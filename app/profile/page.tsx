@@ -4,20 +4,14 @@ import { useState } from "react";
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<"profile" | "library" | "wishlist">("profile");
-  const [isEditing, setIsEditing] = useState(false);
 
-  const [profileData, setProfileData] = useState({
+  // TODO: Replace with API fetch
+  const profileData = {
     name: "Maria Schmidt",
     email: "maria.schmidt@example.com",
     canton: "Zürich",
     subjects: ["Mathematik", "Deutsch", "NMG"],
     cycles: ["Zyklus 2"],
-  });
-
-  const handleSave = () => {
-    // Save profile changes
-    setIsEditing(false);
-    console.log("Saving profile:", profileData);
   };
 
   return (
@@ -124,29 +118,12 @@ export default function ProfilePage() {
                   <h2 className="text-xl font-semibold text-[--text]">
                     Profil Informationen
                   </h2>
-                  {!isEditing ? (
-                    <button
-                      onClick={() => setIsEditing(true)}
-                      className="rounded-lg border border-[--border] px-4 py-2 text-sm font-medium text-[--text] hover:bg-[--surface1] transition-colors"
-                    >
-                      Bearbeiten
-                    </button>
-                  ) : (
-                    <div className="flex gap-2">
-                      <button
-                        onClick={handleSave}
-                        className="rounded-lg bg-gradient-to-r from-[--primary] to-[--secondary] px-4 py-2 text-sm font-medium text-[--background] hover:opacity-90 transition-opacity"
-                      >
-                        Speichern
-                      </button>
-                      <button
-                        onClick={() => setIsEditing(false)}
-                        className="rounded-lg border border-[--border] px-4 py-2 text-sm font-medium text-[--text] hover:bg-[--surface1] transition-colors"
-                      >
-                        Abbrechen
-                      </button>
-                    </div>
-                  )}
+                  <a
+                    href="/profile/edit"
+                    className="rounded-lg border border-[--border] px-4 py-2 text-sm font-medium text-[--text] hover:bg-[--surface1] transition-colors"
+                  >
+                    Bearbeiten
+                  </a>
                 </div>
 
                 <div className="space-y-6">
@@ -155,18 +132,7 @@ export default function ProfilePage() {
                     <label className="mb-2 block text-sm font-medium text-[--text]">
                       Name
                     </label>
-                    {isEditing ? (
-                      <input
-                        type="text"
-                        value={profileData.name}
-                        onChange={(e) =>
-                          setProfileData({ ...profileData, name: e.target.value })
-                        }
-                        className="w-full rounded-lg border border-[--border] bg-[--background] px-4 py-2 text-[--text] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20"
-                      />
-                    ) : (
-                      <div className="text-[--text-muted]">{profileData.name}</div>
-                    )}
+                    <div className="text-[--text-muted]">{profileData.name}</div>
                   </div>
 
                   {/* Email */}
@@ -174,18 +140,7 @@ export default function ProfilePage() {
                     <label className="mb-2 block text-sm font-medium text-[--text]">
                       E-Mail
                     </label>
-                    {isEditing ? (
-                      <input
-                        type="email"
-                        value={profileData.email}
-                        onChange={(e) =>
-                          setProfileData({ ...profileData, email: e.target.value })
-                        }
-                        className="w-full rounded-lg border border-[--border] bg-[--background] px-4 py-2 text-[--text] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20"
-                      />
-                    ) : (
-                      <div className="text-[--text-muted]">{profileData.email}</div>
-                    )}
+                    <div className="text-[--text-muted]">{profileData.email}</div>
                   </div>
 
                   {/* Canton */}
@@ -193,23 +148,7 @@ export default function ProfilePage() {
                     <label className="mb-2 block text-sm font-medium text-[--text]">
                       Kanton
                     </label>
-                    {isEditing ? (
-                      <select
-                        value={profileData.canton}
-                        onChange={(e) =>
-                          setProfileData({ ...profileData, canton: e.target.value })
-                        }
-                        className="w-full rounded-lg border border-[--border] bg-[--background] px-4 py-2 text-[--text] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20"
-                      >
-                        <option value="Zürich">Zürich</option>
-                        <option value="Bern">Bern</option>
-                        <option value="Luzern">Luzern</option>
-                        <option value="Aargau">Aargau</option>
-                        <option value="St. Gallen">St. Gallen</option>
-                      </select>
-                    ) : (
-                      <div className="text-[--text-muted]">{profileData.canton}</div>
-                    )}
+                    <div className="text-[--text-muted]">{profileData.canton}</div>
                   </div>
 
                   {/* Subjects */}
@@ -229,22 +168,6 @@ export default function ProfilePage() {
                     </div>
                   </div>
 
-                  {/* Cycles */}
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-[--text]">
-                      Unterrichtete Zyklen
-                    </label>
-                    <div className="flex flex-wrap gap-2">
-                      {profileData.cycles.map((cycle) => (
-                        <span
-                          key={cycle}
-                          className="rounded-full bg-[--background] px-3 py-1 text-sm text-[--text]"
-                        >
-                          {cycle}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -281,7 +204,7 @@ export default function ProfilePage() {
                     Ressourcen durchsuchen
                   </a>
                   <a
-                    href="#"
+                    href="/profile/edit"
                     className="block rounded-lg border border-[--border] bg-[--background] px-4 py-3 text-sm text-[--text] hover:bg-[--surface1] transition-colors"
                   >
                     Verkäufer werden

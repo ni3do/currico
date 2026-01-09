@@ -1,0 +1,117 @@
+// Prisma schema for Easy Lehrer - Swiss Teaching Materials Marketplace
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================================
+// USER MODEL - Seller Profile
+// ============================================================
+
+model User {
+  // ============ IDENTITY (System) ============
+  id         String   @id @default(cuid())
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  // ============ PUBLIC PROFILE DATA ============
+  // These fields are visible to everyone on the marketplace
+  display_name String // Pseudonym for privacy (e.g., "Frau M.")
+  avatar_url   String? // Profile picture URL
+  bio          String? @db.Text // "About me" - max 500 chars
+  subjects     String[] // ["Mathematik", "Deutsch", "NMG"]
+  cycles       String[] // ["Zyklus 1", "Zyklus 2", "Zyklus 3"]
+  cantons      String[] // ["Zürich", "Bern"] - Swiss cantons
+
+  // ============ PRIVATE ADMIN DATA ============
+  // These fields are NEVER exposed to public APIs
+  email            String  @unique // Login email, never public
+  password_hash    String? // For credential-based auth
+  legal_first_name String? // For invoices/payouts
+  legal_last_name  String? // For invoices/payouts
+  iban             String? // Swiss IBAN for payouts
+  address_street   String?
+  address_city     String?
+  address_postal   String? // Postal code
+  address_country  String  @default("CH")
+
+  // ============ LOGIC/STATUS FIELDS ============
+  role            UserRole @default(BUYER)
+  is_seller       Boolean  @default(false)
+  seller_verified Boolean  @default(false) // Admin-verified seller
+  payout_enabled  Boolean  @default(false) // True when IBAN validated
+  email_verified  Boolean  @default(false)
+
+  // ============ RELATIONS ============
+  resources    Resource[]
+  transactions Transaction[]
+
+  @@map("users")
+}
+
+enum UserRole {
+  BUYER
+  SELLER
+  SCHOOL
+  ADMIN
+}
+
+// ============================================================
+// RESOURCE MODEL - Teaching Materials
+// ============================================================
+
+model Resource {
+  id          String   @id @default(cuid())
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  title       String
+  description String   @db.Text
+  price       Int      // Price in cents (e.g., 500 = 5.00 CHF)
+  file_url    String   // URL to the resource file
+  preview_url String?  // Preview image URL
+
+  subjects    String[]
+  cycles      String[]
+
+  is_published Boolean @default(false)
+  is_approved  Boolean @default(false) // Admin approval
+
+  // Relations
+  seller_id   String
+  seller      User     @relation(fields: [seller_id], references: [id])
+  transactions Transaction[]
+
+  @@map("resources")
+}
+
+// ============================================================
+// TRANSACTION MODEL - Purchases
+// ============================================================
+
+model Transaction {
+  id         String   @id @default(cuid())
+  created_at DateTime @default(now())
+
+  amount     Int      // Amount in cents
+  status     TransactionStatus @default(PENDING)
+
+  // Relations
+  buyer_id    String
+  buyer       User     @relation(fields: [buyer_id], references: [id])
+  resource_id String
+  resource    Resource @relation(fields: [resource_id], references: [id])
+
+  @@map("transactions")
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  REFUNDED
+  FAILED
+}
