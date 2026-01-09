@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Schwer Lehrer - Unterrichtsmaterial für Lehrpersonen",
+  title: "Easy Lehrer - Unterrichtsmaterial für Lehrpersonen",
   description:
     "Entdecken Sie hochwertige Unterrichtsmaterialien für Schweizer Schulen",
 };

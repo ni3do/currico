@@ -6,17 +6,17 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <div className="flex items-center gap-2">
+            <a href="/" className="flex items-center gap-2">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[--primary] to-[--secondary]">
                 <span className="text-xl font-bold text-[--background]">EL</span>
               </div>
               <span className="text-xl font-bold text-[--text]">Easy Lehrer</span>
-            </div>
+            </a>
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-8">
               <a
-                href="#"
+                href="/resources"
                 className="text-[--text-muted] hover:text-[--text] transition-colors"
               >
                 Ressourcen
@@ -38,13 +38,13 @@ export default function Home() {
             {/* CTA Button */}
             <div className="flex items-center gap-4">
               <a
-                href="#"
+                href="/login"
                 className="hidden sm:block text-[--text-muted] hover:text-[--text] transition-colors"
               >
                 Anmelden
               </a>
               <a
-                href="#"
+                href="/register"
                 className="rounded-full bg-gradient-to-r from-[--primary] to-[--secondary] px-6 py-2.5 font-medium text-[--background] hover:opacity-90 transition-opacity shadow-lg shadow-[--primary]/20"
               >
                 Registrieren
@@ -292,16 +292,16 @@ export default function Home() {
             </p>
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
               <a
-                href="#"
+                href="/register"
                 className="rounded-full bg-gradient-to-r from-[--primary] to-[--secondary] px-8 py-4 font-semibold text-[--background] hover:opacity-90 transition-opacity shadow-lg shadow-[--primary]/20"
               >
                 Kostenlos registrieren
               </a>
               <a
-                href="#"
+                href="/resources"
                 className="rounded-full border border-[--border] bg-[--surface] px-8 py-4 font-semibold text-[--text] hover:bg-[--surface1] transition-colors"
               >
-                Mehr erfahren
+                Ressourcen entdecken
               </a>
             </div>
           </div>
