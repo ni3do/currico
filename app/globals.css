@@ -46,38 +46,38 @@
 
 /* Dark Mode - Modern Pastel Night */
 :root[data-theme="dark"] {
-  /* Base colors - softer, not pure black */
-  --background: #0f1117;
-  --surface: #1a1b26;
-  --surface-elevated: #24283b;
+  /* Base colors - warmer, neutral grays with reduced contrast */
+  --background: #1a1a1a;
+  --surface: #222222;
+  --surface-elevated: #2a2a2a;
 
-  /* Text colors - softer whites */
-  --text: #e2e8f0;
-  --text-muted: #94a3b8;
-  --text-subtle: #64748b;
+  /* Text colors - softer, more muted */
+  --text: #d1d5db;
+  --text-muted: #9ca3af;
+  --text-subtle: #6b7280;
 
-  /* Brand colors - Muted pastels for dark mode */
-  --primary: #c4b5fd;
-  --primary-hover: #a78bfa;
-  --secondary: #86efac;
-  --secondary-hover: #4ade80;
-  --accent: #fda4af;
-  --accent-hover: #fb7185;
+  /* Brand colors - Softer pastels for reduced contrast */
+  --primary: #b4a5f3;
+  --primary-hover: #9e8ce8;
+  --secondary: #7cd9a0;
+  --secondary-hover: #6bc78f;
+  --accent: #f5a3b1;
+  --accent-hover: #f08fa0;
 
   /* Additional pastel accents */
-  --lavender: #c4b5fd;
-  --sage: #86efac;
-  --blush: #fda4af;
-  --sky: #7dd3fc;
-  --peach: #fdba74;
+  --lavender: #b4a5f3;
+  --sage: #7cd9a0;
+  --blush: #f5a3b1;
+  --sky: #7ac9f0;
+  --peach: #f5b87a;
 
-  /* Semantic colors */
-  --border: #2d3748;
-  --border-hover: #3f4b5f;
-  --success: #86efac;
-  --warning: #fcd34d;
-  --error: #fca5a5;
-  --info: #93c5fd;
+  /* Semantic colors - softer, less harsh */
+  --border: #3a3a3a;
+  --border-hover: #4a4a4a;
+  --success: #7cd9a0;
+  --warning: #f5c567;
+  --error: #f5a3a3;
+  --info: #8bb8f0;
 
   /* Shadow colors for dark mode */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
@@ -89,38 +89,38 @@
 /* System preference detection */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    /* Base colors */
-    --background: #0f1117;
-    --surface: #1a1b26;
-    --surface-elevated: #24283b;
+    /* Base colors - warmer, neutral grays with reduced contrast */
+    --background: #1a1a1a;
+    --surface: #222222;
+    --surface-elevated: #2a2a2a;
 
-    /* Text colors */
-    --text: #e2e8f0;
-    --text-muted: #94a3b8;
-    --text-subtle: #64748b;
+    /* Text colors - softer, more muted */
+    --text: #d1d5db;
+    --text-muted: #9ca3af;
+    --text-subtle: #6b7280;
 
-    /* Brand colors */
-    --primary: #c4b5fd;
-    --primary-hover: #a78bfa;
-    --secondary: #86efac;
-    --secondary-hover: #4ade80;
-    --accent: #fda4af;
-    --accent-hover: #fb7185;
+    /* Brand colors - Softer pastels for reduced contrast */
+    --primary: #b4a5f3;
+    --primary-hover: #9e8ce8;
+    --secondary: #7cd9a0;
+    --secondary-hover: #6bc78f;
+    --accent: #f5a3b1;
+    --accent-hover: #f08fa0;
 
     /* Additional pastel accents */
-    --lavender: #c4b5fd;
-    --sage: #86efac;
-    --blush: #fda4af;
-    --sky: #7dd3fc;
-    --peach: #fdba74;
+    --lavender: #b4a5f3;
+    --sage: #7cd9a0;
+    --blush: #f5a3b1;
+    --sky: #7ac9f0;
+    --peach: #f5b87a;
 
-    /* Semantic colors */
-    --border: #2d3748;
-    --border-hover: #3f4b5f;
-    --success: #86efac;
-    --warning: #fcd34d;
-    --error: #fca5a5;
-    --info: #93c5fd;
+    /* Semantic colors - softer, less harsh */
+    --border: #3a3a3a;
+    --border-hover: #4a4a4a;
+    --success: #7cd9a0;
+    --warning: #f5c567;
+    --error: #f5a3a3;
+    --info: #8bb8f0;
 
     /* Shadow colors */
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
