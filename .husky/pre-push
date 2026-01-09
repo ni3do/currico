@@ -1,0 +1,15 @@
+#!/bin/sh
+
+echo "🐳 Testing Docker build..."
+
+# Test if Docker build succeeds
+if docker build -t easy-lehrer-test . > /dev/null 2>&1; then
+  echo "✅ Docker build successful"
+  # Clean up test image
+  docker rmi easy-lehrer-test > /dev/null 2>&1
+  exit 0
+else
+  echo "❌ Docker build failed. Please fix the Dockerfile before pushing."
+  echo "Run 'docker build -t easy-lehrer-test .' to see the error details."
+  exit 1
+fi
