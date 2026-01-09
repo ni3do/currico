@@ -1,58 +1,144 @@
 @import "tailwindcss";
 
-/* Catppuccin Mocha Color Palette */
+/* Modern Pastel Dark/Light Theme System */
+
+/* Light Mode (Default) - Soft Pastel Day */
 :root {
   /* Base colors */
-  --ctp-base: #1e1e2e;
-  --ctp-mantle: #181825;
-  --ctp-crust: #11111b;
+  --background: #fafaf9;
+  --surface: #ffffff;
+  --surface-elevated: #f8f9fa;
 
   /* Text colors */
-  --ctp-text: #cdd6f4;
-  --ctp-subtext1: #bac2de;
-  --ctp-subtext0: #a6adc8;
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --text-subtle: #94a3b8;
 
-  /* Surface colors */
-  --ctp-surface0: #313244;
-  --ctp-surface1: #45475a;
-  --ctp-surface2: #585b70;
+  /* Brand colors - Pastel with good contrast for light mode */
+  --primary: #a78bfa;
+  --primary-hover: #8b5cf6;
+  --secondary: #4ade80;
+  --secondary-hover: #22c55e;
+  --accent: #fb7185;
+  --accent-hover: #f43f5e;
 
-  /* Overlay colors */
-  --ctp-overlay0: #6c7086;
-  --ctp-overlay1: #7f849c;
-  --ctp-overlay2: #9399b2;
-
-  /* Accent colors */
-  --ctp-blue: #89b4fa;
-  --ctp-lavender: #b4befe;
-  --ctp-sapphire: #74c7ec;
-  --ctp-sky: #89dceb;
-  --ctp-teal: #94e2d5;
-  --ctp-green: #a6e3a1;
-  --ctp-yellow: #f9e2af;
-  --ctp-peach: #fab387;
-  --ctp-maroon: #eba0ac;
-  --ctp-red: #f38ba8;
-  --ctp-mauve: #cba6f7;
-  --ctp-pink: #f5c2e7;
-  --ctp-flamingo: #f2cdcd;
-  --ctp-rosewater: #f5e0dc;
-
-  /* Primary theme colors for the app */
-  --primary: #89b4fa;
-  --primary-hover: #74c7ec;
-  --secondary: #cba6f7;
-  --accent: #f5c2e7;
+  /* Additional pastel accents */
+  --lavender: #c4b5fd;
+  --sage: #86efac;
+  --blush: #fda4af;
+  --sky: #7dd3fc;
+  --peach: #fdba74;
 
   /* Semantic colors */
-  --background: #1e1e2e;
-  --surface: #313244;
-  --text: #cdd6f4;
-  --text-muted: #bac2de;
-  --border: #45475a;
+  --border: #e2e8f0;
+  --border-hover: #cbd5e1;
+  --success: #4ade80;
+  --warning: #fbbf24;
+  --error: #f87171;
+  --info: #60a5fa;
+
+  /* Shadow colors */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+}
+
+/* Dark Mode - Modern Pastel Night */
+:root[data-theme="dark"] {
+  /* Base colors - softer, not pure black */
+  --background: #0f1117;
+  --surface: #1a1b26;
+  --surface-elevated: #24283b;
+
+  /* Text colors - softer whites */
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+  --text-subtle: #64748b;
+
+  /* Brand colors - Muted pastels for dark mode */
+  --primary: #c4b5fd;
+  --primary-hover: #a78bfa;
+  --secondary: #86efac;
+  --secondary-hover: #4ade80;
+  --accent: #fda4af;
+  --accent-hover: #fb7185;
+
+  /* Additional pastel accents */
+  --lavender: #c4b5fd;
+  --sage: #86efac;
+  --blush: #fda4af;
+  --sky: #7dd3fc;
+  --peach: #fdba74;
+
+  /* Semantic colors */
+  --border: #2d3748;
+  --border-hover: #3f4b5f;
+  --success: #86efac;
+  --warning: #fcd34d;
+  --error: #fca5a5;
+  --info: #93c5fd;
+
+  /* Shadow colors for dark mode */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6);
+}
+
+/* System preference detection */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    /* Base colors */
+    --background: #0f1117;
+    --surface: #1a1b26;
+    --surface-elevated: #24283b;
+
+    /* Text colors */
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --text-subtle: #64748b;
+
+    /* Brand colors */
+    --primary: #c4b5fd;
+    --primary-hover: #a78bfa;
+    --secondary: #86efac;
+    --secondary-hover: #4ade80;
+    --accent: #fda4af;
+    --accent-hover: #fb7185;
+
+    /* Additional pastel accents */
+    --lavender: #c4b5fd;
+    --sage: #86efac;
+    --blush: #fda4af;
+    --sky: #7dd3fc;
+    --peach: #fdba74;
+
+    /* Semantic colors */
+    --border: #2d3748;
+    --border-hover: #3f4b5f;
+    --success: #86efac;
+    --warning: #fcd34d;
+    --error: #fca5a5;
+    --info: #93c5fd;
+
+    /* Shadow colors */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6);
+  }
 }
 
 body {
   background-color: var(--background);
   color: var(--text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Smooth transitions for theme switching */
+* {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
 }

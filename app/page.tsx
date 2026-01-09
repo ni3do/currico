@@ -1,51 +1,54 @@
+import ThemeToggle from "./components/ThemeToggle";
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-[--background]">
       {/* Sticky Header */}
-      <header className="sticky top-0 z-50 border-b border-[--border] bg-[--surface]/95 backdrop-blur-sm">
+      <header className="sticky top-0 z-50 border-b border-[--border] bg-[--surface]/80 backdrop-blur-md">
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <a href="/" className="flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[--primary] to-[--secondary]">
-                <span className="text-xl font-bold text-[--background]">EL</span>
+            <a href="/" className="flex items-center gap-2.5 group">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[--primary] group-hover:scale-105 transition-transform">
+                <span className="text-xl font-bold text-white">EL</span>
               </div>
-              <span className="text-xl font-bold text-[--text]">Easy Lehrer</span>
+              <span className="text-xl font-semibold text-[--text]">Easy Lehrer</span>
             </a>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-8">
+            <nav className="hidden md:flex items-center gap-6">
               <a
                 href="/resources"
-                className="text-[--text-muted] hover:text-[--text] transition-colors"
+                className="text-sm font-medium text-[--text-muted] hover:text-[--text] transition-colors"
               >
                 Ressourcen
               </a>
               <a
                 href="#"
-                className="text-[--text-muted] hover:text-[--text] transition-colors"
+                className="text-sm font-medium text-[--text-muted] hover:text-[--text] transition-colors"
               >
                 Für Schulen
               </a>
               <a
                 href="#"
-                className="text-[--text-muted] hover:text-[--text] transition-colors"
+                className="text-sm font-medium text-[--text-muted] hover:text-[--text] transition-colors"
               >
                 Über uns
               </a>
             </nav>
 
             {/* CTA Button */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
+              <ThemeToggle />
               <a
                 href="/login"
-                className="hidden sm:block text-[--text-muted] hover:text-[--text] transition-colors"
+                className="hidden sm:block text-sm font-medium text-[--text-muted] hover:text-[--text] transition-colors"
               >
                 Anmelden
               </a>
               <a
                 href="/register"
-                className="rounded-full bg-gradient-to-r from-[--primary] to-[--secondary] px-6 py-2.5 font-medium text-[--background] hover:opacity-90 transition-opacity shadow-lg shadow-[--primary]/20"
+                className="rounded-full bg-[--primary] px-5 py-2 text-sm font-semibold text-white hover:bg-[--primary-hover] transition-all shadow-sm hover:shadow-md"
               >
                 Registrieren
               </a>
@@ -56,62 +59,59 @@ export default function Home() {
 
       <main>
         {/* Hero Section with Search */}
-        <section className="relative overflow-hidden">
-          {/* Background gradient */}
-          <div className="absolute inset-0 bg-gradient-to-br from-[--surface] via-[--background] to-[--background]" />
-
-          <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-32">
+        <section className="relative overflow-hidden bg-[--background]">
+          <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
             <div className="text-center">
-              <h1 className="text-4xl font-bold tracking-tight text-[--text] sm:text-5xl lg:text-6xl">
+              <h1 className="text-5xl font-bold tracking-tight text-[--text] sm:text-6xl lg:text-7xl">
                 Unterrichtsmaterial von{" "}
-                <span className="bg-gradient-to-r from-[--primary] to-[--secondary] bg-clip-text text-transparent">
+                <span className="text-[--primary]">
                   Lehrpersonen
                 </span>
                 <br />
                 für Lehrpersonen
               </h1>
-              <p className="mx-auto mt-6 max-w-2xl text-lg text-[--text-muted]">
+              <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-[--text-muted]">
                 Entdecken Sie qualitätsgeprüfte Materialien, abgestimmt auf den
                 Lehrplan 21. Sparen Sie Zeit bei der Unterrichtsvorbereitung und
                 teilen Sie Ihre eigenen Ressourcen.
               </p>
 
-              {/* Search Bar - Airbnb style */}
-              <div className="mx-auto mt-10 max-w-4xl">
-                <div className="flex flex-col gap-4 rounded-2xl bg-[--surface] p-2 shadow-2xl shadow-[--primary]/10 sm:flex-row">
+              {/* Search Bar - Modern Minimal */}
+              <div className="mx-auto mt-12 max-w-4xl">
+                <div className="flex flex-col gap-3 rounded-2xl border border-[--border] bg-[--surface] p-3 shadow-lg sm:flex-row">
                   <div className="flex-1 px-4 py-3">
-                    <label className="text-xs font-semibold text-[--text-muted]">
+                    <label className="text-xs font-medium text-[--text-muted]">
                       Fach
                     </label>
                     <input
                       type="text"
                       placeholder="z.B. Mathematik, Deutsch"
-                      className="w-full bg-transparent text-[--text] outline-none placeholder:text-[--overlay1]"
+                      className="w-full bg-transparent text-[--text] outline-none placeholder:text-[--text-subtle]"
                     />
                   </div>
                   <div className="hidden sm:block h-12 w-px self-center bg-[--border]" />
                   <div className="flex-1 px-4 py-3">
-                    <label className="text-xs font-semibold text-[--text-muted]">
+                    <label className="text-xs font-medium text-[--text-muted]">
                       Zyklus
                     </label>
                     <input
                       type="text"
                       placeholder="1, 2 oder 3"
-                      className="w-full bg-transparent text-[--text] outline-none placeholder:text-[--overlay1]"
+                      className="w-full bg-transparent text-[--text] outline-none placeholder:text-[--text-subtle]"
                     />
                   </div>
                   <div className="hidden sm:block h-12 w-px self-center bg-[--border]" />
                   <div className="flex-1 px-4 py-3">
-                    <label className="text-xs font-semibold text-[--text-muted]">
+                    <label className="text-xs font-medium text-[--text-muted]">
                       Thema
                     </label>
                     <input
                       type="text"
                       placeholder="Suchen..."
-                      className="w-full bg-transparent text-[--text] outline-none placeholder:text-[--overlay1]"
+                      className="w-full bg-transparent text-[--text] outline-none placeholder:text-[--text-subtle]"
                     />
                   </div>
-                  <button className="rounded-xl bg-gradient-to-r from-[--primary] to-[--secondary] px-8 py-3 font-semibold text-[--background] hover:opacity-90 transition-opacity">
+                  <button className="rounded-xl bg-[--primary] px-8 py-3 font-semibold text-white hover:bg-[--primary-hover] transition-all shadow-sm hover:shadow-md">
                     <svg
                       className="h-5 w-5"
                       fill="none"
@@ -130,14 +130,14 @@ export default function Home() {
               </div>
 
               {/* Quick Links */}
-              <div className="mt-8 flex flex-wrap justify-center gap-3">
-                <span className="text-sm text-[--text-muted]">Beliebt:</span>
+              <div className="mt-8 flex flex-wrap justify-center gap-2">
+                <span className="text-sm font-medium text-[--text-muted]">Beliebt:</span>
                 {["Mathematik Zyklus 2", "Deutsch Lesen", "NMG Experimente", "Englisch Vocabulary"].map(
                   (tag) => (
                     <a
                       key={tag}
                       href="#"
-                      className="rounded-full border border-[--border] bg-[--surface] px-4 py-1.5 text-sm text-[--text] hover:border-[--primary] hover:bg-[--surface1] transition-all"
+                      className="rounded-full border border-[--border] bg-[--surface-elevated] px-4 py-1.5 text-sm font-medium text-[--text] hover:border-[--primary] hover:bg-[--primary]/10 transition-all"
                     >
                       {tag}
                     </a>
@@ -149,10 +149,10 @@ export default function Home() {
         </section>
 
         {/* Feature Cards */}
-        <section className="border-t border-[--border] bg-[--surface]/30">
-          <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <section className="border-t border-[--border] bg-[--background]">
+          <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
             <div className="text-center">
-              <h2 className="text-3xl font-bold text-[--text]">
+              <h2 className="text-4xl font-bold text-[--text]">
                 Warum Easy Lehrer?
               </h2>
               <p className="mt-4 text-lg text-[--text-muted]">
@@ -160,12 +160,12 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {/* Feature Card 1 */}
-              <div className="group rounded-2xl bg-[--surface] p-8 shadow-lg hover:shadow-2xl hover:shadow-[--primary]/10 transition-all duration-300 hover:-translate-y-1 border border-[--border] hover:border-[--primary]/50">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[--primary] to-[--sapphire]">
+              <div className="group rounded-2xl border border-[--border] bg-[--surface] p-8 transition-all hover:border-[--primary]/50 hover:shadow-lg">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[--primary]/10">
                   <svg
-                    className="h-6 w-6 text-[--background]"
+                    className="h-6 w-6 text-[--primary]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -188,10 +188,10 @@ export default function Home() {
               </div>
 
               {/* Feature Card 2 */}
-              <div className="group rounded-2xl bg-[--surface] p-8 shadow-lg hover:shadow-2xl hover:shadow-[--secondary]/10 transition-all duration-300 hover:-translate-y-1 border border-[--border] hover:border-[--secondary]/50">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[--secondary] to-[--pink]">
+              <div className="group rounded-2xl border border-[--border] bg-[--surface] p-8 transition-all hover:border-[--secondary]/50 hover:shadow-lg">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[--secondary]/10">
                   <svg
-                    className="h-6 w-6 text-[--background]"
+                    className="h-6 w-6 text-[--secondary]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -214,10 +214,10 @@ export default function Home() {
               </div>
 
               {/* Feature Card 3 */}
-              <div className="group rounded-2xl bg-[--surface] p-8 shadow-lg hover:shadow-2xl hover:shadow-[--accent]/10 transition-all duration-300 hover:-translate-y-1 border border-[--border] hover:border-[--accent]/50">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[--accent] to-[--flamingo]">
+              <div className="group rounded-2xl border border-[--border] bg-[--surface] p-8 transition-all hover:border-[--accent]/50 hover:shadow-lg">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[--accent]/10">
                   <svg
-                    className="h-6 w-6 text-[--background]"
+                    className="h-6 w-6 text-[--accent]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -243,36 +243,36 @@ export default function Home() {
         </section>
 
         {/* Stats Section */}
-        <section className="border-t border-[--border]">
+        <section className="border-t border-[--border] bg-[--background]">
           <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
               <div className="text-center">
-                <div className="text-4xl font-bold bg-gradient-to-r from-[--primary] to-[--secondary] bg-clip-text text-transparent">
+                <div className="text-5xl font-bold text-[--primary]">
                   500+
                 </div>
-                <div className="mt-2 text-sm text-[--text-muted]">
+                <div className="mt-3 text-sm font-medium text-[--text-muted]">
                   Qualitätsmaterialien
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-4xl font-bold bg-gradient-to-r from-[--secondary] to-[--pink] bg-clip-text text-transparent">
+                <div className="text-5xl font-bold text-[--secondary]">
                   1000+
                 </div>
-                <div className="mt-2 text-sm text-[--text-muted]">
+                <div className="mt-3 text-sm font-medium text-[--text-muted]">
                   Aktive Lehrpersonen
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-4xl font-bold bg-gradient-to-r from-[--accent] to-[--flamingo] bg-clip-text text-transparent">
+                <div className="text-5xl font-bold text-[--accent]">
                   50+
                 </div>
-                <div className="mt-2 text-sm text-[--text-muted]">Schulen</div>
+                <div className="mt-3 text-sm font-medium text-[--text-muted]">Schulen</div>
               </div>
               <div className="text-center">
-                <div className="text-4xl font-bold bg-gradient-to-r from-[--teal] to-[--green] bg-clip-text text-transparent">
+                <div className="text-5xl font-bold text-[--sage]">
                   98%
                 </div>
-                <div className="mt-2 text-sm text-[--text-muted]">
+                <div className="mt-3 text-sm font-medium text-[--text-muted]">
                   Zufriedenheit
                 </div>
               </div>
@@ -281,25 +281,25 @@ export default function Home() {
         </section>
 
         {/* CTA Section */}
-        <section className="border-t border-[--border] bg-gradient-to-br from-[--surface] to-[--background]">
-          <div className="mx-auto max-w-4xl px-4 py-20 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-3xl font-bold text-[--text] sm:text-4xl">
+        <section className="border-t border-[--border] bg-[--surface-elevated]">
+          <div className="mx-auto max-w-4xl px-4 py-24 sm:px-6 lg:px-8 text-center">
+            <h2 className="text-4xl font-bold text-[--text] sm:text-5xl">
               Bereit loszulegen?
             </h2>
-            <p className="mt-4 text-lg text-[--text-muted]">
+            <p className="mt-6 text-lg leading-relaxed text-[--text-muted]">
               Treten Sie unserer Community bei und entdecken Sie
               Unterrichtsmaterial, das begeistert.
             </p>
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href="/register"
-                className="rounded-full bg-gradient-to-r from-[--primary] to-[--secondary] px-8 py-4 font-semibold text-[--background] hover:opacity-90 transition-opacity shadow-lg shadow-[--primary]/20"
+                className="rounded-full bg-[--primary] px-8 py-3.5 text-base font-semibold text-white hover:bg-[--primary-hover] transition-all shadow-md hover:shadow-lg"
               >
                 Kostenlos registrieren
               </a>
               <a
                 href="/resources"
-                className="rounded-full border border-[--border] bg-[--surface] px-8 py-4 font-semibold text-[--text] hover:bg-[--surface1] transition-colors"
+                className="rounded-full border-2 border-[--border] bg-transparent px-8 py-3.5 text-base font-semibold text-[--text] hover:bg-[--surface] hover:border-[--border-hover] transition-all"
               >
                 Ressourcen entdecken
               </a>
@@ -309,13 +309,13 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-[--border] bg-[--surface]/50">
+      <footer className="border-t border-[--border] bg-[--surface]">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {/* Company */}
             <div>
               <h3 className="font-semibold text-[--text]">Easy Lehrer</h3>
-              <p className="mt-4 text-sm text-[--text-muted]">
+              <p className="mt-4 text-sm leading-relaxed text-[--text-muted]">
                 Die Plattform für Unterrichtsmaterial von Lehrpersonen für
                 Lehrpersonen.
               </p>
@@ -324,7 +324,7 @@ export default function Home() {
             {/* Product */}
             <div>
               <h3 className="font-semibold text-[--text]">Produkt</h3>
-              <ul className="mt-4 space-y-3">
+              <ul className="mt-4 space-y-2">
                 <li>
                   <a
                     href="#"
@@ -355,7 +355,7 @@ export default function Home() {
             {/* Company */}
             <div>
               <h3 className="font-semibold text-[--text]">Unternehmen</h3>
-              <ul className="mt-4 space-y-3">
+              <ul className="mt-4 space-y-2">
                 <li>
                   <a
                     href="#"
@@ -386,7 +386,7 @@ export default function Home() {
             {/* Legal */}
             <div>
               <h3 className="font-semibold text-[--text]">Rechtliches</h3>
-              <ul className="mt-4 space-y-3">
+              <ul className="mt-4 space-y-2">
                 <li>
                   <a
                     href="#"
