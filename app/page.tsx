@@ -1,4 +1,7 @@
 import ThemeToggle from "./components/ThemeToggle";
+import Button from "./components/Button";
+import Card from "./components/Card";
+import Badge from "./components/Badge";
 
 export default function Home() {
   return (
@@ -40,18 +43,12 @@ export default function Home() {
             {/* CTA Button */}
             <div className="flex items-center gap-3">
               <ThemeToggle />
-              <a
-                href="/login"
-                className="hidden sm:block text-sm font-medium text-[--text-muted] hover:text-[--text] transition-colors"
-              >
+              <Button variant="ghost" size="sm" href="/login" className="hidden sm:inline-flex">
                 Anmelden
-              </a>
-              <a
-                href="/register"
-                className="rounded-full bg-[--primary] px-5 py-2 text-sm font-semibold text-white hover:bg-[--primary-hover] transition-all shadow-sm hover:shadow-md"
-              >
+              </Button>
+              <Button variant="primary" size="sm" href="/register">
                 Registrieren
-              </a>
+              </Button>
             </div>
           </div>
         </div>
@@ -62,7 +59,7 @@ export default function Home() {
         <section className="relative overflow-hidden bg-[--background]">
           <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
             <div className="text-center">
-              <h1 className="text-5xl font-bold tracking-tight text-[--text] sm:text-6xl lg:text-7xl">
+              <h1 className="text-5xl font-bold tracking-tight text-[--text] sm:text-6xl lg:text-7xl animate-fade-in">
                 Unterrichtsmaterial von{" "}
                 <span className="text-[--primary]">
                   Lehrpersonen
@@ -70,15 +67,15 @@ export default function Home() {
                 <br />
                 für Lehrpersonen
               </h1>
-              <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-[--text-muted]">
+              <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-[--text-muted] animate-fade-in" style={{ animationDelay: "0.1s", opacity: 0 }}>
                 Entdecken Sie qualitätsgeprüfte Materialien, abgestimmt auf den
                 Lehrplan 21. Sparen Sie Zeit bei der Unterrichtsvorbereitung und
                 teilen Sie Ihre eigenen Ressourcen.
               </p>
 
-              {/* Search Bar - Modern Minimal */}
-              <div className="mx-auto mt-12 max-w-4xl">
-                <div className="flex flex-col gap-3 rounded-2xl border border-[--border] bg-[--surface] p-3 shadow-lg sm:flex-row">
+              {/* Search Bar - Glassmorphism */}
+              <div className="mx-auto mt-12 max-w-4xl animate-fade-in-scale" style={{ animationDelay: "0.2s", opacity: 0 }}>
+                <div className="flex flex-col gap-3 rounded-2xl border border-[--border]/50 bg-[--surface]/60 backdrop-blur-xl p-3 shadow-xl sm:flex-row">
                   <div className="flex-1 px-4 py-3">
                     <label className="text-xs font-medium text-[--text-muted]">
                       Fach
@@ -111,7 +108,7 @@ export default function Home() {
                       className="w-full bg-transparent text-[--text] outline-none placeholder:text-[--text-subtle]"
                     />
                   </div>
-                  <button className="rounded-xl bg-[--primary] px-8 py-3 font-semibold text-white hover:bg-[--primary-hover] transition-all shadow-sm hover:shadow-md">
+                  <button className="rounded-xl bg-[--primary] px-8 py-3 font-semibold text-white hover:bg-[--primary-hover] transition-all shadow-sm hover:shadow-md hover:scale-[1.02] active:scale-[0.98]">
                     <svg
                       className="h-5 w-5"
                       fill="none"
@@ -130,14 +127,14 @@ export default function Home() {
               </div>
 
               {/* Quick Links */}
-              <div className="mt-8 flex flex-wrap justify-center gap-2">
+              <div className="mt-8 flex flex-wrap justify-center gap-2 animate-fade-in" style={{ animationDelay: "0.3s", opacity: 0 }}>
                 <span className="text-sm font-medium text-[--text-muted]">Beliebt:</span>
                 {["Mathematik Zyklus 2", "Deutsch Lesen", "NMG Experimente", "Englisch Vocabulary"].map(
                   (tag) => (
                     <a
                       key={tag}
                       href="#"
-                      className="rounded-full border border-[--border] bg-[--surface-elevated] px-4 py-1.5 text-sm font-medium text-[--text] hover:border-[--primary] hover:bg-[--primary]/10 transition-all"
+                      className="rounded-full border border-[--border] bg-[--surface-elevated] px-4 py-1.5 text-sm font-medium text-[--text] hover:border-[--primary] hover:bg-[--primary]/10 transition-all hover:scale-105"
                     >
                       {tag}
                     </a>
@@ -160,9 +157,9 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 stagger-children">
               {/* Feature Card 1 */}
-              <div className="group rounded-2xl border border-[--border] bg-[--surface] p-8 transition-all hover:border-[--primary]/50 hover:shadow-lg">
+              <Card hover className="group p-8">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[--primary]/10">
                   <svg
                     className="h-6 w-6 text-[--primary]"
@@ -185,10 +182,10 @@ export default function Home() {
                   Alle Materialien werden auf Qualität und Lehrplan-Konformität
                   geprüft. Nur die besten Ressourcen für Ihren Unterricht.
                 </p>
-              </div>
+              </Card>
 
               {/* Feature Card 2 */}
-              <div className="group rounded-2xl border border-[--border] bg-[--surface] p-8 transition-all hover:border-[--secondary]/50 hover:shadow-lg">
+              <Card hover className="group p-8">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[--secondary]/10">
                   <svg
                     className="h-6 w-6 text-[--secondary]"
@@ -211,10 +208,10 @@ export default function Home() {
                   Ressourcen sind nach Kompetenzen und Zyklen des Lehrplan 21
                   kategorisiert. Finden Sie genau das Richtige.
                 </p>
-              </div>
+              </Card>
 
               {/* Feature Card 3 */}
-              <div className="group rounded-2xl border border-[--border] bg-[--surface] p-8 transition-all hover:border-[--accent]/50 hover:shadow-lg">
+              <Card hover className="group p-8">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[--accent]/10">
                   <svg
                     className="h-6 w-6 text-[--accent]"
@@ -237,7 +234,7 @@ export default function Home() {
                   Schulen können Team-Lizenzen erwerben und Materialien mit
                   allen Lehrpersonen teilen. Gemeinsam mehr erreichen.
                 </p>
-              </div>
+              </Card>
             </div>
           </div>
         </section>
@@ -291,18 +288,12 @@ export default function Home() {
               Unterrichtsmaterial, das begeistert.
             </p>
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-              <a
-                href="/register"
-                className="rounded-full bg-[--primary] px-8 py-3.5 text-base font-semibold text-white hover:bg-[--primary-hover] transition-all shadow-md hover:shadow-lg"
-              >
+              <Button variant="primary" size="lg" href="/register">
                 Kostenlos registrieren
-              </a>
-              <a
-                href="/resources"
-                className="rounded-full border-2 border-[--border] bg-transparent px-8 py-3.5 text-base font-semibold text-[--text] hover:bg-[--surface] hover:border-[--border-hover] transition-all"
-              >
+              </Button>
+              <Button variant="outline" size="lg" href="/resources">
                 Ressourcen entdecken
-              </a>
+              </Button>
             </div>
           </div>
         </section>
