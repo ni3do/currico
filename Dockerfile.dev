@@ -1,0 +1,31 @@
+# Development Dockerfile for Next.js with hot reload
+FROM node:20-alpine
+
+# Install dependencies for native modules
+RUN apk add --no-cache libc6-compat openssl
+
+WORKDIR /app
+
+# Copy package files for dependency caching
+COPY package.json package-lock.json* ./
+
+# Install all dependencies (including devDependencies)
+RUN npm ci
+
+# Copy Prisma schema and generate client
+COPY prisma ./prisma/
+COPY prisma.config.ts ./
+RUN npx prisma generate
+
+# Copy application code (will be overwritten by volume mount)
+COPY . .
+
+EXPOSE 3000
+
+# Development environment settings
+ENV NODE_ENV=development
+ENV NEXT_TELEMETRY_DISABLED=1
+# Enable polling for file watching in Docker (required for macOS/Windows)
+ENV WATCHPACK_POLLING=true
+
+CMD ["npm", "run", "dev"]
