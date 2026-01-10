@@ -25,7 +25,7 @@ INSERT INTO users (
   updated_at
 ) VALUES (
   'test-user-id',
-  'test',
+  'test@test.com',
   'test',
   'Test User',
   'BUYER',
@@ -45,7 +45,7 @@ INSERT INTO users (
 ```
 
 This creates a test user with:
-- **Email:** test
+- **Email:** test@test.com
 - **Password:** test
 - **Display Name:** Test User
 - **Role:** BUYER
