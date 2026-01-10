@@ -1,51 +1,54 @@
+"use client";
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-[--background]">
-      {/* Sticky Header */}
-      <header className="sticky top-0 z-50 border-b border-[--border] bg-[--surface]/95 backdrop-blur-sm">
+      {/* Sticky Header - Clean with soft shadow */}
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md" style={{ boxShadow: 'var(--shadow-sm)' }}>
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <a href="/" className="flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[--primary] to-[--secondary]">
-                <span className="text-xl font-bold text-[--background]">EL</span>
+            <a href="/" className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[--primary]" style={{ boxShadow: 'var(--shadow-brand)' }}>
+                <span className="text-xl font-bold text-white">EL</span>
               </div>
-              <span className="text-xl font-bold text-[--text]">Easy Lehrer</span>
+              <span className="text-xl font-bold text-[--gray-800]">Easy Lehrer</span>
             </a>
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-8">
               <a
                 href="/resources"
-                className="text-[--text-muted] hover:text-[--text] transition-colors"
+                className="text-[--text-muted] hover:text-[--text] transition-colors font-medium"
               >
                 Ressourcen
               </a>
               <a
                 href="#"
-                className="text-[--text-muted] hover:text-[--text] transition-colors"
+                className="text-[--text-muted] hover:text-[--text] transition-colors font-medium"
               >
-                Für Schulen
+                Fur Schulen
               </a>
               <a
                 href="#"
-                className="text-[--text-muted] hover:text-[--text] transition-colors"
+                className="text-[--text-muted] hover:text-[--text] transition-colors font-medium"
               >
-                Über uns
+                Uber uns
               </a>
             </nav>
 
-            {/* CTA Button */}
+            {/* CTA Buttons */}
             <div className="flex items-center gap-4">
               <a
                 href="/login"
-                className="hidden sm:block text-[--text-muted] hover:text-[--text] transition-colors"
+                className="hidden sm:block text-[--text-muted] hover:text-[--text] transition-colors font-medium"
               >
                 Anmelden
               </a>
               <a
                 href="/register"
-                className="rounded-full bg-gradient-to-r from-[--primary] to-[--secondary] px-6 py-2.5 font-medium text-[--background] hover:opacity-90 transition-opacity shadow-lg shadow-[--primary]/20"
+                className="rounded-full bg-[--primary] px-6 py-2.5 font-semibold text-white hover:bg-[--primary-hover] transition-all"
+                style={{ boxShadow: 'var(--shadow-brand)' }}
               >
                 Registrieren
               </a>
@@ -55,65 +58,72 @@ export default function Home() {
       </header>
 
       <main>
-        {/* Hero Section with Search */}
-        <section className="relative overflow-hidden">
-          {/* Background gradient */}
-          <div className="absolute inset-0 bg-gradient-to-br from-[--surface] via-[--background] to-[--background]" />
+        {/* Hero Section with Floating Search */}
+        <section className="relative overflow-hidden bg-[--background-alt]">
+          {/* Subtle gradient background */}
+          <div className="absolute inset-0 bg-gradient-to-b from-white via-[--gray-50] to-[--background-alt]" />
 
-          <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-32">
+          <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
             <div className="text-center">
-              <h1 className="text-4xl font-bold tracking-tight text-[--text] sm:text-5xl lg:text-6xl">
+              <h1 className="text-4xl font-extrabold tracking-tight text-[--gray-800] sm:text-5xl lg:text-6xl">
                 Unterrichtsmaterial von{" "}
-                <span className="bg-gradient-to-r from-[--primary] to-[--secondary] bg-clip-text text-transparent">
+                <span className="text-[--primary]">
                   Lehrpersonen
                 </span>
                 <br />
-                für Lehrpersonen
+                fur Lehrpersonen
               </h1>
-              <p className="mx-auto mt-6 max-w-2xl text-lg text-[--text-muted]">
-                Entdecken Sie qualitätsgeprüfte Materialien, abgestimmt auf den
+              <p className="mx-auto mt-6 max-w-2xl text-lg text-[--text-muted] leading-relaxed">
+                Entdecken Sie qualitatsgeprüfte Materialien, abgestimmt auf den
                 Lehrplan 21. Sparen Sie Zeit bei der Unterrichtsvorbereitung und
                 teilen Sie Ihre eigenen Ressourcen.
               </p>
 
-              {/* Search Bar - Airbnb style */}
-              <div className="mx-auto mt-10 max-w-4xl">
-                <div className="flex flex-col gap-4 rounded-2xl bg-[--surface] p-2 shadow-2xl shadow-[--primary]/10 sm:flex-row">
-                  <div className="flex-1 px-4 py-3">
-                    <label className="text-xs font-semibold text-[--text-muted]">
+              {/* Floating Search Bar - Hero Element */}
+              <div className="mx-auto mt-12 max-w-4xl">
+                <div
+                  className="flex flex-col gap-2 rounded-[24px] bg-white p-2 sm:flex-row sm:items-center"
+                  style={{ boxShadow: 'var(--shadow-xl)' }}
+                >
+                  <div className="flex-1 px-5 py-3">
+                    <label className="text-xs font-semibold text-[--gray-800] uppercase tracking-wide">
                       Fach
                     </label>
                     <input
                       type="text"
                       placeholder="z.B. Mathematik, Deutsch"
-                      className="w-full bg-transparent text-[--text] outline-none placeholder:text-[--overlay1]"
+                      className="w-full bg-transparent text-[--text] outline-none placeholder:text-[--text-light] text-base mt-1"
                     />
                   </div>
-                  <div className="hidden sm:block h-12 w-px self-center bg-[--border]" />
-                  <div className="flex-1 px-4 py-3">
-                    <label className="text-xs font-semibold text-[--text-muted]">
+                  <div className="hidden sm:block h-10 w-px bg-[--border]" />
+                  <div className="flex-1 px-5 py-3">
+                    <label className="text-xs font-semibold text-[--gray-800] uppercase tracking-wide">
                       Zyklus
                     </label>
                     <input
                       type="text"
                       placeholder="1, 2 oder 3"
-                      className="w-full bg-transparent text-[--text] outline-none placeholder:text-[--overlay1]"
+                      className="w-full bg-transparent text-[--text] outline-none placeholder:text-[--text-light] text-base mt-1"
                     />
                   </div>
-                  <div className="hidden sm:block h-12 w-px self-center bg-[--border]" />
-                  <div className="flex-1 px-4 py-3">
-                    <label className="text-xs font-semibold text-[--text-muted]">
+                  <div className="hidden sm:block h-10 w-px bg-[--border]" />
+                  <div className="flex-1 px-5 py-3">
+                    <label className="text-xs font-semibold text-[--gray-800] uppercase tracking-wide">
                       Thema
                     </label>
                     <input
                       type="text"
                       placeholder="Suchen..."
-                      className="w-full bg-transparent text-[--text] outline-none placeholder:text-[--overlay1]"
+                      className="w-full bg-transparent text-[--text] outline-none placeholder:text-[--text-light] text-base mt-1"
                     />
                   </div>
-                  <button className="rounded-xl bg-gradient-to-r from-[--primary] to-[--secondary] px-8 py-3 font-semibold text-[--background] hover:opacity-90 transition-opacity">
+                  {/* Circular Search Button */}
+                  <button
+                    className="flex h-14 w-14 items-center justify-center rounded-full bg-[--primary] text-white hover:bg-[--primary-hover] transition-all shrink-0 m-1"
+                    style={{ boxShadow: 'var(--shadow-brand)' }}
+                  >
                     <svg
-                      className="h-5 w-5"
+                      className="h-6 w-6"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -121,7 +131,7 @@ export default function Home() {
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        strokeWidth={2}
+                        strokeWidth={2.5}
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                       />
                     </svg>
@@ -129,15 +139,15 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Quick Links */}
+              {/* Filter Chips - Pill shaped */}
               <div className="mt-8 flex flex-wrap justify-center gap-3">
-                <span className="text-sm text-[--text-muted]">Beliebt:</span>
+                <span className="text-sm text-[--text-muted] font-medium py-2">Beliebt:</span>
                 {["Mathematik Zyklus 2", "Deutsch Lesen", "NMG Experimente", "Englisch Vocabulary"].map(
                   (tag) => (
                     <a
                       key={tag}
                       href="#"
-                      className="rounded-full border border-[--border] bg-[--surface] px-4 py-1.5 text-sm text-[--text] hover:border-[--primary] hover:bg-[--surface1] transition-all"
+                      className="rounded-full bg-[--gray-100] px-4 py-2 text-sm font-medium text-[--text] hover:bg-[--primary] hover:text-white transition-all"
                     >
                       {tag}
                     </a>
@@ -149,23 +159,28 @@ export default function Home() {
         </section>
 
         {/* Feature Cards */}
-        <section className="border-t border-[--border] bg-[--surface]/30">
-          <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <section className="bg-white py-20">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <h2 className="text-3xl font-bold text-[--text]">
+              <h2 className="text-3xl font-bold text-[--gray-800] sm:text-4xl">
                 Warum Easy Lehrer?
               </h2>
               <p className="mt-4 text-lg text-[--text-muted]">
-                Die Plattform für Schweizer Lehrpersonen
+                Die Plattform fur Schweizer Lehrpersonen
               </p>
             </div>
 
             <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {/* Feature Card 1 */}
-              <div className="group rounded-2xl bg-[--surface] p-8 shadow-lg hover:shadow-2xl hover:shadow-[--primary]/10 transition-all duration-300 hover:-translate-y-1 border border-[--border] hover:border-[--primary]/50">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[--primary] to-[--sapphire]">
+              <div
+                className="group rounded-[16px] bg-white p-8 transition-all duration-300 hover:-translate-y-1"
+                style={{ boxShadow: 'var(--shadow-md)' }}
+                onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-lg)'}
+                onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'}
+              >
+                <div className="flex h-14 w-14 items-center justify-center rounded-[12px] bg-[--primary]">
                   <svg
-                    className="h-6 w-6 text-[--background]"
+                    className="h-7 w-7 text-white"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -178,20 +193,25 @@ export default function Home() {
                     />
                   </svg>
                 </div>
-                <h3 className="mt-6 text-xl font-semibold text-[--text]">
-                  Qualitätsgeprüft
+                <h3 className="mt-6 text-xl font-bold text-[--gray-800]">
+                  Qualitatsgeprüft
                 </h3>
                 <p className="mt-3 text-[--text-muted] leading-relaxed">
-                  Alle Materialien werden auf Qualität und Lehrplan-Konformität
-                  geprüft. Nur die besten Ressourcen für Ihren Unterricht.
+                  Alle Materialien werden auf Qualitat und Lehrplan-Konformitat
+                  geprüft. Nur die besten Ressourcen fur Ihren Unterricht.
                 </p>
               </div>
 
               {/* Feature Card 2 */}
-              <div className="group rounded-2xl bg-[--surface] p-8 shadow-lg hover:shadow-2xl hover:shadow-[--secondary]/10 transition-all duration-300 hover:-translate-y-1 border border-[--border] hover:border-[--secondary]/50">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[--secondary] to-[--pink]">
+              <div
+                className="group rounded-[16px] bg-white p-8 transition-all duration-300 hover:-translate-y-1"
+                style={{ boxShadow: 'var(--shadow-md)' }}
+                onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-lg)'}
+                onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'}
+              >
+                <div className="flex h-14 w-14 items-center justify-center rounded-[12px] bg-[--secondary]">
                   <svg
-                    className="h-6 w-6 text-[--background]"
+                    className="h-7 w-7 text-white"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -204,7 +224,7 @@ export default function Home() {
                     />
                   </svg>
                 </div>
-                <h3 className="mt-6 text-xl font-semibold text-[--text]">
+                <h3 className="mt-6 text-xl font-bold text-[--gray-800]">
                   Lehrplan 21 konform
                 </h3>
                 <p className="mt-3 text-[--text-muted] leading-relaxed">
@@ -214,10 +234,15 @@ export default function Home() {
               </div>
 
               {/* Feature Card 3 */}
-              <div className="group rounded-2xl bg-[--surface] p-8 shadow-lg hover:shadow-2xl hover:shadow-[--accent]/10 transition-all duration-300 hover:-translate-y-1 border border-[--border] hover:border-[--accent]/50">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[--accent] to-[--flamingo]">
+              <div
+                className="group rounded-[16px] bg-white p-8 transition-all duration-300 hover:-translate-y-1"
+                style={{ boxShadow: 'var(--shadow-md)' }}
+                onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-lg)'}
+                onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'}
+              >
+                <div className="flex h-14 w-14 items-center justify-center rounded-[12px] bg-[--primary]">
                   <svg
-                    className="h-6 w-6 text-[--background]"
+                    className="h-7 w-7 text-white"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -230,11 +255,11 @@ export default function Home() {
                     />
                   </svg>
                 </div>
-                <h3 className="mt-6 text-xl font-semibold text-[--text]">
+                <h3 className="mt-6 text-xl font-bold text-[--gray-800]">
                   Schullizenzen
                 </h3>
                 <p className="mt-3 text-[--text-muted] leading-relaxed">
-                  Schulen können Team-Lizenzen erwerben und Materialien mit
+                  Schulen konnen Team-Lizenzen erwerben und Materialien mit
                   allen Lehrpersonen teilen. Gemeinsam mehr erreichen.
                 </p>
               </div>
@@ -243,36 +268,38 @@ export default function Home() {
         </section>
 
         {/* Stats Section */}
-        <section className="border-t border-[--border]">
-          <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <section className="bg-[--background-alt] py-20">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
               <div className="text-center">
-                <div className="text-4xl font-bold bg-gradient-to-r from-[--primary] to-[--secondary] bg-clip-text text-transparent">
+                <div className="text-5xl font-extrabold text-[--primary]">
                   500+
                 </div>
-                <div className="mt-2 text-sm text-[--text-muted]">
-                  Qualitätsmaterialien
+                <div className="mt-3 text-base text-[--text-muted] font-medium">
+                  Qualitatsmaterialien
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-4xl font-bold bg-gradient-to-r from-[--secondary] to-[--pink] bg-clip-text text-transparent">
+                <div className="text-5xl font-extrabold text-[--secondary]">
                   1000+
                 </div>
-                <div className="mt-2 text-sm text-[--text-muted]">
+                <div className="mt-3 text-base text-[--text-muted] font-medium">
                   Aktive Lehrpersonen
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-4xl font-bold bg-gradient-to-r from-[--accent] to-[--flamingo] bg-clip-text text-transparent">
+                <div className="text-5xl font-extrabold text-[--primary]">
                   50+
                 </div>
-                <div className="mt-2 text-sm text-[--text-muted]">Schulen</div>
+                <div className="mt-3 text-base text-[--text-muted] font-medium">
+                  Schulen
+                </div>
               </div>
               <div className="text-center">
-                <div className="text-4xl font-bold bg-gradient-to-r from-[--teal] to-[--green] bg-clip-text text-transparent">
+                <div className="text-5xl font-extrabold text-[--secondary]">
                   98%
                 </div>
-                <div className="mt-2 text-sm text-[--text-muted]">
+                <div className="mt-3 text-base text-[--text-muted] font-medium">
                   Zufriedenheit
                 </div>
               </div>
@@ -281,9 +308,9 @@ export default function Home() {
         </section>
 
         {/* CTA Section */}
-        <section className="border-t border-[--border] bg-gradient-to-br from-[--surface] to-[--background]">
-          <div className="mx-auto max-w-4xl px-4 py-20 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-3xl font-bold text-[--text] sm:text-4xl">
+        <section className="bg-white py-20">
+          <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
+            <h2 className="text-3xl font-bold text-[--gray-800] sm:text-4xl">
               Bereit loszulegen?
             </h2>
             <p className="mt-4 text-lg text-[--text-muted]">
@@ -293,13 +320,15 @@ export default function Home() {
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href="/register"
-                className="rounded-full bg-gradient-to-r from-[--primary] to-[--secondary] px-8 py-4 font-semibold text-[--background] hover:opacity-90 transition-opacity shadow-lg shadow-[--primary]/20"
+                className="rounded-full bg-[--primary] px-8 py-4 font-semibold text-white hover:bg-[--primary-hover] transition-all"
+                style={{ boxShadow: 'var(--shadow-brand)' }}
               >
                 Kostenlos registrieren
               </a>
               <a
                 href="/resources"
-                className="rounded-full border border-[--border] bg-[--surface] px-8 py-4 font-semibold text-[--text] hover:bg-[--surface1] transition-colors"
+                className="rounded-full bg-white px-8 py-4 font-semibold text-[--text] hover:bg-[--gray-50] transition-colors"
+                style={{ boxShadow: 'var(--shadow-md)' }}
               >
                 Ressourcen entdecken
               </a>
@@ -309,21 +338,21 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-[--border] bg-[--surface]/50">
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <footer className="bg-[--background-alt]">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {/* Company */}
             <div>
-              <h3 className="font-semibold text-[--text]">Easy Lehrer</h3>
-              <p className="mt-4 text-sm text-[--text-muted]">
-                Die Plattform für Unterrichtsmaterial von Lehrpersonen für
+              <h3 className="font-bold text-[--gray-800]">Easy Lehrer</h3>
+              <p className="mt-4 text-sm text-[--text-muted] leading-relaxed">
+                Die Plattform fur Unterrichtsmaterial von Lehrpersonen fur
                 Lehrpersonen.
               </p>
             </div>
 
             {/* Product */}
             <div>
-              <h3 className="font-semibold text-[--text]">Produkt</h3>
+              <h3 className="font-bold text-[--gray-800]">Produkt</h3>
               <ul className="mt-4 space-y-3">
                 <li>
                   <a
@@ -338,7 +367,7 @@ export default function Home() {
                     href="#"
                     className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors"
                   >
-                    Für Schulen
+                    Fur Schulen
                   </a>
                 </li>
                 <li>
@@ -354,14 +383,14 @@ export default function Home() {
 
             {/* Company */}
             <div>
-              <h3 className="font-semibold text-[--text]">Unternehmen</h3>
+              <h3 className="font-bold text-[--gray-800]">Unternehmen</h3>
               <ul className="mt-4 space-y-3">
                 <li>
                   <a
                     href="#"
                     className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors"
                   >
-                    Über uns
+                    Uber uns
                   </a>
                 </li>
                 <li>
@@ -385,7 +414,7 @@ export default function Home() {
 
             {/* Legal */}
             <div>
-              <h3 className="font-semibold text-[--text]">Rechtliches</h3>
+              <h3 className="font-bold text-[--gray-800]">Rechtliches</h3>
               <ul className="mt-4 space-y-3">
                 <li>
                   <a
@@ -416,7 +445,7 @@ export default function Home() {
           </div>
 
           <div className="mt-12 border-t border-[--border] pt-8 text-center text-sm text-[--text-muted]">
-            <p>© 2026 Easy Lehrer. Alle Rechte vorbehalten.</p>
+            <p>&copy; 2026 Easy Lehrer. Alle Rechte vorbehalten.</p>
           </div>
         </div>
       </footer>
