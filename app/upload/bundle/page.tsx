@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 // Mock seller's resources
 const mockResources = [
@@ -56,19 +57,19 @@ export default function CreateBundlePage() {
       <header className="border-b border-[--border] bg-[--surface]/95">
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
-            <a href="/" className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-2">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[--primary] to-[--secondary]">
                 <span className="text-xl font-bold text-[--background]">EL</span>
               </div>
               <span className="text-xl font-bold text-[--text]">Easy Lehrer</span>
-            </a>
+            </Link>
 
-            <a
+            <Link
               href="/dashboard/seller"
               className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors"
             >
               ← Zurück zum Dashboard
-            </a>
+            </Link>
           </div>
         </div>
       </header>
@@ -302,12 +303,12 @@ export default function CreateBundlePage() {
 
           {/* Submit Buttons */}
           <div className="flex gap-4">
-            <a
+            <Link
               href="/dashboard/seller"
               className="flex-1 rounded-xl border border-[--border] bg-[--surface] px-6 py-4 text-center font-semibold text-[--text] hover:bg-[--surface1] transition-colors"
             >
               Abbrechen
-            </a>
+            </Link>
             <button
               type="submit"
               disabled={formData.selectedResources.length < 2}

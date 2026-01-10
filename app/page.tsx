@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-[--background]">
@@ -11,7 +13,7 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo - Professional, Institutional */}
-            <a href="/" className="flex items-center gap-3">
+            <Link href="/" className="flex items-center gap-3">
               <div className="flex items-center justify-center w-10 h-10 bg-[--primary] rounded-[--radius-sm]">
                 <span className="text-white font-bold text-lg">EL</span>
               </div>
@@ -19,14 +21,14 @@ export default function Home() {
                 <span className="text-lg font-semibold text-[--gray-800] leading-tight">EasyLehrer</span>
                 <span className="text-xs text-[--text-muted] leading-tight">Bildungsplattform Schweiz</span>
               </div>
-            </a>
+            </Link>
 
             {/* Navigation - Strict Horizontal */}
             <nav className="hidden lg:flex items-center">
               <div className="flex items-center border-r border-[--border] pr-6 mr-6">
-                <a href="/resources" className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
+                <Link href="/resources" className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
                   Ressourcen
-                </a>
+                </Link>
                 <a href="#" className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
                   Fur Schulen
                 </a>
@@ -38,15 +40,15 @@ export default function Home() {
                 </a>
               </div>
               <div className="flex items-center gap-3">
-                <a href="/login" className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
+                <Link href="/login" className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
                   Anmelden
-                </a>
-                <a
+                </Link>
+                <Link
                   href="/register"
                   className="rounded-[--radius-sm] bg-[--primary] px-5 py-2 font-medium text-white text-sm hover:bg-[--primary-hover] transition-colors"
                 >
                   Registrieren
-                </a>
+                </Link>
               </div>
             </nav>
 
@@ -78,7 +80,7 @@ export default function Home() {
                   und abgestimmt auf den Lehrplan 21. Vertrauenswurdig, gepruft, sofort einsetzbar.
                 </p>
                 <div className="mt-8 flex flex-col sm:flex-row gap-4">
-                  <a
+                  <Link
                     href="/resources"
                     className="inline-flex items-center justify-center rounded-[--radius-sm] bg-[--primary] px-6 py-3 font-medium text-white hover:bg-[--primary-hover] transition-colors"
                   >
@@ -86,7 +88,7 @@ export default function Home() {
                     <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
-                  </a>
+                  </Link>
                   <a
                     href="#features"
                     className="inline-flex items-center justify-center rounded-[--radius-sm] bg-white px-6 py-3 font-medium text-[--text-secondary] border border-[--border] hover:border-[--primary] hover:text-[--primary] transition-colors"
@@ -158,12 +160,12 @@ export default function Home() {
                 <h2 className="text-2xl font-semibold text-[--gray-800]">Empfohlene Materialien</h2>
                 <p className="mt-2 text-[--text-muted]">Von Experten ausgewahlt und qualitatsgepruft</p>
               </div>
-              <a href="/resources" className="hidden sm:flex items-center text-[--primary] font-medium text-sm hover:underline">
+              <Link href="/resources" className="hidden sm:flex items-center text-[--primary] font-medium text-sm hover:underline">
                 Alle anzeigen
                 <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
-              </a>
+              </Link>
             </div>
 
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -280,12 +282,12 @@ export default function Home() {
             </div>
 
             <div className="mt-8 text-center sm:hidden">
-              <a href="/resources" className="inline-flex items-center text-[--primary] font-medium text-sm hover:underline">
+              <Link href="/resources" className="inline-flex items-center text-[--primary] font-medium text-sm hover:underline">
                 Alle Materialien anzeigen
                 <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
-              </a>
+              </Link>
             </div>
           </div>
         </section>
@@ -360,7 +362,7 @@ export default function Home() {
                 <div className="mt-2 text-sm text-[--text-muted] font-medium">Geprufte Materialien</div>
               </div>
               <div className="text-center">
-                <div className="text-4xl font-bold text-[--accent]">1'000+</div>
+                <div className="text-4xl font-bold text-[--accent]">1&apos;000+</div>
                 <div className="mt-2 text-sm text-[--text-muted] font-medium">Aktive Lehrpersonen</div>
               </div>
               <div className="text-center">
@@ -385,18 +387,18 @@ export default function Home() {
               Registrieren Sie sich kostenlos und erhalten Sie Zugang zu hochwertigen Unterrichtsmaterialien.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-              <a
+              <Link
                 href="/register"
                 className="inline-flex items-center justify-center rounded-[--radius-sm] bg-white px-6 py-3 font-medium text-[--primary] hover:bg-[--gray-100] transition-colors"
               >
                 Kostenlos registrieren
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/resources"
                 className="inline-flex items-center justify-center rounded-[--radius-sm] bg-transparent px-6 py-3 font-medium text-white border border-white/30 hover:bg-white/10 transition-colors"
               >
                 Ressourcen durchsuchen
-              </a>
+              </Link>
             </div>
           </div>
         </section>
@@ -423,7 +425,7 @@ export default function Home() {
             <div>
               <h3 className="font-semibold text-white text-sm uppercase tracking-wider">Plattform</h3>
               <ul className="mt-4 space-y-3">
-                <li><a href="/resources" className="text-sm text-[--gray-400] hover:text-white transition-colors">Ressourcen</a></li>
+                <li><Link href="/resources" className="text-sm text-[--gray-400] hover:text-white transition-colors">Ressourcen</Link></li>
                 <li><a href="#" className="text-sm text-[--gray-400] hover:text-white transition-colors">Fur Schulen</a></li>
                 <li><a href="#" className="text-sm text-[--gray-400] hover:text-white transition-colors">Preise</a></li>
               </ul>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 // Mock data for demonstration
 const mockResources = [
@@ -93,7 +94,7 @@ export default function ResourcesPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <a href="/" className="flex items-center gap-3">
+            <Link href="/" className="flex items-center gap-3">
               <div className="flex items-center justify-center w-10 h-10 bg-[--primary] rounded-[--radius-sm]">
                 <span className="text-white font-bold text-lg">EL</span>
               </div>
@@ -101,14 +102,14 @@ export default function ResourcesPage() {
                 <span className="text-lg font-semibold text-[--gray-800] leading-tight">EasyLehrer</span>
                 <span className="text-xs text-[--text-muted] leading-tight">Bildungsplattform Schweiz</span>
               </div>
-            </a>
+            </Link>
 
             {/* Navigation */}
             <nav className="hidden lg:flex items-center">
               <div className="flex items-center border-r border-[--border] pr-6 mr-6">
-                <a href="/resources" className="px-4 py-2 text-[--primary] font-medium text-sm">
+                <Link href="/resources" className="px-4 py-2 text-[--primary] font-medium text-sm">
                   Ressourcen
-                </a>
+                </Link>
                 <a href="#" className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
                   Fur Schulen
                 </a>
@@ -120,15 +121,15 @@ export default function ResourcesPage() {
                 </a>
               </div>
               <div className="flex items-center gap-3">
-                <a href="/login" className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
+                <Link href="/login" className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
                   Anmelden
-                </a>
-                <a
+                </Link>
+                <Link
                   href="/register"
                   className="rounded-[--radius-sm] bg-[--primary] px-5 py-2 font-medium text-white text-sm hover:bg-[--primary-hover] transition-colors"
                 >
                   Registrieren
-                </a>
+                </Link>
               </div>
             </nav>
 
@@ -146,7 +147,7 @@ export default function ResourcesPage() {
         {/* Page Header */}
         <div className="mb-8">
           <div className="flex items-center gap-2 text-sm text-[--text-muted] mb-2">
-            <a href="/" className="hover:text-[--primary] transition-colors">Startseite</a>
+            <Link href="/" className="hover:text-[--primary] transition-colors">Startseite</Link>
             <span>/</span>
             <span className="text-[--text-secondary]">Ressourcen</span>
           </div>
@@ -478,7 +479,7 @@ export default function ResourcesPage() {
             <div>
               <h3 className="font-semibold text-white text-sm uppercase tracking-wider">Plattform</h3>
               <ul className="mt-4 space-y-3">
-                <li><a href="/resources" className="text-sm text-[--gray-400] hover:text-white transition-colors">Ressourcen</a></li>
+                <li><Link href="/resources" className="text-sm text-[--gray-400] hover:text-white transition-colors">Ressourcen</Link></li>
                 <li><a href="#" className="text-sm text-[--gray-400] hover:text-white transition-colors">Fur Schulen</a></li>
                 <li><a href="#" className="text-sm text-[--gray-400] hover:text-white transition-colors">Preise</a></li>
               </ul>

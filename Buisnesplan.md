@@ -99,21 +99,72 @@ ________________________________________
 •    Breakpoints: The design prioritizes mobile-first navigation.
 •    Modals: Complex interactions (Filtering, Reporting, Uploading) utilize full-screen overlays or bottom sheets on small devices to maximize screen real estate.
 ________________________________________
-10. Roadmap
-Phase 1: Core Foundation
-•    Develop User/School Auth & Profile Management.
-•    Build the 4-Step Upload Wizard with Lehrplan 21 data structure.
-•    Implement Catalog with "Hidden" Filters.
-Phase 2: Commerce & Wallet
-•    Integrate Payment Gateway (Split Payments).
-•    Build Seller Dashboard & Admin Commission Settings.
-•    Implement "School Library" logic.
-Phase 3: Trust & Community
-•    Enable Reviews, Ratings, and Reporting workflows.
-•    Launch "Follow" system and Notification feed.
-•    Launch Beta.
-11. Future Features
-11.1 AI Bot
+10. Current Implementation Status
+
+### What's Built (UI exists, mostly mock data)
+- Landing page, login/register flows
+- Resource catalog with filters (mock data)
+- 4-step upload wizard (client-side only)
+- Seller dashboard (mock data)
+- Admin quality control dashboard (mock data)
+- Basic database schema (User, Resource, Transaction)
+- Design system and styling
+
+### Critical Gaps
+
+| Spec Feature | Status |
+|--------------|--------|
+| **Authentication** | NextAuth configured but not wired up |
+| **School accounts & team licenses** | Missing entirely (no School model) |
+| **Bundles** | Missing (no Bundle model) |
+| **Wishlist** | Missing (no model) |
+| **Following sellers** | Missing (no model) |
+| **Reviews & Ratings** | Missing (no model) |
+| **Reporting system** | API routes exist, no model |
+| **File upload/storage** | No S3/storage integration |
+| **Watermarked previews** | Not implemented |
+| **Payment processing** | Not implemented |
+| **Libraries (My/School)** | Not implemented |
+
+________________________________________
+11. Development Roadmap
+
+### Phase 1: Foundation (Critical Path)
+1. **Complete authentication flow** - Wire up NextAuth, session management, protected routes
+2. **Expand database schema** - Add missing models (Bundle, Wishlist, Following, Review, Report, School) and fields (competence_codes, editability, license_scope, platform_fee)
+3. **Connect forms to database** - Upload wizard, profile forms, admin actions currently just log to console
+4. **File upload system** - Integrate S3 or similar for resource files
+
+### Phase 2: Core Marketplace
+5. **Purchase flow** - Connect checkout, create transactions, grant access
+6. **My Library page** - Show purchased resources with download
+7. **Reviews & ratings** - Allow buyers to rate and review
+8. **Wishlist** - Save items for later
+
+### Phase 3: Social & Bundles
+9. **Following system** - Follow sellers, notification feed
+10. **Bundles** - Create, display, and purchase bundles
+11. **School accounts** - Team licenses, school library
+
+### Phase 4: Quality & Payments
+12. **Preview watermarking** - Protect preview files
+13. **Payment integration** - Stripe/PayreXX for Swiss payments
+14. **Payout system** - Calculate commissions, pay sellers
+
+### Immediate Action Items
+1. **Authentication** - Complete NextAuth integration (without auth, nothing else works)
+2. **Database migrations** - Run `npx prisma migrate dev` to create tables, then expand schema
+3. **Connect upload form to API** - Upload wizard UI is ready, needs backend
+4. **File storage** - Decide on S3/Cloudflare R2/Supabase Storage
+
+________________________________________
+12. Future Features
+12.1 AI Bot
 •    Create worksheets of text and picture inputs
 •    Subscription based
-11.2 Plagiatsüberprüfungs AI
+12.2 Plagiatsüberprüfungs AI
+13. Lehrplan 21
+    sort for class not zyklus
+    sort for subject
+    sort for undertheme in this class
+

@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 // Mock data - updates from followed sellers
 const mockUpdates = [
   {
@@ -63,37 +65,37 @@ export default function FollowingPage() {
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <a href="/" className="flex items-center gap-2">
+              <Link href="/" className="flex items-center gap-2">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[--primary] to-[--secondary]">
                   <span className="text-xl font-bold text-[--background]">EL</span>
                 </div>
                 <span className="text-xl font-bold text-[--text]">Easy Lehrer</span>
-              </a>
+              </Link>
             </div>
 
             <nav className="hidden md:flex items-center gap-8">
-              <a
+              <Link
                 href="/resources"
                 className="text-[--text-muted] hover:text-[--text] transition-colors"
               >
                 Ressourcen
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/following"
                 className="text-[--primary] font-medium transition-colors"
               >
                 Folge ich
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/profile"
                 className="text-[--text-muted] hover:text-[--text] transition-colors"
               >
                 Profil
-              </a>
+              </Link>
             </nav>
 
             <div className="flex items-center gap-4">
-              <a
+              <Link
                 href="/profile"
                 className="flex items-center gap-2 rounded-full border-2 border-[--primary] px-4 py-2 font-medium text-[--primary] transition-colors"
               >
@@ -101,7 +103,7 @@ export default function FollowingPage() {
                   M
                 </div>
                 <span className="hidden sm:inline">Maria</span>
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -218,12 +220,12 @@ export default function FollowingPage() {
                 ))}
               </div>
 
-              <a
+              <Link
                 href="/resources"
                 className="mt-4 block text-center text-sm text-[--primary] hover:text-[--primary-hover] transition-colors"
               >
                 Mehr Verkäufer entdecken →
-              </a>
+              </Link>
             </div>
 
             {/* Quick Stats */}

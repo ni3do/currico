@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -21,7 +22,7 @@ export default function LoginPage() {
       <header className="bg-white border-b border-[--border]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <a href="/" className="flex items-center gap-3">
+            <Link href="/" className="flex items-center gap-3">
               <div className="flex items-center justify-center w-10 h-10 bg-[--primary] rounded-[--radius-sm]">
                 <span className="text-white font-bold text-lg">EL</span>
               </div>
@@ -29,14 +30,14 @@ export default function LoginPage() {
                 <span className="text-lg font-semibold text-[--gray-800] leading-tight">EasyLehrer</span>
                 <span className="text-xs text-[--text-muted] leading-tight">Bildungsplattform Schweiz</span>
               </div>
-            </a>
+            </Link>
 
-            <a
+            <Link
               href="/register"
               className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors"
             >
               Noch kein Konto? <span className="font-medium text-[--primary]">Registrieren</span>
-            </a>
+            </Link>
           </div>
         </div>
       </header>
@@ -176,7 +177,7 @@ export default function LoginPage() {
 
           {/* Footer Link */}
           <div className="mt-8 text-center">
-            <a
+            <Link
               href="/"
               className="inline-flex items-center text-sm text-[--text-muted] hover:text-[--primary] transition-colors font-medium"
             >
@@ -184,7 +185,7 @@ export default function LoginPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
               Zuruck zur Startseite
-            </a>
+            </Link>
           </div>
         </div>
       </main>

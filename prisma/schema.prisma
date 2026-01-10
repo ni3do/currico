@@ -9,27 +9,72 @@ datasource db {
 }
 
 // ============================================================
+// NEXTAUTH.JS MODELS - Required for OAuth authentication
+// ============================================================
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ============================================================
 // USER MODEL - Seller Profile
 // ============================================================
 
 model User {
   // ============ IDENTITY (System) ============
-  id         String   @id @default(cuid())
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id            String    @id @default(cuid())
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+
+  // ============ NEXTAUTH.JS REQUIRED FIELDS ============
+  name          String?   // Display name from OAuth provider
+  email         String    @unique
+  emailVerified DateTime? // When email was verified
+  image         String?   // Avatar from OAuth provider
 
   // ============ PUBLIC PROFILE DATA ============
-  // These fields are visible to everyone on the marketplace
-  display_name String // Pseudonym for privacy (e.g., "Frau M.")
-  avatar_url   String? // Profile picture URL
-  bio          String? @db.Text // "About me" - max 500 chars
-  subjects     String[] // ["Mathematik", "Deutsch", "NMG"]
-  cycles       String[] // ["Zyklus 1", "Zyklus 2", "Zyklus 3"]
-  cantons      String[] // ["Zürich", "Bern"] - Swiss cantons
+  display_name String?   // Custom pseudonym for privacy (e.g., "Frau M.")
+  bio          String?   @db.Text // "About me" - max 500 chars
+  subjects     String[]  // ["Mathematik", "Deutsch", "NMG"]
+  cycles       String[]  // ["Zyklus 1", "Zyklus 2", "Zyklus 3"]
+  cantons      String[]  // ["Zürich", "Bern"] - Swiss cantons
 
   // ============ PRIVATE ADMIN DATA ============
-  // These fields are NEVER exposed to public APIs
-  email            String  @unique // Login email, never public
   password_hash    String? // For credential-based auth
   legal_first_name String? // For invoices/payouts
   legal_last_name  String? // For invoices/payouts
@@ -44,9 +89,10 @@ model User {
   is_seller       Boolean  @default(false)
   seller_verified Boolean  @default(false) // Admin-verified seller
   payout_enabled  Boolean  @default(false) // True when IBAN validated
-  email_verified  Boolean  @default(false)
 
   // ============ RELATIONS ============
+  accounts     Account[]
+  sessions     Session[]
   resources    Resource[]
   transactions Transaction[]
 

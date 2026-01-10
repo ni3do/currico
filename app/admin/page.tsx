@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 // Mock data
 const mockResources = [
@@ -79,34 +80,34 @@ export default function AdminDashboardPage() {
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <a href="/" className="flex items-center gap-2">
+              <Link href="/" className="flex items-center gap-2">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[--primary] to-[--secondary]">
                   <span className="text-xl font-bold text-[--background]">EL</span>
                 </div>
                 <span className="text-xl font-bold text-[--text]">Easy Lehrer</span>
-              </a>
+              </Link>
             </div>
 
             <nav className="hidden md:flex items-center gap-8">
-              <a
+              <Link
                 href="/admin"
                 className="text-[--primary] font-medium transition-colors"
               >
                 Admin Dashboard
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/resources"
                 className="text-[--text-muted] hover:text-[--text] transition-colors"
               >
                 Ressourcen
-              </a>
+              </Link>
             </nav>
 
             <div className="flex items-center gap-4">
               <span className="rounded-full bg-[--red]/20 px-3 py-1 text-xs font-medium text-[--red]">
                 Admin
               </span>
-              <a
+              <Link
                 href="/profile"
                 className="flex items-center gap-2 rounded-full border-2 border-[--primary] px-4 py-2 font-medium text-[--primary] transition-colors"
               >
@@ -114,7 +115,7 @@ export default function AdminDashboardPage() {
                   A
                 </div>
                 <span className="hidden sm:inline">Admin</span>
-              </a>
+              </Link>
             </div>
           </div>
         </div>

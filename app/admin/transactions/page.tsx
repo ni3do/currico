@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 // Mock transaction data
 const mockTransactions = [
@@ -86,33 +87,33 @@ export default function AdminTransactionsPage() {
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <a href="/" className="flex items-center gap-2">
+              <Link href="/" className="flex items-center gap-2">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[--primary] to-[--secondary]">
                   <span className="text-xl font-bold text-[--background]">EL</span>
                 </div>
                 <span className="text-xl font-bold text-[--text]">Easy Lehrer</span>
-              </a>
+              </Link>
             </div>
 
             <nav className="hidden md:flex items-center gap-8">
-              <a
+              <Link
                 href="/admin"
                 className="text-[--text-muted] hover:text-[--text] transition-colors"
               >
                 Dashboard
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/admin/transactions"
                 className="text-[--primary] font-medium transition-colors"
               >
                 Transaktionen
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/admin/settings"
                 className="text-[--text-muted] hover:text-[--text] transition-colors"
               >
                 Einstellungen
-              </a>
+              </Link>
             </nav>
 
             <div className="flex items-center gap-4">

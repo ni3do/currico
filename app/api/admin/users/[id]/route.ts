@@ -34,13 +34,15 @@ export async function GET(
         id: true,
         created_at: true,
         updated_at: true,
+        name: true,
         display_name: true,
-        avatar_url: true,
+        image: true,
         bio: true,
         subjects: true,
         cycles: true,
         cantons: true,
         email: true,
+        emailVerified: true,
         legal_first_name: true,
         legal_last_name: true,
         iban: true, // Full IBAN for admin
@@ -52,7 +54,6 @@ export async function GET(
         is_seller: true,
         seller_verified: true,
         payout_enabled: true,
-        email_verified: true,
       },
     });
 

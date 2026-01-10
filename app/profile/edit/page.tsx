@@ -4,6 +4,7 @@ import { useState } from "react";
 import { AvatarUploader } from "@/components/profile/AvatarUploader";
 import { MultiSelect } from "@/components/ui/MultiSelect";
 import { PayoutForm } from "@/components/profile/PayoutForm";
+import Link from "next/link";
 import {
   SWISS_SUBJECTS,
   SWISS_CYCLES,
@@ -129,21 +130,21 @@ export default function EditProfilePage() {
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <a href="/" className="flex items-center gap-2">
+              <Link href="/" className="flex items-center gap-2">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[--primary] to-[--secondary]">
                   <span className="text-xl font-bold text-[--background]">EL</span>
                 </div>
                 <span className="text-xl font-bold text-[--text]">Easy Lehrer</span>
-              </a>
+              </Link>
             </div>
 
             <div className="flex items-center gap-4">
-              <a
+              <Link
                 href="/profile"
                 className="rounded-lg border border-[--border] px-4 py-2 text-sm font-medium text-[--text] hover:bg-[--surface1] transition-colors"
               >
                 Zurück zum Profil
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -321,12 +322,12 @@ export default function EditProfilePage() {
 
           {/* Submit Button */}
           <div className="flex justify-end gap-4">
-            <a
+            <Link
               href="/profile"
               className="rounded-lg border border-[--border] px-6 py-3 font-medium text-[--text] hover:bg-[--surface1] transition-colors"
             >
               Abbrechen
-            </a>
+            </Link>
             <button
               type="submit"
               disabled={isSaving}

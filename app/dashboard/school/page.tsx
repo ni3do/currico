@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 // Mock data
 const mockSchoolInfo = {
@@ -41,31 +42,31 @@ export default function SchoolDashboardPage() {
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <a href="/" className="flex items-center gap-2">
+              <Link href="/" className="flex items-center gap-2">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[--primary] to-[--secondary]">
                   <span className="text-xl font-bold text-[--background]">EL</span>
                 </div>
                 <span className="text-xl font-bold text-[--text]">Easy Lehrer</span>
-              </a>
+              </Link>
             </div>
 
             <nav className="hidden md:flex items-center gap-8">
-              <a
+              <Link
                 href="/resources"
                 className="text-[--text-muted] hover:text-[--text] transition-colors"
               >
                 Ressourcen
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/dashboard/school"
                 className="text-[--primary] font-medium transition-colors"
               >
                 School Dashboard
-              </a>
+              </Link>
             </nav>
 
             <div className="flex items-center gap-4">
-              <a
+              <Link
                 href="/profile"
                 className="flex items-center gap-2 rounded-full border-2 border-[--primary] px-4 py-2 font-medium text-[--primary] transition-colors"
               >
@@ -73,7 +74,7 @@ export default function SchoolDashboardPage() {
                   A
                 </div>
                 <span className="hidden sm:inline">Admin</span>
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -178,12 +179,12 @@ export default function SchoolDashboardPage() {
               <div className="rounded-2xl border border-[--border] bg-[--surface] p-8">
                 <div className="mb-6 flex items-center justify-between">
                   <h2 className="text-xl font-semibold text-[--text]">School Library</h2>
-                  <a
+                  <Link
                     href="/resources"
                     className="rounded-lg border border-[--border] px-4 py-2 text-sm font-medium text-[--text] hover:bg-[--surface1] transition-colors"
                   >
                     Ressourcen kaufen
-                  </a>
+                  </Link>
                 </div>
 
                 <div className="space-y-3">

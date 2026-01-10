@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 // Mock data
 const mockStats = {
@@ -81,37 +82,37 @@ export default function SellerDashboardPage() {
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <a href="/" className="flex items-center gap-2">
+              <Link href="/" className="flex items-center gap-2">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[--primary] to-[--secondary]">
                   <span className="text-xl font-bold text-[--background]">EL</span>
                 </div>
                 <span className="text-xl font-bold text-[--text]">Easy Lehrer</span>
-              </a>
+              </Link>
             </div>
 
             <nav className="hidden md:flex items-center gap-8">
-              <a
+              <Link
                 href="/resources"
                 className="text-[--text-muted] hover:text-[--text] transition-colors"
               >
                 Ressourcen
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/dashboard/seller"
                 className="text-[--primary] font-medium transition-colors"
               >
                 Dashboard
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/profile"
                 className="text-[--text-muted] hover:text-[--text] transition-colors"
               >
                 Profil
-              </a>
+              </Link>
             </nav>
 
             <div className="flex items-center gap-4">
-              <a
+              <Link
                 href="/profile"
                 className="flex items-center gap-2 rounded-full border-2 border-[--primary] px-4 py-2 font-medium text-[--primary] transition-colors"
               >
@@ -119,7 +120,7 @@ export default function SellerDashboardPage() {
                   M
                 </div>
                 <span className="hidden sm:inline">Maria</span>
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -221,18 +222,18 @@ export default function SellerDashboardPage() {
 
         {/* Action Buttons */}
         <div className="mb-8 flex flex-wrap gap-4">
-          <a
+          <Link
             href="/upload"
             className="rounded-xl bg-gradient-to-r from-[--primary] to-[--secondary] px-6 py-3 font-semibold text-[--background] hover:opacity-90 transition-opacity shadow-lg shadow-[--primary]/20"
           >
             + Neue Ressource hochladen
-          </a>
-          <a
+          </Link>
+          <Link
             href="/upload/bundle"
             className="rounded-xl border border-[--border] bg-[--surface] px-6 py-3 font-semibold text-[--text] hover:bg-[--surface1] transition-colors"
           >
             + Bundle erstellen
-          </a>
+          </Link>
         </div>
 
         {/* View Toggle */}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<"profile" | "library" | "wishlist">("profile");
@@ -21,21 +22,21 @@ export default function ProfilePage() {
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <a href="/" className="flex items-center gap-2">
+              <Link href="/" className="flex items-center gap-2">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[--primary] to-[--secondary]">
                   <span className="text-xl font-bold text-[--background]">EL</span>
                 </div>
                 <span className="text-xl font-bold text-[--text]">Easy Lehrer</span>
-              </a>
+              </Link>
             </div>
 
             <nav className="hidden md:flex items-center gap-8">
-              <a
+              <Link
                 href="/resources"
                 className="text-[--text-muted] hover:text-[--text] transition-colors"
               >
                 Ressourcen
-              </a>
+              </Link>
               <a
                 href="#"
                 className="text-[--text-muted] hover:text-[--text] transition-colors"
@@ -51,7 +52,7 @@ export default function ProfilePage() {
             </nav>
 
             <div className="flex items-center gap-4">
-              <a
+              <Link
                 href="/profile"
                 className="flex items-center gap-2 rounded-full border-2 border-[--primary] px-4 py-2 font-medium text-[--primary] transition-colors"
               >
@@ -59,7 +60,7 @@ export default function ProfilePage() {
                   {profileData.name.charAt(0)}
                 </div>
                 <span className="hidden sm:inline">{profileData.name.split(" ")[0]}</span>
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -118,12 +119,12 @@ export default function ProfilePage() {
                   <h2 className="text-xl font-semibold text-[--text]">
                     Profil Informationen
                   </h2>
-                  <a
+                  <Link
                     href="/profile/edit"
                     className="rounded-lg border border-[--border] px-4 py-2 text-sm font-medium text-[--text] hover:bg-[--surface1] transition-colors"
                   >
                     Bearbeiten
-                  </a>
+                  </Link>
                 </div>
 
                 <div className="space-y-6">
@@ -197,18 +198,18 @@ export default function ProfilePage() {
               <div className="rounded-2xl border border-[--border] bg-[--surface] p-6">
                 <h3 className="mb-4 font-semibold text-[--text]">Schnellaktionen</h3>
                 <div className="space-y-3">
-                  <a
+                  <Link
                     href="/resources"
                     className="block rounded-lg border border-[--border] bg-[--background] px-4 py-3 text-sm text-[--text] hover:bg-[--surface1] transition-colors"
                   >
                     Ressourcen durchsuchen
-                  </a>
-                  <a
+                  </Link>
+                  <Link
                     href="/profile/edit"
                     className="block rounded-lg border border-[--border] bg-[--background] px-4 py-3 text-sm text-[--text] hover:bg-[--surface1] transition-colors"
                   >
                     Verkäufer werden
-                  </a>
+                  </Link>
                   <button className="w-full rounded-lg border border-[--red] px-4 py-3 text-sm text-[--red] hover:bg-[--red]/10 transition-colors">
                     Abmelden
                   </button>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 // Mock data - in real app, fetch based on id
 const mockResource = {
@@ -91,21 +92,21 @@ export default function ResourceDetailPage() {
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <a href="/" className="flex items-center gap-2">
+              <Link href="/" className="flex items-center gap-2">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[--primary] to-[--secondary]">
                   <span className="text-xl font-bold text-[--background]">EL</span>
                 </div>
                 <span className="text-xl font-bold text-[--text]">Easy Lehrer</span>
-              </a>
+              </Link>
             </div>
 
             <nav className="hidden md:flex items-center gap-8">
-              <a
+              <Link
                 href="/resources"
                 className="text-[--text-muted] hover:text-[--text] transition-colors"
               >
                 Ressourcen
-              </a>
+              </Link>
               <a
                 href="#"
                 className="text-[--text-muted] hover:text-[--text] transition-colors"
@@ -121,18 +122,18 @@ export default function ResourceDetailPage() {
             </nav>
 
             <div className="flex items-center gap-4">
-              <a
+              <Link
                 href="/login"
                 className="hidden sm:block text-[--text-muted] hover:text-[--text] transition-colors"
               >
                 Anmelden
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/register"
                 className="rounded-full bg-gradient-to-r from-[--primary] to-[--secondary] px-6 py-2.5 font-medium text-[--background] hover:opacity-90 transition-opacity shadow-lg shadow-[--primary]/20"
               >
                 Registrieren
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -141,13 +142,13 @@ export default function ResourceDetailPage() {
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Breadcrumb */}
         <nav className="mb-8 flex items-center gap-2 text-sm text-[--text-muted]">
-          <a href="/resources" className="hover:text-[--primary]">
+          <Link href="/resources" className="hover:text-[--primary]">
             Ressourcen
-          </a>
+          </Link>
           <span>/</span>
-          <a href="/resources?subject=Mathematik" className="hover:text-[--primary]">
+          <Link href="/resources?subject=Mathematik" className="hover:text-[--primary]">
             Mathematik
-          </a>
+          </Link>
           <span>/</span>
           <span className="text-[--text]">{mockResource.title}</span>
         </nav>

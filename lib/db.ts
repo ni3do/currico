@@ -1,17 +1,27 @@
 import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { Pool } from "pg";
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-export const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient({
+function createPrismaClient() {
+  const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+  });
+  const adapter = new PrismaPg(pool);
+
+  return new PrismaClient({
+    adapter,
     log:
       process.env.NODE_ENV === "development"
         ? ["query", "error", "warn"]
         : ["error"],
   });
+}
+
+export const prisma = globalForPrisma.prisma ?? createPrismaClient();
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
@@ -22,8 +32,9 @@ if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 // Public profile - visible to everyone
 export const publicUserSelect = {
   id: true,
+  name: true,
   display_name: true,
-  avatar_url: true,
+  image: true,
   bio: true,
   subjects: true,
   cycles: true,
@@ -37,6 +48,7 @@ export const publicUserSelect = {
 export const privateUserSelect = {
   ...publicUserSelect,
   email: true,
+  emailVerified: true,
   legal_first_name: true,
   legal_last_name: true,
   iban: true,
@@ -45,7 +57,6 @@ export const privateUserSelect = {
   address_postal: true,
   address_country: true,
   payout_enabled: true,
-  email_verified: true,
   role: true,
 } as const;
 
