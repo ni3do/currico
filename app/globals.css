@@ -1,58 +1,131 @@
 @import "tailwindcss";
 
-/* Catppuccin Mocha Color Palette */
+/* Institutional Modern Theme - Government/Corporate Trustworthy Design */
 :root {
-  /* Base colors */
-  --ctp-base: #1e1e2e;
-  --ctp-mantle: #181825;
-  --ctp-crust: #11111b;
+  /* Primary Brand Colors - Navy/Institutional Blue */
+  --primary: #1e3a5f;
+  --primary-hover: #15294a;
+  --primary-light: #e8eef5;
 
-  /* Text colors */
-  --ctp-text: #cdd6f4;
-  --ctp-subtext1: #bac2de;
-  --ctp-subtext0: #a6adc8;
+  /* Accent - Professional Teal */
+  --accent: #0d7377;
+  --accent-hover: #095456;
+  --accent-light: #e0f4f4;
 
-  /* Surface colors */
-  --ctp-surface0: #313244;
-  --ctp-surface1: #45475a;
-  --ctp-surface2: #585b70;
+  /* Secondary - Forest Green (retained for continuity) */
+  --secondary: #2d5a3d;
+  --secondary-light: #e8f0eb;
 
-  /* Overlay colors */
-  --ctp-overlay0: #6c7086;
-  --ctp-overlay1: #7f849c;
-  --ctp-overlay2: #9399b2;
+  /* Neutral Palette - High Contrast Clean */
+  --white: #FFFFFF;
+  --off-white: #FAFBFC;
+  --gray-50: #F7F8FA;
+  --gray-100: #EEF1F4;
+  --gray-200: #DFE3E8;
+  --gray-300: #C4CDD5;
+  --gray-400: #919EAB;
+  --gray-500: #637381;
+  --gray-600: #454F5B;
+  --gray-700: #212B36;
+  --gray-800: #161C24;
+  --gray-900: #0D1117;
 
-  /* Accent colors */
-  --ctp-blue: #89b4fa;
-  --ctp-lavender: #b4befe;
-  --ctp-sapphire: #74c7ec;
-  --ctp-sky: #89dceb;
-  --ctp-teal: #94e2d5;
-  --ctp-green: #a6e3a1;
-  --ctp-yellow: #f9e2af;
-  --ctp-peach: #fab387;
-  --ctp-maroon: #eba0ac;
-  --ctp-red: #f38ba8;
-  --ctp-mauve: #cba6f7;
-  --ctp-pink: #f5c2e7;
-  --ctp-flamingo: #f2cdcd;
-  --ctp-rosewater: #f5e0dc;
-
-  /* Primary theme colors for the app */
-  --primary: #89b4fa;
-  --primary-hover: #74c7ec;
-  --secondary: #cba6f7;
-  --accent: #f5c2e7;
+  /* Status Colors */
+  --success: #1a7f37;
+  --success-light: #dafbe1;
+  --warning: #bf8700;
+  --warning-light: #fff8c5;
+  --error: #cf222e;
+  --error-light: #ffebe9;
 
   /* Semantic colors */
-  --background: #1e1e2e;
-  --surface: #313244;
-  --text: #cdd6f4;
-  --text-muted: #bac2de;
-  --border: #45475a;
+  --background: #FFFFFF;
+  --background-alt: #F7F8FA;
+  --surface: #FFFFFF;
+  --surface-hover: #F7F8FA;
+  --text: #212B36;
+  --text-secondary: #454F5B;
+  --text-muted: #637381;
+  --text-light: #919EAB;
+  --border: #DFE3E8;
+  --border-hover: #C4CDD5;
+
+  /* Shadows - Subtle, professional */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.03);
+
+  /* Border Radius - More subtle, professional */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
 }
 
 body {
   background-color: var(--background);
   color: var(--text);
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+}
+
+/* Typography hierarchy - High contrast */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--gray-800);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+h1 {
+  font-weight: 700;
+}
+
+/* Focus styles for accessibility */
+*:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom utility classes */
+.text-balance {
+  text-wrap: balance;
+}
+
+/* High-contrast link styles */
+a {
+  transition: color 0.15s ease;
+}
+
+/* Professional button base */
+.btn-primary {
+  background-color: var(--primary);
+  color: var(--white);
+  font-weight: 500;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+}
+
+/* Institutional border accent */
+.border-accent-top {
+  border-top: 3px solid var(--primary);
+}
+
+/* Clean divider */
+.divider {
+  height: 1px;
+  background: var(--border);
 }

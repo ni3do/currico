@@ -6,63 +6,75 @@ import { useState } from "react";
 const mockResources = [
   {
     id: 1,
-    title: "Bruchrechnen Übungsblätter",
-    description: "Umfassende Übungen zur Bruchrechnung mit Lösungsschlüssel",
+    title: "Bruchrechnen Ubungsblatter",
+    description: "Umfassende Ubungen zur Bruchrechnung mit Losungsschlussel",
     subject: "Mathematik",
     cycle: "Zyklus 2",
     price: "CHF 12.00",
     quality: "Verified",
     type: "PDF",
+    documents: 8,
+    rating: 4.8,
   },
   {
     id: 2,
     title: "Leseverstehen: Kurzgeschichten",
-    description: "10 spannende Kurzgeschichten mit Verständnisfragen",
+    description: "10 spannende Kurzgeschichten mit Verstandnisfragen",
     subject: "Deutsch",
     cycle: "Zyklus 3",
     price: "CHF 18.00",
     quality: "AI-Checked",
     type: "PDF",
+    documents: 10,
+    rating: 4.9,
   },
   {
     id: 3,
     title: "NMG: Experimente mit Wasser",
-    description: "Praktische Experimente zum Thema Wasser und Aggregatzustände",
+    description: "Praktische Experimente zum Thema Wasser und Aggregatzustande",
     subject: "NMG",
     cycle: "Zyklus 2",
     price: "CHF 15.00",
     quality: "Verified",
     type: "Bundle",
+    documents: 12,
+    rating: 4.7,
   },
   {
     id: 4,
     title: "Englisch Vokabeltraining",
-    description: "Interaktive Übungen für Anfänger",
+    description: "Interaktive Ubungen fur Anfanger mit Audio-Dateien",
     subject: "Englisch",
     cycle: "Zyklus 2",
     price: "CHF 10.00",
     quality: "Verified",
     type: "PDF",
+    documents: 6,
+    rating: 4.6,
   },
   {
     id: 5,
-    title: "Geometrie: Flächen und Körper",
-    description: "Arbeitsblätter zu Flächen- und Volumenberechnungen",
+    title: "Geometrie: Flachen und Korper",
+    description: "Arbeitsblatter zu Flachen- und Volumenberechnungen",
     subject: "Mathematik",
     cycle: "Zyklus 3",
     price: "Gratis",
     quality: "AI-Checked",
     type: "PDF",
+    documents: 5,
+    rating: 4.5,
   },
   {
     id: 6,
     title: "Rechtschreibung: Doppelkonsonanten",
-    description: "Übungen und Spiele zur Rechtschreibung",
+    description: "Ubungen und Spiele zur Rechtschreibung mit Losungen",
     subject: "Deutsch",
     cycle: "Zyklus 2",
     price: "CHF 8.00",
     quality: "Verified",
     type: "Bundle",
+    documents: 7,
+    rating: 4.8,
   },
 ];
 
@@ -73,71 +85,81 @@ export default function ResourcesPage() {
 
   return (
     <div className="min-h-screen bg-[--background]">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-[--border] bg-[--surface]/95 backdrop-blur-sm">
-        <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <a href="/" className="flex items-center gap-2">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[--primary] to-[--secondary]">
-                  <span className="text-xl font-bold text-[--background]">EL</span>
-                </div>
-                <span className="text-xl font-bold text-[--text]">Easy Lehrer</span>
-              </a>
-            </div>
+      {/* Top Bar - Institutional accent line */}
+      <div className="h-1 bg-[--primary]" />
 
-            <nav className="hidden md:flex items-center gap-8">
-              <a
-                href="/resources"
-                className="text-[--primary] font-medium transition-colors"
-              >
-                Ressourcen
-              </a>
-              <a
-                href="#"
-                className="text-[--text-muted] hover:text-[--text] transition-colors"
-              >
-                Für Schulen
-              </a>
-              <a
-                href="#"
-                className="text-[--text-muted] hover:text-[--text] transition-colors"
-              >
-                Über uns
-              </a>
+      {/* Header */}
+      <header className="sticky top-0 z-50 bg-white border-b border-[--border]">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
+            <a href="/" className="flex items-center gap-3">
+              <div className="flex items-center justify-center w-10 h-10 bg-[--primary] rounded-[--radius-sm]">
+                <span className="text-white font-bold text-lg">EL</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-lg font-semibold text-[--gray-800] leading-tight">EasyLehrer</span>
+                <span className="text-xs text-[--text-muted] leading-tight">Bildungsplattform Schweiz</span>
+              </div>
+            </a>
+
+            {/* Navigation */}
+            <nav className="hidden lg:flex items-center">
+              <div className="flex items-center border-r border-[--border] pr-6 mr-6">
+                <a href="/resources" className="px-4 py-2 text-[--primary] font-medium text-sm">
+                  Ressourcen
+                </a>
+                <a href="#" className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
+                  Fur Schulen
+                </a>
+                <a href="#" className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
+                  Uber uns
+                </a>
+                <a href="#" className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
+                  Kontakt
+                </a>
+              </div>
+              <div className="flex items-center gap-3">
+                <a href="/login" className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
+                  Anmelden
+                </a>
+                <a
+                  href="/register"
+                  className="rounded-[--radius-sm] bg-[--primary] px-5 py-2 font-medium text-white text-sm hover:bg-[--primary-hover] transition-colors"
+                >
+                  Registrieren
+                </a>
+              </div>
             </nav>
 
-            <div className="flex items-center gap-4">
-              <a
-                href="/login"
-                className="hidden sm:block text-[--text-muted] hover:text-[--text] transition-colors"
-              >
-                Anmelden
-              </a>
-              <a
-                href="/register"
-                className="rounded-full bg-gradient-to-r from-[--primary] to-[--secondary] px-6 py-2.5 font-medium text-[--background] hover:opacity-90 transition-opacity shadow-lg shadow-[--primary]/20"
-              >
-                Registrieren
-              </a>
-            </div>
+            {/* Mobile Menu Button */}
+            <button className="lg:hidden p-2 text-[--text-secondary] hover:text-[--primary]">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
           </div>
         </div>
       </header>
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        {/* Page Title */}
+        {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[--text]">Ressourcen</h1>
+          <div className="flex items-center gap-2 text-sm text-[--text-muted] mb-2">
+            <a href="/" className="hover:text-[--primary] transition-colors">Startseite</a>
+            <span>/</span>
+            <span className="text-[--text-secondary]">Ressourcen</span>
+          </div>
+          <h1 className="text-2xl font-semibold text-[--gray-800]">Unterrichtsmaterialien</h1>
           <p className="mt-2 text-[--text-muted]">
-            Entdecken Sie qualitätsgeprüfte Unterrichtsmaterialien
+            Durchsuchen Sie qualitatsgeprufte Materialien fur Ihren Unterricht
           </p>
         </div>
 
         {/* Search and Filter Section */}
         <div className="mb-8 space-y-4">
           {/* Main Search Controls */}
-          <div className="flex flex-col gap-4 sm:flex-row">
+          <div className="flex flex-col gap-3 sm:flex-row">
             {/* Search Bar */}
             <div className="flex-1">
               <div className="relative">
@@ -146,7 +168,7 @@ export default function ResourcesPage() {
                   placeholder="Suche nach Titel, Thema, Stichwort..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full rounded-xl border border-[--border] bg-[--surface] px-4 py-3 pl-11 text-[--text] placeholder:text-[--text-muted] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20"
+                  className="w-full rounded-[--radius-md] border border-[--border] bg-white px-4 py-3 pl-11 text-[--text] placeholder:text-[--text-light] focus:outline-none focus:ring-2 focus:ring-[--primary]/20 focus:border-[--primary]"
                 />
                 <svg
                   className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[--text-muted]"
@@ -165,17 +187,17 @@ export default function ResourcesPage() {
             </div>
 
             {/* Subject Selector */}
-            <div className="sm:w-64">
+            <div className="sm:w-56">
               <select
                 value={selectedSubject}
                 onChange={(e) => setSelectedSubject(e.target.value)}
-                className="w-full rounded-xl border border-[--border] bg-[--surface] px-4 py-3 text-[--text] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20"
+                className="w-full rounded-[--radius-md] border border-[--border] bg-white px-4 py-3 text-[--text] focus:outline-none focus:ring-2 focus:ring-[--primary]/20 focus:border-[--primary] appearance-none cursor-pointer"
               >
-                <option value="">Alle Fächer</option>
+                <option value="">Alle Facher</option>
                 <option value="Mathematik">Mathematik</option>
                 <option value="Deutsch">Deutsch</option>
                 <option value="Englisch">Englisch</option>
-                <option value="Französisch">Französisch</option>
+                <option value="Franzosisch">Franzosisch</option>
                 <option value="NMG">NMG</option>
                 <option value="BG">Bildnerisches Gestalten</option>
                 <option value="Musik">Musik</option>
@@ -186,7 +208,11 @@ export default function ResourcesPage() {
             {/* More Filters Button */}
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center justify-center gap-2 rounded-xl border border-[--border] bg-[--surface] px-6 py-3 text-[--text] hover:bg-[--surface1] transition-colors"
+              className={`flex items-center justify-center gap-2 rounded-[--radius-md] px-5 py-3 font-medium text-sm transition-colors border ${
+                showFilters
+                  ? "bg-[--primary] text-white border-[--primary]"
+                  : "bg-white text-[--text-secondary] border-[--border] hover:border-[--primary]"
+              }`}
             >
               <svg
                 className="h-5 w-5"
@@ -201,22 +227,22 @@ export default function ResourcesPage() {
                   d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
                 />
               </svg>
-              <span className="hidden sm:inline">Mehr Filter</span>
+              <span>Filter</span>
             </button>
           </div>
 
           {/* Advanced Filters (Collapsible) */}
           {showFilters && (
-            <div className="rounded-xl border border-[--border] bg-[--surface] p-6">
-              <h3 className="mb-4 font-semibold text-[--text]">Erweiterte Filter</h3>
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="rounded-[--radius-lg] bg-white p-6 border border-[--border]">
+              <h3 className="mb-4 font-semibold text-[--gray-800]">Erweiterte Filter</h3>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {/* Cycle Filter */}
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[--text]">
+                  <label className="mb-2 block text-sm font-medium text-[--gray-700]">
                     Zyklus
                   </label>
-                  <select className="w-full rounded-lg border border-[--border] bg-[--background] px-3 py-2 text-[--text] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20">
-                    <option value="">Alle</option>
+                  <select className="w-full rounded-[--radius-md] border border-[--border] bg-white px-4 py-2.5 text-[--text] text-sm focus:outline-none focus:ring-2 focus:ring-[--primary]/20 focus:border-[--primary]">
+                    <option value="">Alle Zyklen</option>
                     <option value="1">Zyklus 1</option>
                     <option value="2">Zyklus 2</option>
                     <option value="3">Zyklus 3</option>
@@ -225,12 +251,12 @@ export default function ResourcesPage() {
 
                 {/* Canton Filter */}
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[--text]">
+                  <label className="mb-2 block text-sm font-medium text-[--gray-700]">
                     Kanton
                   </label>
-                  <select className="w-full rounded-lg border border-[--border] bg-[--background] px-3 py-2 text-[--text] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20">
-                    <option value="">Alle</option>
-                    <option value="ZH">Zürich</option>
+                  <select className="w-full rounded-[--radius-md] border border-[--border] bg-white px-4 py-2.5 text-[--text] text-sm focus:outline-none focus:ring-2 focus:ring-[--primary]/20 focus:border-[--primary]">
+                    <option value="">Alle Kantone</option>
+                    <option value="ZH">Zurich</option>
                     <option value="BE">Bern</option>
                     <option value="LU">Luzern</option>
                     <option value="AG">Aargau</option>
@@ -240,23 +266,22 @@ export default function ResourcesPage() {
 
                 {/* Quality Filter */}
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[--text]">
-                    Qualität
+                  <label className="mb-2 block text-sm font-medium text-[--gray-700]">
+                    Qualitat
                   </label>
-                  <select className="w-full rounded-lg border border-[--border] bg-[--background] px-3 py-2 text-[--text] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20">
+                  <select className="w-full rounded-[--radius-md] border border-[--border] bg-white px-4 py-2.5 text-[--text] text-sm focus:outline-none focus:ring-2 focus:ring-[--primary]/20 focus:border-[--primary]">
                     <option value="">Alle</option>
                     <option value="verified">Verifiziert</option>
-                    <option value="ai-checked">KI-Geprüft</option>
-                    <option value="pending">Ausstehend</option>
+                    <option value="ai-checked">KI-Gepruft</option>
                   </select>
                 </div>
 
                 {/* Price Type Filter */}
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[--text]">
+                  <label className="mb-2 block text-sm font-medium text-[--gray-700]">
                     Preistyp
                   </label>
-                  <select className="w-full rounded-lg border border-[--border] bg-[--background] px-3 py-2 text-[--text] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20">
+                  <select className="w-full rounded-[--radius-md] border border-[--border] bg-white px-4 py-2.5 text-[--text] text-sm focus:outline-none focus:ring-2 focus:ring-[--primary]/20 focus:border-[--primary]">
                     <option value="">Alle</option>
                     <option value="free">Kostenlos</option>
                     <option value="paid">Kostenpflichtig</option>
@@ -265,10 +290,10 @@ export default function ResourcesPage() {
 
                 {/* Resource Type Filter */}
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[--text]">
+                  <label className="mb-2 block text-sm font-medium text-[--gray-700]">
                     Ressourcentyp
                   </label>
-                  <select className="w-full rounded-lg border border-[--border] bg-[--background] px-3 py-2 text-[--text] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20">
+                  <select className="w-full rounded-[--radius-md] border border-[--border] bg-white px-4 py-2.5 text-[--text] text-sm focus:outline-none focus:ring-2 focus:ring-[--primary]/20 focus:border-[--primary]">
                     <option value="">Alle</option>
                     <option value="pdf">PDF</option>
                     <option value="word">Word</option>
@@ -279,10 +304,10 @@ export default function ResourcesPage() {
 
                 {/* Editable Filter */}
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[--text]">
+                  <label className="mb-2 block text-sm font-medium text-[--gray-700]">
                     Editierbar
                   </label>
-                  <select className="w-full rounded-lg border border-[--border] bg-[--background] px-3 py-2 text-[--text] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20">
+                  <select className="w-full rounded-[--radius-md] border border-[--border] bg-white px-4 py-2.5 text-[--text] text-sm focus:outline-none focus:ring-2 focus:ring-[--primary]/20 focus:border-[--primary]">
                     <option value="">Alle</option>
                     <option value="yes">Ja</option>
                     <option value="no">Nein</option>
@@ -291,29 +316,30 @@ export default function ResourcesPage() {
               </div>
 
               {/* Filter Actions */}
-              <div className="mt-6 flex gap-3">
-                <button className="rounded-lg bg-gradient-to-r from-[--primary] to-[--secondary] px-6 py-2 font-medium text-[--background] hover:opacity-90 transition-opacity">
+              <div className="mt-6 flex gap-3 pt-4 border-t border-[--border]">
+                <button className="rounded-[--radius-sm] bg-[--primary] px-5 py-2 font-medium text-white text-sm hover:bg-[--primary-hover] transition-colors">
                   Filter anwenden
                 </button>
-                <button className="rounded-lg border border-[--border] px-6 py-2 font-medium text-[--text] hover:bg-[--surface1] transition-colors">
-                  Zurücksetzen
+                <button className="rounded-[--radius-sm] bg-white px-5 py-2 font-medium text-[--text-secondary] text-sm border border-[--border] hover:border-[--primary] hover:text-[--primary] transition-colors">
+                  Zurucksetzen
                 </button>
               </div>
             </div>
           )}
 
           {/* Sort and Results Count */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between py-2">
             <p className="text-sm text-[--text-muted]">
-              {mockResources.length} Ressourcen gefunden
+              <span className="font-medium text-[--text-secondary]">{mockResources.length}</span> Ressourcen gefunden
             </p>
             <div className="flex items-center gap-2">
               <label className="text-sm text-[--text-muted]">Sortieren:</label>
-              <select className="rounded-lg border border-[--border] bg-[--surface] px-3 py-1.5 text-sm text-[--text] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20">
+              <select className="rounded-[--radius-sm] border border-[--border] bg-white px-3 py-1.5 text-sm text-[--text-secondary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20 focus:border-[--primary]">
                 <option value="newest">Neueste</option>
                 <option value="popular">Beliebteste</option>
-                <option value="price-low">Preis: Niedrig → Hoch</option>
-                <option value="price-high">Preis: Hoch → Niedrig</option>
+                <option value="rating">Beste Bewertung</option>
+                <option value="price-low">Preis aufsteigend</option>
+                <option value="price-high">Preis absteigend</option>
               </select>
             </div>
           </div>
@@ -322,87 +348,170 @@ export default function ResourcesPage() {
         {/* Resource Grid */}
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {mockResources.map((resource) => (
-            <a
+            <article
               key={resource.id}
-              href={`/resources/${resource.id}`}
-              className="group rounded-2xl border border-[--border] bg-[--surface] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-[--primary]/50 hover:shadow-2xl hover:shadow-[--primary]/10"
+              className="group bg-white border border-[--border] rounded-[--radius-lg] overflow-hidden hover:border-[--primary] hover:shadow-[var(--shadow-md)] transition-all"
             >
-              {/* Resource Type & Quality Badge */}
-              <div className="mb-4 flex items-center justify-between">
-                <span className="rounded-full bg-[--background] px-3 py-1 text-xs font-medium text-[--text]">
-                  {resource.type}
-                </span>
-                <span
-                  className={`rounded-full px-3 py-1 text-xs font-medium ${
-                    resource.quality === "Verified"
-                      ? "bg-[--green]/20 text-[--green]"
-                      : "bg-[--sapphire]/20 text-[--sapphire]"
-                  }`}
-                >
-                  {resource.quality === "Verified" ? "✓ Verifiziert" : "KI-Geprüft"}
-                </span>
-              </div>
+              {/* Card Header */}
+              <div className="p-5 pb-4">
+                {/* Badges */}
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="px-2 py-1 bg-[--gray-100] text-[--text-muted] text-xs font-medium rounded-[--radius-xs]">
+                      {resource.type}
+                    </span>
+                    <span className="px-2 py-1 bg-[--gray-100] text-[--text-muted] text-xs font-medium rounded-[--radius-xs]">
+                      {resource.cycle}
+                    </span>
+                  </div>
+                  <span
+                    className={`px-2 py-1 text-xs font-medium rounded-[--radius-xs] ${
+                      resource.quality === "Verified"
+                        ? "bg-[--success-light] text-[--success]"
+                        : "bg-[--accent-light] text-[--accent]"
+                    }`}
+                  >
+                    {resource.quality === "Verified" ? "Verifiziert" : "KI-Gepruft"}
+                  </span>
+                </div>
 
-              {/* Title */}
-              <h3 className="mb-2 text-lg font-semibold text-[--text] group-hover:text-[--primary] transition-colors">
-                {resource.title}
-              </h3>
-
-              {/* Description */}
-              <p className="mb-4 text-sm text-[--text-muted] line-clamp-2">
-                {resource.description}
-              </p>
-
-              {/* Metadata */}
-              <div className="mb-4 flex flex-wrap gap-2">
-                <span className="rounded-full bg-[--background] px-3 py-1 text-xs text-[--text-muted]">
+                {/* Subject Tag */}
+                <span className="inline-block px-2 py-1 bg-[--primary-light] text-[--primary] text-xs font-medium rounded-[--radius-xs] mb-3">
                   {resource.subject}
                 </span>
-                <span className="rounded-full bg-[--background] px-3 py-1 text-xs text-[--text-muted]">
-                  {resource.cycle}
-                </span>
+
+                {/* Title */}
+                <h3 className="font-semibold text-[--gray-800] group-hover:text-[--primary] transition-colors mb-2">
+                  {resource.title}
+                </h3>
+
+                {/* Description */}
+                <p className="text-sm text-[--text-muted] line-clamp-2 leading-relaxed">
+                  {resource.description}
+                </p>
               </div>
 
-              {/* Price and CTA */}
-              <div className="flex items-center justify-between">
-                <span className="text-xl font-bold text-[--primary]">
-                  {resource.price}
-                </span>
-                <span className="rounded-full bg-gradient-to-r from-[--primary] to-[--secondary] px-4 py-2 text-sm font-medium text-[--background] group-hover:opacity-90 transition-opacity">
-                  Ansehen
-                </span>
+              {/* Card Footer */}
+              <div className="px-5 py-4 border-t border-[--border] bg-[--background-alt]">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    {/* Documents count */}
+                    <span className="text-sm text-[--text-muted]">
+                      {resource.documents} Dok.
+                    </span>
+                    {/* Rating */}
+                    <div className="flex items-center gap-1 text-sm">
+                      <svg className="w-4 h-4 text-[--warning]" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                      <span className="font-medium text-[--text-secondary]">{resource.rating}</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className={`font-semibold ${resource.price === "Gratis" ? "text-[--success]" : "text-[--primary]"}`}>
+                      {resource.price}
+                    </span>
+                    <a
+                      href={`/resources/${resource.id}`}
+                      className="rounded-[--radius-sm] bg-[--primary] px-4 py-1.5 text-sm font-medium text-white hover:bg-[--primary-hover] transition-colors"
+                    >
+                      Ansehen
+                    </a>
+                  </div>
+                </div>
               </div>
-            </a>
+            </article>
           ))}
         </div>
 
         {/* Pagination */}
         <div className="mt-12 flex justify-center">
-          <div className="flex gap-2">
-            <button className="rounded-lg border border-[--border] bg-[--surface] px-4 py-2 text-[--text] hover:bg-[--surface1] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-              Zurück
+          <nav className="flex items-center gap-1">
+            <button
+              className="rounded-[--radius-sm] px-3 py-2 text-[--text-muted] font-medium text-sm hover:bg-[--gray-100] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
             </button>
-            <button className="rounded-lg bg-gradient-to-r from-[--primary] to-[--secondary] px-4 py-2 font-medium text-[--background]">
+            <button className="rounded-[--radius-sm] bg-[--primary] px-4 py-2 font-medium text-white text-sm min-w-[40px]">
               1
             </button>
-            <button className="rounded-lg border border-[--border] bg-[--surface] px-4 py-2 text-[--text] hover:bg-[--surface1] transition-colors">
+            <button className="rounded-[--radius-sm] px-4 py-2 text-[--text-secondary] font-medium text-sm hover:bg-[--gray-100] transition-colors min-w-[40px]">
               2
             </button>
-            <button className="rounded-lg border border-[--border] bg-[--surface] px-4 py-2 text-[--text] hover:bg-[--surface1] transition-colors">
+            <button className="rounded-[--radius-sm] px-4 py-2 text-[--text-secondary] font-medium text-sm hover:bg-[--gray-100] transition-colors min-w-[40px]">
               3
             </button>
-            <button className="rounded-lg border border-[--border] bg-[--surface] px-4 py-2 text-[--text] hover:bg-[--surface1] transition-colors">
-              Weiter
+            <span className="px-2 text-[--text-muted]">...</span>
+            <button className="rounded-[--radius-sm] px-4 py-2 text-[--text-secondary] font-medium text-sm hover:bg-[--gray-100] transition-colors min-w-[40px]">
+              12
             </button>
-          </div>
+            <button className="rounded-[--radius-sm] px-3 py-2 text-[--text-secondary] font-medium text-sm hover:bg-[--gray-100] transition-colors">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </nav>
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="mt-20 border-t border-[--border] bg-[--surface]/50">
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="text-center text-sm text-[--text-muted]">
-            <p>© 2026 Easy Lehrer. Alle Rechte vorbehalten.</p>
+      <footer className="mt-16 bg-[--gray-800]">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {/* Brand */}
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center justify-center w-8 h-8 bg-white rounded-[--radius-xs]">
+                  <span className="text-[--primary] font-bold text-sm">EL</span>
+                </div>
+                <span className="text-lg font-semibold text-white">EasyLehrer</span>
+              </div>
+              <p className="text-sm text-[--gray-400] leading-relaxed">
+                Die offizielle Plattform fur Unterrichtsmaterial von Schweizer Lehrpersonen.
+              </p>
+            </div>
+
+            {/* Product */}
+            <div>
+              <h3 className="font-semibold text-white text-sm uppercase tracking-wider">Plattform</h3>
+              <ul className="mt-4 space-y-3">
+                <li><a href="/resources" className="text-sm text-[--gray-400] hover:text-white transition-colors">Ressourcen</a></li>
+                <li><a href="#" className="text-sm text-[--gray-400] hover:text-white transition-colors">Fur Schulen</a></li>
+                <li><a href="#" className="text-sm text-[--gray-400] hover:text-white transition-colors">Preise</a></li>
+              </ul>
+            </div>
+
+            {/* Company */}
+            <div>
+              <h3 className="font-semibold text-white text-sm uppercase tracking-wider">Information</h3>
+              <ul className="mt-4 space-y-3">
+                <li><a href="#" className="text-sm text-[--gray-400] hover:text-white transition-colors">Uber uns</a></li>
+                <li><a href="#" className="text-sm text-[--gray-400] hover:text-white transition-colors">Kontakt</a></li>
+                <li><a href="#" className="text-sm text-[--gray-400] hover:text-white transition-colors">Hilfe</a></li>
+              </ul>
+            </div>
+
+            {/* Legal */}
+            <div>
+              <h3 className="font-semibold text-white text-sm uppercase tracking-wider">Rechtliches</h3>
+              <ul className="mt-4 space-y-3">
+                <li><a href="#" className="text-sm text-[--gray-400] hover:text-white transition-colors">Datenschutz</a></li>
+                <li><a href="#" className="text-sm text-[--gray-400] hover:text-white transition-colors">AGB</a></li>
+                <li><a href="#" className="text-sm text-[--gray-400] hover:text-white transition-colors">Impressum</a></li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="mt-12 pt-8 border-t border-[--gray-700] flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-sm text-[--gray-400]">
+              2026 EasyLehrer. Alle Rechte vorbehalten.
+            </p>
+            <p className="text-sm text-[--gray-500]">
+              Eine Initiative fur Schweizer Bildung
+            </p>
           </div>
         </div>
       </footer>

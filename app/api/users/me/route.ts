@@ -93,11 +93,15 @@ export async function PATCH(request: NextRequest) {
       !!data.legal_last_name &&
       !!data.iban;
 
-    // Update user
+    // Update user - transform arrays for Prisma
+    const { subjects, cycles, cantons, ...restData } = data;
     const updatedUser = await prisma.user.update({
       where: { id: userId },
       data: {
-        ...data,
+        ...restData,
+        ...(subjects && { subjects: { set: subjects } }),
+        ...(cycles && { cycles: { set: cycles } }),
+        ...(cantons && { cantons: { set: cantons } }),
         payout_enabled: payoutEnabled,
         // Set is_seller to true if they have payout info
         is_seller: payoutEnabled ? true : undefined,

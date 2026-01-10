@@ -43,7 +43,11 @@ export async function GET() {
       );
     }
 
-    const result = canUploadResources(user);
+    const result = canUploadResources({
+      ...user,
+      subjects: Array.isArray(user.subjects) ? user.subjects : [],
+      cycles: Array.isArray(user.cycles) ? user.cycles : [],
+    });
 
     return NextResponse.json(result);
   } catch (error) {
