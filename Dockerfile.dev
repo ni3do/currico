@@ -27,6 +27,7 @@ ENV NODE_ENV=development
 ENV NEXT_TELEMETRY_DISABLED=1
 # Enable polling for file watching in Docker (required for macOS/Windows)
 ENV WATCHPACK_POLLING=true
+ENV CHOKIDAR_USEPOLLING=true
 
 # Run prisma db push to sync schema, then start dev server
 CMD ["sh", "-c", "npx prisma db push && npm run dev"]
