@@ -29,8 +29,8 @@ export const content = {
 
     navigation: {
       resources: "Ressourcen",
-      forSchools: "Fur Schulen",
-      aboutUs: "Uber uns",
+      forSchools: "Für Schulen",
+      aboutUs: "Über uns",
       contact: "Kontakt",
       login: "Anmelden",
       register: "Registrieren",
@@ -39,7 +39,7 @@ export const content = {
     },
 
     footer: {
-      brandDescription: "Die offizielle Plattform fur Unterrichtsmaterial von Schweizer Lehrpersonen.",
+      brandDescription: "Die offizielle Plattform für Unterrichtsmaterial von Schweizer Lehrpersonen.",
 
       platformSection: {
         title: "Plattform",
@@ -50,7 +50,7 @@ export const content = {
 
       infoSection: {
         title: "Information",
-        aboutUs: "Uber uns",
+        aboutUs: "Über uns",
         contact: "Kontakt",
         help: "Hilfe",
       },
@@ -180,7 +180,7 @@ export const content = {
   // LOGIN PAGE (app/login/page.tsx)
   // ============================================
   loginPage: {
-    title: "Willkommen zuruck",
+    title: "Willkommen zurück",
     subtitle: "Melden Sie sich bei Ihrem Konto an",
 
     form: {
@@ -228,7 +228,7 @@ export const content = {
         school: "Name der Institution",
       },
       namePlaceholder: {
-        teacher: "Maria Schmidt",
+        teacher: "Maria Muster",
         school: "Primarschule Musterstadt",
       },
 

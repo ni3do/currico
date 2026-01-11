@@ -30,7 +30,7 @@ export default function LoginPage() {
       if (result?.error) {
         setError("Ungültige E-Mail-Adresse oder Passwort");
       } else {
-        router.push("/dashboard");
+        router.push("/account");
       }
     } catch {
       setError("Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.");
@@ -161,7 +161,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full rounded-[--radius-md] bg-[--primary] px-6 py-3.5 font-semibold text-white hover:bg-[--primary-hover] transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(0,82,204,0.25)] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none"
+                className="w-full rounded-[--radius-md] bg-gradient-to-r from-[--primary-solid] via-[--accent] to-[--secondary] px-6 py-3.5 font-semibold text-white transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(13,148,136,0.35)] hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none disabled:hover:brightness-100"
               >
                 {isLoading ? "Wird angemeldet..." : loginPage.form.submitButton}
               </button>
