@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { content } from "@/lib/content";
+import { isValidEmail } from "@/lib/validations/common";
+import { DecorationBg } from "@/components/ui/DecorationBg";
 
 const { common, loginPage } = content;
 
@@ -39,18 +41,9 @@ export default function LoginPage() {
     }
   };
 
-  const isValidEmail = (email: string) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  };
-
   return (
     <div className="min-h-screen geometric-bg relative flex flex-col">
-      {/* Decorative Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-64 h-64 rounded-full bg-[--primary] opacity-[0.03] blur-3xl"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 rounded-full bg-[--accent] opacity-[0.03] blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-[--primary] opacity-[0.02] blur-3xl"></div>
-      </div>
+      <DecorationBg />
 
       {/* Header */}
       <header className="relative z-10 px-6 py-6 sm:px-8">
@@ -161,9 +154,9 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full rounded-[--radius-md] bg-gradient-to-r from-[--primary-solid] via-[--accent] to-[--secondary] px-6 py-3.5 font-semibold text-white transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(13,148,136,0.35)] hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none disabled:hover:brightness-100"
+                className="w-full rounded-[--radius-md] bg-[#DC2626] px-6 py-3.5 font-semibold text-white text-center transition-all hover:-translate-y-0.5 hover:bg-[#B91C1C] hover:shadow-[0_8px_25px_rgba(220,38,38,0.35)] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none disabled:hover:bg-[#DC2626]"
               >
-                {isLoading ? "Wird angemeldet..." : loginPage.form.submitButton}
+                {isLoading ? "Wird angemeldet..." : "Anmelden"}
               </button>
             </form>
 

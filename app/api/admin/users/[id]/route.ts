@@ -1,11 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-
-// TODO: Replace with actual auth session and admin check
-async function getCurrentUserRole(): Promise<string | null> {
-  // Placeholder - integrate with your auth system
-  return "ADMIN"; // For development only!
-}
+import { requireAdmin, unauthorizedResponse } from "@/lib/admin-auth";
 
 /**
  * GET /api/admin/users/[id]
@@ -17,13 +12,10 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const role = await getCurrentUserRole();
+    const admin = await requireAdmin();
 
-    if (role !== "ADMIN") {
-      return NextResponse.json(
-        { error: "Zugriff verweigert" },
-        { status: 403 }
-      );
+    if (!admin) {
+      return unauthorizedResponse();
     }
 
     const { id } = await params;
@@ -84,13 +76,10 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const role = await getCurrentUserRole();
+    const admin = await requireAdmin();
 
-    if (role !== "ADMIN") {
-      return NextResponse.json(
-        { error: "Zugriff verweigert" },
-        { status: 403 }
-      );
+    if (!admin) {
+      return unauthorizedResponse();
     }
 
     const { id } = await params;

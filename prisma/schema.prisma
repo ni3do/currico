@@ -96,6 +96,11 @@ model User {
   resources    Resource[]
   transactions Transaction[]
 
+  // Report relations
+  reports_submitted Report[] @relation("Reporter")
+  reports_received  Report[] @relation("ReportedUser")
+  reports_handled   Report[] @relation("ReportHandler")
+
   @@map("users")
 }
 
@@ -131,6 +136,7 @@ model Resource {
   seller_id   String
   seller      User     @relation(fields: [seller_id], references: [id])
   transactions Transaction[]
+  reports     Report[]
 
   @@map("resources")
 }
@@ -160,4 +166,44 @@ enum TransactionStatus {
   COMPLETED
   REFUNDED
   FAILED
+}
+
+// ============================================================
+// REPORT MODEL - Content Moderation
+// ============================================================
+
+model Report {
+  id          String       @id @default(cuid())
+  created_at  DateTime     @default(now())
+  updated_at  DateTime     @updatedAt
+
+  reason      String       // Category: "copyright", "inappropriate", "spam", "fraud", "other"
+  description String?      @db.Text // Detailed description from reporter
+  status      ReportStatus @default(OPEN)
+  resolution  String?      @db.Text // Admin notes on resolution
+
+  // What is being reported (either a resource or a user)
+  resource_id String?
+  resource    Resource?    @relation(fields: [resource_id], references: [id], onDelete: SetNull)
+
+  reported_user_id String?
+  reported_user    User?   @relation("ReportedUser", fields: [reported_user_id], references: [id], onDelete: SetNull)
+
+  // Who submitted the report
+  reporter_id String
+  reporter    User    @relation("Reporter", fields: [reporter_id], references: [id], onDelete: Cascade)
+
+  // Admin who handled the report
+  handled_by_id String?
+  handled_by    User?   @relation("ReportHandler", fields: [handled_by_id], references: [id], onDelete: SetNull)
+  handled_at    DateTime?
+
+  @@map("reports")
+}
+
+enum ReportStatus {
+  OPEN
+  IN_REVIEW
+  RESOLVED
+  DISMISSED
 }

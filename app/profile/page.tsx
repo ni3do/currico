@@ -1,19 +1,49 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+
+interface ProfileData {
+  name: string | null;
+  display_name: string | null;
+  email: string;
+  cantons: string[];
+  subjects: string[];
+  cycles: string[];
+}
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<"profile" | "library" | "wishlist">("profile");
+  const [profileData, setProfileData] = useState<ProfileData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // TODO: Replace with API fetch
-  const profileData = {
-    name: "Maria Schmidt",
-    email: "maria.schmidt@example.com",
-    canton: "Zürich",
-    subjects: ["Mathematik", "Deutsch", "NMG"],
-    cycles: ["Zyklus 2"],
-  };
+  useEffect(() => {
+    async function fetchProfile() {
+      try {
+        const response = await fetch("/api/users/me");
+        if (!response.ok) {
+          if (response.status === 401) {
+            setError("Bitte melden Sie sich an");
+            return;
+          }
+          throw new Error("Fehler beim Laden des Profils");
+        }
+        const data = await response.json();
+        setProfileData(data);
+      } catch (err) {
+        console.error("Error fetching profile:", err);
+        setError("Fehler beim Laden des Profils");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchProfile();
+  }, []);
+
+  const displayName = profileData?.display_name || profileData?.name || "Benutzer";
+  const displayCanton = profileData?.cantons?.[0] || "Nicht angegeben";
 
   return (
     <div className="min-h-screen bg-[--background]">
@@ -57,9 +87,9 @@ export default function ProfilePage() {
                 className="flex items-center gap-2 rounded-full border-2 border-[--primary] px-4 py-2 font-medium text-[--primary] transition-colors"
               >
                 <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-[--primary] to-[--secondary] text-xs font-bold text-[--background]">
-                  {profileData.name.charAt(0)}
+                  {displayName.charAt(0)}
                 </div>
-                <span className="hidden sm:inline">{profileData.name.split(" ")[0]}</span>
+                <span className="hidden sm:inline">{displayName.split(" ")[0]}</span>
               </Link>
             </div>
           </div>
@@ -127,49 +157,63 @@ export default function ProfilePage() {
                   </Link>
                 </div>
 
-                <div className="space-y-6">
-                  {/* Name */}
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-[--text]">
-                      Name
-                    </label>
-                    <div className="text-[--text-muted]">{profileData.name}</div>
+                {isLoading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <div className="h-8 w-8 animate-spin rounded-full border-4 border-[--primary] border-t-transparent"></div>
                   </div>
-
-                  {/* Email */}
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-[--text]">
-                      E-Mail
-                    </label>
-                    <div className="text-[--text-muted]">{profileData.email}</div>
+                ) : error ? (
+                  <div className="rounded-lg bg-[--red]/10 p-4 text-center text-[--red]">
+                    {error}
                   </div>
-
-                  {/* Canton */}
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-[--text]">
-                      Kanton
-                    </label>
-                    <div className="text-[--text-muted]">{profileData.canton}</div>
-                  </div>
-
-                  {/* Subjects */}
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-[--text]">
-                      Unterrichtsfächer
-                    </label>
-                    <div className="flex flex-wrap gap-2">
-                      {profileData.subjects.map((subject) => (
-                        <span
-                          key={subject}
-                          className="rounded-full bg-[--background] px-3 py-1 text-sm text-[--text]"
-                        >
-                          {subject}
-                        </span>
-                      ))}
+                ) : profileData ? (
+                  <div className="space-y-6">
+                    {/* Name */}
+                    <div>
+                      <label className="mb-2 block text-sm font-medium text-[--text]">
+                        Name
+                      </label>
+                      <div className="text-[--text-muted]">{displayName}</div>
                     </div>
-                  </div>
 
-                </div>
+                    {/* Email */}
+                    <div>
+                      <label className="mb-2 block text-sm font-medium text-[--text]">
+                        E-Mail
+                      </label>
+                      <div className="text-[--text-muted]">{profileData.email}</div>
+                    </div>
+
+                    {/* Canton */}
+                    <div>
+                      <label className="mb-2 block text-sm font-medium text-[--text]">
+                        Kanton
+                      </label>
+                      <div className="text-[--text-muted]">{displayCanton}</div>
+                    </div>
+
+                    {/* Subjects */}
+                    <div>
+                      <label className="mb-2 block text-sm font-medium text-[--text]">
+                        Unterrichtsfächer
+                      </label>
+                      <div className="flex flex-wrap gap-2">
+                        {profileData.subjects?.length > 0 ? (
+                          profileData.subjects.map((subject) => (
+                            <span
+                              key={subject}
+                              className="rounded-full bg-[--background] px-3 py-1 text-sm text-[--text]"
+                            >
+                              {subject}
+                            </span>
+                          ))
+                        ) : (
+                          <span className="text-[--text-muted]">Keine Fächer ausgewählt</span>
+                        )}
+                      </div>
+                    </div>
+
+                  </div>
+                ) : null}
               </div>
             </div>
 

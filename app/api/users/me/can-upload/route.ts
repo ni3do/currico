@@ -1,11 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { canUploadResources } from "@/lib/validations/user";
-
-// TODO: Replace with actual auth session
-async function getCurrentUserId(): Promise<string | null> {
-  return "demo-user-id";
-}
+import { getCurrentUserId } from "@/lib/auth";
 
 /**
  * GET /api/users/me/can-upload

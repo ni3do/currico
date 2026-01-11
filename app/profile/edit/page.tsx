@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AvatarUploader } from "@/components/profile/AvatarUploader";
 import { MultiSelect } from "@/components/ui/MultiSelect";
 import { PayoutForm } from "@/components/profile/PayoutForm";
@@ -11,15 +11,30 @@ import {
   SWISS_CANTONS,
 } from "@/lib/validations/user";
 
-// Mock initial data - replace with API fetch
-const initialData = {
-  display_name: "Maria Schmidt",
-  avatar_url: null as string | null,
+interface ProfileFormData {
+  display_name: string;
+  avatar_url: string | null;
+  bio: string;
+  subjects: string[];
+  cycles: string[];
+  cantons: string[];
+  email: string;
+  legal_first_name: string;
+  legal_last_name: string;
+  iban: string;
+  address_street: string;
+  address_city: string;
+  address_postal: string;
+}
+
+const emptyFormData: ProfileFormData = {
+  display_name: "",
+  avatar_url: null,
   bio: "",
-  subjects: ["Mathematik", "Deutsch"],
-  cycles: ["Zyklus 2"],
-  cantons: ["Zürich"],
-  email: "maria.schmidt@example.com",
+  subjects: [],
+  cycles: [],
+  cantons: [],
+  email: "",
   legal_first_name: "",
   legal_last_name: "",
   iban: "",
@@ -29,10 +44,45 @@ const initialData = {
 };
 
 export default function EditProfilePage() {
-  const [formData, setFormData] = useState(initialData);
+  const [formData, setFormData] = useState<ProfileFormData>(emptyFormData);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [successMessage, setSuccessMessage] = useState("");
+
+  useEffect(() => {
+    async function fetchProfile() {
+      try {
+        const response = await fetch("/api/users/me");
+        if (!response.ok) {
+          throw new Error("Fehler beim Laden des Profils");
+        }
+        const data = await response.json();
+        setFormData({
+          display_name: data.display_name || data.name || "",
+          avatar_url: data.image || null,
+          bio: data.bio || "",
+          subjects: data.subjects || [],
+          cycles: data.cycles || [],
+          cantons: data.cantons || [],
+          email: data.email || "",
+          legal_first_name: data.legal_first_name || "",
+          legal_last_name: data.legal_last_name || "",
+          iban: data.iban_set ? "****" : "",
+          address_street: data.address_street || "",
+          address_city: data.address_city || "",
+          address_postal: data.address_postal || "",
+        });
+      } catch (err) {
+        console.error("Error fetching profile:", err);
+        setErrors({ submit: "Fehler beim Laden des Profils" });
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchProfile();
+  }, []);
 
   const handleChange = (field: string, value: string | string[]) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -47,11 +97,28 @@ export default function EditProfilePage() {
   };
 
   const handleAvatarUpload = async (file: File) => {
-    // TODO: Implement actual file upload
-    console.log("Uploading avatar:", file.name);
-    // For now, create a preview URL
-    const url = URL.createObjectURL(file);
-    setFormData((prev) => ({ ...prev, avatar_url: url }));
+    const uploadFormData = new FormData();
+    uploadFormData.append("avatar", file);
+
+    try {
+      const response = await fetch("/api/users/me/avatar", {
+        method: "POST",
+        body: uploadFormData,
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Fehler beim Hochladen");
+      }
+
+      const data = await response.json();
+      setFormData((prev) => ({ ...prev, avatar_url: data.url }));
+      setSuccessMessage("Avatar erfolgreich hochgeladen!");
+      setTimeout(() => setSuccessMessage(""), 3000);
+    } catch (error) {
+      console.error("Error uploading avatar:", error);
+      setErrors({ avatar: "Fehler beim Hochladen des Avatars" });
+    }
   };
 
   const validateForm = (): boolean => {
@@ -101,7 +168,6 @@ export default function EditProfilePage() {
     setSuccessMessage("");
 
     try {
-      // TODO: Replace with actual API call
       const response = await fetch("/api/users/me", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -178,6 +244,12 @@ export default function EditProfilePage() {
           </div>
         )}
 
+        {/* Loading State */}
+        {isLoading ? (
+          <div className="flex items-center justify-center py-16">
+            <div className="h-12 w-12 animate-spin rounded-full border-4 border-[--primary] border-t-transparent"></div>
+          </div>
+        ) : (
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Public Profile Section */}
           <div className="rounded-2xl border border-[--border] bg-[--surface] p-8">
@@ -359,6 +431,7 @@ export default function EditProfilePage() {
             </button>
           </div>
         </form>
+        )}
       </main>
 
       {/* Footer */}

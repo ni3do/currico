@@ -1,46 +1,50 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { content } from "@/lib/content";
+import { isValidEmail } from "@/lib/validations/common";
+import { DecorationBg } from "@/components/ui/DecorationBg";
 
 const { common, registerPage } = content;
 
 export default function RegisterPage() {
-  const [accountType, setAccountType] = useState<"teacher" | "school">("teacher");
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
-    canton: "",
-    subjects: [] as string[],
-    cycles: [] as string[],
-    schoolName: "",
     agreeToTerms: false,
   });
 
+  const isFormValid = () => {
+    return (
+      formData.name.trim() !== "" &&
+      formData.email.trim() !== "" &&
+      isValidEmail(formData.email) &&
+      formData.password.length >= 8 &&
+      formData.password === formData.confirmPassword &&
+      formData.agreeToTerms
+    );
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Register:", { accountType, ...formData });
+    if (isFormValid()) {
+      console.log("Register:", formData);
+      router.push("/account");
+    }
   };
 
-  const handleInputChange = (field: string, value: string | string[] | boolean) => {
+  const handleInputChange = (field: string, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const isValidEmail = (email: string) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
   return (
     <div className="min-h-screen geometric-bg relative flex flex-col">
-      {/* Decorative Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 right-20 w-72 h-72 rounded-full bg-[--primary] opacity-[0.03] blur-3xl"></div>
-        <div className="absolute bottom-40 left-20 w-80 h-80 rounded-full bg-[--accent] opacity-[0.03] blur-3xl"></div>
-        <div className="absolute top-1/3 left-1/3 w-[600px] h-[600px] rounded-full bg-[--secondary] opacity-[0.02] blur-3xl"></div>
-      </div>
+      <DecorationBg />
 
       {/* Header */}
       <header className="relative z-10 px-6 py-6 sm:px-8">
@@ -61,37 +65,11 @@ export default function RegisterPage() {
           {/* Glass-morphic Card */}
           <div className="glass-card p-8 sm:p-10">
             {/* Title */}
-            <div className="mb-6 text-center">
+            <div className="mb-8 text-center">
               <h1 className="text-3xl font-bold text-[--text-heading]">{registerPage.title}</h1>
               <p className="mt-3 text-[--text-muted]">
                 {registerPage.subtitle}
               </p>
-            </div>
-
-            {/* Account Type Selector */}
-            <div className="mb-6 rounded-[--radius-lg] bg-[--gray-100] p-1">
-              <div className="grid grid-cols-2 gap-1">
-                <button
-                  onClick={() => setAccountType("teacher")}
-                  className={`rounded-[--radius-md] px-6 py-3 font-semibold text-sm transition-all ${
-                    accountType === "teacher"
-                      ? "bg-[--primary] text-white shadow-sm"
-                      : "text-[--text-muted] hover:text-[--text-heading]"
-                  }`}
-                >
-                  {registerPage.accountTypes.teacher}
-                </button>
-                <button
-                  onClick={() => setAccountType("school")}
-                  className={`rounded-[--radius-md] px-6 py-3 font-semibold text-sm transition-all ${
-                    accountType === "school"
-                      ? "bg-[--primary] text-white shadow-sm"
-                      : "text-[--text-muted] hover:text-[--text-heading]"
-                  }`}
-                >
-                  {registerPage.accountTypes.school}
-                </button>
-              </div>
             </div>
 
             {/* Registration Form */}
@@ -102,7 +80,7 @@ export default function RegisterPage() {
                   htmlFor="name"
                   className="mb-2 block text-sm font-medium text-[--text-heading]"
                 >
-                  {accountType === "teacher" ? "Vollstandiger Name" : "Name der Institution"}
+                  Vollständiger Name
                 </label>
                 <input
                   type="text"
@@ -111,9 +89,7 @@ export default function RegisterPage() {
                   onChange={(e) => handleInputChange("name", e.target.value)}
                   required
                   className="w-full rounded-[--radius-md] border border-[--border] bg-white px-4 py-3.5 text-[--text-heading] placeholder:text-[--text-light] focus:outline-none focus:border-[--primary] focus:ring-[3px] focus:ring-[--primary-light] transition-all"
-                  placeholder={
-                    accountType === "teacher" ? "Maria Schmidt" : "Primarschule Musterstadt"
-                  }
+                  placeholder="Maria Schmidt"
                 />
               </div>
 
@@ -140,133 +116,10 @@ export default function RegisterPage() {
                 />
                 {formData.email && !isValidEmail(formData.email) && (
                   <p className="mt-2 text-sm text-[--error] animate-fade-in">
-                    Bitte geben Sie eine gultige E-Mail-Adresse ein
+                    Bitte geben Sie eine gültige E-Mail-Adresse ein
                   </p>
                 )}
               </div>
-
-              {/* Canton Field */}
-              <div>
-                <label
-                  htmlFor="canton"
-                  className="mb-2 block text-sm font-medium text-[--text-heading]"
-                >
-                  Kanton
-                </label>
-                <select
-                  id="canton"
-                  value={formData.canton}
-                  onChange={(e) => handleInputChange("canton", e.target.value)}
-                  required
-                  className="w-full rounded-[--radius-md] border border-[--border] bg-white px-4 py-3.5 text-[--text-heading] focus:outline-none focus:border-[--primary] focus:ring-[3px] focus:ring-[--primary-light] appearance-none cursor-pointer transition-all"
-                >
-                  <option value="">Kanton wahlen</option>
-                  <option value="ZH">Zurich</option>
-                  <option value="BE">Bern</option>
-                  <option value="LU">Luzern</option>
-                  <option value="UR">Uri</option>
-                  <option value="SZ">Schwyz</option>
-                  <option value="OW">Obwalden</option>
-                  <option value="NW">Nidwalden</option>
-                  <option value="GL">Glarus</option>
-                  <option value="ZG">Zug</option>
-                  <option value="FR">Freiburg</option>
-                  <option value="SO">Solothurn</option>
-                  <option value="BS">Basel-Stadt</option>
-                  <option value="BL">Basel-Landschaft</option>
-                  <option value="SH">Schaffhausen</option>
-                  <option value="AR">Appenzell Ausserrhoden</option>
-                  <option value="AI">Appenzell Innerrhoden</option>
-                  <option value="SG">St. Gallen</option>
-                  <option value="GR">Graubunden</option>
-                  <option value="AG">Aargau</option>
-                  <option value="TG">Thurgau</option>
-                  <option value="TI">Tessin</option>
-                  <option value="VD">Waadt</option>
-                  <option value="VS">Wallis</option>
-                  <option value="NE">Neuenburg</option>
-                  <option value="GE">Genf</option>
-                  <option value="JU">Jura</option>
-                </select>
-              </div>
-
-              {/* Teacher-specific fields */}
-              {accountType === "teacher" && (
-                <>
-                  {/* Subjects */}
-                  <div>
-                    <label className="mb-3 block text-sm font-medium text-[--text-heading]">
-                      Unterrichtsfacher
-                    </label>
-                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                      {[
-                        "Mathematik",
-                        "Deutsch",
-                        "Englisch",
-                        "Franzosisch",
-                        "NMG",
-                        "BG",
-                        "Musik",
-                        "Sport",
-                      ].map((subject) => (
-                        <label
-                          key={subject}
-                          className={`flex items-center justify-center rounded-full px-3 py-2 cursor-pointer transition-all text-sm font-medium ${
-                            formData.subjects.includes(subject)
-                              ? "bg-[--primary] text-white"
-                              : "bg-[--gray-100] text-[--text-body] hover:bg-[--gray-200]"
-                          }`}
-                        >
-                          <input
-                            type="checkbox"
-                            className="sr-only"
-                            checked={formData.subjects.includes(subject)}
-                            onChange={(e) => {
-                              const newSubjects = e.target.checked
-                                ? [...formData.subjects, subject]
-                                : formData.subjects.filter((s) => s !== subject);
-                              handleInputChange("subjects", newSubjects);
-                            }}
-                          />
-                          {subject}
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Cycles */}
-                  <div>
-                    <label className="mb-3 block text-sm font-medium text-[--text-heading]">
-                      Unterrichtete Zyklen
-                    </label>
-                    <div className="grid grid-cols-3 gap-2">
-                      {["Zyklus 1", "Zyklus 2", "Zyklus 3"].map((cycle) => (
-                        <label
-                          key={cycle}
-                          className={`flex items-center justify-center rounded-full px-3 py-2.5 cursor-pointer transition-all text-sm font-medium ${
-                            formData.cycles.includes(cycle)
-                              ? "bg-[--primary] text-white"
-                              : "bg-[--gray-100] text-[--text-body] hover:bg-[--gray-200]"
-                          }`}
-                        >
-                          <input
-                            type="checkbox"
-                            className="sr-only"
-                            checked={formData.cycles.includes(cycle)}
-                            onChange={(e) => {
-                              const newCycles = e.target.checked
-                                ? [...formData.cycles, cycle]
-                                : formData.cycles.filter((c) => c !== cycle);
-                              handleInputChange("cycles", newCycles);
-                            }}
-                          />
-                          {cycle}
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                </>
-              )}
 
               {/* Password Field */}
               <div>
@@ -302,7 +155,7 @@ export default function RegisterPage() {
                   htmlFor="confirmPassword"
                   className="mb-2 block text-sm font-medium text-[--text-heading]"
                 >
-                  Passwort bestatigen
+                  Passwort bestätigen
                 </label>
                 <input
                   type="password"
@@ -319,7 +172,7 @@ export default function RegisterPage() {
                 />
                 {formData.confirmPassword && formData.password !== formData.confirmPassword && (
                   <p className="mt-2 text-sm text-[--error] animate-fade-in">
-                    Passworter stimmen nicht uberein
+                    Passwörter stimmen nicht überein
                   </p>
                 )}
               </div>
@@ -337,28 +190,26 @@ export default function RegisterPage() {
                 <label htmlFor="terms" className="text-sm text-[--text-muted]">
                   Ich akzeptiere die{" "}
                   <a href="#" className="text-[--primary] hover:text-[--primary-hover] font-medium">
-                    Allgemeinen Geschaftsbedingungen
+                    Allgemeinen Geschäftsbedingungen
                   </a>{" "}
                   und die{" "}
                   <a href="#" className="text-[--primary] hover:text-[--primary-hover] font-medium">
-                    Datenschutzerklarung
+                    Datenschutzerklärung
                   </a>
                 </label>
               </div>
 
-              {/* Submit Button - Only visible when all validations pass */}
-              {formData.name && formData.email && isValidEmail(formData.email) && formData.canton && formData.password && formData.password.length >= 8 && formData.confirmPassword && formData.password === formData.confirmPassword && formData.agreeToTerms && (
-                <button
-                  type="submit"
-                  className="w-full rounded-[--radius-md] bg-[--primary] px-6 py-3.5 font-semibold text-white hover:bg-[--primary-hover] transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(0,82,204,0.25)] mt-2 animate-fade-in"
-                >
-                  Konto erstellen
-                </button>
-              )}
+              {/* Submit Button */}
+              <button
+                type="submit"
+                className="w-full rounded-[--radius-md] bg-[#DC2626] px-6 py-4 font-bold text-white text-center transition-all hover:-translate-y-0.5 hover:bg-[#B91C1C] hover:shadow-[0_8px_25px_rgba(220,38,38,0.35)] mt-4"
+              >
+                Registrieren
+              </button>
             </form>
 
             {/* Divider */}
-            <div className="my-6">
+            <div className="my-8">
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-[--border]"></div>
@@ -374,6 +225,7 @@ export default function RegisterPage() {
             {/* OAuth Buttons */}
             <div className="grid gap-3">
               <button
+                type="button"
                 className="flex items-center justify-center gap-3 rounded-[--radius-md] bg-[--gray-100] px-4 py-3.5 text-[--text-heading] font-medium hover:bg-[--gray-200] transition-all"
               >
                 <svg className="h-5 w-5" viewBox="0 0 24 24">
@@ -398,17 +250,21 @@ export default function RegisterPage() {
               </button>
 
               <button
+                type="button"
                 className="flex items-center justify-center gap-3 rounded-[--radius-md] bg-[--gray-100] px-4 py-3.5 text-[--text-heading] font-medium hover:bg-[--gray-200] transition-all"
               >
-                <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z" />
+                <svg className="h-5 w-5" viewBox="0 0 23 23">
+                  <path fill="#f35325" d="M1 1h10v10H1z"/>
+                  <path fill="#81bc06" d="M12 1h10v10H12z"/>
+                  <path fill="#05a6f0" d="M1 12h10v10H1z"/>
+                  <path fill="#ffba08" d="M12 12h10v10H12z"/>
                 </svg>
-                Mit GitHub registrieren
+                Mit Microsoft Office registrieren
               </button>
             </div>
 
             {/* Login Link */}
-            <p className="mt-6 text-center text-[--text-muted]">
+            <p className="mt-8 text-center text-[--text-muted]">
               Bereits registriert?{" "}
               <Link
                 href="/login"

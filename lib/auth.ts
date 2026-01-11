@@ -6,7 +6,7 @@ import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "./db";
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
+const nextAuth = NextAuth({
   adapter: PrismaAdapter(prisma),
   session: {
     strategy: "jwt",
@@ -59,7 +59,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
-    async signIn({ user, account, profile }) {
+    async signIn() {
       return true;
     },
     async jwt({ token, user }) {
@@ -80,3 +80,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     newUser: "/register",
   },
 });
+
+export const { handlers, signIn, signOut, auth } = nextAuth;
+
+/**
+ * Get the current authenticated user's ID
+ * @returns The user ID or null if not authenticated
+ */
+export async function getCurrentUserId(): Promise<string | null> {
+  const session = await auth();
+  return session?.user?.id ?? null;
+}

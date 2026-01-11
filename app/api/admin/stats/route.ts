@@ -19,6 +19,7 @@ export async function GET() {
       schoolCount,
       sellerCount,
       buyerCount,
+      openReports,
     ] = await Promise.all([
       prisma.user.count(),
       prisma.user.count({
@@ -39,10 +40,8 @@ export async function GET() {
       prisma.user.count({ where: { role: "SCHOOL" } }),
       prisma.user.count({ where: { role: "SELLER" } }),
       prisma.user.count({ where: { role: "BUYER" } }),
+      prisma.report.count({ where: { status: { in: ["OPEN", "IN_REVIEW"] } } }),
     ]);
-
-    // TODO: Add Report model to schema to enable this
-    const openReports = 0;
 
     // Get weekly revenue data
     const weeklyRevenue = await Promise.all(

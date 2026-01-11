@@ -2,13 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma, privateUserSelect } from "@/lib/db";
 import { updateProfileSchema } from "@/lib/validations/user";
 import { maskIBAN } from "@/lib/utils/iban";
-
-// TODO: Replace with actual auth session
-async function getCurrentUserId(): Promise<string | null> {
-  // Placeholder - integrate with your auth system (NextAuth, Clerk, etc.)
-  // return session?.user?.id
-  return "demo-user-id";
-}
+import { getCurrentUserId } from "@/lib/auth";
 
 /**
  * GET /api/users/me
