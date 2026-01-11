@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { content } from "@/lib/content";
+
+const { common, resourcesPage } = content;
 
 // Mock data for demonstration
 const mockResources = [
@@ -85,12 +88,9 @@ export default function ResourcesPage() {
   const [selectedSubject, setSelectedSubject] = useState("");
 
   return (
-    <div className="min-h-screen bg-[--background]">
-      {/* Top Bar - Institutional accent line */}
-      <div className="h-1 bg-[--primary]" />
-
+    <div className="min-h-screen bg-[--background-alt]">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white border-b border-[--border]">
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.06)' }}>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
@@ -126,7 +126,7 @@ export default function ResourcesPage() {
                 </Link>
                 <Link
                   href="/register"
-                  className="rounded-[--radius-sm] bg-[--primary] px-5 py-2 font-medium text-white text-sm hover:bg-[--primary-hover] transition-colors"
+                  className="rounded-[--radius-md] bg-[--primary] px-5 py-2.5 font-semibold text-white text-sm hover:bg-[--primary-hover] transition-all hover:-translate-y-0.5 hover:shadow-[0_6px_16px_rgba(0,82,204,0.25)]"
                 >
                   Registrieren
                 </Link>
@@ -318,10 +318,10 @@ export default function ResourcesPage() {
 
               {/* Filter Actions */}
               <div className="mt-6 flex gap-3 pt-4 border-t border-[--border]">
-                <button className="rounded-[--radius-sm] bg-[--primary] px-5 py-2 font-medium text-white text-sm hover:bg-[--primary-hover] transition-colors">
+                <button className="rounded-[--radius-md] bg-[--primary] px-5 py-2.5 font-semibold text-white text-sm hover:bg-[--primary-hover] transition-all hover:-translate-y-0.5 hover:shadow-[0_6px_16px_rgba(0,82,204,0.25)]">
                   Filter anwenden
                 </button>
-                <button className="rounded-[--radius-sm] bg-white px-5 py-2 font-medium text-[--text-secondary] text-sm border border-[--border] hover:border-[--primary] hover:text-[--primary] transition-colors">
+                <button className="rounded-[--radius-md] bg-[--gray-100] px-5 py-2.5 font-semibold text-[--text-heading] text-sm hover:bg-[--gray-200] transition-all">
                   Zurucksetzen
                 </button>
               </div>
@@ -351,22 +351,31 @@ export default function ResourcesPage() {
           {mockResources.map((resource) => (
             <article
               key={resource.id}
-              className="group bg-white border border-[--border] rounded-[--radius-lg] overflow-hidden hover:border-[--primary] hover:shadow-[var(--shadow-md)] transition-all"
+              className="group bg-white rounded-[--radius-lg] overflow-hidden transition-all duration-200 hover:-translate-y-1"
+              style={{
+                boxShadow: 'var(--shadow-card)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.boxShadow = 'var(--shadow-card-hover)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.boxShadow = 'var(--shadow-card)';
+              }}
             >
               {/* Card Header */}
-              <div className="p-5 pb-4">
-                {/* Badges */}
-                <div className="flex items-center justify-between mb-3">
+              <div className="p-6">
+                {/* Badges - Pill style with full radius */}
+                <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
-                    <span className="px-2 py-1 bg-[--gray-100] text-[--text-muted] text-xs font-medium rounded-[--radius-xs]">
+                    <span className="px-3 py-1 bg-[--gray-100] text-[--text-muted] text-xs font-medium rounded-full">
                       {resource.type}
                     </span>
-                    <span className="px-2 py-1 bg-[--gray-100] text-[--text-muted] text-xs font-medium rounded-[--radius-xs]">
+                    <span className="px-3 py-1 bg-[--gray-100] text-[--text-muted] text-xs font-medium rounded-full">
                       {resource.cycle}
                     </span>
                   </div>
                   <span
-                    className={`px-2 py-1 text-xs font-medium rounded-[--radius-xs] ${
+                    className={`px-3 py-1 text-xs font-medium rounded-full ${
                       resource.quality === "Verified"
                         ? "bg-[--success-light] text-[--success]"
                         : "bg-[--accent-light] text-[--accent]"
@@ -376,13 +385,13 @@ export default function ResourcesPage() {
                   </span>
                 </div>
 
-                {/* Subject Tag */}
-                <span className="inline-block px-2 py-1 bg-[--primary-light] text-[--primary] text-xs font-medium rounded-[--radius-xs] mb-3">
+                {/* Subject Tag - Pill style with primary accent */}
+                <span className="inline-block px-3 py-1 bg-[--primary-light] text-[--primary] text-xs font-semibold rounded-full mb-4">
                   {resource.subject}
                 </span>
 
-                {/* Title */}
-                <h3 className="font-semibold text-[--gray-800] group-hover:text-[--primary] transition-colors mb-2">
+                {/* Title - Bold and larger */}
+                <h3 className="text-lg font-bold text-[--text-heading] group-hover:text-[--primary] transition-colors mb-2">
                   {resource.title}
                 </h3>
 
@@ -393,7 +402,7 @@ export default function ResourcesPage() {
               </div>
 
               {/* Card Footer */}
-              <div className="px-5 py-4 border-t border-[--border] bg-[--background-alt]">
+              <div className="px-6 py-4 border-t border-[--gray-100] bg-[--gray-50]">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     {/* Documents count */}
@@ -405,16 +414,17 @@ export default function ResourcesPage() {
                       <svg className="w-4 h-4 text-[--warning]" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                       </svg>
-                      <span className="font-medium text-[--text-secondary]">{resource.rating}</span>
+                      <span className="font-medium text-[--text-body]">{resource.rating}</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className={`font-semibold ${resource.price === "Gratis" ? "text-[--success]" : "text-[--primary]"}`}>
+                    {/* Price - Bold and accent colored */}
+                    <span className={`text-lg font-bold ${resource.price === "Gratis" ? "text-[--success]" : "text-[--primary]"}`}>
                       {resource.price}
                     </span>
                     <a
                       href={`/resources/${resource.id}`}
-                      className="rounded-[--radius-sm] bg-[--primary] px-4 py-1.5 text-sm font-medium text-white hover:bg-[--primary-hover] transition-colors"
+                      className="rounded-[--radius-md] bg-[--primary] px-4 py-2 text-sm font-semibold text-white hover:bg-[--primary-hover] transition-all hover:shadow-[var(--shadow-sm)]"
                     >
                       Ansehen
                     </a>
@@ -458,59 +468,59 @@ export default function ResourcesPage() {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="mt-16 bg-[--gray-800]">
+      {/* Footer - Grounded with slate background */}
+      <footer className="mt-16 bg-[--sidebar-bg] border-t border-[--border]">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {/* Brand */}
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="flex items-center justify-center w-8 h-8 bg-white rounded-[--radius-xs]">
-                  <span className="text-[--primary] font-bold text-sm">EL</span>
+                <div className="flex items-center justify-center w-8 h-8 bg-[--primary] rounded-[--radius-sm]">
+                  <span className="text-white font-bold text-sm">EL</span>
                 </div>
-                <span className="text-lg font-semibold text-white">EasyLehrer</span>
+                <span className="text-lg font-semibold text-[--text-heading]">EasyLehrer</span>
               </div>
-              <p className="text-sm text-[--gray-400] leading-relaxed">
+              <p className="text-sm text-[--text-muted] leading-relaxed">
                 Die offizielle Plattform fur Unterrichtsmaterial von Schweizer Lehrpersonen.
               </p>
             </div>
 
             {/* Product */}
             <div>
-              <h3 className="font-semibold text-white text-sm uppercase tracking-wider">Plattform</h3>
+              <h3 className="font-semibold text-[--text-heading] text-sm uppercase tracking-wider">Plattform</h3>
               <ul className="mt-4 space-y-3">
-                <li><Link href="/resources" className="text-sm text-[--gray-400] hover:text-white transition-colors">Ressourcen</Link></li>
-                <li><a href="#" className="text-sm text-[--gray-400] hover:text-white transition-colors">Fur Schulen</a></li>
-                <li><a href="#" className="text-sm text-[--gray-400] hover:text-white transition-colors">Preise</a></li>
+                <li><Link href="/resources" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">Ressourcen</Link></li>
+                <li><a href="#" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">Fur Schulen</a></li>
+                <li><a href="#" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">Preise</a></li>
               </ul>
             </div>
 
             {/* Company */}
             <div>
-              <h3 className="font-semibold text-white text-sm uppercase tracking-wider">Information</h3>
+              <h3 className="font-semibold text-[--text-heading] text-sm uppercase tracking-wider">Information</h3>
               <ul className="mt-4 space-y-3">
-                <li><a href="#" className="text-sm text-[--gray-400] hover:text-white transition-colors">Uber uns</a></li>
-                <li><a href="#" className="text-sm text-[--gray-400] hover:text-white transition-colors">Kontakt</a></li>
-                <li><a href="#" className="text-sm text-[--gray-400] hover:text-white transition-colors">Hilfe</a></li>
+                <li><a href="#" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">Uber uns</a></li>
+                <li><a href="#" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">Kontakt</a></li>
+                <li><a href="#" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">Hilfe</a></li>
               </ul>
             </div>
 
             {/* Legal */}
             <div>
-              <h3 className="font-semibold text-white text-sm uppercase tracking-wider">Rechtliches</h3>
+              <h3 className="font-semibold text-[--text-heading] text-sm uppercase tracking-wider">Rechtliches</h3>
               <ul className="mt-4 space-y-3">
-                <li><a href="#" className="text-sm text-[--gray-400] hover:text-white transition-colors">Datenschutz</a></li>
-                <li><a href="#" className="text-sm text-[--gray-400] hover:text-white transition-colors">AGB</a></li>
-                <li><a href="#" className="text-sm text-[--gray-400] hover:text-white transition-colors">Impressum</a></li>
+                <li><a href="#" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">Datenschutz</a></li>
+                <li><a href="#" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">AGB</a></li>
+                <li><a href="#" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">Impressum</a></li>
               </ul>
             </div>
           </div>
 
-          <div className="mt-12 pt-8 border-t border-[--gray-700] flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-[--gray-400]">
+          <div className="mt-12 pt-8 border-t border-[--gray-200] flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-sm text-[--text-muted]">
               2026 EasyLehrer. Alle Rechte vorbehalten.
             </p>
-            <p className="text-sm text-[--gray-500]">
+            <p className="text-sm text-[--text-light]">
               Eine Initiative fur Schweizer Bildung
             </p>
           </div>

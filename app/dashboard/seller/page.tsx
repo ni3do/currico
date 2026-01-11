@@ -13,7 +13,7 @@ const mockStats = {
 const mockResources = [
   {
     id: 1,
-    title: "Bruchrechnen Übungsblätter",
+    title: "Bruchrechnen Ubungsblatter",
     type: "Resource",
     status: "Verified",
     downloads: 87,
@@ -29,7 +29,7 @@ const mockResources = [
   },
   {
     id: 3,
-    title: "Geometrie Arbeitsblätter",
+    title: "Geometrie Arbeitsblatter",
     type: "Resource",
     status: "Verified",
     downloads: 103,
@@ -48,7 +48,7 @@ const mockResources = [
 const mockTransactions = [
   {
     id: 1,
-    resource: "Bruchrechnen Übungsblätter",
+    resource: "Bruchrechnen Ubungsblatter",
     date: "2026-01-08",
     gross: "CHF 12.00",
     platformFee: "CHF 1.80",
@@ -64,7 +64,7 @@ const mockTransactions = [
   },
   {
     id: 3,
-    resource: "Geometrie Arbeitsblätter",
+    resource: "Geometrie Arbeitsblatter",
     date: "2026-01-06",
     gross: "CHF 8.00",
     platformFee: "CHF 1.20",
@@ -76,50 +76,51 @@ export default function SellerDashboardPage() {
   const [activeView, setActiveView] = useState<"resources" | "transactions">("resources");
 
   return (
-    <div className="min-h-screen bg-[--background]">
+    <div className="min-h-screen bg-[--background-alt]">
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-[--border] bg-[--surface]/95 backdrop-blur-sm">
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.06)' }}>
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Link href="/" className="flex items-center gap-2">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[--primary] to-[--secondary]">
-                  <span className="text-xl font-bold text-[--background]">EL</span>
-                </div>
-                <span className="text-xl font-bold text-[--text]">Easy Lehrer</span>
-              </Link>
-            </div>
+            <Link href="/" className="flex items-center gap-3">
+              <div className="flex items-center justify-center w-10 h-10 bg-[--primary] rounded-[--radius-md]">
+                <span className="text-white font-bold text-lg">EL</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-lg font-semibold text-[--text-heading] leading-tight">EasyLehrer</span>
+                <span className="text-xs text-[--text-muted] leading-tight">Bildungsplattform Schweiz</span>
+              </div>
+            </Link>
 
-            <nav className="hidden md:flex items-center gap-8">
+            <nav className="hidden md:flex items-center gap-1">
               <Link
                 href="/resources"
-                className="text-[--text-muted] hover:text-[--text] transition-colors"
+                className="px-4 py-2 text-[--text-body] hover:text-[--primary] font-medium text-sm transition-colors rounded-[--radius-md] hover:bg-[--gray-50]"
               >
                 Ressourcen
               </Link>
               <Link
                 href="/dashboard/seller"
-                className="text-[--primary] font-medium transition-colors"
+                className="px-4 py-2 text-[--primary] font-medium text-sm bg-[--primary-light] rounded-[--radius-md]"
               >
                 Dashboard
               </Link>
               <Link
                 href="/profile"
-                className="text-[--text-muted] hover:text-[--text] transition-colors"
+                className="px-4 py-2 text-[--text-body] hover:text-[--primary] font-medium text-sm transition-colors rounded-[--radius-md] hover:bg-[--gray-50]"
               >
                 Profil
               </Link>
             </nav>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <Link
                 href="/profile"
-                className="flex items-center gap-2 rounded-full border-2 border-[--primary] px-4 py-2 font-medium text-[--primary] transition-colors"
+                className="flex items-center gap-2 px-4 py-2 rounded-full border border-[--border] hover:border-[--primary] transition-colors"
               >
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-[--primary] to-[--secondary] text-xs font-bold text-[--background]">
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[--primary] text-xs font-bold text-white">
                   M
                 </div>
-                <span className="hidden sm:inline">Maria</span>
+                <span className="hidden sm:inline text-sm font-medium text-[--text-heading]">Maria</span>
               </Link>
             </div>
           </div>
@@ -129,20 +130,23 @@ export default function SellerDashboardPage() {
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[--text]">Verkäufer Dashboard</h1>
+          <h1 className="text-3xl font-bold text-[--text-heading]">Verkaufer Dashboard</h1>
           <p className="mt-2 text-[--text-muted]">
-            Verwalten Sie Ihre Ressourcen und überwachen Sie Ihre Verkäufe
+            Verwalten Sie Ihre Ressourcen und uberwachen Sie Ihre Verkaufe
           </p>
         </div>
 
         {/* Stats Cards */}
         <div className="mb-8 grid gap-6 sm:grid-cols-3">
           {/* Net Earnings */}
-          <div className="rounded-2xl border border-[--border] bg-[--surface] p-6">
-            <div className="mb-2 flex items-center gap-2">
-              <div className="rounded-lg bg-gradient-to-br from-[--primary] to-[--sapphire] p-2">
+          <div
+            className="bg-white rounded-[--radius-lg] p-6"
+            style={{ boxShadow: 'var(--shadow-card)' }}
+          >
+            <div className="mb-3 flex items-center gap-3">
+              <div className="flex items-center justify-center w-10 h-10 bg-[--primary-light] rounded-[--radius-md]">
                 <svg
-                  className="h-6 w-6 text-[--background]"
+                  className="h-5 w-5 text-[--primary]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -159,18 +163,21 @@ export default function SellerDashboardPage() {
                 Netto-Einnahmen
               </h3>
             </div>
-            <div className="text-3xl font-bold text-[--text]">
+            <div className="text-3xl font-bold text-[--text-heading]">
               {mockStats.netEarnings}
             </div>
-            <p className="mt-1 text-sm text-[--text-muted]">Nach Plattformgebühr</p>
+            <p className="mt-1 text-sm text-[--text-muted]">Nach Plattformgebuhr</p>
           </div>
 
           {/* Total Downloads */}
-          <div className="rounded-2xl border border-[--border] bg-[--surface] p-6">
-            <div className="mb-2 flex items-center gap-2">
-              <div className="rounded-lg bg-gradient-to-br from-[--secondary] to-[--pink] p-2">
+          <div
+            className="bg-white rounded-[--radius-lg] p-6"
+            style={{ boxShadow: 'var(--shadow-card)' }}
+          >
+            <div className="mb-3 flex items-center gap-3">
+              <div className="flex items-center justify-center w-10 h-10 bg-[--accent-light] rounded-[--radius-md]">
                 <svg
-                  className="h-6 w-6 text-[--background]"
+                  className="h-5 w-5 text-[--accent]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -187,18 +194,21 @@ export default function SellerDashboardPage() {
                 Downloads
               </h3>
             </div>
-            <div className="text-3xl font-bold text-[--text]">
+            <div className="text-3xl font-bold text-[--text-heading]">
               {mockStats.totalDownloads}
             </div>
             <p className="mt-1 text-sm text-[--text-muted]">Alle Ressourcen</p>
           </div>
 
           {/* Followers */}
-          <div className="rounded-2xl border border-[--border] bg-[--surface] p-6">
-            <div className="mb-2 flex items-center gap-2">
-              <div className="rounded-lg bg-gradient-to-br from-[--accent] to-[--flamingo] p-2">
+          <div
+            className="bg-white rounded-[--radius-lg] p-6"
+            style={{ boxShadow: 'var(--shadow-card)' }}
+          >
+            <div className="mb-3 flex items-center gap-3">
+              <div className="flex items-center justify-center w-10 h-10 bg-[--secondary-light] rounded-[--radius-md]">
                 <svg
-                  className="h-6 w-6 text-[--background]"
+                  className="h-5 w-5 text-[--secondary]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -213,7 +223,7 @@ export default function SellerDashboardPage() {
               </div>
               <h3 className="text-sm font-medium text-[--text-muted]">Follower</h3>
             </div>
-            <div className="text-3xl font-bold text-[--text]">
+            <div className="text-3xl font-bold text-[--text-heading]">
               {mockStats.followers}
             </div>
             <p className="mt-1 text-sm text-[--text-muted]">Folgen Ihnen</p>
@@ -224,36 +234,36 @@ export default function SellerDashboardPage() {
         <div className="mb-8 flex flex-wrap gap-4">
           <Link
             href="/upload"
-            className="rounded-xl bg-gradient-to-r from-[--primary] to-[--secondary] px-6 py-3 font-semibold text-[--background] hover:opacity-90 transition-opacity shadow-lg shadow-[--primary]/20"
+            className="rounded-[--radius-md] bg-[--primary] px-6 py-3.5 font-semibold text-white hover:bg-[--primary-hover] transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(0,82,204,0.25)]"
           >
             + Neue Ressource hochladen
           </Link>
           <Link
             href="/upload/bundle"
-            className="rounded-xl border border-[--border] bg-[--surface] px-6 py-3 font-semibold text-[--text] hover:bg-[--surface1] transition-colors"
+            className="rounded-[--radius-md] bg-[--gray-100] px-6 py-3.5 font-semibold text-[--text-heading] hover:bg-[--gray-200] transition-all"
           >
             + Bundle erstellen
           </Link>
         </div>
 
         {/* View Toggle */}
-        <div className="mb-6 flex gap-4 border-b border-[--border]">
+        <div className="mb-6 flex gap-6 border-b border-[--border]">
           <button
             onClick={() => setActiveView("resources")}
-            className={`pb-4 text-sm font-medium transition-colors ${
+            className={`pb-4 text-sm font-semibold transition-colors ${
               activeView === "resources"
                 ? "border-b-2 border-[--primary] text-[--primary]"
-                : "text-[--text-muted] hover:text-[--text]"
+                : "text-[--text-muted] hover:text-[--text-heading]"
             }`}
           >
             Meine Ressourcen
           </button>
           <button
             onClick={() => setActiveView("transactions")}
-            className={`pb-4 text-sm font-medium transition-colors ${
+            className={`pb-4 text-sm font-semibold transition-colors ${
               activeView === "transactions"
                 ? "border-b-2 border-[--primary] text-[--primary]"
-                : "text-[--text-muted] hover:text-[--text]"
+                : "text-[--text-muted] hover:text-[--text-heading]"
             }`}
           >
             Transaktionen
@@ -262,73 +272,76 @@ export default function SellerDashboardPage() {
 
         {/* Resources View */}
         {activeView === "resources" && (
-          <div className="rounded-2xl border border-[--border] bg-[--surface] overflow-hidden">
+          <div
+            className="bg-white rounded-[--radius-lg] overflow-hidden"
+            style={{ boxShadow: 'var(--shadow-card)' }}
+          >
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-[--background]">
+                <thead className="bg-[--gray-50] border-b border-[--gray-100]">
                   <tr>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-[--text]">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-[--text-heading]">
                       Titel
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-[--text]">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-[--text-heading]">
                       Typ
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-[--text]">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-[--text-heading]">
                       Status
                     </th>
-                    <th className="px-6 py-4 text-right text-sm font-semibold text-[--text]">
+                    <th className="px-6 py-4 text-right text-sm font-semibold text-[--text-heading]">
                       Downloads
                     </th>
-                    <th className="px-6 py-4 text-right text-sm font-semibold text-[--text]">
+                    <th className="px-6 py-4 text-right text-sm font-semibold text-[--text-heading]">
                       Einnahmen
                     </th>
-                    <th className="px-6 py-4 text-right text-sm font-semibold text-[--text]">
+                    <th className="px-6 py-4 text-right text-sm font-semibold text-[--text-heading]">
                       Aktionen
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[--border]">
+                <tbody className="divide-y divide-[--gray-100]">
                   {mockResources.map((resource) => (
-                    <tr key={resource.id} className="hover:bg-[--background] transition-colors">
+                    <tr key={resource.id} className="hover:bg-[--gray-50] transition-colors">
                       <td className="px-6 py-4">
-                        <div className="font-medium text-[--text]">{resource.title}</div>
+                        <div className="font-medium text-[--text-heading]">{resource.title}</div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="rounded-full bg-[--background] px-3 py-1 text-xs font-medium text-[--text]">
+                        <span className="px-3 py-1 bg-[--gray-100] text-[--text-muted] text-xs font-medium rounded-full">
                           {resource.type}
                         </span>
                       </td>
                       <td className="px-6 py-4">
                         <span
-                          className={`rounded-full px-3 py-1 text-xs font-medium ${
+                          className={`px-3 py-1 text-xs font-medium rounded-full ${
                             resource.status === "Verified"
-                              ? "bg-[--green]/20 text-[--green]"
+                              ? "bg-[--success-light] text-[--success]"
                               : resource.status === "AI-Checked"
-                              ? "bg-[--sapphire]/20 text-[--sapphire]"
-                              : "bg-[--yellow]/20 text-[--yellow]"
+                              ? "bg-[--accent-light] text-[--accent]"
+                              : "bg-[--warning-light] text-[--warning]"
                           }`}
                         >
                           {resource.status === "Verified"
-                            ? "✓ Verifiziert"
+                            ? "Verifiziert"
                             : resource.status === "AI-Checked"
-                            ? "KI-Geprüft"
+                            ? "KI-Gepruft"
                             : "Ausstehend"}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-right text-[--text]">
+                      <td className="px-6 py-4 text-right text-[--text-body]">
                         {resource.downloads}
                       </td>
-                      <td className="px-6 py-4 text-right font-semibold text-[--primary]">
+                      <td className="px-6 py-4 text-right font-bold text-[--primary]">
                         {resource.netEarnings}
                       </td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex justify-end gap-2">
-                          <button className="rounded-lg border border-[--border] px-3 py-1 text-sm text-[--text] hover:bg-[--surface1] transition-colors">
+                          <button className="rounded-[--radius-md] border border-[--border] px-3 py-1.5 text-sm font-medium text-[--text-body] hover:border-[--primary] hover:text-[--primary] transition-colors">
                             Bearbeiten
                           </button>
                           <a
                             href={`/resources/${resource.id}`}
-                            className="rounded-lg border border-[--border] px-3 py-1 text-sm text-[--text] hover:bg-[--surface1] transition-colors"
+                            className="rounded-[--radius-md] bg-[--primary] px-3 py-1.5 text-sm font-medium text-white hover:bg-[--primary-hover] transition-colors"
                           >
                             Ansehen
                           </a>
@@ -344,44 +357,47 @@ export default function SellerDashboardPage() {
 
         {/* Transactions View */}
         {activeView === "transactions" && (
-          <div className="rounded-2xl border border-[--border] bg-[--surface] overflow-hidden">
+          <div
+            className="bg-white rounded-[--radius-lg] overflow-hidden"
+            style={{ boxShadow: 'var(--shadow-card)' }}
+          >
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-[--background]">
+                <thead className="bg-[--gray-50] border-b border-[--gray-100]">
                   <tr>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-[--text]">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-[--text-heading]">
                       Ressource
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-[--text]">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-[--text-heading]">
                       Datum
                     </th>
-                    <th className="px-6 py-4 text-right text-sm font-semibold text-[--text]">
+                    <th className="px-6 py-4 text-right text-sm font-semibold text-[--text-heading]">
                       Bruttopreis
                     </th>
-                    <th className="px-6 py-4 text-right text-sm font-semibold text-[--text]">
-                      Plattformgebühr
+                    <th className="px-6 py-4 text-right text-sm font-semibold text-[--text-heading]">
+                      Plattformgebuhr
                     </th>
-                    <th className="px-6 py-4 text-right text-sm font-semibold text-[--text]">
+                    <th className="px-6 py-4 text-right text-sm font-semibold text-[--text-heading]">
                       Ihre Auszahlung
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[--border]">
+                <tbody className="divide-y divide-[--gray-100]">
                   {mockTransactions.map((transaction) => (
-                    <tr key={transaction.id} className="hover:bg-[--background] transition-colors">
-                      <td className="px-6 py-4 font-medium text-[--text]">
+                    <tr key={transaction.id} className="hover:bg-[--gray-50] transition-colors">
+                      <td className="px-6 py-4 font-medium text-[--text-heading]">
                         {transaction.resource}
                       </td>
                       <td className="px-6 py-4 text-[--text-muted]">
                         {new Date(transaction.date).toLocaleDateString("de-CH")}
                       </td>
-                      <td className="px-6 py-4 text-right text-[--text]">
+                      <td className="px-6 py-4 text-right text-[--text-body]">
                         {transaction.gross}
                       </td>
-                      <td className="px-6 py-4 text-right text-[--red]">
+                      <td className="px-6 py-4 text-right text-[--error]">
                         -{transaction.platformFee}
                       </td>
-                      <td className="px-6 py-4 text-right font-semibold text-[--green]">
+                      <td className="px-6 py-4 text-right font-bold text-[--success]">
                         {transaction.sellerPayout}
                       </td>
                     </tr>
@@ -394,10 +410,10 @@ export default function SellerDashboardPage() {
       </main>
 
       {/* Footer */}
-      <footer className="mt-20 border-t border-[--border] bg-[--surface]/50">
+      <footer className="mt-20 bg-[--sidebar-bg] border-t border-[--border]">
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           <div className="text-center text-sm text-[--text-muted]">
-            <p>© 2026 Easy Lehrer. Alle Rechte vorbehalten.</p>
+            <p>2026 EasyLehrer. Alle Rechte vorbehalten.</p>
           </div>
         </div>
       </footer>

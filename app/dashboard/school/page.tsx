@@ -6,20 +6,20 @@ import Link from "next/link";
 // Mock data
 const mockSchoolInfo = {
   name: "Primarschule Musterstadt",
-  canton: "Zürich",
+  canton: "Zurich",
   email: "admin@primarschule-musterstadt.ch",
   memberCount: 15,
 };
 
 const mockMembers = [
   { id: 1, name: "Maria Schmidt", email: "maria.schmidt@example.com", role: "Lehrperson", status: "Active" },
-  { id: 2, name: "Peter Müller", email: "peter.mueller@example.com", role: "Lehrperson", status: "Active" },
+  { id: 2, name: "Peter Muller", email: "peter.mueller@example.com", role: "Lehrperson", status: "Active" },
   { id: 3, name: "Anna Weber", email: "anna.weber@example.com", role: "Lehrperson", status: "Active" },
   { id: 4, name: "Thomas Fischer", email: "thomas.fischer@example.com", role: "Lehrperson", status: "Pending" },
 ];
 
 const mockLicenses = [
-  { id: 1, title: "Bruchrechnen Übungsblätter", type: "Resource", purchaseDate: "2026-01-05", usedBy: 8 },
+  { id: 1, title: "Bruchrechnen Ubungsblatter", type: "Resource", purchaseDate: "2026-01-05", usedBy: 8 },
   { id: 2, title: "Mathematik Spiele Bundle", type: "Bundle", purchaseDate: "2026-01-03", usedBy: 12 },
   { id: 3, title: "Leseverstehen: Kurzgeschichten", type: "Resource", purchaseDate: "2025-12-28", usedBy: 6 },
 ];
@@ -36,44 +36,45 @@ export default function SchoolDashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[--background]">
+    <div className="min-h-screen bg-[--background-alt]">
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-[--border] bg-[--surface]/95 backdrop-blur-sm">
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.06)' }}>
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Link href="/" className="flex items-center gap-2">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[--primary] to-[--secondary]">
-                  <span className="text-xl font-bold text-[--background]">EL</span>
-                </div>
-                <span className="text-xl font-bold text-[--text]">Easy Lehrer</span>
-              </Link>
-            </div>
+            <Link href="/" className="flex items-center gap-3">
+              <div className="flex items-center justify-center w-10 h-10 bg-[--primary] rounded-[--radius-md]">
+                <span className="text-white font-bold text-lg">EL</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-lg font-semibold text-[--text-heading] leading-tight">EasyLehrer</span>
+                <span className="text-xs text-[--text-muted] leading-tight">Bildungsplattform Schweiz</span>
+              </div>
+            </Link>
 
-            <nav className="hidden md:flex items-center gap-8">
+            <nav className="hidden md:flex items-center gap-1">
               <Link
                 href="/resources"
-                className="text-[--text-muted] hover:text-[--text] transition-colors"
+                className="px-4 py-2 text-[--text-body] hover:text-[--primary] font-medium text-sm transition-colors rounded-[--radius-md] hover:bg-[--gray-50]"
               >
                 Ressourcen
               </Link>
               <Link
                 href="/dashboard/school"
-                className="text-[--primary] font-medium transition-colors"
+                className="px-4 py-2 text-[--primary] font-medium text-sm bg-[--primary-light] rounded-[--radius-md]"
               >
                 School Dashboard
               </Link>
             </nav>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <Link
                 href="/profile"
-                className="flex items-center gap-2 rounded-full border-2 border-[--primary] px-4 py-2 font-medium text-[--primary] transition-colors"
+                className="flex items-center gap-2 px-4 py-2 rounded-full border border-[--border] hover:border-[--primary] transition-colors"
               >
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-[--primary] to-[--secondary] text-xs font-bold text-[--background]">
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[--primary] text-xs font-bold text-white">
                   A
                 </div>
-                <span className="hidden sm:inline">Admin</span>
+                <span className="hidden sm:inline text-sm font-medium text-[--text-heading]">Admin</span>
               </Link>
             </div>
           </div>
@@ -83,7 +84,7 @@ export default function SchoolDashboardPage() {
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[--text]">{mockSchoolInfo.name}</h1>
+          <h1 className="text-3xl font-bold text-[--text-heading]">{mockSchoolInfo.name}</h1>
           <p className="mt-2 text-[--text-muted]">
             Verwalten Sie Ihre Schule und Team-Lizenzen
           </p>
@@ -93,33 +94,33 @@ export default function SchoolDashboardPage() {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
             {/* Section Navigation */}
-            <div className="flex gap-4 border-b border-[--border]">
+            <div className="flex gap-6 border-b border-[--border]">
               <button
                 onClick={() => setActiveSection("members")}
-                className={`pb-4 text-sm font-medium transition-colors ${
+                className={`pb-4 text-sm font-semibold transition-colors ${
                   activeSection === "members"
                     ? "border-b-2 border-[--primary] text-[--primary]"
-                    : "text-[--text-muted] hover:text-[--text]"
+                    : "text-[--text-muted] hover:text-[--text-heading]"
                 }`}
               >
                 Team-Mitglieder
               </button>
               <button
                 onClick={() => setActiveSection("licenses")}
-                className={`pb-4 text-sm font-medium transition-colors ${
+                className={`pb-4 text-sm font-semibold transition-colors ${
                   activeSection === "licenses"
                     ? "border-b-2 border-[--primary] text-[--primary]"
-                    : "text-[--text-muted] hover:text-[--text]"
+                    : "text-[--text-muted] hover:text-[--text-heading]"
                 }`}
               >
                 Lizenzen
               </button>
               <button
                 onClick={() => setActiveSection("billing")}
-                className={`pb-4 text-sm font-medium transition-colors ${
+                className={`pb-4 text-sm font-semibold transition-colors ${
                   activeSection === "billing"
                     ? "border-b-2 border-[--primary] text-[--primary]"
-                    : "text-[--text-muted] hover:text-[--text]"
+                    : "text-[--text-muted] hover:text-[--text-heading]"
                 }`}
               >
                 Abrechnung
@@ -128,12 +129,15 @@ export default function SchoolDashboardPage() {
 
             {/* Members Section */}
             {activeSection === "members" && (
-              <div className="rounded-2xl border border-[--border] bg-[--surface] p-8">
+              <div
+                className="bg-white rounded-[--radius-lg] p-6"
+                style={{ boxShadow: 'var(--shadow-card)' }}
+              >
                 <div className="mb-6 flex items-center justify-between">
-                  <h2 className="text-xl font-semibold text-[--text]">Team-Mitglieder</h2>
+                  <h2 className="text-xl font-bold text-[--text-heading]">Team-Mitglieder</h2>
                   <button
                     onClick={() => setShowInviteModal(true)}
-                    className="rounded-lg bg-gradient-to-r from-[--primary] to-[--secondary] px-4 py-2 text-sm font-medium text-[--background] hover:opacity-90 transition-opacity"
+                    className="rounded-[--radius-md] bg-[--primary] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[--primary-hover] transition-all hover:-translate-y-0.5 hover:shadow-[0_6px_16px_rgba(0,82,204,0.25)]"
                   >
                     + Mitglied einladen
                   </button>
@@ -143,28 +147,28 @@ export default function SchoolDashboardPage() {
                   {mockMembers.map((member) => (
                     <div
                       key={member.id}
-                      className="flex items-center justify-between rounded-xl border border-[--border] bg-[--background] p-4"
+                      className="flex items-center justify-between rounded-[--radius-lg] border border-[--gray-100] bg-[--gray-50] p-4 hover:border-[--gray-200] transition-colors"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[--primary] to-[--secondary] text-sm font-bold text-[--background]">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[--primary] text-sm font-bold text-white">
                           {member.name.charAt(0)}
                         </div>
                         <div>
-                          <div className="font-medium text-[--text]">{member.name}</div>
+                          <div className="font-medium text-[--text-heading]">{member.name}</div>
                           <div className="text-sm text-[--text-muted]">{member.email}</div>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
                         <span
-                          className={`rounded-full px-3 py-1 text-xs font-medium ${
+                          className={`px-3 py-1 text-xs font-medium rounded-full ${
                             member.status === "Active"
-                              ? "bg-[--green]/20 text-[--green]"
-                              : "bg-[--yellow]/20 text-[--yellow]"
+                              ? "bg-[--success-light] text-[--success]"
+                              : "bg-[--warning-light] text-[--warning]"
                           }`}
                         >
                           {member.status === "Active" ? "Aktiv" : "Ausstehend"}
                         </span>
-                        <button className="rounded-lg border border-[--border] px-3 py-1 text-sm text-[--text] hover:bg-[--surface1] transition-colors">
+                        <button className="rounded-[--radius-md] border border-[--border] px-3 py-1.5 text-sm font-medium text-[--text-body] hover:border-[--error] hover:text-[--error] transition-colors">
                           Entfernen
                         </button>
                       </div>
@@ -176,12 +180,15 @@ export default function SchoolDashboardPage() {
 
             {/* Licenses Section */}
             {activeSection === "licenses" && (
-              <div className="rounded-2xl border border-[--border] bg-[--surface] p-8">
+              <div
+                className="bg-white rounded-[--radius-lg] p-6"
+                style={{ boxShadow: 'var(--shadow-card)' }}
+              >
                 <div className="mb-6 flex items-center justify-between">
-                  <h2 className="text-xl font-semibold text-[--text]">School Library</h2>
+                  <h2 className="text-xl font-bold text-[--text-heading]">School Library</h2>
                   <Link
                     href="/resources"
-                    className="rounded-lg border border-[--border] px-4 py-2 text-sm font-medium text-[--text] hover:bg-[--surface1] transition-colors"
+                    className="rounded-[--radius-md] border border-[--border] bg-white px-4 py-2 text-sm font-semibold text-[--text-heading] hover:border-[--primary] hover:text-[--primary] transition-colors"
                   >
                     Ressourcen kaufen
                   </Link>
@@ -191,12 +198,12 @@ export default function SchoolDashboardPage() {
                   {mockLicenses.map((license) => (
                     <div
                       key={license.id}
-                      className="flex items-center justify-between rounded-xl border border-[--border] bg-[--background] p-4"
+                      className="flex items-center justify-between rounded-[--radius-lg] border border-[--gray-100] bg-[--gray-50] p-4 hover:border-[--gray-200] transition-colors"
                     >
                       <div>
-                        <div className="font-medium text-[--text]">{license.title}</div>
+                        <div className="font-medium text-[--text-heading]">{license.title}</div>
                         <div className="mt-1 flex items-center gap-3 text-sm text-[--text-muted]">
-                          <span className="rounded-full bg-[--surface] px-2 py-0.5 text-xs">
+                          <span className="px-2 py-0.5 bg-[--gray-100] text-[--text-muted] text-xs font-medium rounded-full">
                             {license.type}
                           </span>
                           <span>
@@ -206,7 +213,7 @@ export default function SchoolDashboardPage() {
                       </div>
                       <div className="text-right">
                         <div className="text-sm text-[--text-muted]">Verwendet von</div>
-                        <div className="text-lg font-semibold text-[--primary]">
+                        <div className="text-lg font-bold text-[--primary]">
                           {license.usedBy} Lehrpersonen
                         </div>
                       </div>
@@ -218,52 +225,55 @@ export default function SchoolDashboardPage() {
 
             {/* Billing Section */}
             {activeSection === "billing" && (
-              <div className="rounded-2xl border border-[--border] bg-[--surface] p-8">
-                <h2 className="mb-6 text-xl font-semibold text-[--text]">Abrechnung</h2>
+              <div
+                className="bg-white rounded-[--radius-lg] p-6"
+                style={{ boxShadow: 'var(--shadow-card)' }}
+              >
+                <h2 className="mb-6 text-xl font-bold text-[--text-heading]">Abrechnung</h2>
 
                 <div className="space-y-6">
-                  <div className="rounded-xl border border-[--border] bg-[--background] p-6">
+                  <div className="rounded-[--radius-lg] border border-[--gray-100] bg-[--gray-50] p-6">
                     <div className="mb-4 flex items-center justify-between">
-                      <h3 className="font-semibold text-[--text]">Zahlungsmethode</h3>
-                      <button className="text-sm text-[--primary] hover:text-[--primary-hover]">
+                      <h3 className="font-semibold text-[--text-heading]">Zahlungsmethode</h3>
+                      <button className="text-sm font-medium text-[--primary] hover:text-[--primary-hover] transition-colors">
                         Bearbeiten
                       </button>
                     </div>
                     <div className="flex items-center gap-3">
-                      <div className="flex h-12 w-16 items-center justify-center rounded-lg border border-[--border] bg-[--surface]">
-                        <svg className="h-8 w-8 text-[--text]" fill="currentColor" viewBox="0 0 24 24">
+                      <div className="flex h-12 w-16 items-center justify-center rounded-[--radius-md] border border-[--gray-200] bg-white">
+                        <svg className="h-8 w-8 text-[--text-muted]" fill="currentColor" viewBox="0 0 24 24">
                           <rect x="2" y="5" width="20" height="14" rx="2" fill="none" stroke="currentColor" strokeWidth="2"/>
                           <path d="M2 10h20" stroke="currentColor" strokeWidth="2"/>
                         </svg>
                       </div>
                       <div>
-                        <div className="font-medium text-[--text]">•••• •••• •••• 4242</div>
-                        <div className="text-sm text-[--text-muted]">Läuft ab 12/2027</div>
+                        <div className="font-medium text-[--text-heading]">---- ---- ---- 4242</div>
+                        <div className="text-sm text-[--text-muted]">Lauft ab 12/2027</div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="rounded-xl border border-[--border] bg-[--background] p-6">
-                    <h3 className="mb-4 font-semibold text-[--text]">Letzte Transaktionen</h3>
+                  <div className="rounded-[--radius-lg] border border-[--gray-100] bg-[--gray-50] p-6">
+                    <h3 className="mb-4 font-semibold text-[--text-heading]">Letzte Transaktionen</h3>
                     <div className="space-y-3">
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between py-2 border-b border-[--gray-100]">
                         <div>
-                          <div className="text-sm text-[--text]">Mathematik Spiele Bundle</div>
+                          <div className="text-sm font-medium text-[--text-heading]">Mathematik Spiele Bundle</div>
                           <div className="text-xs text-[--text-muted]">03.01.2026</div>
                         </div>
-                        <div className="font-semibold text-[--text]">CHF 25.00</div>
+                        <div className="font-bold text-[--text-heading]">CHF 25.00</div>
                       </div>
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between py-2">
                         <div>
-                          <div className="text-sm text-[--text]">Bruchrechnen Übungsblätter</div>
+                          <div className="text-sm font-medium text-[--text-heading]">Bruchrechnen Ubungsblatter</div>
                           <div className="text-xs text-[--text-muted]">05.01.2026</div>
                         </div>
-                        <div className="font-semibold text-[--text]">CHF 12.00</div>
+                        <div className="font-bold text-[--text-heading]">CHF 12.00</div>
                       </div>
                     </div>
                   </div>
 
-                  <button className="w-full rounded-lg border border-[--border] px-4 py-3 text-sm font-medium text-[--text] hover:bg-[--surface1] transition-colors">
+                  <button className="w-full rounded-[--radius-md] border border-[--border] bg-white px-4 py-3 text-sm font-semibold text-[--text-heading] hover:border-[--primary] hover:text-[--primary] transition-colors">
                     Alle Transaktionen anzeigen
                   </button>
                 </div>
@@ -274,42 +284,48 @@ export default function SchoolDashboardPage() {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* School Info */}
-            <div className="rounded-2xl border border-[--border] bg-[--surface] p-6">
-              <h3 className="mb-4 font-semibold text-[--text]">Schul-Informationen</h3>
-              <div className="space-y-3">
+            <div
+              className="bg-white rounded-[--radius-lg] p-6"
+              style={{ boxShadow: 'var(--shadow-card)' }}
+            >
+              <h3 className="mb-4 font-bold text-[--text-heading]">Schul-Informationen</h3>
+              <div className="space-y-4">
                 <div>
                   <div className="text-sm text-[--text-muted]">Name</div>
-                  <div className="font-medium text-[--text]">{mockSchoolInfo.name}</div>
+                  <div className="font-medium text-[--text-heading]">{mockSchoolInfo.name}</div>
                 </div>
                 <div>
                   <div className="text-sm text-[--text-muted]">Kanton</div>
-                  <div className="font-medium text-[--text]">{mockSchoolInfo.canton}</div>
+                  <div className="font-medium text-[--text-heading]">{mockSchoolInfo.canton}</div>
                 </div>
                 <div>
                   <div className="text-sm text-[--text-muted]">E-Mail</div>
-                  <div className="font-medium text-[--text]">{mockSchoolInfo.email}</div>
+                  <div className="font-medium text-[--text-heading]">{mockSchoolInfo.email}</div>
                 </div>
               </div>
-              <button className="mt-4 w-full rounded-lg border border-[--border] px-4 py-2 text-sm font-medium text-[--text] hover:bg-[--surface1] transition-colors">
+              <button className="mt-6 w-full rounded-[--radius-md] border border-[--border] bg-white px-4 py-2.5 text-sm font-semibold text-[--text-heading] hover:border-[--primary] hover:text-[--primary] transition-colors">
                 Details bearbeiten
               </button>
             </div>
 
             {/* Stats */}
-            <div className="rounded-2xl border border-[--border] bg-[--surface] p-6">
-              <h3 className="mb-4 font-semibold text-[--text]">Statistiken</h3>
+            <div
+              className="bg-white rounded-[--radius-lg] p-6"
+              style={{ boxShadow: 'var(--shadow-card)' }}
+            >
+              <h3 className="mb-4 font-bold text-[--text-heading]">Statistiken</h3>
               <div className="space-y-4">
-                <div>
+                <div className="flex items-center justify-between p-4 rounded-[--radius-md] bg-[--primary-light]">
+                  <div className="text-sm font-medium text-[--text-body]">Team-Mitglieder</div>
                   <div className="text-2xl font-bold text-[--primary]">
                     {mockSchoolInfo.memberCount}
                   </div>
-                  <div className="text-sm text-[--text-muted]">Team-Mitglieder</div>
                 </div>
-                <div>
-                  <div className="text-2xl font-bold text-[--secondary]">
+                <div className="flex items-center justify-between p-4 rounded-[--radius-md] bg-[--accent-light]">
+                  <div className="text-sm font-medium text-[--text-body]">Aktive Lizenzen</div>
+                  <div className="text-2xl font-bold text-[--accent]">
                     {mockLicenses.length}
                   </div>
-                  <div className="text-sm text-[--text-muted]">Aktive Lizenzen</div>
                 </div>
               </div>
             </div>
@@ -319,15 +335,18 @@ export default function SchoolDashboardPage() {
 
       {/* Invite Modal */}
       {showInviteModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[--background]/80 backdrop-blur-sm">
-          <div className="mx-4 w-full max-w-md rounded-2xl border border-[--border] bg-[--surface] p-6">
-            <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-xl font-semibold text-[--text]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div
+            className="mx-4 w-full max-w-md bg-white rounded-[--radius-xl] p-6"
+            style={{ boxShadow: 'var(--shadow-xl)' }}
+          >
+            <div className="mb-6 flex items-center justify-between">
+              <h3 className="text-xl font-bold text-[--text-heading]">
                 Lehrperson einladen
               </h3>
               <button
                 onClick={() => setShowInviteModal(false)}
-                className="text-[--text-muted] hover:text-[--text]"
+                className="text-[--text-muted] hover:text-[--text-heading] transition-colors"
               >
                 <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -337,28 +356,28 @@ export default function SchoolDashboardPage() {
 
             <div className="space-y-4">
               <div>
-                <label className="mb-2 block text-sm font-medium text-[--text]">
+                <label className="mb-2 block text-sm font-medium text-[--text-heading]">
                   E-Mail-Adresse
                 </label>
                 <input
                   type="email"
                   value={inviteEmail}
                   onChange={(e) => setInviteEmail(e.target.value)}
-                  className="w-full rounded-lg border border-[--border] bg-[--background] px-4 py-2 text-[--text] placeholder:text-[--text-muted] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20"
+                  className="w-full rounded-[--radius-md] border border-[--border] bg-white px-4 py-3.5 text-[--text-heading] placeholder:text-[--text-light] focus:outline-none focus:border-[--primary] focus:ring-[3px] focus:ring-[--primary-light] transition-all"
                   placeholder="lehrperson@example.com"
                 />
               </div>
 
-              <div className="flex gap-3">
+              <div className="flex gap-3 pt-2">
                 <button
                   onClick={handleInvite}
-                  className="flex-1 rounded-lg bg-gradient-to-r from-[--primary] to-[--secondary] px-4 py-3 font-medium text-[--background] hover:opacity-90 transition-opacity"
+                  className="flex-1 rounded-[--radius-md] bg-[--primary] px-4 py-3 font-semibold text-white hover:bg-[--primary-hover] transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(0,82,204,0.25)]"
                 >
                   Einladung senden
                 </button>
                 <button
                   onClick={() => setShowInviteModal(false)}
-                  className="rounded-lg border border-[--border] px-6 py-3 font-medium text-[--text] hover:bg-[--surface1] transition-colors"
+                  className="rounded-[--radius-md] bg-[--gray-100] px-6 py-3 font-semibold text-[--text-heading] hover:bg-[--gray-200] transition-all"
                 >
                   Abbrechen
                 </button>
@@ -369,10 +388,10 @@ export default function SchoolDashboardPage() {
       )}
 
       {/* Footer */}
-      <footer className="mt-20 border-t border-[--border] bg-[--surface]/50">
+      <footer className="mt-20 bg-[--sidebar-bg] border-t border-[--border]">
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           <div className="text-center text-sm text-[--text-muted]">
-            <p>© 2026 Easy Lehrer. Alle Rechte vorbehalten.</p>
+            <p>2026 EasyLehrer. Alle Rechte vorbehalten.</p>
           </div>
         </div>
       </footer>
