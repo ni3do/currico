@@ -33,6 +33,7 @@ export const content = {
       aboutUs: "Über uns",
       contact: "Kontakt",
       login: "Anmelden",
+      logout: "Abmelden",
       register: "Registrieren",
       dashboard: "Dashboard",
       profile: "Profil",

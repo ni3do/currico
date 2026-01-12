@@ -31,3 +31,7 @@ next-env.d.ts
 # local database
 prisma/dev.db
 prisma/dev.db-journal
+
+# uploaded files (keep directory structure via .gitkeep)
+public/uploads/*
+!public/uploads/**/.gitkeep

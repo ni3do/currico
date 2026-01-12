@@ -8,8 +8,10 @@ import { prisma } from "./db";
 
 const nextAuth = NextAuth({
   adapter: PrismaAdapter(prisma),
+  trustHost: true,
   session: {
     strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   providers: [
     Google({

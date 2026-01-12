@@ -136,19 +136,21 @@ export default function EditProfilePage() {
     }
 
     // Payout info validation (if any payout field is filled, all required fields must be filled)
-    const hasPayoutInfo =
+    // IBAN with asterisks means it's already set on the server
+    const ibanIsSet = formData.iban && formData.iban.includes("*");
+    const hasNewPayoutInfo =
       formData.legal_first_name ||
       formData.legal_last_name ||
-      formData.iban;
+      (formData.iban && !ibanIsSet);
 
-    if (hasPayoutInfo) {
+    if (hasNewPayoutInfo) {
       if (!formData.legal_first_name) {
         newErrors.legal_first_name = "Vorname ist erforderlich";
       }
       if (!formData.legal_last_name) {
         newErrors.legal_last_name = "Nachname ist erforderlich";
       }
-      if (!formData.iban) {
+      if (!formData.iban && !ibanIsSet) {
         newErrors.iban = "IBAN ist erforderlich";
       }
     }
@@ -168,10 +170,40 @@ export default function EditProfilePage() {
     setSuccessMessage("");
 
     try {
+      // Build the update payload with only fields that should be sent
+      const updatePayload: Record<string, unknown> = {
+        display_name: formData.display_name,
+        bio: formData.bio || null,
+        subjects: formData.subjects,
+        cycles: formData.cycles,
+        cantons: formData.cantons,
+      };
+
+      // Only include payout fields if they have actual values (not masked)
+      if (formData.legal_first_name) {
+        updatePayload.legal_first_name = formData.legal_first_name;
+      }
+      if (formData.legal_last_name) {
+        updatePayload.legal_last_name = formData.legal_last_name;
+      }
+      // Only send IBAN if it's not the masked placeholder
+      if (formData.iban && !formData.iban.includes("*")) {
+        updatePayload.iban = formData.iban;
+      }
+      if (formData.address_street) {
+        updatePayload.address_street = formData.address_street;
+      }
+      if (formData.address_city) {
+        updatePayload.address_city = formData.address_city;
+      }
+      if (formData.address_postal) {
+        updatePayload.address_postal = formData.address_postal;
+      }
+
       const response = await fetch("/api/users/me", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(updatePayload),
       });
 
       if (!response.ok) {

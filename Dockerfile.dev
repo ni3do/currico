@@ -29,5 +29,5 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV WATCHPACK_POLLING=true
 ENV CHOKIDAR_USEPOLLING=true
 
-# Run prisma db push to sync schema, then start dev server
-CMD ["sh", "-c", "npx prisma db push --accept-data-loss && npm run dev"]
+# Run prisma db push to sync schema, seed database, then start dev server
+CMD ["sh", "-c", "npx prisma db push --accept-data-loss && npx prisma db seed && npm run dev"]

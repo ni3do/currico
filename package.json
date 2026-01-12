@@ -2,6 +2,9 @@
   "name": "easy-lehrer",
   "version": "1.0.0",
   "description": "Educational resource marketplace for Swiss teachers",
+  "prisma": {
+    "seed": "npx tsx prisma/seed.ts"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -14,6 +17,7 @@
     "db:migrate:deploy": "prisma migrate deploy",
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset",
+    "db:seed": "prisma db seed",
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
     "docker:logs": "docker compose logs -f",
@@ -43,6 +47,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.3",
+    "tsx": "^4.19.2",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^25.0.3",

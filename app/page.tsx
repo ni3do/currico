@@ -1,11 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { useSession, signOut } from "next-auth/react";
 import { content } from "@/lib/content";
 
 const { common, homePage } = content;
 
 export default function Home() {
+  const { data: session } = useSession();
+
   return (
     <div className="min-h-screen bg-[--background]">
       {/* Header - Strict Horizontal Navigation with subtle shadow */}
@@ -29,6 +32,9 @@ export default function Home() {
                 <Link href="/resources" className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
                   {common.navigation.resources}
                 </Link>
+                <Link href={session ? "/dashboard/seller" : "/login"} className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
+                  {common.navigation.dashboard}
+                </Link>
                 <a href="#" className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
                   {common.navigation.forSchools}
                 </a>
@@ -40,15 +46,26 @@ export default function Home() {
                 </a>
               </div>
               <div className="flex items-center gap-3">
-                <Link href="/login" className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
-                  {common.navigation.login}
-                </Link>
-                <Link
-                  href="/register"
-                  className="rounded-[--radius-sm] bg-[--primary] px-5 py-2 font-medium text-white text-sm hover:bg-[--primary-hover] transition-colors"
-                >
-                  {common.navigation.register}
-                </Link>
+                {session ? (
+                  <button
+                    onClick={() => signOut()}
+                    className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors"
+                  >
+                    {common.navigation.logout}
+                  </button>
+                ) : (
+                  <>
+                    <Link href="/login" className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
+                      {common.navigation.login}
+                    </Link>
+                    <Link
+                      href="/register"
+                      className="rounded-[--radius-sm] bg-[--primary] px-5 py-2 font-medium text-white text-sm hover:bg-[--primary-hover] transition-colors"
+                    >
+                      {common.navigation.register}
+                    </Link>
+                  </>
+                )}
               </div>
             </nav>
 

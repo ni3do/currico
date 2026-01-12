@@ -20,13 +20,13 @@ INSERT INTO users (
   is_seller,
   seller_verified,
   payout_enabled,
-  email_verified,
+  \"emailVerified\",
   created_at,
   updated_at
 ) VALUES (
   'test-user-id',
   'test@test.com',
-  'test',
+  '\$2b\$12\$3o/DKUA.tFqHIudcfJF8/.Lc.QGFAVtATkAS1kXqIMBEWqLHaU43y',
   'Test User',
   'BUYER',
   '{}',
@@ -35,18 +35,18 @@ INSERT INTO users (
   false,
   false,
   false,
-  true,
+  NOW(),
   NOW(),
   NOW()
 ) ON CONFLICT (email) DO UPDATE SET
-  password_hash = 'test',
+  password_hash = '\$2b\$12\$3o/DKUA.tFqHIudcfJF8/.Lc.QGFAVtATkAS1kXqIMBEWqLHaU43y',
   updated_at = NOW();
 "
 ```
 
 This creates a test user with:
 - **Email:** test@test.com
-- **Password:** test
+- **Password:** test (bcrypt hashed)
 - **Display Name:** Test User
 - **Role:** BUYER
 
