@@ -9,7 +9,7 @@ import { isValidEmail } from "@/lib/validations/common";
 import { DecorationBg } from "@/components/ui/DecorationBg";
 import TopBar from "@/components/ui/TopBar";
 
-const { loginPage } = content;
+const { loginPage, common } = content;
 
 export default function LoginPage() {
   const router = useRouter();
