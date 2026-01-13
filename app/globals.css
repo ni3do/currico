@@ -67,6 +67,13 @@
   --warning-light: rgba(217, 119, 6, 0.1);
   --error: #DC2626;
   --error-light: rgba(220, 38, 38, 0.1);
+  --green: #059669;
+  --teal: #0F766E;
+  --yellow: #F59E0B;
+  --peach: #FDBA74;
+  --red: #DC2626;
+  --maroon: #B91C1C;
+  --overlay1: #9CA3AF;
 
   /* =================================================================
      SEMANTIC COLORS
