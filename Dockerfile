@@ -26,6 +26,8 @@ COPY . .
 # Ensure public directory exists
 RUN mkdir -p public
 
+RUN npm run db:generate
+
 RUN npm run build
 
 # Production image, copy all the files and run next

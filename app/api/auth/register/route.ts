@@ -29,9 +29,9 @@ export async function POST(request: NextRequest) {
     // Validate input with schema
     const parsed = registrationSchema.safeParse(body);
     if (!parsed.success) {
-      const firstError = parsed.error.errors[0];
+      const firstError = parsed.error.issues[0];
       return NextResponse.json(
-        { error: firstError.message },
+        { error: firstError?.message ?? "Ungültige Eingabe" },
         { status: 400 }
       );
     }
