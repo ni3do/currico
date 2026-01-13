@@ -5,6 +5,7 @@
    Swiss-Warm: Clean, Grid-based, Precise yet Approachable
    ================================================================= */
 :root {
+  --font-inter: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   /* =================================================================
      COLOR PALETTE - Swiss Trust + Warm Approachability
      - 60% Backgrounds: Cool Gray (not pure white)
