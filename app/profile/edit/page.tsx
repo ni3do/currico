@@ -5,6 +5,7 @@ import { AvatarUploader } from "@/components/profile/AvatarUploader";
 import { MultiSelect } from "@/components/ui/MultiSelect";
 import { PayoutForm } from "@/components/profile/PayoutForm";
 import Link from "next/link";
+import TopBar from "@/components/ui/TopBar";
 import {
   SWISS_SUBJECTS,
   SWISS_CYCLES,
@@ -223,30 +224,7 @@ export default function EditProfilePage() {
 
   return (
     <div className="min-h-screen bg-[--background]">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-[--border] bg-[--surface]/95 backdrop-blur-sm">
-        <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Link href="/" className="flex items-center gap-2">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[--primary] to-[--secondary]">
-                  <span className="text-xl font-bold text-[--background]">EL</span>
-                </div>
-                <span className="text-xl font-bold text-[--text]">Easy Lehrer</span>
-              </Link>
-            </div>
-
-            <div className="flex items-center gap-4">
-              <Link
-                href="/profile"
-                className="rounded-lg border border-[--border] px-4 py-2 text-sm font-medium text-[--text] hover:bg-[--surface1] transition-colors"
-              >
-                Zurück zum Profil
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
+      <TopBar />
 
       <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Page Header */}

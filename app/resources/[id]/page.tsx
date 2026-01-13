@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import TopBar from "@/components/ui/TopBar";
 
 // Mock data - in real app, fetch based on id
 const mockResource = {
@@ -87,57 +88,7 @@ export default function ResourceDetailPage() {
 
   return (
     <div className="min-h-screen bg-[--background]">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-[--border] bg-[--surface]/95 backdrop-blur-sm">
-        <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Link href="/" className="flex items-center gap-2">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[--primary] to-[--secondary]">
-                  <span className="text-xl font-bold text-[--background]">EL</span>
-                </div>
-                <span className="text-xl font-bold text-[--text]">Easy Lehrer</span>
-              </Link>
-            </div>
-
-            <nav className="hidden md:flex items-center gap-8">
-              <Link
-                href="/resources"
-                className="text-[--text-muted] hover:text-[--text] transition-colors"
-              >
-                Ressourcen
-              </Link>
-              <a
-                href="#"
-                className="text-[--text-muted] hover:text-[--text] transition-colors"
-              >
-                Für Schulen
-              </a>
-              <a
-                href="#"
-                className="text-[--text-muted] hover:text-[--text] transition-colors"
-              >
-                Über uns
-              </a>
-            </nav>
-
-            <div className="flex items-center gap-4">
-              <Link
-                href="/login"
-                className="hidden sm:block text-[--text-muted] hover:text-[--text] transition-colors"
-              >
-                Anmelden
-              </Link>
-              <Link
-                href="/register"
-                className="rounded-full bg-gradient-to-r from-[--primary] to-[--secondary] px-6 py-2.5 font-medium text-[--background] hover:opacity-90 transition-opacity shadow-lg shadow-[--primary]/20"
-              >
-                Registrieren
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
+      <TopBar />
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Breadcrumb */}

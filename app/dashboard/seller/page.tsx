@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import TopBar from "@/components/ui/TopBar";
 
 // Mock data
 const mockStats = {
@@ -77,55 +78,7 @@ export default function SellerDashboardPage() {
 
   return (
     <div className="min-h-screen bg-[--background-alt]">
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.06)' }}>
-        <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-10 h-10 bg-[--primary] rounded-[--radius-md]">
-                <span className="text-white font-bold text-lg">EL</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-lg font-semibold text-[--text-heading] leading-tight">EasyLehrer</span>
-                <span className="text-xs text-[--text-muted] leading-tight">Bildungsplattform Schweiz</span>
-              </div>
-            </Link>
-
-            <nav className="hidden md:flex items-center gap-1">
-              <Link
-                href="/resources"
-                className="px-4 py-2 text-[--text-body] hover:text-[--primary] font-medium text-sm transition-colors rounded-[--radius-md] hover:bg-[--gray-50]"
-              >
-                Ressourcen
-              </Link>
-              <Link
-                href="/dashboard/seller"
-                className="px-4 py-2 text-[--primary] font-medium text-sm bg-[--primary-light] rounded-[--radius-md]"
-              >
-                Dashboard
-              </Link>
-              <Link
-                href="/profile"
-                className="px-4 py-2 text-[--text-body] hover:text-[--primary] font-medium text-sm transition-colors rounded-[--radius-md] hover:bg-[--gray-50]"
-              >
-                Profil
-              </Link>
-            </nav>
-
-            <div className="flex items-center gap-3">
-              <Link
-                href="/profile"
-                className="flex items-center gap-2 px-4 py-2 rounded-full border border-[--border] hover:border-[--primary] transition-colors"
-              >
-                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[--primary] text-xs font-bold text-white">
-                  M
-                </div>
-                <span className="hidden sm:inline text-sm font-medium text-[--text-heading]">Maria</span>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
+      <TopBar />
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Page Header */}
