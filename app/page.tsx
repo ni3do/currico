@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { content } from "@/lib/content";
@@ -8,6 +9,7 @@ const { common, homePage } = content;
 
 export default function Home() {
   const { data: session } = useSession();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-[--background]">
@@ -35,15 +37,15 @@ export default function Home() {
                 <Link href={session ? "/dashboard/seller" : "/login"} className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
                   {common.navigation.dashboard}
                 </Link>
-                <a href="#" className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
+                <Link href="/coming-soon" className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
                   {common.navigation.forSchools}
-                </a>
-                <a href="#" className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
+                </Link>
+                <Link href="/coming-soon" className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
                   {common.navigation.aboutUs}
-                </a>
-                <a href="#" className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
+                </Link>
+                <Link href="/coming-soon" className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
                   {common.navigation.contact}
-                </a>
+                </Link>
               </div>
               <div className="flex items-center gap-3">
                 {session ? (
@@ -70,12 +72,66 @@ export default function Home() {
             </nav>
 
             {/* Mobile Menu Button */}
-            <button className="lg:hidden p-2 text-[--text-secondary] hover:text-[--primary]">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="lg:hidden p-2 text-[--text-secondary] hover:text-[--primary]"
+            >
+              {isMobileMenuOpen ? (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
             </button>
           </div>
+
+          {/* Mobile Menu Panel */}
+          {isMobileMenuOpen && (
+            <div className="lg:hidden border-t border-[--border] py-4">
+              <nav className="flex flex-col space-y-2">
+                <Link href="/resources" className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
+                  {common.navigation.resources}
+                </Link>
+                <Link href={session ? "/dashboard/seller" : "/login"} className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
+                  {common.navigation.dashboard}
+                </Link>
+                <Link href="/coming-soon" className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
+                  {common.navigation.forSchools}
+                </Link>
+                <Link href="/coming-soon" className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
+                  {common.navigation.aboutUs}
+                </Link>
+                <Link href="/coming-soon" className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
+                  {common.navigation.contact}
+                </Link>
+                <div className="border-t border-[--border] pt-4 mt-2 flex flex-col space-y-2">
+                  {session ? (
+                    <button
+                      onClick={() => signOut()}
+                      className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors text-left"
+                    >
+                      {common.navigation.logout}
+                    </button>
+                  ) : (
+                    <>
+                      <Link href="/login" className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
+                        {common.navigation.login}
+                      </Link>
+                      <Link
+                        href="/register"
+                        className="mx-4 rounded-[--radius-sm] bg-[--primary] px-5 py-2 font-medium text-white text-sm hover:bg-[--primary-hover] transition-colors text-center"
+                      >
+                        {common.navigation.register}
+                      </Link>
+                    </>
+                  )}
+                </div>
+              </nav>
+            </div>
+          )}
         </div>
       </header>
 
@@ -143,27 +199,27 @@ export default function Home() {
         <section className="bg-[--sidebar-bg] border-y border-[--border]">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex items-center gap-1 py-4 overflow-x-auto">
-              <a href="#" className="px-4 py-2 rounded-[--radius-sm] bg-[--primary] text-white font-medium text-sm whitespace-nowrap">
+              <Link href="/resources" className="px-4 py-2 rounded-[--radius-sm] bg-[--primary] text-white font-medium text-sm whitespace-nowrap">
                 {homePage.categories.allSubjects}
-              </a>
-              <a href="#" className="px-4 py-2 rounded-[--radius-sm] text-[--text-secondary] font-medium text-sm whitespace-nowrap hover:bg-[--gray-100] transition-colors">
+              </Link>
+              <Link href="/resources?subject=NMG" className="px-4 py-2 rounded-[--radius-sm] text-[--text-secondary] font-medium text-sm whitespace-nowrap hover:bg-[--gray-100] transition-colors">
                 {homePage.categories.science}
-              </a>
-              <a href="#" className="px-4 py-2 rounded-[--radius-sm] text-[--text-secondary] font-medium text-sm whitespace-nowrap hover:bg-[--gray-100] transition-colors">
+              </Link>
+              <Link href="/resources?subject=Deutsch" className="px-4 py-2 rounded-[--radius-sm] text-[--text-secondary] font-medium text-sm whitespace-nowrap hover:bg-[--gray-100] transition-colors">
                 {homePage.categories.languages}
-              </a>
-              <a href="#" className="px-4 py-2 rounded-[--radius-sm] text-[--text-secondary] font-medium text-sm whitespace-nowrap hover:bg-[--gray-100] transition-colors">
+              </Link>
+              <Link href="/resources?subject=Mathematik" className="px-4 py-2 rounded-[--radius-sm] text-[--text-secondary] font-medium text-sm whitespace-nowrap hover:bg-[--gray-100] transition-colors">
                 {homePage.categories.math}
-              </a>
-              <a href="#" className="px-4 py-2 rounded-[--radius-sm] text-[--text-secondary] font-medium text-sm whitespace-nowrap hover:bg-[--gray-100] transition-colors">
+              </Link>
+              <Link href="/resources?subject=BG" className="px-4 py-2 rounded-[--radius-sm] text-[--text-secondary] font-medium text-sm whitespace-nowrap hover:bg-[--gray-100] transition-colors">
                 {homePage.categories.arts}
-              </a>
-              <a href="#" className="px-4 py-2 rounded-[--radius-sm] text-[--text-secondary] font-medium text-sm whitespace-nowrap hover:bg-[--gray-100] transition-colors">
+              </Link>
+              <Link href="/resources?subject=Geschichte" className="px-4 py-2 rounded-[--radius-sm] text-[--text-secondary] font-medium text-sm whitespace-nowrap hover:bg-[--gray-100] transition-colors">
                 {homePage.categories.history}
-              </a>
-              <a href="#" className="px-4 py-2 rounded-[--radius-sm] text-[--text-secondary] font-medium text-sm whitespace-nowrap hover:bg-[--gray-100] transition-colors">
+              </Link>
+              <Link href="/resources?subject=Musik" className="px-4 py-2 rounded-[--radius-sm] text-[--text-secondary] font-medium text-sm whitespace-nowrap hover:bg-[--gray-100] transition-colors">
                 {homePage.categories.music}
-              </a>
+              </Link>
             </div>
           </div>
         </section>
@@ -457,8 +513,8 @@ export default function Home() {
               <h3 className="font-semibold text-[--text-heading] text-sm uppercase tracking-wider">{common.footer.platformSection.title}</h3>
               <ul className="mt-4 space-y-3">
                 <li><Link href="/resources" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">{common.footer.platformSection.resources}</Link></li>
-                <li><a href="#" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">{common.footer.platformSection.forSchools}</a></li>
-                <li><a href="#" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">{common.footer.platformSection.pricing}</a></li>
+                <li><Link href="/coming-soon" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">{common.footer.platformSection.forSchools}</Link></li>
+                <li><Link href="/coming-soon" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">{common.footer.platformSection.pricing}</Link></li>
               </ul>
             </div>
 
@@ -466,9 +522,9 @@ export default function Home() {
             <div>
               <h3 className="font-semibold text-[--text-heading] text-sm uppercase tracking-wider">{common.footer.infoSection.title}</h3>
               <ul className="mt-4 space-y-3">
-                <li><a href="#" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">{common.footer.infoSection.aboutUs}</a></li>
-                <li><a href="#" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">{common.footer.infoSection.contact}</a></li>
-                <li><a href="#" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">{common.footer.infoSection.help}</a></li>
+                <li><Link href="/coming-soon" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">{common.footer.infoSection.aboutUs}</Link></li>
+                <li><Link href="/coming-soon" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">{common.footer.infoSection.contact}</Link></li>
+                <li><Link href="/coming-soon" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">{common.footer.infoSection.help}</Link></li>
               </ul>
             </div>
 
@@ -476,9 +532,9 @@ export default function Home() {
             <div>
               <h3 className="font-semibold text-[--text-heading] text-sm uppercase tracking-wider">{common.footer.legalSection.title}</h3>
               <ul className="mt-4 space-y-3">
-                <li><a href="#" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">{common.footer.legalSection.privacy}</a></li>
-                <li><a href="#" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">{common.footer.legalSection.terms}</a></li>
-                <li><a href="#" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">{common.footer.legalSection.imprint}</a></li>
+                <li><Link href="/coming-soon" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">{common.footer.legalSection.privacy}</Link></li>
+                <li><Link href="/coming-soon" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">{common.footer.legalSection.terms}</Link></li>
+                <li><Link href="/coming-soon" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">{common.footer.legalSection.imprint}</Link></li>
               </ul>
             </div>
           </div>

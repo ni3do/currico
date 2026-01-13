@@ -110,12 +110,12 @@ export default function LoginPage() {
                   >
                     {loginPage.form.passwordLabel}
                   </label>
-                  <a
-                    href="#"
+                  <Link
+                    href="/coming-soon"
                     className="text-sm text-[--primary] hover:text-[--primary-hover] transition-colors font-medium"
                   >
                     {loginPage.form.forgotPassword}
-                  </a>
+                  </Link>
                 </div>
                 <input
                   type="password"
@@ -177,6 +177,8 @@ export default function LoginPage() {
             {/* OAuth Buttons */}
             <div className="grid gap-3">
               <button
+                type="button"
+                onClick={() => signIn("google")}
                 className="flex items-center justify-center gap-3 rounded-[--radius-md] bg-[--gray-100] px-4 py-3.5 text-[--text-heading] font-medium hover:bg-[--gray-200] transition-all"
               >
                 <svg className="h-5 w-5" viewBox="0 0 24 24">
@@ -201,6 +203,8 @@ export default function LoginPage() {
               </button>
 
               <button
+                type="button"
+                onClick={() => signIn("github")}
                 className="flex items-center justify-center gap-3 rounded-[--radius-md] bg-[--gray-100] px-4 py-3.5 text-[--text-heading] font-medium hover:bg-[--gray-200] transition-all"
               >
                 <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">

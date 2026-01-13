@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 
 type Step = 1 | 2 | 3 | 4;
@@ -30,6 +30,23 @@ export default function UploadPage() {
     files: [] as File[],
     previewFiles: [] as File[],
   });
+
+  const mainFileInputRef = useRef<HTMLInputElement>(null);
+  const previewFileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleMainFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      setFormData((prev) => ({ ...prev, files: Array.from(files) }));
+    }
+  };
+
+  const handlePreviewFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      setFormData((prev) => ({ ...prev, previewFiles: Array.from(files) }));
+    }
+  };
 
   const handleNext = () => {
     if (currentStep < 4) {
@@ -398,7 +415,10 @@ export default function UploadPage() {
                 <label className="mb-2 block text-sm font-medium text-[--text]">
                   Hauptdatei(en) *
                 </label>
-                <div className="rounded-xl border-2 border-dashed border-[--border] bg-[--background] p-8 text-center">
+                <div
+                  onClick={() => mainFileInputRef.current?.click()}
+                  className="rounded-xl border-2 border-dashed border-[--border] bg-[--background] p-8 text-center cursor-pointer hover:border-[--primary] transition-colors"
+                >
                   <svg
                     className="mx-auto h-12 w-12 text-[--text-muted]"
                     fill="none"
@@ -418,11 +438,18 @@ export default function UploadPage() {
                   <p className="mt-1 text-xs text-[--text-muted]">
                     PDF, Word, PowerPoint, Excel bis 50 MB
                   </p>
+                  {formData.files.length > 0 && (
+                    <p className="mt-2 text-sm text-[--primary] font-medium">
+                      {formData.files.length} Datei(en) ausgewählt
+                    </p>
+                  )}
                   <input
+                    ref={mainFileInputRef}
                     type="file"
                     multiple
                     className="hidden"
                     accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
+                    onChange={handleMainFilesChange}
                   />
                 </div>
               </div>
@@ -431,7 +458,10 @@ export default function UploadPage() {
                 <label className="mb-2 block text-sm font-medium text-[--text]">
                   Vorschaudateien
                 </label>
-                <div className="rounded-xl border-2 border-dashed border-[--border] bg-[--background] p-8 text-center">
+                <div
+                  onClick={() => previewFileInputRef.current?.click()}
+                  className="rounded-xl border-2 border-dashed border-[--border] bg-[--background] p-8 text-center cursor-pointer hover:border-[--primary] transition-colors"
+                >
                   <svg
                     className="mx-auto h-12 w-12 text-[--text-muted]"
                     fill="none"
@@ -451,11 +481,18 @@ export default function UploadPage() {
                   <p className="mt-1 text-xs text-[--text-muted]">
                     PNG, JPG bis 10 MB - wird mit Wasserzeichen versehen
                   </p>
+                  {formData.previewFiles.length > 0 && (
+                    <p className="mt-2 text-sm text-[--primary] font-medium">
+                      {formData.previewFiles.length} Vorschaubild(er) ausgewählt
+                    </p>
+                  )}
                   <input
+                    ref={previewFileInputRef}
                     type="file"
                     multiple
                     className="hidden"
                     accept="image/png,image/jpeg"
+                    onChange={handlePreviewFilesChange}
                   />
                 </div>
               </div>

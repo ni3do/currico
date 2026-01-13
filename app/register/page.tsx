@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
 import { content } from "@/lib/content";
 import { isValidEmail } from "@/lib/validations/common";
 import { DecorationBg } from "@/components/ui/DecorationBg";
@@ -30,11 +31,46 @@ export default function RegisterPage() {
     );
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isFormValid()) {
-      console.log("Register:", formData);
-      router.push("/account");
+      setIsLoading(true);
+      setError("");
+      try {
+        const response = await fetch("/api/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: formData.name,
+            email: formData.email,
+            password: formData.password,
+          }),
+        });
+
+        if (response.ok) {
+          const result = await signIn("credentials", {
+            email: formData.email,
+            password: formData.password,
+            redirect: false,
+          });
+          if (result?.ok) {
+            router.push("/account");
+          } else {
+            setError("Registrierung erfolgreich. Bitte melden Sie sich an.");
+            router.push("/login");
+          }
+        } else {
+          const data = await response.json();
+          setError(data.error || "Registrierung fehlgeschlagen. Bitte versuchen Sie es erneut.");
+        }
+      } catch {
+        setError("Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.");
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -189,22 +225,30 @@ export default function RegisterPage() {
                 />
                 <label htmlFor="terms" className="text-sm text-[--text-muted]">
                   Ich akzeptiere die{" "}
-                  <a href="#" className="text-[--primary] hover:text-[--primary-hover] font-medium">
+                  <Link href="/coming-soon" className="text-[--primary] hover:text-[--primary-hover] font-medium">
                     Allgemeinen Geschäftsbedingungen
-                  </a>{" "}
+                  </Link>{" "}
                   und die{" "}
-                  <a href="#" className="text-[--primary] hover:text-[--primary-hover] font-medium">
+                  <Link href="/coming-soon" className="text-[--primary] hover:text-[--primary-hover] font-medium">
                     Datenschutzerklärung
-                  </a>
+                  </Link>
                 </label>
               </div>
+
+              {/* Error Message */}
+              {error && (
+                <div className="rounded-[--radius-md] bg-[--error-light] border border-[--error] px-4 py-3 text-sm text-[--error] animate-fade-in">
+                  {error}
+                </div>
+              )}
 
               {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full rounded-[--radius-md] bg-[#DC2626] px-6 py-4 font-bold text-white text-center transition-all hover:-translate-y-0.5 hover:bg-[#B91C1C] hover:shadow-[0_8px_25px_rgba(220,38,38,0.35)] mt-4"
+                disabled={isLoading}
+                className="w-full rounded-[--radius-md] bg-[#DC2626] px-6 py-4 font-bold text-white text-center transition-all hover:-translate-y-0.5 hover:bg-[#B91C1C] hover:shadow-[0_8px_25px_rgba(220,38,38,0.35)] mt-4 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none disabled:hover:bg-[#DC2626]"
               >
-                Registrieren
+                {isLoading ? "Wird registriert..." : "Registrieren"}
               </button>
             </form>
 
@@ -226,6 +270,7 @@ export default function RegisterPage() {
             <div className="grid gap-3">
               <button
                 type="button"
+                onClick={() => signIn("google")}
                 className="flex items-center justify-center gap-3 rounded-[--radius-md] bg-[--gray-100] px-4 py-3.5 text-[--text-heading] font-medium hover:bg-[--gray-200] transition-all"
               >
                 <svg className="h-5 w-5" viewBox="0 0 24 24">
@@ -251,6 +296,7 @@ export default function RegisterPage() {
 
               <button
                 type="button"
+                onClick={() => signIn("azure-ad")}
                 className="flex items-center justify-center gap-3 rounded-[--radius-md] bg-[--gray-100] px-4 py-3.5 text-[--text-heading] font-medium hover:bg-[--gray-200] transition-all"
               >
                 <svg className="h-5 w-5" viewBox="0 0 23 23">
