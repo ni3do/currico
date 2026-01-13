@@ -3,7 +3,7 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { requireAdmin, unauthorizedResponse } from "@/lib/admin-auth";
 
-const resourceSelect = {
+const resourceSelect = Prisma.validator<Prisma.ResourceSelect>()({
   id: true,
   title: true,
   description: true,
@@ -26,7 +26,7 @@ const resourceSelect = {
       transactions: true,
     },
   },
-} as const;
+});
 
 type ResourceWithRelations = Prisma.ResourceGetPayload<{
   select: typeof resourceSelect;
