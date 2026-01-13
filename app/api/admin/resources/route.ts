@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { requireAdmin, unauthorizedResponse } from "@/lib/admin-auth";
 
 export async function GET(request: NextRequest) {
+  const admin = await requireAdmin();
+  if (!admin) {
+    return unauthorizedResponse();
+  }
+
   try {
     const searchParams = request.nextUrl.searchParams;
     const page = parseInt(searchParams.get("page") || "1");
@@ -93,6 +99,11 @@ export async function GET(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
+  const admin = await requireAdmin();
+  if (!admin) {
+    return unauthorizedResponse();
+  }
+
   try {
     const body = await request.json();
     const { id, is_approved } = body;

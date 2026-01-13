@@ -7,6 +7,32 @@ import path from "path";
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 const MAX_SIZE = 2 * 1024 * 1024; // 2MB
 
+// Magic bytes for image type validation
+const MAGIC_BYTES: Record<string, number[]> = {
+  "image/jpeg": [0xff, 0xd8, 0xff],
+  "image/png": [0x89, 0x50, 0x4e, 0x47], // \x89PNG
+  "image/webp": [0x52, 0x49, 0x46, 0x46], // RIFF (WebP also has WEBP at offset 8)
+};
+
+function validateMagicBytes(buffer: Buffer, mimeType: string): boolean {
+  const expectedBytes = MAGIC_BYTES[mimeType];
+  if (!expectedBytes) return false;
+
+  for (let i = 0; i < expectedBytes.length; i++) {
+    if (buffer[i] !== expectedBytes[i]) return false;
+  }
+
+  // Additional check for WebP: bytes 8-11 should be "WEBP"
+  if (mimeType === "image/webp") {
+    const webpSignature = [0x57, 0x45, 0x42, 0x50]; // WEBP
+    for (let i = 0; i < webpSignature.length; i++) {
+      if (buffer[8 + i] !== webpSignature[i]) return false;
+    }
+  }
+
+  return true;
+}
+
 /**
  * POST /api/users/me/avatar
  * Upload a new avatar image
@@ -49,6 +75,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate file content with magic bytes
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+
+    if (!validateMagicBytes(buffer, file.type)) {
+      return NextResponse.json(
+        { error: "Dateiinhalt stimmt nicht mit dem Dateityp überein" },
+        { status: 400 }
+      );
+    }
+
     // Generate unique filename
     const ext = file.type.split("/")[1];
     const filename = `${userId}-${Date.now()}.${ext}`;
@@ -58,8 +95,6 @@ export async function POST(request: NextRequest) {
     await mkdir(uploadsDir, { recursive: true });
 
     // Save file
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
     const filePath = path.join(uploadsDir, filename);
     await writeFile(filePath, buffer);
 
