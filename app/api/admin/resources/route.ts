@@ -3,32 +3,9 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { requireAdmin, unauthorizedResponse } from "@/lib/admin-auth";
 
-type ResourceWithRelations = Prisma.ResourceGetPayload<{
-  select: {
-    id: true;
-    title: true;
-    description: true;
-    price: true;
-    subjects: true;
-    cycles: true;
-    is_published: true;
-    is_approved: true;
-    created_at: true;
-    updated_at: true;
-    seller: {
-      select: {
-        id: true;
-        display_name: true;
-        email: true;
-      };
-    };
-    _count: {
-      select: {
-        transactions: true;
-      };
-    };
-  };
-}>;
+type ResourceWithRelations = Awaited<
+  ReturnType<typeof prisma.resource.findMany>
+>[number];
 
 export async function GET(request: NextRequest) {
   const admin = await requireAdmin();
