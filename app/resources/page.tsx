@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { content } from "@/lib/content";
+import TopBar from "@/components/ui/TopBar";
 
 const { common, resourcesPage } = content;
 
@@ -89,59 +90,7 @@ export default function ResourcesPage() {
 
   return (
     <div className="min-h-screen bg-[--background-alt]">
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.06)' }}>
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-10 h-10 bg-[--primary] rounded-[--radius-sm]">
-                <span className="text-white font-bold text-lg">EL</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-lg font-semibold text-[--gray-800] leading-tight">EasyLehrer</span>
-                <span className="text-xs text-[--text-muted] leading-tight">Bildungsplattform Schweiz</span>
-              </div>
-            </Link>
-
-            {/* Navigation */}
-            <nav className="hidden lg:flex items-center">
-              <div className="flex items-center border-r border-[--border] pr-6 mr-6">
-                <Link href="/resources" className="px-4 py-2 text-[--primary] font-medium text-sm">
-                  Ressourcen
-                </Link>
-                <a href="#" className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
-                  Fur Schulen
-                </a>
-                <a href="#" className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
-                  Uber uns
-                </a>
-                <a href="#" className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
-                  Kontakt
-                </a>
-              </div>
-              <div className="flex items-center gap-3">
-                <Link href="/login" className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors">
-                  Anmelden
-                </Link>
-                <Link
-                  href="/register"
-                  className="rounded-[--radius-md] bg-[--primary] px-5 py-2.5 font-semibold text-white text-sm hover:bg-[--primary-hover] transition-all hover:-translate-y-0.5 hover:shadow-[0_6px_16px_rgba(0,82,204,0.25)]"
-                >
-                  Registrieren
-                </Link>
-              </div>
-            </nav>
-
-            {/* Mobile Menu Button */}
-            <button className="lg:hidden p-2 text-[--text-secondary] hover:text-[--primary]">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </header>
+      <TopBar />
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Page Header */}

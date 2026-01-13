@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import TopBar from "@/components/ui/TopBar";
 
 export default function AccountPage() {
   const [activeTab, setActiveTab] = useState<"overview" | "library" | "wishlist" | "settings">("overview");
@@ -57,43 +58,7 @@ export default function AccountPage() {
 
   return (
     <div className="min-h-screen bg-[--background]">
-      {/* Top Bar - Institutional accent line */}
-      <div className="h-1 bg-[--primary]" />
-
-      {/* Header */}
-      <header className="bg-white border-b border-[--border]">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <Link href="/" className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-10 h-10 bg-[--primary] rounded-[--radius-sm]">
-                <span className="text-white font-bold text-lg">EL</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-lg font-semibold text-[--gray-800] leading-tight">EasyLehrer</span>
-                <span className="text-xs text-[--text-muted] leading-tight">Bildungsplattform Schweiz</span>
-              </div>
-            </Link>
-
-            <nav className="hidden md:flex items-center gap-6">
-              <Link href="/resources" className="text-sm text-[--text-secondary] hover:text-[--primary] transition-colors">
-                Ressourcen
-              </Link>
-              <Link href="/upload" className="text-sm text-[--text-secondary] hover:text-[--primary] transition-colors">
-                Hochladen
-              </Link>
-            </nav>
-
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => signOut({ callbackUrl: "/" })}
-                className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors"
-              >
-                Abmelden
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <TopBar />
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Page Header with User Info */}
