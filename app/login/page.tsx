@@ -7,8 +7,9 @@ import Link from "next/link";
 import { content } from "@/lib/content";
 import { isValidEmail } from "@/lib/validations/common";
 import { DecorationBg } from "@/components/ui/DecorationBg";
+import TopBar from "@/components/ui/TopBar";
 
-const { common, loginPage } = content;
+const { loginPage } = content;
 
 export default function LoginPage() {
   const router = useRouter();
@@ -45,18 +46,7 @@ export default function LoginPage() {
     <div className="min-h-screen geometric-bg relative flex flex-col">
       <DecorationBg />
 
-      {/* Header */}
-      <header className="relative z-10 px-6 py-6 sm:px-8">
-        <Link href="/" className="inline-flex items-center gap-3">
-          <div className="flex items-center justify-center w-10 h-10 bg-[--primary] rounded-[--radius-md]">
-            <span className="text-white font-bold text-lg">{common.brand.logoText}</span>
-          </div>
-          <div className="flex flex-col">
-            <span className="text-lg font-semibold text-[--text-heading] leading-tight">{common.brand.name}</span>
-            <span className="text-xs text-[--text-muted] leading-tight">{common.brand.tagline}</span>
-          </div>
-        </Link>
-      </header>
+      <TopBar />
 
       {/* Main Content - Centered Glass Card */}
       <main className="relative z-10 flex-1 flex items-center justify-center px-4 py-8 sm:px-6">

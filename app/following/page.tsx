@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import TopBar from "@/components/ui/TopBar";
 
 // Mock data - updates from followed sellers
 const mockUpdates = [
@@ -60,54 +61,7 @@ const mockFollowedSellers = [
 export default function FollowingPage() {
   return (
     <div className="min-h-screen bg-[--background]">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-[--border] bg-[--surface]/95 backdrop-blur-sm">
-        <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Link href="/" className="flex items-center gap-2">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[--primary] to-[--secondary]">
-                  <span className="text-xl font-bold text-[--background]">EL</span>
-                </div>
-                <span className="text-xl font-bold text-[--text]">Easy Lehrer</span>
-              </Link>
-            </div>
-
-            <nav className="hidden md:flex items-center gap-8">
-              <Link
-                href="/resources"
-                className="text-[--text-muted] hover:text-[--text] transition-colors"
-              >
-                Ressourcen
-              </Link>
-              <Link
-                href="/following"
-                className="text-[--primary] font-medium transition-colors"
-              >
-                Folge ich
-              </Link>
-              <Link
-                href="/profile"
-                className="text-[--text-muted] hover:text-[--text] transition-colors"
-              >
-                Profil
-              </Link>
-            </nav>
-
-            <div className="flex items-center gap-4">
-              <Link
-                href="/profile"
-                className="flex items-center gap-2 rounded-full border-2 border-[--primary] px-4 py-2 font-medium text-[--primary] transition-colors"
-              >
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-[--primary] to-[--secondary] text-xs font-bold text-[--background]">
-                  M
-                </div>
-                <span className="hidden sm:inline">Maria</span>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
+      <TopBar />
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Page Header */}

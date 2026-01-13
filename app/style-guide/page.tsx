@@ -1,21 +1,21 @@
 "use client";
 
+import TopBar from "@/components/ui/TopBar";
+
 export default function StyleGuidePage() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: "var(--background)" }}>
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-white border-b border-[var(--border)]">
-        <div className="max-w-7xl mx-auto px-6 py-4">
+      <TopBar />
+
+      <main className="max-w-7xl mx-auto px-6 py-10 space-y-16">
+        <section>
           <h1 className="text-2xl font-bold" style={{ color: "var(--text-heading)" }}>
             EasyLehrer Design System
           </h1>
           <p className="text-sm" style={{ color: "var(--text-muted)" }}>
             Swiss-Warm: Clean, Grid-based, Precise yet Approachable
           </p>
-        </div>
-      </header>
-
-      <main className="max-w-7xl mx-auto px-6 py-10 space-y-16">
+        </section>
         {/* Table of Contents */}
         <nav className="card p-6">
           <h2 className="text-lg font-semibold mb-4" style={{ color: "var(--text-heading)" }}>
