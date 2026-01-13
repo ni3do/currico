@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin, unauthorizedResponse } from "@/lib/admin-auth";
 
+type ResourceWithRelations = Awaited<
+  ReturnType<typeof prisma.resource.findMany>
+>[number];
+
 export async function GET(request: NextRequest) {
   const admin = await requireAdmin();
   if (!admin) {
@@ -62,7 +66,7 @@ export async function GET(request: NextRequest) {
     ]);
 
     // Transform resources
-    const transformedResources = resources.map((resource) => {
+    const transformedResources = resources.map((resource: ResourceWithRelations) => {
       let resourceStatus = "Draft";
       if (resource.is_approved) {
         resourceStatus = "Verified";
