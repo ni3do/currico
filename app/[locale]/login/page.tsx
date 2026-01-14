@@ -76,7 +76,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className={`w-full rounded-lg border bg-white px-4 py-3.5 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-[3px] transition-all ${
+                  className={`w-full rounded-lg border bg-[var(--color-surface)] px-4 py-3.5 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-[3px] transition-all ${
                     email && !isValidEmail(email)
                       ? "border-[var(--color-error)] focus:border-[var(--color-error)] focus:ring-[var(--color-error)]/20"
                       : "border-[var(--color-border)] focus:border-[var(--color-primary)] focus:ring-[var(--color-primary)]/20"
@@ -112,7 +112,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full rounded-lg border border-[var(--color-border)] bg-white px-4 py-3.5 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-[3px] focus:ring-[var(--color-primary)]/20 transition-all"
+                  className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3.5 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-[3px] focus:ring-[var(--color-primary)]/20 transition-all"
                   placeholder={t("form.passwordPlaceholder")}
                 />
               </div>
@@ -156,7 +156,7 @@ export default function LoginPage() {
                   <div className="w-full border-t border-[var(--color-border)]"></div>
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="bg-white/90 px-4 text-[var(--color-text-muted)]">
+                  <span className="bg-[var(--color-surface)]/90 px-4 text-[var(--color-text-muted)]">
                     {t("divider")}
                   </span>
                 </div>

@@ -343,7 +343,7 @@ export default function AdminTransactionsPage() {
                     onClick={() => setSelectedTransaction(null)}
                     className="w-full rounded-lg border border-[var(--color-border)] px-4 py-3 font-medium text-[var(--color-text)] hover:bg-[var(--color-surface-elevated)] transition-colors"
                   >
-                    Schliessen
+                    Schließen
                   </button>
                 </div>
               );

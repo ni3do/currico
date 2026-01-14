@@ -30,7 +30,7 @@ export default function AccountPage() {
     name: session?.user?.name || "Benutzer",
     email: session?.user?.email || "",
     image: session?.user?.image || null,
-    canton: "Zurich",
+    canton: "Zürich",
     subjects: ["Mathematik", "Deutsch", "NMG"],
     cycles: ["Zyklus 2"],
   };
@@ -45,15 +45,15 @@ export default function AccountPage() {
 
   // Mock library items
   const libraryItems = [
-    { id: 1, title: "Bruchrechnen Ubungsblatter", type: "PDF", subject: "Mathematik", cycle: "Zyklus 2", verified: true },
-    { id: 2, title: "Leseverstandnis Texte", type: "PDF", subject: "Deutsch", cycle: "Zyklus 2", verified: true },
+    { id: 1, title: "Bruchrechnen Übungsblätter", type: "PDF", subject: "Mathematik", cycle: "Zyklus 2", verified: true },
+    { id: 2, title: "Leseverständnis Texte", type: "PDF", subject: "Deutsch", cycle: "Zyklus 2", verified: true },
     { id: 3, title: "NMG Experimente Set", type: "Bundle", subject: "NMG", cycle: "Zyklus 2", verified: true },
   ];
 
   // Mock wishlist items
   const wishlistItems = [
-    { id: 1, title: "Geometrie Arbeitsblatter", subject: "Mathematik", cycle: "Zyklus 2", price: 15.00 },
-    { id: 2, title: "Franzosisch Vokabeltrainer", subject: "Franzosisch", cycle: "Zyklus 2", price: 12.00 },
+    { id: 1, title: "Geometrie Arbeitsblätter", subject: "Mathematik", cycle: "Zyklus 2", price: 15.00 },
+    { id: 2, title: "Französisch Vokabeltrainer", subject: "Französisch", cycle: "Zyklus 2", price: 12.00 },
   ];
 
   return (
@@ -96,7 +96,7 @@ export default function AccountPage() {
                   : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
               }`}
             >
-              Ubersicht
+              Übersicht
             </button>
             <button
               onClick={() => setActiveTab("library")}
@@ -138,28 +138,28 @@ export default function AccountPage() {
             <div className="lg:col-span-2 space-y-6">
               {/* Statistics Cards */}
               <div className="grid gap-4 sm:grid-cols-2">
-                <div className="rounded-xl bg-white p-6 border border-[var(--color-border)]">
+                <div className="rounded-xl bg-[var(--color-surface)] p-6 border border-[var(--color-border)]">
                   <div className="text-3xl font-bold text-[var(--color-primary)]">{stats.purchasedResources}</div>
                   <div className="text-sm text-[var(--color-text-muted)] mt-1">Gekaufte Ressourcen</div>
                 </div>
-                <div className="rounded-xl bg-white p-6 border border-[var(--color-border)]">
+                <div className="rounded-xl bg-[var(--color-surface)] p-6 border border-[var(--color-border)]">
                   <div className="text-3xl font-bold text-[var(--color-accent)]">{stats.wishlistItems}</div>
                   <div className="text-sm text-[var(--color-text-muted)] mt-1">Auf der Wunschliste</div>
                 </div>
-                <div className="rounded-xl bg-white p-6 border border-[var(--color-border)]">
+                <div className="rounded-xl bg-[var(--color-surface)] p-6 border border-[var(--color-border)]">
                   <div className="text-3xl font-bold text-[var(--color-success)]">{stats.followedSellers}</div>
-                  <div className="text-sm text-[var(--color-text-muted)] mt-1">Gefolgte Verkaufer</div>
+                  <div className="text-sm text-[var(--color-text-muted)] mt-1">Gefolgte Verkäufer</div>
                 </div>
-                <div className="rounded-xl bg-white p-6 border border-[var(--color-border)]">
+                <div className="rounded-xl bg-[var(--color-surface)] p-6 border border-[var(--color-border)]">
                   <div className="text-3xl font-bold text-[var(--color-text-muted)]">{stats.uploadedResources}</div>
                   <div className="text-sm text-[var(--color-text-muted)] mt-1">Eigene Ressourcen</div>
                 </div>
               </div>
 
               {/* Profile Information */}
-              <div className="rounded-xl bg-white p-6 border border-[var(--color-border)]">
+              <div className="rounded-xl bg-[var(--color-surface)] p-6 border border-[var(--color-border)]">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-lg font-semibold text-[var(--color-text)]">Profil Informationen</h2>
+                  <h2 className="text-lg font-semibold text-[var(--color-text)]">Profilinformationen</h2>
                   <Link
                     href="/profile/edit"
                     className="text-sm text-[var(--color-primary)] hover:underline font-medium"
@@ -174,7 +174,7 @@ export default function AccountPage() {
                     <p className="text-[var(--color-text-secondary)] mt-1">{userData.canton}</p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-[var(--color-text)]">Unterrichtsfacher</label>
+                    <label className="text-sm font-medium text-[var(--color-text)]">Unterrichtsfächer</label>
                     <div className="flex flex-wrap gap-2 mt-2">
                       {userData.subjects.map((subject) => (
                         <span
@@ -203,9 +203,9 @@ export default function AccountPage() {
               </div>
 
               {/* Recent Library Items */}
-              <div className="rounded-xl bg-white p-6 border border-[var(--color-border)]">
+              <div className="rounded-xl bg-[var(--color-surface)] p-6 border border-[var(--color-border)]">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-lg font-semibold text-[var(--color-text)]">Letzte Kaufe</h2>
+                  <h2 className="text-lg font-semibold text-[var(--color-text)]">Letzte Käufe</h2>
                   <button
                     onClick={() => setActiveTab("library")}
                     className="text-sm text-[var(--color-primary)] hover:underline font-medium"
@@ -232,7 +232,7 @@ export default function AccountPage() {
                         </div>
                       </div>
                       <button className="px-4 py-2 bg-[var(--color-primary)] text-white text-sm font-medium rounded-md hover:bg-[var(--color-primary-hover)] transition-colors">
-                        Offnen
+                        Öffnen
                       </button>
                     </div>
                   ))}
@@ -243,7 +243,7 @@ export default function AccountPage() {
             {/* Sidebar */}
             <div className="space-y-6">
               {/* Quick Actions */}
-              <div className="rounded-xl bg-white p-6 border border-[var(--color-border)]">
+              <div className="rounded-xl bg-[var(--color-surface)] p-6 border border-[var(--color-border)]">
                 <h3 className="font-semibold text-[var(--color-text)] mb-4">Schnellaktionen</h3>
                 <div className="space-y-3">
                   <Link
@@ -271,7 +271,7 @@ export default function AccountPage() {
                     <svg className="w-5 h-5 text-[var(--color-text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                     </svg>
-                    <span className="text-sm text-[var(--color-text-secondary)]">Verkaufer Dashboard</span>
+                    <span className="text-sm text-[var(--color-text-secondary)]">Verkäufer Dashboard</span>
                   </Link>
                   <Link
                     href="/following"
@@ -280,7 +280,7 @@ export default function AccountPage() {
                     <svg className="w-5 h-5 text-[var(--color-text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
-                    <span className="text-sm text-[var(--color-text-secondary)]">Gefolgte Verkaufer</span>
+                    <span className="text-sm text-[var(--color-text-secondary)]">Gefolgte Verkäufer</span>
                   </Link>
                 </div>
               </div>
@@ -291,7 +291,7 @@ export default function AccountPage() {
 
         {/* Library Tab */}
         {activeTab === "library" && (
-          <div className="rounded-xl bg-white p-6 border border-[var(--color-border)]">
+          <div className="rounded-xl bg-[var(--color-surface)] p-6 border border-[var(--color-border)]">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-xl font-semibold text-[var(--color-text)]">Meine Bibliothek</h2>
@@ -317,7 +317,7 @@ export default function AccountPage() {
                       {item.type}
                     </span>
                     {item.verified && (
-                      <span className="px-2 py-1 bg-green-50 text-green-700 text-xs font-medium rounded">
+                      <span className="px-2 py-1 bg-[var(--badge-success-bg)] text-[var(--badge-success-text)] text-xs font-medium rounded">
                         Verifiziert
                       </span>
                     )}
@@ -351,11 +351,11 @@ export default function AccountPage() {
 
         {/* Wishlist Tab */}
         {activeTab === "wishlist" && (
-          <div className="rounded-xl bg-white p-6 border border-[var(--color-border)]">
+          <div className="rounded-xl bg-[var(--color-surface)] p-6 border border-[var(--color-border)]">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-xl font-semibold text-[var(--color-text)]">Wunschliste</h2>
-                <p className="text-sm text-[var(--color-text-muted)] mt-1">Gespeicherte Ressourcen fur spater</p>
+                <p className="text-sm text-[var(--color-text-muted)] mt-1">Gespeicherte Ressourcen für später</p>
               </div>
             </div>
 
@@ -369,7 +369,7 @@ export default function AccountPage() {
                     <span className="px-2 py-1 bg-[var(--color-surface)] text-[var(--color-text-muted)] text-xs font-medium rounded">
                       {item.subject}
                     </span>
-                    <button className="text-red-500 hover:text-red-600">
+                    <button className="text-[var(--color-error)] hover:text-[var(--color-error-hover)]">
                       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                       </svg>
@@ -393,7 +393,7 @@ export default function AccountPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
                 <h3 className="text-lg font-medium text-[var(--color-text)] mb-2">Ihre Wunschliste ist leer</h3>
-                <p className="text-[var(--color-text-muted)] mb-4">Speichern Sie interessante Ressourcen fur spater.</p>
+                <p className="text-[var(--color-text-muted)] mb-4">Speichern Sie interessante Ressourcen für später.</p>
                 <Link
                   href="/resources"
                   className="inline-flex items-center px-4 py-2 bg-[var(--color-primary)] text-white text-sm font-medium rounded-md hover:bg-[var(--color-primary-hover)] transition-colors"
@@ -409,8 +409,8 @@ export default function AccountPage() {
         {activeTab === "settings" && (
           <div className="max-w-2xl space-y-6">
             {/* Profile Settings */}
-            <div className="rounded-xl bg-white p-6 border border-[var(--color-border)]">
-              <h2 className="text-lg font-semibold text-[var(--color-text)] mb-4">Profil Einstellungen</h2>
+            <div className="rounded-xl bg-[var(--color-surface)] p-6 border border-[var(--color-border)]">
+              <h2 className="text-lg font-semibold text-[var(--color-text)] mb-4">Profileinstellungen</h2>
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-[var(--color-text)] mb-1">Name</label>
@@ -429,7 +429,7 @@ export default function AccountPage() {
                     disabled
                     className="w-full px-4 py-2 border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] text-[var(--color-text-muted)]"
                   />
-                  <p className="text-xs text-[var(--color-text-muted)] mt-1">E-Mail kann nicht geandert werden.</p>
+                  <p className="text-xs text-[var(--color-text-muted)] mt-1">E-Mail kann nicht geändert werden.</p>
                 </div>
               </div>
               <div className="mt-6">
@@ -443,27 +443,27 @@ export default function AccountPage() {
             </div>
 
             {/* Notification Settings */}
-            <div className="rounded-xl bg-white p-6 border border-[var(--color-border)]">
+            <div className="rounded-xl bg-[var(--color-surface)] p-6 border border-[var(--color-border)]">
               <h2 className="text-lg font-semibold text-[var(--color-text)] mb-4">Benachrichtigungen</h2>
               <div className="space-y-4">
                 <label className="flex items-center justify-between">
                   <div>
                     <span className="font-medium text-[var(--color-text)]">Neue Ressourcen</span>
-                    <p className="text-sm text-[var(--color-text-muted)]">Benachrichtigungen uber neue Materialien von gefolgten Verkaufern</p>
+                    <p className="text-sm text-[var(--color-text-muted)]">Benachrichtigungen über neue Materialien von gefolgten Verkäufern</p>
                   </div>
                   <input type="checkbox" defaultChecked className="w-5 h-5 text-[var(--color-primary)] rounded" />
                 </label>
                 <label className="flex items-center justify-between">
                   <div>
-                    <span className="font-medium text-[var(--color-text)]">Preisanderungen</span>
-                    <p className="text-sm text-[var(--color-text-muted)]">Benachrichtigungen bei Preisanderungen auf der Wunschliste</p>
+                    <span className="font-medium text-[var(--color-text)]">Preisänderungen</span>
+                    <p className="text-sm text-[var(--color-text-muted)]">Benachrichtigungen bei Preisänderungen auf der Wunschliste</p>
                   </div>
                   <input type="checkbox" defaultChecked className="w-5 h-5 text-[var(--color-primary)] rounded" />
                 </label>
                 <label className="flex items-center justify-between">
                   <div>
                     <span className="font-medium text-[var(--color-text)]">Newsletter</span>
-                    <p className="text-sm text-[var(--color-text-muted)]">Wochentliche Updates und Tipps</p>
+                    <p className="text-sm text-[var(--color-text-muted)]">Wöchentliche Updates und Tipps</p>
                   </div>
                   <input type="checkbox" className="w-5 h-5 text-[var(--color-primary)] rounded" />
                 </label>
@@ -471,13 +471,13 @@ export default function AccountPage() {
             </div>
 
             {/* Danger Zone */}
-            <div className="rounded-xl bg-white p-6 border border-red-200">
-              <h2 className="text-lg font-semibold text-red-700 mb-4">Gefahrenzone</h2>
+            <div className="rounded-xl bg-[var(--color-surface)] p-6 border border-[var(--color-error)]/30">
+              <h2 className="text-lg font-semibold text-[var(--color-error)] mb-4">Gefahrenzone</h2>
               <p className="text-sm text-[var(--color-text-muted)] mb-4">
                 Diese Aktionen sind unwiderruflich. Bitte seien Sie vorsichtig.
               </p>
-              <button className="px-4 py-2 border border-red-500 text-red-500 text-sm font-medium rounded-md hover:bg-red-50 transition-colors">
-                Konto loschen
+              <button className="px-4 py-2 border border-[var(--color-error)] text-[var(--color-error)] text-sm font-medium rounded-md hover:bg-[var(--badge-error-bg)] transition-colors">
+                Konto löschen
               </button>
             </div>
           </div>
@@ -485,7 +485,7 @@ export default function AccountPage() {
       </main>
 
       {/* Footer */}
-      <footer className="mt-20 border-t border-[var(--color-border)] bg-white">
+      <footer className="mt-20 border-t border-[var(--color-border)] bg-[var(--color-surface)]">
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-sm text-[var(--color-text-muted)]">

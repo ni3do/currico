@@ -113,7 +113,7 @@ export default function RegisterPage() {
                   value={formData.name}
                   onChange={(e) => handleInputChange("name", e.target.value)}
                   required
-                  className="w-full rounded-lg border border-[var(--color-border)] bg-white px-4 py-3.5 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-[3px] focus:ring-[var(--color-primary)]/20 transition-all"
+                  className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3.5 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-[3px] focus:ring-[var(--color-primary)]/20 transition-all"
                   placeholder={t("form.namePlaceholder")}
                 />
               </div>
@@ -132,7 +132,7 @@ export default function RegisterPage() {
                   value={formData.email}
                   onChange={(e) => handleInputChange("email", e.target.value)}
                   required
-                  className={`w-full rounded-lg border bg-white px-4 py-3.5 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-[3px] transition-all ${
+                  className={`w-full rounded-lg border bg-[var(--color-surface)] px-4 py-3.5 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-[3px] transition-all ${
                     formData.email && !isValidEmail(formData.email)
                       ? "border-[var(--color-error)] focus:border-[var(--color-error)] focus:ring-[var(--color-error)]/20"
                       : "border-[var(--color-border)] focus:border-[var(--color-primary)] focus:ring-[var(--color-primary)]/20"
@@ -160,7 +160,7 @@ export default function RegisterPage() {
                   value={formData.password}
                   onChange={(e) => handleInputChange("password", e.target.value)}
                   required
-                  className={`w-full rounded-lg border bg-white px-4 py-3.5 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-[3px] transition-all ${
+                  className={`w-full rounded-lg border bg-[var(--color-surface)] px-4 py-3.5 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-[3px] transition-all ${
                     formData.password && formData.password.length < 8
                       ? "border-[var(--color-error)] focus:border-[var(--color-error)] focus:ring-[var(--color-error)]/20"
                       : "border-[var(--color-border)] focus:border-[var(--color-primary)] focus:ring-[var(--color-primary)]/20"
@@ -188,7 +188,7 @@ export default function RegisterPage() {
                   value={formData.confirmPassword}
                   onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
                   required
-                  className={`w-full rounded-lg border bg-white px-4 py-3.5 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-[3px] transition-all ${
+                  className={`w-full rounded-lg border bg-[var(--color-surface)] px-4 py-3.5 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-[3px] transition-all ${
                     formData.confirmPassword && formData.password !== formData.confirmPassword
                       ? "border-[var(--color-error)] focus:border-[var(--color-error)] focus:ring-[var(--color-error)]/20"
                       : "border-[var(--color-border)] focus:border-[var(--color-primary)] focus:ring-[var(--color-primary)]/20"
@@ -248,7 +248,7 @@ export default function RegisterPage() {
                   <div className="w-full border-t border-[var(--color-border)]"></div>
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="bg-white/90 px-4 text-[var(--color-text-muted)]">
+                  <span className="bg-[var(--color-surface)]/90 px-4 text-[var(--color-text-muted)]">
                     {t("divider")}
                   </span>
                 </div>

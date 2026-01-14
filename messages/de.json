@@ -13,7 +13,8 @@
       "logout": "Abmelden",
       "register": "Registrieren",
       "dashboard": "Dashboard",
-      "profile": "Profil"
+      "profile": "Profil",
+      "account": "Mein Konto"
     },
     "footer": {
       "brandDescription": "Die Plattform für Unterrichtsmaterial von Schweizer Lehrpersonen.",

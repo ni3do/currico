@@ -132,13 +132,13 @@ export default function ResourceDetailPage() {
           <div className="text-center">
             <h1 className="text-4xl font-bold text-[var(--color-text)] mb-4">Ressource nicht gefunden</h1>
             <p className="text-[var(--color-text-muted)] mb-8">
-              Die gesuchte Ressource existiert nicht oder ist nicht mehr verfugbar.
+              Die gesuchte Ressource existiert nicht oder ist nicht mehr verfügbar.
             </p>
             <Link
               href="/resources"
               className="btn-primary inline-flex items-center px-6 py-3 font-semibold"
             >
-              Zuruck zu den Ressourcen
+              Zurück zu den Ressourcen
             </Link>
           </div>
         </main>
@@ -154,7 +154,7 @@ export default function ResourceDetailPage() {
           <div className="text-center">
             <h1 className="text-4xl font-bold text-[var(--color-text)] mb-4">Fehler beim Laden</h1>
             <p className="text-[var(--color-text-muted)] mb-8">
-              Die Ressource konnte nicht geladen werden. Bitte versuchen Sie es spater erneut.
+              Die Ressource konnte nicht geladen werden. Bitte versuchen Sie es später erneut.
             </p>
             <button
               onClick={fetchResource}
@@ -260,7 +260,7 @@ export default function ResourceDetailPage() {
                     <div className="font-medium text-[var(--color-text)]">{resource.downloadCount}</div>
                   </div>
                   <div>
-                    <div className="text-sm text-[var(--color-text-muted)]">Veroffentlicht</div>
+                    <div className="text-sm text-[var(--color-text-muted)]">Veröffentlicht</div>
                     <div className="font-medium text-[var(--color-text)]">
                       {new Date(resource.createdAt).toLocaleDateString("de-CH")}
                     </div>
@@ -287,7 +287,7 @@ export default function ResourceDetailPage() {
                     </div>
                   </div>
                   <p className="mt-4 text-sm text-[var(--color-text-muted)]">
-                    Vollstandige Dateien sind nach dem Kauf verfugbar
+                    Vollständige Dateien sind nach dem Kauf verfügbar
                   </p>
                 </div>
               )}
@@ -307,8 +307,8 @@ export default function ResourceDetailPage() {
                 Bewertungen
               </h2>
               <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-8 text-center">
-                <p className="text-[var(--color-text-muted)] mb-2">Bewertungen sind bald verfugbar</p>
-                <p className="text-sm text-[var(--color-text-faint)]">Diese Funktion wird in Kurze freigeschaltet</p>
+                <p className="text-[var(--color-text-muted)] mb-2">Bewertungen sind bald verfügbar</p>
+                <p className="text-sm text-[var(--color-text-faint)]">Diese Funktion wird in Kürze freigeschaltet</p>
               </div>
             </div>
 
@@ -316,7 +316,7 @@ export default function ResourceDetailPage() {
             {relatedResources.length > 0 && (
               <div className="mt-12">
                 <h2 className="mb-6 text-2xl font-bold text-[var(--color-text)]">
-                  Ahnliche Ressourcen
+                  Ähnliche Ressourcen
                 </h2>
                 <div className="grid gap-4 sm:grid-cols-3">
                   {relatedResources.map((related) => (
@@ -361,7 +361,7 @@ export default function ResourceDetailPage() {
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={resource.seller.image}
-                    alt={resource.seller.displayName || "Verkaufer"}
+                    alt={resource.seller.displayName || "Verkäufer"}
                     className="h-12 w-12 rounded-full object-cover"
                   />
                 ) : (
@@ -438,7 +438,7 @@ export default function ResourceDetailPage() {
                 <select className="input">
                   <option>Unangemessener Inhalt</option>
                   <option>Urheberrechtsverletzung</option>
-                  <option>Qualitatsprobleme</option>
+                  <option>Qualitätsprobleme</option>
                   <option>Falsches Fach/Zyklus</option>
                   <option>Anderes</option>
                 </select>

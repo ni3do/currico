@@ -62,9 +62,9 @@ export default function SellerDashboardPage() {
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[var(--color-text)]">Verkaufer Dashboard</h1>
+          <h1 className="text-3xl font-bold text-[var(--color-text)]">Verkäufer-Dashboard</h1>
           <p className="mt-2 text-[var(--color-text-muted)]">
-            Verwalten Sie Ihre Ressourcen und uberwachen Sie Ihre Verkaufe
+            Verwalten Sie Ihre Ressourcen und überwachen Sie Ihre Verkäufe
           </p>
         </div>
 
@@ -95,7 +95,7 @@ export default function SellerDashboardPage() {
             <div className="text-3xl font-bold text-[var(--color-text)]">
               {stats.netEarnings}
             </div>
-            <p className="mt-1 text-sm text-[var(--color-text-muted)]">Nach Plattformgebuhr</p>
+            <p className="mt-1 text-sm text-[var(--color-text-muted)]">Nach Plattformgebühr</p>
           </div>
 
           {/* Total Downloads */}
@@ -257,7 +257,7 @@ export default function SellerDashboardPage() {
                           {resource.status === "Verified"
                             ? "Verifiziert"
                             : resource.status === "AI-Checked"
-                            ? "KI-Gepruft"
+                            ? "KI-Geprüft"
                             : "Ausstehend"}
                         </span>
                       </td>
@@ -313,7 +313,7 @@ export default function SellerDashboardPage() {
                       Bruttopreis
                     </th>
                     <th className="px-6 py-4 text-right text-sm font-semibold text-[var(--color-text)]">
-                      Plattformgebuhr
+                      Plattformgebühr
                     </th>
                     <th className="px-6 py-4 text-right text-sm font-semibold text-[var(--color-text)]">
                       Ihre Auszahlung

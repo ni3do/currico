@@ -13,7 +13,8 @@
       "logout": "Sign Out",
       "register": "Register",
       "dashboard": "Dashboard",
-      "profile": "Profile"
+      "profile": "Profile",
+      "account": "My Account"
     },
     "footer": {
       "brandDescription": "The platform for teaching materials by Swiss educators.",

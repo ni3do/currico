@@ -61,12 +61,34 @@ export default function TopBar() {
               <LocaleSwitcher />
               <ThemeToggle />
               {session ? (
-                <button
-                  onClick={() => signOut()}
-                  className="px-4 py-2 text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] font-medium text-sm transition-colors"
-                >
-                  {t("navigation.logout")}
-                </button>
+                <>
+                  <Link
+                    href="/account"
+                    className="flex items-center gap-2 px-4 py-2 text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] font-medium text-sm transition-colors"
+                  >
+                    {session.user?.image ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={session.user.image}
+                        alt=""
+                        className="w-6 h-6 rounded-full"
+                      />
+                    ) : (
+                      <div className="w-6 h-6 rounded-full bg-[var(--color-primary)] flex items-center justify-center">
+                        <span className="text-xs font-bold text-white">
+                          {(session.user?.name || "U").charAt(0).toUpperCase()}
+                        </span>
+                      </div>
+                    )}
+                    {t("navigation.account")}
+                  </Link>
+                  <button
+                    onClick={() => signOut()}
+                    className="px-4 py-2 text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] font-medium text-sm transition-colors"
+                  >
+                    {t("navigation.logout")}
+                  </button>
+                </>
               ) : (
                 <>
                   <Link
@@ -138,12 +160,34 @@ export default function TopBar() {
                   <ThemeToggle />
                 </div>
                 {session ? (
-                  <button
-                    onClick={() => signOut()}
-                    className="px-4 py-2 text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] font-medium text-sm transition-colors text-left"
-                  >
-                    {t("navigation.logout")}
-                  </button>
+                  <>
+                    <Link
+                      href="/account"
+                      className="flex items-center gap-2 px-4 py-2 text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] font-medium text-sm transition-colors"
+                    >
+                      {session.user?.image ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={session.user.image}
+                          alt=""
+                          className="w-6 h-6 rounded-full"
+                        />
+                      ) : (
+                        <div className="w-6 h-6 rounded-full bg-[var(--color-primary)] flex items-center justify-center">
+                          <span className="text-xs font-bold text-white">
+                            {(session.user?.name || "U").charAt(0).toUpperCase()}
+                          </span>
+                        </div>
+                      )}
+                      {t("navigation.account")}
+                    </Link>
+                    <button
+                      onClick={() => signOut()}
+                      className="px-4 py-2 text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] font-medium text-sm transition-colors text-left"
+                    >
+                      {t("navigation.logout")}
+                    </button>
+                  </>
                 ) : (
                   <>
                     <Link
