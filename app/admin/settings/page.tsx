@@ -17,21 +17,21 @@ export default function AdminSettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[--background]">
+    <div className="min-h-screen bg-[var(--color-bg)]">
       <TopBar />
 
       <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[--text]">Plattform-Einstellungen</h1>
-          <p className="mt-2 text-[--text-muted]">
+          <h1 className="text-3xl font-bold text-[var(--color-text)]">Plattform-Einstellungen</h1>
+          <p className="mt-2 text-[var(--color-text-muted)]">
             Verwalten Sie globale Einstellungen der Plattform
           </p>
         </div>
 
         {/* Commission Settings */}
-        <div className="rounded-2xl border border-[--border] bg-[--surface] p-8">
-          <h2 className="mb-6 text-xl font-semibold text-[--text]">
+        <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8">
+          <h2 className="mb-6 text-xl font-semibold text-[var(--color-text)]">
             Provisionseinstellungen
           </h2>
 
@@ -40,7 +40,7 @@ export default function AdminSettingsPage() {
             <div>
               <label
                 htmlFor="commissionRate"
-                className="mb-2 block text-sm font-medium text-[--text]"
+                className="mb-2 block text-sm font-medium text-[var(--color-text)]"
               >
                 Plattform-Provisionsrate (%)
               </label>
@@ -55,9 +55,9 @@ export default function AdminSettingsPage() {
                       min="0"
                       max="100"
                       step="0.5"
-                      className="w-full rounded-xl border border-[--border] bg-[--background] px-4 py-3 pr-12 text-[--text] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20"
+                      className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 pr-12 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                     />
-                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[--text-muted]">
+                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]">
                       %
                     </span>
                   </div>
@@ -65,23 +65,23 @@ export default function AdminSettingsPage() {
                 <button
                   onClick={handleSave}
                   disabled={isSaving}
-                  className="rounded-xl bg-gradient-to-r from-[--primary] to-[--secondary] px-6 py-3 font-semibold text-[--background] hover:opacity-90 transition-opacity shadow-lg shadow-[--primary]/20 disabled:opacity-50"
+                  className="rounded-xl bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-success)] px-6 py-3 font-semibold text-white hover:opacity-90 transition-opacity shadow-lg shadow-[var(--color-primary)]/20 disabled:opacity-50"
                 >
                   {isSaving ? "Wird gespeichert..." : "Provisionsrate aktualisieren"}
                 </button>
               </div>
-              <p className="mt-2 text-sm text-[--text-muted]">
+              <p className="mt-2 text-sm text-[var(--color-text-muted)]">
                 Dieser Prozentsatz wird von jedem Verkauf abgezogen. Der Rest geht an
                 den Verkäufer.
               </p>
             </div>
 
             {/* Explanation Card */}
-            <div className="rounded-xl border border-[--border] bg-[--background] p-6">
-              <h3 className="mb-3 font-semibold text-[--text]">Wie funktioniert es?</h3>
-              <div className="space-y-2 text-sm text-[--text-muted]">
+            <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-6">
+              <h3 className="mb-3 font-semibold text-[var(--color-text)]">Wie funktioniert es?</h3>
+              <div className="space-y-2 text-sm text-[var(--color-text-muted)]">
                 <p>
-                  <strong className="text-[--text]">Beispiel:</strong> Bei einem
+                  <strong className="text-[var(--color-text)]">Beispiel:</strong> Bei einem
                   Verkaufspreis von CHF 20.00 und {commissionRate}% Provision:
                 </p>
                 <div className="ml-4 space-y-1">
@@ -100,10 +100,10 @@ export default function AdminSettingsPage() {
             </div>
 
             {/* Current Impact */}
-            <div className="rounded-xl border border-[--sapphire]/30 bg-[--sapphire]/10 p-6">
+            <div className="rounded-xl border border-[var(--color-info)]/30 bg-[var(--color-info)]/10 p-6">
               <div className="flex items-start gap-3">
                 <svg
-                  className="h-5 w-5 flex-shrink-0 text-[--sapphire]"
+                  className="h-5 w-5 flex-shrink-0 text-[var(--color-info)]"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -114,8 +114,8 @@ export default function AdminSettingsPage() {
                   />
                 </svg>
                 <div className="text-sm">
-                  <strong className="text-[--text]">Hinweis:</strong>
-                  <p className="mt-1 text-[--text-muted]">
+                  <strong className="text-[var(--color-text)]">Hinweis:</strong>
+                  <p className="mt-1 text-[var(--color-text-muted)]">
                     Änderungen an der Provisionsrate gelten sofort für alle neuen
                     Transaktionen. Bereits abgeschlossene Transaktionen bleiben
                     unverändert.
@@ -127,20 +127,20 @@ export default function AdminSettingsPage() {
         </div>
 
         {/* Additional Settings (Placeholder) */}
-        <div className="mt-8 rounded-2xl border border-[--border] bg-[--surface] p-8">
-          <h2 className="mb-6 text-xl font-semibold text-[--text]">
+        <div className="mt-8 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8">
+          <h2 className="mb-6 text-xl font-semibold text-[var(--color-text)]">
             Weitere Einstellungen
           </h2>
-          <p className="text-[--text-muted]">
+          <p className="text-[var(--color-text-muted)]">
             Zusätzliche Plattform-Einstellungen werden hier angezeigt.
           </p>
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="mt-20 border-t border-[--border] bg-[--surface]/50">
+      <footer className="mt-20 border-t border-[var(--color-border)] bg-[var(--color-surface)]/50">
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="text-center text-sm text-[--text-muted]">
+          <div className="text-center text-sm text-[var(--color-text-muted)]">
             <p>© 2026 Easy Lehrer. Alle Rechte vorbehalten.</p>
           </div>
         </div>

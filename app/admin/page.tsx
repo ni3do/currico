@@ -1,73 +1,111 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import TopBar from "@/components/ui/TopBar";
 
-// Mock data
-const mockResources = [
-  {
-    id: 1,
-    title: "Bruchrechnen Übungsblätter",
-    seller: "Maria Schmidt",
-    status: "Pending",
-    uploadDate: "2026-01-08",
-    subject: "Mathematik",
-  },
-  {
-    id: 2,
-    title: "Leseverstehen: Kurzgeschichten",
-    seller: "Peter Müller",
-    status: "AI-Checked",
-    uploadDate: "2026-01-07",
-    subject: "Deutsch",
-  },
-  {
-    id: 3,
-    title: "NMG Experimente mit Wasser",
-    seller: "Anna Weber",
-    status: "Verified",
-    uploadDate: "2026-01-05",
-    subject: "NMG",
-  },
-];
+interface AdminResource {
+  id: string;
+  title: string;
+  status: string;
+  subjects: string[];
+  created_at: string;
+  seller: {
+    id: string;
+    display_name: string | null;
+    email: string;
+  };
+}
 
-const mockReports = [
-  {
-    id: 1,
-    resource: "Grammatik Übungen",
-    reporter: "Thomas Fischer",
-    reason: "Qualitätsprobleme",
-    date: "2026-01-08",
-    status: "Open",
-  },
-  {
-    id: 2,
-    resource: "Mathe Arbeitsblätter",
-    reporter: "Lisa Meier",
-    reason: "Urheberrechtsverletzung",
-    date: "2026-01-07",
-    status: "In Review",
-  },
-  {
-    id: 3,
-    resource: "Englisch Vokabeln",
-    reporter: "Hans Keller",
-    reason: "Falsches Fach/Zyklus",
-    date: "2026-01-06",
-    status: "Resolved",
-  },
-];
+interface AdminReport {
+  id: string;
+  reason: string;
+  status: string;
+  created_at: string;
+  reporter: {
+    id: string;
+    display_name: string | null;
+    email: string;
+  };
+  resource: {
+    id: string;
+    title: string;
+  } | null;
+}
+
+interface AdminStats {
+  pendingApproval: number;
+  openReports: number;
+  totalResources: number;
+}
 
 export default function AdminDashboardPage() {
   const [activeTab, setActiveTab] = useState<"quality" | "reports">("quality");
-  const [selectedResource, setSelectedResource] = useState<number | null>(null);
+  const [selectedResource, setSelectedResource] = useState<string | null>(null);
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [newStatus, setNewStatus] = useState("");
   const [adminNote, setAdminNote] = useState("");
+  const [resources, setResources] = useState<AdminResource[]>([]);
+  const [reports, setReports] = useState<AdminReport[]>([]);
+  const [stats, setStats] = useState<AdminStats>({ pendingApproval: 0, openReports: 0, totalResources: 0 });
+  const [loading, setLoading] = useState(true);
 
-  const handleStatusChange = () => {
-    console.log("Changing status:", { selectedResource, newStatus, adminNote });
+  useEffect(() => {
+    fetchAdminData();
+  }, []);
+
+  const fetchAdminData = async () => {
+    setLoading(true);
+    try {
+      const [resourcesRes, reportsRes, statsRes] = await Promise.all([
+        fetch("/api/admin/resources?status=pending"),
+        fetch("/api/admin/reports"),
+        fetch("/api/admin/stats"),
+      ]);
+
+      if (resourcesRes.ok) {
+        const data = await resourcesRes.json();
+        setResources(data.resources);
+      }
+      if (reportsRes.ok) {
+        const data = await reportsRes.json();
+        setReports(data.reports);
+      }
+      if (statsRes.ok) {
+        const data = await statsRes.json();
+        setStats({
+          pendingApproval: data.pendingApproval,
+          openReports: data.openReports,
+          totalResources: data.totalResources,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching admin data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleStatusChange = async () => {
+    if (!selectedResource) return;
+
+    try {
+      const response = await fetch("/api/admin/resources", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: selectedResource,
+          is_approved: newStatus === "Verified",
+        }),
+      });
+
+      if (response.ok) {
+        fetchAdminData(); // Refresh the data
+      }
+    } catch (error) {
+      console.error("Error updating resource:", error);
+    }
+
     setShowStatusModal(false);
     setSelectedResource(null);
     setNewStatus("");
@@ -75,25 +113,25 @@ export default function AdminDashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[--background]">
+    <div className="min-h-screen bg-[var(--color-bg)]">
       <TopBar />
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[--text]">Admin Dashboard</h1>
-          <p className="mt-2 text-[--text-muted]">
+          <h1 className="text-3xl font-bold text-[var(--color-text)]">Admin Dashboard</h1>
+          <p className="mt-2 text-[var(--color-text-muted)]">
             Verwalten Sie Qualitätsstatus und Meldungen
           </p>
         </div>
 
         {/* Stats Overview */}
         <div className="mb-8 grid gap-6 sm:grid-cols-3">
-          <div className="rounded-2xl border border-[--border] bg-[--surface] p-6">
+          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
             <div className="mb-2 flex items-center gap-2">
-              <div className="rounded-lg bg-gradient-to-br from-[--yellow] to-[--peach] p-2">
+              <div className="rounded-lg bg-gradient-to-br from-[var(--ctp-yellow)] to-[var(--ctp-peach)] p-2">
                 <svg
-                  className="h-6 w-6 text-[--background]"
+                  className="h-6 w-6 text-[var(--ctp-crust)]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -106,18 +144,18 @@ export default function AdminDashboardPage() {
                   />
                 </svg>
               </div>
-              <h3 className="text-sm font-medium text-[--text-muted]">
+              <h3 className="text-sm font-medium text-[var(--color-text-muted)]">
                 Ausstehende Prüfungen
               </h3>
             </div>
-            <div className="text-3xl font-bold text-[--text]">12</div>
+            <div className="text-3xl font-bold text-[var(--color-text)]">{stats.pendingApproval}</div>
           </div>
 
-          <div className="rounded-2xl border border-[--border] bg-[--surface] p-6">
+          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
             <div className="mb-2 flex items-center gap-2">
-              <div className="rounded-lg bg-gradient-to-br from-[--red] to-[--maroon] p-2">
+              <div className="rounded-lg bg-gradient-to-br from-[var(--ctp-red)] to-[var(--ctp-maroon)] p-2">
                 <svg
-                  className="h-6 w-6 text-[--background]"
+                  className="h-6 w-6 text-[var(--ctp-crust)]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -130,18 +168,18 @@ export default function AdminDashboardPage() {
                   />
                 </svg>
               </div>
-              <h3 className="text-sm font-medium text-[--text-muted]">
+              <h3 className="text-sm font-medium text-[var(--color-text-muted)]">
                 Offene Meldungen
               </h3>
             </div>
-            <div className="text-3xl font-bold text-[--text]">3</div>
+            <div className="text-3xl font-bold text-[var(--color-text)]">{stats.openReports}</div>
           </div>
 
-          <div className="rounded-2xl border border-[--border] bg-[--surface] p-6">
+          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
             <div className="mb-2 flex items-center gap-2">
-              <div className="rounded-lg bg-gradient-to-br from-[--green] to-[--teal] p-2">
+              <div className="rounded-lg bg-gradient-to-br from-[var(--ctp-green)] to-[var(--ctp-teal)] p-2">
                 <svg
-                  className="h-6 w-6 text-[--background]"
+                  className="h-6 w-6 text-[var(--ctp-crust)]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -154,22 +192,22 @@ export default function AdminDashboardPage() {
                   />
                 </svg>
               </div>
-              <h3 className="text-sm font-medium text-[--text-muted]">
-                Diese Woche verifiziert
+              <h3 className="text-sm font-medium text-[var(--color-text-muted)]">
+                Gesamt Ressourcen
               </h3>
             </div>
-            <div className="text-3xl font-bold text-[--text]">45</div>
+            <div className="text-3xl font-bold text-[var(--color-text)]">{stats.totalResources}</div>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="mb-8 flex gap-4 border-b border-[--border]">
+        <div className="mb-8 flex gap-4 border-b border-[var(--color-border)]">
           <button
             onClick={() => setActiveTab("quality")}
             className={`pb-4 text-sm font-medium transition-colors ${
               activeTab === "quality"
-                ? "border-b-2 border-[--primary] text-[--primary]"
-                : "text-[--text-muted] hover:text-[--text]"
+                ? "border-b-2 border-[var(--color-primary)] text-[var(--color-primary)]"
+                : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
             }`}
           >
             Qualitätsstatus
@@ -178,8 +216,8 @@ export default function AdminDashboardPage() {
             onClick={() => setActiveTab("reports")}
             className={`pb-4 text-sm font-medium transition-colors ${
               activeTab === "reports"
-                ? "border-b-2 border-[--primary] text-[--primary]"
-                : "text-[--text-muted] hover:text-[--text]"
+                ? "border-b-2 border-[var(--color-primary)] text-[var(--color-primary)]"
+                : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
             }`}
           >
             Meldungen
@@ -188,47 +226,55 @@ export default function AdminDashboardPage() {
 
         {/* Quality Status Management */}
         {activeTab === "quality" && (
-          <div className="rounded-2xl border border-[--border] bg-[--surface] overflow-hidden">
+          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-[--background]">
+                <thead className="bg-[var(--color-bg)]">
                   <tr>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-[--text]">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
                       Titel
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-[--text]">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
                       Verkäufer
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-[--text]">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
                       Fach
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-[--text]">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
                       Status
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-[--text]">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
                       Hochgeladen
                     </th>
-                    <th className="px-6 py-4 text-right text-sm font-semibold text-[--text]">
+                    <th className="px-6 py-4 text-right text-sm font-semibold text-[var(--color-text)]">
                       Aktionen
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[--border]">
-                  {mockResources.map((resource) => (
-                    <tr key={resource.id} className="hover:bg-[--background] transition-colors">
-                      <td className="px-6 py-4 font-medium text-[--text]">
+                <tbody className="divide-y divide-[var(--color-border)]">
+                  {loading ? (
+                    <tr>
+                      <td colSpan={6} className="px-6 py-12 text-center text-[var(--color-text-muted)]">Laden...</td>
+                    </tr>
+                  ) : resources.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="px-6 py-12 text-center text-[var(--color-text-muted)]">Keine ausstehenden Ressourcen</td>
+                    </tr>
+                  ) : resources.map((resource) => (
+                    <tr key={resource.id} className="hover:bg-[var(--color-bg)] transition-colors">
+                      <td className="px-6 py-4 font-medium text-[var(--color-text)]">
                         {resource.title}
                       </td>
-                      <td className="px-6 py-4 text-[--text-muted]">{resource.seller}</td>
-                      <td className="px-6 py-4 text-[--text-muted]">{resource.subject}</td>
+                      <td className="px-6 py-4 text-[var(--color-text-muted)]">{resource.seller.display_name || resource.seller.email}</td>
+                      <td className="px-6 py-4 text-[var(--color-text-muted)]">{resource.subjects[0] || "-"}</td>
                       <td className="px-6 py-4">
                         <span
                           className={`rounded-full px-3 py-1 text-xs font-medium ${
                             resource.status === "Verified"
-                              ? "bg-[--green]/20 text-[--green]"
+                              ? "bg-[var(--badge-success-bg)] text-[var(--badge-success-text)]"
                               : resource.status === "AI-Checked"
-                              ? "bg-[--sapphire]/20 text-[--sapphire]"
-                              : "bg-[--yellow]/20 text-[--yellow]"
+                              ? "bg-[var(--badge-info-bg)] text-[var(--badge-info-text)]"
+                              : "bg-[var(--badge-warning-bg)] text-[var(--badge-warning-text)]"
                           }`}
                         >
                           {resource.status === "Verified"
@@ -238,8 +284,8 @@ export default function AdminDashboardPage() {
                             : "Ausstehend"}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-[--text-muted]">
-                        {new Date(resource.uploadDate).toLocaleDateString("de-CH")}
+                      <td className="px-6 py-4 text-[var(--color-text-muted)]">
+                        {new Date(resource.created_at).toLocaleDateString("de-CH")}
                       </td>
                       <td className="px-6 py-4 text-right">
                         <button
@@ -248,7 +294,7 @@ export default function AdminDashboardPage() {
                             setNewStatus(resource.status);
                             setShowStatusModal(true);
                           }}
-                          className="rounded-lg bg-gradient-to-r from-[--primary] to-[--secondary] px-4 py-2 text-sm font-medium text-[--background] hover:opacity-90 transition-opacity"
+                          className="btn-primary px-4 py-2 text-sm"
                         >
                           Status ändern
                         </button>
@@ -263,61 +309,69 @@ export default function AdminDashboardPage() {
 
         {/* Reports Management */}
         {activeTab === "reports" && (
-          <div className="rounded-2xl border border-[--border] bg-[--surface] overflow-hidden">
+          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-[--background]">
+                <thead className="bg-[var(--color-bg)]">
                   <tr>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-[--text]">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
                       Ressource
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-[--text]">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
                       Melder
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-[--text]">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
                       Grund
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-[--text]">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
                       Status
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-[--text]">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
                       Datum
                     </th>
-                    <th className="px-6 py-4 text-right text-sm font-semibold text-[--text]">
+                    <th className="px-6 py-4 text-right text-sm font-semibold text-[var(--color-text)]">
                       Aktionen
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[--border]">
-                  {mockReports.map((report) => (
-                    <tr key={report.id} className="hover:bg-[--background] transition-colors">
-                      <td className="px-6 py-4 font-medium text-[--text]">
-                        {report.resource}
+                <tbody className="divide-y divide-[var(--color-border)]">
+                  {loading ? (
+                    <tr>
+                      <td colSpan={6} className="px-6 py-12 text-center text-[var(--color-text-muted)]">Laden...</td>
+                    </tr>
+                  ) : reports.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="px-6 py-12 text-center text-[var(--color-text-muted)]">Keine Meldungen vorhanden</td>
+                    </tr>
+                  ) : reports.map((report) => (
+                    <tr key={report.id} className="hover:bg-[var(--color-bg)] transition-colors">
+                      <td className="px-6 py-4 font-medium text-[var(--color-text)]">
+                        {report.resource?.title || "-"}
                       </td>
-                      <td className="px-6 py-4 text-[--text-muted]">{report.reporter}</td>
-                      <td className="px-6 py-4 text-[--text-muted]">{report.reason}</td>
+                      <td className="px-6 py-4 text-[var(--color-text-muted)]">{report.reporter.display_name || report.reporter.email}</td>
+                      <td className="px-6 py-4 text-[var(--color-text-muted)]">{report.reason}</td>
                       <td className="px-6 py-4">
                         <span
                           className={`rounded-full px-3 py-1 text-xs font-medium ${
-                            report.status === "Open"
-                              ? "bg-[--red]/20 text-[--red]"
-                              : report.status === "In Review"
-                              ? "bg-[--yellow]/20 text-[--yellow]"
-                              : "bg-[--green]/20 text-[--green]"
+                            report.status === "OPEN"
+                              ? "bg-[var(--badge-error-bg)] text-[var(--badge-error-text)]"
+                              : report.status === "IN_REVIEW"
+                              ? "bg-[var(--badge-warning-bg)] text-[var(--badge-warning-text)]"
+                              : "bg-[var(--badge-success-bg)] text-[var(--badge-success-text)]"
                           }`}
                         >
-                          {report.status === "Open"
+                          {report.status === "OPEN"
                             ? "Offen"
-                            : report.status === "In Review"
+                            : report.status === "IN_REVIEW"
                             ? "In Prüfung"
                             : "Gelöst"}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-[--text-muted]">
-                        {new Date(report.date).toLocaleDateString("de-CH")}
+                      <td className="px-6 py-4 text-[var(--color-text-muted)]">
+                        {new Date(report.created_at).toLocaleDateString("de-CH")}
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <button className="rounded-lg border border-[--border] px-4 py-2 text-sm font-medium text-[--text] hover:bg-[--surface1] transition-colors">
+                        <button className="btn-secondary px-4 py-2 text-sm">
                           Prüfen
                         </button>
                       </td>
@@ -332,15 +386,15 @@ export default function AdminDashboardPage() {
 
       {/* Status Change Modal */}
       {showStatusModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[--background]/80 backdrop-blur-sm">
-          <div className="mx-4 w-full max-w-md rounded-2xl border border-[--border] bg-[--surface] p-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--color-bg)]/80 backdrop-blur-sm">
+          <div className="mx-4 w-full max-w-md rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-xl font-semibold text-[--text]">
+              <h3 className="text-xl font-semibold text-[var(--color-text)]">
                 Status ändern
               </h3>
               <button
                 onClick={() => setShowStatusModal(false)}
-                className="text-[--text-muted] hover:text-[--text]"
+                className="text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
               >
                 <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -350,13 +404,13 @@ export default function AdminDashboardPage() {
 
             <div className="space-y-4">
               <div>
-                <label className="mb-2 block text-sm font-medium text-[--text]">
+                <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
                   Neuer Status
                 </label>
                 <select
                   value={newStatus}
                   onChange={(e) => setNewStatus(e.target.value)}
-                  className="w-full rounded-lg border border-[--border] bg-[--background] px-4 py-2 text-[--text] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20"
+                  className="input"
                 >
                   <option value="Pending">Ausstehend</option>
                   <option value="AI-Checked">KI-Geprüft</option>
@@ -365,14 +419,14 @@ export default function AdminDashboardPage() {
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-[--text]">
+                <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
                   Interne Notiz (optional)
                 </label>
                 <textarea
                   value={adminNote}
                   onChange={(e) => setAdminNote(e.target.value)}
                   rows={3}
-                  className="w-full rounded-lg border border-[--border] bg-[--background] px-4 py-2 text-[--text] placeholder:text-[--text-muted] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20"
+                  className="input min-h-[80px] resize-y"
                   placeholder="Notizen zur Statusänderung..."
                 />
               </div>
@@ -380,13 +434,13 @@ export default function AdminDashboardPage() {
               <div className="flex gap-3">
                 <button
                   onClick={handleStatusChange}
-                  className="flex-1 rounded-lg bg-gradient-to-r from-[--primary] to-[--secondary] px-4 py-3 font-medium text-[--background] hover:opacity-90 transition-opacity"
+                  className="btn-primary flex-1 px-4 py-3"
                 >
                   Status aktualisieren
                 </button>
                 <button
                   onClick={() => setShowStatusModal(false)}
-                  className="rounded-lg border border-[--border] px-6 py-3 font-medium text-[--text] hover:bg-[--surface1] transition-colors"
+                  className="btn-secondary px-6 py-3"
                 >
                   Abbrechen
                 </button>
@@ -397,9 +451,9 @@ export default function AdminDashboardPage() {
       )}
 
       {/* Footer */}
-      <footer className="mt-20 border-t border-[--border] bg-[--surface]/50">
+      <footer className="mt-20 border-t border-[var(--color-border)] bg-[var(--color-bg-secondary)]">
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="text-center text-sm text-[--text-muted]">
+          <div className="text-center text-sm text-[var(--color-text-muted)]">
             <p>© 2026 Easy Lehrer. Alle Rechte vorbehalten.</p>
           </div>
         </div>

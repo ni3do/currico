@@ -70,14 +70,14 @@ export default function UploadPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[--background]">
+    <div className="min-h-screen bg-[var(--color-bg)]">
       <TopBar />
 
       <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-[--text]">Ressource hochladen</h1>
-          <p className="mt-2 text-[--text-muted]">
+          <h1 className="text-3xl font-bold text-[var(--color-text)]">Ressource hochladen</h1>
+          <p className="mt-2 text-[var(--color-text-muted)]">
             Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen
           </p>
         </div>
@@ -91,13 +91,13 @@ export default function UploadPage() {
                   <div
                     className={`flex h-10 w-10 items-center justify-center rounded-full border-2 font-semibold transition-all ${
                       step <= currentStep
-                        ? "border-[--primary] bg-[--primary] text-[--background]"
-                        : "border-[--border] bg-[--surface] text-[--text-muted]"
+                        ? "border-[var(--color-primary)] bg-[var(--color-primary)] text-white"
+                        : "border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)]"
                     }`}
                   >
                     {step}
                   </div>
-                  <span className="mt-2 text-xs text-[--text-muted]">
+                  <span className="mt-2 text-xs text-[var(--color-text-muted)]">
                     {step === 1 && "Basics"}
                     {step === 2 && "Lehrplan"}
                     {step === 3 && "Preis"}
@@ -107,7 +107,7 @@ export default function UploadPage() {
                 {step < 4 && (
                   <div
                     className={`flex-1 h-0.5 mx-2 ${
-                      step < currentStep ? "bg-[--primary]" : "bg-[--border]"
+                      step < currentStep ? "bg-[var(--color-primary)]" : "bg-[var(--color-border)]"
                     }`}
                   />
                 )}
@@ -117,14 +117,14 @@ export default function UploadPage() {
         </div>
 
         {/* Form */}
-        <div className="rounded-2xl border border-[--border] bg-[--surface] p-8">
+        <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8">
           {/* Step 1: Basics */}
           {currentStep === 1 && (
             <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-[--text]">Grundinformationen</h2>
+              <h2 className="text-xl font-semibold text-[var(--color-text)]">Grundinformationen</h2>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-[--text]">
+                <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
                   Titel *
                 </label>
                 <input
@@ -132,13 +132,13 @@ export default function UploadPage() {
                   value={formData.title}
                   onChange={(e) => updateFormData("title", e.target.value)}
                   required
-                  className="w-full rounded-xl border border-[--border] bg-[--background] px-4 py-3 text-[--text] placeholder:text-[--text-muted] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20"
+                  className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] placeholder:text-[var(--color-text-faint)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                   placeholder="z.B. Bruchrechnen Übungsblätter"
                 />
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-[--text]">
+                <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
                   Kurzbeschreibung *
                 </label>
                 <textarea
@@ -146,20 +146,20 @@ export default function UploadPage() {
                   onChange={(e) => updateFormData("description", e.target.value)}
                   required
                   rows={4}
-                  className="w-full rounded-xl border border-[--border] bg-[--background] px-4 py-3 text-[--text] placeholder:text-[--text-muted] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20"
+                  className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] placeholder:text-[var(--color-text-faint)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                   placeholder="Beschreiben Sie Ihre Ressource in 2-3 Sätzen..."
                 />
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[--text]">
+                  <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
                     Sprache *
                   </label>
                   <select
                     value={formData.language}
                     onChange={(e) => updateFormData("language", e.target.value)}
-                    className="w-full rounded-xl border border-[--border] bg-[--background] px-4 py-3 text-[--text] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20"
+                    className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                   >
                     <option value="de">Deutsch</option>
                     <option value="fr">Französisch</option>
@@ -169,13 +169,13 @@ export default function UploadPage() {
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[--text]">
+                  <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
                     Ressourcentyp *
                   </label>
                   <select
                     value={formData.resourceType}
                     onChange={(e) => updateFormData("resourceType", e.target.value)}
-                    className="w-full rounded-xl border border-[--border] bg-[--background] px-4 py-3 text-[--text] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20"
+                    className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                   >
                     <option value="pdf">PDF</option>
                     <option value="word">Word</option>
@@ -191,17 +191,17 @@ export default function UploadPage() {
           {/* Step 2: Curriculum */}
           {currentStep === 2 && (
             <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-[--text]">Lehrplan-Zuordnung</h2>
+              <h2 className="text-xl font-semibold text-[var(--color-text)]">Lehrplan-Zuordnung</h2>
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[--text]">
+                  <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
                     Zyklus *
                   </label>
                   <select
                     value={formData.cycle}
                     onChange={(e) => updateFormData("cycle", e.target.value)}
-                    className="w-full rounded-xl border border-[--border] bg-[--background] px-4 py-3 text-[--text] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20"
+                    className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                   >
                     <option value="">Wählen Sie...</option>
                     <option value="1">Zyklus 1</option>
@@ -211,13 +211,13 @@ export default function UploadPage() {
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[--text]">
+                  <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
                     Hauptfach *
                   </label>
                   <select
                     value={formData.subject}
                     onChange={(e) => updateFormData("subject", e.target.value)}
-                    className="w-full rounded-xl border border-[--border] bg-[--background] px-4 py-3 text-[--text] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20"
+                    className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                   >
                     <option value="">Wählen Sie...</option>
                     <option value="Mathematik">Mathematik</option>
@@ -233,13 +233,13 @@ export default function UploadPage() {
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-[--text]">
+                <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
                   Kanton *
                 </label>
                 <select
                   value={formData.canton}
                   onChange={(e) => updateFormData("canton", e.target.value)}
-                  className="w-full rounded-xl border border-[--border] bg-[--background] px-4 py-3 text-[--text] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20"
+                  className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                 >
                   <option value="">Wählen Sie...</option>
                   <option value="ZH">Zürich</option>
@@ -252,15 +252,15 @@ export default function UploadPage() {
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-[--text]">
+                <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
                   Lehrplan 21 Kompetenzen
                 </label>
                 <input
                   type="text"
                   placeholder="z.B. MA.1.A.2, MA.1.A.3 (kommagetrennt)"
-                  className="w-full rounded-xl border border-[--border] bg-[--background] px-4 py-3 text-[--text] placeholder:text-[--text-muted] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20"
+                  className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] placeholder:text-[var(--color-text-faint)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                 />
-                <p className="mt-1 text-xs text-[--text-muted]">
+                <p className="mt-1 text-xs text-[var(--color-text-muted)]">
                   Optional: Geben Sie die Kompetenzcodes aus dem Lehrplan 21 ein
                 </p>
               </div>
@@ -270,18 +270,18 @@ export default function UploadPage() {
           {/* Step 3: Properties */}
           {currentStep === 3 && (
             <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-[--text]">Eigenschaften & Preis</h2>
+              <h2 className="text-xl font-semibold text-[var(--color-text)]">Eigenschaften & Preis</h2>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-[--text]">
+                <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
                   Preistyp *
                 </label>
                 <div className="grid grid-cols-2 gap-4">
                   <label
                     className={`flex cursor-pointer items-center gap-3 rounded-xl border-2 p-4 transition-all ${
                       formData.priceType === "free"
-                        ? "border-[--primary] bg-[--primary]/10"
-                        : "border-[--border] bg-[--background]"
+                        ? "border-[var(--color-primary)] bg-[var(--color-primary)]/10"
+                        : "border-[var(--color-border)] bg-[var(--color-bg)]"
                     }`}
                   >
                     <input
@@ -290,11 +290,11 @@ export default function UploadPage() {
                       value="free"
                       checked={formData.priceType === "free"}
                       onChange={(e) => updateFormData("priceType", e.target.value)}
-                      className="h-4 w-4 text-[--primary] focus:ring-2 focus:ring-[--primary]/20"
+                      className="h-4 w-4 text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20"
                     />
                     <div>
-                      <div className="font-medium text-[--text]">Kostenlos</div>
-                      <div className="text-xs text-[--text-muted]">
+                      <div className="font-medium text-[var(--color-text)]">Kostenlos</div>
+                      <div className="text-xs text-[var(--color-text-muted)]">
                         Frei zugänglich
                       </div>
                     </div>
@@ -303,8 +303,8 @@ export default function UploadPage() {
                   <label
                     className={`flex cursor-pointer items-center gap-3 rounded-xl border-2 p-4 transition-all ${
                       formData.priceType === "paid"
-                        ? "border-[--primary] bg-[--primary]/10"
-                        : "border-[--border] bg-[--background]"
+                        ? "border-[var(--color-primary)] bg-[var(--color-primary)]/10"
+                        : "border-[var(--color-border)] bg-[var(--color-bg)]"
                     }`}
                   >
                     <input
@@ -313,11 +313,11 @@ export default function UploadPage() {
                       value="paid"
                       checked={formData.priceType === "paid"}
                       onChange={(e) => updateFormData("priceType", e.target.value)}
-                      className="h-4 w-4 text-[--primary] focus:ring-2 focus:ring-[--primary]/20"
+                      className="h-4 w-4 text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20"
                     />
                     <div>
-                      <div className="font-medium text-[--text]">Kostenpflichtig</div>
-                      <div className="text-xs text-[--text-muted]">Preis festlegen</div>
+                      <div className="font-medium text-[var(--color-text)]">Kostenpflichtig</div>
+                      <div className="text-xs text-[var(--color-text-muted)]">Preis festlegen</div>
                     </div>
                   </label>
                 </div>
@@ -325,7 +325,7 @@ export default function UploadPage() {
 
               {formData.priceType === "paid" && (
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[--text]">
+                  <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
                     Preis (CHF) *
                   </label>
                   <div className="relative">
@@ -335,14 +335,14 @@ export default function UploadPage() {
                       onChange={(e) => updateFormData("price", e.target.value)}
                       min="0"
                       step="0.50"
-                      className="w-full rounded-xl border border-[--border] bg-[--background] px-4 py-3 pl-12 text-[--text] placeholder:text-[--text-muted] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20"
+                      className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 pl-12 text-[var(--color-text)] placeholder:text-[var(--color-text-faint)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                       placeholder="12.00"
                     />
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[--text-muted]">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]">
                       CHF
                     </span>
                   </div>
-                  <p className="mt-1 text-xs text-[--text-muted]">
+                  <p className="mt-1 text-xs text-[var(--color-text-muted)]">
                     Sie erhalten 85% des Verkaufspreises (15% Plattformgebühr)
                   </p>
                 </div>
@@ -354,13 +354,13 @@ export default function UploadPage() {
                     type="checkbox"
                     checked={formData.editable}
                     onChange={(e) => updateFormData("editable", e.target.checked)}
-                    className="h-4 w-4 rounded border-[--border] bg-[--background] text-[--primary] focus:ring-2 focus:ring-[--primary]/20"
+                    className="h-4 w-4 rounded border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20"
                   />
                   <div>
-                    <div className="text-sm font-medium text-[--text]">
+                    <div className="text-sm font-medium text-[var(--color-text)]">
                       Editierbar
                     </div>
-                    <div className="text-xs text-[--text-muted]">
+                    <div className="text-xs text-[var(--color-text-muted)]">
                       Käufer können die Datei bearbeiten (z.B. Word-Dokument)
                     </div>
                   </div>
@@ -368,13 +368,13 @@ export default function UploadPage() {
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-[--text]">
+                <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
                   Lizenzumfang *
                 </label>
                 <select
                   value={formData.licenseScope}
                   onChange={(e) => updateFormData("licenseScope", e.target.value)}
-                  className="w-full rounded-xl border border-[--border] bg-[--background] px-4 py-3 text-[--text] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20"
+                  className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                 >
                   <option value="individual">Einzellizenz</option>
                 </select>
@@ -385,18 +385,18 @@ export default function UploadPage() {
           {/* Step 4: Files */}
           {currentStep === 4 && (
             <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-[--text]">Dateien & Vorschau</h2>
+              <h2 className="text-xl font-semibold text-[var(--color-text)]">Dateien & Vorschau</h2>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-[--text]">
+                <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
                   Hauptdatei(en) *
                 </label>
                 <div
                   onClick={() => mainFileInputRef.current?.click()}
-                  className="rounded-xl border-2 border-dashed border-[--border] bg-[--background] p-8 text-center cursor-pointer hover:border-[--primary] transition-colors"
+                  className="rounded-xl border-2 border-dashed border-[var(--color-border)] bg-[var(--color-bg)] p-8 text-center cursor-pointer hover:border-[var(--color-primary)] transition-colors"
                 >
                   <svg
-                    className="mx-auto h-12 w-12 text-[--text-muted]"
+                    className="mx-auto h-12 w-12 text-[var(--color-text-muted)]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -408,14 +408,14 @@ export default function UploadPage() {
                       d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
                     />
                   </svg>
-                  <p className="mt-2 text-sm text-[--text]">
+                  <p className="mt-2 text-sm text-[var(--color-text)]">
                     Klicken Sie hier oder ziehen Sie Dateien hinein
                   </p>
-                  <p className="mt-1 text-xs text-[--text-muted]">
+                  <p className="mt-1 text-xs text-[var(--color-text-muted)]">
                     PDF, Word, PowerPoint, Excel bis 50 MB
                   </p>
                   {formData.files.length > 0 && (
-                    <p className="mt-2 text-sm text-[--primary] font-medium">
+                    <p className="mt-2 text-sm text-[var(--color-primary)] font-medium">
                       {formData.files.length} Datei(en) ausgewählt
                     </p>
                   )}
@@ -431,15 +431,15 @@ export default function UploadPage() {
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-[--text]">
+                <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
                   Vorschaudateien
                 </label>
                 <div
                   onClick={() => previewFileInputRef.current?.click()}
-                  className="rounded-xl border-2 border-dashed border-[--border] bg-[--background] p-8 text-center cursor-pointer hover:border-[--primary] transition-colors"
+                  className="rounded-xl border-2 border-dashed border-[var(--color-border)] bg-[var(--color-bg)] p-8 text-center cursor-pointer hover:border-[var(--color-primary)] transition-colors"
                 >
                   <svg
-                    className="mx-auto h-12 w-12 text-[--text-muted]"
+                    className="mx-auto h-12 w-12 text-[var(--color-text-muted)]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -451,14 +451,14 @@ export default function UploadPage() {
                       d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                     />
                   </svg>
-                  <p className="mt-2 text-sm text-[--text]">
+                  <p className="mt-2 text-sm text-[var(--color-text)]">
                     Vorschaubilder hochladen (optional)
                   </p>
-                  <p className="mt-1 text-xs text-[--text-muted]">
+                  <p className="mt-1 text-xs text-[var(--color-text-muted)]">
                     PNG, JPG bis 10 MB - wird mit Wasserzeichen versehen
                   </p>
                   {formData.previewFiles.length > 0 && (
-                    <p className="mt-2 text-sm text-[--primary] font-medium">
+                    <p className="mt-2 text-sm text-[var(--color-primary)] font-medium">
                       {formData.previewFiles.length} Vorschaubild(er) ausgewählt
                     </p>
                   )}
@@ -473,10 +473,10 @@ export default function UploadPage() {
                 </div>
               </div>
 
-              <div className="rounded-xl border border-[--border] bg-[--background] p-4">
+              <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-4">
                 <div className="flex gap-3">
                   <svg
-                    className="h-5 w-5 flex-shrink-0 text-[--sapphire]"
+                    className="h-5 w-5 flex-shrink-0 text-[var(--color-info)]"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -486,8 +486,8 @@ export default function UploadPage() {
                       clipRule="evenodd"
                     />
                   </svg>
-                  <div className="text-sm text-[--text-muted]">
-                    <strong className="text-[--text]">Hinweis:</strong> Vorschaudateien werden
+                  <div className="text-sm text-[var(--color-text-muted)]">
+                    <strong className="text-[var(--color-text)]">Hinweis:</strong> Vorschaudateien werden
                     automatisch mit einem Wasserzeichen versehen. Die vollständigen
                     Dateien sind nur für Käufer zugänglich.
                   </div>
@@ -497,11 +497,11 @@ export default function UploadPage() {
           )}
 
           {/* Navigation Buttons */}
-          <div className="mt-8 flex justify-between border-t border-[--border] pt-6">
+          <div className="mt-8 flex justify-between border-t border-[var(--color-border)] pt-6">
             <button
               onClick={handleBack}
               disabled={currentStep === 1}
-              className="rounded-lg border border-[--border] px-6 py-3 font-medium text-[--text] hover:bg-[--surface1] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="rounded-lg border border-[var(--color-border)] px-6 py-3 font-medium text-[var(--color-text)] hover:bg-[var(--color-surface-elevated)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Zurück
             </button>
@@ -509,14 +509,14 @@ export default function UploadPage() {
             {currentStep < 4 ? (
               <button
                 onClick={handleNext}
-                className="rounded-lg bg-gradient-to-r from-[--primary] to-[--secondary] px-8 py-3 font-semibold text-[--background] hover:opacity-90 transition-opacity shadow-lg shadow-[--primary]/20"
+                className="rounded-lg bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-success)] px-8 py-3 font-semibold text-white hover:opacity-90 transition-opacity shadow-lg shadow-[var(--color-primary)]/20"
               >
                 Weiter
               </button>
             ) : (
               <button
                 onClick={handlePublish}
-                className="rounded-lg bg-gradient-to-r from-[--green] to-[--teal] px-8 py-3 font-semibold text-[--background] hover:opacity-90 transition-opacity shadow-lg shadow-[--green]/20"
+                className="rounded-lg bg-gradient-to-r from-[var(--color-success)] to-[var(--color-info)] px-8 py-3 font-semibold text-white hover:opacity-90 transition-opacity shadow-lg shadow-[var(--color-success)]/20"
               >
                 Veröffentlichen
               </button>
@@ -526,9 +526,9 @@ export default function UploadPage() {
       </main>
 
       {/* Footer */}
-      <footer className="mt-20 border-t border-[--border] bg-[--surface]/50">
+      <footer className="mt-20 border-t border-[var(--color-border)] bg-[var(--color-surface)]/50">
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="text-center text-sm text-[--text-muted]">
+          <div className="text-center text-sm text-[var(--color-text-muted)]">
             <p>© 2026 Easy Lehrer. Alle Rechte vorbehalten.</p>
           </div>
         </div>

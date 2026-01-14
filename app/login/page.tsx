@@ -55,8 +55,8 @@ export default function LoginPage() {
           <div className="glass-card p-8 sm:p-10">
             {/* Title */}
             <div className="mb-8 text-center">
-              <h1 className="text-3xl font-bold text-[--text-heading]">{loginPage.title}</h1>
-              <p className="mt-3 text-[--text-muted]">
+              <h1 className="text-3xl font-bold text-[var(--color-text)]">{loginPage.title}</h1>
+              <p className="mt-3 text-[var(--color-text-muted)]">
                 {loginPage.subtitle}
               </p>
             </div>
@@ -67,7 +67,7 @@ export default function LoginPage() {
               <div>
                 <label
                   htmlFor="email"
-                  className="mb-2 block text-sm font-medium text-[--text-heading]"
+                  className="mb-2 block text-sm font-medium text-[var(--color-text)]"
                 >
                   {loginPage.form.emailLabel}
                 </label>
@@ -77,15 +77,15 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className={`w-full rounded-[--radius-md] border bg-white px-4 py-3.5 text-[--text-heading] placeholder:text-[--text-light] focus:outline-none focus:ring-[3px] transition-all ${
+                  className={`w-full rounded-lg border bg-white px-4 py-3.5 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-[3px] transition-all ${
                     email && !isValidEmail(email)
-                      ? "border-[--error] focus:border-[--error] focus:ring-[--error-light]"
-                      : "border-[--border] focus:border-[--primary] focus:ring-[--primary-light]"
+                      ? "border-[var(--color-error)] focus:border-[var(--color-error)] focus:ring-[var(--color-error)]/20"
+                      : "border-[var(--color-border)] focus:border-[var(--color-primary)] focus:ring-[var(--color-primary)]/20"
                   }`}
                   placeholder={loginPage.form.emailPlaceholder}
                 />
                 {email && !isValidEmail(email) && (
-                  <p className="mt-2 text-sm text-[--error] animate-fade-in">
+                  <p className="mt-2 text-sm text-[var(--color-error)] animate-fade-in">
                     {loginPage.form.emailError}
                   </p>
                 )}
@@ -96,13 +96,13 @@ export default function LoginPage() {
                 <div className="mb-2 flex items-center justify-between">
                   <label
                     htmlFor="password"
-                    className="text-sm font-medium text-[--text-heading]"
+                    className="text-sm font-medium text-[var(--color-text)]"
                   >
                     {loginPage.form.passwordLabel}
                   </label>
                   <Link
                     href="/coming-soon"
-                    className="text-sm text-[--primary] hover:text-[--primary-hover] transition-colors font-medium"
+                    className="text-sm text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-colors font-medium"
                   >
                     {loginPage.form.forgotPassword}
                   </Link>
@@ -113,7 +113,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full rounded-[--radius-md] border border-[--border] bg-white px-4 py-3.5 text-[--text-heading] placeholder:text-[--text-light] focus:outline-none focus:border-[--primary] focus:ring-[3px] focus:ring-[--primary-light] transition-all"
+                  className="w-full rounded-lg border border-[var(--color-border)] bg-white px-4 py-3.5 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-[3px] focus:ring-[var(--color-primary)]/20 transition-all"
                   placeholder={loginPage.form.passwordPlaceholder}
                 />
               </div>
@@ -123,11 +123,11 @@ export default function LoginPage() {
                 <input
                   type="checkbox"
                   id="remember"
-                  className="h-4 w-4 rounded border-[--border] text-[--primary] focus:ring-2 focus:ring-[--primary-light] cursor-pointer"
+                  className="h-4 w-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 cursor-pointer"
                 />
                 <label
                   htmlFor="remember"
-                  className="ml-2.5 text-sm text-[--text-muted] cursor-pointer"
+                  className="ml-2.5 text-sm text-[var(--color-text-muted)] cursor-pointer"
                 >
                   {loginPage.form.rememberMe}
                 </label>
@@ -135,7 +135,7 @@ export default function LoginPage() {
 
               {/* Error Message */}
               {error && (
-                <div className="rounded-[--radius-md] bg-[--error-light] border border-[--error] px-4 py-3 text-sm text-[--error] animate-fade-in">
+                <div className="rounded-lg bg-[var(--badge-error-bg)] border border-[var(--color-error)] px-4 py-3 text-sm text-[var(--color-error)] animate-fade-in">
                   {error}
                 </div>
               )}
@@ -144,7 +144,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full rounded-[--radius-md] bg-[#DC2626] px-6 py-3.5 font-semibold text-white text-center transition-all hover:-translate-y-0.5 hover:bg-[#B91C1C] hover:shadow-[0_8px_25px_rgba(220,38,38,0.35)] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none disabled:hover:bg-[#DC2626]"
+                className="w-full rounded-lg bg-[#DC2626] px-6 py-3.5 font-semibold text-white text-center transition-all hover:-translate-y-0.5 hover:bg-[#B91C1C] hover:shadow-[0_8px_25px_rgba(220,38,38,0.35)] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none disabled:hover:bg-[#DC2626]"
               >
                 {isLoading ? "Wird angemeldet..." : "Anmelden"}
               </button>
@@ -154,10 +154,10 @@ export default function LoginPage() {
             <div className="my-8">
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-[--border]"></div>
+                  <div className="w-full border-t border-[var(--color-border)]"></div>
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="bg-white/90 px-4 text-[--text-muted]">
+                  <span className="bg-white/90 px-4 text-[var(--color-text-muted)]">
                     {loginPage.divider}
                   </span>
                 </div>
@@ -169,7 +169,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => signIn("google")}
-                className="flex items-center justify-center gap-3 rounded-[--radius-md] bg-[--gray-100] px-4 py-3.5 text-[--text-heading] font-medium hover:bg-[--gray-200] transition-all"
+                className="flex items-center justify-center gap-3 rounded-lg bg-[var(--color-surface)] px-4 py-3.5 text-[var(--color-text)] font-medium hover:bg-[var(--color-surface-elevated)] transition-all"
               >
                 <svg className="h-5 w-5" viewBox="0 0 24 24">
                   <path
@@ -195,7 +195,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => signIn("github")}
-                className="flex items-center justify-center gap-3 rounded-[--radius-md] bg-[--gray-100] px-4 py-3.5 text-[--text-heading] font-medium hover:bg-[--gray-200] transition-all"
+                className="flex items-center justify-center gap-3 rounded-lg bg-[var(--color-surface)] px-4 py-3.5 text-[var(--color-text)] font-medium hover:bg-[var(--color-surface-elevated)] transition-all"
               >
                 <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z" />
@@ -205,11 +205,11 @@ export default function LoginPage() {
             </div>
 
             {/* Register Link */}
-            <p className="mt-8 text-center text-[--text-muted]">
+            <p className="mt-8 text-center text-[var(--color-text-muted)]">
               {loginPage.register.prompt}{" "}
               <Link
                 href="/register"
-                className="font-semibold text-[--primary] hover:text-[--primary-hover] transition-colors"
+                className="font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-colors"
               >
                 {loginPage.register.link}
               </Link>
@@ -222,7 +222,7 @@ export default function LoginPage() {
       <footer className="relative z-10 px-6 py-6 sm:px-8">
         <Link
           href="/"
-          className="inline-flex items-center text-sm text-[--text-muted] hover:text-[--primary] transition-colors font-medium"
+          className="inline-flex items-center text-sm text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors font-medium"
         >
           <svg className="mr-1.5 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />

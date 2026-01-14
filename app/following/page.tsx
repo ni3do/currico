@@ -1,73 +1,42 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import TopBar from "@/components/ui/TopBar";
 
-// Mock data - updates from followed sellers
-const mockUpdates = [
-  {
-    id: 1,
-    title: "Geometrie Arbeitsblätter Zyklus 3",
-    seller: "Maria Schmidt",
-    type: "Resource",
-    publishDate: "2026-01-08",
-    subject: "Mathematik",
-    price: "CHF 14.00",
-  },
-  {
-    id: 2,
-    title: "Deutsch Komplett-Paket",
-    seller: "Peter Müller",
-    type: "Bundle",
-    publishDate: "2026-01-07",
-    subject: "Deutsch",
-    price: "CHF 35.00",
-  },
-  {
-    id: 3,
-    title: "Textaufgaben für Fortgeschrittene",
-    seller: "Maria Schmidt",
-    type: "Resource",
-    publishDate: "2026-01-05",
-    subject: "Mathematik",
-    price: "CHF 12.00",
-  },
-  {
-    id: 4,
-    title: "Naturwissenschaftliche Experimente",
-    seller: "Anna Weber",
-    type: "Resource",
-    publishDate: "2026-01-04",
-    subject: "NMG",
-    price: "CHF 18.00",
-  },
-  {
-    id: 5,
-    title: "Leseverständnis Übungen",
-    seller: "Peter Müller",
-    type: "Resource",
-    publishDate: "2026-01-02",
-    subject: "Deutsch",
-    price: "Gratis",
-  },
-];
+// Note: Following feature requires additional database models (follower relationships)
+// that are not yet implemented. This page shows empty states for now.
 
-const mockFollowedSellers = [
-  { id: 1, name: "Maria Schmidt", resources: 23 },
-  { id: 2, name: "Peter Müller", resources: 15 },
-  { id: 3, name: "Anna Weber", resources: 12 },
-];
+interface Update {
+  id: string;
+  title: string;
+  seller: string;
+  type: string;
+  publishDate: string;
+  subject: string;
+  price: string;
+}
+
+interface FollowedSeller {
+  id: string;
+  name: string;
+  resources: number;
+}
 
 export default function FollowingPage() {
+  // These features require additional database models (follower relationships)
+  // For now, we show empty states
+  const [updates] = useState<Update[]>([]);
+  const [followedSellers] = useState<FollowedSeller[]>([]);
   return (
-    <div className="min-h-screen bg-[--background]">
+    <div className="min-h-screen bg-[var(--color-bg)]">
       <TopBar />
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[--text]">Folge ich</h1>
-          <p className="mt-2 text-[--text-muted]">
+          <h1 className="text-3xl font-bold text-[var(--color-text)]">Folge ich</h1>
+          <p className="mt-2 text-[var(--color-text-muted)]">
             Neue Ressourcen von Verkäufern, denen Sie folgen
           </p>
         </div>
@@ -75,16 +44,22 @@ export default function FollowingPage() {
         <div className="grid gap-8 lg:grid-cols-3">
           {/* Main Content - Updates */}
           <div className="lg:col-span-2">
-            <div className="rounded-2xl border border-[--border] bg-[--surface] p-8">
-              <h2 className="mb-6 text-xl font-semibold text-[--text]">
+            <div className="card p-8">
+              <h2 className="mb-6 text-xl font-semibold text-[var(--color-text)]">
                 Neueste Updates
               </h2>
 
               <div className="space-y-4">
-                {mockUpdates.map((update) => (
+                {updates.length === 0 ? (
+                  <div className="py-12 text-center">
+                    <p className="text-[var(--color-text-muted)] mb-2">Keine Updates vorhanden</p>
+                    <p className="text-sm text-[var(--color-text-faint)] mb-4">Folgen Sie Verkäufern, um ihre neuen Ressourcen zu sehen</p>
+                    <p className="text-xs text-[var(--color-text-faint)]">Diese Funktion wird bald verfügbar sein</p>
+                  </div>
+                ) : updates.map((update) => (
                   <div
                     key={update.id}
-                    className="rounded-xl border border-[--border] bg-[--background] p-6 hover:border-[--primary]/50 transition-all"
+                    className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-6 hover:border-[var(--color-primary)]/50 transition-all"
                   >
                     <div className="mb-3 flex items-start justify-between">
                       <div className="flex-1">
@@ -92,21 +67,21 @@ export default function FollowingPage() {
                           <span
                             className={`rounded-full px-2 py-0.5 text-xs font-medium ${
                               update.type === "Bundle"
-                                ? "bg-[--secondary]/20 text-[--secondary]"
-                                : "bg-[--primary]/20 text-[--primary]"
+                                ? "bg-[var(--badge-success-bg)] text-[var(--badge-success-text)]"
+                                : "bg-[var(--badge-primary-bg)] text-[var(--badge-primary-text)]"
                             }`}
                           >
                             {update.type}
                           </span>
-                          <span className="rounded-full bg-[--surface] px-2 py-0.5 text-xs text-[--text-muted]">
+                          <span className="pill pill-neutral">
                             {update.subject}
                           </span>
                         </div>
-                        <h3 className="mb-2 text-lg font-semibold text-[--text]">
+                        <h3 className="mb-2 text-lg font-semibold text-[var(--color-text)]">
                           {update.title}
                         </h3>
-                        <div className="flex items-center gap-2 text-sm text-[--text-muted]">
-                          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-[--primary] to-[--secondary] text-xs font-bold text-[--background]">
+                        <div className="flex items-center gap-2 text-sm text-[var(--color-text-muted)]">
+                          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-success)] text-xs font-bold text-[var(--ctp-crust)]">
                             {update.seller.charAt(0)}
                           </div>
                           <span>{update.seller}</span>
@@ -117,12 +92,12 @@ export default function FollowingPage() {
                         </div>
                       </div>
                       <div className="ml-4 text-right">
-                        <div className="mb-2 text-lg font-bold text-[--primary]">
+                        <div className="mb-2 text-lg font-bold text-[var(--color-primary)]">
                           {update.price}
                         </div>
                         <a
                           href={`/resources/${update.id}`}
-                          className="inline-block rounded-lg bg-gradient-to-r from-[--primary] to-[--secondary] px-4 py-2 text-sm font-medium text-[--background] hover:opacity-90 transition-opacity"
+                          className="btn-primary px-4 py-2 text-sm inline-block"
                         >
                           Ansehen
                         </a>
@@ -132,42 +107,48 @@ export default function FollowingPage() {
                 ))}
               </div>
 
-              {/* Load More */}
-              <div className="mt-6 text-center">
-                <button className="rounded-lg border border-[--border] bg-[--background] px-6 py-3 text-sm font-medium text-[--text] hover:bg-[--surface1] transition-colors">
-                  Mehr laden
-                </button>
-              </div>
+              {/* Load More - only show when there are updates */}
+              {updates.length > 0 && (
+                <div className="mt-6 text-center">
+                  <button className="btn-secondary px-6 py-3 text-sm">
+                    Mehr laden
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
           {/* Sidebar - Followed Sellers */}
           <div className="lg:col-span-1">
-            <div className="rounded-2xl border border-[--border] bg-[--surface] p-6">
-              <h3 className="mb-4 font-semibold text-[--text]">
-                Folge ich ({mockFollowedSellers.length})
+            <div className="card p-6">
+              <h3 className="mb-4 font-semibold text-[var(--color-text)]">
+                Folge ich ({followedSellers.length})
               </h3>
 
               <div className="space-y-3">
-                {mockFollowedSellers.map((seller) => (
+                {followedSellers.length === 0 ? (
+                  <div className="py-4 text-center">
+                    <p className="text-sm text-[var(--color-text-muted)]">Sie folgen noch niemandem</p>
+                  </div>
+                ) : followedSellers.map((seller) => (
                   <div
                     key={seller.id}
-                    className="flex items-center justify-between rounded-lg border border-[--border] bg-[--background] p-3"
+                    className="flex items-center justify-between rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] p-3"
                   >
                     <div className="flex items-center gap-2">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[--primary] to-[--secondary] text-xs font-bold text-[--background]">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-success)] text-xs font-bold text-[var(--ctp-crust)]">
                         {seller.name.charAt(0)}
                       </div>
                       <div>
-                        <div className="text-sm font-medium text-[--text]">
+                        <div className="text-sm font-medium text-[var(--color-text)]">
                           {seller.name}
                         </div>
-                        <div className="text-xs text-[--text-muted]">
+                        <div className="text-xs text-[var(--color-text-muted)]">
                           {seller.resources} Ressourcen
                         </div>
                       </div>
                     </div>
-                    <button className="rounded-lg border border-[--border] px-3 py-1 text-xs text-[--text] hover:bg-[--surface1] transition-colors">
+                    <button className="btn-ghost px-3 py-1 text-xs">
                       Entfolgen
                     </button>
                   </div>
@@ -176,29 +157,29 @@ export default function FollowingPage() {
 
               <Link
                 href="/resources"
-                className="mt-4 block text-center text-sm text-[--primary] hover:text-[--primary-hover] transition-colors"
+                className="mt-4 block text-center text-sm text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-colors"
               >
                 Mehr Verkäufer entdecken →
               </Link>
             </div>
 
             {/* Quick Stats */}
-            <div className="mt-6 rounded-2xl border border-[--border] bg-[--surface] p-6">
-              <h3 className="mb-4 font-semibold text-[--text]">Ihre Statistiken</h3>
+            <div className="mt-6 card p-6">
+              <h3 className="mb-4 font-semibold text-[var(--color-text)]">Ihre Statistiken</h3>
               <div className="space-y-3">
                 <div>
-                  <div className="text-2xl font-bold text-[--primary]">
-                    {mockUpdates.length}
+                  <div className="text-2xl font-bold text-[var(--color-primary)]">
+                    {updates.length}
                   </div>
-                  <div className="text-sm text-[--text-muted]">
+                  <div className="text-sm text-[var(--color-text-muted)]">
                     Neue Updates diese Woche
                   </div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-[--secondary]">
-                    {mockFollowedSellers.length}
+                  <div className="text-2xl font-bold text-[var(--color-success)]">
+                    {followedSellers.length}
                   </div>
-                  <div className="text-sm text-[--text-muted]">Gefolgte Verkäufer</div>
+                  <div className="text-sm text-[var(--color-text-muted)]">Gefolgte Verkäufer</div>
                 </div>
               </div>
             </div>
@@ -207,9 +188,9 @@ export default function FollowingPage() {
       </main>
 
       {/* Footer */}
-      <footer className="mt-20 border-t border-[--border] bg-[--surface]/50">
+      <footer className="mt-20 border-t border-[var(--color-border)] bg-[var(--color-bg-secondary)]">
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="text-center text-sm text-[--text-muted]">
+          <div className="text-center text-sm text-[var(--color-text-muted)]">
             <p>© 2026 Easy Lehrer. Alle Rechte vorbehalten.</p>
           </div>
         </div>

@@ -12,11 +12,11 @@ export function ProfileCompletionBanner({
   if (missingFields.length === 0) return null;
 
   return (
-    <div className="rounded-xl border border-[--yellow]/50 bg-[--yellow]/10 p-6">
+    <div className="rounded-xl border border-[var(--color-warning)]/50 bg-[var(--color-warning)]/10 p-6">
       <div className="flex items-start gap-4">
-        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[--yellow]/20">
+        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[var(--color-warning)]/20">
           <svg
-            className="h-5 w-5 text-[--yellow]"
+            className="h-5 w-5 text-[var(--color-warning)]"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -30,10 +30,10 @@ export function ProfileCompletionBanner({
           </svg>
         </div>
         <div className="flex-1">
-          <h3 className="font-semibold text-[--text]">
+          <h3 className="font-semibold text-[var(--color-text)]">
             Profil vervollständigen
           </h3>
-          <p className="mt-1 text-sm text-[--text-muted]">
+          <p className="mt-1 text-sm text-[var(--color-text-muted)]">
             Bevor Sie Materialien hochladen können, müssen Sie folgende Angaben
             ergänzen:
           </p>
@@ -41,7 +41,7 @@ export function ProfileCompletionBanner({
             {missingFields.map((field) => (
               <li
                 key={field}
-                className="flex items-center gap-2 text-sm text-[--red]"
+                className="flex items-center gap-2 text-sm text-[var(--color-error)]"
               >
                 <svg
                   className="h-4 w-4"
@@ -62,7 +62,7 @@ export function ProfileCompletionBanner({
           </ul>
           <button
             onClick={onComplete}
-            className="mt-4 rounded-lg bg-gradient-to-r from-[--primary] to-[--secondary] px-4 py-2 text-sm font-medium text-[--background] hover:opacity-90 transition-opacity"
+            className="mt-4 rounded-lg bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-success)] px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity"
           >
             Profil vervollständigen
           </button>

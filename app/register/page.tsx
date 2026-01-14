@@ -92,8 +92,8 @@ export default function RegisterPage() {
           <div className="glass-card p-8 sm:p-10">
             {/* Title */}
             <div className="mb-8 text-center">
-              <h1 className="text-3xl font-bold text-[--text-heading]">{registerPage.title}</h1>
-              <p className="mt-3 text-[--text-muted]">
+              <h1 className="text-3xl font-bold text-[var(--color-text)]">{registerPage.title}</h1>
+              <p className="mt-3 text-[var(--color-text-muted)]">
                 {registerPage.subtitle}
               </p>
             </div>
@@ -104,7 +104,7 @@ export default function RegisterPage() {
               <div>
                 <label
                   htmlFor="name"
-                  className="mb-2 block text-sm font-medium text-[--text-heading]"
+                  className="mb-2 block text-sm font-medium text-[var(--color-text)]"
                 >
                   Vollständiger Name
                 </label>
@@ -114,7 +114,7 @@ export default function RegisterPage() {
                   value={formData.name}
                   onChange={(e) => handleInputChange("name", e.target.value)}
                   required
-                  className="w-full rounded-[--radius-md] border border-[--border] bg-white px-4 py-3.5 text-[--text-heading] placeholder:text-[--text-light] focus:outline-none focus:border-[--primary] focus:ring-[3px] focus:ring-[--primary-light] transition-all"
+                  className="w-full rounded-lg border border-[var(--color-border)] bg-white px-4 py-3.5 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-[3px] focus:ring-[var(--color-primary)]/20 transition-all"
                   placeholder="Maria Schmidt"
                 />
               </div>
@@ -123,7 +123,7 @@ export default function RegisterPage() {
               <div>
                 <label
                   htmlFor="email"
-                  className="mb-2 block text-sm font-medium text-[--text-heading]"
+                  className="mb-2 block text-sm font-medium text-[var(--color-text)]"
                 >
                   E-Mail-Adresse
                 </label>
@@ -133,15 +133,15 @@ export default function RegisterPage() {
                   value={formData.email}
                   onChange={(e) => handleInputChange("email", e.target.value)}
                   required
-                  className={`w-full rounded-[--radius-md] border bg-white px-4 py-3.5 text-[--text-heading] placeholder:text-[--text-light] focus:outline-none focus:ring-[3px] transition-all ${
+                  className={`w-full rounded-lg border bg-white px-4 py-3.5 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-[3px] transition-all ${
                     formData.email && !isValidEmail(formData.email)
-                      ? "border-[--error] focus:border-[--error] focus:ring-[--error-light]"
-                      : "border-[--border] focus:border-[--primary] focus:ring-[--primary-light]"
+                      ? "border-[var(--color-error)] focus:border-[var(--color-error)] focus:ring-[var(--color-error)]/20"
+                      : "border-[var(--color-border)] focus:border-[var(--color-primary)] focus:ring-[var(--color-primary)]/20"
                   }`}
                   placeholder="ihre.email@example.com"
                 />
                 {formData.email && !isValidEmail(formData.email) && (
-                  <p className="mt-2 text-sm text-[--error] animate-fade-in">
+                  <p className="mt-2 text-sm text-[var(--color-error)] animate-fade-in">
                     Bitte geben Sie eine gültige E-Mail-Adresse ein
                   </p>
                 )}
@@ -151,7 +151,7 @@ export default function RegisterPage() {
               <div>
                 <label
                   htmlFor="password"
-                  className="mb-2 block text-sm font-medium text-[--text-heading]"
+                  className="mb-2 block text-sm font-medium text-[var(--color-text)]"
                 >
                   Passwort
                 </label>
@@ -161,15 +161,15 @@ export default function RegisterPage() {
                   value={formData.password}
                   onChange={(e) => handleInputChange("password", e.target.value)}
                   required
-                  className={`w-full rounded-[--radius-md] border bg-white px-4 py-3.5 text-[--text-heading] placeholder:text-[--text-light] focus:outline-none focus:ring-[3px] transition-all ${
+                  className={`w-full rounded-lg border bg-white px-4 py-3.5 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-[3px] transition-all ${
                     formData.password && formData.password.length < 8
-                      ? "border-[--error] focus:border-[--error] focus:ring-[--error-light]"
-                      : "border-[--border] focus:border-[--primary] focus:ring-[--primary-light]"
+                      ? "border-[var(--color-error)] focus:border-[var(--color-error)] focus:ring-[var(--color-error)]/20"
+                      : "border-[var(--color-border)] focus:border-[var(--color-primary)] focus:ring-[var(--color-primary)]/20"
                   }`}
                   placeholder="Mindestens 8 Zeichen"
                 />
                 {formData.password && formData.password.length < 8 && (
-                  <p className="mt-2 text-sm text-[--error] animate-fade-in">
+                  <p className="mt-2 text-sm text-[var(--color-error)] animate-fade-in">
                     Passwort muss mindestens 8 Zeichen lang sein
                   </p>
                 )}
@@ -179,7 +179,7 @@ export default function RegisterPage() {
               <div>
                 <label
                   htmlFor="confirmPassword"
-                  className="mb-2 block text-sm font-medium text-[--text-heading]"
+                  className="mb-2 block text-sm font-medium text-[var(--color-text)]"
                 >
                   Passwort bestätigen
                 </label>
@@ -189,15 +189,15 @@ export default function RegisterPage() {
                   value={formData.confirmPassword}
                   onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
                   required
-                  className={`w-full rounded-[--radius-md] border bg-white px-4 py-3.5 text-[--text-heading] placeholder:text-[--text-light] focus:outline-none focus:ring-[3px] transition-all ${
+                  className={`w-full rounded-lg border bg-white px-4 py-3.5 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-[3px] transition-all ${
                     formData.confirmPassword && formData.password !== formData.confirmPassword
-                      ? "border-[--error] focus:border-[--error] focus:ring-[--error-light]"
-                      : "border-[--border] focus:border-[--primary] focus:ring-[--primary-light]"
+                      ? "border-[var(--color-error)] focus:border-[var(--color-error)] focus:ring-[var(--color-error)]/20"
+                      : "border-[var(--color-border)] focus:border-[var(--color-primary)] focus:ring-[var(--color-primary)]/20"
                   }`}
                   placeholder="Passwort wiederholen"
                 />
                 {formData.confirmPassword && formData.password !== formData.confirmPassword && (
-                  <p className="mt-2 text-sm text-[--error] animate-fade-in">
+                  <p className="mt-2 text-sm text-[var(--color-error)] animate-fade-in">
                     Passwörter stimmen nicht überein
                   </p>
                 )}
@@ -211,15 +211,15 @@ export default function RegisterPage() {
                   checked={formData.agreeToTerms}
                   onChange={(e) => handleInputChange("agreeToTerms", e.target.checked)}
                   required
-                  className="mt-0.5 h-4 w-4 rounded border-[--border] text-[--primary] focus:ring-2 focus:ring-[--primary-light] cursor-pointer"
+                  className="mt-0.5 h-4 w-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 cursor-pointer"
                 />
-                <label htmlFor="terms" className="text-sm text-[--text-muted]">
+                <label htmlFor="terms" className="text-sm text-[var(--color-text-muted)]">
                   Ich akzeptiere die{" "}
-                  <Link href="/coming-soon" className="text-[--primary] hover:text-[--primary-hover] font-medium">
+                  <Link href="/coming-soon" className="text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] font-medium">
                     Allgemeinen Geschäftsbedingungen
                   </Link>{" "}
                   und die{" "}
-                  <Link href="/coming-soon" className="text-[--primary] hover:text-[--primary-hover] font-medium">
+                  <Link href="/coming-soon" className="text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] font-medium">
                     Datenschutzerklärung
                   </Link>
                 </label>
@@ -227,7 +227,7 @@ export default function RegisterPage() {
 
               {/* Error Message */}
               {error && (
-                <div className="rounded-[--radius-md] bg-[--error-light] border border-[--error] px-4 py-3 text-sm text-[--error] animate-fade-in">
+                <div className="rounded-lg bg-[var(--badge-error-bg)] border border-[var(--color-error)] px-4 py-3 text-sm text-[var(--color-error)] animate-fade-in">
                   {error}
                 </div>
               )}
@@ -236,7 +236,7 @@ export default function RegisterPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full rounded-[--radius-md] bg-[#DC2626] px-6 py-4 font-bold text-white text-center transition-all hover:-translate-y-0.5 hover:bg-[#B91C1C] hover:shadow-[0_8px_25px_rgba(220,38,38,0.35)] mt-4 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none disabled:hover:bg-[#DC2626]"
+                className="w-full rounded-lg bg-[#DC2626] px-6 py-4 font-bold text-white text-center transition-all hover:-translate-y-0.5 hover:bg-[#B91C1C] hover:shadow-[0_8px_25px_rgba(220,38,38,0.35)] mt-4 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none disabled:hover:bg-[#DC2626]"
               >
                 {isLoading ? "Wird registriert..." : "Registrieren"}
               </button>
@@ -246,10 +246,10 @@ export default function RegisterPage() {
             <div className="my-8">
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-[--border]"></div>
+                  <div className="w-full border-t border-[var(--color-border)]"></div>
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="bg-white/90 px-4 text-[--text-muted]">
+                  <span className="bg-white/90 px-4 text-[var(--color-text-muted)]">
                     Oder registrieren mit
                   </span>
                 </div>
@@ -261,7 +261,7 @@ export default function RegisterPage() {
               <button
                 type="button"
                 onClick={() => signIn("google")}
-                className="flex items-center justify-center gap-3 rounded-[--radius-md] bg-[--gray-100] px-4 py-3.5 text-[--text-heading] font-medium hover:bg-[--gray-200] transition-all"
+                className="flex items-center justify-center gap-3 rounded-lg bg-[var(--color-surface)] px-4 py-3.5 text-[var(--color-text)] font-medium hover:bg-[var(--color-surface-elevated)] transition-all"
               >
                 <svg className="h-5 w-5" viewBox="0 0 24 24">
                   <path
@@ -287,7 +287,7 @@ export default function RegisterPage() {
               <button
                 type="button"
                 onClick={() => signIn("azure-ad")}
-                className="flex items-center justify-center gap-3 rounded-[--radius-md] bg-[--gray-100] px-4 py-3.5 text-[--text-heading] font-medium hover:bg-[--gray-200] transition-all"
+                className="flex items-center justify-center gap-3 rounded-lg bg-[var(--color-surface)] px-4 py-3.5 text-[var(--color-text)] font-medium hover:bg-[var(--color-surface-elevated)] transition-all"
               >
                 <svg className="h-5 w-5" viewBox="0 0 23 23">
                   <path fill="#f35325" d="M1 1h10v10H1z"/>
@@ -300,11 +300,11 @@ export default function RegisterPage() {
             </div>
 
             {/* Login Link */}
-            <p className="mt-8 text-center text-[--text-muted]">
+            <p className="mt-8 text-center text-[var(--color-text-muted)]">
               Bereits registriert?{" "}
               <Link
                 href="/login"
-                className="font-semibold text-[--primary] hover:text-[--primary-hover] transition-colors"
+                className="font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-colors"
               >
                 Anmelden
               </Link>
@@ -317,7 +317,7 @@ export default function RegisterPage() {
       <footer className="relative z-10 px-6 py-6 sm:px-8">
         <Link
           href="/"
-          className="inline-flex items-center text-sm text-[--text-muted] hover:text-[--primary] transition-colors font-medium"
+          className="inline-flex items-center text-sm text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors font-medium"
         >
           <svg className="mr-1.5 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />

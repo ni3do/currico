@@ -8,13 +8,28 @@ export const metadata: Metadata = {
     "Entdecken Sie hochwertige Unterrichtsmaterialien fur Schweizer Lehrpersonen",
 };
 
+// Anti-FOUC script to set theme before React hydrates
+const themeScript = `
+  (function() {
+    try {
+      const theme = localStorage.getItem('theme') || 'system';
+      const isDark = theme === 'dark' ||
+        (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    } catch (e) {}
+  })();
+`;
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="de">
+    <html lang="de" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body className="antialiased">
         <Providers>{children}</Providers>
       </body>

@@ -223,21 +223,21 @@ export default function EditProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[--background]">
+    <div className="min-h-screen bg-[var(--color-bg)]">
       <TopBar />
 
       <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[--text]">Profil bearbeiten</h1>
-          <p className="mt-2 text-[--text-muted]">
+          <h1 className="text-3xl font-bold text-[var(--color-text)]">Profil bearbeiten</h1>
+          <p className="mt-2 text-[var(--color-text-muted)]">
             Verwalten Sie Ihre öffentlichen Profilinformationen und Auszahlungsdaten
           </p>
         </div>
 
         {/* Success Message */}
         {successMessage && (
-          <div className="mb-6 rounded-lg border border-[--green]/50 bg-[--green]/10 p-4 text-[--green]">
+          <div className="mb-6 rounded-lg border border-[var(--color-success)]/50 bg-[var(--color-success)]/10 p-4 text-[var(--color-success)]">
             <div className="flex items-center gap-2">
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -249,7 +249,7 @@ export default function EditProfilePage() {
 
         {/* Error Message */}
         {errors.submit && (
-          <div className="mb-6 rounded-lg border border-[--red]/50 bg-[--red]/10 p-4 text-[--red]">
+          <div className="mb-6 rounded-lg border border-[var(--color-error)]/50 bg-[var(--color-error)]/10 p-4 text-[var(--color-error)]">
             {errors.submit}
           </div>
         )}
@@ -257,16 +257,16 @@ export default function EditProfilePage() {
         {/* Loading State */}
         {isLoading ? (
           <div className="flex items-center justify-center py-16">
-            <div className="h-12 w-12 animate-spin rounded-full border-4 border-[--primary] border-t-transparent"></div>
+            <div className="h-12 w-12 animate-spin rounded-full border-4 border-[var(--color-primary)] border-t-transparent"></div>
           </div>
         ) : (
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Public Profile Section */}
-          <div className="rounded-2xl border border-[--border] bg-[--surface] p-8">
-            <h2 className="mb-6 text-xl font-semibold text-[--text]">
+          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8">
+            <h2 className="mb-6 text-xl font-semibold text-[var(--color-text)]">
               Öffentliches Profil
             </h2>
-            <p className="mb-6 text-sm text-[--text-muted]">
+            <p className="mb-6 text-sm text-[var(--color-text-muted)]">
               Diese Informationen sind für alle sichtbar
             </p>
 
@@ -284,31 +284,31 @@ export default function EditProfilePage() {
               <div className="space-y-6">
                 {/* Display Name */}
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[--text]">
-                    Profilname <span className="text-[--red]">*</span>
+                  <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
+                    Profilname <span className="text-[var(--color-error)]">*</span>
                   </label>
                   <input
                     type="text"
                     value={formData.display_name}
                     onChange={(e) => handleChange("display_name", e.target.value)}
                     placeholder="z.B. Frau M. oder Maria S."
-                    className={`w-full rounded-lg border bg-[--background] px-4 py-2 text-[--text] focus:outline-none focus:ring-2 focus:ring-[--primary]/20 ${
+                    className={`w-full rounded-lg border bg-[var(--color-bg)] px-4 py-2 text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 ${
                       errors.display_name
-                        ? "border-[--red] focus:border-[--red]"
-                        : "border-[--border] focus:border-[--primary]"
+                        ? "border-[var(--color-error)] focus:border-[var(--color-error)]"
+                        : "border-[var(--color-border)] focus:border-[var(--color-primary)]"
                     }`}
                   />
                   {errors.display_name && (
-                    <p className="mt-1 text-sm text-[--red]">{errors.display_name}</p>
+                    <p className="mt-1 text-sm text-[var(--color-error)]">{errors.display_name}</p>
                   )}
-                  <p className="mt-1 text-xs text-[--text-muted]">
+                  <p className="mt-1 text-xs text-[var(--color-text-muted)]">
                     Tipp: Verwenden Sie ein Pseudonym für mehr Privatsphäre
                   </p>
                 </div>
 
                 {/* Bio */}
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[--text]">
+                  <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
                     Über mich
                   </label>
                   <textarea
@@ -317,9 +317,9 @@ export default function EditProfilePage() {
                     placeholder="Erzählen Sie etwas über sich und Ihre Unterrichtserfahrung..."
                     rows={4}
                     maxLength={500}
-                    className="w-full rounded-lg border border-[--border] bg-[--background] px-4 py-2 text-[--text] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20"
+                    className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-2 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                   />
-                  <p className="mt-1 text-right text-xs text-[--text-muted]">
+                  <p className="mt-1 text-right text-xs text-[var(--color-text-muted)]">
                     {formData.bio.length}/500 Zeichen
                   </p>
                 </div>
@@ -359,11 +359,11 @@ export default function EditProfilePage() {
           </div>
 
           {/* Payout Information Section */}
-          <div className="rounded-2xl border border-[--border] bg-[--surface] p-8">
-            <h2 className="mb-6 text-xl font-semibold text-[--text]">
+          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8">
+            <h2 className="mb-6 text-xl font-semibold text-[var(--color-text)]">
               Auszahlungsinformationen
             </h2>
-            <p className="mb-6 text-sm text-[--text-muted]">
+            <p className="mb-6 text-sm text-[var(--color-text-muted)]">
               Diese Informationen sind <strong>nicht öffentlich</strong> und werden nur
               für Rechnungen und Auszahlungen verwendet
             </p>
@@ -381,22 +381,22 @@ export default function EditProfilePage() {
           </div>
 
           {/* Email Section (Read-only) */}
-          <div className="rounded-2xl border border-[--border] bg-[--surface] p-8">
-            <h2 className="mb-6 text-xl font-semibold text-[--text]">
+          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8">
+            <h2 className="mb-6 text-xl font-semibold text-[var(--color-text)]">
               Konto-Einstellungen
             </h2>
 
             <div>
-              <label className="mb-2 block text-sm font-medium text-[--text]">
+              <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
                 E-Mail-Adresse
               </label>
               <input
                 type="email"
                 value={formData.email}
                 disabled
-                className="w-full cursor-not-allowed rounded-lg border border-[--border] bg-[--surface1] px-4 py-2 text-[--text-muted]"
+                className="w-full cursor-not-allowed rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-4 py-2 text-[var(--color-text-muted)]"
               />
-              <p className="mt-1 text-xs text-[--text-muted]">
+              <p className="mt-1 text-xs text-[var(--color-text-muted)]">
                 E-Mail kann nicht geändert werden. Kontaktieren Sie den Support bei Problemen.
               </p>
             </div>
@@ -406,14 +406,14 @@ export default function EditProfilePage() {
           <div className="flex justify-end gap-4">
             <Link
               href="/profile"
-              className="rounded-lg border border-[--border] px-6 py-3 font-medium text-[--text] hover:bg-[--surface1] transition-colors"
+              className="rounded-lg border border-[var(--color-border)] px-6 py-3 font-medium text-[var(--color-text)] hover:bg-[var(--color-surface-elevated)] transition-colors"
             >
               Abbrechen
             </Link>
             <button
               type="submit"
               disabled={isSaving}
-              className="rounded-lg bg-gradient-to-r from-[--primary] to-[--secondary] px-6 py-3 font-medium text-[--background] hover:opacity-90 transition-opacity disabled:opacity-50"
+              className="rounded-lg bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-success)] px-6 py-3 font-medium text-white hover:opacity-90 transition-opacity disabled:opacity-50"
             >
               {isSaving ? (
                 <span className="flex items-center gap-2">
@@ -445,9 +445,9 @@ export default function EditProfilePage() {
       </main>
 
       {/* Footer */}
-      <footer className="mt-20 border-t border-[--border] bg-[--surface]/50">
+      <footer className="mt-20 border-t border-[var(--color-border)] bg-[var(--color-surface)]/50">
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="text-center text-sm text-[--text-muted]">
+          <div className="text-center text-sm text-[var(--color-text-muted)]">
             <p>© 2026 Easy Lehrer. Alle Rechte vorbehalten.</p>
           </div>
         </div>

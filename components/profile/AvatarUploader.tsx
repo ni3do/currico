@@ -67,7 +67,7 @@ export function AvatarUploader({
     <div className="flex flex-col items-center">
       <div className="relative">
         {/* Avatar display */}
-        <div className="relative h-24 w-24 overflow-hidden rounded-full border-4 border-[--border] bg-gradient-to-br from-[--primary] to-[--secondary]">
+        <div className="relative h-24 w-24 overflow-hidden rounded-full border-4 border-[var(--color-border)] bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-success)]">
           {displayedAvatar ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -76,7 +76,7 @@ export function AvatarUploader({
               className="h-full w-full object-cover"
             />
           ) : (
-            <div className="flex h-full w-full items-center justify-center text-2xl font-bold text-[--background]">
+            <div className="flex h-full w-full items-center justify-center text-2xl font-bold text-white">
               {initials}
             </div>
           )}
@@ -94,7 +94,7 @@ export function AvatarUploader({
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={isUploading}
-          className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full border-2 border-[--background] bg-[--primary] text-[--background] hover:bg-[--secondary] transition-colors disabled:opacity-50"
+          className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-[var(--color-primary)] text-white hover:bg-[var(--color-success)] transition-colors disabled:opacity-50"
         >
           <svg
             className="h-4 w-4"
@@ -128,13 +128,13 @@ export function AvatarUploader({
       />
 
       {/* Instructions */}
-      <p className="mt-3 text-center text-xs text-[--text-muted]">
+      <p className="mt-3 text-center text-xs text-[var(--color-text-muted)]">
         JPG, PNG oder WebP. Max 2MB.
       </p>
 
       {/* Error message */}
       {error && (
-        <p className="mt-2 text-center text-sm text-[--red]">{error}</p>
+        <p className="mt-2 text-center text-sm text-[var(--color-error)]">{error}</p>
       )}
     </div>
   );

@@ -37,9 +37,9 @@ export function PayoutForm({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-3 rounded-lg border border-[--yellow]/50 bg-[--yellow]/10 p-4">
+      <div className="flex items-center gap-3 rounded-lg border border-[var(--color-warning)]/50 bg-[var(--color-warning)]/10 p-4">
         <svg
-          className="h-5 w-5 flex-shrink-0 text-[--yellow]"
+          className="h-5 w-5 flex-shrink-0 text-[var(--color-warning)]"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -52,10 +52,10 @@ export function PayoutForm({
           />
         </svg>
         <div>
-          <p className="font-medium text-[--yellow]">
+          <p className="font-medium text-[var(--color-warning)]">
             Auszahlungsdaten erforderlich
           </p>
-          <p className="text-sm text-[--text-muted]">
+          <p className="text-sm text-[var(--color-text-muted)]">
             Diese Informationen werden für Rechnungen und Auszahlungen benötigt
             und sind nicht öffentlich sichtbar.
           </p>
@@ -65,50 +65,50 @@ export function PayoutForm({
       {/* Legal Name */}
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label className="mb-2 block text-sm font-medium text-[--text]">
-            Vorname (rechtlich) <span className="text-[--red]">*</span>
+          <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
+            Vorname (rechtlich) <span className="text-[var(--color-error)]">*</span>
           </label>
           <input
             type="text"
             value={legalFirstName}
             onChange={(e) => onChange("legal_first_name", e.target.value)}
             placeholder="Maria"
-            className={`w-full rounded-lg border bg-[--background] px-4 py-2 text-[--text] focus:outline-none focus:ring-2 focus:ring-[--primary]/20 ${
+            className={`w-full rounded-lg border bg-[var(--color-bg)] px-4 py-2 text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 ${
               errors.legal_first_name
-                ? "border-[--red] focus:border-[--red]"
-                : "border-[--border] focus:border-[--primary]"
+                ? "border-[var(--color-error)] focus:border-[var(--color-error)]"
+                : "border-[var(--color-border)] focus:border-[var(--color-primary)]"
             }`}
           />
           {errors.legal_first_name && (
-            <p className="mt-1 text-sm text-[--red]">{errors.legal_first_name}</p>
+            <p className="mt-1 text-sm text-[var(--color-error)]">{errors.legal_first_name}</p>
           )}
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-medium text-[--text]">
-            Nachname (rechtlich) <span className="text-[--red]">*</span>
+          <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
+            Nachname (rechtlich) <span className="text-[var(--color-error)]">*</span>
           </label>
           <input
             type="text"
             value={legalLastName}
             onChange={(e) => onChange("legal_last_name", e.target.value)}
             placeholder="Schmidt"
-            className={`w-full rounded-lg border bg-[--background] px-4 py-2 text-[--text] focus:outline-none focus:ring-2 focus:ring-[--primary]/20 ${
+            className={`w-full rounded-lg border bg-[var(--color-bg)] px-4 py-2 text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 ${
               errors.legal_last_name
-                ? "border-[--red] focus:border-[--red]"
-                : "border-[--border] focus:border-[--primary]"
+                ? "border-[var(--color-error)] focus:border-[var(--color-error)]"
+                : "border-[var(--color-border)] focus:border-[var(--color-primary)]"
             }`}
           />
           {errors.legal_last_name && (
-            <p className="mt-1 text-sm text-[--red]">{errors.legal_last_name}</p>
+            <p className="mt-1 text-sm text-[var(--color-error)]">{errors.legal_last_name}</p>
           )}
         </div>
       </div>
 
       {/* IBAN */}
       <div>
-        <label className="mb-2 block text-sm font-medium text-[--text]">
-          IBAN (Schweiz) <span className="text-[--red]">*</span>
+        <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
+          IBAN (Schweiz) <span className="text-[var(--color-error)]">*</span>
         </label>
         <input
           type="text"
@@ -116,32 +116,32 @@ export function PayoutForm({
           onChange={(e) => handleIBANChange(e.target.value)}
           onBlur={() => setIbanTouched(true)}
           placeholder="CH93 0076 2011 6238 5295 7"
-          className={`w-full rounded-lg border bg-[--background] px-4 py-2 font-mono text-[--text] focus:outline-none focus:ring-2 focus:ring-[--primary]/20 ${
+          className={`w-full rounded-lg border bg-[var(--color-bg)] px-4 py-2 font-mono text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 ${
             showIBANError || errors.iban
-              ? "border-[--red] focus:border-[--red]"
-              : "border-[--border] focus:border-[--primary]"
+              ? "border-[var(--color-error)] focus:border-[var(--color-error)]"
+              : "border-[var(--color-border)] focus:border-[var(--color-primary)]"
           }`}
         />
         {showIBANError && (
-          <p className="mt-1 text-sm text-[--red]">
+          <p className="mt-1 text-sm text-[var(--color-error)]">
             Bitte geben Sie eine gültige Schweizer IBAN ein
           </p>
         )}
-        {errors.iban && <p className="mt-1 text-sm text-[--red]">{errors.iban}</p>}
-        <p className="mt-1 text-xs text-[--text-muted]">
+        {errors.iban && <p className="mt-1 text-sm text-[var(--color-error)]">{errors.iban}</p>}
+        <p className="mt-1 text-xs text-[var(--color-text-muted)]">
           Schweizer IBAN beginnt mit CH und hat 21 Zeichen
         </p>
       </div>
 
       {/* Address (optional) */}
-      <div className="border-t border-[--border] pt-6">
-        <h4 className="mb-4 text-sm font-medium text-[--text-muted]">
+      <div className="border-t border-[var(--color-border)] pt-6">
+        <h4 className="mb-4 text-sm font-medium text-[var(--color-text-muted)]">
           Adresse (optional, für Rechnungen)
         </h4>
 
         <div className="space-y-4">
           <div>
-            <label className="mb-2 block text-sm font-medium text-[--text]">
+            <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
               Strasse und Hausnummer
             </label>
             <input
@@ -149,13 +149,13 @@ export function PayoutForm({
               value={addressStreet}
               onChange={(e) => onChange("address_street", e.target.value)}
               placeholder="Bahnhofstrasse 1"
-              className="w-full rounded-lg border border-[--border] bg-[--background] px-4 py-2 text-[--text] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20"
+              className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-2 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
             />
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="mb-2 block text-sm font-medium text-[--text]">
+              <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
                 PLZ
               </label>
               <input
@@ -164,12 +164,12 @@ export function PayoutForm({
                 onChange={(e) => onChange("address_postal", e.target.value)}
                 placeholder="8001"
                 maxLength={4}
-                className="w-full rounded-lg border border-[--border] bg-[--background] px-4 py-2 text-[--text] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20"
+                className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-2 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
               />
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-medium text-[--text]">
+              <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
                 Ort
               </label>
               <input
@@ -177,7 +177,7 @@ export function PayoutForm({
                 value={addressCity}
                 onChange={(e) => onChange("address_city", e.target.value)}
                 placeholder="Zürich"
-                className="w-full rounded-lg border border-[--border] bg-[--background] px-4 py-2 text-[--text] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20"
+                className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-2 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
               />
             </div>
           </div>

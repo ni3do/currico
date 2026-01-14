@@ -70,19 +70,19 @@ export default function ResourcesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[--background-alt]">
+    <div className="min-h-screen bg-[var(--color-bg)]">
       <TopBar />
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="mb-8">
-          <div className="flex items-center gap-2 text-sm text-[--text-muted] mb-2">
-            <Link href="/" className="hover:text-[--primary] transition-colors">Startseite</Link>
+          <div className="flex items-center gap-2 text-sm text-[var(--color-text-muted)] mb-2">
+            <Link href="/" className="hover:text-[var(--color-primary)] transition-colors">Startseite</Link>
             <span>/</span>
-            <span className="text-[--text-secondary]">Ressourcen</span>
+            <span className="text-[var(--color-text-secondary)]">Ressourcen</span>
           </div>
-          <h1 className="text-2xl font-semibold text-[--gray-800]">Unterrichtsmaterialien</h1>
-          <p className="mt-2 text-[--text-muted]">
+          <h1 className="text-2xl font-semibold text-[var(--color-text)]">Unterrichtsmaterialien</h1>
+          <p className="mt-2 text-[var(--color-text-muted)]">
             Durchsuchen Sie qualitatsgeprufte Materialien fur Ihren Unterricht
           </p>
         </div>
@@ -99,10 +99,10 @@ export default function ResourcesPage() {
                   placeholder="Suche nach Titel, Thema, Stichwort..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full rounded-[--radius-md] border border-[--border] bg-white px-4 py-3 pl-11 text-[--text] placeholder:text-[--text-light] focus:outline-none focus:ring-2 focus:ring-[--primary]/20 focus:border-[--primary]"
+                  className="input pl-11"
                 />
                 <svg
-                  className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[--text-muted]"
+                  className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--color-text-muted)]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -122,7 +122,7 @@ export default function ResourcesPage() {
               <select
                 value={selectedSubject}
                 onChange={(e) => setSelectedSubject(e.target.value)}
-                className="w-full rounded-[--radius-md] border border-[--border] bg-white px-4 py-3 text-[--text] focus:outline-none focus:ring-2 focus:ring-[--primary]/20 focus:border-[--primary] appearance-none cursor-pointer"
+                className="input appearance-none cursor-pointer"
               >
                 <option value="">Alle Facher</option>
                 <option value="Mathematik">Mathematik</option>
@@ -140,10 +140,10 @@ export default function ResourcesPage() {
             <button
               type="button"
               onClick={() => setShowFilters(!showFilters)}
-              className={`flex items-center justify-center gap-2 rounded-[--radius-md] px-5 py-3 font-medium text-sm transition-colors border ${
+              className={`flex items-center justify-center gap-2 rounded-lg px-5 py-3 font-medium text-sm transition-colors border ${
                 showFilters
-                  ? "bg-[--primary] text-white border-[--primary]"
-                  : "bg-white text-[--text-secondary] border-[--border] hover:border-[--primary]"
+                  ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)]"
+                  : "bg-[var(--color-bg)] text-[var(--color-text-secondary)] border-[var(--color-border)] hover:border-[var(--color-primary)]"
               }`}
             >
               <svg
@@ -165,15 +165,15 @@ export default function ResourcesPage() {
 
           {/* Advanced Filters (Collapsible) */}
           {showFilters && (
-            <div className="rounded-[--radius-lg] bg-white p-6 border border-[--border]">
-              <h3 className="mb-4 font-semibold text-[--gray-800]">Erweiterte Filter</h3>
+            <div className="card p-6">
+              <h3 className="mb-4 font-semibold text-[var(--color-text)]">Erweiterte Filter</h3>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {/* Cycle Filter */}
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[--gray-700]">
+                  <label className="mb-2 block text-sm font-medium text-[var(--color-text-secondary)]">
                     Zyklus
                   </label>
-                  <select className="w-full rounded-[--radius-md] border border-[--border] bg-white px-4 py-2.5 text-[--text] text-sm focus:outline-none focus:ring-2 focus:ring-[--primary]/20 focus:border-[--primary]">
+                  <select className="input text-sm">
                     <option value="">Alle Zyklen</option>
                     <option value="1">Zyklus 1</option>
                     <option value="2">Zyklus 2</option>
@@ -183,10 +183,10 @@ export default function ResourcesPage() {
 
                 {/* Canton Filter */}
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[--gray-700]">
+                  <label className="mb-2 block text-sm font-medium text-[var(--color-text-secondary)]">
                     Kanton
                   </label>
-                  <select className="w-full rounded-[--radius-md] border border-[--border] bg-white px-4 py-2.5 text-[--text] text-sm focus:outline-none focus:ring-2 focus:ring-[--primary]/20 focus:border-[--primary]">
+                  <select className="input text-sm">
                     <option value="">Alle Kantone</option>
                     <option value="ZH">Zurich</option>
                     <option value="BE">Bern</option>
@@ -198,10 +198,10 @@ export default function ResourcesPage() {
 
                 {/* Quality Filter */}
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[--gray-700]">
+                  <label className="mb-2 block text-sm font-medium text-[var(--color-text-secondary)]">
                     Qualitat
                   </label>
-                  <select className="w-full rounded-[--radius-md] border border-[--border] bg-white px-4 py-2.5 text-[--text] text-sm focus:outline-none focus:ring-2 focus:ring-[--primary]/20 focus:border-[--primary]">
+                  <select className="input text-sm">
                     <option value="">Alle</option>
                     <option value="verified">Verifiziert</option>
                     <option value="ai-checked">KI-Gepruft</option>
@@ -210,10 +210,10 @@ export default function ResourcesPage() {
 
                 {/* Price Type Filter */}
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[--gray-700]">
+                  <label className="mb-2 block text-sm font-medium text-[var(--color-text-secondary)]">
                     Preistyp
                   </label>
-                  <select className="w-full rounded-[--radius-md] border border-[--border] bg-white px-4 py-2.5 text-[--text] text-sm focus:outline-none focus:ring-2 focus:ring-[--primary]/20 focus:border-[--primary]">
+                  <select className="input text-sm">
                     <option value="">Alle</option>
                     <option value="free">Kostenlos</option>
                     <option value="paid">Kostenpflichtig</option>
@@ -222,10 +222,10 @@ export default function ResourcesPage() {
 
                 {/* Resource Type Filter */}
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[--gray-700]">
+                  <label className="mb-2 block text-sm font-medium text-[var(--color-text-secondary)]">
                     Ressourcentyp
                   </label>
-                  <select className="w-full rounded-[--radius-md] border border-[--border] bg-white px-4 py-2.5 text-[--text] text-sm focus:outline-none focus:ring-2 focus:ring-[--primary]/20 focus:border-[--primary]">
+                  <select className="input text-sm">
                     <option value="">Alle</option>
                     <option value="pdf">PDF</option>
                     <option value="word">Word</option>
@@ -236,10 +236,10 @@ export default function ResourcesPage() {
 
                 {/* Editable Filter */}
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[--gray-700]">
+                  <label className="mb-2 block text-sm font-medium text-[var(--color-text-secondary)]">
                     Editierbar
                   </label>
-                  <select className="w-full rounded-[--radius-md] border border-[--border] bg-white px-4 py-2.5 text-[--text] text-sm focus:outline-none focus:ring-2 focus:ring-[--primary]/20 focus:border-[--primary]">
+                  <select className="input text-sm">
                     <option value="">Alle</option>
                     <option value="yes">Ja</option>
                     <option value="no">Nein</option>
@@ -248,11 +248,11 @@ export default function ResourcesPage() {
               </div>
 
               {/* Filter Actions */}
-              <div className="mt-6 flex gap-3 pt-4 border-t border-[--border]">
-                <button className="rounded-[--radius-md] bg-[--primary] px-5 py-2.5 font-semibold text-white text-sm hover:bg-[--primary-hover] transition-all hover:-translate-y-0.5 hover:shadow-[0_6px_16px_rgba(0,82,204,0.25)]">
+              <div className="mt-6 flex gap-3 pt-4 border-t border-[var(--color-border)]">
+                <button className="btn-primary px-5 py-2.5 text-sm">
                   Filter anwenden
                 </button>
-                <button className="rounded-[--radius-md] bg-[--gray-100] px-5 py-2.5 font-semibold text-[--text-heading] text-sm hover:bg-[--gray-200] transition-all">
+                <button className="btn-secondary px-5 py-2.5 text-sm">
                   Zurucksetzen
                 </button>
               </div>
@@ -261,12 +261,12 @@ export default function ResourcesPage() {
 
           {/* Sort and Results Count */}
           <div className="flex items-center justify-between py-2">
-            <p className="text-sm text-[--text-muted]">
-              <span className="font-medium text-[--text-secondary]">{pagination.total}</span> Ressourcen gefunden
+            <p className="text-sm text-[var(--color-text-muted)]">
+              <span className="font-medium text-[var(--color-text-secondary)]">{pagination.total}</span> Ressourcen gefunden
             </p>
             <div className="flex items-center gap-2">
-              <label className="text-sm text-[--text-muted]">Sortieren:</label>
-              <select className="rounded-[--radius-sm] border border-[--border] bg-white px-3 py-1.5 text-sm text-[--text-secondary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20 focus:border-[--primary]">
+              <label className="text-sm text-[var(--color-text-muted)]">Sortieren:</label>
+              <select className="rounded-md border border-[var(--color-border)] bg-[var(--color-bg)] px-3 py-1.5 text-sm text-[var(--color-text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:border-[var(--color-primary)]">
                 <option value="newest">Neueste</option>
                 <option value="popular">Beliebteste</option>
                 <option value="rating">Beste Bewertung</option>
@@ -280,81 +280,72 @@ export default function ResourcesPage() {
         {/* Resource Grid */}
         {loading ? (
           <div className="flex items-center justify-center py-16">
-            <div className="text-[--text-muted]">Laden...</div>
+            <div className="text-[var(--color-text-muted)]">Laden...</div>
           </div>
         ) : resources.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16">
-            <p className="text-[--text-muted] mb-4">Keine Ressourcen gefunden</p>
-            <p className="text-sm text-[--text-light]">Versuchen Sie andere Suchbegriffe oder Filter</p>
+            <p className="text-[var(--color-text-muted)] mb-4">Keine Ressourcen gefunden</p>
+            <p className="text-sm text-[var(--color-text-faint)]">Versuchen Sie andere Suchbegriffe oder Filter</p>
           </div>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {resources.map((resource) => (
               <article
                 key={resource.id}
-                className="group bg-white rounded-[--radius-lg] overflow-hidden transition-all duration-200 hover:-translate-y-1"
-                style={{
-                  boxShadow: 'var(--shadow-card)',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.boxShadow = 'var(--shadow-card-hover)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.boxShadow = 'var(--shadow-card)';
-                }}
+                className="card group overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
               >
                 {/* Card Header */}
                 <div className="p-6">
                   {/* Badges - Pill style with full radius */}
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
-                      <span className="px-3 py-1 bg-[--gray-100] text-[--text-muted] text-xs font-medium rounded-full">
+                      <span className="pill pill-neutral">
                         PDF
                       </span>
                       {resource.cycle && (
-                        <span className="px-3 py-1 bg-[--gray-100] text-[--text-muted] text-xs font-medium rounded-full">
+                        <span className="pill pill-neutral">
                           {resource.cycle}
                         </span>
                       )}
                     </div>
-                    <span className="px-3 py-1 text-xs font-medium rounded-full bg-[--success-light] text-[--success]">
+                    <span className="pill pill-success">
                       Verifiziert
                     </span>
                   </div>
 
                   {/* Subject Tag - Pill style with primary accent */}
-                  <span className="inline-block px-3 py-1 bg-[--primary-light] text-[--primary] text-xs font-semibold rounded-full mb-4">
+                  <span className="pill pill-primary mb-4">
                     {resource.subject}
                   </span>
 
                   {/* Title - Bold and larger */}
-                  <h3 className="text-lg font-bold text-[--text-heading] group-hover:text-[--primary] transition-colors mb-2">
+                  <h3 className="text-lg font-bold text-[var(--color-text)] group-hover:text-[var(--color-primary)] transition-colors mb-2">
                     {resource.title}
                   </h3>
 
                   {/* Description */}
-                  <p className="text-sm text-[--text-muted] line-clamp-2 leading-relaxed">
+                  <p className="text-sm text-[var(--color-text-muted)] line-clamp-2 leading-relaxed">
                     {resource.description}
                   </p>
                 </div>
 
                 {/* Card Footer */}
-                <div className="px-6 py-4 border-t border-[--gray-100] bg-[--gray-50]">
+                <div className="px-6 py-4 border-t border-[var(--color-border-subtle)] bg-[var(--color-bg-secondary)]">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       {/* Seller */}
-                      <span className="text-sm text-[--text-muted]">
+                      <span className="text-sm text-[var(--color-text-muted)]">
                         {resource.seller.display_name || "Anonym"}
                       </span>
                     </div>
                     <div className="flex items-center gap-3">
                       {/* Price - Bold and accent colored */}
-                      <span className={`text-lg font-bold ${resource.priceFormatted === "Gratis" ? "text-[--success]" : "text-[--primary]"}`}>
+                      <span className={`text-lg font-bold ${resource.priceFormatted === "Gratis" ? "text-[var(--color-success)]" : "text-[var(--color-primary)]"}`}>
                         {resource.priceFormatted}
                       </span>
                       <a
                         href={`/resources/${resource.id}`}
-                        className="rounded-[--radius-md] bg-[--primary] px-4 py-2 text-sm font-semibold text-white hover:bg-[--primary-hover] transition-all hover:shadow-[var(--shadow-sm)]"
+                        className="btn-primary px-4 py-2 text-sm"
                       >
                         Ansehen
                       </a>
@@ -371,7 +362,7 @@ export default function ResourcesPage() {
           <div className="mt-12 flex justify-center">
             <nav className="flex items-center gap-1">
               <button
-                className="rounded-[--radius-sm] px-3 py-2 text-[--text-muted] font-medium text-sm hover:bg-[--gray-100] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="rounded-md px-3 py-2 text-[var(--color-text-muted)] font-medium text-sm hover:bg-[var(--color-surface)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={pagination.page === 1}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -381,17 +372,17 @@ export default function ResourcesPage() {
               {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map((pageNum) => (
                 <button
                   key={pageNum}
-                  className={`rounded-[--radius-sm] px-4 py-2 font-medium text-sm min-w-[40px] transition-colors ${
+                  className={`rounded-md px-4 py-2 font-medium text-sm min-w-[40px] transition-colors ${
                     pageNum === pagination.page
-                      ? "bg-[--primary] text-white"
-                      : "text-[--text-secondary] hover:bg-[--gray-100]"
+                      ? "bg-[var(--color-primary)] text-white"
+                      : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface)]"
                   }`}
                 >
                   {pageNum}
                 </button>
               ))}
               <button
-                className="rounded-[--radius-sm] px-3 py-2 text-[--text-secondary] font-medium text-sm hover:bg-[--gray-100] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="rounded-md px-3 py-2 text-[var(--color-text-secondary)] font-medium text-sm hover:bg-[var(--color-surface)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={pagination.page === pagination.totalPages}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -404,57 +395,57 @@ export default function ResourcesPage() {
       </main>
 
       {/* Footer - Grounded with slate background */}
-      <footer className="mt-16 bg-[--sidebar-bg] border-t border-[--border]">
+      <footer className="mt-16 bg-[var(--color-bg-secondary)] border-t border-[var(--color-border)]">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {/* Brand */}
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="flex items-center justify-center w-8 h-8 bg-[--primary] rounded-[--radius-sm]">
+                <div className="flex items-center justify-center w-8 h-8 bg-[var(--color-primary)] rounded-md">
                   <span className="text-white font-bold text-sm">EL</span>
                 </div>
-                <span className="text-lg font-semibold text-[--text-heading]">EasyLehrer</span>
+                <span className="text-lg font-semibold text-[var(--color-text)]">EasyLehrer</span>
               </div>
-              <p className="text-sm text-[--text-muted] leading-relaxed">
+              <p className="text-sm text-[var(--color-text-muted)] leading-relaxed">
                 Die Plattform fur Unterrichtsmaterial von Schweizer Lehrpersonen.
               </p>
             </div>
 
             {/* Product */}
             <div>
-              <h3 className="font-semibold text-[--text-heading] text-sm uppercase tracking-wider">Plattform</h3>
+              <h3 className="font-semibold text-[var(--color-text)] text-sm uppercase tracking-wider">Plattform</h3>
               <ul className="mt-4 space-y-3">
-                <li><Link href="/resources" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">Ressourcen</Link></li>
-                <li><a href="#" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">Preise</a></li>
+                <li><Link href="/resources" className="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors">Ressourcen</Link></li>
+                <li><a href="#" className="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors">Preise</a></li>
               </ul>
             </div>
 
             {/* Company */}
             <div>
-              <h3 className="font-semibold text-[--text-heading] text-sm uppercase tracking-wider">Information</h3>
+              <h3 className="font-semibold text-[var(--color-text)] text-sm uppercase tracking-wider">Information</h3>
               <ul className="mt-4 space-y-3">
-                <li><a href="#" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">Uber uns</a></li>
-                <li><a href="#" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">Kontakt</a></li>
-                <li><a href="#" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">Hilfe</a></li>
+                <li><a href="#" className="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors">Uber uns</a></li>
+                <li><a href="#" className="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors">Kontakt</a></li>
+                <li><a href="#" className="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors">Hilfe</a></li>
               </ul>
             </div>
 
             {/* Legal */}
             <div>
-              <h3 className="font-semibold text-[--text-heading] text-sm uppercase tracking-wider">Rechtliches</h3>
+              <h3 className="font-semibold text-[var(--color-text)] text-sm uppercase tracking-wider">Rechtliches</h3>
               <ul className="mt-4 space-y-3">
-                <li><a href="#" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">Datenschutz</a></li>
-                <li><a href="#" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">AGB</a></li>
-                <li><a href="#" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">Impressum</a></li>
+                <li><a href="#" className="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors">Datenschutz</a></li>
+                <li><a href="#" className="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors">AGB</a></li>
+                <li><a href="#" className="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors">Impressum</a></li>
               </ul>
             </div>
           </div>
 
-          <div className="mt-12 pt-8 border-t border-[--gray-200] flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-[--text-muted]">
+          <div className="mt-12 pt-8 border-t border-[var(--color-border-subtle)] flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-sm text-[var(--color-text-muted)]">
               2026 EasyLehrer. Alle Rechte vorbehalten.
             </p>
-            <p className="text-sm text-[--text-light]">
+            <p className="text-sm text-[var(--color-text-faint)]">
               Eine Initiative fur Schweizer Bildung
             </p>
           </div>

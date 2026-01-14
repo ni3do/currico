@@ -53,28 +53,28 @@ export default function CreateBundlePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[--background]">
+    <div className="min-h-screen bg-[var(--color-bg)]">
       <TopBar />
 
       <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-[--text]">Bundle erstellen</h1>
-          <p className="mt-2 text-[--text-muted]">
+          <h1 className="text-3xl font-bold text-[var(--color-text)]">Bundle erstellen</h1>
+          <p className="mt-2 text-[var(--color-text-muted)]">
             Kombinieren Sie mehrere Ressourcen zu einem vergünstigten Paket
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Basic Information */}
-          <div className="rounded-2xl border border-[--border] bg-[--surface] p-8">
-            <h2 className="mb-6 text-xl font-semibold text-[--text]">
+          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8">
+            <h2 className="mb-6 text-xl font-semibold text-[var(--color-text)]">
               Bundle-Informationen
             </h2>
 
             <div className="space-y-6">
               <div>
-                <label className="mb-2 block text-sm font-medium text-[--text]">
+                <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
                   Bundle-Titel *
                 </label>
                 <input
@@ -82,13 +82,13 @@ export default function CreateBundlePage() {
                   value={formData.title}
                   onChange={(e) => updateFormData("title", e.target.value)}
                   required
-                  className="w-full rounded-xl border border-[--border] bg-[--background] px-4 py-3 text-[--text] placeholder:text-[--text-muted] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20"
+                  className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                   placeholder="z.B. Mathematik Komplett-Paket Zyklus 2"
                 />
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-[--text]">
+                <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
                   Beschreibung *
                 </label>
                 <textarea
@@ -96,21 +96,21 @@ export default function CreateBundlePage() {
                   onChange={(e) => updateFormData("description", e.target.value)}
                   required
                   rows={4}
-                  className="w-full rounded-xl border border-[--border] bg-[--background] px-4 py-3 text-[--text] placeholder:text-[--text-muted] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20"
+                  className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                   placeholder="Beschreiben Sie das Bundle und welchen Mehrwert es bietet..."
                 />
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[--text]">
+                  <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
                     Hauptfach *
                   </label>
                   <select
                     value={formData.subject}
                     onChange={(e) => updateFormData("subject", e.target.value)}
                     required
-                    className="w-full rounded-xl border border-[--border] bg-[--background] px-4 py-3 text-[--text] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20"
+                    className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                   >
                     <option value="">Wählen Sie...</option>
                     <option value="Mathematik">Mathematik</option>
@@ -122,14 +122,14 @@ export default function CreateBundlePage() {
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[--text]">
+                  <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
                     Zyklus *
                   </label>
                   <select
                     value={formData.cycle}
                     onChange={(e) => updateFormData("cycle", e.target.value)}
                     required
-                    className="w-full rounded-xl border border-[--border] bg-[--background] px-4 py-3 text-[--text] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20"
+                    className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                   >
                     <option value="">Wählen Sie...</option>
                     <option value="1">Zyklus 1</option>
@@ -140,12 +140,12 @@ export default function CreateBundlePage() {
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-[--text]">
+                <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
                   Cover-Bild
                 </label>
-                <div className="rounded-xl border-2 border-dashed border-[--border] bg-[--background] p-8 text-center">
+                <div className="rounded-xl border-2 border-dashed border-[var(--color-border)] bg-[var(--color-bg)] p-8 text-center">
                   <svg
-                    className="mx-auto h-12 w-12 text-[--text-muted]"
+                    className="mx-auto h-12 w-12 text-[var(--color-text-muted)]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -157,10 +157,10 @@ export default function CreateBundlePage() {
                       d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                     />
                   </svg>
-                  <p className="mt-2 text-sm text-[--text]">
+                  <p className="mt-2 text-sm text-[var(--color-text)]">
                     Cover-Bild hochladen (optional)
                   </p>
-                  <p className="mt-1 text-xs text-[--text-muted]">
+                  <p className="mt-1 text-xs text-[var(--color-text-muted)]">
                     PNG, JPG bis 5 MB - empfohlen: 1200x630 px
                   </p>
                   <input type="file" className="hidden" accept="image/png,image/jpeg" />
@@ -170,12 +170,12 @@ export default function CreateBundlePage() {
           </div>
 
           {/* Select Resources */}
-          <div className="rounded-2xl border border-[--border] bg-[--surface] p-8">
-            <h2 className="mb-6 text-xl font-semibold text-[--text]">
+          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8">
+            <h2 className="mb-6 text-xl font-semibold text-[var(--color-text)]">
               Ressourcen auswählen
             </h2>
 
-            <p className="mb-4 text-sm text-[--text-muted]">
+            <p className="mb-4 text-sm text-[var(--color-text-muted)]">
               Wählen Sie mindestens 2 Ihrer veröffentlichten Ressourcen für dieses Bundle
             </p>
 
@@ -185,36 +185,36 @@ export default function CreateBundlePage() {
                   key={resource.id}
                   className={`flex cursor-pointer items-center gap-4 rounded-xl border-2 p-4 transition-all ${
                     formData.selectedResources.includes(resource.id)
-                      ? "border-[--primary] bg-[--primary]/10"
-                      : "border-[--border] bg-[--background] hover:border-[--primary]/50"
+                      ? "border-[var(--color-primary)] bg-[var(--color-primary)]/10"
+                      : "border-[var(--color-border)] bg-[var(--color-bg)] hover:border-[var(--color-primary)]/50"
                   }`}
                 >
                   <input
                     type="checkbox"
                     checked={formData.selectedResources.includes(resource.id)}
                     onChange={() => toggleResource(resource.id)}
-                    className="h-5 w-5 rounded border-[--border] text-[--primary] focus:ring-2 focus:ring-[--primary]/20"
+                    className="h-5 w-5 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20"
                   />
                   <div className="flex-1">
-                    <div className="font-medium text-[--text]">{resource.title}</div>
-                    <div className="text-sm text-[--text-muted]">{resource.subject}</div>
+                    <div className="font-medium text-[var(--color-text)]">{resource.title}</div>
+                    <div className="text-sm text-[var(--color-text-muted)]">{resource.subject}</div>
                   </div>
-                  <div className="font-semibold text-[--primary]">{resource.price}</div>
+                  <div className="font-semibold text-[var(--color-primary)]">{resource.price}</div>
                 </label>
               ))}
             </div>
 
             {formData.selectedResources.length > 0 && (
-              <div className="mt-6 rounded-xl border border-[--border] bg-[--background] p-4">
+              <div className="mt-6 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-[--text-muted]">
+                  <span className="text-sm text-[var(--color-text-muted)]">
                     {formData.selectedResources.length} Ressourcen ausgewählt
                   </span>
                   <div className="text-right">
-                    <div className="text-sm text-[--text-muted]">
+                    <div className="text-sm text-[var(--color-text-muted)]">
                       Gesamt-Einzelpreis
                     </div>
-                    <div className="text-lg font-bold text-[--text]">
+                    <div className="text-lg font-bold text-[var(--color-text)]">
                       CHF {calculateTotal().toFixed(2)}
                     </div>
                   </div>
@@ -224,13 +224,13 @@ export default function CreateBundlePage() {
           </div>
 
           {/* Pricing */}
-          <div className="rounded-2xl border border-[--border] bg-[--surface] p-8">
-            <h2 className="mb-6 text-xl font-semibold text-[--text]">
+          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8">
+            <h2 className="mb-6 text-xl font-semibold text-[var(--color-text)]">
               Bundle-Preis
             </h2>
 
             <div>
-              <label className="mb-2 block text-sm font-medium text-[--text]">
+              <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
                 Bundle-Preis (CHF) *
               </label>
               <div className="relative">
@@ -241,19 +241,19 @@ export default function CreateBundlePage() {
                   required
                   min="0"
                   step="0.50"
-                  className="w-full rounded-xl border border-[--border] bg-[--background] px-4 py-3 pl-12 text-[--text] placeholder:text-[--text-muted] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20"
+                  className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 pl-12 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                   placeholder="25.00"
                 />
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[--text-muted]">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]">
                   CHF
                 </span>
               </div>
 
               {formData.price && formData.selectedResources.length > 0 && (
-                <div className="mt-4 rounded-xl border border-[--green]/30 bg-[--green]/10 p-4">
+                <div className="mt-4 rounded-xl border border-[var(--color-success)]/30 bg-[var(--color-success)]/10 p-4">
                   <div className="flex items-center gap-2">
                     <svg
-                      className="h-5 w-5 text-[--green]"
+                      className="h-5 w-5 text-[var(--color-success)]"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -264,10 +264,10 @@ export default function CreateBundlePage() {
                       />
                     </svg>
                     <div>
-                      <div className="font-semibold text-[--green]">
+                      <div className="font-semibold text-[var(--color-success)]">
                         {calculateDiscount()}% Ersparnis!
                       </div>
-                      <div className="text-sm text-[--text-muted]">
+                      <div className="text-sm text-[var(--color-text-muted)]">
                         Käufer sparen CHF{" "}
                         {(calculateTotal() - parseFloat(formData.price)).toFixed(2)} im
                         Vergleich zum Einzelkauf
@@ -277,7 +277,7 @@ export default function CreateBundlePage() {
                 </div>
               )}
 
-              <p className="mt-2 text-xs text-[--text-muted]">
+              <p className="mt-2 text-xs text-[var(--color-text-muted)]">
                 Sie erhalten 85% des Verkaufspreises (15% Plattformgebühr)
               </p>
             </div>
@@ -287,14 +287,14 @@ export default function CreateBundlePage() {
           <div className="flex gap-4">
             <Link
               href="/dashboard/seller"
-              className="flex-1 rounded-xl border border-[--border] bg-[--surface] px-6 py-4 text-center font-semibold text-[--text] hover:bg-[--surface1] transition-colors"
+              className="flex-1 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-6 py-4 text-center font-semibold text-[var(--color-text)] hover:bg-[var(--color-surface-elevated)] transition-colors"
             >
               Abbrechen
             </Link>
             <button
               type="submit"
               disabled={formData.selectedResources.length < 2}
-              className="flex-1 rounded-xl bg-gradient-to-r from-[--primary] to-[--secondary] px-6 py-4 font-semibold text-[--background] hover:opacity-90 transition-opacity shadow-lg shadow-[--primary]/20 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 rounded-xl bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-success)] px-6 py-4 font-semibold text-white hover:opacity-90 transition-opacity shadow-lg shadow-[var(--color-primary)]/20 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Bundle erstellen
             </button>
@@ -303,9 +303,9 @@ export default function CreateBundlePage() {
       </main>
 
       {/* Footer */}
-      <footer className="mt-20 border-t border-[--border] bg-[--surface]/50">
+      <footer className="mt-20 border-t border-[var(--color-border)] bg-[var(--color-surface)]/50">
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="text-center text-sm text-[--text-muted]">
+          <div className="text-center text-sm text-[var(--color-text-muted)]">
             <p>© 2026 Easy Lehrer. Alle Rechte vorbehalten.</p>
           </div>
         </div>
