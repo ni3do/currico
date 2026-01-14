@@ -1,5 +1,13 @@
 # Reviews & Ratings
 
+## Implementation Status
+
+**Status: Not Implemented**
+
+This feature is deferred to a future sprint.
+
+---
+
 ## Overview
 
 Allow buyers to leave star ratings and brief text reviews on purchased resources.

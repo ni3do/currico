@@ -1,5 +1,17 @@
 # Multi-Stage Resource Upload Workflow
 
+## Implementation Status
+
+**Status: UI Only**
+
+- Multi-step wizard UI: Implemented
+- Form validation: Implemented
+- File upload backend: Not implemented
+- Watermarking system: Not implemented
+- Resource creation API: Not implemented
+
+---
+
 ## Overview
 
 Provide a guided, multi-step upload process for resources with competence code integration.

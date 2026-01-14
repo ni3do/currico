@@ -1,5 +1,16 @@
 # Teacher & School Account Management
 
+## Implementation Status
+
+**Status: Partial**
+
+- Teacher account registration and login: Implemented
+- Teacher profile management: Implemented
+- School accounts: Not implemented
+- School admin features: Not implemented
+
+---
+
 ## Overview
 
 Provide registration and login for both individual teachers and school accounts.

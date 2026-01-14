@@ -1,5 +1,13 @@
 # Seller Dashboard
 
+## Implementation Status
+
+**Status: Complete**
+
+All features specified below are implemented, including the API endpoint at `/api/seller/dashboard`.
+
+---
+
 ## Overview
 
 Provide a consolidated Seller Dashboard with focus on clarity over data density.

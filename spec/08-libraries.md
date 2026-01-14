@@ -1,5 +1,13 @@
 # Purchase, Download & Libraries
 
+## Implementation Status
+
+**Status: Not Implemented**
+
+This feature is deferred to a future sprint.
+
+---
+
 ## Overview
 
 Enable purchase and download of individual resources and bundles, with separate personal and school libraries.

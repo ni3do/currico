@@ -1,5 +1,17 @@
 # Wishlist
 
+## Implementation Status
+
+**Status: UI Only**
+
+- Wishlist UI: Implemented
+- Heart icon interactions: Implemented
+- Client-side state management: Implemented
+- Database persistence: Not implemented
+- API endpoints: Not implemented
+
+---
+
 ## Overview
 
 Allow logged-in users to save resources and bundles to a personal wishlist for later purchase.

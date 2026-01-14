@@ -1,5 +1,17 @@
 # Transaction & Commission Management
 
+## Implementation Status
+
+**Status: Partial**
+
+- Commission configuration UI: Implemented
+- Transaction list view UI: Implemented
+- Transaction detail view UI: Implemented
+- Stripe payment integration: Not implemented
+- Actual payment processing: Not implemented
+
+---
+
 ## Overview
 
 Handle purchases for resources and bundles with automatic splitting between platform fee and seller payout.

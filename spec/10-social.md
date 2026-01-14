@@ -1,5 +1,17 @@
 # Follow Seller & Notifications
 
+## Implementation Status
+
+**Status: UI Only**
+
+- Follow button UI: Implemented
+- Updates/Following page UI: Implemented
+- Follow database model: Not implemented
+- Follow API endpoints: Not implemented
+- Notification system: Not implemented
+
+---
+
 ## Overview
 
 Allow users to follow sellers and receive updates about new content.

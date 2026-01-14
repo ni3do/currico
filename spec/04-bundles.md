@@ -1,5 +1,17 @@
 # Resource Bundles
 
+## Implementation Status
+
+**Status: UI Only**
+
+- Bundle creation form UI: Implemented
+- Bundle detail page UI: Implemented
+- Bundle database model: Not implemented
+- Bundle API endpoints: Not implemented
+- Bundle purchase flow: Not implemented
+
+---
+
 ## Overview
 
 Allow sellers to combine multiple existing resources into discounted "Bundles" with their own identity and pricing.

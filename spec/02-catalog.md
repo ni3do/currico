@@ -1,5 +1,19 @@
 # Resource Catalog & Search
 
+## Implementation Status
+
+**Status: Partial**
+
+- Catalog grid display: Implemented
+- Card information display: Implemented
+- Search bar with keywords: Implemented
+- Subject selector: Implemented
+- Advanced filters UI: Implemented but not wired to API
+- Sorting options: UI only, not functional
+- Mobile experience: Implemented
+
+---
+
 ## Overview
 
 Display a catalog of individual resources and bundles with clean advanced search capabilities.
