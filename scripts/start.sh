@@ -1,6 +1,13 @@
 #!/bin/sh
 set -e
 
+# Check for required environment variable
+if [ -z "$DATABASE_URL" ]; then
+  echo "ERROR: DATABASE_URL environment variable is not set"
+  echo "Please configure DATABASE_URL in your Dokploy service settings"
+  exit 1
+fi
+
 echo "Running database migrations..."
 npx prisma migrate deploy
 
