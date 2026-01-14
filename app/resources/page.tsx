@@ -1,92 +1,73 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { content } from "@/lib/content";
 import TopBar from "@/components/ui/TopBar";
 
 const { common, resourcesPage } = content;
 
-// Mock data for demonstration
-const mockResources = [
-  {
-    id: 1,
-    title: "Bruchrechnen Ubungsblatter",
-    description: "Umfassende Ubungen zur Bruchrechnung mit Losungsschlussel",
-    subject: "Mathematik",
-    cycle: "Zyklus 2",
-    price: "CHF 12.00",
-    quality: "Verified",
-    type: "PDF",
-    documents: 8,
-    rating: 4.8,
-  },
-  {
-    id: 2,
-    title: "Leseverstehen: Kurzgeschichten",
-    description: "10 spannende Kurzgeschichten mit Verstandnisfragen",
-    subject: "Deutsch",
-    cycle: "Zyklus 3",
-    price: "CHF 18.00",
-    quality: "AI-Checked",
-    type: "PDF",
-    documents: 10,
-    rating: 4.9,
-  },
-  {
-    id: 3,
-    title: "NMG: Experimente mit Wasser",
-    description: "Praktische Experimente zum Thema Wasser und Aggregatzustande",
-    subject: "NMG",
-    cycle: "Zyklus 2",
-    price: "CHF 15.00",
-    quality: "Verified",
-    type: "Bundle",
-    documents: 12,
-    rating: 4.7,
-  },
-  {
-    id: 4,
-    title: "Englisch Vokabeltraining",
-    description: "Interaktive Ubungen fur Anfanger mit Audio-Dateien",
-    subject: "Englisch",
-    cycle: "Zyklus 2",
-    price: "CHF 10.00",
-    quality: "Verified",
-    type: "PDF",
-    documents: 6,
-    rating: 4.6,
-  },
-  {
-    id: 5,
-    title: "Geometrie: Flachen und Korper",
-    description: "Arbeitsblatter zu Flachen- und Volumenberechnungen",
-    subject: "Mathematik",
-    cycle: "Zyklus 3",
-    price: "Gratis",
-    quality: "AI-Checked",
-    type: "PDF",
-    documents: 5,
-    rating: 4.5,
-  },
-  {
-    id: 6,
-    title: "Rechtschreibung: Doppelkonsonanten",
-    description: "Ubungen und Spiele zur Rechtschreibung mit Losungen",
-    subject: "Deutsch",
-    cycle: "Zyklus 2",
-    price: "CHF 8.00",
-    quality: "Verified",
-    type: "Bundle",
-    documents: 7,
-    rating: 4.8,
-  },
-];
+interface Resource {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  priceFormatted: string;
+  subject: string;
+  cycle: string;
+  subjects: string[];
+  cycles: string[];
+  previewUrl: string | null;
+  createdAt: string;
+  seller: {
+    id: string;
+    display_name: string | null;
+  };
+}
+
+interface Pagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
 
 export default function ResourcesPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
+  const [resources, setResources] = useState<Resource[]>([]);
+  const [pagination, setPagination] = useState<Pagination>({ page: 1, limit: 20, total: 0, totalPages: 0 });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchResources();
+  }, [selectedSubject]);
+
+  const fetchResources = async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (selectedSubject) params.set("subject", selectedSubject);
+      if (searchQuery) params.set("search", searchQuery);
+
+      const response = await fetch(`/api/resources?${params.toString()}`);
+      if (response.ok) {
+        const data = await response.json();
+        setResources(data.resources);
+        setPagination(data.pagination);
+      }
+    } catch (error) {
+      console.error("Error fetching resources:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    fetchResources();
+  };
 
   return (
     <div className="min-h-screen bg-[--background-alt]">
@@ -109,7 +90,7 @@ export default function ResourcesPage() {
         {/* Search and Filter Section */}
         <div className="mb-8 space-y-4">
           {/* Main Search Controls */}
-          <div className="flex flex-col gap-3 sm:flex-row">
+          <form onSubmit={handleSearch} className="flex flex-col gap-3 sm:flex-row">
             {/* Search Bar */}
             <div className="flex-1">
               <div className="relative">
@@ -157,6 +138,7 @@ export default function ResourcesPage() {
 
             {/* More Filters Button */}
             <button
+              type="button"
               onClick={() => setShowFilters(!showFilters)}
               className={`flex items-center justify-center gap-2 rounded-[--radius-md] px-5 py-3 font-medium text-sm transition-colors border ${
                 showFilters
@@ -179,7 +161,7 @@ export default function ResourcesPage() {
               </svg>
               <span>Filter</span>
             </button>
-          </div>
+          </form>
 
           {/* Advanced Filters (Collapsible) */}
           {showFilters && (
@@ -280,7 +262,7 @@ export default function ResourcesPage() {
           {/* Sort and Results Count */}
           <div className="flex items-center justify-between py-2">
             <p className="text-sm text-[--text-muted]">
-              <span className="font-medium text-[--text-secondary]">{mockResources.length}</span> Ressourcen gefunden
+              <span className="font-medium text-[--text-secondary]">{pagination.total}</span> Ressourcen gefunden
             </p>
             <div className="flex items-center gap-2">
               <label className="text-sm text-[--text-muted]">Sortieren:</label>
@@ -296,125 +278,129 @@ export default function ResourcesPage() {
         </div>
 
         {/* Resource Grid */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {mockResources.map((resource) => (
-            <article
-              key={resource.id}
-              className="group bg-white rounded-[--radius-lg] overflow-hidden transition-all duration-200 hover:-translate-y-1"
-              style={{
-                boxShadow: 'var(--shadow-card)',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.boxShadow = 'var(--shadow-card-hover)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = 'var(--shadow-card)';
-              }}
-            >
-              {/* Card Header */}
-              <div className="p-6">
-                {/* Badges - Pill style with full radius */}
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-2">
-                    <span className="px-3 py-1 bg-[--gray-100] text-[--text-muted] text-xs font-medium rounded-full">
-                      {resource.type}
-                    </span>
-                    <span className="px-3 py-1 bg-[--gray-100] text-[--text-muted] text-xs font-medium rounded-full">
-                      {resource.cycle}
+        {loading ? (
+          <div className="flex items-center justify-center py-16">
+            <div className="text-[--text-muted]">Laden...</div>
+          </div>
+        ) : resources.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-16">
+            <p className="text-[--text-muted] mb-4">Keine Ressourcen gefunden</p>
+            <p className="text-sm text-[--text-light]">Versuchen Sie andere Suchbegriffe oder Filter</p>
+          </div>
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {resources.map((resource) => (
+              <article
+                key={resource.id}
+                className="group bg-white rounded-[--radius-lg] overflow-hidden transition-all duration-200 hover:-translate-y-1"
+                style={{
+                  boxShadow: 'var(--shadow-card)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow = 'var(--shadow-card-hover)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = 'var(--shadow-card)';
+                }}
+              >
+                {/* Card Header */}
+                <div className="p-6">
+                  {/* Badges - Pill style with full radius */}
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <span className="px-3 py-1 bg-[--gray-100] text-[--text-muted] text-xs font-medium rounded-full">
+                        PDF
+                      </span>
+                      {resource.cycle && (
+                        <span className="px-3 py-1 bg-[--gray-100] text-[--text-muted] text-xs font-medium rounded-full">
+                          {resource.cycle}
+                        </span>
+                      )}
+                    </div>
+                    <span className="px-3 py-1 text-xs font-medium rounded-full bg-[--success-light] text-[--success]">
+                      Verifiziert
                     </span>
                   </div>
-                  <span
-                    className={`px-3 py-1 text-xs font-medium rounded-full ${
-                      resource.quality === "Verified"
-                        ? "bg-[--success-light] text-[--success]"
-                        : "bg-[--accent-light] text-[--accent]"
-                    }`}
-                  >
-                    {resource.quality === "Verified" ? "Verifiziert" : "KI-Gepruft"}
+
+                  {/* Subject Tag - Pill style with primary accent */}
+                  <span className="inline-block px-3 py-1 bg-[--primary-light] text-[--primary] text-xs font-semibold rounded-full mb-4">
+                    {resource.subject}
                   </span>
+
+                  {/* Title - Bold and larger */}
+                  <h3 className="text-lg font-bold text-[--text-heading] group-hover:text-[--primary] transition-colors mb-2">
+                    {resource.title}
+                  </h3>
+
+                  {/* Description */}
+                  <p className="text-sm text-[--text-muted] line-clamp-2 leading-relaxed">
+                    {resource.description}
+                  </p>
                 </div>
 
-                {/* Subject Tag - Pill style with primary accent */}
-                <span className="inline-block px-3 py-1 bg-[--primary-light] text-[--primary] text-xs font-semibold rounded-full mb-4">
-                  {resource.subject}
-                </span>
-
-                {/* Title - Bold and larger */}
-                <h3 className="text-lg font-bold text-[--text-heading] group-hover:text-[--primary] transition-colors mb-2">
-                  {resource.title}
-                </h3>
-
-                {/* Description */}
-                <p className="text-sm text-[--text-muted] line-clamp-2 leading-relaxed">
-                  {resource.description}
-                </p>
-              </div>
-
-              {/* Card Footer */}
-              <div className="px-6 py-4 border-t border-[--gray-100] bg-[--gray-50]">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    {/* Documents count */}
-                    <span className="text-sm text-[--text-muted]">
-                      {resource.documents} Dok.
-                    </span>
-                    {/* Rating */}
-                    <div className="flex items-center gap-1 text-sm">
-                      <svg className="w-4 h-4 text-[--warning]" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>
-                      <span className="font-medium text-[--text-body]">{resource.rating}</span>
+                {/* Card Footer */}
+                <div className="px-6 py-4 border-t border-[--gray-100] bg-[--gray-50]">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      {/* Seller */}
+                      <span className="text-sm text-[--text-muted]">
+                        {resource.seller.display_name || "Anonym"}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      {/* Price - Bold and accent colored */}
+                      <span className={`text-lg font-bold ${resource.priceFormatted === "Gratis" ? "text-[--success]" : "text-[--primary]"}`}>
+                        {resource.priceFormatted}
+                      </span>
+                      <a
+                        href={`/resources/${resource.id}`}
+                        className="rounded-[--radius-md] bg-[--primary] px-4 py-2 text-sm font-semibold text-white hover:bg-[--primary-hover] transition-all hover:shadow-[var(--shadow-sm)]"
+                      >
+                        Ansehen
+                      </a>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    {/* Price - Bold and accent colored */}
-                    <span className={`text-lg font-bold ${resource.price === "Gratis" ? "text-[--success]" : "text-[--primary]"}`}>
-                      {resource.price}
-                    </span>
-                    <a
-                      href={`/resources/${resource.id}`}
-                      className="rounded-[--radius-md] bg-[--primary] px-4 py-2 text-sm font-semibold text-white hover:bg-[--primary-hover] transition-all hover:shadow-[var(--shadow-sm)]"
-                    >
-                      Ansehen
-                    </a>
-                  </div>
                 </div>
-              </div>
-            </article>
-          ))}
-        </div>
+              </article>
+            ))}
+          </div>
+        )}
 
-        {/* Pagination */}
-        <div className="mt-12 flex justify-center">
-          <nav className="flex items-center gap-1">
-            <button
-              className="rounded-[--radius-sm] px-3 py-2 text-[--text-muted] font-medium text-sm hover:bg-[--gray-100] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-            <button className="rounded-[--radius-sm] bg-[--primary] px-4 py-2 font-medium text-white text-sm min-w-[40px]">
-              1
-            </button>
-            <button className="rounded-[--radius-sm] px-4 py-2 text-[--text-secondary] font-medium text-sm hover:bg-[--gray-100] transition-colors min-w-[40px]">
-              2
-            </button>
-            <button className="rounded-[--radius-sm] px-4 py-2 text-[--text-secondary] font-medium text-sm hover:bg-[--gray-100] transition-colors min-w-[40px]">
-              3
-            </button>
-            <span className="px-2 text-[--text-muted]">...</span>
-            <button className="rounded-[--radius-sm] px-4 py-2 text-[--text-secondary] font-medium text-sm hover:bg-[--gray-100] transition-colors min-w-[40px]">
-              12
-            </button>
-            <button className="rounded-[--radius-sm] px-3 py-2 text-[--text-secondary] font-medium text-sm hover:bg-[--gray-100] transition-colors">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          </nav>
-        </div>
+        {/* Pagination - only show if more than one page */}
+        {pagination.totalPages > 1 && (
+          <div className="mt-12 flex justify-center">
+            <nav className="flex items-center gap-1">
+              <button
+                className="rounded-[--radius-sm] px-3 py-2 text-[--text-muted] font-medium text-sm hover:bg-[--gray-100] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={pagination.page === 1}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map((pageNum) => (
+                <button
+                  key={pageNum}
+                  className={`rounded-[--radius-sm] px-4 py-2 font-medium text-sm min-w-[40px] transition-colors ${
+                    pageNum === pagination.page
+                      ? "bg-[--primary] text-white"
+                      : "text-[--text-secondary] hover:bg-[--gray-100]"
+                  }`}
+                >
+                  {pageNum}
+                </button>
+              ))}
+              <button
+                className="rounded-[--radius-sm] px-3 py-2 text-[--text-secondary] font-medium text-sm hover:bg-[--gray-100] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={pagination.page === pagination.totalPages}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </nav>
+          </div>
+        )}
       </main>
 
       {/* Footer - Grounded with slate background */}
