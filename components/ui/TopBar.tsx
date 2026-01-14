@@ -36,12 +36,14 @@ export default function TopBar() {
               >
                 {common.navigation.resources}
               </Link>
-              <Link
-                href={session ? "/dashboard/seller" : "/login"}
-                className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors"
-              >
-                {common.navigation.dashboard}
-              </Link>
+              {session && (
+                <Link
+                  href="/dashboard/seller"
+                  className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors"
+                >
+                  {common.navigation.dashboard}
+                </Link>
+              )}
               <Link
                 href="/coming-soon"
                 className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors"
@@ -114,12 +116,14 @@ export default function TopBar() {
               >
                 {common.navigation.resources}
               </Link>
-              <Link
-                href={session ? "/dashboard/seller" : "/login"}
-                className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors"
-              >
-                {common.navigation.dashboard}
-              </Link>
+              {session && (
+                <Link
+                  href="/dashboard/seller"
+                  className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors"
+                >
+                  {common.navigation.dashboard}
+                </Link>
+              )}
               <Link
                 href="/coming-soon"
                 className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors"
