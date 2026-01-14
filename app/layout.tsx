@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
+import { getLocale } from "next-intl/server";
 import "./globals.css";
 import { Providers } from "./providers";
 
 export const metadata: Metadata = {
-  title: "Easy Lehrer - Unterrichtsmaterial fur Lehrpersonen",
+  title: "Easy Lehrer - Unterrichtsmaterial für Lehrpersonen",
   description:
-    "Entdecken Sie hochwertige Unterrichtsmaterialien fur Schweizer Lehrpersonen",
+    "Entdecken Sie hochwertige Unterrichtsmaterialien für Schweizer Lehrpersonen",
 };
 
 // Anti-FOUC script to set theme before React hydrates
@@ -20,13 +21,15 @@ const themeScript = `
   })();
 `;
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const locale = await getLocale();
+
   return (
-    <html lang="de" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>

@@ -1,0 +1,388 @@
+{
+  "common": {
+    "brand": {
+      "logoText": "EL",
+      "name": "EasyLehrer",
+      "tagline": "Bildungsplattform Schweiz"
+    },
+    "navigation": {
+      "resources": "Ressourcen",
+      "aboutUs": "Über uns",
+      "contact": "Kontakt",
+      "login": "Anmelden",
+      "logout": "Abmelden",
+      "register": "Registrieren",
+      "dashboard": "Dashboard",
+      "profile": "Profil"
+    },
+    "footer": {
+      "brandDescription": "Die Plattform für Unterrichtsmaterial von Schweizer Lehrpersonen.",
+      "platformSection": {
+        "title": "Plattform",
+        "resources": "Ressourcen",
+        "pricing": "Preise"
+      },
+      "infoSection": {
+        "title": "Information",
+        "aboutUs": "Über uns",
+        "contact": "Kontakt",
+        "help": "Hilfe"
+      },
+      "legalSection": {
+        "title": "Rechtliches",
+        "privacy": "Datenschutz",
+        "terms": "AGB",
+        "imprint": "Impressum"
+      },
+      "copyright": "2026 EasyLehrer. Alle Rechte vorbehalten.",
+      "initiative": "Eine Initiative für Schweizer Bildung"
+    },
+    "buttons": {
+      "viewAll": "Alle anzeigen",
+      "view": "Ansehen",
+      "edit": "Bearbeiten",
+      "cancel": "Abbrechen",
+      "apply": "Anwenden",
+      "reset": "Zurücksetzen",
+      "backToHome": "Zurück zur Startseite"
+    }
+  },
+  "homePage": {
+    "hero": {
+      "badge": "Bildungsplattform Schweiz",
+      "title": "Qualitätsgesicherte Unterrichtsmaterialien für Schweizer Lehrpersonen",
+      "description": "Entdecken Sie professionelle Lehrmittel, entwickelt von Lehrpersonen und abgestimmt auf den Lehrplan 21. Vertrauenswürdig, geprüft, sofort einsetzbar.",
+      "primaryButton": "Materialien durchsuchen",
+      "secondaryButton": "Mehr erfahren",
+      "trustLabel": "Vertraut von Bildungsinstitutionen",
+      "trustBadges": {
+        "lehrplan21": "Lehrplan 21 konform",
+        "qualityChecked": "Qualitätsgeprüft",
+        "swissStandard": "Schweizer Standard"
+      }
+    },
+    "categories": {
+      "allSubjects": "Alle Fächer",
+      "science": "Naturwissenschaften",
+      "languages": "Sprachen",
+      "math": "Mathematik",
+      "arts": "Gestalten",
+      "history": "Geschichte",
+      "music": "Musik"
+    },
+    "featuredResources": {
+      "title": "Empfohlene Materialien",
+      "description": "Von Experten ausgewählt und qualitätsgeprüft",
+      "viewAllMobile": "Alle Materialien anzeigen",
+      "card1": {
+        "category": "Naturwissenschaften",
+        "cycle": "Zyklus 2",
+        "title": "Naturkunde Experimente",
+        "description": "Praxisnahe Experimente und Arbeitsblätter für den naturwissenschaftlichen Unterricht.",
+        "documents": "12 Dokumente",
+        "rating": "4.9"
+      },
+      "card2": {
+        "category": "Sprachen",
+        "cycle": "Zyklus 1-2",
+        "title": "Deutsch Lesetraining",
+        "description": "Strukturierte Lesetexte mit differenzierten Aufgaben für verschiedene Niveaus.",
+        "documents": "8 Dokumente",
+        "rating": "4.8"
+      },
+      "card3": {
+        "category": "Mathematik",
+        "cycle": "Zyklus 1",
+        "title": "Mathematik Grundlagen",
+        "description": "Systematische Übungsblätter für den Aufbau mathematischer Grundkompetenzen.",
+        "documents": "15 Dokumente",
+        "rating": "4.7"
+      }
+    },
+    "features": {
+      "title": "Warum EasyLehrer?",
+      "description": "Eine Plattform, die den Ansprüchen von Schweizer Bildungsinstitutionen gerecht wird.",
+      "feature1": {
+        "title": "Qualitätsgeprüft",
+        "description": "Jedes Material wird von Fachexperten auf pädagogische Qualität und Lehrplan-Konformität geprüft."
+      },
+      "feature2": {
+        "title": "Lehrplan 21 konform",
+        "description": "Alle Ressourcen sind nach Kompetenzbereichen und Zyklen des Lehrplan 21 kategorisiert."
+      },
+      "feature3": {
+        "title": "Sofort einsetzbar",
+        "description": "Alle Materialien sind vollständig ausgearbeitet und können direkt im Unterricht verwendet werden."
+      }
+    },
+    "stats": {
+      "materials": {
+        "value": "500+",
+        "label": "Geprüfte Materialien"
+      },
+      "teachers": {
+        "value": "1'000+",
+        "label": "Aktive Lehrpersonen"
+      },
+      "satisfaction": {
+        "value": "98%",
+        "label": "Zufriedenheitsrate"
+      }
+    },
+    "cta": {
+      "title": "Bereit, Ihren Unterricht zu bereichern?",
+      "description": "Registrieren Sie sich kostenlos und erhalten Sie Zugang zu hochwertigen Unterrichtsmaterialien.",
+      "primaryButton": "Kostenlos registrieren",
+      "secondaryButton": "Ressourcen durchsuchen"
+    }
+  },
+  "loginPage": {
+    "title": "Willkommen zurück",
+    "subtitle": "Melden Sie sich bei Ihrem Konto an",
+    "form": {
+      "emailLabel": "E-Mail-Adresse",
+      "emailPlaceholder": "ihre.email@example.com",
+      "emailError": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+      "passwordLabel": "Passwort",
+      "passwordPlaceholder": "Ihr Passwort",
+      "forgotPassword": "Vergessen?",
+      "rememberMe": "Angemeldet bleiben",
+      "submitButton": "Anmelden",
+      "submitting": "Wird angemeldet..."
+    },
+    "divider": "Oder fortfahren mit",
+    "oauth": {
+      "google": "Mit Google anmelden",
+      "github": "Mit GitHub anmelden"
+    },
+    "register": {
+      "prompt": "Noch kein Konto?",
+      "link": "Kostenlos registrieren"
+    },
+    "errors": {
+      "invalidCredentials": "Ungültige E-Mail-Adresse oder Passwort",
+      "generic": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
+    }
+  },
+  "registerPage": {
+    "title": "Konto erstellen",
+    "subtitle": "Werden Sie Teil der EasyLehrer Plattform",
+    "accountTypes": {
+      "teacher": "Lehrperson"
+    },
+    "form": {
+      "nameLabel": "Vollständiger Name",
+      "namePlaceholder": "Maria Schmidt",
+      "emailLabel": "E-Mail-Adresse",
+      "emailPlaceholder": "ihre.email@example.com",
+      "emailError": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+      "cantonLabel": "Kanton",
+      "cantonPlaceholder": "Kanton wählen",
+      "subjectsLabel": "Unterrichtsfächer",
+      "cyclesLabel": "Unterrichtete Zyklen",
+      "passwordLabel": "Passwort",
+      "passwordPlaceholder": "Mindestens 8 Zeichen",
+      "passwordError": "Passwort muss mindestens 8 Zeichen lang sein",
+      "confirmPasswordLabel": "Passwort bestätigen",
+      "confirmPasswordPlaceholder": "Passwort wiederholen",
+      "confirmPasswordError": "Passwörter stimmen nicht überein",
+      "termsText": "Ich akzeptiere die",
+      "termsLink": "Allgemeinen Geschäftsbedingungen",
+      "termsAnd": "und die",
+      "privacyLink": "Datenschutzerklärung",
+      "submitButton": "Registrieren",
+      "submitting": "Wird registriert..."
+    },
+    "divider": "Oder registrieren mit",
+    "oauth": {
+      "google": "Mit Google registrieren",
+      "microsoft": "Mit Microsoft Office registrieren"
+    },
+    "login": {
+      "prompt": "Bereits registriert?",
+      "link": "Anmelden"
+    },
+    "errors": {
+      "registrationSuccess": "Registrierung erfolgreich. Bitte melden Sie sich an.",
+      "registrationFailed": "Registrierung fehlgeschlagen. Bitte versuchen Sie es erneut.",
+      "generic": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
+    },
+    "cantons": {
+      "ZH": "Zürich",
+      "BE": "Bern",
+      "LU": "Luzern",
+      "UR": "Uri",
+      "SZ": "Schwyz",
+      "OW": "Obwalden",
+      "NW": "Nidwalden",
+      "GL": "Glarus",
+      "ZG": "Zug",
+      "FR": "Freiburg",
+      "SO": "Solothurn",
+      "BS": "Basel-Stadt",
+      "BL": "Basel-Landschaft",
+      "SH": "Schaffhausen",
+      "AR": "Appenzell Ausserrhoden",
+      "AI": "Appenzell Innerrhoden",
+      "SG": "St. Gallen",
+      "GR": "Graubünden",
+      "AG": "Aargau",
+      "TG": "Thurgau",
+      "TI": "Tessin",
+      "VD": "Waadt",
+      "VS": "Wallis",
+      "NE": "Neuenburg",
+      "GE": "Genf",
+      "JU": "Jura"
+    },
+    "subjects": ["Mathematik", "Deutsch", "Englisch", "Französisch", "NMG", "BG", "Musik", "Sport"],
+    "cycles": ["Zyklus 1", "Zyklus 2", "Zyklus 3"]
+  },
+  "resourcesPage": {
+    "breadcrumb": {
+      "home": "Startseite"
+    },
+    "header": {
+      "title": "Unterrichtsmaterialien",
+      "description": "Durchsuchen Sie qualitätsgeprüfte Materialien für Ihren Unterricht"
+    },
+    "search": {
+      "placeholder": "Suche nach Titel, Thema, Stichwort...",
+      "subjectFilter": {
+        "all": "Alle Fächer",
+        "math": "Mathematik",
+        "german": "Deutsch",
+        "english": "Englisch",
+        "french": "Französisch",
+        "nmg": "NMG",
+        "arts": "Bildnerisches Gestalten",
+        "music": "Musik",
+        "sports": "Sport"
+      },
+      "filterButton": "Filter"
+    },
+    "advancedFilters": {
+      "title": "Erweiterte Filter",
+      "cycleFilter": {
+        "label": "Zyklus",
+        "all": "Alle Zyklen",
+        "cycle1": "Zyklus 1",
+        "cycle2": "Zyklus 2",
+        "cycle3": "Zyklus 3"
+      },
+      "cantonFilter": {
+        "label": "Kanton",
+        "all": "Alle Kantone"
+      },
+      "qualityFilter": {
+        "label": "Qualität",
+        "all": "Alle",
+        "verified": "Verifiziert",
+        "aiChecked": "KI-Geprüft"
+      },
+      "priceFilter": {
+        "label": "Preistyp",
+        "all": "Alle",
+        "free": "Kostenlos",
+        "paid": "Kostenpflichtig"
+      },
+      "typeFilter": {
+        "label": "Ressourcentyp",
+        "all": "Alle",
+        "pdf": "PDF",
+        "word": "Word",
+        "powerpoint": "PowerPoint",
+        "bundle": "Bundle"
+      },
+      "editableFilter": {
+        "label": "Editierbar",
+        "all": "Alle",
+        "yes": "Ja",
+        "no": "Nein"
+      },
+      "applyButton": "Filter anwenden",
+      "resetButton": "Zurücksetzen"
+    },
+    "results": {
+      "countLabel": "Ressourcen gefunden",
+      "sortLabel": "Sortieren:",
+      "sortOptions": {
+        "newest": "Neueste",
+        "popular": "Beliebteste",
+        "rating": "Beste Bewertung",
+        "priceLow": "Preis aufsteigend",
+        "priceHigh": "Preis absteigend"
+      }
+    },
+    "card": {
+      "verified": "Verifiziert",
+      "aiChecked": "KI-Geprüft",
+      "documents": "Dok.",
+      "free": "Gratis",
+      "viewButton": "Ansehen"
+    }
+  },
+  "sellerDashboard": {
+    "header": {
+      "title": "Verkäufer Dashboard",
+      "subtitle": "Verwalten Sie Ihre Ressourcen und überwachen Sie Ihre Verkäufe"
+    },
+    "stats": {
+      "earnings": {
+        "title": "Netto-Einnahmen",
+        "subtitle": "Nach Plattformgebühr"
+      },
+      "downloads": {
+        "title": "Downloads",
+        "subtitle": "Alle Ressourcen"
+      },
+      "followers": {
+        "title": "Follower",
+        "subtitle": "Folgen Ihnen"
+      }
+    },
+    "actions": {
+      "uploadResource": "+ Neue Ressource hochladen",
+      "createBundle": "+ Bundle erstellen"
+    },
+    "tabs": {
+      "resources": "Meine Ressourcen",
+      "transactions": "Transaktionen"
+    },
+    "resourcesTable": {
+      "columns": {
+        "title": "Titel",
+        "type": "Typ",
+        "status": "Status",
+        "downloads": "Downloads",
+        "earnings": "Einnahmen",
+        "actions": "Aktionen"
+      },
+      "statusLabels": {
+        "verified": "Verifiziert",
+        "aiChecked": "KI-Geprüft",
+        "pending": "Ausstehend"
+      },
+      "editButton": "Bearbeiten",
+      "viewButton": "Ansehen"
+    },
+    "transactionsTable": {
+      "columns": {
+        "resource": "Ressource",
+        "date": "Datum",
+        "gross": "Bruttopreis",
+        "platformFee": "Plattformgebühr",
+        "payout": "Ihre Auszahlung"
+      }
+    }
+  },
+  "localeSwitcher": {
+    "label": "Sprache",
+    "de": "Deutsch",
+    "en": "English"
+  },
+  "metadata": {
+    "title": "Easy Lehrer - Unterrichtsmaterial für Lehrpersonen",
+    "description": "Entdecken Sie hochwertige Unterrichtsmaterialien für Schweizer Lehrpersonen"
+  }
+}
