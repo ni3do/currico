@@ -416,7 +416,7 @@ export default function ResourcesPage() {
                 <span className="text-lg font-semibold text-[--text-heading]">EasyLehrer</span>
               </div>
               <p className="text-sm text-[--text-muted] leading-relaxed">
-                Die offizielle Plattform fur Unterrichtsmaterial von Schweizer Lehrpersonen.
+                Die Plattform fur Unterrichtsmaterial von Schweizer Lehrpersonen.
               </p>
             </div>
 
@@ -425,7 +425,6 @@ export default function ResourcesPage() {
               <h3 className="font-semibold text-[--text-heading] text-sm uppercase tracking-wider">Plattform</h3>
               <ul className="mt-4 space-y-3">
                 <li><Link href="/resources" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">Ressourcen</Link></li>
-                <li><a href="#" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">Fur Schulen</a></li>
                 <li><a href="#" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">Preise</a></li>
               </ul>
             </div>

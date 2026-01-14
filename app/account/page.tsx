@@ -285,19 +285,6 @@ export default function AccountPage() {
                 </div>
               </div>
 
-              {/* School Account Card */}
-              <div className="rounded-[--radius-lg] bg-white p-6 border border-[--border]">
-                <h3 className="font-semibold text-[--gray-800] mb-4">Schulkonto</h3>
-                <p className="text-sm text-[--text-muted] mb-4">
-                  Verbinden Sie Ihr Konto mit einer Schule, um auf gemeinsame Ressourcen zuzugreifen.
-                </p>
-                <Link
-                  href="/dashboard/school"
-                  className="block w-full px-4 py-3 text-center rounded-[--radius-sm] border border-[--primary] text-[--primary] font-medium text-sm hover:bg-[--primary-light] transition-colors"
-                >
-                  Schulkonto verbinden
-                </Link>
-              </div>
             </div>
           </div>
         )}

@@ -12,7 +12,6 @@
  * - loginPage: Login page (app/login/page.tsx)
  * - registerPage: Registration page (app/register/page.tsx)
  * - resourcesPage: Resources listing page (app/resources/page.tsx)
- * - schoolDashboard: School admin dashboard (app/dashboard/school/page.tsx)
  * - sellerDashboard: Seller dashboard (app/dashboard/seller/page.tsx)
  */
 
@@ -29,7 +28,6 @@ export const content = {
 
     navigation: {
       resources: "Ressourcen",
-      forSchools: "Für Schulen",
       aboutUs: "Über uns",
       contact: "Kontakt",
       login: "Anmelden",
@@ -40,12 +38,11 @@ export const content = {
     },
 
     footer: {
-      brandDescription: "Die offizielle Plattform für Unterrichtsmaterial von Schweizer Lehrpersonen.",
+      brandDescription: "Die Plattform für Unterrichtsmaterial von Schweizer Lehrpersonen.",
 
       platformSection: {
         title: "Plattform",
         resources: "Ressourcen",
-        forSchools: "Fur Schulen",
         pricing: "Preise",
       },
 
@@ -83,8 +80,8 @@ export const content = {
   // ============================================
   homePage: {
     hero: {
-      badge: "Offizielle Bildungsplattform",
-      title: "Qualitatsgesicherte Unterrichtsmaterialien fur Schweizer Schulen",
+      badge: "Bildungsplattform Schweiz",
+      title: "Qualitatsgesicherte Unterrichtsmaterialien fur Schweizer Lehrpersonen",
       description: "Entdecken Sie professionelle Lehrmittel, entwickelt von Lehrpersonen und abgestimmt auf den Lehrplan 21. Vertrauenswurdig, gepruft, sofort einsetzbar.",
       primaryButton: "Materialien durchsuchen",
       secondaryButton: "Mehr erfahren",
@@ -157,15 +154,14 @@ export const content = {
       },
 
       feature3: {
-        title: "Schullizenzen",
-        description: "Institutionelle Lizenzen ermoglichen die gemeinsame Nutzung von Materialien im gesamten Kollegium.",
+        title: "Sofort einsetzbar",
+        description: "Alle Materialien sind vollstandig ausgearbeitet und konnen direkt im Unterricht verwendet werden.",
       },
     },
 
     stats: {
       materials: { value: "500+", label: "Geprufte Materialien" },
       teachers: { value: "1'000+", label: "Aktive Lehrpersonen" },
-      schools: { value: "50+", label: "Partnerschulen" },
       satisfaction: { value: "98%", label: "Zufriedenheitsrate" },
     },
 
@@ -219,18 +215,15 @@ export const content = {
 
     accountTypes: {
       teacher: "Lehrperson",
-      school: "Schule / Institution",
     },
 
     form: {
       // Name field
       nameLabel: {
         teacher: "Vollstandiger Name",
-        school: "Name der Institution",
       },
       namePlaceholder: {
         teacher: "Maria Muster",
-        school: "Primarschule Musterstadt",
       },
 
       // Email field
@@ -408,77 +401,6 @@ export const content = {
       documents: "Dok.",
       free: "Gratis",
       viewButton: "Ansehen",
-    },
-  },
-
-  // ============================================
-  // SCHOOL DASHBOARD (app/dashboard/school/page.tsx)
-  // ============================================
-  schoolDashboard: {
-    header: {
-      subtitle: "Verwalten Sie Ihre Schule und Team-Lizenzen",
-    },
-
-    tabs: {
-      members: "Team-Mitglieder",
-      licenses: "Lizenzen",
-      billing: "Abrechnung",
-    },
-
-    members: {
-      title: "Team-Mitglieder",
-      inviteButton: "+ Mitglied einladen",
-      statusActive: "Aktiv",
-      statusPending: "Ausstehend",
-      removeButton: "Entfernen",
-    },
-
-    licenses: {
-      title: "School Library",
-      buyButton: "Ressourcen kaufen",
-      purchasedLabel: "Gekauft:",
-      usedByLabel: "Verwendet von",
-      teachersLabel: "Lehrpersonen",
-    },
-
-    billing: {
-      title: "Abrechnung",
-
-      paymentMethod: {
-        title: "Zahlungsmethode",
-        editButton: "Bearbeiten",
-        cardNumber: "---- ---- ---- 4242",
-        expires: "Lauft ab 12/2027",
-      },
-
-      transactions: {
-        title: "Letzte Transaktionen",
-        viewAllButton: "Alle Transaktionen anzeigen",
-      },
-    },
-
-    sidebar: {
-      schoolInfo: {
-        title: "Schul-Informationen",
-        nameLabel: "Name",
-        cantonLabel: "Kanton",
-        emailLabel: "E-Mail",
-        editButton: "Details bearbeiten",
-      },
-
-      stats: {
-        title: "Statistiken",
-        membersLabel: "Team-Mitglieder",
-        licensesLabel: "Aktive Lizenzen",
-      },
-    },
-
-    inviteModal: {
-      title: "Lehrperson einladen",
-      emailLabel: "E-Mail-Adresse",
-      emailPlaceholder: "lehrperson@example.com",
-      sendButton: "Einladung senden",
-      cancelButton: "Abbrechen",
     },
   },
 

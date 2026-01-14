@@ -377,12 +377,7 @@ export default function UploadPage() {
                   className="w-full rounded-xl border border-[--border] bg-[--background] px-4 py-3 text-[--text] focus:border-[--primary] focus:outline-none focus:ring-2 focus:ring-[--primary]/20"
                 >
                   <option value="individual">Einzellizenz</option>
-                  <option value="school">Schullizenz</option>
-                  <option value="both">Beide</option>
                 </select>
-                <p className="mt-1 text-xs text-[--text-muted]">
-                  Schullizenzen erlauben allen Lehrpersonen einer Schule die Nutzung
-                </p>
               </div>
             </div>
           )}

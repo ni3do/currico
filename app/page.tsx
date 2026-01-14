@@ -319,7 +319,7 @@ export default function Home() {
         {/* Stats Section - Clean numbers */}
         <section className="bg-white py-20 border-y border-[--border]">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-8 sm:grid-cols-3">
               <div className="text-center">
                 <div className="text-4xl font-bold text-[--primary]">{homePage.stats.materials.value}</div>
                 <div className="mt-2 text-sm text-[--text-muted] font-medium">{homePage.stats.materials.label}</div>
@@ -327,10 +327,6 @@ export default function Home() {
               <div className="text-center">
                 <div className="text-4xl font-bold text-[--accent]">{homePage.stats.teachers.value}</div>
                 <div className="mt-2 text-sm text-[--text-muted] font-medium">{homePage.stats.teachers.label}</div>
-              </div>
-              <div className="text-center">
-                <div className="text-4xl font-bold text-[--secondary]">{homePage.stats.schools.value}</div>
-                <div className="mt-2 text-sm text-[--text-muted] font-medium">{homePage.stats.schools.label}</div>
               </div>
               <div className="text-center">
                 <div className="text-4xl font-bold text-[--primary]">{homePage.stats.satisfaction.value}</div>
@@ -389,7 +385,6 @@ export default function Home() {
               <h3 className="font-semibold text-[--text-heading] text-sm uppercase tracking-wider">{common.footer.platformSection.title}</h3>
               <ul className="mt-4 space-y-3">
                 <li><Link href="/resources" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">{common.footer.platformSection.resources}</Link></li>
-                <li><Link href="/coming-soon" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">{common.footer.platformSection.forSchools}</Link></li>
                 <li><Link href="/coming-soon" className="text-sm text-[--text-muted] hover:text-[--primary] transition-colors">{common.footer.platformSection.pricing}</Link></li>
               </ul>
             </div>

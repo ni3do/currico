@@ -5,7 +5,7 @@ import { Providers } from "./providers";
 export const metadata: Metadata = {
   title: "Easy Lehrer - Unterrichtsmaterial fur Lehrpersonen",
   description:
-    "Entdecken Sie hochwertige Unterrichtsmaterialien fur Schweizer Schulen",
+    "Entdecken Sie hochwertige Unterrichtsmaterialien fur Schweizer Lehrpersonen",
 };
 
 export default function RootLayout({

@@ -48,12 +48,6 @@ export default function TopBar() {
                 href="/coming-soon"
                 className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors"
               >
-                {common.navigation.forSchools}
-              </Link>
-              <Link
-                href="/coming-soon"
-                className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors"
-              >
                 {common.navigation.aboutUs}
               </Link>
               <Link
@@ -124,12 +118,6 @@ export default function TopBar() {
                   {common.navigation.dashboard}
                 </Link>
               )}
-              <Link
-                href="/coming-soon"
-                className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors"
-              >
-                {common.navigation.forSchools}
-              </Link>
               <Link
                 href="/coming-soon"
                 className="px-4 py-2 text-[--text-secondary] hover:text-[--primary] font-medium text-sm transition-colors"
