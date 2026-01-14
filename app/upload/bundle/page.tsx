@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import TopBar from "@/components/ui/TopBar";
 
 // Mock seller's resources
