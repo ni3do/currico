@@ -52,12 +52,28 @@ RUN chown nextjs:nodejs .next
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# Copy Prisma schema and migrations for deployment
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/package.json ./package.json
+
+# Install minimal dependencies for migrations and seeding (before switching to non-root user)
+RUN npm install --no-save prisma @prisma/client @prisma/adapter-pg pg bcryptjs tsx
+
+# Generate Prisma client for the installed version
+RUN npx prisma generate
+
+# Copy startup script
+COPY --from=builder /app/scripts/start.sh ./start.sh
+RUN chmod +x ./start.sh
+
+# Set ownership for nextjs user
+RUN chown -R nextjs:nodejs /app
+
 USER nextjs
 
 EXPOSE 3000
 
 ENV PORT=3000
 
-# server.js is created by next build from the standalone output
-# https://nextjs.org/docs/pages/api-reference/next-config-js/output
-CMD ["node", "server.js"]
+# Run migrations, seed, then start server
+CMD ["./start.sh"]
