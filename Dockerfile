@@ -58,7 +58,7 @@ COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 COPY --from=builder /app/package.json ./package.json
 
 # Install minimal dependencies for migrations and seeding (before switching to non-root user)
-RUN npm install --no-save prisma @prisma/client @prisma/adapter-pg pg bcryptjs tsx dotenv
+RUN npm install --no-save prisma @prisma/client @prisma/adapter-pg pg postgres-array bcryptjs tsx dotenv
 
 # Generate Prisma client for the installed version
 RUN npx prisma generate
