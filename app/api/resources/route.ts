@@ -15,7 +15,7 @@ import {
   MAX_RESOURCE_FILE_SIZE,
   MAX_PREVIEW_FILE_SIZE,
 } from "@/lib/validations/resource";
-import { mkdir, writeFile } from "fs/promises";
+import { mkdir, writeFile, unlink } from "fs/promises";
 import path from "path";
 
 /**
@@ -42,8 +42,8 @@ export async function GET(request: NextRequest) {
 
   try {
     const searchParams = request.nextUrl.searchParams;
-    const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "20");
+    const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
+    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") || "20")));
     const subject = searchParams.get("subject");
     const cycle = searchParams.get("cycle");
     const search = searchParams.get("search");
@@ -340,12 +340,17 @@ export async function POST(request: NextRequest) {
     await writeFile(filePath, fileBuffer);
     const fileUrl = `/uploads/resources/${userId}/${fileName}`;
 
+    // Helper to clean up on preview validation failure
+    const cleanupOnError = async () => {
+      await prisma.resource.delete({ where: { id: resource.id } });
+      await unlink(filePath).catch(() => {}); // Clean up main file, ignore errors
+    };
+
     // Handle preview file
     let previewUrl: string | null = null;
     if (previewFile) {
       if (previewFile.size > MAX_PREVIEW_FILE_SIZE) {
-        // Clean up main file and resource on error
-        await prisma.resource.delete({ where: { id: resource.id } });
+        await cleanupOnError();
         return NextResponse.json(
           { error: "Vorschaubild zu gross (maximal 5MB)" },
           { status: 400 }
@@ -353,7 +358,7 @@ export async function POST(request: NextRequest) {
       }
 
       if (!isAllowedPreviewType(previewFile.type)) {
-        await prisma.resource.delete({ where: { id: resource.id } });
+        await cleanupOnError();
         return NextResponse.json(
           { error: "Ungültiger Vorschaubild-Typ (JPEG, PNG oder WebP)" },
           { status: 400 }
@@ -364,7 +369,7 @@ export async function POST(request: NextRequest) {
       const previewBuffer = Buffer.from(previewBytes);
 
       if (!validateMagicBytes(previewBuffer, previewFile.type)) {
-        await prisma.resource.delete({ where: { id: resource.id } });
+        await cleanupOnError();
         return NextResponse.json(
           { error: "Vorschaubild-Inhalt stimmt nicht mit dem Dateityp überein" },
           { status: 400 }

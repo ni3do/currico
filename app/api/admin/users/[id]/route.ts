@@ -86,18 +86,34 @@ export async function PATCH(
     const body = await request.json();
 
     // Only allow admin to update specific fields
-    const allowedFields = ["seller_verified", "role", "email_verified"];
+    // Map request field names to Prisma field names
+    const fieldMapping: Record<string, string> = {
+      seller_verified: "seller_verified",
+      role: "role",
+      emailVerified: "emailVerified",
+    };
     const updateData: Record<string, unknown> = {};
 
-    for (const field of allowedFields) {
-      if (field in body) {
-        updateData[field] = body[field];
+    for (const [requestField, prismaField] of Object.entries(fieldMapping)) {
+      if (requestField in body) {
+        updateData[prismaField] = body[requestField];
       }
     }
 
     const updatedUser = await prisma.user.update({
       where: { id },
       data: updateData,
+      select: {
+        id: true,
+        name: true,
+        display_name: true,
+        email: true,
+        emailVerified: true,
+        role: true,
+        is_seller: true,
+        seller_verified: true,
+        updated_at: true,
+      },
     });
 
     return NextResponse.json(updatedUser);

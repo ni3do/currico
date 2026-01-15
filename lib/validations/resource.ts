@@ -34,7 +34,28 @@ export const ALLOWED_RESOURCE_TYPES: Record<string, string[]> = {
     "application/vnd.ms-excel",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   ],
-  other: [], // Allow any file type
+  // Safe file types for "other" - educational/document formats only
+  other: [
+    "application/pdf",
+    "application/msword",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/vnd.ms-powerpoint",
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    "application/vnd.ms-excel",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "application/rtf",
+    "text/plain",
+    "text/csv",
+    "application/zip",
+    "image/jpeg",
+    "image/png",
+    "image/gif",
+    "image/webp",
+    "audio/mpeg",
+    "audio/wav",
+    "video/mp4",
+    "video/webm",
+  ],
 };
 
 // Allowed MIME types for preview images
@@ -161,9 +182,6 @@ export function isAllowedResourceType(
   mimeType: string,
   resourceType: string
 ): boolean {
-  if (resourceType === "other") {
-    return true; // Allow any type for "other"
-  }
   const allowedTypes = ALLOWED_RESOURCE_TYPES[resourceType];
   return allowedTypes ? allowedTypes.includes(mimeType) : false;
 }
