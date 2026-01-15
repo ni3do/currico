@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
+import Footer from "@/components/ui/Footer";
 
 interface Stats {
   netEarnings: string;
@@ -348,14 +349,7 @@ export default function SellerDashboardPage() {
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="mt-20 bg-[var(--color-bg-secondary)] border-t border-[var(--color-border)]">
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="text-center text-sm text-[var(--color-text-muted)]">
-            <p>2026 EasyLehrer. Alle Rechte vorbehalten.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

@@ -1,16 +1,25 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import TopBar from "@/components/ui/TopBar";
+import Footer from "@/components/ui/Footer";
+import { CurriculumSelector } from "@/components/upload/CurriculumSelector";
+import { checkForEszett, replaceEszett } from "@/lib/validations/swiss-quality";
 
 type Step = 1 | 2 | 3 | 4;
+
+type UploadStatus = "idle" | "uploading" | "success" | "error";
 
 export default function UploadPage() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState<Step>(1);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState<UploadStatus>("idle");
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [createdResourceId, setCreatedResourceId] = useState<string | null>(null);
+
   const [formData, setFormData] = useState({
     // Step 1: Basics
     title: "",
@@ -22,7 +31,8 @@ export default function UploadPage() {
     cycle: "",
     subject: "",
     canton: "",
-    competences: [] as string[],
+    competencies: [] as string[],
+    lehrmittelIds: [] as string[],
 
     // Step 3: Properties
     priceType: "paid",
@@ -33,6 +43,13 @@ export default function UploadPage() {
     // Step 4: Files
     files: [] as File[],
     previewFiles: [] as File[],
+
+    // Legal confirmations
+    legalOwnContent: false,
+    legalNoTextbookScans: false,
+    legalNoTrademarks: false,
+    legalSwissGerman: false,
+    legalTermsAccepted: false,
   });
 
   const mainFileInputRef = useRef<HTMLInputElement>(null);
@@ -66,27 +83,30 @@ export default function UploadPage() {
 
   const handlePublish = async () => {
     setError(null);
-    setIsSubmitting(true);
+    setUploadStatus("uploading");
+    setUploadProgress(10);
 
     try {
       // Validate required fields
       if (!formData.title || !formData.description) {
         setError("Titel und Beschreibung sind erforderlich");
-        setIsSubmitting(false);
+        setUploadStatus("error");
         return;
       }
 
       if (!formData.cycle || !formData.subject) {
         setError("Zyklus und Fach sind erforderlich");
-        setIsSubmitting(false);
+        setUploadStatus("error");
         return;
       }
 
       if (formData.files.length === 0) {
         setError("Bitte laden Sie mindestens eine Datei hoch");
-        setIsSubmitting(false);
+        setUploadStatus("error");
         return;
       }
+
+      setUploadProgress(30);
 
       // Prepare form data for API
       const apiFormData = new FormData();
@@ -110,6 +130,8 @@ export default function UploadPage() {
       // Publish immediately as draft (not published yet, needs admin approval)
       apiFormData.append("is_published", "true");
 
+      setUploadProgress(50);
+
       // Add main file (only the first one for now)
       if (formData.files[0]) {
         apiFormData.append("file", formData.files[0]);
@@ -120,6 +142,8 @@ export default function UploadPage() {
         apiFormData.append("preview", formData.previewFiles[0]);
       }
 
+      setUploadProgress(70);
+
       const response = await fetch("/api/resources", {
         method: "POST",
         body: apiFormData,
@@ -129,22 +153,62 @@ export default function UploadPage() {
 
       if (!response.ok) {
         setError(result.error || "Fehler beim Hochladen");
-        setIsSubmitting(false);
+        setUploadStatus("error");
         return;
       }
 
-      // Success - redirect to seller dashboard
-      router.push("/dashboard/seller");
+      setUploadProgress(100);
+      setUploadStatus("success");
+      setCreatedResourceId(result.resource?.id);
+
+      // Redirect after a short delay
+      setTimeout(() => {
+        router.push("/dashboard/seller");
+      }, 2000);
     } catch (err) {
       console.error("Upload error:", err);
       setError("Ein unerwarteter Fehler ist aufgetreten");
-      setIsSubmitting(false);
+      setUploadStatus("error");
     }
   };
 
-  const updateFormData = (field: string, value: any) => {
+  const updateFormData = (field: string, value: unknown) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
+
+  // Eszett (ß) validation for Swiss German
+  const eszettCheck = useMemo(() => {
+    const titleCheck = checkForEszett(formData.title);
+    const descriptionCheck = checkForEszett(formData.description);
+    return {
+      title: titleCheck,
+      description: descriptionCheck,
+      hasAny: titleCheck.hasEszett || descriptionCheck.hasEszett,
+      totalCount: titleCheck.count + descriptionCheck.count,
+    };
+  }, [formData.title, formData.description]);
+
+  const handleFixEszett = () => {
+    setFormData((prev) => ({
+      ...prev,
+      title: replaceEszett(prev.title),
+      description: replaceEszett(prev.description),
+    }));
+  };
+
+  // Check if all legal confirmations are checked
+  const allLegalChecked =
+    formData.legalOwnContent &&
+    formData.legalNoTextbookScans &&
+    formData.legalNoTrademarks &&
+    formData.legalSwissGerman &&
+    formData.legalTermsAccepted;
+
+  // Check if form can be published
+  const canPublish =
+    allLegalChecked &&
+    formData.files.length > 0 &&
+    !eszettCheck.hasAny;
 
   return (
     <div className="min-h-screen bg-[var(--color-bg)]">
@@ -194,7 +258,7 @@ export default function UploadPage() {
         </div>
 
         {/* Error Display */}
-        {error && (
+        {error && uploadStatus === "idle" && (
           <div className="mb-6 rounded-xl border border-red-300 bg-red-50 p-4 dark:border-red-800 dark:bg-red-900/20">
             <div className="flex gap-3">
               <svg
@@ -282,6 +346,54 @@ export default function UploadPage() {
                   </select>
                 </div>
               </div>
+
+              {/* Eszett (ß) Warning */}
+              {eszettCheck.hasAny && (
+                <div className="rounded-xl border border-[var(--color-warning)]/50 bg-[var(--color-warning)]/10 p-4">
+                  <div className="flex items-start gap-3">
+                    <svg
+                      className="h-5 w-5 flex-shrink-0 text-[var(--color-warning)]"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <div className="flex-1">
+                      <h4 className="font-medium text-[var(--color-warning)]">
+                        Eszett (ß) gefunden
+                      </h4>
+                      <p className="mt-1 text-sm text-[var(--color-text)]">
+                        Ihr Text enthält {eszettCheck.totalCount} Eszett-Zeichen (ß).
+                        In der Schweiz wird stattdessen &quot;ss&quot; verwendet.
+                      </p>
+                      {eszettCheck.title.hasEszett && (
+                        <p className="mt-1 text-xs text-[var(--color-text-muted)]">
+                          Titel: {eszettCheck.title.count}x gefunden
+                        </p>
+                      )}
+                      {eszettCheck.description.hasEszett && (
+                        <p className="text-xs text-[var(--color-text-muted)]">
+                          Beschreibung: {eszettCheck.description.count}x gefunden
+                        </p>
+                      )}
+                      <button
+                        type="button"
+                        onClick={handleFixEszett}
+                        className="mt-3 inline-flex items-center gap-2 rounded-lg bg-[var(--color-warning)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--color-warning)]/90 transition-colors"
+                      >
+                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Automatisch zu &quot;ss&quot; ändern
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -290,77 +402,18 @@ export default function UploadPage() {
             <div className="space-y-6">
               <h2 className="text-xl font-semibold text-[var(--color-text)]">Lehrplan-Zuordnung</h2>
 
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
-                    Zyklus *
-                  </label>
-                  <select
-                    value={formData.cycle}
-                    onChange={(e) => updateFormData("cycle", e.target.value)}
-                    className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
-                  >
-                    <option value="">Wählen Sie...</option>
-                    <option value="1">Zyklus 1</option>
-                    <option value="2">Zyklus 2</option>
-                    <option value="3">Zyklus 3</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
-                    Hauptfach *
-                  </label>
-                  <select
-                    value={formData.subject}
-                    onChange={(e) => updateFormData("subject", e.target.value)}
-                    className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
-                  >
-                    <option value="">Wählen Sie...</option>
-                    <option value="Mathematik">Mathematik</option>
-                    <option value="Deutsch">Deutsch</option>
-                    <option value="Englisch">Englisch</option>
-                    <option value="Französisch">Französisch</option>
-                    <option value="NMG">NMG</option>
-                    <option value="BG">Bildnerisches Gestalten</option>
-                    <option value="Musik">Musik</option>
-                    <option value="Sport">Sport</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
-                  Kanton *
-                </label>
-                <select
-                  value={formData.canton}
-                  onChange={(e) => updateFormData("canton", e.target.value)}
-                  className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
-                >
-                  <option value="">Wählen Sie...</option>
-                  <option value="ZH">Zürich</option>
-                  <option value="BE">Bern</option>
-                  <option value="LU">Luzern</option>
-                  <option value="AG">Aargau</option>
-                  <option value="SG">St. Gallen</option>
-                  <option value="all">Alle Kantone</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
-                  Lehrplan 21 Kompetenzen
-                </label>
-                <input
-                  type="text"
-                  placeholder="z.B. MA.1.A.2, MA.1.A.3 (kommagetrennt)"
-                  className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] placeholder:text-[var(--color-text-faint)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
-                />
-                <p className="mt-1 text-xs text-[var(--color-text-muted)]">
-                  Optional: Geben Sie die Kompetenzcodes aus dem Lehrplan 21 ein
-                </p>
-              </div>
+              <CurriculumSelector
+                cycle={formData.cycle}
+                subject={formData.subject}
+                canton={formData.canton}
+                competencies={formData.competencies}
+                lehrmittelIds={formData.lehrmittelIds}
+                onCycleChange={(cycle) => updateFormData("cycle", cycle)}
+                onSubjectChange={(subject) => updateFormData("subject", subject)}
+                onCantonChange={(canton) => updateFormData("canton", canton)}
+                onCompetenciesChange={(competencies) => updateFormData("competencies", competencies)}
+                onLehrmittelChange={(lehrmittelIds) => updateFormData("lehrmittelIds", lehrmittelIds)}
+              />
             </div>
           )}
 
@@ -590,6 +643,142 @@ export default function UploadPage() {
                   </div>
                 </div>
               </div>
+
+              {/* Legal Copyright Confirmations */}
+              <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] p-6">
+                <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-[var(--color-text)]">
+                  <svg className="h-5 w-5 text-[var(--color-primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                  Rechtliche Bestätigungen
+                </h3>
+                <p className="mb-4 text-sm text-[var(--color-text-muted)]">
+                  Bitte bestätigen Sie die folgenden Punkte, um Ihre Ressource zu veröffentlichen:
+                </p>
+
+                <div className="space-y-4">
+                  {/* Own Content */}
+                  <label className="flex cursor-pointer items-start gap-3 rounded-lg p-3 transition-colors hover:bg-[var(--color-bg)]">
+                    <input
+                      type="checkbox"
+                      checked={formData.legalOwnContent}
+                      onChange={(e) => updateFormData("legalOwnContent", e.target.checked)}
+                      className="mt-0.5 h-5 w-5 rounded border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                    />
+                    <div>
+                      <div className="font-medium text-[var(--color-text)]">
+                        Eigene Inhalte oder CC0-Lizenz
+                      </div>
+                      <div className="text-sm text-[var(--color-text-muted)]">
+                        Ich habe alle Bilder, Grafiken und Texte selbst erstellt oder verwende nur
+                        Materialien mit CC0-Lizenz (Public Domain).
+                      </div>
+                    </div>
+                  </label>
+
+                  {/* No Textbook Scans */}
+                  <label className="flex cursor-pointer items-start gap-3 rounded-lg p-3 transition-colors hover:bg-[var(--color-bg)]">
+                    <input
+                      type="checkbox"
+                      checked={formData.legalNoTextbookScans}
+                      onChange={(e) => updateFormData("legalNoTextbookScans", e.target.checked)}
+                      className="mt-0.5 h-5 w-5 rounded border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                    />
+                    <div>
+                      <div className="font-medium text-[var(--color-text)]">
+                        Keine Lehrmittel-Scans
+                      </div>
+                      <div className="text-sm text-[var(--color-text-muted)]">
+                        Ich habe keine Seiten aus Lehrmitteln, Schulbüchern oder anderen
+                        urheberrechtlich geschützten Werken eingescannt oder kopiert.
+                      </div>
+                    </div>
+                  </label>
+
+                  {/* No Trademarks */}
+                  <label className="flex cursor-pointer items-start gap-3 rounded-lg p-3 transition-colors hover:bg-[var(--color-bg)]">
+                    <input
+                      type="checkbox"
+                      checked={formData.legalNoTrademarks}
+                      onChange={(e) => updateFormData("legalNoTrademarks", e.target.checked)}
+                      className="mt-0.5 h-5 w-5 rounded border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                    />
+                    <div>
+                      <div className="font-medium text-[var(--color-text)]">
+                        Keine geschützten Marken oder Charaktere
+                      </div>
+                      <div className="text-sm text-[var(--color-text-muted)]">
+                        Meine Ressource enthält keine geschützten Marken, Logos oder Figuren
+                        (z.B. Disney, Marvel, Pokémon, etc.).
+                      </div>
+                    </div>
+                  </label>
+
+                  {/* Swiss German */}
+                  <label className="flex cursor-pointer items-start gap-3 rounded-lg p-3 transition-colors hover:bg-[var(--color-bg)]">
+                    <input
+                      type="checkbox"
+                      checked={formData.legalSwissGerman}
+                      onChange={(e) => updateFormData("legalSwissGerman", e.target.checked)}
+                      className="mt-0.5 h-5 w-5 rounded border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                    />
+                    <div>
+                      <div className="font-medium text-[var(--color-text)]">
+                        Schweizer Rechtschreibung
+                      </div>
+                      <div className="text-sm text-[var(--color-text-muted)]">
+                        Meine Ressource verwendet die Schweizer Rechtschreibung (kein Eszett &quot;ß&quot;,
+                        stattdessen &quot;ss&quot;).
+                      </div>
+                    </div>
+                  </label>
+
+                  {/* Terms Accepted */}
+                  <label className="flex cursor-pointer items-start gap-3 rounded-lg border-t border-[var(--color-border)] p-3 pt-4 transition-colors hover:bg-[var(--color-bg)]">
+                    <input
+                      type="checkbox"
+                      checked={formData.legalTermsAccepted}
+                      onChange={(e) => updateFormData("legalTermsAccepted", e.target.checked)}
+                      className="mt-0.5 h-5 w-5 rounded border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                    />
+                    <div>
+                      <div className="font-medium text-[var(--color-text)]">
+                        Verkäufervereinbarung akzeptieren
+                      </div>
+                      <div className="text-sm text-[var(--color-text-muted)]">
+                        Ich akzeptiere die{" "}
+                        <Link href="/terms" className="text-[var(--color-primary)] hover:underline">
+                          Verkäufervereinbarung
+                        </Link>{" "}
+                        und bestätige, dass ich die Rechte habe, diese Ressource zu verkaufen.
+                      </div>
+                    </div>
+                  </label>
+                </div>
+
+                {/* Validation Summary */}
+                {!allLegalChecked && (
+                  <div className="mt-4 rounded-lg bg-[var(--color-warning)]/10 p-3 text-sm text-[var(--color-warning)]">
+                    <div className="flex items-center gap-2">
+                      <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                      Bitte bestätigen Sie alle Punkte, um fortzufahren.
+                    </div>
+                  </div>
+                )}
+
+                {eszettCheck.hasAny && (
+                  <div className="mt-4 rounded-lg bg-[var(--color-error)]/10 p-3 text-sm text-[var(--color-error)]">
+                    <div className="flex items-center gap-2">
+                      <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                      </svg>
+                      Ihr Titel oder Beschreibung enthält noch Eszett-Zeichen (ß). Bitte korrigieren Sie dies in Schritt 1.
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
@@ -613,49 +802,107 @@ export default function UploadPage() {
             ) : (
               <button
                 onClick={handlePublish}
-                disabled={isSubmitting}
-                className="rounded-lg bg-gradient-to-r from-[var(--color-success)] to-[var(--color-info)] px-8 py-3 font-semibold text-white hover:opacity-90 transition-opacity shadow-lg shadow-[var(--color-success)]/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                disabled={!canPublish || uploadStatus !== "idle"}
+                className="rounded-lg bg-gradient-to-r from-[var(--color-success)] to-[var(--color-info)] px-8 py-3 font-semibold text-white hover:opacity-90 transition-opacity shadow-lg shadow-[var(--color-success)]/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:from-gray-400 disabled:to-gray-500"
               >
-                {isSubmitting ? (
-                  <>
-                    <svg
-                      className="h-5 w-5 animate-spin"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      />
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      />
-                    </svg>
-                    Wird hochgeladen...
-                  </>
-                ) : (
-                  "Veröffentlichen"
-                )}
+                Veröffentlichen
               </button>
             )}
           </div>
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="mt-20 border-t border-[var(--color-border)] bg-[var(--color-surface)]/50">
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="text-center text-sm text-[var(--color-text-muted)]">
-            <p>© 2026 Easy Lehrer. Alle Rechte vorbehalten.</p>
+      <Footer />
+
+      {/* Upload Progress / Success / Error Modal */}
+      {uploadStatus !== "idle" && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="mx-4 w-full max-w-md rounded-2xl bg-[var(--color-surface)] p-8 shadow-2xl">
+            {/* Uploading State */}
+            {uploadStatus === "uploading" && (
+              <div className="text-center">
+                <div className="mx-auto mb-4 h-16 w-16 animate-spin rounded-full border-4 border-[var(--color-primary)]/30 border-t-[var(--color-primary)]" />
+                <h3 className="mb-2 text-xl font-semibold text-[var(--color-text)]">
+                  Wird hochgeladen...
+                </h3>
+                <p className="mb-4 text-sm text-[var(--color-text-muted)]">
+                  Bitte warten Sie, dies kann einen Moment dauern.
+                </p>
+                {/* Progress bar */}
+                <div className="h-2 overflow-hidden rounded-full bg-[var(--color-border)]">
+                  <div
+                    className="h-full bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-success)] transition-all duration-300"
+                    style={{ width: `${uploadProgress}%` }}
+                  />
+                </div>
+                <p className="mt-2 text-xs text-[var(--color-text-muted)]">{uploadProgress}%</p>
+              </div>
+            )}
+
+            {/* Success State */}
+            {uploadStatus === "success" && (
+              <div className="text-center">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-success)]/20">
+                  <svg className="h-8 w-8 text-[var(--color-success)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h3 className="mb-2 text-xl font-semibold text-[var(--color-text)]">
+                  Ressource erfolgreich erstellt!
+                </h3>
+                <p className="mb-4 text-sm text-[var(--color-text-muted)]">
+                  Ihre Ressource wurde hochgeladen und wartet auf Freigabe durch unser Team.
+                </p>
+                <div className="rounded-lg bg-[var(--color-info)]/10 p-3 text-sm text-[var(--color-info)]">
+                  <p>Sie werden in Kürze zum Dashboard weitergeleitet...</p>
+                </div>
+                {createdResourceId && (
+                  <button
+                    onClick={() => router.push(`/resources/${createdResourceId}`)}
+                    className="mt-4 rounded-lg bg-[var(--color-primary)] px-6 py-2 font-medium text-white hover:bg-[var(--color-primary)]/90 transition-colors"
+                  >
+                    Zur Ressource
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* Error State */}
+            {uploadStatus === "error" && (
+              <div className="text-center">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-error)]/20">
+                  <svg className="h-8 w-8 text-[var(--color-error)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </div>
+                <h3 className="mb-2 text-xl font-semibold text-[var(--color-text)]">
+                  Fehler beim Hochladen
+                </h3>
+                <p className="mb-4 text-sm text-[var(--color-error)]">
+                  {error || "Ein unbekannter Fehler ist aufgetreten."}
+                </p>
+                <div className="flex gap-3 justify-center">
+                  <button
+                    onClick={() => {
+                      setUploadStatus("idle");
+                      setError(null);
+                    }}
+                    className="rounded-lg border border-[var(--color-border)] px-6 py-2 font-medium text-[var(--color-text)] hover:bg-[var(--color-surface-elevated)] transition-colors"
+                  >
+                    Zurück
+                  </button>
+                  <button
+                    onClick={handlePublish}
+                    className="rounded-lg bg-[var(--color-primary)] px-6 py-2 font-medium text-white hover:bg-[var(--color-primary)]/90 transition-colors"
+                  >
+                    Erneut versuchen
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
-      </footer>
+      )}
     </div>
   );
 }

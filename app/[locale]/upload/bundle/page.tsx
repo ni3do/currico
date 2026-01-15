@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
+import Footer from "@/components/ui/Footer";
 
-// Mock seller's resources
+// TODO: Replace mock data with real API call to fetch seller's resources
+// This page is a work-in-progress - bundle feature not yet implemented
 const mockResources = [
   { id: 1, title: "Bruchrechnen Übungsblätter", subject: "Mathematik", price: "CHF 12.00" },
   { id: 2, title: "Geometrie Arbeitsblätter", subject: "Mathematik", price: "CHF 8.00" },
@@ -49,6 +51,11 @@ export default function CreateBundlePage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    // TODO: Implement bundle creation API call
+    // 1. Create Bundle model in prisma/schema.prisma
+    // 2. Create /api/bundles POST endpoint
+    // 3. Submit form data to create bundle
+    void formData; // Placeholder until API is implemented
   };
 
   return (
@@ -301,14 +308,7 @@ export default function CreateBundlePage() {
         </form>
       </main>
 
-      {/* Footer */}
-      <footer className="mt-20 border-t border-[var(--color-border)] bg-[var(--color-surface)]/50">
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="text-center text-sm text-[var(--color-text-muted)]">
-            <p>© 2026 Easy Lehrer. Alle Rechte vorbehalten.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

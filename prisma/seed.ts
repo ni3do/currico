@@ -4,6 +4,7 @@ import { Pool } from "pg";
 import { hash } from "bcryptjs";
 import * as fs from "fs";
 import * as path from "path";
+import { seedCurriculum } from "./seed-curriculum";
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -146,6 +147,9 @@ async function main() {
     });
     console.log(`   ✓ Resource: ${upserted.title}`);
   }
+
+  // 4. Seed curriculum data (LP21, textbooks)
+  await seedCurriculum(prisma);
 
   console.log("✅ Seed completed successfully!");
   console.log("");

@@ -58,15 +58,6 @@
     "trustBar": {
       "title": "Trusted by Educational Institutions"
     },
-    "categories": {
-      "allSubjects": "All Subjects",
-      "science": "Science",
-      "languages": "Languages",
-      "math": "Mathematics",
-      "arts": "Arts",
-      "history": "History",
-      "music": "Music"
-    },
     "featuredResources": {
       "title": "Featured Materials",
       "description": "Selected by experts and quality checked",
@@ -111,26 +102,6 @@
         "title": "Ready to Use",
         "description": "All materials are fully developed and can be used directly in the classroom."
       }
-    },
-    "stats": {
-      "materials": {
-        "value": "500+",
-        "label": "Verified Materials"
-      },
-      "teachers": {
-        "value": "1,000+",
-        "label": "Active Educators"
-      },
-      "satisfaction": {
-        "value": "98%",
-        "label": "Satisfaction Rate"
-      }
-    },
-    "cta": {
-      "title": "Ready to Enrich Your Teaching?",
-      "description": "Register for free and gain access to high-quality teaching materials.",
-      "primaryButton": "Register for Free",
-      "secondaryButton": "Browse Resources"
     }
   },
   "loginPage": {
@@ -414,6 +385,54 @@
     "cta": {
       "title": "Ready for Less Preparation Stress?",
       "button": "Discover Teaching Materials Now"
+    }
+  },
+  "contactPage": {
+    "hero": {
+      "title": "Let's Start a Conversation",
+      "subtitle": "Have a question or idea? Drop us a line. A real person from our team will get back to you within 24 hours — usually much sooner."
+    },
+    "form": {
+      "title": "Send Us a Message",
+      "nameLabel": "Your Name",
+      "namePlaceholder": "Maria Schmidt",
+      "emailLabel": "Email Address",
+      "emailPlaceholder": "your.email@example.com",
+      "phoneLabel": "Phone Number (Optional)",
+      "phonePlaceholder": "+41 79 123 45 67",
+      "phoneHint": "Only if you'd prefer a quick call back. We promise not to share it or call unexpectedly.",
+      "subjectLabel": "What's This About?",
+      "subjectPlaceholder": "Select a topic",
+      "subjects": {
+        "general": "General Question",
+        "support": "Technical Support",
+        "sales": "Becoming a Seller",
+        "partnership": "Partnership Inquiry",
+        "feedback": "Feedback or Suggestion"
+      },
+      "messageLabel": "Your Message",
+      "messagePlaceholder": "Tell us what's on your mind...",
+      "consentText": "I agree that EasyLehrer may store and use the information I've provided to respond to my inquiry. I can withdraw my consent at any time. Read our Privacy Policy for details.",
+      "submitButton": "Send Message",
+      "submitting": "Sending...",
+      "successTitle": "Message Sent!",
+      "successMessage": "Thanks for reaching out. We've received your message and will get back to you shortly."
+    },
+    "direct": {
+      "title": "Prefer to Reach Out Directly?",
+      "email": {
+        "title": "Email Us",
+        "description": "For detailed questions or document sharing"
+      },
+      "phone": {
+        "title": "Give Us a Call",
+        "description": "Mon–Fri, 9:00–17:00 CET"
+      },
+      "responseTime": "We typically respond within a few hours during business days."
+    },
+    "faq": {
+      "title": "Looking for Quick Answers?",
+      "description": "Check our Help Center for answers to common questions about accounts, resources, and selling on EasyLehrer."
     }
   },
   "metadata": {

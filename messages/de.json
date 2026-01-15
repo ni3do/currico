@@ -58,15 +58,6 @@
     "trustBar": {
       "title": "Vertraut von Bildungsinstitutionen"
     },
-    "categories": {
-      "allSubjects": "Alle Fächer",
-      "science": "Naturwissenschaften",
-      "languages": "Sprachen",
-      "math": "Mathematik",
-      "arts": "Gestalten",
-      "history": "Geschichte",
-      "music": "Musik"
-    },
     "featuredResources": {
       "title": "Empfohlene Materialien",
       "description": "Von Experten ausgewählt und qualitätsgeprüft",
@@ -111,26 +102,6 @@
         "title": "Sofort einsetzbar",
         "description": "Alle Materialien sind vollständig ausgearbeitet und können direkt im Unterricht verwendet werden."
       }
-    },
-    "stats": {
-      "materials": {
-        "value": "500+",
-        "label": "Geprüfte Materialien"
-      },
-      "teachers": {
-        "value": "1'000+",
-        "label": "Aktive Lehrpersonen"
-      },
-      "satisfaction": {
-        "value": "98%",
-        "label": "Zufriedenheitsrate"
-      }
-    },
-    "cta": {
-      "title": "Bereit, Ihren Unterricht zu bereichern?",
-      "description": "Registrieren Sie sich kostenlos und erhalten Sie Zugang zu hochwertigen Unterrichtsmaterialien.",
-      "primaryButton": "Kostenlos registrieren",
-      "secondaryButton": "Ressourcen durchsuchen"
     }
   },
   "loginPage": {
@@ -414,6 +385,54 @@
     "cta": {
       "title": "Bereit für weniger Vorbereitungsstress?",
       "button": "Jetzt Unterrichtsmaterial entdecken"
+    }
+  },
+  "contactPage": {
+    "hero": {
+      "title": "Lassen Sie uns ins Gespräch kommen",
+      "subtitle": "Haben Sie eine Frage oder Idee? Schreiben Sie uns. Eine echte Person aus unserem Team meldet sich innerhalb von 24 Stunden bei Ihnen — meistens viel schneller."
+    },
+    "form": {
+      "title": "Nachricht senden",
+      "nameLabel": "Ihr Name",
+      "namePlaceholder": "Maria Schmidt",
+      "emailLabel": "E-Mail-Adresse",
+      "emailPlaceholder": "ihre.email@example.com",
+      "phoneLabel": "Telefonnummer (Optional)",
+      "phonePlaceholder": "+41 79 123 45 67",
+      "phoneHint": "Nur falls Sie einen Rückruf bevorzugen. Wir versprechen, Ihre Nummer nicht weiterzugeben oder unerwartet anzurufen.",
+      "subjectLabel": "Worum geht es?",
+      "subjectPlaceholder": "Thema wählen",
+      "subjects": {
+        "general": "Allgemeine Frage",
+        "support": "Technischer Support",
+        "sales": "Verkäufer werden",
+        "partnership": "Partnerschaftsanfrage",
+        "feedback": "Feedback oder Vorschlag"
+      },
+      "messageLabel": "Ihre Nachricht",
+      "messagePlaceholder": "Teilen Sie uns Ihr Anliegen mit...",
+      "consentText": "Ich bin damit einverstanden, dass EasyLehrer die von mir angegebenen Daten speichert und zur Beantwortung meiner Anfrage nutzt. Ich kann meine Einwilligung jederzeit widerrufen. Details finden Sie in unserer Datenschutzerklärung.",
+      "submitButton": "Nachricht senden",
+      "submitting": "Wird gesendet...",
+      "successTitle": "Nachricht gesendet!",
+      "successMessage": "Vielen Dank für Ihre Nachricht. Wir haben sie erhalten und melden uns in Kürze bei Ihnen."
+    },
+    "direct": {
+      "title": "Lieber direkt Kontakt aufnehmen?",
+      "email": {
+        "title": "E-Mail schreiben",
+        "description": "Für ausführliche Fragen oder Dokumentenaustausch"
+      },
+      "phone": {
+        "title": "Rufen Sie uns an",
+        "description": "Mo–Fr, 9:00–17:00 Uhr"
+      },
+      "responseTime": "Wir antworten in der Regel innerhalb weniger Stunden während der Geschäftszeiten."
+    },
+    "faq": {
+      "title": "Schnelle Antworten gesucht?",
+      "description": "In unserem Hilfe-Center finden Sie Antworten auf häufige Fragen zu Konten, Ressourcen und dem Verkauf auf EasyLehrer."
     }
   },
   "metadata": {

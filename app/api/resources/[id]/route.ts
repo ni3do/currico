@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getCurrentUserId } from "@/lib/auth";
 import { updateResourceSchema } from "@/lib/validations/resource";
+import { formatPrice } from "@/lib/utils/price";
 import { unlink } from "fs/promises";
 import path from "path";
 
@@ -82,7 +83,7 @@ export async function GET(
       title: resource.title,
       description: resource.description,
       price: resource.price,
-      priceFormatted: resource.price === 0 ? "Gratis" : `CHF ${(resource.price / 100).toFixed(2)}`,
+      priceFormatted: formatPrice(resource.price),
       fileUrl: resource.file_url,
       previewUrl: resource.preview_url,
       subjects: resource.subjects,
@@ -104,7 +105,7 @@ export async function GET(
       id: r.id,
       title: r.title,
       price: r.price,
-      priceFormatted: r.price === 0 ? "Gratis" : `CHF ${(r.price / 100).toFixed(2)}`,
+      priceFormatted: formatPrice(r.price),
       subject: r.subjects[0] || "Allgemein",
       cycle: r.cycles[0] || "",
       verified: r.is_approved,

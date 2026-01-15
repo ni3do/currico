@@ -37,7 +37,7 @@ export default function Footer() {
             <h3 className="font-semibold text-[var(--color-text)] text-sm uppercase tracking-wider">{tCommon("footer.infoSection.title")}</h3>
             <ul className="mt-4 space-y-3">
               <li><Link href="/about" className="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors">{tCommon("footer.infoSection.aboutUs")}</Link></li>
-              <li><Link href="/coming-soon" className="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors">{tCommon("footer.infoSection.contact")}</Link></li>
+              <li><Link href="/contact" className="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors">{tCommon("footer.infoSection.contact")}</Link></li>
               <li><Link href="/coming-soon" className="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors">{tCommon("footer.infoSection.help")}</Link></li>
             </ul>
           </div>
