@@ -235,7 +235,7 @@ export default function RegisterPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full rounded-lg bg-[#DC2626] px-6 py-4 font-bold text-white text-center transition-all hover:-translate-y-0.5 hover:bg-[#B91C1C] hover:shadow-[0_8px_25px_rgba(220,38,38,0.35)] mt-4 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none disabled:hover:bg-[#DC2626]"
+                className="w-full rounded-lg bg-[var(--color-primary)] px-6 py-4 font-bold text-white text-center transition-all hover:-translate-y-0.5 hover:bg-[var(--color-primary-hover)] hover:shadow-lg mt-4 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none disabled:hover:bg-[var(--color-primary)]"
               >
                 {isLoading ? t("form.submitting") : t("form.submitButton")}
               </button>

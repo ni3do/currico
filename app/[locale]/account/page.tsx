@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
+import Footer from "@/components/ui/Footer";
 
 export default function AccountPage() {
   const [activeTab, setActiveTab] = useState<"overview" | "library" | "wishlist" | "settings">("overview");
@@ -484,21 +485,7 @@ export default function AccountPage() {
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="mt-20 border-t border-[var(--color-border)] bg-[var(--color-surface)]">
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-[var(--color-text-muted)]">
-              2026 EasyLehrer. Alle Rechte vorbehalten.
-            </p>
-            <div className="flex items-center gap-6">
-              <a href="#" className="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-primary)]">Datenschutz</a>
-              <a href="#" className="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-primary)]">AGB</a>
-              <a href="#" className="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-primary)]">Hilfe</a>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

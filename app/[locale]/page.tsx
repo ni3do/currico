@@ -18,7 +18,7 @@ export default function Home() {
         {/* Hero Section - Split-Screen Layout */}
         <section className="bg-[var(--color-bg)]">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 py-8 pb-24 lg:py-12 lg:pb-32 items-center">
+            <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 py-16 lg:py-24 items-center">
               {/* Left Side - Text Content */}
               <div className="order-2 lg:order-1">
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[var(--color-text)] leading-tight tracking-tight">
