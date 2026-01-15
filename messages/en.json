@@ -50,17 +50,13 @@
   },
   "homePage": {
     "hero": {
-      "badge": "Swiss Education Platform",
-      "title": "Quality-Assured Teaching Materials for Swiss Educators",
-      "description": "Discover professional teaching resources, developed by educators and aligned with Lehrplan 21. Trustworthy, verified, ready to use.",
-      "primaryButton": "Browse Materials",
-      "secondaryButton": "Learn More",
-      "trustLabel": "Trusted by Educational Institutions",
-      "trustBadges": {
-        "lehrplan21": "Lehrplan 21 Compliant",
-        "qualityChecked": "Quality Checked",
-        "swissStandard": "Swiss Standard"
-      }
+      "title": "By Teachers, For Teachers: Teaching Materials in Record Time.",
+      "description": "Discover professional teaching resources, developed by colleagues and precisely aligned with <bold>Lehrplan 21</bold>. Trustworthy, verified, ready to use.",
+      "primaryButton": "Find Materials Now",
+      "secondaryButton": "Learn More"
+    },
+    "trustBar": {
+      "title": "Trusted by Educational Institutions"
     },
     "categories": {
       "allSubjects": "All Subjects",
@@ -381,6 +377,44 @@
     "label": "Language",
     "de": "Deutsch",
     "en": "English"
+  },
+  "aboutPage": {
+    "hero": {
+      "title": "Prepare Smarter. Live Better.",
+      "subtitle": "We bring Swiss quality and valuable free time back to your school day.",
+      "imageAlt": "Relaxed teacher with tablet"
+    },
+    "mission": {
+      "title": "Our Mission",
+      "paragraph1": "Sunday afternoons at your desk? Nights spent formatting worksheets? We believe: Great teaching doesn't mean sacrificing yourself.",
+      "paragraph2": "The demands on Swiss educators are constantly increasing. Individualization, digitalization, and administrative hurdles require time – time that's often missing in everyday life. This is exactly where EasyLehrer comes in.",
+      "paragraph3": "We see ourselves as your digital assistant. We bridge the gap between high didactic standards and limited preparation time. Our goal is to have your back, so you can invest your energy where it's needed most: with your students."
+    },
+    "values": {
+      "title": "Why EasyLehrer?",
+      "value1": {
+        "title": "Time Savings, Not Stress",
+        "description": "Our materials are ready to use immediately. Find, print, teach. Your evening belongs to you again."
+      },
+      "value2": {
+        "title": "100% Lehrplan 21",
+        "description": "No converting Euros to Francs or adapting content. Our materials are tailored specifically for Switzerland."
+      },
+      "value3": {
+        "title": "Teacher-Verified",
+        "description": "We offer quality over quantity. Every material undergoes a quality check by experienced educators."
+      }
+    },
+    "origin": {
+      "title": "From Practice, For Practice",
+      "paragraph1": "EasyLehrer is not an anonymous tech corporation. The platform emerged from a genuine need: colleagues were looking for a central hub for modern Swiss teaching materials, without having to wade through confusing databases.",
+      "paragraph2": "What started as a small exchange has become a growing community. We connect creativity with didactics and ensure that good work is fairly rewarded.",
+      "imageAlt": "Team collaborating together"
+    },
+    "cta": {
+      "title": "Ready for Less Preparation Stress?",
+      "button": "Discover Teaching Materials Now"
+    }
   },
   "metadata": {
     "title": "Easy Lehrer - Teaching Materials for Educators",

@@ -50,17 +50,13 @@
   },
   "homePage": {
     "hero": {
-      "badge": "Bildungsplattform Schweiz",
-      "title": "Qualitätsgesicherte Unterrichtsmaterialien für Schweizer Lehrpersonen",
-      "description": "Entdecken Sie professionelle Lehrmittel, entwickelt von Lehrpersonen und abgestimmt auf den Lehrplan 21. Vertrauenswürdig, geprüft, sofort einsetzbar.",
-      "primaryButton": "Materialien durchsuchen",
-      "secondaryButton": "Mehr erfahren",
-      "trustLabel": "Vertraut von Bildungsinstitutionen",
-      "trustBadges": {
-        "lehrplan21": "Lehrplan 21 konform",
-        "qualityChecked": "Qualitätsgeprüft",
-        "swissStandard": "Schweizer Standard"
-      }
+      "title": "Von Lehrpersonen für Lehrpersonen: Unterrichtsmaterial in Rekordzeit.",
+      "description": "Entdecken Sie professionelle Lehrmittel, entwickelt von Kollegen und exakt abgestimmt auf den <bold>Lehrplan 21</bold>. Vertrauenswürdig, geprüft, sofort einsetzbar.",
+      "primaryButton": "Jetzt Material finden",
+      "secondaryButton": "Mehr erfahren"
+    },
+    "trustBar": {
+      "title": "Vertraut von Bildungsinstitutionen"
     },
     "categories": {
       "allSubjects": "Alle Fächer",
@@ -381,6 +377,44 @@
     "label": "Sprache",
     "de": "Deutsch",
     "en": "English"
+  },
+  "aboutPage": {
+    "hero": {
+      "title": "Intelligent vorbereiten. Entspannter leben.",
+      "subtitle": "Wir bringen Schweizer Qualität und wertvolle Freizeit zurück in Ihren Schulalltag.",
+      "imageAlt": "Entspannte Lehrperson mit Tablet"
+    },
+    "mission": {
+      "title": "Unsere Mission",
+      "paragraph1": "Sonntagnachmittage am Schreibtisch? Nächte, die für das Formatieren von Arbeitsblättern draufgehen? Wir glauben: Guter Unterricht bedeutet nicht, dass man sich aufopfern muss.",
+      "paragraph2": "Die Anforderungen an Schweizer Lehrkräfte steigen stetig. Individualisierung, Digitalisierung und administrative Hürden fordern Zeit – Zeit, die im Alltag oft fehlt. Genau hier setzt EasyLehrer an.",
+      "paragraph3": "Wir verstehen uns als Ihre digitale Assistenz. Wir schliessen die Lücke zwischen hohem didaktischen Anspruch und begrenzter Vorbereitungszeit. Unser Ziel ist es, Ihnen den Rücken frei zu halten, damit Sie Ihre Energie dort investieren können, wo sie am dringendsten gebraucht wird: bei Ihren Schülerinnen und Schülern."
+    },
+    "values": {
+      "title": "Warum EasyLehrer?",
+      "value1": {
+        "title": "Zeitgewinn statt Stress",
+        "description": "Unsere Materialien sind sofort einsatzbereit. Finden, drucken, unterrichten. Ihr Feierabend gehört wieder Ihnen."
+      },
+      "value2": {
+        "title": "100% Lehrplan 21",
+        "description": "Kein Umrechnen von Euro in Franken oder Anpassen von \"ß\" zu \"ss\". Unsere Inhalte sind massgeschneidert für die Schweiz."
+      },
+      "value3": {
+        "title": "Von Lehrpersonen geprüft",
+        "description": "Wir bieten Klasse statt Masse. Jedes Material durchläuft einen Qualitätscheck durch erfahrene Pädagogen."
+      }
+    },
+    "origin": {
+      "title": "Aus der Praxis für die Praxis",
+      "paragraph1": "EasyLehrer ist kein anonymer Tech-Konzern. Die Plattform entstand aus einem echten Bedürfnis heraus: Kolleginnen und Kollegen suchten nach einer zentralen Anlaufstelle für modernes, Schweizer Unterrichtsmaterial, ohne sich durch unübersichtliche Datenbanken wühlen zu müssen.",
+      "paragraph2": "Was als kleiner Austausch begann, ist heute eine wachsende Community. Wir vernetzen Kreativität mit Didaktik und sorgen dafür, dass gute Arbeit fair entlohnt wird.",
+      "imageAlt": "Team bei der Zusammenarbeit"
+    },
+    "cta": {
+      "title": "Bereit für weniger Vorbereitungsstress?",
+      "button": "Jetzt Unterrichtsmaterial entdecken"
+    }
   },
   "metadata": {
     "title": "Easy Lehrer - Unterrichtsmaterial für Lehrpersonen",
