@@ -100,10 +100,10 @@ export default function ResourcesPage() {
                   placeholder={t("search.placeholder")}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="input pl-11"
+                  className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] py-3 pl-11 pr-4 text-[var(--color-text)] placeholder:text-[var(--color-text-faint)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-focus-ring)]"
                 />
                 <svg
-                  className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--color-text-muted)]"
+                  className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--color-text-muted)]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"

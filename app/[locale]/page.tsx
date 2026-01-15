@@ -32,7 +32,7 @@ export default function Home() {
                 <div className="mt-8 flex flex-col sm:flex-row gap-4">
                   <Link
                     href="/resources"
-                    className="btn-primary px-6 py-3.5 hover:-translate-y-0.5"
+                    className="btn-primary inline-flex items-center justify-center px-6 py-2.5 hover:-translate-y-0.5"
                   >
                     {t("hero.primaryButton")}
                     <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -41,7 +41,7 @@ export default function Home() {
                   </Link>
                   <a
                     href="#features"
-                    className="btn-secondary px-6 py-3.5"
+                    className="btn-secondary inline-flex items-center justify-center px-6 py-2.5"
                   >
                     {t("hero.secondaryButton")}
                   </a>
@@ -256,13 +256,13 @@ export default function Home() {
             <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="/register"
-                className="inline-flex items-center justify-center rounded-lg bg-white px-6 py-3.5 font-semibold text-[var(--color-primary)] hover:bg-[var(--color-surface)] transition-all hover:-translate-y-0.5 hover:shadow-lg"
+                className="inline-flex items-center justify-center rounded-lg bg-white px-6 py-2.5 font-semibold text-[var(--color-primary)] hover:bg-[var(--color-surface)] transition-all hover:-translate-y-0.5 hover:shadow-lg"
               >
                 {t("cta.primaryButton")}
               </Link>
               <Link
                 href="/resources"
-                className="inline-flex items-center justify-center rounded-lg bg-white/10 px-6 py-3.5 font-semibold text-white border border-white/20 hover:bg-white/20 transition-all"
+                className="inline-flex items-center justify-center rounded-lg bg-white/10 px-6 py-2.5 font-semibold text-white border border-white/20 hover:bg-white/20 transition-all"
               >
                 {t("cta.secondaryButton")}
               </Link>

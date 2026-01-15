@@ -1,12 +1,16 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { useRouter } from "next/navigation";
 import TopBar from "@/components/ui/TopBar";
 
 type Step = 1 | 2 | 3 | 4;
 
 export default function UploadPage() {
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState<Step>(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     // Step 1: Basics
     title: "",
@@ -60,8 +64,82 @@ export default function UploadPage() {
     }
   };
 
-  const handlePublish = () => {
-    // Handle publish logic
+  const handlePublish = async () => {
+    setError(null);
+    setIsSubmitting(true);
+
+    try {
+      // Validate required fields
+      if (!formData.title || !formData.description) {
+        setError("Titel und Beschreibung sind erforderlich");
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (!formData.cycle || !formData.subject) {
+        setError("Zyklus und Fach sind erforderlich");
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (formData.files.length === 0) {
+        setError("Bitte laden Sie mindestens eine Datei hoch");
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Prepare form data for API
+      const apiFormData = new FormData();
+      apiFormData.append("title", formData.title);
+      apiFormData.append("description", formData.description);
+      apiFormData.append("language", formData.language);
+      apiFormData.append("resourceType", formData.resourceType);
+
+      // Convert cycle to full name (e.g., "1" -> "Zyklus 1")
+      const cycleFullName = `Zyklus ${formData.cycle}`;
+      apiFormData.append("subjects", JSON.stringify([formData.subject]));
+      apiFormData.append("cycles", JSON.stringify([cycleFullName]));
+
+      // Calculate price in cents
+      const priceInCents =
+        formData.priceType === "free"
+          ? 0
+          : Math.round(parseFloat(formData.price || "0") * 100);
+      apiFormData.append("price", priceInCents.toString());
+
+      // Publish immediately as draft (not published yet, needs admin approval)
+      apiFormData.append("is_published", "true");
+
+      // Add main file (only the first one for now)
+      if (formData.files[0]) {
+        apiFormData.append("file", formData.files[0]);
+      }
+
+      // Add preview file if present
+      if (formData.previewFiles[0]) {
+        apiFormData.append("preview", formData.previewFiles[0]);
+      }
+
+      const response = await fetch("/api/resources", {
+        method: "POST",
+        body: apiFormData,
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        setError(result.error || "Fehler beim Hochladen");
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Success - redirect to seller dashboard
+      router.push("/dashboard/seller");
+    } catch (err) {
+      console.error("Upload error:", err);
+      setError("Ein unerwarteter Fehler ist aufgetreten");
+      setIsSubmitting(false);
+    }
   };
 
   const updateFormData = (field: string, value: any) => {
@@ -114,6 +192,26 @@ export default function UploadPage() {
             ))}
           </div>
         </div>
+
+        {/* Error Display */}
+        {error && (
+          <div className="mb-6 rounded-xl border border-red-300 bg-red-50 p-4 dark:border-red-800 dark:bg-red-900/20">
+            <div className="flex gap-3">
+              <svg
+                className="h-5 w-5 flex-shrink-0 text-red-500"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
+            </div>
+          </div>
+        )}
 
         {/* Form */}
         <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8">
@@ -515,9 +613,35 @@ export default function UploadPage() {
             ) : (
               <button
                 onClick={handlePublish}
-                className="rounded-lg bg-gradient-to-r from-[var(--color-success)] to-[var(--color-info)] px-8 py-3 font-semibold text-white hover:opacity-90 transition-opacity shadow-lg shadow-[var(--color-success)]/20"
+                disabled={isSubmitting}
+                className="rounded-lg bg-gradient-to-r from-[var(--color-success)] to-[var(--color-info)] px-8 py-3 font-semibold text-white hover:opacity-90 transition-opacity shadow-lg shadow-[var(--color-success)]/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
-                Veröffentlichen
+                {isSubmitting ? (
+                  <>
+                    <svg
+                      className="h-5 w-5 animate-spin"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
+                    </svg>
+                    Wird hochgeladen...
+                  </>
+                ) : (
+                  "Veröffentlichen"
+                )}
               </button>
             )}
           </div>

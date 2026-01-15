@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
+import {
+  checkRateLimit,
+  getClientIP,
+  rateLimitHeaders,
+} from "@/lib/rateLimit";
 
 const registrationSchema = z.object({
   name: z
@@ -23,6 +28,23 @@ const registrationSchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
+  // Rate limiting check
+  const clientIP = getClientIP(request);
+  const rateLimitResult = checkRateLimit(clientIP, "auth:register");
+
+  if (!rateLimitResult.success) {
+    return NextResponse.json(
+      {
+        error: "Zu viele Anfragen. Bitte versuchen Sie es später erneut.",
+        retryAfter: rateLimitResult.retryAfter,
+      },
+      {
+        status: 429,
+        headers: rateLimitHeaders(rateLimitResult),
+      }
+    );
+  }
+
   try {
     const body = await request.json();
 
