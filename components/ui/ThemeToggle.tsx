@@ -1,6 +1,6 @@
 "use client";
 
-import { useTheme, type Theme } from "@/components/providers/ThemeProvider";
+import { useTheme, useIsMounted, type Theme } from "@/components/providers/ThemeProvider";
 import { useEffect, useState } from "react";
 
 const themes: Theme[] = ["light", "system", "dark"];
@@ -71,11 +71,7 @@ const labels: Record<Theme, string> = {
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useIsMounted();
 
   const cycleTheme = () => {
     const currentIndex = themes.indexOf(theme);
@@ -113,12 +109,8 @@ export function ThemeToggle() {
 // Dropdown variant for more explicit control
 export function ThemeToggleDropdown() {
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  const mounted = useIsMounted();
   const [isOpen, setIsOpen] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {

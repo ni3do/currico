@@ -2,11 +2,13 @@
 
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import Image from "next/image";
 import TopBar from "@/components/ui/TopBar";
+import Footer from "@/components/ui/Footer";
 
 export default function Home() {
   const t = useTranslations("homePage");
-  const tCommon = useTranslations("common");
+  const tCommon = useTranslations("common"); // Used for buttons.viewAll
 
   return (
     <div className="min-h-screen bg-[var(--color-bg)]">
@@ -16,17 +18,16 @@ export default function Home() {
         {/* Hero Section - Split-Screen Layout */}
         <section className="bg-[var(--color-bg)]">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 py-16 lg:py-24 items-center">
+            <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 py-8 lg:py-12 items-center">
               {/* Left Side - Text Content */}
               <div className="order-2 lg:order-1">
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[var(--color-primary-light)] rounded-md mb-6">
-                  <span className="text-[var(--color-primary)] text-sm font-medium">{t("hero.badge")}</span>
-                </div>
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[var(--color-text)] leading-tight tracking-tight">
                   {t("hero.title")}
                 </h1>
                 <p className="mt-6 text-lg text-[var(--color-text-muted)] leading-relaxed max-w-xl">
-                  {t("hero.description")}
+                  {t.rich("hero.description", {
+                    bold: (chunks) => <strong className="font-semibold text-[var(--color-text)]">{chunks}</strong>
+                  })}
                 </p>
                 <div className="mt-8 flex flex-col sm:flex-row gap-4">
                   <Link
@@ -34,8 +35,8 @@ export default function Home() {
                     className="btn-primary px-6 py-3.5 hover:-translate-y-0.5"
                   >
                     {t("hero.primaryButton")}
-                    <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                     </svg>
                   </Link>
                   <a
@@ -45,27 +46,17 @@ export default function Home() {
                     {t("hero.secondaryButton")}
                   </a>
                 </div>
-                <div className="mt-10 pt-8 border-t border-[var(--color-border)]">
-                  <p className="text-sm text-[var(--color-text-muted)] mb-3">{t("hero.trustLabel")}</p>
-                  <div className="flex items-center gap-6 text-[var(--color-text-faint)]">
-                    <span className="text-sm font-medium">{t("hero.trustBadges.lehrplan21")}</span>
-                    <span className="text-[var(--color-border)]">|</span>
-                    <span className="text-sm font-medium">{t("hero.trustBadges.qualityChecked")}</span>
-                    <span className="text-[var(--color-border)]">|</span>
-                    <span className="text-sm font-medium">{t("hero.trustBadges.swissStandard")}</span>
-                  </div>
-                </div>
               </div>
 
               {/* Right Side - Hero Image */}
               <div className="order-1 lg:order-2">
-                <div
-                  className="w-full h-[320px] sm:h-[400px] lg:h-[480px] rounded-xl bg-[var(--color-surface)]"
-                  style={{
-                    backgroundImage: 'url("https://images.unsplash.com/photo-1524178232363-1fb2b075b655?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80")',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                  }}
+                <Image
+                  src="/images/hero-teachers.png"
+                  alt="Lehrer hilft Schülern bei Gruppenarbeit im Klassenzimmer"
+                  width={1000}
+                  height={667}
+                  className="w-full h-[320px] sm:h-[400px] lg:h-[480px] rounded-xl shadow-lg object-cover object-center"
+                  priority
                 />
               </div>
             </div>
@@ -118,116 +109,47 @@ export default function Home() {
             </div>
 
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {/* Card 1 */}
-              <article className="card group overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
-                <div
-                  className="w-full h-[180px] bg-[var(--color-surface)]"
-                  style={{
-                    backgroundImage: 'url("https://images.unsplash.com/photo-1532094349884-543bc11b234d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60")',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                  }}
-                />
-                <div className="p-6">
-                  <div className="flex items-center gap-2 mb-4">
-                    <span className="pill pill-accent">
-                      {t("featuredResources.card1.category")}
-                    </span>
-                    <span className="pill pill-neutral">
-                      {t("featuredResources.card1.cycle")}
-                    </span>
-                  </div>
-                  <h3 className="text-lg font-bold text-[var(--color-text)] group-hover:text-[var(--color-primary)] transition-colors">
-                    {t("featuredResources.card1.title")}
-                  </h3>
-                  <p className="mt-2 text-sm text-[var(--color-text-muted)] line-clamp-2">
-                    {t("featuredResources.card1.description")}
-                  </p>
-                  <div className="mt-4 pt-4 border-t border-[var(--color-border-subtle)] flex items-center justify-between">
-                    <span className="text-sm text-[var(--color-text-muted)]">{t("featuredResources.card1.documents")}</span>
-                    <div className="flex items-center gap-1 text-sm font-medium text-[var(--color-text-secondary)]">
-                      <svg className="w-4 h-4 text-[var(--color-warning)]" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>
-                      {t("featuredResources.card1.rating")}
+              {[
+                { key: "card1", pillClass: "pill-accent", image: "photo-1532094349884-543bc11b234d" },
+                { key: "card2", pillClass: "pill-success", image: "photo-1456513080510-7bf3a84b82f8" },
+                { key: "card3", pillClass: "pill-primary", image: "photo-1635070041078-e363dbe005cb" },
+              ].map((card) => (
+                <article key={card.key} className="card group overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+                  <div
+                    className="w-full h-[180px] bg-[var(--color-surface)]"
+                    style={{
+                      backgroundImage: `url("https://images.unsplash.com/${card.image}?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60")`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                    }}
+                  />
+                  <div className="p-6">
+                    <div className="flex items-center gap-2 mb-4">
+                      <span className={`pill ${card.pillClass}`}>
+                        {t(`featuredResources.${card.key}.category`)}
+                      </span>
+                      <span className="pill pill-neutral">
+                        {t(`featuredResources.${card.key}.cycle`)}
+                      </span>
+                    </div>
+                    <h3 className="text-lg font-bold text-[var(--color-text)] group-hover:text-[var(--color-primary)] transition-colors">
+                      {t(`featuredResources.${card.key}.title`)}
+                    </h3>
+                    <p className="mt-2 text-sm text-[var(--color-text-muted)] line-clamp-2">
+                      {t(`featuredResources.${card.key}.description`)}
+                    </p>
+                    <div className="mt-4 pt-4 border-t border-[var(--color-border-subtle)] flex items-center justify-between">
+                      <span className="text-sm text-[var(--color-text-muted)]">{t(`featuredResources.${card.key}.documents`)}</span>
+                      <div className="flex items-center gap-1 text-sm font-medium text-[var(--color-text-secondary)]">
+                        <svg className="w-4 h-4 text-[var(--color-warning)]" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                        {t(`featuredResources.${card.key}.rating`)}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </article>
-
-              {/* Card 2 */}
-              <article className="card group overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
-                <div
-                  className="w-full h-[180px] bg-[var(--color-surface)]"
-                  style={{
-                    backgroundImage: 'url("https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60")',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                  }}
-                />
-                <div className="p-6">
-                  <div className="flex items-center gap-2 mb-4">
-                    <span className="pill pill-success">
-                      {t("featuredResources.card2.category")}
-                    </span>
-                    <span className="pill pill-neutral">
-                      {t("featuredResources.card2.cycle")}
-                    </span>
-                  </div>
-                  <h3 className="text-lg font-bold text-[var(--color-text)] group-hover:text-[var(--color-primary)] transition-colors">
-                    {t("featuredResources.card2.title")}
-                  </h3>
-                  <p className="mt-2 text-sm text-[var(--color-text-muted)] line-clamp-2">
-                    {t("featuredResources.card2.description")}
-                  </p>
-                  <div className="mt-4 pt-4 border-t border-[var(--color-border-subtle)] flex items-center justify-between">
-                    <span className="text-sm text-[var(--color-text-muted)]">{t("featuredResources.card2.documents")}</span>
-                    <div className="flex items-center gap-1 text-sm font-medium text-[var(--color-text-secondary)]">
-                      <svg className="w-4 h-4 text-[var(--color-warning)]" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>
-                      {t("featuredResources.card2.rating")}
-                    </div>
-                  </div>
-                </div>
-              </article>
-
-              {/* Card 3 */}
-              <article className="card group overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
-                <div
-                  className="w-full h-[180px] bg-[var(--color-surface)]"
-                  style={{
-                    backgroundImage: 'url("https://images.unsplash.com/photo-1635070041078-e363dbe005cb?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60")',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                  }}
-                />
-                <div className="p-6">
-                  <div className="flex items-center gap-2 mb-4">
-                    <span className="pill pill-primary">
-                      {t("featuredResources.card3.category")}
-                    </span>
-                    <span className="pill pill-neutral">
-                      {t("featuredResources.card3.cycle")}
-                    </span>
-                  </div>
-                  <h3 className="text-lg font-bold text-[var(--color-text)] group-hover:text-[var(--color-primary)] transition-colors">
-                    {t("featuredResources.card3.title")}
-                  </h3>
-                  <p className="mt-2 text-sm text-[var(--color-text-muted)] line-clamp-2">
-                    {t("featuredResources.card3.description")}
-                  </p>
-                  <div className="mt-4 pt-4 border-t border-[var(--color-border-subtle)] flex items-center justify-between">
-                    <span className="text-sm text-[var(--color-text-muted)]">{t("featuredResources.card3.documents")}</span>
-                    <div className="flex items-center gap-1 text-sm font-medium text-[var(--color-text-secondary)]">
-                      <svg className="w-4 h-4 text-[var(--color-warning)]" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>
-                      {t("featuredResources.card3.rating")}
-                    </div>
-                  </div>
-                </div>
-              </article>
+                </article>
+              ))}
             </div>
 
             <div className="mt-8 text-center sm:hidden">
@@ -349,63 +271,7 @@ export default function Home() {
         </section>
       </main>
 
-      {/* Footer - Grounded with slate background */}
-      <footer className="bg-[var(--color-bg-secondary)] border-t border-[var(--color-border)]">
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {/* Brand */}
-            <div>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="flex items-center justify-center w-8 h-8 bg-[var(--color-primary)] rounded-md">
-                  <span className="text-white font-bold text-sm">{tCommon("brand.logoText")}</span>
-                </div>
-                <span className="text-lg font-semibold text-[var(--color-text)]">{tCommon("brand.name")}</span>
-              </div>
-              <p className="text-sm text-[var(--color-text-muted)] leading-relaxed">
-                {tCommon("footer.brandDescription")}
-              </p>
-            </div>
-
-            {/* Product */}
-            <div>
-              <h3 className="font-semibold text-[var(--color-text)] text-sm uppercase tracking-wider">{tCommon("footer.platformSection.title")}</h3>
-              <ul className="mt-4 space-y-3">
-                <li><Link href="/resources" className="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors">{tCommon("footer.platformSection.resources")}</Link></li>
-                <li><Link href="/coming-soon" className="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors">{tCommon("footer.platformSection.pricing")}</Link></li>
-              </ul>
-            </div>
-
-            {/* Company */}
-            <div>
-              <h3 className="font-semibold text-[var(--color-text)] text-sm uppercase tracking-wider">{tCommon("footer.infoSection.title")}</h3>
-              <ul className="mt-4 space-y-3">
-                <li><Link href="/coming-soon" className="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors">{tCommon("footer.infoSection.aboutUs")}</Link></li>
-                <li><Link href="/coming-soon" className="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors">{tCommon("footer.infoSection.contact")}</Link></li>
-                <li><Link href="/coming-soon" className="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors">{tCommon("footer.infoSection.help")}</Link></li>
-              </ul>
-            </div>
-
-            {/* Legal */}
-            <div>
-              <h3 className="font-semibold text-[var(--color-text)] text-sm uppercase tracking-wider">{tCommon("footer.legalSection.title")}</h3>
-              <ul className="mt-4 space-y-3">
-                <li><Link href="/coming-soon" className="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors">{tCommon("footer.legalSection.privacy")}</Link></li>
-                <li><Link href="/coming-soon" className="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors">{tCommon("footer.legalSection.terms")}</Link></li>
-                <li><Link href="/coming-soon" className="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors">{tCommon("footer.legalSection.imprint")}</Link></li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="mt-12 pt-8 border-t border-[var(--color-border-subtle)] flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-[var(--color-text-muted)]">
-              {tCommon("footer.copyright")}
-            </p>
-            <p className="text-sm text-[var(--color-text-faint)]">
-              {tCommon("footer.initiative")}
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

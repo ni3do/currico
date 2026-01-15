@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
+import Footer from "@/components/ui/Footer";
 
 interface Resource {
   id: string;
@@ -50,13 +51,7 @@ export default function ResourceDetailPage() {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
 
-  useEffect(() => {
-    if (id) {
-      fetchResource();
-    }
-  }, [id]);
-
-  const fetchResource = async () => {
+  const fetchResource = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -77,7 +72,13 @@ export default function ResourceDetailPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    if (id) {
+      fetchResource();
+    }
+  }, [id, fetchResource]);
 
   // Loading state
   if (loading) {
@@ -475,14 +476,7 @@ export default function ResourceDetailPage() {
         </div>
       )}
 
-      {/* Footer */}
-      <footer className="mt-20 border-t border-[var(--color-border)] bg-[var(--color-bg-secondary)]">
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="text-center text-sm text-[var(--color-text-muted)]">
-            <p>2026 EasyLehrer. Alle Rechte vorbehalten.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

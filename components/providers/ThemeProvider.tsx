@@ -5,6 +5,9 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
+  useRef,
+  useSyncExternalStore,
   useState,
 } from "react";
 
@@ -28,37 +31,49 @@ function getSystemTheme(): ResolvedTheme {
     : "light";
 }
 
-function resolveTheme(theme: Theme): ResolvedTheme {
-  if (theme === "system") {
-    return getSystemTheme();
+function getStoredTheme(): Theme {
+  if (typeof window === "undefined") return "system";
+  const stored = localStorage.getItem(STORAGE_KEY) as Theme | null;
+  if (stored && ["light", "dark", "system"].includes(stored)) {
+    return stored;
   }
-  return theme;
+  return "system";
+}
+
+// Custom hook to detect client-side mounting without setState in effect
+export function useIsMounted(): boolean {
+  return useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("system");
-  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>("light");
-  const [mounted, setMounted] = useState(false);
+  const mounted = useIsMounted();
+  const [theme, setThemeState] = useState<Theme>(() => getStoredTheme());
+  const [systemTheme, setSystemTheme] = useState<ResolvedTheme>(() => getSystemTheme());
 
-  // Initialize theme from localStorage
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY) as Theme | null;
-    if (stored && ["light", "dark", "system"].includes(stored)) {
-      setThemeState(stored);
+  // Derive resolvedTheme from theme and systemTheme
+  const resolvedTheme = useMemo<ResolvedTheme>(() => {
+    if (theme === "system") {
+      return systemTheme;
     }
-    setMounted(true);
-  }, []);
+    return theme;
+  }, [theme, systemTheme]);
 
-  // Update resolved theme and DOM when theme changes
+  // Update DOM when resolved theme changes
+  const prevResolvedRef = useRef<ResolvedTheme | null>(null);
   useEffect(() => {
     if (!mounted) return;
 
-    const resolved = resolveTheme(theme);
-    setResolvedTheme(resolved);
+    // Skip if theme hasn't changed
+    if (prevResolvedRef.current === resolvedTheme) return;
+    prevResolvedRef.current = resolvedTheme;
 
     // Add transition class for smooth theme switching
     document.documentElement.classList.add("theme-transition");
-    document.documentElement.setAttribute("data-theme", resolved);
+    document.documentElement.setAttribute("data-theme", resolvedTheme);
 
     // Remove transition class after animation completes
     const timeout = setTimeout(() => {
@@ -66,7 +81,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }, 200);
 
     return () => clearTimeout(timeout);
-  }, [theme, mounted]);
+  }, [resolvedTheme, mounted]);
 
   // Listen for system preference changes
   useEffect(() => {
@@ -74,21 +89,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
-    const handleChange = () => {
-      if (theme === "system") {
-        const resolved = getSystemTheme();
-        setResolvedTheme(resolved);
-        document.documentElement.classList.add("theme-transition");
-        document.documentElement.setAttribute("data-theme", resolved);
-        setTimeout(() => {
-          document.documentElement.classList.remove("theme-transition");
-        }, 200);
-      }
+    const handleChange = (e: MediaQueryListEvent) => {
+      setSystemTheme(e.matches ? "dark" : "light");
     };
 
     mediaQuery.addEventListener("change", handleChange);
     return () => mediaQuery.removeEventListener("change", handleChange);
-  }, [theme, mounted]);
+  }, [mounted]);
 
   const setTheme = useCallback((newTheme: Theme) => {
     setThemeState(newTheme);
