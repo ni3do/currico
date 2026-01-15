@@ -90,6 +90,10 @@ model User {
   seller_verified Boolean  @default(false) // Admin-verified seller
   payout_enabled  Boolean  @default(false) // True when IBAN validated
 
+  // ============ STRIPE CONNECT ============
+  stripe_account_id          String?  // Stripe Connect account ID
+  stripe_onboarding_complete Boolean  @default(false)
+
   // ============ RELATIONS ============
   accounts     Account[]
   sessions     Session[]
@@ -132,11 +136,20 @@ model Resource {
   is_published Boolean @default(false)
   is_approved  Boolean @default(false) // Admin approval
 
+  // Swiss Quality Checks
+  eszett_checked  Boolean @default(false) // Checked for ß (should use ss)
+  swiss_verified  Boolean @default(false) // Admin verified Swiss quality
+  language        String  @default("de")  // de, fr, it
+
   // Relations
-  seller_id   String
-  seller      User     @relation(fields: [seller_id], references: [id])
+  seller_id    String
+  seller       User     @relation(fields: [seller_id], references: [id])
   transactions Transaction[]
-  reports     Report[]
+  reports      Report[]
+
+  // Curriculum alignment
+  competencies ResourceCompetency[]
+  lehrmittel   ResourceLehrmittel[]
 
   @@map("resources")
 }
@@ -151,6 +164,19 @@ model Transaction {
 
   amount     Int      // Amount in cents
   status     TransactionStatus @default(PENDING)
+
+  // Payment tracking
+  stripe_payment_intent_id   String? @unique
+  stripe_checkout_session_id String?
+  payment_method             String? // "card", "twint", "invoice"
+
+  // Swiss QR-Bill invoice fields
+  invoice_number  String? @unique
+  invoice_pdf_url String?
+
+  // Fee breakdown (stored for historical accuracy)
+  platform_fee_amount Int? // Platform fee in cents
+  seller_payout_amount Int? // Amount to seller in cents
 
   // Relations
   buyer_id    String
@@ -206,4 +232,123 @@ enum ReportStatus {
   IN_REVIEW
   RESOLVED
   DISMISSED
+}
+
+// ============================================================
+// CONTACT MESSAGE MODEL - Contact Form Submissions
+// ============================================================
+
+model ContactMessage {
+  id         String               @id @default(cuid())
+  created_at DateTime             @default(now())
+
+  name       String
+  email      String
+  phone      String?
+  subject    String
+  message    String               @db.Text
+  status     ContactMessageStatus @default(NEW)
+
+  @@map("contact_messages")
+}
+
+enum ContactMessageStatus {
+  NEW
+  READ
+  REPLIED
+  ARCHIVED
+}
+
+// ============================================================
+// CURRICULUM MODELS - Lehrplan 21 (LP21) & PER
+// ============================================================
+
+model Curriculum {
+  id       String @id @default(cuid())
+  code     String @unique // "LP21", "PER"
+  name_de  String
+  name_fr  String?
+  name_it  String?
+  region   String // "de-CH", "fr-CH", "it-CH"
+
+  subjects CurriculumSubject[]
+
+  @@map("curricula")
+}
+
+model CurriculumSubject {
+  id      String  @id @default(cuid())
+  code    String  // "MA", "D", "NMG", etc.
+  name_de String
+  name_fr String?
+  name_it String?
+
+  curriculum_id String
+  curriculum    Curriculum @relation(fields: [curriculum_id], references: [id], onDelete: Cascade)
+
+  competencies CurriculumCompetency[]
+
+  @@unique([curriculum_id, code])
+  @@map("curriculum_subjects")
+}
+
+model CurriculumCompetency {
+  id             String  @id @default(cuid())
+  code           String  @unique // "MA.1.A.1", "MA.1.A.2", etc.
+  description_de String  @db.Text
+  description_fr String? @db.Text
+  description_it String? @db.Text
+  cycle          Int     // 1, 2, or 3
+
+  // Hierarchy levels for LP21
+  kompetenzbereich String?  // Competency Area (Level 2)
+  handlungsaspekt  String?  // Action/Theme Aspect (Level 3)
+
+  subject_id String
+  subject    CurriculumSubject @relation(fields: [subject_id], references: [id], onDelete: Cascade)
+
+  resources ResourceCompetency[]
+
+  @@map("curriculum_competencies")
+}
+
+// ============================================================
+// LEHRMITTEL (TEXTBOOK) MODEL - Canton-specific textbooks
+// ============================================================
+
+model Lehrmittel {
+  id        String   @id @default(cuid())
+  name      String
+  publisher String
+  subject   String   // Subject code: "MA", "D", "F", etc.
+  cantons   String[] // Which cantons use this textbook
+  cycles    Int[]    // Which cycles: [1], [1,2], [2,3], etc.
+
+  resources ResourceLehrmittel[]
+
+  @@map("lehrmittel")
+}
+
+// ============================================================
+// JUNCTION TABLES - Many-to-many relations
+// ============================================================
+
+model ResourceCompetency {
+  resource_id   String
+  resource      Resource             @relation(fields: [resource_id], references: [id], onDelete: Cascade)
+  competency_id String
+  competency    CurriculumCompetency @relation(fields: [competency_id], references: [id], onDelete: Cascade)
+
+  @@id([resource_id, competency_id])
+  @@map("resource_competencies")
+}
+
+model ResourceLehrmittel {
+  resource_id   String
+  resource      Resource   @relation(fields: [resource_id], references: [id], onDelete: Cascade)
+  lehrmittel_id String
+  lehrmittel    Lehrmittel @relation(fields: [lehrmittel_id], references: [id], onDelete: Cascade)
+
+  @@id([resource_id, lehrmittel_id])
+  @@map("resource_lehrmittel")
 }

@@ -4,7 +4,8 @@ import { useState } from "react";
 import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 
-// Mock seller's resources
+// TODO: Replace mock data with real API call to fetch seller's resources
+// This page is a work-in-progress - bundle feature not yet implemented
 const mockResources = [
   { id: 1, title: "Bruchrechnen Übungsblätter", subject: "Mathematik", price: "CHF 12.00" },
   { id: 2, title: "Geometrie Arbeitsblätter", subject: "Mathematik", price: "CHF 8.00" },
@@ -49,6 +50,11 @@ export default function CreateBundlePage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    // TODO: Implement bundle creation API call
+    // 1. Create Bundle model in prisma/schema.prisma
+    // 2. Create /api/bundles POST endpoint
+    // 3. Submit form data to create bundle
+    void formData; // Placeholder until API is implemented
   };
 
   return (

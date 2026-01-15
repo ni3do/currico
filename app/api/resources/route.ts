@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getCurrentUserId } from "@/lib/auth";
+import { formatPrice } from "@/lib/utils/price";
 import {
   checkRateLimit,
   getClientIP,
@@ -112,7 +113,7 @@ export async function GET(request: NextRequest) {
       title: resource.title,
       description: resource.description,
       price: resource.price,
-      priceFormatted: resource.price === 0 ? "Gratis" : `CHF ${(resource.price / 100).toFixed(2)}`,
+      priceFormatted: formatPrice(resource.price),
       subject: resource.subjects[0] || "Allgemein",
       cycle: resource.cycles[0] || "",
       subjects: resource.subjects,

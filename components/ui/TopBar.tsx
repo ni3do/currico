@@ -51,7 +51,7 @@ export default function TopBar() {
                 {t("navigation.aboutUs")}
               </Link>
               <Link
-                href="/coming-soon"
+                href="/contact"
                 className="px-4 py-2 text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] font-medium text-sm transition-colors"
               >
                 {t("navigation.contact")}
@@ -149,7 +149,7 @@ export default function TopBar() {
                 {t("navigation.aboutUs")}
               </Link>
               <Link
-                href="/coming-soon"
+                href="/contact"
                 className="px-4 py-2 text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] font-medium text-sm transition-colors"
               >
                 {t("navigation.contact")}

@@ -8,6 +8,7 @@ Swiss platform for teachers to buy, sell, and share teaching materials.
 - [Design System](./design-system.md) - Catppuccin theme, tokens, components
 - [i18n Plan](./i18n-plan.md) - Internationalization implementation
 - [Payment Plan](./payment-integration-plan.md) - Stripe integration roadmap
+- [Swiss Market Roadmap](./roadmap.md) - Strategic roadmap for Swiss-specific features
 
 ## Design Principles
 

@@ -29,5 +29,5 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV WATCHPACK_POLLING=true
 ENV CHOKIDAR_USEPOLLING=true
 
-# Run prisma migrations, seed database, then start dev server
-CMD ["sh", "-c", "npx prisma migrate deploy && npx prisma db seed && npm run dev"]
+# Sync database schema and start dev server
+CMD ["sh", "-c", "npx prisma db push && npm run dev"]

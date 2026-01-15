@@ -18,7 +18,7 @@ export default function Home() {
         {/* Hero Section - Split-Screen Layout */}
         <section className="bg-[var(--color-bg)]">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 py-8 lg:py-12 items-center">
+            <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 py-8 pb-24 lg:py-12 lg:pb-32 items-center">
               {/* Left Side - Text Content */}
               <div className="order-2 lg:order-1">
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[var(--color-text)] leading-tight tracking-tight">
@@ -35,9 +35,6 @@ export default function Home() {
                     className="btn-primary inline-flex items-center justify-center px-6 py-2.5 hover:-translate-y-0.5"
                   >
                     {t("hero.primaryButton")}
-                    <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
                   </Link>
                   <a
                     href="#features"
@@ -63,37 +60,8 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Category Navigation - Clean Horizontal */}
-        <section className="bg-[var(--color-bg-secondary)] border-y border-[var(--color-border)]">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center gap-1 py-4 overflow-x-auto">
-              <Link href="/resources" className="px-4 py-2 rounded-md bg-[var(--color-primary)] text-white font-medium text-sm whitespace-nowrap">
-                {t("categories.allSubjects")}
-              </Link>
-              <Link href="/resources?subject=NMG" className="px-4 py-2 rounded-md text-[var(--color-text-secondary)] font-medium text-sm whitespace-nowrap hover:bg-[var(--color-surface)] transition-colors">
-                {t("categories.science")}
-              </Link>
-              <Link href="/resources?subject=Deutsch" className="px-4 py-2 rounded-md text-[var(--color-text-secondary)] font-medium text-sm whitespace-nowrap hover:bg-[var(--color-surface)] transition-colors">
-                {t("categories.languages")}
-              </Link>
-              <Link href="/resources?subject=Mathematik" className="px-4 py-2 rounded-md text-[var(--color-text-secondary)] font-medium text-sm whitespace-nowrap hover:bg-[var(--color-surface)] transition-colors">
-                {t("categories.math")}
-              </Link>
-              <Link href="/resources?subject=BG" className="px-4 py-2 rounded-md text-[var(--color-text-secondary)] font-medium text-sm whitespace-nowrap hover:bg-[var(--color-surface)] transition-colors">
-                {t("categories.arts")}
-              </Link>
-              <Link href="/resources?subject=Geschichte" className="px-4 py-2 rounded-md text-[var(--color-text-secondary)] font-medium text-sm whitespace-nowrap hover:bg-[var(--color-surface)] transition-colors">
-                {t("categories.history")}
-              </Link>
-              <Link href="/resources?subject=Musik" className="px-4 py-2 rounded-md text-[var(--color-text-secondary)] font-medium text-sm whitespace-nowrap hover:bg-[var(--color-surface)] transition-colors">
-                {t("categories.music")}
-              </Link>
-            </div>
-          </div>
-        </section>
-
         {/* Featured Resources - Clean Card Grid */}
-        <section className="bg-[var(--color-bg)] py-20">
+        <section className="bg-[var(--color-bg)] py-24">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex items-end justify-between mb-8">
               <div>
@@ -224,51 +192,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Stats Section - Clean numbers */}
-        <section className="bg-[var(--color-bg)] py-20 border-y border-[var(--color-border)]">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="grid gap-8 sm:grid-cols-3">
-              <div className="text-center">
-                <div className="text-4xl font-bold text-[var(--color-primary)]">{t("stats.materials.value")}</div>
-                <div className="mt-2 text-sm text-[var(--color-text-muted)] font-medium">{t("stats.materials.label")}</div>
-              </div>
-              <div className="text-center">
-                <div className="text-4xl font-bold text-[var(--color-accent)]">{t("stats.teachers.value")}</div>
-                <div className="mt-2 text-sm text-[var(--color-text-muted)] font-medium">{t("stats.teachers.label")}</div>
-              </div>
-              <div className="text-center">
-                <div className="text-4xl font-bold text-[var(--color-primary)]">{t("stats.satisfaction.value")}</div>
-                <div className="mt-2 text-sm text-[var(--color-text-muted)] font-medium">{t("stats.satisfaction.label")}</div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* CTA Section */}
-        <section className="bg-[var(--color-primary)] py-16">
-          <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-2xl sm:text-3xl font-semibold text-white">
-              {t("cta.title")}
-            </h2>
-            <p className="mt-4 text-lg text-white/80">
-              {t("cta.description")}
-            </p>
-            <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/register"
-                className="inline-flex items-center justify-center rounded-lg bg-white px-6 py-2.5 font-semibold text-[var(--color-primary)] hover:bg-[var(--color-surface)] transition-all hover:-translate-y-0.5 hover:shadow-lg"
-              >
-                {t("cta.primaryButton")}
-              </Link>
-              <Link
-                href="/resources"
-                className="inline-flex items-center justify-center rounded-lg bg-white/10 px-6 py-2.5 font-semibold text-white border border-white/20 hover:bg-white/20 transition-all"
-              >
-                {t("cta.secondaryButton")}
-              </Link>
-            </div>
-          </div>
-        </section>
       </main>
 
       <Footer />

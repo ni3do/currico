@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { requireAdmin, unauthorizedResponse } from "@/lib/admin-auth";
+import { formatPriceAdmin, getResourceStatus } from "@/lib/utils/price";
 
 const resourceSelect = Prisma.validator<Prisma.ResourceSelect>()({
   id: true,
@@ -69,23 +70,14 @@ export async function GET(request: NextRequest) {
     ]);
 
     // Transform resources
-    const transformedResources = resources.map((resource: ResourceWithRelations) => {
-      let resourceStatus = "Draft";
-      if (resource.is_approved) {
-        resourceStatus = "Verified";
-      } else if (resource.is_published) {
-        resourceStatus = "Pending";
-      }
-
-      return {
-        ...resource,
-        status: resourceStatus,
-        priceFormatted: (resource.price / 100).toFixed(2),
-        subjects: resource.subjects,
-        cycles: resource.cycles,
-        salesCount: resource._count.transactions,
-      };
-    });
+    const transformedResources = resources.map((resource: ResourceWithRelations) => ({
+      ...resource,
+      status: getResourceStatus(resource.is_published, resource.is_approved),
+      priceFormatted: formatPriceAdmin(resource.price),
+      subjects: resource.subjects,
+      cycles: resource.cycles,
+      salesCount: resource._count.transactions,
+    }));
 
     return NextResponse.json({
       resources: transformedResources,

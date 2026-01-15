@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { auth } from "@/lib/auth";
+import { formatPrice, getResourceStatus } from "@/lib/utils/price";
 
 /**
  * GET /api/seller/dashboard
@@ -92,20 +93,13 @@ export async function GET() {
       const grossEarnings = resource.transactions.reduce((sum, t) => sum + t.amount, 0);
       const netEarnings = grossEarnings * (1 - platformFeeRate);
 
-      let status = "Entwurf";
-      if (resource.is_approved) {
-        status = "Verified";
-      } else if (resource.is_published) {
-        status = "Pending";
-      }
-
       return {
         id: resource.id,
         title: resource.title,
         type: "Resource",
-        status,
+        status: getResourceStatus(resource.is_published, resource.is_approved),
         downloads: resource._count.transactions,
-        netEarnings: `CHF ${(netEarnings / 100).toFixed(2)}`,
+        netEarnings: formatPrice(netEarnings, { showFreeLabel: false }),
       };
     });
 
@@ -119,15 +113,15 @@ export async function GET() {
         id: transaction.id,
         resource: transaction.resource.title,
         date: transaction.created_at.toISOString().split("T")[0],
-        gross: `CHF ${(gross / 100).toFixed(2)}`,
-        platformFee: `CHF ${(platformFee / 100).toFixed(2)}`,
-        sellerPayout: `CHF ${(sellerPayout / 100).toFixed(2)}`,
+        gross: formatPrice(gross, { showFreeLabel: false }),
+        platformFee: formatPrice(platformFee, { showFreeLabel: false }),
+        sellerPayout: formatPrice(sellerPayout, { showFreeLabel: false }),
       };
     });
 
     return NextResponse.json({
       stats: {
-        netEarnings: `CHF ${(totalNet / 100).toFixed(2)}`,
+        netEarnings: formatPrice(totalNet, { showFreeLabel: false }),
         totalDownloads,
         followers: 0, // TODO: Implement following feature
       },

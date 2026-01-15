@@ -1,7 +1,6 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
@@ -142,22 +141,6 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* CTA Section */}
-        <section className="bg-[var(--color-primary)] py-20 lg:py-24">
-          <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-2xl sm:text-3xl font-semibold text-white">
-              {t("cta.title")}
-            </h2>
-            <div className="mt-8">
-              <Link
-                href="/resources"
-                className="inline-flex items-center justify-center rounded-lg bg-white px-8 py-4 font-semibold text-[var(--color-primary)] hover:bg-[var(--color-surface)] transition-all hover:-translate-y-0.5 hover:shadow-lg"
-              >
-                {t("cta.button")}
-              </Link>
-            </div>
-          </div>
-        </section>
       </main>
 
       <Footer />
