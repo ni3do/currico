@@ -4,10 +4,7 @@
 - Add backup solution
 - Scope out deployment
 - Do we need redis?
-- Add admin dashboard
-  - Review uploaded Ressources
-  - Manage users
-  - Overview of activity
+- Google OAuth
 
 # To Test
 
