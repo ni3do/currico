@@ -67,4 +67,3 @@
 ### Social (Follow)
 **Implemented:** Follow button UI, updates/following page
 **Missing:** Follow database model, API, notifications
-

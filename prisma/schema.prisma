@@ -57,22 +57,22 @@ model VerificationToken {
 
 model User {
   // ============ IDENTITY (System) ============
-  id            String    @id @default(cuid())
-  created_at    DateTime  @default(now())
-  updated_at    DateTime  @updatedAt
+  id         String   @id @default(cuid())
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   // ============ NEXTAUTH.JS REQUIRED FIELDS ============
-  name          String?   // Display name from OAuth provider
+  name          String? // Display name from OAuth provider
   email         String    @unique
   emailVerified DateTime? // When email was verified
-  image         String?   // Avatar from OAuth provider
+  image         String? // Avatar from OAuth provider
 
   // ============ PUBLIC PROFILE DATA ============
-  display_name String?   // Custom pseudonym for privacy (e.g., "Frau M.")
-  bio          String?   @db.Text // "About me" - max 500 chars
-  subjects     String[]  // ["Mathematik", "Deutsch", "NMG"]
-  cycles       String[]  // ["Zyklus 1", "Zyklus 2", "Zyklus 3"]
-  cantons      String[]  // ["Zürich", "Bern"] - Swiss cantons
+  display_name String? // Custom pseudonym for privacy (e.g., "Frau M.")
+  bio          String?  @db.Text // "About me" - max 500 chars
+  subjects     String[] // ["Mathematik", "Deutsch", "NMG"]
+  cycles       String[] // ["Zyklus 1", "Zyklus 2", "Zyklus 3"]
+  cantons      String[] // ["Zürich", "Bern"] - Swiss cantons
 
   // ============ PRIVATE ADMIN DATA ============
   password_hash    String? // For credential-based auth
@@ -91,8 +91,8 @@ model User {
   payout_enabled  Boolean  @default(false) // True when IBAN validated
 
   // ============ STRIPE CONNECT ============
-  stripe_account_id          String?  // Stripe Connect account ID
-  stripe_onboarding_complete Boolean  @default(false)
+  stripe_account_id          String? // Stripe Connect account ID
+  stripe_onboarding_complete Boolean @default(false)
 
   // ============ RELATIONS ============
   accounts     Account[]
@@ -120,30 +120,30 @@ enum UserRole {
 // ============================================================
 
 model Resource {
-  id          String   @id @default(cuid())
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  id         String   @id @default(cuid())
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   title       String
-  description String   @db.Text
-  price       Int      // Price in cents (e.g., 500 = 5.00 CHF)
-  file_url    String   // URL to the resource file
-  preview_url String?  // Preview image URL
+  description String  @db.Text
+  price       Int // Price in cents (e.g., 500 = 5.00 CHF)
+  file_url    String // URL to the resource file
+  preview_url String? // Preview image URL
 
-  subjects    String[]
-  cycles      String[]
+  subjects String[]
+  cycles   String[]
 
   is_published Boolean @default(false)
   is_approved  Boolean @default(false) // Admin approval
 
   // Swiss Quality Checks
-  eszett_checked  Boolean @default(false) // Checked for ß (should use ss)
-  swiss_verified  Boolean @default(false) // Admin verified Swiss quality
-  language        String  @default("de")  // de, fr, it
+  eszett_checked Boolean @default(false) // Checked for ß (should use ss)
+  swiss_verified Boolean @default(false) // Admin verified Swiss quality
+  language       String  @default("de") // de, fr, it
 
   // Relations
   seller_id    String
-  seller       User     @relation(fields: [seller_id], references: [id])
+  seller       User          @relation(fields: [seller_id], references: [id])
   transactions Transaction[]
   reports      Report[]
 
@@ -162,8 +162,8 @@ model Transaction {
   id         String   @id @default(cuid())
   created_at DateTime @default(now())
 
-  amount     Int      // Amount in cents
-  status     TransactionStatus @default(PENDING)
+  amount Int // Amount in cents
+  status TransactionStatus @default(PENDING)
 
   // Payment tracking
   stripe_payment_intent_id   String? @unique
@@ -175,7 +175,7 @@ model Transaction {
   invoice_pdf_url String?
 
   // Fee breakdown (stored for historical accuracy)
-  platform_fee_amount Int? // Platform fee in cents
+  platform_fee_amount  Int? // Platform fee in cents
   seller_payout_amount Int? // Amount to seller in cents
 
   // Relations
@@ -199,29 +199,29 @@ enum TransactionStatus {
 // ============================================================
 
 model Report {
-  id          String       @id @default(cuid())
-  created_at  DateTime     @default(now())
-  updated_at  DateTime     @updatedAt
+  id         String   @id @default(cuid())
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  reason      String       // Category: "copyright", "inappropriate", "spam", "fraud", "other"
+  reason      String // Category: "copyright", "inappropriate", "spam", "fraud", "other"
   description String?      @db.Text // Detailed description from reporter
   status      ReportStatus @default(OPEN)
   resolution  String?      @db.Text // Admin notes on resolution
 
   // What is being reported (either a resource or a user)
   resource_id String?
-  resource    Resource?    @relation(fields: [resource_id], references: [id], onDelete: SetNull)
+  resource    Resource? @relation(fields: [resource_id], references: [id], onDelete: SetNull)
 
   reported_user_id String?
   reported_user    User?   @relation("ReportedUser", fields: [reported_user_id], references: [id], onDelete: SetNull)
 
   // Who submitted the report
   reporter_id String
-  reporter    User    @relation("Reporter", fields: [reporter_id], references: [id], onDelete: Cascade)
+  reporter    User   @relation("Reporter", fields: [reporter_id], references: [id], onDelete: Cascade)
 
   // Admin who handled the report
   handled_by_id String?
-  handled_by    User?   @relation("ReportHandler", fields: [handled_by_id], references: [id], onDelete: SetNull)
+  handled_by    User?     @relation("ReportHandler", fields: [handled_by_id], references: [id], onDelete: SetNull)
   handled_at    DateTime?
 
   @@map("reports")
@@ -239,15 +239,15 @@ enum ReportStatus {
 // ============================================================
 
 model ContactMessage {
-  id         String               @id @default(cuid())
-  created_at DateTime             @default(now())
+  id         String   @id @default(cuid())
+  created_at DateTime @default(now())
 
-  name       String
-  email      String
-  phone      String?
-  subject    String
-  message    String               @db.Text
-  status     ContactMessageStatus @default(NEW)
+  name    String
+  email   String
+  phone   String?
+  subject String
+  message String               @db.Text
+  status  ContactMessageStatus @default(NEW)
 
   @@map("contact_messages")
 }
@@ -264,12 +264,12 @@ enum ContactMessageStatus {
 // ============================================================
 
 model Curriculum {
-  id       String @id @default(cuid())
-  code     String @unique // "LP21", "PER"
-  name_de  String
-  name_fr  String?
-  name_it  String?
-  region   String // "de-CH", "fr-CH", "it-CH"
+  id      String  @id @default(cuid())
+  code    String  @unique // "LP21", "PER"
+  name_de String
+  name_fr String?
+  name_it String?
+  region  String // "de-CH", "fr-CH", "it-CH"
 
   subjects CurriculumSubject[]
 
@@ -278,7 +278,7 @@ model Curriculum {
 
 model CurriculumSubject {
   id      String  @id @default(cuid())
-  code    String  // "MA", "D", "NMG", etc.
+  code    String // "MA", "D", "NMG", etc.
   name_de String
   name_fr String?
   name_it String?
@@ -298,11 +298,11 @@ model CurriculumCompetency {
   description_de String  @db.Text
   description_fr String? @db.Text
   description_it String? @db.Text
-  cycle          Int     // 1, 2, or 3
+  cycle          Int // 1, 2, or 3
 
   // Hierarchy levels for LP21
-  kompetenzbereich String?  // Competency Area (Level 2)
-  handlungsaspekt  String?  // Action/Theme Aspect (Level 3)
+  kompetenzbereich String? // Competency Area (Level 2)
+  handlungsaspekt  String? // Action/Theme Aspect (Level 3)
 
   subject_id String
   subject    CurriculumSubject @relation(fields: [subject_id], references: [id], onDelete: Cascade)
@@ -320,9 +320,9 @@ model Lehrmittel {
   id        String   @id @default(cuid())
   name      String
   publisher String
-  subject   String   // Subject code: "MA", "D", "F", etc.
+  subject   String // Subject code: "MA", "D", "F", etc.
   cantons   String[] // Which cantons use this textbook
-  cycles    Int[]    // Which cycles: [1], [1,2], [2,3], etc.
+  cycles    Int[] // Which cycles: [1], [1,2], [2,3], etc.
 
   resources ResourceLehrmittel[]
 
