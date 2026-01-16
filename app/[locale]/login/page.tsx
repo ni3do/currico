@@ -32,7 +32,18 @@ export default function LoginPage() {
       if (result?.error) {
         setError(t("errors.invalidCredentials"));
       } else {
-        router.push("/account");
+        // Fetch user role to determine redirect
+        const userResponse = await fetch("/api/user/me");
+        if (userResponse.ok) {
+          const userData = await userResponse.json();
+          if (userData.role === "ADMIN") {
+            router.push("/admin");
+          } else {
+            router.push("/account");
+          }
+        } else {
+          router.push("/account");
+        }
       }
     } catch {
       setError(t("errors.generic"));

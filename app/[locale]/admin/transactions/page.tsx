@@ -1,8 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import TopBar from "@/components/ui/TopBar";
-import Footer from "@/components/ui/Footer";
 
 // Mock transaction data
 const mockTransactions = [
@@ -82,146 +80,142 @@ export default function AdminTransactionsPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[var(--color-bg)]">
-      <TopBar />
+    <div className="p-6 lg:p-8 max-w-7xl mx-auto">
+      {/* Page Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-[var(--color-text)]">Transaktionen</h1>
+        <p className="mt-2 text-[var(--color-text-muted)]">
+          Übersicht aller Plattform-Transaktionen
+        </p>
+      </div>
 
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        {/* Page Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[var(--color-text)]">Transaktionen</h1>
-          <p className="mt-2 text-[var(--color-text-muted)]">
-            Übersicht aller Plattform-Transaktionen
-          </p>
-        </div>
-
-        {/* Summary Cards */}
-        <div className="mb-8 grid gap-6 sm:grid-cols-3">
-          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
-            <h3 className="mb-2 text-sm font-medium text-[var(--color-text-muted)]">
-              Gesamt-Bruttoeinnahmen
-            </h3>
-            <div className="text-3xl font-bold text-[var(--color-text)]">
-              CHF {totalGross.toFixed(2)}
-            </div>
-          </div>
-
-          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
-            <h3 className="mb-2 text-sm font-medium text-[var(--color-text-muted)]">
-              Plattformgebühren
-            </h3>
-            <div className="text-3xl font-bold text-[var(--color-primary)]">
-              CHF {totalPlatformFee.toFixed(2)}
-            </div>
-          </div>
-
-          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
-            <h3 className="mb-2 text-sm font-medium text-[var(--color-text-muted)]">
-              Verkäufer-Auszahlungen
-            </h3>
-            <div className="text-3xl font-bold text-[var(--color-success)]">
-              CHF {totalSellerPayout.toFixed(2)}
-            </div>
+      {/* Summary Cards */}
+      <div className="mb-8 grid gap-6 sm:grid-cols-3">
+        <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
+          <h3 className="mb-2 text-sm font-medium text-[var(--color-text-muted)]">
+            Gesamt-Bruttoeinnahmen
+          </h3>
+          <div className="text-3xl font-bold text-[var(--color-text)]">
+            CHF {totalGross.toFixed(2)}
           </div>
         </div>
 
-        {/* Filters */}
-        <div className="mb-6 flex items-center gap-4">
-          <label className="text-sm font-medium text-[var(--color-text)]">Status:</label>
-          <select
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-            className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
-          >
-            <option value="all">Alle</option>
-            <option value="completed">Abgeschlossen</option>
-            <option value="pending">Ausstehend</option>
-          </select>
+        <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
+          <h3 className="mb-2 text-sm font-medium text-[var(--color-text-muted)]">
+            Plattformgebühren
+          </h3>
+          <div className="text-3xl font-bold text-[var(--color-primary)]">
+            CHF {totalPlatformFee.toFixed(2)}
+          </div>
         </div>
 
-        {/* Transactions Table */}
-        <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-[var(--color-bg)]">
-                <tr>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
-                    Transaktions-ID
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
-                    Ressource
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
-                    Käufer
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
-                    Verkäufer
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
-                    Datum
-                  </th>
-                  <th className="px-6 py-4 text-right text-sm font-semibold text-[var(--color-text)]">
-                    Brutto
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
-                    Status
-                  </th>
-                  <th className="px-6 py-4 text-right text-sm font-semibold text-[var(--color-text)]">
-                    Aktionen
-                  </th>
+        <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
+          <h3 className="mb-2 text-sm font-medium text-[var(--color-text-muted)]">
+            Verkäufer-Auszahlungen
+          </h3>
+          <div className="text-3xl font-bold text-[var(--ctp-green)]">
+            CHF {totalSellerPayout.toFixed(2)}
+          </div>
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div className="mb-6 flex items-center gap-4">
+        <label className="text-sm font-medium text-[var(--color-text)]">Status:</label>
+        <select
+          value={filterStatus}
+          onChange={(e) => setFilterStatus(e.target.value)}
+          className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+        >
+          <option value="all">Alle</option>
+          <option value="completed">Abgeschlossen</option>
+          <option value="pending">Ausstehend</option>
+        </select>
+      </div>
+
+      {/* Transactions Table */}
+      <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-[var(--color-bg)]">
+              <tr>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
+                  Transaktions-ID
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
+                  Ressource
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
+                  Käufer
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
+                  Verkäufer
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
+                  Datum
+                </th>
+                <th className="px-6 py-4 text-right text-sm font-semibold text-[var(--color-text)]">
+                  Brutto
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
+                  Status
+                </th>
+                <th className="px-6 py-4 text-right text-sm font-semibold text-[var(--color-text)]">
+                  Aktionen
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[var(--color-border)]">
+              {filteredTransactions.map((transaction) => (
+                <tr
+                  key={transaction.id}
+                  className="hover:bg-[var(--color-bg)] transition-colors"
+                >
+                  <td className="px-6 py-4 font-mono text-sm text-[var(--color-text)]">
+                    {transaction.id}
+                  </td>
+                  <td className="px-6 py-4 font-medium text-[var(--color-text)]">
+                    {transaction.resource}
+                  </td>
+                  <td className="px-6 py-4 text-[var(--color-text-muted)]">
+                    {transaction.buyer}
+                  </td>
+                  <td className="px-6 py-4 text-[var(--color-text-muted)]">
+                    {transaction.seller}
+                  </td>
+                  <td className="px-6 py-4 text-[var(--color-text-muted)]">
+                    {new Date(transaction.date).toLocaleDateString("de-CH")}
+                  </td>
+                  <td className="px-6 py-4 text-right font-semibold text-[var(--color-text)]">
+                    CHF {transaction.gross.toFixed(2)}
+                  </td>
+                  <td className="px-6 py-4">
+                    <span
+                      className={`rounded-full px-3 py-1 text-xs font-medium ${
+                        transaction.status === "Completed"
+                          ? "bg-[var(--badge-success-bg)] text-[var(--badge-success-text)]"
+                          : "bg-[var(--badge-warning-bg)] text-[var(--badge-warning-text)]"
+                      }`}
+                    >
+                      {transaction.status === "Completed"
+                        ? "Abgeschlossen"
+                        : "Ausstehend"}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <button
+                      onClick={() => setSelectedTransaction(transaction.id)}
+                      className="text-sm text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-colors"
+                    >
+                      Details
+                    </button>
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="divide-y divide-[var(--color-border)]">
-                {filteredTransactions.map((transaction) => (
-                  <tr
-                    key={transaction.id}
-                    className="hover:bg-[var(--color-bg)] transition-colors"
-                  >
-                    <td className="px-6 py-4 font-mono text-sm text-[var(--color-text)]">
-                      {transaction.id}
-                    </td>
-                    <td className="px-6 py-4 font-medium text-[var(--color-text)]">
-                      {transaction.resource}
-                    </td>
-                    <td className="px-6 py-4 text-[var(--color-text-muted)]">
-                      {transaction.buyer}
-                    </td>
-                    <td className="px-6 py-4 text-[var(--color-text-muted)]">
-                      {transaction.seller}
-                    </td>
-                    <td className="px-6 py-4 text-[var(--color-text-muted)]">
-                      {new Date(transaction.date).toLocaleDateString("de-CH")}
-                    </td>
-                    <td className="px-6 py-4 text-right font-semibold text-[var(--color-text)]">
-                      CHF {transaction.gross.toFixed(2)}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span
-                        className={`rounded-full px-3 py-1 text-xs font-medium ${
-                          transaction.status === "Completed"
-                            ? "bg-[var(--color-success)]/20 text-[var(--color-success)]"
-                            : "bg-[var(--color-warning)]/20 text-[var(--color-warning)]"
-                        }`}
-                      >
-                        {transaction.status === "Completed"
-                          ? "Abgeschlossen"
-                          : "Ausstehend"}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <button
-                        onClick={() => setSelectedTransaction(transaction.id)}
-                        className="text-sm text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-colors"
-                      >
-                        Details →
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         </div>
-      </main>
+      </div>
 
       {/* Transaction Detail Modal */}
       {selectedTransaction && (
@@ -274,8 +268,8 @@ export default function AdminTransactionsPage() {
                         <span
                           className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${
                             transaction.status === "Completed"
-                              ? "bg-[var(--color-success)]/20 text-[var(--color-success)]"
-                              : "bg-[var(--color-warning)]/20 text-[var(--color-warning)]"
+                              ? "bg-[var(--badge-success-bg)] text-[var(--badge-success-text)]"
+                              : "bg-[var(--badge-warning-bg)] text-[var(--badge-warning-text)]"
                           }`}
                         >
                           {transaction.status === "Completed"
@@ -332,7 +326,7 @@ export default function AdminTransactionsPage() {
                           <span className="font-semibold text-[var(--color-text)]">
                             Verkäufer-Auszahlung
                           </span>
-                          <span className="text-lg font-bold text-[var(--color-success)]">
+                          <span className="text-lg font-bold text-[var(--ctp-green)]">
                             CHF {transaction.sellerPayout.toFixed(2)}
                           </span>
                         </div>
@@ -342,9 +336,9 @@ export default function AdminTransactionsPage() {
 
                   <button
                     onClick={() => setSelectedTransaction(null)}
-                    className="w-full rounded-lg border border-[var(--color-border)] px-4 py-3 font-medium text-[var(--color-text)] hover:bg-[var(--color-surface-elevated)] transition-colors"
+                    className="w-full rounded-lg border border-[var(--color-border)] px-4 py-3 font-medium text-[var(--color-text)] hover:bg-[var(--color-bg)] transition-colors"
                   >
-                    Schließen
+                    Schliessen
                   </button>
                 </div>
               );
@@ -352,8 +346,6 @@ export default function AdminTransactionsPage() {
           </div>
         </div>
       )}
-
-      <Footer />
     </div>
   );
 }

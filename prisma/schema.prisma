@@ -89,6 +89,7 @@ model User {
   is_seller       Boolean  @default(false)
   seller_verified Boolean  @default(false) // Admin-verified seller
   payout_enabled  Boolean  @default(false) // True when IBAN validated
+  is_protected    Boolean  @default(false) // Protected users cannot be deleted (e.g., super admin)
 
   // ============ STRIPE CONNECT ============
   stripe_account_id          String? // Stripe Connect account ID
@@ -115,6 +116,12 @@ enum UserRole {
   ADMIN
 }
 
+enum ResourceStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
 // ============================================================
 // RESOURCE MODEL - Teaching Materials
 // ============================================================
@@ -135,6 +142,10 @@ model Resource {
 
   is_published Boolean @default(false)
   is_approved  Boolean @default(false) // Admin approval
+
+  // Document verification workflow
+  status      ResourceStatus @default(PENDING) // pending, verified, rejected
+  is_public   Boolean @default(false) // Only visible to others when true
 
   // Swiss Quality Checks
   eszett_checked Boolean @default(false) // Checked for ß (should use ss)

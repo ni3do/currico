@@ -42,6 +42,7 @@ export async function GET(request: NextRequest) {
           role: true,
           is_seller: true,
           seller_verified: true,
+          is_protected: true,
           emailVerified: true,
           created_at: true,
           image: true,
@@ -73,12 +74,10 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       users: transformedUsers,
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-      },
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
     });
   } catch (error) {
     console.error("Error fetching users:", error);

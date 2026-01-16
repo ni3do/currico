@@ -14,6 +14,9 @@ const prisma = new PrismaClient({ adapter });
 
 // Pre-defined IDs for consistent upserts
 const TEST_USER_ID = "test-user-id";
+const ADMIN_USER_ID = "admin-user-id";
+const ADMIN_EMAIL = "admin@easy-lehrer.ch";
+const ADMIN_USERNAME = "ADMINISTRATOR";
 const RESOURCE_IDS = {
   math: "test-resource-math",
   german: "test-resource-german",
@@ -23,21 +26,46 @@ const RESOURCE_IDS = {
 async function main() {
   console.log("🌱 Starting seed...");
 
-  // Hash password for test user
-  const passwordHash = await hash("test", 12);
+  // Hash passwords
+  const testPasswordHash = await hash("test", 12);
+  const adminPasswordHash = await hash("12345678", 12);
 
-  // 1. Upsert test user with full seller profile
+  // 1. Upsert ADMINISTRATOR (super admin) user
+  console.log("👑 Creating ADMINISTRATOR user...");
+  const adminUser = await prisma.user.upsert({
+    where: { email: ADMIN_EMAIL },
+    update: {
+      password_hash: adminPasswordHash,
+      updated_at: new Date(),
+    },
+    create: {
+      id: ADMIN_USER_ID,
+      email: ADMIN_EMAIL,
+      password_hash: adminPasswordHash,
+      name: ADMIN_USERNAME,
+      display_name: ADMIN_USERNAME,
+      role: "ADMIN",
+      is_seller: false,
+      seller_verified: false,
+      payout_enabled: false,
+      is_protected: true, // Cannot be deleted through UI
+      emailVerified: new Date(),
+    },
+  });
+  console.log(`   ✓ Admin user: ${adminUser.email} (ID: ${adminUser.id})`);
+
+  // 2. Upsert test user with full seller profile
   console.log("👤 Creating test user...");
   const testUser = await prisma.user.upsert({
     where: { email: "test@test.com" },
     update: {
-      password_hash: passwordHash,
+      password_hash: testPasswordHash,
       updated_at: new Date(),
     },
     create: {
       id: TEST_USER_ID,
       email: "test@test.com",
-      password_hash: passwordHash,
+      password_hash: testPasswordHash,
       name: "Test User",
       display_name: "Frau Test",
       role: "SELLER",
@@ -55,7 +83,7 @@ async function main() {
   });
   console.log(`   ✓ Test user: ${testUser.email} (ID: ${testUser.id})`);
 
-  // 2. Copy sample files to public/uploads/resources/
+  // 3. Copy sample files to public/uploads/resources/
   console.log("📁 Copying sample files...");
   const seedFilesDir = path.join(__dirname, "seed-files");
   const uploadsDir = path.join(__dirname, "..", "public", "uploads", "resources");
@@ -82,7 +110,7 @@ async function main() {
     }
   }
 
-  // 3. Upsert sample resources
+  // 4. Upsert sample resources
   console.log("📚 Creating sample resources...");
 
   const resources = [
@@ -98,6 +126,8 @@ async function main() {
       cycles: ["Zyklus 1"],
       is_published: true,
       is_approved: true,
+      status: "VERIFIED" as const,
+      is_public: true,
       seller_id: testUser.id,
     },
     {
@@ -112,6 +142,8 @@ async function main() {
       cycles: ["Zyklus 2"],
       is_published: true,
       is_approved: true,
+      status: "VERIFIED" as const,
+      is_public: true,
       seller_id: testUser.id,
     },
     {
@@ -126,6 +158,8 @@ async function main() {
       cycles: ["Zyklus 2"],
       is_published: true,
       is_approved: true,
+      status: "VERIFIED" as const,
+      is_public: true,
       seller_id: testUser.id,
     },
   ];
@@ -142,16 +176,22 @@ async function main() {
         cycles: resource.cycles,
         is_published: resource.is_published,
         is_approved: resource.is_approved,
+        status: resource.status,
+        is_public: resource.is_public,
       },
       create: resource,
     });
     console.log(`   ✓ Resource: ${upserted.title}`);
   }
 
-  // 4. Seed curriculum data (LP21, textbooks)
+  // 5. Seed curriculum data (LP21, textbooks)
   await seedCurriculum(prisma);
 
   console.log("✅ Seed completed successfully!");
+  console.log("");
+  console.log("Admin credentials:");
+  console.log(`  Email: ${ADMIN_EMAIL}`);
+  console.log("  Password: 12345678");
   console.log("");
   console.log("Test user credentials:");
   console.log("  Email: test@test.com");

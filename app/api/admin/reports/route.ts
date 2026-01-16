@@ -47,12 +47,10 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       reports,
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-      },
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
     });
   } catch (error) {
     console.error("Error fetching reports:", error);

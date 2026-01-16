@@ -13,6 +13,10 @@ const resourceSelect = Prisma.validator<Prisma.ResourceSelect>()({
   cycles: true,
   is_published: true,
   is_approved: true,
+  status: true,
+  is_public: true,
+  file_url: true,
+  preview_url: true,
   created_at: true,
   updated_at: true,
   seller: {
@@ -50,10 +54,12 @@ export async function GET(request: NextRequest) {
     const where: Record<string, unknown> = {};
 
     if (status === "pending") {
-      where.is_approved = false;
+      where.status = "PENDING";
       where.is_published = true;
     } else if (status === "approved") {
-      where.is_approved = true;
+      where.status = "VERIFIED";
+    } else if (status === "rejected") {
+      where.status = "REJECTED";
     } else if (status === "draft") {
       where.is_published = false;
     }
@@ -105,7 +111,7 @@ export async function PATCH(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { id, is_approved } = body;
+    const { id, is_approved, status, is_public } = body;
 
     if (!id) {
       return NextResponse.json(
@@ -114,9 +120,42 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
+    const updateData: Record<string, unknown> = {};
+
+    // Handle legacy is_approved field
+    if (is_approved !== undefined) {
+      updateData.is_approved = is_approved;
+    }
+
+    // Handle new status field (PENDING, VERIFIED, REJECTED)
+    if (status !== undefined) {
+      if (!["PENDING", "VERIFIED", "REJECTED"].includes(status)) {
+        return NextResponse.json(
+          { error: "Invalid status value" },
+          { status: 400 }
+        );
+      }
+      updateData.status = status;
+
+      // When verifying, also set is_approved and is_public
+      if (status === "VERIFIED") {
+        updateData.is_approved = true;
+        updateData.is_public = true;
+      } else if (status === "REJECTED") {
+        updateData.is_approved = false;
+        updateData.is_public = false;
+      }
+    }
+
+    // Handle explicit is_public update
+    if (is_public !== undefined) {
+      updateData.is_public = is_public;
+    }
+
     const updated = await prisma.resource.update({
       where: { id },
-      data: { is_approved },
+      data: updateData,
+      select: resourceSelect,
     });
 
     return NextResponse.json(updated);

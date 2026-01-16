@@ -33,7 +33,7 @@ export async function GET() {
       }),
       prisma.resource.count(),
       prisma.resource.count({
-        where: { is_approved: false, is_published: true },
+        where: { status: "PENDING", is_published: true },
       }),
       prisma.transaction.aggregate({
         _sum: { amount: true },

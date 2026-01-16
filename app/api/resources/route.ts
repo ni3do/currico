@@ -52,10 +52,10 @@ export async function GET(request: NextRequest) {
 
     const skip = (page - 1) * limit;
 
-    // Build where clause - only show published and approved resources
+    // Build where clause - only show published and public (verified) resources
     const where: Record<string, unknown> = {
       is_published: true,
-      is_approved: true,
+      is_public: true, // Only show verified/public resources
     };
 
     if (subject) {
@@ -318,6 +318,8 @@ export async function POST(request: NextRequest) {
         cycles: data.cycles,
         is_published: data.is_published,
         is_approved: false, // Requires admin approval
+        status: "PENDING", // New uploads are pending verification
+        is_public: false, // Not visible to others until verified
         seller_id: userId,
         file_url: "", // Will be updated after file save
         preview_url: null,
@@ -402,6 +404,8 @@ export async function POST(request: NextRequest) {
         preview_url: true,
         is_published: true,
         is_approved: true,
+        status: true,
+        is_public: true,
         created_at: true,
       },
     });
