@@ -30,7 +30,7 @@ export default function ComingSoonPage() {
           </p>
           <Link
             href="/"
-            className="inline-flex items-center justify-center rounded-lg bg-[var(--color-primary)] px-6 py-3.5 font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-[var(--color-primary-hover)] hover:shadow-[0_8px_20px_rgba(0,82,204,0.25)]"
+            className="inline-flex items-center justify-center rounded-lg bg-[var(--color-primary)] px-6 py-3.5 font-semibold text-[var(--btn-primary-text)] transition-all hover:-translate-y-0.5 hover:bg-[var(--color-primary-hover)] hover:shadow-[0_8px_20px_rgba(0,82,204,0.25)]"
           >
             <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path

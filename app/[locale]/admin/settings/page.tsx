@@ -19,15 +19,7 @@ export default function AdminSettingsPage() {
   };
 
   return (
-    <div className="mx-auto max-w-4xl p-6 lg:p-8">
-      {/* Page Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--color-text)]">Plattform-Einstellungen</h1>
-        <p className="mt-2 text-[var(--color-text-muted)]">
-          Verwalten Sie globale Einstellungen der Plattform
-        </p>
-      </div>
-
+    <div className="mx-auto max-w-4xl space-y-6">
       {/* Commission Settings */}
       <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8">
         <h2 className="mb-6 text-xl font-semibold text-[var(--color-text)]">
@@ -64,7 +56,7 @@ export default function AdminSettingsPage() {
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="w-full rounded-xl bg-[var(--color-primary)] px-6 py-3 font-semibold text-white transition-colors hover:bg-[var(--color-primary-hover)] disabled:opacity-50 sm:w-auto"
+                className="w-full rounded-xl bg-[var(--color-primary)] px-6 py-3 font-semibold text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--color-primary-hover)] disabled:opacity-50 sm:w-auto"
               >
                 {isSaving ? "Wird gespeichert..." : "Provisionsrate aktualisieren"}
               </button>
@@ -122,14 +114,14 @@ export default function AdminSettingsPage() {
       </div>
 
       {/* Admin Account Settings */}
-      <div className="mt-8 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8">
+      <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8">
         <h2 className="mb-6 text-xl font-semibold text-[var(--color-text)]">Konto-Einstellungen</h2>
 
         <div className="space-y-6">
           {/* Admin Info */}
           <div className="flex items-center gap-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-4">
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[var(--ctp-mauve)] to-[var(--ctp-pink)]">
-              <span className="text-lg font-bold text-white">
+              <span className="text-lg font-bold text-[var(--btn-primary-text)]">
                 {(session?.user?.name || "A").charAt(0).toUpperCase()}
               </span>
             </div>

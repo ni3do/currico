@@ -164,40 +164,43 @@ export default function AdminDocumentsPage() {
   };
 
   return (
-    <div className="p-6 lg:p-8 max-w-7xl mx-auto">
-      {/* Page Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--color-text)]">Dokumentenprüfung</h1>
-        <p className="mt-2 text-[var(--color-text-muted)]">
-          Prüfen und verifizieren Sie hochgeladene Ressourcen. Nur verifizierte Dokumente sind für andere Benutzer sichtbar.
-        </p>
-      </div>
-
+    <div className="space-y-6">
       {/* Info Box */}
-      <div className="mb-6 rounded-xl border border-[var(--ctp-blue)]/30 bg-[var(--ctp-blue)]/10 p-4">
+      <div className="rounded-xl border border-[var(--ctp-blue)]/30 bg-[var(--ctp-blue)]/10 p-4">
         <div className="flex items-start gap-3">
-          <svg className="h-5 w-5 text-[var(--ctp-blue)] mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <svg
+            className="mt-0.5 h-5 w-5 text-[var(--ctp-blue)]"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
           </svg>
           <div>
-            <p className="text-sm text-[var(--ctp-blue)] font-medium">Verifizierungsworkflow</p>
-            <p className="text-sm text-[var(--color-text-muted)] mt-1">
-              Neue Uploads haben den Status &quot;Ausstehend&quot; und sind nur für den Besitzer sichtbar.
-              Nach der Verifizierung werden Dokumente öffentlich und für alle Benutzer zugänglich.
+            <p className="text-sm font-medium text-[var(--ctp-blue)]">Verifizierungsworkflow</p>
+            <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+              Neue Uploads haben den Status &quot;Ausstehend&quot; und sind nur für den Besitzer
+              sichtbar. Nach der Verifizierung werden Dokumente öffentlich und für alle Benutzer
+              zugänglich.
             </p>
           </div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="mb-6 flex flex-col sm:flex-row gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row">
         <select
           value={statusFilter}
           onChange={(e) => {
             setStatusFilter(e.target.value);
             setPage(1);
           }}
-          className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2.5 text-[var(--color-text)] focus:outline-none focus:border-[var(--color-primary)]"
+          className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2.5 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none"
         >
           <option value="all">Alle Status</option>
           <option value="pending">Ausstehend</option>
@@ -207,12 +210,10 @@ export default function AdminDocumentsPage() {
       </div>
 
       {/* Stats Bar */}
-      <div className="mb-6 text-sm text-[var(--color-text-muted)]">
-        {total} Dokumente gefunden
-      </div>
+      <div className="text-sm text-[var(--color-text-muted)]">{total} Dokumente gefunden</div>
 
       {/* Resources Table */}
-      <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden">
+      <div className="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)]">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-[var(--color-bg)]">
@@ -255,10 +256,12 @@ export default function AdminDocumentsPage() {
                 </tr>
               ) : (
                 resources.map((resource) => (
-                  <tr key={resource.id} className="hover:bg-[var(--color-bg)] transition-colors">
+                  <tr key={resource.id} className="transition-colors hover:bg-[var(--color-bg)]">
                     <td className="px-6 py-4">
                       <div className="font-medium text-[var(--color-text)]">{resource.title}</div>
-                      <div className="text-sm text-[var(--color-text-muted)]">{resource.priceFormatted}</div>
+                      <div className="text-sm text-[var(--color-text-muted)]">
+                        {resource.priceFormatted}
+                      </div>
                     </td>
                     <td className="px-6 py-4 text-[var(--color-text-muted)]">
                       {resource.seller.display_name || resource.seller.email}
@@ -267,7 +270,9 @@ export default function AdminDocumentsPage() {
                       {resource.subjects[0] || "-"}
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`rounded-full px-3 py-1 text-xs font-medium ${statusColors[resource.status] || statusColors.PENDING}`}>
+                      <span
+                        className={`rounded-full px-3 py-1 text-xs font-medium ${statusColors[resource.status] || statusColors.PENDING}`}
+                      >
                         {statusLabels[resource.status] || resource.status}
                       </span>
                     </td>
@@ -276,14 +281,22 @@ export default function AdminDocumentsPage() {
                         <span className="flex items-center gap-1 text-[var(--badge-success-text)]">
                           <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                            <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                            <path
+                              fillRule="evenodd"
+                              d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                              clipRule="evenodd"
+                            />
                           </svg>
                           Öffentlich
                         </span>
                       ) : (
                         <span className="flex items-center gap-1 text-[var(--color-text-muted)]">
                           <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478z" clipRule="evenodd" />
+                            <path
+                              fillRule="evenodd"
+                              d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478z"
+                              clipRule="evenodd"
+                            />
                             <path d="M12.454 16.697L9.75 13.992a4 4 0 01-3.742-3.741L2.335 6.578A9.98 9.98 0 00.458 10c1.274 4.057 5.065 7 9.542 7 .847 0 1.669-.105 2.454-.303z" />
                           </svg>
                           Privat
@@ -296,7 +309,7 @@ export default function AdminDocumentsPage() {
                     <td className="px-6 py-4 text-right">
                       <button
                         onClick={() => openResourceModal(resource)}
-                        className="rounded-lg bg-[var(--color-primary)] px-4 py-1.5 text-xs font-medium text-white hover:bg-[var(--color-primary-hover)] transition-colors"
+                        className="rounded-lg bg-[var(--color-primary)] px-4 py-1.5 text-xs font-medium text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--color-primary-hover)]"
                       >
                         Prüfen
                       </button>
@@ -315,7 +328,7 @@ export default function AdminDocumentsPage() {
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm font-medium text-[var(--color-text)] hover:bg-[var(--color-bg)] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm font-medium text-[var(--color-text)] hover:bg-[var(--color-bg)] disabled:cursor-not-allowed disabled:opacity-50"
           >
             Zurück
           </button>
@@ -325,7 +338,7 @@ export default function AdminDocumentsPage() {
           <button
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
-            className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm font-medium text-[var(--color-text)] hover:bg-[var(--color-bg)] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm font-medium text-[var(--color-text)] hover:bg-[var(--color-bg)] disabled:cursor-not-allowed disabled:opacity-50"
           >
             Weiter
           </button>
@@ -335,11 +348,9 @@ export default function AdminDocumentsPage() {
       {/* Resource Detail Modal */}
       {showModal && selectedResource && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--color-bg)]/80 backdrop-blur-sm">
-          <div className="mx-4 w-full max-w-2xl rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 max-h-[90vh] overflow-y-auto">
+          <div className="mx-4 max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-xl font-semibold text-[var(--color-text)]">
-                Dokument prüfen
-              </h3>
+              <h3 className="text-xl font-semibold text-[var(--color-text)]">Dokument prüfen</h3>
               <button
                 onClick={() => {
                   setShowModal(false);
@@ -348,47 +359,64 @@ export default function AdminDocumentsPage() {
                 className="text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
               >
                 <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
 
             {/* Resource Details */}
-            <div className="space-y-4 mb-6">
+            <div className="mb-6 space-y-4">
               <div>
-                <h4 className="text-lg font-semibold text-[var(--color-text)]">{selectedResource.title}</h4>
-                <p className="text-sm text-[var(--color-text-muted)] mt-1">{selectedResource.description}</p>
+                <h4 className="text-lg font-semibold text-[var(--color-text)]">
+                  {selectedResource.title}
+                </h4>
+                <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+                  {selectedResource.description}
+                </p>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="rounded-lg border border-[var(--color-border)] p-4">
-                  <div className="text-sm text-[var(--color-text-muted)] mb-1">Verkäufer</div>
+                  <div className="mb-1 text-sm text-[var(--color-text-muted)]">Verkäufer</div>
                   <div className="text-[var(--color-text)]">
                     {selectedResource.seller.display_name || selectedResource.seller.email}
                   </div>
                 </div>
                 <div className="rounded-lg border border-[var(--color-border)] p-4">
-                  <div className="text-sm text-[var(--color-text-muted)] mb-1">Preis</div>
-                  <div className="text-[var(--color-text)] font-medium">{selectedResource.priceFormatted}</div>
+                  <div className="mb-1 text-sm text-[var(--color-text-muted)]">Preis</div>
+                  <div className="font-medium text-[var(--color-text)]">
+                    {selectedResource.priceFormatted}
+                  </div>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="rounded-lg border border-[var(--color-border)] p-4">
-                  <div className="text-sm text-[var(--color-text-muted)] mb-1">Fächer</div>
+                  <div className="mb-1 text-sm text-[var(--color-text-muted)]">Fächer</div>
                   <div className="flex flex-wrap gap-1">
                     {selectedResource.subjects.map((subject) => (
-                      <span key={subject} className="rounded-full bg-[var(--color-bg)] px-2 py-1 text-xs text-[var(--color-text)]">
+                      <span
+                        key={subject}
+                        className="rounded-full bg-[var(--color-bg)] px-2 py-1 text-xs text-[var(--color-text)]"
+                      >
                         {subject}
                       </span>
                     ))}
                   </div>
                 </div>
                 <div className="rounded-lg border border-[var(--color-border)] p-4">
-                  <div className="text-sm text-[var(--color-text-muted)] mb-1">Zyklen</div>
+                  <div className="mb-1 text-sm text-[var(--color-text-muted)]">Zyklen</div>
                   <div className="flex flex-wrap gap-1">
                     {selectedResource.cycles.map((cycle) => (
-                      <span key={cycle} className="rounded-full bg-[var(--color-bg)] px-2 py-1 text-xs text-[var(--color-text)]">
+                      <span
+                        key={cycle}
+                        className="rounded-full bg-[var(--color-bg)] px-2 py-1 text-xs text-[var(--color-text)]"
+                      >
                         {cycle}
                       </span>
                     ))}
@@ -398,13 +426,17 @@ export default function AdminDocumentsPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="rounded-lg border border-[var(--color-border)] p-4">
-                  <div className="text-sm text-[var(--color-text-muted)] mb-1">Aktueller Status</div>
-                  <span className={`rounded-full px-3 py-1 text-xs font-medium ${statusColors[selectedResource.status] || statusColors.PENDING}`}>
+                  <div className="mb-1 text-sm text-[var(--color-text-muted)]">
+                    Aktueller Status
+                  </div>
+                  <span
+                    className={`rounded-full px-3 py-1 text-xs font-medium ${statusColors[selectedResource.status] || statusColors.PENDING}`}
+                  >
                     {statusLabels[selectedResource.status] || selectedResource.status}
                   </span>
                 </div>
                 <div className="rounded-lg border border-[var(--color-border)] p-4">
-                  <div className="text-sm text-[var(--color-text-muted)] mb-1">Sichtbarkeit</div>
+                  <div className="mb-1 text-sm text-[var(--color-text-muted)]">Sichtbarkeit</div>
                   <div className="text-[var(--color-text)]">
                     {selectedResource.is_public ? "Öffentlich" : "Nur für Besitzer"}
                   </div>
@@ -414,7 +446,7 @@ export default function AdminDocumentsPage() {
               {/* File Preview Link */}
               {selectedResource.file_url && (
                 <div className="rounded-lg border border-[var(--color-border)] p-4">
-                  <div className="text-sm text-[var(--color-text-muted)] mb-2">Dokument</div>
+                  <div className="mb-2 text-sm text-[var(--color-text-muted)]">Dokument</div>
                   <a
                     href={selectedResource.file_url}
                     target="_blank"
@@ -422,7 +454,12 @@ export default function AdminDocumentsPage() {
                     className="inline-flex items-center gap-2 text-[var(--color-primary)] hover:underline"
                   >
                     <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      />
                     </svg>
                     Dokument öffnen
                   </a>
@@ -432,7 +469,9 @@ export default function AdminDocumentsPage() {
 
             {/* Action Buttons */}
             <div className="border-t border-[var(--color-border)] pt-4">
-              <div className="text-sm font-medium text-[var(--color-text)] mb-3">Aktion wählen:</div>
+              <div className="mb-3 text-sm font-medium text-[var(--color-text)]">
+                Aktion wählen:
+              </div>
               <div className="grid grid-cols-3 gap-3">
                 {selectedResource.status !== "VERIFIED" && (
                   <button
@@ -441,7 +480,12 @@ export default function AdminDocumentsPage() {
                     className="flex items-center justify-center gap-2 rounded-lg bg-[var(--badge-success-bg)] px-4 py-3 text-sm font-medium text-[var(--badge-success-text)] hover:opacity-90 disabled:opacity-50"
                   >
                     <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
                     </svg>
                     Verifizieren
                   </button>
@@ -453,7 +497,12 @@ export default function AdminDocumentsPage() {
                     className="flex items-center justify-center gap-2 rounded-lg bg-[var(--badge-error-bg)] px-4 py-3 text-sm font-medium text-[var(--badge-error-text)] hover:opacity-90 disabled:opacity-50"
                   >
                     <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
                     </svg>
                     Ablehnen
                   </button>
@@ -465,7 +514,12 @@ export default function AdminDocumentsPage() {
                     className="flex items-center justify-center gap-2 rounded-lg bg-[var(--badge-warning-bg)] px-4 py-3 text-sm font-medium text-[var(--badge-warning-text)] hover:opacity-90 disabled:opacity-50"
                   >
                     <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                      />
                     </svg>
                     Zurücksetzen
                   </button>

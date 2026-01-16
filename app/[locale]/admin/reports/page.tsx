@@ -135,24 +135,16 @@ export default function AdminReportsPage() {
   };
 
   return (
-    <div className="p-6 lg:p-8 max-w-7xl mx-auto">
-      {/* Page Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--color-text)]">Meldungen</h1>
-        <p className="mt-2 text-[var(--color-text-muted)]">
-          Bearbeiten Sie eingehende Meldungen von Benutzern.
-        </p>
-      </div>
-
+    <div className="space-y-6">
       {/* Filters */}
-      <div className="mb-6 flex flex-col sm:flex-row gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row">
         <select
           value={statusFilter}
           onChange={(e) => {
             setStatusFilter(e.target.value);
             setPage(1);
           }}
-          className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2.5 text-[var(--color-text)] focus:outline-none focus:border-[var(--color-primary)]"
+          className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2.5 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none"
         >
           <option value="">Alle Status</option>
           <option value="OPEN">Offen</option>
@@ -163,12 +155,10 @@ export default function AdminReportsPage() {
       </div>
 
       {/* Stats Bar */}
-      <div className="mb-6 text-sm text-[var(--color-text-muted)]">
-        {total} Meldungen gefunden
-      </div>
+      <div className="text-sm text-[var(--color-text-muted)]">{total} Meldungen gefunden</div>
 
       {/* Reports Table */}
-      <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden">
+      <div className="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)]">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-[var(--color-bg)]">
@@ -208,7 +198,7 @@ export default function AdminReportsPage() {
                 </tr>
               ) : (
                 reports.map((report) => (
-                  <tr key={report.id} className="hover:bg-[var(--color-bg)] transition-colors">
+                  <tr key={report.id} className="transition-colors hover:bg-[var(--color-bg)]">
                     <td className="px-6 py-4">
                       <span className="font-medium text-[var(--color-text)]">
                         {reasonLabels[report.reason] || report.reason}
@@ -235,7 +225,9 @@ export default function AdminReportsPage() {
                       {report.reporter.display_name || report.reporter.email}
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`rounded-full px-3 py-1 text-xs font-medium ${statusColors[report.status]}`}>
+                      <span
+                        className={`rounded-full px-3 py-1 text-xs font-medium ${statusColors[report.status]}`}
+                      >
                         {statusLabels[report.status]}
                       </span>
                     </td>
@@ -245,7 +237,7 @@ export default function AdminReportsPage() {
                     <td className="px-6 py-4 text-right">
                       <button
                         onClick={() => openReportModal(report)}
-                        className="rounded-lg bg-[var(--color-primary)] px-4 py-1.5 text-xs font-medium text-white hover:bg-[var(--color-primary-hover)] transition-colors"
+                        className="rounded-lg bg-[var(--color-primary)] px-4 py-1.5 text-xs font-medium text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--color-primary-hover)]"
                       >
                         Bearbeiten
                       </button>
@@ -264,7 +256,7 @@ export default function AdminReportsPage() {
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm font-medium text-[var(--color-text)] hover:bg-[var(--color-bg)] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm font-medium text-[var(--color-text)] hover:bg-[var(--color-bg)] disabled:cursor-not-allowed disabled:opacity-50"
           >
             Zurück
           </button>
@@ -274,7 +266,7 @@ export default function AdminReportsPage() {
           <button
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
-            className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm font-medium text-[var(--color-text)] hover:bg-[var(--color-bg)] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm font-medium text-[var(--color-text)] hover:bg-[var(--color-bg)] disabled:cursor-not-allowed disabled:opacity-50"
           >
             Weiter
           </button>
@@ -284,11 +276,9 @@ export default function AdminReportsPage() {
       {/* Report Detail Modal */}
       {showModal && selectedReport && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--color-bg)]/80 backdrop-blur-sm">
-          <div className="mx-4 w-full max-w-lg rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 max-h-[90vh] overflow-y-auto">
+          <div className="mx-4 max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-xl font-semibold text-[var(--color-text)]">
-                Meldung bearbeiten
-              </h3>
+              <h3 className="text-xl font-semibold text-[var(--color-text)]">Meldung bearbeiten</h3>
               <button
                 onClick={() => {
                   setShowModal(false);
@@ -297,15 +287,20 @@ export default function AdminReportsPage() {
                 className="text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
               >
                 <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
 
             {/* Report Details */}
-            <div className="space-y-4 mb-6">
+            <div className="mb-6 space-y-4">
               <div className="rounded-lg border border-[var(--color-border)] p-4">
-                <div className="text-sm text-[var(--color-text-muted)] mb-1">Grund</div>
+                <div className="mb-1 text-sm text-[var(--color-text-muted)]">Grund</div>
                 <div className="font-medium text-[var(--color-text)]">
                   {reasonLabels[selectedReport.reason] || selectedReport.reason}
                 </div>
@@ -313,25 +308,30 @@ export default function AdminReportsPage() {
 
               {selectedReport.description && (
                 <div className="rounded-lg border border-[var(--color-border)] p-4">
-                  <div className="text-sm text-[var(--color-text-muted)] mb-1">Beschreibung</div>
+                  <div className="mb-1 text-sm text-[var(--color-text-muted)]">Beschreibung</div>
                   <div className="text-[var(--color-text)]">{selectedReport.description}</div>
                 </div>
               )}
 
               <div className="rounded-lg border border-[var(--color-border)] p-4">
-                <div className="text-sm text-[var(--color-text-muted)] mb-1">Gemeldet</div>
+                <div className="mb-1 text-sm text-[var(--color-text-muted)]">Gemeldet</div>
                 <div className="text-[var(--color-text)]">
                   {selectedReport.resource ? (
                     <>
                       <span className="font-medium">{selectedReport.resource.title}</span>
-                      <span className="text-xs text-[var(--color-text-muted)] ml-2">(Ressource)</span>
+                      <span className="ml-2 text-xs text-[var(--color-text-muted)]">
+                        (Ressource)
+                      </span>
                     </>
                   ) : selectedReport.reported_user ? (
                     <>
                       <span className="font-medium">
-                        {selectedReport.reported_user.display_name || selectedReport.reported_user.email}
+                        {selectedReport.reported_user.display_name ||
+                          selectedReport.reported_user.email}
                       </span>
-                      <span className="text-xs text-[var(--color-text-muted)] ml-2">(Benutzer)</span>
+                      <span className="ml-2 text-xs text-[var(--color-text-muted)]">
+                        (Benutzer)
+                      </span>
                     </>
                   ) : (
                     "-"
@@ -341,14 +341,18 @@ export default function AdminReportsPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="rounded-lg border border-[var(--color-border)] p-4">
-                  <div className="text-sm text-[var(--color-text-muted)] mb-1">Melder</div>
+                  <div className="mb-1 text-sm text-[var(--color-text-muted)]">Melder</div>
                   <div className="text-[var(--color-text)]">
                     {selectedReport.reporter.display_name || selectedReport.reporter.email}
                   </div>
                 </div>
                 <div className="rounded-lg border border-[var(--color-border)] p-4">
-                  <div className="text-sm text-[var(--color-text-muted)] mb-1">Aktueller Status</div>
-                  <span className={`rounded-full px-3 py-1 text-xs font-medium ${statusColors[selectedReport.status]}`}>
+                  <div className="mb-1 text-sm text-[var(--color-text-muted)]">
+                    Aktueller Status
+                  </div>
+                  <span
+                    className={`rounded-full px-3 py-1 text-xs font-medium ${statusColors[selectedReport.status]}`}
+                  >
                     {statusLabels[selectedReport.status]}
                   </span>
                 </div>
@@ -364,14 +368,16 @@ export default function AdminReportsPage() {
                 value={resolution}
                 onChange={(e) => setResolution(e.target.value)}
                 rows={3}
-                className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2.5 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-primary)] resize-y min-h-[80px]"
+                className="min-h-[80px] w-full resize-y rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2.5 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:outline-none"
                 placeholder="Beschreiben Sie die ergriffenen Massnahmen..."
               />
             </div>
 
             {/* Action Buttons */}
             <div className="space-y-3">
-              <div className="text-sm font-medium text-[var(--color-text)] mb-2">Status ändern:</div>
+              <div className="mb-2 text-sm font-medium text-[var(--color-text)]">
+                Status ändern:
+              </div>
               <div className="grid grid-cols-2 gap-3">
                 {selectedReport.status !== "IN_REVIEW" && (
                   <button
@@ -395,7 +401,7 @@ export default function AdminReportsPage() {
                   <button
                     onClick={() => handleStatusUpdate(selectedReport.id, "DISMISSED")}
                     disabled={actionLoading}
-                    className="rounded-lg bg-[var(--color-bg)] px-4 py-2.5 text-sm font-medium text-[var(--color-text-muted)] hover:opacity-90 disabled:opacity-50 border border-[var(--color-border)]"
+                    className="rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-2.5 text-sm font-medium text-[var(--color-text-muted)] hover:opacity-90 disabled:opacity-50"
                   >
                     Abweisen
                   </button>
@@ -412,7 +418,7 @@ export default function AdminReportsPage() {
               </div>
             </div>
 
-            <div className="mt-6 pt-4 border-t border-[var(--color-border)]">
+            <div className="mt-6 border-t border-[var(--color-border)] pt-4">
               <button
                 onClick={() => {
                   setShowModal(false);

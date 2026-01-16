@@ -186,13 +186,13 @@ export function CurriculumBox({
         <div className="border-t border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-4 py-2">
           <div className="flex items-center gap-4 text-xs text-[var(--color-text-muted)]">
             <span className="flex items-center gap-1">
-              <span className="rounded bg-gray-500/30 px-1 font-bold text-gray-600 dark:text-gray-300">
+              <span className="rounded bg-[var(--color-surface-high)] px-1 font-bold text-[var(--color-text-muted)]">
                 G
               </span>
               Grundansprüche
             </span>
             <span className="flex items-center gap-1">
-              <span className="rounded bg-orange-500/30 px-1 font-bold text-orange-600 dark:text-orange-300">
+              <span className="rounded bg-[var(--color-warning-light)] px-1 font-bold text-[var(--color-warning)]">
                 E
               </span>
               Erweiterte Ansprüche

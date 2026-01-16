@@ -12,12 +12,12 @@ export default function AboutPage() {
   const locale = useLocale();
 
   return (
-    <div className="min-h-screen bg-[var(--color-bg)]">
+    <div className="flex min-h-screen flex-col">
       <TopBar />
 
-      <main>
+      <main className="flex-1">
         {/* Hero Section with gradient accent */}
-        <section className="relative overflow-hidden bg-[var(--color-bg)]">
+        <section className="relative overflow-hidden">
           {/* Subtle gradient accent */}
           <div className="pointer-events-none absolute top-0 right-0 h-full w-1/2 bg-gradient-to-l from-[var(--color-primary)]/5 to-transparent" />
 
@@ -66,7 +66,7 @@ export default function AboutPage() {
         </section>
 
         {/* Core Values Section */}
-        <section className="bg-[var(--color-bg)] py-20 lg:py-28">
+        <section className="py-20 lg:py-28">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <h2 className="mb-16 text-center text-2xl font-semibold text-[var(--color-primary)] sm:text-3xl">
               {t("values.title")}
@@ -176,6 +176,42 @@ export default function AboutPage() {
                   className="h-[300px] w-full rounded-xl object-cover object-center shadow-lg sm:h-[350px] lg:h-[400px]"
                 />
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Founders Section */}
+        <section className="py-20 lg:py-28">
+          <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+            <div className="text-center">
+              <div className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-full bg-[var(--color-primary)]/10">
+                <svg
+                  className="h-10 w-10 text-[var(--color-primary)]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                  />
+                </svg>
+              </div>
+              <h2 className="mb-8 text-2xl font-semibold text-[var(--color-primary)] sm:text-3xl">
+                {t("founders.title")}
+              </h2>
+            </div>
+            <div className="space-y-6 text-lg leading-relaxed text-[var(--color-text-secondary)]">
+              <p>{t("founders.paragraph1")}</p>
+              <p>{t("founders.paragraph2")}</p>
+              <p>{t("founders.paragraph3")}</p>
+            </div>
+            <div className="mt-10 rounded-xl border border-[var(--color-primary)]/20 bg-[var(--color-primary)]/5 p-6 text-center">
+              <p className="text-lg font-medium text-[var(--color-primary)]">
+                {t("founders.highlight")}
+              </p>
             </div>
           </div>
         </section>

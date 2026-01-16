@@ -218,10 +218,10 @@ export default function EditProfilePage() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-4xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-[var(--color-text)]">Profil bearbeiten</h1>
@@ -415,7 +415,7 @@ export default function EditProfilePage() {
               <button
                 type="submit"
                 disabled={isSaving}
-                className="rounded-lg bg-[var(--color-primary)] px-6 py-3 font-medium text-white transition-colors hover:bg-[var(--color-primary-hover)] disabled:bg-gray-400 disabled:opacity-50"
+                className="rounded-lg bg-[var(--color-primary)] px-6 py-3 font-medium text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--color-primary-hover)] disabled:bg-[var(--color-surface)] disabled:opacity-50"
               >
                 {isSaving ? (
                   <span className="flex items-center gap-2">

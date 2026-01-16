@@ -51,7 +51,7 @@ export function ProfileCompletionBanner({
           </ul>
           <button
             onClick={onComplete}
-            className="mt-4 rounded-lg bg-[var(--color-primary)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--color-primary-hover)]"
+            className="mt-4 rounded-lg bg-[var(--color-primary)] px-4 py-2 text-sm font-medium text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--color-primary-hover)]"
           >
             Profil vervollständigen
           </button>

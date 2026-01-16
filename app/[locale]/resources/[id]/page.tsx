@@ -192,9 +192,9 @@ export default function ResourceDetailPage() {
   // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen">
+      <div className="flex min-h-screen flex-col">
         <TopBar />
-        <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <main className="mx-auto max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
           <div className="animate-pulse">
             <div className="mb-8 h-4 w-48 rounded bg-[var(--color-surface)]" />
             <div className="grid gap-8 lg:grid-cols-3">
@@ -236,9 +236,9 @@ export default function ResourceDetailPage() {
   // Error states
   if (error === "not_found") {
     return (
-      <div className="min-h-screen">
+      <div className="flex min-h-screen flex-col">
         <TopBar />
-        <main className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <main className="mx-auto max-w-7xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="mb-4 text-4xl font-bold text-[var(--color-text)]">
               Ressource nicht gefunden
@@ -260,9 +260,9 @@ export default function ResourceDetailPage() {
 
   if (error || !resource) {
     return (
-      <div className="min-h-screen">
+      <div className="flex min-h-screen flex-col">
         <TopBar />
-        <main className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <main className="mx-auto max-w-7xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="mb-4 text-4xl font-bold text-[var(--color-text)]">Fehler beim Laden</h1>
             <p className="mb-8 text-[var(--color-text-muted)]">
@@ -281,10 +281,10 @@ export default function ResourceDetailPage() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
         {/* Breadcrumb */}
         <nav className="mb-8 flex items-center gap-2 text-sm text-[var(--color-text-muted)]">
           <Link href="/resources" className="hover:text-[var(--color-primary)]">
@@ -375,7 +375,7 @@ export default function ResourceDetailPage() {
                 <button
                   onClick={handleWishlistToggle}
                   disabled={wishlistLoading}
-                  className={`rounded-lg border-2 p-4 transition-all disabled:opacity-50 ${
+                  className={`group rounded-lg border-2 p-4 transition-all disabled:opacity-50 ${
                     isWishlisted
                       ? "border-[var(--color-error)] bg-[var(--color-error)]/10 text-[var(--color-error)]"
                       : "border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text-muted)] hover:border-[var(--color-error)] hover:text-[var(--color-error)]"
@@ -383,17 +383,15 @@ export default function ResourceDetailPage() {
                   title={isWishlisted ? "Von Wunschliste entfernen" : "Zur Wunschliste hinzufügen"}
                 >
                   <svg
-                    className="h-6 w-6"
+                    className={`h-6 w-6 transition-transform duration-200 ease-out group-active:scale-125 ${
+                      isWishlisted ? "animate-[heartBeat_0.3s_ease-in-out]" : ""
+                    }`}
                     fill={isWishlisted ? "currentColor" : "none"}
                     stroke="currentColor"
+                    strokeWidth={2}
                     viewBox="0 0 24 24"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                    />
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                   </svg>
                 </button>
               </div>

@@ -28,10 +28,7 @@ export function MultiSelect({
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     }
@@ -87,12 +84,7 @@ export function MultiSelect({
                 }}
                 className="ml-1 hover:text-[var(--color-error)]"
               >
-                <svg
-                  className="h-3 w-3"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -153,7 +145,7 @@ export function MultiSelect({
                   >
                     {selected.includes(option) && (
                       <svg
-                        className="h-3 w-3 text-white"
+                        className="h-3 w-3 text-[var(--btn-primary-text)]"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"

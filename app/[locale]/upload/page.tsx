@@ -17,6 +17,8 @@ export default function UploadPage() {
   const [currentStep, setCurrentStep] = useState<Step>(1);
   const [uploadStatus, setUploadStatus] = useState<UploadStatus>("idle");
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [fileLoadingProgress, setFileLoadingProgress] = useState(0);
+  const [isLoadingFiles, setIsLoadingFiles] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [createdResourceId, setCreatedResourceId] = useState<string | null>(null);
 
@@ -57,8 +59,43 @@ export default function UploadPage() {
 
   const handleMainFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (files) {
-      setFormData((prev) => ({ ...prev, files: Array.from(files) }));
+    if (files && files.length > 0) {
+      setIsLoadingFiles(true);
+      setFileLoadingProgress(0);
+
+      const fileArray = Array.from(files);
+      const totalSize = fileArray.reduce((acc, file) => acc + file.size, 0);
+      let loadedSize = 0;
+
+      // Read each file to track progress
+      const readPromises = fileArray.map((file) => {
+        return new Promise<void>((resolve) => {
+          const reader = new FileReader();
+          reader.onprogress = (event) => {
+            if (event.lengthComputable) {
+              const currentLoaded = loadedSize + event.loaded;
+              const progress = Math.round((currentLoaded / totalSize) * 100);
+              setFileLoadingProgress(progress);
+            }
+          };
+          reader.onload = () => {
+            loadedSize += file.size;
+            setFileLoadingProgress(Math.round((loadedSize / totalSize) * 100));
+            resolve();
+          };
+          reader.onerror = () => resolve();
+          reader.readAsArrayBuffer(file);
+        });
+      });
+
+      Promise.all(readPromises).then(() => {
+        setFormData((prev) => ({ ...prev, files: fileArray }));
+        setFileLoadingProgress(100);
+        setTimeout(() => {
+          setIsLoadingFiles(false);
+          setFileLoadingProgress(0);
+        }, 500);
+      });
     }
   };
 
@@ -67,6 +104,13 @@ export default function UploadPage() {
     if (files) {
       setFormData((prev) => ({ ...prev, previewFiles: Array.from(files) }));
     }
+  };
+
+  const handleFilePreview = (file: File) => {
+    const url = URL.createObjectURL(file);
+    window.open(url, "_blank");
+    // Clean up the URL after a short delay
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
 
   const handleNext = () => {
@@ -84,96 +128,106 @@ export default function UploadPage() {
   const handlePublish = async () => {
     setError(null);
     setUploadStatus("uploading");
-    setUploadProgress(10);
+    setUploadProgress(0);
 
-    try {
-      // Validate required fields
-      if (!formData.title || !formData.description) {
-        setError("Titel und Beschreibung sind erforderlich");
-        setUploadStatus("error");
-        return;
-      }
-
-      if (!formData.cycle || !formData.subject) {
-        setError("Zyklus und Fach sind erforderlich");
-        setUploadStatus("error");
-        return;
-      }
-
-      if (formData.files.length === 0) {
-        setError("Bitte laden Sie mindestens eine Datei hoch");
-        setUploadStatus("error");
-        return;
-      }
-
-      setUploadProgress(30);
-
-      // Prepare form data for API
-      const apiFormData = new FormData();
-      apiFormData.append("title", formData.title);
-      apiFormData.append("description", formData.description);
-      apiFormData.append("language", formData.language);
-      apiFormData.append("resourceType", formData.resourceType);
-
-      // Convert cycle to full name (e.g., "1" -> "Zyklus 1")
-      const cycleFullName = `Zyklus ${formData.cycle}`;
-      apiFormData.append("subjects", JSON.stringify([formData.subject]));
-      apiFormData.append("cycles", JSON.stringify([cycleFullName]));
-
-      // Calculate price in cents
-      const priceInCents =
-        formData.priceType === "free" ? 0 : Math.round(parseFloat(formData.price || "0") * 100);
-      apiFormData.append("price", priceInCents.toString());
-
-      // Publish immediately as draft (not published yet, needs admin approval)
-      apiFormData.append("is_published", "true");
-
-      setUploadProgress(50);
-
-      // Add main file (only the first one for now)
-      if (formData.files[0]) {
-        apiFormData.append("file", formData.files[0]);
-      }
-
-      // Add preview file if present
-      if (formData.previewFiles[0]) {
-        apiFormData.append("preview", formData.previewFiles[0]);
-      }
-
-      setUploadProgress(70);
-
-      const response = await fetch("/api/resources", {
-        method: "POST",
-        body: apiFormData,
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        setError(result.error || "Fehler beim Hochladen");
-        setUploadStatus("error");
-        return;
-      }
-
-      setUploadProgress(100);
-      setUploadStatus("success");
-      setCreatedResourceId(result.resource?.id);
-
-      // Redirect after a short delay
-      setTimeout(() => {
-        router.push("/account");
-      }, 2000);
-    } catch (err) {
-      console.error("Upload error:", err);
-      if (err instanceof TypeError && err.message.includes("fetch")) {
-        setError("Netzwerkfehler: Bitte überprüfen Sie Ihre Internetverbindung");
-      } else if (err instanceof Error) {
-        setError(`Fehler: ${err.message}`);
-      } else {
-        setError("Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.");
-      }
+    // Validate required fields first
+    if (!formData.title || !formData.description) {
+      setError("Titel und Beschreibung sind erforderlich");
       setUploadStatus("error");
+      return;
     }
+
+    if (!formData.cycle || !formData.subject) {
+      setError("Zyklus und Fach sind erforderlich");
+      setUploadStatus("error");
+      return;
+    }
+
+    if (formData.files.length === 0) {
+      setError("Bitte laden Sie mindestens eine Datei hoch");
+      setUploadStatus("error");
+      return;
+    }
+
+    // Prepare form data for API
+    const apiFormData = new FormData();
+    apiFormData.append("title", formData.title);
+    apiFormData.append("description", formData.description);
+    apiFormData.append("language", formData.language);
+    apiFormData.append("resourceType", formData.resourceType);
+
+    // Convert cycle to full name (e.g., "1" -> "Zyklus 1")
+    const cycleFullName = `Zyklus ${formData.cycle}`;
+    apiFormData.append("subjects", JSON.stringify([formData.subject]));
+    apiFormData.append("cycles", JSON.stringify([cycleFullName]));
+
+    // Calculate price in cents
+    const priceInCents =
+      formData.priceType === "free" ? 0 : Math.round(parseFloat(formData.price || "0") * 100);
+    apiFormData.append("price", priceInCents.toString());
+
+    // Publish immediately as draft (not published yet, needs admin approval)
+    apiFormData.append("is_published", "true");
+
+    // Add main file (only the first one for now)
+    if (formData.files[0]) {
+      apiFormData.append("file", formData.files[0]);
+    }
+
+    // Add preview file if present
+    if (formData.previewFiles[0]) {
+      apiFormData.append("preview", formData.previewFiles[0]);
+    }
+
+    // Use XMLHttpRequest for real progress tracking
+    const xhr = new XMLHttpRequest();
+
+    xhr.upload.addEventListener("progress", (event) => {
+      if (event.lengthComputable) {
+        const percentComplete = Math.round((event.loaded / event.total) * 100);
+        setUploadProgress(percentComplete);
+      }
+    });
+
+    xhr.addEventListener("load", () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        try {
+          const result = JSON.parse(xhr.responseText);
+          setUploadProgress(100);
+          setUploadStatus("success");
+          setCreatedResourceId(result.resource?.id);
+
+          // Redirect after a short delay
+          setTimeout(() => {
+            router.push("/account");
+          }, 2000);
+        } catch {
+          setError("Fehler beim Verarbeiten der Antwort");
+          setUploadStatus("error");
+        }
+      } else {
+        try {
+          const result = JSON.parse(xhr.responseText);
+          setError(result.error || "Fehler beim Hochladen");
+        } catch {
+          setError(`Fehler beim Hochladen (Status: ${xhr.status})`);
+        }
+        setUploadStatus("error");
+      }
+    });
+
+    xhr.addEventListener("error", () => {
+      setError("Netzwerkfehler: Bitte überprüfen Sie Ihre Internetverbindung");
+      setUploadStatus("error");
+    });
+
+    xhr.addEventListener("abort", () => {
+      setError("Upload wurde abgebrochen");
+      setUploadStatus("error");
+    });
+
+    xhr.open("POST", "/api/resources");
+    xhr.send(apiFormData);
   };
 
   const updateFormData = (field: string, value: unknown) => {
@@ -212,10 +266,10 @@ export default function UploadPage() {
   const canPublish = allLegalChecked && formData.files.length > 0 && !eszettCheck.hasAny;
 
   return (
-    <div className="min-h-screen">
+    <div className="flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-3xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-[var(--color-text)]">Ressource hochladen</h1>
@@ -233,7 +287,7 @@ export default function UploadPage() {
                   <div
                     className={`flex h-10 w-10 items-center justify-center rounded-full border-2 font-semibold transition-all ${
                       step <= currentStep
-                        ? "border-[var(--color-primary)] bg-[var(--color-primary)] text-white"
+                        ? "border-[var(--color-primary)] bg-[var(--color-primary)] text-[var(--btn-primary-text)]"
                         : "border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)]"
                     }`}
                   >
@@ -384,7 +438,7 @@ export default function UploadPage() {
                       <button
                         type="button"
                         onClick={handleFixEszett}
-                        className="mt-3 inline-flex items-center gap-2 rounded-lg bg-[var(--color-warning)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--color-warning)]/90"
+                        className="mt-3 inline-flex items-center gap-2 rounded-lg bg-[var(--color-warning)] px-4 py-2 text-sm font-medium text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--color-warning)]/90"
                       >
                         <svg
                           className="h-4 w-4"
@@ -554,7 +608,30 @@ export default function UploadPage() {
                 <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
                   Hauptdatei(en) *
                 </label>
-                {formData.files.length === 0 ? (
+                {/* Loading state with progress bar */}
+                {isLoadingFiles && (
+                  <div className="rounded-xl border-2 border-[var(--color-primary)] bg-[var(--color-primary)]/5 p-8">
+                    <div className="text-center">
+                      <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-[var(--color-primary)]/30 border-t-[var(--color-primary)]" />
+                      <p className="mb-4 text-sm font-medium text-[var(--color-text)]">
+                        Datei wird geladen...
+                      </p>
+                      {/* Progress bar */}
+                      <div className="mx-auto max-w-xs">
+                        <div className="h-3 overflow-hidden rounded-full bg-[var(--color-border)]">
+                          <div
+                            className="h-full bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-success)] transition-all duration-300 ease-out"
+                            style={{ width: `${fileLoadingProgress}%` }}
+                          />
+                        </div>
+                        <p className="mt-2 text-sm font-medium text-[var(--color-primary)]">
+                          {fileLoadingProgress}%
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {!isLoadingFiles && formData.files.length === 0 && (
                   <div
                     onClick={() => mainFileInputRef.current?.click()}
                     className="cursor-pointer rounded-xl border-2 border-dashed border-[var(--color-border)] bg-[var(--color-bg)] p-8 text-center transition-colors hover:border-[var(--color-primary)]"
@@ -587,70 +664,91 @@ export default function UploadPage() {
                       onChange={handleMainFilesChange}
                     />
                   </div>
-                ) : (
+                )}
+                {!isLoadingFiles && formData.files.length > 0 && (
                   <div className="rounded-xl border-2 border-[var(--color-primary)] bg-[var(--color-primary)]/5 p-4">
                     <div className="space-y-3">
                       {formData.files.map((file, index) => (
                         <div
                           key={index}
-                          className="flex items-center gap-4 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-3"
+                          className="flex items-center gap-4 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-3 transition-colors hover:bg-[var(--color-surface-elevated)]"
                         >
-                          <div className="flex-shrink-0">
-                            {file.type === "application/pdf" ? (
-                              <svg
-                                className="h-10 w-10 text-red-500"
-                                fill="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2l5 5h-5V4zM8.5 13H10v4.5a.5.5 0 0 1-1 0V14H8.5a.5.5 0 0 1 0-1zm2.5.5a.5.5 0 0 1 .5-.5h1c.83 0 1.5.67 1.5 1.5v2c0 .83-.67 1.5-1.5 1.5h-1a.5.5 0 0 1-.5-.5v-4zm1 .5v3h.5a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5H12zm3 0h1.5a.5.5 0 0 1 0 1H16v1h.5a.5.5 0 0 1 0 1H16v1a.5.5 0 0 1-1 0v-3.5a.5.5 0 0 1 .5-.5h.5z" />
-                              </svg>
-                            ) : file.type.includes("word") ||
-                              file.name.endsWith(".doc") ||
-                              file.name.endsWith(".docx") ? (
-                              <svg
-                                className="h-10 w-10 text-blue-600"
-                                fill="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2l5 5h-5V4zM7 17l1.5-6h1l1 4 1-4h1l1.5 6h-1l-1-4-1 4h-1l-1-4-1 4H7z" />
-                              </svg>
-                            ) : file.type.includes("powerpoint") ||
-                              file.name.endsWith(".ppt") ||
-                              file.name.endsWith(".pptx") ? (
-                              <svg
-                                className="h-10 w-10 text-orange-500"
-                                fill="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2l5 5h-5V4zM9 13h2.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5H10v2H9v-5zm1 2h1.5a.5.5 0 0 0 0-1H10v1z" />
-                              </svg>
-                            ) : file.type.includes("excel") ||
-                              file.name.endsWith(".xls") ||
-                              file.name.endsWith(".xlsx") ? (
-                              <svg
-                                className="h-10 w-10 text-green-600"
-                                fill="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2l5 5h-5V4zM9 13l1.5 2.5L9 18h1.2l1-1.7 1 1.7h1.2l-1.5-2.5L13.4 13h-1.2l-1 1.7-1-1.7H9z" />
-                              </svg>
-                            ) : (
-                              <svg
-                                className="h-10 w-10 text-[var(--color-text-muted)]"
-                                fill="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2l5 5h-5V4z" />
-                              </svg>
-                            )}
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <p className="truncate text-sm font-medium text-[var(--color-text)]">
-                              {file.name}
-                            </p>
-                            <p className="text-xs text-[var(--color-text-muted)]">
-                              {(file.size / 1024 / 1024).toFixed(2)} MB
-                            </p>
+                          <div
+                            className="flex flex-1 cursor-pointer items-center gap-4"
+                            onClick={() => handleFilePreview(file)}
+                            title="Klicken zum Öffnen"
+                          >
+                            <div className="flex-shrink-0">
+                              {file.type === "application/pdf" ? (
+                                <svg
+                                  className="h-10 w-10 text-red-500"
+                                  fill="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2l5 5h-5V4zM8.5 13H10v4.5a.5.5 0 0 1-1 0V14H8.5a.5.5 0 0 1 0-1zm2.5.5a.5.5 0 0 1 .5-.5h1c.83 0 1.5.67 1.5 1.5v2c0 .83-.67 1.5-1.5 1.5h-1a.5.5 0 0 1-.5-.5v-4zm1 .5v3h.5a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5H12zm3 0h1.5a.5.5 0 0 1 0 1H16v1h.5a.5.5 0 0 1 0 1H16v1a.5.5 0 0 1-1 0v-3.5a.5.5 0 0 1 .5-.5h.5z" />
+                                </svg>
+                              ) : file.type.includes("word") ||
+                                file.name.endsWith(".doc") ||
+                                file.name.endsWith(".docx") ? (
+                                <svg
+                                  className="h-10 w-10 text-blue-600"
+                                  fill="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2l5 5h-5V4zM7 17l1.5-6h1l1 4 1-4h1l1.5 6h-1l-1-4-1 4h-1l-1-4-1 4H7z" />
+                                </svg>
+                              ) : file.type.includes("powerpoint") ||
+                                file.name.endsWith(".ppt") ||
+                                file.name.endsWith(".pptx") ? (
+                                <svg
+                                  className="h-10 w-10 text-orange-500"
+                                  fill="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2l5 5h-5V4zM9 13h2.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5H10v2H9v-5zm1 2h1.5a.5.5 0 0 0 0-1H10v1z" />
+                                </svg>
+                              ) : file.type.includes("excel") ||
+                                file.name.endsWith(".xls") ||
+                                file.name.endsWith(".xlsx") ? (
+                                <svg
+                                  className="h-10 w-10 text-green-600"
+                                  fill="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2l5 5h-5V4zM9 13l1.5 2.5L9 18h1.2l1-1.7 1 1.7h1.2l-1.5-2.5L13.4 13h-1.2l-1 1.7-1-1.7H9z" />
+                                </svg>
+                              ) : (
+                                <svg
+                                  className="h-10 w-10 text-[var(--color-text-muted)]"
+                                  fill="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2l5 5h-5V4z" />
+                                </svg>
+                              )}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="truncate text-sm font-medium text-[var(--color-text)]">
+                                {file.name}
+                              </p>
+                              <p className="text-xs text-[var(--color-text-muted)]">
+                                {(file.size / 1024 / 1024).toFixed(2)} MB
+                              </p>
+                            </div>
+                            {/* External link icon to indicate clickable */}
+                            <svg
+                              className="h-4 w-4 flex-shrink-0 text-[var(--color-text-muted)]"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                              />
+                            </svg>
                           </div>
                           <button
                             type="button"
@@ -952,7 +1050,7 @@ export default function UploadPage() {
             {currentStep < 4 ? (
               <button
                 onClick={handleNext}
-                className="rounded-lg bg-[var(--color-primary)] px-8 py-3 font-semibold text-white shadow-[var(--color-primary)]/20 shadow-lg transition-colors hover:bg-[var(--color-primary-hover)]"
+                className="rounded-lg bg-[var(--color-primary)] px-8 py-3 font-semibold text-[var(--btn-primary-text)] shadow-[var(--color-primary)]/20 shadow-lg transition-colors hover:bg-[var(--color-primary-hover)]"
               >
                 Weiter
               </button>
@@ -960,7 +1058,7 @@ export default function UploadPage() {
               <button
                 onClick={handlePublish}
                 disabled={!canPublish || uploadStatus !== "idle"}
-                className="rounded-lg bg-[var(--color-primary)] px-8 py-3 font-semibold text-white shadow-[var(--color-primary)]/20 shadow-lg transition-colors hover:bg-[var(--color-primary-hover)] disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-lg bg-[var(--color-primary)] px-8 py-3 font-semibold text-[var(--btn-primary-text)] shadow-[var(--color-primary)]/20 shadow-lg transition-colors hover:bg-[var(--color-primary-hover)] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Veröffentlichen
               </button>
@@ -983,16 +1081,24 @@ export default function UploadPage() {
                   Wird hochgeladen...
                 </h3>
                 <p className="mb-4 text-sm text-[var(--color-text-muted)]">
+                  {formData.files[0]?.name && (
+                    <span className="block truncate">
+                      {formData.files[0].name} ({(formData.files[0].size / 1024 / 1024).toFixed(2)}{" "}
+                      MB)
+                    </span>
+                  )}
                   Bitte warten Sie, dies kann einen Moment dauern.
                 </p>
                 {/* Progress bar */}
-                <div className="h-2 overflow-hidden rounded-full bg-[var(--color-border)]">
+                <div className="h-3 overflow-hidden rounded-full bg-[var(--color-border)]">
                   <div
-                    className="h-full bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-success)] transition-all duration-300"
+                    className="h-full bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-success)] transition-all duration-300 ease-out"
                     style={{ width: `${uploadProgress}%` }}
                   />
                 </div>
-                <p className="mt-2 text-xs text-[var(--color-text-muted)]">{uploadProgress}%</p>
+                <p className="mt-2 text-sm font-medium text-[var(--color-text)]">
+                  {uploadProgress}%
+                </p>
               </div>
             )}
 
@@ -1026,7 +1132,7 @@ export default function UploadPage() {
                 {createdResourceId && (
                   <button
                     onClick={() => router.push(`/resources/${createdResourceId}`)}
-                    className="mt-4 rounded-lg bg-[var(--color-primary)] px-6 py-2 font-medium text-white transition-colors hover:bg-[var(--color-primary)]/90"
+                    className="mt-4 rounded-lg bg-[var(--color-primary)] px-6 py-2 font-medium text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--color-primary)]/90"
                   >
                     Zur Ressource
                   </button>
@@ -1070,7 +1176,7 @@ export default function UploadPage() {
                   </button>
                   <button
                     onClick={handlePublish}
-                    className="rounded-lg bg-[var(--color-primary)] px-6 py-2 font-medium text-white transition-colors hover:bg-[var(--color-primary)]/90"
+                    className="rounded-lg bg-[var(--color-primary)] px-6 py-2 font-medium text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--color-primary)]/90"
                   >
                     Erneut versuchen
                   </button>

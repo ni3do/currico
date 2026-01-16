@@ -80,8 +80,8 @@ export function LP21Badge({
         <span
           className={`ml-1 rounded px-1 text-[0.65em] font-bold ${
             anforderungsstufe === "grund"
-              ? "bg-gray-500/30 text-gray-600 dark:text-gray-300"
-              : "bg-orange-500/30 text-orange-600 dark:text-orange-300"
+              ? "bg-[var(--color-surface-high)] text-[var(--color-text-muted)]"
+              : "bg-[var(--color-warning-light)] text-[var(--color-warning)]"
           }`}
         >
           {anforderungsstufe === "grund" ? "G" : "E"}

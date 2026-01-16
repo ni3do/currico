@@ -144,17 +144,9 @@ export default function AdminUsersPage() {
   };
 
   return (
-    <div className="p-6 lg:p-8 max-w-7xl mx-auto">
-      {/* Page Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--color-text)]">Benutzerverwaltung</h1>
-        <p className="mt-2 text-[var(--color-text-muted)]">
-          Verwalten Sie alle registrierten Benutzer der Plattform.
-        </p>
-      </div>
-
+    <div className="space-y-6">
       {/* Filters */}
-      <div className="mb-6 flex flex-col sm:flex-row gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row">
         <div className="flex-1">
           <input
             type="text"
@@ -164,7 +156,7 @@ export default function AdminUsersPage() {
               setSearch(e.target.value);
               setPage(1);
             }}
-            className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2.5 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20"
+            className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2.5 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
           />
         </div>
         <select
@@ -173,7 +165,7 @@ export default function AdminUsersPage() {
             setRoleFilter(e.target.value);
             setPage(1);
           }}
-          className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2.5 text-[var(--color-text)] focus:outline-none focus:border-[var(--color-primary)]"
+          className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2.5 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none"
         >
           <option value="">Alle Rollen</option>
           <option value="BUYER">Käufer</option>
@@ -184,12 +176,10 @@ export default function AdminUsersPage() {
       </div>
 
       {/* Stats Bar */}
-      <div className="mb-6 text-sm text-[var(--color-text-muted)]">
-        {total} Benutzer gefunden
-      </div>
+      <div className="text-sm text-[var(--color-text-muted)]">{total} Benutzer gefunden</div>
 
       {/* Users Table */}
-      <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden">
+      <div className="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)]">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-[var(--color-bg)]">
@@ -229,15 +219,23 @@ export default function AdminUsersPage() {
                 </tr>
               ) : (
                 users.map((user) => (
-                  <tr key={user.id} className="hover:bg-[var(--color-bg)] transition-colors">
+                  <tr key={user.id} className="transition-colors hover:bg-[var(--color-bg)]">
                     <td className="px-6 py-4">
                       <div>
                         <div className="font-medium text-[var(--color-text)]">
                           {user.display_name || user.name || "Unbekannt"}
                           {user.is_protected && (
                             <span className="ml-2 text-xs text-[var(--ctp-pink)]" title="Geschützt">
-                              <svg className="inline h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z" clipRule="evenodd" />
+                              <svg
+                                className="inline h-4 w-4"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z"
+                                  clipRule="evenodd"
+                                />
                               </svg>
                             </span>
                           )}
@@ -246,17 +244,21 @@ export default function AdminUsersPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`rounded-full px-3 py-1 text-xs font-medium ${roleBadgeColors[user.role]}`}>
+                      <span
+                        className={`rounded-full px-3 py-1 text-xs font-medium ${roleBadgeColors[user.role]}`}
+                      >
                         {roleLabels[user.role]}
                       </span>
                     </td>
                     <td className="px-6 py-4">
                       {user.is_seller && (
-                        <span className={`rounded-full px-3 py-1 text-xs font-medium ${
-                          user.seller_verified
-                            ? "bg-[var(--badge-success-bg)] text-[var(--badge-success-text)]"
-                            : "bg-[var(--badge-warning-bg)] text-[var(--badge-warning-text)]"
-                        }`}>
+                        <span
+                          className={`rounded-full px-3 py-1 text-xs font-medium ${
+                            user.seller_verified
+                              ? "bg-[var(--badge-success-bg)] text-[var(--badge-success-text)]"
+                              : "bg-[var(--badge-warning-bg)] text-[var(--badge-warning-text)]"
+                          }`}
+                        >
                           {user.seller_verified ? "Verifiziert" : "Nicht verifiziert"}
                         </span>
                       )}
@@ -273,7 +275,7 @@ export default function AdminUsersPage() {
                           <button
                             onClick={() => handleVerifySeller(user.id, true)}
                             disabled={actionLoading}
-                            className="rounded-lg bg-[var(--badge-success-bg)] px-3 py-1.5 text-xs font-medium text-[var(--badge-success-text)] hover:opacity-80 transition-opacity disabled:opacity-50"
+                            className="rounded-lg bg-[var(--badge-success-bg)] px-3 py-1.5 text-xs font-medium text-[var(--badge-success-text)] transition-opacity hover:opacity-80 disabled:opacity-50"
                           >
                             Verifizieren
                           </button>
@@ -283,7 +285,7 @@ export default function AdminUsersPage() {
                             setSelectedUser(user);
                             setShowModal(true);
                           }}
-                          className="rounded-lg bg-[var(--color-bg)] px-3 py-1.5 text-xs font-medium text-[var(--color-text)] hover:bg-[var(--color-border)] transition-colors"
+                          className="rounded-lg bg-[var(--color-bg)] px-3 py-1.5 text-xs font-medium text-[var(--color-text)] transition-colors hover:bg-[var(--color-border)]"
                         >
                           Bearbeiten
                         </button>
@@ -293,7 +295,7 @@ export default function AdminUsersPage() {
                               setSelectedUser(user);
                               setShowDeleteConfirm(true);
                             }}
-                            className="rounded-lg bg-[var(--badge-error-bg)] px-3 py-1.5 text-xs font-medium text-[var(--badge-error-text)] hover:opacity-80 transition-opacity"
+                            className="rounded-lg bg-[var(--badge-error-bg)] px-3 py-1.5 text-xs font-medium text-[var(--badge-error-text)] transition-opacity hover:opacity-80"
                           >
                             Löschen
                           </button>
@@ -314,7 +316,7 @@ export default function AdminUsersPage() {
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm font-medium text-[var(--color-text)] hover:bg-[var(--color-bg)] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm font-medium text-[var(--color-text)] hover:bg-[var(--color-bg)] disabled:cursor-not-allowed disabled:opacity-50"
           >
             Zurück
           </button>
@@ -324,7 +326,7 @@ export default function AdminUsersPage() {
           <button
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
-            className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm font-medium text-[var(--color-text)] hover:bg-[var(--color-bg)] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm font-medium text-[var(--color-text)] hover:bg-[var(--color-bg)] disabled:cursor-not-allowed disabled:opacity-50"
           >
             Weiter
           </button>
@@ -347,13 +349,20 @@ export default function AdminUsersPage() {
                 className="text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
               >
                 <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
 
             <div className="mb-6">
-              <p className="text-[var(--color-text)]">{selectedUser.display_name || selectedUser.name}</p>
+              <p className="text-[var(--color-text)]">
+                {selectedUser.display_name || selectedUser.name}
+              </p>
               <p className="text-sm text-[var(--color-text-muted)]">{selectedUser.email}</p>
             </div>
 
@@ -366,7 +375,7 @@ export default function AdminUsersPage() {
                   defaultValue={selectedUser.role}
                   onChange={(e) => handleRoleChange(selectedUser.id, e.target.value)}
                   disabled={selectedUser.is_protected || actionLoading}
-                  className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2.5 text-[var(--color-text)] focus:outline-none focus:border-[var(--color-primary)] disabled:opacity-50"
+                  className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2.5 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none disabled:opacity-50"
                 >
                   <option value="BUYER">Käufer</option>
                   <option value="SELLER">Verkäufer</option>
@@ -389,7 +398,9 @@ export default function AdminUsersPage() {
                     </p>
                   </div>
                   <button
-                    onClick={() => handleVerifySeller(selectedUser.id, !selectedUser.seller_verified)}
+                    onClick={() =>
+                      handleVerifySeller(selectedUser.id, !selectedUser.seller_verified)
+                    }
                     disabled={actionLoading}
                     className={`rounded-lg px-4 py-2 text-sm font-medium transition-opacity disabled:opacity-50 ${
                       selectedUser.seller_verified
@@ -424,24 +435,36 @@ export default function AdminUsersPage() {
           <div className="mx-4 w-full max-w-md rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
             <div className="mb-4 flex items-center gap-3">
               <div className="rounded-full bg-[var(--badge-error-bg)] p-2">
-                <svg className="h-6 w-6 text-[var(--badge-error-text)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                <svg
+                  className="h-6 w-6 text-[var(--badge-error-text)]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-[var(--color-text)]">
-                Benutzer löschen?
-              </h3>
+              <h3 className="text-xl font-semibold text-[var(--color-text)]">Benutzer löschen?</h3>
             </div>
 
             <p className="mb-6 text-[var(--color-text-muted)]">
-              Möchten Sie den Benutzer <strong className="text-[var(--color-text)]">{selectedUser.display_name || selectedUser.email}</strong> wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
+              Möchten Sie den Benutzer{" "}
+              <strong className="text-[var(--color-text)]">
+                {selectedUser.display_name || selectedUser.email}
+              </strong>{" "}
+              wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
             </p>
 
             <div className="flex gap-3">
               <button
                 onClick={() => handleDeleteUser(selectedUser.id)}
                 disabled={actionLoading}
-                className="flex-1 rounded-lg bg-[var(--color-error)] px-4 py-2.5 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
+                className="flex-1 rounded-lg bg-[var(--color-error)] px-4 py-2.5 text-sm font-medium text-[var(--btn-danger-text)] hover:opacity-90 disabled:opacity-50"
               >
                 {actionLoading ? "Löschen..." : "Ja, löschen"}
               </button>

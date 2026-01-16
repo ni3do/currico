@@ -149,7 +149,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full rounded-lg bg-[var(--color-primary)] px-6 py-3.5 text-center font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-[var(--color-primary-hover)] hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:bg-[var(--color-primary)] disabled:hover:shadow-none"
+                className="w-full rounded-lg bg-[var(--color-primary)] px-6 py-3.5 text-center font-semibold text-[var(--btn-primary-text)] transition-all hover:-translate-y-0.5 hover:bg-[var(--color-primary-hover)] hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:bg-[var(--color-primary)] disabled:hover:shadow-none"
               >
                 {isLoading ? t("form.submitting") : t("form.submitButton")}
               </button>

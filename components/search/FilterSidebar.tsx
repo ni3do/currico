@@ -469,7 +469,7 @@ export function FilterSidebar({
               className="peer sr-only"
             />
             <div className="h-6 w-11 rounded-full bg-[var(--color-border)] transition-colors peer-checked:bg-[#6366f1]" />
-            <div className="absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white transition-transform peer-checked:translate-x-5" />
+            <div className="absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-[var(--color-bg)] transition-transform peer-checked:translate-x-5" />
           </div>
         </label>
         <p className="mt-2 text-xs text-[var(--color-text-muted)]">

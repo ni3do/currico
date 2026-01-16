@@ -59,10 +59,10 @@ export default function CreateBundlePage() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-4xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-[var(--color-text)]">Bundle erstellen</h1>
@@ -296,7 +296,7 @@ export default function CreateBundlePage() {
             <button
               type="submit"
               disabled={formData.selectedResources.length < 2}
-              className="flex-1 rounded-xl bg-[var(--color-primary)] px-6 py-4 font-semibold text-white shadow-[var(--color-primary)]/20 shadow-lg transition-colors hover:bg-[var(--color-primary-hover)] disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex-1 rounded-xl bg-[var(--color-primary)] px-6 py-4 font-semibold text-[var(--btn-primary-text)] shadow-[var(--color-primary)]/20 shadow-lg transition-colors hover:bg-[var(--color-primary-hover)] disabled:cursor-not-allowed disabled:opacity-50"
             >
               Bundle erstellen
             </button>

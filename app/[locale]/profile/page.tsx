@@ -48,10 +48,10 @@ export default function ProfilePage() {
   const displayCanton = profileData?.cantons?.[0] || "Nicht angegeben";
 
   return (
-    <div className="min-h-screen">
+    <div className="flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-[var(--color-text)]">Mein Profil</h1>
@@ -248,7 +248,7 @@ export default function ProfilePage() {
                   <p className="mb-4 text-sm text-[var(--color-text-muted)]">
                     Mathematik • Zyklus 2
                   </p>
-                  <button className="w-full rounded-lg bg-[var(--color-primary)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--color-primary-hover)]">
+                  <button className="w-full rounded-lg bg-[var(--color-primary)] px-4 py-2 text-sm font-medium text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--color-primary-hover)]">
                     Herunterladen
                   </button>
                 </div>
@@ -284,7 +284,7 @@ export default function ProfilePage() {
                   <p className="mb-3 text-sm text-[var(--color-text-muted)]">NMG • Zyklus 2</p>
                   <div className="flex items-center justify-between">
                     <span className="text-lg font-bold text-[var(--color-primary)]">CHF 25.00</span>
-                    <button className="rounded-lg bg-[var(--color-primary)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--color-primary-hover)]">
+                    <button className="rounded-lg bg-[var(--color-primary)] px-4 py-2 text-sm font-medium text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--color-primary-hover)]">
                       Kaufen
                     </button>
                   </div>

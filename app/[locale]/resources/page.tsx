@@ -76,10 +76,10 @@ export default function ResourcesPage() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="mb-8">
           <div className="mb-2 flex items-center gap-2 text-sm text-[var(--color-text-muted)]">
@@ -150,7 +150,7 @@ export default function ResourcesPage() {
               onClick={() => setShowFilters(!showFilters)}
               className={`flex items-center justify-center gap-2 rounded-lg border px-5 py-3 text-sm font-medium transition-colors ${
                 showFilters
-                  ? "border-[var(--color-primary)] bg-[var(--color-primary)] text-white"
+                  ? "border-[var(--color-primary)] bg-[var(--color-primary)] text-[var(--btn-primary-text)]"
                   : "border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text-secondary)] hover:border-[var(--color-primary)]"
               }`}
             >
@@ -387,7 +387,7 @@ export default function ResourcesPage() {
                   key={pageNum}
                   className={`min-w-[40px] rounded-md px-4 py-2 text-sm font-medium transition-colors ${
                     pageNum === pagination.page
-                      ? "bg-[var(--color-primary)] text-white"
+                      ? "bg-[var(--color-primary)] text-[var(--btn-primary-text)]"
                       : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface)]"
                   }`}
                 >

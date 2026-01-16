@@ -11,10 +11,10 @@ export default function Home() {
   const tCommon = useTranslations("common"); // Used for buttons.viewAll
 
   return (
-    <div className="min-h-screen">
+    <div className="flex min-h-screen flex-col">
       <TopBar />
 
-      <main>
+      <main className="flex-1">
         {/* Hero Section - Split-Screen Layout */}
         <section>
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -92,7 +92,7 @@ export default function Home() {
                     </svg>
                   </div>
                   <div className="absolute top-8 left-[60%] hidden w-[80%] border-t-2 border-dashed border-[var(--color-border)] md:block" />
-                  <span className="mb-3 inline-flex h-7 w-7 items-center justify-center rounded-full bg-[var(--color-primary)] text-sm font-bold text-white">
+                  <span className="mb-3 inline-flex h-7 w-7 items-center justify-center rounded-full bg-[var(--color-primary)] text-sm font-bold text-[var(--btn-primary-text)]">
                     1
                   </span>
                   <h3 className="text-lg font-semibold text-[var(--color-text)]">
@@ -129,7 +129,7 @@ export default function Home() {
                     </svg>
                   </div>
                   <div className="absolute top-8 left-[60%] hidden w-[80%] border-t-2 border-dashed border-[var(--color-border)] md:block" />
-                  <span className="mb-3 inline-flex h-7 w-7 items-center justify-center rounded-full bg-[var(--color-primary)] text-sm font-bold text-white">
+                  <span className="mb-3 inline-flex h-7 w-7 items-center justify-center rounded-full bg-[var(--color-primary)] text-sm font-bold text-[var(--btn-primary-text)]">
                     2
                   </span>
                   <h3 className="text-lg font-semibold text-[var(--color-text)]">
@@ -159,7 +159,7 @@ export default function Home() {
                       />
                     </svg>
                   </div>
-                  <span className="mb-3 inline-flex h-7 w-7 items-center justify-center rounded-full bg-[var(--color-primary)] text-sm font-bold text-white">
+                  <span className="mb-3 inline-flex h-7 w-7 items-center justify-center rounded-full bg-[var(--color-primary)] text-sm font-bold text-[var(--btn-primary-text)]">
                     3
                   </span>
                   <h3 className="text-lg font-semibold text-[var(--color-text)]">

@@ -60,12 +60,12 @@ export default function ContactClient() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--color-bg)]">
+    <div className="flex min-h-screen flex-col">
       <TopBar />
 
-      <main>
+      <main className="flex-1">
         {/* Hero Section */}
-        <section className="bg-[var(--color-bg)]">
+        <section>
           <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
             <div className="mx-auto max-w-3xl text-center">
               <h1 className="text-3xl leading-tight font-bold tracking-tight text-[var(--color-text)] sm:text-4xl lg:text-5xl">
@@ -267,7 +267,7 @@ export default function ContactClient() {
                       <button
                         type="submit"
                         disabled={isSubmitting || !formData.consent}
-                        className="inline-flex w-full items-center justify-center rounded-lg bg-[var(--color-primary)] px-8 py-3 font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-[var(--color-primary-hover)] hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-none sm:w-auto"
+                        className="inline-flex w-full items-center justify-center rounded-lg bg-[var(--color-primary)] px-8 py-3 font-semibold text-[var(--btn-primary-text)] transition-all hover:-translate-y-0.5 hover:bg-[var(--color-primary-hover)] hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-none sm:w-auto"
                       >
                         {isSubmitting ? t("form.submitting") : t("form.submitButton")}
                       </button>
@@ -344,7 +344,7 @@ export default function ContactClient() {
         </section>
 
         {/* FAQ CTA Section */}
-        <section className="bg-[var(--color-bg)] py-16 lg:py-20">
+        <section className="py-16 lg:py-20">
           <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
             <h2 className="mb-4 text-xl font-semibold text-[var(--color-text)] sm:text-2xl">
               {t("faq.title")}

@@ -1,6 +1,9 @@
 "use client";
 
+import { useState, useRef, useLayoutEffect, useEffect } from "react";
 import { Link, usePathname } from "@/i18n/navigation";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 
@@ -9,7 +12,7 @@ interface AdminLayoutProps {
 }
 
 const adminNavItems = [
-  { href: "/admin", label: "Dashboard", icon: "home" },
+  { href: "/admin", label: "Übersicht", icon: "home" },
   { href: "/admin/users", label: "Benutzer", icon: "users" },
   { href: "/admin/documents", label: "Dokumente", icon: "documents" },
   { href: "/admin/reports", label: "Meldungen", icon: "reports" },
@@ -19,7 +22,7 @@ const adminNavItems = [
 
 const icons: Record<string, React.ReactNode> = {
   home: (
-    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -29,7 +32,7 @@ const icons: Record<string, React.ReactNode> = {
     </svg>
   ),
   users: (
-    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -39,7 +42,7 @@ const icons: Record<string, React.ReactNode> = {
     </svg>
   ),
   documents: (
-    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -49,7 +52,7 @@ const icons: Record<string, React.ReactNode> = {
     </svg>
   ),
   reports: (
-    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -59,7 +62,7 @@ const icons: Record<string, React.ReactNode> = {
     </svg>
   ),
   transactions: (
-    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -69,7 +72,7 @@ const icons: Record<string, React.ReactNode> = {
     </svg>
   ),
   settings: (
-    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -88,91 +91,159 @@ const icons: Record<string, React.ReactNode> = {
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const pathname = usePathname();
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  // Tab indicator state and refs
+  const tabsContainerRef = useRef<HTMLDivElement>(null);
+  const tabRefs = useRef<{ [key: string]: HTMLAnchorElement | null }>({});
+  const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
+
+  // Redirect non-admin users
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login");
+    } else if (status === "authenticated" && session?.user?.role !== "ADMIN") {
+      router.push("/account");
+    }
+  }, [status, session?.user?.role, router]);
+
+  // Get active tab key based on pathname
+  const getActiveTab = () => {
+    if (pathname === "/admin") return "/admin";
+    const activeItem = adminNavItems.find(
+      (item) => item.href !== "/admin" && pathname.startsWith(item.href)
+    );
+    return activeItem?.href || "/admin";
+  };
+
+  const activeTab = getActiveTab();
+
+  // Update tab indicator position
+  useLayoutEffect(() => {
+    const updateIndicator = () => {
+      const activeTabEl = tabRefs.current[activeTab];
+      const container = tabsContainerRef.current;
+      if (activeTabEl && container) {
+        const containerRect = container.getBoundingClientRect();
+        const tabRect = activeTabEl.getBoundingClientRect();
+        setIndicatorStyle({
+          left: tabRect.left - containerRect.left,
+          width: tabRect.width,
+        });
+      }
+    };
+    updateIndicator();
+    window.addEventListener("resize", updateIndicator);
+    return () => window.removeEventListener("resize", updateIndicator);
+  }, [activeTab]);
+
+  // Show loading state while checking auth
+  if (status === "loading" || status === "unauthenticated" || session?.user?.role !== "ADMIN") {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-[var(--color-primary)]"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col">
       <TopBar />
 
-      <div className="flex flex-1">
-        {/* Sidebar */}
-        <aside className="hidden w-64 border-r border-[var(--color-border)] bg-[var(--color-surface)] lg:block">
-          <div className="p-6">
-            <h2 className="flex items-center gap-2 text-lg font-bold text-[var(--color-text)]">
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[var(--ctp-mauve)] to-[var(--ctp-pink)]">
-                <svg
-                  className="h-5 w-5 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                  />
-                </svg>
-              </span>
-              Admin Panel
-            </h2>
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
+        {/* Page Header with Admin Info */}
+        <div className="mb-8">
+          <div className="mb-4 flex items-center gap-4">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-[var(--ctp-mauve)] to-[var(--ctp-pink)]">
+              <svg
+                className="h-8 w-8 text-[var(--btn-primary-text)]"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                />
+              </svg>
+            </div>
+            <div>
+              <h1 className="text-2xl font-semibold text-[var(--color-text)]">Admin Panel</h1>
+              <p className="text-[var(--color-text-muted)]">
+                {session?.user?.name || session?.user?.email}
+              </p>
+            </div>
           </div>
+        </div>
 
-          <nav className="px-3 pb-6">
-            <ul className="space-y-1">
-              {adminNavItems.map((item) => {
+        {/* Navigation Tabs */}
+        <div className="relative mb-8 border-b border-[var(--color-border)]">
+          <nav
+            ref={tabsContainerRef}
+            className="scrollbar-hide relative flex items-center overflow-x-auto"
+          >
+            {/* Main tabs */}
+            <div className="flex gap-1 sm:gap-2">
+              {adminNavItems.slice(0, 5).map((item) => {
                 const isActive =
-                  pathname === item.href ||
-                  (item.href !== "/admin" && pathname.startsWith(item.href));
+                  item.href === "/admin" ? pathname === "/admin" : pathname.startsWith(item.href);
                 return (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      className={`flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors ${
-                        isActive
-                          ? "bg-[var(--color-primary)] text-white"
-                          : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg)] hover:text-[var(--color-text)]"
-                      }`}
-                    >
-                      {icons[item.icon]}
-                      <span className="font-medium">{item.label}</span>
-                    </Link>
-                  </li>
+                  <Link
+                    key={item.href}
+                    ref={(el) => {
+                      tabRefs.current[item.href] = el;
+                    }}
+                    href={item.href}
+                    className={`flex items-center gap-2 px-3 pt-1 pb-4 text-sm font-medium whitespace-nowrap transition-colors sm:px-4 ${
+                      isActive
+                        ? "text-[var(--ctp-blue)]"
+                        : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+                    }`}
+                  >
+                    <span className="hidden sm:inline">{icons[item.icon]}</span>
+                    {item.label}
+                  </Link>
                 );
               })}
-            </ul>
-          </nav>
-        </aside>
+            </div>
 
-        {/* Mobile Navigation */}
-        <div className="fixed right-0 bottom-0 left-0 z-50 border-t border-[var(--color-border)] bg-[var(--color-surface)] lg:hidden">
-          <nav className="flex justify-around py-2">
-            {adminNavItems.slice(0, 5).map((item) => {
-              const isActive =
-                pathname === item.href ||
-                (item.href !== "/admin" && pathname.startsWith(item.href));
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`flex flex-col items-center gap-1 rounded-lg px-3 py-2 transition-colors ${
-                    isActive ? "text-[var(--color-primary)]" : "text-[var(--color-text-muted)]"
-                  }`}
-                >
-                  {icons[item.icon]}
-                  <span className="text-xs font-medium">{item.label}</span>
-                </Link>
-              );
-            })}
+            {/* Settings tab on the right */}
+            <div className="ml-auto flex-shrink-0">
+              <Link
+                ref={(el) => {
+                  tabRefs.current["/admin/settings"] = el;
+                }}
+                href="/admin/settings"
+                className={`flex items-center gap-2 px-3 pt-1 pb-4 text-sm font-medium whitespace-nowrap transition-colors sm:px-4 ${
+                  pathname.startsWith("/admin/settings")
+                    ? "text-[var(--ctp-blue)]"
+                    : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+                }`}
+              >
+                <span className="hidden sm:inline">{icons.settings}</span>
+                Einstellungen
+              </Link>
+            </div>
+
+            {/* Animated indicator bar */}
+            <div
+              className="absolute bottom-0 h-0.5 bg-[var(--ctp-blue)] transition-all duration-300 ease-out"
+              style={{
+                left: indicatorStyle.left,
+                width: indicatorStyle.width,
+              }}
+            />
           </nav>
         </div>
 
         {/* Main Content */}
-        <main className="flex-1 overflow-auto pb-20 lg:pb-0">{children}</main>
-      </div>
+        <div>{children}</div>
+      </main>
 
-      <div className="hidden lg:block">
-        <Footer />
-      </div>
+      <Footer />
     </div>
   );
 }
