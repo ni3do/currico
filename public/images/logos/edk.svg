@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 50" fill="none">
+  <circle cx="25" cy="25" r="18" stroke="#dc2626" stroke-width="2" fill="none"/>
+  <path d="M16 20h18M16 25h14M16 30h18" stroke="#dc2626" stroke-width="2" stroke-linecap="round"/>
+  <text x="50" y="30" font-family="system-ui, sans-serif" font-size="18" font-weight="700" fill="#4c4f69">EDK</text>
+</svg>

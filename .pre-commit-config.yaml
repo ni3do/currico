@@ -1,0 +1,65 @@
+repos:
+  # General pre-commit hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-executables-have-shebangs
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+        exclude: ^(\.next/|node_modules/)
+      - id: check-yaml
+      - id: check-json
+        exclude: ^(\.next/|node_modules/|tsconfig\.json)
+      - id: check-added-large-files
+        args: ['--maxkb=500']
+      - id: check-merge-conflict
+      - id: detect-private-key
+      - id: no-commit-to-branch
+        args: ['--branch', 'main']
+
+  # Dockerfile linting (uses locally installed hadolint)
+  - repo: local
+    hooks:
+      - id: hadolint
+        name: Hadolint
+        entry: hadolint --ignore DL3018 --ignore DL3059 --ignore DL3016
+        language: system
+        files: Dockerfile
+
+  # Prisma schema formatting
+  - repo: local
+    hooks:
+      - id: prisma-format
+        name: Prisma format
+        entry: npx prisma format
+        language: system
+        files: ^prisma/schema\.prisma$
+        pass_filenames: false
+
+      # ESLint for staged files
+      - id: eslint
+        name: ESLint
+        entry: npx eslint --fix --max-warnings=0 --no-warn-ignored
+        language: system
+        types: [file]
+        files: \.(js|jsx|ts|tsx|mjs)$
+        exclude: ^(\.next/|node_modules/|prisma/)
+
+      # TypeScript type checking (uses tsconfig.check.json to exclude .next)
+      - id: typescript
+        name: TypeScript check
+        entry: npx tsc --noEmit --project tsconfig.check.json
+        language: system
+        types: [file]
+        files: \.(ts|tsx)$
+        exclude: ^\.next/
+        pass_filenames: false
+
+      # Docker compose validation
+      - id: docker-compose-check
+        name: Docker Compose check
+        entry: docker compose config --quiet
+        language: system
+        files: (docker-compose\.ya?ml|Dockerfile)$
+        pass_filenames: false

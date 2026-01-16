@@ -1,27 +1,19 @@
 # Easy-Lehrer Specification
 
-This directory contains the feature specifications for the Easy-Lehrer platform, organized by domain.
+Swiss platform for teachers to buy, sell, and share teaching materials.
 
-## Specification Files
+## Documents
 
-1. [Accounts](./01-accounts.md) - Teacher & School Account Management
-2. [Catalog](./02-catalog.md) - Resource Catalog & Search
-3. [Resource Details](./03-resource-details.md) - Resource Detail Pages
-4. [Bundles](./04-bundles.md) - Resource Bundles
-5. [Upload](./05-upload.md) - Resource Upload Workflow
-6. [Quality](./06-quality.md) - Quality Status Management
-7. [Transactions](./07-transactions.md) - Transaction & Commission Management
-8. [Libraries](./08-libraries.md) - Purchase, Download & Libraries
-9. [Wishlist](./09-wishlist.md) - Wishlist Feature
-10. [Social](./10-social.md) - Follow Seller & Notifications
-11. [Seller Dashboard](./11-seller-dashboard.md) - Seller Analytics & Management
-12. [Reviews](./12-reviews.md) - Reviews & Ratings
-13. [Moderation](./13-moderation.md) - Reporting & Admin Review
+- [Features](./features.md) - All feature specifications with implementation status
+- [Design System](./design-system.md) - Catppuccin theme, tokens, components
+- [i18n Plan](./i18n-plan.md) - Internationalization implementation
+- [Payment Plan](./payment-integration-plan.md) - Stripe integration roadmap
+- [Swiss Market Roadmap](./roadmap.md) - Strategic roadmap for Swiss-specific features
 
 ## Design Principles
 
-- UI forms are visually simple and vertically stacked
-- Ample whitespace and minimal fields on each screen
-- Primary actions use a distinct primary color
-- Secondary actions are subdued
-- Mobile-first responsive design
+- **Forms:** Vertical layout, minimal fields per screen
+- **Spacing:** Generous whitespace, avoid density
+- **Actions:** Primary CTAs use accent color, secondary actions subdued
+- **Mobile:** Responsive first, bottom sheets for filters
+- **Content:** Only essential info visible, details on drill-down

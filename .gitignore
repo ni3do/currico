@@ -16,8 +16,23 @@ build
 npm-debug.log*
 
 # env files
+.env
 .env*.local
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+/app/generated/prisma
+
+# tool caches
+.beads/
+.claude/settings.local.json
+
+# local database
+prisma/dev.db
+prisma/dev.db-journal
+
+# uploaded files (keep directory structure via .gitkeep)
+public/uploads/*
+!public/uploads/**/.gitkeep

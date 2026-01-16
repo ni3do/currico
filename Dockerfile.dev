@@ -1,0 +1,36 @@
+# syntax=docker/dockerfile:1
+
+# Development Dockerfile for Next.js with hot reload
+FROM node:20-alpine
+
+# Install dependencies for native modules
+RUN apk add --no-cache libc6-compat openssl
+
+WORKDIR /app
+
+# Development environment settings (set early, rarely changes)
+ENV NODE_ENV=development
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV WATCHPACK_POLLING=true
+ENV CHOKIDAR_USEPOLLING=true
+
+# Copy package files for dependency caching
+COPY package.json package-lock.json* ./
+
+# Install dependencies with npm cache mount for faster rebuilds
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci
+
+# Copy Prisma schema and generate client with cache
+COPY prisma ./prisma/
+COPY prisma.config.ts ./
+RUN --mount=type=cache,target=/root/.cache/prisma \
+    npx prisma generate
+
+# Note: Source code is mounted as volume in docker-compose.yml
+# No need to COPY . . since it would be overwritten anyway
+
+EXPOSE 3000
+
+# Sync database schema and start dev server
+CMD ["sh", "-c", "npx prisma db push --accept-data-loss && npm run dev"]

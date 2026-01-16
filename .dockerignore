@@ -57,3 +57,24 @@ LICENSE
 .editorconfig
 .eslintrc*
 .prettierrc*
+
+# spec and docs
+spec/
+*.md
+
+# test files
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+__tests__/
+tests/
+
+# Prisma migrations (not needed for dev push)
+prisma/migrations/
+
+# Large/unnecessary files
+*.sql
+*.dump
+*.tar
+*.zip

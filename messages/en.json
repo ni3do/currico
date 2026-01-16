@@ -1,0 +1,442 @@
+{
+  "common": {
+    "brand": {
+      "logoText": "EL",
+      "name": "EasyLehrer",
+      "tagline": "Swiss Education Platform"
+    },
+    "navigation": {
+      "resources": "Resources",
+      "aboutUs": "About Us",
+      "contact": "Contact",
+      "login": "Sign In",
+      "logout": "Sign Out",
+      "register": "Register",
+      "dashboard": "Dashboard",
+      "profile": "Profile",
+      "account": "My Account"
+    },
+    "footer": {
+      "brandDescription": "The platform for teaching materials by Swiss educators.",
+      "platformSection": {
+        "title": "Platform",
+        "resources": "Resources",
+        "pricing": "Pricing"
+      },
+      "infoSection": {
+        "title": "Information",
+        "aboutUs": "About Us",
+        "contact": "Contact",
+        "help": "Help"
+      },
+      "legalSection": {
+        "title": "Legal",
+        "privacy": "Privacy Policy",
+        "terms": "Terms of Service",
+        "imprint": "Imprint"
+      },
+      "copyright": "2026 EasyLehrer. All rights reserved.",
+      "initiative": "An initiative for Swiss education"
+    },
+    "buttons": {
+      "viewAll": "View All",
+      "view": "View",
+      "edit": "Edit",
+      "cancel": "Cancel",
+      "apply": "Apply",
+      "reset": "Reset",
+      "backToHome": "Back to Home"
+    }
+  },
+  "homePage": {
+    "hero": {
+      "title": "By Teachers, For Teachers: Teaching Materials in Record Time.",
+      "description": "Discover professional teaching resources, developed by colleagues and precisely aligned with <bold>Lehrplan 21</bold>. Trustworthy, verified, ready to use.",
+      "primaryButton": "Find Materials Now",
+      "secondaryButton": "Learn More"
+    },
+    "trustBar": {
+      "title": "Trusted by Educational Institutions"
+    },
+    "featuredResources": {
+      "title": "Featured Materials",
+      "description": "Selected by experts and quality checked",
+      "viewAllMobile": "View All Materials",
+      "card1": {
+        "category": "Science",
+        "cycle": "Cycle 2",
+        "title": "Nature Studies Experiments",
+        "description": "Hands-on experiments and worksheets for science education.",
+        "documents": "12 Documents",
+        "rating": "4.9"
+      },
+      "card2": {
+        "category": "Languages",
+        "cycle": "Cycle 1-2",
+        "title": "German Reading Training",
+        "description": "Structured reading texts with differentiated tasks for various levels.",
+        "documents": "8 Documents",
+        "rating": "4.8"
+      },
+      "card3": {
+        "category": "Mathematics",
+        "cycle": "Cycle 1",
+        "title": "Mathematics Basics",
+        "description": "Systematic worksheets for building foundational math skills.",
+        "documents": "15 Documents",
+        "rating": "4.7"
+      }
+    },
+    "features": {
+      "title": "Why EasyLehrer?",
+      "description": "A platform that meets the standards of Swiss educational institutions.",
+      "feature1": {
+        "title": "Quality Checked",
+        "description": "Every material is reviewed by experts for pedagogical quality and curriculum compliance."
+      },
+      "feature2": {
+        "title": "Lehrplan 21 Compliant",
+        "description": "All resources are categorized by competence areas and cycles of Lehrplan 21."
+      },
+      "feature3": {
+        "title": "Ready to Use",
+        "description": "All materials are fully developed and can be used directly in the classroom."
+      }
+    }
+  },
+  "loginPage": {
+    "title": "Welcome Back",
+    "subtitle": "Sign in to your account",
+    "form": {
+      "emailLabel": "Email Address",
+      "emailPlaceholder": "your.email@example.com",
+      "emailError": "Please enter a valid email address",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Your password",
+      "forgotPassword": "Forgot?",
+      "rememberMe": "Remember me",
+      "submitButton": "Sign In",
+      "submitting": "Signing in..."
+    },
+    "divider": "Or continue with",
+    "oauth": {
+      "google": "Sign in with Google",
+      "github": "Sign in with GitHub"
+    },
+    "register": {
+      "prompt": "Don't have an account?",
+      "link": "Register for free"
+    },
+    "errors": {
+      "invalidCredentials": "Invalid email address or password",
+      "generic": "An error occurred. Please try again."
+    }
+  },
+  "registerPage": {
+    "title": "Create Account",
+    "subtitle": "Join the EasyLehrer Platform",
+    "accountTypes": {
+      "teacher": "Educator"
+    },
+    "form": {
+      "nameLabel": "Full Name",
+      "namePlaceholder": "Maria Schmidt",
+      "emailLabel": "Email Address",
+      "emailPlaceholder": "your.email@example.com",
+      "emailError": "Please enter a valid email address",
+      "cantonLabel": "Canton",
+      "cantonPlaceholder": "Select canton",
+      "subjectsLabel": "Teaching Subjects",
+      "cyclesLabel": "Teaching Cycles",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "At least 8 characters",
+      "passwordError": "Password must be at least 8 characters",
+      "confirmPasswordLabel": "Confirm Password",
+      "confirmPasswordPlaceholder": "Repeat password",
+      "confirmPasswordError": "Passwords do not match",
+      "termsText": "I accept the",
+      "termsLink": "Terms and Conditions",
+      "termsAnd": "and the",
+      "privacyLink": "Privacy Policy",
+      "submitButton": "Register",
+      "submitting": "Registering..."
+    },
+    "divider": "Or register with",
+    "oauth": {
+      "google": "Register with Google",
+      "microsoft": "Register with Microsoft Office"
+    },
+    "login": {
+      "prompt": "Already registered?",
+      "link": "Sign In"
+    },
+    "errors": {
+      "registrationSuccess": "Registration successful. Please sign in.",
+      "registrationFailed": "Registration failed. Please try again.",
+      "generic": "An error occurred. Please try again."
+    },
+    "cantons": {
+      "ZH": "Zurich",
+      "BE": "Bern",
+      "LU": "Lucerne",
+      "UR": "Uri",
+      "SZ": "Schwyz",
+      "OW": "Obwalden",
+      "NW": "Nidwalden",
+      "GL": "Glarus",
+      "ZG": "Zug",
+      "FR": "Fribourg",
+      "SO": "Solothurn",
+      "BS": "Basel-Stadt",
+      "BL": "Basel-Landschaft",
+      "SH": "Schaffhausen",
+      "AR": "Appenzell Ausserrhoden",
+      "AI": "Appenzell Innerrhoden",
+      "SG": "St. Gallen",
+      "GR": "Grisons",
+      "AG": "Aargau",
+      "TG": "Thurgau",
+      "TI": "Ticino",
+      "VD": "Vaud",
+      "VS": "Valais",
+      "NE": "Neuchâtel",
+      "GE": "Geneva",
+      "JU": "Jura"
+    },
+    "subjects": ["Mathematics", "German", "English", "French", "NMG", "Arts", "Music", "Sports"],
+    "cycles": ["Cycle 1", "Cycle 2", "Cycle 3"]
+  },
+  "resourcesPage": {
+    "breadcrumb": {
+      "home": "Home"
+    },
+    "header": {
+      "title": "Teaching Materials",
+      "description": "Browse quality-checked materials for your classroom"
+    },
+    "search": {
+      "placeholder": "Search by title, topic, keyword...",
+      "subjectFilter": {
+        "all": "All Subjects",
+        "math": "Mathematics",
+        "german": "German",
+        "english": "English",
+        "french": "French",
+        "nmg": "NMG",
+        "arts": "Visual Arts",
+        "music": "Music",
+        "sports": "Sports"
+      },
+      "filterButton": "Filter"
+    },
+    "advancedFilters": {
+      "title": "Advanced Filters",
+      "cycleFilter": {
+        "label": "Cycle",
+        "all": "All Cycles",
+        "cycle1": "Cycle 1",
+        "cycle2": "Cycle 2",
+        "cycle3": "Cycle 3"
+      },
+      "cantonFilter": {
+        "label": "Canton",
+        "all": "All Cantons"
+      },
+      "qualityFilter": {
+        "label": "Quality",
+        "all": "All",
+        "verified": "Verified",
+        "aiChecked": "AI-Checked"
+      },
+      "priceFilter": {
+        "label": "Price Type",
+        "all": "All",
+        "free": "Free",
+        "paid": "Paid"
+      },
+      "typeFilter": {
+        "label": "Resource Type",
+        "all": "All",
+        "pdf": "PDF",
+        "word": "Word",
+        "powerpoint": "PowerPoint",
+        "bundle": "Bundle"
+      },
+      "editableFilter": {
+        "label": "Editable",
+        "all": "All",
+        "yes": "Yes",
+        "no": "No"
+      },
+      "applyButton": "Apply Filters",
+      "resetButton": "Reset"
+    },
+    "results": {
+      "countLabel": "Resources found",
+      "sortLabel": "Sort by:",
+      "sortOptions": {
+        "newest": "Newest",
+        "popular": "Most Popular",
+        "rating": "Best Rating",
+        "priceLow": "Price: Low to High",
+        "priceHigh": "Price: High to Low"
+      }
+    },
+    "card": {
+      "verified": "Verified",
+      "aiChecked": "AI-Checked",
+      "documents": "Docs",
+      "free": "Free",
+      "viewButton": "View"
+    }
+  },
+  "sellerDashboard": {
+    "header": {
+      "title": "Seller Dashboard",
+      "subtitle": "Manage your resources and monitor your sales"
+    },
+    "stats": {
+      "earnings": {
+        "title": "Net Earnings",
+        "subtitle": "After platform fee"
+      },
+      "downloads": {
+        "title": "Downloads",
+        "subtitle": "All resources"
+      },
+      "followers": {
+        "title": "Followers",
+        "subtitle": "Following you"
+      }
+    },
+    "actions": {
+      "uploadResource": "+ Upload New Resource",
+      "createBundle": "+ Create Bundle"
+    },
+    "tabs": {
+      "resources": "My Resources",
+      "transactions": "Transactions"
+    },
+    "resourcesTable": {
+      "columns": {
+        "title": "Title",
+        "type": "Type",
+        "status": "Status",
+        "downloads": "Downloads",
+        "earnings": "Earnings",
+        "actions": "Actions"
+      },
+      "statusLabels": {
+        "verified": "Verified",
+        "aiChecked": "AI-Checked",
+        "pending": "Pending"
+      },
+      "editButton": "Edit",
+      "viewButton": "View"
+    },
+    "transactionsTable": {
+      "columns": {
+        "resource": "Resource",
+        "date": "Date",
+        "gross": "Gross Price",
+        "platformFee": "Platform Fee",
+        "payout": "Your Payout"
+      }
+    }
+  },
+  "localeSwitcher": {
+    "label": "Language",
+    "de": "Deutsch",
+    "en": "English"
+  },
+  "aboutPage": {
+    "hero": {
+      "title": "Prepare Smarter. Live Better.",
+      "subtitle": "We bring Swiss quality and valuable free time back to your school day.",
+      "imageAlt": "Relaxed teacher with tablet"
+    },
+    "mission": {
+      "title": "Our Mission",
+      "paragraph1": "Sunday afternoons at your desk? Nights spent formatting worksheets? We believe: Great teaching doesn't mean sacrificing yourself.",
+      "paragraph2": "The demands on Swiss educators are constantly increasing. Individualization, digitalization, and administrative hurdles require time – time that's often missing in everyday life. This is exactly where EasyLehrer comes in.",
+      "paragraph3": "We see ourselves as your digital assistant. We bridge the gap between high didactic standards and limited preparation time. Our goal is to have your back, so you can invest your energy where it's needed most: with your students."
+    },
+    "values": {
+      "title": "Why EasyLehrer?",
+      "value1": {
+        "title": "Time Savings, Not Stress",
+        "description": "Our materials are ready to use immediately. Find, print, teach. Your evening belongs to you again."
+      },
+      "value2": {
+        "title": "100% Lehrplan 21",
+        "description": "No converting Euros to Francs or adapting content. Our materials are tailored specifically for Switzerland."
+      },
+      "value3": {
+        "title": "Teacher-Verified",
+        "description": "We offer quality over quantity. Every material undergoes a quality check by experienced educators."
+      }
+    },
+    "origin": {
+      "title": "From Practice, For Practice",
+      "paragraph1": "EasyLehrer is not an anonymous tech corporation. The platform emerged from a genuine need: colleagues were looking for a central hub for modern Swiss teaching materials, without having to wade through confusing databases.",
+      "paragraph2": "What started as a small exchange has become a growing community. We connect creativity with didactics and ensure that good work is fairly rewarded.",
+      "imageAlt": "Team collaborating together"
+    },
+    "cta": {
+      "title": "Ready for Less Preparation Stress?",
+      "button": "Discover Teaching Materials Now"
+    }
+  },
+  "contactPage": {
+    "hero": {
+      "title": "Let's Start a Conversation",
+      "subtitle": "Have a question or idea? Drop us a line. A real person from our team will get back to you within 24 hours — usually much sooner."
+    },
+    "form": {
+      "title": "Send Us a Message",
+      "nameLabel": "Your Name",
+      "namePlaceholder": "Maria Schmidt",
+      "emailLabel": "Email Address",
+      "emailPlaceholder": "your.email@example.com",
+      "phoneLabel": "Phone Number (Optional)",
+      "phonePlaceholder": "+41 79 123 45 67",
+      "phoneHint": "Only if you'd prefer a quick call back. We promise not to share it or call unexpectedly.",
+      "subjectLabel": "What's This About?",
+      "subjectPlaceholder": "Select a topic",
+      "subjects": {
+        "general": "General Question",
+        "support": "Technical Support",
+        "sales": "Becoming a Seller",
+        "partnership": "Partnership Inquiry",
+        "feedback": "Feedback or Suggestion"
+      },
+      "messageLabel": "Your Message",
+      "messagePlaceholder": "Tell us what's on your mind...",
+      "consentText": "I agree that EasyLehrer may store and use the information I've provided to respond to my inquiry. I can withdraw my consent at any time. Read our Privacy Policy for details.",
+      "submitButton": "Send Message",
+      "submitting": "Sending...",
+      "successTitle": "Message Sent!",
+      "successMessage": "Thanks for reaching out. We've received your message and will get back to you shortly."
+    },
+    "direct": {
+      "title": "Prefer to Reach Out Directly?",
+      "email": {
+        "title": "Email Us",
+        "description": "For detailed questions or document sharing"
+      },
+      "phone": {
+        "title": "Give Us a Call",
+        "description": "Mon–Fri, 9:00–17:00 CET"
+      },
+      "responseTime": "We typically respond within a few hours during business days."
+    },
+    "faq": {
+      "title": "Looking for Quick Answers?",
+      "description": "Check our Help Center for answers to common questions about accounts, resources, and selling on EasyLehrer."
+    }
+  },
+  "metadata": {
+    "title": "Easy Lehrer - Teaching Materials for Educators",
+    "description": "Discover high-quality teaching materials for Swiss educators"
+  }
+}

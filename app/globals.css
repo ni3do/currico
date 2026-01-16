@@ -1,179 +1,594 @@
 @import "tailwindcss";
 
-/* Modern Pastel Dark/Light Theme System */
+/* =================================================================
+   EASYLEHRER DESIGN SYSTEM
+   Catppuccin Theme - Light (Latte) / Dark (Mocha)
+   ================================================================= */
 
-/* Light Mode (Default) - Soft Pastel Day */
+/* =================================================================
+   CATPPUCCIN LATTE (Light Theme) - Raw Palette
+   ================================================================= */
 :root {
-  /* Base colors */
-  --background: #fafaf9;
-  --surface: #ffffff;
-  --surface-elevated: #f8f9fa;
+  /* Accent Colors */
+  --ctp-rosewater: #dc8a78;
+  --ctp-flamingo: #dd7878;
+  --ctp-pink: #ea76cb;
+  --ctp-mauve: #8839ef;
+  --ctp-red: #d20f39;
+  --ctp-maroon: #e64553;
+  --ctp-peach: #fe640b;
+  --ctp-yellow: #df8e1d;
+  --ctp-green: #40a02b;
+  --ctp-teal: #179299;
+  --ctp-sky: #04a5e5;
+  --ctp-sapphire: #209fb5;
+  --ctp-blue: #1e66f5;
+  --ctp-lavender: #7287fd;
 
-  /* Text colors */
-  --text: #1e293b;
-  --text-muted: #64748b;
-  --text-subtle: #94a3b8;
-
-  /* Brand colors - Pastel with good contrast for light mode */
-  --primary: #a78bfa;
-  --primary-hover: #8b5cf6;
-  --secondary: #4ade80;
-  --secondary-hover: #22c55e;
-  --accent: #fb7185;
-  --accent-hover: #f43f5e;
-
-  /* Additional pastel accents */
-  --lavender: #c4b5fd;
-  --sage: #86efac;
-  --blush: #fda4af;
-  --sky: #7dd3fc;
-  --peach: #fdba74;
-
-  /* Semantic colors */
-  --border: #e2e8f0;
-  --border-hover: #cbd5e1;
-  --success: #4ade80;
-  --warning: #fbbf24;
-  --error: #f87171;
-  --info: #60a5fa;
-
-  /* Shadow colors */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+  /* Base Colors */
+  --ctp-text: #4c4f69;
+  --ctp-subtext1: #5c5f77;
+  --ctp-subtext0: #6c6f85;
+  --ctp-overlay2: #7c7f93;
+  --ctp-overlay1: #8c8fa1;
+  --ctp-overlay0: #9ca0b0;
+  --ctp-surface2: #acb0be;
+  --ctp-surface1: #bcc0cc;
+  --ctp-surface0: #ccd0da;
+  --ctp-base: #eff1f5;
+  --ctp-mantle: #e6e9ef;
+  --ctp-crust: #dce0e8;
 }
 
-/* Dark Mode - Modern Pastel Night */
+/* =================================================================
+   CATPPUCCIN MOCHA (Dark Theme) - Raw Palette
+   ================================================================= */
 :root[data-theme="dark"] {
-  /* Base colors - warmer, neutral grays with reduced contrast */
-  --background: #1a1a1a;
-  --surface: #222222;
-  --surface-elevated: #2a2a2a;
+  /* Accent Colors */
+  --ctp-rosewater: #f5e0dc;
+  --ctp-flamingo: #f2cdcd;
+  --ctp-pink: #f5c2e7;
+  --ctp-mauve: #cba6f7;
+  --ctp-red: #f38ba8;
+  --ctp-maroon: #eba0ac;
+  --ctp-peach: #fab387;
+  --ctp-yellow: #f9e2af;
+  --ctp-green: #a6e3a1;
+  --ctp-teal: #94e2d5;
+  --ctp-sky: #89dceb;
+  --ctp-sapphire: #74c7ec;
+  --ctp-blue: #89b4fa;
+  --ctp-lavender: #b4befe;
 
-  /* Text colors - softer, more muted */
-  --text: #d1d5db;
-  --text-muted: #9ca3af;
-  --text-subtle: #6b7280;
-
-  /* Brand colors - Softer pastels for reduced contrast */
-  --primary: #b4a5f3;
-  --primary-hover: #9e8ce8;
-  --secondary: #7cd9a0;
-  --secondary-hover: #6bc78f;
-  --accent: #f5a3b1;
-  --accent-hover: #f08fa0;
-
-  /* Additional pastel accents */
-  --lavender: #b4a5f3;
-  --sage: #7cd9a0;
-  --blush: #f5a3b1;
-  --sky: #7ac9f0;
-  --peach: #f5b87a;
-
-  /* Semantic colors - softer, less harsh */
-  --border: #3a3a3a;
-  --border-hover: #4a4a4a;
-  --success: #7cd9a0;
-  --warning: #f5c567;
-  --error: #f5a3a3;
-  --info: #8bb8f0;
-
-  /* Shadow colors for dark mode */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6);
+  /* Base Colors */
+  --ctp-text: #cdd6f4;
+  --ctp-subtext1: #bac2de;
+  --ctp-subtext0: #a6adc8;
+  --ctp-overlay2: #9399b2;
+  --ctp-overlay1: #7f849c;
+  --ctp-overlay0: #6c7086;
+  --ctp-surface2: #585b70;
+  --ctp-surface1: #45475a;
+  --ctp-surface0: #313244;
+  --ctp-base: #1e1e2e;
+  --ctp-mantle: #181825;
+  --ctp-crust: #11111b;
 }
 
-/* System preference detection */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    /* Base colors - warmer, neutral grays with reduced contrast */
-    --background: #1a1a1a;
-    --surface: #222222;
-    --surface-elevated: #2a2a2a;
+/* =================================================================
+   SEMANTIC TOKENS - Maps raw Catppuccin to semantic purposes
+   ================================================================= */
+:root {
+  /* Font */
+  --font-inter: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
-    /* Text colors - softer, more muted */
-    --text: #d1d5db;
-    --text-muted: #9ca3af;
-    --text-subtle: #6b7280;
+  /* =================================================================
+     BACKGROUNDS
+     ================================================================= */
+  --color-bg: var(--ctp-base);
+  --color-bg-secondary: var(--ctp-mantle);
+  --color-bg-tertiary: var(--ctp-crust);
+  --color-surface: var(--ctp-surface0);
+  --color-surface-hover: var(--ctp-surface1);
+  --color-surface-elevated: var(--ctp-surface1);
+  --color-surface-high: var(--ctp-surface2);
 
-    /* Brand colors - Softer pastels for reduced contrast */
-    --primary: #b4a5f3;
-    --primary-hover: #9e8ce8;
-    --secondary: #7cd9a0;
-    --secondary-hover: #6bc78f;
-    --accent: #f5a3b1;
-    --accent-hover: #f08fa0;
+  /* Legacy mappings */
+  --background: var(--ctp-base);
+  --background-alt: var(--ctp-mantle);
+  --sidebar-bg: var(--ctp-mantle);
+  --white: var(--ctp-base);
+  --surface: var(--ctp-surface0);
 
-    /* Additional pastel accents */
-    --lavender: #b4a5f3;
-    --sage: #7cd9a0;
-    --blush: #f5a3b1;
-    --sky: #7ac9f0;
-    --peach: #f5b87a;
+  /* =================================================================
+     TEXT COLORS
+     ================================================================= */
+  --color-text: var(--ctp-text);
+  --color-text-secondary: var(--ctp-subtext1);
+  --color-text-muted: var(--ctp-subtext0);
+  --color-text-faint: var(--ctp-overlay2);
+  --color-text-on-accent: var(--ctp-crust);
 
-    /* Semantic colors - softer, less harsh */
-    --border: #3a3a3a;
-    --border-hover: #4a4a4a;
-    --success: #7cd9a0;
-    --warning: #f5c567;
-    --error: #f5a3a3;
-    --info: #8bb8f0;
+  /* Legacy mappings */
+  --text-heading: var(--ctp-text);
+  --text-body: var(--ctp-subtext1);
+  --text-muted: var(--ctp-subtext0);
+  --text-light: var(--ctp-overlay1);
+  --text: var(--ctp-text);
+  --text-secondary: var(--ctp-subtext1);
 
-    /* Shadow colors */
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6);
-  }
+  /* =================================================================
+     BORDER COLORS
+     ================================================================= */
+  --color-border: var(--ctp-surface2);
+  --color-border-subtle: var(--ctp-surface1);
+  --color-border-strong: var(--ctp-overlay0);
+  --color-border-focus: var(--ctp-blue);
+
+  /* Legacy mappings */
+  --border: var(--ctp-surface2);
+  --border-hover: var(--ctp-overlay0);
+  --border-focus: var(--ctp-blue);
+
+  /* =================================================================
+     INTERACTIVE / PRIMARY COLORS
+     ================================================================= */
+  --color-primary: var(--ctp-blue);
+  --color-primary-hover: var(--ctp-sapphire);
+  --color-primary-light: color-mix(in srgb, var(--ctp-blue) 15%, transparent);
+
+  /* Legacy mappings */
+  --primary: var(--ctp-blue);
+  --primary-solid: var(--ctp-blue);
+  --primary-hover: var(--ctp-sapphire);
+  --primary-light: color-mix(in srgb, var(--ctp-blue) 15%, transparent);
+
+  /* Secondary/Accent Colors */
+  --color-accent: var(--ctp-mauve);
+  --color-accent-hover: var(--ctp-pink);
+  --color-accent-light: color-mix(in srgb, var(--ctp-mauve) 15%, transparent);
+
+  --accent: var(--ctp-teal);
+  --accent-hover: var(--ctp-sapphire);
+  --accent-light: color-mix(in srgb, var(--ctp-teal) 15%, transparent);
+
+  --secondary: var(--ctp-green);
+  --secondary-light: color-mix(in srgb, var(--ctp-green) 15%, transparent);
+
+  /* =================================================================
+     STATUS COLORS
+     ================================================================= */
+  --color-success: var(--ctp-green);
+  --color-success-light: color-mix(in srgb, var(--ctp-green) 15%, transparent);
+  --color-warning: var(--ctp-yellow);
+  --color-warning-light: color-mix(in srgb, var(--ctp-yellow) 15%, transparent);
+  --color-error: var(--ctp-red);
+  --color-error-light: color-mix(in srgb, var(--ctp-red) 15%, transparent);
+  --color-info: var(--ctp-sky);
+  --color-info-light: color-mix(in srgb, var(--ctp-sky) 15%, transparent);
+
+  /* Legacy mappings */
+  --success: var(--ctp-green);
+  --success-light: color-mix(in srgb, var(--ctp-green) 15%, transparent);
+  --warning: var(--ctp-yellow);
+  --warning-light: color-mix(in srgb, var(--ctp-yellow) 15%, transparent);
+  --error: var(--ctp-red);
+  --error-light: color-mix(in srgb, var(--ctp-red) 15%, transparent);
+  --green: var(--ctp-green);
+  --teal: var(--ctp-teal);
+  --yellow: var(--ctp-yellow);
+  --peach: var(--ctp-peach);
+  --red: var(--ctp-red);
+  --maroon: var(--ctp-maroon);
+  --overlay1: var(--ctp-overlay1);
+
+  /* =================================================================
+     FOCUS COLORS
+     ================================================================= */
+  --color-focus: var(--ctp-lavender);
+  --color-focus-ring: color-mix(in srgb, var(--ctp-lavender) 40%, transparent);
+
+  /* =================================================================
+     BUTTON TOKENS - Guaranteed contrast pairs
+     ================================================================= */
+  /* Primary Button */
+  --btn-primary-bg: var(--ctp-blue);
+  --btn-primary-text: var(--ctp-crust);
+  --btn-primary-hover-bg: var(--ctp-sapphire);
+
+  /* Secondary Button */
+  --btn-secondary-bg: var(--ctp-surface0);
+  --btn-secondary-text: var(--ctp-text);
+  --btn-secondary-hover-bg: var(--ctp-surface1);
+
+  /* Ghost Button */
+  --btn-ghost-bg: transparent;
+  --btn-ghost-text: var(--ctp-text);
+  --btn-ghost-hover-bg: var(--ctp-surface0);
+
+  /* Danger Button */
+  --btn-danger-bg: var(--ctp-red);
+  --btn-danger-text: var(--ctp-crust);
+  --btn-danger-hover-bg: var(--ctp-maroon);
+
+  /* =================================================================
+     BADGE/PILL TOKENS - 20% opacity backgrounds with full color text
+     ================================================================= */
+  --badge-success-bg: color-mix(in srgb, var(--ctp-green) 20%, transparent);
+  --badge-success-text: var(--ctp-green);
+
+  --badge-warning-bg: color-mix(in srgb, var(--ctp-yellow) 20%, transparent);
+  --badge-warning-text: var(--ctp-yellow);
+
+  --badge-error-bg: color-mix(in srgb, var(--ctp-red) 20%, transparent);
+  --badge-error-text: var(--ctp-red);
+
+  --badge-info-bg: color-mix(in srgb, var(--ctp-sky) 20%, transparent);
+  --badge-info-text: var(--ctp-sky);
+
+  --badge-primary-bg: color-mix(in srgb, var(--ctp-blue) 20%, transparent);
+  --badge-primary-text: var(--ctp-blue);
+
+  --badge-neutral-bg: var(--ctp-surface0);
+  --badge-neutral-text: var(--ctp-subtext0);
+
+  /* =================================================================
+     SHADOWS - Adjust opacity for light/dark theme
+     ================================================================= */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.08), 0 4px 8px rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.10), 0 10px 20px rgba(0, 0, 0, 0.05);
+  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.05);
+  --shadow-card-hover: 0 20px 40px rgba(0, 0, 0, 0.10);
+  --shadow-glass: 0 25px 60px rgba(0, 0, 0, 0.15);
+
+  /* =================================================================
+     BORDER RADIUS - Rounded edges
+     ================================================================= */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-full: 9999px;
+
+  /* =================================================================
+     SPACING
+     ================================================================= */
+  --space-section: 5rem;
+  --space-card: 1.75rem;
+
+  /* =================================================================
+     GRAY SCALE (mapped from Catppuccin)
+     ================================================================= */
+  --gray-50: var(--ctp-base);
+  --gray-100: var(--ctp-mantle);
+  --gray-200: var(--ctp-surface0);
+  --gray-300: var(--ctp-surface1);
+  --gray-400: var(--ctp-surface2);
+  --gray-500: var(--ctp-overlay0);
+  --gray-600: var(--ctp-overlay1);
+  --gray-700: var(--ctp-overlay2);
+  --gray-800: var(--ctp-subtext0);
+  --gray-900: var(--ctp-text);
 }
 
+/* Dark theme shadow adjustments */
+:root[data-theme="dark"] {
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.15);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.10);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.10);
+  --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.20), 0 4px 8px rgba(0, 0, 0, 0.12);
+  --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.25), 0 10px 20px rgba(0, 0, 0, 0.15);
+  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.15);
+  --shadow-card-hover: 0 20px 40px rgba(0, 0, 0, 0.25);
+  --shadow-glass: 0 25px 60px rgba(0, 0, 0, 0.30);
+}
+
+/* =================================================================
+   BASE STYLES
+   ================================================================= */
 body {
-  background-color: var(--background);
-  color: var(--text);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  background-color: var(--color-bg);
+  color: var(--color-text-secondary);
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* Smooth transitions for theme switching */
-* {
-  transition-property: background-color, border-color, color, fill, stroke;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 200ms;
+/* =================================================================
+   TYPOGRAPHY
+   ================================================================= */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-text);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+h1 {
+  font-weight: 800;
 }
 
-::-webkit-scrollbar-track {
-  background: var(--background);
+h2 {
+  font-weight: 700;
 }
 
-::-webkit-scrollbar-thumb {
-  background: var(--primary);
-  border-radius: 5px;
-  border: 2px solid var(--background);
+/* Uppercase tracked labels for metadata */
+.label-meta {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-hover);
+p {
+  color: var(--color-text-secondary);
 }
 
-/* Firefox scrollbar */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: var(--primary) var(--background);
+/* Focus styles for accessibility */
+*:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
 }
 
-/* Fade-in Animation */
-@keyframes fadeIn {
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* =================================================================
+   UTILITY CLASSES
+   ================================================================= */
+.text-balance {
+  text-wrap: balance;
+}
+
+/* Link styles */
+a {
+  transition: color 0.15s ease;
+}
+
+/* =================================================================
+   BUTTON STYLES - Contrast-safe with micro-interactions
+   ================================================================= */
+.btn-primary {
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: var(--btn-primary-hover-bg);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--ctp-blue) 30%, transparent);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+/* Secondary - Surface fill */
+.btn-secondary {
+  background-color: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background-color: var(--btn-secondary-hover-bg);
+}
+
+/* Tertiary - Bordered style */
+.btn-tertiary {
+  background-color: var(--color-bg);
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  transition: all 0.15s ease;
+}
+
+.btn-tertiary:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* Ghost - Transparent background */
+.btn-ghost {
+  background-color: var(--btn-ghost-bg);
+  color: var(--btn-ghost-text);
+  font-weight: 500;
+  border: none;
+  border-radius: var(--radius-md);
+  transition: all 0.15s ease;
+}
+
+.btn-ghost:hover {
+  background-color: var(--btn-ghost-hover-bg);
+}
+
+/* Danger - Red background */
+.btn-danger {
+  background-color: var(--btn-danger-bg);
+  color: var(--btn-danger-text);
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease;
+}
+
+.btn-danger:hover {
+  background-color: var(--btn-danger-hover-bg);
+}
+
+/* =================================================================
+   CARD STYLES
+   ================================================================= */
+.card {
+  background: var(--color-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--color-border-subtle);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+/* =================================================================
+   PILL/TAG STYLES
+   ================================================================= */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.pill-primary {
+  background-color: var(--badge-primary-bg);
+  color: var(--badge-primary-text);
+}
+
+.pill-accent {
+  background-color: var(--color-accent-light);
+  color: var(--color-accent);
+}
+
+.pill-neutral {
+  background-color: var(--badge-neutral-bg);
+  color: var(--badge-neutral-text);
+}
+
+.pill-success {
+  background-color: var(--badge-success-bg);
+  color: var(--badge-success-text);
+}
+
+.pill-warning {
+  background-color: var(--badge-warning-bg);
+  color: var(--badge-warning-text);
+}
+
+.pill-error {
+  background-color: var(--badge-error-bg);
+  color: var(--badge-error-text);
+}
+
+/* =================================================================
+   INPUT STYLES
+   ================================================================= */
+.input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 1rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.input::placeholder {
+  color: var(--color-text-faint);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-focus-ring);
+}
+
+/* =================================================================
+   HEADER STYLES
+   ================================================================= */
+.header-shadow {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* =================================================================
+   FOOTER STYLES
+   ================================================================= */
+.footer-grounded {
+  background-color: var(--color-bg-secondary);
+}
+
+/* Clean divider */
+.divider {
+  height: 1px;
+  background: var(--color-border);
+}
+
+/* =================================================================
+   NAVIGATION STYLES
+   ================================================================= */
+.nav-link {
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-full);
+  transition: all 0.15s ease;
+}
+
+.nav-link:hover {
+  color: var(--color-primary);
+  background-color: var(--color-primary-light);
+}
+
+.nav-link-active {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* =================================================================
+   GLASS-MORPHIC CARD (for auth pages)
+   ================================================================= */
+.glass-card {
+  background: color-mix(in srgb, var(--color-bg) 90%, transparent);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-glass);
+}
+
+/* =================================================================
+   GEOMETRIC BACKGROUND PATTERN
+   ================================================================= */
+.geometric-bg {
+  background-color: var(--color-bg);
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--ctp-blue) 3%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--ctp-blue) 3%, transparent) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* =================================================================
+   ANIMATIONS
+   ================================================================= */
+@keyframes fade-in {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -181,66 +596,20 @@ body {
   }
 }
 
-@keyframes fadeInScale {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
 .animate-fade-in {
-  animation: fadeIn 0.6s ease-out forwards;
+  animation: fade-in 0.3s ease-out forwards;
 }
 
-.animate-fade-in-scale {
-  animation: fadeInScale 0.5s ease-out forwards;
+/* Theme transition for smooth switching */
+* {
+  transition-property: background-color, border-color, color;
+  transition-duration: 0s;
 }
 
-/* Stagger animation delays for children */
-.stagger-children > * {
-  opacity: 0;
-  animation: fadeIn 0.6s ease-out forwards;
-}
-
-.stagger-children > *:nth-child(1) {
-  animation-delay: 0.1s;
-}
-.stagger-children > *:nth-child(2) {
-  animation-delay: 0.2s;
-}
-.stagger-children > *:nth-child(3) {
-  animation-delay: 0.3s;
-}
-.stagger-children > *:nth-child(4) {
-  animation-delay: 0.4s;
-}
-.stagger-children > *:nth-child(5) {
-  animation-delay: 0.5s;
-}
-.stagger-children > *:nth-child(6) {
-  animation-delay: 0.6s;
-}
-
-/* Reduced motion preference */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-
-  .animate-fade-in,
-  .animate-fade-in-scale,
-  .stagger-children > * {
-    opacity: 1 !important;
-    transform: none !important;
-    animation: none !important;
-  }
+html.theme-transition,
+html.theme-transition *,
+html.theme-transition *::before,
+html.theme-transition *::after {
+  transition-duration: 0.2s !important;
+  transition-timing-function: ease !important;
 }
