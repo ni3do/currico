@@ -17,26 +17,13 @@
       "account": "Mein Konto"
     },
     "footer": {
-      "brandDescription": "Die Plattform für Unterrichtsmaterial von Schweizer Lehrpersonen.",
-      "platformSection": {
-        "title": "Plattform",
-        "resources": "Ressourcen",
-        "pricing": "Preise"
-      },
-      "infoSection": {
-        "title": "Information",
-        "aboutUs": "Über uns",
-        "contact": "Kontakt",
-        "help": "Hilfe"
-      },
-      "legalSection": {
-        "title": "Rechtliches",
+      "copyright": "\u00a9 2026 EasyLehrer",
+      "links": {
+        "help": "Hilfe",
+        "imprint": "Impressum",
         "privacy": "Datenschutz",
-        "terms": "AGB",
-        "imprint": "Impressum"
-      },
-      "copyright": "2026 EasyLehrer. Alle Rechte vorbehalten.",
-      "initiative": "Eine Initiative für Schweizer Bildung"
+        "terms": "AGB"
+      }
     },
     "buttons": {
       "viewAll": "Alle anzeigen",
@@ -53,10 +40,36 @@
       "title": "Von Lehrpersonen für Lehrpersonen: Unterrichtsmaterial in Rekordzeit.",
       "description": "Entdecken Sie professionelle Lehrmittel, entwickelt von Kollegen und exakt abgestimmt auf den <bold>Lehrplan 21</bold>. Vertrauenswürdig, geprüft, sofort einsetzbar.",
       "primaryButton": "Jetzt Material finden",
-      "secondaryButton": "Mehr erfahren"
+      "secondaryButton": "Mehr erfahren",
+      "search": {
+        "placeholder": "Arbeitsblätter, Unterrichtseinheiten, Prüfungen...",
+        "allSubjects": "Alle Fächer",
+        "math": "Mathematik",
+        "german": "Deutsch",
+        "english": "Englisch",
+        "french": "Französisch",
+        "nmg": "NMG",
+        "arts": "Bildnerisches Gestalten",
+        "music": "Musik",
+        "sports": "Sport",
+        "button": "Suchen"
+      }
     },
-    "trustBar": {
-      "title": "Vertraut von Bildungsinstitutionen"
+    "howItWorks": {
+      "title": "So funktioniert's",
+      "description": "In drei einfachen Schritten starten",
+      "step1": {
+        "title": "Durchsuchen & Finden",
+        "description": "Suchen Sie nach Fach, Zyklus oder Stichwort. Filtern Sie nach Lehrplan 21 Kompetenzen."
+      },
+      "step2": {
+        "title": "Vorschau & Kaufen",
+        "description": "Materialien vor dem Kauf ansehen. Sichere Bezahlung per Kreditkarte oder TWINT."
+      },
+      "step3": {
+        "title": "Herunterladen & Nutzen",
+        "description": "Sofortiger Download nach dem Kauf. Materialien direkt im Unterricht einsetzen."
+      }
     },
     "featuredResources": {
       "title": "Empfohlene Materialien",
@@ -101,6 +114,42 @@
       "feature3": {
         "title": "Sofort einsetzbar",
         "description": "Alle Materialien sind vollständig ausgearbeitet und können direkt im Unterricht verwendet werden."
+      }
+    },
+    "sellerCta": {
+      "title": "Teilen Sie Ihre Unterrichtsmaterialien",
+      "description": "Sie haben tolle Arbeitsblätter, Unterrichtseinheiten oder Prüfungen erstellt? Teilen Sie diese mit Kolleginnen und Kollegen in der ganzen Schweiz und verdienen Sie Geld, während Sie anderen Lehrpersonen Zeit sparen.",
+      "benefits": {
+        "earn": "Passives Einkommen",
+        "earnDesc": "Setzen Sie Ihre eigenen Preise und verdienen Sie 70% pro Verkauf",
+        "reach": "Tausende erreichen",
+        "reachDesc": "Vernetzen Sie sich mit Lehrpersonen in der ganzen Schweiz",
+        "simple": "Einfacher Upload",
+        "simpleDesc": "Einmal hochladen, wiederholt verkaufen ohne Aufwand"
+      },
+      "button": "Jetzt verkaufen",
+      "note": "Kostenlose Registrierung. Keine monatlichen Gebühren."
+    },
+    "testimonials": {
+      "title": "Was Lehrpersonen sagen",
+      "description": "Vertraut von Pädagogen in der ganzen Schweiz",
+      "testimonial1": {
+        "quote": "EasyLehrer hat meine Unterrichtsvorbereitung verändert. Ich finde Qualitätsmaterialien in Minuten statt Stunden. Die Lehrplan 21 Filterung ist unglaublich hilfreich.",
+        "name": "Sarah M.",
+        "role": "Primarlehrerin",
+        "location": "Zürich"
+      },
+      "testimonial2": {
+        "quote": "Als Verkäufer habe ich über CHF 2'000 verdient, indem ich Materialien geteilt habe, die ich bereits erstellt hatte. Es fühlt sich toll an, anderen zu helfen und dabei zu verdienen.",
+        "name": "Thomas K.",
+        "role": "Sekundarlehrer",
+        "location": "Bern"
+      },
+      "testimonial3": {
+        "quote": "Die Qualitätskontrolle zeigt sich wirklich. Jede Ressource, die ich gekauft habe, war professionell erstellt und am nächsten Tag einsatzbereit.",
+        "name": "Lisa W.",
+        "role": "Heilpädagogin",
+        "location": "Basel"
       }
     }
   },
@@ -351,6 +400,7 @@
   },
   "aboutPage": {
     "hero": {
+      "badge": "Für Schweizer Lehrpersonen",
       "title": "Intelligent vorbereiten. Entspannter leben.",
       "subtitle": "Wir bringen Schweizer Qualität und wertvolle Freizeit zurück in Ihren Schulalltag.",
       "imageAlt": "Entspannte Lehrperson mit Tablet"
@@ -384,7 +434,9 @@
     },
     "cta": {
       "title": "Bereit für weniger Vorbereitungsstress?",
-      "button": "Jetzt Unterrichtsmaterial entdecken"
+      "subtitle": "Schliessen Sie sich Hunderten von Schweizer Lehrpersonen an, die bereits Zeit sparen und qualitativ hochwertige Materialien nutzen.",
+      "button": "Materialien entdecken",
+      "secondaryButton": "Kostenlos registrieren"
     }
   },
   "contactPage": {
@@ -438,5 +490,102 @@
   "metadata": {
     "title": "Easy Lehrer - Unterrichtsmaterial für Lehrpersonen",
     "description": "Entdecken Sie hochwertige Unterrichtsmaterialien für Schweizer Lehrpersonen"
+  },
+  "curriculum": {
+    "lp21": {
+      "title": "Lehrplan 21",
+      "alignment": "Lehrplan 21 Zuordnung",
+      "competencies": "Kompetenzen",
+      "noAlignment": "Keine Lehrplan 21 Zuordnung vorhanden"
+    },
+    "cycles": {
+      "title": "Zyklus",
+      "cycle1": "Zyklus 1",
+      "cycle1Desc": "Kindergarten - 2. Klasse",
+      "cycle2": "Zyklus 2",
+      "cycle2Desc": "3. - 6. Klasse",
+      "cycle3": "Zyklus 3",
+      "cycle3Desc": "7. - 9. Klasse"
+    },
+    "subjects": {
+      "title": "Fachbereich",
+      "MA": "Mathematik",
+      "D": "Deutsch",
+      "F": "Französisch",
+      "E": "Englisch",
+      "NMG": "Natur, Mensch, Gesellschaft",
+      "BG": "Bildnerisches Gestalten",
+      "TTG": "Textiles und Technisches Gestalten",
+      "MU": "Musik",
+      "BS": "Bewegung und Sport",
+      "MI": "Medien und Informatik"
+    },
+    "anforderungsstufe": {
+      "title": "Anforderungsstufe",
+      "grund": "Grundansprüche",
+      "erweitert": "Erweiterte Ansprüche",
+      "grundShort": "G",
+      "erweitertShort": "E"
+    },
+    "transversal": {
+      "title": "Überfachliche Kompetenzen",
+      "personale": "Personale Kompetenzen",
+      "soziale": "Soziale Kompetenzen",
+      "methodische": "Methodische Kompetenzen",
+      "PK1": "Selbstreflexion",
+      "PK2": "Selbstständigkeit",
+      "PK3": "Eigenständigkeit",
+      "SK1": "Kooperationsfähigkeit",
+      "SK2": "Konfliktfähigkeit",
+      "SK3": "Umgang mit Vielfalt",
+      "MK1": "Sprachfähigkeit",
+      "MK2": "Informationen nutzen",
+      "MK3": "Aufgaben/Probleme lösen"
+    },
+    "bne": {
+      "title": "BNE Themen",
+      "description": "Bildung für Nachhaltige Entwicklung",
+      "BNE1": "Politik, Demokratie und Menschenrechte",
+      "BNE2": "Natürliche Umwelt und Ressourcen",
+      "BNE3": "Geschlechter und Gleichstellung",
+      "BNE4": "Gesundheit und Wohlbefinden",
+      "BNE5": "Globale Entwicklung und Frieden",
+      "BNE6": "Kulturelle Identitäten und interkulturelle Verständigung",
+      "BNE7": "Wirtschaft und Konsum",
+      "sdg": "UN-Nachhaltigkeitsziel"
+    },
+    "mi": {
+      "title": "Medien und Informatik",
+      "integrated": "Medien und Informatik integriert",
+      "description": "Nur Materialien mit M&I Integration anzeigen"
+    },
+    "filter": {
+      "title": "Filter",
+      "clearAll": "Alle zurücksetzen",
+      "competencySearch": "LP21 Kompetenz",
+      "competencyPlaceholder": "z.B. MA.1.A oder D.2.B",
+      "competencyHint": "Geben Sie einen LP21-Kompetenzcode ein",
+      "clearSelection": "Auswahl aufheben"
+    },
+    "search": {
+      "placeholder": "Suchen (z.B. MA.1.A oder Addition)...",
+      "codeDetected": "LP21-Code erkannt - Ergebnisse werden nach Code gefiltert",
+      "noResults": "Keine Ergebnisse für"
+    },
+    "navigator": {
+      "title": "Kompetenz-Navigator",
+      "selectCompetencies": "Kompetenzen auswählen",
+      "selectedCount": "ausgewählt",
+      "expandAll": "Alle aufklappen",
+      "collapseAll": "Alle zuklappen"
+    },
+    "lehrmittel": {
+      "title": "Passend zu Lehrmittel",
+      "placeholder": "Optional: Lehrmittel auswählen...",
+      "hint": "Wählen Sie Lehrmittel, zu denen Ihre Ressource passt"
+    },
+    "upload": {
+      "competencyTip": "Je genauer Sie Ihre Ressource dem Lehrplan 21 zuordnen, desto besser finden Lehrpersonen Ihre Materialien. Wählen Sie alle relevanten Kompetenzen aus."
+    }
   }
 }

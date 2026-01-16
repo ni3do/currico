@@ -38,7 +38,12 @@ export default function ResourcesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
   const [resources, setResources] = useState<Resource[]>([]);
-  const [pagination, setPagination] = useState<Pagination>({ page: 1, limit: 20, total: 0, totalPages: 0 });
+  const [pagination, setPagination] = useState<Pagination>({
+    page: 1,
+    limit: 20,
+    total: 0,
+    totalPages: 0,
+  });
   const [loading, setLoading] = useState(true);
 
   const fetchResources = useCallback(async (currentSearch: string, currentSubject: string) => {
@@ -71,21 +76,23 @@ export default function ResourcesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--color-bg)]">
+    <div className="min-h-screen">
       <TopBar />
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="mb-8">
-          <div className="flex items-center gap-2 text-sm text-[var(--color-text-muted)] mb-2">
-            <Link href="/" className="hover:text-[var(--color-primary)] transition-colors">{t("breadcrumb.home")}</Link>
+          <div className="mb-2 flex items-center gap-2 text-sm text-[var(--color-text-muted)]">
+            <Link href="/" className="transition-colors hover:text-[var(--color-primary)]">
+              {t("breadcrumb.home")}
+            </Link>
             <span>/</span>
-            <span className="text-[var(--color-text-secondary)]">{tCommon("navigation.resources")}</span>
+            <span className="text-[var(--color-text-secondary)]">
+              {tCommon("navigation.resources")}
+            </span>
           </div>
           <h1 className="text-2xl font-semibold text-[var(--color-text)]">{t("header.title")}</h1>
-          <p className="mt-2 text-[var(--color-text-muted)]">
-            {t("header.description")}
-          </p>
+          <p className="mt-2 text-[var(--color-text-muted)]">{t("header.description")}</p>
         </div>
 
         {/* Search and Filter Section */}
@@ -100,10 +107,10 @@ export default function ResourcesPage() {
                   placeholder={t("search.placeholder")}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] py-3 pl-11 pr-4 text-[var(--color-text)] placeholder:text-[var(--color-text-faint)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-focus-ring)]"
+                  className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] py-3 pr-4 pl-11 text-[var(--color-text)] placeholder:text-[var(--color-text-faint)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-focus-ring)] focus:outline-none"
                 />
                 <svg
-                  className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--color-text-muted)]"
+                  className="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-[var(--color-text-muted)]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -123,7 +130,7 @@ export default function ResourcesPage() {
               <select
                 value={selectedSubject}
                 onChange={(e) => setSelectedSubject(e.target.value)}
-                className="input appearance-none cursor-pointer"
+                className="input cursor-pointer appearance-none"
               >
                 <option value="">{t("search.subjectFilter.all")}</option>
                 <option value="Mathematik">{t("search.subjectFilter.math")}</option>
@@ -141,18 +148,13 @@ export default function ResourcesPage() {
             <button
               type="button"
               onClick={() => setShowFilters(!showFilters)}
-              className={`flex items-center justify-center gap-2 rounded-lg px-5 py-3 font-medium text-sm transition-colors border ${
+              className={`flex items-center justify-center gap-2 rounded-lg border px-5 py-3 text-sm font-medium transition-colors ${
                 showFilters
-                  ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)]"
-                  : "bg-[var(--color-bg)] text-[var(--color-text-secondary)] border-[var(--color-border)] hover:border-[var(--color-primary)]"
+                  ? "border-[var(--color-primary)] bg-[var(--color-primary)] text-white"
+                  : "border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text-secondary)] hover:border-[var(--color-primary)]"
               }`}
             >
-              <svg
-                className="h-5 w-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -167,7 +169,9 @@ export default function ResourcesPage() {
           {/* Advanced Filters (Collapsible) */}
           {showFilters && (
             <div className="card p-6">
-              <h3 className="mb-4 font-semibold text-[var(--color-text)]">{t("advancedFilters.title")}</h3>
+              <h3 className="mb-4 font-semibold text-[var(--color-text)]">
+                {t("advancedFilters.title")}
+              </h3>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {/* Cycle Filter */}
                 <div>
@@ -205,7 +209,9 @@ export default function ResourcesPage() {
                   <select className="input text-sm">
                     <option value="">{t("advancedFilters.qualityFilter.all")}</option>
                     <option value="verified">{t("advancedFilters.qualityFilter.verified")}</option>
-                    <option value="ai-checked">{t("advancedFilters.qualityFilter.aiChecked")}</option>
+                    <option value="ai-checked">
+                      {t("advancedFilters.qualityFilter.aiChecked")}
+                    </option>
                   </select>
                 </div>
 
@@ -249,7 +255,7 @@ export default function ResourcesPage() {
               </div>
 
               {/* Filter Actions */}
-              <div className="mt-6 flex gap-3 pt-4 border-t border-[var(--color-border)]">
+              <div className="mt-6 flex gap-3 border-t border-[var(--color-border)] pt-4">
                 <button className="btn-primary px-5 py-2.5 text-sm">
                   {t("advancedFilters.applyButton")}
                 </button>
@@ -263,11 +269,16 @@ export default function ResourcesPage() {
           {/* Sort and Results Count */}
           <div className="flex items-center justify-between py-2">
             <p className="text-sm text-[var(--color-text-muted)]">
-              <span className="font-medium text-[var(--color-text-secondary)]">{pagination.total}</span> {t("results.countLabel")}
+              <span className="font-medium text-[var(--color-text-secondary)]">
+                {pagination.total}
+              </span>{" "}
+              {t("results.countLabel")}
             </p>
             <div className="flex items-center gap-2">
-              <label className="text-sm text-[var(--color-text-muted)]">{t("results.sortLabel")}</label>
-              <select className="rounded-md border border-[var(--color-border)] bg-[var(--color-bg)] px-3 py-1.5 text-sm text-[var(--color-text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:border-[var(--color-primary)]">
+              <label className="text-sm text-[var(--color-text-muted)]">
+                {t("results.sortLabel")}
+              </label>
+              <select className="rounded-md border border-[var(--color-border)] bg-[var(--color-bg)] px-3 py-1.5 text-sm text-[var(--color-text-secondary)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none">
                 <option value="newest">{t("results.sortOptions.newest")}</option>
                 <option value="popular">{t("results.sortOptions.popular")}</option>
                 <option value="rating">{t("results.sortOptions.rating")}</option>
@@ -285,8 +296,10 @@ export default function ResourcesPage() {
           </div>
         ) : resources.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16">
-            <p className="text-[var(--color-text-muted)] mb-4">No resources found</p>
-            <p className="text-sm text-[var(--color-text-faint)]">Try different search terms or filters</p>
+            <p className="mb-4 text-[var(--color-text-muted)]">No resources found</p>
+            <p className="text-sm text-[var(--color-text-faint)]">
+              Try different search terms or filters
+            </p>
           </div>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -298,40 +311,32 @@ export default function ResourcesPage() {
                 {/* Card Header */}
                 <div className="p-6">
                   {/* Badges - Pill style with full radius */}
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="mb-4 flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="pill pill-neutral">
-                        PDF
-                      </span>
+                      <span className="pill pill-neutral">PDF</span>
                       {resource.cycle && (
-                        <span className="pill pill-neutral">
-                          {resource.cycle}
-                        </span>
+                        <span className="pill pill-neutral">{resource.cycle}</span>
                       )}
                     </div>
-                    <span className="pill pill-success">
-                      {t("card.verified")}
-                    </span>
+                    <span className="pill pill-success">{t("card.verified")}</span>
                   </div>
 
                   {/* Subject Tag - Pill style with primary accent */}
-                  <span className="pill pill-primary mb-4">
-                    {resource.subject}
-                  </span>
+                  <span className="pill pill-primary mb-4">{resource.subject}</span>
 
                   {/* Title - Bold and larger */}
-                  <h3 className="text-lg font-bold text-[var(--color-text)] group-hover:text-[var(--color-primary)] transition-colors mb-2">
+                  <h3 className="mb-2 text-lg font-bold text-[var(--color-text)] transition-colors group-hover:text-[var(--color-primary)]">
                     {resource.title}
                   </h3>
 
                   {/* Description */}
-                  <p className="text-sm text-[var(--color-text-muted)] line-clamp-2 leading-relaxed">
+                  <p className="line-clamp-2 text-sm leading-relaxed text-[var(--color-text-muted)]">
                     {resource.description}
                   </p>
                 </div>
 
                 {/* Card Footer */}
-                <div className="px-6 py-4 border-t border-[var(--color-border-subtle)] bg-[var(--color-bg-secondary)]">
+                <div className="border-t border-[var(--color-border-subtle)] bg-[var(--color-bg-secondary)] px-6 py-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       {/* Seller */}
@@ -341,7 +346,9 @@ export default function ResourcesPage() {
                     </div>
                     <div className="flex items-center gap-3">
                       {/* Price - Bold and accent colored */}
-                      <span className={`text-lg font-bold ${resource.priceFormatted === "Gratis" ? "text-[var(--color-success)]" : "text-[var(--color-primary)]"}`}>
+                      <span
+                        className={`text-lg font-bold ${resource.priceFormatted === "Gratis" ? "text-[var(--color-success)]" : "text-[var(--color-primary)]"}`}
+                      >
                         {resource.priceFormatted}
                       </span>
                       <Link
@@ -363,17 +370,22 @@ export default function ResourcesPage() {
           <div className="mt-12 flex justify-center">
             <nav className="flex items-center gap-1">
               <button
-                className="rounded-md px-3 py-2 text-[var(--color-text-muted)] font-medium text-sm hover:bg-[var(--color-surface)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="rounded-md px-3 py-2 text-sm font-medium text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface)] disabled:cursor-not-allowed disabled:opacity-50"
                 disabled={pagination.page === 1}
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 19l-7-7 7-7"
+                  />
                 </svg>
               </button>
               {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map((pageNum) => (
                 <button
                   key={pageNum}
-                  className={`rounded-md px-4 py-2 font-medium text-sm min-w-[40px] transition-colors ${
+                  className={`min-w-[40px] rounded-md px-4 py-2 text-sm font-medium transition-colors ${
                     pageNum === pagination.page
                       ? "bg-[var(--color-primary)] text-white"
                       : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface)]"
@@ -383,11 +395,16 @@ export default function ResourcesPage() {
                 </button>
               ))}
               <button
-                className="rounded-md px-3 py-2 text-[var(--color-text-secondary)] font-medium text-sm hover:bg-[var(--color-surface)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="rounded-md px-3 py-2 text-sm font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface)] disabled:cursor-not-allowed disabled:opacity-50"
                 disabled={pagination.page === pagination.totalPages}
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
                 </svg>
               </button>
             </nav>

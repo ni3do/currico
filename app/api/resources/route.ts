@@ -2,11 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getCurrentUserId } from "@/lib/auth";
 import { formatPrice } from "@/lib/utils/price";
-import {
-  checkRateLimit,
-  getClientIP,
-  rateLimitHeaders,
-} from "@/lib/rateLimit";
+import { checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
 import {
   createResourceSchema,
   validateMagicBytes,
@@ -22,6 +18,19 @@ import path from "path";
 /**
  * GET /api/resources
  * Public endpoint to fetch published and approved resources
+ *
+ * Query params:
+ *   - page: page number (default: 1)
+ *   - limit: results per page (default: 20, max: 100)
+ *   - subject: filter by subject
+ *   - cycle: filter by cycle
+ *   - search: search in title and description
+ *   - sort: "newest" | "price-low" | "price-high"
+ *   - competency: filter by LP21 competency code (fuzzy match)
+ *   - transversal: filter by transversal competency code
+ *   - bne: filter by BNE theme code
+ *   - mi_integrated: "true" to show only M&I integrated resources
+ *   - lehrmittel: filter by lehrmittel ID
  */
 export async function GET(request: NextRequest) {
   // Rate limiting check
@@ -50,6 +59,13 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get("search");
     const sort = searchParams.get("sort") || "newest";
 
+    // LP21 curriculum filters
+    const competencyCode = searchParams.get("competency");
+    const transversalCode = searchParams.get("transversal");
+    const bneCode = searchParams.get("bne");
+    const miIntegrated = searchParams.get("mi_integrated") === "true";
+    const lehrmittelId = searchParams.get("lehrmittel");
+
     const skip = (page - 1) * limit;
 
     // Build where clause - only show published and public (verified) resources
@@ -73,6 +89,114 @@ export async function GET(request: NextRequest) {
       ];
     }
 
+    // M&I integration filter
+    if (miIntegrated) {
+      where.is_mi_integrated = true;
+    }
+
+    // Competency filter - fuzzy match on code
+    if (competencyCode) {
+      const normalizedCode = competencyCode.replace(/[\s.]/g, "").toUpperCase();
+      // Find competencies that match the code pattern
+      const matchingCompetencies = await prisma.curriculumCompetency.findMany({
+        where: {
+          code: {
+            contains: competencyCode.toUpperCase(),
+            mode: "insensitive",
+          },
+        },
+        select: { id: true, code: true },
+      });
+
+      // Also try normalized search if no results
+      if (matchingCompetencies.length === 0 && normalizedCode.length >= 2) {
+        const allCompetencies = await prisma.curriculumCompetency.findMany({
+          select: { id: true, code: true },
+        });
+        const fuzzyMatches = allCompetencies.filter((c) =>
+          c.code.replace(/[\s.]/g, "").toUpperCase().includes(normalizedCode)
+        );
+        matchingCompetencies.push(...fuzzyMatches);
+      }
+
+      if (matchingCompetencies.length > 0) {
+        where.competencies = {
+          some: {
+            competency_id: {
+              in: matchingCompetencies.map((c) => c.id),
+            },
+          },
+        };
+      } else {
+        // No matching competencies, return empty results
+        return NextResponse.json({
+          resources: [],
+          pagination: { page, limit, total: 0, totalPages: 0 },
+        });
+      }
+    }
+
+    // Transversal competency filter
+    if (transversalCode) {
+      const transversal = await prisma.transversalCompetency.findFirst({
+        where: {
+          code: {
+            contains: transversalCode.toUpperCase(),
+            mode: "insensitive",
+          },
+        },
+        select: { id: true },
+      });
+
+      if (transversal) {
+        where.transversals = {
+          some: {
+            transversal_id: transversal.id,
+          },
+        };
+      } else {
+        return NextResponse.json({
+          resources: [],
+          pagination: { page, limit, total: 0, totalPages: 0 },
+        });
+      }
+    }
+
+    // BNE theme filter
+    if (bneCode) {
+      const bneTheme = await prisma.bneTheme.findFirst({
+        where: {
+          code: {
+            contains: bneCode.toUpperCase(),
+            mode: "insensitive",
+          },
+        },
+        select: { id: true },
+      });
+
+      if (bneTheme) {
+        where.bne_themes = {
+          some: {
+            bne_id: bneTheme.id,
+          },
+        };
+      } else {
+        return NextResponse.json({
+          resources: [],
+          pagination: { page, limit, total: 0, totalPages: 0 },
+        });
+      }
+    }
+
+    // Lehrmittel filter
+    if (lehrmittelId) {
+      where.lehrmittel = {
+        some: {
+          lehrmittel_id: lehrmittelId,
+        },
+      };
+    }
+
     // Build orderBy
     let orderBy: Record<string, string> = { created_at: "desc" };
     if (sort === "price-low") {
@@ -93,10 +217,55 @@ export async function GET(request: NextRequest) {
           cycles: true,
           preview_url: true,
           created_at: true,
+          is_mi_integrated: true,
           seller: {
             select: {
               id: true,
               display_name: true,
+            },
+          },
+          competencies: {
+            select: {
+              competency: {
+                select: {
+                  id: true,
+                  code: true,
+                  description_de: true,
+                  anforderungsstufe: true,
+                  subject: {
+                    select: {
+                      code: true,
+                      color: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          transversals: {
+            select: {
+              transversal: {
+                select: {
+                  id: true,
+                  code: true,
+                  name_de: true,
+                  icon: true,
+                  color: true,
+                },
+              },
+            },
+          },
+          bne_themes: {
+            select: {
+              bne: {
+                select: {
+                  id: true,
+                  code: true,
+                  name_de: true,
+                  icon: true,
+                  color: true,
+                },
+              },
             },
           },
         },
@@ -121,6 +290,29 @@ export async function GET(request: NextRequest) {
       previewUrl: resource.preview_url,
       createdAt: resource.created_at,
       seller: resource.seller,
+      isMiIntegrated: resource.is_mi_integrated,
+      competencies: (resource.competencies ?? []).map((rc) => ({
+        id: rc.competency.id,
+        code: rc.competency.code,
+        description_de: rc.competency.description_de,
+        anforderungsstufe: rc.competency.anforderungsstufe,
+        subjectCode: rc.competency.subject.code,
+        subjectColor: rc.competency.subject.color,
+      })),
+      transversals: (resource.transversals ?? []).map((rt) => ({
+        id: rt.transversal.id,
+        code: rt.transversal.code,
+        name_de: rt.transversal.name_de,
+        icon: rt.transversal.icon,
+        color: rt.transversal.color,
+      })),
+      bneThemes: (resource.bne_themes ?? []).map((rb) => ({
+        id: rb.bne.id,
+        code: rb.bne.code,
+        name_de: rb.bne.name_de,
+        icon: rb.bne.icon,
+        color: rb.bne.color,
+      })),
     }));
 
     return NextResponse.json({
@@ -134,10 +326,7 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error fetching resources:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch resources" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch resources" }, { status: 500 });
   }
 }
 
@@ -149,10 +338,7 @@ export async function POST(request: NextRequest) {
   // Authentication check
   const userId = await getCurrentUserId();
   if (!userId) {
-    return NextResponse.json(
-      { error: "Nicht authentifiziert" },
-      { status: 401 }
-    );
+    return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
   }
 
   // Rate limiting check
@@ -187,10 +373,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (!user) {
-      return NextResponse.json(
-        { error: "Benutzer nicht gefunden" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Benutzer nicht gefunden" }, { status: 404 });
     }
 
     const isSeller = user.is_seller || user.role === "SELLER";
@@ -276,18 +459,12 @@ export async function POST(request: NextRequest) {
     const previewFile = formData.get("preview") as File | null;
 
     if (!file) {
-      return NextResponse.json(
-        { error: "Keine Datei hochgeladen" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Keine Datei hochgeladen" }, { status: 400 });
     }
 
     // Validate main file
     if (file.size > MAX_RESOURCE_FILE_SIZE) {
-      return NextResponse.json(
-        { error: "Datei zu gross (maximal 50MB)" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Datei zu gross (maximal 50MB)" }, { status: 400 });
     }
 
     if (!isAllowedResourceType(file.type, data.resourceType || "other")) {
@@ -327,13 +504,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Create upload directory
-    const uploadsDir = path.join(
-      process.cwd(),
-      "public",
-      "uploads",
-      "resources",
-      userId
-    );
+    const uploadsDir = path.join(process.cwd(), "public", "uploads", "resources", userId);
     await mkdir(uploadsDir, { recursive: true });
 
     // Save main file
@@ -352,12 +523,10 @@ export async function POST(request: NextRequest) {
     // Handle preview file
     let previewUrl: string | null = null;
     if (previewFile) {
+      // User uploaded a preview file
       if (previewFile.size > MAX_PREVIEW_FILE_SIZE) {
         await cleanupOnError();
-        return NextResponse.json(
-          { error: "Vorschaubild zu gross (maximal 5MB)" },
-          { status: 400 }
-        );
+        return NextResponse.json({ error: "Vorschaubild zu gross (maximal 5MB)" }, { status: 400 });
       }
 
       if (!isAllowedPreviewType(previewFile.type)) {
@@ -384,6 +553,25 @@ export async function POST(request: NextRequest) {
       const previewPath = path.join(uploadsDir, previewFileName);
       await writeFile(previewPath, previewBuffer);
       previewUrl = `/uploads/resources/${userId}/${previewFileName}`;
+    } else {
+      // No preview uploaded - try to auto-generate from main file
+      // Use dynamic import to avoid build-time issues with pdf-to-img native deps
+      try {
+        const { canGeneratePreview, generatePreview } =
+          await import("@/lib/utils/preview-generator");
+        if (canGeneratePreview(file.type)) {
+          const generatedPreview = await generatePreview(fileBuffer, file.type);
+          if (generatedPreview) {
+            const previewFileName = `${resource.id}-preview-${Date.now()}.png`;
+            const previewPath = path.join(uploadsDir, previewFileName);
+            await writeFile(previewPath, generatedPreview);
+            previewUrl = `/uploads/resources/${userId}/${previewFileName}`;
+          }
+        }
+      } catch (previewError) {
+        // Preview generation failed, but we continue without a preview
+        console.error("Auto-preview generation failed:", previewError);
+      }
     }
 
     // Update resource with file URLs
@@ -419,9 +607,6 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error("Error creating resource:", error);
-    return NextResponse.json(
-      { error: "Interner Serverfehler" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
   }
 }

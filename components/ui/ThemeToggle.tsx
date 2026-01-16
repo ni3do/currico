@@ -8,8 +8,8 @@ const icons = {
   light: (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="18"
-      height="18"
+      width="14"
+      height="14"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -31,8 +31,8 @@ const icons = {
   system: (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="18"
-      height="18"
+      width="14"
+      height="14"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -48,8 +48,8 @@ const icons = {
   dark: (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="18"
-      height="18"
+      width="14"
+      height="14"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -82,11 +82,11 @@ export function ThemeToggle() {
   if (!mounted) {
     return (
       <button
-        className="flex items-center justify-center w-9 h-9 rounded-lg bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] transition-colors"
+        className="flex h-7 w-7 items-center justify-center rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] transition-colors hover:bg-[var(--color-surface-hover)]"
         aria-label="Toggle theme"
         disabled
       >
-        <span className="w-[18px] h-[18px]" />
+        <span className="h-[14px] w-[14px]" />
       </button>
     );
   }
@@ -94,7 +94,7 @@ export function ThemeToggle() {
   return (
     <button
       onClick={cycleTheme}
-      className="group relative flex items-center justify-center w-9 h-9 rounded-lg bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-all duration-200"
+      className="group relative flex h-7 w-7 items-center justify-center rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-secondary)] transition-all duration-200 hover:bg-[var(--color-surface-elevated)] hover:text-[var(--color-text)]"
       aria-label={`Current theme: ${labels[theme]}. Click to change.`}
       title={labels[theme]}
     >
@@ -102,5 +102,60 @@ export function ThemeToggle() {
         {icons[theme]}
       </span>
     </button>
+  );
+}
+
+const settingsLabels: Record<Theme, string> = {
+  light: "Hell",
+  system: "System",
+  dark: "Dunkel",
+};
+
+// Settings component for account settings page
+export function ThemeSettings() {
+  const { theme, setTheme } = useTheme();
+  const mounted = useIsMounted();
+
+  if (!mounted) {
+    return (
+      <div className="space-y-3">
+        {themes.map((t) => (
+          <div
+            key={t}
+            className="flex items-center gap-3 rounded-lg border border-[var(--color-border)] p-3 opacity-50"
+          >
+            <div className="h-5 w-5 rounded-full border-2 border-[var(--color-border)]" />
+            <span className="h-[14px] w-[14px]" />
+            <span className="text-[var(--color-text)]">{settingsLabels[t]}</span>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      {themes.map((t) => (
+        <label
+          key={t}
+          className={`flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-colors ${
+            theme === t
+              ? "border-[var(--color-primary)] bg-[var(--color-primary-light)]"
+              : "border-[var(--color-border)] hover:border-[var(--color-border-hover)]"
+          }`}
+          onClick={() => setTheme(t)}
+        >
+          <div
+            className={`flex h-5 w-5 items-center justify-center rounded-full border-2 ${
+              theme === t ? "border-[var(--color-primary)]" : "border-[var(--color-border)]"
+            }`}
+          >
+            {theme === t && <div className="h-2.5 w-2.5 rounded-full bg-[var(--color-primary)]" />}
+          </div>
+          <span className="text-[var(--color-text-muted)]">{icons[t]}</span>
+          <span className="text-[var(--color-text)]">{settingsLabels[t]}</span>
+        </label>
+      ))}
+    </div>
   );
 }

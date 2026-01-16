@@ -288,7 +288,7 @@ export default function CreateBundlePage() {
           {/* Submit Buttons */}
           <div className="flex gap-4">
             <Link
-              href="/dashboard/seller"
+              href="/account"
               className="flex-1 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-6 py-4 text-center font-semibold text-[var(--color-text)] transition-colors hover:bg-[var(--color-surface-elevated)]"
             >
               Abbrechen
@@ -296,7 +296,7 @@ export default function CreateBundlePage() {
             <button
               type="submit"
               disabled={formData.selectedResources.length < 2}
-              className="flex-1 rounded-xl bg-[var(--color-primary)] px-6 py-4 font-semibold text-white shadow-[var(--color-primary)]/20 shadow-lg transition-colors hover:bg-[var(--color-primary-hover)] disabled:cursor-not-allowed disabled:bg-gray-400 disabled:opacity-50"
+              className="flex-1 rounded-xl bg-[var(--color-primary)] px-6 py-4 font-semibold text-white shadow-[var(--color-primary)]/20 shadow-lg transition-colors hover:bg-[var(--color-primary-hover)] disabled:cursor-not-allowed disabled:opacity-50"
             >
               Bundle erstellen
             </button>

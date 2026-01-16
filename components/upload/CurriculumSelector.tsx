@@ -43,7 +43,7 @@ interface CurriculumSelectorProps {
   competencies: string[];
   lehrmittelIds: string[];
   onCycleChange: (cycle: string) => void;
-  onSubjectChange: (subject: string) => void;
+  onSubjectChange: (subject: string, subjectCode?: string) => void;
   onCantonChange: (canton: string) => void;
   onCompetenciesChange: (competencies: string[]) => void;
   onLehrmittelChange: (lehrmittelIds: string[]) => void;
@@ -88,17 +88,19 @@ export function CurriculumSelector({
   const [competencySearch, setCompetencySearch] = useState("");
   const [showCompetencyDropdown, setShowCompetencyDropdown] = useState(false);
   const [showLehrmittelDropdown, setShowLehrmittelDropdown] = useState(false);
+  // Track subject code separately for API calls (subject prop contains the display name)
+  const [subjectCode, setSubjectCode] = useState("");
   const competencyRef = useRef<HTMLDivElement>(null);
   const lehrmittelRef = useRef<HTMLDivElement>(null);
 
-  // Fetch curriculum data when cycle, subject, or canton changes
+  // Fetch curriculum data when cycle, subjectCode, or canton changes
   useEffect(() => {
     async function fetchCurriculum() {
       setLoading(true);
       try {
         const params = new URLSearchParams();
         params.set("curriculum", "LP21");
-        if (subject) params.set("subject", subject);
+        if (subjectCode) params.set("subject", subjectCode);
         if (cycle) params.set("cycle", cycle);
         if (canton) params.set("canton", canton);
 
@@ -115,7 +117,17 @@ export function CurriculumSelector({
     }
 
     fetchCurriculum();
-  }, [cycle, subject, canton]);
+  }, [cycle, subjectCode, canton]);
+
+  // Sync subjectCode when curriculum data loads and subject name is set
+  useEffect(() => {
+    if (curriculumData && subject && !subjectCode) {
+      const matchingSubject = curriculumData.subjects.find((s) => s.name_de === subject);
+      if (matchingSubject) {
+        setSubjectCode(matchingSubject.code);
+      }
+    }
+  }, [curriculumData, subject, subjectCode]);
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -133,11 +145,12 @@ export function CurriculumSelector({
   }, []);
 
   // Filter competencies by search
-  const filteredCompetencies = curriculumData?.competencies.filter(
-    (c) =>
-      c.code.toLowerCase().includes(competencySearch.toLowerCase()) ||
-      c.description_de.toLowerCase().includes(competencySearch.toLowerCase())
-  ) || [];
+  const filteredCompetencies =
+    curriculumData?.competencies.filter(
+      (c) =>
+        c.code.toLowerCase().includes(competencySearch.toLowerCase()) ||
+        c.description_de.toLowerCase().includes(competencySearch.toLowerCase())
+    ) || [];
 
   // Group filtered competencies
   const groupedFiltered = filteredCompetencies.reduce(
@@ -166,13 +179,11 @@ export function CurriculumSelector({
     }
   };
 
-  const selectedCompetencyDetails = curriculumData?.competencies.filter((c) =>
-    competencies.includes(c.code)
-  ) || [];
+  const selectedCompetencyDetails =
+    curriculumData?.competencies.filter((c) => competencies.includes(c.code)) || [];
 
-  const selectedLehrmittelDetails = curriculumData?.lehrmittel.filter((l) =>
-    lehrmittelIds.includes(l.id)
-  ) || [];
+  const selectedLehrmittelDetails =
+    curriculumData?.lehrmittel.filter((l) => lehrmittelIds.includes(l.id)) || [];
 
   return (
     <div className="space-y-6">
@@ -218,15 +229,21 @@ export function CurriculumSelector({
           <select
             value={subject}
             onChange={(e) => {
-              onSubjectChange(e.target.value);
+              const selectedName = e.target.value;
+              const selectedSubject = curriculumData?.subjects.find(
+                (s) => s.name_de === selectedName
+              );
+              const code = selectedSubject?.code || "";
+              setSubjectCode(code);
+              onSubjectChange(selectedName, code);
               onCompetenciesChange([]); // Reset competencies when subject changes
               onLehrmittelChange([]); // Reset lehrmittel when subject changes
             }}
-            className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+            className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
           >
             <option value="">Fach wählen...</option>
             {curriculumData?.subjects.map((s) => (
-              <option key={s.id} value={s.code}>
+              <option key={s.id} value={s.name_de}>
                 {s.name_de}
               </option>
             ))}
@@ -235,13 +252,11 @@ export function CurriculumSelector({
 
         {/* Canton Selection */}
         <div>
-          <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
-            Kanton
-          </label>
+          <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">Kanton</label>
           <select
             value={canton}
             onChange={(e) => onCantonChange(e.target.value)}
-            className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+            className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
           >
             <option value="">Optional: Kanton wählen...</option>
             {CANTONS.map((c) => (
@@ -281,8 +296,18 @@ export function CurriculumSelector({
                       }}
                       className="ml-1 hover:text-[var(--color-error)]"
                     >
-                      <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      <svg
+                        className="h-3 w-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
                       </svg>
                     </button>
                   </span>
@@ -319,7 +344,7 @@ export function CurriculumSelector({
                 ) : (
                   Object.entries(groupedFiltered).map(([group, comps]) => (
                     <div key={group} className="mb-3">
-                      <div className="mb-1 px-2 text-xs font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
+                      <div className="mb-1 px-2 text-xs font-semibold tracking-wide text-[var(--color-text-muted)] uppercase">
                         {group}
                       </div>
                       {comps.map((comp) => (
@@ -341,8 +366,18 @@ export function CurriculumSelector({
                             }`}
                           >
                             {competencies.includes(comp.code) && (
-                              <svg className="h-3 w-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                              <svg
+                                className="h-3 w-3 text-white"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={3}
+                                  d="M5 13l4 4L19 7"
+                                />
                               </svg>
                             )}
                           </span>
@@ -355,7 +390,7 @@ export function CurriculumSelector({
                                 Zyklus {comp.cycle}
                               </span>
                             </div>
-                            <p className="mt-0.5 text-xs text-[var(--color-text-muted)] line-clamp-2">
+                            <p className="mt-0.5 line-clamp-2 text-xs text-[var(--color-text-muted)]">
                               {comp.description_de}
                             </p>
                           </div>
@@ -402,8 +437,18 @@ export function CurriculumSelector({
                       }}
                       className="ml-1 hover:text-[var(--color-error)]"
                     >
-                      <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      <svg
+                        className="h-3 w-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
                       </svg>
                     </button>
                   </span>
@@ -438,8 +483,18 @@ export function CurriculumSelector({
                     }`}
                   >
                     {lehrmittelIds.includes(lm.id) && (
-                      <svg className="h-3 w-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                      <svg
+                        className="h-3 w-3 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={3}
+                          d="M5 13l4 4L19 7"
+                        />
                       </svg>
                     )}
                   </span>

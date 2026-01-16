@@ -6,6 +6,26 @@ import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "./db";
 
+// Extend NextAuth types to include role
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string;
+      email: string;
+      name?: string | null;
+      image?: string | null;
+      role: "BUYER" | "SELLER" | "SCHOOL" | "ADMIN";
+    };
+  }
+}
+
+declare module "@auth/core/jwt" {
+  interface JWT {
+    id?: string;
+    role?: "BUYER" | "SELLER" | "SCHOOL" | "ADMIN";
+  }
+}
+
 const nextAuth = NextAuth({
   adapter: PrismaAdapter(prisma),
   trustHost: true,
@@ -64,15 +84,30 @@ const nextAuth = NextAuth({
     async signIn() {
       return true;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       if (user) {
-        token.id = user.id;
+        token.id = user.id as string;
+        // Fetch role from database
+        const dbUser = await prisma.user.findUnique({
+          where: { id: user.id as string },
+          select: { role: true },
+        });
+        token.role = (dbUser?.role ?? "BUYER") as "BUYER" | "SELLER" | "SCHOOL" | "ADMIN";
+      }
+      // Refresh role on session update
+      if (trigger === "update" && token.id) {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: { role: true },
+        });
+        token.role = (dbUser?.role ?? "BUYER") as "BUYER" | "SELLER" | "SCHOOL" | "ADMIN";
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user && token.id) {
         session.user.id = token.id as string;
+        session.user.role = (token.role ?? "BUYER") as "BUYER" | "SELLER" | "SCHOOL" | "ADMIN";
       }
       return session;
     },

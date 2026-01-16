@@ -5,7 +5,6 @@ import { signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { isValidEmail } from "@/lib/validations/common";
-import { DecorationBg } from "@/components/ui/DecorationBg";
 import TopBar from "@/components/ui/TopBar";
 
 export default function RegisterPage() {
@@ -79,22 +78,18 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen geometric-bg relative flex flex-col">
-      <DecorationBg />
-
+    <div className="flex min-h-screen flex-col">
       <TopBar />
 
       {/* Main Content - Centered Glass Card */}
-      <main className="relative z-10 flex-1 flex items-center justify-center px-4 py-8 sm:px-6">
+      <main className="relative z-10 flex flex-1 items-center justify-center px-4 py-8 sm:px-6">
         <div className="w-full max-w-lg">
           {/* Glass-morphic Card */}
           <div className="glass-card p-8 sm:p-10">
             {/* Title */}
             <div className="mb-8 text-center">
               <h1 className="text-3xl font-bold text-[var(--color-text)]">{t("title")}</h1>
-              <p className="mt-3 text-[var(--color-text-muted)]">
-                {t("subtitle")}
-              </p>
+              <p className="mt-3 text-[var(--color-text-muted)]">{t("subtitle")}</p>
             </div>
 
             {/* Registration Form */}
@@ -113,7 +108,7 @@ export default function RegisterPage() {
                   value={formData.name}
                   onChange={(e) => handleInputChange("name", e.target.value)}
                   required
-                  className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3.5 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-[3px] focus:ring-[var(--color-primary)]/20 transition-all"
+                  className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3.5 text-[var(--color-text)] transition-all placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:ring-[3px] focus:ring-[var(--color-primary)]/20 focus:outline-none"
                   placeholder={t("form.namePlaceholder")}
                 />
               </div>
@@ -132,7 +127,7 @@ export default function RegisterPage() {
                   value={formData.email}
                   onChange={(e) => handleInputChange("email", e.target.value)}
                   required
-                  className={`w-full rounded-lg border bg-[var(--color-surface)] px-4 py-3.5 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-[3px] transition-all ${
+                  className={`w-full rounded-lg border bg-[var(--color-surface)] px-4 py-3.5 text-[var(--color-text)] transition-all placeholder:text-[var(--color-text-muted)] focus:ring-[3px] focus:outline-none ${
                     formData.email && !isValidEmail(formData.email)
                       ? "border-[var(--color-error)] focus:border-[var(--color-error)] focus:ring-[var(--color-error)]/20"
                       : "border-[var(--color-border)] focus:border-[var(--color-primary)] focus:ring-[var(--color-primary)]/20"
@@ -140,7 +135,7 @@ export default function RegisterPage() {
                   placeholder={t("form.emailPlaceholder")}
                 />
                 {formData.email && !isValidEmail(formData.email) && (
-                  <p className="mt-2 text-sm text-[var(--color-error)] animate-fade-in">
+                  <p className="animate-fade-in mt-2 text-sm text-[var(--color-error)]">
                     {t("form.emailError")}
                   </p>
                 )}
@@ -160,7 +155,7 @@ export default function RegisterPage() {
                   value={formData.password}
                   onChange={(e) => handleInputChange("password", e.target.value)}
                   required
-                  className={`w-full rounded-lg border bg-[var(--color-surface)] px-4 py-3.5 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-[3px] transition-all ${
+                  className={`w-full rounded-lg border bg-[var(--color-surface)] px-4 py-3.5 text-[var(--color-text)] transition-all placeholder:text-[var(--color-text-muted)] focus:ring-[3px] focus:outline-none ${
                     formData.password && formData.password.length < 8
                       ? "border-[var(--color-error)] focus:border-[var(--color-error)] focus:ring-[var(--color-error)]/20"
                       : "border-[var(--color-border)] focus:border-[var(--color-primary)] focus:ring-[var(--color-primary)]/20"
@@ -168,7 +163,7 @@ export default function RegisterPage() {
                   placeholder={t("form.passwordPlaceholder")}
                 />
                 {formData.password && formData.password.length < 8 && (
-                  <p className="mt-2 text-sm text-[var(--color-error)] animate-fade-in">
+                  <p className="animate-fade-in mt-2 text-sm text-[var(--color-error)]">
                     {t("form.passwordError")}
                   </p>
                 )}
@@ -188,7 +183,7 @@ export default function RegisterPage() {
                   value={formData.confirmPassword}
                   onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
                   required
-                  className={`w-full rounded-lg border bg-[var(--color-surface)] px-4 py-3.5 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-[3px] transition-all ${
+                  className={`w-full rounded-lg border bg-[var(--color-surface)] px-4 py-3.5 text-[var(--color-text)] transition-all placeholder:text-[var(--color-text-muted)] focus:ring-[3px] focus:outline-none ${
                     formData.confirmPassword && formData.password !== formData.confirmPassword
                       ? "border-[var(--color-error)] focus:border-[var(--color-error)] focus:ring-[var(--color-error)]/20"
                       : "border-[var(--color-border)] focus:border-[var(--color-primary)] focus:ring-[var(--color-primary)]/20"
@@ -196,7 +191,7 @@ export default function RegisterPage() {
                   placeholder={t("form.confirmPasswordPlaceholder")}
                 />
                 {formData.confirmPassword && formData.password !== formData.confirmPassword && (
-                  <p className="mt-2 text-sm text-[var(--color-error)] animate-fade-in">
+                  <p className="animate-fade-in mt-2 text-sm text-[var(--color-error)]">
                     {t("form.confirmPasswordError")}
                   </p>
                 )}
@@ -210,15 +205,21 @@ export default function RegisterPage() {
                   checked={formData.agreeToTerms}
                   onChange={(e) => handleInputChange("agreeToTerms", e.target.checked)}
                   required
-                  className="mt-0.5 h-4 w-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 cursor-pointer"
+                  className="mt-0.5 h-4 w-4 cursor-pointer rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20"
                 />
                 <label htmlFor="terms" className="text-sm text-[var(--color-text-muted)]">
                   {t("form.termsText")}{" "}
-                  <Link href="/coming-soon" className="text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] font-medium">
+                  <Link
+                    href="/coming-soon"
+                    className="font-medium text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]"
+                  >
                     {t("form.termsLink")}
                   </Link>{" "}
                   {t("form.termsAnd")}{" "}
-                  <Link href="/coming-soon" className="text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] font-medium">
+                  <Link
+                    href="/coming-soon"
+                    className="font-medium text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]"
+                  >
                     {t("form.privacyLink")}
                   </Link>
                 </label>
@@ -226,7 +227,7 @@ export default function RegisterPage() {
 
               {/* Error Message */}
               {error && (
-                <div className="rounded-lg bg-[var(--badge-error-bg)] border border-[var(--color-error)] px-4 py-3 text-sm text-[var(--color-error)] animate-fade-in">
+                <div className="animate-fade-in rounded-lg border border-[var(--color-error)] bg-[var(--badge-error-bg)] px-4 py-3 text-sm text-[var(--color-error)]">
                   {error}
                 </div>
               )}
@@ -235,7 +236,7 @@ export default function RegisterPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full rounded-lg bg-[var(--color-primary)] px-6 py-4 font-bold text-white text-center transition-all hover:-translate-y-0.5 hover:bg-[var(--color-primary-hover)] hover:shadow-lg mt-4 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none disabled:hover:bg-[var(--color-primary)]"
+                className="mt-4 w-full rounded-lg bg-[var(--color-primary)] px-6 py-4 text-center font-bold text-white transition-all hover:-translate-y-0.5 hover:bg-[var(--color-primary-hover)] hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:bg-[var(--color-primary)] disabled:hover:shadow-none"
               >
                 {isLoading ? t("form.submitting") : t("form.submitButton")}
               </button>
@@ -260,7 +261,7 @@ export default function RegisterPage() {
               <button
                 type="button"
                 onClick={() => signIn("google")}
-                className="flex items-center justify-center gap-3 rounded-lg bg-[var(--color-surface)] px-4 py-3.5 text-[var(--color-text)] font-medium hover:bg-[var(--color-surface-elevated)] transition-all"
+                className="flex items-center justify-center gap-3 rounded-lg bg-[var(--color-surface)] px-4 py-3.5 font-medium text-[var(--color-text)] transition-all hover:bg-[var(--color-surface-elevated)]"
               >
                 <svg className="h-5 w-5" viewBox="0 0 24 24">
                   <path
@@ -286,13 +287,13 @@ export default function RegisterPage() {
               <button
                 type="button"
                 onClick={() => signIn("azure-ad")}
-                className="flex items-center justify-center gap-3 rounded-lg bg-[var(--color-surface)] px-4 py-3.5 text-[var(--color-text)] font-medium hover:bg-[var(--color-surface-elevated)] transition-all"
+                className="flex items-center justify-center gap-3 rounded-lg bg-[var(--color-surface)] px-4 py-3.5 font-medium text-[var(--color-text)] transition-all hover:bg-[var(--color-surface-elevated)]"
               >
                 <svg className="h-5 w-5" viewBox="0 0 23 23">
-                  <path fill="#f35325" d="M1 1h10v10H1z"/>
-                  <path fill="#81bc06" d="M12 1h10v10H12z"/>
-                  <path fill="#05a6f0" d="M1 12h10v10H1z"/>
-                  <path fill="#ffba08" d="M12 12h10v10H12z"/>
+                  <path fill="#f35325" d="M1 1h10v10H1z" />
+                  <path fill="#81bc06" d="M12 1h10v10H12z" />
+                  <path fill="#05a6f0" d="M1 12h10v10H1z" />
+                  <path fill="#ffba08" d="M12 12h10v10H12z" />
                 </svg>
                 {t("oauth.microsoft")}
               </button>
@@ -303,7 +304,7 @@ export default function RegisterPage() {
               {t("login.prompt")}{" "}
               <Link
                 href="/login"
-                className="font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-colors"
+                className="font-semibold text-[var(--color-primary)] transition-colors hover:text-[var(--color-primary-hover)]"
               >
                 {t("login.link")}
               </Link>
@@ -316,10 +317,15 @@ export default function RegisterPage() {
       <footer className="relative z-10 px-6 py-6 sm:px-8">
         <Link
           href="/"
-          className="inline-flex items-center text-sm text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors font-medium"
+          className="inline-flex items-center text-sm font-medium text-[var(--color-text-muted)] transition-colors hover:text-[var(--color-primary)]"
         >
-          <svg className="mr-1.5 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          <svg className="mr-1.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
           </svg>
           {tCommon("buttons.backToHome")}
         </Link>

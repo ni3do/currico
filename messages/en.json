@@ -17,26 +17,13 @@
       "account": "My Account"
     },
     "footer": {
-      "brandDescription": "The platform for teaching materials by Swiss educators.",
-      "platformSection": {
-        "title": "Platform",
-        "resources": "Resources",
-        "pricing": "Pricing"
-      },
-      "infoSection": {
-        "title": "Information",
-        "aboutUs": "About Us",
-        "contact": "Contact",
-        "help": "Help"
-      },
-      "legalSection": {
-        "title": "Legal",
-        "privacy": "Privacy Policy",
-        "terms": "Terms of Service",
-        "imprint": "Imprint"
-      },
-      "copyright": "2026 EasyLehrer. All rights reserved.",
-      "initiative": "An initiative for Swiss education"
+      "copyright": "\u00a9 2026 EasyLehrer",
+      "links": {
+        "help": "Help",
+        "imprint": "Imprint",
+        "privacy": "Privacy",
+        "terms": "Terms"
+      }
     },
     "buttons": {
       "viewAll": "View All",
@@ -53,10 +40,36 @@
       "title": "By Teachers, For Teachers: Teaching Materials in Record Time.",
       "description": "Discover professional teaching resources, developed by colleagues and precisely aligned with <bold>Lehrplan 21</bold>. Trustworthy, verified, ready to use.",
       "primaryButton": "Find Materials Now",
-      "secondaryButton": "Learn More"
+      "secondaryButton": "Learn More",
+      "search": {
+        "placeholder": "Search worksheets, lesson plans, exams...",
+        "allSubjects": "All Subjects",
+        "math": "Mathematics",
+        "german": "German",
+        "english": "English",
+        "french": "French",
+        "nmg": "NMG",
+        "arts": "Visual Arts",
+        "music": "Music",
+        "sports": "Sports",
+        "button": "Search"
+      }
     },
-    "trustBar": {
-      "title": "Trusted by Educational Institutions"
+    "howItWorks": {
+      "title": "How It Works",
+      "description": "Get started in three simple steps",
+      "step1": {
+        "title": "Browse & Search",
+        "description": "Search by subject, cycle, or keyword. Filter by Lehrplan 21 competencies to find exactly what you need."
+      },
+      "step2": {
+        "title": "Preview & Purchase",
+        "description": "Preview materials before buying. Secure payment via credit card or TWINT."
+      },
+      "step3": {
+        "title": "Download & Use",
+        "description": "Instant download after purchase. Use the materials directly in your classroom."
+      }
     },
     "featuredResources": {
       "title": "Featured Materials",
@@ -101,6 +114,42 @@
       "feature3": {
         "title": "Ready to Use",
         "description": "All materials are fully developed and can be used directly in the classroom."
+      }
+    },
+    "sellerCta": {
+      "title": "Share Your Teaching Materials",
+      "description": "You've created great worksheets, lesson plans, or exams? Share them with colleagues across Switzerland and earn money while helping other teachers save time.",
+      "benefits": {
+        "earn": "Earn passive income",
+        "earnDesc": "Set your own prices and earn 70% of every sale",
+        "reach": "Reach thousands",
+        "reachDesc": "Connect with teachers throughout Switzerland",
+        "simple": "Simple upload",
+        "simpleDesc": "Upload once, sell repeatedly with no effort"
+      },
+      "button": "Start Selling",
+      "note": "Free to join. No monthly fees."
+    },
+    "testimonials": {
+      "title": "What Teachers Say",
+      "description": "Trusted by educators across Switzerland",
+      "testimonial1": {
+        "quote": "EasyLehrer has transformed my lesson planning. I find quality materials in minutes instead of hours. The Lehrplan 21 filtering is incredibly helpful.",
+        "name": "Sarah M.",
+        "role": "Primary Teacher",
+        "location": "Zürich"
+      },
+      "testimonial2": {
+        "quote": "As a seller, I've earned over CHF 2,000 sharing materials I already created. It feels great to help other teachers while earning extra income.",
+        "name": "Thomas K.",
+        "role": "Secondary Teacher",
+        "location": "Bern"
+      },
+      "testimonial3": {
+        "quote": "The quality control really shows. Every resource I've purchased has been professionally made and ready to use in my classroom the next day.",
+        "name": "Lisa W.",
+        "role": "Special Education Teacher",
+        "location": "Basel"
       }
     }
   },
@@ -351,6 +400,7 @@
   },
   "aboutPage": {
     "hero": {
+      "badge": "For Swiss Educators",
       "title": "Prepare Smarter. Live Better.",
       "subtitle": "We bring Swiss quality and valuable free time back to your school day.",
       "imageAlt": "Relaxed teacher with tablet"
@@ -384,7 +434,9 @@
     },
     "cta": {
       "title": "Ready for Less Preparation Stress?",
-      "button": "Discover Teaching Materials Now"
+      "subtitle": "Join hundreds of Swiss teachers who are already saving time and using high-quality materials.",
+      "button": "Explore Materials",
+      "secondaryButton": "Register for Free"
     }
   },
   "contactPage": {
@@ -438,5 +490,102 @@
   "metadata": {
     "title": "Easy Lehrer - Teaching Materials for Educators",
     "description": "Discover high-quality teaching materials for Swiss educators"
+  },
+  "curriculum": {
+    "lp21": {
+      "title": "Lehrplan 21",
+      "alignment": "Lehrplan 21 Alignment",
+      "competencies": "Competencies",
+      "noAlignment": "No Lehrplan 21 alignment available"
+    },
+    "cycles": {
+      "title": "Cycle",
+      "cycle1": "Cycle 1",
+      "cycle1Desc": "Kindergarten - 2nd Grade",
+      "cycle2": "Cycle 2",
+      "cycle2Desc": "3rd - 6th Grade",
+      "cycle3": "Cycle 3",
+      "cycle3Desc": "7th - 9th Grade"
+    },
+    "subjects": {
+      "title": "Subject Area",
+      "MA": "Mathematics",
+      "D": "German",
+      "F": "French",
+      "E": "English",
+      "NMG": "Nature, People, Society",
+      "BG": "Visual Arts",
+      "TTG": "Textiles and Technical Design",
+      "MU": "Music",
+      "BS": "Physical Education",
+      "MI": "Media and Computing"
+    },
+    "anforderungsstufe": {
+      "title": "Requirement Level",
+      "grund": "Basic Requirements",
+      "erweitert": "Extended Requirements",
+      "grundShort": "B",
+      "erweitertShort": "E"
+    },
+    "transversal": {
+      "title": "Cross-Curricular Competencies",
+      "personale": "Personal Competencies",
+      "soziale": "Social Competencies",
+      "methodische": "Methodological Competencies",
+      "PK1": "Self-Reflection",
+      "PK2": "Self-Reliance",
+      "PK3": "Independence",
+      "SK1": "Cooperation Skills",
+      "SK2": "Conflict Resolution",
+      "SK3": "Dealing with Diversity",
+      "MK1": "Language Skills",
+      "MK2": "Using Information",
+      "MK3": "Problem Solving"
+    },
+    "bne": {
+      "title": "ESD Topics",
+      "description": "Education for Sustainable Development",
+      "BNE1": "Politics, Democracy and Human Rights",
+      "BNE2": "Natural Environment and Resources",
+      "BNE3": "Gender and Equality",
+      "BNE4": "Health and Well-being",
+      "BNE5": "Global Development and Peace",
+      "BNE6": "Cultural Identities and Intercultural Understanding",
+      "BNE7": "Economy and Consumption",
+      "sdg": "UN Sustainable Development Goal"
+    },
+    "mi": {
+      "title": "Media and Computing",
+      "integrated": "Media and Computing Integrated",
+      "description": "Only show materials with M&I integration"
+    },
+    "filter": {
+      "title": "Filters",
+      "clearAll": "Clear All",
+      "competencySearch": "LP21 Competency",
+      "competencyPlaceholder": "e.g. MA.1.A or D.2.B",
+      "competencyHint": "Enter an LP21 competency code",
+      "clearSelection": "Clear selection"
+    },
+    "search": {
+      "placeholder": "Search (e.g. MA.1.A or Addition)...",
+      "codeDetected": "LP21 code detected - filtering results by code",
+      "noResults": "No results for"
+    },
+    "navigator": {
+      "title": "Competence Navigator",
+      "selectCompetencies": "Select competencies",
+      "selectedCount": "selected",
+      "expandAll": "Expand all",
+      "collapseAll": "Collapse all"
+    },
+    "lehrmittel": {
+      "title": "Compatible Textbooks",
+      "placeholder": "Optional: Select textbook...",
+      "hint": "Select textbooks that your resource is compatible with"
+    },
+    "upload": {
+      "competencyTip": "The more precisely you align your resource to Lehrplan 21, the easier teachers will find your materials. Select all relevant competencies."
+    }
   }
 }

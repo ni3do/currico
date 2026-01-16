@@ -10,7 +10,7 @@ export const SWISS_SUBJECTS = [
   "Deutsch",
   "Französisch",
   "Englisch",
-  "NMG", // Natur, Mensch, Gesellschaft
+  "Natur, Mensch, Gesellschaft", // NMG
   "Bildnerisches Gestalten",
   "Textiles und Technisches Gestalten",
   "Musik",
@@ -65,17 +65,9 @@ export const updatePublicProfileSchema = z.object({
     .string()
     .min(2, "Name muss mindestens 2 Zeichen haben")
     .max(50, "Name darf maximal 50 Zeichen haben"),
-  bio: z
-    .string()
-    .max(500, "Bio darf maximal 500 Zeichen haben")
-    .optional()
-    .nullable(),
-  subjects: z
-    .array(z.string())
-    .min(1, "Mindestens ein Fach auswählen"),
-  cycles: z
-    .array(z.string())
-    .min(1, "Mindestens einen Zyklus auswählen"),
+  bio: z.string().max(500, "Bio darf maximal 500 Zeichen haben").optional().nullable(),
+  subjects: z.array(z.string()).min(1, "Mindestens ein Fach auswählen"),
+  cycles: z.array(z.string()).min(1, "Mindestens einen Zyklus auswählen"),
   cantons: z.array(z.string()).optional(),
 });
 
@@ -89,18 +81,14 @@ export const updatePayoutSchema = z.object({
     .string()
     .min(1, "Nachname ist erforderlich")
     .max(100, "Nachname darf maximal 100 Zeichen haben"),
-  iban: z
-    .string()
-    .refine(isValidSwissIBAN, "Ungültige Schweizer IBAN"),
+  iban: z.string().refine(isValidSwissIBAN, "Ungültige Schweizer IBAN"),
   address_street: z.string().optional().nullable(),
   address_city: z.string().optional().nullable(),
   address_postal: z.string().optional().nullable(),
 });
 
 // Full profile update (combines both)
-export const updateProfileSchema = updatePublicProfileSchema.merge(
-  updatePayoutSchema.partial()
-);
+export const updateProfileSchema = updatePublicProfileSchema.merge(updatePayoutSchema.partial());
 
 // Registration schema
 export const registerSchema = z.object({

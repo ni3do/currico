@@ -100,6 +100,8 @@ model User {
   sessions     Session[]
   resources    Resource[]
   transactions Transaction[]
+  downloads    Download[]
+  wishlists    Wishlist[]
 
   // Report relations
   reports_submitted Report[] @relation("Reporter")
@@ -144,8 +146,8 @@ model Resource {
   is_approved  Boolean @default(false) // Admin approval
 
   // Document verification workflow
-  status      ResourceStatus @default(PENDING) // pending, verified, rejected
-  is_public   Boolean @default(false) // Only visible to others when true
+  status    ResourceStatus @default(PENDING) // pending, verified, rejected
+  is_public Boolean        @default(false) // Only visible to others when true
 
   // Swiss Quality Checks
   eszett_checked Boolean @default(false) // Checked for ß (should use ss)
@@ -156,11 +158,18 @@ model Resource {
   seller_id    String
   seller       User          @relation(fields: [seller_id], references: [id])
   transactions Transaction[]
+  downloads    Download[]
+  wishlists    Wishlist[]
   reports      Report[]
 
   // Curriculum alignment
   competencies ResourceCompetency[]
   lehrmittel   ResourceLehrmittel[]
+
+  // LP21 cross-curricular features
+  is_mi_integrated Boolean               @default(false) // Medien & Informatik integration
+  transversals     ResourceTransversal[]
+  bne_themes       ResourceBne[]
 
   @@map("resources")
 }
@@ -293,6 +302,8 @@ model CurriculumSubject {
   name_de String
   name_fr String?
   name_it String?
+  color   String? // LP21 official color scheme (hex)
+  icon    String? // Optional icon identifier
 
   curriculum_id String
   curriculum    Curriculum @relation(fields: [curriculum_id], references: [id], onDelete: Cascade)
@@ -314,6 +325,14 @@ model CurriculumCompetency {
   // Hierarchy levels for LP21
   kompetenzbereich String? // Competency Area (Level 2)
   handlungsaspekt  String? // Action/Theme Aspect (Level 3)
+
+  // Requirement level: "grund" (basic) | "erweitert" (extended) | null (both)
+  anforderungsstufe String?
+
+  // Self-referential hierarchy for nested competencies
+  parent_id String?
+  parent    CurriculumCompetency?  @relation("CompetencyHierarchy", fields: [parent_id], references: [id], onDelete: SetNull)
+  children  CurriculumCompetency[] @relation("CompetencyHierarchy")
 
   subject_id String
   subject    CurriculumSubject @relation(fields: [subject_id], references: [id], onDelete: Cascade)
@@ -341,6 +360,46 @@ model Lehrmittel {
 }
 
 // ============================================================
+// TRANSVERSAL COMPETENCIES - Überfachliche Kompetenzen
+// ============================================================
+
+model TransversalCompetency {
+  id             String  @id @default(cuid())
+  code           String  @unique // "PK.1", "SK.1", "MK.1"
+  category       String // "personale" | "soziale" | "methodische"
+  name_de        String
+  name_fr        String?
+  description_de String  @db.Text
+  description_fr String? @db.Text
+  icon           String? // Icon identifier
+  color          String? // Hex color code
+
+  resources ResourceTransversal[]
+
+  @@map("transversal_competencies")
+}
+
+// ============================================================
+// BNE THEMES - Bildung für Nachhaltige Entwicklung
+// ============================================================
+
+model BneTheme {
+  id             String  @id @default(cuid())
+  code           String  @unique // "BNE.1", "BNE.2", etc.
+  name_de        String
+  name_fr        String?
+  description_de String  @db.Text
+  description_fr String? @db.Text
+  sdg_number     Int? // UN Sustainable Development Goal alignment (1-17)
+  icon           String? // Icon identifier
+  color          String? // Hex color code
+
+  resources ResourceBne[]
+
+  @@map("bne_themes")
+}
+
+// ============================================================
 // JUNCTION TABLES - Many-to-many relations
 // ============================================================
 
@@ -362,4 +421,60 @@ model ResourceLehrmittel {
 
   @@id([resource_id, lehrmittel_id])
   @@map("resource_lehrmittel")
+}
+
+model ResourceTransversal {
+  resource_id    String
+  resource       Resource              @relation(fields: [resource_id], references: [id], onDelete: Cascade)
+  transversal_id String
+  transversal    TransversalCompetency @relation(fields: [transversal_id], references: [id], onDelete: Cascade)
+
+  @@id([resource_id, transversal_id])
+  @@map("resource_transversals")
+}
+
+model ResourceBne {
+  resource_id String
+  resource    Resource @relation(fields: [resource_id], references: [id], onDelete: Cascade)
+  bne_id      String
+  bne         BneTheme @relation(fields: [bne_id], references: [id], onDelete: Cascade)
+
+  @@id([resource_id, bne_id])
+  @@map("resource_bne")
+}
+
+// ============================================================
+// DOWNLOAD MODEL - Track free resource downloads
+// ============================================================
+
+model Download {
+  id         String   @id @default(cuid())
+  created_at DateTime @default(now())
+
+  // Relations
+  user_id     String
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  resource_id String
+  resource    Resource @relation(fields: [resource_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, resource_id])
+  @@map("downloads")
+}
+
+// ============================================================
+// WISHLIST MODEL - Save resources for later
+// ============================================================
+
+model Wishlist {
+  id         String   @id @default(cuid())
+  created_at DateTime @default(now())
+
+  // Relations
+  user_id     String
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  resource_id String
+  resource    Resource @relation(fields: [resource_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, resource_id])
+  @@map("wishlists")
 }

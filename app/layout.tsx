@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import { getLocale } from "next-intl/server";
 import "./globals.css";
 import { Providers } from "./providers";
+import { DecorationBg } from "@/components/ui/DecorationBg";
 
 export const metadata: Metadata = {
   title: "Easy Lehrer - Unterrichtsmaterial für Lehrpersonen",
-  description:
-    "Entdecken Sie hochwertige Unterrichtsmaterialien für Schweizer Lehrpersonen",
+  description: "Entdecken Sie hochwertige Unterrichtsmaterialien für Schweizer Lehrpersonen",
 };
 
 // Anti-FOUC script to set theme before React hydrates
@@ -21,11 +21,7 @@ const themeScript = `
   })();
 `;
 
-export default async function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const locale = await getLocale();
 
   return (
@@ -33,7 +29,8 @@ export default async function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className="antialiased">
+      <body className="geometric-bg relative min-h-screen antialiased">
+        <DecorationBg />
         <Providers>{children}</Providers>
       </body>
     </html>

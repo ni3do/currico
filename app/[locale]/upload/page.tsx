@@ -161,7 +161,7 @@ export default function UploadPage() {
 
       // Redirect after a short delay
       setTimeout(() => {
-        router.push("/dashboard/seller");
+        router.push("/account");
       }, 2000);
     } catch (err) {
       console.error("Upload error:", err);
@@ -960,7 +960,7 @@ export default function UploadPage() {
               <button
                 onClick={handlePublish}
                 disabled={!canPublish || uploadStatus !== "idle"}
-                className="rounded-lg bg-[var(--color-primary)] px-8 py-3 font-semibold text-white shadow-[var(--color-primary)]/20 shadow-lg transition-colors hover:bg-[var(--color-primary-hover)] disabled:cursor-not-allowed disabled:bg-gray-400 disabled:opacity-50"
+                className="rounded-lg bg-[var(--color-primary)] px-8 py-3 font-semibold text-white shadow-[var(--color-primary)]/20 shadow-lg transition-colors hover:bg-[var(--color-primary-hover)] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Veröffentlichen
               </button>
