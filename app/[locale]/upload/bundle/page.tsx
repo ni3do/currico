@@ -59,7 +59,7 @@ export default function CreateBundlePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--color-bg)]">
+    <div className="min-h-screen">
       <TopBar />
 
       <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
@@ -88,7 +88,7 @@ export default function CreateBundlePage() {
                   value={formData.title}
                   onChange={(e) => updateFormData("title", e.target.value)}
                   required
-                  className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                  className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
                   placeholder="z.B. Mathematik Komplett-Paket Zyklus 2"
                 />
               </div>
@@ -102,7 +102,7 @@ export default function CreateBundlePage() {
                   onChange={(e) => updateFormData("description", e.target.value)}
                   required
                   rows={4}
-                  className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                  className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
                   placeholder="Beschreiben Sie das Bundle und welchen Mehrwert es bietet..."
                 />
               </div>
@@ -116,7 +116,7 @@ export default function CreateBundlePage() {
                     value={formData.subject}
                     onChange={(e) => updateFormData("subject", e.target.value)}
                     required
-                    className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                    className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
                   >
                     <option value="">Wählen Sie...</option>
                     <option value="Mathematik">Mathematik</option>
@@ -135,7 +135,7 @@ export default function CreateBundlePage() {
                     value={formData.cycle}
                     onChange={(e) => updateFormData("cycle", e.target.value)}
                     required
-                    className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                    className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
                   >
                     <option value="">Wählen Sie...</option>
                     <option value="1">Zyklus 1</option>
@@ -217,9 +217,7 @@ export default function CreateBundlePage() {
                     {formData.selectedResources.length} Ressourcen ausgewählt
                   </span>
                   <div className="text-right">
-                    <div className="text-sm text-[var(--color-text-muted)]">
-                      Gesamt-Einzelpreis
-                    </div>
+                    <div className="text-sm text-[var(--color-text-muted)]">Gesamt-Einzelpreis</div>
                     <div className="text-lg font-bold text-[var(--color-text)]">
                       CHF {calculateTotal().toFixed(2)}
                     </div>
@@ -231,9 +229,7 @@ export default function CreateBundlePage() {
 
           {/* Pricing */}
           <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8">
-            <h2 className="mb-6 text-xl font-semibold text-[var(--color-text)]">
-              Bundle-Preis
-            </h2>
+            <h2 className="mb-6 text-xl font-semibold text-[var(--color-text)]">Bundle-Preis</h2>
 
             <div>
               <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
@@ -247,10 +243,10 @@ export default function CreateBundlePage() {
                   required
                   min="0"
                   step="0.50"
-                  className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 pl-12 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                  className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 pl-12 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
                   placeholder="25.00"
                 />
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]">
+                <span className="absolute top-1/2 left-4 -translate-y-1/2 text-[var(--color-text-muted)]">
                   CHF
                 </span>
               </div>
@@ -275,8 +271,8 @@ export default function CreateBundlePage() {
                       </div>
                       <div className="text-sm text-[var(--color-text-muted)]">
                         Käufer sparen CHF{" "}
-                        {(calculateTotal() - parseFloat(formData.price)).toFixed(2)} im
-                        Vergleich zum Einzelkauf
+                        {(calculateTotal() - parseFloat(formData.price)).toFixed(2)} im Vergleich
+                        zum Einzelkauf
                       </div>
                     </div>
                   </div>
@@ -293,14 +289,14 @@ export default function CreateBundlePage() {
           <div className="flex gap-4">
             <Link
               href="/dashboard/seller"
-              className="flex-1 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-6 py-4 text-center font-semibold text-[var(--color-text)] hover:bg-[var(--color-surface-elevated)] transition-colors"
+              className="flex-1 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-6 py-4 text-center font-semibold text-[var(--color-text)] transition-colors hover:bg-[var(--color-surface-elevated)]"
             >
               Abbrechen
             </Link>
             <button
               type="submit"
               disabled={formData.selectedResources.length < 2}
-              className="flex-1 rounded-xl bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-success)] px-6 py-4 font-semibold text-white hover:opacity-90 transition-opacity shadow-lg shadow-[var(--color-primary)]/20 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 rounded-xl bg-[var(--color-primary)] px-6 py-4 font-semibold text-white shadow-[var(--color-primary)]/20 shadow-lg transition-colors hover:bg-[var(--color-primary-hover)] disabled:cursor-not-allowed disabled:bg-gray-400 disabled:opacity-50"
             >
               Bundle erstellen
             </button>

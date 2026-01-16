@@ -48,7 +48,7 @@ export default function ProfilePage() {
   const displayCanton = profileData?.cantons?.[0] || "Nicht angegeben";
 
   return (
-    <div className="min-h-screen bg-[var(--color-bg)]">
+    <div className="min-h-screen">
       <TopBar />
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -106,7 +106,7 @@ export default function ProfilePage() {
                   </h2>
                   <Link
                     href="/profile/edit"
-                    className="rounded-lg border border-[var(--color-border)] px-4 py-2 text-sm font-medium text-[var(--color-text)] hover:bg-[var(--color-surface-elevated)] transition-colors"
+                    className="rounded-lg border border-[var(--color-border)] px-4 py-2 text-sm font-medium text-[var(--color-text)] transition-colors hover:bg-[var(--color-surface-elevated)]"
                   >
                     Bearbeiten
                   </Link>
@@ -162,11 +162,12 @@ export default function ProfilePage() {
                             </span>
                           ))
                         ) : (
-                          <span className="text-[var(--color-text-muted)]">Keine Fächer ausgewählt</span>
+                          <span className="text-[var(--color-text-muted)]">
+                            Keine Fächer ausgewählt
+                          </span>
                         )}
                       </div>
                     </div>
-
                   </div>
                 ) : null}
               </div>
@@ -180,7 +181,9 @@ export default function ProfilePage() {
                 <div className="space-y-4">
                   <div>
                     <div className="text-2xl font-bold text-[var(--color-primary)]">12</div>
-                    <div className="text-sm text-[var(--color-text-muted)]">Gekaufte Ressourcen</div>
+                    <div className="text-sm text-[var(--color-text-muted)]">
+                      Gekaufte Ressourcen
+                    </div>
                   </div>
                   <div>
                     <div className="text-2xl font-bold text-[var(--color-success)]">5</div>
@@ -199,17 +202,17 @@ export default function ProfilePage() {
                 <div className="space-y-3">
                   <Link
                     href="/resources"
-                    className="block rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-sm text-[var(--color-text)] hover:bg-[var(--color-surface-elevated)] transition-colors"
+                    className="block rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-sm text-[var(--color-text)] transition-colors hover:bg-[var(--color-surface-elevated)]"
                   >
                     Ressourcen durchsuchen
                   </Link>
                   <Link
                     href="/profile/edit"
-                    className="block rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-sm text-[var(--color-text)] hover:bg-[var(--color-surface-elevated)] transition-colors"
+                    className="block rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-sm text-[var(--color-text)] transition-colors hover:bg-[var(--color-surface-elevated)]"
                   >
                     Verkäufer werden
                   </Link>
-                  <button className="w-full rounded-lg border border-[var(--color-error)] px-4 py-3 text-sm text-[var(--color-error)] hover:bg-[var(--color-error)]/10 transition-colors">
+                  <button className="w-full rounded-lg border border-[var(--color-error)] px-4 py-3 text-sm text-[var(--color-error)] transition-colors hover:bg-[var(--color-error)]/10">
                     Abmelden
                   </button>
                 </div>
@@ -242,8 +245,10 @@ export default function ProfilePage() {
                   <h3 className="mb-2 font-semibold text-[var(--color-text)]">
                     Bruchrechnen Übungsblätter
                   </h3>
-                  <p className="mb-4 text-sm text-[var(--color-text-muted)]">Mathematik • Zyklus 2</p>
-                  <button className="w-full rounded-lg bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-success)] px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity">
+                  <p className="mb-4 text-sm text-[var(--color-text-muted)]">
+                    Mathematik • Zyklus 2
+                  </p>
+                  <button className="w-full rounded-lg bg-[var(--color-primary)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--color-primary-hover)]">
                     Herunterladen
                   </button>
                 </div>
@@ -279,7 +284,7 @@ export default function ProfilePage() {
                   <p className="mb-3 text-sm text-[var(--color-text-muted)]">NMG • Zyklus 2</p>
                   <div className="flex items-center justify-between">
                     <span className="text-lg font-bold text-[var(--color-primary)]">CHF 25.00</span>
-                    <button className="rounded-lg bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-success)] px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity">
+                    <button className="rounded-lg bg-[var(--color-primary)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--color-primary-hover)]">
                       Kaufen
                     </button>
                   </div>
