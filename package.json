@@ -30,7 +30,8 @@
     "docker:db:push": "docker compose exec app npx prisma db push",
     "docker:db:migrate": "docker compose exec app npx prisma migrate dev",
     "docker:db:studio": "docker compose exec app npx prisma studio",
-    "docker:shell": "docker compose exec app sh"
+    "docker:shell": "docker compose exec app sh",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
@@ -66,8 +67,12 @@
     "autoprefixer": "^10.4.23",
     "eslint": "^9.39.2",
     "eslint-config-next": "^16.1.1",
+    "husky": "^9.1.7",
     "jsdom": "^27.4.0",
+    "lint-staged": "^16.2.7",
     "postcss": "^8.5.6",
+    "prettier": "^3.7.4",
+    "prettier-plugin-tailwindcss": "^0.7.2",
     "tailwindcss": "^4.1.18",
     "tsx": "^4.19.2",
     "typescript": "^5.9.3",
@@ -75,5 +80,15 @@
   },
   "optionalDependencies": {
     "@swc/helpers": "^0.5.18"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "prettier --write",
+      "eslint --fix",
+      "bash -c 'tsc --noEmit'"
+    ],
+    "*.{js,jsx,json,css,md}": [
+      "prettier --write"
+    ]
   }
 }
