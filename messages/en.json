@@ -725,5 +725,40 @@
       "verifyEmail": "Verify your email to continue",
       "emailRequired": "Please verify your email address before becoming a seller"
     }
+  },
+  "sellerOnboarding": {
+    "loading": "Checking your seller status...",
+    "notLoggedIn": {
+      "title": "Not Logged In",
+      "description": "You need to be signed in to complete seller onboarding.",
+      "loginButton": "Sign In"
+    },
+    "error": {
+      "title": "Something Went Wrong",
+      "fetchFailed": "Could not check your seller status. Please try again.",
+      "tryAgain": "Try Again"
+    },
+    "success": {
+      "title": "You're All Set!",
+      "description": "Your seller account is now active. You can start uploading and selling your teaching materials.",
+      "chargesEnabled": "Payments enabled",
+      "payoutsEnabled": "Payouts enabled",
+      "payoutsPending": "Payouts pending",
+      "uploadFirst": "Upload Your First Resource",
+      "viewDashboard": "View Stripe Dashboard"
+    },
+    "pending": {
+      "title": "Almost There!",
+      "description": "Your account is being reviewed by Stripe. This usually takes a few minutes.",
+      "requirementsNeeded": "Stripe needs some additional information to complete your account setup.",
+      "requiredInfo": "Required information:",
+      "andMore": "and {count} more...",
+      "continueSetup": "Continue Setup"
+    },
+    "noAccount": {
+      "title": "Start Selling",
+      "description": "You haven't started the seller onboarding process yet.",
+      "startSetup": "Become a Seller"
+    }
   }
 }

@@ -725,5 +725,40 @@
       "verifyEmail": "Verifizieren Sie Ihre E-Mail, um fortzufahren",
       "emailRequired": "Bitte verifizieren Sie Ihre E-Mail-Adresse, bevor Sie Verkäufer werden"
     }
+  },
+  "sellerOnboarding": {
+    "loading": "Verkäuferstatus wird überprüft...",
+    "notLoggedIn": {
+      "title": "Nicht angemeldet",
+      "description": "Sie müssen angemeldet sein, um die Verkäuferregistrierung abzuschliessen.",
+      "loginButton": "Anmelden"
+    },
+    "error": {
+      "title": "Etwas ist schiefgelaufen",
+      "fetchFailed": "Ihr Verkäuferstatus konnte nicht überprüft werden. Bitte versuchen Sie es erneut.",
+      "tryAgain": "Erneut versuchen"
+    },
+    "success": {
+      "title": "Alles bereit!",
+      "description": "Ihr Verkäuferkonto ist jetzt aktiv. Sie können mit dem Hochladen und Verkaufen Ihrer Unterrichtsmaterialien beginnen.",
+      "chargesEnabled": "Zahlungen aktiviert",
+      "payoutsEnabled": "Auszahlungen aktiviert",
+      "payoutsPending": "Auszahlungen ausstehend",
+      "uploadFirst": "Erste Ressource hochladen",
+      "viewDashboard": "Stripe-Dashboard öffnen"
+    },
+    "pending": {
+      "title": "Fast fertig!",
+      "description": "Ihr Konto wird von Stripe überprüft. Dies dauert normalerweise einige Minuten.",
+      "requirementsNeeded": "Stripe benötigt einige zusätzliche Informationen, um Ihr Konto einzurichten.",
+      "requiredInfo": "Erforderliche Informationen:",
+      "andMore": "und {count} weitere...",
+      "continueSetup": "Einrichtung fortsetzen"
+    },
+    "noAccount": {
+      "title": "Verkaufen starten",
+      "description": "Sie haben den Verkäufer-Registrierungsprozess noch nicht begonnen.",
+      "startSetup": "Verkäufer werden"
+    }
   }
 }

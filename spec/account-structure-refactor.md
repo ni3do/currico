@@ -178,7 +178,7 @@ Implement the actual Stripe Connect flow.
 - [x] **6.5** Create `GET /api/seller/connect/status` - returns current Stripe status
 - [x] **6.6** Create `POST /api/payments/webhook` - handles Stripe webhooks
 - [x] **6.7** Handle `account.updated` webhook - sync charges/payouts enabled
-- [ ] **6.8** Create seller onboarding return page `/seller/onboarding/complete`
+- [x] **6.8** Create seller onboarding return page `/seller/onboarding/complete`
 - [x] **6.9** Update user role to SELLER when Stripe onboarding complete
 
 ### Platform Fee Configuration
