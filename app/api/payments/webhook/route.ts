@@ -45,10 +45,9 @@ export async function POST(request: NextRequest) {
         await handleCheckoutSessionCompleted(event.data.object as Stripe.Checkout.Session);
         break;
 
-      // Future event handlers can be added here:
-      // case "payment_intent.payment_failed":
-      //   await handlePaymentFailed(event.data.object as Stripe.PaymentIntent);
-      //   break;
+      case "payment_intent.payment_failed":
+        await handlePaymentIntentFailed(event.data.object as Stripe.PaymentIntent);
+        break;
 
       default:
         // Log unhandled events for debugging
@@ -216,6 +215,67 @@ async function handleCheckoutSessionCompleted(
   console.log(
     `Webhook: Completed transaction ${transaction.id} for buyer ${transaction.buyer_id}, ` +
     `granted access to resource ${transaction.resource_id}`
+  );
+}
+
+/**
+ * Handle payment_intent.payment_failed webhook event
+ * Marks pending transactions as failed when payment fails
+ */
+async function handlePaymentIntentFailed(
+  paymentIntent: Stripe.PaymentIntent
+): Promise<void> {
+  const paymentIntentId = paymentIntent.id;
+  const metadata = paymentIntent.metadata;
+
+  console.log(`Webhook: Processing payment_intent.payment_failed for ${paymentIntentId}`);
+
+  // Extract identifiers from metadata (set during checkout session creation)
+  const resourceId = metadata?.resourceId;
+  const buyerId = metadata?.buyerId;
+
+  if (!resourceId || !buyerId) {
+    console.warn(
+      `Webhook: Missing metadata on failed payment intent ${paymentIntentId}`
+    );
+    return;
+  }
+
+  // Find the pending transaction for this buyer and resource
+  const transaction = await prisma.transaction.findFirst({
+    where: {
+      buyer_id: buyerId,
+      resource_id: resourceId,
+      status: "PENDING",
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  if (!transaction) {
+    console.warn(
+      `Webhook: No pending transaction found for failed payment intent ${paymentIntentId}`
+    );
+    return;
+  }
+
+  // Get failure reason if available
+  const lastPaymentError = paymentIntent.last_payment_error;
+  const failureMessage = lastPaymentError?.message ?? "Payment failed";
+
+  // Update transaction to FAILED
+  await prisma.transaction.update({
+    where: { id: transaction.id },
+    data: {
+      status: "FAILED",
+      stripe_payment_intent_id: paymentIntentId,
+    },
+  });
+
+  console.log(
+    `Webhook: Marked transaction ${transaction.id} as FAILED ` +
+    `for payment intent ${paymentIntentId}: ${failureMessage}`
   );
 }
 

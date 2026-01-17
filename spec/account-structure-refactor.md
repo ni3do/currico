@@ -242,7 +242,7 @@ Implement actual payment processing.
 - [x] **9.5** Handle `checkout.session.completed` webhook
 - [x] **9.6** Create Transaction record on successful payment
 - [x] **9.7** Grant resource access to buyer
-- [ ] **9.8** Handle `payment_intent.payment_failed` webhook
+- [x] **9.8** Handle `payment_intent.payment_failed` webhook
 - [ ] **9.9** Enable TWINT payment method in Stripe dashboard
 - [ ] **9.10** Test card payments with test keys
 - [ ] **9.11** Test TWINT payments with test keys
