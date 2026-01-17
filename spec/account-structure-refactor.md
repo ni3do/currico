@@ -205,7 +205,7 @@ Create the "Become a Seller" experience.
   - Shows onboarding status (complete/incomplete)
   - "Open Stripe Dashboard" button (link to Express dashboard for earnings)
   - Status indicators (charges enabled, payouts enabled)
-- [ ] **7.3** Add "Start Selling" CTA to landing page
+- [x] **7.3** Add "Start Selling" CTA to landing page
 - [ ] **7.4** Add "Start Selling" CTA to buyer dashboard
 - [ ] **7.5** Add "Start Selling" CTA to resource browse page
 - [ ] **7.6** Create i18n translations for all seller onboarding text

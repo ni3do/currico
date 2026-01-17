@@ -299,7 +299,7 @@ export default function Home() {
 
                 <div className="mt-8 flex flex-col gap-4 sm:flex-row">
                   <Link
-                    href="/register"
+                    href="/become-seller"
                     className="inline-flex items-center justify-center rounded-lg bg-white px-6 py-3 font-semibold text-[var(--ctp-blue)] transition-colors hover:bg-white/90"
                   >
                     {t("sellerCta.button")}
