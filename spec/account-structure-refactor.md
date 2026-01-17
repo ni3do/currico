@@ -26,25 +26,25 @@ Remove deprecated fields and simplify the role system.
 
 ### Tasks
 
-- [ ] **1.1** Remove `is_seller` field from User model
-- [ ] **1.2** Remove `seller_verified` field from User model
-- [ ] **1.3** Remove `payout_enabled` field from User model
-- [ ] **1.4** Remove `legal_first_name` field from User model
-- [ ] **1.5** Remove `legal_last_name` field from User model
-- [ ] **1.6** Remove `iban` field from User model
-- [ ] **1.7** Remove `address_street` field from User model
-- [ ] **1.8** Remove `address_city` field from User model
-- [ ] **1.9** Remove `address_postal` field from User model
-- [ ] **1.10** Remove `address_country` field from User model
-- [ ] **1.11** Remove `SCHOOL` from UserRole enum
-- [ ] **1.12** Add `stripe_customer_id` field (for buyers making purchases)
-- [ ] **1.13** Add `stripe_charges_enabled` field (synced from Stripe webhook)
-- [ ] **1.14** Add `stripe_payouts_enabled` field (synced from Stripe webhook)
-- [ ] **1.15** Add `seller_terms_accepted_at` field (DateTime, nullable)
-- [ ] **1.16** Run Prisma migration
-- [ ] **1.17** Update `publicProfileSelect` in `lib/db.ts`
-- [ ] **1.18** Update `privateProfileSelect` in `lib/db.ts`
-- [ ] **1.19** Update `adminProfileSelect` in `lib/db.ts`
+- [x] **1.1** Remove `is_seller` field from User model
+- [x] **1.2** Remove `seller_verified` field from User model
+- [x] **1.3** Remove `payout_enabled` field from User model
+- [x] **1.4** Remove `legal_first_name` field from User model
+- [x] **1.5** Remove `legal_last_name` field from User model
+- [x] **1.6** Remove `iban` field from User model
+- [x] **1.7** Remove `address_street` field from User model
+- [x] **1.8** Remove `address_city` field from User model
+- [x] **1.9** Remove `address_postal` field from User model
+- [x] **1.10** Remove `address_country` field from User model
+- [x] **1.11** Remove `SCHOOL` from UserRole enum
+- [x] **1.12** Add `stripe_customer_id` field (for buyers making purchases)
+- [x] **1.13** Add `stripe_charges_enabled` field (synced from Stripe webhook)
+- [x] **1.14** Add `stripe_payouts_enabled` field (synced from Stripe webhook)
+- [x] **1.15** Add `seller_terms_accepted_at` field (DateTime, nullable)
+- [x] **1.16** Run Prisma migration
+- [x] **1.17** Update `publicProfileSelect` in `lib/db.ts`
+- [x] **1.18** Update `privateProfileSelect` in `lib/db.ts`
+- [x] **1.19** Update `adminProfileSelect` in `lib/db.ts`
 
 ### New Schema (Target State)
 
@@ -101,12 +101,12 @@ Update API routes to use new schema.
 
 ### Tasks
 
-- [ ] **2.1** Update `POST /api/auth/register` - remove accountType "school" option
-- [ ] **2.2** Update `GET /api/users/me` - remove payout fields from response
-- [ ] **2.3** Update `PATCH /api/users/me` - remove payout field handling
-- [ ] **2.4** Update `GET /api/admin/users` - remove is_seller/seller_verified logic
-- [ ] **2.5** Update `PATCH /api/admin/users/[id]` - simplify status logic
-- [ ] **2.6** Update `GET /api/seller/dashboard` - use `role === 'SELLER'` check
+- [x] **2.1** Update `POST /api/auth/register` - remove accountType "school" option
+- [x] **2.2** Update `GET /api/users/me` - remove payout fields from response
+- [x] **2.3** Update `PATCH /api/users/me` - remove payout field handling
+- [x] **2.4** Update `GET /api/admin/users` - remove is_seller/seller_verified logic
+- [x] **2.5** Update `PATCH /api/admin/users/[id]` - simplify status logic
+- [x] **2.6** Update `GET /api/seller/dashboard` - use `role === 'SELLER'` check
 - [x] **2.7** Search codebase for `is_seller` references and update
 - [x] **2.8** Search codebase for `seller_verified` references and update
 - [x] **2.9** Search codebase for `payout_enabled` references and update
@@ -120,8 +120,8 @@ Update frontend to match new schema.
 ### Tasks
 
 - [x] **3.1** Update profile edit page - remove payout info section
-- [ ] **3.2** Update registration form - remove school account type option
-- [ ] **3.3** Update dashboard sidebar - use `role` instead of `is_seller`
+- [x] **3.2** Update registration form - remove school account type option
+- [x] **3.3** Update dashboard sidebar - use `role` instead of `is_seller`
 - [x] **3.4** Update admin user management - simplify status display
 - [x] **3.5** Remove any "Payout Information" UI components
 
