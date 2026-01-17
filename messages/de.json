@@ -713,7 +713,11 @@
       "pleaseAccept": "Bitte akzeptieren Sie die obigen Bedingungen, um fortzufahren"
     },
     "cta": {
-      "button": "Weiter zur Stripe-Einrichtung",
+      "button": "Bedingungen akzeptieren & fortfahren",
+      "submitting": "Wird gesendet...",
+      "error": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+      "termsAccepted": "Bedingungen akzeptiert!",
+      "stripeComingSoon": "Die Stripe-Registrierung wird bald verfügbar sein. Sie können mit dem Hochladen von Ressourcen beginnen, sobald sie bereit ist.",
       "login": "Anmelden, um Verkäufer zu werden",
       "loginRequired": "Sie müssen sich anmelden, um Verkäufer zu werden",
       "verifyEmail": "Verifizieren Sie Ihre E-Mail, um fortzufahren",

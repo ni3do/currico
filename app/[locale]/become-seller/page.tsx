@@ -9,6 +9,7 @@ import Footer from "@/components/ui/Footer";
 
 interface UserData {
   emailVerified: string | null;
+  sellerTermsAcceptedAt: string | null;
 }
 
 export default function BecomeSellerPage() {
@@ -16,20 +17,42 @@ export default function BecomeSellerPage() {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [fetchState, setFetchState] = useState<"idle" | "loading" | "done">("idle");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [termsAcceptedAt, setTermsAcceptedAt] = useState<string | null>(null);
   const t = useTranslations("becomeSeller");
   const tTerms = useTranslations("sellerTerms");
 
-  // Fetch user data to get emailVerified status
+  // Fetch user data to get emailVerified status and terms acceptance
   useEffect(() => {
     let cancelled = false;
 
     async function fetchUserData() {
       try {
-        const res = await fetch("/api/user/stats");
-        if (!res.ok) return;
-        const data = await res.json();
-        if (!cancelled && data?.user) {
-          setUserData({ emailVerified: data.user.emailVerified });
+        // Fetch both user stats and terms status in parallel
+        const [statsRes, termsRes] = await Promise.all([
+          fetch("/api/user/stats"),
+          fetch("/api/seller/accept-terms"),
+        ]);
+
+        if (!cancelled) {
+          if (statsRes.ok) {
+            const statsData = await statsRes.json();
+            if (statsData?.user) {
+              setUserData({
+                emailVerified: statsData.user.emailVerified,
+                sellerTermsAcceptedAt: null,
+              });
+            }
+          }
+
+          if (termsRes.ok) {
+            const termsData = await termsRes.json();
+            if (termsData?.acceptedAt) {
+              setTermsAcceptedAt(termsData.acceptedAt);
+              setTermsAccepted(true);
+            }
+          }
         }
       } catch (error) {
         console.error(error);
@@ -50,9 +73,35 @@ export default function BecomeSellerPage() {
     };
   }, [status]);
 
+  const handleAcceptTerms = async () => {
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const res = await fetch("/api/seller/accept-terms", {
+        method: "POST",
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setSubmitError(data.error || t("cta.error"));
+        return;
+      }
+
+      setTermsAcceptedAt(data.acceptedAt);
+      // TODO: When Stripe integration is ready, redirect to Stripe onboarding
+    } catch {
+      setSubmitError(t("cta.error"));
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const isLoading = status === "loading" || (status === "authenticated" && fetchState !== "done");
   const isLoggedIn = status === "authenticated";
   const isEmailVerified = !!userData?.emailVerified;
+  const hasAcceptedTerms = !!termsAcceptedAt;
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -373,16 +422,30 @@ export default function BecomeSellerPage() {
                     {t("cta.verifyEmail")}
                   </Link>
                 </div>
+              ) : hasAcceptedTerms ? (
+                <div className="space-y-3">
+                  <div className="inline-flex items-center gap-2 rounded-lg bg-[var(--color-success-light)] px-4 py-2 text-[var(--color-success)]">
+                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    {t("cta.termsAccepted")}
+                  </div>
+                  <p className="text-sm text-[var(--color-text-muted)]">{t("cta.stripeComingSoon")}</p>
+                </div>
               ) : (
                 <div className="space-y-3">
                   {!termsAccepted && (
                     <p className="text-[var(--color-text-muted)]">{t("acceptance.pleaseAccept")}</p>
                   )}
+                  {submitError && (
+                    <p className="text-sm text-[var(--color-error)]">{submitError}</p>
+                  )}
                   <button
-                    disabled={!termsAccepted}
+                    onClick={handleAcceptTerms}
+                    disabled={!termsAccepted || isSubmitting}
                     className="btn btn-primary px-8 py-3 disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    {t("cta.button")}
+                    {isSubmitting ? t("cta.submitting") : t("cta.button")}
                   </button>
                 </div>
               )}

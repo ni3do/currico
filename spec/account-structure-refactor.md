@@ -156,9 +156,9 @@ Create seller terms acceptance flow.
   - Prohibited content
 - [x] **5.2** Create `/become-seller` page with terms display
 - [x] **5.3** Add "I accept the seller terms" checkbox
-- [ ] **5.4** Create `POST /api/seller/accept-terms` endpoint
-- [ ] **5.5** Record `seller_terms_accepted_at` timestamp
-- [ ] **5.6** Gate Stripe onboarding on terms acceptance
+- [x] **5.4** Create `POST /api/seller/accept-terms` endpoint
+- [x] **5.5** Record `seller_terms_accepted_at` timestamp
+- [x] **5.6** Gate Stripe onboarding on terms acceptance
 
 ---
 

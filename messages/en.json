@@ -713,7 +713,11 @@
       "pleaseAccept": "Please accept the terms above to continue"
     },
     "cta": {
-      "button": "Continue to Stripe Setup",
+      "button": "Accept Terms & Continue",
+      "submitting": "Submitting...",
+      "error": "An error occurred. Please try again.",
+      "termsAccepted": "Terms accepted!",
+      "stripeComingSoon": "Stripe onboarding will be available soon. You can start uploading resources once it's ready.",
       "login": "Sign in to become a seller",
       "loginRequired": "You need to sign in to become a seller",
       "verifyEmail": "Verify your email to continue",
