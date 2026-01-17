@@ -154,7 +154,7 @@ Create seller terms acceptance flow.
   - Payout schedule (Stripe default: 2-7 days)
   - Content policies
   - Prohibited content
-- [ ] **5.2** Create `/become-seller` page with terms display
+- [x] **5.2** Create `/become-seller` page with terms display
 - [ ] **5.3** Add "I accept the seller terms" checkbox
 - [ ] **5.4** Create `POST /api/seller/accept-terms` endpoint
 - [ ] **5.5** Record `seller_terms_accepted_at` timestamp

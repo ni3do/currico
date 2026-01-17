@@ -676,5 +676,42 @@
     "upload": {
       "competencyTip": "Je genauer Sie Ihre Ressource dem Lehrplan 21 zuordnen, desto besser finden Lehrpersonen Ihre Materialien. Wählen Sie alle relevanten Kompetenzen aus."
     }
+  },
+  "becomeSeller": {
+    "hero": {
+      "badge": "Verkaufen starten",
+      "title": "Teilen Sie Ihre Unterrichtsmaterialien",
+      "subtitle": "Schliessen Sie sich Hunderten von Schweizer Lehrpersonen an, die durch das Teilen ihrer sorgfältig erstellten Unterrichtsmaterialien mit Kollegen zusätzliches Einkommen erzielen."
+    },
+    "benefits": {
+      "title": "Warum auf EasyLehrer verkaufen?",
+      "earn": {
+        "title": "Verdienen Sie 70% von jedem Verkauf",
+        "description": "Legen Sie Ihre eigenen Preise fest. Wir kümmern uns um Zahlungen und Dateiauslieferung - Sie behalten 70% von jedem Verkauf."
+      },
+      "reach": {
+        "title": "Erreichen Sie Lehrpersonen in der ganzen Schweiz",
+        "description": "Ihre Materialien werden für Tausende von Lehrpersonen auffindbar, die nach Qualitätsressourcen suchen."
+      },
+      "simple": {
+        "title": "Einmal hochladen, wiederholt verdienen",
+        "description": "Erstellen Sie Ihre Materialien einmal. Verdienen Sie passives Einkommen bei jedem Kauf."
+      }
+    },
+    "requirements": {
+      "title": "Voraussetzungen",
+      "emailVerified": "Verifizierte E-Mail-Adresse",
+      "acceptTerms": "Akzeptieren der Verkäufer-AGB",
+      "stripeAccount": "Stripe-Identitätsverifizierung für Auszahlungen abschliessen"
+    },
+    "termsSection": {
+      "title": "Verkäufer-AGB",
+      "readBelow": "Bitte lesen Sie die folgenden Bedingungen, bevor Sie fortfahren."
+    },
+    "cta": {
+      "button": "Weiter zur Stripe-Einrichtung",
+      "login": "Anmelden, um Verkäufer zu werden",
+      "verifyEmail": "Verifizieren Sie Ihre E-Mail, um fortzufahren"
+    }
   }
 }

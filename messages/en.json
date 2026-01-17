@@ -676,5 +676,42 @@
     "upload": {
       "competencyTip": "The more precisely you align your resource to Lehrplan 21, the easier teachers will find your materials. Select all relevant competencies."
     }
+  },
+  "becomeSeller": {
+    "hero": {
+      "badge": "Start Selling",
+      "title": "Share Your Teaching Materials",
+      "subtitle": "Join hundreds of Swiss teachers who earn extra income by sharing their carefully crafted teaching materials with colleagues."
+    },
+    "benefits": {
+      "title": "Why Sell on EasyLehrer?",
+      "earn": {
+        "title": "Earn 70% of Every Sale",
+        "description": "Set your own prices. We handle payments and deliver files - you keep 70% of each sale."
+      },
+      "reach": {
+        "title": "Reach Teachers Across Switzerland",
+        "description": "Your materials become discoverable to thousands of teachers searching for quality resources."
+      },
+      "simple": {
+        "title": "Upload Once, Earn Repeatedly",
+        "description": "Create your materials once. Earn passive income every time someone purchases them."
+      }
+    },
+    "requirements": {
+      "title": "Requirements",
+      "emailVerified": "Verified email address",
+      "acceptTerms": "Accept the Seller Terms & Conditions",
+      "stripeAccount": "Complete Stripe identity verification for payouts"
+    },
+    "termsSection": {
+      "title": "Seller Terms & Conditions",
+      "readBelow": "Please read the terms below before proceeding."
+    },
+    "cta": {
+      "button": "Continue to Stripe Setup",
+      "login": "Sign in to become a seller",
+      "verifyEmail": "Verify your email to continue"
+    }
   }
 }
