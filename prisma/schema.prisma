@@ -51,6 +51,19 @@ model VerificationToken {
   @@map("verification_tokens")
 }
 
+// Email verification tokens for confirming user email addresses
+model EmailVerificationToken {
+  id         String   @id @default(cuid())
+  token      String   @unique
+  expires    DateTime
+  created_at DateTime @default(now())
+
+  user_id String
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("email_verification_tokens")
+}
+
 // ============================================================
 // USER MODEL - Seller Profile
 // ============================================================
@@ -74,34 +87,31 @@ model User {
   cycles       String[] // ["Zyklus 1", "Zyklus 2", "Zyklus 3"]
   cantons      String[] // ["Zürich", "Bern"] - Swiss cantons
 
-  // ============ PRIVATE ADMIN DATA ============
-  password_hash    String? // For credential-based auth
-  legal_first_name String? // For invoices/payouts
-  legal_last_name  String? // For invoices/payouts
-  iban             String? // Swiss IBAN for payouts
-  address_street   String?
-  address_city     String?
-  address_postal   String? // Postal code
-  address_country  String  @default("CH")
+  // ============ PRIVATE DATA ============
+  password_hash String? // For credential-based auth
 
-  // ============ LOGIC/STATUS FIELDS ============
-  role            UserRole @default(BUYER)
-  is_seller       Boolean  @default(false)
-  seller_verified Boolean  @default(false) // Admin-verified seller
-  payout_enabled  Boolean  @default(false) // True when IBAN validated
-  is_protected    Boolean  @default(false) // Protected users cannot be deleted (e.g., super admin)
+  // ============ ROLE & STATUS ============
+  role         UserRole @default(BUYER)
+  is_protected Boolean  @default(false) // Protected users cannot be deleted (e.g., super admin)
 
-  // ============ STRIPE CONNECT ============
-  stripe_account_id          String? // Stripe Connect account ID
+  // ============ STRIPE ============
+  stripe_customer_id         String? // Buyer's Stripe customer ID
+  stripe_account_id          String? // Seller's Stripe Connect Express account ID
   stripe_onboarding_complete Boolean @default(false)
+  stripe_charges_enabled     Boolean @default(false) // Synced from Stripe webhook
+  stripe_payouts_enabled     Boolean @default(false) // Synced from Stripe webhook
+
+  // ============ SELLER ============
+  seller_terms_accepted_at DateTime? // When seller accepted terms
 
   // ============ RELATIONS ============
-  accounts     Account[]
-  sessions     Session[]
-  resources    Resource[]
-  transactions Transaction[]
-  downloads    Download[]
-  wishlists    Wishlist[]
+  accounts                Account[]
+  sessions                Session[]
+  emailVerificationTokens EmailVerificationToken[]
+  resources               Resource[]
+  transactions            Transaction[]
+  downloads               Download[]
+  wishlists               Wishlist[]
 
   // Report relations
   reports_submitted Report[] @relation("Reporter")
@@ -114,7 +124,6 @@ model User {
 enum UserRole {
   BUYER
   SELLER
-  SCHOOL
   ADMIN
 }
 
