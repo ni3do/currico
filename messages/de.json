@@ -827,5 +827,46 @@
       "notAvailable": "Diese Ressource ist nicht zum Kauf verfügbar",
       "generic": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
     }
+  },
+  "checkoutSuccess": {
+    "loading": "Ihr Kauf wird geladen...",
+    "notLoggedIn": {
+      "title": "Nicht angemeldet",
+      "description": "Sie müssen angemeldet sein, um Ihren Kauf anzuzeigen.",
+      "loginButton": "Anmelden"
+    },
+    "error": {
+      "title": "Etwas ist schiefgelaufen",
+      "browseResources": "Materialien durchsuchen"
+    },
+    "errors": {
+      "noSession": "Keine Checkout-Sitzung gefunden.",
+      "fetchFailed": "Kaufdetails konnten nicht geladen werden. Bitte versuchen Sie es erneut."
+    },
+    "success": {
+      "title": "Kauf abgeschlossen!",
+      "description": "Vielen Dank für Ihren Kauf. Sie können jetzt auf Ihre neue Ressource zugreifen."
+    },
+    "pending": {
+      "title": "Zahlung wird verarbeitet",
+      "description": "Ihre Zahlung wird verarbeitet. Dies dauert normalerweise nur einen Moment."
+    },
+    "purchaseDetails": {
+      "title": "Kaufdetails",
+      "resource": "Ressource",
+      "amount": "Betrag",
+      "status": "Status",
+      "statusCompleted": "Abgeschlossen",
+      "statusPending": "In Bearbeitung"
+    },
+    "actions": {
+      "viewResource": "Ressource ansehen",
+      "goToLibrary": "Zur Bibliothek"
+    },
+    "noTransaction": {
+      "title": "Kein Kauf gefunden",
+      "description": "Wir konnten keinen Kauf für diese Sitzung finden.",
+      "browseResources": "Materialien durchsuchen"
+    }
   }
 }

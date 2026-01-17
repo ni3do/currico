@@ -827,5 +827,46 @@
       "notAvailable": "This resource is not available for purchase",
       "generic": "An error occurred. Please try again."
     }
+  },
+  "checkoutSuccess": {
+    "loading": "Loading your purchase...",
+    "notLoggedIn": {
+      "title": "Not Logged In",
+      "description": "You need to be signed in to view your purchase.",
+      "loginButton": "Sign In"
+    },
+    "error": {
+      "title": "Something Went Wrong",
+      "browseResources": "Browse Resources"
+    },
+    "errors": {
+      "noSession": "No checkout session found.",
+      "fetchFailed": "Could not load purchase details. Please try again."
+    },
+    "success": {
+      "title": "Purchase Complete!",
+      "description": "Thank you for your purchase. You can now access your new resource."
+    },
+    "pending": {
+      "title": "Payment Processing",
+      "description": "Your payment is being processed. This usually takes just a moment."
+    },
+    "purchaseDetails": {
+      "title": "Purchase Details",
+      "resource": "Resource",
+      "amount": "Amount",
+      "status": "Status",
+      "statusCompleted": "Completed",
+      "statusPending": "Processing"
+    },
+    "actions": {
+      "viewResource": "View Resource",
+      "goToLibrary": "Go to My Library"
+    },
+    "noTransaction": {
+      "title": "No Purchase Found",
+      "description": "We couldn't find a purchase associated with this session.",
+      "browseResources": "Browse Resources"
+    }
   }
 }
