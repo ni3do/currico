@@ -1,22 +1,19 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { getCurrentUserId } from "@/lib/auth";
+import { requireAuth, unauthorized, notFound } from "@/lib/api";
 
 /**
  * GET /api/user/stats
  * Fetch user statistics for the account page
  */
 export async function GET() {
-  // Authentication check
-  const userId = await getCurrentUserId();
-  if (!userId) {
-    return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
-  }
+  const userId = await requireAuth();
+  if (!userId) return unauthorized();
 
   try {
     // Get user data with relations counts
-    const [purchasedCount, downloadedCount, wishlistCount, uploadedCount, user] = await Promise.all(
-      [
+    const [purchasedCount, downloadedCount, wishlistCount, uploadedCount, followingCount, user] =
+      await Promise.all([
         // Purchased resources (completed transactions)
         prisma.transaction.count({
           where: {
@@ -36,6 +33,10 @@ export async function GET() {
         prisma.resource.count({
           where: { seller_id: userId },
         }),
+        // Following count
+        prisma.follow.count({
+          where: { follower_id: userId },
+        }),
         // User profile data
         prisma.user.findUnique({
           where: { id: userId },
@@ -53,12 +54,9 @@ export async function GET() {
             seller_verified: true,
           },
         }),
-      ]
-    );
+      ]);
 
-    if (!user) {
-      return NextResponse.json({ error: "Benutzer nicht gefunden" }, { status: 404 });
-    }
+    if (!user) return notFound("Benutzer nicht gefunden");
 
     return NextResponse.json({
       user: {
@@ -80,7 +78,7 @@ export async function GET() {
         totalInLibrary: purchasedCount + downloadedCount,
         wishlistItems: wishlistCount,
         uploadedResources: uploadedCount,
-        followedSellers: 0, // TODO: Implement following feature
+        followedSellers: followingCount,
       },
     });
   } catch (error) {

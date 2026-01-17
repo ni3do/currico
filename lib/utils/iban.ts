@@ -67,7 +67,3 @@ export function maskIBAN(iban: string): string {
   const masked = "CH** **** **** **** *" + lastFour.slice(-1);
   return masked;
 }
-
-// Example valid Swiss IBANs for testing:
-// CH93 0076 2011 6238 5295 7
-// CH56 0483 5012 3456 7800 9

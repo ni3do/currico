@@ -3,6 +3,13 @@
 import { useState } from "react";
 import Link from "next/link";
 
+// Shared size classes for all badge components
+const BADGE_SIZE_CLASSES = {
+  sm: "px-1.5 py-0.5 text-xs",
+  md: "px-2 py-1 text-sm",
+  lg: "px-3 py-1.5 text-base",
+} as const;
+
 interface LP21BadgeProps {
   code: string;
   description?: string;
@@ -56,15 +63,9 @@ export function LP21Badge({
 
   const color = subjectColor || defaultColors[subjectCode] || "#6b7280";
 
-  const sizeClasses = {
-    sm: "px-1.5 py-0.5 text-xs",
-    md: "px-2 py-1 text-sm",
-    lg: "px-3 py-1.5 text-base",
-  };
-
   const badgeContent = (
     <span
-      className={`inline-flex items-center gap-1 rounded-md font-mono font-semibold transition-all ${sizeClasses[size]} ${
+      className={`inline-flex items-center gap-1 rounded-md font-mono font-semibold transition-all ${BADGE_SIZE_CLASSES[size]} ${
         clickable ? "cursor-pointer hover:opacity-80" : ""
       }`}
       style={{
@@ -80,8 +81,8 @@ export function LP21Badge({
         <span
           className={`ml-1 rounded px-1 text-[0.65em] font-bold ${
             anforderungsstufe === "grund"
-              ? "bg-[var(--color-surface-high)] text-[var(--color-text-muted)]"
-              : "bg-[var(--color-warning-light)] text-[var(--color-warning)]"
+              ? "bg-surface-hover text-text-muted"
+              : "bg-warning/15 text-warning"
           }`}
         >
           {anforderungsstufe === "grund" ? "G" : "E"}
@@ -92,22 +93,22 @@ export function LP21Badge({
 
   const tooltipContent = showTooltip && description && tooltipVisible && (
     <div
-      className="absolute bottom-full left-1/2 z-50 mb-2 w-64 -translate-x-1/2 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-xl"
+      className="border-border bg-surface absolute bottom-full left-1/2 z-50 mb-2 w-64 -translate-x-1/2 rounded-lg border p-3 shadow-xl"
       style={{ maxWidth: "min(300px, 90vw)" }}
     >
       <div className="mb-1 font-mono text-sm font-semibold" style={{ color }}>
         {code}
       </div>
-      <p className="text-xs leading-relaxed text-[var(--color-text-muted)]">{description}</p>
+      <p className="text-text-muted text-xs leading-relaxed">{description}</p>
       {anforderungsstufe && (
-        <div className="mt-2 text-xs text-[var(--color-text-muted)]">
+        <div className="text-text-muted mt-2 text-xs">
           Anforderungsstufe:{" "}
           <span className="font-medium">
             {anforderungsstufe === "grund" ? "Grundansprüche" : "Erweiterte Ansprüche"}
           </span>
         </div>
       )}
-      <div className="absolute -bottom-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rotate-45 border-r border-b border-[var(--color-border)] bg-[var(--color-surface)]" />
+      <div className="border-border bg-surface absolute -bottom-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rotate-45 border-r border-b" />
     </div>
   );
 
@@ -148,15 +149,9 @@ export function TransversalBadge({
   size = "md",
   clickable = true,
 }: TransversalBadgeProps) {
-  const sizeClasses = {
-    sm: "px-1.5 py-0.5 text-xs",
-    md: "px-2 py-1 text-sm",
-    lg: "px-3 py-1.5 text-base",
-  };
-
   const badgeContent = (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-md font-medium transition-all ${sizeClasses[size]} ${
+      className={`inline-flex items-center gap-1.5 rounded-md font-medium transition-all ${BADGE_SIZE_CLASSES[size]} ${
         clickable ? "cursor-pointer hover:opacity-80" : ""
       }`}
       style={{
@@ -200,15 +195,9 @@ export function BneBadge({
   size = "md",
   clickable = true,
 }: BneBadgeProps) {
-  const sizeClasses = {
-    sm: "px-1.5 py-0.5 text-xs",
-    md: "px-2 py-1 text-sm",
-    lg: "px-3 py-1.5 text-base",
-  };
-
   const badgeContent = (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-md font-medium transition-all ${sizeClasses[size]} ${
+      className={`inline-flex items-center gap-1.5 rounded-md font-medium transition-all ${BADGE_SIZE_CLASSES[size]} ${
         clickable ? "cursor-pointer hover:opacity-80" : ""
       }`}
       style={{

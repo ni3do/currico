@@ -1,18 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { getCurrentUserId } from "@/lib/auth";
 import { formatPrice } from "@/lib/utils/price";
+import { requireAuth, unauthorized } from "@/lib/api";
 
 /**
  * GET /api/user/wishlist
  * Fetch all resources in user's wishlist
  */
 export async function GET(request: NextRequest) {
-  // Authentication check
-  const userId = await getCurrentUserId();
-  if (!userId) {
-    return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
-  }
+  const userId = await requireAuth();
+  if (!userId) return unauthorized();
 
   try {
     const { searchParams } = new URL(request.url);
@@ -101,11 +98,8 @@ export async function GET(request: NextRequest) {
  * Add a resource to wishlist
  */
 export async function POST(request: NextRequest) {
-  // Authentication check
-  const userId = await getCurrentUserId();
-  if (!userId) {
-    return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
-  }
+  const userId = await requireAuth();
+  if (!userId) return unauthorized();
 
   try {
     const body = await request.json();
@@ -173,11 +167,8 @@ export async function POST(request: NextRequest) {
  * Remove a resource from wishlist
  */
 export async function DELETE(request: NextRequest) {
-  // Authentication check
-  const userId = await getCurrentUserId();
-  if (!userId) {
-    return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
-  }
+  const userId = await requireAuth();
+  if (!userId) return unauthorized();
 
   try {
     const { searchParams } = new URL(request.url);

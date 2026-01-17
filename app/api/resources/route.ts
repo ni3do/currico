@@ -1,8 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { getCurrentUserId } from "@/lib/auth";
 import { formatPrice } from "@/lib/utils/price";
 import { checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
+import {
+  requireAuth,
+  requireSeller,
+  checkSellerProfile,
+  unauthorized,
+  forbidden,
+  badRequest,
+  notFound,
+  serverError,
+} from "@/lib/api";
 import {
   createResourceSchema,
   validateMagicBytes,
@@ -335,11 +344,8 @@ export async function GET(request: NextRequest) {
  * Create a new resource (seller only)
  */
 export async function POST(request: NextRequest) {
-  // Authentication check
-  const userId = await getCurrentUserId();
-  if (!userId) {
-    return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
-  }
+  const userId = await requireAuth();
+  if (!userId) return unauthorized();
 
   // Rate limiting check
   const rateLimitResult = checkRateLimit(userId, "resources:create");
@@ -357,50 +363,13 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    // Check if user is a seller
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: {
-        is_seller: true,
-        role: true,
-        display_name: true,
-        subjects: true,
-        cycles: true,
-        legal_first_name: true,
-        legal_last_name: true,
-        iban: true,
-      },
-    });
-
-    if (!user) {
-      return NextResponse.json({ error: "Benutzer nicht gefunden" }, { status: 404 });
-    }
-
-    const isSeller = user.is_seller || user.role === "SELLER";
-    if (!isSeller) {
-      return NextResponse.json(
-        { error: "Nur Verkäufer können Ressourcen erstellen" },
-        { status: 403 }
-      );
-    }
+    const seller = await requireSeller(userId);
+    if (!seller) return forbidden("Nur Verkäufer können Ressourcen erstellen");
 
     // Check seller profile completion
-    const missingFields: string[] = [];
-    if (!user.display_name) missingFields.push("Profilname");
-    if (!user.subjects || user.subjects.length === 0) missingFields.push("Fächer");
-    if (!user.cycles || user.cycles.length === 0) missingFields.push("Zyklen");
-    if (!user.legal_first_name) missingFields.push("Vorname (rechtlich)");
-    if (!user.legal_last_name) missingFields.push("Nachname (rechtlich)");
-    if (!user.iban) missingFields.push("IBAN");
-
+    const missingFields = await checkSellerProfile(userId);
     if (missingFields.length > 0) {
-      return NextResponse.json(
-        {
-          error: "Bitte vervollständigen Sie Ihr Profil",
-          missing: missingFields,
-        },
-        { status: 400 }
-      );
+      return badRequest("Bitte vervollständigen Sie Ihr Profil", { missing: missingFields });
     }
 
     // Parse form data
@@ -443,13 +412,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (!parsed.success) {
-      return NextResponse.json(
-        {
-          error: "Ungültige Eingabe",
-          details: parsed.error.flatten().fieldErrors,
-        },
-        { status: 400 }
-      );
+      return badRequest("Ungültige Eingabe", { details: parsed.error.flatten().fieldErrors });
     }
 
     const data = parsed.data;
@@ -458,20 +421,13 @@ export async function POST(request: NextRequest) {
     const file = formData.get("file") as File | null;
     const previewFile = formData.get("preview") as File | null;
 
-    if (!file) {
-      return NextResponse.json({ error: "Keine Datei hochgeladen" }, { status: 400 });
-    }
+    if (!file) return badRequest("Keine Datei hochgeladen");
 
     // Validate main file
-    if (file.size > MAX_RESOURCE_FILE_SIZE) {
-      return NextResponse.json({ error: "Datei zu gross (maximal 50MB)" }, { status: 400 });
-    }
+    if (file.size > MAX_RESOURCE_FILE_SIZE) return badRequest("Datei zu gross (maximal 50MB)");
 
     if (!isAllowedResourceType(file.type, data.resourceType || "other")) {
-      return NextResponse.json(
-        { error: `Ungültiger Dateityp für ${data.resourceType}` },
-        { status: 400 }
-      );
+      return badRequest(`Ungültiger Dateityp für ${data.resourceType}`);
     }
 
     // Read file buffer and validate magic bytes
@@ -479,10 +435,7 @@ export async function POST(request: NextRequest) {
     const fileBuffer = Buffer.from(fileBytes);
 
     if (!validateMagicBytes(fileBuffer, file.type)) {
-      return NextResponse.json(
-        { error: "Dateiinhalt stimmt nicht mit dem Dateityp überein" },
-        { status: 400 }
-      );
+      return badRequest("Dateiinhalt stimmt nicht mit dem Dateityp überein");
     }
 
     // Create resource in database first to get ID
@@ -526,15 +479,12 @@ export async function POST(request: NextRequest) {
       // User uploaded a preview file
       if (previewFile.size > MAX_PREVIEW_FILE_SIZE) {
         await cleanupOnError();
-        return NextResponse.json({ error: "Vorschaubild zu gross (maximal 5MB)" }, { status: 400 });
+        return badRequest("Vorschaubild zu gross (maximal 5MB)");
       }
 
       if (!isAllowedPreviewType(previewFile.type)) {
         await cleanupOnError();
-        return NextResponse.json(
-          { error: "Ungültiger Vorschaubild-Typ (JPEG, PNG oder WebP)" },
-          { status: 400 }
-        );
+        return badRequest("Ungültiger Vorschaubild-Typ (JPEG, PNG oder WebP)");
       }
 
       const previewBytes = await previewFile.arrayBuffer();
@@ -542,10 +492,7 @@ export async function POST(request: NextRequest) {
 
       if (!validateMagicBytes(previewBuffer, previewFile.type)) {
         await cleanupOnError();
-        return NextResponse.json(
-          { error: "Vorschaubild-Inhalt stimmt nicht mit dem Dateityp überein" },
-          { status: 400 }
-        );
+        return badRequest("Vorschaubild-Inhalt stimmt nicht mit dem Dateityp überein");
       }
 
       const previewExt = getExtensionFromMimeType(previewFile.type);
@@ -607,6 +554,6 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error("Error creating resource:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError();
   }
 }

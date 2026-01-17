@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { auth } from "@/lib/auth";
 import { formatPrice, getResourceStatus } from "@/lib/utils/price";
+import { requireAuth, requireSeller, unauthorized, forbidden } from "@/lib/api";
 
 /**
  * GET /api/seller/dashboard
@@ -10,31 +10,14 @@ import { formatPrice, getResourceStatus } from "@/lib/utils/price";
  */
 export async function GET() {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "Nicht autorisiert" },
-        { status: 401 }
-      );
-    }
+    const userId = await requireAuth();
+    if (!userId) return unauthorized();
 
-    const userId = session.user.id;
-
-    // Check if user is a seller
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { is_seller: true, role: true },
-    });
-
-    if (!user?.is_seller && user?.role !== "SELLER") {
-      return NextResponse.json(
-        { error: "Nur für Verkäufer zugänglich" },
-        { status: 403 }
-      );
-    }
+    const seller = await requireSeller(userId);
+    if (!seller) return forbidden("Nur für Verkäufer zugänglich");
 
     // Fetch data in parallel
-    const [resources, transactions, totalEarnings] = await Promise.all([
+    const [resources, transactions, totalEarnings, followerCount] = await Promise.all([
       // Get seller's resources with transaction counts
       prisma.resource.findMany({
         where: { seller_id: userId },
@@ -80,6 +63,10 @@ export async function GET() {
         },
         _sum: { amount: true },
       }),
+      // Get follower count
+      prisma.follow.count({
+        where: { followed_id: userId },
+      }),
     ]);
 
     // Calculate stats
@@ -123,16 +110,13 @@ export async function GET() {
       stats: {
         netEarnings: formatPrice(totalNet, { showFreeLabel: false }),
         totalDownloads,
-        followers: 0, // TODO: Implement following feature
+        followers: followerCount,
       },
       resources: transformedResources,
       transactions: transformedTransactions,
     });
   } catch (error) {
     console.error("Error fetching seller dashboard:", error);
-    return NextResponse.json(
-      { error: "Fehler beim Laden der Dashboard-Daten" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Fehler beim Laden der Dashboard-Daten" }, { status: 500 });
   }
 }
