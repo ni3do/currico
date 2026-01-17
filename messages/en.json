@@ -922,7 +922,14 @@
       "purchaseDate": "Purchase date"
     },
     "createAccountCta": {
-      "description": "Create a free account to access your purchases anytime and save them to your library.",
+      "title": "Save to Your Library",
+      "description": "Create a free account to keep this purchase in your library forever.",
+      "benefits": {
+        "unlimitedDownloads": "Unlimited downloads, no restrictions",
+        "neverExpires": "Access never expires",
+        "purchaseHistory": "View all your past purchases"
+      },
+      "button": "Create Free Account",
       "link": "Create Free Account"
     }
   }

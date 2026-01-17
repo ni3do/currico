@@ -922,7 +922,14 @@
       "purchaseDate": "Kaufdatum"
     },
     "createAccountCta": {
-      "description": "Erstellen Sie ein kostenloses Konto, um jederzeit auf Ihre Käufe zuzugreifen und sie in Ihrer Bibliothek zu speichern.",
+      "title": "In Ihrer Bibliothek speichern",
+      "description": "Erstellen Sie ein kostenloses Konto, um diesen Kauf dauerhaft in Ihrer Bibliothek zu behalten.",
+      "benefits": {
+        "unlimitedDownloads": "Unbegrenzte Downloads, keine Einschränkungen",
+        "neverExpires": "Zugang läuft nie ab",
+        "purchaseHistory": "Alle vergangenen Käufe einsehen"
+      },
+      "button": "Kostenloses Konto erstellen",
       "link": "Kostenloses Konto erstellen"
     }
   }

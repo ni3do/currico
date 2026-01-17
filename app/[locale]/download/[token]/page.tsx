@@ -363,15 +363,85 @@ export default function GuestDownloadPage({
               )}
 
               {/* Create Account CTA */}
-              <div className="rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-4 text-center">
-                <p className="mb-3 text-sm text-[var(--color-text-muted)]">
+              <div className="rounded-lg border-2 border-[var(--color-primary)] bg-[var(--color-primary-light)] p-6">
+                <div className="mb-4 flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-primary)]">
+                    <svg
+                      className="h-5 w-5 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold text-[var(--color-text)]">
+                    {t("createAccountCta.title")}
+                  </h3>
+                </div>
+                <p className="mb-4 text-sm text-[var(--color-text-muted)]">
                   {t("createAccountCta.description")}
                 </p>
+                <ul className="mb-5 space-y-2 text-sm text-[var(--color-text)]">
+                  <li className="flex items-center gap-2">
+                    <svg
+                      className="h-4 w-4 flex-shrink-0 text-[var(--color-success)]"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                    {t("createAccountCta.benefits.unlimitedDownloads")}
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <svg
+                      className="h-4 w-4 flex-shrink-0 text-[var(--color-success)]"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                    {t("createAccountCta.benefits.neverExpires")}
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <svg
+                      className="h-4 w-4 flex-shrink-0 text-[var(--color-success)]"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                    {t("createAccountCta.benefits.purchaseHistory")}
+                  </li>
+                </ul>
                 <Link
                   href="/register"
-                  className="text-sm font-medium text-[var(--color-primary)] hover:underline"
+                  className="btn btn-primary w-full py-2.5"
                 >
-                  {t("createAccountCta.link")}
+                  {t("createAccountCta.button")}
                 </Link>
               </div>
             </div>
