@@ -337,6 +337,11 @@
       "documents": "Dok.",
       "free": "Gratis",
       "viewButton": "Ansehen"
+    },
+    "sellerCta": {
+      "title": "Haben Sie Materialien zum Teilen?",
+      "description": "Werden Sie Verkäufer und verdienen Sie 70% bei jedem Verkauf, während Sie anderen Lehrern Zeit sparen.",
+      "button": "Verkaufen starten"
     }
   },
   "sellerDashboard": {

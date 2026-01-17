@@ -337,6 +337,11 @@
       "documents": "Docs",
       "free": "Free",
       "viewButton": "View"
+    },
+    "sellerCta": {
+      "title": "Have Materials to Share?",
+      "description": "Become a seller and earn 70% of every sale while helping other teachers save time.",
+      "button": "Start Selling"
     }
   },
   "sellerDashboard": {
