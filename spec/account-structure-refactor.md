@@ -176,10 +176,10 @@ Implement the actual Stripe Connect flow.
   - `STRIPE_WEBHOOK_SECRET`
 - [x] **6.4** Create `POST /api/seller/connect` - creates Express account + onboarding link
 - [x] **6.5** Create `GET /api/seller/connect/status` - returns current Stripe status
-- [ ] **6.6** Create `POST /api/payments/webhook` - handles Stripe webhooks
-- [ ] **6.7** Handle `account.updated` webhook - sync charges/payouts enabled
+- [x] **6.6** Create `POST /api/payments/webhook` - handles Stripe webhooks
+- [x] **6.7** Handle `account.updated` webhook - sync charges/payouts enabled
 - [ ] **6.8** Create seller onboarding return page `/seller/onboarding/complete`
-- [ ] **6.9** Update user role to SELLER when Stripe onboarding complete
+- [x] **6.9** Update user role to SELLER when Stripe onboarding complete
 
 ### Platform Fee Configuration
 
