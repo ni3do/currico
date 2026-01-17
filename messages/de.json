@@ -868,5 +868,14 @@
       "description": "Wir konnten keinen Kauf für diese Sitzung finden.",
       "browseResources": "Materialien durchsuchen"
     }
+  },
+  "checkoutCancel": {
+    "title": "Zahlung abgebrochen",
+    "description": "Ihre Zahlung wurde abgebrochen. Es wurden keine Kosten berechnet.",
+    "reassurance": "Keine Sorge - Sie können es jederzeit erneut versuchen. Ihr Warenkorb und gespeicherte Artikel sind weiterhin verfügbar.",
+    "actions": {
+      "tryAgain": "Erneut versuchen",
+      "browseResources": "Materialien durchsuchen"
+    }
   }
 }

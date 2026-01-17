@@ -868,5 +868,14 @@
       "description": "We couldn't find a purchase associated with this session.",
       "browseResources": "Browse Resources"
     }
+  },
+  "checkoutCancel": {
+    "title": "Payment Cancelled",
+    "description": "Your payment was cancelled. No charges have been made to your account.",
+    "reassurance": "Don't worry - you can try again whenever you're ready. Your cart and any saved items are still available.",
+    "actions": {
+      "tryAgain": "Try Again",
+      "browseResources": "Browse Resources"
+    }
   }
 }

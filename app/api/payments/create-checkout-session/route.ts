@@ -169,7 +169,7 @@ export async function POST(request: NextRequest) {
     // Build success and cancel URLs
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || request.nextUrl.origin;
     const successUrl = `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`;
-    const cancelUrl = `${baseUrl}/resources/${resourceId}`;
+    const cancelUrl = `${baseUrl}/checkout/cancel?resource_id=${resourceId}`;
 
     // Create Stripe Checkout session
     const checkoutSession = await stripe.checkout.sessions.create({
