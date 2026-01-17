@@ -207,9 +207,12 @@ model Transaction {
   platform_fee_amount  Int? // Platform fee in cents
   seller_payout_amount Int? // Amount to seller in cents
 
+  // Guest checkout (when buyer_id is null)
+  guest_email String? // Email for guest purchases
+
   // Relations
-  buyer_id    String
-  buyer       User     @relation(fields: [buyer_id], references: [id])
+  buyer_id    String? // Nullable for guest checkout
+  buyer       User?    @relation(fields: [buyer_id], references: [id])
   resource_id String
   resource    Resource @relation(fields: [resource_id], references: [id])
 

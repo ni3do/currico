@@ -172,6 +172,7 @@ async function handleCheckoutSessionCompleted(
     select: {
       id: true,
       buyer_id: true,
+      guest_email: true,
       resource_id: true,
     },
   });
@@ -183,6 +184,9 @@ async function handleCheckoutSessionCompleted(
 
   // Get payment method from session if available
   const paymentMethod = session.payment_method_types?.[0] ?? null;
+
+  // Determine if this is a guest checkout
+  const isGuestCheckout = !transaction.buyer_id;
 
   // Use a transaction to ensure atomicity
   await prisma.$transaction(async (tx) => {
@@ -197,25 +201,36 @@ async function handleCheckoutSessionCompleted(
     });
 
     // Grant resource access - create Download record if it doesn't exist
-    await tx.download.upsert({
-      where: {
-        user_id_resource_id: {
+    // Only for authenticated users (guests use download tokens handled separately)
+    if (!isGuestCheckout && transaction.buyer_id) {
+      await tx.download.upsert({
+        where: {
+          user_id_resource_id: {
+            user_id: transaction.buyer_id,
+            resource_id: transaction.resource_id,
+          },
+        },
+        update: {}, // No update needed if already exists
+        create: {
           user_id: transaction.buyer_id,
           resource_id: transaction.resource_id,
         },
-      },
-      update: {}, // No update needed if already exists
-      create: {
-        user_id: transaction.buyer_id,
-        resource_id: transaction.resource_id,
-      },
-    });
+      });
+    }
   });
 
-  console.log(
-    `Webhook: Completed transaction ${transaction.id} for buyer ${transaction.buyer_id}, ` +
-    `granted access to resource ${transaction.resource_id}`
-  );
+  if (isGuestCheckout) {
+    console.log(
+      `Webhook: Completed guest transaction ${transaction.id} for ${transaction.guest_email}, ` +
+      `resource ${transaction.resource_id}`
+    );
+    // TODO: Task 8.4 will send purchase confirmation email with download link
+  } else {
+    console.log(
+      `Webhook: Completed transaction ${transaction.id} for buyer ${transaction.buyer_id}, ` +
+      `granted access to resource ${transaction.resource_id}`
+    );
+  }
 }
 
 /**
@@ -233,21 +248,30 @@ async function handlePaymentIntentFailed(
   // Extract identifiers from metadata (set during checkout session creation)
   const resourceId = metadata?.resourceId;
   const buyerId = metadata?.buyerId;
+  const guestEmail = metadata?.guestEmail;
 
-  if (!resourceId || !buyerId) {
+  if (!resourceId) {
     console.warn(
-      `Webhook: Missing metadata on failed payment intent ${paymentIntentId}`
+      `Webhook: Missing resourceId metadata on failed payment intent ${paymentIntentId}`
     );
     return;
   }
 
-  // Find the pending transaction for this buyer and resource
+  // Need either buyerId or guestEmail to identify the transaction
+  if (!buyerId && !guestEmail) {
+    console.warn(
+      `Webhook: Missing buyerId/guestEmail metadata on failed payment intent ${paymentIntentId}`
+    );
+    return;
+  }
+
+  // Find the pending transaction for this buyer/guest and resource
+  const transactionWhere = buyerId
+    ? { buyer_id: buyerId, resource_id: resourceId, status: "PENDING" as const }
+    : { guest_email: guestEmail, resource_id: resourceId, status: "PENDING" as const };
+
   const transaction = await prisma.transaction.findFirst({
-    where: {
-      buyer_id: buyerId,
-      resource_id: resourceId,
-      status: "PENDING",
-    },
+    where: transactionWhere,
     select: {
       id: true,
     },

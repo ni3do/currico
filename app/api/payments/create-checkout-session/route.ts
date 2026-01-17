@@ -7,24 +7,18 @@ import { getStripeClient, calculateApplicationFee } from "@/lib/stripe";
 // Input validation schema
 const createCheckoutSessionSchema = z.object({
   resourceId: z.string().min(1, "Resource ID is required"),
+  guestEmail: z.string().email("Valid email required for guest checkout").optional(),
 });
 
 /**
  * POST /api/payments/create-checkout-session
  * Creates a Stripe Checkout session for purchasing a resource
- * Access: Authenticated users only
+ * Access: Authenticated users OR guests with email
  */
 export async function POST(request: NextRequest) {
-  // Get authenticated user
+  // Get authenticated user (optional for guest checkout)
   const session = await auth();
-  if (!session?.user?.id) {
-    return NextResponse.json(
-      { error: "Authentication required" },
-      { status: 401 }
-    );
-  }
-
-  const userId = session.user.id;
+  const userId = session?.user?.id || null;
 
   // Parse and validate request body
   let body: unknown;
@@ -45,7 +39,36 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { resourceId } = parsed.data;
+  const { resourceId, guestEmail } = parsed.data;
+
+  // Require either authentication or guest email
+  if (!userId && !guestEmail) {
+    return NextResponse.json(
+      { error: "Authentication or guest email required" },
+      { status: 401 }
+    );
+  }
+
+  // Determine buyer email for Stripe customer
+  const isGuestCheckout = !userId;
+  let buyerEmail: string;
+
+  if (isGuestCheckout) {
+    buyerEmail = guestEmail!;
+  } else {
+    // Fetch authenticated user's email
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { email: true },
+    });
+    if (!user) {
+      return NextResponse.json(
+        { error: "User not found" },
+        { status: 404 }
+      );
+    }
+    buyerEmail = user.email;
+  }
 
   try {
     // Fetch resource with seller info
@@ -84,21 +107,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Prevent purchasing own resources
-    if (resource.seller_id === userId) {
+    // Prevent purchasing own resources (only applies to authenticated users)
+    if (userId && resource.seller_id === userId) {
       return NextResponse.json(
         { error: "Cannot purchase your own resource" },
         { status: 400 }
       );
     }
 
-    // Check if user already owns this resource
+    // Check if user/guest already owns this resource
+    const existingPurchaseWhere = userId
+      ? { buyer_id: userId, resource_id: resourceId, status: "COMPLETED" as const }
+      : { guest_email: guestEmail, resource_id: resourceId, status: "COMPLETED" as const };
+
     const existingPurchase = await prisma.transaction.findFirst({
-      where: {
-        buyer_id: userId,
-        resource_id: resourceId,
-        status: "COMPLETED",
-      },
+      where: existingPurchaseWhere,
     });
 
     if (existingPurchase) {
@@ -126,41 +149,55 @@ export async function POST(request: NextRequest) {
 
     const stripe = getStripeClient();
 
-    // Get or create Stripe customer for the buyer
-    const buyer = await prisma.user.findUnique({
-      where: { id: userId },
-      select: {
-        id: true,
-        email: true,
-        stripe_customer_id: true,
-      },
-    });
+    // Get or create Stripe customer
+    let stripeCustomerId: string;
 
-    if (!buyer) {
-      return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 }
-      );
-    }
-
-    let stripeCustomerId = buyer.stripe_customer_id;
-
-    if (!stripeCustomerId) {
-      // Create a new Stripe customer
-      const customer = await stripe.customers.create({
-        email: buyer.email,
-        metadata: {
-          userId: buyer.id,
+    if (!isGuestCheckout) {
+      // For authenticated users, get or create customer linked to user
+      const buyer = await prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+          id: true,
+          email: true,
+          stripe_customer_id: true,
         },
       });
 
-      stripeCustomerId = customer.id;
+      if (!buyer) {
+        return NextResponse.json(
+          { error: "User not found" },
+          { status: 404 }
+        );
+      }
 
-      // Save customer ID to database
-      await prisma.user.update({
-        where: { id: userId },
-        data: { stripe_customer_id: stripeCustomerId },
+      stripeCustomerId = buyer.stripe_customer_id || "";
+
+      if (!stripeCustomerId) {
+        // Create a new Stripe customer for authenticated user
+        const customer = await stripe.customers.create({
+          email: buyer.email,
+          metadata: {
+            userId: buyer.id,
+          },
+        });
+
+        stripeCustomerId = customer.id;
+
+        // Save customer ID to database
+        await prisma.user.update({
+          where: { id: userId },
+          data: { stripe_customer_id: stripeCustomerId },
+        });
+      }
+    } else {
+      // For guests, create a new Stripe customer with guest email
+      const customer = await stripe.customers.create({
+        email: guestEmail!,
+        metadata: {
+          guestCheckout: "true",
+        },
       });
+      stripeCustomerId = customer.id;
     }
 
     // Calculate application fee (platform fee)
@@ -170,6 +207,18 @@ export async function POST(request: NextRequest) {
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || request.nextUrl.origin;
     const successUrl = `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`;
     const cancelUrl = `${baseUrl}/checkout/cancel?resource_id=${resourceId}`;
+
+    // Build metadata for Stripe (include guest_email for guest checkouts)
+    const stripeMetadata: Record<string, string> = {
+      resourceId: resource.id,
+      sellerId: resource.seller_id,
+    };
+
+    if (isGuestCheckout) {
+      stripeMetadata.guestEmail = guestEmail!;
+    } else {
+      stripeMetadata.buyerId = userId!;
+    }
 
     // Create Stripe Checkout session
     const checkoutSession = await stripe.checkout.sessions.create({
@@ -193,17 +242,9 @@ export async function POST(request: NextRequest) {
         transfer_data: {
           destination: resource.seller.stripe_account_id,
         },
-        metadata: {
-          resourceId: resource.id,
-          buyerId: userId,
-          sellerId: resource.seller_id,
-        },
+        metadata: stripeMetadata,
       },
-      metadata: {
-        resourceId: resource.id,
-        buyerId: userId,
-        sellerId: resource.seller_id,
-      },
+      metadata: stripeMetadata,
       success_url: successUrl,
       cancel_url: cancelUrl,
       // TWINT and card payments for Swiss market
@@ -215,7 +256,8 @@ export async function POST(request: NextRequest) {
     // Create pending transaction record
     await prisma.transaction.create({
       data: {
-        buyer_id: userId,
+        buyer_id: isGuestCheckout ? null : userId,
+        guest_email: isGuestCheckout ? guestEmail : null,
         resource_id: resourceId,
         amount: resource.price,
         status: "PENDING",
