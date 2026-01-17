@@ -292,13 +292,13 @@ export default function ResourcesPage() {
         {/* Resource Grid */}
         {loading ? (
           <div className="flex items-center justify-center py-16">
-            <div className="text-[var(--color-text-muted)]">Loading...</div>
+            <div className="text-[var(--color-text-muted)]">{t("loading")}</div>
           </div>
         ) : resources.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16">
-            <p className="mb-4 text-[var(--color-text-muted)]">No resources found</p>
+            <p className="mb-4 text-[var(--color-text-muted)]">{t("empty.title")}</p>
             <p className="text-sm text-[var(--color-text-faint)]">
-              Try different search terms or filters
+              {t("empty.description")}
             </p>
           </div>
         ) : (

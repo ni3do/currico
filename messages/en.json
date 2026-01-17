@@ -342,6 +342,11 @@
       "title": "Have Materials to Share?",
       "description": "Become a seller and earn 70% of every sale while helping other teachers save time.",
       "button": "Start Selling"
+    },
+    "loading": "Loading...",
+    "empty": {
+      "title": "No resources found",
+      "description": "Try different search terms or filters"
     }
   },
   "sellerDashboard": {
@@ -759,6 +764,22 @@
       "benefit1": "Earn 70% per sale",
       "benefit2": "Reach thousands of teachers",
       "cta": "Become a Seller"
+    }
+  },
+  "emailVerification": {
+    "banner": {
+      "title": "Verify your email address",
+      "description": "Please verify your email address {email} to unlock all features. This is required to become a seller.",
+      "sendButton": "Send verification link",
+      "sending": "Sending...",
+      "errorFallback": "An error occurred",
+      "sendError": "Error sending verification"
+    },
+    "sent": {
+      "title": "Verification link sent",
+      "description": "We've sent a verification link to {email}. Please check your inbox and click the link.",
+      "resendButton": "Resend link",
+      "resendIn": "Resend in {seconds}s"
     }
   },
   "sellerOnboarding": {

@@ -342,6 +342,11 @@
       "title": "Haben Sie Materialien zum Teilen?",
       "description": "Werden Sie Verkäufer und verdienen Sie 70% bei jedem Verkauf, während Sie anderen Lehrern Zeit sparen.",
       "button": "Verkaufen starten"
+    },
+    "loading": "Wird geladen...",
+    "empty": {
+      "title": "Keine Ressourcen gefunden",
+      "description": "Versuchen Sie andere Suchbegriffe oder Filter"
     }
   },
   "sellerDashboard": {
@@ -759,6 +764,22 @@
       "benefit1": "70% pro Verkauf",
       "benefit2": "Tausende Lehrpersonen erreichen",
       "cta": "Verkäufer werden"
+    }
+  },
+  "emailVerification": {
+    "banner": {
+      "title": "E-Mail-Adresse bestätigen",
+      "description": "Bitte bestätigen Sie Ihre E-Mail-Adresse {email}, um alle Funktionen nutzen zu können. Dies ist erforderlich, um Verkäufer zu werden.",
+      "sendButton": "Bestätigungslink senden",
+      "sending": "Wird gesendet...",
+      "errorFallback": "Ein Fehler ist aufgetreten",
+      "sendError": "Fehler beim Senden"
+    },
+    "sent": {
+      "title": "Bestätigungslink gesendet",
+      "description": "Wir haben Ihnen einen Bestätigungslink an {email} gesendet. Bitte überprüfen Sie Ihren Posteingang und klicken Sie auf den Link.",
+      "resendButton": "Link erneut senden",
+      "resendIn": "Erneut senden in {seconds}s"
     }
   },
   "sellerOnboarding": {

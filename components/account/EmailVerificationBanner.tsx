@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useTranslations } from "next-intl";
 
 interface EmailVerificationBannerProps {
   email: string;
@@ -13,6 +14,7 @@ export function EmailVerificationBanner({ email }: EmailVerificationBannerProps)
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [cooldownRemaining, setCooldownRemaining] = useState(0);
+  const t = useTranslations("emailVerification");
 
   // Cooldown timer effect
   useEffect(() => {
@@ -40,17 +42,17 @@ export function EmailVerificationBanner({ email }: EmailVerificationBannerProps)
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.error || "Fehler beim Senden");
+        throw new Error(data.error || t("banner.sendError"));
       }
 
       setSent(true);
       setCooldownRemaining(RESEND_COOLDOWN_SECONDS);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Ein Fehler ist aufgetreten");
+      setError(err instanceof Error ? err.message : t("banner.errorFallback"));
     } finally {
       setSending(false);
     }
-  }, [cooldownRemaining, sending]);
+  }, [cooldownRemaining, sending, t]);
 
   if (sent) {
     return (
@@ -73,11 +75,12 @@ export function EmailVerificationBanner({ email }: EmailVerificationBannerProps)
           </div>
           <div className="flex-1">
             <h3 className="font-semibold text-[var(--color-text)]">
-              Bestätigungslink gesendet
+              {t("sent.title")}
             </h3>
             <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-              Wir haben Ihnen einen Bestätigungslink an <strong>{email}</strong> gesendet.
-              Bitte überprüfen Sie Ihren Posteingang und klicken Sie auf den Link.
+              {t.rich("sent.description", {
+                email: () => <strong>{email}</strong>,
+              })}
             </p>
             {error && (
               <p className="mt-2 text-sm text-[var(--color-error)]">{error}</p>
@@ -88,11 +91,11 @@ export function EmailVerificationBanner({ email }: EmailVerificationBannerProps)
               className="mt-3 text-sm font-medium text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {sending ? (
-                "Wird gesendet..."
+                t("banner.sending")
               ) : cooldownRemaining > 0 ? (
-                `Erneut senden in ${cooldownRemaining}s`
+                t("sent.resendIn", { seconds: cooldownRemaining })
               ) : (
-                "Link erneut senden"
+                t("sent.resendButton")
               )}
             </button>
           </div>
@@ -121,11 +124,12 @@ export function EmailVerificationBanner({ email }: EmailVerificationBannerProps)
         </div>
         <div className="flex-1">
           <h3 className="font-semibold text-[var(--color-text)]">
-            E-Mail-Adresse bestätigen
+            {t("banner.title")}
           </h3>
           <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-            Bitte bestätigen Sie Ihre E-Mail-Adresse <strong>{email}</strong>, um alle
-            Funktionen nutzen zu können. Dies ist erforderlich, um Verkäufer zu werden.
+            {t.rich("banner.description", {
+              email: () => <strong>{email}</strong>,
+            })}
           </p>
           {error && (
             <p className="mt-2 text-sm text-[var(--color-error)]">{error}</p>
@@ -153,10 +157,10 @@ export function EmailVerificationBanner({ email }: EmailVerificationBannerProps)
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   />
                 </svg>
-                Wird gesendet...
+                {t("banner.sending")}
               </span>
             ) : (
-              "Bestätigungslink senden"
+              t("banner.sendButton")
             )}
           </button>
         </div>
