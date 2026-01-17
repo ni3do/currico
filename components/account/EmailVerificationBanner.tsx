@@ -1,17 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 interface EmailVerificationBannerProps {
   email: string;
 }
 
+const RESEND_COOLDOWN_SECONDS = 60;
+
 export function EmailVerificationBanner({ email }: EmailVerificationBannerProps) {
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [cooldownRemaining, setCooldownRemaining] = useState(0);
 
-  const handleResend = async () => {
+  // Cooldown timer effect
+  useEffect(() => {
+    if (cooldownRemaining > 0) {
+      const timer = setTimeout(() => {
+        setCooldownRemaining(cooldownRemaining - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [cooldownRemaining]);
+
+  const handleResend = useCallback(async () => {
+    if (cooldownRemaining > 0 || sending) return;
+
     setSending(true);
     setError(null);
 
@@ -29,12 +44,13 @@ export function EmailVerificationBanner({ email }: EmailVerificationBannerProps)
       }
 
       setSent(true);
+      setCooldownRemaining(RESEND_COOLDOWN_SECONDS);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Ein Fehler ist aufgetreten");
     } finally {
       setSending(false);
     }
-  };
+  }, [cooldownRemaining, sending]);
 
   if (sent) {
     return (
@@ -63,6 +79,22 @@ export function EmailVerificationBanner({ email }: EmailVerificationBannerProps)
               Wir haben Ihnen einen Bestätigungslink an <strong>{email}</strong> gesendet.
               Bitte überprüfen Sie Ihren Posteingang und klicken Sie auf den Link.
             </p>
+            {error && (
+              <p className="mt-2 text-sm text-[var(--color-error)]">{error}</p>
+            )}
+            <button
+              onClick={handleResend}
+              disabled={sending || cooldownRemaining > 0}
+              className="mt-3 text-sm font-medium text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {sending ? (
+                "Wird gesendet..."
+              ) : cooldownRemaining > 0 ? (
+                `Erneut senden in ${cooldownRemaining}s`
+              ) : (
+                "Link erneut senden"
+              )}
+            </button>
           </div>
         </div>
       </div>
