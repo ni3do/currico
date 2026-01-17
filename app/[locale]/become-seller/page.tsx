@@ -1,12 +1,58 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 
+interface UserData {
+  emailVerified: string | null;
+}
+
 export default function BecomeSellerPage() {
+  const { data: session, status } = useSession();
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [fetchState, setFetchState] = useState<"idle" | "loading" | "done">("idle");
   const t = useTranslations("becomeSeller");
   const tTerms = useTranslations("sellerTerms");
+
+  // Fetch user data to get emailVerified status
+  useEffect(() => {
+    let cancelled = false;
+
+    async function fetchUserData() {
+      try {
+        const res = await fetch("/api/user/stats");
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!cancelled && data?.user) {
+          setUserData({ emailVerified: data.user.emailVerified });
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        if (!cancelled) {
+          setFetchState("done");
+        }
+      }
+    }
+
+    if (status === "authenticated") {
+      setFetchState("loading");
+      fetchUserData();
+    }
+
+    return () => {
+      cancelled = true;
+    };
+  }, [status]);
+
+  const isLoading = status === "loading" || (status === "authenticated" && fetchState !== "done");
+  const isLoggedIn = status === "authenticated";
+  const isEmailVerified = !!userData?.emailVerified;
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -286,6 +332,60 @@ export default function BecomeSellerPage() {
                   <p>{tTerms("sections.changes.content")}</p>
                 </div>
               </div>
+            </div>
+
+            {/* Terms Acceptance Checkbox */}
+            <div className="mt-6">
+              <label className="flex cursor-pointer items-start gap-3">
+                <input
+                  type="checkbox"
+                  checked={termsAccepted}
+                  onChange={(e) => setTermsAccepted(e.target.checked)}
+                  className="mt-1 h-5 w-5 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)] focus:ring-offset-0"
+                />
+                <span className="text-[var(--color-text-secondary)]">
+                  {t("acceptance.checkboxLabel")}
+                </span>
+              </label>
+            </div>
+
+            {/* CTA Section */}
+            <div className="mt-8 text-center">
+              {isLoading ? (
+                <div className="h-12 w-48 mx-auto animate-pulse rounded-lg bg-[var(--color-bg-secondary)]" />
+              ) : !isLoggedIn ? (
+                <div className="space-y-3">
+                  <p className="text-[var(--color-text-muted)]">{t("cta.loginRequired")}</p>
+                  <Link
+                    href="/login"
+                    className="btn btn-primary inline-block px-8 py-3"
+                  >
+                    {t("cta.login")}
+                  </Link>
+                </div>
+              ) : !isEmailVerified ? (
+                <div className="space-y-3">
+                  <p className="text-[var(--color-text-muted)]">{t("cta.emailRequired")}</p>
+                  <Link
+                    href="/account"
+                    className="btn btn-primary inline-block px-8 py-3"
+                  >
+                    {t("cta.verifyEmail")}
+                  </Link>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {!termsAccepted && (
+                    <p className="text-[var(--color-text-muted)]">{t("acceptance.pleaseAccept")}</p>
+                  )}
+                  <button
+                    disabled={!termsAccepted}
+                    className="btn btn-primary px-8 py-3 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {t("cta.button")}
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </section>

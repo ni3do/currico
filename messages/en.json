@@ -708,10 +708,16 @@
       "title": "Seller Terms & Conditions",
       "readBelow": "Please read the terms below before proceeding."
     },
+    "acceptance": {
+      "checkboxLabel": "I have read and accept the Seller Terms & Conditions",
+      "pleaseAccept": "Please accept the terms above to continue"
+    },
     "cta": {
       "button": "Continue to Stripe Setup",
       "login": "Sign in to become a seller",
-      "verifyEmail": "Verify your email to continue"
+      "loginRequired": "You need to sign in to become a seller",
+      "verifyEmail": "Verify your email to continue",
+      "emailRequired": "Please verify your email address before becoming a seller"
     }
   }
 }

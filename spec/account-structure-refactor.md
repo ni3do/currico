@@ -155,7 +155,7 @@ Create seller terms acceptance flow.
   - Content policies
   - Prohibited content
 - [x] **5.2** Create `/become-seller` page with terms display
-- [ ] **5.3** Add "I accept the seller terms" checkbox
+- [x] **5.3** Add "I accept the seller terms" checkbox
 - [ ] **5.4** Create `POST /api/seller/accept-terms` endpoint
 - [ ] **5.5** Record `seller_terms_accepted_at` timestamp
 - [ ] **5.6** Gate Stripe onboarding on terms acceptance

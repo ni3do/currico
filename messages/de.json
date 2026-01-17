@@ -708,10 +708,16 @@
       "title": "Verkäufer-AGB",
       "readBelow": "Bitte lesen Sie die folgenden Bedingungen, bevor Sie fortfahren."
     },
+    "acceptance": {
+      "checkboxLabel": "Ich habe die Verkäufer-AGB gelesen und akzeptiere sie",
+      "pleaseAccept": "Bitte akzeptieren Sie die obigen Bedingungen, um fortzufahren"
+    },
     "cta": {
       "button": "Weiter zur Stripe-Einrichtung",
       "login": "Anmelden, um Verkäufer zu werden",
-      "verifyEmail": "Verifizieren Sie Ihre E-Mail, um fortzufahren"
+      "loginRequired": "Sie müssen sich anmelden, um Verkäufer zu werden",
+      "verifyEmail": "Verifizieren Sie Ihre E-Mail, um fortzufahren",
+      "emailRequired": "Bitte verifizieren Sie Ihre E-Mail-Adresse, bevor Sie Verkäufer werden"
     }
   }
 }
