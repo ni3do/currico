@@ -122,7 +122,7 @@ Update frontend to match new schema.
 - [x] **3.1** Update profile edit page - remove payout info section
 - [ ] **3.2** Update registration form - remove school account type option
 - [ ] **3.3** Update dashboard sidebar - use `role` instead of `is_seller`
-- [ ] **3.4** Update admin user management - simplify status display
+- [x] **3.4** Update admin user management - simplify status display
 - [ ] **3.5** Remove any "Payout Information" UI components
 
 ---

@@ -10,12 +10,11 @@ interface AdminStats {
   pendingApproval: number;
   totalRevenue: number;
   revenueToday: number;
-  activeSchools: number;
   openReports: number;
   userBreakdown: {
     buyers: number;
     sellers: number;
-    schools: number;
+    admins: number;
   };
   weeklyRevenue: number[];
 }
@@ -264,10 +263,10 @@ export default function AdminDashboardPage() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="h-3 w-3 rounded-full bg-[var(--ctp-mauve)]"></div>
-                <span className="text-[var(--color-text-muted)]">Schulen</span>
+                <span className="text-[var(--color-text-muted)]">Admins</span>
               </div>
               <span className="font-medium text-[var(--color-text)]">
-                {stats?.userBreakdown?.schools || 0}
+                {stats?.userBreakdown?.admins || 0}
               </span>
             </div>
           </div>
@@ -286,12 +285,6 @@ export default function AdminDashboardPage() {
               <span className="text-[var(--color-text-muted)]">Ausstehende Prüfungen</span>
               <span className="font-medium text-[var(--ctp-yellow)]">
                 {stats?.pendingApproval || 0}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-[var(--color-text-muted)]">Aktive Schulen</span>
-              <span className="font-medium text-[var(--color-text)]">
-                {stats?.activeSchools || 0}
               </span>
             </div>
           </div>
