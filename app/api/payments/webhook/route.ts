@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { prisma } from "@/lib/db";
 import { constructWebhookEvent } from "@/lib/stripe";
+import { sendPurchaseConfirmationEmail } from "@/lib/email";
 import { DOWNLOAD_LINK_EXPIRY_DAYS, DOWNLOAD_LINK_MAX_DOWNLOADS } from "@/lib/constants";
 import Stripe from "stripe";
 
@@ -165,7 +166,7 @@ async function handleCheckoutSessionCompleted(
     return;
   }
 
-  // Find the pending transaction by checkout session ID
+  // Find the pending transaction by checkout session ID with resource and buyer details
   const transaction = await prisma.transaction.findFirst({
     where: {
       stripe_checkout_session_id: sessionId,
@@ -176,6 +177,17 @@ async function handleCheckoutSessionCompleted(
       buyer_id: true,
       guest_email: true,
       resource_id: true,
+      amount: true,
+      resource: {
+        select: {
+          title: true,
+        },
+      },
+      buyer: {
+        select: {
+          email: true,
+        },
+      },
     },
   });
 
@@ -241,12 +253,42 @@ async function handleCheckoutSessionCompleted(
     }
   });
 
+  // Send purchase confirmation email
+  const buyerEmail = isGuestCheckout
+    ? transaction.guest_email
+    : transaction.buyer?.email;
+
+  if (buyerEmail) {
+    const emailResult = await sendPurchaseConfirmationEmail({
+      email: buyerEmail,
+      resourceTitle: transaction.resource.title,
+      amount: transaction.amount,
+      downloadToken: downloadToken ?? undefined,
+      isGuest: isGuestCheckout,
+      // Default to German for Swiss platform
+      locale: "de",
+    });
+
+    if (emailResult.success) {
+      console.log(
+        `Webhook: Sent purchase confirmation email to ${buyerEmail} for transaction ${transaction.id}`
+      );
+    } else {
+      console.error(
+        `Webhook: Failed to send purchase confirmation email to ${buyerEmail}: ${emailResult.error}`
+      );
+    }
+  } else {
+    console.warn(
+      `Webhook: No email address available for transaction ${transaction.id}`
+    );
+  }
+
   if (isGuestCheckout) {
     console.log(
       `Webhook: Completed guest transaction ${transaction.id} for ${transaction.guest_email}, ` +
       `resource ${transaction.resource_id}, token: ${downloadToken}`
     );
-    // TODO: Task 8.4 will send purchase confirmation email with download link
   } else {
     console.log(
       `Webhook: Completed transaction ${transaction.id} for buyer ${transaction.buyer_id}, ` +
