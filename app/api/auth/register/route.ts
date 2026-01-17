@@ -24,7 +24,6 @@ const registrationSchema = z.object({
   canton: z.string().optional(),
   subjects: z.array(z.string()).optional(),
   cycles: z.array(z.string()).optional(),
-  accountType: z.enum(["buyer", "school"]).optional(),
 });
 
 export async function POST(request: NextRequest) {
@@ -58,7 +57,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { name, email, password, canton, subjects, cycles, accountType } = parsed.data;
+    const { name, email, password, canton, subjects, cycles } = parsed.data;
 
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
@@ -75,18 +74,63 @@ export async function POST(request: NextRequest) {
     // Hash the password
     const password_hash = await bcrypt.hash(password, 12);
 
-    // Create the user
-    const user = await prisma.user.create({
-      data: {
-        name,
-        email,
-        password_hash,
-        display_name: name,
-        cantons: canton ? [canton] : [],
-        subjects: subjects || [],
-        cycles: cycles || [],
-        role: accountType === "school" ? "SCHOOL" : "BUYER",
-      },
+    // Create the user and link any past guest purchases
+    const user = await prisma.$transaction(async (tx) => {
+      // Create the user (all new users start as BUYER)
+      const newUser = await tx.user.create({
+        data: {
+          name,
+          email,
+          password_hash,
+          display_name: name,
+          cantons: canton ? [canton] : [],
+          subjects: subjects || [],
+          cycles: cycles || [],
+          role: "BUYER",
+        },
+      });
+
+      // Find all completed guest transactions with this email
+      const guestTransactions = await tx.transaction.findMany({
+        where: {
+          guest_email: email,
+          buyer_id: null,
+          status: "COMPLETED",
+        },
+        select: {
+          id: true,
+          resource_id: true,
+        },
+      });
+
+      if (guestTransactions.length > 0) {
+        // Link transactions to the new user
+        await tx.transaction.updateMany({
+          where: {
+            guest_email: email,
+            buyer_id: null,
+            status: "COMPLETED",
+          },
+          data: {
+            buyer_id: newUser.id,
+          },
+        });
+
+        // Create Download records for each purchased resource
+        // (grants permanent library access)
+        const downloadRecords = guestTransactions.map((t) => ({
+          user_id: newUser.id,
+          resource_id: t.resource_id,
+        }));
+
+        // Use createMany with skipDuplicates in case user already has access
+        await tx.download.createMany({
+          data: downloadRecords,
+          skipDuplicates: true,
+        });
+      }
+
+      return newUser;
     });
 
     return NextResponse.json(
