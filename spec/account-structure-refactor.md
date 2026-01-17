@@ -174,7 +174,7 @@ Implement the actual Stripe Connect flow.
   - `STRIPE_SECRET_KEY`
   - `STRIPE_PUBLISHABLE_KEY`
   - `STRIPE_WEBHOOK_SECRET`
-- [ ] **6.4** Create `POST /api/seller/connect` - creates Express account + onboarding link
+- [x] **6.4** Create `POST /api/seller/connect` - creates Express account + onboarding link
 - [ ] **6.5** Create `GET /api/seller/connect/status` - returns current Stripe status
 - [ ] **6.6** Create `POST /api/payments/webhook` - handles Stripe webhooks
 - [ ] **6.7** Handle `account.updated` webhook - sync charges/payouts enabled

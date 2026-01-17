@@ -20,6 +20,8 @@ export default function BecomeSellerPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [termsAcceptedAt, setTermsAcceptedAt] = useState<string | null>(null);
+  const [isStripeLoading, setIsStripeLoading] = useState(false);
+  const [stripeError, setStripeError] = useState<string | null>(null);
   const t = useTranslations("becomeSeller");
   const tTerms = useTranslations("sellerTerms");
 
@@ -90,11 +92,38 @@ export default function BecomeSellerPage() {
       }
 
       setTermsAcceptedAt(data.acceptedAt);
-      // TODO: When Stripe integration is ready, redirect to Stripe onboarding
     } catch {
       setSubmitError(t("cta.error"));
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleStartStripeOnboarding = async () => {
+    setIsStripeLoading(true);
+    setStripeError(null);
+
+    try {
+      const res = await fetch("/api/seller/connect", {
+        method: "POST",
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setStripeError(data.error || t("cta.stripeOnboardingError"));
+        return;
+      }
+
+      // Redirect to Stripe onboarding
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        setStripeError(t("cta.stripeOnboardingError"));
+      }
+    } catch {
+      setStripeError(t("cta.stripeOnboardingError"));
+      setIsStripeLoading(false);
     }
   };
 
@@ -423,14 +452,23 @@ export default function BecomeSellerPage() {
                   </Link>
                 </div>
               ) : hasAcceptedTerms ? (
-                <div className="space-y-3">
+                <div className="space-y-4">
                   <div className="inline-flex items-center gap-2 rounded-lg bg-[var(--color-success-light)] px-4 py-2 text-[var(--color-success)]">
                     <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                     {t("cta.termsAccepted")}
                   </div>
-                  <p className="text-sm text-[var(--color-text-muted)]">{t("cta.stripeComingSoon")}</p>
+                  {stripeError && (
+                    <p className="text-sm text-[var(--color-error)]">{stripeError}</p>
+                  )}
+                  <button
+                    onClick={handleStartStripeOnboarding}
+                    disabled={isStripeLoading}
+                    className="btn btn-primary px-8 py-3 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {isStripeLoading ? t("cta.stripeOnboardingLoading") : t("cta.startStripeOnboarding")}
+                  </button>
                 </div>
               ) : (
                 <div className="space-y-3">
