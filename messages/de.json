@@ -877,5 +877,53 @@
       "tryAgain": "Erneut versuchen",
       "browseResources": "Materialien durchsuchen"
     }
+  },
+  "guestDownload": {
+    "loading": "Ihr Download wird geladen...",
+    "browseResources": "Materialien durchsuchen",
+    "createAccount": "Konto erstellen",
+    "downloadButton": "Jetzt herunterladen",
+    "downloading": "Wird heruntergeladen...",
+    "errors": {
+      "invalid_token": {
+        "title": "Link nicht gefunden",
+        "description": "Dieser Download-Link ist ungültig oder wurde entfernt."
+      },
+      "payment_incomplete": {
+        "title": "Zahlung unvollständig",
+        "description": "Die Zahlung für diese Ressource wurde nicht abgeschlossen."
+      },
+      "generic": {
+        "title": "Etwas ist schiefgelaufen",
+        "description": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut."
+      }
+    },
+    "expired": {
+      "title": "Link abgelaufen",
+      "description": "Dieser Download-Link ist abgelaufen. Gast-Download-Links sind 7 Tage nach dem Kauf gültig.",
+      "expiredOn": "Abgelaufen am {date}"
+    },
+    "maxDownloads": {
+      "title": "Download-Limit erreicht",
+      "description": "Sie haben alle {max} Downloads für diesen Link verwendet.",
+      "suggestion": "Erstellen Sie ein kostenloses Konto, um Ihre Käufe dauerhaft zu speichern."
+    },
+    "ready": {
+      "title": "Ihr Download ist bereit",
+      "description": "Klicken Sie auf den Button unten, um Ihre gekaufte Ressource herunterzuladen."
+    },
+    "success": {
+      "title": "Download gestartet!",
+      "description": "Ihre Datei wird heruntergeladen. Überprüfen Sie Ihren Downloads-Ordner."
+    },
+    "info": {
+      "remainingDownloads": "Verbleibende Downloads",
+      "expiresOn": "Link läuft ab",
+      "purchaseDate": "Kaufdatum"
+    },
+    "createAccountCta": {
+      "description": "Erstellen Sie ein kostenloses Konto, um jederzeit auf Ihre Käufe zuzugreifen und sie in Ihrer Bibliothek zu speichern.",
+      "link": "Kostenloses Konto erstellen"
+    }
   }
 }

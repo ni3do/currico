@@ -222,10 +222,10 @@ Enable purchasing without an account.
 - [x] **8.2** Create guest transaction record (link by email, no user_id)
 - [x] **8.3** Create download token system for guest access
 - [x] **8.4** Create purchase confirmation email with download link
-- [ ] **8.5** Create `/download/[token]` page for guest downloads
+- [x] **8.5** Create `/download/[token]` page for guest downloads
 - [ ] **8.6** Add "Create account to save to library" prompt after purchase
 - [ ] **8.7** Handle account creation - link past purchases by email
-- [ ] **8.8** Set download link expiration (7 days, 3 downloads max)
+- [x] **8.8** Set download link expiration (7 days, 3 downloads max)
 
 ---
 

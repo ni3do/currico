@@ -877,5 +877,53 @@
       "tryAgain": "Try Again",
       "browseResources": "Browse Resources"
     }
+  },
+  "guestDownload": {
+    "loading": "Loading your download...",
+    "browseResources": "Browse Resources",
+    "createAccount": "Create Account",
+    "downloadButton": "Download Now",
+    "downloading": "Downloading...",
+    "errors": {
+      "invalid_token": {
+        "title": "Link Not Found",
+        "description": "This download link is invalid or has been removed."
+      },
+      "payment_incomplete": {
+        "title": "Payment Incomplete",
+        "description": "The payment for this resource has not been completed."
+      },
+      "generic": {
+        "title": "Something Went Wrong",
+        "description": "An error occurred. Please try again later."
+      }
+    },
+    "expired": {
+      "title": "Link Expired",
+      "description": "This download link has expired. Guest download links are valid for 7 days after purchase.",
+      "expiredOn": "Expired on {date}"
+    },
+    "maxDownloads": {
+      "title": "Download Limit Reached",
+      "description": "You have used all {max} downloads for this link.",
+      "suggestion": "Create a free account to save your purchases permanently."
+    },
+    "ready": {
+      "title": "Your Download is Ready",
+      "description": "Click the button below to download your purchased resource."
+    },
+    "success": {
+      "title": "Download Started!",
+      "description": "Your file is being downloaded. Check your downloads folder."
+    },
+    "info": {
+      "remainingDownloads": "Remaining downloads",
+      "expiresOn": "Link expires",
+      "purchaseDate": "Purchase date"
+    },
+    "createAccountCta": {
+      "description": "Create a free account to access your purchases anytime and save them to your library.",
+      "link": "Create Free Account"
+    }
   }
 }
