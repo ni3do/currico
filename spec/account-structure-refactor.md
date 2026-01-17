@@ -196,12 +196,12 @@ Create the "Become a Seller" experience.
 
 ### Tasks
 
-- [ ] **7.1** Create `/become-seller` page layout
+- [x] **7.1** Create `/become-seller` page layout
   - Benefits section (reach teachers, earn money)
   - Fee disclosure (30% platform fee)
   - Requirements (email verified, accept terms)
   - "Start Stripe Onboarding" button
-- [ ] **7.2** Create `StripeConnectStatus` component for seller dashboard
+- [x] **7.2** Create `StripeConnectStatus` component for seller dashboard
   - Shows onboarding status (complete/incomplete)
   - "Open Stripe Dashboard" button (link to Express dashboard for earnings)
   - Status indicators (charges enabled, payouts enabled)

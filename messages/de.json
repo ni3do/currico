@@ -726,6 +726,36 @@
       "emailRequired": "Bitte verifizieren Sie Ihre E-Mail-Adresse, bevor Sie Verkäufer werden"
     }
   },
+  "stripeConnectStatus": {
+    "error": {
+      "title": "Verbindungsfehler",
+      "fetchFailed": "Stripe-Status konnte nicht geladen werden. Bitte versuchen Sie es erneut.",
+      "tryAgain": "Erneut versuchen"
+    },
+    "active": {
+      "title": "Verkäuferkonto aktiv",
+      "description": "Ihr Stripe-Konto ist eingerichtet und bereit für Zahlungen.",
+      "chargesEnabled": "Zahlungen aktiviert",
+      "payoutsEnabled": "Auszahlungen aktiviert",
+      "payoutsPending": "Auszahlungen ausstehend",
+      "viewDashboard": "Stripe-Dashboard öffnen"
+    },
+    "pending": {
+      "title": "Einrichtung unvollständig",
+      "description": "Ihr Stripe-Konto wird überprüft. Dies dauert normalerweise einige Minuten.",
+      "requirementsNeeded": "Zusätzliche Informationen sind erforderlich, um die Einrichtung abzuschliessen.",
+      "requiredInfo": "Erforderliche Informationen:",
+      "andMore": "und {count} weitere...",
+      "continueSetup": "Einrichtung abschliessen"
+    },
+    "invite": {
+      "title": "Geld verdienen",
+      "description": "Teilen Sie Ihre Unterrichtsmaterialien und verdienen Sie 70% bei jedem Verkauf. Richten Sie Ihr Verkäuferkonto in wenigen Minuten ein.",
+      "benefit1": "70% pro Verkauf",
+      "benefit2": "Tausende Lehrpersonen erreichen",
+      "cta": "Verkäufer werden"
+    }
+  },
   "sellerOnboarding": {
     "loading": "Verkäuferstatus wird überprüft...",
     "notLoggedIn": {

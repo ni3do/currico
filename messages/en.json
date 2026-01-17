@@ -726,6 +726,36 @@
       "emailRequired": "Please verify your email address before becoming a seller"
     }
   },
+  "stripeConnectStatus": {
+    "error": {
+      "title": "Connection Error",
+      "fetchFailed": "Could not load Stripe status. Please try again.",
+      "tryAgain": "Try Again"
+    },
+    "active": {
+      "title": "Seller Account Active",
+      "description": "Your Stripe account is set up and ready to receive payments.",
+      "chargesEnabled": "Payments enabled",
+      "payoutsEnabled": "Payouts enabled",
+      "payoutsPending": "Payouts pending",
+      "viewDashboard": "Open Stripe Dashboard"
+    },
+    "pending": {
+      "title": "Setup Incomplete",
+      "description": "Your Stripe account is being reviewed. This usually takes a few minutes.",
+      "requirementsNeeded": "Additional information is needed to complete your setup.",
+      "requiredInfo": "Required information:",
+      "andMore": "and {count} more...",
+      "continueSetup": "Complete Setup"
+    },
+    "invite": {
+      "title": "Start Earning Money",
+      "description": "Share your teaching materials and earn 70% of every sale. Set up your seller account in minutes.",
+      "benefit1": "Earn 70% per sale",
+      "benefit2": "Reach thousands of teachers",
+      "cta": "Become a Seller"
+    }
+  },
   "sellerOnboarding": {
     "loading": "Checking your seller status...",
     "notLoggedIn": {

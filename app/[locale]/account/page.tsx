@@ -9,6 +9,7 @@ import Footer from "@/components/ui/Footer";
 import { ThemeSettings } from "@/components/ui/ThemeToggle";
 import { AvatarUploader } from "@/components/profile/AvatarUploader";
 import { EmailVerificationBanner } from "@/components/account/EmailVerificationBanner";
+import { StripeConnectStatus } from "@/components/account/StripeConnectStatus";
 
 interface LibraryItem {
   id: string;
@@ -639,6 +640,11 @@ export default function AccountPage() {
               {/* Email Verification Banner - show if email not verified */}
               {userData && !userData.emailVerified && (
                 <EmailVerificationBanner email={userData.email} />
+              )}
+
+              {/* Stripe Connect Status - show for verified users */}
+              {userData && userData.emailVerified && (
+                <StripeConnectStatus isSeller={userData.isSeller} />
               )}
 
               {/* KPI Metrics Row - 3 columns */}
