@@ -357,18 +357,16 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    // Check if user is a seller
+    // Check if user is a seller with Stripe enabled
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: {
-        is_seller: true,
         role: true,
         display_name: true,
         subjects: true,
         cycles: true,
-        legal_first_name: true,
-        legal_last_name: true,
-        iban: true,
+        stripe_charges_enabled: true,
+        emailVerified: true,
       },
     });
 
@@ -376,22 +374,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Benutzer nicht gefunden" }, { status: 404 });
     }
 
-    const isSeller = user.is_seller || user.role === "SELLER";
-    if (!isSeller) {
+    if (user.role !== "SELLER") {
       return NextResponse.json(
         { error: "Nur Verkäufer können Ressourcen erstellen" },
         { status: 403 }
       );
     }
 
-    // Check seller profile completion
+    // Check seller profile, email verification, and Stripe completion
     const missingFields: string[] = [];
+    if (!user.emailVerified) missingFields.push("E-Mail-Verifizierung");
     if (!user.display_name) missingFields.push("Profilname");
     if (!user.subjects || user.subjects.length === 0) missingFields.push("Fächer");
     if (!user.cycles || user.cycles.length === 0) missingFields.push("Zyklen");
-    if (!user.legal_first_name) missingFields.push("Vorname (rechtlich)");
-    if (!user.legal_last_name) missingFields.push("Nachname (rechtlich)");
-    if (!user.iban) missingFields.push("IBAN");
+    if (!user.stripe_charges_enabled) missingFields.push("Stripe-Verifizierung");
 
     if (missingFields.length > 0) {
       return NextResponse.json(

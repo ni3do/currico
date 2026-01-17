@@ -138,7 +138,7 @@ Implement email verification requirement for sellers.
 - [x] **4.3** Create `GET /api/auth/verify-email` endpoint
 - [x] **4.4** Create verification email template
 - [x] **4.5** Add "Verify Email" prompt in dashboard for unverified users
-- [ ] **4.6** Block seller onboarding if email not verified
+- [x] **4.6** Block seller onboarding if email not verified
 - [ ] **4.7** Add resend verification option
 
 ---

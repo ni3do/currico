@@ -26,9 +26,9 @@ export async function GET() {
         display_name: true,
         subjects: true,
         cycles: true,
-        legal_first_name: true,
-        legal_last_name: true,
-        iban: true,
+        role: true,
+        stripe_charges_enabled: true,
+        emailVerified: true,
       },
     });
 
@@ -40,9 +40,12 @@ export async function GET() {
     }
 
     const result = canUploadResources({
-      ...user,
+      display_name: user.display_name,
       subjects: Array.isArray(user.subjects) ? user.subjects : [],
       cycles: Array.isArray(user.cycles) ? user.cycles : [],
+      role: user.role,
+      stripe_charges_enabled: user.stripe_charges_enabled,
+      emailVerified: user.emailVerified,
     });
 
     return NextResponse.json(result);
