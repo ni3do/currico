@@ -498,6 +498,88 @@
     "title": "Easy Lehrer - Unterrichtsmaterial für Lehrpersonen",
     "description": "Entdecken Sie hochwertige Unterrichtsmaterialien für Schweizer Lehrpersonen"
   },
+  "sellerTerms": {
+    "pageTitle": "Verkäufer-AGB",
+    "pageSubtitle": "Bitte lesen Sie diese Bedingungen sorgfältig durch, bevor Sie Verkäufer auf EasyLehrer werden",
+    "lastUpdated": "Letzte Aktualisierung: Januar 2026",
+    "sections": {
+      "overview": {
+        "title": "1. Übersicht",
+        "content": "Diese Verkäufer-AGB regeln Ihre Nutzung von EasyLehrer als Verkäufer von Unterrichtsmaterialien. Mit der Annahme dieser Bedingungen und dem Abschluss des Verkäufer-Onboardings erklären Sie sich mit diesen Bedingungen einverstanden."
+      },
+      "platformFee": {
+        "title": "2. Plattformgebühr",
+        "content": "EasyLehrer erhebt eine Plattformgebühr von 30% auf alle Verkäufe. Das bedeutet:",
+        "breakdown": {
+          "seller": "Sie erhalten 70% von jedem Verkauf",
+          "platform": "EasyLehrer behält 30% als Plattformgebühr",
+          "example": "Beispiel: Bei einer Ressource für CHF 10.00 erhalten Sie CHF 7.00"
+        },
+        "note": "Die Zahlungsabwicklungsgebühren (Stripe-Gebühren) sind in der Plattformgebühr enthalten und werden Ihnen nicht separat berechnet."
+      },
+      "payouts": {
+        "title": "3. Auszahlungen",
+        "content": "Auszahlungen werden über Stripe Connect abgewickelt. Wichtige Details:",
+        "details": {
+          "schedule": "Auszahlungen erfolgen automatisch auf rollierender Basis (in der Regel 2-7 Werktage nach einem Verkauf)",
+          "minimum": "Es gibt keinen Mindestauszahlungsbetrag",
+          "currency": "Alle Transaktionen erfolgen in Schweizer Franken (CHF)",
+          "account": "Sie müssen die Identitätsprüfung von Stripe abschliessen, um Auszahlungen zu erhalten"
+        }
+      },
+      "contentPolicies": {
+        "title": "4. Inhaltsrichtlinien",
+        "content": "Als Verkäufer bestätigen Sie, dass alle von Ihnen hochgeladenen Materialien:",
+        "requirements": {
+          "original": "Ihre eigene Arbeit sind oder Sie die Rechte zum Verkauf haben",
+          "appropriate": "Für den Bildungseinsatz in Schweizer Schulen geeignet sind",
+          "accurate": "Genaue und aktuelle Informationen enthalten",
+          "quality": "Unseren Qualitätsstandards für Unterrichtsmaterialien entsprechen",
+          "lp21": "Wo zutreffend, korrekt auf den Lehrplan 21 abgestimmt sind"
+        }
+      },
+      "prohibited": {
+        "title": "5. Verbotene Inhalte",
+        "content": "Folgende Inhalte sind strengstens untersagt:",
+        "items": {
+          "copyright": "Urheberrechtlich geschütztes Material, für das Sie keine Verkaufsrechte haben",
+          "inappropriate": "Unangemessene, beleidigende oder diskriminierende Inhalte",
+          "misleading": "Irreführende oder falsche Bildungsinformationen",
+          "plagiarized": "Plagiierte oder von anderen Quellen kopierte Inhalte",
+          "malicious": "Dateien mit Schadsoftware oder bösartigem Code",
+          "personal": "Inhalte mit personenbezogenen Daten von Schülern oder anderen Personen"
+        }
+      },
+      "responsibilities": {
+        "title": "6. Pflichten des Verkäufers",
+        "content": "Als Verkäufer sind Sie verantwortlich für:",
+        "items": {
+          "accuracy": "Die Richtigkeit Ihrer Ressourcenbeschreibungen",
+          "support": "Die Beantwortung von Käuferfragen zu Ihren Materialien",
+          "updates": "Die Aktualisierung von Materialien bei entdeckten Fehlern",
+          "taxes": "Die Erfüllung Ihrer eigenen steuerlichen Pflichten für erzielte Einnahmen",
+          "compliance": "Die Einhaltung der Schweizer Bildungsstandards und -vorschriften"
+        }
+      },
+      "termination": {
+        "title": "7. Kontoauflösung",
+        "content": "EasyLehrer behält sich das Recht vor:",
+        "rights": {
+          "remove": "Inhalte zu entfernen, die gegen diese Bedingungen verstossen",
+          "suspend": "Verkäuferkonten bei Richtlinienverstössen zu sperren oder zu kündigen",
+          "withhold": "Auszahlungen bei Verdacht auf betrügerische Aktivitäten zurückzuhalten"
+        }
+      },
+      "changes": {
+        "title": "8. Änderungen der Bedingungen",
+        "content": "Wir können diese Bedingungen von Zeit zu Zeit aktualisieren. Wesentliche Änderungen werden per E-Mail mitgeteilt. Die weitere Nutzung der Plattform nach Änderungen gilt als Zustimmung zu den neuen Bedingungen."
+      }
+    },
+    "acceptance": {
+      "checkbox": "Ich habe die Verkäufer-AGB gelesen und akzeptiere sie",
+      "feeAcknowledgment": "Ich verstehe, dass EasyLehrer eine Plattformgebühr von 30% auf alle Verkäufe erhebt"
+    }
+  },
   "curriculum": {
     "lp21": {
       "title": "Lehrplan 21",

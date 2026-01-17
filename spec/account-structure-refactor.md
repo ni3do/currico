@@ -149,7 +149,7 @@ Create seller terms acceptance flow.
 
 ### Tasks
 
-- [ ] **5.1** Create seller terms content (markdown or page)
+- [x] **5.1** Create seller terms content (markdown or page)
   - Platform fee: 30%
   - Payout schedule (Stripe default: 2-7 days)
   - Content policies

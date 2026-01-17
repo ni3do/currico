@@ -498,6 +498,88 @@
     "title": "Easy Lehrer - Teaching Materials for Educators",
     "description": "Discover high-quality teaching materials for Swiss educators"
   },
+  "sellerTerms": {
+    "pageTitle": "Seller Terms & Conditions",
+    "pageSubtitle": "Please read these terms carefully before becoming a seller on EasyLehrer",
+    "lastUpdated": "Last updated: January 2026",
+    "sections": {
+      "overview": {
+        "title": "1. Overview",
+        "content": "These Seller Terms govern your use of EasyLehrer as a seller of teaching materials. By accepting these terms and completing the seller onboarding process, you agree to be bound by these conditions."
+      },
+      "platformFee": {
+        "title": "2. Platform Fee",
+        "content": "EasyLehrer charges a platform fee of 30% on all sales. This means:",
+        "breakdown": {
+          "seller": "You receive 70% of each sale",
+          "platform": "EasyLehrer retains 30% as a platform fee",
+          "example": "Example: For a CHF 10.00 resource, you receive CHF 7.00"
+        },
+        "note": "Payment processing fees (Stripe fees) are included in the platform fee and are not charged separately to you."
+      },
+      "payouts": {
+        "title": "3. Payouts",
+        "content": "Payouts are processed through Stripe Connect. Key details:",
+        "details": {
+          "schedule": "Payouts are processed automatically on a rolling basis (typically 2-7 business days after a sale)",
+          "minimum": "There is no minimum payout threshold",
+          "currency": "All transactions are in Swiss Francs (CHF)",
+          "account": "You must complete Stripe's identity verification to receive payouts"
+        }
+      },
+      "contentPolicies": {
+        "title": "4. Content Policies",
+        "content": "As a seller, you agree that all materials you upload:",
+        "requirements": {
+          "original": "Are your original work or you have the rights to sell them",
+          "appropriate": "Are appropriate for educational use in Swiss schools",
+          "accurate": "Contain accurate and up-to-date information",
+          "quality": "Meet our quality standards for teaching materials",
+          "lp21": "Are properly aligned with Lehrplan 21 where applicable"
+        }
+      },
+      "prohibited": {
+        "title": "5. Prohibited Content",
+        "content": "The following content is strictly prohibited:",
+        "items": {
+          "copyright": "Copyrighted material you don't have rights to sell",
+          "inappropriate": "Inappropriate, offensive, or discriminatory content",
+          "misleading": "Misleading or false educational information",
+          "plagiarized": "Plagiarized or copied content from other sources",
+          "malicious": "Files containing malware or malicious code",
+          "personal": "Content containing personal data of students or others"
+        }
+      },
+      "responsibilities": {
+        "title": "6. Seller Responsibilities",
+        "content": "As a seller, you are responsible for:",
+        "items": {
+          "accuracy": "Ensuring the accuracy of your resource descriptions",
+          "support": "Responding to buyer questions about your materials",
+          "updates": "Updating materials if errors are discovered",
+          "taxes": "Handling your own tax obligations for income earned",
+          "compliance": "Complying with Swiss education standards and regulations"
+        }
+      },
+      "termination": {
+        "title": "7. Account Termination",
+        "content": "EasyLehrer reserves the right to:",
+        "rights": {
+          "remove": "Remove content that violates these terms",
+          "suspend": "Suspend or terminate seller accounts for policy violations",
+          "withhold": "Withhold payouts if fraudulent activity is suspected"
+        }
+      },
+      "changes": {
+        "title": "8. Changes to Terms",
+        "content": "We may update these terms from time to time. Significant changes will be communicated via email. Continued use of the platform after changes constitutes acceptance of the new terms."
+      }
+    },
+    "acceptance": {
+      "checkbox": "I have read and accept the Seller Terms & Conditions",
+      "feeAcknowledgment": "I understand that EasyLehrer charges a 30% platform fee on all sales"
+    }
+  },
   "curriculum": {
     "lp21": {
       "title": "Lehrplan 21",
