@@ -41,10 +41,11 @@ export async function POST(request: NextRequest) {
         await handleAccountUpdated(event.data.object as Stripe.Account);
         break;
 
+      case "checkout.session.completed":
+        await handleCheckoutSessionCompleted(event.data.object as Stripe.Checkout.Session);
+        break;
+
       // Future event handlers can be added here:
-      // case "checkout.session.completed":
-      //   await handleCheckoutSessionCompleted(event.data.object as Stripe.Checkout.Session);
-      //   break;
       // case "payment_intent.payment_failed":
       //   await handlePaymentFailed(event.data.object as Stripe.PaymentIntent);
       //   break;
@@ -140,6 +141,82 @@ async function handleAccountUpdated(account: Stripe.Account): Promise<void> {
   } else {
     console.log(`Webhook: No changes for user ${user.id}`);
   }
+}
+
+/**
+ * Handle checkout.session.completed webhook event
+ * Updates transaction to COMPLETED and grants resource access to buyer
+ */
+async function handleCheckoutSessionCompleted(
+  session: Stripe.Checkout.Session
+): Promise<void> {
+  const sessionId = session.id;
+  const paymentIntentId = typeof session.payment_intent === "string"
+    ? session.payment_intent
+    : session.payment_intent?.id;
+  const paymentStatus = session.payment_status;
+
+  console.log(`Webhook: Processing checkout.session.completed for ${sessionId}`);
+
+  // Only process successful payments
+  if (paymentStatus !== "paid") {
+    console.log(`Webhook: Skipping session ${sessionId} with status ${paymentStatus}`);
+    return;
+  }
+
+  // Find the pending transaction by checkout session ID
+  const transaction = await prisma.transaction.findFirst({
+    where: {
+      stripe_checkout_session_id: sessionId,
+      status: "PENDING",
+    },
+    select: {
+      id: true,
+      buyer_id: true,
+      resource_id: true,
+    },
+  });
+
+  if (!transaction) {
+    console.warn(`Webhook: No pending transaction found for session ${sessionId}`);
+    return;
+  }
+
+  // Get payment method from session if available
+  const paymentMethod = session.payment_method_types?.[0] ?? null;
+
+  // Use a transaction to ensure atomicity
+  await prisma.$transaction(async (tx) => {
+    // Update transaction to COMPLETED
+    await tx.transaction.update({
+      where: { id: transaction.id },
+      data: {
+        status: "COMPLETED",
+        stripe_payment_intent_id: paymentIntentId ?? null,
+        payment_method: paymentMethod,
+      },
+    });
+
+    // Grant resource access - create Download record if it doesn't exist
+    await tx.download.upsert({
+      where: {
+        user_id_resource_id: {
+          user_id: transaction.buyer_id,
+          resource_id: transaction.resource_id,
+        },
+      },
+      update: {}, // No update needed if already exists
+      create: {
+        user_id: transaction.buyer_id,
+        resource_id: transaction.resource_id,
+      },
+    });
+  });
+
+  console.log(
+    `Webhook: Completed transaction ${transaction.id} for buyer ${transaction.buyer_id}, ` +
+    `granted access to resource ${transaction.resource_id}`
+  );
 }
 
 // Disable body parsing since we need raw body for signature verification

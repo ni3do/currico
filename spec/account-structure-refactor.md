@@ -239,9 +239,9 @@ Implement actual payment processing.
 - [x] **9.2** Create `CheckoutButton` component
 - [x] **9.3** Create `/checkout/success` page
 - [x] **9.4** Create `/checkout/cancel` page
-- [ ] **9.5** Handle `checkout.session.completed` webhook
-- [ ] **9.6** Create Transaction record on successful payment
-- [ ] **9.7** Grant resource access to buyer
+- [x] **9.5** Handle `checkout.session.completed` webhook
+- [x] **9.6** Create Transaction record on successful payment
+- [x] **9.7** Grant resource access to buyer
 - [ ] **9.8** Handle `payment_intent.payment_failed` webhook
 - [ ] **9.9** Enable TWINT payment method in Stripe dashboard
 - [ ] **9.10** Test card payments with test keys
