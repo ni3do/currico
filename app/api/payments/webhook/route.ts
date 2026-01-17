@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+import crypto from "crypto";
 import { prisma } from "@/lib/db";
 import { constructWebhookEvent } from "@/lib/stripe";
+import { DOWNLOAD_LINK_EXPIRY_DAYS, DOWNLOAD_LINK_MAX_DOWNLOADS } from "@/lib/constants";
 import Stripe from "stripe";
 
 /**
@@ -188,6 +190,16 @@ async function handleCheckoutSessionCompleted(
   // Determine if this is a guest checkout
   const isGuestCheckout = !transaction.buyer_id;
 
+  // Generate download token for guest checkout
+  let downloadToken: string | null = null;
+  if (isGuestCheckout) {
+    downloadToken = crypto.randomUUID();
+  }
+
+  // Calculate token expiration (7 days from now)
+  const tokenExpiresAt = new Date();
+  tokenExpiresAt.setDate(tokenExpiresAt.getDate() + DOWNLOAD_LINK_EXPIRY_DAYS);
+
   // Use a transaction to ensure atomicity
   await prisma.$transaction(async (tx) => {
     // Update transaction to COMPLETED
@@ -200,9 +212,19 @@ async function handleCheckoutSessionCompleted(
       },
     });
 
-    // Grant resource access - create Download record if it doesn't exist
-    // Only for authenticated users (guests use download tokens handled separately)
-    if (!isGuestCheckout && transaction.buyer_id) {
+    // Grant resource access
+    if (isGuestCheckout && downloadToken) {
+      // For guests, create a download token
+      await tx.downloadToken.create({
+        data: {
+          token: downloadToken,
+          expires_at: tokenExpiresAt,
+          max_downloads: DOWNLOAD_LINK_MAX_DOWNLOADS,
+          transaction_id: transaction.id,
+        },
+      });
+    } else if (transaction.buyer_id) {
+      // For authenticated users, create Download record if it doesn't exist
       await tx.download.upsert({
         where: {
           user_id_resource_id: {
@@ -222,7 +244,7 @@ async function handleCheckoutSessionCompleted(
   if (isGuestCheckout) {
     console.log(
       `Webhook: Completed guest transaction ${transaction.id} for ${transaction.guest_email}, ` +
-      `resource ${transaction.resource_id}`
+      `resource ${transaction.resource_id}, token: ${downloadToken}`
     );
     // TODO: Task 8.4 will send purchase confirmation email with download link
   } else {

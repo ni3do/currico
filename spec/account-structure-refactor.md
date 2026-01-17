@@ -219,8 +219,8 @@ Enable purchasing without an account.
 ### Tasks
 
 - [x] **8.1** Update checkout flow to accept email without auth
-- [ ] **8.2** Create guest transaction record (link by email, no user_id)
-- [ ] **8.3** Create download token system for guest access
+- [x] **8.2** Create guest transaction record (link by email, no user_id)
+- [x] **8.3** Create download token system for guest access
 - [ ] **8.4** Create purchase confirmation email with download link
 - [ ] **8.5** Create `/download/[token]` page for guest downloads
 - [ ] **8.6** Add "Create account to save to library" prompt after purchase

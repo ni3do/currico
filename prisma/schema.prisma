@@ -216,6 +216,9 @@ model Transaction {
   resource_id String
   resource    Resource @relation(fields: [resource_id], references: [id])
 
+  // Guest download tokens
+  download_tokens DownloadToken[]
+
   @@map("transactions")
 }
 
@@ -471,6 +474,26 @@ model Download {
 
   @@unique([user_id, resource_id])
   @@map("downloads")
+}
+
+// ============================================================
+// DOWNLOAD TOKEN MODEL - Guest download access tokens
+// ============================================================
+
+model DownloadToken {
+  id         String   @id @default(cuid())
+  created_at DateTime @default(now())
+
+  token          String   @unique // Secure random token for URL
+  expires_at     DateTime // Token expiration (7 days from purchase)
+  download_count Int      @default(0) // Number of times downloaded (max 3)
+  max_downloads  Int      @default(3) // Maximum allowed downloads
+
+  // Relations
+  transaction_id String
+  transaction    Transaction @relation(fields: [transaction_id], references: [id], onDelete: Cascade)
+
+  @@map("download_tokens")
 }
 
 // ============================================================
