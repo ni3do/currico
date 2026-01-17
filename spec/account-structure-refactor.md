@@ -235,7 +235,7 @@ Implement actual payment processing.
 
 ### Tasks
 
-- [ ] **9.1** Create `POST /api/payments/create-checkout-session` endpoint
+- [x] **9.1** Create `POST /api/payments/create-checkout-session` endpoint
 - [ ] **9.2** Create `CheckoutButton` component
 - [ ] **9.3** Create `/checkout/success` page
 - [ ] **9.4** Create `/checkout/cancel` page
