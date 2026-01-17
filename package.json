@@ -31,7 +31,8 @@
     "docker:db:migrate": "docker compose exec app npx prisma migrate dev",
     "docker:db:studio": "docker compose exec app npx prisma studio",
     "docker:shell": "docker compose exec app sh",
-    "prepare": "husky"
+    "prepare": "husky",
+    "validate:all": "npm run lint && npm run build && npm run test:run"
   },
   "keywords": [],
   "author": "",
@@ -50,6 +51,7 @@
     "prisma": "^7.2.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
+    "resend": "^6.7.0",
     "sharp": "^0.34.5",
     "zod": "^4.3.5"
   },
