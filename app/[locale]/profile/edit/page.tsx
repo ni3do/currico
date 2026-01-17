@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { AvatarUploader } from "@/components/profile/AvatarUploader";
 import { MultiSelect } from "@/components/ui/MultiSelect";
-import { PayoutForm } from "@/components/profile/PayoutForm";
 import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
@@ -17,12 +16,6 @@ interface ProfileFormData {
   cycles: string[];
   cantons: string[];
   email: string;
-  legal_first_name: string;
-  legal_last_name: string;
-  iban: string;
-  address_street: string;
-  address_city: string;
-  address_postal: string;
 }
 
 const emptyFormData: ProfileFormData = {
@@ -33,12 +26,6 @@ const emptyFormData: ProfileFormData = {
   cycles: [],
   cantons: [],
   email: "",
-  legal_first_name: "",
-  legal_last_name: "",
-  iban: "",
-  address_street: "",
-  address_city: "",
-  address_postal: "",
 };
 
 export default function EditProfilePage() {
@@ -64,12 +51,6 @@ export default function EditProfilePage() {
           cycles: data.cycles || [],
           cantons: data.cantons || [],
           email: data.email || "",
-          legal_first_name: data.legal_first_name || "",
-          legal_last_name: data.legal_last_name || "",
-          iban: data.iban_set ? "****" : "",
-          address_street: data.address_street || "",
-          address_city: data.address_city || "",
-          address_postal: data.address_postal || "",
         });
       } catch (err) {
         console.error("Error fetching profile:", err);
@@ -133,24 +114,6 @@ export default function EditProfilePage() {
       newErrors.cycles = "Mindestens einen Zyklus auswählen";
     }
 
-    // Payout info validation (if any payout field is filled, all required fields must be filled)
-    // IBAN with asterisks means it's already set on the server
-    const ibanIsSet = formData.iban && formData.iban.includes("*");
-    const hasNewPayoutInfo =
-      formData.legal_first_name || formData.legal_last_name || (formData.iban && !ibanIsSet);
-
-    if (hasNewPayoutInfo) {
-      if (!formData.legal_first_name) {
-        newErrors.legal_first_name = "Vorname ist erforderlich";
-      }
-      if (!formData.legal_last_name) {
-        newErrors.legal_last_name = "Nachname ist erforderlich";
-      }
-      if (!formData.iban && !ibanIsSet) {
-        newErrors.iban = "IBAN ist erforderlich";
-      }
-    }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -167,34 +130,13 @@ export default function EditProfilePage() {
 
     try {
       // Build the update payload with only fields that should be sent
-      const updatePayload: Record<string, unknown> = {
+      const updatePayload = {
         display_name: formData.display_name,
         bio: formData.bio || null,
         subjects: formData.subjects,
         cycles: formData.cycles,
         cantons: formData.cantons,
       };
-
-      // Only include payout fields if they have actual values (not masked)
-      if (formData.legal_first_name) {
-        updatePayload.legal_first_name = formData.legal_first_name;
-      }
-      if (formData.legal_last_name) {
-        updatePayload.legal_last_name = formData.legal_last_name;
-      }
-      // Only send IBAN if it's not the masked placeholder
-      if (formData.iban && !formData.iban.includes("*")) {
-        updatePayload.iban = formData.iban;
-      }
-      if (formData.address_street) {
-        updatePayload.address_street = formData.address_street;
-      }
-      if (formData.address_city) {
-        updatePayload.address_city = formData.address_city;
-      }
-      if (formData.address_postal) {
-        updatePayload.address_postal = formData.address_postal;
-      }
 
       const response = await fetch("/api/users/me", {
         method: "PATCH",
@@ -226,7 +168,7 @@ export default function EditProfilePage() {
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-[var(--color-text)]">Profil bearbeiten</h1>
           <p className="mt-2 text-[var(--color-text-muted)]">
-            Verwalten Sie Ihre öffentlichen Profilinformationen und Auszahlungsdaten
+            Verwalten Sie Ihre öffentlichen Profilinformationen
           </p>
         </div>
 
@@ -358,28 +300,6 @@ export default function EditProfilePage() {
                   />
                 </div>
               </div>
-            </div>
-
-            {/* Payout Information Section */}
-            <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8">
-              <h2 className="mb-6 text-xl font-semibold text-[var(--color-text)]">
-                Auszahlungsinformationen
-              </h2>
-              <p className="mb-6 text-sm text-[var(--color-text-muted)]">
-                Diese Informationen sind <strong>nicht öffentlich</strong> und werden nur für
-                Rechnungen und Auszahlungen verwendet
-              </p>
-
-              <PayoutForm
-                legalFirstName={formData.legal_first_name}
-                legalLastName={formData.legal_last_name}
-                iban={formData.iban}
-                addressStreet={formData.address_street}
-                addressCity={formData.address_city}
-                addressPostal={formData.address_postal}
-                onChange={handleChange}
-                errors={errors}
-              />
             </div>
 
             {/* Email Section (Read-only) */}
