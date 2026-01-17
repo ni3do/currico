@@ -107,9 +107,9 @@ Update API routes to use new schema.
 - [ ] **2.4** Update `GET /api/admin/users` - remove is_seller/seller_verified logic
 - [ ] **2.5** Update `PATCH /api/admin/users/[id]` - simplify status logic
 - [ ] **2.6** Update `GET /api/seller/dashboard` - use `role === 'SELLER'` check
-- [ ] **2.7** Search codebase for `is_seller` references and update
-- [ ] **2.8** Search codebase for `seller_verified` references and update
-- [ ] **2.9** Search codebase for `payout_enabled` references and update
+- [x] **2.7** Search codebase for `is_seller` references and update
+- [x] **2.8** Search codebase for `seller_verified` references and update
+- [x] **2.9** Search codebase for `payout_enabled` references and update
 
 ---
 

@@ -17,9 +17,9 @@ INSERT INTO users (
   subjects,
   cycles,
   cantons,
-  is_seller,
-  seller_verified,
-  payout_enabled,
+  stripe_onboarding_complete,
+  stripe_charges_enabled,
+  stripe_payouts_enabled,
   \"emailVerified\",
   created_at,
   updated_at
