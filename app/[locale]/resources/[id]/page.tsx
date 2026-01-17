@@ -8,6 +8,7 @@ import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { CurriculumBox } from "@/components/curriculum";
 import { LP21Badge } from "@/components/curriculum/LP21Badge";
+import { CheckoutButton } from "@/components/checkout";
 
 interface Competency {
   id: string;
@@ -356,22 +357,34 @@ export default function ResourceDetailPage() {
 
               {/* Price and Actions */}
               <div className="mb-8 flex flex-wrap items-center gap-4">
-                <div
-                  className={`text-3xl font-bold ${resource.price === 0 ? "text-[var(--color-success)]" : "text-[var(--color-primary)]"}`}
-                >
-                  {resource.priceFormatted}
-                </div>
-                <button
-                  onClick={resource.price === 0 ? handleDownload : undefined}
-                  disabled={downloading}
-                  className="btn-primary flex-1 px-8 py-4 disabled:opacity-50"
-                >
-                  {downloading
-                    ? "Wird heruntergeladen..."
-                    : resource.price === 0
-                      ? "Kostenlos herunterladen"
-                      : "Jetzt kaufen"}
-                </button>
+                {resource.price === 0 ? (
+                  <>
+                    <div className="text-3xl font-bold text-[var(--color-success)]">
+                      {resource.priceFormatted}
+                    </div>
+                    <button
+                      onClick={handleDownload}
+                      disabled={downloading}
+                      className="btn-primary flex-1 px-8 py-4 disabled:opacity-50"
+                    >
+                      {downloading ? "Wird heruntergeladen..." : "Kostenlos herunterladen"}
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <div className="text-3xl font-bold text-[var(--color-primary)]">
+                      {resource.priceFormatted}
+                    </div>
+                    <div className="flex-1">
+                      <CheckoutButton
+                        resourceId={resource.id}
+                        price={resource.price}
+                        priceFormatted={resource.priceFormatted}
+                        className="w-full"
+                      />
+                    </div>
+                  </>
+                )}
                 <button
                   onClick={handleWishlistToggle}
                   disabled={wishlistLoading}

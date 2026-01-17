@@ -816,5 +816,16 @@
       "description": "You haven't started the seller onboarding process yet.",
       "startSetup": "Become a Seller"
     }
+  },
+  "checkout": {
+    "buyNow": "Buy Now",
+    "processing": "Processing...",
+    "errors": {
+      "alreadyOwned": "You already own this resource",
+      "ownResource": "You cannot purchase your own resource",
+      "sellerNotReady": "This seller cannot receive payments at this time",
+      "notAvailable": "This resource is not available for purchase",
+      "generic": "An error occurred. Please try again."
+    }
   }
 }
