@@ -8,6 +8,7 @@ import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { ThemeSettings } from "@/components/ui/ThemeToggle";
 import { AvatarUploader } from "@/components/profile/AvatarUploader";
+import { EmailVerificationBanner } from "@/components/account/EmailVerificationBanner";
 
 interface LibraryItem {
   id: string;
@@ -97,6 +98,7 @@ interface UserData {
   id: string;
   name: string | null;
   email: string;
+  emailVerified: string | null;
   image: string | null;
   displayName: string | null;
   subjects: string[];
@@ -634,6 +636,11 @@ export default function AccountPage() {
           {/* Overview Tab */}
           {activeTab === "overview" && (
             <div className="space-y-6">
+              {/* Email Verification Banner - show if email not verified */}
+              {userData && !userData.emailVerified && (
+                <EmailVerificationBanner email={userData.email} />
+              )}
+
               {/* KPI Metrics Row - 3 columns */}
               <div className="grid gap-4 sm:grid-cols-3">
                 {/* Einnahmen (Earnings) */}
