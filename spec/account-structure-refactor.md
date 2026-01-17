@@ -168,7 +168,7 @@ Implement the actual Stripe Connect flow.
 
 ### Tasks
 
-- [ ] **6.1** Install Stripe packages: `npm install stripe @stripe/stripe-js`
+- [x] **6.1** Install Stripe packages: `npm install stripe @stripe/stripe-js`
 - [ ] **6.2** Create `lib/stripe.ts` with Stripe client
 - [ ] **6.3** Add environment variables to `.env.example`
   - `STRIPE_SECRET_KEY`
