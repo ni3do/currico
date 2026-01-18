@@ -76,7 +76,7 @@ Files involved:
 
 ### Phase 3: Add edu-ID UI
 
-- [ ] **Task 6:** Add edu-ID button to login page
+- [x] **Task 6:** Add edu-ID button to login page
   - File: `app/[locale]/login/page.tsx`
   - Add button with official logo after Microsoft
 
@@ -84,7 +84,7 @@ Files involved:
   - File: `app/[locale]/register/page.tsx`
   - Add button with official logo after Microsoft
 
-- [ ] **Task 8:** Add edu-ID logo
+- [x] **Task 8:** Add edu-ID logo
   - File: `public/eduid-logo.svg`
   - Add official Switch edu-ID logo
 
@@ -96,11 +96,11 @@ Files involved:
 - [x] **Task 10:** Check/add Microsoft translation (English)
   - File: `messages/en.json`
 
-- [ ] **Task 11:** Add edu-ID translation (German)
+- [x] **Task 11:** Add edu-ID translation (German)
   - File: `messages/de.json`
   - Add: `"continueWithEduID": "Mit edu-ID fortfahren"`
 
-- [ ] **Task 12:** Add edu-ID translation (English)
+- [x] **Task 12:** Add edu-ID translation (English)
   - File: `messages/en.json`
   - Add: `"continueWithEduID": "Continue with edu-ID"`
 

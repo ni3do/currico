@@ -201,7 +201,7 @@ model Bundle {
   updated_at DateTime @updatedAt
 
   title           String
-  description     String?        @db.Text
+  description     String?  @db.Text
   price           Int // Price in cents (discounted bundle price)
   subject         String[]
   cycle           String[]
