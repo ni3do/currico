@@ -286,7 +286,7 @@ export default function RegisterPage() {
 
               <button
                 type="button"
-                onClick={() => signIn("azure-ad")}
+                onClick={() => signIn("microsoft-entra-id")}
                 className="flex items-center justify-center gap-3 rounded-lg bg-[var(--color-surface)] px-4 py-3.5 font-medium text-[var(--color-text)] transition-all hover:bg-[var(--color-surface-elevated)]"
               >
                 <svg className="h-5 w-5" viewBox="0 0 23 23">

@@ -26,6 +26,107 @@ Files involved:
 
 ---
 
+## Issues Found in Current Implementation
+
+| Issue | Location | Problem | Fix |
+|-------|----------|---------|-----|
+| Wrong provider ID | `register/page.tsx:289` | Uses `signIn("azure-ad")` but provider is `microsoft-entra-id` | Change to `signIn("microsoft-entra-id")` |
+| Missing Microsoft button | `login/page.tsx` | Only shows Google, inconsistent with register page | Add Microsoft button |
+| Missing edu-ID | All auth files | Not yet implemented | Add provider + UI |
+
+---
+
+## Implementation Decisions
+
+| Decision | Choice |
+|----------|--------|
+| Providers to enable | Google + Microsoft + edu-ID (all three) |
+| Pages with OAuth | Both login AND register pages |
+| Button order | Google → Microsoft → edu-ID |
+| edu-ID logo | Official Switch edu-ID logo |
+| edu-ID setup | Add code now (ready for credentials) |
+
+---
+
+## Implementation Tasks
+
+### Phase 1: Fix Existing Issues
+
+- [x] **Task 1:** Fix Microsoft button on register page
+  - File: `app/[locale]/register/page.tsx:289`
+  - Change: `signIn("azure-ad")` → `signIn("microsoft-entra-id")`
+
+- [ ] **Task 2:** Add Microsoft button to login page
+  - File: `app/[locale]/login/page.tsx`
+  - Add Microsoft button after Google button
+
+### Phase 2: Add edu-ID Provider
+
+- [ ] **Task 3:** Add EduID custom OIDC provider function
+  - File: `lib/auth.ts`
+  - Add `EduID()` function with issuer `login.eduid.ch`
+
+- [ ] **Task 4:** Register EduID in providers array
+  - File: `lib/auth.ts`
+  - Add `EduID()` to providers array after MicrosoftEntraID
+
+- [ ] **Task 5:** Add edu-ID environment variables
+  - File: `.env.example`
+  - Add: `EDUID_CLIENT_ID`, `EDUID_CLIENT_SECRET`, `EDUID_USE_TEST`
+
+### Phase 3: Add edu-ID UI
+
+- [ ] **Task 6:** Add edu-ID button to login page
+  - File: `app/[locale]/login/page.tsx`
+  - Add button with official logo after Microsoft
+
+- [ ] **Task 7:** Add edu-ID button to register page
+  - File: `app/[locale]/register/page.tsx`
+  - Add button with official logo after Microsoft
+
+- [ ] **Task 8:** Add edu-ID logo
+  - File: `public/eduid-logo.svg`
+  - Add official Switch edu-ID logo
+
+### Phase 4: Translations
+
+- [ ] **Task 9:** Check/add Microsoft translation (German)
+  - File: `messages/de.json`
+
+- [ ] **Task 10:** Check/add Microsoft translation (English)
+  - File: `messages/en.json`
+
+- [ ] **Task 11:** Add edu-ID translation (German)
+  - File: `messages/de.json`
+  - Add: `"continueWithEduID": "Mit edu-ID fortfahren"`
+
+- [ ] **Task 12:** Add edu-ID translation (English)
+  - File: `messages/en.json`
+  - Add: `"continueWithEduID": "Continue with edu-ID"`
+
+---
+
+## Files Summary
+
+### Files to Modify (6)
+
+| File | Changes |
+|------|---------|
+| `lib/auth.ts` | Add EduID provider function + register in array |
+| `app/[locale]/login/page.tsx` | Add Microsoft + edu-ID buttons |
+| `app/[locale]/register/page.tsx` | Fix Microsoft ID, add edu-ID button |
+| `messages/de.json` | Add Microsoft (if missing) + edu-ID translations |
+| `messages/en.json` | Add Microsoft (if missing) + edu-ID translations |
+| `.env.example` | Add edu-ID environment variables |
+
+### Files to Create (1)
+
+| File | Content |
+|------|---------|
+| `public/eduid-logo.svg` | Official Switch edu-ID logo |
+
+---
+
 ## Part 1: Activating Google OAuth
 
 ### Step 1.1: Create Google OAuth Credentials
