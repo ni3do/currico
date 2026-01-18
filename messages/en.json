@@ -946,6 +946,29 @@
     "commissionNote": "You keep 70% of every sale – one of the best rates in the industry.",
     "ctaButton": "Start Selling"
   },
+  "sellerHero": {
+    "headline": "Calculate Your Earnings",
+    "subheadline": "Discover how much you could earn as a seller on EasyLehrer.",
+    "whySell": {
+      "title": "Why Sell on EasyLehrer?",
+      "description": "Share your teaching materials with thousands of teachers across Switzerland and earn money."
+    },
+    "features": {
+      "commission": {
+        "title": "70% Commission",
+        "description": "You keep the largest share of every sale – more than other platforms."
+      },
+      "community": {
+        "title": "Growing Community",
+        "description": "Reach new teachers every day who are looking for quality materials."
+      },
+      "curriculum": {
+        "title": "Lehrplan 21",
+        "description": "Materials aligned with the Swiss curriculum are in high demand."
+      }
+    },
+    "ctaButton": "Become a Seller"
+  },
   "previewBadge": {
     "buttonText": "Preview",
     "watermark": {

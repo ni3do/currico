@@ -946,6 +946,29 @@
     "commissionNote": "Sie behalten 70% jedes Verkaufs – eine der besten Raten der Branche.",
     "ctaButton": "Jetzt verkaufen"
   },
+  "sellerHero": {
+    "headline": "Berechne deine Einnahmen",
+    "subheadline": "Entdecke, wie viel du als Verkäufer auf EasyLehrer verdienen kannst.",
+    "whySell": {
+      "title": "Warum auf EasyLehrer verkaufen?",
+      "description": "Teile deine Unterrichtsmaterialien mit tausenden von Lehrpersonen in der Schweiz und verdiene dabei."
+    },
+    "features": {
+      "commission": {
+        "title": "70% Provision",
+        "description": "Du erhältst den grössten Anteil jedes Verkaufs – mehr als bei anderen Plattformen."
+      },
+      "community": {
+        "title": "Wachsende Community",
+        "description": "Erreiche täglich neue Lehrpersonen, die nach qualitativem Material suchen."
+      },
+      "curriculum": {
+        "title": "Lehrplan 21",
+        "description": "Materialien passend zum Schweizer Lehrplan werden besonders nachgefragt."
+      }
+    },
+    "ctaButton": "Jetzt Verkäufer werden"
+  },
   "previewBadge": {
     "buttonText": "Vorschau",
     "watermark": {
