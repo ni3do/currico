@@ -62,15 +62,15 @@ Files involved:
 
 ### Phase 2: Add edu-ID Provider
 
-- [ ] **Task 3:** Add EduID custom OIDC provider function
+- [x] **Task 3:** Add EduID custom OIDC provider function
   - File: `lib/auth.ts`
   - Add `EduID()` function with issuer `login.eduid.ch`
 
-- [ ] **Task 4:** Register EduID in providers array
+- [x] **Task 4:** Register EduID in providers array
   - File: `lib/auth.ts`
   - Add `EduID()` to providers array after MicrosoftEntraID
 
-- [ ] **Task 5:** Add edu-ID environment variables
+- [x] **Task 5:** Add edu-ID environment variables
   - File: `.env.example`
   - Add: `EDUID_CLIENT_ID`, `EDUID_CLIENT_SECRET`, `EDUID_USE_TEST`
 

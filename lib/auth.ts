@@ -3,8 +3,44 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import Google from "next-auth/providers/google";
 import MicrosoftEntraID from "next-auth/providers/microsoft-entra-id";
 import Credentials from "next-auth/providers/credentials";
+import type { OIDCConfig } from "next-auth/providers";
 import bcrypt from "bcryptjs";
 import { prisma } from "./db";
+
+// Custom Switch edu-ID provider (Swiss educational identity)
+function EduID(): OIDCConfig<{
+  sub: string;
+  name?: string;
+  email?: string;
+  email_verified?: boolean;
+}> {
+  const isTest = process.env.EDUID_USE_TEST === "true";
+  const baseUrl = isTest
+    ? "https://login.test.eduid.ch"
+    : "https://login.eduid.ch";
+
+  return {
+    id: "eduid",
+    name: "Switch edu-ID",
+    type: "oidc",
+    issuer: baseUrl,
+    clientId: process.env.EDUID_CLIENT_ID!,
+    clientSecret: process.env.EDUID_CLIENT_SECRET!,
+    authorization: {
+      params: {
+        scope: "openid profile email",
+      },
+    },
+    profile(profile) {
+      return {
+        id: profile.sub,
+        name: profile.name,
+        email: profile.email,
+        image: null,
+      };
+    },
+  };
+}
 
 // Extend NextAuth types to include role
 declare module "next-auth" {
@@ -43,6 +79,7 @@ const nextAuth = NextAuth({
       clientSecret: process.env.MICROSOFT_CLIENT_SECRET!,
       issuer: `https://login.microsoftonline.com/${process.env.MICROSOFT_TENANT_ID || "common"}/v2.0`,
     }),
+    EduID(),
     Credentials({
       name: "credentials",
       credentials: {
