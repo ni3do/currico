@@ -22,8 +22,6 @@ export interface ResourceCardProps {
   variant?: "default" | "compact";
   /** Link href - defaults to /resources/[id] */
   href?: string;
-  /** Button text for default footer */
-  buttonText?: string;
   /** Custom pill class for subject badge */
   subjectPillClass?: string;
   /** Show/hide the price badge overlay on image */
@@ -47,7 +45,6 @@ export function ResourceCard({
   footer,
   variant = "default",
   href,
-  buttonText = "Ansehen",
   subjectPillClass,
   showPriceBadge = true,
   previewType,
@@ -148,12 +145,20 @@ export function ResourceCard({
                   <InlinePreviewInfo previewType={previewType} pageCount={previewPageCount} />
                 )}
               </div>
-              <Link
-                href={linkHref}
-                className="btn-primary px-4 py-2 text-sm"
+              {/* Arrow icon indicating navigation */}
+              <svg
+                className="h-5 w-5 text-text-muted transition-transform duration-200 group-hover:translate-x-1 group-hover:text-primary"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
               >
-                {buttonText}
-              </Link>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
             </div>
           )
         )}
@@ -161,21 +166,14 @@ export function ResourceCard({
     </>
   );
 
-  if (isCompact) {
-    return (
-      <Link
-        href={linkHref}
-        className="card group flex h-full flex-col overflow-hidden"
-      >
-        {cardContent}
-      </Link>
-    );
-  }
+  const cardClasses = isCompact
+    ? "card group flex h-full flex-col overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+    : "card group flex h-full flex-col overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-1.5 hover:shadow-xl";
 
   return (
-    <article className="card group flex h-full flex-col overflow-hidden">
+    <Link href={linkHref} className={cardClasses}>
       {cardContent}
-    </article>
+    </Link>
   );
 }
 
