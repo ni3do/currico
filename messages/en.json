@@ -270,7 +270,9 @@
       "title": "Filters",
       "reset": "Reset",
       "subjectLabel": "Subject",
-      "cycleLabel": "Cycle",
+      "cycleLabel": "Level",
+      "materialTypeLabel": "Material Type",
+      "formatLabel": "Format & Properties",
       "priceLabel": "Price"
     },
     "search": {
@@ -283,19 +285,60 @@
         "french": "French",
         "nmg": "NMG",
         "arts": "Visual Arts",
+        "ttg": "Textile & Technical Design",
         "music": "Music",
-        "sports": "Sports"
+        "sports": "Physical Education",
+        "mi": "Media & IT",
+        "bo": "Career Orientation"
+      },
+      "nmgSubcategories": {
+        "nt": "Nature & Technology (NT)",
+        "wah": "Economy, Work, Household (WAH)",
+        "rzg": "Spaces, Times, Societies (RZG)",
+        "erg": "Ethics, Religions, Community (ERG)"
       },
       "filterButton": "Filter"
     },
     "advancedFilters": {
       "title": "Advanced Filters",
       "cycleFilter": {
-        "label": "Cycle",
-        "all": "All Cycles",
+        "label": "Level",
+        "all": "All Levels",
         "cycle1": "Cycle 1",
         "cycle2": "Cycle 2",
         "cycle3": "Cycle 3"
+      },
+      "grades": {
+        "kindergarten": "Kindergarten",
+        "grade1": "1st Grade",
+        "grade2": "2nd Grade",
+        "grade3": "3rd Grade",
+        "grade4": "4th Grade",
+        "grade5": "5th Grade",
+        "grade6": "6th Grade",
+        "grade7": "7th Grade",
+        "grade8": "8th Grade",
+        "grade9": "9th Grade"
+      },
+      "niveauFilter": {
+        "label": "Difficulty Level",
+        "basic": "Basic (Sek B/C)",
+        "extended": "Extended (Sek A)"
+      },
+      "materialTypes": {
+        "worksheet": "Worksheets",
+        "test": "Tests & Quizzes",
+        "game": "Games & Puzzles",
+        "lessonPlan": "Lesson Plans",
+        "presentation": "Presentations",
+        "factsheet": "Fact Sheets & Posters",
+        "station": "Learning Stations"
+      },
+      "formats": {
+        "editable": "Editable (Word/PPT)",
+        "pdf": "PDF",
+        "withSolutions": "With Solutions",
+        "differentiated": "Differentiated"
       },
       "cantonFilter": {
         "label": "Canton",
@@ -954,27 +997,28 @@
     "ctaButton": "Start Selling"
   },
   "sellerHero": {
-    "headline": "Calculate Your Earnings",
-    "subheadline": "Discover how much you could earn as a seller on EasyLehrer.",
+    "headline": "Share Your Teaching Materials",
+    "subheadline": "You've created great worksheets, lesson plans, or exams? Share them with colleagues across Switzerland and earn money while helping other teachers save time.",
     "whySell": {
       "title": "Why Sell on EasyLehrer?",
       "description": "Share your teaching materials with thousands of teachers across Switzerland and earn money."
     },
     "features": {
       "commission": {
-        "title": "70% Commission",
-        "description": "You keep the largest share of every sale – more than other platforms."
+        "title": "Passive Income",
+        "description": "Set your own prices and earn 70% of every sale"
       },
       "community": {
-        "title": "Growing Community",
-        "description": "Reach new teachers every day who are looking for quality materials."
+        "title": "Reach Thousands",
+        "description": "Connect with teachers throughout Switzerland"
       },
       "curriculum": {
-        "title": "Lehrplan 21",
-        "description": "Materials aligned with the Swiss curriculum are in high demand."
+        "title": "Simple Upload",
+        "description": "Upload once, sell repeatedly with no effort"
       }
     },
-    "ctaButton": "Become a Seller"
+    "ctaButton": "Start Selling",
+    "freeNote": "Free registration. No monthly fees."
   },
   "previewBadge": {
     "buttonText": "Preview",

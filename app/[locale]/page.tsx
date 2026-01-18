@@ -7,7 +7,7 @@ import Image from "next/image";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { ResourceCard } from "@/components/ui/ResourceCard";
-import { EarningsCalculator } from "@/components/ui/EarningsCalculator";
+import { SellerHeroSection } from "@/components/ui/SellerHeroSection";
 
 export default function Home() {
   const t = useTranslations("homePage");
@@ -351,64 +351,8 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Seller CTA Section */}
-        <section className="bg-gradient-to-br from-ctp-blue/60 to-ctp-sapphire/60 py-20">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="grid items-center gap-12 lg:grid-cols-2">
-              {/* Left - Text Content */}
-              <div className="text-white">
-                <h2 className="text-3xl leading-tight font-bold">{t("sellerCta.title")}</h2>
-                <p className="mt-4 text-lg leading-relaxed text-white/80">
-                  {t("sellerCta.description")}
-                </p>
-
-                {/* Benefits List */}
-                <div className="mt-8 space-y-4">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20">
-                      <svg className="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <span className="font-semibold">{t("sellerCta.benefits.earn")}</span>
-                      <span className="ml-1 text-white/70">– {t("sellerCta.benefits.earnDesc")}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20">
-                      <svg className="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <span className="font-semibold">{t("sellerCta.benefits.reach")}</span>
-                      <span className="ml-1 text-white/70">– {t("sellerCta.benefits.reachDesc")}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20">
-                      <svg className="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                      </svg>
-                    </div>
-                    <div>
-                      <span className="font-semibold">{t("sellerCta.benefits.simple")}</span>
-                      <span className="ml-1 text-white/70">– {t("sellerCta.benefits.simpleDesc")}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <p className="mt-6 text-sm text-white/60">{t("sellerCta.note")}</p>
-              </div>
-
-              {/* Right - Earnings Calculator */}
-              <div className="flex justify-center lg:justify-end">
-                <EarningsCalculator className="w-full max-w-md" />
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* Seller CTA Section - Premium Design */}
+        <SellerHeroSection />
 
         {/* Features Section - Clean Grid */}
         <section id="features" className="py-24">

@@ -270,7 +270,9 @@
       "title": "Filter",
       "reset": "Zurücksetzen",
       "subjectLabel": "Fachbereich",
-      "cycleLabel": "Zyklus",
+      "cycleLabel": "Stufe",
+      "materialTypeLabel": "Materialart",
+      "formatLabel": "Format & Eigenschaften",
       "priceLabel": "Preis"
     },
     "search": {
@@ -283,19 +285,60 @@
         "french": "Französisch",
         "nmg": "NMG",
         "arts": "Bildnerisches Gestalten",
+        "ttg": "Textiles & Technisches Gestalten",
         "music": "Musik",
-        "sports": "Sport"
+        "sports": "Bewegung & Sport",
+        "mi": "Medien & Informatik",
+        "bo": "Berufliche Orientierung"
+      },
+      "nmgSubcategories": {
+        "nt": "Natur & Technik (NT)",
+        "wah": "Wirtschaft, Arbeit, Haushalt (WAH)",
+        "rzg": "Räume, Zeiten, Gesellschaften (RZG)",
+        "erg": "Ethik, Religionen, Gemeinschaft (ERG)"
       },
       "filterButton": "Filter"
     },
     "advancedFilters": {
       "title": "Erweiterte Filter",
       "cycleFilter": {
-        "label": "Zyklus",
-        "all": "Alle Zyklen",
+        "label": "Stufe",
+        "all": "Alle Stufen",
         "cycle1": "Zyklus 1",
         "cycle2": "Zyklus 2",
         "cycle3": "Zyklus 3"
+      },
+      "grades": {
+        "kindergarten": "Kindergarten",
+        "grade1": "1. Klasse",
+        "grade2": "2. Klasse",
+        "grade3": "3. Klasse",
+        "grade4": "4. Klasse",
+        "grade5": "5. Klasse",
+        "grade6": "6. Klasse",
+        "grade7": "7. Klasse",
+        "grade8": "8. Klasse",
+        "grade9": "9. Klasse"
+      },
+      "niveauFilter": {
+        "label": "Anforderungsstufe",
+        "basic": "Grundlegend (Sek B/C)",
+        "extended": "Erweitert (Sek A)"
+      },
+      "materialTypes": {
+        "worksheet": "Arbeitsblätter",
+        "test": "Lernkontrollen & Tests",
+        "game": "Spiele & Rätsel",
+        "lessonPlan": "Unterrichtsplanung",
+        "presentation": "Präsentationen",
+        "factsheet": "Merkblätter & Poster",
+        "station": "Werkstätten & Posten"
+      },
+      "formats": {
+        "editable": "Editierbar (Word/PPT)",
+        "pdf": "PDF",
+        "withSolutions": "Mit Lösungen",
+        "differentiated": "Differenziert"
       },
       "cantonFilter": {
         "label": "Kanton",
@@ -954,27 +997,28 @@
     "ctaButton": "Jetzt verkaufen"
   },
   "sellerHero": {
-    "headline": "Berechne deine Einnahmen",
-    "subheadline": "Entdecke, wie viel du als Verkäufer auf EasyLehrer verdienen kannst.",
+    "headline": "Teilen Sie Ihre Unterrichtsmaterialien",
+    "subheadline": "Sie haben tolle Arbeitsblätter, Unterrichtseinheiten oder Prüfungen erstellt? Teilen Sie diese mit Kolleginnen und Kollegen in der ganzen Schweiz und verdienen Sie Geld, während Sie anderen Lehrpersonen Zeit sparen.",
     "whySell": {
       "title": "Warum auf EasyLehrer verkaufen?",
-      "description": "Teile deine Unterrichtsmaterialien mit tausenden von Lehrpersonen in der Schweiz und verdiene dabei."
+      "description": "Teilen Sie Ihre Unterrichtsmaterialien mit tausenden von Lehrpersonen in der Schweiz und verdienen Sie dabei."
     },
     "features": {
       "commission": {
-        "title": "70% Provision",
-        "description": "Du erhältst den grössten Anteil jedes Verkaufs – mehr als bei anderen Plattformen."
+        "title": "Passives Einkommen",
+        "description": "Setzen Sie Ihre eigenen Preise und verdienen Sie 70% pro Verkauf"
       },
       "community": {
-        "title": "Wachsende Community",
-        "description": "Erreiche täglich neue Lehrpersonen, die nach qualitativem Material suchen."
+        "title": "Tausende erreichen",
+        "description": "Vernetzen Sie sich mit Lehrpersonen in der ganzen Schweiz"
       },
       "curriculum": {
-        "title": "Lehrplan 21",
-        "description": "Materialien passend zum Schweizer Lehrplan werden besonders nachgefragt."
+        "title": "Einfacher Upload",
+        "description": "Einmal hochladen, wiederholt verkaufen ohne Aufwand"
       }
     },
-    "ctaButton": "Jetzt Verkäufer werden"
+    "ctaButton": "Jetzt verkaufen",
+    "freeNote": "Kostenlose Registrierung. Keine monatlichen Gebühren."
   },
   "previewBadge": {
     "buttonText": "Vorschau",
