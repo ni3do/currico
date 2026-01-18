@@ -42,7 +42,7 @@
       "primaryButton": "Find Materials Now",
       "secondaryButton": "Learn More",
       "search": {
-        "placeholder": "Search worksheets, lesson plans, exams...",
+        "placeholder": "Search subject, topic or keyword...",
         "allSubjects": "All Subjects",
         "math": "Mathematics",
         "german": "German",
@@ -934,6 +934,29 @@
       },
       "button": "Create Free Account",
       "link": "Create Free Account"
+    }
+  },
+  "earningsCalculator": {
+    "title": "Calculate Your Earning Potential",
+    "subtitle": "See how much you could earn sharing your teaching materials",
+    "materialsLabel": "Materials sold per month",
+    "priceLabel": "Average price per material",
+    "yearlyEarnings": "Estimated Yearly Earnings",
+    "monthlyBreakdown": "That's {amount} per month",
+    "commissionNote": "You keep 70% of every sale – one of the best rates in the industry.",
+    "ctaButton": "Start Selling"
+  },
+  "previewBadge": {
+    "buttonText": "Preview",
+    "watermark": {
+      "label": "Watermarked View",
+      "tooltip": "Full document view with watermark – see the entire material before buying",
+      "inline": "Full preview with watermark"
+    },
+    "pages": {
+      "label": "First {count} Pages Free",
+      "tooltip": "The first {count} pages are free to view so you can judge the quality",
+      "inline": "First {count} pages free"
     }
   },
   "termsPage": {

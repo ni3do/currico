@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
+import { InlinePreviewInfo, type PreviewType } from "./PreviewBadge";
 
 export interface ResourceCardProps {
   id: string;
@@ -27,6 +28,10 @@ export interface ResourceCardProps {
   subjectPillClass?: string;
   /** Show/hide the price badge overlay on image */
   showPriceBadge?: boolean;
+  /** Preview type for trust badge - "watermark" or "pages" */
+  previewType?: PreviewType;
+  /** Number of free preview pages (when previewType is "pages") */
+  previewPageCount?: number;
 }
 
 export function ResourceCard({
@@ -45,6 +50,8 @@ export function ResourceCard({
   buttonText = "Ansehen",
   subjectPillClass,
   showPriceBadge = true,
+  previewType,
+  previewPageCount = 2,
 }: ResourceCardProps) {
   const isCompact = variant === "compact";
   const linkHref = href ?? `/resources/${id}`;
@@ -133,9 +140,14 @@ export function ResourceCard({
         {!isCompact && (
           footer ?? (
             <div className="flex items-center justify-between border-t border-border-subtle pt-4">
-              <span className="text-sm text-text-muted">
-                {seller?.displayName || "Anonymous"}
-              </span>
+              <div className="flex flex-col gap-1">
+                <span className="text-sm text-text-muted">
+                  {seller?.displayName || "Anonymous"}
+                </span>
+                {previewType && (
+                  <InlinePreviewInfo previewType={previewType} pageCount={previewPageCount} />
+                )}
+              </div>
               <Link
                 href={linkHref}
                 className="btn-primary px-4 py-2 text-sm"

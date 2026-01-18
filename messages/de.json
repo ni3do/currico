@@ -42,7 +42,7 @@
       "primaryButton": "Jetzt Material finden",
       "secondaryButton": "Mehr erfahren",
       "search": {
-        "placeholder": "Arbeitsblätter, Unterrichtseinheiten, Prüfungen...",
+        "placeholder": "Fach, Thema oder Stichwort suchen...",
         "allSubjects": "Alle Fächer",
         "math": "Mathematik",
         "german": "Deutsch",
@@ -934,6 +934,29 @@
       },
       "button": "Kostenloses Konto erstellen",
       "link": "Kostenloses Konto erstellen"
+    }
+  },
+  "earningsCalculator": {
+    "title": "Berechnen Sie Ihr Verdienstpotenzial",
+    "subtitle": "Sehen Sie, wie viel Sie mit Ihren Unterrichtsmaterialien verdienen könnten",
+    "materialsLabel": "Verkaufte Materialien pro Monat",
+    "priceLabel": "Durchschnittspreis pro Material",
+    "yearlyEarnings": "Geschätzter Jahresverdienst",
+    "monthlyBreakdown": "Das sind {amount} pro Monat",
+    "commissionNote": "Sie behalten 70% jedes Verkaufs – eine der besten Raten der Branche.",
+    "ctaButton": "Jetzt verkaufen"
+  },
+  "previewBadge": {
+    "buttonText": "Vorschau",
+    "watermark": {
+      "label": "Mit Wasserzeichen",
+      "tooltip": "Vollständige Ansicht mit Wasserzeichen – Sie sehen das gesamte Material vor dem Kauf",
+      "inline": "Vollständige Vorschau mit Wasserzeichen"
+    },
+    "pages": {
+      "label": "Erste {count} Seiten gratis",
+      "tooltip": "Die ersten {count} Seiten sind kostenlos einsehbar, um die Qualität zu beurteilen",
+      "inline": "Erste {count} Seiten kostenlos"
     }
   },
   "termsPage": {

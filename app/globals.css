@@ -705,6 +705,127 @@ a {
 }
 
 /* =================================================================
+   EARNINGS CALCULATOR SLIDER
+   ================================================================= */
+.earnings-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(
+    to right,
+    var(--color-primary) 0%,
+    var(--color-primary) var(--value, 50%),
+    var(--color-border) var(--value, 50%),
+    var(--color-border) 100%
+  );
+  background: var(--color-border);
+  outline: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.earnings-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  cursor: grab;
+  border: 3px solid var(--color-bg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.earnings-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.earnings-slider::-webkit-slider-thumb:active {
+  cursor: grabbing;
+  transform: scale(1.05);
+}
+
+.earnings-slider::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  cursor: grab;
+  border: 3px solid var(--color-bg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.earnings-slider::-moz-range-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.earnings-slider::-moz-range-track {
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--color-border);
+}
+
+.earnings-slider:focus {
+  outline: none;
+}
+
+.earnings-slider:focus::-webkit-slider-thumb {
+  box-shadow: 0 0 0 4px var(--color-focus-ring), 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.earnings-slider:focus::-moz-range-thumb {
+  box-shadow: 0 0 0 4px var(--color-focus-ring), 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Earnings amount animation */
+.earnings-amount {
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.earnings-amount:hover {
+  transform: scale(1.02);
+}
+
+/* =================================================================
+   PREVIEW BADGE STYLES
+   ================================================================= */
+.preview-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: var(--radius-full);
+  transition: all 0.15s ease;
+}
+
+.preview-badge-watermark {
+  background-color: color-mix(in srgb, var(--color-info) 15%, transparent);
+  color: var(--color-info);
+  border: 1px solid color-mix(in srgb, var(--color-info) 30%, transparent);
+}
+
+.preview-badge-watermark:hover {
+  background-color: color-mix(in srgb, var(--color-info) 20%, transparent);
+}
+
+.preview-badge-pages {
+  background-color: color-mix(in srgb, var(--color-success) 15%, transparent);
+  color: var(--color-success);
+  border: 1px solid color-mix(in srgb, var(--color-success) 30%, transparent);
+}
+
+.preview-badge-pages:hover {
+  background-color: color-mix(in srgb, var(--color-success) 20%, transparent);
+}
+
+/* =================================================================
    HEADER STYLES
    ================================================================= */
 .header-shadow {
@@ -988,4 +1109,83 @@ html.theme-transition *::after {
   height: 60px;
   background: var(--ctp-green);
   opacity: 0.1;
+}
+
+/* =================================================================
+   BUTTON CONTRAST FIX
+   Fixes invisible buttons caused by Catppuccin theme contrast issues
+   The --ctp-crust color (#dce0e8) is too light for text on colored backgrounds
+   ================================================================= */
+
+/* =================================================================
+   1. FIX: Override text-on-accent for better contrast
+   ================================================================= */
+:root {
+  /* Force white text on accent backgrounds for light theme */
+  --btn-primary-text: #ffffff;
+  --btn-action-text: #ffffff;
+  --btn-danger-text: #ffffff;
+  --color-text-on-accent: #ffffff;
+}
+
+:root[data-theme="dark"] {
+  /* Dark theme uses dark text on bright accent colors */
+  --btn-primary-text: #1e1e2e;
+  --btn-action-text: #1e1e2e;
+  --btn-danger-text: #1e1e2e;
+  --color-text-on-accent: #1e1e2e;
+}
+
+/* =================================================================
+   2. PRIMARY BUTTONS - Ensure visibility
+   ================================================================= */
+button[type="submit"],
+input[type="submit"],
+.btn-primary {
+  color: var(--btn-primary-text);
+}
+
+/* Tailwind class overrides for buttons with bg-primary */
+.bg-primary {
+  color: var(--btn-primary-text);
+}
+
+/* =================================================================
+   3. ACTION BUTTONS (Teal)
+   ================================================================= */
+.btn-action {
+  color: var(--btn-action-text);
+}
+
+.bg-action {
+  color: var(--btn-action-text);
+}
+
+/* =================================================================
+   4. DANGER BUTTONS
+   ================================================================= */
+.btn-danger {
+  color: var(--btn-danger-text);
+}
+
+/* =================================================================
+   5. HERO CTA - Ensure gradient buttons have white text
+   ================================================================= */
+.hero-cta {
+  color: #ffffff;
+}
+
+/* =================================================================
+   6. SEARCH BUTTON IN HERO
+   ================================================================= */
+.hero-section button[type="submit"],
+form button.bg-primary {
+  color: #ffffff;
+}
+
+/* =================================================================
+   7. Ensure Tailwind text-text-on-accent class works correctly
+   ================================================================= */
+.text-text-on-accent {
+  color: var(--color-text-on-accent);
 }
