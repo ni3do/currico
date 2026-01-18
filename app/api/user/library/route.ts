@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { getCurrentUserId } from "@/lib/auth";
 import { formatPrice } from "@/lib/utils/price";
+import { requireAuth, unauthorized } from "@/lib/api";
 
 /**
  * GET /api/user/library
@@ -13,11 +13,8 @@ import { formatPrice } from "@/lib/utils/price";
  * - offset: pagination offset
  */
 export async function GET(request: NextRequest) {
-  // Authentication check
-  const userId = await getCurrentUserId();
-  if (!userId) {
-    return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
-  }
+  const userId = await requireAuth();
+  if (!userId) return unauthorized();
 
   try {
     const { searchParams } = new URL(request.url);
