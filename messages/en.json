@@ -932,5 +932,60 @@
       "button": "Create Free Account",
       "link": "Create Free Account"
     }
+  },
+  "termsPage": {
+    "title": "Terms of Service",
+    "lastUpdated": "Last updated: January 2026",
+    "general": {
+      "introduction": {
+        "title": "1. Introduction",
+        "content": "Welcome to EasyLehrer. By accessing or using our platform, you agree to be bound by these Terms of Service. EasyLehrer is a Swiss platform connecting educators to buy, sell, and share high-quality teaching materials aligned with the Swiss curriculum (Lehrplan 21)."
+      },
+      "account": {
+        "title": "2. Account Terms",
+        "content": "To use certain features of EasyLehrer, you must create an account. You agree to:",
+        "items": {
+          "accurate": "Provide accurate and complete information during registration",
+          "secure": "Keep your password secure and not share your account credentials",
+          "age": "Be at least 18 years old or have parental consent to use the platform",
+          "oneAccount": "Maintain only one account per person"
+        }
+      },
+      "acceptableUse": {
+        "title": "3. Acceptable Use",
+        "content": "You agree to use EasyLehrer only for lawful purposes and in accordance with these terms. You must not:",
+        "items": {
+          "lawful": "Use the platform for any illegal or unauthorized purpose",
+          "noAbuse": "Harass, abuse, or harm other users",
+          "noScraping": "Attempt to scrape, copy, or redistribute content without permission",
+          "respectOthers": "Infringe on the intellectual property rights of others"
+        }
+      },
+      "intellectualProperty": {
+        "title": "4. Intellectual Property",
+        "content": "All content on EasyLehrer, including the platform design, logos, and original materials, is protected by copyright and other intellectual property laws. Teaching materials uploaded by sellers remain the property of their respective creators, who grant buyers a limited license to use them for educational purposes."
+      },
+      "purchases": {
+        "title": "5. Purchases and Downloads",
+        "content": "When you purchase teaching materials on EasyLehrer:",
+        "items": {
+          "personal": "You receive a personal, non-transferable license to use the materials",
+          "noRedistribution": "You may not redistribute, resell, or share purchased materials",
+          "refunds": "Refund requests are handled on a case-by-case basis through our support team"
+        }
+      },
+      "liability": {
+        "title": "6. Limitation of Liability",
+        "content": "EasyLehrer provides the platform 'as is' and makes no warranties regarding the quality, accuracy, or fitness of teaching materials sold by third-party sellers. We are not liable for any indirect, incidental, or consequential damages arising from your use of the platform."
+      },
+      "governingLaw": {
+        "title": "7. Governing Law",
+        "content": "These Terms of Service are governed by the laws of Switzerland. Any disputes shall be resolved in the courts of Zurich, Switzerland."
+      }
+    },
+    "contact": {
+      "title": "Questions?",
+      "content": "If you have any questions about these Terms of Service, please contact us through our contact page."
+    }
   }
 }

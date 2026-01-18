@@ -43,7 +43,7 @@ export default function Footer() {
               {tCommon("footer.links.privacy")}
             </Link>
             <Link
-              href="/coming-soon"
+              href="/terms"
               className="text-sm text-[var(--color-text-muted)] transition-colors hover:text-[var(--color-primary)]"
             >
               {tCommon("footer.links.terms")}

@@ -260,7 +260,7 @@ Implement actual payment processing.
 - [ ] **10.5** Test account creation after guest purchase
 - [ ] **10.6** Configure Stripe webhooks in production
 - [ ] **10.7** Verify Stripe Connect Express settings
-- [ ] **10.8** Update Terms of Service with seller terms
+- [x] **10.8** Update Terms of Service with seller terms
 
 ---
 

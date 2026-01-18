@@ -932,5 +932,60 @@
       "button": "Kostenloses Konto erstellen",
       "link": "Kostenloses Konto erstellen"
     }
+  },
+  "termsPage": {
+    "title": "Nutzungsbedingungen",
+    "lastUpdated": "Zuletzt aktualisiert: Januar 2026",
+    "general": {
+      "introduction": {
+        "title": "1. Einführung",
+        "content": "Willkommen bei EasyLehrer. Durch den Zugriff auf unsere Plattform oder deren Nutzung erklären Sie sich mit diesen Nutzungsbedingungen einverstanden. EasyLehrer ist eine Schweizer Plattform, die Lehrpersonen verbindet, um hochwertige Unterrichtsmaterialien zu kaufen, zu verkaufen und zu teilen, die auf den Schweizer Lehrplan (Lehrplan 21) abgestimmt sind."
+      },
+      "account": {
+        "title": "2. Kontobedingungen",
+        "content": "Um bestimmte Funktionen von EasyLehrer nutzen zu können, müssen Sie ein Konto erstellen. Sie erklären sich damit einverstanden:",
+        "items": {
+          "accurate": "Bei der Registrierung genaue und vollständige Angaben zu machen",
+          "secure": "Ihr Passwort sicher aufzubewahren und Ihre Kontodaten nicht weiterzugeben",
+          "age": "Mindestens 18 Jahre alt zu sein oder die elterliche Zustimmung zur Nutzung der Plattform zu haben",
+          "oneAccount": "Nur ein Konto pro Person zu führen"
+        }
+      },
+      "acceptableUse": {
+        "title": "3. Zulässige Nutzung",
+        "content": "Sie erklären sich damit einverstanden, EasyLehrer nur für rechtmässige Zwecke und in Übereinstimmung mit diesen Bedingungen zu nutzen. Sie dürfen nicht:",
+        "items": {
+          "lawful": "Die Plattform für illegale oder unbefugte Zwecke nutzen",
+          "noAbuse": "Andere Nutzer belästigen, missbrauchen oder schädigen",
+          "noScraping": "Versuchen, Inhalte ohne Erlaubnis zu scrapen, zu kopieren oder weiterzuverbreiten",
+          "respectOthers": "Die geistigen Eigentumsrechte anderer verletzen"
+        }
+      },
+      "intellectualProperty": {
+        "title": "4. Geistiges Eigentum",
+        "content": "Alle Inhalte auf EasyLehrer, einschliesslich des Plattformdesigns, der Logos und der Originalmaterialien, sind durch Urheberrechte und andere Gesetze zum Schutz des geistigen Eigentums geschützt. Von Verkäufern hochgeladene Unterrichtsmaterialien bleiben Eigentum ihrer jeweiligen Ersteller, die den Käufern eine eingeschränkte Lizenz zur Nutzung für Bildungszwecke gewähren."
+      },
+      "purchases": {
+        "title": "5. Käufe und Downloads",
+        "content": "Wenn Sie Unterrichtsmaterialien auf EasyLehrer kaufen:",
+        "items": {
+          "personal": "Erhalten Sie eine persönliche, nicht übertragbare Lizenz zur Nutzung der Materialien",
+          "noRedistribution": "Dürfen Sie gekaufte Materialien nicht weiterverbreiten, weiterverkaufen oder teilen",
+          "refunds": "Rückerstattungsanfragen werden von unserem Support-Team von Fall zu Fall bearbeitet"
+        }
+      },
+      "liability": {
+        "title": "6. Haftungsbeschränkung",
+        "content": "EasyLehrer stellt die Plattform \"wie besehen\" zur Verfügung und übernimmt keine Garantien hinsichtlich der Qualität, Genauigkeit oder Eignung der von Drittanbietern verkauften Unterrichtsmaterialien. Wir haften nicht für indirekte, zufällige oder Folgeschäden, die sich aus Ihrer Nutzung der Plattform ergeben."
+      },
+      "governingLaw": {
+        "title": "7. Anwendbares Recht",
+        "content": "Diese Nutzungsbedingungen unterliegen dem schweizerischen Recht. Alle Streitigkeiten werden vor den Gerichten in Zürich, Schweiz, beigelegt."
+      }
+    },
+    "contact": {
+      "title": "Fragen?",
+      "content": "Wenn Sie Fragen zu diesen Nutzungsbedingungen haben, kontaktieren Sie uns bitte über unsere Kontaktseite."
+    }
   }
 }

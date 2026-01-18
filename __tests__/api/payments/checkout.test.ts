@@ -31,7 +31,8 @@ const mockAuth = auth as ReturnType<typeof vi.fn>;
 // Import Stripe mocks after vi.mock
 import { getStripeClient } from "@/lib/stripe";
 
-const mockGetStripeClient = getStripeClient as ReturnType<typeof vi.fn>;
+
+const mockGetStripeClient = getStripeClient as any;
 
 // Type definitions for responses
 interface CreateCheckoutResponse {
