@@ -8,9 +8,10 @@ interface AdminUser {
   name: string | null;
   display_name: string | null;
   role: string;
-  is_seller: boolean;
-  seller_verified: boolean;
+  stripe_onboarding_complete: boolean;
+  stripe_charges_enabled: boolean;
   is_protected: boolean;
+  emailVerified: string | null;
   created_at: string;
   resourceCount: number;
   transactionCount: number;
@@ -26,14 +27,12 @@ interface PaginatedResponse {
 const roleLabels: Record<string, string> = {
   BUYER: "Käufer",
   SELLER: "Verkäufer",
-  SCHOOL: "Schule",
   ADMIN: "Administrator",
 };
 
 const roleBadgeColors: Record<string, string> = {
   BUYER: "bg-[var(--badge-info-bg)] text-[var(--badge-info-text)]",
   SELLER: "bg-[var(--badge-success-bg)] text-[var(--badge-success-text)]",
-  SCHOOL: "bg-[var(--ctp-mauve)]/20 text-[var(--ctp-mauve)]",
   ADMIN: "bg-[var(--ctp-pink)]/20 text-[var(--ctp-pink)]",
 };
 
@@ -102,25 +101,6 @@ export default function AdminUsersPage() {
     }
   };
 
-  const handleVerifySeller = async (userId: string, verified: boolean) => {
-    setActionLoading(true);
-    try {
-      const response = await fetch(`/api/admin/users/${userId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ seller_verified: verified }),
-      });
-
-      if (response.ok) {
-        fetchUsers();
-      }
-    } catch (error) {
-      console.error("Error verifying seller:", error);
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
   const handleDeleteUser = async (userId: string) => {
     setActionLoading(true);
     try {
@@ -170,7 +150,6 @@ export default function AdminUsersPage() {
           <option value="">Alle Rollen</option>
           <option value="BUYER">Käufer</option>
           <option value="SELLER">Verkäufer</option>
-          <option value="SCHOOL">Schule</option>
           <option value="ADMIN">Administrator</option>
         </select>
       </div>
@@ -251,15 +230,15 @@ export default function AdminUsersPage() {
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      {user.is_seller && (
+                      {user.role === "SELLER" && (
                         <span
                           className={`rounded-full px-3 py-1 text-xs font-medium ${
-                            user.seller_verified
+                            user.stripe_charges_enabled
                               ? "bg-[var(--badge-success-bg)] text-[var(--badge-success-text)]"
                               : "bg-[var(--badge-warning-bg)] text-[var(--badge-warning-text)]"
                           }`}
                         >
-                          {user.seller_verified ? "Verifiziert" : "Nicht verifiziert"}
+                          {user.stripe_charges_enabled ? "Stripe aktiv" : "Stripe ausstehend"}
                         </span>
                       )}
                     </td>
@@ -271,15 +250,6 @@ export default function AdminUsersPage() {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
-                        {user.is_seller && !user.seller_verified && (
-                          <button
-                            onClick={() => handleVerifySeller(user.id, true)}
-                            disabled={actionLoading}
-                            className="rounded-lg bg-[var(--badge-success-bg)] px-3 py-1.5 text-xs font-medium text-[var(--badge-success-text)] transition-opacity hover:opacity-80 disabled:opacity-50"
-                          >
-                            Verifizieren
-                          </button>
-                        )}
                         <button
                           onClick={() => {
                             setSelectedUser(user);
@@ -379,7 +349,6 @@ export default function AdminUsersPage() {
                 >
                   <option value="BUYER">Käufer</option>
                   <option value="SELLER">Verkäufer</option>
-                  <option value="SCHOOL">Schule</option>
                   <option value="ADMIN">Administrator</option>
                 </select>
                 {selectedUser.is_protected && (
@@ -389,27 +358,19 @@ export default function AdminUsersPage() {
                 )}
               </div>
 
-              {selectedUser.is_seller && (
-                <div className="flex items-center justify-between rounded-lg border border-[var(--color-border)] p-4">
-                  <div>
-                    <p className="font-medium text-[var(--color-text)]">Verkäufer-Status</p>
-                    <p className="text-sm text-[var(--color-text-muted)]">
-                      {selectedUser.seller_verified ? "Verifiziert" : "Nicht verifiziert"}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() =>
-                      handleVerifySeller(selectedUser.id, !selectedUser.seller_verified)
-                    }
-                    disabled={actionLoading}
-                    className={`rounded-lg px-4 py-2 text-sm font-medium transition-opacity disabled:opacity-50 ${
-                      selectedUser.seller_verified
-                        ? "bg-[var(--badge-warning-bg)] text-[var(--badge-warning-text)]"
-                        : "bg-[var(--badge-success-bg)] text-[var(--badge-success-text)]"
-                    }`}
-                  >
-                    {selectedUser.seller_verified ? "Entziehen" : "Verifizieren"}
-                  </button>
+              {selectedUser.role === "SELLER" && (
+                <div className="rounded-lg border border-[var(--color-border)] p-4">
+                  <p className="font-medium text-[var(--color-text)]">Stripe-Status</p>
+                  <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+                    {selectedUser.stripe_charges_enabled
+                      ? "Zahlungen aktiviert"
+                      : selectedUser.stripe_onboarding_complete
+                        ? "Onboarding abgeschlossen, Zahlungen ausstehend"
+                        : "Stripe-Onboarding ausstehend"}
+                  </p>
+                  <p className="mt-2 text-xs text-[var(--color-text-muted)]">
+                    Verkäufer-Verifizierung wird automatisch über Stripe KYC verwaltet.
+                  </p>
                 </div>
               )}
             </div>

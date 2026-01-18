@@ -12,6 +12,7 @@ Swiss platform for teachers to buy, sell, and share teaching materials.
 
 ### Implementation Plans
 
+- [Account Structure Refactor](./account-structure-refactor.md) - Schema cleanup and Stripe Connect preparation
 - [Stripe Connect Plan](./stripe-connect-implementation-plan.md) - Payment integration implementation
 - [Stripe Connect Architecture](./stripe-connect-architecture.md) - How Stripe Connect works (reference)
 - [i18n Plan](./i18n-plan.md) - Internationalization implementation

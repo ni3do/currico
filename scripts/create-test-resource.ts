@@ -22,9 +22,7 @@ async function main() {
   try {
     // First, find or create a seller user to attach the resource to
     let seller = await prisma.user.findFirst({
-      where: {
-        OR: [{ role: "SELLER" }, { is_seller: true }],
-      },
+      where: { role: "SELLER" },
     });
 
     if (!seller) {
@@ -36,13 +34,12 @@ async function main() {
           name: "Test Seller",
           display_name: "Test Verkäufer",
           role: "SELLER",
-          is_seller: true,
-          seller_verified: true,
           subjects: ["Mathematik"],
           cycles: ["Zyklus 1"],
-          legal_first_name: "Test",
-          legal_last_name: "Seller",
-          iban: "CH93 0076 2011 6238 5295 7",
+          stripe_onboarding_complete: true,
+          stripe_charges_enabled: true,
+          stripe_payouts_enabled: true,
+          seller_terms_accepted_at: new Date(),
         },
       });
       console.log(`✅ Created test seller: ${seller.id}`);

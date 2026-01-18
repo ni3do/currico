@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma, privateUserSelect } from "@/lib/db";
 import { updateProfileSchema } from "@/lib/validations/user";
-import { maskIBAN } from "@/lib/utils/iban";
 import { getCurrentUserId } from "@/lib/auth";
 
 /**
  * GET /api/users/me
- * Get the current user's private profile (including payout info)
+ * Get the current user's private profile
  * Access: Authenticated user only
  */
 export async function GET() {
@@ -32,14 +31,7 @@ export async function GET() {
       );
     }
 
-    // Mask IBAN for security (user can see partial IBAN)
-    const response = {
-      ...user,
-      iban: user.iban ? maskIBAN(user.iban) : null,
-      iban_set: !!user.iban, // Indicate if IBAN is set
-    };
-
-    return NextResponse.json(response);
+    return NextResponse.json(user);
   } catch (error) {
     console.error("Error fetching user profile:", error);
     return NextResponse.json(
@@ -81,12 +73,6 @@ export async function PATCH(request: NextRequest) {
 
     const data = validationResult.data;
 
-    // Check if payout info is complete to enable payouts
-    const payoutEnabled =
-      !!data.legal_first_name &&
-      !!data.legal_last_name &&
-      !!data.iban;
-
     // Update user - transform arrays for Prisma
     const { subjects, cycles, cantons, ...restData } = data;
     const updatedUser = await prisma.user.update({
@@ -96,21 +82,11 @@ export async function PATCH(request: NextRequest) {
         ...(subjects && { subjects: { set: subjects } }),
         ...(cycles && { cycles: { set: cycles } }),
         ...(cantons && { cantons: { set: cantons } }),
-        payout_enabled: payoutEnabled,
-        // Set is_seller to true if they have payout info
-        is_seller: payoutEnabled ? true : undefined,
       },
       select: privateUserSelect,
     });
 
-    // Mask IBAN in response
-    const response = {
-      ...updatedUser,
-      iban: updatedUser.iban ? maskIBAN(updatedUser.iban) : null,
-      iban_set: !!updatedUser.iban,
-    };
-
-    return NextResponse.json(response);
+    return NextResponse.json(updatedUser);
   } catch (error) {
     console.error("Error updating user profile:", error);
     return NextResponse.json(

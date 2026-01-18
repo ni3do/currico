@@ -37,7 +37,7 @@ export async function GET(
             id: true,
             display_name: true,
             image: true,
-            seller_verified: true,
+            stripe_charges_enabled: true,
             _count: {
               select: { resources: true },
             },
@@ -96,7 +96,7 @@ export async function GET(
         id: resource.seller.id,
         displayName: resource.seller.display_name,
         image: resource.seller.image,
-        verified: resource.seller.seller_verified,
+        verified: resource.seller.stripe_charges_enabled,
         resourceCount: resource.seller._count.resources,
       },
     };

@@ -38,14 +38,13 @@ async function setupTestSeller() {
       data: {
         password_hash: await bcrypt.hash(TEST_USER_PASSWORD, 10),
         role: "SELLER",
-        is_seller: true,
-        seller_verified: true,
         display_name: "Upload Test Seller",
         subjects: ["Mathematik"],
         cycles: ["Zyklus 1"],
-        legal_first_name: "Test",
-        legal_last_name: "Upload",
-        iban: "CH93 0076 2011 6238 5295 7",
+        stripe_onboarding_complete: true,
+        stripe_charges_enabled: true,
+        stripe_payouts_enabled: true,
+        seller_terms_accepted_at: new Date(),
       },
     });
   } else {
@@ -56,13 +55,12 @@ async function setupTestSeller() {
         name: "Upload Test",
         display_name: "Upload Test Seller",
         role: "SELLER",
-        is_seller: true,
-        seller_verified: true,
         subjects: ["Mathematik"],
         cycles: ["Zyklus 1"],
-        legal_first_name: "Test",
-        legal_last_name: "Upload",
-        iban: "CH93 0076 2011 6238 5295 7",
+        stripe_onboarding_complete: true,
+        stripe_charges_enabled: true,
+        stripe_payouts_enabled: true,
+        seller_terms_accepted_at: new Date(),
       },
     });
   }

@@ -14,7 +14,7 @@ declare module "next-auth" {
       email: string;
       name?: string | null;
       image?: string | null;
-      role: "BUYER" | "SELLER" | "SCHOOL" | "ADMIN";
+      role: "BUYER" | "SELLER" | "ADMIN";
     };
   }
 }
@@ -22,7 +22,7 @@ declare module "next-auth" {
 declare module "@auth/core/jwt" {
   interface JWT {
     id?: string;
-    role?: "BUYER" | "SELLER" | "SCHOOL" | "ADMIN";
+    role?: "BUYER" | "SELLER" | "ADMIN";
   }
 }
 
@@ -92,7 +92,7 @@ const nextAuth = NextAuth({
           where: { id: user.id as string },
           select: { role: true },
         });
-        token.role = (dbUser?.role ?? "BUYER") as "BUYER" | "SELLER" | "SCHOOL" | "ADMIN";
+        token.role = (dbUser?.role ?? "BUYER") as "BUYER" | "SELLER" | "ADMIN";
       }
       // Refresh role on session update
       if (trigger === "update" && token.id) {
@@ -100,14 +100,14 @@ const nextAuth = NextAuth({
           where: { id: token.id as string },
           select: { role: true },
         });
-        token.role = (dbUser?.role ?? "BUYER") as "BUYER" | "SELLER" | "SCHOOL" | "ADMIN";
+        token.role = (dbUser?.role ?? "BUYER") as "BUYER" | "SELLER" | "ADMIN";
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user && token.id) {
         session.user.id = token.id as string;
-        session.user.role = (token.role ?? "BUYER") as "BUYER" | "SELLER" | "SCHOOL" | "ADMIN";
+        session.user.role = (token.role ?? "BUYER") as "BUYER" | "SELLER" | "ADMIN";
       }
       return session;
     },

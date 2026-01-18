@@ -4,7 +4,7 @@ import { requireAdmin, unauthorizedResponse } from "@/lib/admin-auth";
 
 /**
  * GET /api/admin/users/[id]
- * Get full user details including unmasked IBAN
+ * Get full user details
  * Access: ADMIN only
  */
 export async function GET(
@@ -35,17 +35,12 @@ export async function GET(
         cantons: true,
         email: true,
         emailVerified: true,
-        legal_first_name: true,
-        legal_last_name: true,
-        iban: true, // Full IBAN for admin
-        address_street: true,
-        address_city: true,
-        address_postal: true,
-        address_country: true,
         role: true,
-        is_seller: true,
-        seller_verified: true,
-        payout_enabled: true,
+        stripe_account_id: true,
+        stripe_onboarding_complete: true,
+        stripe_charges_enabled: true,
+        stripe_payouts_enabled: true,
+        seller_terms_accepted_at: true,
         is_protected: true,
       },
     });
@@ -108,17 +103,13 @@ export async function PATCH(
     }
 
     // Only allow admin to update specific fields
-    // Map request field names to Prisma field names
-    const fieldMapping: Record<string, string> = {
-      seller_verified: "seller_verified",
-      role: "role",
-      emailVerified: "emailVerified",
-    };
+    // Note: Seller verification is now handled via Stripe KYC, not admin toggle
+    const allowedFields = ["role", "emailVerified"];
     const updateData: Record<string, unknown> = {};
 
-    for (const [requestField, prismaField] of Object.entries(fieldMapping)) {
-      if (requestField in body) {
-        updateData[prismaField] = body[requestField];
+    for (const field of allowedFields) {
+      if (field in body) {
+        updateData[field] = body[field];
       }
     }
 
@@ -132,8 +123,8 @@ export async function PATCH(
         email: true,
         emailVerified: true,
         role: true,
-        is_seller: true,
-        seller_verified: true,
+        stripe_onboarding_complete: true,
+        stripe_charges_enabled: true,
         updated_at: true,
       },
     });

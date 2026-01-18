@@ -69,13 +69,12 @@ async function createTestSeller() {
       name: "Test Seller",
       display_name: "Lehrer Test",
       role: "SELLER",
-      is_seller: true,
-      seller_verified: true,
       subjects: ["Mathematik", "Deutsch"],
       cycles: ["Zyklus 1", "Zyklus 2"],
-      legal_first_name: "Test",
-      legal_last_name: "Seller",
-      iban: "CH93 0076 2011 6238 5295 7",
+      stripe_onboarding_complete: true,
+      stripe_charges_enabled: true,
+      stripe_payouts_enabled: true,
+      seller_terms_accepted_at: new Date(),
     },
   });
 

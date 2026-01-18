@@ -129,7 +129,7 @@ async function testDatabaseInsertion() {
 
   // Find or create a seller
   let seller = await prisma.user.findFirst({
-    where: { OR: [{ role: "SELLER" }, { is_seller: true }] },
+    where: { role: "SELLER" },
   });
 
   if (!seller) {
@@ -139,12 +139,12 @@ async function testDatabaseInsertion() {
         name: "Validation Test",
         display_name: "Validation Tester",
         role: "SELLER",
-        is_seller: true,
         subjects: ["Mathematik"],
         cycles: ["Zyklus 1"],
-        legal_first_name: "Test",
-        legal_last_name: "Validation",
-        iban: "CH93 0076 2011 6238 5295 7",
+        stripe_onboarding_complete: true,
+        stripe_charges_enabled: true,
+        stripe_payouts_enabled: true,
+        seller_terms_accepted_at: new Date(),
       },
     });
   }
