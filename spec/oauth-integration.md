@@ -80,7 +80,7 @@ Files involved:
   - File: `app/[locale]/login/page.tsx`
   - Add button with official logo after Microsoft
 
-- [ ] **Task 7:** Add edu-ID button to register page
+- [x] **Task 7:** Add edu-ID button to register page
   - File: `app/[locale]/register/page.tsx`
   - Add button with official logo after Microsoft
 

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import { Link, useRouter } from "@/i18n/navigation";
 import { isValidEmail } from "@/lib/validations/common";
 import TopBar from "@/components/ui/TopBar";
@@ -296,6 +297,21 @@ export default function RegisterPage() {
                   <path fill="#ffba08" d="M12 12h10v10H12z" />
                 </svg>
                 {t("oauth.microsoft")}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => signIn("eduid")}
+                className="flex items-center justify-center gap-3 rounded-lg bg-[var(--color-surface)] px-4 py-3.5 font-medium text-[var(--color-text)] transition-all hover:bg-[var(--color-surface-elevated)]"
+              >
+                <Image
+                  src="/eduid-logo.svg"
+                  alt="edu-ID"
+                  width={20}
+                  height={20}
+                  className="h-5 w-5"
+                />
+                {t("oauth.eduid")}
               </button>
             </div>
 
