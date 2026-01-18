@@ -118,6 +118,13 @@ model User {
   reports_received  Report[] @relation("ReportedUser")
   reports_handled   Report[] @relation("ReportHandler")
 
+  // Bundle relations
+  bundles Bundle[]
+
+  // Follow relations
+  following Follow[] @relation("Follower")
+  followers Follow[] @relation("Followed")
+
   @@map("users")
 }
 
@@ -165,11 +172,12 @@ model Resource {
 
   // Relations
   seller_id    String
-  seller       User          @relation(fields: [seller_id], references: [id])
+  seller       User             @relation(fields: [seller_id], references: [id])
   transactions Transaction[]
   downloads    Download[]
   wishlists    Wishlist[]
   reports      Report[]
+  bundles      BundleResource[]
 
   // Curriculum alignment
   competencies ResourceCompetency[]
@@ -181,6 +189,43 @@ model Resource {
   bne_themes       ResourceBne[]
 
   @@map("resources")
+}
+
+// ============================================================
+// BUNDLE MODEL - Resource Bundles (Discounted Packages)
+// ============================================================
+
+model Bundle {
+  id         String   @id @default(cuid())
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  title           String
+  description     String?        @db.Text
+  price           Int // Price in cents (discounted bundle price)
+  subject         String[]
+  cycle           String[]
+  cover_image_url String?
+
+  is_published Boolean        @default(false)
+  status       ResourceStatus @default(PENDING)
+
+  // Relations
+  seller_id String
+  seller    User             @relation(fields: [seller_id], references: [id])
+  resources BundleResource[]
+
+  @@map("bundles")
+}
+
+model BundleResource {
+  bundle_id   String
+  bundle      Bundle   @relation(fields: [bundle_id], references: [id], onDelete: Cascade)
+  resource_id String
+  resource    Resource @relation(fields: [resource_id], references: [id], onDelete: Cascade)
+
+  @@id([bundle_id, resource_id])
+  @@map("bundle_resources")
 }
 
 // ============================================================
@@ -512,4 +557,22 @@ model Wishlist {
 
   @@unique([user_id, resource_id])
   @@map("wishlists")
+}
+
+// ============================================================
+// FOLLOW MODEL - Seller Following
+// ============================================================
+
+model Follow {
+  id         String   @id @default(cuid())
+  created_at DateTime @default(now())
+
+  // Relations
+  follower_id String
+  follower    User   @relation("Follower", fields: [follower_id], references: [id], onDelete: Cascade)
+  followed_id String
+  followed    User   @relation("Followed", fields: [followed_id], references: [id], onDelete: Cascade)
+
+  @@unique([follower_id, followed_id])
+  @@map("follows")
 }

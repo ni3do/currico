@@ -72,11 +72,11 @@ export async function POST(request: NextRequest) {
     // Check if seller exists and is actually a seller
     const seller = await prisma.user.findUnique({
       where: { id: sellerId },
-      select: { is_seller: true, role: true },
+      select: { role: true },
     });
 
     if (!seller) return notFound("Verkäufer nicht gefunden");
-    if (!seller.is_seller && seller.role !== "SELLER") {
+    if (seller.role !== "SELLER") {
       return badRequest("Dieser Benutzer ist kein Verkäufer");
     }
 

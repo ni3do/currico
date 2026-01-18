@@ -45,11 +45,11 @@ export async function requireAuth(): Promise<string | null> {
 export async function requireSeller(userId: string) {
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { id: true, is_seller: true, role: true },
+    select: { id: true, role: true },
   });
 
   if (!user) return null;
-  if (!user.is_seller && user.role !== "SELLER") return null;
+  if (user.role !== "SELLER") return null;
 
   return user;
 }
@@ -65,9 +65,8 @@ export async function checkSellerProfile(userId: string): Promise<string[]> {
       display_name: true,
       subjects: true,
       cycles: true,
-      legal_first_name: true,
-      legal_last_name: true,
-      iban: true,
+      stripe_onboarding_complete: true,
+      stripe_charges_enabled: true,
     },
   });
 
@@ -77,9 +76,9 @@ export async function checkSellerProfile(userId: string): Promise<string[]> {
   if (!user.display_name) missing.push("Profilname");
   if (!user.subjects || user.subjects.length === 0) missing.push("Fächer");
   if (!user.cycles || user.cycles.length === 0) missing.push("Zyklen");
-  if (!user.legal_first_name) missing.push("Vorname (rechtlich)");
-  if (!user.legal_last_name) missing.push("Nachname (rechtlich)");
-  if (!user.iban) missing.push("IBAN");
+  if (!user.stripe_onboarding_complete || !user.stripe_charges_enabled) {
+    missing.push("Stripe-Verifizierung");
+  }
 
   return missing;
 }
