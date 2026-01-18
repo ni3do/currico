@@ -196,6 +196,20 @@ export default function LoginPage() {
                 </svg>
                 {t("oauth.google")}
               </button>
+
+              <button
+                type="button"
+                onClick={() => signIn("microsoft-entra-id")}
+                className="flex items-center justify-center gap-3 rounded-lg bg-[var(--color-surface)] px-4 py-3.5 font-medium text-[var(--color-text)] transition-all hover:bg-[var(--color-surface-elevated)]"
+              >
+                <svg className="h-5 w-5" viewBox="0 0 23 23">
+                  <path fill="#f35325" d="M1 1h10v10H1z" />
+                  <path fill="#81bc06" d="M12 1h10v10H12z" />
+                  <path fill="#05a6f0" d="M1 12h10v10H1z" />
+                  <path fill="#ffba08" d="M12 12h10v10H12z" />
+                </svg>
+                {t("oauth.microsoft")}
+              </button>
             </div>
 
             {/* Register Link */}

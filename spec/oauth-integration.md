@@ -56,7 +56,7 @@ Files involved:
   - File: `app/[locale]/register/page.tsx:289`
   - Change: `signIn("azure-ad")` → `signIn("microsoft-entra-id")`
 
-- [ ] **Task 2:** Add Microsoft button to login page
+- [x] **Task 2:** Add Microsoft button to login page
   - File: `app/[locale]/login/page.tsx`
   - Add Microsoft button after Google button
 
@@ -90,10 +90,10 @@ Files involved:
 
 ### Phase 4: Translations
 
-- [ ] **Task 9:** Check/add Microsoft translation (German)
+- [x] **Task 9:** Check/add Microsoft translation (German)
   - File: `messages/de.json`
 
-- [ ] **Task 10:** Check/add Microsoft translation (English)
+- [x] **Task 10:** Check/add Microsoft translation (English)
   - File: `messages/en.json`
 
 - [ ] **Task 11:** Add edu-ID translation (German)

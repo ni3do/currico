@@ -170,7 +170,8 @@
     "divider": "Oder fortfahren mit",
     "oauth": {
       "google": "Mit Google anmelden",
-      "github": "Mit GitHub anmelden"
+      "github": "Mit GitHub anmelden",
+      "microsoft": "Mit Microsoft anmelden"
     },
     "register": {
       "prompt": "Noch kein Konto?",
