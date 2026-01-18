@@ -134,13 +134,13 @@ export default function ResourcesPage() {
                 className="input cursor-pointer appearance-none"
               >
                 <option value="">{t("search.subjectFilter.all")}</option>
-                <option value="Mathematik">{t("search.subjectFilter.math")}</option>
+                <option value="BG">{t("search.subjectFilter.arts")}</option>
                 <option value="Deutsch">{t("search.subjectFilter.german")}</option>
                 <option value="Englisch">{t("search.subjectFilter.english")}</option>
                 <option value="Franzosisch">{t("search.subjectFilter.french")}</option>
-                <option value="NMG">{t("search.subjectFilter.nmg")}</option>
-                <option value="BG">{t("search.subjectFilter.arts")}</option>
+                <option value="Mathematik">{t("search.subjectFilter.math")}</option>
                 <option value="Musik">{t("search.subjectFilter.music")}</option>
+                <option value="NMG">{t("search.subjectFilter.nmg")}</option>
                 <option value="Sport">{t("search.subjectFilter.sports")}</option>
               </select>
             </div>
@@ -194,11 +194,11 @@ export default function ResourcesPage() {
                   </label>
                   <select className="input text-sm">
                     <option value="">{t("advancedFilters.cantonFilter.all")}</option>
-                    <option value="ZH">Zurich</option>
+                    <option value="AG">Aargau</option>
                     <option value="BE">Bern</option>
                     <option value="LU">Luzern</option>
-                    <option value="AG">Aargau</option>
                     <option value="SG">St. Gallen</option>
+                    <option value="ZH">Zurich</option>
                   </select>
                 </div>
 

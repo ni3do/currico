@@ -378,9 +378,9 @@ export default function UploadPage() {
                     className="w-full rounded-xl border border-border bg-bg px-4 py-3 text-text focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
                   >
                     <option value="de">Deutsch</option>
+                    <option value="en">Englisch</option>
                     <option value="fr">Französisch</option>
                     <option value="it">Italienisch</option>
-                    <option value="en">Englisch</option>
                   </select>
                 </div>
 

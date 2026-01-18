@@ -56,18 +56,18 @@ const CYCLES = [
 ];
 
 const CANTONS = [
-  { value: "ZH", label: "Zürich" },
-  { value: "BE", label: "Bern" },
-  { value: "LU", label: "Luzern" },
   { value: "AG", label: "Aargau" },
+  { value: "BL", label: "Basel-Landschaft" },
+  { value: "BS", label: "Basel-Stadt" },
+  { value: "BE", label: "Bern" },
+  { value: "FR", label: "Freiburg" },
+  { value: "GR", label: "Graubünden" },
+  { value: "LU", label: "Luzern" },
+  { value: "SO", label: "Solothurn" },
   { value: "SG", label: "St. Gallen" },
   { value: "TG", label: "Thurgau" },
-  { value: "GR", label: "Graubünden" },
-  { value: "BS", label: "Basel-Stadt" },
-  { value: "BL", label: "Basel-Landschaft" },
-  { value: "SO", label: "Solothurn" },
-  { value: "FR", label: "Freiburg" },
   { value: "VS", label: "Wallis" },
+  { value: "ZH", label: "Zürich" },
   { value: "all", label: "Alle Kantone" },
 ];
 

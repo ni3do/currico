@@ -196,10 +196,10 @@ export default function ContactClient() {
                         >
                           <option value="">{t("form.subjectPlaceholder")}</option>
                           <option value="general">{t("form.subjects.general")}</option>
+                          <option value="feedback">{t("form.subjects.feedback")}</option>
+                          <option value="partnership">{t("form.subjects.partnership")}</option>
                           <option value="support">{t("form.subjects.support")}</option>
                           <option value="sales">{t("form.subjects.sales")}</option>
-                          <option value="partnership">{t("form.subjects.partnership")}</option>
-                          <option value="feedback">{t("form.subjects.feedback")}</option>
                         </select>
                       </div>
 
