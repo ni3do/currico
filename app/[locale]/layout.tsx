@@ -4,6 +4,9 @@ import { getMessages, setRequestLocale } from 'next-intl/server';
 import { routing } from '@/i18n/routing';
 import type { Locale } from '@/i18n/config';
 
+// Force dynamic rendering to avoid prerender errors with client-side hooks
+export const dynamic = 'force-dynamic';
+
 type Props = {
   children: React.ReactNode;
   params: Promise<{ locale: string }>;

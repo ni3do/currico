@@ -83,34 +83,34 @@ export default function AdminTransactionsPage() {
     <div className="p-6 lg:p-8 max-w-7xl mx-auto">
       {/* Page Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--color-text)]">Transaktionen</h1>
-        <p className="mt-2 text-[var(--color-text-muted)]">
+        <h1 className="text-3xl font-bold text-text">Transaktionen</h1>
+        <p className="mt-2 text-text-muted">
           Übersicht aller Plattform-Transaktionen
         </p>
       </div>
 
       {/* Summary Cards */}
       <div className="mb-8 grid gap-6 sm:grid-cols-3">
-        <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
-          <h3 className="mb-2 text-sm font-medium text-[var(--color-text-muted)]">
+        <div className="rounded-2xl border border-border bg-surface p-6">
+          <h3 className="mb-2 text-sm font-medium text-text-muted">
             Gesamt-Bruttoeinnahmen
           </h3>
-          <div className="text-3xl font-bold text-[var(--color-text)]">
+          <div className="text-3xl font-bold text-text">
             CHF {totalGross.toFixed(2)}
           </div>
         </div>
 
-        <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
-          <h3 className="mb-2 text-sm font-medium text-[var(--color-text-muted)]">
+        <div className="rounded-2xl border border-border bg-surface p-6">
+          <h3 className="mb-2 text-sm font-medium text-text-muted">
             Plattformgebühren
           </h3>
-          <div className="text-3xl font-bold text-[var(--color-primary)]">
+          <div className="text-3xl font-bold text-primary">
             CHF {totalPlatformFee.toFixed(2)}
           </div>
         </div>
 
-        <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
-          <h3 className="mb-2 text-sm font-medium text-[var(--color-text-muted)]">
+        <div className="rounded-2xl border border-border bg-surface p-6">
+          <h3 className="mb-2 text-sm font-medium text-text-muted">
             Verkäufer-Auszahlungen
           </h3>
           <div className="text-3xl font-bold text-[var(--ctp-green)]">
@@ -121,11 +121,11 @@ export default function AdminTransactionsPage() {
 
       {/* Filters */}
       <div className="mb-6 flex items-center gap-4">
-        <label className="text-sm font-medium text-[var(--color-text)]">Status:</label>
+        <label className="text-sm font-medium text-text">Status:</label>
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
-          className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+          className="rounded-lg border border-border bg-surface px-4 py-2 text-sm text-text focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
         >
           <option value="all">Alle</option>
           <option value="completed">Abgeschlossen</option>
@@ -134,59 +134,59 @@ export default function AdminTransactionsPage() {
       </div>
 
       {/* Transactions Table */}
-      <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden">
+      <div className="rounded-2xl border border-border bg-surface overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-[var(--color-bg)]">
+            <thead className="bg-bg">
               <tr>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
+                <th className="px-6 py-4 text-left text-sm font-semibold text-text">
                   Transaktions-ID
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
+                <th className="px-6 py-4 text-left text-sm font-semibold text-text">
                   Ressource
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
+                <th className="px-6 py-4 text-left text-sm font-semibold text-text">
                   Käufer
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
+                <th className="px-6 py-4 text-left text-sm font-semibold text-text">
                   Verkäufer
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
+                <th className="px-6 py-4 text-left text-sm font-semibold text-text">
                   Datum
                 </th>
-                <th className="px-6 py-4 text-right text-sm font-semibold text-[var(--color-text)]">
+                <th className="px-6 py-4 text-right text-sm font-semibold text-text">
                   Brutto
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
+                <th className="px-6 py-4 text-left text-sm font-semibold text-text">
                   Status
                 </th>
-                <th className="px-6 py-4 text-right text-sm font-semibold text-[var(--color-text)]">
+                <th className="px-6 py-4 text-right text-sm font-semibold text-text">
                   Aktionen
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[var(--color-border)]">
+            <tbody className="divide-y divide-border">
               {filteredTransactions.map((transaction) => (
                 <tr
                   key={transaction.id}
-                  className="hover:bg-[var(--color-bg)] transition-colors"
+                  className="hover:bg-bg transition-colors"
                 >
-                  <td className="px-6 py-4 font-mono text-sm text-[var(--color-text)]">
+                  <td className="px-6 py-4 font-mono text-sm text-text">
                     {transaction.id}
                   </td>
-                  <td className="px-6 py-4 font-medium text-[var(--color-text)]">
+                  <td className="px-6 py-4 font-medium text-text">
                     {transaction.resource}
                   </td>
-                  <td className="px-6 py-4 text-[var(--color-text-muted)]">
+                  <td className="px-6 py-4 text-text-muted">
                     {transaction.buyer}
                   </td>
-                  <td className="px-6 py-4 text-[var(--color-text-muted)]">
+                  <td className="px-6 py-4 text-text-muted">
                     {transaction.seller}
                   </td>
-                  <td className="px-6 py-4 text-[var(--color-text-muted)]">
+                  <td className="px-6 py-4 text-text-muted">
                     {new Date(transaction.date).toLocaleDateString("de-CH")}
                   </td>
-                  <td className="px-6 py-4 text-right font-semibold text-[var(--color-text)]">
+                  <td className="px-6 py-4 text-right font-semibold text-text">
                     CHF {transaction.gross.toFixed(2)}
                   </td>
                   <td className="px-6 py-4">
@@ -205,7 +205,7 @@ export default function AdminTransactionsPage() {
                   <td className="px-6 py-4 text-right">
                     <button
                       onClick={() => setSelectedTransaction(transaction.id)}
-                      className="text-sm text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-colors"
+                      className="text-sm text-primary hover:text-primary-hover transition-colors"
                     >
                       Details
                     </button>
@@ -219,15 +219,15 @@ export default function AdminTransactionsPage() {
 
       {/* Transaction Detail Modal */}
       {selectedTransaction && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--color-bg)]/80 backdrop-blur-sm">
-          <div className="mx-4 w-full max-w-2xl rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-bg/80 backdrop-blur-sm">
+          <div className="mx-4 w-full max-w-2xl rounded-2xl border border-border bg-surface p-6">
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-xl font-semibold text-[var(--color-text)]">
+              <h3 className="text-xl font-semibold text-text">
                 Transaktionsdetails
               </h3>
               <button
                 onClick={() => setSelectedTransaction(null)}
-                className="text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+                className="text-text-muted hover:text-text"
               >
                 <svg
                   className="h-6 w-6"
@@ -253,18 +253,18 @@ export default function AdminTransactionsPage() {
 
               return (
                 <div className="space-y-6">
-                  <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-6">
+                  <div className="rounded-xl border border-border bg-bg p-6">
                     <div className="mb-4 grid gap-4 sm:grid-cols-2">
                       <div>
-                        <div className="text-sm text-[var(--color-text-muted)]">
+                        <div className="text-sm text-text-muted">
                           Transaktions-ID
                         </div>
-                        <div className="font-mono font-medium text-[var(--color-text)]">
+                        <div className="font-mono font-medium text-text">
                           {transaction.id}
                         </div>
                       </div>
                       <div>
-                        <div className="text-sm text-[var(--color-text-muted)]">Status</div>
+                        <div className="text-sm text-text-muted">Status</div>
                         <span
                           className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${
                             transaction.status === "Completed"
@@ -278,52 +278,52 @@ export default function AdminTransactionsPage() {
                         </span>
                       </div>
                       <div>
-                        <div className="text-sm text-[var(--color-text-muted)]">Ressource</div>
-                        <div className="font-medium text-[var(--color-text)]">
+                        <div className="text-sm text-text-muted">Ressource</div>
+                        <div className="font-medium text-text">
                           {transaction.resource}
                         </div>
                       </div>
                       <div>
-                        <div className="text-sm text-[var(--color-text-muted)]">Datum</div>
-                        <div className="font-medium text-[var(--color-text)]">
+                        <div className="text-sm text-text-muted">Datum</div>
+                        <div className="font-medium text-text">
                           {new Date(transaction.date).toLocaleDateString("de-CH")}
                         </div>
                       </div>
                       <div>
-                        <div className="text-sm text-[var(--color-text-muted)]">Käufer</div>
-                        <div className="font-medium text-[var(--color-text)]">
+                        <div className="text-sm text-text-muted">Käufer</div>
+                        <div className="font-medium text-text">
                           {transaction.buyer}
                         </div>
                       </div>
                       <div>
-                        <div className="text-sm text-[var(--color-text-muted)]">Verkäufer</div>
-                        <div className="font-medium text-[var(--color-text)]">
+                        <div className="text-sm text-text-muted">Verkäufer</div>
+                        <div className="font-medium text-text">
                           {transaction.seller}
                         </div>
                       </div>
                     </div>
 
-                    <div className="mt-6 border-t border-[var(--color-border)] pt-6">
-                      <h4 className="mb-4 font-semibold text-[var(--color-text)]">
+                    <div className="mt-6 border-t border-border pt-6">
+                      <h4 className="mb-4 font-semibold text-text">
                         Finanzübersicht
                       </h4>
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                          <span className="text-[var(--color-text-muted)]">Bruttopreis</span>
-                          <span className="font-semibold text-[var(--color-text)]">
+                          <span className="text-text-muted">Bruttopreis</span>
+                          <span className="font-semibold text-text">
                             CHF {transaction.gross.toFixed(2)}
                           </span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-[var(--color-text-muted)]">
+                          <span className="text-text-muted">
                             Plattformgebühr (15%)
                           </span>
-                          <span className="font-semibold text-[var(--color-error)]">
+                          <span className="font-semibold text-error">
                             - CHF {transaction.platformFee.toFixed(2)}
                           </span>
                         </div>
-                        <div className="flex items-center justify-between border-t border-[var(--color-border)] pt-3">
-                          <span className="font-semibold text-[var(--color-text)]">
+                        <div className="flex items-center justify-between border-t border-border pt-3">
+                          <span className="font-semibold text-text">
                             Verkäufer-Auszahlung
                           </span>
                           <span className="text-lg font-bold text-[var(--ctp-green)]">
@@ -336,7 +336,7 @@ export default function AdminTransactionsPage() {
 
                   <button
                     onClick={() => setSelectedTransaction(null)}
-                    className="w-full rounded-lg border border-[var(--color-border)] px-4 py-3 font-medium text-[var(--color-text)] hover:bg-[var(--color-bg)] transition-colors"
+                    className="w-full rounded-lg border border-border px-4 py-3 font-medium text-text hover:bg-bg transition-colors"
                   >
                     Schliessen
                   </button>

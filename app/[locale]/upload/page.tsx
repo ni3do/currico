@@ -272,8 +272,8 @@ export default function UploadPage() {
       <main className="mx-auto max-w-3xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-[var(--color-text)]">Ressource hochladen</h1>
-          <p className="mt-2 text-[var(--color-text-muted)]">
+          <h1 className="text-3xl font-bold text-text">Ressource hochladen</h1>
+          <p className="mt-2 text-text-muted">
             Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen
           </p>
         </div>
@@ -287,13 +287,13 @@ export default function UploadPage() {
                   <div
                     className={`flex h-10 w-10 items-center justify-center rounded-full border-2 font-semibold transition-all ${
                       step <= currentStep
-                        ? "border-[var(--color-primary)] bg-[var(--color-primary)] text-[var(--btn-primary-text)]"
-                        : "border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)]"
+                        ? "border-primary bg-primary text-text-on-accent"
+                        : "border-border bg-surface text-text-muted"
                     }`}
                   >
                     {step}
                   </div>
-                  <span className="mt-2 text-xs whitespace-nowrap text-[var(--color-text-muted)]">
+                  <span className="mt-2 text-xs whitespace-nowrap text-text-muted">
                     {step === 1 && "Basics"}
                     {step === 2 && "Lehrplan"}
                     {step === 3 && "Preis"}
@@ -303,7 +303,7 @@ export default function UploadPage() {
                 {step < 4 && (
                   <div
                     className={`mx-3 mb-6 h-0.5 w-16 sm:mx-4 sm:w-24 ${
-                      step < currentStep ? "bg-[var(--color-primary)]" : "bg-[var(--color-border)]"
+                      step < currentStep ? "bg-primary" : "bg-border"
                     }`}
                   />
                 )}
@@ -333,14 +333,14 @@ export default function UploadPage() {
         )}
 
         {/* Form */}
-        <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8">
+        <div className="rounded-2xl border border-border bg-surface p-8">
           {/* Step 1: Basics */}
           {currentStep === 1 && (
             <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-[var(--color-text)]">Grundinformationen</h2>
+              <h2 className="text-xl font-semibold text-text">Grundinformationen</h2>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
+                <label className="mb-2 block text-sm font-medium text-text">
                   Titel *
                 </label>
                 <input
@@ -348,13 +348,13 @@ export default function UploadPage() {
                   value={formData.title}
                   onChange={(e) => updateFormData("title", e.target.value)}
                   required
-                  className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] placeholder:text-[var(--color-text-faint)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
+                  className="w-full rounded-xl border border-border bg-bg px-4 py-3 text-text placeholder:text-text-faint focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
                   placeholder="z.B. Bruchrechnen Übungsblätter"
                 />
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
+                <label className="mb-2 block text-sm font-medium text-text">
                   Kurzbeschreibung *
                 </label>
                 <textarea
@@ -362,20 +362,20 @@ export default function UploadPage() {
                   onChange={(e) => updateFormData("description", e.target.value)}
                   required
                   rows={4}
-                  className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] placeholder:text-[var(--color-text-faint)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
+                  className="w-full rounded-xl border border-border bg-bg px-4 py-3 text-text placeholder:text-text-faint focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
                   placeholder="Beschreiben Sie Ihre Ressource in 2-3 Sätzen..."
                 />
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
+                  <label className="mb-2 block text-sm font-medium text-text">
                     Sprache *
                   </label>
                   <select
                     value={formData.language}
                     onChange={(e) => updateFormData("language", e.target.value)}
-                    className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
+                    className="w-full rounded-xl border border-border bg-bg px-4 py-3 text-text focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
                   >
                     <option value="de">Deutsch</option>
                     <option value="fr">Französisch</option>
@@ -385,13 +385,13 @@ export default function UploadPage() {
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
+                  <label className="mb-2 block text-sm font-medium text-text">
                     Ressourcentyp *
                   </label>
                   <select
                     value={formData.resourceType}
                     onChange={(e) => updateFormData("resourceType", e.target.value)}
-                    className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
+                    className="w-full rounded-xl border border-border bg-bg px-4 py-3 text-text focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
                   >
                     <option value="pdf">PDF</option>
                     <option value="word">Word</option>
@@ -404,10 +404,10 @@ export default function UploadPage() {
 
               {/* Eszett (ß) Warning */}
               {eszettCheck.hasAny && (
-                <div className="rounded-xl border border-[var(--color-warning)]/50 bg-[var(--color-warning)]/10 p-4">
+                <div className="rounded-xl border border-warning/50 bg-warning/10 p-4">
                   <div className="flex items-start gap-3">
                     <svg
-                      className="h-5 w-5 flex-shrink-0 text-[var(--color-warning)]"
+                      className="h-5 w-5 flex-shrink-0 text-warning"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -418,27 +418,27 @@ export default function UploadPage() {
                       />
                     </svg>
                     <div className="flex-1">
-                      <h4 className="font-medium text-[var(--color-warning)]">
+                      <h4 className="font-medium text-warning">
                         Eszett (ß) gefunden
                       </h4>
-                      <p className="mt-1 text-sm text-[var(--color-text)]">
+                      <p className="mt-1 text-sm text-text">
                         Ihr Text enthält {eszettCheck.totalCount} Eszett-Zeichen (ß). In der Schweiz
                         wird stattdessen &quot;ss&quot; verwendet.
                       </p>
                       {eszettCheck.title.hasEszett && (
-                        <p className="mt-1 text-xs text-[var(--color-text-muted)]">
+                        <p className="mt-1 text-xs text-text-muted">
                           Titel: {eszettCheck.title.count}x gefunden
                         </p>
                       )}
                       {eszettCheck.description.hasEszett && (
-                        <p className="text-xs text-[var(--color-text-muted)]">
+                        <p className="text-xs text-text-muted">
                           Beschreibung: {eszettCheck.description.count}x gefunden
                         </p>
                       )}
                       <button
                         type="button"
                         onClick={handleFixEszett}
-                        className="mt-3 inline-flex items-center gap-2 rounded-lg bg-[var(--color-warning)] px-4 py-2 text-sm font-medium text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--color-warning)]/90"
+                        className="mt-3 inline-flex items-center gap-2 rounded-lg bg-warning px-4 py-2 text-sm font-medium text-text-on-accent transition-colors hover:bg-warning/90"
                       >
                         <svg
                           className="h-4 w-4"
@@ -465,7 +465,7 @@ export default function UploadPage() {
           {/* Step 2: Curriculum */}
           {currentStep === 2 && (
             <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-[var(--color-text)]">Lehrplan-Zuordnung</h2>
+              <h2 className="text-xl font-semibold text-text">Lehrplan-Zuordnung</h2>
 
               <CurriculumSelector
                 cycle={formData.cycle}
@@ -489,20 +489,20 @@ export default function UploadPage() {
           {/* Step 3: Properties */}
           {currentStep === 3 && (
             <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-[var(--color-text)]">
+              <h2 className="text-xl font-semibold text-text">
                 Eigenschaften & Preis
               </h2>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
+                <label className="mb-2 block text-sm font-medium text-text">
                   Preistyp *
                 </label>
                 <div className="grid grid-cols-2 gap-4">
                   <label
                     className={`flex cursor-pointer items-center gap-3 rounded-xl border-2 p-4 transition-all ${
                       formData.priceType === "free"
-                        ? "border-[var(--color-primary)] bg-[var(--color-primary)]/10"
-                        : "border-[var(--color-border)] bg-[var(--color-bg)]"
+                        ? "border-primary bg-primary/10"
+                        : "border-border bg-bg"
                     }`}
                   >
                     <input
@@ -511,19 +511,19 @@ export default function UploadPage() {
                       value="free"
                       checked={formData.priceType === "free"}
                       onChange={(e) => updateFormData("priceType", e.target.value)}
-                      className="h-4 w-4 text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                      className="h-4 w-4 text-primary focus:ring-2 focus:ring-primary/20"
                     />
                     <div>
-                      <div className="font-medium text-[var(--color-text)]">Kostenlos</div>
-                      <div className="text-xs text-[var(--color-text-muted)]">Frei zugänglich</div>
+                      <div className="font-medium text-text">Kostenlos</div>
+                      <div className="text-xs text-text-muted">Frei zugänglich</div>
                     </div>
                   </label>
 
                   <label
                     className={`flex cursor-pointer items-center gap-3 rounded-xl border-2 p-4 transition-all ${
                       formData.priceType === "paid"
-                        ? "border-[var(--color-primary)] bg-[var(--color-primary)]/10"
-                        : "border-[var(--color-border)] bg-[var(--color-bg)]"
+                        ? "border-primary bg-primary/10"
+                        : "border-border bg-bg"
                     }`}
                   >
                     <input
@@ -532,11 +532,11 @@ export default function UploadPage() {
                       value="paid"
                       checked={formData.priceType === "paid"}
                       onChange={(e) => updateFormData("priceType", e.target.value)}
-                      className="h-4 w-4 text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                      className="h-4 w-4 text-primary focus:ring-2 focus:ring-primary/20"
                     />
                     <div>
-                      <div className="font-medium text-[var(--color-text)]">Kostenpflichtig</div>
-                      <div className="text-xs text-[var(--color-text-muted)]">Preis festlegen</div>
+                      <div className="font-medium text-text">Kostenpflichtig</div>
+                      <div className="text-xs text-text-muted">Preis festlegen</div>
                     </div>
                   </label>
                 </div>
@@ -544,7 +544,7 @@ export default function UploadPage() {
 
               {formData.priceType === "paid" && (
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
+                  <label className="mb-2 block text-sm font-medium text-text">
                     Preis (CHF) *
                   </label>
                   <div className="relative">
@@ -554,14 +554,14 @@ export default function UploadPage() {
                       onChange={(e) => updateFormData("price", e.target.value)}
                       min="0"
                       step="0.50"
-                      className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 pl-12 text-[var(--color-text)] placeholder:text-[var(--color-text-faint)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
+                      className="w-full rounded-xl border border-border bg-bg px-4 py-3 pl-12 text-text placeholder:text-text-faint focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
                       placeholder="12.00"
                     />
-                    <span className="absolute top-1/2 left-4 -translate-y-1/2 text-[var(--color-text-muted)]">
+                    <span className="absolute top-1/2 left-4 -translate-y-1/2 text-text-muted">
                       CHF
                     </span>
                   </div>
-                  <p className="mt-1 text-xs text-[var(--color-text-muted)]">
+                  <p className="mt-1 text-xs text-text-muted">
                     Sie erhalten 85% des Verkaufspreises (15% Plattformgebühr)
                   </p>
                 </div>
@@ -573,11 +573,11 @@ export default function UploadPage() {
                     type="checkbox"
                     checked={formData.editable}
                     onChange={(e) => updateFormData("editable", e.target.checked)}
-                    className="h-4 w-4 rounded border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                    className="h-4 w-4 rounded border-border bg-bg text-primary focus:ring-2 focus:ring-primary/20"
                   />
                   <div>
-                    <div className="text-sm font-medium text-[var(--color-text)]">Editierbar</div>
-                    <div className="text-xs text-[var(--color-text-muted)]">
+                    <div className="text-sm font-medium text-text">Editierbar</div>
+                    <div className="text-xs text-text-muted">
                       Käufer können die Datei bearbeiten (z.B. Word-Dokument)
                     </div>
                   </div>
@@ -585,13 +585,13 @@ export default function UploadPage() {
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
+                <label className="mb-2 block text-sm font-medium text-text">
                   Lizenzumfang *
                 </label>
                 <select
                   value={formData.licenseScope}
                   onChange={(e) => updateFormData("licenseScope", e.target.value)}
-                  className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
+                  className="w-full rounded-xl border border-border bg-bg px-4 py-3 text-text focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
                 >
                   <option value="individual">Einzellizenz</option>
                 </select>
@@ -602,29 +602,29 @@ export default function UploadPage() {
           {/* Step 4: Files */}
           {currentStep === 4 && (
             <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-[var(--color-text)]">Dateien & Vorschau</h2>
+              <h2 className="text-xl font-semibold text-text">Dateien & Vorschau</h2>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
+                <label className="mb-2 block text-sm font-medium text-text">
                   Hauptdatei(en) *
                 </label>
                 {/* Loading state with progress bar */}
                 {isLoadingFiles && (
-                  <div className="rounded-xl border-2 border-[var(--color-primary)] bg-[var(--color-primary)]/5 p-8">
+                  <div className="rounded-xl border-2 border-primary bg-primary/5 p-8">
                     <div className="text-center">
-                      <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-[var(--color-primary)]/30 border-t-[var(--color-primary)]" />
-                      <p className="mb-4 text-sm font-medium text-[var(--color-text)]">
+                      <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-primary/30 border-t-primary" />
+                      <p className="mb-4 text-sm font-medium text-text">
                         Datei wird geladen...
                       </p>
                       {/* Progress bar */}
                       <div className="mx-auto max-w-xs">
-                        <div className="h-3 overflow-hidden rounded-full bg-[var(--color-border)]">
+                        <div className="h-3 overflow-hidden rounded-full bg-border">
                           <div
-                            className="h-full bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-success)] transition-all duration-300 ease-out"
+                            className="h-full bg-gradient-to-r from-primary to-success transition-all duration-300 ease-out"
                             style={{ width: `${fileLoadingProgress}%` }}
                           />
                         </div>
-                        <p className="mt-2 text-sm font-medium text-[var(--color-primary)]">
+                        <p className="mt-2 text-sm font-medium text-primary">
                           {fileLoadingProgress}%
                         </p>
                       </div>
@@ -634,10 +634,10 @@ export default function UploadPage() {
                 {!isLoadingFiles && formData.files.length === 0 && (
                   <div
                     onClick={() => mainFileInputRef.current?.click()}
-                    className="cursor-pointer rounded-xl border-2 border-dashed border-[var(--color-border)] bg-[var(--color-bg)] p-8 text-center transition-colors hover:border-[var(--color-primary)]"
+                    className="cursor-pointer rounded-xl border-2 border-dashed border-border bg-bg p-8 text-center transition-colors hover:border-primary"
                   >
                     <svg
-                      className="mx-auto h-12 w-12 text-[var(--color-text-muted)]"
+                      className="mx-auto h-12 w-12 text-text-muted"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -649,10 +649,10 @@ export default function UploadPage() {
                         d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
                       />
                     </svg>
-                    <p className="mt-2 text-sm text-[var(--color-text)]">
+                    <p className="mt-2 text-sm text-text">
                       Klicken Sie hier oder ziehen Sie Dateien hinein
                     </p>
-                    <p className="mt-1 text-xs text-[var(--color-text-muted)]">
+                    <p className="mt-1 text-xs text-text-muted">
                       PDF, Word, PowerPoint, Excel bis 50 MB
                     </p>
                     <input
@@ -666,12 +666,12 @@ export default function UploadPage() {
                   </div>
                 )}
                 {!isLoadingFiles && formData.files.length > 0 && (
-                  <div className="rounded-xl border-2 border-[var(--color-primary)] bg-[var(--color-primary)]/5 p-4">
+                  <div className="rounded-xl border-2 border-primary bg-primary/5 p-4">
                     <div className="space-y-3">
                       {formData.files.map((file, index) => (
                         <div
                           key={index}
-                          className="flex items-center gap-4 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-3 transition-colors hover:bg-[var(--color-surface-elevated)]"
+                          className="flex items-center gap-4 rounded-lg border border-border bg-surface p-3 transition-colors hover:bg-surface-elevated"
                         >
                           <div
                             className="flex flex-1 cursor-pointer items-center gap-4"
@@ -719,7 +719,7 @@ export default function UploadPage() {
                                 </svg>
                               ) : (
                                 <svg
-                                  className="h-10 w-10 text-[var(--color-text-muted)]"
+                                  className="h-10 w-10 text-text-muted"
                                   fill="currentColor"
                                   viewBox="0 0 24 24"
                                 >
@@ -728,16 +728,16 @@ export default function UploadPage() {
                               )}
                             </div>
                             <div className="min-w-0 flex-1">
-                              <p className="truncate text-sm font-medium text-[var(--color-text)]">
+                              <p className="truncate text-sm font-medium text-text">
                                 {file.name}
                               </p>
-                              <p className="text-xs text-[var(--color-text-muted)]">
+                              <p className="text-xs text-text-muted">
                                 {(file.size / 1024 / 1024).toFixed(2)} MB
                               </p>
                             </div>
                             {/* External link icon to indicate clickable */}
                             <svg
-                              className="h-4 w-4 flex-shrink-0 text-[var(--color-text-muted)]"
+                              className="h-4 w-4 flex-shrink-0 text-text-muted"
                               fill="none"
                               stroke="currentColor"
                               viewBox="0 0 24 24"
@@ -759,7 +759,7 @@ export default function UploadPage() {
                                 files: prev.files.filter((_, i) => i !== index),
                               }));
                             }}
-                            className="flex-shrink-0 rounded-lg p-2 text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-error)]/10 hover:text-[var(--color-error)]"
+                            className="flex-shrink-0 rounded-lg p-2 text-text-muted transition-colors hover:bg-error/10 hover:text-error"
                           >
                             <svg
                               className="h-5 w-5"
@@ -781,7 +781,7 @@ export default function UploadPage() {
                     <button
                       type="button"
                       onClick={() => mainFileInputRef.current?.click()}
-                      className="mt-3 w-full rounded-lg border border-dashed border-[var(--color-border)] bg-[var(--color-bg)] p-3 text-sm text-[var(--color-text-muted)] transition-colors hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]"
+                      className="mt-3 w-full rounded-lg border border-dashed border-border bg-bg p-3 text-sm text-text-muted transition-colors hover:border-primary hover:text-primary"
                     >
                       + Weitere Datei hinzufugen
                     </button>
@@ -797,10 +797,10 @@ export default function UploadPage() {
                 )}
               </div>
 
-              <div className="rounded-xl border border-[var(--color-success)]/30 bg-[var(--color-success)]/5 p-4">
+              <div className="rounded-xl border border-success/30 bg-success/5 p-4">
                 <div className="flex gap-3">
                   <svg
-                    className="h-5 w-5 flex-shrink-0 text-[var(--color-success)]"
+                    className="h-5 w-5 flex-shrink-0 text-success"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -810,7 +810,7 @@ export default function UploadPage() {
                       clipRule="evenodd"
                     />
                   </svg>
-                  <div className="text-sm text-[var(--color-text)]">
+                  <div className="text-sm text-text">
                     <strong>Automatische Vorschau:</strong> Fur PDF-Dateien wird automatisch eine
                     Vorschau aus der ersten Seite erstellt. Sie mussen kein separates Vorschaubild
                     hochladen.
@@ -819,19 +819,19 @@ export default function UploadPage() {
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
+                <label className="mb-2 block text-sm font-medium text-text">
                   Eigenes Vorschaubild (optional)
                 </label>
-                <p className="mb-2 text-xs text-[var(--color-text-muted)]">
+                <p className="mb-2 text-xs text-text-muted">
                   Falls Sie ein eigenes Vorschaubild verwenden mochten, konnen Sie es hier
                   hochladen.
                 </p>
                 <div
                   onClick={() => previewFileInputRef.current?.click()}
-                  className="cursor-pointer rounded-xl border-2 border-dashed border-[var(--color-border)] bg-[var(--color-bg)] p-6 text-center transition-colors hover:border-[var(--color-primary)]"
+                  className="cursor-pointer rounded-xl border-2 border-dashed border-border bg-bg p-6 text-center transition-colors hover:border-primary"
                 >
                   <svg
-                    className="mx-auto h-10 w-10 text-[var(--color-text-muted)]"
+                    className="mx-auto h-10 w-10 text-text-muted"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -843,9 +843,9 @@ export default function UploadPage() {
                       d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                     />
                   </svg>
-                  <p className="mt-2 text-sm text-[var(--color-text-muted)]">PNG, JPG bis 5 MB</p>
+                  <p className="mt-2 text-sm text-text-muted">PNG, JPG bis 5 MB</p>
                   {formData.previewFiles.length > 0 && (
-                    <p className="mt-2 text-sm font-medium text-[var(--color-primary)]">
+                    <p className="mt-2 text-sm font-medium text-primary">
                       {formData.previewFiles.length} Vorschaubild(er) ausgewählt
                     </p>
                   )}
@@ -860,10 +860,10 @@ export default function UploadPage() {
                 </div>
               </div>
 
-              <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-4">
+              <div className="rounded-xl border border-border bg-bg p-4">
                 <div className="flex gap-3">
                   <svg
-                    className="h-5 w-5 flex-shrink-0 text-[var(--color-info)]"
+                    className="h-5 w-5 flex-shrink-0 text-info"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -873,18 +873,18 @@ export default function UploadPage() {
                       clipRule="evenodd"
                     />
                   </svg>
-                  <div className="text-sm text-[var(--color-text-muted)]">
-                    <strong className="text-[var(--color-text)]">Hinweis:</strong> Die vollständigen
+                  <div className="text-sm text-text-muted">
+                    <strong className="text-text">Hinweis:</strong> Die vollständigen
                     Dateien sind nur für Käufer zugänglich. Die Vorschau zeigt nur die erste Seite.
                   </div>
                 </div>
               </div>
 
               {/* Legal Copyright Confirmations */}
-              <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] p-6">
-                <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-[var(--color-text)]">
+              <div className="rounded-xl border border-border bg-surface-elevated p-6">
+                <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-text">
                   <svg
-                    className="h-5 w-5 text-[var(--color-primary)]"
+                    className="h-5 w-5 text-primary"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -898,24 +898,24 @@ export default function UploadPage() {
                   </svg>
                   Rechtliche Bestätigungen
                 </h3>
-                <p className="mb-4 text-sm text-[var(--color-text-muted)]">
+                <p className="mb-4 text-sm text-text-muted">
                   Bitte bestätigen Sie die folgenden Punkte, um Ihre Ressource zu veröffentlichen:
                 </p>
 
                 <div className="space-y-4">
                   {/* Own Content */}
-                  <label className="flex cursor-pointer items-start gap-3 rounded-lg p-3 transition-colors hover:bg-[var(--color-bg)]">
+                  <label className="flex cursor-pointer items-start gap-3 rounded-lg p-3 transition-colors hover:bg-bg">
                     <input
                       type="checkbox"
                       checked={formData.legalOwnContent}
                       onChange={(e) => updateFormData("legalOwnContent", e.target.checked)}
-                      className="mt-0.5 h-5 w-5 rounded border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                      className="mt-0.5 h-5 w-5 rounded border-border bg-bg text-primary focus:ring-2 focus:ring-primary/20"
                     />
                     <div>
-                      <div className="font-medium text-[var(--color-text)]">
+                      <div className="font-medium text-text">
                         Eigene Inhalte oder CC0-Lizenz
                       </div>
-                      <div className="text-sm text-[var(--color-text-muted)]">
+                      <div className="text-sm text-text-muted">
                         Ich habe alle Bilder, Grafiken und Texte selbst erstellt oder verwende nur
                         Materialien mit CC0-Lizenz (Public Domain).
                       </div>
@@ -923,18 +923,18 @@ export default function UploadPage() {
                   </label>
 
                   {/* No Textbook Scans */}
-                  <label className="flex cursor-pointer items-start gap-3 rounded-lg p-3 transition-colors hover:bg-[var(--color-bg)]">
+                  <label className="flex cursor-pointer items-start gap-3 rounded-lg p-3 transition-colors hover:bg-bg">
                     <input
                       type="checkbox"
                       checked={formData.legalNoTextbookScans}
                       onChange={(e) => updateFormData("legalNoTextbookScans", e.target.checked)}
-                      className="mt-0.5 h-5 w-5 rounded border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                      className="mt-0.5 h-5 w-5 rounded border-border bg-bg text-primary focus:ring-2 focus:ring-primary/20"
                     />
                     <div>
-                      <div className="font-medium text-[var(--color-text)]">
+                      <div className="font-medium text-text">
                         Keine Lehrmittel-Scans
                       </div>
-                      <div className="text-sm text-[var(--color-text-muted)]">
+                      <div className="text-sm text-text-muted">
                         Ich habe keine Seiten aus Lehrmitteln, Schulbüchern oder anderen
                         urheberrechtlich geschützten Werken eingescannt oder kopiert.
                       </div>
@@ -942,18 +942,18 @@ export default function UploadPage() {
                   </label>
 
                   {/* No Trademarks */}
-                  <label className="flex cursor-pointer items-start gap-3 rounded-lg p-3 transition-colors hover:bg-[var(--color-bg)]">
+                  <label className="flex cursor-pointer items-start gap-3 rounded-lg p-3 transition-colors hover:bg-bg">
                     <input
                       type="checkbox"
                       checked={formData.legalNoTrademarks}
                       onChange={(e) => updateFormData("legalNoTrademarks", e.target.checked)}
-                      className="mt-0.5 h-5 w-5 rounded border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                      className="mt-0.5 h-5 w-5 rounded border-border bg-bg text-primary focus:ring-2 focus:ring-primary/20"
                     />
                     <div>
-                      <div className="font-medium text-[var(--color-text)]">
+                      <div className="font-medium text-text">
                         Keine geschützten Marken oder Charaktere
                       </div>
-                      <div className="text-sm text-[var(--color-text-muted)]">
+                      <div className="text-sm text-text-muted">
                         Meine Ressource enthält keine geschützten Marken, Logos oder Figuren (z.B.
                         Disney, Marvel, Pokémon, etc.).
                       </div>
@@ -961,18 +961,18 @@ export default function UploadPage() {
                   </label>
 
                   {/* Swiss German */}
-                  <label className="flex cursor-pointer items-start gap-3 rounded-lg p-3 transition-colors hover:bg-[var(--color-bg)]">
+                  <label className="flex cursor-pointer items-start gap-3 rounded-lg p-3 transition-colors hover:bg-bg">
                     <input
                       type="checkbox"
                       checked={formData.legalSwissGerman}
                       onChange={(e) => updateFormData("legalSwissGerman", e.target.checked)}
-                      className="mt-0.5 h-5 w-5 rounded border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                      className="mt-0.5 h-5 w-5 rounded border-border bg-bg text-primary focus:ring-2 focus:ring-primary/20"
                     />
                     <div>
-                      <div className="font-medium text-[var(--color-text)]">
+                      <div className="font-medium text-text">
                         Schweizer Rechtschreibung
                       </div>
-                      <div className="text-sm text-[var(--color-text-muted)]">
+                      <div className="text-sm text-text-muted">
                         Meine Ressource verwendet die Schweizer Rechtschreibung (kein Eszett
                         &quot;ß&quot;, stattdessen &quot;ss&quot;).
                       </div>
@@ -980,20 +980,20 @@ export default function UploadPage() {
                   </label>
 
                   {/* Terms Accepted */}
-                  <label className="flex cursor-pointer items-start gap-3 rounded-lg border-t border-[var(--color-border)] p-3 pt-4 transition-colors hover:bg-[var(--color-bg)]">
+                  <label className="flex cursor-pointer items-start gap-3 rounded-lg border-t border-border p-3 pt-4 transition-colors hover:bg-bg">
                     <input
                       type="checkbox"
                       checked={formData.legalTermsAccepted}
                       onChange={(e) => updateFormData("legalTermsAccepted", e.target.checked)}
-                      className="mt-0.5 h-5 w-5 rounded border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                      className="mt-0.5 h-5 w-5 rounded border-border bg-bg text-primary focus:ring-2 focus:ring-primary/20"
                     />
                     <div>
-                      <div className="font-medium text-[var(--color-text)]">
+                      <div className="font-medium text-text">
                         Verkäufervereinbarung akzeptieren
                       </div>
-                      <div className="text-sm text-[var(--color-text-muted)]">
+                      <div className="text-sm text-text-muted">
                         Ich akzeptiere die{" "}
-                        <Link href="/terms" className="text-[var(--color-primary)] hover:underline">
+                        <Link href="/terms" className="text-primary hover:underline">
                           Verkäufervereinbarung
                         </Link>{" "}
                         und bestätige, dass ich die Rechte habe, diese Ressource zu verkaufen.
@@ -1004,7 +1004,7 @@ export default function UploadPage() {
 
                 {/* Validation Summary */}
                 {!allLegalChecked && (
-                  <div className="mt-4 rounded-lg bg-[var(--color-warning)]/10 p-3 text-sm text-[var(--color-warning)]">
+                  <div className="mt-4 rounded-lg bg-warning/10 p-3 text-sm text-warning">
                     <div className="flex items-center gap-2">
                       <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                         <path
@@ -1019,7 +1019,7 @@ export default function UploadPage() {
                 )}
 
                 {eszettCheck.hasAny && (
-                  <div className="mt-4 rounded-lg bg-[var(--color-error)]/10 p-3 text-sm text-[var(--color-error)]">
+                  <div className="mt-4 rounded-lg bg-error/10 p-3 text-sm text-error">
                     <div className="flex items-center gap-2">
                       <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                         <path
@@ -1038,11 +1038,11 @@ export default function UploadPage() {
           )}
 
           {/* Navigation Buttons */}
-          <div className="mt-8 flex justify-between border-t border-[var(--color-border)] pt-6">
+          <div className="mt-8 flex justify-between border-t border-border pt-6">
             <button
               onClick={handleBack}
               disabled={currentStep === 1}
-              className="rounded-lg border border-[var(--color-border)] px-6 py-3 font-medium text-[var(--color-text)] transition-colors hover:bg-[var(--color-surface-elevated)] disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-lg border border-border px-6 py-3 font-medium text-text transition-colors hover:bg-surface-elevated disabled:cursor-not-allowed disabled:opacity-50"
             >
               Zurück
             </button>
@@ -1050,7 +1050,7 @@ export default function UploadPage() {
             {currentStep < 4 ? (
               <button
                 onClick={handleNext}
-                className="rounded-lg bg-[var(--color-primary)] px-8 py-3 font-semibold text-[var(--btn-primary-text)] shadow-[var(--color-primary)]/20 shadow-lg transition-colors hover:bg-[var(--color-primary-hover)]"
+                className="rounded-lg bg-primary px-8 py-3 font-semibold text-text-on-accent shadow-primary/20 shadow-lg transition-colors hover:bg-primary-hover"
               >
                 Weiter
               </button>
@@ -1058,7 +1058,7 @@ export default function UploadPage() {
               <button
                 onClick={handlePublish}
                 disabled={!canPublish || uploadStatus !== "idle"}
-                className="rounded-lg bg-[var(--color-primary)] px-8 py-3 font-semibold text-[var(--btn-primary-text)] shadow-[var(--color-primary)]/20 shadow-lg transition-colors hover:bg-[var(--color-primary-hover)] disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-lg bg-primary px-8 py-3 font-semibold text-text-on-accent shadow-primary/20 shadow-lg transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Veröffentlichen
               </button>
@@ -1072,15 +1072,15 @@ export default function UploadPage() {
       {/* Upload Progress / Success / Error Modal */}
       {uploadStatus !== "idle" && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="mx-4 w-full max-w-md rounded-2xl bg-[var(--color-surface)] p-8 shadow-2xl">
+          <div className="mx-4 w-full max-w-md rounded-2xl bg-surface p-8 shadow-2xl">
             {/* Uploading State */}
             {uploadStatus === "uploading" && (
               <div className="text-center">
-                <div className="mx-auto mb-4 h-16 w-16 animate-spin rounded-full border-4 border-[var(--color-primary)]/30 border-t-[var(--color-primary)]" />
-                <h3 className="mb-2 text-xl font-semibold text-[var(--color-text)]">
+                <div className="mx-auto mb-4 h-16 w-16 animate-spin rounded-full border-4 border-primary/30 border-t-primary" />
+                <h3 className="mb-2 text-xl font-semibold text-text">
                   Wird hochgeladen...
                 </h3>
-                <p className="mb-4 text-sm text-[var(--color-text-muted)]">
+                <p className="mb-4 text-sm text-text-muted">
                   {formData.files[0]?.name && (
                     <span className="block truncate">
                       {formData.files[0].name} ({(formData.files[0].size / 1024 / 1024).toFixed(2)}{" "}
@@ -1090,13 +1090,13 @@ export default function UploadPage() {
                   Bitte warten Sie, dies kann einen Moment dauern.
                 </p>
                 {/* Progress bar */}
-                <div className="h-3 overflow-hidden rounded-full bg-[var(--color-border)]">
+                <div className="h-3 overflow-hidden rounded-full bg-border">
                   <div
-                    className="h-full bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-success)] transition-all duration-300 ease-out"
+                    className="h-full bg-gradient-to-r from-primary to-success transition-all duration-300 ease-out"
                     style={{ width: `${uploadProgress}%` }}
                   />
                 </div>
-                <p className="mt-2 text-sm font-medium text-[var(--color-text)]">
+                <p className="mt-2 text-sm font-medium text-text">
                   {uploadProgress}%
                 </p>
               </div>
@@ -1105,9 +1105,9 @@ export default function UploadPage() {
             {/* Success State */}
             {uploadStatus === "success" && (
               <div className="text-center">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-success)]/20">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-success/20">
                   <svg
-                    className="h-8 w-8 text-[var(--color-success)]"
+                    className="h-8 w-8 text-success"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -1120,19 +1120,19 @@ export default function UploadPage() {
                     />
                   </svg>
                 </div>
-                <h3 className="mb-2 text-xl font-semibold text-[var(--color-text)]">
+                <h3 className="mb-2 text-xl font-semibold text-text">
                   Ressource erfolgreich erstellt!
                 </h3>
-                <p className="mb-4 text-sm text-[var(--color-text-muted)]">
+                <p className="mb-4 text-sm text-text-muted">
                   Ihre Ressource wurde hochgeladen und wartet auf Freigabe durch unser Team.
                 </p>
-                <div className="rounded-lg bg-[var(--color-info)]/10 p-3 text-sm text-[var(--color-info)]">
+                <div className="rounded-lg bg-info/10 p-3 text-sm text-info">
                   <p>Sie werden in Kürze zum Dashboard weitergeleitet...</p>
                 </div>
                 {createdResourceId && (
                   <button
                     onClick={() => router.push(`/resources/${createdResourceId}`)}
-                    className="mt-4 rounded-lg bg-[var(--color-primary)] px-6 py-2 font-medium text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--color-primary)]/90"
+                    className="mt-4 rounded-lg bg-primary px-6 py-2 font-medium text-text-on-accent transition-colors hover:bg-primary/90"
                   >
                     Zur Ressource
                   </button>
@@ -1143,9 +1143,9 @@ export default function UploadPage() {
             {/* Error State */}
             {uploadStatus === "error" && (
               <div className="text-center">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-error)]/20">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-error/20">
                   <svg
-                    className="h-8 w-8 text-[var(--color-error)]"
+                    className="h-8 w-8 text-error"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -1158,10 +1158,10 @@ export default function UploadPage() {
                     />
                   </svg>
                 </div>
-                <h3 className="mb-2 text-xl font-semibold text-[var(--color-text)]">
+                <h3 className="mb-2 text-xl font-semibold text-text">
                   Fehler beim Hochladen
                 </h3>
-                <p className="mb-4 text-sm text-[var(--color-error)]">
+                <p className="mb-4 text-sm text-error">
                   {error || "Ein unbekannter Fehler ist aufgetreten."}
                 </p>
                 <div className="flex justify-center gap-3">
@@ -1170,13 +1170,13 @@ export default function UploadPage() {
                       setUploadStatus("idle");
                       setError(null);
                     }}
-                    className="rounded-lg border border-[var(--color-border)] px-6 py-2 font-medium text-[var(--color-text)] transition-colors hover:bg-[var(--color-surface-elevated)]"
+                    className="rounded-lg border border-border px-6 py-2 font-medium text-text transition-colors hover:bg-surface-elevated"
                   >
                     Zurück
                   </button>
                   <button
                     onClick={handlePublish}
-                    className="rounded-lg bg-[var(--color-primary)] px-6 py-2 font-medium text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--color-primary)]/90"
+                    className="rounded-lg bg-primary px-6 py-2 font-medium text-text-on-accent transition-colors hover:bg-primary/90"
                   >
                     Erneut versuchen
                   </button>

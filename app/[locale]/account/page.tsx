@@ -399,7 +399,7 @@ export default function AccountPage() {
   if (status === "loading" || status === "unauthenticated" || session?.user?.role === "ADMIN") {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-[var(--color-primary)]"></div>
+        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -437,20 +437,20 @@ export default function AccountPage() {
               <img
                 src={displayData.image}
                 alt={displayData.name || "Benutzer"}
-                className="h-12 w-12 rounded-full border-2 border-[var(--color-border)]"
+                className="h-12 w-12 rounded-full border-2 border-border"
               />
             ) : (
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-primary)]">
-                <span className="text-lg font-bold text-[var(--btn-primary-text)]">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary">
+                <span className="text-lg font-bold text-text-on-accent">
                   {(displayData.name || "B").charAt(0).toUpperCase()}
                 </span>
               </div>
             )}
             <div className="min-w-0">
-              <h2 className="truncate text-sm font-semibold text-[var(--color-text)]">
+              <h2 className="truncate text-sm font-semibold text-text">
                 {displayData.name}
               </h2>
-              <p className="truncate text-xs text-[var(--color-text-muted)]">{displayData.email}</p>
+              <p className="truncate text-xs text-text-muted">{displayData.email}</p>
             </div>
           </div>
 
@@ -460,8 +460,8 @@ export default function AccountPage() {
               onClick={() => setActiveTab("overview")}
               className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                 activeTab === "overview"
-                  ? "bg-[var(--color-primary-light)] text-[var(--ctp-blue)]"
-                  : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg)] hover:text-[var(--color-text)]"
+                  ? "bg-primary-light text-ctp-blue"
+                  : "text-text-secondary hover:bg-bg hover:text-text"
               }`}
             >
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -478,8 +478,8 @@ export default function AccountPage() {
               onClick={() => setActiveTab("library")}
               className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                 activeTab === "library"
-                  ? "bg-[var(--color-primary-light)] text-[var(--ctp-blue)]"
-                  : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg)] hover:text-[var(--color-text)]"
+                  ? "bg-primary-light text-ctp-blue"
+                  : "text-text-secondary hover:bg-bg hover:text-text"
               }`}
             >
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -496,8 +496,8 @@ export default function AccountPage() {
               onClick={() => setActiveTab("wishlist")}
               className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                 activeTab === "wishlist"
-                  ? "bg-[var(--color-primary-light)] text-[var(--ctp-blue)]"
-                  : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg)] hover:text-[var(--color-text)]"
+                  ? "bg-primary-light text-ctp-blue"
+                  : "text-text-secondary hover:bg-bg hover:text-text"
               }`}
             >
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -514,8 +514,8 @@ export default function AccountPage() {
               onClick={() => setActiveTab("settings")}
               className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                 activeTab === "settings"
-                  ? "bg-[var(--color-primary-light)] text-[var(--ctp-blue)]"
-                  : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg)] hover:text-[var(--color-text)]"
+                  ? "bg-primary-light text-ctp-blue"
+                  : "text-text-secondary hover:bg-bg hover:text-text"
               }`}
             >
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -537,26 +537,26 @@ export default function AccountPage() {
           </nav>
 
           {/* Quick Stats in Sidebar */}
-          <div className="mt-6 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
-            <h3 className="mb-3 text-xs font-semibold tracking-wider text-[var(--color-text-muted)] uppercase">
+          <div className="mt-6 rounded-xl border border-border bg-surface p-4">
+            <h3 className="mb-3 text-xs font-semibold tracking-wider text-text-muted uppercase">
               Statistiken
             </h3>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-[var(--color-text-secondary)]">In Bibliothek</span>
-                <span className="text-sm font-semibold text-[var(--color-text)]">
+                <span className="text-sm text-text-secondary">In Bibliothek</span>
+                <span className="text-sm font-semibold text-text">
                   {displayStats.totalInLibrary}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-[var(--color-text-secondary)]">Hochgeladen</span>
-                <span className="text-sm font-semibold text-[var(--color-text)]">
+                <span className="text-sm text-text-secondary">Hochgeladen</span>
+                <span className="text-sm font-semibold text-text">
                   {displayStats.uploadedResources}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-[var(--color-text-secondary)]">Wunschliste</span>
-                <span className="text-sm font-semibold text-[var(--color-text)]">
+                <span className="text-sm text-text-secondary">Wunschliste</span>
+                <span className="text-sm font-semibold text-text">
                   {displayStats.wishlistItems}
                 </span>
               </div>
@@ -573,18 +573,18 @@ export default function AccountPage() {
               <img
                 src={displayData.image}
                 alt={displayData.name || "Benutzer"}
-                className="h-12 w-12 rounded-full border-2 border-[var(--color-border)]"
+                className="h-12 w-12 rounded-full border-2 border-border"
               />
             ) : (
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-primary)]">
-                <span className="text-lg font-bold text-[var(--btn-primary-text)]">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary">
+                <span className="text-lg font-bold text-text-on-accent">
                   {(displayData.name || "B").charAt(0).toUpperCase()}
                 </span>
               </div>
             )}
             <div>
-              <h2 className="text-sm font-semibold text-[var(--color-text)]">{displayData.name}</h2>
-              <p className="text-xs text-[var(--color-text-muted)]">{displayData.email}</p>
+              <h2 className="text-sm font-semibold text-text">{displayData.name}</h2>
+              <p className="text-xs text-text-muted">{displayData.email}</p>
             </div>
           </div>
           {/* Mobile Tabs */}
@@ -593,8 +593,8 @@ export default function AccountPage() {
               onClick={() => setActiveTab("overview")}
               className={`shrink-0 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                 activeTab === "overview"
-                  ? "bg-[var(--color-primary)] text-[var(--btn-primary-text)]"
-                  : "bg-[var(--color-surface)] text-[var(--color-text-muted)]"
+                  ? "bg-primary text-text-on-accent"
+                  : "bg-surface text-text-muted"
               }`}
             >
               Übersicht
@@ -603,8 +603,8 @@ export default function AccountPage() {
               onClick={() => setActiveTab("library")}
               className={`shrink-0 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                 activeTab === "library"
-                  ? "bg-[var(--color-primary)] text-[var(--btn-primary-text)]"
-                  : "bg-[var(--color-surface)] text-[var(--color-text-muted)]"
+                  ? "bg-primary text-text-on-accent"
+                  : "bg-surface text-text-muted"
               }`}
             >
               Bibliothek
@@ -613,8 +613,8 @@ export default function AccountPage() {
               onClick={() => setActiveTab("wishlist")}
               className={`shrink-0 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                 activeTab === "wishlist"
-                  ? "bg-[var(--color-primary)] text-[var(--btn-primary-text)]"
-                  : "bg-[var(--color-surface)] text-[var(--color-text-muted)]"
+                  ? "bg-primary text-text-on-accent"
+                  : "bg-surface text-text-muted"
               }`}
             >
               Wunschliste
@@ -623,8 +623,8 @@ export default function AccountPage() {
               onClick={() => setActiveTab("settings")}
               className={`shrink-0 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                 activeTab === "settings"
-                  ? "bg-[var(--color-primary)] text-[var(--btn-primary-text)]"
-                  : "bg-[var(--color-surface)] text-[var(--color-text-muted)]"
+                  ? "bg-primary text-text-on-accent"
+                  : "bg-surface text-text-muted"
               }`}
             >
               Einstellungen
@@ -650,19 +650,19 @@ export default function AccountPage() {
               {/* KPI Metrics Row - 3 columns */}
               <div className="grid gap-4 sm:grid-cols-3">
                 {/* Einnahmen (Earnings) */}
-                <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
+                <div className="rounded-2xl border border-border bg-surface p-6">
                   <div className="flex items-start justify-between">
                     <div>
-                      <p className="text-sm font-medium text-[var(--color-text-muted)]">
+                      <p className="text-sm font-medium text-text-muted">
                         Einnahmen
                       </p>
-                      <p className="mt-2 text-3xl font-bold text-[var(--color-text)]">
+                      <p className="mt-2 text-3xl font-bold text-text">
                         {loading ? "-" : sellerStats.netEarnings}
                       </p>
                     </div>
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--color-success-light)]">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-success-light">
                       <svg
-                        className="h-6 w-6 text-[var(--ctp-green)]"
+                        className="h-6 w-6 text-ctp-green"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -679,19 +679,19 @@ export default function AccountPage() {
                 </div>
 
                 {/* Downloads */}
-                <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
+                <div className="rounded-2xl border border-border bg-surface p-6">
                   <div className="flex items-start justify-between">
                     <div>
-                      <p className="text-sm font-medium text-[var(--color-text-muted)]">
+                      <p className="text-sm font-medium text-text-muted">
                         Downloads
                       </p>
-                      <p className="mt-2 text-3xl font-bold text-[var(--color-text)]">
+                      <p className="mt-2 text-3xl font-bold text-text">
                         {loading ? "-" : sellerStats.totalDownloads}
                       </p>
                     </div>
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--color-primary-light)]">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-light">
                       <svg
-                        className="h-6 w-6 text-[var(--ctp-blue)]"
+                        className="h-6 w-6 text-ctp-blue"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -708,17 +708,17 @@ export default function AccountPage() {
                 </div>
 
                 {/* Beiträge (Contributions) */}
-                <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
+                <div className="rounded-2xl border border-border bg-surface p-6">
                   <div className="flex items-start justify-between">
                     <div>
-                      <p className="text-sm font-medium text-[var(--color-text-muted)]">Beiträge</p>
-                      <p className="mt-2 text-3xl font-bold text-[var(--color-text)]">
+                      <p className="text-sm font-medium text-text-muted">Beiträge</p>
+                      <p className="mt-2 text-3xl font-bold text-text">
                         {loading ? "-" : sellerResources.length}
                       </p>
                     </div>
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--color-accent-light)]">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent-light">
                       <svg
-                        className="h-6 w-6 text-[var(--ctp-mauve)]"
+                        className="h-6 w-6 text-ctp-mauve"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -738,13 +738,13 @@ export default function AccountPage() {
               {/* Main Content Grid - Resources Table + Sidebar */}
               <div className="grid gap-6 lg:grid-cols-4">
                 {/* Main Resources Table Container - Takes 3 columns */}
-                <div className="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] lg:col-span-3">
+                <div className="overflow-hidden rounded-2xl border border-border bg-surface lg:col-span-3">
                   {/* Integrated Header with Search and Upload Button */}
-                  <div className="flex flex-col gap-4 border-b border-[var(--color-border)] bg-[var(--color-bg)] p-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex flex-col gap-4 border-b border-border bg-bg p-4 sm:flex-row sm:items-center sm:justify-between">
                     {/* Search Bar (Left) */}
                     <div className="relative flex-1 sm:max-w-sm">
                       <svg
-                        className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-[var(--color-text-muted)]"
+                        className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-text-muted"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -761,14 +761,14 @@ export default function AccountPage() {
                         placeholder="Ressourcen durchsuchen..."
                         value={uploadedSearch}
                         onChange={(e) => setUploadedSearch(e.target.value)}
-                        className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] py-2.5 pr-4 pl-10 text-sm text-[var(--color-text)] placeholder-[var(--color-text-muted)] transition-colors focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
+                        className="w-full rounded-lg border border-border bg-surface py-2.5 pr-4 pl-10 text-sm text-text placeholder-text-muted transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
                       />
                     </div>
 
                     {/* Upload Button (Right) */}
                     <Link
                       href="/upload"
-                      className="inline-flex items-center justify-center gap-2 rounded-lg bg-[var(--ctp-blue)] px-5 py-2.5 text-sm font-semibold text-[var(--btn-primary-text)] shadow-[var(--ctp-blue)]/20 shadow-md transition-all hover:bg-[var(--ctp-sapphire)] hover:shadow-[var(--ctp-blue)]/25 hover:shadow-lg"
+                      className="inline-flex items-center justify-center gap-2 rounded-lg bg-ctp-blue px-5 py-2.5 text-sm font-semibold text-text-on-accent shadow-ctp-blue/20 shadow-md transition-all hover:bg-ctp-sapphire hover:shadow-ctp-blue/25 hover:shadow-lg"
                     >
                       <svg
                         className="h-4 w-4"
@@ -790,14 +790,14 @@ export default function AccountPage() {
                   {/* Table Content */}
                   <div className="p-4">
                     {loading ? (
-                      <div className="py-12 text-center text-[var(--color-text-muted)]">
-                        <div className="mx-auto mb-3 h-8 w-8 animate-spin rounded-full border-4 border-[var(--color-primary)] border-t-transparent"></div>
+                      <div className="py-12 text-center text-text-muted">
+                        <div className="mx-auto mb-3 h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
                         Laden...
                       </div>
                     ) : sellerResources.length === 0 ? (
                       <div className="py-12 text-center">
                         <svg
-                          className="mx-auto mb-4 h-16 w-16 text-[var(--color-text-faint)]"
+                          className="mx-auto mb-4 h-16 w-16 text-text-faint"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -809,15 +809,15 @@ export default function AccountPage() {
                             d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                           />
                         </svg>
-                        <h3 className="mb-2 text-lg font-medium text-[var(--color-text)]">
+                        <h3 className="mb-2 text-lg font-medium text-text">
                           Noch keine Ressourcen hochgeladen
                         </h3>
-                        <p className="mb-4 text-sm text-[var(--color-text-muted)]">
+                        <p className="mb-4 text-sm text-text-muted">
                           Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen.
                         </p>
                         <Link
                           href="/upload"
-                          className="inline-flex items-center gap-2 rounded-lg bg-[var(--ctp-blue)] px-5 py-2.5 text-sm font-semibold text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--ctp-sapphire)]"
+                          className="inline-flex items-center gap-2 rounded-lg bg-ctp-blue px-5 py-2.5 text-sm font-semibold text-text-on-accent transition-colors hover:bg-ctp-sapphire"
                         >
                           <svg
                             className="h-4 w-4"
@@ -839,7 +839,7 @@ export default function AccountPage() {
                       <div className="overflow-x-auto">
                         <table className="w-full">
                           <thead>
-                            <tr className="text-left text-xs font-medium tracking-wider text-[var(--color-text-muted)] uppercase">
+                            <tr className="text-left text-xs font-medium tracking-wider text-text-muted uppercase">
                               <th className="pb-4">Titel</th>
                               <th className="pb-4">Status</th>
                               <th className="pb-4 text-right">Downloads</th>
@@ -847,25 +847,25 @@ export default function AccountPage() {
                               <th className="pb-4 text-right">Aktionen</th>
                             </tr>
                           </thead>
-                          <tbody className="divide-y divide-[var(--color-border)]">
+                          <tbody className="divide-y divide-border">
                             {sellerResources.map((resource) => (
                               <tr
                                 key={resource.id}
-                                className="group transition-colors hover:bg-[var(--color-bg)]"
+                                className="group transition-colors hover:bg-bg"
                               >
                                 <td className="py-4 pr-4">
                                   <Link href={`/resources/${resource.id}`} className="block">
-                                    <div className="text-sm font-medium text-[var(--color-text)] group-hover:text-[var(--color-primary)]">
+                                    <div className="text-sm font-medium text-text group-hover:text-primary">
                                       {resource.title}
                                     </div>
-                                    <div className="mt-0.5 text-xs text-[var(--color-text-muted)]">
+                                    <div className="mt-0.5 text-xs text-text-muted">
                                       {resource.type}
                                     </div>
                                   </Link>
                                 </td>
                                 <td className="py-4 pr-4">
                                   <span
-                                    className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${resource.status === "Verified" ? "bg-[var(--badge-success-bg)] text-[var(--badge-success-text)]" : resource.status === "AI-Checked" ? "bg-[var(--color-accent-light)] text-[var(--color-accent)]" : "bg-[var(--badge-warning-bg)] text-[var(--badge-warning-text)]"}`}
+                                    className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${resource.status === "Verified" ? "bg-badge-success-bg text-badge-success-text" : resource.status === "AI-Checked" ? "bg-accent-light text-accent" : "bg-badge-warning-bg text-badge-warning-text"}`}
                                   >
                                     {resource.status === "Verified"
                                       ? "Verifiziert"
@@ -874,10 +874,10 @@ export default function AccountPage() {
                                         : "Ausstehend"}
                                   </span>
                                 </td>
-                                <td className="py-4 pr-4 text-right text-sm font-medium text-[var(--color-text)]">
+                                <td className="py-4 pr-4 text-right text-sm font-medium text-text">
                                   {resource.downloads}
                                 </td>
-                                <td className="py-4 pr-4 text-right text-sm font-semibold text-[var(--color-success)]">
+                                <td className="py-4 pr-4 text-right text-sm font-semibold text-success">
                                   {resource.netEarnings}
                                 </td>
                                 <td className="py-4 text-right">
@@ -891,7 +891,7 @@ export default function AccountPage() {
                                           openActionMenu === resource.id ? null : resource.id
                                         )
                                       }
-                                      className="rounded-lg p-2 text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface-elevated)] hover:text-[var(--color-text)]"
+                                      className="rounded-lg p-2 text-text-muted transition-colors hover:bg-surface-elevated hover:text-text"
                                       aria-label="Aktionen"
                                     >
                                       <svg
@@ -909,10 +909,10 @@ export default function AccountPage() {
                                       </svg>
                                     </button>
                                     {openActionMenu === resource.id && (
-                                      <div className="absolute right-0 z-10 mt-1 w-40 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] py-1.5 shadow-lg">
+                                      <div className="absolute right-0 z-10 mt-1 w-40 rounded-xl border border-border bg-surface py-1.5 shadow-lg">
                                         <Link
                                           href={`/resources/${resource.id}`}
-                                          className="flex items-center gap-2.5 px-4 py-2 text-sm text-[var(--color-text)] transition-colors hover:bg-[var(--color-bg)]"
+                                          className="flex items-center gap-2.5 px-4 py-2 text-sm text-text transition-colors hover:bg-bg"
                                           onClick={() => setOpenActionMenu(null)}
                                         >
                                           <svg
@@ -938,7 +938,7 @@ export default function AccountPage() {
                                         </Link>
                                         <Link
                                           href={`/resources/${resource.id}/edit`}
-                                          className="flex items-center gap-2.5 px-4 py-2 text-sm text-[var(--color-text)] transition-colors hover:bg-[var(--color-bg)]"
+                                          className="flex items-center gap-2.5 px-4 py-2 text-sm text-text transition-colors hover:bg-bg"
                                           onClick={() => setOpenActionMenu(null)}
                                         >
                                           <svg
@@ -958,7 +958,7 @@ export default function AccountPage() {
                                         </Link>
                                         <button
                                           onClick={() => setOpenActionMenu(null)}
-                                          className="flex w-full items-center gap-2.5 px-4 py-2 text-sm text-[var(--color-error)] transition-colors hover:bg-[var(--badge-error-bg)]"
+                                          className="flex w-full items-center gap-2.5 px-4 py-2 text-sm text-error transition-colors hover:bg-badge-error-bg"
                                         >
                                           <svg
                                             className="h-4 w-4"
@@ -989,14 +989,14 @@ export default function AccountPage() {
                 </div>
 
                 {/* Right Sidebar - Recent Downloads */}
-                <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 lg:col-span-1">
+                <div className="rounded-2xl border border-border bg-surface p-5 lg:col-span-1">
                   <div className="mb-4 flex items-center justify-between">
-                    <h2 className="text-base font-semibold text-[var(--color-text)]">
+                    <h2 className="text-base font-semibold text-text">
                       Letzte Downloads
                     </h2>
                     <button
                       onClick={() => setActiveTab("library")}
-                      className="text-xs font-medium text-[var(--color-primary)] hover:underline"
+                      className="text-xs font-medium text-primary hover:underline"
                     >
                       Alle anzeigen
                     </button>
@@ -1005,9 +1005,9 @@ export default function AccountPage() {
                   {loading ? (
                     <div className="space-y-3">
                       {[1, 2, 3].map((i) => (
-                        <div key={i} className="animate-pulse rounded-xl bg-[var(--color-bg)] p-3">
-                          <div className="mb-2 h-4 w-3/4 rounded bg-[var(--color-surface-elevated)]"></div>
-                          <div className="h-3 w-1/2 rounded bg-[var(--color-surface-elevated)]"></div>
+                        <div key={i} className="animate-pulse rounded-xl bg-bg p-3">
+                          <div className="mb-2 h-4 w-3/4 rounded bg-surface-elevated"></div>
+                          <div className="h-3 w-1/2 rounded bg-surface-elevated"></div>
                         </div>
                       ))}
                     </div>
@@ -1016,20 +1016,20 @@ export default function AccountPage() {
                       {libraryItems.slice(0, 5).map((item) => (
                         <div
                           key={item.id}
-                          className="group flex items-center justify-between rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-3 transition-all hover:border-[var(--color-primary)] hover:shadow-sm"
+                          className="group flex items-center justify-between rounded-xl border border-border bg-bg p-3 transition-all hover:border-primary hover:shadow-sm"
                         >
                           <div className="mr-2 min-w-0 flex-1">
-                            <h3 className="truncate text-sm font-medium text-[var(--color-text)] group-hover:text-[var(--color-primary)]">
+                            <h3 className="truncate text-sm font-medium text-text group-hover:text-primary">
                               {item.title}
                             </h3>
-                            <p className="truncate text-xs text-[var(--color-text-muted)]">
+                            <p className="truncate text-xs text-text-muted">
                               {item.subject}
                             </p>
                           </div>
                           <button
                             onClick={() => handleDownload(item.id)}
                             disabled={downloading === item.id}
-                            className="shrink-0 rounded-lg p-2 text-[var(--color-primary)] transition-colors hover:bg-[var(--color-primary-light)] disabled:opacity-50"
+                            className="shrink-0 rounded-lg p-2 text-primary transition-colors hover:bg-primary-light disabled:opacity-50"
                             title="Herunterladen"
                           >
                             <svg
@@ -1052,7 +1052,7 @@ export default function AccountPage() {
                   ) : (
                     <div className="py-8 text-center">
                       <svg
-                        className="mx-auto mb-3 h-10 w-10 text-[var(--color-text-faint)]"
+                        className="mx-auto mb-3 h-10 w-10 text-text-faint"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -1064,12 +1064,12 @@ export default function AccountPage() {
                           d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
                         />
                       </svg>
-                      <p className="mb-2 text-sm text-[var(--color-text-muted)]">
+                      <p className="mb-2 text-sm text-text-muted">
                         Noch keine Ressourcen
                       </p>
                       <Link
                         href="/resources"
-                        className="text-sm font-medium text-[var(--color-primary)] hover:underline"
+                        className="text-sm font-medium text-primary hover:underline"
                       >
                         Entdecken
                       </Link>
@@ -1077,14 +1077,14 @@ export default function AccountPage() {
                   )}
 
                   {/* Quick Links */}
-                  <div className="mt-6 border-t border-[var(--color-border)] pt-4">
-                    <h3 className="mb-3 text-xs font-semibold tracking-wider text-[var(--color-text-muted)] uppercase">
+                  <div className="mt-6 border-t border-border pt-4">
+                    <h3 className="mb-3 text-xs font-semibold tracking-wider text-text-muted uppercase">
                       Schnellzugriff
                     </h3>
                     <div className="space-y-2">
                       <Link
                         href="/resources"
-                        className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-bg)] hover:text-[var(--color-text)]"
+                        className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-text-secondary transition-colors hover:bg-bg hover:text-text"
                       >
                         <svg
                           className="h-4 w-4"
@@ -1103,7 +1103,7 @@ export default function AccountPage() {
                       </Link>
                       <Link
                         href="/following"
-                        className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-bg)] hover:text-[var(--color-text)]"
+                        className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-text-secondary transition-colors hover:bg-bg hover:text-text"
                       >
                         <svg
                           className="h-4 w-4"
@@ -1129,13 +1129,13 @@ export default function AccountPage() {
 
           {/* Library Tab */}
           {activeTab === "library" && (
-            <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
+            <div className="rounded-xl border border-border bg-surface p-6">
               <div className="mb-6 flex items-center justify-between">
                 <div>
-                  <h2 className="text-xl font-semibold text-[var(--color-text)]">
+                  <h2 className="text-xl font-semibold text-text">
                     Meine Bibliothek
                   </h2>
-                  <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+                  <p className="mt-1 text-sm text-text-muted">
                     {librarySubTab === "acquired"
                       ? "Ressourcen, die Sie erworben haben"
                       : "Ressourcen, die Sie hochgeladen haben"}
@@ -1151,7 +1151,7 @@ export default function AccountPage() {
                         ? setLibrarySearch(e.target.value)
                         : setUploadedSearch(e.target.value)
                     }
-                    className="rounded-md border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-2 text-sm focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
+                    className="rounded-md border border-border bg-bg px-4 py-2 text-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
                   />
                 </div>
               </div>
@@ -1162,8 +1162,8 @@ export default function AccountPage() {
                   onClick={() => setLibrarySubTab("acquired")}
                   className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                     librarySubTab === "acquired"
-                      ? "bg-[var(--color-primary)] text-[var(--btn-primary-text)]"
-                      : "border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text-muted)] hover:bg-[var(--color-surface-elevated)]"
+                      ? "bg-primary text-text-on-accent"
+                      : "border border-border bg-bg text-text-muted hover:bg-surface-elevated"
                   }`}
                 >
                   Erworben ({libraryItems.length})
@@ -1172,8 +1172,8 @@ export default function AccountPage() {
                   onClick={() => setLibrarySubTab("uploaded")}
                   className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                     librarySubTab === "uploaded"
-                      ? "bg-[var(--color-primary)] text-[var(--btn-primary-text)]"
-                      : "border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text-muted)] hover:bg-[var(--color-surface-elevated)]"
+                      ? "bg-primary text-text-on-accent"
+                      : "border border-border bg-bg text-text-muted hover:bg-surface-elevated"
                   }`}
                 >
                   Hochgeladen ({uploadedItems.length})
@@ -1188,12 +1188,12 @@ export default function AccountPage() {
                       {[1, 2, 3].map((i) => (
                         <div
                           key={i}
-                          className="animate-pulse rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] p-4"
+                          className="animate-pulse rounded-lg border border-border bg-bg p-4"
                         >
-                          <div className="mb-3 h-4 w-16 rounded bg-[var(--color-surface-elevated)]"></div>
-                          <div className="mb-2 h-5 w-full rounded bg-[var(--color-surface-elevated)]"></div>
-                          <div className="mb-4 h-4 w-24 rounded bg-[var(--color-surface-elevated)]"></div>
-                          <div className="h-10 w-full rounded bg-[var(--color-surface-elevated)]"></div>
+                          <div className="mb-3 h-4 w-16 rounded bg-surface-elevated"></div>
+                          <div className="mb-2 h-5 w-full rounded bg-surface-elevated"></div>
+                          <div className="mb-4 h-4 w-24 rounded bg-surface-elevated"></div>
+                          <div className="h-10 w-full rounded bg-surface-elevated"></div>
                         </div>
                       ))}
                     </div>
@@ -1202,31 +1202,31 @@ export default function AccountPage() {
                       {libraryItems.map((item) => (
                         <div
                           key={item.id}
-                          className="rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] p-4 transition-colors hover:border-[var(--color-primary)]"
+                          className="rounded-lg border border-border bg-bg p-4 transition-colors hover:border-primary"
                         >
                           <div className="mb-3 flex items-center justify-between">
-                            <span className="rounded bg-[var(--color-surface)] px-2 py-1 text-xs font-medium text-[var(--color-text-muted)]">
+                            <span className="rounded bg-surface px-2 py-1 text-xs font-medium text-text-muted">
                               {item.type === "purchased" ? "Gekauft" : "Gratis"}
                             </span>
                             {item.verified && (
-                              <span className="rounded bg-[var(--badge-success-bg)] px-2 py-1 text-xs font-medium text-[var(--badge-success-text)]">
+                              <span className="rounded bg-badge-success-bg px-2 py-1 text-xs font-medium text-badge-success-text">
                                 Verifiziert
                               </span>
                             )}
                           </div>
-                          <h3 className="mb-1 font-semibold text-[var(--color-text)]">
+                          <h3 className="mb-1 font-semibold text-text">
                             {item.title}
                           </h3>
-                          <p className="mb-2 text-sm text-[var(--color-text-muted)]">
+                          <p className="mb-2 text-sm text-text-muted">
                             {item.subject} - {item.cycle}
                           </p>
-                          <p className="mb-4 text-xs text-[var(--color-text-muted)]">
+                          <p className="mb-4 text-xs text-text-muted">
                             Von: {item.seller.displayName || "Unbekannt"}
                           </p>
                           <button
                             onClick={() => handleDownload(item.id)}
                             disabled={downloading === item.id}
-                            className="w-full rounded-md bg-[var(--color-primary)] px-4 py-2 text-sm font-medium text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--color-primary-hover)] disabled:opacity-50"
+                            className="w-full rounded-md bg-primary px-4 py-2 text-sm font-medium text-text-on-accent transition-colors hover:bg-primary-hover disabled:opacity-50"
                           >
                             {downloading === item.id ? "Wird geladen..." : "Herunterladen"}
                           </button>
@@ -1236,7 +1236,7 @@ export default function AccountPage() {
                   ) : (
                     <div className="py-12 text-center">
                       <svg
-                        className="mx-auto mb-4 h-16 w-16 text-[var(--color-text-faint)]"
+                        className="mx-auto mb-4 h-16 w-16 text-text-faint"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -1248,15 +1248,15 @@ export default function AccountPage() {
                           d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
                         />
                       </svg>
-                      <h3 className="mb-2 text-lg font-medium text-[var(--color-text)]">
+                      <h3 className="mb-2 text-lg font-medium text-text">
                         Noch keine erworbenen Ressourcen
                       </h3>
-                      <p className="mb-4 text-[var(--color-text-muted)]">
+                      <p className="mb-4 text-text-muted">
                         Entdecken Sie unsere Ressourcen und beginnen Sie Ihre Sammlung.
                       </p>
                       <Link
                         href="/resources"
-                        className="inline-flex items-center rounded-md bg-[var(--color-primary)] px-4 py-2 text-sm font-medium text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--color-primary-hover)]"
+                        className="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-text-on-accent transition-colors hover:bg-primary-hover"
                       >
                         Ressourcen entdecken
                       </Link>
@@ -1273,12 +1273,12 @@ export default function AccountPage() {
                       {[1, 2, 3].map((i) => (
                         <div
                           key={i}
-                          className="animate-pulse rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] p-4"
+                          className="animate-pulse rounded-lg border border-border bg-bg p-4"
                         >
-                          <div className="mb-3 h-4 w-16 rounded bg-[var(--color-surface-elevated)]"></div>
-                          <div className="mb-2 h-5 w-full rounded bg-[var(--color-surface-elevated)]"></div>
-                          <div className="mb-4 h-4 w-24 rounded bg-[var(--color-surface-elevated)]"></div>
-                          <div className="h-10 w-full rounded bg-[var(--color-surface-elevated)]"></div>
+                          <div className="mb-3 h-4 w-16 rounded bg-surface-elevated"></div>
+                          <div className="mb-2 h-5 w-full rounded bg-surface-elevated"></div>
+                          <div className="mb-4 h-4 w-24 rounded bg-surface-elevated"></div>
+                          <div className="h-10 w-full rounded bg-surface-elevated"></div>
                         </div>
                       ))}
                     </div>
@@ -1287,16 +1287,16 @@ export default function AccountPage() {
                       {uploadedItems.map((item) => (
                         <div
                           key={item.id}
-                          className="rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] p-4 transition-colors hover:border-[var(--color-primary)]"
+                          className="rounded-lg border border-border bg-bg p-4 transition-colors hover:border-primary"
                         >
                           <div className="mb-3 flex items-center justify-between">
                             <span
                               className={`rounded px-2 py-1 text-xs font-medium ${
                                 item.status === "VERIFIED"
-                                  ? "bg-[var(--badge-success-bg)] text-[var(--badge-success-text)]"
+                                  ? "bg-badge-success-bg text-badge-success-text"
                                   : item.status === "PENDING"
-                                    ? "bg-[var(--badge-warning-bg)] text-[var(--badge-warning-text)]"
-                                    : "bg-[var(--color-surface)] text-[var(--color-text-muted)]"
+                                    ? "bg-badge-warning-bg text-badge-warning-text"
+                                    : "bg-surface text-text-muted"
                               }`}
                             >
                               {item.status === "VERIFIED"
@@ -1305,25 +1305,25 @@ export default function AccountPage() {
                                   ? "Ausstehend"
                                   : item.status}
                             </span>
-                            <span className="text-sm font-semibold text-[var(--color-primary)]">
+                            <span className="text-sm font-semibold text-primary">
                               {item.priceFormatted}
                             </span>
                           </div>
                           <Link href={`/resources/${item.id}`}>
-                            <h3 className="mb-1 font-semibold text-[var(--color-text)] hover:text-[var(--color-primary)]">
+                            <h3 className="mb-1 font-semibold text-text hover:text-primary">
                               {item.title}
                             </h3>
                           </Link>
-                          <p className="mb-3 text-sm text-[var(--color-text-muted)]">
+                          <p className="mb-3 text-sm text-text-muted">
                             {item.subject} - {item.cycle}
                           </p>
-                          <div className="mb-4 flex items-center justify-between text-xs text-[var(--color-text-muted)]">
+                          <div className="mb-4 flex items-center justify-between text-xs text-text-muted">
                             <span>{item.downloadCount} Downloads</span>
                             <span>{item.purchaseCount} Verkäufe</span>
                           </div>
                           <Link
                             href={`/resources/${item.id}`}
-                            className="block w-full rounded-md bg-[var(--color-primary)] px-4 py-2 text-center text-sm font-medium text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--color-primary-hover)]"
+                            className="block w-full rounded-md bg-primary px-4 py-2 text-center text-sm font-medium text-text-on-accent transition-colors hover:bg-primary-hover"
                           >
                             Ansehen
                           </Link>
@@ -1333,7 +1333,7 @@ export default function AccountPage() {
                   ) : (
                     <div className="py-12 text-center">
                       <svg
-                        className="mx-auto mb-4 h-16 w-16 text-[var(--color-text-faint)]"
+                        className="mx-auto mb-4 h-16 w-16 text-text-faint"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -1345,15 +1345,15 @@ export default function AccountPage() {
                           d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
                         />
                       </svg>
-                      <h3 className="mb-2 text-lg font-medium text-[var(--color-text)]">
+                      <h3 className="mb-2 text-lg font-medium text-text">
                         Noch keine hochgeladenen Ressourcen
                       </h3>
-                      <p className="mb-4 text-[var(--color-text-muted)]">
+                      <p className="mb-4 text-text-muted">
                         Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen.
                       </p>
                       <Link
                         href="/upload"
-                        className="inline-flex items-center rounded-md bg-[var(--color-primary)] px-4 py-2 text-sm font-medium text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--color-primary-hover)]"
+                        className="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-text-on-accent transition-colors hover:bg-primary-hover"
                       >
                         Material hochladen
                       </Link>
@@ -1366,11 +1366,11 @@ export default function AccountPage() {
 
           {/* Wishlist Tab */}
           {activeTab === "wishlist" && (
-            <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
+            <div className="rounded-xl border border-border bg-surface p-6">
               <div className="mb-6 flex items-center justify-between">
                 <div>
-                  <h2 className="text-xl font-semibold text-[var(--color-text)]">Wunschliste</h2>
-                  <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+                  <h2 className="text-xl font-semibold text-text">Wunschliste</h2>
+                  <p className="mt-1 text-sm text-text-muted">
                     Gespeicherte Ressourcen für später
                   </p>
                 </div>
@@ -1381,12 +1381,12 @@ export default function AccountPage() {
                   {[1, 2].map((i) => (
                     <div
                       key={i}
-                      className="animate-pulse rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] p-4"
+                      className="animate-pulse rounded-lg border border-border bg-bg p-4"
                     >
-                      <div className="mb-3 h-4 w-16 rounded bg-[var(--color-surface-elevated)]"></div>
-                      <div className="mb-2 h-5 w-full rounded bg-[var(--color-surface-elevated)]"></div>
-                      <div className="mb-4 h-4 w-24 rounded bg-[var(--color-surface-elevated)]"></div>
-                      <div className="h-10 w-full rounded bg-[var(--color-surface-elevated)]"></div>
+                      <div className="mb-3 h-4 w-16 rounded bg-surface-elevated"></div>
+                      <div className="mb-2 h-5 w-full rounded bg-surface-elevated"></div>
+                      <div className="mb-4 h-4 w-24 rounded bg-surface-elevated"></div>
+                      <div className="h-10 w-full rounded bg-surface-elevated"></div>
                     </div>
                   ))}
                 </div>
@@ -1395,15 +1395,15 @@ export default function AccountPage() {
                   {wishlistItems.map((item) => (
                     <div
                       key={item.id}
-                      className="rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] p-4 transition-colors hover:border-[var(--color-primary)]"
+                      className="rounded-lg border border-border bg-bg p-4 transition-colors hover:border-primary"
                     >
                       <div className="mb-3 flex items-center justify-between">
-                        <span className="rounded bg-[var(--color-surface)] px-2 py-1 text-xs font-medium text-[var(--color-text-muted)]">
+                        <span className="rounded bg-surface px-2 py-1 text-xs font-medium text-text-muted">
                           {item.subject}
                         </span>
                         <button
                           onClick={() => handleRemoveFromWishlist(item.id)}
-                          className="text-[var(--color-error)] hover:text-[var(--color-error-hover)]"
+                          className="text-error hover:text-error-hover"
                         >
                           <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
@@ -1411,20 +1411,20 @@ export default function AccountPage() {
                         </button>
                       </div>
                       <Link href={`/resources/${item.id}`}>
-                        <h3 className="mb-1 font-semibold text-[var(--color-text)] hover:text-[var(--color-primary)]">
+                        <h3 className="mb-1 font-semibold text-text hover:text-primary">
                           {item.title}
                         </h3>
                       </Link>
-                      <p className="mb-4 text-sm text-[var(--color-text-muted)]">{item.cycle}</p>
+                      <p className="mb-4 text-sm text-text-muted">{item.cycle}</p>
                       <div className="flex items-center justify-between">
                         <span
-                          className={`text-lg font-bold ${item.price === 0 ? "text-[var(--color-success)]" : "text-[var(--color-primary)]"}`}
+                          className={`text-lg font-bold ${item.price === 0 ? "text-success" : "text-primary"}`}
                         >
                           {item.priceFormatted}
                         </span>
                         <Link
                           href={`/resources/${item.id}`}
-                          className="rounded-md bg-[var(--color-primary)] px-4 py-2 text-sm font-medium text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--color-primary-hover)]"
+                          className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-text-on-accent transition-colors hover:bg-primary-hover"
                         >
                           Ansehen
                         </Link>
@@ -1435,7 +1435,7 @@ export default function AccountPage() {
               ) : (
                 <div className="py-12 text-center">
                   <svg
-                    className="mx-auto mb-4 h-16 w-16 text-[var(--color-text-faint)]"
+                    className="mx-auto mb-4 h-16 w-16 text-text-faint"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -1447,15 +1447,15 @@ export default function AccountPage() {
                       d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
                     />
                   </svg>
-                  <h3 className="mb-2 text-lg font-medium text-[var(--color-text)]">
+                  <h3 className="mb-2 text-lg font-medium text-text">
                     Ihre Wunschliste ist leer
                   </h3>
-                  <p className="mb-4 text-[var(--color-text-muted)]">
+                  <p className="mb-4 text-text-muted">
                     Speichern Sie interessante Ressourcen für später.
                   </p>
                   <Link
                     href="/resources"
-                    className="inline-flex items-center rounded-md bg-[var(--color-primary)] px-4 py-2 text-sm font-medium text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--color-primary-hover)]"
+                    className="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-text-on-accent transition-colors hover:bg-primary-hover"
                   >
                     Ressourcen entdecken
                   </Link>
@@ -1472,11 +1472,11 @@ export default function AccountPage() {
                 {/* Left Column - Profile & Avatar */}
                 <div className="space-y-6">
                   {/* Profile Picture Settings */}
-                  <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
-                    <h2 className="mb-4 text-lg font-semibold text-[var(--color-text)]">
+                  <div className="rounded-xl border border-border bg-surface p-6">
+                    <h2 className="mb-4 text-lg font-semibold text-text">
                       Profilbild
                     </h2>
-                    <p className="mb-6 text-sm text-[var(--color-text-muted)]">
+                    <p className="mb-6 text-sm text-text-muted">
                       Laden Sie ein Profilbild hoch oder entfernen Sie das aktuelle Bild
                     </p>
 
@@ -1485,8 +1485,8 @@ export default function AccountPage() {
                       <div
                         className={`mb-4 rounded-lg border p-3 ${
                           avatarMessage.type === "success"
-                            ? "border-[var(--color-success)]/50 bg-[var(--color-success)]/10 text-[var(--color-success)]"
-                            : "border-[var(--color-error)]/50 bg-[var(--color-error)]/10 text-[var(--color-error)]"
+                            ? "border-success/50 bg-success/10 text-success"
+                            : "border-error/50 bg-error/10 text-error"
                         }`}
                       >
                         <div className="flex items-center gap-2">
@@ -1534,14 +1534,14 @@ export default function AccountPage() {
 
                       {/* Delete Button */}
                       <div className="flex flex-col gap-2">
-                        <p className="text-sm text-[var(--color-text-secondary)]">
+                        <p className="text-sm text-text-secondary">
                           Klicken Sie auf das Kamera-Symbol, um ein neues Bild hochzuladen.
                         </p>
                         {avatarUrl && (
                           <button
                             onClick={handleAvatarDelete}
                             disabled={isDeletingAvatar}
-                            className="inline-flex items-center gap-2 rounded-lg border border-[var(--color-error)]/50 px-4 py-2 text-sm font-medium text-[var(--color-error)] transition-colors hover:bg-[var(--color-error)]/10 disabled:opacity-50"
+                            className="inline-flex items-center gap-2 rounded-lg border border-error/50 px-4 py-2 text-sm font-medium text-error transition-colors hover:bg-error/10 disabled:opacity-50"
                           >
                             {isDeletingAvatar ? (
                               <>
@@ -1588,12 +1588,12 @@ export default function AccountPage() {
                   </div>
 
                   {/* Profile Settings */}
-                  <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
+                  <div className="rounded-xl border border-border bg-surface p-6">
                     <div className="mb-4 flex items-center justify-between">
-                      <h2 className="text-lg font-semibold text-[var(--color-text)]">Profil</h2>
+                      <h2 className="text-lg font-semibold text-text">Profil</h2>
                       <Link
                         href="/profile/edit"
-                        className="text-sm font-medium text-[var(--color-primary)] hover:underline"
+                        className="text-sm font-medium text-primary hover:underline"
                       >
                         Bearbeiten
                       </Link>
@@ -1601,27 +1601,27 @@ export default function AccountPage() {
 
                     <div className="space-y-4">
                       <div>
-                        <label className="mb-1 block text-sm font-medium text-[var(--color-text)]">
+                        <label className="mb-1 block text-sm font-medium text-text">
                           Name
                         </label>
                         <input
                           type="text"
                           value={displayData.name || ""}
                           disabled
-                          className="w-full rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-[var(--color-text-muted)]"
+                          className="w-full rounded-md border border-border bg-surface px-4 py-2 text-text-muted"
                         />
                       </div>
                       <div>
-                        <label className="mb-1 block text-sm font-medium text-[var(--color-text)]">
+                        <label className="mb-1 block text-sm font-medium text-text">
                           E-Mail
                         </label>
                         <input
                           type="email"
                           value={displayData.email}
                           disabled
-                          className="w-full rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-[var(--color-text-muted)]"
+                          className="w-full rounded-md border border-border bg-surface px-4 py-2 text-text-muted"
                         />
-                        <p className="mt-1 text-xs text-[var(--color-text-muted)]">
+                        <p className="mt-1 text-xs text-text-muted">
                           E-Mail kann nicht geändert werden.
                         </p>
                       </div>
@@ -1630,30 +1630,30 @@ export default function AccountPage() {
                     <div className="mt-6 grid gap-4 sm:grid-cols-3">
                       {displayData.cantons && displayData.cantons.length > 0 ? (
                         <div>
-                          <label className="text-xs font-medium tracking-wide text-[var(--color-text-muted)] uppercase">
+                          <label className="text-xs font-medium tracking-wide text-text-muted uppercase">
                             Kanton
                           </label>
-                          <p className="mt-1 text-[var(--color-text)]">
+                          <p className="mt-1 text-text">
                             {displayData.cantons.join(", ")}
                           </p>
                         </div>
                       ) : null}
                       {displayData.subjects && displayData.subjects.length > 0 ? (
                         <div>
-                          <label className="text-xs font-medium tracking-wide text-[var(--color-text-muted)] uppercase">
+                          <label className="text-xs font-medium tracking-wide text-text-muted uppercase">
                             Fächer
                           </label>
                           <div className="mt-1 flex flex-wrap gap-1">
                             {displayData.subjects.slice(0, 3).map((subject) => (
                               <span
                                 key={subject}
-                                className="rounded bg-[var(--color-bg)] px-2 py-0.5 text-sm text-[var(--color-text-secondary)]"
+                                className="rounded bg-bg px-2 py-0.5 text-sm text-text-secondary"
                               >
                                 {subject}
                               </span>
                             ))}
                             {displayData.subjects.length > 3 && (
-                              <span className="px-2 py-0.5 text-sm text-[var(--color-text-muted)]">
+                              <span className="px-2 py-0.5 text-sm text-text-muted">
                                 +{displayData.subjects.length - 3}
                               </span>
                             )}
@@ -1662,14 +1662,14 @@ export default function AccountPage() {
                       ) : null}
                       {displayData.cycles && displayData.cycles.length > 0 ? (
                         <div>
-                          <label className="text-xs font-medium tracking-wide text-[var(--color-text-muted)] uppercase">
+                          <label className="text-xs font-medium tracking-wide text-text-muted uppercase">
                             Zyklen
                           </label>
                           <div className="mt-1 flex flex-wrap gap-1">
                             {displayData.cycles.map((cycle) => (
                               <span
                                 key={cycle}
-                                className="rounded bg-[var(--color-primary-light)] px-2 py-0.5 text-sm text-[var(--color-primary)]"
+                                className="rounded bg-primary-light px-2 py-0.5 text-sm text-primary"
                               >
                                 {cycle}
                               </span>
@@ -1680,7 +1680,7 @@ export default function AccountPage() {
                       {(!displayData.subjects || displayData.subjects.length === 0) &&
                         (!displayData.cycles || displayData.cycles.length === 0) &&
                         (!displayData.cantons || displayData.cantons.length === 0) && (
-                          <p className="col-span-3 text-[var(--color-text-muted)]">
+                          <p className="col-span-3 text-text-muted">
                             Vervollständigen Sie Ihr Profil für personalisierte Empfehlungen.
                           </p>
                         )}
@@ -1691,76 +1691,76 @@ export default function AccountPage() {
                 {/* Right Column - Preferences */}
                 <div className="space-y-6">
                   {/* Appearance Settings */}
-                  <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
-                    <h2 className="mb-4 text-lg font-semibold text-[var(--color-text)]">
+                  <div className="rounded-xl border border-border bg-surface p-6">
+                    <h2 className="mb-4 text-lg font-semibold text-text">
                       Darstellung
                     </h2>
-                    <p className="mb-4 text-sm text-[var(--color-text-muted)]">
+                    <p className="mb-4 text-sm text-text-muted">
                       Wählen Sie Ihr bevorzugtes Farbschema
                     </p>
                     <ThemeSettings />
                   </div>
 
                   {/* Notification Settings */}
-                  <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
-                    <h2 className="mb-4 text-lg font-semibold text-[var(--color-text)]">
+                  <div className="rounded-xl border border-border bg-surface p-6">
+                    <h2 className="mb-4 text-lg font-semibold text-text">
                       Benachrichtigungen
                     </h2>
                     <div className="space-y-4">
                       <label className="flex items-center justify-between">
                         <div>
-                          <span className="font-medium text-[var(--color-text)]">
+                          <span className="font-medium text-text">
                             Neue Ressourcen
                           </span>
-                          <p className="text-sm text-[var(--color-text-muted)]">
+                          <p className="text-sm text-text-muted">
                             Benachrichtigungen über neue Materialien von gefolgten Verkäufern
                           </p>
                         </div>
                         <input
                           type="checkbox"
                           defaultChecked
-                          className="h-5 w-5 rounded text-[var(--color-primary)]"
+                          className="h-5 w-5 rounded text-primary"
                         />
                       </label>
                       <label className="flex items-center justify-between">
                         <div>
-                          <span className="font-medium text-[var(--color-text)]">
+                          <span className="font-medium text-text">
                             Preisänderungen
                           </span>
-                          <p className="text-sm text-[var(--color-text-muted)]">
+                          <p className="text-sm text-text-muted">
                             Benachrichtigungen bei Preisänderungen auf der Wunschliste
                           </p>
                         </div>
                         <input
                           type="checkbox"
                           defaultChecked
-                          className="h-5 w-5 rounded text-[var(--color-primary)]"
+                          className="h-5 w-5 rounded text-primary"
                         />
                       </label>
                       <label className="flex items-center justify-between">
                         <div>
-                          <span className="font-medium text-[var(--color-text)]">Newsletter</span>
-                          <p className="text-sm text-[var(--color-text-muted)]">
+                          <span className="font-medium text-text">Newsletter</span>
+                          <p className="text-sm text-text-muted">
                             Wöchentliche Updates und Tipps
                           </p>
                         </div>
                         <input
                           type="checkbox"
-                          className="h-5 w-5 rounded text-[var(--color-primary)]"
+                          className="h-5 w-5 rounded text-primary"
                         />
                       </label>
                     </div>
                   </div>
 
                   {/* Danger Zone */}
-                  <div className="rounded-xl border border-[var(--color-error)]/30 bg-[var(--color-surface)] p-6">
-                    <h2 className="mb-4 text-lg font-semibold text-[var(--color-error)]">
+                  <div className="rounded-xl border border-error/30 bg-surface p-6">
+                    <h2 className="mb-4 text-lg font-semibold text-error">
                       Gefahrenzone
                     </h2>
-                    <p className="mb-4 text-sm text-[var(--color-text-muted)]">
+                    <p className="mb-4 text-sm text-text-muted">
                       Diese Aktionen sind unwiderruflich. Bitte seien Sie vorsichtig.
                     </p>
-                    <button className="rounded-md border border-[var(--color-error)] px-4 py-2 text-sm font-medium text-[var(--color-error)] transition-colors hover:bg-[var(--badge-error-bg)]">
+                    <button className="rounded-md border border-error px-4 py-2 text-sm font-medium text-error transition-colors hover:bg-badge-error-bg">
                       Konto löschen
                     </button>
                   </div>

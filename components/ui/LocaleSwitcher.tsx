@@ -19,7 +19,7 @@ export default function LocaleSwitcher() {
       <select
         value={locale}
         onChange={(e) => handleChange(e.target.value as Locale)}
-        className="cursor-pointer appearance-none rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-2 py-1 pr-6 text-xs font-medium text-[var(--color-text)] transition-colors hover:bg-[var(--color-surface-elevated)] focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
+        className="cursor-pointer appearance-none rounded-md border border-border bg-surface px-2 py-1 pr-6 text-xs font-medium text-text transition-colors hover:bg-surface-elevated focus:ring-2 focus:ring-primary/20 focus:outline-none"
         aria-label={t("label")}
       >
         {locales.map((loc) => (
@@ -29,7 +29,7 @@ export default function LocaleSwitcher() {
         ))}
       </select>
       <svg
-        className="pointer-events-none absolute top-1/2 right-1.5 h-3 w-3 -translate-y-1/2 text-[var(--color-text-muted)]"
+        className="pointer-events-none absolute top-1/2 right-1.5 h-3 w-3 -translate-y-1/2 text-text-muted"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"

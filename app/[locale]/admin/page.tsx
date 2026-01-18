@@ -10,11 +10,12 @@ interface AdminStats {
   pendingApproval: number;
   totalRevenue: number;
   revenueToday: number;
+  activeSchools: number;
   openReports: number;
   userBreakdown: {
     buyers: number;
     sellers: number;
-    admins: number;
+    schools: number;
   };
   weeklyRevenue: number[];
 }
@@ -44,7 +45,7 @@ export default function AdminDashboardPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
-        <div className="text-[var(--color-text-muted)]">Laden...</div>
+        <div className="text-text-muted">Laden...</div>
       </div>
     );
   }
@@ -54,11 +55,11 @@ export default function AdminDashboardPage() {
       {/* Key Metrics */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {/* Total Users */}
-        <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
+        <div className="rounded-2xl border border-border bg-surface p-6">
           <div className="mb-3 flex items-center gap-3">
             <div className="rounded-lg bg-gradient-to-br from-[var(--ctp-blue)] to-[var(--ctp-sapphire)] p-2.5">
               <svg
-                className="h-5 w-5 text-[var(--btn-primary-text)]"
+                className="h-5 w-5 text-text-on-accent"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -71,18 +72,18 @@ export default function AdminDashboardPage() {
                 />
               </svg>
             </div>
-            <h3 className="text-sm font-medium text-[var(--color-text-muted)]">Benutzer</h3>
+            <h3 className="text-sm font-medium text-text-muted">Benutzer</h3>
           </div>
-          <div className="text-3xl font-bold text-[var(--color-text)]">
+          <div className="text-3xl font-bold text-text">
             {stats?.totalUsers || 0}
           </div>
-          <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+          <p className="mt-1 text-sm text-text-muted">
             +{stats?.newUsersToday || 0} heute
           </p>
         </div>
 
         {/* Pending Documents */}
-        <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
+        <div className="rounded-2xl border border-border bg-surface p-6">
           <div className="mb-3 flex items-center gap-3">
             <div className="rounded-lg bg-gradient-to-br from-[var(--ctp-yellow)] to-[var(--ctp-peach)] p-2.5">
               <svg
@@ -99,20 +100,20 @@ export default function AdminDashboardPage() {
                 />
               </svg>
             </div>
-            <h3 className="text-sm font-medium text-[var(--color-text-muted)]">Ausstehend</h3>
+            <h3 className="text-sm font-medium text-text-muted">Ausstehend</h3>
           </div>
-          <div className="text-3xl font-bold text-[var(--color-text)]">
+          <div className="text-3xl font-bold text-text">
             {stats?.pendingApproval || 0}
           </div>
-          <p className="mt-1 text-sm text-[var(--color-text-muted)]">Dokumente zur Prüfung</p>
+          <p className="mt-1 text-sm text-text-muted">Dokumente zur Prüfung</p>
         </div>
 
         {/* Open Reports */}
-        <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
+        <div className="rounded-2xl border border-border bg-surface p-6">
           <div className="mb-3 flex items-center gap-3">
             <div className="rounded-lg bg-gradient-to-br from-[var(--ctp-red)] to-[var(--ctp-maroon)] p-2.5">
               <svg
-                className="h-5 w-5 text-[var(--btn-primary-text)]"
+                className="h-5 w-5 text-text-on-accent"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -125,16 +126,16 @@ export default function AdminDashboardPage() {
                 />
               </svg>
             </div>
-            <h3 className="text-sm font-medium text-[var(--color-text-muted)]">Meldungen</h3>
+            <h3 className="text-sm font-medium text-text-muted">Meldungen</h3>
           </div>
-          <div className="text-3xl font-bold text-[var(--color-text)]">
+          <div className="text-3xl font-bold text-text">
             {stats?.openReports || 0}
           </div>
-          <p className="mt-1 text-sm text-[var(--color-text-muted)]">Offene Meldungen</p>
+          <p className="mt-1 text-sm text-text-muted">Offene Meldungen</p>
         </div>
 
         {/* Total Revenue */}
-        <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
+        <div className="rounded-2xl border border-border bg-surface p-6">
           <div className="mb-3 flex items-center gap-3">
             <div className="rounded-lg bg-gradient-to-br from-[var(--ctp-green)] to-[var(--ctp-teal)] p-2.5">
               <svg
@@ -151,12 +152,12 @@ export default function AdminDashboardPage() {
                 />
               </svg>
             </div>
-            <h3 className="text-sm font-medium text-[var(--color-text-muted)]">Umsatz</h3>
+            <h3 className="text-sm font-medium text-text-muted">Umsatz</h3>
           </div>
-          <div className="text-3xl font-bold text-[var(--color-text)]">
+          <div className="text-3xl font-bold text-text">
             CHF {stats?.totalRevenue?.toFixed(2) || "0.00"}
           </div>
-          <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+          <p className="mt-1 text-sm text-text-muted">
             +CHF {stats?.revenueToday?.toFixed(2) || "0.00"} heute
           </p>
         </div>
@@ -166,19 +167,19 @@ export default function AdminDashboardPage() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Link
           href="/admin/documents"
-          className="group rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 transition-colors hover:border-[var(--color-primary)]"
+          className="group rounded-2xl border border-border bg-surface p-6 transition-colors hover:border-primary"
         >
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-semibold text-[var(--color-text)] group-hover:text-[var(--color-primary)]">
+              <h3 className="font-semibold text-text group-hover:text-primary">
                 Dokumente prüfen
               </h3>
-              <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+              <p className="mt-1 text-sm text-text-muted">
                 {stats?.pendingApproval || 0} ausstehend
               </p>
             </div>
             <svg
-              className="h-6 w-6 text-[var(--color-text-muted)] group-hover:text-[var(--color-primary)]"
+              className="h-6 w-6 text-text-muted group-hover:text-primary"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -190,19 +191,19 @@ export default function AdminDashboardPage() {
 
         <Link
           href="/admin/reports"
-          className="group rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 transition-colors hover:border-[var(--color-primary)]"
+          className="group rounded-2xl border border-border bg-surface p-6 transition-colors hover:border-primary"
         >
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-semibold text-[var(--color-text)] group-hover:text-[var(--color-primary)]">
+              <h3 className="font-semibold text-text group-hover:text-primary">
                 Meldungen bearbeiten
               </h3>
-              <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+              <p className="mt-1 text-sm text-text-muted">
                 {stats?.openReports || 0} offen
               </p>
             </div>
             <svg
-              className="h-6 w-6 text-[var(--color-text-muted)] group-hover:text-[var(--color-primary)]"
+              className="h-6 w-6 text-text-muted group-hover:text-primary"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -214,19 +215,19 @@ export default function AdminDashboardPage() {
 
         <Link
           href="/admin/users"
-          className="group rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 transition-colors hover:border-[var(--color-primary)]"
+          className="group rounded-2xl border border-border bg-surface p-6 transition-colors hover:border-primary"
         >
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-semibold text-[var(--color-text)] group-hover:text-[var(--color-primary)]">
+              <h3 className="font-semibold text-text group-hover:text-primary">
                 Benutzer verwalten
               </h3>
-              <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+              <p className="mt-1 text-sm text-text-muted">
                 {stats?.totalUsers || 0} registriert
               </p>
             </div>
             <svg
-              className="h-6 w-6 text-[var(--color-text-muted)] group-hover:text-[var(--color-primary)]"
+              className="h-6 w-6 text-text-muted group-hover:text-primary"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -239,52 +240,58 @@ export default function AdminDashboardPage() {
 
       {/* User Breakdown */}
       <div className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
-          <h3 className="mb-4 font-semibold text-[var(--color-text)]">Benutzer nach Rolle</h3>
+        <div className="rounded-2xl border border-border bg-surface p-6">
+          <h3 className="mb-4 font-semibold text-text">Benutzer nach Rolle</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="h-3 w-3 rounded-full bg-[var(--ctp-blue)]"></div>
-                <span className="text-[var(--color-text-muted)]">Käufer</span>
+                <span className="text-text-muted">Käufer</span>
               </div>
-              <span className="font-medium text-[var(--color-text)]">
+              <span className="font-medium text-text">
                 {stats?.userBreakdown?.buyers || 0}
               </span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="h-3 w-3 rounded-full bg-[var(--ctp-green)]"></div>
-                <span className="text-[var(--color-text-muted)]">Verkäufer</span>
+                <span className="text-text-muted">Verkäufer</span>
               </div>
-              <span className="font-medium text-[var(--color-text)]">
+              <span className="font-medium text-text">
                 {stats?.userBreakdown?.sellers || 0}
               </span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="h-3 w-3 rounded-full bg-[var(--ctp-mauve)]"></div>
-                <span className="text-[var(--color-text-muted)]">Admins</span>
+                <span className="text-text-muted">Schulen</span>
               </div>
-              <span className="font-medium text-[var(--color-text)]">
-                {stats?.userBreakdown?.admins || 0}
+              <span className="font-medium text-text">
+                {stats?.userBreakdown?.schools || 0}
               </span>
             </div>
           </div>
         </div>
 
-        <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
-          <h3 className="mb-4 font-semibold text-[var(--color-text)]">Ressourcen</h3>
+        <div className="rounded-2xl border border-border bg-surface p-6">
+          <h3 className="mb-4 font-semibold text-text">Ressourcen</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-[var(--color-text-muted)]">Total Ressourcen</span>
-              <span className="font-medium text-[var(--color-text)]">
+              <span className="text-text-muted">Total Ressourcen</span>
+              <span className="font-medium text-text">
                 {stats?.totalResources || 0}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-[var(--color-text-muted)]">Ausstehende Prüfungen</span>
+              <span className="text-text-muted">Ausstehende Prüfungen</span>
               <span className="font-medium text-[var(--ctp-yellow)]">
                 {stats?.pendingApproval || 0}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-text-muted">Aktive Schulen</span>
+              <span className="font-medium text-text">
+                {stats?.activeSchools || 0}
               </span>
             </div>
           </div>

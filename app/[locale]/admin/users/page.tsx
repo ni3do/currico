@@ -8,10 +8,9 @@ interface AdminUser {
   name: string | null;
   display_name: string | null;
   role: string;
-  stripe_onboarding_complete: boolean;
-  stripe_charges_enabled: boolean;
+  is_seller: boolean;
+  seller_verified: boolean;
   is_protected: boolean;
-  emailVerified: string | null;
   created_at: string;
   resourceCount: number;
   transactionCount: number;
@@ -27,12 +26,14 @@ interface PaginatedResponse {
 const roleLabels: Record<string, string> = {
   BUYER: "Käufer",
   SELLER: "Verkäufer",
+  SCHOOL: "Schule",
   ADMIN: "Administrator",
 };
 
 const roleBadgeColors: Record<string, string> = {
   BUYER: "bg-[var(--badge-info-bg)] text-[var(--badge-info-text)]",
   SELLER: "bg-[var(--badge-success-bg)] text-[var(--badge-success-text)]",
+  SCHOOL: "bg-[var(--ctp-mauve)]/20 text-[var(--ctp-mauve)]",
   ADMIN: "bg-[var(--ctp-pink)]/20 text-[var(--ctp-pink)]",
 };
 
@@ -101,6 +102,25 @@ export default function AdminUsersPage() {
     }
   };
 
+  const handleVerifySeller = async (userId: string, verified: boolean) => {
+    setActionLoading(true);
+    try {
+      const response = await fetch(`/api/admin/users/${userId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ seller_verified: verified }),
+      });
+
+      if (response.ok) {
+        fetchUsers();
+      }
+    } catch (error) {
+      console.error("Error verifying seller:", error);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const handleDeleteUser = async (userId: string) => {
     setActionLoading(true);
     try {
@@ -136,7 +156,7 @@ export default function AdminUsersPage() {
               setSearch(e.target.value);
               setPage(1);
             }}
-            className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2.5 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
+            className="w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-text placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
           />
         </div>
         <select
@@ -145,63 +165,64 @@ export default function AdminUsersPage() {
             setRoleFilter(e.target.value);
             setPage(1);
           }}
-          className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2.5 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none"
+          className="rounded-lg border border-border bg-surface px-4 py-2.5 text-text focus:border-primary focus:outline-none"
         >
           <option value="">Alle Rollen</option>
           <option value="BUYER">Käufer</option>
           <option value="SELLER">Verkäufer</option>
+          <option value="SCHOOL">Schule</option>
           <option value="ADMIN">Administrator</option>
         </select>
       </div>
 
       {/* Stats Bar */}
-      <div className="text-sm text-[var(--color-text-muted)]">{total} Benutzer gefunden</div>
+      <div className="text-sm text-text-muted">{total} Benutzer gefunden</div>
 
       {/* Users Table */}
-      <div className="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)]">
+      <div className="overflow-hidden rounded-2xl border border-border bg-surface">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-[var(--color-bg)]">
+            <thead className="bg-bg">
               <tr>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
+                <th className="px-6 py-4 text-left text-sm font-semibold text-text">
                   Benutzer
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
+                <th className="px-6 py-4 text-left text-sm font-semibold text-text">
                   Rolle
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
+                <th className="px-6 py-4 text-left text-sm font-semibold text-text">
                   Status
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
+                <th className="px-6 py-4 text-left text-sm font-semibold text-text">
                   Ressourcen
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
+                <th className="px-6 py-4 text-left text-sm font-semibold text-text">
                   Registriert
                 </th>
-                <th className="px-6 py-4 text-right text-sm font-semibold text-[var(--color-text)]">
+                <th className="px-6 py-4 text-right text-sm font-semibold text-text">
                   Aktionen
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[var(--color-border)]">
+            <tbody className="divide-y divide-border">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-[var(--color-text-muted)]">
+                  <td colSpan={6} className="px-6 py-12 text-center text-text-muted">
                     Laden...
                   </td>
                 </tr>
               ) : users.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-[var(--color-text-muted)]">
+                  <td colSpan={6} className="px-6 py-12 text-center text-text-muted">
                     Keine Benutzer gefunden
                   </td>
                 </tr>
               ) : (
                 users.map((user) => (
-                  <tr key={user.id} className="transition-colors hover:bg-[var(--color-bg)]">
+                  <tr key={user.id} className="transition-colors hover:bg-bg">
                     <td className="px-6 py-4">
                       <div>
-                        <div className="font-medium text-[var(--color-text)]">
+                        <div className="font-medium text-text">
                           {user.display_name || user.name || "Unbekannt"}
                           {user.is_protected && (
                             <span className="ml-2 text-xs text-[var(--ctp-pink)]" title="Geschützt">
@@ -219,7 +240,7 @@ export default function AdminUsersPage() {
                             </span>
                           )}
                         </div>
-                        <div className="text-sm text-[var(--color-text-muted)]">{user.email}</div>
+                        <div className="text-sm text-text-muted">{user.email}</div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
@@ -230,32 +251,41 @@ export default function AdminUsersPage() {
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      {user.role === "SELLER" && (
+                      {user.is_seller && (
                         <span
                           className={`rounded-full px-3 py-1 text-xs font-medium ${
-                            user.stripe_charges_enabled
+                            user.seller_verified
                               ? "bg-[var(--badge-success-bg)] text-[var(--badge-success-text)]"
                               : "bg-[var(--badge-warning-bg)] text-[var(--badge-warning-text)]"
                           }`}
                         >
-                          {user.stripe_charges_enabled ? "Stripe aktiv" : "Stripe ausstehend"}
+                          {user.seller_verified ? "Verifiziert" : "Nicht verifiziert"}
                         </span>
                       )}
                     </td>
-                    <td className="px-6 py-4 text-[var(--color-text-muted)]">
+                    <td className="px-6 py-4 text-text-muted">
                       {user.resourceCount}
                     </td>
-                    <td className="px-6 py-4 text-[var(--color-text-muted)]">
+                    <td className="px-6 py-4 text-text-muted">
                       {new Date(user.created_at).toLocaleDateString("de-CH")}
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
+                        {user.is_seller && !user.seller_verified && (
+                          <button
+                            onClick={() => handleVerifySeller(user.id, true)}
+                            disabled={actionLoading}
+                            className="rounded-lg bg-[var(--badge-success-bg)] px-3 py-1.5 text-xs font-medium text-[var(--badge-success-text)] transition-opacity hover:opacity-80 disabled:opacity-50"
+                          >
+                            Verifizieren
+                          </button>
+                        )}
                         <button
                           onClick={() => {
                             setSelectedUser(user);
                             setShowModal(true);
                           }}
-                          className="rounded-lg bg-[var(--color-bg)] px-3 py-1.5 text-xs font-medium text-[var(--color-text)] transition-colors hover:bg-[var(--color-border)]"
+                          className="rounded-lg bg-bg px-3 py-1.5 text-xs font-medium text-text transition-colors hover:bg-border"
                         >
                           Bearbeiten
                         </button>
@@ -286,17 +316,17 @@ export default function AdminUsersPage() {
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm font-medium text-[var(--color-text)] hover:bg-[var(--color-bg)] disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-lg border border-border bg-surface px-4 py-2 text-sm font-medium text-text hover:bg-bg disabled:cursor-not-allowed disabled:opacity-50"
           >
             Zurück
           </button>
-          <span className="text-sm text-[var(--color-text-muted)]">
+          <span className="text-sm text-text-muted">
             Seite {page} von {totalPages}
           </span>
           <button
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
-            className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm font-medium text-[var(--color-text)] hover:bg-[var(--color-bg)] disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-lg border border-border bg-surface px-4 py-2 text-sm font-medium text-text hover:bg-bg disabled:cursor-not-allowed disabled:opacity-50"
           >
             Weiter
           </button>
@@ -305,10 +335,10 @@ export default function AdminUsersPage() {
 
       {/* Edit Modal */}
       {showModal && selectedUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--color-bg)]/80 backdrop-blur-sm">
-          <div className="mx-4 w-full max-w-md rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-bg/80 backdrop-blur-sm">
+          <div className="mx-4 w-full max-w-md rounded-2xl border border-border bg-surface p-6">
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-xl font-semibold text-[var(--color-text)]">
+              <h3 className="text-xl font-semibold text-text">
                 Benutzer bearbeiten
               </h3>
               <button
@@ -316,7 +346,7 @@ export default function AdminUsersPage() {
                   setShowModal(false);
                   setSelectedUser(null);
                 }}
-                className="text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+                className="text-text-muted hover:text-text"
               >
                 <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -330,25 +360,26 @@ export default function AdminUsersPage() {
             </div>
 
             <div className="mb-6">
-              <p className="text-[var(--color-text)]">
+              <p className="text-text">
                 {selectedUser.display_name || selectedUser.name}
               </p>
-              <p className="text-sm text-[var(--color-text-muted)]">{selectedUser.email}</p>
+              <p className="text-sm text-text-muted">{selectedUser.email}</p>
             </div>
 
             <div className="space-y-4">
               <div>
-                <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
+                <label className="mb-2 block text-sm font-medium text-text">
                   Rolle ändern
                 </label>
                 <select
                   defaultValue={selectedUser.role}
                   onChange={(e) => handleRoleChange(selectedUser.id, e.target.value)}
                   disabled={selectedUser.is_protected || actionLoading}
-                  className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2.5 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none disabled:opacity-50"
+                  className="w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-text focus:border-primary focus:outline-none disabled:opacity-50"
                 >
                   <option value="BUYER">Käufer</option>
                   <option value="SELLER">Verkäufer</option>
+                  <option value="SCHOOL">Schule</option>
                   <option value="ADMIN">Administrator</option>
                 </select>
                 {selectedUser.is_protected && (
@@ -358,19 +389,27 @@ export default function AdminUsersPage() {
                 )}
               </div>
 
-              {selectedUser.role === "SELLER" && (
-                <div className="rounded-lg border border-[var(--color-border)] p-4">
-                  <p className="font-medium text-[var(--color-text)]">Stripe-Status</p>
-                  <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-                    {selectedUser.stripe_charges_enabled
-                      ? "Zahlungen aktiviert"
-                      : selectedUser.stripe_onboarding_complete
-                        ? "Onboarding abgeschlossen, Zahlungen ausstehend"
-                        : "Stripe-Onboarding ausstehend"}
-                  </p>
-                  <p className="mt-2 text-xs text-[var(--color-text-muted)]">
-                    Verkäufer-Verifizierung wird automatisch über Stripe KYC verwaltet.
-                  </p>
+              {selectedUser.is_seller && (
+                <div className="flex items-center justify-between rounded-lg border border-border p-4">
+                  <div>
+                    <p className="font-medium text-text">Verkäufer-Status</p>
+                    <p className="text-sm text-text-muted">
+                      {selectedUser.seller_verified ? "Verifiziert" : "Nicht verifiziert"}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() =>
+                      handleVerifySeller(selectedUser.id, !selectedUser.seller_verified)
+                    }
+                    disabled={actionLoading}
+                    className={`rounded-lg px-4 py-2 text-sm font-medium transition-opacity disabled:opacity-50 ${
+                      selectedUser.seller_verified
+                        ? "bg-[var(--badge-warning-bg)] text-[var(--badge-warning-text)]"
+                        : "bg-[var(--badge-success-bg)] text-[var(--badge-success-text)]"
+                    }`}
+                  >
+                    {selectedUser.seller_verified ? "Entziehen" : "Verifizieren"}
+                  </button>
                 </div>
               )}
             </div>
@@ -381,7 +420,7 @@ export default function AdminUsersPage() {
                   setShowModal(false);
                   setSelectedUser(null);
                 }}
-                className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2.5 text-sm font-medium text-[var(--color-text)] hover:bg-[var(--color-bg)]"
+                className="w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-sm font-medium text-text hover:bg-bg"
               >
                 Schliessen
               </button>
@@ -392,8 +431,8 @@ export default function AdminUsersPage() {
 
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && selectedUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--color-bg)]/80 backdrop-blur-sm">
-          <div className="mx-4 w-full max-w-md rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-bg/80 backdrop-blur-sm">
+          <div className="mx-4 w-full max-w-md rounded-2xl border border-border bg-surface p-6">
             <div className="mb-4 flex items-center gap-3">
               <div className="rounded-full bg-[var(--badge-error-bg)] p-2">
                 <svg
@@ -410,12 +449,12 @@ export default function AdminUsersPage() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-[var(--color-text)]">Benutzer löschen?</h3>
+              <h3 className="text-xl font-semibold text-text">Benutzer löschen?</h3>
             </div>
 
-            <p className="mb-6 text-[var(--color-text-muted)]">
+            <p className="mb-6 text-text-muted">
               Möchten Sie den Benutzer{" "}
-              <strong className="text-[var(--color-text)]">
+              <strong className="text-text">
                 {selectedUser.display_name || selectedUser.email}
               </strong>{" "}
               wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
@@ -425,7 +464,7 @@ export default function AdminUsersPage() {
               <button
                 onClick={() => handleDeleteUser(selectedUser.id)}
                 disabled={actionLoading}
-                className="flex-1 rounded-lg bg-[var(--color-error)] px-4 py-2.5 text-sm font-medium text-[var(--btn-danger-text)] hover:opacity-90 disabled:opacity-50"
+                className="flex-1 rounded-lg bg-error px-4 py-2.5 text-sm font-medium text-text-on-accent hover:opacity-90 disabled:opacity-50"
               >
                 {actionLoading ? "Löschen..." : "Ja, löschen"}
               </button>
@@ -434,7 +473,7 @@ export default function AdminUsersPage() {
                   setShowDeleteConfirm(false);
                   setSelectedUser(null);
                 }}
-                className="flex-1 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2.5 text-sm font-medium text-[var(--color-text)] hover:bg-[var(--color-bg)]"
+                className="flex-1 rounded-lg border border-border bg-surface px-4 py-2.5 text-sm font-medium text-text hover:bg-bg"
               >
                 Abbrechen
               </button>

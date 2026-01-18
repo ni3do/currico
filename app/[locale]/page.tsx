@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
+import { ResourceCard } from "@/components/ui/ResourceCard";
 
 export default function Home() {
   const t = useTranslations("homePage");
@@ -16,45 +17,95 @@ export default function Home() {
 
       <main className="flex-1">
         {/* Hero Section - Split-Screen Layout */}
-        <section>
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="grid items-center gap-12 py-16 lg:grid-cols-2 lg:gap-16 lg:py-24">
-              {/* Left Side - Text Content */}
-              <div className="order-2 lg:order-1">
-                <h1 className="text-3xl leading-tight font-bold tracking-tight text-[var(--color-text)] sm:text-4xl lg:text-5xl">
+        <section className="hero-section">
+          {/* Decorative floating shapes */}
+          <div className="hero-decoration hero-decoration-1" aria-hidden="true" />
+          <div className="hero-decoration hero-decoration-2" aria-hidden="true" />
+          <div className="hero-decoration hero-decoration-3" aria-hidden="true" />
+
+          <div className="relative mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
+            <div className="grid items-center gap-12 py-20 lg:grid-cols-2 lg:gap-20 lg:py-28">
+              {/* Left Side - Text Content (Mobile: order-1, Desktop: order-1) */}
+              <div className="order-1 max-w-xl">
+                <h1 className="text-4xl leading-[1.1] font-extrabold tracking-tight text-text sm:text-5xl lg:text-6xl">
                   {t("hero.title")}
                 </h1>
-                <p className="mt-6 max-w-xl text-lg leading-relaxed text-[var(--color-text-muted)]">
+                <p className="mt-6 text-lg leading-relaxed text-text-muted sm:text-xl">
                   {t.rich("hero.description", {
                     bold: (chunks) => (
-                      <strong className="font-semibold text-[var(--color-text)]">{chunks}</strong>
+                      <strong className="font-semibold text-text">{chunks}</strong>
                     ),
                   })}
                 </p>
-                <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+                <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
                   <Link
                     href="/resources"
-                    className="btn-primary inline-flex items-center justify-center px-6 py-2.5 hover:-translate-y-0.5"
+                    className="hero-cta inline-flex items-center justify-center gap-2"
                   >
                     {t("hero.primaryButton")}
+                    <svg
+                      className="h-5 w-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 7l5 5m0 0l-5 5m5-5H6"
+                      />
+                    </svg>
                   </Link>
                   <a
                     href="#features"
-                    className="btn-secondary inline-flex items-center justify-center px-6 py-2.5"
+                    className="hero-cta-secondary inline-flex items-center justify-center"
                   >
                     {t("hero.secondaryButton")}
                   </a>
                 </div>
+
+                {/* Trust indicators */}
+                <div className="mt-10 flex items-center gap-6 text-sm text-text-muted">
+                  <div className="flex items-center gap-2">
+                    <svg
+                      className="h-5 w-5 text-success"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <span>Lehrplan 21</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <svg
+                      className="h-5 w-5 text-success"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <span>Schweizer Lehrpersonen</span>
+                  </div>
+                </div>
               </div>
 
-              {/* Right Side - Hero Image */}
-              <div className="order-1 lg:order-2">
+              {/* Right Side - Hero Image with decorative container */}
+              <div className="hero-image-container order-2">
                 <Image
                   src="/images/hero-teachers.png"
                   alt="Lehrer hilft Schülern bei Gruppenarbeit im Klassenzimmer"
                   width={1000}
                   height={667}
-                  className="h-[320px] w-full rounded-xl object-cover object-center shadow-lg sm:h-[400px] lg:h-[480px]"
+                  className="hero-image h-[320px] w-full object-cover object-center sm:h-[420px] lg:h-[500px]"
                   priority
                 />
               </div>
@@ -63,22 +114,22 @@ export default function Home() {
         </section>
 
         {/* How It Works */}
-        <section className="bg-[var(--color-surface)] py-20">
+        <section className="bg-surface py-20">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mb-12 text-center">
-              <h2 className="text-2xl font-semibold text-[var(--color-text)]">
+              <h2 className="text-2xl font-semibold text-text">
                 {t("howItWorks.title")}
               </h2>
-              <p className="mt-2 text-[var(--color-text-muted)]">{t("howItWorks.description")}</p>
+              <p className="mt-2 text-text-muted">{t("howItWorks.description")}</p>
             </div>
 
             <div className="grid gap-8 md:grid-cols-3">
               {/* Step 1 */}
               <div className="relative">
                 <div className="flex flex-col items-center text-center">
-                  <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--color-primary-light)]">
+                  <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-light">
                     <svg
-                      className="h-8 w-8 text-[var(--color-primary)]"
+                      className="h-8 w-8 text-primary"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -91,14 +142,14 @@ export default function Home() {
                       />
                     </svg>
                   </div>
-                  <div className="absolute top-8 left-[60%] hidden w-[80%] border-t-2 border-dashed border-[var(--color-border)] md:block" />
-                  <span className="mb-3 inline-flex h-7 w-7 items-center justify-center rounded-full bg-[var(--color-primary)] text-sm font-bold text-[var(--btn-primary-text)]">
+                  <div className="absolute top-8 left-[60%] hidden w-[80%] border-t-2 border-dashed border-border md:block" />
+                  <span className="mb-3 inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary text-sm font-bold text-text-on-accent">
                     1
                   </span>
-                  <h3 className="text-lg font-semibold text-[var(--color-text)]">
+                  <h3 className="text-lg font-semibold text-text">
                     {t("howItWorks.step1.title")}
                   </h3>
-                  <p className="mt-2 max-w-xs text-sm text-[var(--color-text-muted)]">
+                  <p className="mt-2 max-w-xs text-sm text-text-muted">
                     {t("howItWorks.step1.description")}
                   </p>
                 </div>
@@ -107,9 +158,9 @@ export default function Home() {
               {/* Step 2 */}
               <div className="relative">
                 <div className="flex flex-col items-center text-center">
-                  <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--color-accent-light)]">
+                  <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-light">
                     <svg
-                      className="h-8 w-8 text-[var(--color-accent)]"
+                      className="h-8 w-8 text-accent"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -128,14 +179,14 @@ export default function Home() {
                       />
                     </svg>
                   </div>
-                  <div className="absolute top-8 left-[60%] hidden w-[80%] border-t-2 border-dashed border-[var(--color-border)] md:block" />
-                  <span className="mb-3 inline-flex h-7 w-7 items-center justify-center rounded-full bg-[var(--color-primary)] text-sm font-bold text-[var(--btn-primary-text)]">
+                  <div className="absolute top-8 left-[60%] hidden w-[80%] border-t-2 border-dashed border-border md:block" />
+                  <span className="mb-3 inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary text-sm font-bold text-text-on-accent">
                     2
                   </span>
-                  <h3 className="text-lg font-semibold text-[var(--color-text)]">
+                  <h3 className="text-lg font-semibold text-text">
                     {t("howItWorks.step2.title")}
                   </h3>
-                  <p className="mt-2 max-w-xs text-sm text-[var(--color-text-muted)]">
+                  <p className="mt-2 max-w-xs text-sm text-text-muted">
                     {t("howItWorks.step2.description")}
                   </p>
                 </div>
@@ -144,9 +195,9 @@ export default function Home() {
               {/* Step 3 */}
               <div className="relative">
                 <div className="flex flex-col items-center text-center">
-                  <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--color-success-light)]">
+                  <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-success-light">
                     <svg
-                      className="h-8 w-8 text-[var(--color-success)]"
+                      className="h-8 w-8 text-success"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -159,13 +210,13 @@ export default function Home() {
                       />
                     </svg>
                   </div>
-                  <span className="mb-3 inline-flex h-7 w-7 items-center justify-center rounded-full bg-[var(--color-primary)] text-sm font-bold text-[var(--btn-primary-text)]">
+                  <span className="mb-3 inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary text-sm font-bold text-text-on-accent">
                     3
                   </span>
-                  <h3 className="text-lg font-semibold text-[var(--color-text)]">
+                  <h3 className="text-lg font-semibold text-text">
                     {t("howItWorks.step3.title")}
                   </h3>
-                  <p className="mt-2 max-w-xs text-sm text-[var(--color-text-muted)]">
+                  <p className="mt-2 max-w-xs text-sm text-text-muted">
                     {t("howItWorks.step3.description")}
                   </p>
                 </div>
@@ -179,16 +230,16 @@ export default function Home() {
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mb-8 flex items-end justify-between">
               <div>
-                <h2 className="text-2xl font-semibold text-[var(--color-text)]">
+                <h2 className="text-2xl font-semibold text-text">
                   {t("featuredResources.title")}
                 </h2>
-                <p className="mt-2 text-[var(--color-text-muted)]">
+                <p className="mt-2 text-text-muted">
                   {t("featuredResources.description")}
                 </p>
               </div>
               <Link
                 href="/resources"
-                className="hidden items-center text-sm font-medium text-[var(--color-primary)] hover:underline sm:flex"
+                className="hidden items-center text-sm font-medium text-primary hover:underline sm:flex"
               >
                 {tCommon("buttons.viewAll")}
                 <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -220,40 +271,26 @@ export default function Home() {
                   image: "photo-1635070041078-e363dbe005cb",
                 },
               ].map((card) => (
-                <article
+                <ResourceCard
                   key={card.key}
-                  className="card group overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
-                >
-                  <div
-                    className="h-[180px] w-full bg-[var(--color-surface)]"
-                    style={{
-                      backgroundImage: `url("https://images.unsplash.com/${card.image}?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60")`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                    }}
-                  />
-                  <div className="p-6">
-                    <div className="mb-4 flex items-center gap-2">
-                      <span className={`pill ${card.pillClass}`}>
-                        {t(`featuredResources.${card.key}.category`)}
-                      </span>
-                      <span className="pill pill-neutral">
-                        {t(`featuredResources.${card.key}.cycle`)}
-                      </span>
-                    </div>
-                    <h3 className="text-lg font-bold text-[var(--color-text)] transition-colors group-hover:text-[var(--color-primary)]">
-                      {t(`featuredResources.${card.key}.title`)}
-                    </h3>
-                    <p className="mt-2 line-clamp-2 text-sm text-[var(--color-text-muted)]">
-                      {t(`featuredResources.${card.key}.description`)}
-                    </p>
-                    <div className="mt-4 flex items-center justify-between border-t border-[var(--color-border-subtle)] pt-4">
-                      <span className="text-sm text-[var(--color-text-muted)]">
+                  id={card.key}
+                  title={t(`featuredResources.${card.key}.title`)}
+                  description={t(`featuredResources.${card.key}.description`)}
+                  subject={t(`featuredResources.${card.key}.category`)}
+                  cycle={t(`featuredResources.${card.key}.cycle`)}
+                  previewUrl={`https://images.unsplash.com/${card.image}?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80`}
+                  subjectPillClass={card.pillClass}
+                  showPriceBadge={false}
+                  verified={false}
+                  href="/resources"
+                  footer={
+                    <div className="flex items-center justify-between border-t border-border-subtle pt-4">
+                      <span className="text-sm text-text-muted">
                         {t(`featuredResources.${card.key}.documents`)}
                       </span>
-                      <div className="flex items-center gap-1 text-sm font-medium text-[var(--color-text-secondary)]">
+                      <div className="flex items-center gap-1 text-sm font-medium text-text-secondary">
                         <svg
-                          className="h-4 w-4 text-[var(--color-warning)]"
+                          className="h-4 w-4 text-warning"
                           fill="currentColor"
                           viewBox="0 0 20 20"
                         >
@@ -262,15 +299,15 @@ export default function Home() {
                         {t(`featuredResources.${card.key}.rating`)}
                       </div>
                     </div>
-                  </div>
-                </article>
+                  }
+                />
               ))}
             </div>
 
             <div className="mt-8 text-center sm:hidden">
               <Link
                 href="/resources"
-                className="inline-flex items-center text-sm font-medium text-[var(--color-primary)] hover:underline"
+                className="inline-flex items-center text-sm font-medium text-primary hover:underline"
               >
                 {t("featuredResources.viewAllMobile")}
                 <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -287,7 +324,7 @@ export default function Home() {
         </section>
 
         {/* Seller CTA Section */}
-        <section className="bg-gradient-to-br from-[var(--ctp-blue)]/60 to-[var(--ctp-sapphire)]/60 py-20">
+        <section className="bg-gradient-to-br from-ctp-blue/60 to-ctp-sapphire/60 py-20">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="grid items-center gap-12 lg:grid-cols-2">
               {/* Left - Text Content */}
@@ -299,8 +336,8 @@ export default function Home() {
 
                 <div className="mt-8 flex flex-col gap-4 sm:flex-row">
                   <Link
-                    href="/become-seller"
-                    className="inline-flex items-center justify-center rounded-lg bg-white px-6 py-3 font-semibold text-[var(--ctp-blue)] transition-colors hover:bg-white/90"
+                    href="/register"
+                    className="inline-flex items-center justify-center rounded-lg bg-white px-6 py-3 font-semibold text-ctp-blue transition-colors hover:bg-white/90"
                   >
                     {t("sellerCta.button")}
                     <svg
@@ -391,10 +428,10 @@ export default function Home() {
         <section id="features" className="py-24">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mx-auto mb-16 max-w-2xl text-center">
-              <h2 className="text-3xl font-semibold text-[var(--color-text)]">
+              <h2 className="text-3xl font-semibold text-text">
                 {t("features.title")}
               </h2>
-              <p className="mt-4 text-lg text-[var(--color-text-muted)]">
+              <p className="mt-4 text-lg text-text-muted">
                 {t("features.description")}
               </p>
             </div>
@@ -402,9 +439,9 @@ export default function Home() {
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {/* Feature 1 */}
               <div className="card p-8">
-                <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--color-primary-light)]">
+                <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-primary-light">
                   <svg
-                    className="h-6 w-6 text-[var(--color-primary)]"
+                    className="h-6 w-6 text-primary"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -417,19 +454,19 @@ export default function Home() {
                     />
                   </svg>
                 </div>
-                <h3 className="text-lg font-bold text-[var(--color-text)]">
+                <h3 className="text-lg font-bold text-text">
                   {t("features.feature1.title")}
                 </h3>
-                <p className="mt-3 leading-relaxed text-[var(--color-text-muted)]">
+                <p className="mt-3 leading-relaxed text-text-muted">
                   {t("features.feature1.description")}
                 </p>
               </div>
 
               {/* Feature 2 */}
               <div className="card p-8">
-                <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--color-accent-light)]">
+                <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-accent-light">
                   <svg
-                    className="h-6 w-6 text-[var(--color-accent)]"
+                    className="h-6 w-6 text-accent"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -442,19 +479,19 @@ export default function Home() {
                     />
                   </svg>
                 </div>
-                <h3 className="text-lg font-bold text-[var(--color-text)]">
+                <h3 className="text-lg font-bold text-text">
                   {t("features.feature2.title")}
                 </h3>
-                <p className="mt-3 leading-relaxed text-[var(--color-text-muted)]">
+                <p className="mt-3 leading-relaxed text-text-muted">
                   {t("features.feature2.description")}
                 </p>
               </div>
 
               {/* Feature 3 */}
               <div className="card p-8">
-                <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--color-success-light)]">
+                <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-success-light">
                   <svg
-                    className="h-6 w-6 text-[var(--color-success)]"
+                    className="h-6 w-6 text-success"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -467,10 +504,10 @@ export default function Home() {
                     />
                   </svg>
                 </div>
-                <h3 className="text-lg font-bold text-[var(--color-text)]">
+                <h3 className="text-lg font-bold text-text">
                   {t("features.feature3.title")}
                 </h3>
-                <p className="mt-3 leading-relaxed text-[var(--color-text-muted)]">
+                <p className="mt-3 leading-relaxed text-text-muted">
                   {t("features.feature3.description")}
                 </p>
               </div>
@@ -479,13 +516,13 @@ export default function Home() {
         </section>
 
         {/* Testimonials Section */}
-        <section className="bg-[var(--color-surface)] py-24">
+        <section className="bg-surface py-24">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mb-12 text-center">
-              <h2 className="text-2xl font-semibold text-[var(--color-text)]">
+              <h2 className="text-2xl font-semibold text-text">
                 {t("testimonials.title")}
               </h2>
-              <p className="mt-2 text-[var(--color-text-muted)]">{t("testimonials.description")}</p>
+              <p className="mt-2 text-text-muted">{t("testimonials.description")}</p>
             </div>
 
             <div className="grid gap-8 md:grid-cols-3">
@@ -496,7 +533,7 @@ export default function Home() {
               ].map((testimonial) => (
                 <div
                   key={testimonial.key}
-                  className="relative rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-bg)] p-6"
+                  className="relative rounded-xl border border-border-subtle bg-bg p-6"
                 >
                   {/* Quote icon */}
                   <svg
@@ -509,7 +546,7 @@ export default function Home() {
                   </svg>
 
                   {/* Quote text */}
-                  <p className="mb-6 leading-relaxed text-[var(--color-text-secondary)]">
+                  <p className="mb-6 leading-relaxed text-text-secondary">
                     &ldquo;{t(`testimonials.${testimonial.key}.quote`)}&rdquo;
                   </p>
 
@@ -522,10 +559,10 @@ export default function Home() {
                       {t(`testimonials.${testimonial.key}.name`).charAt(0)}
                     </div>
                     <div>
-                      <div className="font-medium text-[var(--color-text)]">
+                      <div className="font-medium text-text">
                         {t(`testimonials.${testimonial.key}.name`)}
                       </div>
-                      <div className="text-sm text-[var(--color-text-muted)]">
+                      <div className="text-sm text-text-muted">
                         {t(`testimonials.${testimonial.key}.role`)} ·{" "}
                         {t(`testimonials.${testimonial.key}.location`)}
                       </div>

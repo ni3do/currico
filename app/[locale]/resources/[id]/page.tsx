@@ -6,9 +6,9 @@ import { useSession } from "next-auth/react";
 import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
+import { ResourceCard } from "@/components/ui/ResourceCard";
 import { CurriculumBox } from "@/components/curriculum";
 import { LP21Badge } from "@/components/curriculum/LP21Badge";
-import { CheckoutButton } from "@/components/checkout";
 
 interface Competency {
   id: string;
@@ -72,6 +72,7 @@ interface RelatedResource {
   subject: string;
   cycle: string;
   verified: boolean;
+  previewUrl: string | null;
 }
 
 export default function ResourceDetailPage() {
@@ -197,32 +198,32 @@ export default function ResourceDetailPage() {
         <TopBar />
         <main className="mx-auto max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
           <div className="animate-pulse">
-            <div className="mb-8 h-4 w-48 rounded bg-[var(--color-surface)]" />
+            <div className="mb-8 h-4 w-48 rounded bg-surface" />
             <div className="grid gap-8 lg:grid-cols-3">
               <div className="lg:col-span-2">
                 <div className="card rounded-2xl p-8">
                   <div className="mb-4 flex gap-3">
-                    <div className="h-6 w-16 rounded-full bg-[var(--color-surface)]" />
-                    <div className="h-6 w-24 rounded-full bg-[var(--color-surface)]" />
+                    <div className="h-6 w-16 rounded-full bg-surface" />
+                    <div className="h-6 w-24 rounded-full bg-surface" />
                   </div>
-                  <div className="mb-6 h-10 w-3/4 rounded bg-[var(--color-surface)]" />
-                  <div className="mb-4 h-4 w-full rounded bg-[var(--color-surface)]" />
-                  <div className="mb-4 h-4 w-5/6 rounded bg-[var(--color-surface)]" />
-                  <div className="mb-8 h-4 w-2/3 rounded bg-[var(--color-surface)]" />
+                  <div className="mb-6 h-10 w-3/4 rounded bg-surface" />
+                  <div className="mb-4 h-4 w-full rounded bg-surface" />
+                  <div className="mb-4 h-4 w-5/6 rounded bg-surface" />
+                  <div className="mb-8 h-4 w-2/3 rounded bg-surface" />
                   <div className="flex gap-4">
-                    <div className="h-12 w-32 rounded bg-[var(--color-surface)]" />
-                    <div className="h-12 flex-1 rounded bg-[var(--color-surface)]" />
+                    <div className="h-12 w-32 rounded bg-surface" />
+                    <div className="h-12 flex-1 rounded bg-surface" />
                   </div>
                 </div>
               </div>
               <div className="lg:col-span-1">
                 <div className="card rounded-2xl p-6">
-                  <div className="mb-4 h-5 w-24 rounded bg-[var(--color-surface)]" />
+                  <div className="mb-4 h-5 w-24 rounded bg-surface" />
                   <div className="flex gap-3">
-                    <div className="h-12 w-12 rounded-full bg-[var(--color-surface)]" />
+                    <div className="h-12 w-12 rounded-full bg-surface" />
                     <div>
-                      <div className="mb-2 h-4 w-32 rounded bg-[var(--color-surface)]" />
-                      <div className="h-3 w-24 rounded bg-[var(--color-surface)]" />
+                      <div className="mb-2 h-4 w-32 rounded bg-surface" />
+                      <div className="h-3 w-24 rounded bg-surface" />
                     </div>
                   </div>
                 </div>
@@ -241,10 +242,10 @@ export default function ResourceDetailPage() {
         <TopBar />
         <main className="mx-auto max-w-7xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="mb-4 text-4xl font-bold text-[var(--color-text)]">
+            <h1 className="mb-4 text-4xl font-bold text-text">
               Ressource nicht gefunden
             </h1>
-            <p className="mb-8 text-[var(--color-text-muted)]">
+            <p className="mb-8 text-text-muted">
               Die gesuchte Ressource existiert nicht oder ist nicht mehr verfügbar.
             </p>
             <Link
@@ -265,8 +266,8 @@ export default function ResourceDetailPage() {
         <TopBar />
         <main className="mx-auto max-w-7xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="mb-4 text-4xl font-bold text-[var(--color-text)]">Fehler beim Laden</h1>
-            <p className="mb-8 text-[var(--color-text-muted)]">
+            <h1 className="mb-4 text-4xl font-bold text-text">Fehler beim Laden</h1>
+            <p className="mb-8 text-text-muted">
               Die Ressource konnte nicht geladen werden. Bitte versuchen Sie es später erneut.
             </p>
             <button
@@ -287,19 +288,19 @@ export default function ResourceDetailPage() {
 
       <main className="mx-auto max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
         {/* Breadcrumb */}
-        <nav className="mb-8 flex items-center gap-2 text-sm text-[var(--color-text-muted)]">
-          <Link href="/resources" className="hover:text-[var(--color-primary)]">
+        <nav className="mb-8 flex items-center gap-2 text-sm text-text-muted">
+          <Link href="/resources" className="hover:text-primary">
             Ressourcen
           </Link>
           <span>/</span>
           <Link
             href={`/resources?subject=${resource.subject}`}
-            className="hover:text-[var(--color-primary)]"
+            className="hover:text-primary"
           >
             {resource.subject}
           </Link>
           <span>/</span>
-          <span className="text-[var(--color-text)]">{resource.title}</span>
+          <span className="text-text">{resource.title}</span>
         </nav>
 
         <div className="grid gap-8 lg:grid-cols-3">
@@ -327,16 +328,16 @@ export default function ResourceDetailPage() {
                         />
                       ))}
                   {resource.competencies && resource.competencies.length > 2 && (
-                    <span className="text-xs text-[var(--color-text-muted)]">
+                    <span className="text-xs text-text-muted">
                       +{resource.competencies.length - 2}
                     </span>
                   )}
                 </div>
-                <h1 className="text-3xl font-bold text-[var(--color-text)]">{resource.title}</h1>
+                <h1 className="text-3xl font-bold text-text">{resource.title}</h1>
               </div>
 
               {/* Description */}
-              <p className="mb-6 leading-relaxed text-[var(--color-text-muted)]">
+              <p className="mb-6 leading-relaxed text-text-muted">
                 {resource.description}
               </p>
 
@@ -357,41 +358,29 @@ export default function ResourceDetailPage() {
 
               {/* Price and Actions */}
               <div className="mb-8 flex flex-wrap items-center gap-4">
-                {resource.price === 0 ? (
-                  <>
-                    <div className="text-3xl font-bold text-[var(--color-success)]">
-                      {resource.priceFormatted}
-                    </div>
-                    <button
-                      onClick={handleDownload}
-                      disabled={downloading}
-                      className="btn-primary flex-1 px-8 py-4 disabled:opacity-50"
-                    >
-                      {downloading ? "Wird heruntergeladen..." : "Kostenlos herunterladen"}
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <div className="text-3xl font-bold text-[var(--color-primary)]">
-                      {resource.priceFormatted}
-                    </div>
-                    <div className="flex-1">
-                      <CheckoutButton
-                        resourceId={resource.id}
-                        price={resource.price}
-                        priceFormatted={resource.priceFormatted}
-                        className="w-full"
-                      />
-                    </div>
-                  </>
-                )}
+                <div
+                  className={`text-3xl font-bold ${resource.price === 0 ? "text-success" : "text-primary"}`}
+                >
+                  {resource.priceFormatted}
+                </div>
+                <button
+                  onClick={resource.price === 0 ? handleDownload : undefined}
+                  disabled={downloading}
+                  className="btn-primary flex-1 px-8 py-4 disabled:opacity-50"
+                >
+                  {downloading
+                    ? "Wird heruntergeladen..."
+                    : resource.price === 0
+                      ? "Kostenlos herunterladen"
+                      : "Jetzt kaufen"}
+                </button>
                 <button
                   onClick={handleWishlistToggle}
                   disabled={wishlistLoading}
                   className={`group rounded-lg border-2 p-4 transition-all disabled:opacity-50 ${
                     isWishlisted
-                      ? "border-[var(--color-error)] bg-[var(--color-error)]/10 text-[var(--color-error)]"
-                      : "border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text-muted)] hover:border-[var(--color-error)] hover:text-[var(--color-error)]"
+                      ? "border-error bg-error/10 text-error"
+                      : "border-border bg-bg text-text-muted hover:border-error hover:text-error"
                   }`}
                   title={isWishlisted ? "Von Wunschliste entfernen" : "Zur Wunschliste hinzufügen"}
                 >
@@ -410,28 +399,28 @@ export default function ResourceDetailPage() {
               </div>
 
               {/* Metadata Block */}
-              <div className="mb-8 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-6">
-                <h3 className="mb-4 font-semibold text-[var(--color-text)]">Details</h3>
+              <div className="mb-8 rounded-xl border border-border bg-bg p-6">
+                <h3 className="mb-4 font-semibold text-text">Details</h3>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
-                    <div className="text-sm text-[var(--color-text-muted)]">Fach</div>
-                    <div className="font-medium text-[var(--color-text)]">{resource.subject}</div>
+                    <div className="text-sm text-text-muted">Fach</div>
+                    <div className="font-medium text-text">{resource.subject}</div>
                   </div>
                   <div>
-                    <div className="text-sm text-[var(--color-text-muted)]">Zyklus</div>
-                    <div className="font-medium text-[var(--color-text)]">
+                    <div className="text-sm text-text-muted">Zyklus</div>
+                    <div className="font-medium text-text">
                       {resource.cycle || "-"}
                     </div>
                   </div>
                   <div>
-                    <div className="text-sm text-[var(--color-text-muted)]">Downloads</div>
-                    <div className="font-medium text-[var(--color-text)]">
+                    <div className="text-sm text-text-muted">Downloads</div>
+                    <div className="font-medium text-text">
                       {resource.downloadCount}
                     </div>
                   </div>
                   <div>
-                    <div className="text-sm text-[var(--color-text-muted)]">Veröffentlicht</div>
-                    <div className="font-medium text-[var(--color-text)]">
+                    <div className="text-sm text-text-muted">Veröffentlicht</div>
+                    <div className="font-medium text-text">
                       {new Date(resource.createdAt).toLocaleDateString("de-CH")}
                     </div>
                   </div>
@@ -441,8 +430,8 @@ export default function ResourceDetailPage() {
               {/* Preview Section */}
               {resource.previewUrl && (
                 <div className="mb-8">
-                  <h3 className="mb-4 text-xl font-semibold text-[var(--color-text)]">Vorschau</h3>
-                  <div className="relative aspect-[3/4] max-w-sm overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)]">
+                  <h3 className="mb-4 text-xl font-semibold text-text">Vorschau</h3>
+                  <div className="relative aspect-[3/4] max-w-sm overflow-hidden rounded-xl border border-border bg-bg">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={resource.previewUrl}
@@ -450,13 +439,13 @@ export default function ResourceDetailPage() {
                       className="h-full w-full object-cover"
                     />
                     {/* Watermark overlay */}
-                    <div className="absolute inset-0 flex items-center justify-center bg-[var(--color-bg)]/30 backdrop-blur-[1px]">
-                      <span className="rotate-[-45deg] text-4xl font-bold text-[var(--color-text-muted)] opacity-30">
+                    <div className="absolute inset-0 flex items-center justify-center bg-bg/30 backdrop-blur-[1px]">
+                      <span className="rotate-[-45deg] text-4xl font-bold text-text-muted opacity-30">
                         VORSCHAU
                       </span>
                     </div>
                   </div>
-                  <p className="mt-4 text-sm text-[var(--color-text-muted)]">
+                  <p className="mt-4 text-sm text-text-muted">
                     Vollständige Dateien sind nach dem Kauf verfügbar
                   </p>
                 </div>
@@ -465,20 +454,20 @@ export default function ResourceDetailPage() {
               {/* Report Button */}
               <button
                 onClick={() => setShowReportModal(true)}
-                className="text-sm text-[var(--color-text-muted)] transition-colors hover:text-[var(--color-error)]"
+                className="text-sm text-text-muted transition-colors hover:text-error"
               >
                 Ressource melden
               </button>
             </div>
 
             {/* Reviews Section - Coming Soon */}
-            <div className="mt-12 border-t border-[var(--color-border)] pt-8">
-              <h2 className="mb-6 text-2xl font-bold text-[var(--color-text)]">Bewertungen</h2>
-              <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-8 text-center">
-                <p className="mb-2 text-[var(--color-text-muted)]">
+            <div className="mt-12 border-t border-border pt-8">
+              <h2 className="mb-6 text-2xl font-bold text-text">Bewertungen</h2>
+              <div className="rounded-xl border border-border bg-bg p-8 text-center">
+                <p className="mb-2 text-text-muted">
                   Bewertungen sind bald verfügbar
                 </p>
-                <p className="text-sm text-[var(--color-text-faint)]">
+                <p className="text-sm text-text-faint">
                   Diese Funktion wird in Kürze freigeschaltet
                 </p>
               </div>
@@ -487,36 +476,22 @@ export default function ResourceDetailPage() {
             {/* Related Resources */}
             {relatedResources.length > 0 && (
               <div className="mt-12">
-                <h2 className="mb-6 text-2xl font-bold text-[var(--color-text)]">
+                <h2 className="mb-6 text-2xl font-bold text-text">
                   Ähnliche Ressourcen
                 </h2>
-                <div className="grid gap-4 sm:grid-cols-3">
+                <div className="grid gap-6 sm:grid-cols-3">
                   {relatedResources.map((related) => (
-                    <Link
+                    <ResourceCard
                       key={related.id}
-                      href={`/resources/${related.id}`}
-                      className="group card p-4 transition-all hover:-translate-y-1 hover:border-[var(--color-primary)]/50"
-                    >
-                      <div className="mb-3 flex items-center justify-between">
-                        <span className="pill pill-neutral text-xs">{related.subject}</span>
-                        {related.verified && (
-                          <span className="pill pill-success text-xs">Verifiziert</span>
-                        )}
-                      </div>
-                      <h3 className="mb-2 font-semibold text-[var(--color-text)] transition-colors group-hover:text-[var(--color-primary)]">
-                        {related.title}
-                      </h3>
-                      <div className="flex items-center justify-between">
-                        <span
-                          className={`font-bold ${related.priceFormatted === "Gratis" ? "text-[var(--color-success)]" : "text-[var(--color-primary)]"}`}
-                        >
-                          {related.priceFormatted}
-                        </span>
-                        <span className="text-xs text-[var(--color-text-muted)]">
-                          {related.cycle}
-                        </span>
-                      </div>
-                    </Link>
+                      id={related.id}
+                      title={related.title}
+                      subject={related.subject}
+                      cycle={related.cycle}
+                      priceFormatted={related.priceFormatted}
+                      previewUrl={related.previewUrl}
+                      verified={related.verified}
+                      variant="compact"
+                    />
                   ))}
                 </div>
               </div>
@@ -527,7 +502,7 @@ export default function ResourceDetailPage() {
           <div className="lg:col-span-1">
             {/* Seller Info */}
             <div className="card sticky top-24 p-6">
-              <h3 className="mb-4 font-semibold text-[var(--color-text)]">Erstellt von</h3>
+              <h3 className="mb-4 font-semibold text-text">Erstellt von</h3>
               <div className="mb-4 flex items-center gap-3">
                 {resource.seller.image ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -537,18 +512,18 @@ export default function ResourceDetailPage() {
                     className="h-12 w-12 rounded-full object-cover"
                   />
                 ) : (
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-primary)] text-lg font-bold text-[var(--btn-primary-text)]">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-lg font-bold text-text-on-accent">
                     {(resource.seller.displayName || "A").charAt(0).toUpperCase()}
                   </div>
                 )}
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-medium text-[var(--color-text)]">
+                    <span className="font-medium text-text">
                       {resource.seller.displayName || "Anonym"}
                     </span>
                     {resource.seller.verified && (
                       <svg
-                        className="h-4 w-4 text-[var(--color-primary)]"
+                        className="h-4 w-4 text-primary"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
@@ -560,7 +535,7 @@ export default function ResourceDetailPage() {
                       </svg>
                     )}
                   </div>
-                  <div className="text-sm text-[var(--color-text-muted)]">
+                  <div className="text-sm text-text-muted">
                     {resource.seller.resourceCount} Ressourcen
                   </div>
                 </div>
@@ -571,18 +546,18 @@ export default function ResourceDetailPage() {
                 onClick={() => setIsFollowing(!isFollowing)}
                 className={`w-full rounded-lg border-2 px-4 py-3 font-medium transition-all ${
                   isFollowing
-                    ? "border-[var(--color-primary)] bg-[var(--color-primary-light)] text-[var(--color-primary)]"
-                    : "border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] hover:border-[var(--color-primary)] hover:bg-[var(--color-primary-light)]"
+                    ? "border-primary bg-primary-light text-primary"
+                    : "border-border bg-bg text-text hover:border-primary hover:bg-primary-light"
                 }`}
               >
                 {isFollowing ? "Folge ich" : "+ Folgen"}
               </button>
 
               {/* More from Seller */}
-              <div className="mt-6 border-t border-[var(--color-border)] pt-6">
+              <div className="mt-6 border-t border-border pt-6">
                 <Link
                   href={`/resources?seller=${resource.seller.id}`}
-                  className="text-sm font-medium text-[var(--color-primary)] transition-colors hover:text-[var(--color-primary-hover)]"
+                  className="text-sm font-medium text-primary transition-colors hover:text-primary-hover"
                 >
                   Alle Ressourcen ansehen
                 </Link>
@@ -594,13 +569,13 @@ export default function ResourceDetailPage() {
 
       {/* Report Modal */}
       {showReportModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--ctp-crust)]/50 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ctp-crust/50 backdrop-blur-sm">
           <div className="card mx-4 w-full max-w-md p-6">
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-xl font-semibold text-[var(--color-text)]">Ressource melden</h3>
+              <h3 className="text-xl font-semibold text-text">Ressource melden</h3>
               <button
                 onClick={() => setShowReportModal(false)}
-                className="text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+                className="text-text-muted hover:text-text"
               >
                 <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -615,7 +590,7 @@ export default function ResourceDetailPage() {
 
             <form className="space-y-4">
               <div>
-                <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
+                <label className="mb-2 block text-sm font-medium text-text">
                   Grund
                 </label>
                 <select className="input">
@@ -628,7 +603,7 @@ export default function ResourceDetailPage() {
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
+                <label className="mb-2 block text-sm font-medium text-text">
                   Kommentar (optional)
                 </label>
                 <textarea

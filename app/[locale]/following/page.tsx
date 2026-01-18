@@ -36,8 +36,8 @@ export default function FollowingPage() {
       <main className="mx-auto max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[var(--color-text)]">Folge ich</h1>
-          <p className="mt-2 text-[var(--color-text-muted)]">
+          <h1 className="text-3xl font-bold text-text">Folge ich</h1>
+          <p className="mt-2 text-text-muted">
             Neue Ressourcen von Verkäufern, denen Sie folgen
           </p>
         </div>
@@ -46,18 +46,18 @@ export default function FollowingPage() {
           {/* Main Content - Updates */}
           <div className="lg:col-span-2">
             <div className="card p-8">
-              <h2 className="mb-6 text-xl font-semibold text-[var(--color-text)]">
+              <h2 className="mb-6 text-xl font-semibold text-text">
                 Neueste Updates
               </h2>
 
               <div className="space-y-4">
                 {updates.length === 0 ? (
                   <div className="py-12 text-center">
-                    <p className="mb-2 text-[var(--color-text-muted)]">Keine Updates vorhanden</p>
-                    <p className="mb-4 text-sm text-[var(--color-text-faint)]">
+                    <p className="mb-2 text-text-muted">Keine Updates vorhanden</p>
+                    <p className="mb-4 text-sm text-text-faint">
                       Folgen Sie Verkäufern, um ihre neuen Ressourcen zu sehen
                     </p>
-                    <p className="text-xs text-[var(--color-text-faint)]">
+                    <p className="text-xs text-text-faint">
                       Diese Funktion wird bald verfügbar sein
                     </p>
                   </div>
@@ -65,7 +65,7 @@ export default function FollowingPage() {
                   updates.map((update) => (
                     <div
                       key={update.id}
-                      className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-6 transition-all hover:border-[var(--color-primary)]/50"
+                      className="rounded-xl border border-border bg-bg p-6 transition-all hover:border-primary/50"
                     >
                       <div className="mb-3 flex items-start justify-between">
                         <div className="flex-1">
@@ -73,19 +73,19 @@ export default function FollowingPage() {
                             <span
                               className={`rounded-full px-2 py-0.5 text-xs font-medium ${
                                 update.type === "Bundle"
-                                  ? "bg-[var(--badge-success-bg)] text-[var(--badge-success-text)]"
-                                  : "bg-[var(--badge-primary-bg)] text-[var(--badge-primary-text)]"
+                                  ? "bg-badge-success-bg text-badge-success-text"
+                                  : "bg-badge-primary-bg text-badge-primary-text"
                               }`}
                             >
                               {update.type}
                             </span>
                             <span className="pill pill-neutral">{update.subject}</span>
                           </div>
-                          <h3 className="mb-2 text-lg font-semibold text-[var(--color-text)]">
+                          <h3 className="mb-2 text-lg font-semibold text-text">
                             {update.title}
                           </h3>
-                          <div className="flex items-center gap-2 text-sm text-[var(--color-text-muted)]">
-                            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-success)] text-xs font-bold text-[var(--ctp-crust)]">
+                          <div className="flex items-center gap-2 text-sm text-text-muted">
+                            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-primary to-success text-xs font-bold text-ctp-crust">
                               {update.seller.charAt(0)}
                             </div>
                             <span>{update.seller}</span>
@@ -94,7 +94,7 @@ export default function FollowingPage() {
                           </div>
                         </div>
                         <div className="ml-4 text-right">
-                          <div className="mb-2 text-lg font-bold text-[var(--color-primary)]">
+                          <div className="mb-2 text-lg font-bold text-primary">
                             {update.price}
                           </div>
                           <a
@@ -122,14 +122,14 @@ export default function FollowingPage() {
           {/* Sidebar - Followed Sellers */}
           <div className="lg:col-span-1">
             <div className="card p-6">
-              <h3 className="mb-4 font-semibold text-[var(--color-text)]">
+              <h3 className="mb-4 font-semibold text-text">
                 Folge ich ({followedSellers.length})
               </h3>
 
               <div className="space-y-3">
                 {followedSellers.length === 0 ? (
                   <div className="py-4 text-center">
-                    <p className="text-sm text-[var(--color-text-muted)]">
+                    <p className="text-sm text-text-muted">
                       Sie folgen noch niemandem
                     </p>
                   </div>
@@ -137,17 +137,17 @@ export default function FollowingPage() {
                   followedSellers.map((seller) => (
                     <div
                       key={seller.id}
-                      className="flex items-center justify-between rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] p-3"
+                      className="flex items-center justify-between rounded-lg border border-border bg-bg p-3"
                     >
                       <div className="flex items-center gap-2">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-success)] text-xs font-bold text-[var(--ctp-crust)]">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-primary to-success text-xs font-bold text-ctp-crust">
                           {seller.name.charAt(0)}
                         </div>
                         <div>
-                          <div className="text-sm font-medium text-[var(--color-text)]">
+                          <div className="text-sm font-medium text-text">
                             {seller.name}
                           </div>
-                          <div className="text-xs text-[var(--color-text-muted)]">
+                          <div className="text-xs text-text-muted">
                             {seller.resources} Ressourcen
                           </div>
                         </div>
@@ -160,7 +160,7 @@ export default function FollowingPage() {
 
               <Link
                 href="/resources"
-                className="mt-4 block text-center text-sm text-[var(--color-primary)] transition-colors hover:text-[var(--color-primary-hover)]"
+                className="mt-4 block text-center text-sm text-primary transition-colors hover:text-primary-hover"
               >
                 Mehr Verkäufer entdecken →
               </Link>
@@ -168,21 +168,21 @@ export default function FollowingPage() {
 
             {/* Quick Stats */}
             <div className="card mt-6 p-6">
-              <h3 className="mb-4 font-semibold text-[var(--color-text)]">Ihre Statistiken</h3>
+              <h3 className="mb-4 font-semibold text-text">Ihre Statistiken</h3>
               <div className="space-y-3">
                 <div>
-                  <div className="text-2xl font-bold text-[var(--color-primary)]">
+                  <div className="text-2xl font-bold text-primary">
                     {updates.length}
                   </div>
-                  <div className="text-sm text-[var(--color-text-muted)]">
+                  <div className="text-sm text-text-muted">
                     Neue Updates diese Woche
                   </div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-[var(--color-success)]">
+                  <div className="text-2xl font-bold text-success">
                     {followedSellers.length}
                   </div>
-                  <div className="text-sm text-[var(--color-text-muted)]">Gefolgte Verkäufer</div>
+                  <div className="text-sm text-text-muted">Gefolgte Verkäufer</div>
                 </div>
               </div>
             </div>

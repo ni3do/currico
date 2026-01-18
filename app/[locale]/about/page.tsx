@@ -19,19 +19,19 @@ export default function AboutPage() {
         {/* Hero Section with gradient accent */}
         <section className="relative overflow-hidden">
           {/* Subtle gradient accent */}
-          <div className="pointer-events-none absolute top-0 right-0 h-full w-1/2 bg-gradient-to-l from-[var(--color-primary)]/5 to-transparent" />
+          <div className="pointer-events-none absolute top-0 right-0 h-full w-1/2 bg-gradient-to-l from-primary/5 to-transparent" />
 
           <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="grid items-center gap-12 py-16 lg:grid-cols-2 lg:gap-16 lg:py-24">
               {/* Left Side - Text Content */}
               <div className="order-2 lg:order-1">
-                <span className="mb-6 inline-block rounded-full bg-[var(--color-primary)]/10 px-4 py-1.5 text-sm font-medium text-[var(--color-primary)]">
+                <span className="mb-6 inline-block rounded-full bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary">
                   {t("hero.badge")}
                 </span>
-                <h1 className="text-3xl leading-tight font-bold tracking-tight text-[var(--color-text)] sm:text-4xl lg:text-5xl">
+                <h1 className="text-3xl leading-tight font-bold tracking-tight text-text sm:text-4xl lg:text-5xl">
                   {t("hero.title")}
                 </h1>
-                <p className="mt-6 max-w-xl text-xl leading-relaxed text-[var(--color-text-muted)]">
+                <p className="mt-6 max-w-xl text-xl leading-relaxed text-text-muted">
                   {t("hero.subtitle")}
                 </p>
               </div>
@@ -52,12 +52,12 @@ export default function AboutPage() {
         </section>
 
         {/* Mission Section */}
-        <section className="bg-[var(--color-bg-secondary)] py-20 lg:py-28">
+        <section className="bg-bg-secondary py-20 lg:py-28">
           <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-            <h2 className="mb-8 text-2xl font-semibold text-[var(--color-primary)] sm:text-3xl">
+            <h2 className="mb-8 text-2xl font-semibold text-primary sm:text-3xl">
               {t("mission.title")}
             </h2>
-            <div className="space-y-6 text-lg leading-relaxed text-[var(--color-text-secondary)]">
+            <div className="space-y-6 text-lg leading-relaxed text-text-secondary">
               <p>{t("mission.paragraph1")}</p>
               <p>{t("mission.paragraph2")}</p>
               <p>{t("mission.paragraph3")}</p>
@@ -68,16 +68,16 @@ export default function AboutPage() {
         {/* Core Values Section */}
         <section className="py-20 lg:py-28">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h2 className="mb-16 text-center text-2xl font-semibold text-[var(--color-primary)] sm:text-3xl">
+            <h2 className="mb-16 text-center text-2xl font-semibold text-primary sm:text-3xl">
               {t("values.title")}
             </h2>
 
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {/* Value 1 - Time Savings */}
               <div className="card p-8 text-center">
-                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-primary-light)]">
+                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-primary-light">
                   <svg
-                    className="h-8 w-8 text-[var(--color-primary)]"
+                    className="h-8 w-8 text-primary"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -90,19 +90,19 @@ export default function AboutPage() {
                     />
                   </svg>
                 </div>
-                <h3 className="mb-3 text-lg font-bold text-[var(--color-text)]">
+                <h3 className="mb-3 text-lg font-bold text-text">
                   {t("values.value1.title")}
                 </h3>
-                <p className="leading-relaxed text-[var(--color-text-muted)]">
+                <p className="leading-relaxed text-text-muted">
                   {t("values.value1.description")}
                 </p>
               </div>
 
               {/* Value 2 - Swiss Quality */}
               <div className="card p-8 text-center">
-                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-accent-light)]">
+                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-accent-light">
                   <svg
-                    className="h-8 w-8 text-[var(--color-accent)]"
+                    className="h-8 w-8 text-accent"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -115,19 +115,19 @@ export default function AboutPage() {
                     />
                   </svg>
                 </div>
-                <h3 className="mb-3 text-lg font-bold text-[var(--color-text)]">
+                <h3 className="mb-3 text-lg font-bold text-text">
                   {t("values.value2.title")}
                 </h3>
-                <p className="leading-relaxed text-[var(--color-text-muted)]">
+                <p className="leading-relaxed text-text-muted">
                   {t("values.value2.description")}
                 </p>
               </div>
 
               {/* Value 3 - Teacher Verified */}
               <div className="card p-8 text-center sm:col-span-2 lg:col-span-1">
-                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-success-light)]">
+                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-success-light">
                   <svg
-                    className="h-8 w-8 text-[var(--color-success)]"
+                    className="h-8 w-8 text-success"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -140,10 +140,10 @@ export default function AboutPage() {
                     />
                   </svg>
                 </div>
-                <h3 className="mb-3 text-lg font-bold text-[var(--color-text)]">
+                <h3 className="mb-3 text-lg font-bold text-text">
                   {t("values.value3.title")}
                 </h3>
-                <p className="leading-relaxed text-[var(--color-text-muted)]">
+                <p className="leading-relaxed text-text-muted">
                   {t("values.value3.description")}
                 </p>
               </div>
@@ -152,15 +152,15 @@ export default function AboutPage() {
         </section>
 
         {/* Origin Story Section */}
-        <section className="bg-[var(--color-bg-secondary)] py-20 lg:py-28">
+        <section className="bg-bg-secondary py-20 lg:py-28">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
               {/* Left Side - Text Content */}
               <div>
-                <h2 className="mb-8 text-2xl font-semibold text-[var(--color-primary)] sm:text-3xl">
+                <h2 className="mb-8 text-2xl font-semibold text-primary sm:text-3xl">
                   {t("origin.title")}
                 </h2>
-                <div className="space-y-6 text-lg leading-relaxed text-[var(--color-text-secondary)]">
+                <div className="space-y-6 text-lg leading-relaxed text-text-secondary">
                   <p>{t("origin.paragraph1")}</p>
                   <p>{t("origin.paragraph2")}</p>
                 </div>
@@ -184,9 +184,9 @@ export default function AboutPage() {
         <section className="py-20 lg:py-28">
           <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <div className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-full bg-[var(--color-primary)]/10">
+              <div className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
                 <svg
-                  className="h-10 w-10 text-[var(--color-primary)]"
+                  className="h-10 w-10 text-primary"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -199,17 +199,17 @@ export default function AboutPage() {
                   />
                 </svg>
               </div>
-              <h2 className="mb-8 text-2xl font-semibold text-[var(--color-primary)] sm:text-3xl">
+              <h2 className="mb-8 text-2xl font-semibold text-primary sm:text-3xl">
                 {t("founders.title")}
               </h2>
             </div>
-            <div className="space-y-6 text-lg leading-relaxed text-[var(--color-text-secondary)]">
+            <div className="space-y-6 text-lg leading-relaxed text-text-secondary">
               <p>{t("founders.paragraph1")}</p>
               <p>{t("founders.paragraph2")}</p>
               <p>{t("founders.paragraph3")}</p>
             </div>
-            <div className="mt-10 rounded-xl border border-[var(--color-primary)]/20 bg-[var(--color-primary)]/5 p-6 text-center">
-              <p className="text-lg font-medium text-[var(--color-primary)]">
+            <div className="mt-10 rounded-xl border border-primary/20 bg-primary/5 p-6 text-center">
+              <p className="text-lg font-medium text-primary">
                 {t("founders.highlight")}
               </p>
             </div>
@@ -217,7 +217,7 @@ export default function AboutPage() {
         </section>
 
         {/* CTA Section */}
-        <section className="bg-gradient-to-br from-[var(--ctp-blue)]/60 to-[var(--ctp-sapphire)]/60 py-20 lg:py-28">
+        <section className="bg-gradient-to-br from-ctp-blue/60 to-ctp-sapphire/60 py-20 lg:py-28">
           <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
             <h2 className="mb-6 text-2xl font-bold text-white sm:text-3xl lg:text-4xl">
               {t("cta.title")}
@@ -226,7 +226,7 @@ export default function AboutPage() {
             <div className="flex flex-col justify-center gap-4 sm:flex-row">
               <Link
                 href={`/${locale}/resources`}
-                className="inline-flex items-center justify-center rounded-lg bg-white px-6 py-3 font-semibold text-[var(--ctp-blue)] transition-colors hover:bg-white/90"
+                className="inline-flex items-center justify-center rounded-lg bg-white px-6 py-3 font-semibold text-ctp-blue transition-colors hover:bg-white/90"
               >
                 {t("cta.button")}
                 <svg className="ml-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -82,7 +82,7 @@ export function ThemeToggle() {
   if (!mounted) {
     return (
       <button
-        className="flex h-7 w-7 items-center justify-center rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] transition-colors hover:bg-[var(--color-surface-hover)]"
+        className="flex h-7 w-7 items-center justify-center rounded-md border border-border bg-surface transition-colors hover:bg-surface-hover"
         aria-label="Toggle theme"
         disabled
       >
@@ -94,7 +94,7 @@ export function ThemeToggle() {
   return (
     <button
       onClick={cycleTheme}
-      className="group relative flex h-7 w-7 items-center justify-center rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-secondary)] transition-all duration-200 hover:bg-[var(--color-surface-elevated)] hover:text-[var(--color-text)]"
+      className="group relative flex h-7 w-7 items-center justify-center rounded-md border border-border bg-surface text-text-secondary transition-all duration-200 hover:bg-surface-elevated hover:text-text"
       aria-label={`Current theme: ${labels[theme]}. Click to change.`}
       title={labels[theme]}
     >
@@ -122,11 +122,11 @@ export function ThemeSettings() {
         {themes.map((t) => (
           <div
             key={t}
-            className="flex items-center gap-3 rounded-lg border border-[var(--color-border)] p-3 opacity-50"
+            className="flex items-center gap-3 rounded-lg border border-border p-3 opacity-50"
           >
-            <div className="h-5 w-5 rounded-full border-2 border-[var(--color-border)]" />
+            <div className="h-5 w-5 rounded-full border-2 border-border" />
             <span className="h-[14px] w-[14px]" />
-            <span className="text-[var(--color-text)]">{settingsLabels[t]}</span>
+            <span className="text-text">{settingsLabels[t]}</span>
           </div>
         ))}
       </div>
@@ -140,20 +140,20 @@ export function ThemeSettings() {
           key={t}
           className={`flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-colors ${
             theme === t
-              ? "border-[var(--color-primary)] bg-[var(--color-primary-light)]"
-              : "border-[var(--color-border)] hover:border-[var(--color-border-hover)]"
+              ? "border-primary bg-primary/15"
+              : "border-border hover:border-border-strong"
           }`}
           onClick={() => setTheme(t)}
         >
           <div
             className={`flex h-5 w-5 items-center justify-center rounded-full border-2 ${
-              theme === t ? "border-[var(--color-primary)]" : "border-[var(--color-border)]"
+              theme === t ? "border-primary" : "border-border"
             }`}
           >
-            {theme === t && <div className="h-2.5 w-2.5 rounded-full bg-[var(--color-primary)]" />}
+            {theme === t && <div className="h-2.5 w-2.5 rounded-full bg-primary" />}
           </div>
-          <span className="text-[var(--color-text-muted)]">{icons[t]}</span>
-          <span className="text-[var(--color-text)]">{settingsLabels[t]}</span>
+          <span className="text-text-muted">{icons[t]}</span>
+          <span className="text-text">{settingsLabels[t]}</span>
         </label>
       ))}
     </div>

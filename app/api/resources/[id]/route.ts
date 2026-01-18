@@ -72,6 +72,7 @@ export async function GET(
         subjects: true,
         cycles: true,
         is_approved: true,
+        preview_url: true,
       },
       take: 3,
       orderBy: { created_at: "desc" },
@@ -109,6 +110,7 @@ export async function GET(
       subject: r.subjects[0] || "Allgemein",
       cycle: r.cycles[0] || "",
       verified: r.is_approved,
+      previewUrl: r.preview_url,
     }));
 
     return NextResponse.json({

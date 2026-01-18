@@ -175,7 +175,7 @@ export function CurriculumAutocomplete({
     <div className={`relative ${className}`}>
       <div className="relative">
         <svg
-          className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-[var(--color-text-muted)]"
+          className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-text-muted"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -201,12 +201,12 @@ export function CurriculumAutocomplete({
           }}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
-          className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] py-3 pr-4 pl-10 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
+          className="w-full rounded-xl border border-border bg-bg py-3 pr-4 pl-10 text-text placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
         />
         {loading && (
           <div className="absolute top-1/2 right-3 -translate-y-1/2">
             <svg
-              className="h-5 w-5 animate-spin text-[var(--color-text-muted)]"
+              className="h-5 w-5 animate-spin text-text-muted"
               fill="none"
               viewBox="0 0 24 24"
             >
@@ -230,7 +230,7 @@ export function CurriculumAutocomplete({
 
       {/* Code detection hint */}
       {value && isLikelyCode(value) && (
-        <div className="mt-1 text-xs text-[var(--color-primary)]">
+        <div className="mt-1 text-xs text-primary">
           LP21-Code erkannt - Ergebnisse werden nach Code gefiltert
         </div>
       )}
@@ -239,7 +239,7 @@ export function CurriculumAutocomplete({
       {showDropdown && results.length > 0 && (
         <div
           ref={dropdownRef}
-          className="absolute z-50 mt-2 max-h-80 w-full overflow-y-auto rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-xl"
+          className="absolute z-50 mt-2 max-h-80 w-full overflow-y-auto rounded-xl border border-border bg-surface shadow-xl"
         >
           {results.map((result, index) => (
             <button
@@ -247,8 +247,8 @@ export function CurriculumAutocomplete({
               onClick={() => handleSelect(result)}
               className={`flex w-full items-start gap-3 px-4 py-3 text-left transition-colors ${
                 index === selectedIndex
-                  ? "bg-[var(--color-primary)]/10"
-                  : "hover:bg-[var(--color-surface-elevated)]"
+                  ? "bg-primary/10"
+                  : "hover:bg-surface-elevated"
               }`}
             >
               <div className="flex-shrink-0 pt-0.5">
@@ -263,7 +263,7 @@ export function CurriculumAutocomplete({
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
                   {result.cycle && (
-                    <span className="rounded bg-[var(--color-surface-elevated)] px-1.5 py-0.5 text-xs text-[var(--color-text-muted)]">
+                    <span className="rounded bg-surface-elevated px-1.5 py-0.5 text-xs text-text-muted">
                       Zyklus {result.cycle}
                     </span>
                   )}
@@ -278,7 +278,7 @@ export function CurriculumAutocomplete({
                     </span>
                   )}
                 </div>
-                <p className="mt-1 line-clamp-2 text-sm text-[var(--color-text-muted)]">
+                <p className="mt-1 line-clamp-2 text-sm text-text-muted">
                   {result.description_de}
                 </p>
               </div>
@@ -289,8 +289,8 @@ export function CurriculumAutocomplete({
 
       {/* No results message */}
       {showDropdown && value.length >= 2 && !loading && results.length === 0 && (
-        <div className="absolute z-50 mt-2 w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 text-center shadow-xl">
-          <p className="text-sm text-[var(--color-text-muted)]">
+        <div className="absolute z-50 mt-2 w-full rounded-xl border border-border bg-surface p-4 text-center shadow-xl">
+          <p className="text-sm text-text-muted">
             Keine Ergebnisse für &quot;{value}&quot;
           </p>
         </div>

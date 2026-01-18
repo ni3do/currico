@@ -160,11 +160,11 @@ export function FilterSidebar({
     <aside className={`space-y-4 ${className}`}>
       {/* Header with Clear All */}
       <div className="flex items-center justify-between">
-        <h2 className="font-semibold text-[var(--color-text)]">Filter</h2>
+        <h2 className="font-semibold text-text">Filter</h2>
         {hasActiveFilters && (
           <button
             onClick={clearAllFilters}
-            className="text-sm text-[var(--color-primary)] hover:underline"
+            className="text-sm text-primary hover:underline"
           >
             Alle zurücksetzen
           </button>
@@ -172,10 +172,10 @@ export function FilterSidebar({
       </div>
 
       {/* Cycle Filter */}
-      <div className="overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]">
+      <div className="overflow-hidden rounded-xl border border-border bg-surface">
         <button
           onClick={() => toggleSection("cycle")}
-          className="flex w-full items-center justify-between px-4 py-3 text-left font-medium text-[var(--color-text)] hover:bg-[var(--color-surface-elevated)]"
+          className="flex w-full items-center justify-between px-4 py-3 text-left font-medium text-text hover:bg-surface-elevated"
         >
           <span>Zyklus</span>
           <svg
@@ -188,15 +188,15 @@ export function FilterSidebar({
           </svg>
         </button>
         {expandedSections.cycle && (
-          <div className="border-t border-[var(--color-border)] p-3">
+          <div className="border-t border-border p-3">
             <div className="space-y-2">
               {CYCLES.map((c) => (
                 <label
                   key={c.value}
                   className={`flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 transition-colors ${
                     filters.cycle === c.value
-                      ? "bg-[var(--color-primary)]/10"
-                      : "hover:bg-[var(--color-surface-elevated)]"
+                      ? "bg-primary/10"
+                      : "hover:bg-surface-elevated"
                   }`}
                 >
                   <input
@@ -205,11 +205,11 @@ export function FilterSidebar({
                     value={c.value}
                     checked={filters.cycle === c.value}
                     onChange={(e) => updateFilter("cycle", e.target.value)}
-                    className="h-4 w-4 text-[var(--color-primary)]"
+                    className="h-4 w-4 text-primary"
                   />
                   <div>
-                    <span className="font-medium text-[var(--color-text)]">{c.label}</span>
-                    <span className="ml-2 text-xs text-[var(--color-text-muted)]">
+                    <span className="font-medium text-text">{c.label}</span>
+                    <span className="ml-2 text-xs text-text-muted">
                       {c.description}
                     </span>
                   </div>
@@ -218,7 +218,7 @@ export function FilterSidebar({
               {filters.cycle && (
                 <button
                   onClick={() => updateFilter("cycle", "")}
-                  className="w-full text-center text-xs text-[var(--color-text-muted)] hover:text-[var(--color-primary)]"
+                  className="w-full text-center text-xs text-text-muted hover:text-primary"
                 >
                   Auswahl aufheben
                 </button>
@@ -229,10 +229,10 @@ export function FilterSidebar({
       </div>
 
       {/* Subject Filter */}
-      <div className="overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]">
+      <div className="overflow-hidden rounded-xl border border-border bg-surface">
         <button
           onClick={() => toggleSection("subject")}
-          className="flex w-full items-center justify-between px-4 py-3 text-left font-medium text-[var(--color-text)] hover:bg-[var(--color-surface-elevated)]"
+          className="flex w-full items-center justify-between px-4 py-3 text-left font-medium text-text hover:bg-surface-elevated"
         >
           <span>Fachbereich</span>
           <svg
@@ -245,7 +245,7 @@ export function FilterSidebar({
           </svg>
         </button>
         {expandedSections.subject && (
-          <div className="border-t border-[var(--color-border)] p-3">
+          <div className="border-t border-border p-3">
             <div className="flex flex-wrap gap-2">
               {subjects.map((s) => (
                 <button
@@ -253,7 +253,7 @@ export function FilterSidebar({
                   onClick={() => updateFilter("subject", filters.subject === s.code ? "" : s.code)}
                   className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-all ${
                     filters.subject === s.code
-                      ? "ring-2 ring-offset-2 ring-offset-[var(--color-surface)]"
+                      ? "ring-2 ring-offset-2 ring-offset-surface"
                       : "opacity-80 hover:opacity-100"
                   }`}
                   style={{
@@ -274,10 +274,10 @@ export function FilterSidebar({
       </div>
 
       {/* Competency Search */}
-      <div className="overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]">
+      <div className="overflow-hidden rounded-xl border border-border bg-surface">
         <button
           onClick={() => toggleSection("competency")}
-          className="flex w-full items-center justify-between px-4 py-3 text-left font-medium text-[var(--color-text)] hover:bg-[var(--color-surface-elevated)]"
+          className="flex w-full items-center justify-between px-4 py-3 text-left font-medium text-text hover:bg-surface-elevated"
         >
           <span>LP21 Kompetenz</span>
           <svg
@@ -290,15 +290,15 @@ export function FilterSidebar({
           </svg>
         </button>
         {expandedSections.competency && (
-          <div className="border-t border-[var(--color-border)] p-3">
+          <div className="border-t border-border p-3">
             <input
               type="text"
               value={filters.competency}
               onChange={(e) => updateFilter("competency", e.target.value)}
               placeholder="z.B. MA.1.A oder D.2.B"
-              className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
+              className="w-full rounded-lg border border-border bg-bg px-3 py-2 text-sm text-text placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
             />
-            <p className="mt-2 text-xs text-[var(--color-text-muted)]">
+            <p className="mt-2 text-xs text-text-muted">
               Geben Sie einen LP21-Kompetenzcode ein (z.B. MA.1.A.1)
             </p>
           </div>
@@ -307,10 +307,10 @@ export function FilterSidebar({
 
       {/* Transversal Competencies */}
       {transversals.length > 0 && (
-        <div className="overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]">
+        <div className="overflow-hidden rounded-xl border border-border bg-surface">
           <button
             onClick={() => toggleSection("transversal")}
-            className="flex w-full items-center justify-between px-4 py-3 text-left font-medium text-[var(--color-text)] hover:bg-[var(--color-surface-elevated)]"
+            className="flex w-full items-center justify-between px-4 py-3 text-left font-medium text-text hover:bg-surface-elevated"
           >
             <span>Überfachliche Kompetenzen</span>
             <svg
@@ -328,10 +328,10 @@ export function FilterSidebar({
             </svg>
           </button>
           {expandedSections.transversal && (
-            <div className="space-y-3 border-t border-[var(--color-border)] p-3">
+            <div className="space-y-3 border-t border-border p-3">
               {Object.entries(groupedTransversals).map(([category, items]) => (
                 <div key={category}>
-                  <div className="mb-1 text-xs font-semibold tracking-wide text-[var(--color-text-muted)] uppercase">
+                  <div className="mb-1 text-xs font-semibold tracking-wide text-text-muted uppercase">
                     {categoryLabels[category] || category}
                   </div>
                   <div className="space-y-1">
@@ -340,8 +340,8 @@ export function FilterSidebar({
                         key={t.id}
                         className={`flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 transition-colors ${
                           filters.transversal === t.code
-                            ? "bg-[var(--color-primary)]/10"
-                            : "hover:bg-[var(--color-surface-elevated)]"
+                            ? "bg-primary/10"
+                            : "hover:bg-surface-elevated"
                         }`}
                       >
                         <input
@@ -359,7 +359,7 @@ export function FilterSidebar({
                         >
                           {t.code}
                         </span>
-                        <span className="text-sm text-[var(--color-text)]">{t.name_de}</span>
+                        <span className="text-sm text-text">{t.name_de}</span>
                       </label>
                     ))}
                   </div>
@@ -368,7 +368,7 @@ export function FilterSidebar({
               {filters.transversal && (
                 <button
                   onClick={() => updateFilter("transversal", "")}
-                  className="w-full text-center text-xs text-[var(--color-text-muted)] hover:text-[var(--color-primary)]"
+                  className="w-full text-center text-xs text-text-muted hover:text-primary"
                 >
                   Auswahl aufheben
                 </button>
@@ -380,10 +380,10 @@ export function FilterSidebar({
 
       {/* BNE Themes */}
       {bneThemes.length > 0 && (
-        <div className="overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]">
+        <div className="overflow-hidden rounded-xl border border-border bg-surface">
           <button
             onClick={() => toggleSection("bne")}
-            className="flex w-full items-center justify-between px-4 py-3 text-left font-medium text-[var(--color-text)] hover:bg-[var(--color-surface-elevated)]"
+            className="flex w-full items-center justify-between px-4 py-3 text-left font-medium text-text hover:bg-surface-elevated"
           >
             <span>BNE Themen</span>
             <svg
@@ -401,14 +401,14 @@ export function FilterSidebar({
             </svg>
           </button>
           {expandedSections.bne && (
-            <div className="space-y-1 border-t border-[var(--color-border)] p-3">
+            <div className="space-y-1 border-t border-border p-3">
               {bneThemes.map((b) => (
                 <label
                   key={b.id}
                   className={`flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 transition-colors ${
                     filters.bne === b.code
-                      ? "bg-[var(--color-primary)]/10"
-                      : "hover:bg-[var(--color-surface-elevated)]"
+                      ? "bg-primary/10"
+                      : "hover:bg-surface-elevated"
                   }`}
                 >
                   <input
@@ -426,13 +426,13 @@ export function FilterSidebar({
                   >
                     {b.code}
                   </span>
-                  <span className="line-clamp-1 text-sm text-[var(--color-text)]">{b.name_de}</span>
+                  <span className="line-clamp-1 text-sm text-text">{b.name_de}</span>
                 </label>
               ))}
               {filters.bne && (
                 <button
                   onClick={() => updateFilter("bne", "")}
-                  className="w-full text-center text-xs text-[var(--color-text-muted)] hover:text-[var(--color-primary)]"
+                  className="w-full text-center text-xs text-text-muted hover:text-primary"
                 >
                   Auswahl aufheben
                 </button>
@@ -443,7 +443,7 @@ export function FilterSidebar({
       )}
 
       {/* M&I Integration Toggle */}
-      <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
+      <div className="rounded-xl border border-border bg-surface p-4">
         <label className="flex cursor-pointer items-center justify-between">
           <div className="flex items-center gap-2">
             <svg
@@ -459,7 +459,7 @@ export function FilterSidebar({
                 d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
               />
             </svg>
-            <span className="font-medium text-[var(--color-text)]">Medien & Informatik</span>
+            <span className="font-medium text-text">Medien & Informatik</span>
           </div>
           <div className="relative">
             <input
@@ -468,11 +468,11 @@ export function FilterSidebar({
               onChange={(e) => updateFilter("miIntegrated", e.target.checked)}
               className="peer sr-only"
             />
-            <div className="h-6 w-11 rounded-full bg-[var(--color-border)] transition-colors peer-checked:bg-[#6366f1]" />
-            <div className="absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-[var(--color-bg)] transition-transform peer-checked:translate-x-5" />
+            <div className="h-6 w-11 rounded-full bg-[border] transition-colors peer-checked:bg-[#6366f1]" />
+            <div className="absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-bg transition-transform peer-checked:translate-x-5" />
           </div>
         </label>
-        <p className="mt-2 text-xs text-[var(--color-text-muted)]">
+        <p className="mt-2 text-xs text-text-muted">
           Nur Materialien mit M&I Integration anzeigen
         </p>
       </div>

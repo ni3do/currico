@@ -189,8 +189,8 @@ export function CurriculumSelector({
     <div className="space-y-6">
       {/* Cycle Selection */}
       <div>
-        <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
-          Zyklus <span className="text-[var(--color-error)]">*</span>
+        <label className="mb-2 block text-sm font-medium text-text">
+          Zyklus <span className="text-error">*</span>
         </label>
         <div className="grid gap-3 sm:grid-cols-3">
           {CYCLES.map((c) => (
@@ -198,8 +198,8 @@ export function CurriculumSelector({
               key={c.value}
               className={`flex cursor-pointer flex-col rounded-xl border-2 p-4 transition-all ${
                 cycle === c.value
-                  ? "border-[var(--color-primary)] bg-[var(--color-primary)]/10"
-                  : "border-[var(--color-border)] bg-[var(--color-bg)] hover:border-[var(--color-primary)]/50"
+                  ? "border-primary bg-primary/10"
+                  : "border-border bg-bg hover:border-primary/50"
               }`}
             >
               <div className="flex items-center gap-2">
@@ -209,11 +209,11 @@ export function CurriculumSelector({
                   value={c.value}
                   checked={cycle === c.value}
                   onChange={(e) => onCycleChange(e.target.value)}
-                  className="h-4 w-4 text-[var(--color-primary)]"
+                  className="h-4 w-4 text-primary"
                 />
-                <span className="font-medium text-[var(--color-text)]">{c.label}</span>
+                <span className="font-medium text-text">{c.label}</span>
               </div>
-              <span className="mt-1 text-xs text-[var(--color-text-muted)]">{c.description}</span>
+              <span className="mt-1 text-xs text-text-muted">{c.description}</span>
             </label>
           ))}
         </div>
@@ -223,8 +223,8 @@ export function CurriculumSelector({
       <div className="grid gap-4 sm:grid-cols-2">
         {/* Subject Selection */}
         <div>
-          <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
-            Fach <span className="text-[var(--color-error)]">*</span>
+          <label className="mb-2 block text-sm font-medium text-text">
+            Fach <span className="text-error">*</span>
           </label>
           <select
             value={subject}
@@ -239,7 +239,7 @@ export function CurriculumSelector({
               onCompetenciesChange([]); // Reset competencies when subject changes
               onLehrmittelChange([]); // Reset lehrmittel when subject changes
             }}
-            className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
+            className="w-full rounded-xl border border-border bg-bg px-4 py-3 text-text focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
           >
             <option value="">Fach wählen...</option>
             {curriculumData?.subjects.map((s) => (
@@ -252,11 +252,11 @@ export function CurriculumSelector({
 
         {/* Canton Selection */}
         <div>
-          <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">Kanton</label>
+          <label className="mb-2 block text-sm font-medium text-text">Kanton</label>
           <select
             value={canton}
             onChange={(e) => onCantonChange(e.target.value)}
-            className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
+            className="w-full rounded-xl border border-border bg-bg px-4 py-3 text-text focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
           >
             <option value="">Optional: Kanton wählen...</option>
             {CANTONS.map((c) => (
@@ -271,21 +271,21 @@ export function CurriculumSelector({
       {/* Competencies Multi-Select */}
       {subject && (
         <div ref={competencyRef} className="relative">
-          <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
+          <label className="mb-2 block text-sm font-medium text-text">
             Lehrplan 21 Kompetenzen
           </label>
 
           {/* Selected competencies display */}
           <div
             onClick={() => setShowCompetencyDropdown(!showCompetencyDropdown)}
-            className="min-h-[48px] w-full cursor-pointer rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 focus-within:border-[var(--color-primary)]"
+            className="min-h-[48px] w-full cursor-pointer rounded-xl border border-border bg-bg px-4 py-3 focus-within:border-primary"
           >
             {selectedCompetencyDetails.length > 0 ? (
               <div className="flex flex-wrap gap-2">
                 {selectedCompetencyDetails.map((comp) => (
                   <span
                     key={comp.code}
-                    className="inline-flex items-center gap-1 rounded-lg bg-[var(--color-primary)]/20 px-2 py-1 text-sm font-medium text-[var(--color-primary)]"
+                    className="inline-flex items-center gap-1 rounded-lg bg-primary/20 px-2 py-1 text-sm font-medium text-primary"
                   >
                     {comp.code}
                     <button
@@ -294,7 +294,7 @@ export function CurriculumSelector({
                         e.stopPropagation();
                         toggleCompetency(comp.code);
                       }}
-                      className="ml-1 hover:text-[var(--color-error)]"
+                      className="ml-1 hover:text-error"
                     >
                       <svg
                         className="h-3 w-3"
@@ -314,7 +314,7 @@ export function CurriculumSelector({
                 ))}
               </div>
             ) : (
-              <span className="text-[var(--color-text-muted)]">
+              <span className="text-text-muted">
                 {loading ? "Lade Kompetenzen..." : "Kompetenzen auswählen..."}
               </span>
             )}
@@ -322,15 +322,15 @@ export function CurriculumSelector({
 
           {/* Dropdown */}
           {showCompetencyDropdown && (
-            <div className="absolute z-50 mt-2 max-h-80 w-full overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-xl">
+            <div className="absolute z-50 mt-2 max-h-80 w-full overflow-hidden rounded-xl border border-border bg-surface shadow-xl">
               {/* Search */}
-              <div className="sticky top-0 border-b border-[var(--color-border)] bg-[var(--color-surface)] p-3">
+              <div className="sticky top-0 border-b border-border bg-surface p-3">
                 <input
                   type="text"
                   value={competencySearch}
                   onChange={(e) => setCompetencySearch(e.target.value)}
                   placeholder="Suchen (z.B. MA.1.A oder Addition)..."
-                  className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] px-3 py-2 text-sm text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none"
+                  className="w-full rounded-lg border border-border bg-bg px-3 py-2 text-sm text-text focus:border-primary focus:outline-none"
                   onClick={(e) => e.stopPropagation()}
                 />
               </div>
@@ -338,13 +338,13 @@ export function CurriculumSelector({
               {/* Grouped competencies */}
               <div className="max-h-60 overflow-y-auto p-2">
                 {Object.keys(groupedFiltered).length === 0 ? (
-                  <div className="px-3 py-4 text-center text-sm text-[var(--color-text-muted)]">
+                  <div className="px-3 py-4 text-center text-sm text-text-muted">
                     {loading ? "Lade..." : "Keine Kompetenzen gefunden"}
                   </div>
                 ) : (
                   Object.entries(groupedFiltered).map(([group, comps]) => (
                     <div key={group} className="mb-3">
-                      <div className="mb-1 px-2 text-xs font-semibold tracking-wide text-[var(--color-text-muted)] uppercase">
+                      <div className="mb-1 px-2 text-xs font-semibold tracking-wide text-text-muted uppercase">
                         {group}
                       </div>
                       {comps.map((comp) => (
@@ -354,20 +354,20 @@ export function CurriculumSelector({
                           onClick={() => toggleCompetency(comp.code)}
                           className={`flex w-full items-start gap-3 rounded-lg px-3 py-2 text-left transition-colors ${
                             competencies.includes(comp.code)
-                              ? "bg-[var(--color-primary)]/20"
-                              : "hover:bg-[var(--color-surface-elevated)]"
+                              ? "bg-primary/20"
+                              : "hover:bg-surface-elevated"
                           }`}
                         >
                           <span
                             className={`mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded border ${
                               competencies.includes(comp.code)
-                                ? "border-[var(--color-primary)] bg-[var(--color-primary)]"
-                                : "border-[var(--color-border)]"
+                                ? "border-primary bg-primary"
+                                : "border-border"
                             }`}
                           >
                             {competencies.includes(comp.code) && (
                               <svg
-                                className="h-3 w-3 text-[var(--btn-primary-text)]"
+                                className="h-3 w-3 text-text-on-accent"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -383,14 +383,14 @@ export function CurriculumSelector({
                           </span>
                           <div className="flex-1">
                             <div className="flex items-center gap-2">
-                              <span className="font-mono text-sm font-semibold text-[var(--color-primary)]">
+                              <span className="font-mono text-sm font-semibold text-primary">
                                 {comp.code}
                               </span>
-                              <span className="rounded bg-[var(--color-surface-elevated)] px-1.5 py-0.5 text-xs text-[var(--color-text-muted)]">
+                              <span className="rounded bg-surface-elevated px-1.5 py-0.5 text-xs text-text-muted">
                                 Zyklus {comp.cycle}
                               </span>
                             </div>
-                            <p className="mt-0.5 line-clamp-2 text-xs text-[var(--color-text-muted)]">
+                            <p className="mt-0.5 line-clamp-2 text-xs text-text-muted">
                               {comp.description_de}
                             </p>
                           </div>
@@ -403,7 +403,7 @@ export function CurriculumSelector({
             </div>
           )}
 
-          <p className="mt-1 text-xs text-[var(--color-text-muted)]">
+          <p className="mt-1 text-xs text-text-muted">
             Wählen Sie die Kompetenzen aus dem Lehrplan 21, die zu Ihrer Ressource passen
           </p>
         </div>
@@ -412,21 +412,21 @@ export function CurriculumSelector({
       {/* Lehrmittel Multi-Select */}
       {subject && curriculumData?.lehrmittel && curriculumData.lehrmittel.length > 0 && (
         <div ref={lehrmittelRef} className="relative">
-          <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
+          <label className="mb-2 block text-sm font-medium text-text">
             Passend zu Lehrmittel
           </label>
 
           {/* Selected lehrmittel display */}
           <div
             onClick={() => setShowLehrmittelDropdown(!showLehrmittelDropdown)}
-            className="min-h-[48px] w-full cursor-pointer rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 focus-within:border-[var(--color-primary)]"
+            className="min-h-[48px] w-full cursor-pointer rounded-xl border border-border bg-bg px-4 py-3 focus-within:border-primary"
           >
             {selectedLehrmittelDetails.length > 0 ? (
               <div className="flex flex-wrap gap-2">
                 {selectedLehrmittelDetails.map((lm) => (
                   <span
                     key={lm.id}
-                    className="inline-flex items-center gap-1 rounded-lg bg-[var(--color-success)]/20 px-2 py-1 text-sm font-medium text-[var(--color-success)]"
+                    className="inline-flex items-center gap-1 rounded-lg bg-success/20 px-2 py-1 text-sm font-medium text-success"
                   >
                     {lm.name}
                     <button
@@ -435,7 +435,7 @@ export function CurriculumSelector({
                         e.stopPropagation();
                         toggleLehrmittel(lm.id);
                       }}
-                      className="ml-1 hover:text-[var(--color-error)]"
+                      className="ml-1 hover:text-error"
                     >
                       <svg
                         className="h-3 w-3"
@@ -455,7 +455,7 @@ export function CurriculumSelector({
                 ))}
               </div>
             ) : (
-              <span className="text-[var(--color-text-muted)]">
+              <span className="text-text-muted">
                 Optional: Lehrmittel auswählen...
               </span>
             )}
@@ -463,7 +463,7 @@ export function CurriculumSelector({
 
           {/* Dropdown */}
           {showLehrmittelDropdown && (
-            <div className="absolute z-50 mt-2 max-h-60 w-full overflow-y-auto rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-2 shadow-xl">
+            <div className="absolute z-50 mt-2 max-h-60 w-full overflow-y-auto rounded-xl border border-border bg-surface p-2 shadow-xl">
               {curriculumData.lehrmittel.map((lm) => (
                 <button
                   key={lm.id}
@@ -471,20 +471,20 @@ export function CurriculumSelector({
                   onClick={() => toggleLehrmittel(lm.id)}
                   className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors ${
                     lehrmittelIds.includes(lm.id)
-                      ? "bg-[var(--color-success)]/20"
-                      : "hover:bg-[var(--color-surface-elevated)]"
+                      ? "bg-success/20"
+                      : "hover:bg-surface-elevated"
                   }`}
                 >
                   <span
                     className={`flex h-4 w-4 flex-shrink-0 items-center justify-center rounded border ${
                       lehrmittelIds.includes(lm.id)
-                        ? "border-[var(--color-success)] bg-[var(--color-success)]"
-                        : "border-[var(--color-border)]"
+                        ? "border-success bg-success"
+                        : "border-border"
                     }`}
                   >
                     {lehrmittelIds.includes(lm.id) && (
                       <svg
-                        className="h-3 w-3 text-[var(--btn-primary-text)]"
+                        className="h-3 w-3 text-text-on-accent"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -499,8 +499,8 @@ export function CurriculumSelector({
                     )}
                   </span>
                   <div className="flex-1">
-                    <div className="font-medium text-[var(--color-text)]">{lm.name}</div>
-                    <div className="text-xs text-[var(--color-text-muted)]">
+                    <div className="font-medium text-text">{lm.name}</div>
+                    <div className="text-xs text-text-muted">
                       {lm.publisher} • Zyklus {lm.cycles.join(", ")}
                     </div>
                   </div>
@@ -509,17 +509,17 @@ export function CurriculumSelector({
             </div>
           )}
 
-          <p className="mt-1 text-xs text-[var(--color-text-muted)]">
+          <p className="mt-1 text-xs text-text-muted">
             Wählen Sie Lehrmittel, zu denen Ihre Ressource passt (hilft Lehrpersonen bei der Suche)
           </p>
         </div>
       )}
 
       {/* Info Box */}
-      <div className="rounded-xl border border-[var(--color-info)]/30 bg-[var(--color-info)]/10 p-4">
+      <div className="rounded-xl border border-info/30 bg-info/10 p-4">
         <div className="flex gap-3">
           <svg
-            className="h-5 w-5 flex-shrink-0 text-[var(--color-info)]"
+            className="h-5 w-5 flex-shrink-0 text-info"
             fill="currentColor"
             viewBox="0 0 20 20"
           >
@@ -529,7 +529,7 @@ export function CurriculumSelector({
               clipRule="evenodd"
             />
           </svg>
-          <div className="text-sm text-[var(--color-text)]">
+          <div className="text-sm text-text">
             <strong>Tipp:</strong> Je genauer Sie Ihre Ressource dem Lehrplan 21 zuordnen, desto
             besser finden Lehrpersonen Ihre Materialien. Wählen Sie alle relevanten Kompetenzen aus.
           </div>

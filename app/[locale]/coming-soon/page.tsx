@@ -8,9 +8,9 @@ export default function ComingSoonPage() {
       <TopBar />
       <main className="flex flex-1 items-center justify-center px-4 py-16">
         <div className="max-w-2xl text-center">
-          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-primary-light)]">
+          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-primary-light">
             <svg
-              className="h-8 w-8 text-[var(--color-primary)]"
+              className="h-8 w-8 text-primary"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -23,14 +23,14 @@ export default function ComingSoonPage() {
               />
             </svg>
           </div>
-          <h1 className="mb-4 text-4xl font-bold text-[var(--color-text)]">Bald verfügbar</h1>
-          <p className="mb-8 text-lg text-[var(--color-text-muted)]">
+          <h1 className="mb-4 text-4xl font-bold text-text">Bald verfügbar</h1>
+          <p className="mb-8 text-lg text-text-muted">
             Diese Funktion ist noch in Entwicklung. Wir arbeiten daran, sie so schnell wie möglich
             verfügbar zu machen.
           </p>
           <Link
             href="/"
-            className="inline-flex items-center justify-center rounded-lg bg-[var(--color-primary)] px-6 py-3.5 font-semibold text-[var(--btn-primary-text)] transition-all hover:-translate-y-0.5 hover:bg-[var(--color-primary-hover)] hover:shadow-[0_8px_20px_rgba(0,82,204,0.25)]"
+            className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3.5 font-semibold text-text-on-accent transition-all hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-[0_8px_20px_rgba(0,82,204,0.25)]"
           >
             <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path

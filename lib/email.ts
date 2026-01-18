@@ -276,3 +276,77 @@ export async function sendPurchaseConfirmationEmail({
     };
   }
 }
+
+/**
+ * Send a contact form notification email to admins
+ */
+export async function sendContactNotificationEmail({
+  name,
+  email,
+  subject,
+  message,
+}: {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}): Promise<SendEmailResult> {
+  try {
+    const resend = getResendClient();
+    const adminEmail = process.env.ADMIN_EMAIL || "admin@easylehrer.ch";
+
+    const subjectLabels: Record<string, string> = {
+      general: "Allgemeine Anfrage",
+      support: "Support",
+      sales: "Verkauf",
+      partnership: "Partnerschaft",
+      feedback: "Feedback",
+    };
+
+    const { error } = await resend.emails.send({
+      from: getFromEmail(),
+      to: adminEmail,
+      subject: `[${APP_NAME}] Neue Kontaktanfrage: ${subjectLabels[subject] || subject}`,
+      text: `Neue Kontaktanfrage von ${name} (${email})
+
+Betreff: ${subjectLabels[subject] || subject}
+
+Nachricht:
+${message}
+
+---
+Diese E-Mail wurde automatisch generiert.`,
+      html: `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Neue Kontaktanfrage</title>
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+  <h2 style="color: #1e3a5f;">Neue Kontaktanfrage</h2>
+  <p><strong>Von:</strong> ${name} (${email})</p>
+  <p><strong>Betreff:</strong> ${subjectLabels[subject] || subject}</p>
+  <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;">
+  <p><strong>Nachricht:</strong></p>
+  <p style="white-space: pre-wrap;">${message}</p>
+  <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;">
+  <p style="color: #6b7280; font-size: 12px;">Diese E-Mail wurde automatisch generiert.</p>
+</body>
+</html>`,
+    });
+
+    if (error) {
+      console.error("Failed to send contact notification email:", error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true };
+  } catch (err) {
+    console.error("Error sending contact notification email:", err);
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : "Unknown error",
+    };
+  }
+}

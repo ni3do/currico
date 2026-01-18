@@ -51,7 +51,6 @@ model VerificationToken {
   @@map("verification_tokens")
 }
 
-// Email verification tokens for confirming user email addresses
 model EmailVerificationToken {
   id         String   @id @default(cuid())
   token      String   @unique
@@ -87,43 +86,51 @@ model User {
   cycles       String[] // ["Zyklus 1", "Zyklus 2", "Zyklus 3"]
   cantons      String[] // ["Zürich", "Bern"] - Swiss cantons
 
-  // ============ PRIVATE DATA ============
-  password_hash String? // For credential-based auth
+  // ============ PRIVATE ADMIN DATA ============
+  password_hash    String? // For credential-based auth
+  legal_first_name String? // For invoices/payouts
+  legal_last_name  String? // For invoices/payouts
+  iban             String? // Swiss IBAN for payouts
+  address_street   String?
+  address_city     String?
+  address_postal   String? // Postal code
+  address_country  String  @default("CH")
 
-  // ============ ROLE & STATUS ============
-  role         UserRole @default(BUYER)
-  is_protected Boolean  @default(false) // Protected users cannot be deleted (e.g., super admin)
+  // ============ LOGIC/STATUS FIELDS ============
+  role            UserRole @default(BUYER)
+  is_seller       Boolean  @default(false)
+  seller_verified Boolean  @default(false) // Admin-verified seller
+  payout_enabled  Boolean  @default(false) // True when IBAN validated
+  is_protected    Boolean  @default(false) // Protected users cannot be deleted (e.g., super admin)
 
-  // ============ STRIPE ============
-  stripe_customer_id         String? // Buyer's Stripe customer ID
-  stripe_account_id          String? // Seller's Stripe Connect Express account ID
-  stripe_onboarding_complete Boolean @default(false)
-  stripe_charges_enabled     Boolean @default(false) // Synced from Stripe webhook
-  stripe_payouts_enabled     Boolean @default(false) // Synced from Stripe webhook
-
-  // ============ SELLER ============
-  seller_terms_accepted_at DateTime? // When seller accepted terms
+  // ============ STRIPE CONNECT ============
+  stripe_account_id          String? // Stripe Connect account ID
+  stripe_onboarding_complete Boolean   @default(false)
+  stripe_charges_enabled     Boolean   @default(false)
+  stripe_payouts_enabled     Boolean   @default(false)
+  stripe_customer_id         String? // Stripe Customer ID for buyers
+  seller_terms_accepted_at   DateTime? // When seller accepted terms
 
   // ============ RELATIONS ============
   accounts                Account[]
   sessions                Session[]
-  emailVerificationTokens EmailVerificationToken[]
   resources               Resource[]
   transactions            Transaction[]
   downloads               Download[]
   wishlists               Wishlist[]
+  emailVerificationTokens EmailVerificationToken[]
 
   // Report relations
   reports_submitted Report[] @relation("Reporter")
   reports_received  Report[] @relation("ReportedUser")
   reports_handled   Report[] @relation("ReportHandler")
 
+  // Following relations
+  followers Follow[] @relation("Following")
+  following Follow[] @relation("Followers")
+
   // Bundle relations
   bundles Bundle[]
-
-  // Follow relations
-  following Follow[] @relation("Follower")
-  followers Follow[] @relation("Followed")
 
   @@map("users")
 }
@@ -131,6 +138,7 @@ model User {
 enum UserRole {
   BUYER
   SELLER
+  SCHOOL
   ADMIN
 }
 
@@ -172,12 +180,11 @@ model Resource {
 
   // Relations
   seller_id    String
-  seller       User             @relation(fields: [seller_id], references: [id])
+  seller       User          @relation(fields: [seller_id], references: [id])
   transactions Transaction[]
   downloads    Download[]
   wishlists    Wishlist[]
   reports      Report[]
-  bundles      BundleResource[]
 
   // Curriculum alignment
   competencies ResourceCompetency[]
@@ -188,44 +195,10 @@ model Resource {
   transversals     ResourceTransversal[]
   bne_themes       ResourceBne[]
 
+  // Bundle relations
+  bundleResources BundleResource[]
+
   @@map("resources")
-}
-
-// ============================================================
-// BUNDLE MODEL - Resource Bundles (Discounted Packages)
-// ============================================================
-
-model Bundle {
-  id         String   @id @default(cuid())
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
-  title           String
-  description     String?  @db.Text
-  price           Int // Price in cents (discounted bundle price)
-  subject         String[]
-  cycle           String[]
-  cover_image_url String?
-
-  is_published Boolean        @default(false)
-  status       ResourceStatus @default(PENDING)
-
-  // Relations
-  seller_id String
-  seller    User             @relation(fields: [seller_id], references: [id])
-  resources BundleResource[]
-
-  @@map("bundles")
-}
-
-model BundleResource {
-  bundle_id   String
-  bundle      Bundle   @relation(fields: [bundle_id], references: [id], onDelete: Cascade)
-  resource_id String
-  resource    Resource @relation(fields: [resource_id], references: [id], onDelete: Cascade)
-
-  @@id([bundle_id, resource_id])
-  @@map("bundle_resources")
 }
 
 // ============================================================
@@ -252,19 +225,31 @@ model Transaction {
   platform_fee_amount  Int? // Platform fee in cents
   seller_payout_amount Int? // Amount to seller in cents
 
-  // Guest checkout (when buyer_id is null)
-  guest_email String? // Email for guest purchases
+  // Guest checkout
+  guest_email String? // Email for guest (non-authenticated) purchases
 
   // Relations
-  buyer_id    String? // Nullable for guest checkout
-  buyer       User?    @relation(fields: [buyer_id], references: [id])
-  resource_id String
-  resource    Resource @relation(fields: [resource_id], references: [id])
-
-  // Guest download tokens
-  download_tokens DownloadToken[]
+  buyer_id       String?
+  buyer          User?           @relation(fields: [buyer_id], references: [id])
+  resource_id    String
+  resource       Resource        @relation(fields: [resource_id], references: [id])
+  downloadTokens DownloadToken[]
 
   @@map("transactions")
+}
+
+model DownloadToken {
+  id             String   @id @default(cuid())
+  token          String   @unique
+  expires_at     DateTime
+  download_count Int      @default(0)
+  max_downloads  Int      @default(5)
+  created_at     DateTime @default(now())
+
+  transaction_id String
+  transaction    Transaction @relation(fields: [transaction_id], references: [id], onDelete: Cascade)
+
+  @@map("download_tokens")
 }
 
 enum TransactionStatus {
@@ -522,26 +507,6 @@ model Download {
 }
 
 // ============================================================
-// DOWNLOAD TOKEN MODEL - Guest download access tokens
-// ============================================================
-
-model DownloadToken {
-  id         String   @id @default(cuid())
-  created_at DateTime @default(now())
-
-  token          String   @unique // Secure random token for URL
-  expires_at     DateTime // Token expiration (7 days from purchase)
-  download_count Int      @default(0) // Number of times downloaded (max 3)
-  max_downloads  Int      @default(3) // Maximum allowed downloads
-
-  // Relations
-  transaction_id String
-  transaction    Transaction @relation(fields: [transaction_id], references: [id], onDelete: Cascade)
-
-  @@map("download_tokens")
-}
-
-// ============================================================
 // WISHLIST MODEL - Save resources for later
 // ============================================================
 
@@ -560,19 +525,53 @@ model Wishlist {
 }
 
 // ============================================================
-// FOLLOW MODEL - Seller Following
+// FOLLOW MODEL - User follows sellers
 // ============================================================
 
 model Follow {
-  id         String   @id @default(cuid())
-  created_at DateTime @default(now())
-
-  // Relations
+  id          String   @id @default(cuid())
+  created_at  DateTime @default(now())
   follower_id String
-  follower    User   @relation("Follower", fields: [follower_id], references: [id], onDelete: Cascade)
+  follower    User     @relation("Followers", fields: [follower_id], references: [id], onDelete: Cascade)
   followed_id String
-  followed    User   @relation("Followed", fields: [followed_id], references: [id], onDelete: Cascade)
+  followed    User     @relation("Following", fields: [followed_id], references: [id], onDelete: Cascade)
 
   @@unique([follower_id, followed_id])
   @@map("follows")
+}
+
+// ============================================================
+// BUNDLE MODEL - Resource bundles at discounted prices
+// ============================================================
+
+model Bundle {
+  id              String         @id @default(cuid())
+  created_at      DateTime       @default(now())
+  updated_at      DateTime       @updatedAt
+  title           String
+  description     String?        @db.Text
+  price           Int // Price in cents
+  subject         String[]
+  cycle           String[]
+  cover_image_url String?
+  is_published    Boolean        @default(false)
+  status          ResourceStatus @default(PENDING)
+
+  seller_id String
+  seller    User   @relation(fields: [seller_id], references: [id], onDelete: Cascade)
+
+  resources BundleResource[]
+
+  @@map("bundles")
+}
+
+model BundleResource {
+  id          String   @id @default(cuid())
+  bundle_id   String
+  bundle      Bundle   @relation(fields: [bundle_id], references: [id], onDelete: Cascade)
+  resource_id String
+  resource    Resource @relation(fields: [resource_id], references: [id], onDelete: Cascade)
+
+  @@unique([bundle_id, resource_id])
+  @@map("bundle_resources")
 }

@@ -63,8 +63,8 @@ export function CurriculumBox({
 
   if (!hasContent && showEmptyState) {
     return (
-      <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
-        <div className="text-center text-sm text-[var(--color-text-muted)]">
+      <div className="rounded-xl border border-border bg-surface p-4">
+        <div className="text-center text-sm text-text-muted">
           Keine Lehrplan 21 Zuordnung vorhanden
         </div>
       </div>
@@ -72,12 +72,12 @@ export function CurriculumBox({
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]">
+    <div className="overflow-hidden rounded-xl border border-border bg-surface">
       {/* Header */}
-      <div className="border-b border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-4 py-3">
+      <div className="border-b border-border bg-surface-elevated px-4 py-3">
         <div className="flex items-center gap-2">
           <svg
-            className="h-5 w-5 text-[var(--color-primary)]"
+            className="h-5 w-5 text-primary"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -89,7 +89,7 @@ export function CurriculumBox({
               d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
             />
           </svg>
-          <h3 className="font-semibold text-[var(--color-text)]">Lehrplan 21 Zuordnung</h3>
+          <h3 className="font-semibold text-text">Lehrplan 21 Zuordnung</h3>
         </div>
       </div>
 
@@ -97,7 +97,7 @@ export function CurriculumBox({
         {/* LP21 Competencies */}
         {competencies.length > 0 && (
           <div>
-            <h4 className="mb-2 text-xs font-semibold tracking-wide text-[var(--color-text-muted)] uppercase">
+            <h4 className="mb-2 text-xs font-semibold tracking-wide text-text-muted uppercase">
               Kompetenzen
             </h4>
             <div className="flex flex-wrap gap-2">
@@ -118,7 +118,7 @@ export function CurriculumBox({
         {/* Transversal Competencies */}
         {transversals.length > 0 && (
           <div>
-            <h4 className="mb-2 text-xs font-semibold tracking-wide text-[var(--color-text-muted)] uppercase">
+            <h4 className="mb-2 text-xs font-semibold tracking-wide text-text-muted uppercase">
               Überfachliche Kompetenzen
             </h4>
             <div className="flex flex-wrap gap-2">
@@ -139,7 +139,7 @@ export function CurriculumBox({
         {/* BNE Themes */}
         {bneThemes.length > 0 && (
           <div>
-            <h4 className="mb-2 text-xs font-semibold tracking-wide text-[var(--color-text-muted)] uppercase">
+            <h4 className="mb-2 text-xs font-semibold tracking-wide text-text-muted uppercase">
               BNE Themen
             </h4>
             <div className="flex flex-wrap gap-2">
@@ -183,16 +183,16 @@ export function CurriculumBox({
 
       {/* Legend/Help */}
       {!compact && competencies.some((c) => c.anforderungsstufe) && (
-        <div className="border-t border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-4 py-2">
-          <div className="flex items-center gap-4 text-xs text-[var(--color-text-muted)]">
+        <div className="border-t border-border bg-surface-elevated px-4 py-2">
+          <div className="flex items-center gap-4 text-xs text-text-muted">
             <span className="flex items-center gap-1">
-              <span className="rounded bg-[var(--color-surface-high)] px-1 font-bold text-[var(--color-text-muted)]">
+              <span className="rounded bg-surface-hover px-1 font-bold text-text-muted">
                 G
               </span>
               Grundansprüche
             </span>
             <span className="flex items-center gap-1">
-              <span className="rounded bg-[var(--color-warning-light)] px-1 font-bold text-[var(--color-warning)]">
+              <span className="rounded bg-warning/15 px-1 font-bold text-warning">
                 E
               </span>
               Erweiterte Ansprüche
@@ -231,7 +231,7 @@ export function CurriculumBoxCompact({
         />
       ))}
       {competencies.length > 3 && (
-        <span className="text-xs text-[var(--color-text-muted)]">+{competencies.length - 3}</span>
+        <span className="text-xs text-text-muted">+{competencies.length - 3}</span>
       )}
       {isMiIntegrated && (
         <span

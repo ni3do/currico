@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { z } from "zod";
+import { sendContactNotificationEmail } from "@/lib/email";
 
 const contactSchema = z.object({
   name: z
@@ -46,8 +47,10 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // TODO: Send email notification to admin
-    // await sendContactNotificationEmail({ name, email, subject, message });
+    // Send email notification to admin (non-blocking)
+    sendContactNotificationEmail({ name, email, subject, message }).catch((err: unknown) => {
+      console.error("Failed to send contact notification email:", err);
+    });
 
     return NextResponse.json(
       {

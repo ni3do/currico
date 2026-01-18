@@ -21,8 +21,8 @@ export default function AdminSettingsPage() {
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       {/* Commission Settings */}
-      <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8">
-        <h2 className="mb-6 text-xl font-semibold text-[var(--color-text)]">
+      <div className="rounded-2xl border border-border bg-surface p-8">
+        <h2 className="mb-6 text-xl font-semibold text-text">
           Provisionseinstellungen
         </h2>
 
@@ -31,7 +31,7 @@ export default function AdminSettingsPage() {
           <div>
             <label
               htmlFor="commissionRate"
-              className="mb-2 block text-sm font-medium text-[var(--color-text)]"
+              className="mb-2 block text-sm font-medium text-text"
             >
               Plattform-Provisionsrate (%)
             </label>
@@ -46,9 +46,9 @@ export default function AdminSettingsPage() {
                     min="0"
                     max="100"
                     step="0.5"
-                    className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 pr-12 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
+                    className="w-full rounded-xl border border-border bg-bg px-4 py-3 pr-12 text-text focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
                   />
-                  <span className="absolute top-1/2 right-4 -translate-y-1/2 text-[var(--color-text-muted)]">
+                  <span className="absolute top-1/2 right-4 -translate-y-1/2 text-text-muted">
                     %
                   </span>
                 </div>
@@ -56,22 +56,22 @@ export default function AdminSettingsPage() {
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="w-full rounded-xl bg-[var(--color-primary)] px-6 py-3 font-semibold text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--color-primary-hover)] disabled:opacity-50 sm:w-auto"
+                className="w-full rounded-xl bg-primary px-6 py-3 font-semibold text-text-on-accent transition-colors hover:bg-primary-hover disabled:opacity-50 sm:w-auto"
               >
                 {isSaving ? "Wird gespeichert..." : "Provisionsrate aktualisieren"}
               </button>
             </div>
-            <p className="mt-2 text-sm text-[var(--color-text-muted)]">
+            <p className="mt-2 text-sm text-text-muted">
               Dieser Prozentsatz wird von jedem Verkauf abgezogen. Der Rest geht an den Verkäufer.
             </p>
           </div>
 
           {/* Explanation Card */}
-          <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-6">
-            <h3 className="mb-3 font-semibold text-[var(--color-text)]">Wie funktioniert es?</h3>
-            <div className="space-y-2 text-sm text-[var(--color-text-muted)]">
+          <div className="rounded-xl border border-border bg-bg p-6">
+            <h3 className="mb-3 font-semibold text-text">Wie funktioniert es?</h3>
+            <div className="space-y-2 text-sm text-text-muted">
               <p>
-                <strong className="text-[var(--color-text)]">Beispiel:</strong> Bei einem
+                <strong className="text-text">Beispiel:</strong> Bei einem
                 Verkaufspreis von CHF 20.00 und {commissionRate}% Provision:
               </p>
               <div className="ml-4 space-y-1">
@@ -102,8 +102,8 @@ export default function AdminSettingsPage() {
                 />
               </svg>
               <div className="text-sm">
-                <strong className="text-[var(--color-text)]">Hinweis:</strong>
-                <p className="mt-1 text-[var(--color-text-muted)]">
+                <strong className="text-text">Hinweis:</strong>
+                <p className="mt-1 text-text-muted">
                   Änderungen an der Provisionsrate gelten sofort für alle neuen Transaktionen.
                   Bereits abgeschlossene Transaktionen bleiben unverändert.
                 </p>
@@ -114,22 +114,22 @@ export default function AdminSettingsPage() {
       </div>
 
       {/* Admin Account Settings */}
-      <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8">
-        <h2 className="mb-6 text-xl font-semibold text-[var(--color-text)]">Konto-Einstellungen</h2>
+      <div className="rounded-2xl border border-border bg-surface p-8">
+        <h2 className="mb-6 text-xl font-semibold text-text">Konto-Einstellungen</h2>
 
         <div className="space-y-6">
           {/* Admin Info */}
-          <div className="flex items-center gap-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-4">
+          <div className="flex items-center gap-4 rounded-xl border border-border bg-bg p-4">
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[var(--ctp-mauve)] to-[var(--ctp-pink)]">
-              <span className="text-lg font-bold text-[var(--btn-primary-text)]">
+              <span className="text-lg font-bold text-text-on-accent">
                 {(session?.user?.name || "A").charAt(0).toUpperCase()}
               </span>
             </div>
             <div>
-              <p className="font-semibold text-[var(--color-text)]">
+              <p className="font-semibold text-text">
                 {session?.user?.name || "Admin"}
               </p>
-              <p className="text-sm text-[var(--color-text-muted)]">{session?.user?.email}</p>
+              <p className="text-sm text-text-muted">{session?.user?.email}</p>
               <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-[var(--ctp-mauve)]/20 px-2 py-0.5 text-xs font-medium text-[var(--ctp-mauve)]">
                 <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -146,24 +146,24 @@ export default function AdminSettingsPage() {
 
           {/* Appearance Settings */}
           <div>
-            <h3 className="mb-3 font-semibold text-[var(--color-text)]">Darstellung</h3>
+            <h3 className="mb-3 font-semibold text-text">Darstellung</h3>
             <div className="flex flex-wrap items-center gap-4">
               <div className="flex items-center gap-3">
-                <span className="text-sm text-[var(--color-text-muted)]">Theme:</span>
+                <span className="text-sm text-text-muted">Theme:</span>
                 <ThemeToggle />
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-sm text-[var(--color-text-muted)]">Sprache:</span>
+                <span className="text-sm text-text-muted">Sprache:</span>
                 <LocaleSwitcher />
               </div>
             </div>
           </div>
 
           {/* Logout */}
-          <div className="border-t border-[var(--color-border)] pt-4">
+          <div className="border-t border-border pt-4">
             <button
               onClick={() => signOut({ callbackUrl: "/" })}
-              className="flex items-center gap-2 rounded-xl border border-[var(--color-error)] px-4 py-2 text-[var(--color-error)] transition-colors hover:bg-[var(--badge-error-bg)]"
+              className="flex items-center gap-2 rounded-xl border border-error px-4 py-2 text-error transition-colors hover:bg-[var(--badge-error-bg)]"
             >
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path

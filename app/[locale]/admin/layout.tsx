@@ -142,7 +142,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   if (status === "loading" || status === "unauthenticated" || session?.user?.role !== "ADMIN") {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-[var(--color-primary)]"></div>
+        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -157,7 +157,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           <div className="mb-4 flex items-center gap-4">
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-[var(--ctp-mauve)] to-[var(--ctp-pink)]">
               <svg
-                className="h-8 w-8 text-[var(--btn-primary-text)]"
+                className="h-8 w-8 text-text-on-accent"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -171,8 +171,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               </svg>
             </div>
             <div>
-              <h1 className="text-2xl font-semibold text-[var(--color-text)]">Admin Panel</h1>
-              <p className="text-[var(--color-text-muted)]">
+              <h1 className="text-2xl font-semibold text-text">Admin Panel</h1>
+              <p className="text-text-muted">
                 {session?.user?.name || session?.user?.email}
               </p>
             </div>
@@ -180,7 +180,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         </div>
 
         {/* Navigation Tabs */}
-        <div className="relative mb-8 border-b border-[var(--color-border)]">
+        <div className="relative mb-8 border-b border-border">
           <nav
             ref={tabsContainerRef}
             className="scrollbar-hide relative flex items-center overflow-x-auto"
@@ -200,7 +200,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                     className={`flex items-center gap-2 px-3 pt-1 pb-4 text-sm font-medium whitespace-nowrap transition-colors sm:px-4 ${
                       isActive
                         ? "text-[var(--ctp-blue)]"
-                        : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+                        : "text-text-muted hover:text-text"
                     }`}
                   >
                     <span className="hidden sm:inline">{icons[item.icon]}</span>
@@ -220,7 +220,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 className={`flex items-center gap-2 px-3 pt-1 pb-4 text-sm font-medium whitespace-nowrap transition-colors sm:px-4 ${
                   pathname.startsWith("/admin/settings")
                     ? "text-[var(--ctp-blue)]"
-                    : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+                    : "text-text-muted hover:text-text"
                 }`}
               >
                 <span className="hidden sm:inline">{icons.settings}</span>

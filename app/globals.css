@@ -1,6 +1,77 @@
 @import "tailwindcss";
 
 /* =================================================================
+   TAILWIND THEME INTEGRATION
+   Uses `inline` to resolve CSS variables at runtime for theme switching
+   Usage: bg-primary, text-text, border-border, etc.
+   ================================================================= */
+@theme inline {
+  /* Background Colors */
+  --color-bg: var(--ctp-base);
+  --color-bg-secondary: var(--ctp-mantle);
+  --color-bg-tertiary: var(--ctp-crust);
+  --color-surface: var(--ctp-surface0);
+  --color-surface-hover: var(--ctp-surface1);
+  --color-surface-elevated: var(--ctp-surface1);
+
+  /* Text Colors */
+  --color-text: var(--ctp-text);
+  --color-text-secondary: var(--ctp-subtext1);
+  --color-text-muted: var(--ctp-subtext0);
+  --color-text-faint: var(--ctp-overlay2);
+  --color-text-on-accent: var(--ctp-crust);
+
+  /* Border Colors */
+  --color-border: var(--ctp-surface2);
+  --color-border-subtle: var(--ctp-surface1);
+  --color-border-strong: var(--ctp-overlay0);
+  --color-border-focus: var(--ctp-blue);
+
+  /* Primary/Interactive */
+  --color-primary: var(--ctp-blue);
+  --color-primary-hover: var(--ctp-sapphire);
+
+  /* Accent */
+  --color-accent: var(--ctp-teal);
+  --color-accent-hover: var(--ctp-sapphire);
+
+  /* Action (Kaufen) */
+  --color-action: var(--ctp-teal);
+  --color-action-hover: var(--ctp-sapphire);
+
+  /* Price */
+  --color-price: var(--ctp-peach);
+
+  /* Status Colors */
+  --color-success: var(--ctp-green);
+  --color-warning: var(--ctp-yellow);
+  --color-error: var(--ctp-red);
+  --color-info: var(--ctp-sky);
+
+  /* Subject Colors (Lehrplan 21) */
+  --color-subject-deutsch: var(--ctp-red);
+  --color-subject-mathe: var(--ctp-blue);
+  --color-subject-nmg: var(--ctp-green);
+  --color-subject-gestalten: var(--ctp-pink);
+  --color-subject-musik: var(--ctp-mauve);
+  --color-subject-sport: var(--ctp-peach);
+  --color-subject-fremdsprachen: var(--ctp-sapphire);
+  --color-subject-medien: var(--ctp-sky);
+
+  /* Focus */
+  --color-focus: var(--ctp-lavender);
+
+  /* Border Radius */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-full: 9999px;
+}
+
+/* =================================================================
    EASYLEHRER DESIGN SYSTEM
    Catppuccin Theme - Light (Latte) / Dark (Mocha)
    ================================================================= */
@@ -144,16 +215,41 @@
   --primary-light: color-mix(in srgb, var(--ctp-blue) 15%, transparent);
 
   /* Secondary/Accent Colors */
-  --color-accent: var(--ctp-mauve);
-  --color-accent-hover: var(--ctp-pink);
-  --color-accent-light: color-mix(in srgb, var(--ctp-mauve) 15%, transparent);
+  --color-accent: var(--ctp-teal);
+  --color-accent-hover: var(--ctp-sapphire);
+  --color-accent-light: color-mix(in srgb, var(--ctp-teal) 15%, transparent);
 
+  /* Legacy mappings */
   --accent: var(--ctp-teal);
   --accent-hover: var(--ctp-sapphire);
   --accent-light: color-mix(in srgb, var(--ctp-teal) 15%, transparent);
 
   --secondary: var(--ctp-green);
   --secondary-light: color-mix(in srgb, var(--ctp-green) 15%, transparent);
+
+  /* =================================================================
+     ACTION & PRICE COLORS (per Design Guidelines)
+     ================================================================= */
+  /* Action/Kaufen - Teal for purchase CTAs */
+  --color-action: var(--ctp-teal);
+  --color-action-hover: var(--ctp-sapphire);
+  --color-action-light: color-mix(in srgb, var(--ctp-teal) 15%, transparent);
+
+  /* Price/Highlight - Peach for CHF prices */
+  --color-price: var(--ctp-peach);
+  --color-price-light: color-mix(in srgb, var(--ctp-peach) 15%, transparent);
+
+  /* =================================================================
+     SUBJECT COLORS (Lehrplan 21 Fächer)
+     ================================================================= */
+  --color-subject-deutsch: var(--ctp-red);
+  --color-subject-mathe: var(--ctp-blue);
+  --color-subject-nmg: var(--ctp-green);
+  --color-subject-gestalten: var(--ctp-pink);
+  --color-subject-musik: var(--ctp-mauve);
+  --color-subject-sport: var(--ctp-peach);
+  --color-subject-fremdsprachen: var(--ctp-sapphire);
+  --color-subject-medien: var(--ctp-sky);
 
   /* =================================================================
      STATUS COLORS
@@ -210,6 +306,11 @@
   --btn-danger-bg: var(--ctp-red);
   --btn-danger-text: var(--ctp-crust);
   --btn-danger-hover-bg: var(--ctp-maroon);
+
+  /* Action Button (Kaufen/Teal) */
+  --btn-action-bg: var(--ctp-teal);
+  --btn-action-text: var(--ctp-crust);
+  --btn-action-hover-bg: var(--ctp-sapphire);
 
   /* =================================================================
      BADGE/PILL TOKENS - 20% opacity backgrounds with full color text
@@ -447,13 +548,33 @@ a {
   background-color: var(--btn-danger-hover-bg);
 }
 
+/* Action - Teal for purchase CTAs */
+.btn-action {
+  background-color: var(--btn-action-bg);
+  color: var(--btn-action-text);
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease;
+}
+
+.btn-action:hover {
+  background-color: var(--btn-action-hover-bg);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--ctp-teal) 30%, transparent);
+}
+
+.btn-action:active {
+  transform: translateY(0);
+}
+
 /* =================================================================
    CARD STYLES
    ================================================================= */
 .card {
   background: var(--color-bg);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03);
   border: 1px solid var(--color-border-subtle);
   transition:
     transform 0.2s ease,
@@ -462,7 +583,16 @@ a {
 
 .card:hover {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-card-hover);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 16px 32px rgba(0, 0, 0, 0.06);
+}
+
+/* Dark theme card shadows */
+:root[data-theme="dark"] .card {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+:root[data-theme="dark"] .card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2), 0 16px 32px rgba(0, 0, 0, 0.15);
 }
 
 /* =================================================================
@@ -505,6 +635,47 @@ a {
 .pill-error {
   background-color: var(--badge-error-bg);
   color: var(--badge-error-text);
+}
+
+/* Subject Pills (Lehrplan 21 Fächer) */
+.pill-deutsch {
+  background-color: color-mix(in srgb, var(--color-subject-deutsch) 20%, transparent);
+  color: var(--color-subject-deutsch);
+}
+
+.pill-mathe {
+  background-color: color-mix(in srgb, var(--color-subject-mathe) 20%, transparent);
+  color: var(--color-subject-mathe);
+}
+
+.pill-nmg {
+  background-color: color-mix(in srgb, var(--color-subject-nmg) 20%, transparent);
+  color: var(--color-subject-nmg);
+}
+
+.pill-gestalten {
+  background-color: color-mix(in srgb, var(--color-subject-gestalten) 20%, transparent);
+  color: var(--color-subject-gestalten);
+}
+
+.pill-musik {
+  background-color: color-mix(in srgb, var(--color-subject-musik) 20%, transparent);
+  color: var(--color-subject-musik);
+}
+
+.pill-sport {
+  background-color: color-mix(in srgb, var(--color-subject-sport) 20%, transparent);
+  color: var(--color-subject-sport);
+}
+
+.pill-fremdsprachen {
+  background-color: color-mix(in srgb, var(--color-subject-fremdsprachen) 20%, transparent);
+  color: var(--color-subject-fremdsprachen);
+}
+
+.pill-medien {
+  background-color: color-mix(in srgb, var(--color-subject-medien) 20%, transparent);
+  color: var(--color-subject-medien);
 }
 
 /* =================================================================
@@ -647,4 +818,174 @@ html.theme-transition *::before,
 html.theme-transition *::after {
   transition-duration: 0.2s !important;
   transition-timing-function: ease !important;
+}
+
+/* =================================================================
+   HERO SECTION STYLES
+   ================================================================= */
+.hero-section {
+  background-color: var(--ctp-mantle);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative background pattern - subtle dots */
+.hero-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    color-mix(in srgb, var(--ctp-blue) 8%, transparent) 1px,
+    transparent 0
+  );
+  background-size: 32px 32px;
+  pointer-events: none;
+}
+
+/* Hero image container with floating effect */
+.hero-image-container {
+  position: relative;
+}
+
+/* Decorative circle behind the image */
+.hero-image-container::before {
+  content: "";
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  width: 120%;
+  height: 120%;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--ctp-blue) 15%, transparent) 0%,
+    color-mix(in srgb, var(--ctp-teal) 10%, transparent) 100%
+  );
+  border-radius: 50%;
+  z-index: 0;
+  filter: blur(40px);
+}
+
+/* Secondary decorative element - small accent circle */
+.hero-image-container::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: -30px;
+  width: 80px;
+  height: 80px;
+  background: var(--ctp-teal);
+  border-radius: 50%;
+  opacity: 0.15;
+  z-index: 0;
+}
+
+/* Hero image styling */
+.hero-image {
+  position: relative;
+  z-index: 1;
+  border-radius: var(--radius-xl);
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.15),
+    0 12px 24px -8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hero-image:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 30px 60px -12px rgba(0, 0, 0, 0.2),
+    0 18px 36px -12px rgba(0, 0, 0, 0.12);
+}
+
+/* Hero CTA Button - Extra prominent */
+.hero-cta {
+  background: linear-gradient(135deg, var(--ctp-blue) 0%, var(--ctp-sapphire) 100%);
+  color: var(--btn-primary-text);
+  font-weight: 700;
+  font-size: 1.125rem;
+  padding: 1rem 2rem;
+  min-height: 56px;
+  border: none;
+  border-radius: var(--radius-lg);
+  box-shadow:
+    0 4px 14px color-mix(in srgb, var(--ctp-blue) 40%, transparent),
+    0 2px 6px color-mix(in srgb, var(--ctp-blue) 20%, transparent);
+  transition: all 0.25s ease;
+}
+
+.hero-cta:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 8px 24px color-mix(in srgb, var(--ctp-blue) 50%, transparent),
+    0 4px 12px color-mix(in srgb, var(--ctp-blue) 30%, transparent);
+  background: linear-gradient(135deg, var(--ctp-sapphire) 0%, var(--ctp-blue) 100%);
+}
+
+.hero-cta:active {
+  transform: translateY(-1px);
+}
+
+/* Hero secondary button */
+.hero-cta-secondary {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.875rem 1.75rem;
+  min-height: 52px;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  transition: all 0.2s ease;
+}
+
+.hero-cta-secondary:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background-color: var(--color-primary-light);
+}
+
+/* Floating decorative shapes */
+.hero-decoration {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.hero-decoration-1 {
+  top: 10%;
+  left: 5%;
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--ctp-teal) 20%, transparent),
+    color-mix(in srgb, var(--ctp-blue) 10%, transparent)
+  );
+  filter: blur(30px);
+}
+
+.hero-decoration-2 {
+  bottom: 15%;
+  right: 10%;
+  width: 180px;
+  height: 180px;
+  background: linear-gradient(
+    45deg,
+    color-mix(in srgb, var(--ctp-mauve) 15%, transparent),
+    color-mix(in srgb, var(--ctp-pink) 10%, transparent)
+  );
+  filter: blur(40px);
+}
+
+.hero-decoration-3 {
+  top: 60%;
+  left: 15%;
+  width: 60px;
+  height: 60px;
+  background: var(--ctp-green);
+  opacity: 0.1;
 }

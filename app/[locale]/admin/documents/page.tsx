@@ -183,7 +183,7 @@ export default function AdminDocumentsPage() {
           </svg>
           <div>
             <p className="text-sm font-medium text-[var(--ctp-blue)]">Verifizierungsworkflow</p>
-            <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+            <p className="mt-1 text-sm text-text-muted">
               Neue Uploads haben den Status &quot;Ausstehend&quot; und sind nur für den Besitzer
               sichtbar. Nach der Verifizierung werden Dokumente öffentlich und für alle Benutzer
               zugänglich.
@@ -200,7 +200,7 @@ export default function AdminDocumentsPage() {
             setStatusFilter(e.target.value);
             setPage(1);
           }}
-          className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2.5 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none"
+          className="rounded-lg border border-border bg-surface px-4 py-2.5 text-text focus:border-primary focus:outline-none"
         >
           <option value="all">Alle Status</option>
           <option value="pending">Ausstehend</option>
@@ -210,63 +210,63 @@ export default function AdminDocumentsPage() {
       </div>
 
       {/* Stats Bar */}
-      <div className="text-sm text-[var(--color-text-muted)]">{total} Dokumente gefunden</div>
+      <div className="text-sm text-text-muted">{total} Dokumente gefunden</div>
 
       {/* Resources Table */}
-      <div className="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)]">
+      <div className="overflow-hidden rounded-2xl border border-border bg-surface">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-[var(--color-bg)]">
+            <thead className="bg-bg">
               <tr>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
+                <th className="px-6 py-4 text-left text-sm font-semibold text-text">
                   Titel
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
+                <th className="px-6 py-4 text-left text-sm font-semibold text-text">
                   Verkäufer
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
+                <th className="px-6 py-4 text-left text-sm font-semibold text-text">
                   Fach
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
+                <th className="px-6 py-4 text-left text-sm font-semibold text-text">
                   Status
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
+                <th className="px-6 py-4 text-left text-sm font-semibold text-text">
                   Sichtbarkeit
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--color-text)]">
+                <th className="px-6 py-4 text-left text-sm font-semibold text-text">
                   Hochgeladen
                 </th>
-                <th className="px-6 py-4 text-right text-sm font-semibold text-[var(--color-text)]">
+                <th className="px-6 py-4 text-right text-sm font-semibold text-text">
                   Aktionen
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[var(--color-border)]">
+            <tbody className="divide-y divide-border">
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-[var(--color-text-muted)]">
+                  <td colSpan={7} className="px-6 py-12 text-center text-text-muted">
                     Laden...
                   </td>
                 </tr>
               ) : resources.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-[var(--color-text-muted)]">
+                  <td colSpan={7} className="px-6 py-12 text-center text-text-muted">
                     Keine Dokumente gefunden
                   </td>
                 </tr>
               ) : (
                 resources.map((resource) => (
-                  <tr key={resource.id} className="transition-colors hover:bg-[var(--color-bg)]">
+                  <tr key={resource.id} className="transition-colors hover:bg-bg">
                     <td className="px-6 py-4">
-                      <div className="font-medium text-[var(--color-text)]">{resource.title}</div>
-                      <div className="text-sm text-[var(--color-text-muted)]">
+                      <div className="font-medium text-text">{resource.title}</div>
+                      <div className="text-sm text-text-muted">
                         {resource.priceFormatted}
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-[var(--color-text-muted)]">
+                    <td className="px-6 py-4 text-text-muted">
                       {resource.seller.display_name || resource.seller.email}
                     </td>
-                    <td className="px-6 py-4 text-[var(--color-text-muted)]">
+                    <td className="px-6 py-4 text-text-muted">
                       {resource.subjects[0] || "-"}
                     </td>
                     <td className="px-6 py-4">
@@ -290,7 +290,7 @@ export default function AdminDocumentsPage() {
                           Öffentlich
                         </span>
                       ) : (
-                        <span className="flex items-center gap-1 text-[var(--color-text-muted)]">
+                        <span className="flex items-center gap-1 text-text-muted">
                           <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                             <path
                               fillRule="evenodd"
@@ -303,13 +303,13 @@ export default function AdminDocumentsPage() {
                         </span>
                       )}
                     </td>
-                    <td className="px-6 py-4 text-[var(--color-text-muted)]">
+                    <td className="px-6 py-4 text-text-muted">
                       {new Date(resource.created_at).toLocaleDateString("de-CH")}
                     </td>
                     <td className="px-6 py-4 text-right">
                       <button
                         onClick={() => openResourceModal(resource)}
-                        className="rounded-lg bg-[var(--color-primary)] px-4 py-1.5 text-xs font-medium text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--color-primary-hover)]"
+                        className="rounded-lg bg-primary px-4 py-1.5 text-xs font-medium text-text-on-accent transition-colors hover:bg-primary-hover"
                       >
                         Prüfen
                       </button>
@@ -328,17 +328,17 @@ export default function AdminDocumentsPage() {
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm font-medium text-[var(--color-text)] hover:bg-[var(--color-bg)] disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-lg border border-border bg-surface px-4 py-2 text-sm font-medium text-text hover:bg-bg disabled:cursor-not-allowed disabled:opacity-50"
           >
             Zurück
           </button>
-          <span className="text-sm text-[var(--color-text-muted)]">
+          <span className="text-sm text-text-muted">
             Seite {page} von {totalPages}
           </span>
           <button
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
-            className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm font-medium text-[var(--color-text)] hover:bg-[var(--color-bg)] disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-lg border border-border bg-surface px-4 py-2 text-sm font-medium text-text hover:bg-bg disabled:cursor-not-allowed disabled:opacity-50"
           >
             Weiter
           </button>
@@ -347,16 +347,16 @@ export default function AdminDocumentsPage() {
 
       {/* Resource Detail Modal */}
       {showModal && selectedResource && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--color-bg)]/80 backdrop-blur-sm">
-          <div className="mx-4 max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-bg/80 backdrop-blur-sm">
+          <div className="mx-4 max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-border bg-surface p-6">
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-xl font-semibold text-[var(--color-text)]">Dokument prüfen</h3>
+              <h3 className="text-xl font-semibold text-text">Dokument prüfen</h3>
               <button
                 onClick={() => {
                   setShowModal(false);
                   setSelectedResource(null);
                 }}
-                className="text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+                className="text-text-muted hover:text-text"
               >
                 <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -372,50 +372,50 @@ export default function AdminDocumentsPage() {
             {/* Resource Details */}
             <div className="mb-6 space-y-4">
               <div>
-                <h4 className="text-lg font-semibold text-[var(--color-text)]">
+                <h4 className="text-lg font-semibold text-text">
                   {selectedResource.title}
                 </h4>
-                <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+                <p className="mt-1 text-sm text-text-muted">
                   {selectedResource.description}
                 </p>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="rounded-lg border border-[var(--color-border)] p-4">
-                  <div className="mb-1 text-sm text-[var(--color-text-muted)]">Verkäufer</div>
-                  <div className="text-[var(--color-text)]">
+                <div className="rounded-lg border border-border p-4">
+                  <div className="mb-1 text-sm text-text-muted">Verkäufer</div>
+                  <div className="text-text">
                     {selectedResource.seller.display_name || selectedResource.seller.email}
                   </div>
                 </div>
-                <div className="rounded-lg border border-[var(--color-border)] p-4">
-                  <div className="mb-1 text-sm text-[var(--color-text-muted)]">Preis</div>
-                  <div className="font-medium text-[var(--color-text)]">
+                <div className="rounded-lg border border-border p-4">
+                  <div className="mb-1 text-sm text-text-muted">Preis</div>
+                  <div className="font-medium text-text">
                     {selectedResource.priceFormatted}
                   </div>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="rounded-lg border border-[var(--color-border)] p-4">
-                  <div className="mb-1 text-sm text-[var(--color-text-muted)]">Fächer</div>
+                <div className="rounded-lg border border-border p-4">
+                  <div className="mb-1 text-sm text-text-muted">Fächer</div>
                   <div className="flex flex-wrap gap-1">
                     {selectedResource.subjects.map((subject) => (
                       <span
                         key={subject}
-                        className="rounded-full bg-[var(--color-bg)] px-2 py-1 text-xs text-[var(--color-text)]"
+                        className="rounded-full bg-bg px-2 py-1 text-xs text-text"
                       >
                         {subject}
                       </span>
                     ))}
                   </div>
                 </div>
-                <div className="rounded-lg border border-[var(--color-border)] p-4">
-                  <div className="mb-1 text-sm text-[var(--color-text-muted)]">Zyklen</div>
+                <div className="rounded-lg border border-border p-4">
+                  <div className="mb-1 text-sm text-text-muted">Zyklen</div>
                   <div className="flex flex-wrap gap-1">
                     {selectedResource.cycles.map((cycle) => (
                       <span
                         key={cycle}
-                        className="rounded-full bg-[var(--color-bg)] px-2 py-1 text-xs text-[var(--color-text)]"
+                        className="rounded-full bg-bg px-2 py-1 text-xs text-text"
                       >
                         {cycle}
                       </span>
@@ -425,8 +425,8 @@ export default function AdminDocumentsPage() {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="rounded-lg border border-[var(--color-border)] p-4">
-                  <div className="mb-1 text-sm text-[var(--color-text-muted)]">
+                <div className="rounded-lg border border-border p-4">
+                  <div className="mb-1 text-sm text-text-muted">
                     Aktueller Status
                   </div>
                   <span
@@ -435,9 +435,9 @@ export default function AdminDocumentsPage() {
                     {statusLabels[selectedResource.status] || selectedResource.status}
                   </span>
                 </div>
-                <div className="rounded-lg border border-[var(--color-border)] p-4">
-                  <div className="mb-1 text-sm text-[var(--color-text-muted)]">Sichtbarkeit</div>
-                  <div className="text-[var(--color-text)]">
+                <div className="rounded-lg border border-border p-4">
+                  <div className="mb-1 text-sm text-text-muted">Sichtbarkeit</div>
+                  <div className="text-text">
                     {selectedResource.is_public ? "Öffentlich" : "Nur für Besitzer"}
                   </div>
                 </div>
@@ -445,13 +445,13 @@ export default function AdminDocumentsPage() {
 
               {/* File Preview Link */}
               {selectedResource.file_url && (
-                <div className="rounded-lg border border-[var(--color-border)] p-4">
-                  <div className="mb-2 text-sm text-[var(--color-text-muted)]">Dokument</div>
+                <div className="rounded-lg border border-border p-4">
+                  <div className="mb-2 text-sm text-text-muted">Dokument</div>
                   <a
                     href={selectedResource.file_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-[var(--color-primary)] hover:underline"
+                    className="inline-flex items-center gap-2 text-primary hover:underline"
                   >
                     <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
@@ -468,8 +468,8 @@ export default function AdminDocumentsPage() {
             </div>
 
             {/* Action Buttons */}
-            <div className="border-t border-[var(--color-border)] pt-4">
-              <div className="mb-3 text-sm font-medium text-[var(--color-text)]">
+            <div className="border-t border-border pt-4">
+              <div className="mb-3 text-sm font-medium text-text">
                 Aktion wählen:
               </div>
               <div className="grid grid-cols-3 gap-3">
@@ -533,7 +533,7 @@ export default function AdminDocumentsPage() {
                   setShowModal(false);
                   setSelectedResource(null);
                 }}
-                className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2.5 text-sm font-medium text-[var(--color-text)] hover:bg-[var(--color-bg)]"
+                className="w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-sm font-medium text-text hover:bg-bg"
               >
                 Schliessen
               </button>
