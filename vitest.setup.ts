@@ -80,6 +80,17 @@ vi.mock("@/lib/db", () => {
     create: vi.fn(),
     createMany: vi.fn(),
     update: vi.fn(),
+    upsert: vi.fn(),
+    delete: vi.fn(),
+    count: vi.fn(),
+  };
+
+  const mockDownloadToken = {
+    findUnique: vi.fn(),
+    findMany: vi.fn(),
+    findFirst: vi.fn(),
+    create: vi.fn(),
+    update: vi.fn(),
     delete: vi.fn(),
     count: vi.fn(),
   };
@@ -101,6 +112,7 @@ vi.mock("@/lib/db", () => {
     contactMessage: mockContactMessage,
     transaction: mockTransaction,
     download: mockDownload,
+    downloadToken: mockDownloadToken,
     report: mockReport,
     $transaction: vi.fn().mockImplementation(async (callback: (tx: typeof mockPrisma) => Promise<unknown>) => {
       return callback(mockPrisma);
