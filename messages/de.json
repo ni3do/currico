@@ -266,6 +266,13 @@
       "title": "Unterrichtsmaterialien",
       "description": "Durchsuchen Sie qualitätsgeprüfte Materialien für Ihren Unterricht"
     },
+    "sidebar": {
+      "title": "Filter",
+      "reset": "Zurücksetzen",
+      "subjectLabel": "Fachbereich",
+      "cycleLabel": "Zyklus",
+      "priceLabel": "Preis"
+    },
     "search": {
       "placeholder": "Suche nach Titel, Thema, Stichwort...",
       "subjectFilter": {

@@ -55,9 +55,24 @@ export function ResourceCard({
   const isFree = priceFormatted === "Gratis" || priceFormatted === "Free";
   const shouldShowPriceBadge = showPriceBadge && priceFormatted;
 
+  // Get subject color for eyebrow tag
+  const getSubjectColor = (pillClass?: string): string => {
+    const colorMap: Record<string, string> = {
+      "pill-deutsch": "text-subject-deutsch",
+      "pill-mathe": "text-subject-mathe",
+      "pill-nmg": "text-subject-nmg",
+      "pill-gestalten": "text-subject-gestalten",
+      "pill-musik": "text-subject-musik",
+      "pill-sport": "text-subject-sport",
+      "pill-fremdsprachen": "text-subject-fremdsprachen",
+      "pill-medien": "text-subject-medien",
+    };
+    return colorMap[pillClass ?? ""] || "text-text-muted";
+  };
+
   const cardContent = (
     <>
-      {/* Preview Image */}
+      {/* Preview Image with Price Badge */}
       <div className="relative aspect-[16/9] w-full overflow-hidden bg-bg-secondary">
         {previewUrl ? (
           <Image
@@ -83,12 +98,15 @@ export function ResourceCard({
             </svg>
           </div>
         )}
-        {/* Price badge */}
+
+        {/* Price Badge - Top Right with Warm Accent */}
         {shouldShowPriceBadge && (
           <span
-            className={`absolute rounded-full font-bold text-white shadow-md ${
-              isFree ? "bg-success" : "bg-primary"
-            } ${isCompact ? "bottom-2 right-2 px-2 py-0.5 text-xs" : "bottom-3 right-3 px-3 py-1 text-sm"}`}
+            className={`absolute top-3 right-3 rounded-full px-3 py-1 text-sm font-bold shadow-md ${
+              isFree
+                ? "bg-success text-white"
+                : "bg-price text-white"
+            } ${isCompact ? "px-2 py-0.5 text-xs" : ""}`}
           >
             {priceFormatted}
           </span>
@@ -97,33 +115,29 @@ export function ResourceCard({
 
       {/* Content */}
       <div className={`flex flex-1 flex-col ${isCompact ? "p-4" : "p-5"}`}>
-        {/* Badges */}
-        <div className={`flex flex-wrap items-center ${isCompact ? "mb-2 gap-1.5" : "mb-3 gap-2"}`}>
-          <span className={`pill ${subjectPillClass ?? "pill-primary"} ${isCompact ? "text-xs" : ""}`}>
+        {/* Eyebrow Tag - Subject & Level */}
+        <div className={`${isCompact ? "mb-2" : "mb-3"}`}>
+          <span className={`text-xs font-semibold uppercase tracking-wide ${getSubjectColor(subjectPillClass)}`}>
             {subject}
+            {cycle && (
+              <>
+                <span className="mx-1.5 text-text-faint">•</span>
+                <span className="text-text-muted">{cycle}</span>
+              </>
+            )}
           </span>
-          {cycle && (
-            <span className={`pill pill-neutral ${isCompact ? "text-xs" : ""}`}>
-              {cycle}
-            </span>
-          )}
-          {verified && (
-            <span className={`pill pill-success ${isCompact ? "text-xs" : ""}`}>
-              Verifiziert
-            </span>
-          )}
         </div>
 
-        {/* Title */}
+        {/* Title - Primary Heading Style */}
         <h3
           className={`line-clamp-2 font-bold text-text transition-colors group-hover:text-primary ${
-            isCompact ? "" : "mb-2 text-lg"
+            isCompact ? "text-base" : "mb-2 text-lg leading-snug"
           }`}
         >
           {title}
         </h3>
 
-        {/* Description (default variant only) */}
+        {/* Description - Muted Body Text (default variant only) */}
         {!isCompact && description && (
           <p className="mb-4 line-clamp-2 text-sm leading-relaxed text-text-muted">
             {description}
@@ -145,20 +159,33 @@ export function ResourceCard({
                   <InlinePreviewInfo previewType={previewType} pageCount={previewPageCount} />
                 )}
               </div>
-              {/* Arrow icon indicating navigation */}
-              <svg
-                className="h-5 w-5 text-text-muted transition-transform duration-200 group-hover:translate-x-1 group-hover:text-primary"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
+              {/* Verified Badge + Arrow */}
+              <div className="flex items-center gap-2">
+                {verified && (
+                  <span className="flex items-center gap-1 text-xs font-medium text-success">
+                    <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </span>
+                )}
+                <svg
+                  className="h-5 w-5 text-text-muted transition-transform duration-200 group-hover:translate-x-1 group-hover:text-primary"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </div>
             </div>
           )
         )}

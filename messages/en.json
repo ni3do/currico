@@ -266,6 +266,13 @@
       "title": "Teaching Materials",
       "description": "Browse quality-checked materials for your classroom"
     },
+    "sidebar": {
+      "title": "Filters",
+      "reset": "Reset",
+      "subjectLabel": "Subject",
+      "cycleLabel": "Cycle",
+      "priceLabel": "Price"
+    },
     "search": {
       "placeholder": "Search by title, topic, keyword...",
       "subjectFilter": {

@@ -58,6 +58,9 @@
   --color-subject-fremdsprachen: var(--ctp-sapphire);
   --color-subject-medien: var(--ctp-sky);
 
+  /* Price Badge Color (warm accent) */
+  --color-price-badge: var(--ctp-peach);
+
   /* Focus */
   --color-focus: var(--ctp-lavender);
 
