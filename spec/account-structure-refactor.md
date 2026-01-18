@@ -253,7 +253,7 @@ Implement actual payment processing.
 
 ### Tasks
 
-- [ ] **10.1** Write tests for seller onboarding flow
+- [x] **10.1** Write tests for seller onboarding flow
 - [ ] **10.2** Write tests for checkout flow
 - [ ] **10.3** Write tests for webhook handlers
 - [ ] **10.4** Test guest checkout end-to-end
