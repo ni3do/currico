@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { Menu, ChevronDown, TrendingUp, Download, FileText, ExternalLink } from "lucide-react";
 import TopBar from "@/components/ui/TopBar";
@@ -131,10 +132,9 @@ const SUBJECT_PILL_CLASSES: Record<string, string> = {
 };
 
 export default function AccountPage() {
-  const [activeTab, setActiveTab] = useState<"overview" | "library" | "wishlist" | "settings">(
-    "overview"
-  );
-  const [librarySubTab, setLibrarySubTab] = useState<"acquired" | "uploaded">("acquired");
+  const [activeTab, setActiveTab] = useState<
+    "overview" | "library" | "uploads" | "wishlist" | "settings"
+  >("overview");
   const { data: session, status } = useSession();
   const router = useRouter();
 
@@ -852,204 +852,189 @@ export default function AccountPage() {
               </div>
             )}
 
-            {/* Library Tab */}
+            {/* Library Tab - Acquired Resources Only */}
             {activeTab === "library" && (
               <div className="border-border bg-surface rounded-xl border p-6">
                 <div className="mb-6 flex items-center justify-between">
                   <div>
-                    <h2 className="text-text text-xl font-semibold">Meine Bibliothek</h2>
+                    <h2 className="text-text text-xl font-semibold">Erworbene Ressourcen</h2>
                     <p className="text-text-muted mt-1 text-sm">
-                      {librarySubTab === "acquired"
-                        ? "Ressourcen, die Sie erworben haben"
-                        : "Ressourcen, die Sie hochgeladen haben"}
+                      Ressourcen, die Sie erworben haben
                     </p>
                   </div>
                 </div>
 
-                {/* Sub-tabs */}
-                <div className="mb-6 flex gap-2">
-                  <button
-                    onClick={() => setLibrarySubTab("acquired")}
-                    className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                      librarySubTab === "acquired"
-                        ? "bg-primary text-text-on-accent"
-                        : "border-border bg-bg text-text-muted hover:bg-surface-hover border"
-                    }`}
+                {loading ? (
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {[1, 2, 3].map((i) => (
+                      <div
+                        key={i}
+                        className="border-border bg-bg animate-pulse rounded-lg border p-4"
+                      >
+                        <div className="bg-surface-hover mb-3 h-4 w-16 rounded"></div>
+                        <div className="bg-surface-hover mb-2 h-5 w-full rounded"></div>
+                        <div className="bg-surface-hover mb-4 h-4 w-24 rounded"></div>
+                        <div className="bg-surface-hover h-10 w-full rounded"></div>
+                      </div>
+                    ))}
+                  </div>
+                ) : libraryItems.length > 0 ? (
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {libraryItems.map((item) => (
+                      <div
+                        key={item.id}
+                        className="border-border bg-bg hover:border-primary rounded-lg border p-4 transition-colors"
+                      >
+                        <div className="mb-3 flex items-center justify-between">
+                          <span
+                            className={`pill text-xs ${item.type === "purchased" ? "pill-primary" : "pill-success"}`}
+                          >
+                            {item.type === "purchased" ? "Gekauft" : "Gratis"}
+                          </span>
+                          {item.verified && (
+                            <span className="pill pill-success text-xs">Verifiziert</span>
+                          )}
+                        </div>
+                        <h3 className="text-text mb-1 font-semibold">{item.title}</h3>
+                        <div className="mb-2 flex items-center gap-2">
+                          <span className={`pill text-xs ${getSubjectPillClass(item.subject)}`}>
+                            {item.subject}
+                          </span>
+                          <span className="text-text-muted text-xs">{item.cycle}</span>
+                        </div>
+                        <p className="text-text-muted mb-4 text-xs">
+                          Von: {item.seller.displayName || "Unbekannt"}
+                        </p>
+                        <button
+                          onClick={() => handleDownload(item.id)}
+                          disabled={downloading === item.id}
+                          className="bg-primary text-text-on-accent hover:bg-primary-hover w-full rounded-md px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
+                        >
+                          {downloading === item.id ? "Wird geladen..." : "Herunterladen"}
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="py-12 text-center">
+                    <Download className="text-text-faint mx-auto mb-4 h-16 w-16" />
+                    <h3 className="text-text mb-2 text-lg font-medium">
+                      Noch keine erworbenen Ressourcen
+                    </h3>
+                    <p className="text-text-muted mb-4">
+                      Entdecken Sie unsere Ressourcen und beginnen Sie Ihre Sammlung.
+                    </p>
+                    <Link
+                      href="/resources"
+                      className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
+                    >
+                      Ressourcen entdecken
+                    </Link>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Uploads Tab */}
+            {activeTab === "uploads" && (
+              <div className="border-border bg-surface rounded-xl border p-6">
+                <div className="mb-6 flex items-center justify-between">
+                  <div>
+                    <h2 className="text-text text-xl font-semibold">Meine Uploads</h2>
+                    <p className="text-text-muted mt-1 text-sm">
+                      Ressourcen, die Sie hochgeladen haben
+                    </p>
+                  </div>
+                  <Link
+                    href="/upload"
+                    className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors"
                   >
-                    Erworben ({libraryItems.length})
-                  </button>
-                  <button
-                    onClick={() => setLibrarySubTab("uploaded")}
-                    className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                      librarySubTab === "uploaded"
-                        ? "bg-primary text-text-on-accent"
-                        : "border-border bg-bg text-text-muted hover:bg-surface-hover border"
-                    }`}
-                  >
-                    Hochgeladen ({uploadedItems.length})
-                  </button>
+                    <span>+</span>
+                    Neue Ressource
+                  </Link>
                 </div>
 
-                {/* Acquired Resources */}
-                {librarySubTab === "acquired" && (
-                  <>
-                    {loading ? (
-                      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        {[1, 2, 3].map((i) => (
-                          <div
-                            key={i}
-                            className="border-border bg-bg animate-pulse rounded-lg border p-4"
-                          >
-                            <div className="bg-surface-hover mb-3 h-4 w-16 rounded"></div>
-                            <div className="bg-surface-hover mb-2 h-5 w-full rounded"></div>
-                            <div className="bg-surface-hover mb-4 h-4 w-24 rounded"></div>
-                            <div className="bg-surface-hover h-10 w-full rounded"></div>
-                          </div>
-                        ))}
+                {loading || uploadedLoading ? (
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {[1, 2, 3].map((i) => (
+                      <div
+                        key={i}
+                        className="border-border bg-bg animate-pulse rounded-lg border p-4"
+                      >
+                        <div className="bg-surface-hover mb-3 h-4 w-16 rounded"></div>
+                        <div className="bg-surface-hover mb-2 h-5 w-full rounded"></div>
+                        <div className="bg-surface-hover mb-4 h-4 w-24 rounded"></div>
+                        <div className="bg-surface-hover h-10 w-full rounded"></div>
                       </div>
-                    ) : libraryItems.length > 0 ? (
-                      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        {libraryItems.map((item) => (
-                          <div
-                            key={item.id}
-                            className="border-border bg-bg hover:border-primary rounded-lg border p-4 transition-colors"
+                    ))}
+                  </div>
+                ) : uploadedItems.length > 0 ? (
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {uploadedItems.map((item) => (
+                      <div
+                        key={item.id}
+                        className="border-border bg-bg hover:border-primary rounded-lg border p-4 transition-colors"
+                      >
+                        <div className="mb-3 flex items-center justify-between">
+                          <span
+                            className={`pill text-xs ${
+                              item.status === "VERIFIED"
+                                ? "pill-success"
+                                : item.status === "PENDING"
+                                  ? "pill-warning"
+                                  : "pill-neutral"
+                            }`}
                           >
-                            <div className="mb-3 flex items-center justify-between">
-                              <span
-                                className={`pill text-xs ${item.type === "purchased" ? "pill-primary" : "pill-success"}`}
-                              >
-                                {item.type === "purchased" ? "Gekauft" : "Gratis"}
-                              </span>
-                              {item.verified && (
-                                <span className="pill pill-success text-xs">Verifiziert</span>
-                              )}
-                            </div>
-                            <h3 className="text-text mb-1 font-semibold">{item.title}</h3>
-                            <div className="mb-2 flex items-center gap-2">
-                              <span className={`pill text-xs ${getSubjectPillClass(item.subject)}`}>
-                                {item.subject}
-                              </span>
-                              <span className="text-text-muted text-xs">{item.cycle}</span>
-                            </div>
-                            <p className="text-text-muted mb-4 text-xs">
-                              Von: {item.seller.displayName || "Unbekannt"}
-                            </p>
-                            <button
-                              onClick={() => handleDownload(item.id)}
-                              disabled={downloading === item.id}
-                              className="bg-primary text-text-on-accent hover:bg-primary-hover w-full rounded-md px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
-                            >
-                              {downloading === item.id ? "Wird geladen..." : "Herunterladen"}
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="py-12 text-center">
-                        <Download className="text-text-faint mx-auto mb-4 h-16 w-16" />
-                        <h3 className="text-text mb-2 text-lg font-medium">
-                          Noch keine erworbenen Ressourcen
-                        </h3>
-                        <p className="text-text-muted mb-4">
-                          Entdecken Sie unsere Ressourcen und beginnen Sie Ihre Sammlung.
-                        </p>
+                            {item.status === "VERIFIED"
+                              ? "Verifiziert"
+                              : item.status === "PENDING"
+                                ? "Ausstehend"
+                                : item.status}
+                          </span>
+                          <span className="text-price text-sm font-semibold">
+                            {item.priceFormatted}
+                          </span>
+                        </div>
+                        <Link href={`/resources/${item.id}`}>
+                          <h3 className="text-text hover:text-primary mb-1 font-semibold">
+                            {item.title}
+                          </h3>
+                        </Link>
+                        <div className="mb-3 flex items-center gap-2">
+                          <span className={`pill text-xs ${getSubjectPillClass(item.subject)}`}>
+                            {item.subject}
+                          </span>
+                          <span className="text-text-muted text-xs">{item.cycle}</span>
+                        </div>
+                        <div className="text-text-muted mb-4 flex items-center justify-between text-xs">
+                          <span>{item.downloadCount} Downloads</span>
+                          <span>{item.purchaseCount} Verkäufe</span>
+                        </div>
                         <Link
-                          href="/resources"
-                          className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
+                          href={`/resources/${item.id}`}
+                          className="bg-primary text-text-on-accent hover:bg-primary-hover block w-full rounded-md px-4 py-2 text-center text-sm font-medium transition-colors"
                         >
-                          Ressourcen entdecken
+                          Ansehen
                         </Link>
                       </div>
-                    )}
-                  </>
-                )}
-
-                {/* Uploaded Resources */}
-                {librarySubTab === "uploaded" && (
-                  <>
-                    {loading || uploadedLoading ? (
-                      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        {[1, 2, 3].map((i) => (
-                          <div
-                            key={i}
-                            className="border-border bg-bg animate-pulse rounded-lg border p-4"
-                          >
-                            <div className="bg-surface-hover mb-3 h-4 w-16 rounded"></div>
-                            <div className="bg-surface-hover mb-2 h-5 w-full rounded"></div>
-                            <div className="bg-surface-hover mb-4 h-4 w-24 rounded"></div>
-                            <div className="bg-surface-hover h-10 w-full rounded"></div>
-                          </div>
-                        ))}
-                      </div>
-                    ) : uploadedItems.length > 0 ? (
-                      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        {uploadedItems.map((item) => (
-                          <div
-                            key={item.id}
-                            className="border-border bg-bg hover:border-primary rounded-lg border p-4 transition-colors"
-                          >
-                            <div className="mb-3 flex items-center justify-between">
-                              <span
-                                className={`pill text-xs ${
-                                  item.status === "VERIFIED"
-                                    ? "pill-success"
-                                    : item.status === "PENDING"
-                                      ? "pill-warning"
-                                      : "pill-neutral"
-                                }`}
-                              >
-                                {item.status === "VERIFIED"
-                                  ? "Verifiziert"
-                                  : item.status === "PENDING"
-                                    ? "Ausstehend"
-                                    : item.status}
-                              </span>
-                              <span className="text-price text-sm font-semibold">
-                                {item.priceFormatted}
-                              </span>
-                            </div>
-                            <Link href={`/resources/${item.id}`}>
-                              <h3 className="text-text hover:text-primary mb-1 font-semibold">
-                                {item.title}
-                              </h3>
-                            </Link>
-                            <div className="mb-3 flex items-center gap-2">
-                              <span className={`pill text-xs ${getSubjectPillClass(item.subject)}`}>
-                                {item.subject}
-                              </span>
-                              <span className="text-text-muted text-xs">{item.cycle}</span>
-                            </div>
-                            <div className="text-text-muted mb-4 flex items-center justify-between text-xs">
-                              <span>{item.downloadCount} Downloads</span>
-                              <span>{item.purchaseCount} Verkäufe</span>
-                            </div>
-                            <Link
-                              href={`/resources/${item.id}`}
-                              className="bg-primary text-text-on-accent hover:bg-primary-hover block w-full rounded-md px-4 py-2 text-center text-sm font-medium transition-colors"
-                            >
-                              Ansehen
-                            </Link>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="py-12 text-center">
-                        <FileText className="text-text-faint mx-auto mb-4 h-16 w-16" />
-                        <h3 className="text-text mb-2 text-lg font-medium">
-                          Noch keine hochgeladenen Ressourcen
-                        </h3>
-                        <p className="text-text-muted mb-4">
-                          Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen.
-                        </p>
-                        <Link
-                          href="/upload"
-                          className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
-                        >
-                          Material hochladen
-                        </Link>
-                      </div>
-                    )}
-                  </>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="py-12 text-center">
+                    <FileText className="text-text-faint mx-auto mb-4 h-16 w-16" />
+                    <h3 className="text-text mb-2 text-lg font-medium">
+                      Noch keine hochgeladenen Ressourcen
+                    </h3>
+                    <p className="text-text-muted mb-4">
+                      Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen.
+                    </p>
+                    <Link
+                      href="/upload"
+                      className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
+                    >
+                      Material hochladen
+                    </Link>
+                  </div>
                 )}
               </div>
             )}
@@ -1157,6 +1142,39 @@ export default function AccountPage() {
             {/* Settings Tab */}
             {activeTab === "settings" && (
               <div className="space-y-6">
+                {/* User Profile Card */}
+                <div className="border-border bg-surface rounded-xl border p-6">
+                  <div className="flex items-center gap-4">
+                    {displayData.image ? (
+                      <Image
+                        src={displayData.image}
+                        alt={displayData.name || "Benutzer"}
+                        width={64}
+                        height={64}
+                        className="border-border h-16 w-16 rounded-full border-2 object-cover"
+                      />
+                    ) : (
+                      <div className="bg-primary flex h-16 w-16 items-center justify-center rounded-full">
+                        <span className="text-text-on-accent text-2xl font-bold">
+                          {(displayData.name || "B").charAt(0).toUpperCase()}
+                        </span>
+                      </div>
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <h2 className="text-text truncate text-lg font-semibold">
+                        {displayData.name || "Benutzer"}
+                      </h2>
+                      <p className="text-text-muted truncate text-sm">{displayData.email}</p>
+                    </div>
+                    <Link
+                      href="/profile/edit"
+                      className="border-border bg-bg text-text-secondary hover:border-primary hover:text-primary flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
+                    >
+                      Profil bearbeiten
+                    </Link>
+                  </div>
+                </div>
+
                 {/* Settings Grid */}
                 <div className="grid gap-6 lg:grid-cols-2">
                   {/* Left Column - Profile & Avatar */}

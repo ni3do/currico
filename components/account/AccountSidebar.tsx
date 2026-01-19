@@ -1,6 +1,7 @@
 "use client";
 
 import { Link } from "@/i18n/navigation";
+import Image from "next/image";
 import {
   Home,
   Library,
@@ -43,12 +44,13 @@ const SUBJECT_COLORS: Record<string, { bg: string; text: string; name: string }>
 // Navigation items
 const NAV_ITEMS = [
   { id: "overview", label: "Übersicht", icon: Home },
-  { id: "library", label: "Meine Bibliothek", icon: Library },
+  { id: "library", label: "Bibliothek", icon: Library },
+  { id: "uploads", label: "Meine Uploads", icon: Upload },
   { id: "wishlist", label: "Wunschliste", icon: Heart },
   { id: "settings", label: "Einstellungen", icon: Settings },
 ] as const;
 
-type TabType = "overview" | "library" | "wishlist" | "settings";
+type TabType = "overview" | "library" | "uploads" | "wishlist" | "settings";
 
 interface UserData {
   name: string | null;
@@ -108,37 +110,6 @@ export function AccountSidebar({
   return (
     <aside className={`border-border bg-bg-secondary rounded-xl border shadow-sm ${className}`}>
       <div className="p-5">
-        {/* User Profile Card */}
-        <div className="mb-5">
-          <div className="flex items-center gap-3">
-            {userData.image ? (
-              <img
-                src={userData.image}
-                alt={userData.name || "Benutzer"}
-                className="border-border h-14 w-14 rounded-full border-2 object-cover"
-              />
-            ) : (
-              <div className="bg-primary flex h-14 w-14 items-center justify-center rounded-full">
-                <span className="text-text-on-accent text-xl font-bold">
-                  {(userData.name || "B").charAt(0).toUpperCase()}
-                </span>
-              </div>
-            )}
-            <div className="min-w-0 flex-1">
-              <h2 className="text-text truncate text-base font-semibold">
-                {userData.name || "Benutzer"}
-              </h2>
-              <p className="text-text-muted truncate text-sm">{userData.email}</p>
-            </div>
-          </div>
-          <Link
-            href="/profile/edit"
-            className="border-border bg-bg text-text-secondary hover:border-primary hover:text-primary mt-3 flex w-full items-center justify-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-colors"
-          >
-            Profil bearbeiten
-          </Link>
-        </div>
-
         {/* Search */}
         <div className="relative mb-5">
           <Search className="text-text-muted absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
@@ -150,39 +121,6 @@ export function AccountSidebar({
             className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 w-full rounded-lg border py-2.5 pr-4 pl-10 text-sm focus:ring-2 focus:outline-none"
           />
         </div>
-
-        {/* Quick Stats */}
-        <div className="mb-5 grid grid-cols-3 gap-2">
-          <button
-            onClick={() => onTabChange("library")}
-            className="group border-border bg-bg hover:border-primary flex flex-col items-center rounded-lg border p-3 transition-all hover:shadow-sm"
-          >
-            <span className="text-text group-hover:text-primary text-lg font-bold">
-              {stats.totalInLibrary}
-            </span>
-            <span className="text-text-muted text-xs">Bibliothek</span>
-          </button>
-          <button
-            onClick={() => onTabChange("library")}
-            className="group border-border bg-bg hover:border-primary flex flex-col items-center rounded-lg border p-3 transition-all hover:shadow-sm"
-          >
-            <span className="text-text group-hover:text-primary text-lg font-bold">
-              {stats.uploadedResources}
-            </span>
-            <span className="text-text-muted text-xs">Uploads</span>
-          </button>
-          <button
-            onClick={() => onTabChange("wishlist")}
-            className="group border-border bg-bg hover:border-primary flex flex-col items-center rounded-lg border p-3 transition-all hover:shadow-sm"
-          >
-            <span className="text-text group-hover:text-primary text-lg font-bold">
-              {stats.wishlistItems}
-            </span>
-            <span className="text-text-muted text-xs">Wunschliste</span>
-          </button>
-        </div>
-
-        <div className="divider my-5" />
 
         {/* Navigation */}
         <nav className="mb-5 space-y-1">
@@ -210,75 +148,6 @@ export function AccountSidebar({
 
         <div className="divider my-5" />
 
-        {/* Meine Fächer (Subjects) */}
-        {userData.subjects && userData.subjects.length > 0 && (
-          <div className="mb-5">
-            <h3 className="label-meta mb-3">Meine Fächer</h3>
-            <div className="flex flex-wrap gap-2">
-              {userData.subjects.map((subject) => {
-                const colors = SUBJECT_COLORS[subject] || {
-                  bg: "bg-surface",
-                  text: "text-text-secondary",
-                  name: subject,
-                };
-                return (
-                  <span
-                    key={subject}
-                    className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${colors.bg} ${colors.text}`}
-                  >
-                    {colors.name}
-                  </span>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* Meine Zyklen (Cycles) */}
-        {userData.cycles && userData.cycles.length > 0 && (
-          <div className="mb-5">
-            <h3 className="label-meta mb-3">Meine Zyklen</h3>
-            <div className="flex gap-2">
-              {[1, 2, 3].map((cycle) => {
-                const isActive =
-                  userData.cycles.includes(`Zyklus ${cycle}`) ||
-                  userData.cycles.includes(`Z${cycle}`);
-                return (
-                  <span
-                    key={cycle}
-                    className={`flex h-10 w-10 items-center justify-center rounded-lg text-sm font-semibold transition-colors ${
-                      isActive
-                        ? "bg-primary/10 text-primary ring-primary/30 ring-2"
-                        : "bg-surface text-text-muted"
-                    }`}
-                  >
-                    Z{cycle}
-                  </span>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* Kanton */}
-        {userData.cantons && userData.cantons.length > 0 && (
-          <div className="mb-5">
-            <h3 className="label-meta mb-3">Kanton</h3>
-            <div className="flex flex-wrap gap-2">
-              {userData.cantons.map((canton) => (
-                <span
-                  key={canton}
-                  className="bg-accent/10 text-accent inline-flex items-center rounded-full px-3 py-1 text-xs font-medium"
-                >
-                  {canton}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <div className="divider my-5" />
-
         {/* Gefolgte Verkäufer */}
         <div className="mb-5">
           <div className="mb-3 flex items-center justify-between">
@@ -299,9 +168,11 @@ export function AccountSidebar({
                   className="group border-border bg-bg hover:border-primary flex items-center gap-3 rounded-lg border p-2 transition-all hover:shadow-sm"
                 >
                   {seller.image ? (
-                    <img
+                    <Image
                       src={seller.image}
                       alt={seller.displayName || "Verkäufer"}
+                      width={32}
+                      height={32}
                       className="h-8 w-8 rounded-full object-cover"
                     />
                   ) : (
