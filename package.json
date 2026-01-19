@@ -87,9 +87,6 @@
     "typescript": "^5.9.3",
     "vitest": "^4.0.17"
   },
-  "optionalDependencies": {
-    "@swc/helpers": "^0.5.18"
-  },
   "lint-staged": {
     "*.{ts,tsx}": [
       "prettier --write",
