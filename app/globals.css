@@ -577,7 +577,9 @@ a {
 .card {
   background: var(--color-bg);
   border-radius: var(--radius-lg);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.04),
+    0 4px 12px rgba(0, 0, 0, 0.03);
   border: 1px solid var(--color-border-subtle);
   transition:
     transform 0.2s ease,
@@ -586,16 +588,22 @@ a {
 
 .card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 16px 32px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.08),
+    0 16px 32px rgba(0, 0, 0, 0.06);
 }
 
 /* Dark theme card shadows */
 :root[data-theme="dark"] .card {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.12),
+    0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 :root[data-theme="dark"] .card:hover {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2), 0 16px 32px rgba(0, 0, 0, 0.15);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.2),
+    0 16px 32px rgba(0, 0, 0, 0.15);
 }
 
 /* =================================================================
@@ -738,7 +746,9 @@ a {
   cursor: grab;
   border: 3px solid var(--color-bg);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .earnings-slider::-webkit-slider-thumb:hover {
@@ -759,7 +769,9 @@ a {
   cursor: grab;
   border: 3px solid var(--color-bg);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .earnings-slider::-moz-range-thumb:hover {
@@ -778,16 +790,22 @@ a {
 }
 
 .earnings-slider:focus::-webkit-slider-thumb {
-  box-shadow: 0 0 0 4px var(--color-focus-ring), 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow:
+    0 0 0 4px var(--color-focus-ring),
+    0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .earnings-slider:focus::-moz-range-thumb {
-  box-shadow: 0 0 0 4px var(--color-focus-ring), 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow:
+    0 0 0 4px var(--color-focus-ring),
+    0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* Earnings amount animation */
 .earnings-amount {
-  transition: transform 0.2s ease, color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease;
 }
 
 .earnings-amount:hover {
@@ -816,13 +834,19 @@ a {
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   cursor: grab;
   border: 4px solid white;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4), 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow:
+    0 4px 12px rgba(59, 130, 246, 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .premium-slider::-webkit-slider-thumb:hover {
   transform: scale(1.15);
-  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.5), 0 3px 6px rgba(0, 0, 0, 0.15);
+  box-shadow:
+    0 6px 16px rgba(59, 130, 246, 0.5),
+    0 3px 6px rgba(0, 0, 0, 0.15);
 }
 
 .premium-slider::-webkit-slider-thumb:active {
@@ -837,13 +861,19 @@ a {
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   cursor: grab;
   border: 4px solid white;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4), 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow:
+    0 4px 12px rgba(59, 130, 246, 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .premium-slider::-moz-range-thumb:hover {
   transform: scale(1.15);
-  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.5), 0 3px 6px rgba(0, 0, 0, 0.15);
+  box-shadow:
+    0 6px 16px rgba(59, 130, 246, 0.5),
+    0 3px 6px rgba(0, 0, 0, 0.15);
 }
 
 .premium-slider::-moz-range-track {
@@ -857,11 +887,102 @@ a {
 }
 
 .premium-slider:focus::-webkit-slider-thumb {
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2), 0 4px 12px rgba(59, 130, 246, 0.4);
+  box-shadow:
+    0 0 0 4px rgba(59, 130, 246, 0.2),
+    0 4px 12px rgba(59, 130, 246, 0.4);
 }
 
 .premium-slider:focus::-moz-range-thumb {
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2), 0 4px 12px rgba(59, 130, 246, 0.4);
+  box-shadow:
+    0 0 0 4px rgba(59, 130, 246, 0.2),
+    0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+/* =================================================================
+   SELLER CALCULATOR SLIDER - Theme-aware premium slider
+   Uses Catppuccin design tokens for proper light/dark support
+   ================================================================= */
+.seller-calculator-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 10px;
+  border-radius: 9999px;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.seller-calculator-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--ctp-blue) 0%, var(--ctp-sapphire) 100%);
+  cursor: grab;
+  border: 4px solid var(--ctp-base);
+  box-shadow:
+    0 4px 14px color-mix(in srgb, var(--ctp-blue) 40%, transparent),
+    0 2px 4px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.seller-calculator-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  box-shadow:
+    0 6px 20px color-mix(in srgb, var(--ctp-blue) 50%, transparent),
+    0 3px 6px rgba(0, 0, 0, 0.12);
+}
+
+.seller-calculator-slider::-webkit-slider-thumb:active {
+  cursor: grabbing;
+  transform: scale(1.1);
+}
+
+.seller-calculator-slider::-moz-range-thumb {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--ctp-blue) 0%, var(--ctp-sapphire) 100%);
+  cursor: grab;
+  border: 4px solid var(--ctp-base);
+  box-shadow:
+    0 4px 14px color-mix(in srgb, var(--ctp-blue) 40%, transparent),
+    0 2px 4px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.seller-calculator-slider::-moz-range-thumb:hover {
+  transform: scale(1.15);
+  box-shadow:
+    0 6px 20px color-mix(in srgb, var(--ctp-blue) 50%, transparent),
+    0 3px 6px rgba(0, 0, 0, 0.12);
+}
+
+.seller-calculator-slider::-moz-range-track {
+  height: 10px;
+  border-radius: 9999px;
+  background: var(--ctp-surface1);
+}
+
+.seller-calculator-slider:focus {
+  outline: none;
+}
+
+.seller-calculator-slider:focus::-webkit-slider-thumb {
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--ctp-blue) 25%, transparent),
+    0 4px 14px color-mix(in srgb, var(--ctp-blue) 40%, transparent);
+}
+
+.seller-calculator-slider:focus::-moz-range-thumb {
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--ctp-blue) 25%, transparent),
+    0 4px 14px color-mix(in srgb, var(--ctp-blue) 40%, transparent);
 }
 
 /* =================================================================
@@ -1085,7 +1206,9 @@ html.theme-transition *::after {
   box-shadow:
     0 25px 50px -12px rgba(0, 0, 0, 0.15),
     0 12px 24px -8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .hero-image:hover {

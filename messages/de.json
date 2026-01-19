@@ -37,6 +37,33 @@
   },
   "homePage": {
     "hero": {
+      "swissBadge": "100% Lehrplan 21 konform",
+      "headline": "Unterrichtsmaterial für den",
+      "headlineHighlight": "Schweizer Lehrplan 21",
+      "subheadline": "Finden Sie sofort einsatzbereite Lehrmittel von Schweizer Lehrpersonen. Qualitätsgeprüft, lehrplankonform, zeitsparend.",
+      "searchPlaceholder": "Was unterrichtest du heute? (z.B. Mathe 5. Klasse)",
+      "searchButton": "Suchen",
+      "quickFilters": "Beliebte Kategorien:",
+      "filters": {
+        "zyklus1": "Zyklus 1",
+        "zyklus2": "Zyklus 2",
+        "deutsch": "Deutsch",
+        "mathe": "Mathematik",
+        "nmg": "NMG"
+      },
+      "trustIndicators": {
+        "lehrplan21": "Lehrplan 21 abgestimmt",
+        "swissTeachers": "Schweizer Lehrpersonen",
+        "verified": "Qualitätsgeprüft"
+      },
+      "imageAlt": "Lehrerin hilft Schülern bei der Gruppenarbeit im Klassenzimmer",
+      "statsCard": {
+        "count": "1'200+",
+        "label": "Unterrichtsmaterialien"
+      },
+      "ratingCard": {
+        "rating": "4.9"
+      },
       "title": "Von Lehrpersonen für Lehrpersonen: Unterrichtsmaterial in Rekordzeit.",
       "description": "Entdecken Sie professionelle Lehrmittel, entwickelt von Kollegen und exakt abgestimmt auf den <bold>Lehrplan 21</bold>. Vertrauenswürdig, geprüft, sofort einsetzbar.",
       "primaryButton": "Jetzt Material finden",

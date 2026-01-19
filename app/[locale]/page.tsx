@@ -31,24 +31,22 @@ export default function Home() {
 
       <main className="flex-1">
         {/* Hero Section - Split-Screen Layout */}
-        <section className="hero-section">
+        <section className="hero-section flex min-h-[calc(100vh-4rem)] items-center">
           {/* Decorative floating shapes */}
           <div className="hero-decoration hero-decoration-1" aria-hidden="true" />
           <div className="hero-decoration hero-decoration-2" aria-hidden="true" />
           <div className="hero-decoration hero-decoration-3" aria-hidden="true" />
 
-          <div className="relative mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
-            <div className="grid items-center gap-12 py-20 lg:grid-cols-2 lg:gap-20 lg:py-28">
+          <div className="relative mx-auto w-full max-w-7xl px-6 py-12 sm:px-8 sm:py-16 lg:px-12 lg:py-20">
+            <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
               {/* Left Side - Text Content (Mobile: order-1, Desktop: order-1) */}
               <div className="order-1 max-w-xl">
-                <h1 className="text-4xl leading-[1.1] font-extrabold tracking-tight text-text sm:text-5xl lg:text-6xl">
+                <h1 className="text-text text-4xl leading-[1.1] font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
                   {t("hero.title")}
                 </h1>
-                <p className="mt-6 text-lg leading-relaxed text-text-muted sm:text-xl">
+                <p className="text-text-muted mt-6 text-lg leading-relaxed sm:text-xl">
                   {t.rich("hero.description", {
-                    bold: (chunks) => (
-                      <strong className="font-semibold text-text">{chunks}</strong>
-                    ),
+                    bold: (chunks) => <strong className="text-text font-semibold">{chunks}</strong>,
                   })}
                 </p>
                 {/* Hero Search Bar */}
@@ -59,11 +57,11 @@ export default function Home() {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder={t("hero.search.placeholder")}
-                      className="w-full rounded-full py-4 pl-6 pr-32 text-base text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                      className="focus:ring-primary w-full rounded-full py-4 pr-32 pl-6 text-base text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-offset-2 focus:outline-none"
                     />
                     <button
                       type="submit"
-                      className="absolute right-2 flex items-center gap-2 rounded-full bg-primary px-6 py-2.5 font-semibold text-white transition-colors hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                      className="bg-primary hover:bg-primary-dark focus:ring-primary absolute right-2 flex items-center gap-2 rounded-full px-6 py-2.5 font-semibold text-white transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none"
                     >
                       <svg
                         className="h-5 w-5"
@@ -94,13 +92,9 @@ export default function Home() {
                 </div>
 
                 {/* Trust indicators */}
-                <div className="mt-10 flex items-center gap-6 text-sm text-text-muted">
+                <div className="text-text-muted mt-10 flex items-center gap-6 text-sm">
                   <div className="flex items-center gap-2">
-                    <svg
-                      className="h-5 w-5 text-success"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
+                    <svg className="text-success h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
                       <path
                         fillRule="evenodd"
                         d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -110,11 +104,7 @@ export default function Home() {
                     <span>Lehrplan 21</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <svg
-                      className="h-5 w-5 text-success"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
+                    <svg className="text-success h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
                       <path
                         fillRule="evenodd"
                         d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -127,13 +117,13 @@ export default function Home() {
               </div>
 
               {/* Right Side - Hero Image with decorative container */}
-              <div className="hero-image-container order-2">
+              <div className="hero-image-container order-2 flex items-center justify-center">
                 <Image
                   src="/images/hero-teachers.png"
                   alt="Lehrer hilft Schülern bei Gruppenarbeit im Klassenzimmer"
                   width={1000}
                   height={667}
-                  className="hero-image h-[320px] w-full object-cover object-center sm:h-[420px] lg:h-[500px]"
+                  className="hero-image aspect-[3/2] w-full max-w-lg object-cover object-center lg:max-w-none"
                   priority
                 />
               </div>
@@ -145,19 +135,17 @@ export default function Home() {
         <section className="bg-surface py-20">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mb-12 text-center">
-              <h2 className="text-2xl font-semibold text-text">
-                {t("howItWorks.title")}
-              </h2>
-              <p className="mt-2 text-text-muted">{t("howItWorks.description")}</p>
+              <h2 className="text-text text-2xl font-semibold">{t("howItWorks.title")}</h2>
+              <p className="text-text-muted mt-2">{t("howItWorks.description")}</p>
             </div>
 
             <div className="grid gap-8 md:grid-cols-3">
               {/* Step 1 */}
               <div className="relative">
                 <div className="flex flex-col items-center text-center">
-                  <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-light">
+                  <div className="bg-primary-light mb-5 flex h-16 w-16 items-center justify-center rounded-2xl">
                     <svg
-                      className="h-8 w-8 text-primary"
+                      className="text-primary h-8 w-8"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -170,14 +158,12 @@ export default function Home() {
                       />
                     </svg>
                   </div>
-                  <div className="absolute top-8 left-[60%] hidden w-[80%] border-t-2 border-dashed border-border md:block" />
-                  <span className="mb-3 inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary text-sm font-bold text-text-on-accent">
+                  <div className="border-border absolute top-8 left-[60%] hidden w-[80%] border-t-2 border-dashed md:block" />
+                  <span className="bg-primary text-text-on-accent mb-3 inline-flex h-7 w-7 items-center justify-center rounded-full text-sm font-bold">
                     1
                   </span>
-                  <h3 className="text-lg font-semibold text-text">
-                    {t("howItWorks.step1.title")}
-                  </h3>
-                  <p className="mt-2 max-w-xs text-sm text-text-muted">
+                  <h3 className="text-text text-lg font-semibold">{t("howItWorks.step1.title")}</h3>
+                  <p className="text-text-muted mt-2 max-w-xs text-sm">
                     {t("howItWorks.step1.description")}
                   </p>
                 </div>
@@ -186,9 +172,9 @@ export default function Home() {
               {/* Step 2 */}
               <div className="relative">
                 <div className="flex flex-col items-center text-center">
-                  <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-light">
+                  <div className="bg-accent-light mb-5 flex h-16 w-16 items-center justify-center rounded-2xl">
                     <svg
-                      className="h-8 w-8 text-accent"
+                      className="text-accent h-8 w-8"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -207,14 +193,12 @@ export default function Home() {
                       />
                     </svg>
                   </div>
-                  <div className="absolute top-8 left-[60%] hidden w-[80%] border-t-2 border-dashed border-border md:block" />
-                  <span className="mb-3 inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary text-sm font-bold text-text-on-accent">
+                  <div className="border-border absolute top-8 left-[60%] hidden w-[80%] border-t-2 border-dashed md:block" />
+                  <span className="bg-primary text-text-on-accent mb-3 inline-flex h-7 w-7 items-center justify-center rounded-full text-sm font-bold">
                     2
                   </span>
-                  <h3 className="text-lg font-semibold text-text">
-                    {t("howItWorks.step2.title")}
-                  </h3>
-                  <p className="mt-2 max-w-xs text-sm text-text-muted">
+                  <h3 className="text-text text-lg font-semibold">{t("howItWorks.step2.title")}</h3>
+                  <p className="text-text-muted mt-2 max-w-xs text-sm">
                     {t("howItWorks.step2.description")}
                   </p>
                 </div>
@@ -223,9 +207,9 @@ export default function Home() {
               {/* Step 3 */}
               <div className="relative">
                 <div className="flex flex-col items-center text-center">
-                  <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-success-light">
+                  <div className="bg-success-light mb-5 flex h-16 w-16 items-center justify-center rounded-2xl">
                     <svg
-                      className="h-8 w-8 text-success"
+                      className="text-success h-8 w-8"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -238,13 +222,11 @@ export default function Home() {
                       />
                     </svg>
                   </div>
-                  <span className="mb-3 inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary text-sm font-bold text-text-on-accent">
+                  <span className="bg-primary text-text-on-accent mb-3 inline-flex h-7 w-7 items-center justify-center rounded-full text-sm font-bold">
                     3
                   </span>
-                  <h3 className="text-lg font-semibold text-text">
-                    {t("howItWorks.step3.title")}
-                  </h3>
-                  <p className="mt-2 max-w-xs text-sm text-text-muted">
+                  <h3 className="text-text text-lg font-semibold">{t("howItWorks.step3.title")}</h3>
+                  <p className="text-text-muted mt-2 max-w-xs text-sm">
                     {t("howItWorks.step3.description")}
                   </p>
                 </div>
@@ -258,16 +240,12 @@ export default function Home() {
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mb-8 flex items-end justify-between">
               <div>
-                <h2 className="text-2xl font-semibold text-text">
-                  {t("featuredResources.title")}
-                </h2>
-                <p className="mt-2 text-text-muted">
-                  {t("featuredResources.description")}
-                </p>
+                <h2 className="text-text text-2xl font-semibold">{t("featuredResources.title")}</h2>
+                <p className="text-text-muted mt-2">{t("featuredResources.description")}</p>
               </div>
               <Link
                 href="/resources"
-                className="hidden items-center text-sm font-medium text-primary hover:underline sm:flex"
+                className="text-primary hidden items-center text-sm font-medium hover:underline sm:flex"
               >
                 {tCommon("buttons.viewAll")}
                 <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -312,13 +290,13 @@ export default function Home() {
                   verified={false}
                   href="/resources"
                   footer={
-                    <div className="flex items-center justify-between border-t border-border-subtle pt-4">
-                      <span className="text-sm text-text-muted">
+                    <div className="border-border-subtle flex items-center justify-between border-t pt-4">
+                      <span className="text-text-muted text-sm">
                         {t(`featuredResources.${card.key}.documents`)}
                       </span>
-                      <div className="flex items-center gap-1 text-sm font-medium text-text-secondary">
+                      <div className="text-text-secondary flex items-center gap-1 text-sm font-medium">
                         <svg
-                          className="h-4 w-4 text-warning"
+                          className="text-warning h-4 w-4"
                           fill="currentColor"
                           viewBox="0 0 20 20"
                         >
@@ -335,7 +313,7 @@ export default function Home() {
             <div className="mt-8 text-center sm:hidden">
               <Link
                 href="/resources"
-                className="inline-flex items-center text-sm font-medium text-primary hover:underline"
+                className="text-primary inline-flex items-center text-sm font-medium hover:underline"
               >
                 {t("featuredResources.viewAllMobile")}
                 <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -358,20 +336,16 @@ export default function Home() {
         <section id="features" className="py-24">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mx-auto mb-16 max-w-2xl text-center">
-              <h2 className="text-3xl font-semibold text-text">
-                {t("features.title")}
-              </h2>
-              <p className="mt-4 text-lg text-text-muted">
-                {t("features.description")}
-              </p>
+              <h2 className="text-text text-3xl font-semibold">{t("features.title")}</h2>
+              <p className="text-text-muted mt-4 text-lg">{t("features.description")}</p>
             </div>
 
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {/* Feature 1 */}
               <div className="card p-8">
-                <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-primary-light">
+                <div className="bg-primary-light mb-6 flex h-12 w-12 items-center justify-center rounded-xl">
                   <svg
-                    className="h-6 w-6 text-primary"
+                    className="text-primary h-6 w-6"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -384,19 +358,17 @@ export default function Home() {
                     />
                   </svg>
                 </div>
-                <h3 className="text-lg font-bold text-text">
-                  {t("features.feature1.title")}
-                </h3>
-                <p className="mt-3 leading-relaxed text-text-muted">
+                <h3 className="text-text text-lg font-bold">{t("features.feature1.title")}</h3>
+                <p className="text-text-muted mt-3 leading-relaxed">
                   {t("features.feature1.description")}
                 </p>
               </div>
 
               {/* Feature 2 */}
               <div className="card p-8">
-                <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-accent-light">
+                <div className="bg-accent-light mb-6 flex h-12 w-12 items-center justify-center rounded-xl">
                   <svg
-                    className="h-6 w-6 text-accent"
+                    className="text-accent h-6 w-6"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -409,19 +381,17 @@ export default function Home() {
                     />
                   </svg>
                 </div>
-                <h3 className="text-lg font-bold text-text">
-                  {t("features.feature2.title")}
-                </h3>
-                <p className="mt-3 leading-relaxed text-text-muted">
+                <h3 className="text-text text-lg font-bold">{t("features.feature2.title")}</h3>
+                <p className="text-text-muted mt-3 leading-relaxed">
                   {t("features.feature2.description")}
                 </p>
               </div>
 
               {/* Feature 3 */}
               <div className="card p-8">
-                <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-success-light">
+                <div className="bg-success-light mb-6 flex h-12 w-12 items-center justify-center rounded-xl">
                   <svg
-                    className="h-6 w-6 text-success"
+                    className="text-success h-6 w-6"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -434,10 +404,8 @@ export default function Home() {
                     />
                   </svg>
                 </div>
-                <h3 className="text-lg font-bold text-text">
-                  {t("features.feature3.title")}
-                </h3>
-                <p className="mt-3 leading-relaxed text-text-muted">
+                <h3 className="text-text text-lg font-bold">{t("features.feature3.title")}</h3>
+                <p className="text-text-muted mt-3 leading-relaxed">
                   {t("features.feature3.description")}
                 </p>
               </div>
@@ -449,10 +417,8 @@ export default function Home() {
         <section className="bg-surface py-24">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mb-12 text-center">
-              <h2 className="text-2xl font-semibold text-text">
-                {t("testimonials.title")}
-              </h2>
-              <p className="mt-2 text-text-muted">{t("testimonials.description")}</p>
+              <h2 className="text-text text-2xl font-semibold">{t("testimonials.title")}</h2>
+              <p className="text-text-muted mt-2">{t("testimonials.description")}</p>
             </div>
 
             <div className="grid gap-8 md:grid-cols-3">
@@ -463,7 +429,7 @@ export default function Home() {
               ].map((testimonial) => (
                 <div
                   key={testimonial.key}
-                  className="relative rounded-xl border border-border-subtle bg-bg p-6"
+                  className="border-border-subtle bg-bg relative rounded-xl border p-6"
                 >
                   {/* Quote icon */}
                   <svg
@@ -476,7 +442,7 @@ export default function Home() {
                   </svg>
 
                   {/* Quote text */}
-                  <p className="mb-6 leading-relaxed text-text-secondary">
+                  <p className="text-text-secondary mb-6 leading-relaxed">
                     &ldquo;{t(`testimonials.${testimonial.key}.quote`)}&rdquo;
                   </p>
 
@@ -489,10 +455,10 @@ export default function Home() {
                       {t(`testimonials.${testimonial.key}.name`).charAt(0)}
                     </div>
                     <div>
-                      <div className="font-medium text-text">
+                      <div className="text-text font-medium">
                         {t(`testimonials.${testimonial.key}.name`)}
                       </div>
-                      <div className="text-sm text-text-muted">
+                      <div className="text-text-muted text-sm">
                         {t(`testimonials.${testimonial.key}.role`)} ·{" "}
                         {t(`testimonials.${testimonial.key}.location`)}
                       </div>

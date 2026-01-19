@@ -37,6 +37,33 @@
   },
   "homePage": {
     "hero": {
+      "swissBadge": "100% Lehrplan 21 aligned",
+      "headline": "Teaching materials for the",
+      "headlineHighlight": "Swiss Lehrplan 21",
+      "subheadline": "Find ready-to-use teaching resources from Swiss educators. Quality-checked, curriculum-aligned, time-saving.",
+      "searchPlaceholder": "What are you teaching today? (e.g. Math Grade 5)",
+      "searchButton": "Search",
+      "quickFilters": "Popular categories:",
+      "filters": {
+        "zyklus1": "Cycle 1",
+        "zyklus2": "Cycle 2",
+        "deutsch": "German",
+        "mathe": "Mathematics",
+        "nmg": "NMG"
+      },
+      "trustIndicators": {
+        "lehrplan21": "Lehrplan 21 aligned",
+        "swissTeachers": "Swiss teachers",
+        "verified": "Quality verified"
+      },
+      "imageAlt": "Teacher helping students with group work in the classroom",
+      "statsCard": {
+        "count": "1,200+",
+        "label": "Teaching materials"
+      },
+      "ratingCard": {
+        "rating": "4.9"
+      },
       "title": "By Teachers, For Teachers: Teaching Materials in Record Time.",
       "description": "Discover professional teaching resources, developed by colleagues and precisely aligned with <bold>Lehrplan 21</bold>. Trustworthy, verified, ready to use.",
       "primaryButton": "Find Materials Now",

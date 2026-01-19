@@ -4,12 +4,14 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Link } from "@/i18n/navigation";
+import { Menu, ChevronDown, TrendingUp, Download, FileText, ExternalLink } from "lucide-react";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { ThemeSettings } from "@/components/ui/ThemeToggle";
 import { AvatarUploader } from "@/components/profile/AvatarUploader";
 import { EmailVerificationBanner } from "@/components/account/EmailVerificationBanner";
 import { StripeConnectStatus } from "@/components/account/StripeConnectStatus";
+import { AccountSidebar } from "@/components/account/AccountSidebar";
 
 interface LibraryItem {
   id: string;
@@ -108,6 +110,26 @@ interface UserData {
   isSeller: boolean;
 }
 
+interface FollowedSeller {
+  id: string;
+  displayName: string | null;
+  image: string | null;
+  newResources?: number;
+}
+
+// Subject color mapping for pills
+const SUBJECT_PILL_CLASSES: Record<string, string> = {
+  Deutsch: "pill-deutsch",
+  Mathematik: "pill-mathe",
+  NMG: "pill-nmg",
+  BG: "pill-gestalten",
+  Musik: "pill-musik",
+  Sport: "pill-sport",
+  Englisch: "pill-fremdsprachen",
+  Französisch: "pill-fremdsprachen",
+  "Medien und Informatik": "pill-medien",
+};
+
 export default function AccountPage() {
   const [activeTab, setActiveTab] = useState<"overview" | "library" | "wishlist" | "settings">(
     "overview"
@@ -122,11 +144,12 @@ export default function AccountPage() {
   const [libraryItems, setLibraryItems] = useState<LibraryItem[]>([]);
   const [uploadedItems, setUploadedItems] = useState<UploadedItem[]>([]);
   const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
-  const [librarySearch, setLibrarySearch] = useState("");
-  const [uploadedSearch, setUploadedSearch] = useState("");
+  const [followedSellers, setFollowedSellers] = useState<FollowedSeller[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [uploadedLoading, setUploadedLoading] = useState(false);
   const [downloading, setDownloading] = useState<string | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Seller dashboard state
   const [sellerStats, setSellerStats] = useState<SellerStats>({
@@ -136,7 +159,6 @@ export default function AccountPage() {
   });
   const [sellerResources, setSellerResources] = useState<SellerResource[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [sellerView, setSellerView] = useState<"resources" | "transactions">("resources");
   const [openActionMenu, setOpenActionMenu] = useState<string | null>(null);
   const actionMenuRef = useRef<HTMLDivElement>(null);
 
@@ -249,6 +271,19 @@ export default function AccountPage() {
     }
   }, []);
 
+  // Fetch followed sellers
+  const fetchFollowedSellers = useCallback(async () => {
+    try {
+      const response = await fetch("/api/user/following");
+      if (response.ok) {
+        const data = await response.json();
+        setFollowedSellers(data.sellers || []);
+      }
+    } catch (error) {
+      console.error("Error fetching followed sellers:", error);
+    }
+  }, []);
+
   // Handle redirects in useEffect to avoid setState during render
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -268,37 +303,36 @@ export default function AccountPage() {
         fetchUploaded(),
         fetchWishlist(),
         fetchSellerData(),
+        fetchFollowedSellers(),
       ]).finally(() => {
         setLoading(false);
       });
     }
-  }, [status, fetchUserStats, fetchLibrary, fetchUploaded, fetchWishlist, fetchSellerData]);
+  }, [
+    status,
+    fetchUserStats,
+    fetchLibrary,
+    fetchUploaded,
+    fetchWishlist,
+    fetchSellerData,
+    fetchFollowedSellers,
+  ]);
 
-  // Handle library search (acquired)
+  // Handle search
   useEffect(() => {
-    if (status === "authenticated") {
+    if (status === "authenticated" && searchQuery) {
       const debounce = setTimeout(() => {
-        fetchLibrary(librarySearch);
+        fetchLibrary(searchQuery);
+        fetchUploaded(searchQuery);
       }, 300);
       return () => clearTimeout(debounce);
     }
-  }, [librarySearch, status, fetchLibrary]);
-
-  // Handle uploaded search
-  useEffect(() => {
-    if (status === "authenticated") {
-      const debounce = setTimeout(() => {
-        fetchUploaded(uploadedSearch);
-      }, 300);
-      return () => clearTimeout(debounce);
-    }
-  }, [uploadedSearch, status, fetchUploaded]);
+  }, [searchQuery, status, fetchLibrary, fetchUploaded]);
 
   // Handle download
   const handleDownload = async (resourceId: string) => {
     setDownloading(resourceId);
     try {
-      // Trigger the download by opening the download URL
       window.open(`/api/resources/${resourceId}/download`, "_blank");
     } catch (error) {
       console.error("Download error:", error);
@@ -395,23 +429,32 @@ export default function AccountPage() {
     }
   };
 
+  // Get subject pill class
+  const getSubjectPillClass = (subject: string): string => {
+    return SUBJECT_PILL_CLASSES[subject] || "pill-neutral";
+  };
+
   // Show loading state while checking auth or redirecting
   if (status === "loading" || status === "unauthenticated" || session?.user?.role === "ADMIN") {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-primary"></div>
+      <div className="bg-bg flex min-h-screen items-center justify-center">
+        <div className="border-primary h-8 w-8 animate-spin rounded-full border-b-2"></div>
       </div>
     );
   }
 
   // Fallback data from session
   const displayData = userData || {
+    id: "",
     name: session?.user?.name || "Benutzer",
     email: session?.user?.email || "",
+    emailVerified: null,
     image: session?.user?.image || null,
+    displayName: null,
     subjects: [],
     cycles: [],
     cantons: [],
+    isSeller: false,
   };
 
   const displayStats = stats || {
@@ -423,415 +466,182 @@ export default function AccountPage() {
     followedSellers: 0,
   };
 
+  // Count pending resources
+  const pendingResourcesCount = sellerResources.filter(
+    (r) => r.status !== "Verified" && r.status !== "AI-Checked"
+  ).length;
+
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
-      <div className="mx-auto flex max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
-        {/* Vertical Sidebar Navigation */}
-        <aside className="mr-8 hidden w-64 shrink-0 lg:block">
-          {/* User Info in Sidebar */}
-          <div className="mb-6 flex items-center gap-3">
-            {displayData.image ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={displayData.image}
-                alt={displayData.name || "Benutzer"}
-                className="h-12 w-12 rounded-full border-2 border-border"
-              />
-            ) : (
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary">
-                <span className="text-lg font-bold text-text-on-accent">
-                  {(displayData.name || "B").charAt(0).toUpperCase()}
-                </span>
-              </div>
-            )}
-            <div className="min-w-0">
-              <h2 className="truncate text-sm font-semibold text-text">
-                {displayData.name}
-              </h2>
-              <p className="truncate text-xs text-text-muted">{displayData.email}</p>
-            </div>
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
+        {/* Page Header */}
+        <div className="mb-6">
+          <div className="text-text-muted mb-2 flex items-center gap-2 text-sm">
+            <Link href="/" className="hover:text-primary transition-colors">
+              Home
+            </Link>
+            <span>/</span>
+            <span className="text-text-secondary">Mein Konto</span>
           </div>
-
-          {/* Navigation Links */}
-          <nav className="space-y-1">
-            <button
-              onClick={() => setActiveTab("overview")}
-              className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                activeTab === "overview"
-                  ? "bg-primary-light text-ctp-blue"
-                  : "text-text-secondary hover:bg-bg hover:text-text"
-              }`}
-            >
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-                />
-              </svg>
-              Übersicht
-            </button>
-            <button
-              onClick={() => setActiveTab("library")}
-              className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                activeTab === "library"
-                  ? "bg-primary-light text-ctp-blue"
-                  : "text-text-secondary hover:bg-bg hover:text-text"
-              }`}
-            >
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                />
-              </svg>
-              Meine Bibliothek
-            </button>
-            <button
-              onClick={() => setActiveTab("wishlist")}
-              className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                activeTab === "wishlist"
-                  ? "bg-primary-light text-ctp-blue"
-                  : "text-text-secondary hover:bg-bg hover:text-text"
-              }`}
-            >
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                />
-              </svg>
-              Wunschliste
-            </button>
-            <button
-              onClick={() => setActiveTab("settings")}
-              className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                activeTab === "settings"
-                  ? "bg-primary-light text-ctp-blue"
-                  : "text-text-secondary hover:bg-bg hover:text-text"
-              }`}
-            >
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
-              Einstellungen
-            </button>
-          </nav>
-
-          {/* Quick Stats in Sidebar */}
-          <div className="mt-6 rounded-xl border border-border bg-surface p-4">
-            <h3 className="mb-3 text-xs font-semibold tracking-wider text-text-muted uppercase">
-              Statistiken
-            </h3>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-text-secondary">In Bibliothek</span>
-                <span className="text-sm font-semibold text-text">
-                  {displayStats.totalInLibrary}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-text-secondary">Hochgeladen</span>
-                <span className="text-sm font-semibold text-text">
-                  {displayStats.uploadedResources}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-text-secondary">Wunschliste</span>
-                <span className="text-sm font-semibold text-text">
-                  {displayStats.wishlistItems}
-                </span>
-              </div>
-            </div>
-          </div>
-        </aside>
-
-        {/* Mobile Navigation - visible only on smaller screens */}
-        <div className="mb-6 lg:hidden">
-          {/* Mobile User Info */}
-          <div className="mb-4 flex items-center gap-3">
-            {displayData.image ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={displayData.image}
-                alt={displayData.name || "Benutzer"}
-                className="h-12 w-12 rounded-full border-2 border-border"
-              />
-            ) : (
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary">
-                <span className="text-lg font-bold text-text-on-accent">
-                  {(displayData.name || "B").charAt(0).toUpperCase()}
-                </span>
-              </div>
-            )}
-            <div>
-              <h2 className="text-sm font-semibold text-text">{displayData.name}</h2>
-              <p className="text-xs text-text-muted">{displayData.email}</p>
-            </div>
-          </div>
-          {/* Mobile Tabs */}
-          <div className="flex gap-2 overflow-x-auto pb-2">
-            <button
-              onClick={() => setActiveTab("overview")}
-              className={`shrink-0 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                activeTab === "overview"
-                  ? "bg-primary text-text-on-accent"
-                  : "bg-surface text-text-muted"
-              }`}
-            >
-              Übersicht
-            </button>
-            <button
-              onClick={() => setActiveTab("library")}
-              className={`shrink-0 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                activeTab === "library"
-                  ? "bg-primary text-text-on-accent"
-                  : "bg-surface text-text-muted"
-              }`}
-            >
-              Bibliothek
-            </button>
-            <button
-              onClick={() => setActiveTab("wishlist")}
-              className={`shrink-0 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                activeTab === "wishlist"
-                  ? "bg-primary text-text-on-accent"
-                  : "bg-surface text-text-muted"
-              }`}
-            >
-              Wunschliste
-            </button>
-            <button
-              onClick={() => setActiveTab("settings")}
-              className={`shrink-0 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                activeTab === "settings"
-                  ? "bg-primary text-text-on-accent"
-                  : "bg-surface text-text-muted"
-              }`}
-            >
-              Einstellungen
-            </button>
-          </div>
+          <h1 className="text-text text-2xl font-bold">Mein Konto</h1>
         </div>
 
-        {/* Main Content Area */}
-        <main className="min-w-0 flex-1">
-          {/* Overview Tab */}
-          {activeTab === "overview" && (
-            <div className="space-y-6">
-              {/* Email Verification Banner - show if email not verified */}
-              {userData && !userData.emailVerified && (
-                <EmailVerificationBanner email={userData.email} />
-              )}
+        {/* Main Layout: Sidebar + Content */}
+        <div className="flex flex-col gap-6 lg:flex-row">
+          {/* Mobile Menu Toggle */}
+          <div className="lg:hidden">
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="border-border bg-bg-secondary text-text-secondary hover:border-primary hover:text-primary flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-3 text-sm font-medium transition-colors"
+            >
+              <Menu className="h-5 w-5" />
+              <span>Menü</span>
+              <ChevronDown
+                className={`h-4 w-4 transition-transform ${mobileMenuOpen ? "rotate-180" : ""}`}
+              />
+            </button>
 
-              {/* Stripe Connect Status - show for verified users */}
-              {userData && userData.emailVerified && (
-                <StripeConnectStatus isSeller={userData.isSeller} />
-              )}
-
-              {/* KPI Metrics Row - 3 columns */}
-              <div className="grid gap-4 sm:grid-cols-3">
-                {/* Einnahmen (Earnings) */}
-                <div className="rounded-2xl border border-border bg-surface p-6">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-text-muted">
-                        Einnahmen
-                      </p>
-                      <p className="mt-2 text-3xl font-bold text-text">
-                        {loading ? "-" : sellerStats.netEarnings}
-                      </p>
-                    </div>
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-success-light">
-                      <svg
-                        className="h-6 w-6 text-ctp-green"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Downloads */}
-                <div className="rounded-2xl border border-border bg-surface p-6">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-text-muted">
-                        Downloads
-                      </p>
-                      <p className="mt-2 text-3xl font-bold text-text">
-                        {loading ? "-" : sellerStats.totalDownloads}
-                      </p>
-                    </div>
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-light">
-                      <svg
-                        className="h-6 w-6 text-ctp-blue"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Beiträge (Contributions) */}
-                <div className="rounded-2xl border border-border bg-surface p-6">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-text-muted">Beiträge</p>
-                      <p className="mt-2 text-3xl font-bold text-text">
-                        {loading ? "-" : sellerResources.length}
-                      </p>
-                    </div>
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent-light">
-                      <svg
-                        className="h-6 w-6 text-ctp-mauve"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
+            {/* Mobile Sidebar */}
+            {mobileMenuOpen && (
+              <div className="mt-4">
+                <AccountSidebar
+                  userData={displayData}
+                  stats={displayStats}
+                  sellerStats={{
+                    ...sellerStats,
+                    pendingResources: pendingResourcesCount,
+                    stripeConnected: true,
+                  }}
+                  followedSellers={followedSellers}
+                  activeTab={activeTab}
+                  onTabChange={(tab) => {
+                    setActiveTab(tab);
+                    setMobileMenuOpen(false);
+                  }}
+                  searchQuery={searchQuery}
+                  onSearchChange={setSearchQuery}
+                />
               </div>
+            )}
+          </div>
 
-              {/* Main Content Grid - Resources Table + Sidebar */}
-              <div className="grid gap-6 lg:grid-cols-4">
-                {/* Main Resources Table Container - Takes 3 columns */}
-                <div className="overflow-hidden rounded-2xl border border-border bg-surface lg:col-span-3">
-                  {/* Integrated Header with Search and Upload Button */}
-                  <div className="flex flex-col gap-4 border-b border-border bg-bg p-4 sm:flex-row sm:items-center sm:justify-between">
-                    {/* Search Bar (Left) */}
-                    <div className="relative flex-1 sm:max-w-sm">
-                      <svg
-                        className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-text-muted"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                        />
-                      </svg>
-                      <input
-                        type="text"
-                        placeholder="Ressourcen durchsuchen..."
-                        value={uploadedSearch}
-                        onChange={(e) => setUploadedSearch(e.target.value)}
-                        className="w-full rounded-lg border border-border bg-surface py-2.5 pr-4 pl-10 text-sm text-text placeholder-text-muted transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
-                      />
+          {/* Desktop Sidebar */}
+          <div className="hidden w-72 flex-shrink-0 lg:block">
+            <div className="sticky top-24">
+              <AccountSidebar
+                userData={displayData}
+                stats={displayStats}
+                sellerStats={{
+                  ...sellerStats,
+                  pendingResources: pendingResourcesCount,
+                  stripeConnected: true,
+                }}
+                followedSellers={followedSellers}
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+              />
+            </div>
+          </div>
+
+          {/* Main Content Area */}
+          <div className="min-w-0 flex-1">
+            {/* Overview Tab */}
+            {activeTab === "overview" && (
+              <div className="space-y-6">
+                {/* Email Verification Banner */}
+                {userData && !userData.emailVerified && (
+                  <EmailVerificationBanner email={userData.email} />
+                )}
+
+                {/* Stripe Connect Status */}
+                {userData && userData.emailVerified && (
+                  <StripeConnectStatus isSeller={userData.isSeller} />
+                )}
+
+                {/* KPI Metrics Row */}
+                <div className="grid gap-4 sm:grid-cols-3">
+                  {/* Einnahmen (Earnings) */}
+                  <div className="border-border bg-surface rounded-2xl border p-6">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="text-text-muted text-sm font-medium">Einnahmen</p>
+                        <p className="text-text mt-2 text-3xl font-bold">
+                          {loading ? "-" : sellerStats.netEarnings}
+                        </p>
+                      </div>
+                      <div className="bg-success/10 flex h-12 w-12 items-center justify-center rounded-xl">
+                        <TrendingUp className="text-success h-6 w-6" />
+                      </div>
                     </div>
+                  </div>
 
-                    {/* Upload Button (Right) */}
+                  {/* Downloads */}
+                  <div className="border-border bg-surface rounded-2xl border p-6">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="text-text-muted text-sm font-medium">Downloads</p>
+                        <p className="text-text mt-2 text-3xl font-bold">
+                          {loading ? "-" : sellerStats.totalDownloads}
+                        </p>
+                      </div>
+                      <div className="bg-primary/10 flex h-12 w-12 items-center justify-center rounded-xl">
+                        <Download className="text-primary h-6 w-6" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Beiträge (Contributions) */}
+                  <div className="border-border bg-surface rounded-2xl border p-6">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="text-text-muted text-sm font-medium">Beiträge</p>
+                        <p className="text-text mt-2 text-3xl font-bold">
+                          {loading ? "-" : sellerResources.length}
+                        </p>
+                      </div>
+                      <div className="bg-accent/10 flex h-12 w-12 items-center justify-center rounded-xl">
+                        <FileText className="text-accent h-6 w-6" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Resources Table */}
+                <div className="border-border bg-surface overflow-hidden rounded-2xl border">
+                  <div className="border-border bg-bg-secondary flex items-center justify-between border-b p-4">
+                    <h2 className="text-text text-lg font-semibold">Meine Ressourcen</h2>
                     <Link
                       href="/upload"
-                      className="inline-flex items-center justify-center gap-2 rounded-lg bg-ctp-blue px-5 py-2.5 text-sm font-semibold text-text-on-accent shadow-ctp-blue/20 shadow-md transition-all hover:bg-ctp-sapphire hover:shadow-ctp-blue/25 hover:shadow-lg"
+                      className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors"
                     >
-                      <svg
-                        className="h-4 w-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 4v16m8-8H4"
-                        />
-                      </svg>
-                      <span>Neue Ressource hochladen</span>
+                      <span>+</span>
+                      Neue Ressource
                     </Link>
                   </div>
 
-                  {/* Table Content */}
                   <div className="p-4">
                     {loading ? (
-                      <div className="py-12 text-center text-text-muted">
-                        <div className="mx-auto mb-3 h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+                      <div className="text-text-muted py-12 text-center">
+                        <div className="border-primary mx-auto mb-3 h-8 w-8 animate-spin rounded-full border-4 border-t-transparent"></div>
                         Laden...
                       </div>
                     ) : sellerResources.length === 0 ? (
                       <div className="py-12 text-center">
-                        <svg
-                          className="mx-auto mb-4 h-16 w-16 text-text-faint"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1.5}
-                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                          />
-                        </svg>
-                        <h3 className="mb-2 text-lg font-medium text-text">
+                        <FileText className="text-text-faint mx-auto mb-4 h-16 w-16" />
+                        <h3 className="text-text mb-2 text-lg font-medium">
                           Noch keine Ressourcen hochgeladen
                         </h3>
-                        <p className="mb-4 text-sm text-text-muted">
+                        <p className="text-text-muted mb-4 text-sm">
                           Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen.
                         </p>
                         <Link
                           href="/upload"
-                          className="inline-flex items-center gap-2 rounded-lg bg-ctp-blue px-5 py-2.5 text-sm font-semibold text-text-on-accent transition-colors hover:bg-ctp-sapphire"
+                          className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition-colors"
                         >
-                          <svg
-                            className="h-4 w-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M12 4v16m8-8H4"
-                            />
-                          </svg>
                           Erste Ressource hochladen
                         </Link>
                       </div>
@@ -839,7 +649,7 @@ export default function AccountPage() {
                       <div className="overflow-x-auto">
                         <table className="w-full">
                           <thead>
-                            <tr className="text-left text-xs font-medium tracking-wider text-text-muted uppercase">
+                            <tr className="text-text-muted text-left text-xs font-medium tracking-wider uppercase">
                               <th className="pb-4">Titel</th>
                               <th className="pb-4">Status</th>
                               <th className="pb-4 text-right">Downloads</th>
@@ -847,25 +657,28 @@ export default function AccountPage() {
                               <th className="pb-4 text-right">Aktionen</th>
                             </tr>
                           </thead>
-                          <tbody className="divide-y divide-border">
+                          <tbody className="divide-border divide-y">
                             {sellerResources.map((resource) => (
-                              <tr
-                                key={resource.id}
-                                className="group transition-colors hover:bg-bg"
-                              >
+                              <tr key={resource.id} className="group hover:bg-bg transition-colors">
                                 <td className="py-4 pr-4">
                                   <Link href={`/resources/${resource.id}`} className="block">
-                                    <div className="text-sm font-medium text-text group-hover:text-primary">
+                                    <div className="text-text group-hover:text-primary text-sm font-medium">
                                       {resource.title}
                                     </div>
-                                    <div className="mt-0.5 text-xs text-text-muted">
+                                    <div className="text-text-muted mt-0.5 text-xs">
                                       {resource.type}
                                     </div>
                                   </Link>
                                 </td>
                                 <td className="py-4 pr-4">
                                   <span
-                                    className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${resource.status === "Verified" ? "bg-badge-success-bg text-badge-success-text" : resource.status === "AI-Checked" ? "bg-accent-light text-accent" : "bg-badge-warning-bg text-badge-warning-text"}`}
+                                    className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${
+                                      resource.status === "Verified"
+                                        ? "bg-success/10 text-success"
+                                        : resource.status === "AI-Checked"
+                                          ? "bg-accent/10 text-accent"
+                                          : "bg-warning/10 text-warning"
+                                    }`}
                                   >
                                     {resource.status === "Verified"
                                       ? "Verifiziert"
@@ -874,10 +687,10 @@ export default function AccountPage() {
                                         : "Ausstehend"}
                                   </span>
                                 </td>
-                                <td className="py-4 pr-4 text-right text-sm font-medium text-text">
+                                <td className="text-text py-4 pr-4 text-right text-sm font-medium">
                                   {resource.downloads}
                                 </td>
-                                <td className="py-4 pr-4 text-right text-sm font-semibold text-success">
+                                <td className="text-success py-4 pr-4 text-right text-sm font-semibold">
                                   {resource.netEarnings}
                                 </td>
                                 <td className="py-4 text-right">
@@ -891,7 +704,7 @@ export default function AccountPage() {
                                           openActionMenu === resource.id ? null : resource.id
                                         )
                                       }
-                                      className="rounded-lg p-2 text-text-muted transition-colors hover:bg-surface-elevated hover:text-text"
+                                      className="text-text-muted hover:bg-surface-hover hover:text-text rounded-lg p-2 transition-colors"
                                       aria-label="Aktionen"
                                     >
                                       <svg
@@ -909,36 +722,18 @@ export default function AccountPage() {
                                       </svg>
                                     </button>
                                     {openActionMenu === resource.id && (
-                                      <div className="absolute right-0 z-10 mt-1 w-40 rounded-xl border border-border bg-surface py-1.5 shadow-lg">
+                                      <div className="border-border bg-surface absolute right-0 z-10 mt-1 w-40 rounded-xl border py-1.5 shadow-lg">
                                         <Link
                                           href={`/resources/${resource.id}`}
-                                          className="flex items-center gap-2.5 px-4 py-2 text-sm text-text transition-colors hover:bg-bg"
+                                          className="text-text hover:bg-bg flex items-center gap-2.5 px-4 py-2 text-sm transition-colors"
                                           onClick={() => setOpenActionMenu(null)}
                                         >
-                                          <svg
-                                            className="h-4 w-4"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24"
-                                          >
-                                            <path
-                                              strokeLinecap="round"
-                                              strokeLinejoin="round"
-                                              strokeWidth={2}
-                                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                                            />
-                                            <path
-                                              strokeLinecap="round"
-                                              strokeLinejoin="round"
-                                              strokeWidth={2}
-                                              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                                            />
-                                          </svg>
+                                          <ExternalLink className="h-4 w-4" />
                                           Ansehen
                                         </Link>
                                         <Link
                                           href={`/resources/${resource.id}/edit`}
-                                          className="flex items-center gap-2.5 px-4 py-2 text-sm text-text transition-colors hover:bg-bg"
+                                          className="text-text hover:bg-bg flex items-center gap-2.5 px-4 py-2 text-sm transition-colors"
                                           onClick={() => setOpenActionMenu(null)}
                                         >
                                           <svg
@@ -958,7 +753,7 @@ export default function AccountPage() {
                                         </Link>
                                         <button
                                           onClick={() => setOpenActionMenu(null)}
-                                          className="flex w-full items-center gap-2.5 px-4 py-2 text-sm text-error transition-colors hover:bg-badge-error-bg"
+                                          className="text-error hover:bg-error/10 flex w-full items-center gap-2.5 px-4 py-2 text-sm transition-colors"
                                         >
                                           <svg
                                             className="h-4 w-4"
@@ -988,788 +783,585 @@ export default function AccountPage() {
                   </div>
                 </div>
 
-                {/* Right Sidebar - Recent Downloads */}
-                <div className="rounded-2xl border border-border bg-surface p-5 lg:col-span-1">
-                  <div className="mb-4 flex items-center justify-between">
-                    <h2 className="text-base font-semibold text-text">
-                      Letzte Downloads
-                    </h2>
+                {/* Recent Downloads */}
+                <div className="border-border bg-surface rounded-2xl border">
+                  <div className="border-border flex items-center justify-between border-b p-4">
+                    <h2 className="text-text text-lg font-semibold">Letzte Downloads</h2>
                     <button
                       onClick={() => setActiveTab("library")}
-                      className="text-xs font-medium text-primary hover:underline"
+                      className="text-primary text-sm font-medium hover:underline"
                     >
                       Alle anzeigen
                     </button>
                   </div>
-
-                  {loading ? (
-                    <div className="space-y-3">
-                      {[1, 2, 3].map((i) => (
-                        <div key={i} className="animate-pulse rounded-xl bg-bg p-3">
-                          <div className="mb-2 h-4 w-3/4 rounded bg-surface-elevated"></div>
-                          <div className="h-3 w-1/2 rounded bg-surface-elevated"></div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : libraryItems.length > 0 ? (
-                    <div className="space-y-2">
-                      {libraryItems.slice(0, 5).map((item) => (
-                        <div
-                          key={item.id}
-                          className="group flex items-center justify-between rounded-xl border border-border bg-bg p-3 transition-all hover:border-primary hover:shadow-sm"
-                        >
-                          <div className="mr-2 min-w-0 flex-1">
-                            <h3 className="truncate text-sm font-medium text-text group-hover:text-primary">
-                              {item.title}
-                            </h3>
-                            <p className="truncate text-xs text-text-muted">
-                              {item.subject}
-                            </p>
+                  <div className="p-4">
+                    {loading ? (
+                      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                        {[1, 2, 3].map((i) => (
+                          <div key={i} className="bg-bg animate-pulse rounded-xl p-4">
+                            <div className="bg-surface-hover mb-2 h-4 w-3/4 rounded"></div>
+                            <div className="bg-surface-hover h-3 w-1/2 rounded"></div>
                           </div>
-                          <button
-                            onClick={() => handleDownload(item.id)}
-                            disabled={downloading === item.id}
-                            className="shrink-0 rounded-lg p-2 text-primary transition-colors hover:bg-primary-light disabled:opacity-50"
-                            title="Herunterladen"
+                        ))}
+                      </div>
+                    ) : libraryItems.length > 0 ? (
+                      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                        {libraryItems.slice(0, 6).map((item) => (
+                          <div
+                            key={item.id}
+                            className="group border-border bg-bg hover:border-primary flex items-center justify-between rounded-xl border p-4 transition-all hover:shadow-sm"
                           >
-                            <svg
-                              className="h-4 w-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
+                            <div className="mr-3 min-w-0 flex-1">
+                              <h3 className="text-text group-hover:text-primary truncate text-sm font-medium">
+                                {item.title}
+                              </h3>
+                              <div className="mt-1 flex items-center gap-2">
+                                <span
+                                  className={`pill text-xs ${getSubjectPillClass(item.subject)}`}
+                                >
+                                  {item.subject}
+                                </span>
+                                <span className="text-text-muted text-xs">{item.cycle}</span>
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => handleDownload(item.id)}
+                              disabled={downloading === item.id}
+                              className="text-primary hover:bg-primary/10 shrink-0 rounded-lg p-2 transition-colors disabled:opacity-50"
+                              title="Herunterladen"
                             >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                              />
-                            </svg>
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="py-8 text-center">
-                      <svg
-                        className="mx-auto mb-3 h-10 w-10 text-text-faint"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={1.5}
-                          d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                        />
-                      </svg>
-                      <p className="mb-2 text-sm text-text-muted">
-                        Noch keine Ressourcen
-                      </p>
-                      <Link
-                        href="/resources"
-                        className="text-sm font-medium text-primary hover:underline"
-                      >
-                        Entdecken
-                      </Link>
-                    </div>
-                  )}
-
-                  {/* Quick Links */}
-                  <div className="mt-6 border-t border-border pt-4">
-                    <h3 className="mb-3 text-xs font-semibold tracking-wider text-text-muted uppercase">
-                      Schnellzugriff
-                    </h3>
-                    <div className="space-y-2">
-                      <Link
-                        href="/resources"
-                        className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-text-secondary transition-colors hover:bg-bg hover:text-text"
-                      >
-                        <svg
-                          className="h-4 w-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
+                              <Download className="h-5 w-5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="py-8 text-center">
+                        <Download className="text-text-faint mx-auto mb-3 h-10 w-10" />
+                        <p className="text-text-muted mb-2 text-sm">Noch keine Ressourcen</p>
+                        <Link
+                          href="/resources"
+                          className="text-primary text-sm font-medium hover:underline"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                          />
-                        </svg>
-                        Ressourcen entdecken
-                      </Link>
-                      <Link
-                        href="/following"
-                        className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-text-secondary transition-colors hover:bg-bg hover:text-text"
-                      >
-                        <svg
-                          className="h-4 w-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                          />
-                        </svg>
-                        Gefolgte ({displayStats.followedSellers})
-                      </Link>
-                    </div>
+                          Entdecken
+                        </Link>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Library Tab */}
-          {activeTab === "library" && (
-            <div className="rounded-xl border border-border bg-surface p-6">
-              <div className="mb-6 flex items-center justify-between">
-                <div>
-                  <h2 className="text-xl font-semibold text-text">
-                    Meine Bibliothek
-                  </h2>
-                  <p className="mt-1 text-sm text-text-muted">
-                    {librarySubTab === "acquired"
-                      ? "Ressourcen, die Sie erworben haben"
-                      : "Ressourcen, die Sie hochgeladen haben"}
-                  </p>
+            {/* Library Tab */}
+            {activeTab === "library" && (
+              <div className="border-border bg-surface rounded-xl border p-6">
+                <div className="mb-6 flex items-center justify-between">
+                  <div>
+                    <h2 className="text-text text-xl font-semibold">Meine Bibliothek</h2>
+                    <p className="text-text-muted mt-1 text-sm">
+                      {librarySubTab === "acquired"
+                        ? "Ressourcen, die Sie erworben haben"
+                        : "Ressourcen, die Sie hochgeladen haben"}
+                    </p>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    placeholder="Suchen..."
-                    value={librarySubTab === "acquired" ? librarySearch : uploadedSearch}
-                    onChange={(e) =>
+
+                {/* Sub-tabs */}
+                <div className="mb-6 flex gap-2">
+                  <button
+                    onClick={() => setLibrarySubTab("acquired")}
+                    className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                       librarySubTab === "acquired"
-                        ? setLibrarySearch(e.target.value)
-                        : setUploadedSearch(e.target.value)
-                    }
-                    className="rounded-md border border-border bg-bg px-4 py-2 text-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
-                  />
+                        ? "bg-primary text-text-on-accent"
+                        : "border-border bg-bg text-text-muted hover:bg-surface-hover border"
+                    }`}
+                  >
+                    Erworben ({libraryItems.length})
+                  </button>
+                  <button
+                    onClick={() => setLibrarySubTab("uploaded")}
+                    className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                      librarySubTab === "uploaded"
+                        ? "bg-primary text-text-on-accent"
+                        : "border-border bg-bg text-text-muted hover:bg-surface-hover border"
+                    }`}
+                  >
+                    Hochgeladen ({uploadedItems.length})
+                  </button>
                 </div>
-              </div>
 
-              {/* Sub-tabs for Acquired vs Uploaded */}
-              <div className="mb-6 flex gap-2">
-                <button
-                  onClick={() => setLibrarySubTab("acquired")}
-                  className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                    librarySubTab === "acquired"
-                      ? "bg-primary text-text-on-accent"
-                      : "border border-border bg-bg text-text-muted hover:bg-surface-elevated"
-                  }`}
-                >
-                  Erworben ({libraryItems.length})
-                </button>
-                <button
-                  onClick={() => setLibrarySubTab("uploaded")}
-                  className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                    librarySubTab === "uploaded"
-                      ? "bg-primary text-text-on-accent"
-                      : "border border-border bg-bg text-text-muted hover:bg-surface-elevated"
-                  }`}
-                >
-                  Hochgeladen ({uploadedItems.length})
-                </button>
-              </div>
-
-              {/* Acquired Resources */}
-              {librarySubTab === "acquired" && (
-                <>
-                  {loading ? (
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                      {[1, 2, 3].map((i) => (
-                        <div
-                          key={i}
-                          className="animate-pulse rounded-lg border border-border bg-bg p-4"
-                        >
-                          <div className="mb-3 h-4 w-16 rounded bg-surface-elevated"></div>
-                          <div className="mb-2 h-5 w-full rounded bg-surface-elevated"></div>
-                          <div className="mb-4 h-4 w-24 rounded bg-surface-elevated"></div>
-                          <div className="h-10 w-full rounded bg-surface-elevated"></div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : libraryItems.length > 0 ? (
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                      {libraryItems.map((item) => (
-                        <div
-                          key={item.id}
-                          className="rounded-lg border border-border bg-bg p-4 transition-colors hover:border-primary"
-                        >
-                          <div className="mb-3 flex items-center justify-between">
-                            <span className="rounded bg-surface px-2 py-1 text-xs font-medium text-text-muted">
-                              {item.type === "purchased" ? "Gekauft" : "Gratis"}
-                            </span>
-                            {item.verified && (
-                              <span className="rounded bg-badge-success-bg px-2 py-1 text-xs font-medium text-badge-success-text">
-                                Verifiziert
-                              </span>
-                            )}
-                          </div>
-                          <h3 className="mb-1 font-semibold text-text">
-                            {item.title}
-                          </h3>
-                          <p className="mb-2 text-sm text-text-muted">
-                            {item.subject} - {item.cycle}
-                          </p>
-                          <p className="mb-4 text-xs text-text-muted">
-                            Von: {item.seller.displayName || "Unbekannt"}
-                          </p>
-                          <button
-                            onClick={() => handleDownload(item.id)}
-                            disabled={downloading === item.id}
-                            className="w-full rounded-md bg-primary px-4 py-2 text-sm font-medium text-text-on-accent transition-colors hover:bg-primary-hover disabled:opacity-50"
+                {/* Acquired Resources */}
+                {librarySubTab === "acquired" && (
+                  <>
+                    {loading ? (
+                      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                        {[1, 2, 3].map((i) => (
+                          <div
+                            key={i}
+                            className="border-border bg-bg animate-pulse rounded-lg border p-4"
                           >
-                            {downloading === item.id ? "Wird geladen..." : "Herunterladen"}
+                            <div className="bg-surface-hover mb-3 h-4 w-16 rounded"></div>
+                            <div className="bg-surface-hover mb-2 h-5 w-full rounded"></div>
+                            <div className="bg-surface-hover mb-4 h-4 w-24 rounded"></div>
+                            <div className="bg-surface-hover h-10 w-full rounded"></div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : libraryItems.length > 0 ? (
+                      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                        {libraryItems.map((item) => (
+                          <div
+                            key={item.id}
+                            className="border-border bg-bg hover:border-primary rounded-lg border p-4 transition-colors"
+                          >
+                            <div className="mb-3 flex items-center justify-between">
+                              <span
+                                className={`pill text-xs ${item.type === "purchased" ? "pill-primary" : "pill-success"}`}
+                              >
+                                {item.type === "purchased" ? "Gekauft" : "Gratis"}
+                              </span>
+                              {item.verified && (
+                                <span className="pill pill-success text-xs">Verifiziert</span>
+                              )}
+                            </div>
+                            <h3 className="text-text mb-1 font-semibold">{item.title}</h3>
+                            <div className="mb-2 flex items-center gap-2">
+                              <span className={`pill text-xs ${getSubjectPillClass(item.subject)}`}>
+                                {item.subject}
+                              </span>
+                              <span className="text-text-muted text-xs">{item.cycle}</span>
+                            </div>
+                            <p className="text-text-muted mb-4 text-xs">
+                              Von: {item.seller.displayName || "Unbekannt"}
+                            </p>
+                            <button
+                              onClick={() => handleDownload(item.id)}
+                              disabled={downloading === item.id}
+                              className="bg-primary text-text-on-accent hover:bg-primary-hover w-full rounded-md px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
+                            >
+                              {downloading === item.id ? "Wird geladen..." : "Herunterladen"}
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="py-12 text-center">
+                        <Download className="text-text-faint mx-auto mb-4 h-16 w-16" />
+                        <h3 className="text-text mb-2 text-lg font-medium">
+                          Noch keine erworbenen Ressourcen
+                        </h3>
+                        <p className="text-text-muted mb-4">
+                          Entdecken Sie unsere Ressourcen und beginnen Sie Ihre Sammlung.
+                        </p>
+                        <Link
+                          href="/resources"
+                          className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
+                        >
+                          Ressourcen entdecken
+                        </Link>
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {/* Uploaded Resources */}
+                {librarySubTab === "uploaded" && (
+                  <>
+                    {loading || uploadedLoading ? (
+                      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                        {[1, 2, 3].map((i) => (
+                          <div
+                            key={i}
+                            className="border-border bg-bg animate-pulse rounded-lg border p-4"
+                          >
+                            <div className="bg-surface-hover mb-3 h-4 w-16 rounded"></div>
+                            <div className="bg-surface-hover mb-2 h-5 w-full rounded"></div>
+                            <div className="bg-surface-hover mb-4 h-4 w-24 rounded"></div>
+                            <div className="bg-surface-hover h-10 w-full rounded"></div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : uploadedItems.length > 0 ? (
+                      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                        {uploadedItems.map((item) => (
+                          <div
+                            key={item.id}
+                            className="border-border bg-bg hover:border-primary rounded-lg border p-4 transition-colors"
+                          >
+                            <div className="mb-3 flex items-center justify-between">
+                              <span
+                                className={`pill text-xs ${
+                                  item.status === "VERIFIED"
+                                    ? "pill-success"
+                                    : item.status === "PENDING"
+                                      ? "pill-warning"
+                                      : "pill-neutral"
+                                }`}
+                              >
+                                {item.status === "VERIFIED"
+                                  ? "Verifiziert"
+                                  : item.status === "PENDING"
+                                    ? "Ausstehend"
+                                    : item.status}
+                              </span>
+                              <span className="text-price text-sm font-semibold">
+                                {item.priceFormatted}
+                              </span>
+                            </div>
+                            <Link href={`/resources/${item.id}`}>
+                              <h3 className="text-text hover:text-primary mb-1 font-semibold">
+                                {item.title}
+                              </h3>
+                            </Link>
+                            <div className="mb-3 flex items-center gap-2">
+                              <span className={`pill text-xs ${getSubjectPillClass(item.subject)}`}>
+                                {item.subject}
+                              </span>
+                              <span className="text-text-muted text-xs">{item.cycle}</span>
+                            </div>
+                            <div className="text-text-muted mb-4 flex items-center justify-between text-xs">
+                              <span>{item.downloadCount} Downloads</span>
+                              <span>{item.purchaseCount} Verkäufe</span>
+                            </div>
+                            <Link
+                              href={`/resources/${item.id}`}
+                              className="bg-primary text-text-on-accent hover:bg-primary-hover block w-full rounded-md px-4 py-2 text-center text-sm font-medium transition-colors"
+                            >
+                              Ansehen
+                            </Link>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="py-12 text-center">
+                        <FileText className="text-text-faint mx-auto mb-4 h-16 w-16" />
+                        <h3 className="text-text mb-2 text-lg font-medium">
+                          Noch keine hochgeladenen Ressourcen
+                        </h3>
+                        <p className="text-text-muted mb-4">
+                          Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen.
+                        </p>
+                        <Link
+                          href="/upload"
+                          className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
+                        >
+                          Material hochladen
+                        </Link>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* Wishlist Tab */}
+            {activeTab === "wishlist" && (
+              <div className="border-border bg-surface rounded-xl border p-6">
+                <div className="mb-6 flex items-center justify-between">
+                  <div>
+                    <h2 className="text-text text-xl font-semibold">Wunschliste</h2>
+                    <p className="text-text-muted mt-1 text-sm">
+                      Gespeicherte Ressourcen für später
+                    </p>
+                  </div>
+                </div>
+
+                {loading ? (
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {[1, 2].map((i) => (
+                      <div
+                        key={i}
+                        className="border-border bg-bg animate-pulse rounded-lg border p-4"
+                      >
+                        <div className="bg-surface-hover mb-3 h-4 w-16 rounded"></div>
+                        <div className="bg-surface-hover mb-2 h-5 w-full rounded"></div>
+                        <div className="bg-surface-hover mb-4 h-4 w-24 rounded"></div>
+                        <div className="bg-surface-hover h-10 w-full rounded"></div>
+                      </div>
+                    ))}
+                  </div>
+                ) : wishlistItems.length > 0 ? (
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {wishlistItems.map((item) => (
+                      <div
+                        key={item.id}
+                        className="border-border bg-bg hover:border-primary rounded-lg border p-4 transition-colors"
+                      >
+                        <div className="mb-3 flex items-center justify-between">
+                          <span className={`pill text-xs ${getSubjectPillClass(item.subject)}`}>
+                            {item.subject}
+                          </span>
+                          <button
+                            onClick={() => handleRemoveFromWishlist(item.id)}
+                            className="text-error hover:text-error/80"
+                          >
+                            <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
                           </button>
                         </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="py-12 text-center">
-                      <svg
-                        className="mx-auto mb-4 h-16 w-16 text-text-faint"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                        />
-                      </svg>
-                      <h3 className="mb-2 text-lg font-medium text-text">
-                        Noch keine erworbenen Ressourcen
-                      </h3>
-                      <p className="mb-4 text-text-muted">
-                        Entdecken Sie unsere Ressourcen und beginnen Sie Ihre Sammlung.
-                      </p>
-                      <Link
-                        href="/resources"
-                        className="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-text-on-accent transition-colors hover:bg-primary-hover"
-                      >
-                        Ressourcen entdecken
-                      </Link>
-                    </div>
-                  )}
-                </>
-              )}
-
-              {/* Uploaded Resources */}
-              {librarySubTab === "uploaded" && (
-                <>
-                  {loading || uploadedLoading ? (
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                      {[1, 2, 3].map((i) => (
-                        <div
-                          key={i}
-                          className="animate-pulse rounded-lg border border-border bg-bg p-4"
-                        >
-                          <div className="mb-3 h-4 w-16 rounded bg-surface-elevated"></div>
-                          <div className="mb-2 h-5 w-full rounded bg-surface-elevated"></div>
-                          <div className="mb-4 h-4 w-24 rounded bg-surface-elevated"></div>
-                          <div className="h-10 w-full rounded bg-surface-elevated"></div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : uploadedItems.length > 0 ? (
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                      {uploadedItems.map((item) => (
-                        <div
-                          key={item.id}
-                          className="rounded-lg border border-border bg-bg p-4 transition-colors hover:border-primary"
-                        >
-                          <div className="mb-3 flex items-center justify-between">
-                            <span
-                              className={`rounded px-2 py-1 text-xs font-medium ${
-                                item.status === "VERIFIED"
-                                  ? "bg-badge-success-bg text-badge-success-text"
-                                  : item.status === "PENDING"
-                                    ? "bg-badge-warning-bg text-badge-warning-text"
-                                    : "bg-surface text-text-muted"
-                              }`}
-                            >
-                              {item.status === "VERIFIED"
-                                ? "Verifiziert"
-                                : item.status === "PENDING"
-                                  ? "Ausstehend"
-                                  : item.status}
-                            </span>
-                            <span className="text-sm font-semibold text-primary">
-                              {item.priceFormatted}
-                            </span>
-                          </div>
-                          <Link href={`/resources/${item.id}`}>
-                            <h3 className="mb-1 font-semibold text-text hover:text-primary">
-                              {item.title}
-                            </h3>
-                          </Link>
-                          <p className="mb-3 text-sm text-text-muted">
-                            {item.subject} - {item.cycle}
-                          </p>
-                          <div className="mb-4 flex items-center justify-between text-xs text-text-muted">
-                            <span>{item.downloadCount} Downloads</span>
-                            <span>{item.purchaseCount} Verkäufe</span>
-                          </div>
+                        <Link href={`/resources/${item.id}`}>
+                          <h3 className="text-text hover:text-primary mb-1 font-semibold">
+                            {item.title}
+                          </h3>
+                        </Link>
+                        <p className="text-text-muted mb-4 text-sm">{item.cycle}</p>
+                        <div className="flex items-center justify-between">
+                          <span
+                            className={`text-lg font-bold ${item.price === 0 ? "text-success" : "text-price"}`}
+                          >
+                            {item.priceFormatted}
+                          </span>
                           <Link
                             href={`/resources/${item.id}`}
-                            className="block w-full rounded-md bg-primary px-4 py-2 text-center text-sm font-medium text-text-on-accent transition-colors hover:bg-primary-hover"
+                            className="bg-primary text-text-on-accent hover:bg-primary-hover rounded-md px-4 py-2 text-sm font-medium transition-colors"
                           >
                             Ansehen
                           </Link>
                         </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="py-12 text-center">
-                      <svg
-                        className="mx-auto mb-4 h-16 w-16 text-text-faint"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
-                        />
-                      </svg>
-                      <h3 className="mb-2 text-lg font-medium text-text">
-                        Noch keine hochgeladenen Ressourcen
-                      </h3>
-                      <p className="mb-4 text-text-muted">
-                        Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen.
-                      </p>
-                      <Link
-                        href="/upload"
-                        className="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-text-on-accent transition-colors hover:bg-primary-hover"
-                      >
-                        Material hochladen
-                      </Link>
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-          )}
-
-          {/* Wishlist Tab */}
-          {activeTab === "wishlist" && (
-            <div className="rounded-xl border border-border bg-surface p-6">
-              <div className="mb-6 flex items-center justify-between">
-                <div>
-                  <h2 className="text-xl font-semibold text-text">Wunschliste</h2>
-                  <p className="mt-1 text-sm text-text-muted">
-                    Gespeicherte Ressourcen für später
-                  </p>
-                </div>
-              </div>
-
-              {loading ? (
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  {[1, 2].map((i) => (
-                    <div
-                      key={i}
-                      className="animate-pulse rounded-lg border border-border bg-bg p-4"
-                    >
-                      <div className="mb-3 h-4 w-16 rounded bg-surface-elevated"></div>
-                      <div className="mb-2 h-5 w-full rounded bg-surface-elevated"></div>
-                      <div className="mb-4 h-4 w-24 rounded bg-surface-elevated"></div>
-                      <div className="h-10 w-full rounded bg-surface-elevated"></div>
-                    </div>
-                  ))}
-                </div>
-              ) : wishlistItems.length > 0 ? (
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  {wishlistItems.map((item) => (
-                    <div
-                      key={item.id}
-                      className="rounded-lg border border-border bg-bg p-4 transition-colors hover:border-primary"
-                    >
-                      <div className="mb-3 flex items-center justify-between">
-                        <span className="rounded bg-surface px-2 py-1 text-xs font-medium text-text-muted">
-                          {item.subject}
-                        </span>
-                        <button
-                          onClick={() => handleRemoveFromWishlist(item.id)}
-                          className="text-error hover:text-error-hover"
-                        >
-                          <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                          </svg>
-                        </button>
                       </div>
-                      <Link href={`/resources/${item.id}`}>
-                        <h3 className="mb-1 font-semibold text-text hover:text-primary">
-                          {item.title}
-                        </h3>
-                      </Link>
-                      <p className="mb-4 text-sm text-text-muted">{item.cycle}</p>
-                      <div className="flex items-center justify-between">
-                        <span
-                          className={`text-lg font-bold ${item.price === 0 ? "text-success" : "text-primary"}`}
+                    ))}
+                  </div>
+                ) : (
+                  <div className="py-12 text-center">
+                    <svg
+                      className="text-text-faint mx-auto mb-4 h-16 w-16"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                      />
+                    </svg>
+                    <h3 className="text-text mb-2 text-lg font-medium">
+                      Ihre Wunschliste ist leer
+                    </h3>
+                    <p className="text-text-muted mb-4">
+                      Speichern Sie interessante Ressourcen für später.
+                    </p>
+                    <Link
+                      href="/resources"
+                      className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
+                    >
+                      Ressourcen entdecken
+                    </Link>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Settings Tab */}
+            {activeTab === "settings" && (
+              <div className="space-y-6">
+                {/* Settings Grid */}
+                <div className="grid gap-6 lg:grid-cols-2">
+                  {/* Left Column - Profile & Avatar */}
+                  <div className="space-y-6">
+                    {/* Profile Picture Settings */}
+                    <div className="border-border bg-surface rounded-xl border p-6">
+                      <h2 className="text-text mb-4 text-lg font-semibold">Profilbild</h2>
+                      <p className="text-text-muted mb-6 text-sm">
+                        Laden Sie ein Profilbild hoch oder entfernen Sie das aktuelle Bild
+                      </p>
+
+                      {avatarMessage && (
+                        <div
+                          className={`mb-4 rounded-lg border p-3 ${
+                            avatarMessage.type === "success"
+                              ? "border-success/50 bg-success/10 text-success"
+                              : "border-error/50 bg-error/10 text-error"
+                          }`}
                         >
-                          {item.priceFormatted}
-                        </span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm">{avatarMessage.text}</span>
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
+                        <AvatarUploader
+                          currentAvatarUrl={avatarUrl}
+                          displayName={displayData.name || "Benutzer"}
+                          onUpload={handleAvatarUpload}
+                        />
+
+                        <div className="flex flex-col gap-2">
+                          <p className="text-text-secondary text-sm">
+                            Klicken Sie auf das Kamera-Symbol, um ein neues Bild hochzuladen.
+                          </p>
+                          {avatarUrl && (
+                            <button
+                              onClick={handleAvatarDelete}
+                              disabled={isDeletingAvatar}
+                              className="border-error/50 text-error hover:bg-error/10 inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
+                            >
+                              {isDeletingAvatar ? "Wird entfernt..." : "Profilbild entfernen"}
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Profile Settings */}
+                    <div className="border-border bg-surface rounded-xl border p-6">
+                      <div className="mb-4 flex items-center justify-between">
+                        <h2 className="text-text text-lg font-semibold">Profil</h2>
                         <Link
-                          href={`/resources/${item.id}`}
-                          className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-text-on-accent transition-colors hover:bg-primary-hover"
+                          href="/profile/edit"
+                          className="text-primary text-sm font-medium hover:underline"
                         >
-                          Ansehen
+                          Bearbeiten
                         </Link>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="py-12 text-center">
-                  <svg
-                    className="mx-auto mb-4 h-16 w-16 text-text-faint"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                    />
-                  </svg>
-                  <h3 className="mb-2 text-lg font-medium text-text">
-                    Ihre Wunschliste ist leer
-                  </h3>
-                  <p className="mb-4 text-text-muted">
-                    Speichern Sie interessante Ressourcen für später.
-                  </p>
-                  <Link
-                    href="/resources"
-                    className="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-text-on-accent transition-colors hover:bg-primary-hover"
-                  >
-                    Ressourcen entdecken
-                  </Link>
-                </div>
-              )}
-            </div>
-          )}
 
-          {/* Settings Tab */}
-          {activeTab === "settings" && (
-            <div className="space-y-6">
-              {/* Settings Grid - 2 columns on large screens */}
-              <div className="grid gap-6 lg:grid-cols-2">
-                {/* Left Column - Profile & Avatar */}
-                <div className="space-y-6">
-                  {/* Profile Picture Settings */}
-                  <div className="rounded-xl border border-border bg-surface p-6">
-                    <h2 className="mb-4 text-lg font-semibold text-text">
-                      Profilbild
-                    </h2>
-                    <p className="mb-6 text-sm text-text-muted">
-                      Laden Sie ein Profilbild hoch oder entfernen Sie das aktuelle Bild
-                    </p>
-
-                    {/* Avatar Message */}
-                    {avatarMessage && (
-                      <div
-                        className={`mb-4 rounded-lg border p-3 ${
-                          avatarMessage.type === "success"
-                            ? "border-success/50 bg-success/10 text-success"
-                            : "border-error/50 bg-error/10 text-error"
-                        }`}
-                      >
-                        <div className="flex items-center gap-2">
-                          {avatarMessage.type === "success" ? (
-                            <svg
-                              className="h-5 w-5"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M5 13l4 4L19 7"
-                              />
-                            </svg>
-                          ) : (
-                            <svg
-                              className="h-5 w-5"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M6 18L18 6M6 6l12 12"
-                              />
-                            </svg>
-                          )}
-                          <span className="text-sm">{avatarMessage.text}</span>
+                      <div className="space-y-4">
+                        <div>
+                          <label className="text-text mb-1 block text-sm font-medium">Name</label>
+                          <input
+                            type="text"
+                            value={displayData.name || ""}
+                            disabled
+                            className="border-border bg-surface text-text-muted w-full rounded-md border px-4 py-2"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-text mb-1 block text-sm font-medium">E-Mail</label>
+                          <input
+                            type="email"
+                            value={displayData.email}
+                            disabled
+                            className="border-border bg-surface text-text-muted w-full rounded-md border px-4 py-2"
+                          />
+                          <p className="text-text-muted mt-1 text-xs">
+                            E-Mail kann nicht geändert werden.
+                          </p>
                         </div>
                       </div>
-                    )}
 
-                    <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
-                      {/* Avatar Uploader */}
-                      <AvatarUploader
-                        currentAvatarUrl={avatarUrl}
-                        displayName={displayData.name || "Benutzer"}
-                        onUpload={handleAvatarUpload}
-                      />
-
-                      {/* Delete Button */}
-                      <div className="flex flex-col gap-2">
-                        <p className="text-sm text-text-secondary">
-                          Klicken Sie auf das Kamera-Symbol, um ein neues Bild hochzuladen.
-                        </p>
-                        {avatarUrl && (
-                          <button
-                            onClick={handleAvatarDelete}
-                            disabled={isDeletingAvatar}
-                            className="inline-flex items-center gap-2 rounded-lg border border-error/50 px-4 py-2 text-sm font-medium text-error transition-colors hover:bg-error/10 disabled:opacity-50"
-                          >
-                            {isDeletingAvatar ? (
-                              <>
-                                <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24">
-                                  <circle
-                                    className="opacity-25"
-                                    cx="12"
-                                    cy="12"
-                                    r="10"
-                                    stroke="currentColor"
-                                    strokeWidth="4"
-                                    fill="none"
-                                  />
-                                  <path
-                                    className="opacity-75"
-                                    fill="currentColor"
-                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                  />
-                                </svg>
-                                Wird entfernt...
-                              </>
-                            ) : (
-                              <>
-                                <svg
-                                  className="h-4 w-4"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
+                      {/* User Tags */}
+                      <div className="mt-6 grid gap-4 sm:grid-cols-3">
+                        {displayData.cantons && displayData.cantons.length > 0 && (
+                          <div>
+                            <label className="text-text-muted text-xs font-medium tracking-wide uppercase">
+                              Kanton
+                            </label>
+                            <p className="text-text mt-1">{displayData.cantons.join(", ")}</p>
+                          </div>
+                        )}
+                        {displayData.subjects && displayData.subjects.length > 0 && (
+                          <div>
+                            <label className="text-text-muted text-xs font-medium tracking-wide uppercase">
+                              Fächer
+                            </label>
+                            <div className="mt-1 flex flex-wrap gap-1">
+                              {displayData.subjects.slice(0, 3).map((subject) => (
+                                <span
+                                  key={subject}
+                                  className={`pill text-xs ${getSubjectPillClass(subject)}`}
                                 >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                                  />
-                                </svg>
-                                Profilbild entfernen
-                              </>
-                            )}
-                          </button>
+                                  {subject}
+                                </span>
+                              ))}
+                              {displayData.subjects.length > 3 && (
+                                <span className="text-text-muted px-2 py-0.5 text-sm">
+                                  +{displayData.subjects.length - 3}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        )}
+                        {displayData.cycles && displayData.cycles.length > 0 && (
+                          <div>
+                            <label className="text-text-muted text-xs font-medium tracking-wide uppercase">
+                              Zyklen
+                            </label>
+                            <div className="mt-1 flex flex-wrap gap-1">
+                              {displayData.cycles.map((cycle) => (
+                                <span key={cycle} className="pill pill-primary text-xs">
+                                  {cycle}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
                         )}
                       </div>
                     </div>
                   </div>
 
-                  {/* Profile Settings */}
-                  <div className="rounded-xl border border-border bg-surface p-6">
-                    <div className="mb-4 flex items-center justify-between">
-                      <h2 className="text-lg font-semibold text-text">Profil</h2>
-                      <Link
-                        href="/profile/edit"
-                        className="text-sm font-medium text-primary hover:underline"
-                      >
-                        Bearbeiten
-                      </Link>
+                  {/* Right Column - Preferences */}
+                  <div className="space-y-6">
+                    {/* Appearance Settings */}
+                    <div className="border-border bg-surface rounded-xl border p-6">
+                      <h2 className="text-text mb-4 text-lg font-semibold">Darstellung</h2>
+                      <p className="text-text-muted mb-4 text-sm">
+                        Wählen Sie Ihr bevorzugtes Farbschema
+                      </p>
+                      <ThemeSettings />
                     </div>
 
-                    <div className="space-y-4">
-                      <div>
-                        <label className="mb-1 block text-sm font-medium text-text">
-                          Name
-                        </label>
-                        <input
-                          type="text"
-                          value={displayData.name || ""}
-                          disabled
-                          className="w-full rounded-md border border-border bg-surface px-4 py-2 text-text-muted"
-                        />
-                      </div>
-                      <div>
-                        <label className="mb-1 block text-sm font-medium text-text">
-                          E-Mail
-                        </label>
-                        <input
-                          type="email"
-                          value={displayData.email}
-                          disabled
-                          className="w-full rounded-md border border-border bg-surface px-4 py-2 text-text-muted"
-                        />
-                        <p className="mt-1 text-xs text-text-muted">
-                          E-Mail kann nicht geändert werden.
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="mt-6 grid gap-4 sm:grid-cols-3">
-                      {displayData.cantons && displayData.cantons.length > 0 ? (
-                        <div>
-                          <label className="text-xs font-medium tracking-wide text-text-muted uppercase">
-                            Kanton
-                          </label>
-                          <p className="mt-1 text-text">
-                            {displayData.cantons.join(", ")}
-                          </p>
-                        </div>
-                      ) : null}
-                      {displayData.subjects && displayData.subjects.length > 0 ? (
-                        <div>
-                          <label className="text-xs font-medium tracking-wide text-text-muted uppercase">
-                            Fächer
-                          </label>
-                          <div className="mt-1 flex flex-wrap gap-1">
-                            {displayData.subjects.slice(0, 3).map((subject) => (
-                              <span
-                                key={subject}
-                                className="rounded bg-bg px-2 py-0.5 text-sm text-text-secondary"
-                              >
-                                {subject}
-                              </span>
-                            ))}
-                            {displayData.subjects.length > 3 && (
-                              <span className="px-2 py-0.5 text-sm text-text-muted">
-                                +{displayData.subjects.length - 3}
-                              </span>
-                            )}
+                    {/* Notification Settings */}
+                    <div className="border-border bg-surface rounded-xl border p-6">
+                      <h2 className="text-text mb-4 text-lg font-semibold">Benachrichtigungen</h2>
+                      <div className="space-y-4">
+                        <label className="flex items-center justify-between">
+                          <div>
+                            <span className="text-text font-medium">Neue Ressourcen</span>
+                            <p className="text-text-muted text-sm">
+                              Benachrichtigungen über neue Materialien von gefolgten Verkäufern
+                            </p>
                           </div>
-                        </div>
-                      ) : null}
-                      {displayData.cycles && displayData.cycles.length > 0 ? (
-                        <div>
-                          <label className="text-xs font-medium tracking-wide text-text-muted uppercase">
-                            Zyklen
-                          </label>
-                          <div className="mt-1 flex flex-wrap gap-1">
-                            {displayData.cycles.map((cycle) => (
-                              <span
-                                key={cycle}
-                                className="rounded bg-primary-light px-2 py-0.5 text-sm text-primary"
-                              >
-                                {cycle}
-                              </span>
-                            ))}
+                          <input
+                            type="checkbox"
+                            defaultChecked
+                            className="text-primary h-5 w-5 rounded"
+                          />
+                        </label>
+                        <label className="flex items-center justify-between">
+                          <div>
+                            <span className="text-text font-medium">Preisänderungen</span>
+                            <p className="text-text-muted text-sm">
+                              Benachrichtigungen bei Preisänderungen auf der Wunschliste
+                            </p>
                           </div>
-                        </div>
-                      ) : null}
-                      {(!displayData.subjects || displayData.subjects.length === 0) &&
-                        (!displayData.cycles || displayData.cycles.length === 0) &&
-                        (!displayData.cantons || displayData.cantons.length === 0) && (
-                          <p className="col-span-3 text-text-muted">
-                            Vervollständigen Sie Ihr Profil für personalisierte Empfehlungen.
-                          </p>
-                        )}
+                          <input
+                            type="checkbox"
+                            defaultChecked
+                            className="text-primary h-5 w-5 rounded"
+                          />
+                        </label>
+                        <label className="flex items-center justify-between">
+                          <div>
+                            <span className="text-text font-medium">Newsletter</span>
+                            <p className="text-text-muted text-sm">
+                              Wöchentliche Updates und Tipps
+                            </p>
+                          </div>
+                          <input type="checkbox" className="text-primary h-5 w-5 rounded" />
+                        </label>
+                      </div>
                     </div>
-                  </div>
-                </div>
 
-                {/* Right Column - Preferences */}
-                <div className="space-y-6">
-                  {/* Appearance Settings */}
-                  <div className="rounded-xl border border-border bg-surface p-6">
-                    <h2 className="mb-4 text-lg font-semibold text-text">
-                      Darstellung
-                    </h2>
-                    <p className="mb-4 text-sm text-text-muted">
-                      Wählen Sie Ihr bevorzugtes Farbschema
-                    </p>
-                    <ThemeSettings />
-                  </div>
-
-                  {/* Notification Settings */}
-                  <div className="rounded-xl border border-border bg-surface p-6">
-                    <h2 className="mb-4 text-lg font-semibold text-text">
-                      Benachrichtigungen
-                    </h2>
-                    <div className="space-y-4">
-                      <label className="flex items-center justify-between">
-                        <div>
-                          <span className="font-medium text-text">
-                            Neue Ressourcen
-                          </span>
-                          <p className="text-sm text-text-muted">
-                            Benachrichtigungen über neue Materialien von gefolgten Verkäufern
-                          </p>
-                        </div>
-                        <input
-                          type="checkbox"
-                          defaultChecked
-                          className="h-5 w-5 rounded text-primary"
-                        />
-                      </label>
-                      <label className="flex items-center justify-between">
-                        <div>
-                          <span className="font-medium text-text">
-                            Preisänderungen
-                          </span>
-                          <p className="text-sm text-text-muted">
-                            Benachrichtigungen bei Preisänderungen auf der Wunschliste
-                          </p>
-                        </div>
-                        <input
-                          type="checkbox"
-                          defaultChecked
-                          className="h-5 w-5 rounded text-primary"
-                        />
-                      </label>
-                      <label className="flex items-center justify-between">
-                        <div>
-                          <span className="font-medium text-text">Newsletter</span>
-                          <p className="text-sm text-text-muted">
-                            Wöchentliche Updates und Tipps
-                          </p>
-                        </div>
-                        <input
-                          type="checkbox"
-                          className="h-5 w-5 rounded text-primary"
-                        />
-                      </label>
+                    {/* Danger Zone */}
+                    <div className="border-error/30 bg-surface rounded-xl border p-6">
+                      <h2 className="text-error mb-4 text-lg font-semibold">Gefahrenzone</h2>
+                      <p className="text-text-muted mb-4 text-sm">
+                        Diese Aktionen sind unwiderruflich. Bitte seien Sie vorsichtig.
+                      </p>
+                      <button className="border-error text-error hover:bg-error/10 rounded-md border px-4 py-2 text-sm font-medium transition-colors">
+                        Konto löschen
+                      </button>
                     </div>
-                  </div>
-
-                  {/* Danger Zone */}
-                  <div className="rounded-xl border border-error/30 bg-surface p-6">
-                    <h2 className="mb-4 text-lg font-semibold text-error">
-                      Gefahrenzone
-                    </h2>
-                    <p className="mb-4 text-sm text-text-muted">
-                      Diese Aktionen sind unwiderruflich. Bitte seien Sie vorsichtig.
-                    </p>
-                    <button className="rounded-md border border-error px-4 py-2 text-sm font-medium text-error transition-colors hover:bg-badge-error-bg">
-                      Konto löschen
-                    </button>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
-        </main>
-      </div>
+            )}
+          </div>
+        </div>
+      </main>
 
       <Footer />
     </div>

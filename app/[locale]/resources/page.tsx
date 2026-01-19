@@ -3,10 +3,12 @@
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { SlidersHorizontal, ChevronDown } from "lucide-react";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { ResourceCard } from "@/components/ui/ResourceCard";
-import { FilterSidebar } from "@/components/ui/FilterSidebar";
+import { LP21FilterSidebar, type LP21FilterState } from "@/components/search/LP21FilterSidebar";
+import { FACHBEREICHE } from "@/lib/data/lehrplan21";
 
 interface Resource {
   id: string;
@@ -36,10 +38,6 @@ interface Pagination {
 export default function ResourcesPage() {
   const t = useTranslations("resourcesPage");
   const tCommon = useTranslations("common");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedSubject, setSelectedSubject] = useState("");
-  const [selectedCycle, setSelectedCycle] = useState("");
-  const [selectedPriceType, setSelectedPriceType] = useState("");
   const [resources, setResources] = useState<Resource[]>([]);
   const [pagination, setPagination] = useState<Pagination>({
     page: 1,
@@ -50,50 +48,64 @@ export default function ResourcesPage() {
   const [loading, setLoading] = useState(true);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
-  const fetchResources = useCallback(
-    async (
-      currentSearch: string,
-      currentSubject: string,
-      currentCycle: string,
-      currentPriceType: string
-    ) => {
-      setLoading(true);
-      try {
-        const params = new URLSearchParams();
-        if (currentSubject) params.set("subject", currentSubject);
-        if (currentSearch) params.set("search", currentSearch);
-        if (currentCycle) params.set("cycle", currentCycle);
-        if (currentPriceType) params.set("priceType", currentPriceType);
+  // LP21 filter state
+  const [filters, setFilters] = useState<LP21FilterState>({
+    zyklus: null,
+    fachbereich: null,
+    kompetenzbereich: null,
+    kompetenz: null,
+    searchQuery: "",
+    priceType: null,
+    maxPrice: null,
+    formats: [],
+    materialScope: null,
+  });
 
-        const response = await fetch(`/api/resources?${params.toString()}`);
-        if (response.ok) {
-          const data = await response.json();
-          setResources(data.resources);
-          setPagination(data.pagination);
-        }
-      } catch (error) {
-        console.error("Error fetching resources:", error);
-      } finally {
-        setLoading(false);
+  // Map Fachbereich code to subject name for API compatibility
+  const mapFachbereichToSubject = (code: string | null): string => {
+    if (!code) return "";
+    const fachbereich = FACHBEREICHE.find((f) => f.code === code);
+    return fachbereich?.name || code;
+  };
+
+  const fetchResources = useCallback(async (currentFilters: LP21FilterState) => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+
+      // Map LP21 filters to API parameters
+      if (currentFilters.fachbereich) {
+        params.set("subject", mapFachbereichToSubject(currentFilters.fachbereich));
       }
-    },
-    []
-  );
+      if (currentFilters.zyklus) {
+        params.set("cycle", currentFilters.zyklus.toString());
+      }
+      if (currentFilters.searchQuery) {
+        params.set("search", currentFilters.searchQuery);
+      }
+      // Use the most specific competency level available
+      if (currentFilters.kompetenz) {
+        params.set("competency", currentFilters.kompetenz);
+      } else if (currentFilters.kompetenzbereich) {
+        params.set("competency", currentFilters.kompetenzbereich);
+      }
+
+      const response = await fetch(`/api/resources?${params.toString()}`);
+      if (response.ok) {
+        const data = await response.json();
+        setResources(data.resources);
+        setPagination(data.pagination);
+      }
+    } catch (error) {
+      console.error("Error fetching resources:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    fetchResources(searchQuery, selectedSubject, selectedCycle, selectedPriceType);
-  }, [selectedSubject, selectedCycle, selectedPriceType, fetchResources, searchQuery]);
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    fetchResources(searchQuery, selectedSubject, selectedCycle, selectedPriceType);
-  };
-
-  const handleResetFilters = () => {
-    setSelectedSubject("");
-    setSelectedCycle("");
-    setSelectedPriceType("");
-  };
+    fetchResources(filters);
+  }, [filters, fetchResources]);
 
   // Get subject pill class based on subject name
   const getSubjectPillClass = (subject: string): string => {
@@ -113,23 +125,21 @@ export default function ResourcesPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-bg">
+    <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="mb-6">
-          <div className="mb-2 flex items-center gap-2 text-sm text-text-muted">
-            <Link href="/" className="transition-colors hover:text-primary">
+          <div className="text-text-muted mb-2 flex items-center gap-2 text-sm">
+            <Link href="/" className="hover:text-primary transition-colors">
               {t("breadcrumb.home")}
             </Link>
             <span>/</span>
-            <span className="text-text-secondary">
-              {tCommon("navigation.resources")}
-            </span>
+            <span className="text-text-secondary">{tCommon("navigation.resources")}</span>
           </div>
-          <h1 className="text-2xl font-bold text-text">{t("header.title")}</h1>
-          <p className="mt-1 text-text-muted">{t("header.description")}</p>
+          <h1 className="text-text text-2xl font-bold">{t("header.title")}</h1>
+          <p className="text-text-muted mt-1">{t("header.description")}</p>
         </div>
 
         {/* Main Layout: Sidebar + Content */}
@@ -138,115 +148,92 @@ export default function ResourcesPage() {
           <div className="lg:hidden">
             <button
               onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)}
-              className="flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-bg-secondary px-4 py-3 text-sm font-medium text-text-secondary transition-colors hover:border-primary hover:text-primary"
+              className="border-border bg-bg-secondary text-text-secondary hover:border-primary hover:text-primary flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-3 text-sm font-medium transition-colors"
             >
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
-                />
-              </svg>
+              <SlidersHorizontal className="h-5 w-5" />
               <span>{t("sidebar.title")}</span>
-              <svg
+              {(filters.zyklus ||
+                filters.fachbereich ||
+                filters.kompetenzbereich ||
+                filters.kompetenz) && (
+                <span className="bg-primary flex h-5 w-5 items-center justify-center rounded-full text-xs text-white">
+                  {
+                    [
+                      filters.zyklus,
+                      filters.fachbereich,
+                      filters.kompetenzbereich,
+                      filters.kompetenz,
+                    ].filter(Boolean).length
+                  }
+                </span>
+              )}
+              <ChevronDown
                 className={`h-4 w-4 transition-transform ${mobileFiltersOpen ? "rotate-180" : ""}`}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
+              />
             </button>
 
             {/* Mobile Filters Panel */}
             {mobileFiltersOpen && (
               <div className="mt-4">
-                <FilterSidebar
-                  selectedSubject={selectedSubject}
-                  onSubjectChange={setSelectedSubject}
-                  selectedCycle={selectedCycle}
-                  onCycleChange={setSelectedCycle}
-                  selectedPriceType={selectedPriceType}
-                  onPriceTypeChange={setSelectedPriceType}
-                  onReset={handleResetFilters}
-                />
+                <LP21FilterSidebar filters={filters} onFiltersChange={setFilters} />
               </div>
             )}
           </div>
 
           {/* Desktop Sidebar */}
-          <div className="hidden w-64 flex-shrink-0 lg:block">
-            <FilterSidebar
-              selectedSubject={selectedSubject}
-              onSubjectChange={setSelectedSubject}
-              selectedCycle={selectedCycle}
-              onCycleChange={setSelectedCycle}
-              selectedPriceType={selectedPriceType}
-              onPriceTypeChange={setSelectedPriceType}
-              onReset={handleResetFilters}
-            />
+          <div className="hidden w-72 flex-shrink-0 lg:block">
+            <LP21FilterSidebar filters={filters} onFiltersChange={setFilters} />
           </div>
 
           {/* Main Content Area */}
           <div className="min-w-0 flex-1">
-            {/* Top Control Bar: Search + Sort */}
-            <div className="mb-6 rounded-lg bg-bg-secondary p-4">
-              <form onSubmit={handleSearch} className="flex flex-col gap-3 sm:flex-row">
-                {/* Search Input */}
-                <div className="flex-1">
-                  <div className="relative">
-                    <input
-                      type="text"
-                      placeholder={t("search.placeholder")}
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full rounded-lg border border-border bg-bg py-3 pr-4 pl-11 text-text placeholder:text-text-faint focus:border-primary focus:ring-2 focus:ring-focus-ring focus:outline-none"
-                    />
-                    <svg
-                      className="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-text-muted"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                      />
-                    </svg>
-                  </div>
-                </div>
-
-                {/* Sort Dropdown */}
-                <div className="flex items-center gap-2">
-                  <label className="whitespace-nowrap text-sm text-text-muted">
-                    {t("results.sortLabel")}
-                  </label>
-                  <select className="rounded-lg border border-border bg-bg px-3 py-3 text-sm text-text-secondary focus:border-primary focus:ring-2 focus:ring-focus-ring focus:outline-none">
-                    <option value="newest">{t("results.sortOptions.newest")}</option>
-                    <option value="popular">{t("results.sortOptions.popular")}</option>
-                    <option value="rating">{t("results.sortOptions.rating")}</option>
-                    <option value="price-low">{t("results.sortOptions.priceLow")}</option>
-                    <option value="price-high">{t("results.sortOptions.priceHigh")}</option>
-                  </select>
-                </div>
-              </form>
-
-              {/* Results Count */}
-              <div className="mt-3 border-t border-border-subtle pt-3">
-                <p className="text-sm text-text-muted">
-                  <span className="font-semibold text-text">{pagination.total}</span>{" "}
+            {/* Top Control Bar: Results + Sort */}
+            <div className="bg-bg-secondary mb-6 flex flex-col gap-4 rounded-lg p-4 sm:flex-row sm:items-center sm:justify-between">
+              {/* Results Count + Active Filters Summary */}
+              <div>
+                <p className="text-text-muted text-sm">
+                  <span className="text-text font-semibold">{pagination.total}</span>{" "}
                   {t("results.countLabel")}
                 </p>
+                {(filters.zyklus ||
+                  filters.fachbereich ||
+                  filters.kompetenzbereich ||
+                  filters.kompetenz ||
+                  filters.searchQuery) && (
+                  <p className="text-text-muted mt-1 text-xs">
+                    {[
+                      filters.zyklus && `Zyklus ${filters.zyklus}`,
+                      filters.fachbereich &&
+                        FACHBEREICHE.find((f) => f.code === filters.fachbereich)?.shortName,
+                      filters.kompetenzbereich,
+                      filters.kompetenz,
+                      filters.searchQuery && `"${filters.searchQuery}"`,
+                    ]
+                      .filter(Boolean)
+                      .join(" · ")}
+                  </p>
+                )}
+              </div>
+
+              {/* Sort Dropdown */}
+              <div className="flex items-center gap-2">
+                <label className="text-text-muted text-sm whitespace-nowrap">
+                  {t("results.sortLabel")}
+                </label>
+                <select className="border-border bg-bg text-text-secondary focus:border-primary focus:ring-focus-ring rounded-lg border px-3 py-2.5 text-sm focus:ring-2 focus:outline-none">
+                  <option value="newest">{t("results.sortOptions.newest")}</option>
+                  <option value="popular">{t("results.sortOptions.popular")}</option>
+                  <option value="rating">{t("results.sortOptions.rating")}</option>
+                  <option value="price-low">{t("results.sortOptions.priceLow")}</option>
+                  <option value="price-high">{t("results.sortOptions.priceHigh")}</option>
+                </select>
               </div>
             </div>
 
             {/* Resource Grid */}
             {loading ? (
               <div className="flex items-center justify-center py-16">
-                <div className="flex items-center gap-3 text-text-muted">
+                <div className="text-text-muted flex items-center gap-3">
                   <svg className="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
                     <circle
                       className="opacity-25"
@@ -266,9 +253,9 @@ export default function ResourcesPage() {
                 </div>
               </div>
             ) : resources.length === 0 ? (
-              <div className="flex flex-col items-center justify-center rounded-lg border border-border-subtle bg-bg-secondary py-16">
+              <div className="border-border-subtle bg-bg-secondary flex flex-col items-center justify-center rounded-lg border py-16">
                 <svg
-                  className="mb-4 h-12 w-12 text-text-faint"
+                  className="text-text-faint mb-4 h-12 w-12"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -280,8 +267,8 @@ export default function ResourcesPage() {
                     d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                <p className="mb-2 text-lg font-medium text-text">{t("empty.title")}</p>
-                <p className="text-sm text-text-muted">{t("empty.description")}</p>
+                <p className="text-text mb-2 text-lg font-medium">{t("empty.title")}</p>
+                <p className="text-text-muted text-sm">{t("empty.description")}</p>
               </div>
             ) : (
               <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
@@ -307,7 +294,7 @@ export default function ResourcesPage() {
               <div className="mt-12 flex justify-center">
                 <nav className="flex items-center gap-1">
                   <button
-                    className="rounded-md px-3 py-2 text-sm font-medium text-text-muted transition-colors hover:bg-surface disabled:cursor-not-allowed disabled:opacity-50"
+                    className="text-text-muted hover:bg-surface rounded-md px-3 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
                     disabled={pagination.page === 1}
                   >
                     <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -332,7 +319,7 @@ export default function ResourcesPage() {
                     </button>
                   ))}
                   <button
-                    className="rounded-md px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-surface disabled:cursor-not-allowed disabled:opacity-50"
+                    className="text-text-secondary hover:bg-surface rounded-md px-3 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
                     disabled={pagination.page === pagination.totalPages}
                   >
                     <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
