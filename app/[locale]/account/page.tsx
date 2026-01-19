@@ -13,6 +13,8 @@ import { AvatarUploader } from "@/components/profile/AvatarUploader";
 import { EmailVerificationBanner } from "@/components/account/EmailVerificationBanner";
 import { StripeConnectStatus } from "@/components/account/StripeConnectStatus";
 import { AccountSidebar } from "@/components/account/AccountSidebar";
+import { MultiSelect } from "@/components/ui/MultiSelect";
+import { SWISS_SUBJECTS, SWISS_CYCLES, SWISS_CANTONS } from "@/lib/validations/user";
 
 interface LibraryItem {
   id: string;
@@ -167,6 +169,26 @@ export default function AccountPage() {
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [isDeletingAvatar, setIsDeletingAvatar] = useState(false);
   const [avatarMessage, setAvatarMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
+
+  // Profile editing state
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
+  const [profileFormData, setProfileFormData] = useState<{
+    display_name: string;
+    subjects: string[];
+    cycles: string[];
+    cantons: string[];
+  }>({
+    display_name: "",
+    subjects: [],
+    cycles: [],
+    cantons: [],
+  });
+  const [profileErrors, setProfileErrors] = useState<Record<string, string>>({});
+  const [profileMessage, setProfileMessage] = useState<{
     type: "success" | "error";
     text: string;
   } | null>(null);
@@ -429,6 +451,105 @@ export default function AccountPage() {
     }
   };
 
+  // Start editing profile
+  const handleStartEditingProfile = () => {
+    setProfileFormData({
+      display_name: userData?.name || userData?.displayName || "",
+      subjects: userData?.subjects || [],
+      cycles: userData?.cycles || [],
+      cantons: userData?.cantons || [],
+    });
+    setProfileErrors({});
+    setProfileMessage(null);
+    setIsEditingProfile(true);
+  };
+
+  // Cancel editing profile
+  const handleCancelEditingProfile = () => {
+    setIsEditingProfile(false);
+    setProfileErrors({});
+    setProfileMessage(null);
+  };
+
+  // Handle profile form field change
+  const handleProfileFieldChange = (field: string, value: string | string[]) => {
+    setProfileFormData((prev) => ({ ...prev, [field]: value }));
+    if (profileErrors[field]) {
+      setProfileErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    }
+  };
+
+  // Save profile
+  const handleSaveProfile = async () => {
+    const errors: Record<string, string> = {};
+
+    if (!profileFormData.display_name || profileFormData.display_name.length < 2) {
+      errors.display_name = "Name muss mindestens 2 Zeichen haben";
+    }
+    if (profileFormData.subjects.length === 0) {
+      errors.subjects = "Mindestens ein Fach auswählen";
+    }
+    if (profileFormData.cycles.length === 0) {
+      errors.cycles = "Mindestens einen Zyklus auswählen";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setProfileErrors(errors);
+      return;
+    }
+
+    setIsSavingProfile(true);
+    setProfileMessage(null);
+
+    try {
+      const response = await fetch("/api/users/me", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          display_name: profileFormData.display_name,
+          subjects: profileFormData.subjects,
+          cycles: profileFormData.cycles,
+          cantons: profileFormData.cantons,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Fehler beim Speichern");
+      }
+
+      const updatedUser = await response.json();
+
+      // Update local state with new data
+      if (userData) {
+        setUserData({
+          ...userData,
+          name: updatedUser.display_name || updatedUser.name,
+          displayName: updatedUser.display_name,
+          subjects: updatedUser.subjects || [],
+          cycles: updatedUser.cycles || [],
+          cantons: updatedUser.cantons || [],
+        });
+      }
+
+      setProfileMessage({ type: "success", text: "Profil erfolgreich gespeichert!" });
+      setIsEditingProfile(false);
+      setTimeout(() => setProfileMessage(null), 3000);
+    } catch (error) {
+      console.error("Error saving profile:", error);
+      setProfileMessage({
+        type: "error",
+        text: "Fehler beim Speichern. Bitte versuchen Sie es erneut.",
+      });
+    } finally {
+      setIsSavingProfile(false);
+    }
+  };
+
   // Get subject pill class
   const getSubjectPillClass = (subject: string): string => {
     return SUBJECT_PILL_CLASSES[subject] || "pill-neutral";
@@ -520,8 +641,6 @@ export default function AccountPage() {
                     setActiveTab(tab);
                     setMobileMenuOpen(false);
                   }}
-                  searchQuery={searchQuery}
-                  onSearchChange={setSearchQuery}
                 />
               </div>
             )}
@@ -541,8 +660,6 @@ export default function AccountPage() {
                 followedSellers={followedSellers}
                 activeTab={activeTab}
                 onTabChange={setActiveTab}
-                searchQuery={searchQuery}
-                onSearchChange={setSearchQuery}
               />
             </div>
           </div>
@@ -1166,12 +1283,14 @@ export default function AccountPage() {
                       </h2>
                       <p className="text-text-muted truncate text-sm">{displayData.email}</p>
                     </div>
-                    <Link
-                      href="/profile/edit"
-                      className="border-border bg-bg text-text-secondary hover:border-primary hover:text-primary flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
-                    >
-                      Profil bearbeiten
-                    </Link>
+                    {!isEditingProfile && (
+                      <button
+                        onClick={handleStartEditingProfile}
+                        className="border-border bg-bg text-text-secondary hover:border-primary hover:text-primary flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
+                      >
+                        Profil bearbeiten
+                      </button>
+                    )}
                   </div>
                 </div>
 
@@ -1228,85 +1347,219 @@ export default function AccountPage() {
                     <div className="border-border bg-surface rounded-xl border p-6">
                       <div className="mb-4 flex items-center justify-between">
                         <h2 className="text-text text-lg font-semibold">Profil</h2>
-                        <Link
-                          href="/profile/edit"
-                          className="text-primary text-sm font-medium hover:underline"
+                        {!isEditingProfile && (
+                          <button
+                            onClick={handleStartEditingProfile}
+                            className="text-primary text-sm font-medium hover:underline"
+                          >
+                            Bearbeiten
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Success/Error Message */}
+                      {profileMessage && (
+                        <div
+                          className={`mb-4 rounded-lg border p-3 ${
+                            profileMessage.type === "success"
+                              ? "border-success/50 bg-success/10 text-success"
+                              : "border-error/50 bg-error/10 text-error"
+                          }`}
                         >
-                          Bearbeiten
-                        </Link>
-                      </div>
-
-                      <div className="space-y-4">
-                        <div>
-                          <label className="text-text mb-1 block text-sm font-medium">Name</label>
-                          <input
-                            type="text"
-                            value={displayData.name || ""}
-                            disabled
-                            className="border-border bg-surface text-text-muted w-full rounded-md border px-4 py-2"
-                          />
+                          <span className="text-sm">{profileMessage.text}</span>
                         </div>
-                        <div>
-                          <label className="text-text mb-1 block text-sm font-medium">E-Mail</label>
-                          <input
-                            type="email"
-                            value={displayData.email}
-                            disabled
-                            className="border-border bg-surface text-text-muted w-full rounded-md border px-4 py-2"
-                          />
-                          <p className="text-text-muted mt-1 text-xs">
-                            E-Mail kann nicht geändert werden.
-                          </p>
-                        </div>
-                      </div>
+                      )}
 
-                      {/* User Tags */}
-                      <div className="mt-6 grid gap-4 sm:grid-cols-3">
-                        {displayData.cantons && displayData.cantons.length > 0 && (
+                      {isEditingProfile ? (
+                        /* Edit Mode */
+                        <div className="space-y-4">
                           <div>
-                            <label className="text-text-muted text-xs font-medium tracking-wide uppercase">
-                              Kanton
+                            <label className="text-text mb-1 block text-sm font-medium">
+                              Name <span className="text-error">*</span>
                             </label>
-                            <p className="text-text mt-1">{displayData.cantons.join(", ")}</p>
+                            <input
+                              type="text"
+                              value={profileFormData.display_name}
+                              onChange={(e) =>
+                                handleProfileFieldChange("display_name", e.target.value)
+                              }
+                              placeholder="z.B. Frau M. oder Maria S."
+                              className={`border-border bg-bg text-text focus:ring-primary/20 w-full rounded-md border px-4 py-2 focus:ring-2 focus:outline-none ${
+                                profileErrors.display_name
+                                  ? "border-error focus:border-error"
+                                  : "focus:border-primary"
+                              }`}
+                            />
+                            {profileErrors.display_name && (
+                              <p className="text-error mt-1 text-xs">
+                                {profileErrors.display_name}
+                              </p>
+                            )}
                           </div>
-                        )}
-                        {displayData.subjects && displayData.subjects.length > 0 && (
+
                           <div>
-                            <label className="text-text-muted text-xs font-medium tracking-wide uppercase">
-                              Fächer
+                            <label className="text-text mb-1 block text-sm font-medium">
+                              E-Mail
                             </label>
-                            <div className="mt-1 flex flex-wrap gap-1">
-                              {displayData.subjects.slice(0, 3).map((subject) => (
-                                <span
-                                  key={subject}
-                                  className={`pill text-xs ${getSubjectPillClass(subject)}`}
-                                >
-                                  {subject}
+                            <input
+                              type="email"
+                              value={displayData.email}
+                              disabled
+                              className="border-border bg-surface text-text-muted w-full cursor-not-allowed rounded-md border px-4 py-2"
+                            />
+                            <p className="text-text-muted mt-1 text-xs">
+                              E-Mail kann nicht geändert werden.
+                            </p>
+                          </div>
+
+                          <MultiSelect
+                            label="Kantone"
+                            options={SWISS_CANTONS}
+                            selected={profileFormData.cantons}
+                            onChange={(value) => handleProfileFieldChange("cantons", value)}
+                            placeholder="Kantone auswählen (optional)..."
+                          />
+
+                          <MultiSelect
+                            label="Fächer"
+                            options={SWISS_SUBJECTS}
+                            selected={profileFormData.subjects}
+                            onChange={(value) => handleProfileFieldChange("subjects", value)}
+                            placeholder="Fächer auswählen..."
+                            required
+                            error={profileErrors.subjects}
+                          />
+
+                          <MultiSelect
+                            label="Zyklen"
+                            options={SWISS_CYCLES}
+                            selected={profileFormData.cycles}
+                            onChange={(value) => handleProfileFieldChange("cycles", value)}
+                            placeholder="Zyklen auswählen..."
+                            required
+                            error={profileErrors.cycles}
+                          />
+
+                          {/* Action Buttons */}
+                          <div className="flex justify-end gap-3 pt-2">
+                            <button
+                              type="button"
+                              onClick={handleCancelEditingProfile}
+                              disabled={isSavingProfile}
+                              className="border-border text-text-secondary hover:bg-surface-hover rounded-lg border px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
+                            >
+                              Abbrechen
+                            </button>
+                            <button
+                              type="button"
+                              onClick={handleSaveProfile}
+                              disabled={isSavingProfile}
+                              className="bg-primary text-text-on-accent hover:bg-primary-hover rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
+                            >
+                              {isSavingProfile ? (
+                                <span className="flex items-center gap-2">
+                                  <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24">
+                                    <circle
+                                      className="opacity-25"
+                                      cx="12"
+                                      cy="12"
+                                      r="10"
+                                      stroke="currentColor"
+                                      strokeWidth="4"
+                                      fill="none"
+                                    />
+                                    <path
+                                      className="opacity-75"
+                                      fill="currentColor"
+                                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                    />
+                                  </svg>
+                                  Speichern...
                                 </span>
-                              ))}
-                              {displayData.subjects.length > 3 && (
-                                <span className="text-text-muted px-2 py-0.5 text-sm">
-                                  +{displayData.subjects.length - 3}
-                                </span>
+                              ) : (
+                                "Speichern"
                               )}
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        /* View Mode */
+                        <>
+                          <div className="space-y-4">
+                            <div>
+                              <label className="text-text mb-1 block text-sm font-medium">
+                                Name
+                              </label>
+                              <p className="text-text">{displayData.name || "-"}</p>
+                            </div>
+                            <div>
+                              <label className="text-text mb-1 block text-sm font-medium">
+                                E-Mail
+                              </label>
+                              <p className="text-text">{displayData.email}</p>
+                              <p className="text-text-muted mt-1 text-xs">
+                                E-Mail kann nicht geändert werden.
+                              </p>
                             </div>
                           </div>
-                        )}
-                        {displayData.cycles && displayData.cycles.length > 0 && (
-                          <div>
-                            <label className="text-text-muted text-xs font-medium tracking-wide uppercase">
-                              Zyklen
-                            </label>
-                            <div className="mt-1 flex flex-wrap gap-1">
-                              {displayData.cycles.map((cycle) => (
-                                <span key={cycle} className="pill pill-primary text-xs">
-                                  {cycle}
-                                </span>
-                              ))}
+
+                          {/* User Tags */}
+                          <div className="mt-6 grid gap-4 sm:grid-cols-3">
+                            <div>
+                              <label className="text-text-muted text-xs font-medium tracking-wide uppercase">
+                                Kanton
+                              </label>
+                              <p className="text-text mt-1">
+                                {displayData.cantons && displayData.cantons.length > 0
+                                  ? displayData.cantons.join(", ")
+                                  : "-"}
+                              </p>
+                            </div>
+                            <div>
+                              <label className="text-text-muted text-xs font-medium tracking-wide uppercase">
+                                Fächer
+                              </label>
+                              <div className="mt-1 flex flex-wrap gap-1">
+                                {displayData.subjects && displayData.subjects.length > 0 ? (
+                                  <>
+                                    {displayData.subjects.slice(0, 3).map((subject) => (
+                                      <span
+                                        key={subject}
+                                        className={`pill text-xs ${getSubjectPillClass(subject)}`}
+                                      >
+                                        {subject}
+                                      </span>
+                                    ))}
+                                    {displayData.subjects.length > 3 && (
+                                      <span className="text-text-muted px-2 py-0.5 text-sm">
+                                        +{displayData.subjects.length - 3}
+                                      </span>
+                                    )}
+                                  </>
+                                ) : (
+                                  <span className="text-text">-</span>
+                                )}
+                              </div>
+                            </div>
+                            <div>
+                              <label className="text-text-muted text-xs font-medium tracking-wide uppercase">
+                                Zyklen
+                              </label>
+                              <div className="mt-1 flex flex-wrap gap-1">
+                                {displayData.cycles && displayData.cycles.length > 0 ? (
+                                  displayData.cycles.map((cycle) => (
+                                    <span key={cycle} className="pill pill-primary text-xs">
+                                      {cycle}
+                                    </span>
+                                  ))
+                                ) : (
+                                  <span className="text-text">-</span>
+                                )}
+                              </div>
                             </div>
                           </div>
-                        )}
-                      </div>
+                        </>
+                      )}
                     </div>
                   </div>
 

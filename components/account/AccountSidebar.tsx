@@ -14,10 +14,8 @@ import {
   Clock,
   CheckCircle,
   AlertCircle,
-  ChevronRight,
   TrendingUp,
   Download,
-  FileText,
 } from "lucide-react";
 
 // Subject color mapping (matching design system)
@@ -91,8 +89,6 @@ interface AccountSidebarProps {
   followedSellers?: FollowedSeller[];
   activeTab: TabType;
   onTabChange: (tab: TabType) => void;
-  searchQuery: string;
-  onSearchChange: (query: string) => void;
   className?: string;
 }
 
@@ -103,24 +99,89 @@ export function AccountSidebar({
   followedSellers = [],
   activeTab,
   onTabChange,
-  searchQuery,
-  onSearchChange,
   className = "",
 }: AccountSidebarProps) {
   return (
     <aside className={`border-border bg-bg-secondary rounded-xl border shadow-sm ${className}`}>
       <div className="p-5">
-        {/* Search */}
-        <div className="relative mb-5">
-          <Search className="text-text-muted absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Bibliothek durchsuchen..."
-            className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 w-full rounded-lg border py-2.5 pr-4 pl-10 text-sm focus:ring-2 focus:outline-none"
-          />
-        </div>
+        {/* Verkäufer-Dashboard (if seller) - at top */}
+        {userData.isSeller && sellerStats && (
+          <div className="mb-5">
+            <h3 className="label-meta mb-3 flex items-center gap-2">
+              <CreditCard className="text-text-muted h-4 w-4" />
+              Verkäufer-Dashboard
+            </h3>
+            <div className="border-border bg-bg space-y-3 rounded-lg border p-4">
+              {/* Stripe Status */}
+              <div className="flex items-center justify-between">
+                <span className="text-text-secondary text-sm">Stripe</span>
+                {sellerStats.stripeConnected !== false ? (
+                  <span className="text-success flex items-center gap-1 text-xs font-medium">
+                    <CheckCircle className="h-3.5 w-3.5" />
+                    Verbunden
+                  </span>
+                ) : (
+                  <span className="text-warning flex items-center gap-1 text-xs font-medium">
+                    <AlertCircle className="h-3.5 w-3.5" />
+                    Nicht verbunden
+                  </span>
+                )}
+              </div>
+
+              {/* Pending Resources */}
+              {sellerStats.pendingResources !== undefined && sellerStats.pendingResources > 0 && (
+                <div className="flex items-center justify-between">
+                  <span className="text-text-secondary flex items-center gap-2 text-sm">
+                    <Clock className="text-warning h-4 w-4" />
+                    Ausstehend
+                  </span>
+                  <span className="bg-warning/10 text-warning rounded-full px-2 py-0.5 text-xs font-medium">
+                    {sellerStats.pendingResources}
+                  </span>
+                </div>
+              )}
+
+              {/* Earnings */}
+              <div className="border-border flex items-center justify-between border-t pt-3">
+                <span className="text-text-secondary flex items-center gap-2 text-sm">
+                  <TrendingUp className="text-success h-4 w-4" />
+                  Einnahmen
+                </span>
+                <span className="text-success text-sm font-semibold">
+                  {sellerStats.netEarnings}
+                </span>
+              </div>
+
+              {/* Downloads */}
+              <div className="flex items-center justify-between">
+                <span className="text-text-secondary flex items-center gap-2 text-sm">
+                  <Download className="text-primary h-4 w-4" />
+                  Downloads
+                </span>
+                <span className="text-text text-sm font-semibold">
+                  {sellerStats.totalDownloads}
+                </span>
+              </div>
+
+              {/* Payout Available */}
+              {sellerStats.payoutAvailable && (
+                <div className="bg-success/10 mt-2 rounded-lg p-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-success text-xs">Auszahlbar</span>
+                    <span className="text-success text-sm font-bold">
+                      {sellerStats.payoutAvailable}
+                    </span>
+                  </div>
+                  <button className="bg-success hover:bg-success/90 mt-2 w-full rounded-md py-1.5 text-xs font-semibold text-white transition-colors">
+                    Auszahlung anfordern
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {userData.isSeller && sellerStats && <div className="divider my-5" />}
 
         {/* Navigation */}
         <nav className="mb-5 space-y-1">
@@ -208,83 +269,6 @@ export function AccountSidebar({
         </div>
 
         <div className="divider my-5" />
-
-        {/* Verkäufer-Dashboard (if seller) */}
-        {userData.isSeller && sellerStats && (
-          <div className="mb-5">
-            <h3 className="label-meta mb-3 flex items-center gap-2">
-              <CreditCard className="text-text-muted h-4 w-4" />
-              Verkäufer-Dashboard
-            </h3>
-            <div className="border-border bg-bg space-y-3 rounded-lg border p-4">
-              {/* Stripe Status */}
-              <div className="flex items-center justify-between">
-                <span className="text-text-secondary text-sm">Stripe</span>
-                {sellerStats.stripeConnected !== false ? (
-                  <span className="text-success flex items-center gap-1 text-xs font-medium">
-                    <CheckCircle className="h-3.5 w-3.5" />
-                    Verbunden
-                  </span>
-                ) : (
-                  <span className="text-warning flex items-center gap-1 text-xs font-medium">
-                    <AlertCircle className="h-3.5 w-3.5" />
-                    Nicht verbunden
-                  </span>
-                )}
-              </div>
-
-              {/* Pending Resources */}
-              {sellerStats.pendingResources !== undefined && sellerStats.pendingResources > 0 && (
-                <div className="flex items-center justify-between">
-                  <span className="text-text-secondary flex items-center gap-2 text-sm">
-                    <Clock className="text-warning h-4 w-4" />
-                    Ausstehend
-                  </span>
-                  <span className="bg-warning/10 text-warning rounded-full px-2 py-0.5 text-xs font-medium">
-                    {sellerStats.pendingResources}
-                  </span>
-                </div>
-              )}
-
-              {/* Earnings */}
-              <div className="border-border flex items-center justify-between border-t pt-3">
-                <span className="text-text-secondary flex items-center gap-2 text-sm">
-                  <TrendingUp className="text-success h-4 w-4" />
-                  Einnahmen
-                </span>
-                <span className="text-success text-sm font-semibold">
-                  {sellerStats.netEarnings}
-                </span>
-              </div>
-
-              {/* Downloads */}
-              <div className="flex items-center justify-between">
-                <span className="text-text-secondary flex items-center gap-2 text-sm">
-                  <Download className="text-primary h-4 w-4" />
-                  Downloads
-                </span>
-                <span className="text-text text-sm font-semibold">
-                  {sellerStats.totalDownloads}
-                </span>
-              </div>
-
-              {/* Payout Available */}
-              {sellerStats.payoutAvailable && (
-                <div className="bg-success/10 mt-2 rounded-lg p-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-success text-xs">Auszahlbar</span>
-                    <span className="text-success text-sm font-bold">
-                      {sellerStats.payoutAvailable}
-                    </span>
-                  </div>
-                  <button className="bg-success hover:bg-success/90 mt-2 w-full rounded-md py-1.5 text-xs font-semibold text-white transition-colors">
-                    Auszahlung anfordern
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
 
         {/* Quick Actions */}
         <div className="space-y-2">
