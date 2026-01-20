@@ -1,0 +1,192 @@
+"use client";
+
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
+import TopBar from "@/components/ui/TopBar";
+import Footer from "@/components/ui/Footer";
+import { Shield, Mail } from "lucide-react";
+
+export default function PrivacyPage() {
+  const t = useTranslations("privacyPage");
+
+  return (
+    <div className="flex min-h-screen flex-col">
+      <TopBar />
+
+      <main className="flex-1">
+        {/* Hero Section */}
+        <section className="border-border bg-bg-secondary border-b">
+          <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
+            <div className="flex items-center gap-3">
+              <div className="bg-accent-subtle flex h-12 w-12 items-center justify-center rounded-full">
+                <Shield className="text-primary h-6 w-6" />
+              </div>
+              <div>
+                <h1 className="text-text-primary text-3xl font-bold tracking-tight sm:text-4xl">
+                  {t("title")}
+                </h1>
+                <p className="text-text-muted mt-1">{t("lastUpdated")}</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Content */}
+        <section className="py-12">
+          <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+            <div className="prose prose-lg text-text-secondary max-w-none">
+              {/* Introduction */}
+              <div className="border-primary/20 bg-accent-subtle mb-8 rounded-xl border p-6">
+                <p className="text-text-primary">{t("intro")}</p>
+              </div>
+
+              {/* Section 1: Responsible Party */}
+              <h2 className="text-text-primary mt-8 text-xl font-semibold">
+                {t("sections.responsible.title")}
+              </h2>
+              <p>{t("sections.responsible.content")}</p>
+              <div className="bg-bg-secondary mt-2 rounded-lg p-4">
+                <p className="text-text-primary font-medium">{t("sections.responsible.company")}</p>
+                <p>{t("sections.responsible.address")}</p>
+                <p>
+                  {t("sections.responsible.emailLabel")}:{" "}
+                  <a
+                    href={`mailto:${t("sections.responsible.email")}`}
+                    className="text-primary hover:underline"
+                  >
+                    {t("sections.responsible.email")}
+                  </a>
+                </p>
+              </div>
+
+              {/* Section 2: Data Collection */}
+              <h2 className="text-text-primary mt-8 text-xl font-semibold">
+                {t("sections.collection.title")}
+              </h2>
+              <p>{t("sections.collection.intro")}</p>
+              <h3 className="text-text-primary mt-4 text-lg font-medium">
+                {t("sections.collection.account.title")}
+              </h3>
+              <ul className="ml-4 list-disc space-y-1">
+                <li>{t("sections.collection.account.items.name")}</li>
+                <li>{t("sections.collection.account.items.email")}</li>
+                <li>{t("sections.collection.account.items.password")}</li>
+                <li>{t("sections.collection.account.items.profile")}</li>
+              </ul>
+              <h3 className="text-text-primary mt-4 text-lg font-medium">
+                {t("sections.collection.payment.title")}
+              </h3>
+              <ul className="ml-4 list-disc space-y-1">
+                <li>{t("sections.collection.payment.items.transaction")}</li>
+                <li>{t("sections.collection.payment.items.billing")}</li>
+              </ul>
+              <p className="mt-2 text-sm">{t("sections.collection.payment.stripe")}</p>
+
+              {/* Section 3: Purpose */}
+              <h2 className="text-text-primary mt-8 text-xl font-semibold">
+                {t("sections.purpose.title")}
+              </h2>
+              <ul className="ml-4 list-disc space-y-1">
+                <li>{t("sections.purpose.items.account")}</li>
+                <li>{t("sections.purpose.items.transactions")}</li>
+                <li>{t("sections.purpose.items.communication")}</li>
+                <li>{t("sections.purpose.items.improvement")}</li>
+                <li>{t("sections.purpose.items.legal")}</li>
+              </ul>
+
+              {/* Section 4: Cookies */}
+              <h2 className="text-text-primary mt-8 text-xl font-semibold">
+                {t("sections.cookies.title")}
+              </h2>
+              <p>{t("sections.cookies.intro")}</p>
+              <h3 className="text-text-primary mt-4 text-lg font-medium">
+                {t("sections.cookies.essential.title")}
+              </h3>
+              <p>{t("sections.cookies.essential.content")}</p>
+              <h3 className="text-text-primary mt-4 text-lg font-medium">
+                {t("sections.cookies.analytics.title")}
+              </h3>
+              <p>{t("sections.cookies.analytics.content")}</p>
+
+              {/* Section 5: Data Sharing */}
+              <h2 className="text-text-primary mt-8 text-xl font-semibold">
+                {t("sections.sharing.title")}
+              </h2>
+              <p>{t("sections.sharing.intro")}</p>
+              <ul className="ml-4 list-disc space-y-1">
+                <li>{t("sections.sharing.items.stripe")}</li>
+                <li>{t("sections.sharing.items.hosting")}</li>
+                <li>{t("sections.sharing.items.email")}</li>
+              </ul>
+
+              {/* Section 6: Data Storage */}
+              <h2 className="text-text-primary mt-8 text-xl font-semibold">
+                {t("sections.storage.title")}
+              </h2>
+              <p>{t("sections.storage.location")}</p>
+              <p className="mt-2">{t("sections.storage.retention")}</p>
+
+              {/* Section 7: Your Rights */}
+              <h2 className="text-text-primary mt-8 text-xl font-semibold">
+                {t("sections.rights.title")}
+              </h2>
+              <p>{t("sections.rights.intro")}</p>
+              <ul className="ml-4 list-disc space-y-1">
+                <li>{t("sections.rights.items.access")}</li>
+                <li>{t("sections.rights.items.rectification")}</li>
+                <li>{t("sections.rights.items.deletion")}</li>
+                <li>{t("sections.rights.items.restriction")}</li>
+                <li>{t("sections.rights.items.portability")}</li>
+                <li>{t("sections.rights.items.objection")}</li>
+              </ul>
+              <p className="mt-4">{t("sections.rights.contact")}</p>
+
+              {/* Section 8: Security */}
+              <h2 className="text-text-primary mt-8 text-xl font-semibold">
+                {t("sections.security.title")}
+              </h2>
+              <p>{t("sections.security.content")}</p>
+
+              {/* Section 9: Changes */}
+              <h2 className="text-text-primary mt-8 text-xl font-semibold">
+                {t("sections.changes.title")}
+              </h2>
+              <p>{t("sections.changes.content")}</p>
+            </div>
+
+            {/* Contact CTA */}
+            <div className="border-border bg-bg-secondary mt-12 rounded-xl border p-6 text-center">
+              <Mail className="text-primary mx-auto mb-4 h-8 w-8" />
+              <h2 className="text-text-primary text-lg font-semibold">{t("contact.title")}</h2>
+              <p className="text-text-muted mt-2">{t("contact.description")}</p>
+              <a
+                href={`mailto:${t("contact.email")}`}
+                className="bg-primary text-text-on-accent hover:bg-primary-hover mt-4 inline-flex items-center gap-2 rounded-lg px-6 py-3 font-medium transition-colors"
+              >
+                {t("contact.email")}
+              </a>
+            </div>
+
+            {/* Links to other legal pages */}
+            <div className="mt-8 flex flex-wrap gap-4">
+              <Link
+                href="/impressum"
+                className="border-border bg-bg-primary text-text-primary hover:bg-bg-secondary inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
+              >
+                {t("links.impressum")}
+              </Link>
+              <Link
+                href="/terms"
+                className="border-border bg-bg-primary text-text-primary hover:bg-bg-secondary inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
+              >
+                {t("links.terms")}
+              </Link>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <Footer />
+    </div>
+  );
+}

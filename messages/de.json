@@ -1114,5 +1114,266 @@
       "title": "Fragen?",
       "content": "Wenn Sie Fragen zu diesen Nutzungsbedingungen haben, kontaktieren Sie uns bitte über unsere Kontaktseite."
     }
+  },
+  "cookieConsent": {
+    "title": "Cookie-Einstellungen",
+    "description": "Wir verwenden Cookies, um Ihre Erfahrung auf unserer Website zu verbessern. Essentielle Cookies sind für die Grundfunktionen notwendig. Statistik-Cookies helfen uns, die Website zu verbessern.",
+    "privacyLink": "Mehr in unserer Datenschutzerklärung",
+    "acceptAll": "Alle akzeptieren",
+    "essentialOnly": "Nur essentielle",
+    "close": "Schliessen"
+  },
+  "faqPage": {
+    "title": "Häufige Fragen",
+    "subtitle": "Finden Sie Antworten auf die wichtigsten Fragen rund um EasyLehrer",
+    "categories": {
+      "general": "Allgemein",
+      "buying": "Materialien kaufen",
+      "selling": "Materialien verkaufen",
+      "technical": "Technisches"
+    },
+    "general": {
+      "q1": {
+        "question": "Was ist EasyLehrer?",
+        "answer": "EasyLehrer ist eine Schweizer Plattform, auf der Lehrpersonen hochwertige Unterrichtsmaterialien kaufen und verkaufen können. Alle Materialien sind speziell für den Schweizer Lehrplan 21 konzipiert und von erfahrenen Lehrpersonen erstellt."
+      },
+      "q2": {
+        "question": "Für wen ist EasyLehrer geeignet?",
+        "answer": "EasyLehrer richtet sich an alle Lehrpersonen in der Schweiz - von der Primarstufe bis zur Sekundarstufe. Unsere Materialien sind für den Zyklus 1, 2 und 3 verfügbar und decken alle Fachbereiche des Lehrplans 21 ab."
+      },
+      "q3": {
+        "question": "Warum EasyLehrer statt anderen Plattformen?",
+        "answer": "EasyLehrer ist 100% auf die Schweiz ausgerichtet. Alle Materialien verwenden Schweizer Rechtschreibung (ss statt ß), sind auf den Lehrplan 21 abgestimmt und die Preise sind in Schweizer Franken. Zudem ist unser Server in der Schweiz gehostet."
+      },
+      "q4": {
+        "question": "Muss ich ein Konto erstellen?",
+        "answer": "Zum Stöbern und Ansehen der Materialvorschauen benötigen Sie kein Konto. Für den Kauf oder Verkauf von Materialien ist jedoch eine kostenlose Registrierung erforderlich."
+      },
+      "q5": {
+        "question": "Wie kann ich den Support kontaktieren?",
+        "answer": "Sie erreichen uns über das Kontaktformular auf unserer Website oder per E-Mail. Wir bemühen uns, alle Anfragen innerhalb von 24 Stunden zu beantworten."
+      }
+    },
+    "buying": {
+      "q1": {
+        "question": "Welche Dateiformate gibt es?",
+        "answer": "Die meisten Materialien sind als PDF und/oder Word-Dokument (DOCX) verfügbar. Das genaue Format ist bei jedem Material angegeben. Word-Dokumente können Sie nach dem Download bearbeiten."
+      },
+      "q2": {
+        "question": "Sind die Materialien editierbar?",
+        "answer": "Das hängt vom Dateiformat ab. Word-Dokumente (DOCX) sind vollständig editierbar. PDF-Dateien können nicht direkt bearbeitet werden, eignen sich aber ideal zum Ausdrucken."
+      },
+      "q3": {
+        "question": "Darf ich das Material an Kollegen weitergeben?",
+        "answer": "Die Lizenz gilt für eine einzelne Lehrperson. Das Weitergeben an Kollegen oder das Hochladen in schulinterne Netzwerke ist nicht gestattet. Für Schullizenzen kontaktieren Sie uns bitte direkt."
+      },
+      "q4": {
+        "question": "Wie funktioniert die Bezahlung?",
+        "answer": "Wir akzeptieren Kreditkarten (Visa, Mastercard), TWINT und für Schulen auch Rechnung mit QR-Code. Alle Preise sind in Schweizer Franken inkl. MWST."
+      },
+      "q5": {
+        "question": "Kann ich Materialien zurückgeben?",
+        "answer": "Da es sich um digitale Produkte handelt, ist eine Rückgabe nach dem Download grundsätzlich nicht möglich. Bei technischen Problemen oder falls das Material nicht der Beschreibung entspricht, kontaktieren Sie bitte unseren Support."
+      }
+    },
+    "selling": {
+      "q1": {
+        "question": "Wie kann ich Materialien verkaufen?",
+        "answer": "Registrieren Sie sich als Verkäufer, verbinden Sie Ihr Konto mit Stripe für die Auszahlungen und laden Sie Ihre Materialien hoch. Nach einer kurzen Prüfung werden Ihre Materialien veröffentlicht."
+      },
+      "q2": {
+        "question": "Wie hoch ist die Provision?",
+        "answer": "EasyLehrer behält 30% des Verkaufspreises als Plattformgebühr. Sie erhalten 70% jedes Verkaufs direkt auf Ihr Bankkonto ausgezahlt."
+      },
+      "q3": {
+        "question": "Wann erhalte ich meine Auszahlung?",
+        "answer": "Auszahlungen erfolgen automatisch über Stripe, sobald Ihr Guthaben CHF 50 erreicht. Die Überweisung auf Ihr Bankkonto dauert in der Regel 2-3 Werktage."
+      },
+      "q4": {
+        "question": "Welche Anforderungen gibt es an die Materialien?",
+        "answer": "Ihre Materialien müssen original sein, den Lehrplan 21 berücksichtigen und Schweizer Rechtschreibung verwenden (ss statt ß). Urheberrechtlich geschützte Inhalte Dritter sind nicht erlaubt."
+      },
+      "q5": {
+        "question": "Was bedeutet LP21-konform?",
+        "answer": "LP21-konform bedeutet, dass Ihr Material auf die Kompetenzen des Lehrplans 21 abgestimmt ist. Beim Hochladen können Sie die entsprechenden Kompetenzcodes (z.B. MA.1.A.1) auswählen."
+      }
+    },
+    "technical": {
+      "q1": {
+        "question": "Wie lade ich gekaufte Materialien herunter?",
+        "answer": "Nach dem Kauf finden Sie alle erworbenen Materialien in Ihrer Bibliothek unter 'Mein Konto'. Dort können Sie die Dateien jederzeit erneut herunterladen."
+      },
+      "q2": {
+        "question": "Ich habe Probleme beim Download. Was tun?",
+        "answer": "Versuchen Sie zunächst, die Seite neu zu laden oder einen anderen Browser zu verwenden. Falls das Problem bestehen bleibt, kontaktieren Sie bitte unseren Support mit Angabe der Bestellnummer."
+      },
+      "q3": {
+        "question": "Sind meine Daten sicher?",
+        "answer": "Ja, wir nehmen Datenschutz sehr ernst. Unsere Server befinden sich in der Schweiz, und wir halten uns strikt an das Schweizer Datenschutzgesetz (nDSG) sowie die DSGVO. Mehr dazu in unserer Datenschutzerklärung."
+      },
+      "q4": {
+        "question": "Welche Browser werden unterstützt?",
+        "answer": "EasyLehrer funktioniert mit allen modernen Browsern: Chrome, Firefox, Safari und Edge. Wir empfehlen, stets die aktuelle Version Ihres Browsers zu verwenden."
+      }
+    },
+    "contact": {
+      "title": "Ihre Frage nicht gefunden?",
+      "description": "Unser Support-Team hilft Ihnen gerne weiter.",
+      "button": "Kontaktieren Sie uns"
+    }
+  },
+  "impressumPage": {
+    "title": "Impressum",
+    "company": {
+      "title": "Unternehmen",
+      "name": "[Firmenname eintragen]",
+      "address": {
+        "street": "[Strasse und Hausnummer]",
+        "city": "[PLZ Ort]",
+        "country": "Schweiz"
+      }
+    },
+    "contact": {
+      "title": "Kontakt",
+      "email": "kontakt@easylehrer.ch",
+      "website": "www.easylehrer.ch"
+    },
+    "legal": {
+      "title": "Rechtliche Angaben",
+      "uid": {
+        "label": "UID-Nummer",
+        "value": "[CHE-XXX.XXX.XXX]"
+      },
+      "register": {
+        "label": "Handelsregister",
+        "value": "[Handelsregisteramt Kanton]"
+      }
+    },
+    "responsible": {
+      "title": "Verantwortliche Person",
+      "name": "[Name der verantwortlichen Person]",
+      "role": "Geschäftsführer/in"
+    },
+    "disclaimer": {
+      "title": "Haftungsausschluss",
+      "liability": {
+        "title": "Haftung für Inhalte",
+        "content": "Die Inhalte unserer Seiten wurden mit grösster Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen."
+      },
+      "links": {
+        "title": "Haftung für Links",
+        "content": "Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen."
+      },
+      "copyright": {
+        "title": "Urheberrecht",
+        "content": "Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem Schweizer Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung ausserhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung."
+      }
+    },
+    "links": {
+      "privacy": "Datenschutzerklärung",
+      "terms": "Allgemeine Geschäftsbedingungen"
+    }
+  },
+  "privacyPage": {
+    "title": "Datenschutzerklärung",
+    "lastUpdated": "Stand: Januar 2026",
+    "intro": "Der Schutz Ihrer persönlichen Daten ist uns wichtig. Diese Datenschutzerklärung informiert Sie über die Erhebung, Verarbeitung und Nutzung Ihrer personenbezogenen Daten bei der Nutzung von EasyLehrer. Wir halten uns an das Schweizer Datenschutzgesetz (nDSG) sowie die EU-Datenschutz-Grundverordnung (DSGVO).",
+    "sections": {
+      "responsible": {
+        "title": "1. Verantwortliche Stelle",
+        "content": "Verantwortlich für die Datenverarbeitung auf dieser Website ist:",
+        "company": "[Firmenname eintragen]",
+        "address": "[Adresse eintragen], Schweiz",
+        "emailLabel": "E-Mail",
+        "email": "datenschutz@easylehrer.ch"
+      },
+      "collection": {
+        "title": "2. Welche Daten wir erheben",
+        "intro": "Wir erheben verschiedene Arten von Daten, um unsere Dienste bereitzustellen und zu verbessern:",
+        "account": {
+          "title": "Kontodaten",
+          "items": {
+            "name": "Name und Vorname",
+            "email": "E-Mail-Adresse",
+            "password": "Passwort (verschlüsselt gespeichert)",
+            "profile": "Profilinformationen (optional: Schule, Kanton, Unterrichtsfächer)"
+          }
+        },
+        "payment": {
+          "title": "Zahlungsdaten",
+          "items": {
+            "transaction": "Transaktionsdaten (Käufe, Verkäufe)",
+            "billing": "Rechnungsadresse (für Verkäufer)"
+          },
+          "stripe": "Zahlungsabwicklung erfolgt über Stripe. Wir speichern keine Kreditkartendaten. Siehe Stripe-Datenschutzrichtlinie."
+        }
+      },
+      "purpose": {
+        "title": "3. Zweck der Datenverarbeitung",
+        "items": {
+          "account": "Bereitstellung und Verwaltung Ihres Benutzerkontos",
+          "transactions": "Abwicklung von Käufen und Verkäufen",
+          "communication": "Kommunikation bezüglich Ihrer Bestellungen und unserer Dienste",
+          "improvement": "Verbesserung unserer Website und Dienste",
+          "legal": "Erfüllung rechtlicher Verpflichtungen"
+        }
+      },
+      "cookies": {
+        "title": "4. Cookies",
+        "intro": "Wir verwenden Cookies, um die Funktionalität unserer Website sicherzustellen und Ihre Erfahrung zu verbessern.",
+        "essential": {
+          "title": "Essenzielle Cookies",
+          "content": "Diese Cookies sind für den Betrieb der Website erforderlich. Sie ermöglichen grundlegende Funktionen wie Anmeldung und Warenkorb."
+        },
+        "analytics": {
+          "title": "Analyse-Cookies (optional)",
+          "content": "Mit Ihrer Zustimmung verwenden wir Analyse-Cookies, um zu verstehen, wie Besucher unsere Website nutzen. Diese Daten helfen uns, die Website zu verbessern."
+        }
+      },
+      "sharing": {
+        "title": "5. Datenweitergabe",
+        "intro": "Wir verkaufen Ihre Daten nicht. Wir teilen Ihre Daten nur mit:",
+        "items": {
+          "stripe": "Stripe - für die sichere Zahlungsabwicklung",
+          "hosting": "Hosting-Anbieter - Server befinden sich in der Schweiz",
+          "email": "E-Mail-Dienstleister - für Transaktions-E-Mails"
+        }
+      },
+      "storage": {
+        "title": "6. Datenspeicherung",
+        "location": "Ihre Daten werden auf Servern in der Schweiz gespeichert. Bei der Nutzung von Drittanbietern stellen wir sicher, dass angemessene Datenschutzgarantien vorhanden sind.",
+        "retention": "Wir speichern Ihre Daten nur so lange, wie es für die angegebenen Zwecke erforderlich ist oder gesetzlich vorgeschrieben."
+      },
+      "rights": {
+        "title": "7. Ihre Rechte",
+        "intro": "Sie haben folgende Rechte bezüglich Ihrer personenbezogenen Daten:",
+        "items": {
+          "access": "Recht auf Auskunft über Ihre gespeicherten Daten",
+          "rectification": "Recht auf Berichtigung unrichtiger Daten",
+          "deletion": "Recht auf Löschung Ihrer Daten",
+          "restriction": "Recht auf Einschränkung der Verarbeitung",
+          "portability": "Recht auf Datenübertragbarkeit",
+          "objection": "Recht auf Widerspruch gegen die Verarbeitung"
+        },
+        "contact": "Um diese Rechte auszuüben, kontaktieren Sie uns bitte unter der unten angegebenen E-Mail-Adresse."
+      },
+      "security": {
+        "title": "8. Datensicherheit",
+        "content": "Wir setzen technische und organisatorische Sicherheitsmassnahmen ein, um Ihre Daten vor unbefugtem Zugriff, Verlust oder Missbrauch zu schützen. Dazu gehören Verschlüsselung, sichere Server und regelmässige Sicherheitsüberprüfungen."
+      },
+      "changes": {
+        "title": "9. Änderungen dieser Datenschutzerklärung",
+        "content": "Wir können diese Datenschutzerklärung von Zeit zu Zeit aktualisieren. Die aktuelle Version ist stets auf dieser Seite verfügbar. Bei wesentlichen Änderungen informieren wir Sie per E-Mail."
+      }
+    },
+    "contact": {
+      "title": "Fragen zum Datenschutz?",
+      "description": "Für Fragen oder Anliegen bezüglich Ihrer Daten kontaktieren Sie uns:",
+      "email": "datenschutz@easylehrer.ch"
+    },
+    "links": {
+      "impressum": "Impressum",
+      "terms": "Allgemeine Geschäftsbedingungen"
+    }
   }
 }

@@ -8,6 +8,7 @@ import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { ResourceCard } from "@/components/ui/ResourceCard";
 import { SellerHeroSection } from "@/components/ui/SellerHeroSection";
+import { BadgeCheck, BookOpen, Zap, Clock, Shield } from "lucide-react";
 
 export default function Home() {
   const t = useTranslations("homePage");
@@ -92,26 +93,18 @@ export default function Home() {
                 </div>
 
                 {/* Trust indicators */}
-                <div className="text-text-muted mt-10 flex items-center gap-6 text-sm">
+                <div className="text-text-muted mt-10 flex flex-wrap items-center gap-4 text-sm sm:gap-6">
                   <div className="flex items-center gap-2">
-                    <svg className="text-success h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
+                    <BadgeCheck className="text-success h-5 w-5" />
                     <span>Lehrplan 21</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <svg className="text-success h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    <span>Schweizer Lehrpersonen</span>
+                    <Shield className="text-success h-5 w-5" />
+                    <span>Schweizer Qualität</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Clock className="text-success h-5 w-5" />
+                    <span>Zeitersparnis</span>
                   </div>
                 </div>
               </div>
@@ -341,22 +334,10 @@ export default function Home() {
             </div>
 
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {/* Feature 1 */}
+              {/* Feature 1: Quality Checked */}
               <div className="card p-8">
                 <div className="bg-primary-light mb-6 flex h-12 w-12 items-center justify-center rounded-xl">
-                  <svg
-                    className="text-primary h-6 w-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
+                  <BadgeCheck className="text-primary h-6 w-6" />
                 </div>
                 <h3 className="text-text text-lg font-bold">{t("features.feature1.title")}</h3>
                 <p className="text-text-muted mt-3 leading-relaxed">
@@ -364,22 +345,10 @@ export default function Home() {
                 </p>
               </div>
 
-              {/* Feature 2 */}
+              {/* Feature 2: LP21 Compliant */}
               <div className="card p-8">
                 <div className="bg-accent-light mb-6 flex h-12 w-12 items-center justify-center rounded-xl">
-                  <svg
-                    className="text-accent h-6 w-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                    />
-                  </svg>
+                  <BookOpen className="text-accent h-6 w-6" />
                 </div>
                 <h3 className="text-text text-lg font-bold">{t("features.feature2.title")}</h3>
                 <p className="text-text-muted mt-3 leading-relaxed">
@@ -387,22 +356,10 @@ export default function Home() {
                 </p>
               </div>
 
-              {/* Feature 3 */}
+              {/* Feature 3: Ready to Use */}
               <div className="card p-8">
                 <div className="bg-success-light mb-6 flex h-12 w-12 items-center justify-center rounded-xl">
-                  <svg
-                    className="text-success h-6 w-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                    />
-                  </svg>
+                  <Zap className="text-success h-6 w-6" />
                 </div>
                 <h3 className="text-text text-lg font-bold">{t("features.feature3.title")}</h3>
                 <p className="text-text-muted mt-3 leading-relaxed">

@@ -1114,5 +1114,266 @@
       "title": "Questions?",
       "content": "If you have any questions about these Terms of Service, please contact us through our contact page."
     }
+  },
+  "cookieConsent": {
+    "title": "Cookie Settings",
+    "description": "We use cookies to enhance your experience on our website. Essential cookies are necessary for basic functionality. Analytics cookies help us improve the website.",
+    "privacyLink": "Learn more in our Privacy Policy",
+    "acceptAll": "Accept All",
+    "essentialOnly": "Essential Only",
+    "close": "Close"
+  },
+  "faqPage": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Find answers to the most common questions about EasyLehrer",
+    "categories": {
+      "general": "General",
+      "buying": "Buying Materials",
+      "selling": "Selling Materials",
+      "technical": "Technical"
+    },
+    "general": {
+      "q1": {
+        "question": "What is EasyLehrer?",
+        "answer": "EasyLehrer is a Swiss platform where teachers can buy and sell high-quality teaching materials. All materials are specifically designed for the Swiss Lehrplan 21 curriculum and created by experienced teachers."
+      },
+      "q2": {
+        "question": "Who is EasyLehrer for?",
+        "answer": "EasyLehrer is aimed at all teachers in Switzerland - from primary to secondary level. Our materials are available for Cycle 1, 2, and 3 and cover all subject areas of the Lehrplan 21."
+      },
+      "q3": {
+        "question": "Why EasyLehrer instead of other platforms?",
+        "answer": "EasyLehrer is 100% focused on Switzerland. All materials use Swiss spelling (ss instead of ß), are aligned with Lehrplan 21, and prices are in Swiss Francs. Additionally, our server is hosted in Switzerland."
+      },
+      "q4": {
+        "question": "Do I need to create an account?",
+        "answer": "You don't need an account to browse and view material previews. However, a free registration is required to buy or sell materials."
+      },
+      "q5": {
+        "question": "How can I contact support?",
+        "answer": "You can reach us via the contact form on our website or by email. We strive to respond to all inquiries within 24 hours."
+      }
+    },
+    "buying": {
+      "q1": {
+        "question": "What file formats are available?",
+        "answer": "Most materials are available as PDF and/or Word documents (DOCX). The exact format is indicated for each material. Word documents can be edited after download."
+      },
+      "q2": {
+        "question": "Are the materials editable?",
+        "answer": "That depends on the file format. Word documents (DOCX) are fully editable. PDF files cannot be edited directly but are ideal for printing."
+      },
+      "q3": {
+        "question": "Can I share materials with colleagues?",
+        "answer": "The license is valid for a single teacher. Sharing with colleagues or uploading to school networks is not permitted. For school licenses, please contact us directly."
+      },
+      "q4": {
+        "question": "How does payment work?",
+        "answer": "We accept credit cards (Visa, Mastercard), TWINT, and for schools also invoice with QR code. All prices are in Swiss Francs including VAT."
+      },
+      "q5": {
+        "question": "Can I return materials?",
+        "answer": "Since these are digital products, returns are generally not possible after download. For technical problems or if the material doesn't match the description, please contact our support."
+      }
+    },
+    "selling": {
+      "q1": {
+        "question": "How can I sell materials?",
+        "answer": "Register as a seller, connect your account with Stripe for payouts, and upload your materials. After a brief review, your materials will be published."
+      },
+      "q2": {
+        "question": "What is the commission rate?",
+        "answer": "EasyLehrer keeps 30% of the sale price as a platform fee. You receive 70% of each sale directly to your bank account."
+      },
+      "q3": {
+        "question": "When will I receive my payout?",
+        "answer": "Payouts are processed automatically via Stripe once your balance reaches CHF 50. The transfer to your bank account usually takes 2-3 business days."
+      },
+      "q4": {
+        "question": "What are the requirements for materials?",
+        "answer": "Your materials must be original, consider the Lehrplan 21, and use Swiss spelling (ss instead of ß). Copyrighted content from third parties is not allowed."
+      },
+      "q5": {
+        "question": "What does LP21-compliant mean?",
+        "answer": "LP21-compliant means your material is aligned with the competencies of the Lehrplan 21. When uploading, you can select the corresponding competency codes (e.g., MA.1.A.1)."
+      }
+    },
+    "technical": {
+      "q1": {
+        "question": "How do I download purchased materials?",
+        "answer": "After purchase, you'll find all acquired materials in your Library under 'My Account'. You can re-download the files there at any time."
+      },
+      "q2": {
+        "question": "I'm having download problems. What should I do?",
+        "answer": "First try reloading the page or using a different browser. If the problem persists, please contact our support with your order number."
+      },
+      "q3": {
+        "question": "Is my data secure?",
+        "answer": "Yes, we take data protection very seriously. Our servers are located in Switzerland, and we strictly comply with Swiss data protection law (nDSG) as well as GDPR. More details in our Privacy Policy."
+      },
+      "q4": {
+        "question": "Which browsers are supported?",
+        "answer": "EasyLehrer works with all modern browsers: Chrome, Firefox, Safari, and Edge. We recommend always using the latest version of your browser."
+      }
+    },
+    "contact": {
+      "title": "Didn't find your question?",
+      "description": "Our support team is happy to help.",
+      "button": "Contact Us"
+    }
+  },
+  "impressumPage": {
+    "title": "Legal Notice",
+    "company": {
+      "title": "Company",
+      "name": "[Enter company name]",
+      "address": {
+        "street": "[Street and number]",
+        "city": "[Postal code City]",
+        "country": "Switzerland"
+      }
+    },
+    "contact": {
+      "title": "Contact",
+      "email": "contact@easylehrer.ch",
+      "website": "www.easylehrer.ch"
+    },
+    "legal": {
+      "title": "Legal Information",
+      "uid": {
+        "label": "UID Number",
+        "value": "[CHE-XXX.XXX.XXX]"
+      },
+      "register": {
+        "label": "Commercial Register",
+        "value": "[Commercial Register Canton]"
+      }
+    },
+    "responsible": {
+      "title": "Responsible Person",
+      "name": "[Name of responsible person]",
+      "role": "Managing Director"
+    },
+    "disclaimer": {
+      "title": "Disclaimer",
+      "liability": {
+        "title": "Liability for Content",
+        "content": "The contents of our pages were created with the greatest care. However, we cannot guarantee the accuracy, completeness, or timeliness of the content."
+      },
+      "links": {
+        "title": "Liability for Links",
+        "content": "Our website contains links to external third-party websites over whose content we have no influence. Therefore, we cannot accept any liability for this external content."
+      },
+      "copyright": {
+        "title": "Copyright",
+        "content": "The content and works created by the site operators on these pages are subject to Swiss copyright law. Reproduction, editing, distribution, and any kind of use beyond the limits of copyright law require written consent."
+      }
+    },
+    "links": {
+      "privacy": "Privacy Policy",
+      "terms": "Terms and Conditions"
+    }
+  },
+  "privacyPage": {
+    "title": "Privacy Policy",
+    "lastUpdated": "Last updated: January 2026",
+    "intro": "Protecting your personal data is important to us. This privacy policy informs you about the collection, processing, and use of your personal data when using EasyLehrer. We comply with the Swiss Data Protection Act (nDSG) and the EU General Data Protection Regulation (GDPR).",
+    "sections": {
+      "responsible": {
+        "title": "1. Responsible Party",
+        "content": "Responsible for data processing on this website is:",
+        "company": "[Enter company name]",
+        "address": "[Enter address], Switzerland",
+        "emailLabel": "Email",
+        "email": "privacy@easylehrer.ch"
+      },
+      "collection": {
+        "title": "2. Data We Collect",
+        "intro": "We collect various types of data to provide and improve our services:",
+        "account": {
+          "title": "Account Data",
+          "items": {
+            "name": "First and last name",
+            "email": "Email address",
+            "password": "Password (stored encrypted)",
+            "profile": "Profile information (optional: school, canton, subjects)"
+          }
+        },
+        "payment": {
+          "title": "Payment Data",
+          "items": {
+            "transaction": "Transaction data (purchases, sales)",
+            "billing": "Billing address (for sellers)"
+          },
+          "stripe": "Payment processing is handled by Stripe. We do not store credit card data. See Stripe's Privacy Policy."
+        }
+      },
+      "purpose": {
+        "title": "3. Purpose of Data Processing",
+        "items": {
+          "account": "Providing and managing your user account",
+          "transactions": "Processing purchases and sales",
+          "communication": "Communication regarding your orders and our services",
+          "improvement": "Improving our website and services",
+          "legal": "Fulfilling legal obligations"
+        }
+      },
+      "cookies": {
+        "title": "4. Cookies",
+        "intro": "We use cookies to ensure the functionality of our website and improve your experience.",
+        "essential": {
+          "title": "Essential Cookies",
+          "content": "These cookies are necessary for the website to function. They enable basic features like login and shopping cart."
+        },
+        "analytics": {
+          "title": "Analytics Cookies (optional)",
+          "content": "With your consent, we use analytics cookies to understand how visitors use our website. This data helps us improve the site."
+        }
+      },
+      "sharing": {
+        "title": "5. Data Sharing",
+        "intro": "We do not sell your data. We only share your data with:",
+        "items": {
+          "stripe": "Stripe - for secure payment processing",
+          "hosting": "Hosting provider - servers are located in Switzerland",
+          "email": "Email service provider - for transactional emails"
+        }
+      },
+      "storage": {
+        "title": "6. Data Storage",
+        "location": "Your data is stored on servers in Switzerland. When using third-party providers, we ensure appropriate data protection guarantees are in place.",
+        "retention": "We only store your data for as long as necessary for the stated purposes or as required by law."
+      },
+      "rights": {
+        "title": "7. Your Rights",
+        "intro": "You have the following rights regarding your personal data:",
+        "items": {
+          "access": "Right to access your stored data",
+          "rectification": "Right to rectification of incorrect data",
+          "deletion": "Right to deletion of your data",
+          "restriction": "Right to restriction of processing",
+          "portability": "Right to data portability",
+          "objection": "Right to object to processing"
+        },
+        "contact": "To exercise these rights, please contact us at the email address below."
+      },
+      "security": {
+        "title": "8. Data Security",
+        "content": "We implement technical and organizational security measures to protect your data from unauthorized access, loss, or misuse. This includes encryption, secure servers, and regular security audits."
+      },
+      "changes": {
+        "title": "9. Changes to This Privacy Policy",
+        "content": "We may update this privacy policy from time to time. The current version is always available on this page. For significant changes, we will notify you by email."
+      }
+    },
+    "contact": {
+      "title": "Questions About Privacy?",
+      "description": "For questions or concerns about your data, contact us:",
+      "email": "privacy@easylehrer.ch"
+    },
+    "links": {
+      "impressum": "Legal Notice",
+      "terms": "Terms and Conditions"
+    }
   }
 }

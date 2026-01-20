@@ -14,29 +14,27 @@ export default function TermsPage() {
 
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="border-b border-[var(--color-border)] bg-[var(--color-bg-secondary)]">
+        <section className="border-border bg-bg-secondary border-b">
           <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
-            <h1 className="text-3xl font-bold tracking-tight text-[var(--color-text)] sm:text-4xl">
+            <h1 className="text-text-primary text-3xl font-bold tracking-tight sm:text-4xl">
               {t("title")}
             </h1>
-            <p className="mt-4 text-[var(--color-text-muted)]">
-              {t("lastUpdated")}
-            </p>
+            <p className="text-text-muted mt-4">{t("lastUpdated")}</p>
           </div>
         </section>
 
         {/* General Terms Section */}
         <section className="py-12">
           <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-            <div className="prose prose-lg max-w-none text-[var(--color-text-secondary)]">
+            <div className="prose prose-lg text-text-secondary max-w-none">
               {/* Introduction */}
-              <h2 className="text-xl font-semibold text-[var(--color-text)]">
+              <h2 className="text-text-primary text-xl font-semibold">
                 {t("general.introduction.title")}
               </h2>
               <p>{t("general.introduction.content")}</p>
 
               {/* Account Terms */}
-              <h2 className="mt-8 text-xl font-semibold text-[var(--color-text)]">
+              <h2 className="text-text-primary mt-8 text-xl font-semibold">
                 {t("general.account.title")}
               </h2>
               <p>{t("general.account.content")}</p>
@@ -48,7 +46,7 @@ export default function TermsPage() {
               </ul>
 
               {/* Acceptable Use */}
-              <h2 className="mt-8 text-xl font-semibold text-[var(--color-text)]">
+              <h2 className="text-text-primary mt-8 text-xl font-semibold">
                 {t("general.acceptableUse.title")}
               </h2>
               <p>{t("general.acceptableUse.content")}</p>
@@ -60,13 +58,13 @@ export default function TermsPage() {
               </ul>
 
               {/* Intellectual Property */}
-              <h2 className="mt-8 text-xl font-semibold text-[var(--color-text)]">
+              <h2 className="text-text-primary mt-8 text-xl font-semibold">
                 {t("general.intellectualProperty.title")}
               </h2>
               <p>{t("general.intellectualProperty.content")}</p>
 
               {/* Purchases and Downloads */}
-              <h2 className="mt-8 text-xl font-semibold text-[var(--color-text)]">
+              <h2 className="text-text-primary mt-8 text-xl font-semibold">
                 {t("general.purchases.title")}
               </h2>
               <p>{t("general.purchases.content")}</p>
@@ -77,13 +75,13 @@ export default function TermsPage() {
               </ul>
 
               {/* Limitation of Liability */}
-              <h2 className="mt-8 text-xl font-semibold text-[var(--color-text)]">
+              <h2 className="text-text-primary mt-8 text-xl font-semibold">
                 {t("general.liability.title")}
               </h2>
               <p>{t("general.liability.content")}</p>
 
               {/* Governing Law */}
-              <h2 className="mt-8 text-xl font-semibold text-[var(--color-text)]">
+              <h2 className="text-text-primary mt-8 text-xl font-semibold">
                 {t("general.governingLaw.title")}
               </h2>
               <p>{t("general.governingLaw.content")}</p>
@@ -93,44 +91,38 @@ export default function TermsPage() {
 
         {/* Divider */}
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <hr className="border-[var(--color-border)]" />
+          <hr className="border-border" />
         </div>
 
         {/* Seller Terms Section */}
         <section className="py-12">
           <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
             <div className="mb-8">
-              <h2 className="text-2xl font-bold text-[var(--color-text)]">
-                {tSellerTerms("pageTitle")}
-              </h2>
-              <p className="mt-2 text-[var(--color-text-muted)]">
-                {tSellerTerms("pageSubtitle")}
-              </p>
+              <h2 className="text-text-primary text-2xl font-bold">{tSellerTerms("pageTitle")}</h2>
+              <p className="text-text-muted mt-2">{tSellerTerms("pageSubtitle")}</p>
             </div>
 
-            <div className="prose prose-lg max-w-none text-[var(--color-text-secondary)]">
+            <div className="prose prose-lg text-text-secondary max-w-none">
               {/* Overview */}
-              <h3 className="text-lg font-semibold text-[var(--color-text)]">
+              <h3 className="text-text-primary text-lg font-semibold">
                 {tSellerTerms("sections.overview.title")}
               </h3>
               <p>{tSellerTerms("sections.overview.content")}</p>
 
               {/* Platform Fee */}
-              <h3 className="mt-6 text-lg font-semibold text-[var(--color-text)]">
+              <h3 className="text-text-primary mt-6 text-lg font-semibold">
                 {tSellerTerms("sections.platformFee.title")}
               </h3>
               <p>{tSellerTerms("sections.platformFee.content")}</p>
               <ul className="ml-4 list-disc space-y-1">
                 <li>{tSellerTerms("sections.platformFee.breakdown.seller")}</li>
                 <li>{tSellerTerms("sections.platformFee.breakdown.platform")}</li>
-                <li className="italic">
-                  {tSellerTerms("sections.platformFee.breakdown.example")}
-                </li>
+                <li className="italic">{tSellerTerms("sections.platformFee.breakdown.example")}</li>
               </ul>
               <p className="text-sm">{tSellerTerms("sections.platformFee.note")}</p>
 
               {/* Payouts */}
-              <h3 className="mt-6 text-lg font-semibold text-[var(--color-text)]">
+              <h3 className="text-text-primary mt-6 text-lg font-semibold">
                 {tSellerTerms("sections.payouts.title")}
               </h3>
               <p>{tSellerTerms("sections.payouts.content")}</p>
@@ -142,7 +134,7 @@ export default function TermsPage() {
               </ul>
 
               {/* Content Policies */}
-              <h3 className="mt-6 text-lg font-semibold text-[var(--color-text)]">
+              <h3 className="text-text-primary mt-6 text-lg font-semibold">
                 {tSellerTerms("sections.contentPolicies.title")}
               </h3>
               <p>{tSellerTerms("sections.contentPolicies.content")}</p>
@@ -155,7 +147,7 @@ export default function TermsPage() {
               </ul>
 
               {/* Prohibited Content */}
-              <h3 className="mt-6 text-lg font-semibold text-[var(--color-text)]">
+              <h3 className="text-text-primary mt-6 text-lg font-semibold">
                 {tSellerTerms("sections.prohibited.title")}
               </h3>
               <p>{tSellerTerms("sections.prohibited.content")}</p>
@@ -169,7 +161,7 @@ export default function TermsPage() {
               </ul>
 
               {/* Seller Responsibilities */}
-              <h3 className="mt-6 text-lg font-semibold text-[var(--color-text)]">
+              <h3 className="text-text-primary mt-6 text-lg font-semibold">
                 {tSellerTerms("sections.responsibilities.title")}
               </h3>
               <p>{tSellerTerms("sections.responsibilities.content")}</p>
@@ -182,7 +174,7 @@ export default function TermsPage() {
               </ul>
 
               {/* Account Termination */}
-              <h3 className="mt-6 text-lg font-semibold text-[var(--color-text)]">
+              <h3 className="text-text-primary mt-6 text-lg font-semibold">
                 {tSellerTerms("sections.termination.title")}
               </h3>
               <p>{tSellerTerms("sections.termination.content")}</p>
@@ -193,7 +185,7 @@ export default function TermsPage() {
               </ul>
 
               {/* Changes to Terms */}
-              <h3 className="mt-6 text-lg font-semibold text-[var(--color-text)]">
+              <h3 className="text-text-primary mt-6 text-lg font-semibold">
                 {tSellerTerms("sections.changes.title")}
               </h3>
               <p>{tSellerTerms("sections.changes.content")}</p>
@@ -202,14 +194,10 @@ export default function TermsPage() {
         </section>
 
         {/* Contact Section */}
-        <section className="bg-[var(--color-bg-secondary)] py-12">
+        <section className="bg-bg-secondary py-12">
           <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
-            <h2 className="text-xl font-semibold text-[var(--color-text)]">
-              {t("contact.title")}
-            </h2>
-            <p className="mt-2 text-[var(--color-text-muted)]">
-              {t("contact.content")}
-            </p>
+            <h2 className="text-text-primary text-xl font-semibold">{t("contact.title")}</h2>
+            <p className="text-text-muted mt-2">{t("contact.content")}</p>
           </div>
         </section>
       </main>
