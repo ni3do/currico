@@ -83,7 +83,7 @@ export default function CookieConsent() {
       aria-describedby="cookie-consent-description"
     >
       <div className="mx-auto max-w-4xl">
-        <div className="border-border bg-bg-primary rounded-xl border p-4 shadow-lg sm:p-6">
+        <div className="border-border rounded-xl border bg-white p-4 shadow-lg sm:p-6 dark:bg-[#1e1e2e]">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
             {/* Icon */}
             <div className="hidden sm:block">

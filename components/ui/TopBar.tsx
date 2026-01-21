@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import { signOut, useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import LocaleSwitcher from "@/components/ui/LocaleSwitcher";
 
 export default function TopBar() {
   const t = useTranslations("common");
@@ -40,31 +39,27 @@ export default function TopBar() {
   }, [isUserMenuOpen]);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border-subtle bg-bg/95 backdrop-blur-sm">
+    <header className="border-border-subtle bg-bg/95 sticky top-0 z-50 border-b backdrop-blur-sm">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary">
-              <span className="text-lg font-bold text-text-on-accent">
-                {t("brand.logoText")}
-              </span>
+            <div className="bg-primary flex h-10 w-10 items-center justify-center rounded-md">
+              <span className="text-text-on-accent text-lg font-bold">{t("brand.logoText")}</span>
             </div>
             <div className="flex flex-col">
-              <span className="text-lg leading-tight font-semibold text-text">
+              <span className="text-text text-lg leading-tight font-semibold">
                 {t("brand.name")}
               </span>
-              <span className="text-xs leading-tight text-text-muted">
-                {t("brand.tagline")}
-              </span>
+              <span className="text-text-muted text-xs leading-tight">{t("brand.tagline")}</span>
             </div>
           </Link>
 
           <nav className="hidden items-center lg:flex">
-            <div className="mr-6 flex items-center border-r border-border pr-6">
+            <div className="border-border mr-6 flex items-center border-r pr-6">
               {!isAdmin && (
                 <Link
                   href="/resources"
-                  className="px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:text-primary"
+                  className="text-text-secondary hover:text-primary px-4 py-2 text-sm font-medium transition-colors"
                 >
                   {t("navigation.resources")}
                 </Link>
@@ -72,7 +67,7 @@ export default function TopBar() {
               {isAdmin && (
                 <Link
                   href="/admin"
-                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:text-primary"
+                  className="text-text-secondary hover:text-primary flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors"
                 >
                   <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
@@ -87,29 +82,28 @@ export default function TopBar() {
               )}
               <Link
                 href="/about"
-                className="px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:text-primary"
+                className="text-text-secondary hover:text-primary px-4 py-2 text-sm font-medium transition-colors"
               >
                 {t("navigation.aboutUs")}
               </Link>
               <Link
                 href="/contact"
-                className="px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:text-primary"
+                className="text-text-secondary hover:text-primary px-4 py-2 text-sm font-medium transition-colors"
               >
                 {t("navigation.contact")}
               </Link>
             </div>
             <div className="flex items-center gap-3">
-              <LocaleSwitcher />
               {session ? (
                 <div className="relative" ref={userMenuRef}>
                   {/* User Avatar/Name Dropdown Trigger */}
                   <button
                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                    className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-primary"
+                    className="text-text-secondary hover:bg-surface hover:text-primary flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
                   >
                     {isAdmin ? (
                       <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[var(--ctp-mauve)] to-[var(--ctp-pink)]">
-                        <span className="text-sm font-bold text-text-on-accent">
+                        <span className="text-text-on-accent text-sm font-bold">
                           {(session.user?.name || "A").charAt(0).toUpperCase()}
                         </span>
                       </div>
@@ -117,8 +111,8 @@ export default function TopBar() {
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={session.user.image} alt="" className="h-8 w-8 rounded-full" />
                     ) : (
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary">
-                        <span className="text-sm font-bold text-text-on-accent">
+                      <div className="bg-primary flex h-8 w-8 items-center justify-center rounded-full">
+                        <span className="text-text-on-accent text-sm font-bold">
                           {(session.user?.name || "U").charAt(0).toUpperCase()}
                         </span>
                       </div>
@@ -143,12 +137,12 @@ export default function TopBar() {
 
                   {/* Dropdown Menu */}
                   {isUserMenuOpen && (
-                    <div className="absolute right-0 z-50 mt-2 w-48 rounded-lg border border-border bg-surface py-1 shadow-lg">
+                    <div className="border-border bg-surface absolute right-0 z-50 mt-2 w-48 rounded-lg border py-1 shadow-lg">
                       {!isAdmin && (
                         <Link
                           href="/account"
                           onClick={() => setIsUserMenuOpen(false)}
-                          className="flex items-center gap-2 px-4 py-2 text-sm text-text transition-colors hover:bg-bg"
+                          className="text-text hover:bg-bg flex items-center gap-2 px-4 py-2 text-sm transition-colors"
                         >
                           <svg
                             className="h-4 w-4"
@@ -166,13 +160,13 @@ export default function TopBar() {
                           {t("navigation.account")}
                         </Link>
                       )}
-                      <div className="my-1 border-t border-border"></div>
+                      <div className="border-border my-1 border-t"></div>
                       <button
                         onClick={() => {
                           setIsUserMenuOpen(false);
                           signOut();
                         }}
-                        className="flex w-full items-center gap-2 px-4 py-2 text-sm text-error transition-colors hover:bg-error/10"
+                        className="text-error hover:bg-error/10 flex w-full items-center gap-2 px-4 py-2 text-sm transition-colors"
                       >
                         <svg
                           className="h-4 w-4"
@@ -196,13 +190,13 @@ export default function TopBar() {
                 <>
                   <Link
                     href="/login"
-                    className="px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:text-primary"
+                    className="text-text-secondary hover:text-primary px-4 py-2 text-sm font-medium transition-colors"
                   >
                     {t("navigation.login")}
                   </Link>
                   <Link
                     href="/register"
-                    className="rounded-lg bg-primary px-5 py-2 text-sm font-medium text-text-on-accent transition-colors hover:bg-primary-hover"
+                    className="bg-primary text-text-on-accent hover:bg-primary-hover rounded-lg px-5 py-2 text-sm font-medium transition-colors"
                   >
                     {t("navigation.register")}
                   </Link>
@@ -213,7 +207,7 @@ export default function TopBar() {
 
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="p-2 text-text-secondary hover:text-primary lg:hidden"
+            className="text-text-secondary hover:text-primary p-2 lg:hidden"
             aria-label="Toggle navigation"
           >
             {isMobileMenuOpen ? (
@@ -239,12 +233,12 @@ export default function TopBar() {
         </div>
 
         {isMobileMenuOpen && (
-          <div className="border-t border-border py-4 lg:hidden">
+          <div className="border-border border-t py-4 lg:hidden">
             <nav className="flex flex-col space-y-2">
               {!isAdmin && (
                 <Link
                   href="/resources"
-                  className="px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:text-primary"
+                  className="text-text-secondary hover:text-primary px-4 py-2 text-sm font-medium transition-colors"
                 >
                   {t("navigation.resources")}
                 </Link>
@@ -252,7 +246,7 @@ export default function TopBar() {
               {isAdmin && (
                 <Link
                   href="/admin"
-                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:text-primary"
+                  className="text-text-secondary hover:text-primary flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors"
                 >
                   <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
@@ -267,33 +261,30 @@ export default function TopBar() {
               )}
               <Link
                 href="/about"
-                className="px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:text-primary"
+                className="text-text-secondary hover:text-primary px-4 py-2 text-sm font-medium transition-colors"
               >
                 {t("navigation.aboutUs")}
               </Link>
               <Link
                 href="/contact"
-                className="px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:text-primary"
+                className="text-text-secondary hover:text-primary px-4 py-2 text-sm font-medium transition-colors"
               >
                 {t("navigation.contact")}
               </Link>
-              <div className="mt-2 flex flex-col space-y-2 border-t border-border pt-4">
-                <div className="flex items-center gap-4 px-4 py-2">
-                  <LocaleSwitcher />
-                </div>
+              <div className="border-border mt-2 flex flex-col space-y-2 border-t pt-4">
                 {session ? (
                   <>
                     {!isAdmin && (
                       <Link
                         href="/account"
-                        className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:text-primary"
+                        className="text-text-secondary hover:text-primary flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors"
                       >
                         {session.user?.image ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img src={session.user.image} alt="" className="h-6 w-6 rounded-full" />
                         ) : (
-                          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary">
-                            <span className="text-xs font-bold text-text-on-accent">
+                          <div className="bg-primary flex h-6 w-6 items-center justify-center rounded-full">
+                            <span className="text-text-on-accent text-xs font-bold">
                               {(session.user?.name || "U").charAt(0).toUpperCase()}
                             </span>
                           </div>
@@ -302,9 +293,9 @@ export default function TopBar() {
                       </Link>
                     )}
                     {isAdmin && (
-                      <div className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-text-secondary">
+                      <div className="text-text-secondary flex items-center gap-2 px-4 py-2 text-sm font-medium">
                         <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-[var(--ctp-mauve)] to-[var(--ctp-pink)]">
-                          <span className="text-xs font-bold text-text-on-accent">
+                          <span className="text-text-on-accent text-xs font-bold">
                             {(session.user?.name || "A").charAt(0).toUpperCase()}
                           </span>
                         </div>
@@ -313,7 +304,7 @@ export default function TopBar() {
                     )}
                     <button
                       onClick={() => signOut()}
-                      className="px-4 py-2 text-left text-sm font-medium text-text-secondary transition-colors hover:text-primary"
+                      className="text-text-secondary hover:text-primary px-4 py-2 text-left text-sm font-medium transition-colors"
                     >
                       {t("navigation.logout")}
                     </button>
@@ -322,13 +313,13 @@ export default function TopBar() {
                   <>
                     <Link
                       href="/login"
-                      className="px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:text-primary"
+                      className="text-text-secondary hover:text-primary px-4 py-2 text-sm font-medium transition-colors"
                     >
                       {t("navigation.login")}
                     </Link>
                     <Link
                       href="/register"
-                      className="mx-4 rounded-lg bg-primary px-5 py-2 text-center text-sm font-medium text-text-on-accent transition-colors hover:bg-primary-hover"
+                      className="bg-primary text-text-on-accent hover:bg-primary-hover mx-4 rounded-lg px-5 py-2 text-center text-sm font-medium transition-colors"
                     >
                       {t("navigation.register")}
                     </Link>

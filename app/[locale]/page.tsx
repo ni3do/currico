@@ -8,7 +8,16 @@ import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { ResourceCard } from "@/components/ui/ResourceCard";
 import { SellerHeroSection } from "@/components/ui/SellerHeroSection";
-import { BadgeCheck, BookOpen, Zap, Clock, Shield } from "lucide-react";
+import {
+  BadgeCheck,
+  BookOpen,
+  Zap,
+  Clock,
+  Shield,
+  Sparkles,
+  MessageCircle,
+  Gift,
+} from "lucide-react";
 
 export default function Home() {
   const t = useTranslations("homePage");
@@ -370,59 +379,81 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Testimonials Section */}
+        {/* Pilot Teacher CTA Section */}
         <section className="bg-surface py-24">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="mb-12 text-center">
-              <h2 className="text-text text-2xl font-semibold">{t("testimonials.title")}</h2>
-              <p className="text-text-muted mt-2">{t("testimonials.description")}</p>
-            </div>
+            <div className="border-border-subtle bg-bg relative overflow-hidden rounded-2xl border p-8 md:p-12">
+              {/* Decorative gradient */}
+              <div className="absolute top-0 right-0 h-64 w-64 rounded-full bg-gradient-to-br from-[var(--ctp-mauve)]/10 to-[var(--ctp-blue)]/10 blur-3xl" />
 
-            <div className="grid gap-8 md:grid-cols-3">
-              {[
-                { key: "testimonial1", color: "var(--ctp-blue)" },
-                { key: "testimonial2", color: "var(--ctp-green)" },
-                { key: "testimonial3", color: "var(--ctp-mauve)" },
-              ].map((testimonial) => (
-                <div
-                  key={testimonial.key}
-                  className="border-border-subtle bg-bg relative rounded-xl border p-6"
-                >
-                  {/* Quote icon */}
-                  <svg
-                    className="absolute top-6 right-6 h-8 w-8 opacity-10"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                    style={{ color: testimonial.color }}
+              <div className="relative grid gap-8 lg:grid-cols-2 lg:gap-12">
+                {/* Left: Text content */}
+                <div>
+                  <span className="text-primary mb-4 inline-flex items-center gap-2 text-sm font-medium">
+                    <Sparkles className="h-4 w-4" />
+                    {t("pilotTeacher.note")}
+                  </span>
+                  <h2 className="text-text text-2xl font-bold md:text-3xl">
+                    {t("pilotTeacher.title")}
+                  </h2>
+                  <p className="text-text-muted mt-4 text-lg">{t("pilotTeacher.text")}</p>
+                  <Link
+                    href="/contact"
+                    className="bg-primary hover:bg-primary-hover text-text-on-accent mt-8 inline-flex items-center gap-2 rounded-lg px-6 py-3 font-semibold transition-colors"
                   >
-                    <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-                  </svg>
+                    {t("pilotTeacher.button")}
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </Link>
+                </div>
 
-                  {/* Quote text */}
-                  <p className="text-text-secondary mb-6 leading-relaxed">
-                    &ldquo;{t(`testimonials.${testimonial.key}.quote`)}&rdquo;
-                  </p>
-
-                  {/* Author */}
-                  <div className="flex items-center gap-3">
-                    <div
-                      className="flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold text-white"
-                      style={{ backgroundColor: testimonial.color }}
-                    >
-                      {t(`testimonials.${testimonial.key}.name`).charAt(0)}
+                {/* Right: Benefits */}
+                <div className="flex flex-col justify-center gap-6">
+                  <div className="flex items-start gap-4">
+                    <div className="bg-primary-light flex h-10 w-10 shrink-0 items-center justify-center rounded-lg">
+                      <Sparkles className="text-primary h-5 w-5" />
                     </div>
                     <div>
-                      <div className="text-text font-medium">
-                        {t(`testimonials.${testimonial.key}.name`)}
-                      </div>
-                      <div className="text-text-muted text-sm">
-                        {t(`testimonials.${testimonial.key}.role`)} ·{" "}
-                        {t(`testimonials.${testimonial.key}.location`)}
-                      </div>
+                      <h3 className="text-text font-semibold">
+                        {t("pilotTeacher.benefits.early")}
+                      </h3>
+                      <p className="text-text-muted mt-1 text-sm">
+                        Testen Sie neue Funktionen vor allen anderen.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-4">
+                    <div className="bg-accent-light flex h-10 w-10 shrink-0 items-center justify-center rounded-lg">
+                      <MessageCircle className="text-accent h-5 w-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-text font-semibold">
+                        {t("pilotTeacher.benefits.feedback")}
+                      </h3>
+                      <p className="text-text-muted mt-1 text-sm">
+                        Ihre Ideen fliessen direkt in die Entwicklung ein.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-4">
+                    <div className="bg-success-light flex h-10 w-10 shrink-0 items-center justify-center rounded-lg">
+                      <Gift className="text-success h-5 w-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-text font-semibold">{t("pilotTeacher.benefits.free")}</h3>
+                      <p className="text-text-muted mt-1 text-sm">
+                        Exklusive Materialien als Dankeschön.
+                      </p>
                     </div>
                   </div>
                 </div>
-              ))}
+              </div>
             </div>
           </div>
         </section>

@@ -5,7 +5,7 @@ import { Providers } from "./providers";
 import { DecorationBg } from "@/components/ui/DecorationBg";
 
 export const metadata: Metadata = {
-  title: "Easy Lehrer - Unterrichtsmaterial für Lehrpersonen",
+  title: "EasyLehrer - Unterrichtsmaterial für Lehrpersonen",
   description: "Entdecken Sie hochwertige Unterrichtsmaterialien für Schweizer Lehrpersonen",
 };
 

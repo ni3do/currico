@@ -17,7 +17,9 @@
       "account": "Mein Konto"
     },
     "footer": {
-      "copyright": "\u00a9 2026 EasyLehrer",
+      "copyright": "\u00a9 2025 EasyLehrer",
+      "madeIn": "Made in Switzerland",
+      "payment": "Zahlung mit TWINT & Karte",
       "links": {
         "help": "Hilfe",
         "imprint": "Impressum",
@@ -69,7 +71,7 @@
       "primaryButton": "Jetzt Material finden",
       "secondaryButton": "Mehr erfahren",
       "search": {
-        "placeholder": "Fach, Thema oder Stichwort suchen...",
+        "placeholder": "Was unterrichtest du heute? (z.B. Mathe 5. Klasse)",
         "allSubjects": "Alle Fächer",
         "math": "Mathematik",
         "german": "Deutsch",
@@ -157,27 +159,17 @@
       "button": "Jetzt verkaufen",
       "note": "Kostenlose Registrierung. Keine monatlichen Gebühren."
     },
-    "testimonials": {
-      "title": "Was Lehrpersonen sagen",
-      "description": "Vertraut von Pädagogen in der ganzen Schweiz",
-      "testimonial1": {
-        "quote": "EasyLehrer hat meine Unterrichtsvorbereitung verändert. Ich finde Qualitätsmaterialien in Minuten statt Stunden. Die Lehrplan 21 Filterung ist unglaublich hilfreich.",
-        "name": "Sarah M.",
-        "role": "Primarlehrerin",
-        "location": "Zürich"
+    "pilotTeacher": {
+      "title": "Werden Sie Pilot-Lehrperson",
+      "description": "Helfen Sie uns, EasyLehrer noch besser zu machen",
+      "text": "Wir suchen engagierte Lehrpersonen, die unsere Plattform testen und mitgestalten möchten. Als Pilot-Lehrperson erhalten Sie exklusiven Zugang zu neuen Funktionen und können direkt Einfluss auf die Entwicklung nehmen.",
+      "benefits": {
+        "early": "Frühzeitiger Zugang zu neuen Features",
+        "feedback": "Direkter Draht zum Entwicklerteam",
+        "free": "Kostenlose Premium-Materialien zum Testen"
       },
-      "testimonial2": {
-        "quote": "Als Verkäufer habe ich über CHF 2'000 verdient, indem ich Materialien geteilt habe, die ich bereits erstellt hatte. Es fühlt sich toll an, anderen zu helfen und dabei zu verdienen.",
-        "name": "Thomas K.",
-        "role": "Sekundarlehrer",
-        "location": "Bern"
-      },
-      "testimonial3": {
-        "quote": "Die Qualitätskontrolle zeigt sich wirklich. Jede Ressource, die ich gekauft habe, war professionell erstellt und am nächsten Tag einsatzbereit.",
-        "name": "Lisa W.",
-        "role": "Heilpädagogin",
-        "location": "Basel"
-      }
+      "button": "Jetzt bewerben",
+      "note": "Begrenzte Plätze verfügbar"
     }
   },
   "loginPage": {
@@ -585,7 +577,7 @@
     }
   },
   "metadata": {
-    "title": "Easy Lehrer - Unterrichtsmaterial für Lehrpersonen",
+    "title": "EasyLehrer - Unterrichtsmaterial für Lehrpersonen",
     "description": "Entdecken Sie hochwertige Unterrichtsmaterialien für Schweizer Lehrpersonen"
   },
   "sellerTerms": {
