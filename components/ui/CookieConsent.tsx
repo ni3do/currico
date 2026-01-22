@@ -4,7 +4,6 @@ import { useState, useEffect, useSyncExternalStore, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Cookie, X } from "lucide-react";
-import { useIsMounted } from "@/components/providers/ThemeProvider";
 import { motion, AnimatePresence } from "framer-motion";
 
 const COOKIE_CONSENT_KEY = "cookie-consent";
@@ -41,25 +40,36 @@ function setConsent(value: "accepted" | "declined") {
 
 export default function CookieConsent() {
   const t = useTranslations("cookieConsent");
-  const mounted = useIsMounted();
+  const mountedRef = useRef(false);
   const consentState = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   const [isVisible, setIsVisible] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Track mounted state via ref to avoid re-render
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
   // Show banner with delay when pending
   useEffect(() => {
-    if (!mounted) return;
+    if (consentState !== "pending") return;
+    if (isVisible) return;
 
-    if (consentState === "pending" && !isVisible) {
-      timerRef.current = setTimeout(() => setIsVisible(true), 500);
-    }
+    timerRef.current = setTimeout(() => {
+      if (mountedRef.current) {
+        setIsVisible(true);
+      }
+    }, 500);
 
     return () => {
       if (timerRef.current) {
         clearTimeout(timerRef.current);
       }
     };
-  }, [mounted, consentState, isVisible]);
+  }, [consentState, isVisible]);
 
   const handleAccept = () => {
     setConsent("accepted");
@@ -71,8 +81,8 @@ export default function CookieConsent() {
     setIsVisible(false);
   };
 
-  // Don't render on server
-  if (!mounted) {
+  // Don't render on server (check if window exists)
+  if (typeof window === "undefined") {
     return null;
   }
 
@@ -154,7 +164,7 @@ export default function CookieConsent() {
                 {/* Close button (declines) */}
                 <motion.button
                   onClick={handleDecline}
-                  className="text-text-muted hover:bg-bg-tertiary hover:text-text-primary absolute top-6 right-6 rounded-full p-1 transition-colors sm:relative sm:top-auto sm:right-auto"
+                  className="text-text-muted hover:bg-bg-tertiary hover:text-text-primary absolute top-4 right-4 rounded-full p-1 transition-colors sm:relative sm:top-auto sm:right-auto"
                   aria-label={t("close")}
                   whileHover={{ scale: 1.1, rotate: 90 }}
                   whileTap={{ scale: 0.9 }}

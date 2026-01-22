@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { SlidersHorizontal, ChevronDown, FileText, Users } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { ResourceCard } from "@/components/ui/ResourceCard";
@@ -274,7 +275,7 @@ export default function ResourcesPage() {
                   <span className="text-text font-semibold">{profilePagination.total}</span> Profile
                   gefunden
                 </p>
-                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
                   {profiles.map((profile) => (
                     <Link
                       key={profile.id}
@@ -388,11 +389,19 @@ export default function ResourcesPage() {
               </button>
 
               {/* Mobile Filters Panel */}
-              {mobileFiltersOpen && (
-                <div className="mt-4">
-                  <LP21FilterSidebar filters={filters} onFiltersChange={setFilters} />
-                </div>
-              )}
+              <AnimatePresence>
+                {mobileFiltersOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="mt-4 overflow-hidden"
+                  >
+                    <LP21FilterSidebar filters={filters} onFiltersChange={setFilters} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* Desktop Sidebar */}
@@ -486,7 +495,7 @@ export default function ResourcesPage() {
                   <p className="text-text-muted text-sm">{t("empty.description")}</p>
                 </div>
               ) : (
-                <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3">
                   {resources.map((resource) => (
                     <ResourceCard
                       key={resource.id}
