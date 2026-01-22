@@ -47,7 +47,7 @@ export default function Home() {
           <div className="hero-decoration hero-decoration-2" aria-hidden="true" />
           <div className="hero-decoration hero-decoration-3" aria-hidden="true" />
 
-          <div className="relative mx-auto w-full max-w-7xl px-6 py-12 sm:px-8 sm:py-16 lg:px-12 lg:py-20">
+          <div className="relative mx-auto w-full max-w-7xl px-6 pt-6 pb-12 sm:px-8 sm:pt-8 sm:pb-16 lg:px-12 lg:pt-10 lg:pb-20">
             <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
               {/* Left Side - Text Content (Mobile: order-1, Desktop: order-1) */}
               <div className="order-1 max-w-xl">
