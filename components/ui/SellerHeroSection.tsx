@@ -56,8 +56,8 @@ export function SellerHeroSection({ className = "" }: SellerHeroSectionProps) {
         <div className="mx-auto max-w-2xl text-center">
           {/* Premium Badge */}
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[var(--ctp-yellow)]/30 bg-[var(--ctp-yellow)]/10 px-4 py-1.5">
-            <Sparkles className="h-3.5 w-3.5 text-[var(--ctp-peach)]" />
-            <span className="text-xs font-semibold text-[var(--ctp-peach)]">
+            <Sparkles className="h-3.5 w-3.5 text-[var(--ctp-blue)]" />
+            <span className="text-xs font-semibold text-[var(--ctp-blue)]">
               70% Provision für Sie
             </span>
           </div>
