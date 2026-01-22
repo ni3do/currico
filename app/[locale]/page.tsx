@@ -91,16 +91,6 @@ export default function Home() {
                   </div>
                 </form>
 
-                {/* Secondary CTA */}
-                <div className="mt-6">
-                  <a
-                    href="#features"
-                    className="hero-cta-secondary inline-flex items-center justify-center"
-                  >
-                    {t("hero.secondaryButton")}
-                  </a>
-                </div>
-
                 {/* Trust indicators */}
                 <div className="text-text-muted mt-10 flex flex-wrap items-center gap-4 text-sm sm:gap-6">
                   <div className="flex items-center gap-2">
