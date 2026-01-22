@@ -1375,5 +1375,97 @@
       "impressum": "Legal Notice",
       "terms": "Terms and Conditions"
     }
+  },
+  "profile": {
+    "notFound": "Profile not found",
+    "notFoundDescription": "The profile you're looking for doesn't exist or has been removed.",
+    "loading": "Loading profile...",
+    "verifiedSeller": "Verified Seller",
+    "memberSince": "Member since",
+    "follow": "Follow",
+    "following": "Following",
+    "unfollow": "Unfollow",
+    "editProfile": "Edit Profile",
+    "stats": {
+      "resources": "Resources",
+      "followers": "Followers",
+      "following": "Following"
+    },
+    "tabs": {
+      "uploads": "All Uploads",
+      "collections": "Collections"
+    },
+    "bestUploads": "Best Uploads",
+    "noUploads": "No uploads yet",
+    "noUploadsOwn": "Upload your first resource!",
+    "noUploadsOther": "This user hasn't uploaded any resources yet.",
+    "noCollections": "No collections yet",
+    "noCollectionsOwn": "Create your first collection!",
+    "noCollectionsOther": "This user doesn't have any public collections.",
+    "loadMore": "Load more"
+  },
+  "collections": {
+    "title": "My Collections",
+    "description": "Organize your resources into collections",
+    "newCollection": "New Collection",
+    "noCollections": "No collections yet",
+    "createFirst": "Create first collection",
+    "selectCollection": "Select a collection",
+    "orCreateNew": "or create a new collection",
+    "noResources": "No resources in this collection yet",
+    "dragDropHint": "Drag and drop resources here or add them from the resources page.",
+    "toUploads": "Go to my uploads",
+    "reorderHint": "Drag resources to reorder them",
+    "viewPublic": "View public",
+    "form": {
+      "name": "Name",
+      "namePlaceholder": "e.g., Math Cycle 2",
+      "description": "Description",
+      "descriptionPlaceholder": "Optional description...",
+      "isPublic": "Visible on my public profile",
+      "save": "Save",
+      "create": "Create",
+      "cancel": "Cancel",
+      "saving": "Saving...",
+      "editCollection": "Edit Collection",
+      "newCollection": "New Collection"
+    },
+    "confirmDelete": "Are you sure you want to delete this collection?"
+  },
+  "following": {
+    "title": "Following",
+    "description": "Teachers and sellers you follow",
+    "followedProfiles": "Followed Profiles",
+    "noFollowing": "You're not following anyone yet",
+    "noFollowingDescription": "Discover interesting teachers and follow them to see their latest materials.",
+    "discoverProfiles": "Discover profiles",
+    "unfollow": "Unfollow",
+    "unfollowing": "Unfollowing...",
+    "followedSince": "Following since",
+    "stats": {
+      "title": "Statistics",
+      "followedProfiles": "Followed Profiles",
+      "availableResources": "Available Resources"
+    },
+    "discoverMore": {
+      "title": "Discover More",
+      "description": "Find more interesting teachers and their materials.",
+      "link": "Browse resources"
+    }
+  },
+  "search": {
+    "tabs": {
+      "resources": "Resources",
+      "profiles": "Profiles"
+    },
+    "profiles": {
+      "placeholder": "Search for teachers...",
+      "loading": "Loading profiles...",
+      "noResults": "No profiles found",
+      "noResultsWithQuery": "Try different search terms",
+      "noResultsEmpty": "Enter a search term to find profiles",
+      "found": "profiles found",
+      "seller": "Seller"
+    }
   }
 }

@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { motion } from "framer-motion";
 
 export default function Footer() {
   const tCommon = useTranslations("common");
@@ -43,30 +44,38 @@ export default function Footer() {
           {/* Bottom row: Links */}
           <div className="border-border flex flex-col items-center gap-3 border-t pt-4 sm:flex-row sm:justify-center">
             <nav className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
-              <Link
-                href="/faq"
-                className="text-text-muted hover:text-primary text-sm transition-colors"
-              >
-                {tCommon("footer.links.help")}
-              </Link>
-              <Link
-                href="/impressum"
-                className="text-text-muted hover:text-primary text-sm transition-colors"
-              >
-                {tCommon("footer.links.imprint")}
-              </Link>
-              <Link
-                href="/privacy"
-                className="text-text-muted hover:text-primary text-sm transition-colors"
-              >
-                {tCommon("footer.links.privacy")}
-              </Link>
-              <Link
-                href="/terms"
-                className="text-text-muted hover:text-primary text-sm transition-colors"
-              >
-                {tCommon("footer.links.terms")}
-              </Link>
+              <motion.div whileHover={{ y: -2 }} transition={{ duration: 0.15 }}>
+                <Link
+                  href="/faq"
+                  className="text-text-muted hover:text-primary text-sm transition-colors"
+                >
+                  {tCommon("footer.links.help")}
+                </Link>
+              </motion.div>
+              <motion.div whileHover={{ y: -2 }} transition={{ duration: 0.15 }}>
+                <Link
+                  href="/impressum"
+                  className="text-text-muted hover:text-primary text-sm transition-colors"
+                >
+                  {tCommon("footer.links.imprint")}
+                </Link>
+              </motion.div>
+              <motion.div whileHover={{ y: -2 }} transition={{ duration: 0.15 }}>
+                <Link
+                  href="/privacy"
+                  className="text-text-muted hover:text-primary text-sm transition-colors"
+                >
+                  {tCommon("footer.links.privacy")}
+                </Link>
+              </motion.div>
+              <motion.div whileHover={{ y: -2 }} transition={{ duration: 0.15 }}>
+                <Link
+                  href="/terms"
+                  className="text-text-muted hover:text-primary text-sm transition-colors"
+                >
+                  {tCommon("footer.links.terms")}
+                </Link>
+              </motion.div>
             </nav>
           </div>
         </div>

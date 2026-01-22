@@ -1367,5 +1367,97 @@
       "impressum": "Impressum",
       "terms": "Allgemeine Geschäftsbedingungen"
     }
+  },
+  "profile": {
+    "notFound": "Profil nicht gefunden",
+    "notFoundDescription": "Das gesuchte Profil existiert nicht oder wurde entfernt.",
+    "loading": "Profil wird geladen...",
+    "verifiedSeller": "Verifizierter Verkäufer",
+    "memberSince": "Mitglied seit",
+    "follow": "Folgen",
+    "following": "Gefolgt",
+    "unfollow": "Entfolgen",
+    "editProfile": "Profil bearbeiten",
+    "stats": {
+      "resources": "Ressourcen",
+      "followers": "Follower",
+      "following": "Folgt"
+    },
+    "tabs": {
+      "uploads": "Alle Uploads",
+      "collections": "Sammlungen"
+    },
+    "bestUploads": "Beste Uploads",
+    "noUploads": "Noch keine Uploads vorhanden",
+    "noUploadsOwn": "Laden Sie Ihre erste Ressource hoch!",
+    "noUploadsOther": "Dieser Benutzer hat noch keine Ressourcen hochgeladen.",
+    "noCollections": "Noch keine Sammlungen vorhanden",
+    "noCollectionsOwn": "Erstellen Sie Ihre erste Sammlung!",
+    "noCollectionsOther": "Dieser Benutzer hat noch keine öffentlichen Sammlungen.",
+    "loadMore": "Mehr laden"
+  },
+  "collections": {
+    "title": "Meine Sammlungen",
+    "description": "Organisieren Sie Ihre Ressourcen in Sammlungen",
+    "newCollection": "Neue Sammlung",
+    "noCollections": "Noch keine Sammlungen",
+    "createFirst": "Erste Sammlung erstellen",
+    "selectCollection": "Wählen Sie eine Sammlung aus",
+    "orCreateNew": "oder erstellen Sie eine neue Sammlung",
+    "noResources": "Noch keine Ressourcen in dieser Sammlung",
+    "dragDropHint": "Ziehen Sie Ressourcen per Drag & Drop hierher oder fügen Sie sie über die Ressourcen-Seite hinzu.",
+    "toUploads": "Zu meinen Uploads",
+    "reorderHint": "Ziehen Sie Ressourcen, um die Reihenfolge zu ändern",
+    "viewPublic": "Öffentlich ansehen",
+    "form": {
+      "name": "Name",
+      "namePlaceholder": "z.B. Mathematik Zyklus 2",
+      "description": "Beschreibung",
+      "descriptionPlaceholder": "Optionale Beschreibung...",
+      "isPublic": "Öffentlich sichtbar auf meinem Profil",
+      "save": "Speichern",
+      "create": "Erstellen",
+      "cancel": "Abbrechen",
+      "saving": "Speichern...",
+      "editCollection": "Sammlung bearbeiten",
+      "newCollection": "Neue Sammlung"
+    },
+    "confirmDelete": "Sind Sie sicher, dass Sie diese Sammlung löschen möchten?"
+  },
+  "following": {
+    "title": "Folge ich",
+    "description": "Lehrpersonen und Verkäufer, denen Sie folgen",
+    "followedProfiles": "Gefolgte Profile",
+    "noFollowing": "Sie folgen noch niemandem",
+    "noFollowingDescription": "Entdecken Sie interessante Lehrpersonen und folgen Sie ihnen, um ihre neuesten Materialien zu sehen.",
+    "discoverProfiles": "Profile entdecken",
+    "unfollow": "Entfolgen",
+    "unfollowing": "Entfolgen...",
+    "followedSince": "Gefolgt seit",
+    "stats": {
+      "title": "Statistiken",
+      "followedProfiles": "Gefolgte Profile",
+      "availableResources": "Verfügbare Ressourcen"
+    },
+    "discoverMore": {
+      "title": "Mehr entdecken",
+      "description": "Finden Sie weitere interessante Lehrpersonen und deren Materialien.",
+      "link": "Ressourcen durchsuchen"
+    }
+  },
+  "search": {
+    "tabs": {
+      "resources": "Ressourcen",
+      "profiles": "Profile"
+    },
+    "profiles": {
+      "placeholder": "Nach Lehrpersonen suchen...",
+      "loading": "Profile werden geladen...",
+      "noResults": "Keine Profile gefunden",
+      "noResultsWithQuery": "Versuchen Sie es mit anderen Suchbegriffen",
+      "noResultsEmpty": "Geben Sie einen Suchbegriff ein, um Profile zu finden",
+      "found": "Profile gefunden",
+      "seller": "Verkäufer"
+    }
   }
 }

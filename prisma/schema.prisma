@@ -132,6 +132,9 @@ model User {
   // Bundle relations
   bundles Bundle[]
 
+  // Collection relations
+  collections Collection[]
+
   @@map("users")
 }
 
@@ -197,6 +200,9 @@ model Resource {
 
   // Bundle relations
   bundleResources BundleResource[]
+
+  // Collection relations
+  collectionItems CollectionItem[]
 
   @@map("resources")
 }
@@ -538,6 +544,41 @@ model Follow {
 
   @@unique([follower_id, followed_id])
   @@map("follows")
+}
+
+// ============================================================
+// COLLECTION MODEL - User-created resource collections/folders
+// ============================================================
+
+model Collection {
+  id          String   @id @default(cuid())
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  name        String
+  description String?  @db.Text
+  is_public   Boolean  @default(true) // Visible on public profile
+  position    Int      @default(0) // For ordering collections
+
+  owner_id String
+  owner    User   @relation(fields: [owner_id], references: [id], onDelete: Cascade)
+
+  items CollectionItem[]
+
+  @@map("collections")
+}
+
+model CollectionItem {
+  id         String   @id @default(cuid())
+  created_at DateTime @default(now())
+  position   Int      @default(0) // For ordering items within collection
+
+  collection_id String
+  collection    Collection @relation(fields: [collection_id], references: [id], onDelete: Cascade)
+  resource_id   String
+  resource      Resource   @relation(fields: [resource_id], references: [id], onDelete: Cascade)
+
+  @@unique([collection_id, resource_id])
+  @@map("collection_items")
 }
 
 // ============================================================

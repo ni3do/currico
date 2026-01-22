@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { signOut, useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function TopBar() {
   const t = useTranslations("common");
@@ -136,13 +137,44 @@ export default function TopBar() {
                   </button>
 
                   {/* Dropdown Menu */}
-                  {isUserMenuOpen && (
-                    <div className="border-border bg-surface absolute right-0 z-50 mt-2 w-48 rounded-lg border py-1 shadow-lg">
-                      {!isAdmin && (
-                        <Link
-                          href="/account"
-                          onClick={() => setIsUserMenuOpen(false)}
-                          className="text-text hover:bg-bg flex items-center gap-2 px-4 py-2 text-sm transition-colors"
+                  <AnimatePresence>
+                    {isUserMenuOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                        transition={{ duration: 0.15, ease: "easeOut" }}
+                        className="border-border bg-surface absolute right-0 z-50 mt-2 w-48 origin-top-right rounded-lg border py-1 shadow-lg"
+                      >
+                        {!isAdmin && (
+                          <Link
+                            href="/account"
+                            onClick={() => setIsUserMenuOpen(false)}
+                            className="text-text hover:bg-bg flex items-center gap-2 px-4 py-2 text-sm transition-colors"
+                          >
+                            <svg
+                              className="h-4 w-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                              />
+                            </svg>
+                            {t("navigation.account")}
+                          </Link>
+                        )}
+                        <div className="border-border my-1 border-t"></div>
+                        <button
+                          onClick={() => {
+                            setIsUserMenuOpen(false);
+                            signOut();
+                          }}
+                          className="text-error hover:bg-error/10 flex w-full items-center gap-2 px-4 py-2 text-sm transition-colors"
                         >
                           <svg
                             className="h-4 w-4"
@@ -154,37 +186,14 @@ export default function TopBar() {
                               strokeLinecap="round"
                               strokeLinejoin="round"
                               strokeWidth={2}
-                              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                             />
                           </svg>
-                          {t("navigation.account")}
-                        </Link>
-                      )}
-                      <div className="border-border my-1 border-t"></div>
-                      <button
-                        onClick={() => {
-                          setIsUserMenuOpen(false);
-                          signOut();
-                        }}
-                        className="text-error hover:bg-error/10 flex w-full items-center gap-2 px-4 py-2 text-sm transition-colors"
-                      >
-                        <svg
-                          className="h-4 w-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                          />
-                        </svg>
-                        {t("navigation.logout")}
-                      </button>
-                    </div>
-                  )}
+                          {t("navigation.logout")}
+                        </button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               ) : (
                 <>
@@ -232,103 +241,145 @@ export default function TopBar() {
           </button>
         </div>
 
-        {isMobileMenuOpen && (
-          <div className="border-border border-t py-4 lg:hidden">
-            <nav className="flex flex-col space-y-2">
-              {!isAdmin && (
-                <Link
-                  href="/resources"
-                  className="text-text-secondary hover:text-primary px-4 py-2 text-sm font-medium transition-colors"
-                >
-                  {t("navigation.resources")}
-                </Link>
-              )}
-              {isAdmin && (
-                <Link
-                  href="/admin"
-                  className="text-text-secondary hover:text-primary flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors"
-                >
-                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                    />
-                  </svg>
-                  Admin Panel
-                </Link>
-              )}
-              <Link
-                href="/about"
-                className="text-text-secondary hover:text-primary px-4 py-2 text-sm font-medium transition-colors"
-              >
-                {t("navigation.aboutUs")}
-              </Link>
-              <Link
-                href="/contact"
-                className="text-text-secondary hover:text-primary px-4 py-2 text-sm font-medium transition-colors"
-              >
-                {t("navigation.contact")}
-              </Link>
-              <div className="border-border mt-2 flex flex-col space-y-2 border-t pt-4">
-                {session ? (
-                  <>
-                    {!isAdmin && (
-                      <Link
-                        href="/account"
-                        className="text-text-secondary hover:text-primary flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors"
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+              className="border-border overflow-hidden border-t lg:hidden"
+            >
+              <nav className="flex flex-col space-y-2 py-4">
+                {!isAdmin && (
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.05 }}
+                  >
+                    <Link
+                      href="/resources"
+                      className="text-text-secondary hover:text-primary block px-4 py-2 text-sm font-medium transition-colors"
+                    >
+                      {t("navigation.resources")}
+                    </Link>
+                  </motion.div>
+                )}
+                {isAdmin && (
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.05 }}
+                  >
+                    <Link
+                      href="/admin"
+                      className="text-text-secondary hover:text-primary flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors"
+                    >
+                      <svg
+                        className="h-4 w-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
                       >
-                        {session.user?.image ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img src={session.user.image} alt="" className="h-6 w-6 rounded-full" />
-                        ) : (
-                          <div className="bg-primary flex h-6 w-6 items-center justify-center rounded-full">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                        />
+                      </svg>
+                      Admin Panel
+                    </Link>
+                  </motion.div>
+                )}
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.1 }}
+                >
+                  <Link
+                    href="/about"
+                    className="text-text-secondary hover:text-primary block px-4 py-2 text-sm font-medium transition-colors"
+                  >
+                    {t("navigation.aboutUs")}
+                  </Link>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.15 }}
+                >
+                  <Link
+                    href="/contact"
+                    className="text-text-secondary hover:text-primary block px-4 py-2 text-sm font-medium transition-colors"
+                  >
+                    {t("navigation.contact")}
+                  </Link>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="border-border mt-2 flex flex-col space-y-2 border-t pt-4"
+                >
+                  {session ? (
+                    <>
+                      {!isAdmin && (
+                        <Link
+                          href="/account"
+                          className="text-text-secondary hover:text-primary flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors"
+                        >
+                          {session.user?.image ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={session.user.image} alt="" className="h-6 w-6 rounded-full" />
+                          ) : (
+                            <div className="bg-primary flex h-6 w-6 items-center justify-center rounded-full">
+                              <span className="text-text-on-accent text-xs font-bold">
+                                {(session.user?.name || "U").charAt(0).toUpperCase()}
+                              </span>
+                            </div>
+                          )}
+                          {t("navigation.account")}
+                        </Link>
+                      )}
+                      {isAdmin && (
+                        <div className="text-text-secondary flex items-center gap-2 px-4 py-2 text-sm font-medium">
+                          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-[var(--ctp-mauve)] to-[var(--ctp-pink)]">
                             <span className="text-text-on-accent text-xs font-bold">
-                              {(session.user?.name || "U").charAt(0).toUpperCase()}
+                              {(session.user?.name || "A").charAt(0).toUpperCase()}
                             </span>
                           </div>
-                        )}
-                        {t("navigation.account")}
-                      </Link>
-                    )}
-                    {isAdmin && (
-                      <div className="text-text-secondary flex items-center gap-2 px-4 py-2 text-sm font-medium">
-                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-[var(--ctp-mauve)] to-[var(--ctp-pink)]">
-                          <span className="text-text-on-accent text-xs font-bold">
-                            {(session.user?.name || "A").charAt(0).toUpperCase()}
-                          </span>
+                          <span className="text-[var(--ctp-mauve)]">Admin</span>
                         </div>
-                        <span className="text-[var(--ctp-mauve)]">Admin</span>
-                      </div>
-                    )}
-                    <button
-                      onClick={() => signOut()}
-                      className="text-text-secondary hover:text-primary px-4 py-2 text-left text-sm font-medium transition-colors"
-                    >
-                      {t("navigation.logout")}
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <Link
-                      href="/login"
-                      className="text-text-secondary hover:text-primary px-4 py-2 text-sm font-medium transition-colors"
-                    >
-                      {t("navigation.login")}
-                    </Link>
-                    <Link
-                      href="/register"
-                      className="bg-primary text-text-on-accent hover:bg-primary-hover mx-4 rounded-lg px-5 py-2 text-center text-sm font-medium transition-colors"
-                    >
-                      {t("navigation.register")}
-                    </Link>
-                  </>
-                )}
-              </div>
-            </nav>
-          </div>
-        )}
+                      )}
+                      <button
+                        onClick={() => signOut()}
+                        className="text-text-secondary hover:text-primary px-4 py-2 text-left text-sm font-medium transition-colors"
+                      >
+                        {t("navigation.logout")}
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Link
+                        href="/login"
+                        className="text-text-secondary hover:text-primary px-4 py-2 text-sm font-medium transition-colors"
+                      >
+                        {t("navigation.login")}
+                      </Link>
+                      <Link
+                        href="/register"
+                        className="bg-primary text-text-on-accent hover:bg-primary-hover mx-4 rounded-lg px-5 py-2 text-center text-sm font-medium transition-colors"
+                      >
+                        {t("navigation.register")}
+                      </Link>
+                    </>
+                  )}
+                </motion.div>
+              </nav>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </header>
   );

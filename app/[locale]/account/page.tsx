@@ -15,6 +15,7 @@ import { StripeConnectStatus } from "@/components/account/StripeConnectStatus";
 import { AccountSidebar } from "@/components/account/AccountSidebar";
 import { MultiSelect } from "@/components/ui/MultiSelect";
 import { SWISS_SUBJECTS, SWISS_CYCLES, SWISS_CANTONS } from "@/lib/validations/user";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface LibraryItem {
   id: string;
@@ -630,11 +631,6 @@ export default function AccountPage() {
                 <AccountSidebar
                   userData={displayData}
                   stats={displayStats}
-                  sellerStats={{
-                    ...sellerStats,
-                    pendingResources: pendingResourcesCount,
-                    stripeConnected: true,
-                  }}
                   followedSellers={followedSellers}
                   activeTab={activeTab}
                   onTabChange={(tab) => {
@@ -652,11 +648,6 @@ export default function AccountPage() {
               <AccountSidebar
                 userData={displayData}
                 stats={displayStats}
-                sellerStats={{
-                  ...sellerStats,
-                  pendingResources: pendingResourcesCount,
-                  stripeConnected: true,
-                }}
                 followedSellers={followedSellers}
                 activeTab={activeTab}
                 onTabChange={setActiveTab}
@@ -666,970 +657,1017 @@ export default function AccountPage() {
 
           {/* Main Content Area */}
           <div className="min-w-0 flex-1">
-            {/* Overview Tab */}
-            {activeTab === "overview" && (
-              <div className="space-y-6">
-                {/* Email Verification Banner */}
-                {userData && !userData.emailVerified && (
-                  <EmailVerificationBanner email={userData.email} />
-                )}
+            <AnimatePresence mode="wait">
+              {/* Overview Tab */}
+              {activeTab === "overview" && (
+                <motion.div
+                  key="overview"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <div className="space-y-6">
+                    {/* Email Verification Banner */}
+                    {userData && !userData.emailVerified && (
+                      <EmailVerificationBanner email={userData.email} />
+                    )}
 
-                {/* Stripe Connect Status */}
-                {userData && userData.emailVerified && (
-                  <StripeConnectStatus isSeller={userData.isSeller} />
-                )}
+                    {/* Stripe Connect Status */}
+                    {userData && userData.emailVerified && (
+                      <StripeConnectStatus isSeller={userData.isSeller} />
+                    )}
 
-                {/* KPI Metrics Row */}
-                <div className="grid gap-4 sm:grid-cols-3">
-                  {/* Einnahmen (Earnings) */}
-                  <div className="border-border bg-surface rounded-2xl border p-6">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <p className="text-text-muted text-sm font-medium">Einnahmen</p>
-                        <p className="text-text mt-2 text-3xl font-bold">
-                          {loading ? "-" : sellerStats.netEarnings}
-                        </p>
+                    {/* KPI Metrics Row */}
+                    <div className="grid gap-4 sm:grid-cols-3">
+                      {/* Einnahmen (Earnings) */}
+                      <div className="border-border bg-surface rounded-2xl border p-6">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <p className="text-text-muted text-sm font-medium">Einnahmen</p>
+                            <p className="text-text mt-2 text-3xl font-bold">
+                              {loading ? "-" : sellerStats.netEarnings}
+                            </p>
+                          </div>
+                          <div className="bg-success/10 flex h-12 w-12 items-center justify-center rounded-xl">
+                            <TrendingUp className="text-success h-6 w-6" />
+                          </div>
+                        </div>
                       </div>
-                      <div className="bg-success/10 flex h-12 w-12 items-center justify-center rounded-xl">
-                        <TrendingUp className="text-success h-6 w-6" />
+
+                      {/* Downloads */}
+                      <div className="border-border bg-surface rounded-2xl border p-6">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <p className="text-text-muted text-sm font-medium">Downloads</p>
+                            <p className="text-text mt-2 text-3xl font-bold">
+                              {loading ? "-" : sellerStats.totalDownloads}
+                            </p>
+                          </div>
+                          <div className="bg-primary/10 flex h-12 w-12 items-center justify-center rounded-xl">
+                            <Download className="text-primary h-6 w-6" />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Beiträge (Contributions) */}
+                      <div className="border-border bg-surface rounded-2xl border p-6">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <p className="text-text-muted text-sm font-medium">Beiträge</p>
+                            <p className="text-text mt-2 text-3xl font-bold">
+                              {loading ? "-" : sellerResources.length}
+                            </p>
+                          </div>
+                          <div className="bg-accent/10 flex h-12 w-12 items-center justify-center rounded-xl">
+                            <FileText className="text-accent h-6 w-6" />
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Downloads */}
-                  <div className="border-border bg-surface rounded-2xl border p-6">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <p className="text-text-muted text-sm font-medium">Downloads</p>
-                        <p className="text-text mt-2 text-3xl font-bold">
-                          {loading ? "-" : sellerStats.totalDownloads}
-                        </p>
-                      </div>
-                      <div className="bg-primary/10 flex h-12 w-12 items-center justify-center rounded-xl">
-                        <Download className="text-primary h-6 w-6" />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Beiträge (Contributions) */}
-                  <div className="border-border bg-surface rounded-2xl border p-6">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <p className="text-text-muted text-sm font-medium">Beiträge</p>
-                        <p className="text-text mt-2 text-3xl font-bold">
-                          {loading ? "-" : sellerResources.length}
-                        </p>
-                      </div>
-                      <div className="bg-accent/10 flex h-12 w-12 items-center justify-center rounded-xl">
-                        <FileText className="text-accent h-6 w-6" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Resources Table */}
-                <div className="border-border bg-surface overflow-hidden rounded-2xl border">
-                  <div className="border-border bg-bg-secondary flex items-center justify-between border-b p-4">
-                    <h2 className="text-text text-lg font-semibold">Meine Ressourcen</h2>
-                    <Link
-                      href="/upload"
-                      className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors"
-                    >
-                      <span>+</span>
-                      Neue Ressource
-                    </Link>
-                  </div>
-
-                  <div className="p-4">
-                    {loading ? (
-                      <div className="text-text-muted py-12 text-center">
-                        <div className="border-primary mx-auto mb-3 h-8 w-8 animate-spin rounded-full border-4 border-t-transparent"></div>
-                        Laden...
-                      </div>
-                    ) : sellerResources.length === 0 ? (
-                      <div className="py-12 text-center">
-                        <FileText className="text-text-faint mx-auto mb-4 h-16 w-16" />
-                        <h3 className="text-text mb-2 text-lg font-medium">
-                          Noch keine Ressourcen hochgeladen
-                        </h3>
-                        <p className="text-text-muted mb-4 text-sm">
-                          Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen.
-                        </p>
+                    {/* Resources Table */}
+                    <div className="border-border bg-surface overflow-hidden rounded-2xl border">
+                      <div className="border-border bg-bg-secondary flex items-center justify-between border-b p-4">
+                        <h2 className="text-text text-lg font-semibold">Meine Ressourcen</h2>
                         <Link
                           href="/upload"
-                          className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition-colors"
+                          className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors"
                         >
-                          Erste Ressource hochladen
+                          <span>+</span>
+                          Neue Ressource
                         </Link>
                       </div>
-                    ) : (
-                      <div className="overflow-x-auto">
-                        <table className="w-full">
-                          <thead>
-                            <tr className="text-text-muted text-left text-xs font-medium tracking-wider uppercase">
-                              <th className="pb-4">Titel</th>
-                              <th className="pb-4">Status</th>
-                              <th className="pb-4 text-right">Downloads</th>
-                              <th className="pb-4 text-right">Einnahmen</th>
-                              <th className="pb-4 text-right">Aktionen</th>
-                            </tr>
-                          </thead>
-                          <tbody className="divide-border divide-y">
-                            {sellerResources.map((resource) => (
-                              <tr key={resource.id} className="group hover:bg-bg transition-colors">
-                                <td className="py-4 pr-4">
-                                  <Link href={`/resources/${resource.id}`} className="block">
-                                    <div className="text-text group-hover:text-primary text-sm font-medium">
-                                      {resource.title}
-                                    </div>
-                                    <div className="text-text-muted mt-0.5 text-xs">
-                                      {resource.type}
-                                    </div>
-                                  </Link>
-                                </td>
-                                <td className="py-4 pr-4">
-                                  <span
-                                    className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${
-                                      resource.status === "Verified"
-                                        ? "bg-success/10 text-success"
-                                        : resource.status === "AI-Checked"
-                                          ? "bg-accent/10 text-accent"
-                                          : "bg-warning/10 text-warning"
-                                    }`}
-                                  >
-                                    {resource.status === "Verified"
-                                      ? "Verifiziert"
-                                      : resource.status === "AI-Checked"
-                                        ? "KI-Geprüft"
-                                        : "Ausstehend"}
-                                  </span>
-                                </td>
-                                <td className="text-text py-4 pr-4 text-right text-sm font-medium">
-                                  {resource.downloads}
-                                </td>
-                                <td className="text-success py-4 pr-4 text-right text-sm font-semibold">
-                                  {resource.netEarnings}
-                                </td>
-                                <td className="py-4 text-right">
-                                  <div
-                                    className="relative inline-block"
-                                    ref={openActionMenu === resource.id ? actionMenuRef : null}
-                                  >
-                                    <button
-                                      onClick={() =>
-                                        setOpenActionMenu(
-                                          openActionMenu === resource.id ? null : resource.id
-                                        )
-                                      }
-                                      className="text-text-muted hover:bg-surface-hover hover:text-text rounded-lg p-2 transition-colors"
-                                      aria-label="Aktionen"
-                                    >
-                                      <svg
-                                        className="h-5 w-5"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                      >
-                                        <path
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                          strokeWidth={2}
-                                          d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
-                                        />
-                                      </svg>
-                                    </button>
-                                    {openActionMenu === resource.id && (
-                                      <div className="border-border bg-surface absolute right-0 z-10 mt-1 w-40 rounded-xl border py-1.5 shadow-lg">
-                                        <Link
-                                          href={`/resources/${resource.id}`}
-                                          className="text-text hover:bg-bg flex items-center gap-2.5 px-4 py-2 text-sm transition-colors"
-                                          onClick={() => setOpenActionMenu(null)}
-                                        >
-                                          <ExternalLink className="h-4 w-4" />
-                                          Ansehen
-                                        </Link>
-                                        <Link
-                                          href={`/resources/${resource.id}/edit`}
-                                          className="text-text hover:bg-bg flex items-center gap-2.5 px-4 py-2 text-sm transition-colors"
-                                          onClick={() => setOpenActionMenu(null)}
-                                        >
-                                          <svg
-                                            className="h-4 w-4"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24"
-                                          >
-                                            <path
-                                              strokeLinecap="round"
-                                              strokeLinejoin="round"
-                                              strokeWidth={2}
-                                              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                                            />
-                                          </svg>
-                                          Bearbeiten
-                                        </Link>
-                                        <button
-                                          onClick={() => setOpenActionMenu(null)}
-                                          className="text-error hover:bg-error/10 flex w-full items-center gap-2.5 px-4 py-2 text-sm transition-colors"
-                                        >
-                                          <svg
-                                            className="h-4 w-4"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24"
-                                          >
-                                            <path
-                                              strokeLinecap="round"
-                                              strokeLinejoin="round"
-                                              strokeWidth={2}
-                                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                                            />
-                                          </svg>
-                                          Löschen
-                                        </button>
-                                      </div>
-                                    )}
-                                  </div>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    )}
-                  </div>
-                </div>
 
-                {/* Recent Downloads */}
-                <div className="border-border bg-surface rounded-2xl border">
-                  <div className="border-border flex items-center justify-between border-b p-4">
-                    <h2 className="text-text text-lg font-semibold">Letzte Downloads</h2>
-                    <button
-                      onClick={() => setActiveTab("library")}
-                      className="text-primary text-sm font-medium hover:underline"
-                    >
-                      Alle anzeigen
-                    </button>
+                      <div className="p-4">
+                        {loading ? (
+                          <div className="text-text-muted py-12 text-center">
+                            <div className="border-primary mx-auto mb-3 h-8 w-8 animate-spin rounded-full border-4 border-t-transparent"></div>
+                            Laden...
+                          </div>
+                        ) : sellerResources.length === 0 ? (
+                          <div className="py-12 text-center">
+                            <FileText className="text-text-faint mx-auto mb-4 h-16 w-16" />
+                            <h3 className="text-text mb-2 text-lg font-medium">
+                              Noch keine Ressourcen hochgeladen
+                            </h3>
+                            <p className="text-text-muted mb-4 text-sm">
+                              Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen.
+                            </p>
+                            <Link
+                              href="/upload"
+                              className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition-colors"
+                            >
+                              Erste Ressource hochladen
+                            </Link>
+                          </div>
+                        ) : (
+                          <div className="overflow-x-auto">
+                            <table className="w-full">
+                              <thead>
+                                <tr className="text-text-muted text-left text-xs font-medium tracking-wider uppercase">
+                                  <th className="pb-4">Titel</th>
+                                  <th className="pb-4">Status</th>
+                                  <th className="pb-4 text-right">Downloads</th>
+                                  <th className="pb-4 text-right">Einnahmen</th>
+                                  <th className="pb-4 text-right">Aktionen</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-border divide-y">
+                                {sellerResources.map((resource) => (
+                                  <tr
+                                    key={resource.id}
+                                    className="group hover:bg-bg transition-colors"
+                                  >
+                                    <td className="py-4 pr-4">
+                                      <Link href={`/resources/${resource.id}`} className="block">
+                                        <div className="text-text group-hover:text-primary text-sm font-medium">
+                                          {resource.title}
+                                        </div>
+                                        <div className="text-text-muted mt-0.5 text-xs">
+                                          {resource.type}
+                                        </div>
+                                      </Link>
+                                    </td>
+                                    <td className="py-4 pr-4">
+                                      <span
+                                        className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${
+                                          resource.status === "Verified"
+                                            ? "bg-success/10 text-success"
+                                            : resource.status === "AI-Checked"
+                                              ? "bg-accent/10 text-accent"
+                                              : "bg-warning/10 text-warning"
+                                        }`}
+                                      >
+                                        {resource.status === "Verified"
+                                          ? "Verifiziert"
+                                          : resource.status === "AI-Checked"
+                                            ? "KI-Geprüft"
+                                            : "Ausstehend"}
+                                      </span>
+                                    </td>
+                                    <td className="text-text py-4 pr-4 text-right text-sm font-medium">
+                                      {resource.downloads}
+                                    </td>
+                                    <td className="text-success py-4 pr-4 text-right text-sm font-semibold">
+                                      {resource.netEarnings}
+                                    </td>
+                                    <td className="py-4 text-right">
+                                      <div
+                                        className="relative inline-block"
+                                        ref={openActionMenu === resource.id ? actionMenuRef : null}
+                                      >
+                                        <button
+                                          onClick={() =>
+                                            setOpenActionMenu(
+                                              openActionMenu === resource.id ? null : resource.id
+                                            )
+                                          }
+                                          className="text-text-muted hover:bg-surface-hover hover:text-text rounded-lg p-2 transition-colors"
+                                          aria-label="Aktionen"
+                                        >
+                                          <svg
+                                            className="h-5 w-5"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                          >
+                                            <path
+                                              strokeLinecap="round"
+                                              strokeLinejoin="round"
+                                              strokeWidth={2}
+                                              d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
+                                            />
+                                          </svg>
+                                        </button>
+                                        {openActionMenu === resource.id && (
+                                          <div className="border-border bg-surface absolute right-0 z-10 mt-1 w-40 rounded-xl border py-1.5 shadow-lg">
+                                            <Link
+                                              href={`/resources/${resource.id}`}
+                                              className="text-text hover:bg-bg flex items-center gap-2.5 px-4 py-2 text-sm transition-colors"
+                                              onClick={() => setOpenActionMenu(null)}
+                                            >
+                                              <ExternalLink className="h-4 w-4" />
+                                              Ansehen
+                                            </Link>
+                                            <Link
+                                              href={`/resources/${resource.id}/edit`}
+                                              className="text-text hover:bg-bg flex items-center gap-2.5 px-4 py-2 text-sm transition-colors"
+                                              onClick={() => setOpenActionMenu(null)}
+                                            >
+                                              <svg
+                                                className="h-4 w-4"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                              >
+                                                <path
+                                                  strokeLinecap="round"
+                                                  strokeLinejoin="round"
+                                                  strokeWidth={2}
+                                                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                                />
+                                              </svg>
+                                              Bearbeiten
+                                            </Link>
+                                            <button
+                                              onClick={() => setOpenActionMenu(null)}
+                                              className="text-error hover:bg-error/10 flex w-full items-center gap-2.5 px-4 py-2 text-sm transition-colors"
+                                            >
+                                              <svg
+                                                className="h-4 w-4"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                              >
+                                                <path
+                                                  strokeLinecap="round"
+                                                  strokeLinejoin="round"
+                                                  strokeWidth={2}
+                                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                                />
+                                              </svg>
+                                              Löschen
+                                            </button>
+                                          </div>
+                                        )}
+                                      </div>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Recent Downloads */}
+                    <div className="border-border bg-surface rounded-2xl border">
+                      <div className="border-border flex items-center justify-between border-b p-4">
+                        <h2 className="text-text text-lg font-semibold">Letzte Downloads</h2>
+                        <button
+                          onClick={() => setActiveTab("library")}
+                          className="text-primary text-sm font-medium hover:underline"
+                        >
+                          Alle anzeigen
+                        </button>
+                      </div>
+                      <div className="p-4">
+                        {loading ? (
+                          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                            {[1, 2, 3].map((i) => (
+                              <div key={i} className="bg-bg animate-pulse rounded-xl p-4">
+                                <div className="bg-surface-hover mb-2 h-4 w-3/4 rounded"></div>
+                                <div className="bg-surface-hover h-3 w-1/2 rounded"></div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : libraryItems.length > 0 ? (
+                          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                            {libraryItems.slice(0, 6).map((item) => (
+                              <div
+                                key={item.id}
+                                className="group border-border bg-bg hover:border-primary flex items-center justify-between rounded-xl border p-4 transition-all hover:shadow-sm"
+                              >
+                                <div className="mr-3 min-w-0 flex-1">
+                                  <h3 className="text-text group-hover:text-primary truncate text-sm font-medium">
+                                    {item.title}
+                                  </h3>
+                                  <div className="mt-1 flex items-center gap-2">
+                                    <span
+                                      className={`pill text-xs ${getSubjectPillClass(item.subject)}`}
+                                    >
+                                      {item.subject}
+                                    </span>
+                                    <span className="text-text-muted text-xs">{item.cycle}</span>
+                                  </div>
+                                </div>
+                                <button
+                                  onClick={() => handleDownload(item.id)}
+                                  disabled={downloading === item.id}
+                                  className="text-primary hover:bg-primary/10 shrink-0 rounded-lg p-2 transition-colors disabled:opacity-50"
+                                  title="Herunterladen"
+                                >
+                                  <Download className="h-5 w-5" />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="py-8 text-center">
+                            <Download className="text-text-faint mx-auto mb-3 h-10 w-10" />
+                            <p className="text-text-muted mb-2 text-sm">Noch keine Ressourcen</p>
+                            <Link
+                              href="/resources"
+                              className="text-primary text-sm font-medium hover:underline"
+                            >
+                              Entdecken
+                            </Link>
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <div className="p-4">
+                </motion.div>
+              )}
+
+              {/* Library Tab - Acquired Resources Only */}
+              {activeTab === "library" && (
+                <motion.div
+                  key="library"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <div className="border-border bg-surface rounded-xl border p-6">
+                    <div className="mb-6 flex items-center justify-between">
+                      <div>
+                        <h2 className="text-text text-xl font-semibold">Erworbene Ressourcen</h2>
+                        <p className="text-text-muted mt-1 text-sm">
+                          Ressourcen, die Sie erworben haben
+                        </p>
+                      </div>
+                    </div>
+
                     {loading ? (
-                      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         {[1, 2, 3].map((i) => (
-                          <div key={i} className="bg-bg animate-pulse rounded-xl p-4">
-                            <div className="bg-surface-hover mb-2 h-4 w-3/4 rounded"></div>
-                            <div className="bg-surface-hover h-3 w-1/2 rounded"></div>
+                          <div
+                            key={i}
+                            className="border-border bg-bg animate-pulse rounded-lg border p-4"
+                          >
+                            <div className="bg-surface-hover mb-3 h-4 w-16 rounded"></div>
+                            <div className="bg-surface-hover mb-2 h-5 w-full rounded"></div>
+                            <div className="bg-surface-hover mb-4 h-4 w-24 rounded"></div>
+                            <div className="bg-surface-hover h-10 w-full rounded"></div>
                           </div>
                         ))}
                       </div>
                     ) : libraryItems.length > 0 ? (
-                      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                        {libraryItems.slice(0, 6).map((item) => (
+                      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                        {libraryItems.map((item) => (
                           <div
                             key={item.id}
-                            className="group border-border bg-bg hover:border-primary flex items-center justify-between rounded-xl border p-4 transition-all hover:shadow-sm"
+                            className="border-border bg-bg hover:border-primary rounded-lg border p-4 transition-colors"
                           >
-                            <div className="mr-3 min-w-0 flex-1">
-                              <h3 className="text-text group-hover:text-primary truncate text-sm font-medium">
-                                {item.title}
-                              </h3>
-                              <div className="mt-1 flex items-center gap-2">
-                                <span
-                                  className={`pill text-xs ${getSubjectPillClass(item.subject)}`}
-                                >
-                                  {item.subject}
-                                </span>
-                                <span className="text-text-muted text-xs">{item.cycle}</span>
-                              </div>
+                            <div className="mb-3 flex items-center justify-between">
+                              <span
+                                className={`pill text-xs ${item.type === "purchased" ? "pill-primary" : "pill-success"}`}
+                              >
+                                {item.type === "purchased" ? "Gekauft" : "Gratis"}
+                              </span>
+                              {item.verified && (
+                                <span className="pill pill-success text-xs">Verifiziert</span>
+                              )}
                             </div>
+                            <h3 className="text-text mb-1 font-semibold">{item.title}</h3>
+                            <div className="mb-2 flex items-center gap-2">
+                              <span className={`pill text-xs ${getSubjectPillClass(item.subject)}`}>
+                                {item.subject}
+                              </span>
+                              <span className="text-text-muted text-xs">{item.cycle}</span>
+                            </div>
+                            <p className="text-text-muted mb-4 text-xs">
+                              Von: {item.seller.displayName || "Unbekannt"}
+                            </p>
                             <button
                               onClick={() => handleDownload(item.id)}
                               disabled={downloading === item.id}
-                              className="text-primary hover:bg-primary/10 shrink-0 rounded-lg p-2 transition-colors disabled:opacity-50"
-                              title="Herunterladen"
+                              className="bg-primary text-text-on-accent hover:bg-primary-hover w-full rounded-md px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
                             >
-                              <Download className="h-5 w-5" />
+                              {downloading === item.id ? "Wird geladen..." : "Herunterladen"}
                             </button>
                           </div>
                         ))}
                       </div>
                     ) : (
-                      <div className="py-8 text-center">
-                        <Download className="text-text-faint mx-auto mb-3 h-10 w-10" />
-                        <p className="text-text-muted mb-2 text-sm">Noch keine Ressourcen</p>
+                      <div className="py-12 text-center">
+                        <Download className="text-text-faint mx-auto mb-4 h-16 w-16" />
+                        <h3 className="text-text mb-2 text-lg font-medium">
+                          Noch keine erworbenen Ressourcen
+                        </h3>
+                        <p className="text-text-muted mb-4">
+                          Entdecken Sie unsere Ressourcen und beginnen Sie Ihre Sammlung.
+                        </p>
                         <Link
                           href="/resources"
-                          className="text-primary text-sm font-medium hover:underline"
+                          className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
                         >
-                          Entdecken
+                          Ressourcen entdecken
                         </Link>
                       </div>
                     )}
                   </div>
-                </div>
-              </div>
-            )}
+                </motion.div>
+              )}
 
-            {/* Library Tab - Acquired Resources Only */}
-            {activeTab === "library" && (
-              <div className="border-border bg-surface rounded-xl border p-6">
-                <div className="mb-6 flex items-center justify-between">
-                  <div>
-                    <h2 className="text-text text-xl font-semibold">Erworbene Ressourcen</h2>
-                    <p className="text-text-muted mt-1 text-sm">
-                      Ressourcen, die Sie erworben haben
-                    </p>
-                  </div>
-                </div>
-
-                {loading ? (
-                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    {[1, 2, 3].map((i) => (
-                      <div
-                        key={i}
-                        className="border-border bg-bg animate-pulse rounded-lg border p-4"
-                      >
-                        <div className="bg-surface-hover mb-3 h-4 w-16 rounded"></div>
-                        <div className="bg-surface-hover mb-2 h-5 w-full rounded"></div>
-                        <div className="bg-surface-hover mb-4 h-4 w-24 rounded"></div>
-                        <div className="bg-surface-hover h-10 w-full rounded"></div>
-                      </div>
-                    ))}
-                  </div>
-                ) : libraryItems.length > 0 ? (
-                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    {libraryItems.map((item) => (
-                      <div
-                        key={item.id}
-                        className="border-border bg-bg hover:border-primary rounded-lg border p-4 transition-colors"
-                      >
-                        <div className="mb-3 flex items-center justify-between">
-                          <span
-                            className={`pill text-xs ${item.type === "purchased" ? "pill-primary" : "pill-success"}`}
-                          >
-                            {item.type === "purchased" ? "Gekauft" : "Gratis"}
-                          </span>
-                          {item.verified && (
-                            <span className="pill pill-success text-xs">Verifiziert</span>
-                          )}
-                        </div>
-                        <h3 className="text-text mb-1 font-semibold">{item.title}</h3>
-                        <div className="mb-2 flex items-center gap-2">
-                          <span className={`pill text-xs ${getSubjectPillClass(item.subject)}`}>
-                            {item.subject}
-                          </span>
-                          <span className="text-text-muted text-xs">{item.cycle}</span>
-                        </div>
-                        <p className="text-text-muted mb-4 text-xs">
-                          Von: {item.seller.displayName || "Unbekannt"}
+              {/* Uploads Tab */}
+              {activeTab === "uploads" && (
+                <motion.div
+                  key="uploads"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <div className="border-border bg-surface rounded-xl border p-6">
+                    <div className="mb-6 flex items-center justify-between">
+                      <div>
+                        <h2 className="text-text text-xl font-semibold">Meine Uploads</h2>
+                        <p className="text-text-muted mt-1 text-sm">
+                          Ressourcen, die Sie hochgeladen haben
                         </p>
-                        <button
-                          onClick={() => handleDownload(item.id)}
-                          disabled={downloading === item.id}
-                          className="bg-primary text-text-on-accent hover:bg-primary-hover w-full rounded-md px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
-                        >
-                          {downloading === item.id ? "Wird geladen..." : "Herunterladen"}
-                        </button>
                       </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="py-12 text-center">
-                    <Download className="text-text-faint mx-auto mb-4 h-16 w-16" />
-                    <h3 className="text-text mb-2 text-lg font-medium">
-                      Noch keine erworbenen Ressourcen
-                    </h3>
-                    <p className="text-text-muted mb-4">
-                      Entdecken Sie unsere Ressourcen und beginnen Sie Ihre Sammlung.
-                    </p>
-                    <Link
-                      href="/resources"
-                      className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
-                    >
-                      Ressourcen entdecken
-                    </Link>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Uploads Tab */}
-            {activeTab === "uploads" && (
-              <div className="border-border bg-surface rounded-xl border p-6">
-                <div className="mb-6 flex items-center justify-between">
-                  <div>
-                    <h2 className="text-text text-xl font-semibold">Meine Uploads</h2>
-                    <p className="text-text-muted mt-1 text-sm">
-                      Ressourcen, die Sie hochgeladen haben
-                    </p>
-                  </div>
-                  <Link
-                    href="/upload"
-                    className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors"
-                  >
-                    <span>+</span>
-                    Neue Ressource
-                  </Link>
-                </div>
-
-                {loading || uploadedLoading ? (
-                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    {[1, 2, 3].map((i) => (
-                      <div
-                        key={i}
-                        className="border-border bg-bg animate-pulse rounded-lg border p-4"
+                      <Link
+                        href="/upload"
+                        className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors"
                       >
-                        <div className="bg-surface-hover mb-3 h-4 w-16 rounded"></div>
-                        <div className="bg-surface-hover mb-2 h-5 w-full rounded"></div>
-                        <div className="bg-surface-hover mb-4 h-4 w-24 rounded"></div>
-                        <div className="bg-surface-hover h-10 w-full rounded"></div>
-                      </div>
-                    ))}
-                  </div>
-                ) : uploadedItems.length > 0 ? (
-                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    {uploadedItems.map((item) => (
-                      <div
-                        key={item.id}
-                        className="border-border bg-bg hover:border-primary rounded-lg border p-4 transition-colors"
-                      >
-                        <div className="mb-3 flex items-center justify-between">
-                          <span
-                            className={`pill text-xs ${
-                              item.status === "VERIFIED"
-                                ? "pill-success"
-                                : item.status === "PENDING"
-                                  ? "pill-warning"
-                                  : "pill-neutral"
-                            }`}
-                          >
-                            {item.status === "VERIFIED"
-                              ? "Verifiziert"
-                              : item.status === "PENDING"
-                                ? "Ausstehend"
-                                : item.status}
-                          </span>
-                          <span className="text-price text-sm font-semibold">
-                            {item.priceFormatted}
-                          </span>
-                        </div>
-                        <Link href={`/resources/${item.id}`}>
-                          <h3 className="text-text hover:text-primary mb-1 font-semibold">
-                            {item.title}
-                          </h3>
-                        </Link>
-                        <div className="mb-3 flex items-center gap-2">
-                          <span className={`pill text-xs ${getSubjectPillClass(item.subject)}`}>
-                            {item.subject}
-                          </span>
-                          <span className="text-text-muted text-xs">{item.cycle}</span>
-                        </div>
-                        <div className="text-text-muted mb-4 flex items-center justify-between text-xs">
-                          <span>{item.downloadCount} Downloads</span>
-                          <span>{item.purchaseCount} Verkäufe</span>
-                        </div>
-                        <Link
-                          href={`/resources/${item.id}`}
-                          className="bg-primary text-text-on-accent hover:bg-primary-hover block w-full rounded-md px-4 py-2 text-center text-sm font-medium transition-colors"
-                        >
-                          Ansehen
-                        </Link>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="py-12 text-center">
-                    <FileText className="text-text-faint mx-auto mb-4 h-16 w-16" />
-                    <h3 className="text-text mb-2 text-lg font-medium">
-                      Noch keine hochgeladenen Ressourcen
-                    </h3>
-                    <p className="text-text-muted mb-4">
-                      Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen.
-                    </p>
-                    <Link
-                      href="/upload"
-                      className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
-                    >
-                      Material hochladen
-                    </Link>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Wishlist Tab */}
-            {activeTab === "wishlist" && (
-              <div className="border-border bg-surface rounded-xl border p-6">
-                <div className="mb-6 flex items-center justify-between">
-                  <div>
-                    <h2 className="text-text text-xl font-semibold">Wunschliste</h2>
-                    <p className="text-text-muted mt-1 text-sm">
-                      Gespeicherte Ressourcen für später
-                    </p>
-                  </div>
-                </div>
-
-                {loading ? (
-                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    {[1, 2].map((i) => (
-                      <div
-                        key={i}
-                        className="border-border bg-bg animate-pulse rounded-lg border p-4"
-                      >
-                        <div className="bg-surface-hover mb-3 h-4 w-16 rounded"></div>
-                        <div className="bg-surface-hover mb-2 h-5 w-full rounded"></div>
-                        <div className="bg-surface-hover mb-4 h-4 w-24 rounded"></div>
-                        <div className="bg-surface-hover h-10 w-full rounded"></div>
-                      </div>
-                    ))}
-                  </div>
-                ) : wishlistItems.length > 0 ? (
-                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    {wishlistItems.map((item) => (
-                      <div
-                        key={item.id}
-                        className="border-border bg-bg hover:border-primary rounded-lg border p-4 transition-colors"
-                      >
-                        <div className="mb-3 flex items-center justify-between">
-                          <span className={`pill text-xs ${getSubjectPillClass(item.subject)}`}>
-                            {item.subject}
-                          </span>
-                          <button
-                            onClick={() => handleRemoveFromWishlist(item.id)}
-                            className="text-error hover:text-error/80"
-                          >
-                            <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                              <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                            </svg>
-                          </button>
-                        </div>
-                        <Link href={`/resources/${item.id}`}>
-                          <h3 className="text-text hover:text-primary mb-1 font-semibold">
-                            {item.title}
-                          </h3>
-                        </Link>
-                        <p className="text-text-muted mb-4 text-sm">{item.cycle}</p>
-                        <div className="flex items-center justify-between">
-                          <span
-                            className={`text-lg font-bold ${item.price === 0 ? "text-success" : "text-price"}`}
-                          >
-                            {item.priceFormatted}
-                          </span>
-                          <Link
-                            href={`/resources/${item.id}`}
-                            className="bg-primary text-text-on-accent hover:bg-primary-hover rounded-md px-4 py-2 text-sm font-medium transition-colors"
-                          >
-                            Ansehen
-                          </Link>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="py-12 text-center">
-                    <svg
-                      className="text-text-faint mx-auto mb-4 h-16 w-16"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                      />
-                    </svg>
-                    <h3 className="text-text mb-2 text-lg font-medium">
-                      Ihre Wunschliste ist leer
-                    </h3>
-                    <p className="text-text-muted mb-4">
-                      Speichern Sie interessante Ressourcen für später.
-                    </p>
-                    <Link
-                      href="/resources"
-                      className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
-                    >
-                      Ressourcen entdecken
-                    </Link>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Settings Tab */}
-            {activeTab === "settings" && (
-              <div className="space-y-6">
-                {/* User Profile Card */}
-                <div className="border-border bg-surface rounded-xl border p-6">
-                  <div className="flex items-center gap-4">
-                    {displayData.image ? (
-                      <Image
-                        src={displayData.image}
-                        alt={displayData.name || "Benutzer"}
-                        width={64}
-                        height={64}
-                        className="border-border h-16 w-16 rounded-full border-2 object-cover"
-                      />
-                    ) : (
-                      <div className="bg-primary flex h-16 w-16 items-center justify-center rounded-full">
-                        <span className="text-text-on-accent text-2xl font-bold">
-                          {(displayData.name || "B").charAt(0).toUpperCase()}
-                        </span>
-                      </div>
-                    )}
-                    <div className="min-w-0 flex-1">
-                      <h2 className="text-text truncate text-lg font-semibold">
-                        {displayData.name || "Benutzer"}
-                      </h2>
-                      <p className="text-text-muted truncate text-sm">{displayData.email}</p>
+                        <span>+</span>
+                        Neue Ressource
+                      </Link>
                     </div>
-                    {!isEditingProfile && (
-                      <button
-                        onClick={handleStartEditingProfile}
-                        className="border-border bg-bg text-text-secondary hover:border-primary hover:text-primary flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
-                      >
-                        Profil bearbeiten
-                      </button>
-                    )}
-                  </div>
-                </div>
 
-                {/* Settings Grid */}
-                <div className="grid gap-6 lg:grid-cols-2">
-                  {/* Left Column - Profile & Avatar */}
-                  <div className="space-y-6">
-                    {/* Profile Picture Settings */}
-                    <div className="border-border bg-surface rounded-xl border p-6">
-                      <h2 className="text-text mb-4 text-lg font-semibold">Profilbild</h2>
-                      <p className="text-text-muted mb-6 text-sm">
-                        Laden Sie ein Profilbild hoch oder entfernen Sie das aktuelle Bild
-                      </p>
-
-                      {avatarMessage && (
-                        <div
-                          className={`mb-4 rounded-lg border p-3 ${
-                            avatarMessage.type === "success"
-                              ? "border-success/50 bg-success/10 text-success"
-                              : "border-error/50 bg-error/10 text-error"
-                          }`}
-                        >
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm">{avatarMessage.text}</span>
+                    {loading || uploadedLoading ? (
+                      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                        {[1, 2, 3].map((i) => (
+                          <div
+                            key={i}
+                            className="border-border bg-bg animate-pulse rounded-lg border p-4"
+                          >
+                            <div className="bg-surface-hover mb-3 h-4 w-16 rounded"></div>
+                            <div className="bg-surface-hover mb-2 h-5 w-full rounded"></div>
+                            <div className="bg-surface-hover mb-4 h-4 w-24 rounded"></div>
+                            <div className="bg-surface-hover h-10 w-full rounded"></div>
                           </div>
-                        </div>
-                      )}
-
-                      <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
-                        <AvatarUploader
-                          currentAvatarUrl={avatarUrl}
-                          displayName={displayData.name || "Benutzer"}
-                          onUpload={handleAvatarUpload}
-                        />
-
-                        <div className="flex flex-col gap-2">
-                          <p className="text-text-secondary text-sm">
-                            Klicken Sie auf das Kamera-Symbol, um ein neues Bild hochzuladen.
-                          </p>
-                          {avatarUrl && (
-                            <button
-                              onClick={handleAvatarDelete}
-                              disabled={isDeletingAvatar}
-                              className="border-error/50 text-error hover:bg-error/10 inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
+                        ))}
+                      </div>
+                    ) : uploadedItems.length > 0 ? (
+                      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                        {uploadedItems.map((item) => (
+                          <div
+                            key={item.id}
+                            className="border-border bg-bg hover:border-primary rounded-lg border p-4 transition-colors"
+                          >
+                            <div className="mb-3 flex items-center justify-between">
+                              <span
+                                className={`pill text-xs ${
+                                  item.status === "VERIFIED"
+                                    ? "pill-success"
+                                    : item.status === "PENDING"
+                                      ? "pill-warning"
+                                      : "pill-neutral"
+                                }`}
+                              >
+                                {item.status === "VERIFIED"
+                                  ? "Verifiziert"
+                                  : item.status === "PENDING"
+                                    ? "Ausstehend"
+                                    : item.status}
+                              </span>
+                              <span className="text-price text-sm font-semibold">
+                                {item.priceFormatted}
+                              </span>
+                            </div>
+                            <Link href={`/resources/${item.id}`}>
+                              <h3 className="text-text hover:text-primary mb-1 font-semibold">
+                                {item.title}
+                              </h3>
+                            </Link>
+                            <div className="mb-3 flex items-center gap-2">
+                              <span className={`pill text-xs ${getSubjectPillClass(item.subject)}`}>
+                                {item.subject}
+                              </span>
+                              <span className="text-text-muted text-xs">{item.cycle}</span>
+                            </div>
+                            <div className="text-text-muted mb-4 flex items-center justify-between text-xs">
+                              <span>{item.downloadCount} Downloads</span>
+                              <span>{item.purchaseCount} Verkäufe</span>
+                            </div>
+                            <Link
+                              href={`/resources/${item.id}`}
+                              className="bg-primary text-text-on-accent hover:bg-primary-hover block w-full rounded-md px-4 py-2 text-center text-sm font-medium transition-colors"
                             >
-                              {isDeletingAvatar ? "Wird entfernt..." : "Profilbild entfernen"}
-                            </button>
-                          )}
-                        </div>
+                              Ansehen
+                            </Link>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="py-12 text-center">
+                        <FileText className="text-text-faint mx-auto mb-4 h-16 w-16" />
+                        <h3 className="text-text mb-2 text-lg font-medium">
+                          Noch keine hochgeladenen Ressourcen
+                        </h3>
+                        <p className="text-text-muted mb-4">
+                          Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen.
+                        </p>
+                        <Link
+                          href="/upload"
+                          className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
+                        >
+                          Material hochladen
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Wishlist Tab */}
+              {activeTab === "wishlist" && (
+                <motion.div
+                  key="wishlist"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <div className="border-border bg-surface rounded-xl border p-6">
+                    <div className="mb-6 flex items-center justify-between">
+                      <div>
+                        <h2 className="text-text text-xl font-semibold">Wunschliste</h2>
+                        <p className="text-text-muted mt-1 text-sm">
+                          Gespeicherte Ressourcen für später
+                        </p>
                       </div>
                     </div>
 
-                    {/* Profile Settings */}
+                    {loading ? (
+                      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                        {[1, 2].map((i) => (
+                          <div
+                            key={i}
+                            className="border-border bg-bg animate-pulse rounded-lg border p-4"
+                          >
+                            <div className="bg-surface-hover mb-3 h-4 w-16 rounded"></div>
+                            <div className="bg-surface-hover mb-2 h-5 w-full rounded"></div>
+                            <div className="bg-surface-hover mb-4 h-4 w-24 rounded"></div>
+                            <div className="bg-surface-hover h-10 w-full rounded"></div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : wishlistItems.length > 0 ? (
+                      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                        {wishlistItems.map((item) => (
+                          <div
+                            key={item.id}
+                            className="border-border bg-bg hover:border-primary rounded-lg border p-4 transition-colors"
+                          >
+                            <div className="mb-3 flex items-center justify-between">
+                              <span className={`pill text-xs ${getSubjectPillClass(item.subject)}`}>
+                                {item.subject}
+                              </span>
+                              <button
+                                onClick={() => handleRemoveFromWishlist(item.id)}
+                                className="text-error hover:text-error/80"
+                              >
+                                <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                                  <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                </svg>
+                              </button>
+                            </div>
+                            <Link href={`/resources/${item.id}`}>
+                              <h3 className="text-text hover:text-primary mb-1 font-semibold">
+                                {item.title}
+                              </h3>
+                            </Link>
+                            <p className="text-text-muted mb-4 text-sm">{item.cycle}</p>
+                            <div className="flex items-center justify-between">
+                              <span
+                                className={`text-lg font-bold ${item.price === 0 ? "text-success" : "text-price"}`}
+                              >
+                                {item.priceFormatted}
+                              </span>
+                              <Link
+                                href={`/resources/${item.id}`}
+                                className="bg-primary text-text-on-accent hover:bg-primary-hover rounded-md px-4 py-2 text-sm font-medium transition-colors"
+                              >
+                                Ansehen
+                              </Link>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="py-12 text-center">
+                        <svg
+                          className="text-text-faint mx-auto mb-4 h-16 w-16"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                          />
+                        </svg>
+                        <h3 className="text-text mb-2 text-lg font-medium">
+                          Ihre Wunschliste ist leer
+                        </h3>
+                        <p className="text-text-muted mb-4">
+                          Speichern Sie interessante Ressourcen für später.
+                        </p>
+                        <Link
+                          href="/resources"
+                          className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
+                        >
+                          Ressourcen entdecken
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Settings Tab */}
+              {activeTab === "settings" && (
+                <motion.div
+                  key="settings"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <div className="space-y-6">
+                    {/* User Profile Card */}
                     <div className="border-border bg-surface rounded-xl border p-6">
-                      <div className="mb-4 flex items-center justify-between">
-                        <h2 className="text-text text-lg font-semibold">Profil</h2>
+                      <div className="flex items-center gap-4">
+                        {displayData.image ? (
+                          <Image
+                            src={displayData.image}
+                            alt={displayData.name || "Benutzer"}
+                            width={64}
+                            height={64}
+                            className="border-border h-16 w-16 rounded-full border-2 object-cover"
+                          />
+                        ) : (
+                          <div className="bg-primary flex h-16 w-16 items-center justify-center rounded-full">
+                            <span className="text-text-on-accent text-2xl font-bold">
+                              {(displayData.name || "B").charAt(0).toUpperCase()}
+                            </span>
+                          </div>
+                        )}
+                        <div className="min-w-0 flex-1">
+                          <h2 className="text-text truncate text-lg font-semibold">
+                            {displayData.name || "Benutzer"}
+                          </h2>
+                          <p className="text-text-muted truncate text-sm">{displayData.email}</p>
+                        </div>
                         {!isEditingProfile && (
                           <button
                             onClick={handleStartEditingProfile}
-                            className="text-primary text-sm font-medium hover:underline"
+                            className="border-border bg-bg text-text-secondary hover:border-primary hover:text-primary flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
                           >
-                            Bearbeiten
+                            Profil bearbeiten
                           </button>
                         )}
                       </div>
+                    </div>
 
-                      {/* Success/Error Message */}
-                      {profileMessage && (
-                        <div
-                          className={`mb-4 rounded-lg border p-3 ${
-                            profileMessage.type === "success"
-                              ? "border-success/50 bg-success/10 text-success"
-                              : "border-error/50 bg-error/10 text-error"
-                          }`}
-                        >
-                          <span className="text-sm">{profileMessage.text}</span>
-                        </div>
-                      )}
+                    {/* Settings Grid */}
+                    <div className="grid gap-6 lg:grid-cols-2">
+                      {/* Left Column - Profile & Avatar */}
+                      <div className="space-y-6">
+                        {/* Profile Picture Settings */}
+                        <div className="border-border bg-surface rounded-xl border p-6">
+                          <h2 className="text-text mb-4 text-lg font-semibold">Profilbild</h2>
+                          <p className="text-text-muted mb-6 text-sm">
+                            Laden Sie ein Profilbild hoch oder entfernen Sie das aktuelle Bild
+                          </p>
 
-                      {isEditingProfile ? (
-                        /* Edit Mode */
-                        <div className="space-y-4">
-                          <div>
-                            <label className="text-text mb-1 block text-sm font-medium">
-                              Name <span className="text-error">*</span>
-                            </label>
-                            <input
-                              type="text"
-                              value={profileFormData.display_name}
-                              onChange={(e) =>
-                                handleProfileFieldChange("display_name", e.target.value)
-                              }
-                              placeholder="z.B. Frau M. oder Maria S."
-                              className={`border-border bg-bg text-text focus:ring-primary/20 w-full rounded-md border px-4 py-2 focus:ring-2 focus:outline-none ${
-                                profileErrors.display_name
-                                  ? "border-error focus:border-error"
-                                  : "focus:border-primary"
+                          {avatarMessage && (
+                            <div
+                              className={`mb-4 rounded-lg border p-3 ${
+                                avatarMessage.type === "success"
+                                  ? "border-success/50 bg-success/10 text-success"
+                                  : "border-error/50 bg-error/10 text-error"
                               }`}
+                            >
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm">{avatarMessage.text}</span>
+                              </div>
+                            </div>
+                          )}
+
+                          <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
+                            <AvatarUploader
+                              currentAvatarUrl={avatarUrl}
+                              displayName={displayData.name || "Benutzer"}
+                              onUpload={handleAvatarUpload}
                             />
-                            {profileErrors.display_name && (
-                              <p className="text-error mt-1 text-xs">
-                                {profileErrors.display_name}
+
+                            <div className="flex flex-col gap-2">
+                              <p className="text-text-secondary text-sm">
+                                Klicken Sie auf das Kamera-Symbol, um ein neues Bild hochzuladen.
                               </p>
+                              {avatarUrl && (
+                                <button
+                                  onClick={handleAvatarDelete}
+                                  disabled={isDeletingAvatar}
+                                  className="border-error/50 text-error hover:bg-error/10 inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
+                                >
+                                  {isDeletingAvatar ? "Wird entfernt..." : "Profilbild entfernen"}
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Profile Settings */}
+                        <div className="border-border bg-surface rounded-xl border p-6">
+                          <div className="mb-4 flex items-center justify-between">
+                            <h2 className="text-text text-lg font-semibold">Profil</h2>
+                            {!isEditingProfile && (
+                              <button
+                                onClick={handleStartEditingProfile}
+                                className="text-primary text-sm font-medium hover:underline"
+                              >
+                                Bearbeiten
+                              </button>
                             )}
                           </div>
 
-                          <div>
-                            <label className="text-text mb-1 block text-sm font-medium">
-                              E-Mail
+                          {/* Success/Error Message */}
+                          {profileMessage && (
+                            <div
+                              className={`mb-4 rounded-lg border p-3 ${
+                                profileMessage.type === "success"
+                                  ? "border-success/50 bg-success/10 text-success"
+                                  : "border-error/50 bg-error/10 text-error"
+                              }`}
+                            >
+                              <span className="text-sm">{profileMessage.text}</span>
+                            </div>
+                          )}
+
+                          {isEditingProfile ? (
+                            /* Edit Mode */
+                            <div className="space-y-4">
+                              <div>
+                                <label className="text-text mb-1 block text-sm font-medium">
+                                  Name <span className="text-error">*</span>
+                                </label>
+                                <input
+                                  type="text"
+                                  value={profileFormData.display_name}
+                                  onChange={(e) =>
+                                    handleProfileFieldChange("display_name", e.target.value)
+                                  }
+                                  placeholder="z.B. Frau M. oder Maria S."
+                                  className={`border-border bg-bg text-text focus:ring-primary/20 w-full rounded-md border px-4 py-2 focus:ring-2 focus:outline-none ${
+                                    profileErrors.display_name
+                                      ? "border-error focus:border-error"
+                                      : "focus:border-primary"
+                                  }`}
+                                />
+                                {profileErrors.display_name && (
+                                  <p className="text-error mt-1 text-xs">
+                                    {profileErrors.display_name}
+                                  </p>
+                                )}
+                              </div>
+
+                              <div>
+                                <label className="text-text mb-1 block text-sm font-medium">
+                                  E-Mail
+                                </label>
+                                <input
+                                  type="email"
+                                  value={displayData.email}
+                                  disabled
+                                  className="border-border bg-surface text-text-muted w-full cursor-not-allowed rounded-md border px-4 py-2"
+                                />
+                                <p className="text-text-muted mt-1 text-xs">
+                                  E-Mail kann nicht geändert werden.
+                                </p>
+                              </div>
+
+                              <MultiSelect
+                                label="Kantone"
+                                options={SWISS_CANTONS}
+                                selected={profileFormData.cantons}
+                                onChange={(value) => handleProfileFieldChange("cantons", value)}
+                                placeholder="Kantone auswählen (optional)..."
+                              />
+
+                              <MultiSelect
+                                label="Fächer"
+                                options={SWISS_SUBJECTS}
+                                selected={profileFormData.subjects}
+                                onChange={(value) => handleProfileFieldChange("subjects", value)}
+                                placeholder="Fächer auswählen..."
+                                required
+                                error={profileErrors.subjects}
+                              />
+
+                              <MultiSelect
+                                label="Zyklen"
+                                options={SWISS_CYCLES}
+                                selected={profileFormData.cycles}
+                                onChange={(value) => handleProfileFieldChange("cycles", value)}
+                                placeholder="Zyklen auswählen..."
+                                required
+                                error={profileErrors.cycles}
+                              />
+
+                              {/* Action Buttons */}
+                              <div className="flex justify-end gap-3 pt-2">
+                                <button
+                                  type="button"
+                                  onClick={handleCancelEditingProfile}
+                                  disabled={isSavingProfile}
+                                  className="border-border text-text-secondary hover:bg-surface-hover rounded-lg border px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
+                                >
+                                  Abbrechen
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={handleSaveProfile}
+                                  disabled={isSavingProfile}
+                                  className="bg-primary text-text-on-accent hover:bg-primary-hover rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
+                                >
+                                  {isSavingProfile ? (
+                                    <span className="flex items-center gap-2">
+                                      <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24">
+                                        <circle
+                                          className="opacity-25"
+                                          cx="12"
+                                          cy="12"
+                                          r="10"
+                                          stroke="currentColor"
+                                          strokeWidth="4"
+                                          fill="none"
+                                        />
+                                        <path
+                                          className="opacity-75"
+                                          fill="currentColor"
+                                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                        />
+                                      </svg>
+                                      Speichern...
+                                    </span>
+                                  ) : (
+                                    "Speichern"
+                                  )}
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            /* View Mode */
+                            <>
+                              <div className="space-y-4">
+                                <div>
+                                  <label className="text-text mb-1 block text-sm font-medium">
+                                    Name
+                                  </label>
+                                  <p className="text-text">{displayData.name || "-"}</p>
+                                </div>
+                                <div>
+                                  <label className="text-text mb-1 block text-sm font-medium">
+                                    E-Mail
+                                  </label>
+                                  <p className="text-text">{displayData.email}</p>
+                                  <p className="text-text-muted mt-1 text-xs">
+                                    E-Mail kann nicht geändert werden.
+                                  </p>
+                                </div>
+                              </div>
+
+                              {/* User Tags */}
+                              <div className="mt-6 grid gap-4 sm:grid-cols-3">
+                                <div>
+                                  <label className="text-text-muted text-xs font-medium tracking-wide uppercase">
+                                    Kanton
+                                  </label>
+                                  <p className="text-text mt-1">
+                                    {displayData.cantons && displayData.cantons.length > 0
+                                      ? displayData.cantons.join(", ")
+                                      : "-"}
+                                  </p>
+                                </div>
+                                <div>
+                                  <label className="text-text-muted text-xs font-medium tracking-wide uppercase">
+                                    Fächer
+                                  </label>
+                                  <div className="mt-1 flex flex-wrap gap-1">
+                                    {displayData.subjects && displayData.subjects.length > 0 ? (
+                                      <>
+                                        {displayData.subjects.slice(0, 3).map((subject) => (
+                                          <span
+                                            key={subject}
+                                            className={`pill text-xs ${getSubjectPillClass(subject)}`}
+                                          >
+                                            {subject}
+                                          </span>
+                                        ))}
+                                        {displayData.subjects.length > 3 && (
+                                          <span className="text-text-muted px-2 py-0.5 text-sm">
+                                            +{displayData.subjects.length - 3}
+                                          </span>
+                                        )}
+                                      </>
+                                    ) : (
+                                      <span className="text-text">-</span>
+                                    )}
+                                  </div>
+                                </div>
+                                <div>
+                                  <label className="text-text-muted text-xs font-medium tracking-wide uppercase">
+                                    Zyklen
+                                  </label>
+                                  <div className="mt-1 flex flex-wrap gap-1">
+                                    {displayData.cycles && displayData.cycles.length > 0 ? (
+                                      displayData.cycles.map((cycle) => (
+                                        <span key={cycle} className="pill pill-primary text-xs">
+                                          {cycle}
+                                        </span>
+                                      ))
+                                    ) : (
+                                      <span className="text-text">-</span>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Right Column - Preferences */}
+                      <div className="space-y-6">
+                        {/* Appearance Settings */}
+                        <div className="border-border bg-surface rounded-xl border p-6">
+                          <h2 className="text-text mb-4 text-lg font-semibold">Darstellung</h2>
+                          <p className="text-text-muted mb-4 text-sm">
+                            Wählen Sie Ihr bevorzugtes Farbschema
+                          </p>
+                          <ThemeSettings />
+                        </div>
+
+                        {/* Notification Settings */}
+                        <div className="border-border bg-surface rounded-xl border p-6">
+                          <h2 className="text-text mb-4 text-lg font-semibold">
+                            Benachrichtigungen
+                          </h2>
+                          <div className="space-y-4">
+                            <label className="flex items-center justify-between">
+                              <div>
+                                <span className="text-text font-medium">Neue Ressourcen</span>
+                                <p className="text-text-muted text-sm">
+                                  Benachrichtigungen über neue Materialien von gefolgten Verkäufern
+                                </p>
+                              </div>
+                              <input
+                                type="checkbox"
+                                defaultChecked
+                                className="text-primary h-5 w-5 rounded"
+                              />
                             </label>
-                            <input
-                              type="email"
-                              value={displayData.email}
-                              disabled
-                              className="border-border bg-surface text-text-muted w-full cursor-not-allowed rounded-md border px-4 py-2"
-                            />
-                            <p className="text-text-muted mt-1 text-xs">
-                              E-Mail kann nicht geändert werden.
-                            </p>
-                          </div>
-
-                          <MultiSelect
-                            label="Kantone"
-                            options={SWISS_CANTONS}
-                            selected={profileFormData.cantons}
-                            onChange={(value) => handleProfileFieldChange("cantons", value)}
-                            placeholder="Kantone auswählen (optional)..."
-                          />
-
-                          <MultiSelect
-                            label="Fächer"
-                            options={SWISS_SUBJECTS}
-                            selected={profileFormData.subjects}
-                            onChange={(value) => handleProfileFieldChange("subjects", value)}
-                            placeholder="Fächer auswählen..."
-                            required
-                            error={profileErrors.subjects}
-                          />
-
-                          <MultiSelect
-                            label="Zyklen"
-                            options={SWISS_CYCLES}
-                            selected={profileFormData.cycles}
-                            onChange={(value) => handleProfileFieldChange("cycles", value)}
-                            placeholder="Zyklen auswählen..."
-                            required
-                            error={profileErrors.cycles}
-                          />
-
-                          {/* Action Buttons */}
-                          <div className="flex justify-end gap-3 pt-2">
-                            <button
-                              type="button"
-                              onClick={handleCancelEditingProfile}
-                              disabled={isSavingProfile}
-                              className="border-border text-text-secondary hover:bg-surface-hover rounded-lg border px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
-                            >
-                              Abbrechen
-                            </button>
-                            <button
-                              type="button"
-                              onClick={handleSaveProfile}
-                              disabled={isSavingProfile}
-                              className="bg-primary text-text-on-accent hover:bg-primary-hover rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
-                            >
-                              {isSavingProfile ? (
-                                <span className="flex items-center gap-2">
-                                  <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24">
-                                    <circle
-                                      className="opacity-25"
-                                      cx="12"
-                                      cy="12"
-                                      r="10"
-                                      stroke="currentColor"
-                                      strokeWidth="4"
-                                      fill="none"
-                                    />
-                                    <path
-                                      className="opacity-75"
-                                      fill="currentColor"
-                                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                    />
-                                  </svg>
-                                  Speichern...
-                                </span>
-                              ) : (
-                                "Speichern"
-                              )}
-                            </button>
+                            <label className="flex items-center justify-between">
+                              <div>
+                                <span className="text-text font-medium">Preisänderungen</span>
+                                <p className="text-text-muted text-sm">
+                                  Benachrichtigungen bei Preisänderungen auf der Wunschliste
+                                </p>
+                              </div>
+                              <input
+                                type="checkbox"
+                                defaultChecked
+                                className="text-primary h-5 w-5 rounded"
+                              />
+                            </label>
+                            <label className="flex items-center justify-between">
+                              <div>
+                                <span className="text-text font-medium">Newsletter</span>
+                                <p className="text-text-muted text-sm">
+                                  Wöchentliche Updates und Tipps
+                                </p>
+                              </div>
+                              <input type="checkbox" className="text-primary h-5 w-5 rounded" />
+                            </label>
                           </div>
                         </div>
-                      ) : (
-                        /* View Mode */
-                        <>
-                          <div className="space-y-4">
-                            <div>
-                              <label className="text-text mb-1 block text-sm font-medium">
-                                Name
-                              </label>
-                              <p className="text-text">{displayData.name || "-"}</p>
-                            </div>
-                            <div>
-                              <label className="text-text mb-1 block text-sm font-medium">
-                                E-Mail
-                              </label>
-                              <p className="text-text">{displayData.email}</p>
-                              <p className="text-text-muted mt-1 text-xs">
-                                E-Mail kann nicht geändert werden.
-                              </p>
-                            </div>
-                          </div>
 
-                          {/* User Tags */}
-                          <div className="mt-6 grid gap-4 sm:grid-cols-3">
-                            <div>
-                              <label className="text-text-muted text-xs font-medium tracking-wide uppercase">
-                                Kanton
-                              </label>
-                              <p className="text-text mt-1">
-                                {displayData.cantons && displayData.cantons.length > 0
-                                  ? displayData.cantons.join(", ")
-                                  : "-"}
-                              </p>
-                            </div>
-                            <div>
-                              <label className="text-text-muted text-xs font-medium tracking-wide uppercase">
-                                Fächer
-                              </label>
-                              <div className="mt-1 flex flex-wrap gap-1">
-                                {displayData.subjects && displayData.subjects.length > 0 ? (
-                                  <>
-                                    {displayData.subjects.slice(0, 3).map((subject) => (
-                                      <span
-                                        key={subject}
-                                        className={`pill text-xs ${getSubjectPillClass(subject)}`}
-                                      >
-                                        {subject}
-                                      </span>
-                                    ))}
-                                    {displayData.subjects.length > 3 && (
-                                      <span className="text-text-muted px-2 py-0.5 text-sm">
-                                        +{displayData.subjects.length - 3}
-                                      </span>
-                                    )}
-                                  </>
-                                ) : (
-                                  <span className="text-text">-</span>
-                                )}
-                              </div>
-                            </div>
-                            <div>
-                              <label className="text-text-muted text-xs font-medium tracking-wide uppercase">
-                                Zyklen
-                              </label>
-                              <div className="mt-1 flex flex-wrap gap-1">
-                                {displayData.cycles && displayData.cycles.length > 0 ? (
-                                  displayData.cycles.map((cycle) => (
-                                    <span key={cycle} className="pill pill-primary text-xs">
-                                      {cycle}
-                                    </span>
-                                  ))
-                                ) : (
-                                  <span className="text-text">-</span>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Right Column - Preferences */}
-                  <div className="space-y-6">
-                    {/* Appearance Settings */}
-                    <div className="border-border bg-surface rounded-xl border p-6">
-                      <h2 className="text-text mb-4 text-lg font-semibold">Darstellung</h2>
-                      <p className="text-text-muted mb-4 text-sm">
-                        Wählen Sie Ihr bevorzugtes Farbschema
-                      </p>
-                      <ThemeSettings />
-                    </div>
-
-                    {/* Notification Settings */}
-                    <div className="border-border bg-surface rounded-xl border p-6">
-                      <h2 className="text-text mb-4 text-lg font-semibold">Benachrichtigungen</h2>
-                      <div className="space-y-4">
-                        <label className="flex items-center justify-between">
-                          <div>
-                            <span className="text-text font-medium">Neue Ressourcen</span>
-                            <p className="text-text-muted text-sm">
-                              Benachrichtigungen über neue Materialien von gefolgten Verkäufern
-                            </p>
-                          </div>
-                          <input
-                            type="checkbox"
-                            defaultChecked
-                            className="text-primary h-5 w-5 rounded"
-                          />
-                        </label>
-                        <label className="flex items-center justify-between">
-                          <div>
-                            <span className="text-text font-medium">Preisänderungen</span>
-                            <p className="text-text-muted text-sm">
-                              Benachrichtigungen bei Preisänderungen auf der Wunschliste
-                            </p>
-                          </div>
-                          <input
-                            type="checkbox"
-                            defaultChecked
-                            className="text-primary h-5 w-5 rounded"
-                          />
-                        </label>
-                        <label className="flex items-center justify-between">
-                          <div>
-                            <span className="text-text font-medium">Newsletter</span>
-                            <p className="text-text-muted text-sm">
-                              Wöchentliche Updates und Tipps
-                            </p>
-                          </div>
-                          <input type="checkbox" className="text-primary h-5 w-5 rounded" />
-                        </label>
+                        {/* Danger Zone */}
+                        <div className="border-error/30 bg-surface rounded-xl border p-6">
+                          <h2 className="text-error mb-4 text-lg font-semibold">Gefahrenzone</h2>
+                          <p className="text-text-muted mb-4 text-sm">
+                            Diese Aktionen sind unwiderruflich. Bitte seien Sie vorsichtig.
+                          </p>
+                          <button className="border-error text-error hover:bg-error/10 rounded-md border px-4 py-2 text-sm font-medium transition-colors">
+                            Konto löschen
+                          </button>
+                        </div>
                       </div>
                     </div>
-
-                    {/* Danger Zone */}
-                    <div className="border-error/30 bg-surface rounded-xl border p-6">
-                      <h2 className="text-error mb-4 text-lg font-semibold">Gefahrenzone</h2>
-                      <p className="text-text-muted mb-4 text-sm">
-                        Diese Aktionen sind unwiderruflich. Bitte seien Sie vorsichtig.
-                      </p>
-                      <button className="border-error text-error hover:bg-error/10 rounded-md border px-4 py-2 text-sm font-medium transition-colors">
-                        Konto löschen
-                      </button>
-                    </div>
                   </div>
-                </div>
-              </div>
-            )}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </main>
