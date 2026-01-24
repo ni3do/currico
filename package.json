@@ -1,5 +1,5 @@
 {
-  "name": "easy-lehrer",
+  "name": "currico",
   "version": "1.0.0",
   "description": "Educational resource marketplace for Swiss teachers",
   "prisma": {

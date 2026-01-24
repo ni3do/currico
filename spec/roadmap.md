@@ -1,672 +1,448 @@
-# EasyLehrer Product Roadmap
+# Currico Swiss Market Roadmap
 
-**Version:** 2.0
-**Last Updated:** January 2026
-**Status:** MVP Phase
-**Target Audience:** Swiss teachers (Lehrplan 21)
+Strategic roadmap for building a Swiss-specific teaching materials marketplace that addresses local friction points international competitors cannot solve.
 
 ---
 
-## Executive Summary
+## Phase 1: Business & Legal Foundation
 
-This roadmap addresses the critical gap between our current MVP state and a production-ready platform that Swiss teachers will trust. The focus is on three pillars: **Trust**, **Supply**, and **Conversion**.
+**Goal:** Create an entity that schools can legally pay and teachers can legally trust.
 
-**Current State:** Hosted on `easy-lehrer.siwachter.com` (subdomain)
-**Goal:** Launch-ready platform with Swiss credibility and legal safety
+### 1.1 Corporate Structure
+
+- [ ] Register as GmbH (Sàrl) - min. 20k CHF capital
+  - Why: Swiss schools/cantons rarely work with "Einzelfirma" due to liability concerns
+  - Register in Handelsregister (Commercial Register)
+- [ ] Open business bank account with Swiss IBAN
+- [ ] Set up accounting system for CHF transactions
+
+### 1.2 VAT & Merchant of Record Setup
+
+**Context:** As of Jan 2025, Swiss VAT laws for electronic platforms require you to act as seller of record.
+
+- [ ] Register for MWST (VAT) immediately
+- [ ] Set up "Merchant of Record" model:
+  - Teacher sells to Platform (Royalties)
+  - Platform sells to School (Official Invoice)
+- [ ] Configure invoice generation with valid Swiss VAT number
+- [ ] **B2B Selling Point:** Schools receive one invoice from your Swiss company, not separate receipts from individual teachers
+
+### 1.3 Legal Terms of Service
+
+- [ ] Draft Terms of Service with IP lawyer
+- [ ] Create "Copyright Indemnification" clause
+  - Teachers warrant they hold rights to uploads
+  - Define line between "legal teaching use" and copyright infringement
+- [ ] Create mandatory "Seller Agreement" checkbox in sign-up flow
+- [ ] Draft Privacy Policy (FADP/DSG compliant - Swiss data protection)
+- [ ] Create refund/dispute resolution policy
+
+**Legal Templates Needed:**
+| Document | Purpose |
+|----------|---------|
+| Seller Agreement | IP warranty, payout terms, content guidelines |
+| Buyer Terms | License scope, school vs personal use |
+| Privacy Policy | Data handling, Swiss hosting declaration |
+| Cookie Policy | Analytics, essential cookies only |
 
 ---
 
-## Phase 1: Critical Trust & Core Functionality
+## Phase 2: Data Architecture & Curriculum Mapping
 
-**Goal:** Establish credibility and core search/browse experience before full launch.
-**Priority:** MUST complete before marketing push.
+**Goal:** Build the navigation system that makes the platform feel native to Swiss teachers.
 
----
+### 2.1 Lehrplan 21 (LP21) Data Structure
 
-### 1.1 Domain & Branding Migration
-
-| Field            | Value         |
-| ---------------- | ------------- |
-| **Priority**     | P0 - Critical |
-| **Effort**       | Medium        |
-| **Dependencies** | None          |
-
-**User Story:**
-
-> As a Swiss teacher visiting the platform, I want to see a `.ch` domain so that I trust this is a legitimate Swiss service and not a student project or foreign platform.
-
-**Problem:**
-The current subdomain (`easy-lehrer.siwachter.com`) signals "hobby project" to skeptical teachers. Swiss educators expect professional, local platforms.
-
-**Acceptance Criteria:**
-
-- [ ] Register `easylehrer.ch` domain
-- [ ] Configure DNS and SSL certificates
-- [ ] Set up 301 redirects from old subdomain
-- [ ] Update all internal links and OAuth callbacks
-- [ ] Update email sending domain (if applicable)
-- [ ] Update legal documents with new domain
-
-**Technical Implementation Notes:**
+**Challenge:** LP21 is hierarchical. A simple "Math" tag is useless.
 
 ```
-1. Domain Registration
-   - Register via Infomaniak or Hostpoint (Swiss registrars)
-   - Cost: ~15 CHF/year
+Database Schema for LP21:
+├── Fachbereich (Subject Area) - e.g., Mathematik
+│   ├── Kompetenzbereich (Competency Area) - e.g., Zahl und Variable
+│   │   ├── Handlungs-/Themenaspekt (Action/Theme) - e.g., Operieren und Benennen
+│   │   │   └── Kompetenzstufe (Competency Level) - e.g., MA.1.A.1
+```
 
-2. DNS Configuration
-   - Point A record to Dokploy server IP
-   - Configure CNAME for www subdomain
-   - Set up CAA record for SSL
+- [ ] Create `Curriculum` model in Prisma schema
+- [ ] Create `CurriculumCompetency` model for competency codes
+- [ ] Import LP21 structure (German-speaking regions)
+- [ ] Import PER structure (Plan d'études romand - French-speaking regions)
+- [ ] Create curriculum selection UI component
+- [ ] Add competency search/autocomplete
 
-3. Application Updates
-   - Update NEXTAUTH_URL in .env.production
-   - Update all OAuth provider redirect URIs (Google, Microsoft, edu-ID)
-   - Update Stripe webhook endpoints
-   - Run migration script to update stored URLs in database
+**LP21 Subject Areas (Fachbereiche):**
+| Code | German | French (PER) |
+|------|--------|--------------|
+| MA | Mathematik | Mathématiques |
+| D | Deutsch | - |
+| F | Französisch | Français |
+| E | Englisch | Anglais |
+| NMG | Natur, Mensch, Gesellschaft | Sciences de la nature |
+| BG | Bildnerisches Gestalten | Arts visuels |
+| TTG | Textiles und Technisches Gestalten | Activités créatrices |
+| MU | Musik | Musique |
+| BS | Bewegung und Sport | Éducation physique |
+| MI | Medien und Informatik | MITIC |
 
-4. Redirect Strategy
-   - Configure nginx/Caddy to 301 redirect old domain
-   - Maintain old domain for 12 months minimum
+### 2.2 Cantonal Layer (Secret Sauce)
+
+**Insight:** Education is cantonal. A Zurich teacher uses "Zahlenbuch"; Bern might use another.
+
+- [ ] Create `Lehrmittel` (Textbook) model
+- [ ] Build "Textbook Compatibility" filter
+- [ ] Map popular textbooks to cantons
+- [ ] Add "Aligned with Lehrmittel..." field to resources
+
+**Priority Textbooks to Map:**
+| Subject | Textbook | Cantons |
+|---------|----------|---------|
+| Math | Schweizer Zahlenbuch | ZH, AG, SG |
+| French | Mille feuilles | ZH, BE |
+| French | Dis donc! | ZH, SG |
+| German | Die Sprachstarken | ZH, AG |
+| NMG | NaTech | Multiple |
+
+### 2.3 Canton-Specific Features
+
+- [ ] Add canton selector to user profile
+- [ ] Create canton-specific homepage collections
+- [ ] Map cantonal holidays/events (Sechseläuten ZH, Fasnacht BS)
+- [ ] Track cantonal email domains for "Verified Teacher" badges
+
+**Cantonal Email Domains:**
+```
+@vsa.zh.ch - Zürich
+@be.ch - Bern
+@sg.ch - St. Gallen
+@lu.ch - Luzern
+@edu.bs.ch - Basel-Stadt
 ```
 
 ---
 
-### 1.2 Lehrplan 21 Search & Filtering
+## Phase 3: Platform Development & UX
 
-| Field            | Value            |
-| ---------------- | ---------------- |
-| **Priority**     | P0 - Critical    |
-| **Effort**       | Large            |
-| **Dependencies** | LP21 data import |
+**Goal:** Build the MVP with "Swiss Quality" UI.
 
-**User Story:**
+### 3.1 Safe Upload Workflow
 
-> As a Cycle 2 math teacher, I want to filter resources by "Zyklus 2" and competence code "MA.1.A.1" so that I find materials that exactly match my lesson plan requirements.
+3-step upload wizard:
 
-**Problem:**
-Current search is too generic. Swiss teachers navigate by LP21 structure, not generic categories.
+- [ ] **Step 1: File Upload**
+  - Drag & drop PDF/DOCX
+  - Client-side preview with pdf.js
+  - Heavy watermarking ("Vorschau") to prevent screenshot theft
 
-**Acceptance Criteria:**
+- [ ] **Step 2: Curriculum Tagging**
+  - User selects Cycle -> Subject -> Auto-suggest competencies
+  - Textbook alignment selector
+  - Canton relevance tags
 
-- [ ] Implement Zyklus filter (Cycle 1, 2, 3)
-- [ ] Implement LP21 competence code search with autocomplete
-- [ ] Add "Dialect" toggle: Schweizerdeutsch vs. Hochdeutsch
-- [ ] Move search bar to Hero section
-- [ ] Add integrated dropdowns for Subject + Cycle in hero
-- [ ] Search results respect all active filters
+- [ ] **Step 3: Legal Check**
+  - [ ] "I created the images myself or used CC0"
+  - [ ] "I did not scan textbook pages"
+  - [ ] "I have not used trademarked characters (e.g., Disney)"
+  - [ ] "This material does not contain Eszett (ß)"
 
-**Technical Implementation Notes:**
+### 3.2 School-Ready Checkout
+
+**Requirement:** Schools cannot pay by credit card. They need a bill.
+
+- [ ] **Swiss QR-Bill Integration**
+  - Use `node-swissqrbill` or similar library
+  - Generate PDF invoice with valid QR code
+  - "Purchase for School" flow generates printable invoice
+
+- [ ] **TWINT Integration** (70%+ of Swiss mobile payments)
+  - Via Stripe TWINT payment method
+  - QR code for desktop, app redirect for mobile
+
+- [ ] **Payment Method Priority:**
+  1. TWINT (individual teachers, quick purchases)
+  2. Card (international, convenience)
+  3. Invoice/QR-Bill (school purchases, requires approval)
+
+### 3.3 Dual-Language Interface
+
+**Status:** ✅ Already using next-intl with de/en
+
+- [ ] Ensure all database fields support French labels
+- [ ] Add French (fr) locale to next-intl
+- [ ] Translate UI strings to French
+- [ ] Translate curriculum labels (Mathematik = Mathématiques)
+- [ ] Support Italian (future - Ticino market)
+
+### 3.4 Swiss Quality Indicators
+
+- [ ] **No-Eszett (ß) Policy**
+  - Switzerland does not use ß - use "ss" instead
+  - Flag/reject uploads containing ß
+  - Add automated check in upload flow
+
+- [ ] **Trust Badges:**
+  - [ ] "Swiss Server" badge in footer (e.g., "Hosted in Lausanne")
+  - [ ] "Verified by [Canton] Teachers" on products rated by cantonal email users
+  - [ ] "LP21 Aligned" badge for properly tagged resources
+  - [ ] "Swiss Quality" badge for admin-verified content
+
+---
+
+## Phase 4: Supply Side & Quality Assurance
+
+**Goal:** Secure 500 high-quality resources before public launch.
+
+### 4.1 Golden 50 Recruitment Drive
+
+Target: 50 top Swiss teachers already selling on German platforms (eduki) or sharing on Instagram/Pinterest.
+
+- [ ] Identify target creators from:
+  - eduki.com Swiss sellers
+  - Instagram #lehrermaterial #unterrichtsmaterial
+  - Pinterest Swiss teacher boards
+  - Facebook "Lehrerzimmer" groups
+
+- [ ] **Recruitment Pitch:**
+  > "Stop losing 50% to platforms that don't understand Swiss invoicing.
+  > Join as 'Founding Creator' for 85% royalties and legal protection."
+
+- [ ] **Concierge Service:** Offer to manually migrate their files
+- [ ] Create "Founding Creator" badge/tier
+- [ ] Set up referral program for creators
+
+### 4.2 Swiss Quality Review Process
+
+- [ ] Hire 2 part-time moderators (retired teachers or PH students)
+- [ ] Create quality checklist:
+  - [ ] No Eszett (ß) - reject if found
+  - [ ] Swiss German terminology (not High German)
+  - [ ] LP21/PER alignment verified
+  - [ ] No copyright violations visible
+  - [ ] Preview images are clear
+
+- [ ] **Terminology Guide:**
+  | Reject | Accept |
+  |--------|--------|
+  | Jänner | Januar |
+  | ß | ss |
+  | Samstag | Samstag ✓ (both OK in CH) |
+
+### 4.3 Content Categories
+
+Priority categories for launch:
+1. [ ] Mathematik (Zyklus 1-2) - Zahlenbuch aligned
+2. [ ] Deutsch (Rechtschreibung, Lesen)
+3. [ ] NMG (Sachunterricht)
+4. [ ] Französisch (Mille feuilles, Dis donc!)
+5. [ ] Classroom management (Belohnungssysteme, Klassenzimmer)
+
+---
+
+## Phase 5: Launch & Marketing
+
+**Goal:** Penetrate the "Lehrerzimmer" (Teacher's Room).
+
+### 5.1 Secretariat Strategy
+
+**Insight:** Teachers find resources; Secretaries pay for them.
+
+- [ ] Create physical "Procurement Pack" for school secretariats
+- [ ] Content: "How to reimburse teacher expenses legally. A guide for School Administrators."
+- [ ] Include platform info card and QR code
+- [ ] Target large schools in launch canton
+
+### 5.2 Canton-Specific Launch
+
+**Strategy:** Don't launch Switzerland-wide. Launch "Zurich-First" or "Bern-First."
+
+- [ ] Choose launch canton (recommendation: Zurich - largest market)
+- [ ] Align homepage collections with cantonal calendar:
+  - Sechseläuten (April) - Zurich
+  - Fasnacht (February/March) - Basel, Luzern
+  - Räbeliechtli (November) - Swiss German regions
+  - 1. August (National Day) - All
+
+- [ ] Partner with cantonal teacher association (LCH Sektion)
+- [ ] Attend cantonal teacher conferences (Schulkongress)
+
+### 5.3 Digital Marketing
+
+- [ ] Create Instagram presence @currico
+- [ ] Pinterest boards with free samples
+- [ ] Facebook group for Swiss teachers
+- [ ] Newsletter for product updates
+- [ ] SEO for "Unterrichtsmaterial Schweiz", "Arbeitsblätter LP21"
+
+### 5.4 Trust Building
+
+- [ ] Launch with 100% Swiss-hosted infrastructure
+- [ ] Display data protection compliance (DSG/FADP)
+- [ ] Publish transparent fee structure
+- [ ] Create teacher testimonial videos
+- [ ] Partner with 1-2 well-known Swiss edu-influencers
+
+---
+
+## Technical Implementation Checklist
+
+### Database Changes Needed
 
 ```prisma
 // Add to schema.prisma
+
+model Curriculum {
+  id          String @id @default(cuid())
+  code        String @unique // e.g., "LP21", "PER"
+  name_de     String
+  name_fr     String?
+  name_it     String?
+  region      String // "de-CH", "fr-CH", "it-CH"
+
+  subjects    CurriculumSubject[]
+}
+
+model CurriculumSubject {
+  id            String @id @default(cuid())
+  code          String // e.g., "MA", "D", "NMG"
+  name_de       String
+  name_fr       String?
+
+  curriculum_id String
+  curriculum    Curriculum @relation(fields: [curriculum_id], references: [id])
+
+  competencies  CurriculumCompetency[]
+}
+
+model CurriculumCompetency {
+  id          String @id @default(cuid())
+  code        String @unique // e.g., "MA.1.A.1"
+  description_de String
+  description_fr String?
+  cycle       Int // 1, 2, or 3
+
+  subject_id  String
+  subject     CurriculumSubject @relation(fields: [subject_id], references: [id])
+
+  resources   Resource[] @relation("ResourceCompetencies")
+}
+
+model Lehrmittel {
+  id          String @id @default(cuid())
+  name        String
+  publisher   String
+  subject     String
+  cantons     String[] // Which cantons use this textbook
+
+  resources   Resource[] @relation("ResourceLehrmittel")
+}
+
+// Update Resource model
 model Resource {
-  // ... existing fields
-  dialect     Dialect @default(HIGH_GERMAN)
+  // ... existing fields ...
+
+  // Add curriculum alignment
+  competencies    CurriculumCompetency[] @relation("ResourceCompetencies")
+  lehrmittel      Lehrmittel[] @relation("ResourceLehrmittel")
+
+  // Swiss quality checks
+  eszett_checked  Boolean @default(false)
+  swiss_verified  Boolean @default(false)
 }
 
-enum Dialect {
-  HIGH_GERMAN      // Hochdeutsch
-  SWISS_GERMAN     // Schweizerdeutsch
-  BOTH             // Works for both
-}
-```
-
-```typescript
-// Hero search component structure
-// components/search/HeroSearch.tsx
-
-interface HeroSearchProps {
-  onSearch: (params: SearchParams) => void;
-}
-
-interface SearchParams {
-  query: string;
-  subject?: string; // MA, D, NMG, etc.
-  cycle?: 1 | 2 | 3;
-  competenceCode?: string; // MA.1.A.1
-  dialect?: "HIGH_GERMAN" | "SWISS_GERMAN" | "BOTH";
-}
-
-// API endpoint update
-// GET /api/resources?cycle=2&subject=MA&competence=MA.1.A.1&dialect=SWISS_GERMAN
-```
-
-```
-UI Changes:
-1. Hero Section
-   - Search bar with placeholder: "Suche nach Thema, Kompetenz..."
-   - Inline dropdowns: [Alle Fächer ▼] [Alle Zyklen ▼]
-   - Competence code input with autocomplete (fetches from /api/curriculum/search)
-
-2. Filter Sidebar (existing)
-   - Add "Sprache/Dialekt" toggle section
-   - LP21 competence tree selector (expandable)
-
-3. Search Results
-   - Show matched competence codes as pills
-   - Highlight dialect badge when filtered
-```
-
----
-
-### 1.3 Product Display & Preview System
-
-| Field            | Value                      |
-| ---------------- | -------------------------- |
-| **Priority**     | P0 - Critical              |
-| **Effort**       | Large                      |
-| **Dependencies** | S3 storage, PDF processing |
-
-**User Story:**
-
-> As a teacher browsing resources, I want to see actual preview images of the worksheet so that I can assess the font size, layout, and visual quality before purchasing.
-
-**Problem:**
-Generic stock icons (pencil for Math, book for German) hide the actual quality of materials. Teachers cannot assess if the style matches their needs.
-
-**Acceptance Criteria:**
-
-- [ ] Replace category stock images with actual content previews
-- [ ] Auto-generate thumbnail from first page of PDF on upload
-- [ ] Implement "Blur Preview" for full document (first page clear, rest blurred)
-- [ ] Add "First Page Free" viewer option for sellers
-- [ ] Preview images are watermarked with "VORSCHAU"
-- [ ] Mobile-optimized preview gallery
-
-**Technical Implementation Notes:**
-
-```
-1. PDF Thumbnail Generation (Upload Flow)
-   - Use pdf-lib or pdf.js for client-side preview
-   - Generate 3 preview images: thumbnail (300px), card (600px), full (1200px)
-   - Server-side: Use sharp + pdf-poppler for production-quality renders
-   - Store in S3 bucket: /previews/{resourceId}/thumb.webp
-
-2. Blur Preview Implementation
-   - CSS filter: blur(8px) for pages 2+
-   - Or: Generate blurred versions server-side for performance
-   - Overlay with "Kaufen für vollständige Ansicht"
-
-3. Preview Gallery Component
-   // components/resource/PreviewGallery.tsx
-   - Swipeable on mobile (use embla-carousel)
-   - Zoom on desktop (react-medium-image-zoom)
-   - Page indicator: "Seite 1 von 5"
-
-4. Database Changes
-   model Resource {
-     // ... existing
-     previewImages    String[]  // Array of S3 URLs
-     firstPageFree    Boolean   @default(false)
-     previewGenerated Boolean   @default(false)
-   }
-
-5. Background Job
-   - Queue preview generation on upload
-   - Use Bull/BullMQ with Redis
-   - Retry failed generations 3x
-```
-
----
-
-## Phase 2: Seller Acquisition & Legal Safety
-
-**Goal:** Remove friction for teachers to become sellers. Address copyright fears.
-**Priority:** Complete before seller recruitment campaign.
-
----
-
-### 2.1 Seller Safety Wizard
-
-| Field            | Value              |
-| ---------------- | ------------------ |
-| **Priority**     | P1 - High          |
-| **Effort**       | Medium             |
-| **Dependencies** | Upload flow exists |
-
-**User Story:**
-
-> As a teacher uploading my first resource, I want clear guidance on copyright rules so that I feel confident I won't face legal trouble for selling my materials.
-
-**Problem:**
-Teachers are terrified of copyright infringement. They worry about using fonts, images, or accidentally including copyrighted content.
-
-**Acceptance Criteria:**
-
-- [ ] Add "Copyright Check" step to upload wizard
-- [ ] Checkbox confirmations for ownership of images/fonts
-- [ ] Link to "Copyright Guide for Teachers" (static page)
-- [ ] Warning about common pitfalls (Disney characters, textbook scans)
-- [ ] Checkbox: "This material does not contain Eszett (ß)"
-- [ ] Save confirmation state to database for legal protection
-
-**Technical Implementation Notes:**
-
-```typescript
-// Upload wizard step 4: Legal Check
-// app/[locale]/dashboard/upload/LegalCheckStep.tsx
-
-interface LegalConfirmations {
-  ownsImages: boolean;        // "Ich besitze alle verwendeten Bilder"
-  ownsFonts: boolean;         // "Ich habe Nutzungsrechte für alle Schriftarten"
-  noTextbookScans: boolean;   // "Enthält keine gescannten Lehrmittelseiten"
-  noTrademarks: boolean;      // "Enthält keine geschützten Figuren (Disney, etc.)"
-  noEszett: boolean;          // "Enthält kein Eszett (ß)"
-  acceptsTerms: boolean;      // "Ich akzeptiere die Verkäufer-AGB"
-}
-
-// Store in database
-model Resource {
-  // ... existing
-  legalConfirmations Json?    // Store the confirmations object
-  legalConfirmedAt   DateTime?
-}
-```
-
-```
-Copyright Guide Page:
-- Create /[locale]/seller/copyright-guide
-- Sections:
-  1. "Was darf ich verkaufen?" (eigene Arbeitsblätter, ✓)
-  2. "Was darf ich NICHT verkaufen?" (Lehrmittel-Kopien, ✗)
-  3. "Bilder: Was ist erlaubt?" (CC0, eigene Fotos, ✓)
-  4. "Schriftarten: Darauf achten" (Google Fonts ✓, gekaufte mit Lizenz ✓)
-  5. "Häufige Fehler" (Disney, Pixar, Lehrmittel-Scans)
-```
-
----
-
-### 2.2 Seller Value Proposition Reframe
-
-| Field            | Value     |
-| ---------------- | --------- |
-| **Priority**     | P1 - High |
-| **Effort**       | Small     |
-| **Dependencies** | None      |
-
-**User Story:**
-
-> As a teacher considering selling materials, I want to understand how much I'll earn and feel good about helping colleagues so that I'm motivated to upload my resources.
-
-**Problem:**
-Current messaging focuses on "Make Money" which feels transactional. Teachers respond better to community contribution framing.
-
-**Acceptance Criteria:**
-
-- [ ] Update "Become a Seller" page copy
-- [ ] Highlight 70% commission prominently (comparison to competitors)
-- [ ] Add "Help colleagues & get rewarded" messaging
-- [ ] Show earnings calculator ("10 Verkäufe à 5 CHF = 35 CHF für dich")
-- [ ] Add testimonials from pilot sellers
-
-**Technical Implementation Notes:**
-
-```
-1. Page Updates: /[locale]/become-seller
-
-   Hero Section:
-   - Headline: "Teile dein Wissen. Verdiene dabei."
-   - Subhead: "70% Provision – mehr als bei jeder anderen Plattform"
-
-2. Comparison Table Component:
-   | Platform      | Deine Provision |
-   |---------------|-----------------|
-   | EasyLehrer    | 70%            |
-   | eduki.com     | 50%            |
-   | Lehrermarkt   | 60%            |
-
-3. Earnings Calculator:
-   // components/seller/EarningsCalculator.tsx
-   - Slider: "Preis pro Material" (1-50 CHF)
-   - Slider: "Verkäufe pro Monat" (1-100)
-   - Output: "Dein monatlicher Verdienst: X CHF"
-
-4. Copy Updates (messages/de.json):
-   "seller.cta.primary": "Kolleg:innen helfen & verdienen"
-   "seller.commission.highlight": "70% für dich – 30% für die Plattform"
-```
-
----
-
-### 2.3 Pilot Program Enhancement
-
-| Field            | Value                     |
-| ---------------- | ------------------------- |
-| **Priority**     | P1 - High                 |
-| **Effort**       | Small                     |
-| **Dependencies** | User roles, credit system |
-
-**User Story:**
-
-> As an early adopter teacher, I want a tangible reward for joining the pilot so that I feel valued and motivated to actively participate.
-
-**Problem:**
-"Exclusive Access" is a weak incentive. Teachers need concrete value.
-
-**Acceptance Criteria:**
-
-- [ ] Offer "50 CHF Starting Credit" for pilot teachers
-- [ ] OR offer "100% Commission for Year 1" (choose one)
-- [ ] Update pilot signup page with new offer
-- [ ] Implement credit/commission tracking for pilot users
-- [ ] Add "Pilot Teacher" badge to profiles
-- [ ] Set expiration date for pilot benefits
-
-**Technical Implementation Notes:**
-
-```prisma
-// Database changes
+// Update User model for Stripe Connect
 model User {
-  // ... existing
-  isPilotTeacher     Boolean   @default(false)
-  pilotJoinedAt      DateTime?
-  pilotCredits       Decimal   @default(0) // in CHF
-  pilotCommissionEnd DateTime? // When 100% commission expires
+  // ... existing fields ...
+
+  stripe_account_id          String?
+  stripe_onboarding_complete Boolean @default(false)
 }
 
-// Pilot badge component
-// components/badges/PilotBadge.tsx
-```
+// Update Transaction for payment tracking
+model Transaction {
+  // ... existing fields ...
 
-```typescript
-// Checkout logic update
-// If user.isPilotTeacher && user.pilotCredits > 0
-// Apply credit to order, reduce pilotCredits balance
-
-// Payout logic update
-// If seller.isPilotTeacher && now < seller.pilotCommissionEnd
-// Commission rate = 100% (platform fee = 0)
-```
-
-```
-Landing Page Updates:
-- Hero: "Werde Pilot-Lehrer:in"
-- Benefit 1: "50 CHF Startguthaben" OR "100% Provision im ersten Jahr"
-- Benefit 2: "Exklusiver Zugang zu neuen Features"
-- Benefit 3: "Direkter Draht zum Gründerteam"
-- CTA: "Jetzt als Pilot starten" (limited slots messaging)
-```
-
----
-
-## Phase 3: User Experience Polish & Social Proof
-
-**Goal:** Increase conversion through trust signals and human connection.
-**Priority:** Complete before scaling marketing.
-
----
-
-### 3.1 Team & Mission Page
-
-| Field            | Value       |
-| ---------------- | ----------- |
-| **Priority**     | P2 - Medium |
-| **Effort**       | Small       |
-| **Dependencies** | Team photos |
-
-**User Story:**
-
-> As a skeptical teacher visiting the site, I want to see who built this platform so that I can trust it's made by people who understand Swiss education.
-
-**Problem:**
-The site feels anonymous. Teachers want to know the humans behind the platform.
-
-**Acceptance Criteria:**
-
-- [ ] Create "Über uns" / "Meet the Team" page
-- [ ] Real photos of founders (no stock photos!)
-- [ ] Short bio for each team member
-- [ ] Highlight pedagogical credentials ("10 Jahre Erfahrung als Lehrperson")
-- [ ] Mission statement with Swiss education focus
-- [ ] Contact information (shows accessibility)
-
-**Technical Implementation Notes:**
-
-```
-Page Structure: /[locale]/about
-
-1. Hero Section
-   - Headline: "Wir sind EasyLehrer"
-   - Subhead: "Zwei Pädagogen mit einer Mission"
-
-2. Team Grid
-   // components/about/TeamMember.tsx
-   interface TeamMember {
-     name: string;
-     role: string;
-     photo: string;        // Real photo, not stock!
-     bio: string;
-     credentials: string;  // "10 Jahre Oberstufe, Kanton ZH"
-     linkedin?: string;
-   }
-
-3. Mission Section
-   - "Unsere Vision": Swiss-quality materials for Swiss classrooms
-   - "Das Problem": German platforms don't understand Swiss needs
-   - "Unsere Lösung": Built by teachers, for teachers
-
-4. Contact Section
-   - Direct email to founders
-   - Optional: Calendar link for feedback calls
-```
-
----
-
-### 3.2 Verified Seller Badges
-
-| Field            | Value                 |
-| ---------------- | --------------------- |
-| **Priority**     | P2 - Medium           |
-| **Effort**       | Medium                |
-| **Dependencies** | Seller profiles exist |
-
-**User Story:**
-
-> As a buyer browsing resources, I want to see which sellers are verified and trusted so that I can confidently purchase from quality contributors.
-
-**Problem:**
-Claiming to check every document doesn't scale. Badge system provides trust without manual review burden.
-
-**Acceptance Criteria:**
-
-- [ ] Create "Verified Seller" badge criteria
-- [ ] Display badge on seller profiles and resource cards
-- [ ] Automatic verification triggers (e.g., 10+ sales, 4.5+ rating)
-- [ ] Manual verification option for admin
-- [ ] Show verification criteria publicly (transparency)
-
-**Technical Implementation Notes:**
-
-```prisma
-// Database changes
-model User {
-  // ... existing
-  isVerifiedSeller    Boolean   @default(false)
-  verifiedAt          DateTime?
-  verificationMethod  String?   // 'auto' | 'manual'
-}
-
-// Auto-verification criteria
-const VERIFICATION_CRITERIA = {
-  minSales: 10,
-  minRating: 4.5,
-  minResources: 3,
-  accountAge: 30, // days
-  noReports: true,
-};
-```
-
-```typescript
-// Verification check job (runs daily)
-// jobs/checkSellerVerification.ts
-
-async function checkAutoVerification(userId: string) {
-  const stats = await getSellerStats(userId);
-
-  if (
-    stats.totalSales >= 10 &&
-    stats.averageRating >= 4.5 &&
-    stats.resourceCount >= 3 &&
-    stats.accountAgeDays >= 30 &&
-    stats.openReports === 0
-  ) {
-    await prisma.user.update({
-      where: { id: userId },
-      data: {
-        isVerifiedSeller: true,
-        verifiedAt: new Date(),
-        verificationMethod: "auto",
-      },
-    });
-  }
+  stripe_payment_intent_id   String? @unique
+  stripe_checkout_session_id String?
+  invoice_number             String? // For QR-Bill
+  invoice_pdf_url            String?
 }
 ```
 
-```
-Badge Display:
-// components/badges/VerifiedSellerBadge.tsx
-- Blue checkmark icon
-- Tooltip: "Verifizierte:r Verkäufer:in"
-- Link to /verified-seller-info page explaining criteria
-```
+### API Routes to Create
 
----
+| Route | Purpose |
+|-------|---------|
+| `POST /api/payments/create-checkout-session` | Initiate purchase |
+| `POST /api/payments/webhook` | Stripe webhook handler |
+| `POST /api/payments/create-invoice` | Generate QR-Bill |
+| `POST /api/seller/connect` | Onboard seller to Stripe |
+| `GET /api/curriculum/search` | Search LP21 competencies |
+| `GET /api/curriculum/subjects` | List subjects by curriculum |
+| `POST /api/upload/validate` | Check for ß and other issues |
 
-### 3.3 Testimonials & Social Proof
+### Environment Variables
 
-| Field            | Value       |
-| ---------------- | ----------- |
-| **Priority**     | P2 - Medium |
-| **Effort**       | Small       |
-| **Dependencies** | Pilot users |
+```env
+# Stripe
+STRIPE_SECRET_KEY=sk_...
+STRIPE_PUBLISHABLE_KEY=pk_...
+STRIPE_WEBHOOK_SECRET=whsec_...
 
-**User Story:**
+# Swiss QR-Bill
+QR_BILL_IBAN=CH...
+QR_BILL_CREDITOR_NAME="Currico GmbH"
+QR_BILL_CREDITOR_ADDRESS="..."
 
-> As a new visitor, I want to see what other teachers say about the platform so that I feel confident this is a legitimate and useful service.
-
-**Problem:**
-No social proof = no trust. Teachers rely on peer recommendations.
-
-**Acceptance Criteria:**
-
-- [ ] Collect testimonials from pilot teachers
-- [ ] Display on landing page (rotating carousel or grid)
-- [ ] Include: quote, name, canton, school type
-- [ ] Add to "Become a Seller" page
-- [ ] Video testimonials (optional, high impact)
-
-**Technical Implementation Notes:**
-
-```typescript
-// components/testimonials/TestimonialCard.tsx
-
-interface Testimonial {
-  id: string;
-  quote: string;
-  authorName: string;
-  authorRole: string; // "Primarlehrerin"
-  authorCanton: string; // "Kanton Zürich"
-  authorPhoto?: string; // Optional real photo
-  rating?: number; // 1-5 stars
-}
-
-// Static data initially, can move to CMS later
-const TESTIMONIALS: Testimonial[] = [
-  {
-    id: "1",
-    quote:
-      "Das Arbeitsblatt zur Französischen Revolution hat mir 2 Stunden Vorbereitungszeit gespart.",
-    authorName: "Sarah M.",
-    authorRole: "Sekundarlehrerin",
-    authorCanton: "Kanton Zürich",
-  },
-  // ...
-];
-```
-
-```
-Placement:
-1. Landing page - Below hero, above features
-2. Become Seller page - Above CTA
-3. Resource detail page - "Was andere sagen" section (if reviews exist)
+# VAT
+VAT_NUMBER=CHE-...
+VAT_RATE=8.1 # Current Swiss VAT rate
 ```
 
 ---
 
-## Summary: Implementation Checklist
+## Summary Checklist
 
-### Phase 1: Critical Trust & Core Functionality
+### Phase 1: Legal Foundation
+- [ ] GmbH/AG founded & registered in Handelsregister
+- [ ] VAT (MWST) registered
+- [ ] Business bank account opened
+- [ ] Terms of Service drafted with IP lawyer
+- [ ] Seller Agreement created
+- [ ] Privacy Policy (DSG compliant)
 
-| #    | Task                                          | Priority | Status |
-| ---- | --------------------------------------------- | -------- | ------ |
-| 1.1  | Migrate to `easylehrer.ch` domain             | P0       | ⬜     |
-| 1.2a | Implement Zyklus filter (Cycle 1, 2, 3)       | P0       | ⬜     |
-| 1.2b | Implement LP21 competence code search         | P0       | ⬜     |
-| 1.2c | Add dialect toggle (CH-DE vs. High German)    | P0       | ⬜     |
-| 1.2d | Move search to Hero with integrated dropdowns | P0       | ⬜     |
-| 1.3a | Replace stock images with real previews       | P0       | ⬜     |
-| 1.3b | Auto-generate PDF thumbnails on upload        | P0       | ⬜     |
-| 1.3c | Implement blur preview system                 | P0       | ⬜     |
+### Phase 2: Data Architecture
+- [ ] LP21 data tree imported and mapped to SQL
+- [ ] PER (French curriculum) imported
+- [ ] Cantonal textbook mapping complete
+- [ ] Curriculum selection UI component built
 
-### Phase 2: Seller Acquisition & Legal Safety
+### Phase 3: Platform Development
+- [ ] QR-Bill generation working
+- [ ] TWINT integrated via Stripe
+- [ ] Upload wizard with legal checks
+- [ ] No-Eszett (ß) policy enforced
+- [ ] French locale added
 
-| #    | Task                                       | Priority | Status |
-| ---- | ------------------------------------------ | -------- | ------ |
-| 2.1a | Create Seller Safety Wizard in upload flow | P1       | ⬜     |
-| 2.1b | Add copyright confirmation checkboxes      | P1       | ⬜     |
-| 2.1c | Create Copyright Guide for Teachers page   | P1       | ⬜     |
-| 2.2a | Reframe "Become a Seller" messaging        | P1       | ⬜     |
-| 2.2b | Highlight 70% commission with comparison   | P1       | ⬜     |
-| 2.2c | Add earnings calculator                    | P1       | ⬜     |
-| 2.3a | Update Pilot Program with tangible rewards | P1       | ⬜     |
-| 2.3b | Implement credit/commission tracking       | P1       | ⬜     |
+### Phase 4: Content & Quality
+- [ ] 50 founding creators onboarded
+- [ ] 500 resources uploaded
+- [ ] Moderation team hired
+- [ ] Quality review process documented
 
-### Phase 3: User Experience Polish & Social Proof
-
-| #    | Task                                         | Priority | Status |
-| ---- | -------------------------------------------- | -------- | ------ |
-| 3.1a | Create "Meet the Team" page with real photos | P2       | ⬜     |
-| 3.1b | Write founder bios with credentials          | P2       | ⬜     |
-| 3.2a | Define Verified Seller criteria              | P2       | ⬜     |
-| 3.2b | Implement auto-verification system           | P2       | ⬜     |
-| 3.2c | Display badges on profiles/cards             | P2       | ⬜     |
-| 3.3a | Collect testimonials from pilot teachers     | P2       | ⬜     |
-| 3.3b | Display testimonials on landing page         | P2       | ⬜     |
+### Phase 5: Launch
+- [ ] Launch canton selected
+- [ ] Physical mailers sent to school secretariats
+- [ ] Social media presence established
+- [ ] First marketing campaign launched
 
 ---
 
-## Appendix: Quick Reference
+## Timeline Notes
 
-### Priority Definitions
+This roadmap is organized by phases, not weeks. Implementation order matters more than calendar dates. Focus on completing each phase before moving to the next:
 
-| Priority | Meaning                          | Timeline                    |
-| -------- | -------------------------------- | --------------------------- |
-| P0       | Critical - Blocks launch         | Before any marketing        |
-| P1       | High - Blocks seller acquisition | Before recruitment campaign |
-| P2       | Medium - Impacts conversion      | Before scaling              |
-| P3       | Low - Nice to have               | Post-launch                 |
+1. **Legal foundation must come first** - Cannot accept payments without proper structure
+2. **Data architecture before UI** - Curriculum system affects all product features
+3. **Supply before demand** - Need quality content before marketing to buyers
+4. **Canton-first before national** - Concentrated launch beats thin coverage
 
-### User Story Template
-
-```
-As a [user type],
-I want [capability/feature]
-so that [benefit/outcome].
-```
-
-### Technical Patterns
-
-- **API Routes:** `/api/[domain]/[action]`
-- **Components:** `/components/[domain]/[Component].tsx`
-- **Pages:** `/app/[locale]/[page]/page.tsx`
-- **Database:** Prisma migrations in `/prisma/migrations/`
-
----
-
-## Related Documents
-
-- [Features Spec](./features.md) - Current feature implementation status
-- [Design System](./design-system.md) - UI components and theming
-- [LP21 Filter Sidebar](./lp21-filter-sidebar.md) - Curriculum filter implementation details
-- [Stripe Connect Plan](./stripe-connect-implementation-plan.md) - Payment integration
+Prioritize based on dependencies, not arbitrary deadlines.

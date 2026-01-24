@@ -1,5 +1,5 @@
 /**
- * Curriculum Seed Data for Easy-Lehrer
+ * Curriculum Seed Data for Currico
  *
  * Contains structured data for:
  * - Lehrplan 21 (LP21) - German-speaking Switzerland

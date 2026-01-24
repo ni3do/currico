@@ -17,7 +17,7 @@
 
 ## Overview
 
-Add internationalization to Easy-Lehrer using `next-intl`, the recommended i18n library for Next.js App Router. This will migrate the existing `lib/content.ts` (German text) to JSON message files and enable locale-based routing.
+Add internationalization to Currico using `next-intl`, the recommended i18n library for Next.js App Router. This will migrate the existing `lib/content.ts` (German text) to JSON message files and enable locale-based routing.
 
 **Current state:** All German text centralized in `lib/content.ts`, some hardcoded strings in components.
 **Target state:** JSON translation files per locale, locale-prefixed routes (`/de/...`, `/en/...`), language switcher.

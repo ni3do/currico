@@ -15,7 +15,7 @@ const prisma = new PrismaClient({ adapter });
 // Pre-defined IDs for consistent upserts
 const TEST_USER_ID = "test-user-id";
 const ADMIN_USER_ID = "admin-user-id";
-const ADMIN_EMAIL = "admin@easy-lehrer.ch";
+const ADMIN_EMAIL = "admin@currico.ch";
 const ADMIN_USERNAME = "ADMINISTRATOR";
 const RESOURCE_IDS = {
   math: "test-resource-math",

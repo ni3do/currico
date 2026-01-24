@@ -2,7 +2,7 @@
 
 ## Overview
 
-Integrate Stripe Connect with TWINT support for the Easy-Lehrer marketplace. The codebase already has Stripe fields in the Prisma schema - this plan covers the complete implementation from account setup to production deployment.
+Integrate Stripe Connect with TWINT support for the Currico marketplace. The codebase already has Stripe fields in the Prisma schema - this plan covers the complete implementation from account setup to production deployment.
 
 ---
 
@@ -16,7 +16,7 @@ Integrate Stripe Connect with TWINT support for the Easy-Lehrer marketplace. The
 ### Step 1.2: Enable Stripe Connect
 - [ ] Go to Dashboard → Connect → Settings
 - [ ] Choose "Express" account type (recommended for marketplaces)
-- [ ] Configure branding (Easy-Lehrer logo, colors)
+- [ ] Configure branding (Currico logo, colors)
 - [ ] Set payout schedule preferences
 
 ### Step 1.3: Enable TWINT Payment Method
@@ -26,7 +26,7 @@ Integrate Stripe Connect with TWINT support for the Easy-Lehrer marketplace. The
 
 ### Step 1.4: Configure Webhooks
 - [ ] Go to Dashboard → Developers → Webhooks
-- [ ] Add endpoint: `https://easy-lehrer.ch/api/payments/webhook`
+- [ ] Add endpoint: `https://currico.ch/api/payments/webhook`
 - [ ] Select events:
   - `checkout.session.completed`
   - `payment_intent.succeeded`

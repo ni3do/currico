@@ -1,6 +1,6 @@
 # Stripe Connect Architecture Guide
 
-This document explains how Stripe Connect works for the Easy-Lehrer marketplace, including account types, money flow, and the various processes involved.
+This document explains how Stripe Connect works for the Currico marketplace, including account types, money flow, and the various processes involved.
 
 ---
 
@@ -47,7 +47,7 @@ This removes the platform from being a "money transmitter" (which requires licen
 
 ## Account Types Explained
 
-Stripe Connect offers three account types. Easy-Lehrer uses **Express**.
+Stripe Connect offers three account types. Currico uses **Express**.
 
 ### Express Accounts (Recommended)
 
@@ -83,7 +83,7 @@ Platform builds all UI and handles all verification. Maximum control, maximum re
 
 **Best for:** Large enterprises with dedicated compliance teams.
 
-### Why Express for Easy-Lehrer?
+### Why Express for Currico?
 
 - Teachers don't need to understand Stripe
 - Stripe handles Swiss compliance and tax requirements
@@ -98,7 +98,7 @@ Platform builds all UI and handles all verification. Maximum control, maximum re
 ```
 ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
 │    BUYER     │     │   PLATFORM   │     │    SELLER    │
-│  (Teacher)   │     │ (Easy-Lehrer)│     │  (Teacher)   │
+│  (Teacher)   │     │ (Currico)│     │  (Teacher)   │
 ├──────────────┤     ├──────────────┤     ├──────────────┤
 │              │     │              │     │              │
 │ Pays for     │────>│ Orchestrates │────>│ Receives     │
@@ -111,7 +111,7 @@ Platform builds all UI and handles all verification. Maximum control, maximum re
 └──────────────┘     └──────────────┘     └──────────────┘
 ```
 
-### Platform Account (Easy-Lehrer)
+### Platform Account (Currico)
 
 - The main Stripe account
 - Receives platform fees (15%)
@@ -166,7 +166,7 @@ Platform builds all UI and handles all verification. Maximum control, maximum re
 │   │          │ Platform Fee    │          │ Seller Payout   ││   │
 │   │          │ CHF 1.50 (15%)  │          │ CHF 7.91 (85%)  ││   │
 │   │          │                 │          │                 ││   │
-│   │          │ → Easy-Lehrer   │          │ → Teacher IBAN  ││   │
+│   │          │ → Currico   │          │ → Teacher IBAN  ││   │
 │   │          └─────────────────┘          └─────────────────┘│   │
 │   └─────────────────────────────────────────────────────────┘   │
 │                                                                  │
@@ -179,7 +179,7 @@ Platform builds all UI and handles all verification. Maximum control, maximum re
 |-----------|--------|-----------|
 | Gross payment | CHF 10.00 | — |
 | Stripe processing | ~CHF 0.59 | Stripe |
-| Platform fee (15%) | CHF 1.50 | Easy-Lehrer |
+| Platform fee (15%) | CHF 1.50 | Currico |
 | Seller payout | CHF 7.91 | Teacher |
 
 **Note:** The 15% platform fee is calculated on the gross amount. Stripe fees come off the top before the split.
@@ -197,7 +197,7 @@ Platform builds all UI and handles all verification. Maximum control, maximum re
 │                                                                     │
 │  1. INITIATE CHECKOUT                                               │
 │     ┌──────────┐      ┌──────────────┐      ┌──────────┐           │
-│     │  Buyer   │ ──── │ Easy-Lehrer  │ ──── │  Stripe  │           │
+│     │  Buyer   │ ──── │ Currico  │ ──── │  Stripe  │           │
 │     │  clicks  │ POST │   creates    │ API  │  returns │           │
 │     │  "Buy"   │ ───> │   session    │ ───> │  URL     │           │
 │     └──────────┘      └──────────────┘      └──────────┘           │
@@ -218,7 +218,7 @@ Platform builds all UI and handles all verification. Maximum control, maximum re
 │                                                                     │
 │  3. CONFIRMATION                                                    │
 │     ┌──────────┐      ┌──────────────┐      ┌──────────┐           │
-│     │  Stripe  │ ──── │ Easy-Lehrer  │ ──── │  Buyer   │           │
+│     │  Stripe  │ ──── │ Currico  │ ──── │  Buyer   │           │
 │     │  sends   │ POST │   updates    │ ───> │ sees     │           │
 │     │ webhook  │ ───> │  database    │      │ success  │           │
 │     └──────────┘      └──────────────┘      └──────────┘           │
@@ -256,8 +256,8 @@ When creating a checkout session, we specify:
   },
 
   // Redirect URLs
-  success_url: 'https://easy-lehrer.ch/checkout/success?session_id={CHECKOUT_SESSION_ID}',
-  cancel_url: 'https://easy-lehrer.ch/resources/123',
+  success_url: 'https://currico.ch/checkout/success?session_id={CHECKOUT_SESSION_ID}',
+  cancel_url: 'https://currico.ch/resources/123',
 }
 ```
 
@@ -400,7 +400,7 @@ Before sellers can receive payments, they must complete Stripe's onboarding (KYC
 │                                                                     │
 │  1. INITIATE                                                        │
 │     ┌──────────────┐      ┌──────────────┐      ┌──────────────┐   │
-│     │   Seller     │      │ Easy-Lehrer  │      │    Stripe    │   │
+│     │   Seller     │      │ Currico  │      │    Stripe    │   │
 │     │   clicks     │ ──── │   creates    │ ──── │   returns    │   │
 │     │ "Connect"    │      │  Express     │      │  onboarding  │   │
 │     │              │      │  account     │      │    URL       │   │
@@ -421,7 +421,7 @@ Before sellers can receive payments, they must complete Stripe's onboarding (KYC
 │                                                        │            │
 │  3. VERIFICATION                                       ▼            │
 │     ┌──────────────┐      ┌──────────────┐      ┌──────────────┐   │
-│     │   Stripe     │      │ Easy-Lehrer  │      │   Seller     │   │
+│     │   Stripe     │      │ Currico  │      │   Seller     │   │
 │     │  verifies    │ ──── │   updates    │ ──── │   can now    │   │
 │     │   seller     │ hook │  database    │      │    sell      │   │
 │     └──────────────┘      └──────────────┘      └──────────────┘   │
@@ -459,8 +459,8 @@ const account = await stripe.accounts.create({
 // Generate onboarding link
 const accountLink = await stripe.accountLinks.create({
   account: account.id,
-  refresh_url: 'https://easy-lehrer.ch/seller/connect/refresh',
-  return_url: 'https://easy-lehrer.ch/seller/connect/complete',
+  refresh_url: 'https://currico.ch/seller/connect/refresh',
+  return_url: 'https://currico.ch/seller/connect/complete',
   type: 'account_onboarding',
 });
 
@@ -511,7 +511,7 @@ For Express accounts, Stripe sets a default schedule (usually 2-day rolling).
 
 ### Platform Payouts
 
-The platform (Easy-Lehrer) receives its 15% fee separately:
+The platform (Currico) receives its 15% fee separately:
 
 - Accumulates in platform Stripe balance
 - Can set up automatic payouts to platform bank account
@@ -570,7 +570,7 @@ By default, Stripe fees come off the top before splitting. Options:
 2. **Platform pays:** Deduct Stripe fee from application_fee_amount
 3. **Buyer pays:** Add Stripe fee to the price
 
-Easy-Lehrer uses the default approach.
+Currico uses the default approach.
 
 ---
 
@@ -631,7 +631,7 @@ When a buyer disputes a charge with their bank:
 | Term | Definition |
 |------|------------|
 | **Connected Account** | Seller's Stripe Express account linked to the platform |
-| **Platform Account** | Easy-Lehrer's main Stripe account |
+| **Platform Account** | Currico's main Stripe account |
 | **Application Fee** | Platform's commission (15%) taken from each payment |
 | **Payment Intent** | Stripe object representing a payment attempt |
 | **Checkout Session** | Stripe-hosted payment page |

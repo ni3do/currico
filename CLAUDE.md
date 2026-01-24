@@ -2,7 +2,7 @@
 
 ## Project
 
-Easy-Lehrer: Swiss platform for teachers to buy, sell, and share teaching materials.
+Currico: Swiss platform for teachers to buy, sell, and share teaching materials.
 
 ## Stack
 

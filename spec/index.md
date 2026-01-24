@@ -1,4 +1,4 @@
-# Easy-Lehrer Specification
+# Currico Specification
 
 Swiss platform for teachers to buy, sell, and share teaching materials.
 

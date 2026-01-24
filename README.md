@@ -1,6 +1,6 @@
-# EasyLehrer
+# Currico
 
-Marktplatz für Unterrichtsmaterialien für Schweizer Lehrpersonen
+Educational resource marketplace for Swiss teachers
 
 ## Getting Started
 
@@ -14,7 +14,6 @@ Marktplatz für Unterrichtsmaterialien für Schweizer Lehrpersonen
 ### Running the Development Server
 
 1. Start the dev server:
-
    ```bash
    npm run dev
    ```

@@ -1,8 +1,8 @@
 {
   "common": {
     "brand": {
-      "logoText": "EL",
-      "name": "EasyLehrer",
+      "logoText": "C",
+      "name": "Currico",
       "tagline": "Bildungsplattform Schweiz"
     },
     "navigation": {
@@ -17,16 +17,26 @@
       "account": "Mein Konto"
     },
     "footer": {
-      "copyright": "\u00a9 2025 EasyLehrer",
-      "madeIn": "Made in Switzerland",
-      "payment": "Zahlung mit TWINT & Karte",
-      "links": {
-        "help": "Hilfe",
-        "imprint": "Impressum",
+      "brandDescription": "Die Plattform für Unterrichtsmaterial von Schweizer Lehrpersonen.",
+      "platformSection": {
+        "title": "Plattform",
+        "resources": "Ressourcen",
+        "pricing": "Preise"
+      },
+      "infoSection": {
+        "title": "Information",
+        "aboutUs": "Über uns",
+        "contact": "Kontakt",
+        "help": "Hilfe"
+      },
+      "legalSection": {
+        "title": "Rechtliches",
         "privacy": "Datenschutz",
         "terms": "AGB",
-        "cookies": "Cookies"
-      }
+        "imprint": "Impressum"
+      },
+      "copyright": "2026 Currico. Alle Rechte vorbehalten.",
+      "initiative": "Eine Initiative für Schweizer Bildung"
     },
     "buttons": {
       "viewAll": "Alle anzeigen",
@@ -40,66 +50,13 @@
   },
   "homePage": {
     "hero": {
-      "swissBadge": "100% Lehrplan 21 konform",
-      "headline": "Unterrichtsmaterial für den",
-      "headlineHighlight": "Schweizer Lehrplan 21",
-      "subheadline": "Finden Sie sofort einsatzbereite Lehrmittel von Schweizer Lehrpersonen. Qualitätsgeprüft, lehrplankonform, zeitsparend.",
-      "searchPlaceholder": "Was unterrichtest du heute? (z.B. Mathe 5. Klasse)",
-      "searchButton": "Suchen",
-      "quickFilters": "Beliebte Kategorien:",
-      "filters": {
-        "zyklus1": "Zyklus 1",
-        "zyklus2": "Zyklus 2",
-        "deutsch": "Deutsch",
-        "mathe": "Mathematik",
-        "nmg": "NMG"
-      },
-      "trustIndicators": {
-        "lehrplan21": "Lehrplan 21 abgestimmt",
-        "swissTeachers": "Schweizer Lehrpersonen",
-        "verified": "Qualitätsgeprüft"
-      },
-      "imageAlt": "Lehrerin hilft Schülern bei der Gruppenarbeit im Klassenzimmer",
-      "statsCard": {
-        "count": "1'200+",
-        "label": "Unterrichtsmaterialien"
-      },
-      "ratingCard": {
-        "rating": "4.9"
-      },
       "title": "Von Lehrpersonen für Lehrpersonen: Unterrichtsmaterial in Rekordzeit.",
       "description": "Entdecken Sie professionelle Lehrmittel, entwickelt von Kollegen und exakt abgestimmt auf den <bold>Lehrplan 21</bold>. Vertrauenswürdig, geprüft, sofort einsetzbar.",
       "primaryButton": "Jetzt Material finden",
-      "secondaryButton": "Mehr erfahren",
-      "search": {
-        "placeholder": "Was unterrichtest du heute? (z.B. Mathe 5. Klasse)",
-        "allSubjects": "Alle Fächer",
-        "math": "Mathematik",
-        "german": "Deutsch",
-        "english": "Englisch",
-        "french": "Französisch",
-        "nmg": "NMG",
-        "arts": "Bildnerisches Gestalten",
-        "music": "Musik",
-        "sports": "Sport",
-        "button": "Suchen"
-      }
+      "secondaryButton": "Mehr erfahren"
     },
-    "howItWorks": {
-      "title": "So funktioniert's",
-      "description": "In drei einfachen Schritten starten",
-      "step1": {
-        "title": "Durchsuchen & Finden",
-        "description": "Suchen Sie nach Fach, Zyklus oder Stichwort. Filtern Sie nach Lehrplan 21 Kompetenzen."
-      },
-      "step2": {
-        "title": "Vorschau & Kaufen",
-        "description": "Materialien vor dem Kauf ansehen. Sichere Bezahlung per Kreditkarte oder TWINT."
-      },
-      "step3": {
-        "title": "Herunterladen & Nutzen",
-        "description": "Sofortiger Download nach dem Kauf. Materialien direkt im Unterricht einsetzen."
-      }
+    "trustBar": {
+      "title": "Vertraut von Bildungsinstitutionen"
     },
     "featuredResources": {
       "title": "Empfohlene Materialien",
@@ -131,7 +88,7 @@
       }
     },
     "features": {
-      "title": "Warum EasyLehrer?",
+      "title": "Warum Currico?",
       "description": "Eine Plattform, die den Ansprüchen von Schweizer Bildungsinstitutionen gerecht wird.",
       "feature1": {
         "title": "Qualitätsgeprüft",
@@ -145,32 +102,6 @@
         "title": "Sofort einsetzbar",
         "description": "Alle Materialien sind vollständig ausgearbeitet und können direkt im Unterricht verwendet werden."
       }
-    },
-    "sellerCta": {
-      "title": "Teilen Sie Ihre Unterrichtsmaterialien",
-      "description": "Sie haben tolle Arbeitsblätter, Unterrichtseinheiten oder Prüfungen erstellt? Teilen Sie diese mit Kolleginnen und Kollegen in der ganzen Schweiz und verdienen Sie Geld, während Sie anderen Lehrpersonen Zeit sparen.",
-      "benefits": {
-        "earn": "Passives Einkommen",
-        "earnDesc": "Setzen Sie Ihre eigenen Preise und verdienen Sie 70% pro Verkauf",
-        "reach": "Tausende erreichen",
-        "reachDesc": "Vernetzen Sie sich mit Lehrpersonen in der ganzen Schweiz",
-        "simple": "Einfacher Upload",
-        "simpleDesc": "Einmal hochladen, wiederholt verkaufen ohne Aufwand"
-      },
-      "button": "Jetzt verkaufen",
-      "note": "Kostenlose Registrierung. Keine monatlichen Gebühren."
-    },
-    "pilotTeacher": {
-      "title": "Werden Sie Pilot-Lehrperson",
-      "description": "Helfen Sie uns, EasyLehrer noch besser zu machen",
-      "text": "Wir suchen engagierte Lehrpersonen, die unsere Plattform testen und mitgestalten möchten. Als Pilot-Lehrperson erhalten Sie exklusiven Zugang zu neuen Funktionen und können direkt Einfluss auf die Entwicklung nehmen.",
-      "benefits": {
-        "early": "Frühzeitiger Zugang zu neuen Features",
-        "feedback": "Direkter Draht zum Entwicklerteam",
-        "free": "Kostenlose Premium-Materialien zum Testen"
-      },
-      "button": "Jetzt bewerben",
-      "note": "Begrenzte Plätze verfügbar"
     }
   },
   "loginPage": {
@@ -190,9 +121,7 @@
     "divider": "Oder fortfahren mit",
     "oauth": {
       "google": "Mit Google anmelden",
-      "github": "Mit GitHub anmelden",
-      "microsoft": "Mit Microsoft anmelden",
-      "eduid": "Mit edu-ID fortfahren"
+      "github": "Mit GitHub anmelden"
     },
     "register": {
       "prompt": "Noch kein Konto?",
@@ -205,7 +134,7 @@
   },
   "registerPage": {
     "title": "Konto erstellen",
-    "subtitle": "Werden Sie Teil der EasyLehrer Plattform",
+    "subtitle": "Werden Sie Teil der Currico Plattform",
     "accountTypes": {
       "teacher": "Lehrperson"
     },
@@ -235,8 +164,7 @@
     "divider": "Oder registrieren mit",
     "oauth": {
       "google": "Mit Google registrieren",
-      "microsoft": "Mit Microsoft Office registrieren",
-      "eduid": "Mit edu-ID registrieren"
+      "microsoft": "Mit Microsoft Office registrieren"
     },
     "login": {
       "prompt": "Bereits registriert?",
@@ -286,15 +214,6 @@
       "title": "Unterrichtsmaterialien",
       "description": "Durchsuchen Sie qualitätsgeprüfte Materialien für Ihren Unterricht"
     },
-    "sidebar": {
-      "title": "Filter",
-      "reset": "Zurücksetzen",
-      "subjectLabel": "Fachbereich",
-      "cycleLabel": "Stufe",
-      "materialTypeLabel": "Materialart",
-      "formatLabel": "Format & Eigenschaften",
-      "priceLabel": "Preis"
-    },
     "search": {
       "placeholder": "Suche nach Titel, Thema, Stichwort...",
       "subjectFilter": {
@@ -305,60 +224,19 @@
         "french": "Französisch",
         "nmg": "NMG",
         "arts": "Bildnerisches Gestalten",
-        "ttg": "Textiles & Technisches Gestalten",
         "music": "Musik",
-        "sports": "Bewegung & Sport",
-        "mi": "Medien & Informatik",
-        "bo": "Berufliche Orientierung"
-      },
-      "nmgSubcategories": {
-        "nt": "Natur & Technik (NT)",
-        "wah": "Wirtschaft, Arbeit, Haushalt (WAH)",
-        "rzg": "Räume, Zeiten, Gesellschaften (RZG)",
-        "erg": "Ethik, Religionen, Gemeinschaft (ERG)"
+        "sports": "Sport"
       },
       "filterButton": "Filter"
     },
     "advancedFilters": {
       "title": "Erweiterte Filter",
       "cycleFilter": {
-        "label": "Stufe",
-        "all": "Alle Stufen",
+        "label": "Zyklus",
+        "all": "Alle Zyklen",
         "cycle1": "Zyklus 1",
         "cycle2": "Zyklus 2",
         "cycle3": "Zyklus 3"
-      },
-      "grades": {
-        "kindergarten": "Kindergarten",
-        "grade1": "1. Klasse",
-        "grade2": "2. Klasse",
-        "grade3": "3. Klasse",
-        "grade4": "4. Klasse",
-        "grade5": "5. Klasse",
-        "grade6": "6. Klasse",
-        "grade7": "7. Klasse",
-        "grade8": "8. Klasse",
-        "grade9": "9. Klasse"
-      },
-      "niveauFilter": {
-        "label": "Anforderungsstufe",
-        "basic": "Grundlegend (Sek B/C)",
-        "extended": "Erweitert (Sek A)"
-      },
-      "materialTypes": {
-        "worksheet": "Arbeitsblätter",
-        "test": "Lernkontrollen & Tests",
-        "game": "Spiele & Rätsel",
-        "lessonPlan": "Unterrichtsplanung",
-        "presentation": "Präsentationen",
-        "factsheet": "Merkblätter & Poster",
-        "station": "Werkstätten & Posten"
-      },
-      "formats": {
-        "editable": "Editierbar (Word/PPT)",
-        "pdf": "PDF",
-        "withSolutions": "Mit Lösungen",
-        "differentiated": "Differenziert"
       },
       "cantonFilter": {
         "label": "Kanton",
@@ -410,16 +288,6 @@
       "documents": "Dok.",
       "free": "Gratis",
       "viewButton": "Ansehen"
-    },
-    "sellerCta": {
-      "title": "Haben Sie Materialien zum Teilen?",
-      "description": "Werden Sie Verkäufer und verdienen Sie 70% bei jedem Verkauf, während Sie anderen Lehrern Zeit sparen.",
-      "button": "Verkaufen starten"
-    },
-    "loading": "Wird geladen...",
-    "empty": {
-      "title": "Keine Ressourcen gefunden",
-      "description": "Versuchen Sie andere Suchbegriffe oder Filter"
     }
   },
   "sellerDashboard": {
@@ -483,7 +351,6 @@
   },
   "aboutPage": {
     "hero": {
-      "badge": "Für Schweizer Lehrpersonen",
       "title": "Intelligent vorbereiten. Entspannter leben.",
       "subtitle": "Wir bringen Schweizer Qualität und wertvolle Freizeit zurück in Ihren Schulalltag.",
       "imageAlt": "Entspannte Lehrperson mit Tablet"
@@ -491,11 +358,11 @@
     "mission": {
       "title": "Unsere Mission",
       "paragraph1": "Sonntagnachmittage am Schreibtisch? Nächte, die für das Formatieren von Arbeitsblättern draufgehen? Wir glauben: Guter Unterricht bedeutet nicht, dass man sich aufopfern muss.",
-      "paragraph2": "Die Anforderungen an Schweizer Lehrkräfte steigen stetig. Individualisierung, Digitalisierung und administrative Hürden fordern Zeit – Zeit, die im Alltag oft fehlt. Genau hier setzt EasyLehrer an.",
+      "paragraph2": "Die Anforderungen an Schweizer Lehrkräfte steigen stetig. Individualisierung, Digitalisierung und administrative Hürden fordern Zeit – Zeit, die im Alltag oft fehlt. Genau hier setzt Currico an.",
       "paragraph3": "Wir verstehen uns als Ihre digitale Assistenz. Wir schliessen die Lücke zwischen hohem didaktischen Anspruch und begrenzter Vorbereitungszeit. Unser Ziel ist es, Ihnen den Rücken frei zu halten, damit Sie Ihre Energie dort investieren können, wo sie am dringendsten gebraucht wird: bei Ihren Schülerinnen und Schülern."
     },
     "values": {
-      "title": "Warum EasyLehrer?",
+      "title": "Warum Currico?",
       "value1": {
         "title": "Zeitgewinn statt Stress",
         "description": "Unsere Materialien sind sofort einsatzbereit. Finden, drucken, unterrichten. Ihr Feierabend gehört wieder Ihnen."
@@ -511,31 +378,13 @@
     },
     "origin": {
       "title": "Aus der Praxis für die Praxis",
-      "paragraph1": "EasyLehrer ist kein anonymer Tech-Konzern. Die Plattform entstand aus einem echten Bedürfnis heraus: Kolleginnen und Kollegen suchten nach einer zentralen Anlaufstelle für modernes, Schweizer Unterrichtsmaterial, ohne sich durch unübersichtliche Datenbanken wühlen zu müssen.",
+      "paragraph1": "Currico ist kein anonymer Tech-Konzern. Die Plattform entstand aus einem echten Bedürfnis heraus: Kolleginnen und Kollegen suchten nach einer zentralen Anlaufstelle für modernes, Schweizer Unterrichtsmaterial, ohne sich durch unübersichtliche Datenbanken wühlen zu müssen.",
       "paragraph2": "Was als kleiner Austausch begann, ist heute eine wachsende Community. Wir vernetzen Kreativität mit Didaktik und sorgen dafür, dass gute Arbeit fair entlohnt wird.",
       "imageAlt": "Team bei der Zusammenarbeit"
     },
-    "founders": {
-      "title": "Das Team kennenlernen",
-      "subtitle": "Zwei Hintergründe, eine Mission: Den Unterrichtsalltag für Schweizer Lehrpersonen erleichtern.",
-      "founder1": {
-        "name": "[Gründer Name]",
-        "role": "Co-Founder & Technik",
-        "bio": "Mit einem Hintergrund in der Informatik bringe ich das technische Know-how mit, um eine Plattform zu bauen, die schnell, zuverlässig und einfach zu bedienen ist. Mein Ziel: Tools, die Zeit sparen, statt Komplexität hinzuzufügen."
-      },
-      "founder2": {
-        "name": "[Gründer Name]",
-        "role": "Co-Founder & Pädagogik",
-        "bio": "Als erfahrene Lehrperson kenne ich die täglichen Herausforderungen im Klassenzimmer aus erster Hand. Ich stelle sicher, dass alles, was wir bauen, praxistauglich, pädagogisch sinnvoll und auf Schweizer Bedürfnisse zugeschnitten ist."
-      },
-      "story": "Wir haben EasyLehrer gegründet, weil wir gesehen haben, wie viel Zeit Lehrpersonen in die Vorbereitung investieren — oft auf Kosten des eigenen Wohlbefindens. Durch die Kombination von Tech und Unterrichtserfahrung bauen wir eine Plattform, die wirklich für Schweizer Lehrpersonen funktioniert.",
-      "highlight": "Haben Sie Fragen oder Ideen? Wir freuen uns von Ihnen zu hören."
-    },
     "cta": {
       "title": "Bereit für weniger Vorbereitungsstress?",
-      "subtitle": "Schliessen Sie sich Hunderten von Schweizer Lehrpersonen an, die bereits Zeit sparen und qualitativ hochwertige Materialien nutzen.",
-      "button": "Materialien entdecken",
-      "secondaryButton": "Kostenlos registrieren"
+      "button": "Jetzt Unterrichtsmaterial entdecken"
     }
   },
   "contactPage": {
@@ -563,7 +412,7 @@
       },
       "messageLabel": "Ihre Nachricht",
       "messagePlaceholder": "Teilen Sie uns Ihr Anliegen mit...",
-      "consentText": "Ich bin damit einverstanden, dass EasyLehrer die von mir angegebenen Daten speichert und zur Beantwortung meiner Anfrage nutzt. Ich kann meine Einwilligung jederzeit widerrufen. Details finden Sie in unserer Datenschutzerklärung.",
+      "consentText": "Ich bin damit einverstanden, dass Currico die von mir angegebenen Daten speichert und zur Beantwortung meiner Anfrage nutzt. Ich kann meine Einwilligung jederzeit widerrufen. Details finden Sie in unserer Datenschutzerklärung.",
       "submitButton": "Nachricht senden",
       "submitting": "Wird gesendet...",
       "successTitle": "Nachricht gesendet!",
@@ -583,953 +432,11 @@
     },
     "faq": {
       "title": "Schnelle Antworten gesucht?",
-      "description": "In unserem Hilfe-Center finden Sie Antworten auf häufige Fragen zu Konten, Ressourcen und dem Verkauf auf EasyLehrer."
+      "description": "In unserem Hilfe-Center finden Sie Antworten auf häufige Fragen zu Konten, Ressourcen und dem Verkauf auf Currico."
     }
   },
   "metadata": {
-    "title": "EasyLehrer - Unterrichtsmaterial für Lehrpersonen",
+    "title": "Currico - Unterrichtsmaterial für Lehrpersonen",
     "description": "Entdecken Sie hochwertige Unterrichtsmaterialien für Schweizer Lehrpersonen"
-  },
-  "sellerTerms": {
-    "pageTitle": "Verkäufer-AGB",
-    "pageSubtitle": "Bitte lesen Sie diese Bedingungen sorgfältig durch, bevor Sie Verkäufer auf EasyLehrer werden",
-    "lastUpdated": "Letzte Aktualisierung: Januar 2026",
-    "sections": {
-      "overview": {
-        "title": "1. Übersicht",
-        "content": "Diese Verkäufer-AGB regeln Ihre Nutzung von EasyLehrer als Verkäufer von Unterrichtsmaterialien. Mit der Annahme dieser Bedingungen und dem Abschluss des Verkäufer-Onboardings erklären Sie sich mit diesen Bedingungen einverstanden."
-      },
-      "platformFee": {
-        "title": "2. Plattformgebühr",
-        "content": "EasyLehrer erhebt eine Plattformgebühr von 30% auf alle Verkäufe. Das bedeutet:",
-        "breakdown": {
-          "seller": "Sie erhalten 70% von jedem Verkauf",
-          "platform": "EasyLehrer behält 30% als Plattformgebühr",
-          "example": "Beispiel: Bei einer Ressource für CHF 10.00 erhalten Sie CHF 7.00"
-        },
-        "note": "Die Zahlungsabwicklungsgebühren (Stripe-Gebühren) sind in der Plattformgebühr enthalten und werden Ihnen nicht separat berechnet."
-      },
-      "payouts": {
-        "title": "3. Auszahlungen",
-        "content": "Auszahlungen werden über Stripe Connect abgewickelt. Wichtige Details:",
-        "details": {
-          "schedule": "Auszahlungen erfolgen automatisch auf rollierender Basis (in der Regel 2-7 Werktage nach einem Verkauf)",
-          "minimum": "Es gibt keinen Mindestauszahlungsbetrag",
-          "currency": "Alle Transaktionen erfolgen in Schweizer Franken (CHF)",
-          "account": "Sie müssen die Identitätsprüfung von Stripe abschliessen, um Auszahlungen zu erhalten"
-        }
-      },
-      "contentPolicies": {
-        "title": "4. Inhaltsrichtlinien",
-        "content": "Als Verkäufer bestätigen Sie, dass alle von Ihnen hochgeladenen Materialien:",
-        "requirements": {
-          "original": "Ihre eigene Arbeit sind oder Sie die Rechte zum Verkauf haben",
-          "appropriate": "Für den Bildungseinsatz in Schweizer Schulen geeignet sind",
-          "accurate": "Genaue und aktuelle Informationen enthalten",
-          "quality": "Unseren Qualitätsstandards für Unterrichtsmaterialien entsprechen",
-          "lp21": "Wo zutreffend, korrekt auf den Lehrplan 21 abgestimmt sind"
-        }
-      },
-      "prohibited": {
-        "title": "5. Verbotene Inhalte",
-        "content": "Folgende Inhalte sind strengstens untersagt:",
-        "items": {
-          "copyright": "Urheberrechtlich geschütztes Material, für das Sie keine Verkaufsrechte haben",
-          "inappropriate": "Unangemessene, beleidigende oder diskriminierende Inhalte",
-          "misleading": "Irreführende oder falsche Bildungsinformationen",
-          "plagiarized": "Plagiierte oder von anderen Quellen kopierte Inhalte",
-          "malicious": "Dateien mit Schadsoftware oder bösartigem Code",
-          "personal": "Inhalte mit personenbezogenen Daten von Schülern oder anderen Personen"
-        }
-      },
-      "responsibilities": {
-        "title": "6. Pflichten des Verkäufers",
-        "content": "Als Verkäufer sind Sie verantwortlich für:",
-        "items": {
-          "accuracy": "Die Richtigkeit Ihrer Ressourcenbeschreibungen",
-          "support": "Die Beantwortung von Käuferfragen zu Ihren Materialien",
-          "updates": "Die Aktualisierung von Materialien bei entdeckten Fehlern",
-          "taxes": "Die Erfüllung Ihrer eigenen steuerlichen Pflichten für erzielte Einnahmen",
-          "compliance": "Die Einhaltung der Schweizer Bildungsstandards und -vorschriften"
-        }
-      },
-      "termination": {
-        "title": "7. Kontoauflösung",
-        "content": "EasyLehrer behält sich das Recht vor:",
-        "rights": {
-          "remove": "Inhalte zu entfernen, die gegen diese Bedingungen verstossen",
-          "suspend": "Verkäuferkonten bei Richtlinienverstössen zu sperren oder zu kündigen",
-          "withhold": "Auszahlungen bei Verdacht auf betrügerische Aktivitäten zurückzuhalten"
-        }
-      },
-      "changes": {
-        "title": "8. Änderungen der Bedingungen",
-        "content": "Wir können diese Bedingungen von Zeit zu Zeit aktualisieren. Wesentliche Änderungen werden per E-Mail mitgeteilt. Die weitere Nutzung der Plattform nach Änderungen gilt als Zustimmung zu den neuen Bedingungen."
-      }
-    },
-    "acceptance": {
-      "checkbox": "Ich habe die Verkäufer-AGB gelesen und akzeptiere sie",
-      "feeAcknowledgment": "Ich verstehe, dass EasyLehrer eine Plattformgebühr von 30% auf alle Verkäufe erhebt"
-    }
-  },
-  "curriculum": {
-    "lp21": {
-      "title": "Lehrplan 21",
-      "alignment": "Lehrplan 21 Zuordnung",
-      "competencies": "Kompetenzen",
-      "noAlignment": "Keine Lehrplan 21 Zuordnung vorhanden"
-    },
-    "cycles": {
-      "title": "Zyklus",
-      "cycle1": "Zyklus 1",
-      "cycle1Desc": "Kindergarten - 2. Klasse",
-      "cycle2": "Zyklus 2",
-      "cycle2Desc": "3. - 6. Klasse",
-      "cycle3": "Zyklus 3",
-      "cycle3Desc": "7. - 9. Klasse"
-    },
-    "subjects": {
-      "title": "Fachbereich",
-      "MA": "Mathematik",
-      "D": "Deutsch",
-      "F": "Französisch",
-      "E": "Englisch",
-      "NMG": "Natur, Mensch, Gesellschaft",
-      "BG": "Bildnerisches Gestalten",
-      "TTG": "Textiles und Technisches Gestalten",
-      "MU": "Musik",
-      "BS": "Bewegung und Sport",
-      "MI": "Medien und Informatik"
-    },
-    "anforderungsstufe": {
-      "title": "Anforderungsstufe",
-      "grund": "Grundansprüche",
-      "erweitert": "Erweiterte Ansprüche",
-      "grundShort": "G",
-      "erweitertShort": "E"
-    },
-    "transversal": {
-      "title": "Überfachliche Kompetenzen",
-      "personale": "Personale Kompetenzen",
-      "soziale": "Soziale Kompetenzen",
-      "methodische": "Methodische Kompetenzen",
-      "PK1": "Selbstreflexion",
-      "PK2": "Selbstständigkeit",
-      "PK3": "Eigenständigkeit",
-      "SK1": "Kooperationsfähigkeit",
-      "SK2": "Konfliktfähigkeit",
-      "SK3": "Umgang mit Vielfalt",
-      "MK1": "Sprachfähigkeit",
-      "MK2": "Informationen nutzen",
-      "MK3": "Aufgaben/Probleme lösen"
-    },
-    "bne": {
-      "title": "BNE Themen",
-      "description": "Bildung für Nachhaltige Entwicklung",
-      "BNE1": "Politik, Demokratie und Menschenrechte",
-      "BNE2": "Natürliche Umwelt und Ressourcen",
-      "BNE3": "Geschlechter und Gleichstellung",
-      "BNE4": "Gesundheit und Wohlbefinden",
-      "BNE5": "Globale Entwicklung und Frieden",
-      "BNE6": "Kulturelle Identitäten und interkulturelle Verständigung",
-      "BNE7": "Wirtschaft und Konsum",
-      "sdg": "UN-Nachhaltigkeitsziel"
-    },
-    "mi": {
-      "title": "Medien und Informatik",
-      "integrated": "Medien und Informatik integriert",
-      "description": "Nur Materialien mit M&I Integration anzeigen"
-    },
-    "filter": {
-      "title": "Filter",
-      "clearAll": "Alle zurücksetzen",
-      "competencySearch": "LP21 Kompetenz",
-      "competencyPlaceholder": "z.B. MA.1.A oder D.2.B",
-      "competencyHint": "Geben Sie einen LP21-Kompetenzcode ein",
-      "clearSelection": "Auswahl aufheben"
-    },
-    "search": {
-      "placeholder": "Suchen (z.B. MA.1.A oder Addition)...",
-      "codeDetected": "LP21-Code erkannt - Ergebnisse werden nach Code gefiltert",
-      "noResults": "Keine Ergebnisse für"
-    },
-    "navigator": {
-      "title": "Kompetenz-Navigator",
-      "selectCompetencies": "Kompetenzen auswählen",
-      "selectedCount": "ausgewählt",
-      "expandAll": "Alle aufklappen",
-      "collapseAll": "Alle zuklappen"
-    },
-    "lehrmittel": {
-      "title": "Passend zu Lehrmittel",
-      "placeholder": "Optional: Lehrmittel auswählen...",
-      "hint": "Wählen Sie Lehrmittel, zu denen Ihre Ressource passt"
-    },
-    "upload": {
-      "competencyTip": "Je genauer Sie Ihre Ressource dem Lehrplan 21 zuordnen, desto besser finden Lehrpersonen Ihre Materialien. Wählen Sie alle relevanten Kompetenzen aus."
-    }
-  },
-  "becomeSeller": {
-    "hero": {
-      "badge": "Verkaufen starten",
-      "title": "Teilen Sie Ihre Unterrichtsmaterialien",
-      "subtitle": "Schliessen Sie sich Hunderten von Schweizer Lehrpersonen an, die durch das Teilen ihrer sorgfältig erstellten Unterrichtsmaterialien mit Kollegen zusätzliches Einkommen erzielen."
-    },
-    "benefits": {
-      "title": "Warum auf EasyLehrer verkaufen?",
-      "earn": {
-        "title": "Verdienen Sie 70% von jedem Verkauf",
-        "description": "Legen Sie Ihre eigenen Preise fest. Wir kümmern uns um Zahlungen und Dateiauslieferung - Sie behalten 70% von jedem Verkauf."
-      },
-      "reach": {
-        "title": "Erreichen Sie Lehrpersonen in der ganzen Schweiz",
-        "description": "Ihre Materialien werden für Tausende von Lehrpersonen auffindbar, die nach Qualitätsressourcen suchen."
-      },
-      "simple": {
-        "title": "Einmal hochladen, wiederholt verdienen",
-        "description": "Erstellen Sie Ihre Materialien einmal. Verdienen Sie passives Einkommen bei jedem Kauf."
-      }
-    },
-    "requirements": {
-      "title": "Voraussetzungen",
-      "emailVerified": "Verifizierte E-Mail-Adresse",
-      "acceptTerms": "Akzeptieren der Verkäufer-AGB",
-      "stripeAccount": "Stripe-Identitätsverifizierung für Auszahlungen abschliessen"
-    },
-    "termsSection": {
-      "title": "Verkäufer-AGB",
-      "readBelow": "Bitte lesen Sie die folgenden Bedingungen, bevor Sie fortfahren."
-    },
-    "acceptance": {
-      "checkboxLabel": "Ich habe die Verkäufer-AGB gelesen und akzeptiere sie",
-      "pleaseAccept": "Bitte akzeptieren Sie die obigen Bedingungen, um fortzufahren"
-    },
-    "cta": {
-      "button": "Bedingungen akzeptieren & fortfahren",
-      "submitting": "Wird gesendet...",
-      "error": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
-      "termsAccepted": "Bedingungen akzeptiert!",
-      "startStripeOnboarding": "Stripe-Konto einrichten",
-      "stripeOnboardingLoading": "Weiterleitung zu Stripe...",
-      "stripeOnboardingError": "Stripe-Registrierung konnte nicht gestartet werden. Bitte versuchen Sie es erneut.",
-      "login": "Anmelden, um Verkäufer zu werden",
-      "loginRequired": "Sie müssen sich anmelden, um Verkäufer zu werden",
-      "verifyEmail": "Verifizieren Sie Ihre E-Mail, um fortzufahren",
-      "emailRequired": "Bitte verifizieren Sie Ihre E-Mail-Adresse, bevor Sie Verkäufer werden"
-    }
-  },
-  "stripeConnectStatus": {
-    "error": {
-      "title": "Verbindungsfehler",
-      "fetchFailed": "Stripe-Status konnte nicht geladen werden. Bitte versuchen Sie es erneut.",
-      "tryAgain": "Erneut versuchen"
-    },
-    "active": {
-      "title": "Verkäuferkonto aktiv",
-      "description": "Ihr Stripe-Konto ist eingerichtet und bereit für Zahlungen.",
-      "chargesEnabled": "Zahlungen aktiviert",
-      "payoutsEnabled": "Auszahlungen aktiviert",
-      "payoutsPending": "Auszahlungen ausstehend",
-      "viewDashboard": "Stripe-Dashboard öffnen"
-    },
-    "pending": {
-      "title": "Einrichtung unvollständig",
-      "description": "Ihr Stripe-Konto wird überprüft. Dies dauert normalerweise einige Minuten.",
-      "requirementsNeeded": "Zusätzliche Informationen sind erforderlich, um die Einrichtung abzuschliessen.",
-      "requiredInfo": "Erforderliche Informationen:",
-      "andMore": "und {count} weitere...",
-      "continueSetup": "Einrichtung abschliessen"
-    },
-    "invite": {
-      "title": "Geld verdienen",
-      "description": "Teilen Sie Ihre Unterrichtsmaterialien und verdienen Sie 70% bei jedem Verkauf. Richten Sie Ihr Verkäuferkonto in wenigen Minuten ein.",
-      "benefit1": "70% pro Verkauf",
-      "benefit2": "Tausende Lehrpersonen erreichen",
-      "cta": "Verkäufer werden"
-    }
-  },
-  "emailVerification": {
-    "banner": {
-      "title": "E-Mail-Adresse bestätigen",
-      "description": "Bitte bestätigen Sie Ihre E-Mail-Adresse {email}, um alle Funktionen nutzen zu können. Dies ist erforderlich, um Verkäufer zu werden.",
-      "sendButton": "Bestätigungslink senden",
-      "sending": "Wird gesendet...",
-      "errorFallback": "Ein Fehler ist aufgetreten",
-      "sendError": "Fehler beim Senden"
-    },
-    "sent": {
-      "title": "Bestätigungslink gesendet",
-      "description": "Wir haben Ihnen einen Bestätigungslink an {email} gesendet. Bitte überprüfen Sie Ihren Posteingang und klicken Sie auf den Link.",
-      "resendButton": "Link erneut senden",
-      "resendIn": "Erneut senden in {seconds}s"
-    }
-  },
-  "sellerOnboarding": {
-    "loading": "Verkäuferstatus wird überprüft...",
-    "notLoggedIn": {
-      "title": "Nicht angemeldet",
-      "description": "Sie müssen angemeldet sein, um die Verkäuferregistrierung abzuschliessen.",
-      "loginButton": "Anmelden"
-    },
-    "error": {
-      "title": "Etwas ist schiefgelaufen",
-      "fetchFailed": "Ihr Verkäuferstatus konnte nicht überprüft werden. Bitte versuchen Sie es erneut.",
-      "tryAgain": "Erneut versuchen"
-    },
-    "success": {
-      "title": "Alles bereit!",
-      "description": "Ihr Verkäuferkonto ist jetzt aktiv. Sie können mit dem Hochladen und Verkaufen Ihrer Unterrichtsmaterialien beginnen.",
-      "chargesEnabled": "Zahlungen aktiviert",
-      "payoutsEnabled": "Auszahlungen aktiviert",
-      "payoutsPending": "Auszahlungen ausstehend",
-      "uploadFirst": "Erste Ressource hochladen",
-      "viewDashboard": "Stripe-Dashboard öffnen"
-    },
-    "pending": {
-      "title": "Fast fertig!",
-      "description": "Ihr Konto wird von Stripe überprüft. Dies dauert normalerweise einige Minuten.",
-      "requirementsNeeded": "Stripe benötigt einige zusätzliche Informationen, um Ihr Konto einzurichten.",
-      "requiredInfo": "Erforderliche Informationen:",
-      "andMore": "und {count} weitere...",
-      "continueSetup": "Einrichtung fortsetzen"
-    },
-    "noAccount": {
-      "title": "Verkaufen starten",
-      "description": "Sie haben den Verkäufer-Registrierungsprozess noch nicht begonnen.",
-      "startSetup": "Verkäufer werden"
-    }
-  },
-  "checkout": {
-    "buyNow": "Jetzt kaufen",
-    "processing": "Wird verarbeitet...",
-    "errors": {
-      "alreadyOwned": "Sie besitzen diese Ressource bereits",
-      "ownResource": "Sie können Ihre eigene Ressource nicht kaufen",
-      "sellerNotReady": "Dieser Verkäufer kann derzeit keine Zahlungen empfangen",
-      "notAvailable": "Diese Ressource ist nicht zum Kauf verfügbar",
-      "generic": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
-    }
-  },
-  "checkoutSuccess": {
-    "loading": "Ihr Kauf wird geladen...",
-    "notLoggedIn": {
-      "title": "Nicht angemeldet",
-      "description": "Sie müssen angemeldet sein, um Ihren Kauf anzuzeigen.",
-      "loginButton": "Anmelden"
-    },
-    "error": {
-      "title": "Etwas ist schiefgelaufen",
-      "browseResources": "Materialien durchsuchen"
-    },
-    "errors": {
-      "noSession": "Keine Checkout-Sitzung gefunden.",
-      "fetchFailed": "Kaufdetails konnten nicht geladen werden. Bitte versuchen Sie es erneut."
-    },
-    "success": {
-      "title": "Kauf abgeschlossen!",
-      "description": "Vielen Dank für Ihren Kauf. Sie können jetzt auf Ihre neue Ressource zugreifen."
-    },
-    "pending": {
-      "title": "Zahlung wird verarbeitet",
-      "description": "Ihre Zahlung wird verarbeitet. Dies dauert normalerweise nur einen Moment."
-    },
-    "purchaseDetails": {
-      "title": "Kaufdetails",
-      "resource": "Ressource",
-      "amount": "Betrag",
-      "status": "Status",
-      "statusCompleted": "Abgeschlossen",
-      "statusPending": "In Bearbeitung"
-    },
-    "actions": {
-      "viewResource": "Ressource ansehen",
-      "goToLibrary": "Zur Bibliothek"
-    },
-    "noTransaction": {
-      "title": "Kein Kauf gefunden",
-      "description": "Wir konnten keinen Kauf für diese Sitzung finden.",
-      "browseResources": "Materialien durchsuchen"
-    }
-  },
-  "checkoutCancel": {
-    "title": "Zahlung abgebrochen",
-    "description": "Ihre Zahlung wurde abgebrochen. Es wurden keine Kosten berechnet.",
-    "reassurance": "Keine Sorge - Sie können es jederzeit erneut versuchen. Ihr Warenkorb und gespeicherte Artikel sind weiterhin verfügbar.",
-    "actions": {
-      "tryAgain": "Erneut versuchen",
-      "browseResources": "Materialien durchsuchen"
-    }
-  },
-  "guestDownload": {
-    "loading": "Ihr Download wird geladen...",
-    "browseResources": "Materialien durchsuchen",
-    "createAccount": "Konto erstellen",
-    "downloadButton": "Jetzt herunterladen",
-    "downloading": "Wird heruntergeladen...",
-    "errors": {
-      "invalid_token": {
-        "title": "Link nicht gefunden",
-        "description": "Dieser Download-Link ist ungültig oder wurde entfernt."
-      },
-      "payment_incomplete": {
-        "title": "Zahlung unvollständig",
-        "description": "Die Zahlung für diese Ressource wurde nicht abgeschlossen."
-      },
-      "generic": {
-        "title": "Etwas ist schiefgelaufen",
-        "description": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut."
-      }
-    },
-    "expired": {
-      "title": "Link abgelaufen",
-      "description": "Dieser Download-Link ist abgelaufen. Gast-Download-Links sind 7 Tage nach dem Kauf gültig.",
-      "expiredOn": "Abgelaufen am {date}"
-    },
-    "maxDownloads": {
-      "title": "Download-Limit erreicht",
-      "description": "Sie haben alle {max} Downloads für diesen Link verwendet.",
-      "suggestion": "Erstellen Sie ein kostenloses Konto, um Ihre Käufe dauerhaft zu speichern."
-    },
-    "ready": {
-      "title": "Ihr Download ist bereit",
-      "description": "Klicken Sie auf den Button unten, um Ihre gekaufte Ressource herunterzuladen."
-    },
-    "success": {
-      "title": "Download gestartet!",
-      "description": "Ihre Datei wird heruntergeladen. Überprüfen Sie Ihren Downloads-Ordner."
-    },
-    "info": {
-      "remainingDownloads": "Verbleibende Downloads",
-      "expiresOn": "Link läuft ab",
-      "purchaseDate": "Kaufdatum"
-    },
-    "createAccountCta": {
-      "title": "In Ihrer Bibliothek speichern",
-      "description": "Erstellen Sie ein kostenloses Konto, um diesen Kauf dauerhaft in Ihrer Bibliothek zu behalten.",
-      "benefits": {
-        "unlimitedDownloads": "Unbegrenzte Downloads, keine Einschränkungen",
-        "neverExpires": "Zugang läuft nie ab",
-        "purchaseHistory": "Alle vergangenen Käufe einsehen"
-      },
-      "button": "Kostenloses Konto erstellen",
-      "link": "Kostenloses Konto erstellen"
-    }
-  },
-  "earningsCalculator": {
-    "title": "Berechnen Sie Ihr Verdienstpotenzial",
-    "subtitle": "Sehen Sie, wie viel Sie mit Ihren Unterrichtsmaterialien verdienen könnten",
-    "materialsLabel": "Verkaufte Materialien pro Monat",
-    "priceLabel": "Durchschnittspreis pro Material",
-    "yearlyEarnings": "Geschätzter Jahresverdienst",
-    "monthlyBreakdown": "Das sind {amount} pro Monat",
-    "commissionNote": "Sie behalten 70% jedes Verkaufs – eine der besten Raten der Branche.",
-    "ctaButton": "Jetzt verkaufen"
-  },
-  "sellerHero": {
-    "headline": "Teilen Sie Ihre Unterrichtsmaterialien",
-    "subheadline": "Sie haben tolle Arbeitsblätter, Unterrichtseinheiten oder Prüfungen erstellt? Teilen Sie diese mit Kolleginnen und Kollegen in der ganzen Schweiz und verdienen Sie Geld, während Sie anderen Lehrpersonen Zeit sparen.",
-    "whySell": {
-      "title": "Warum auf EasyLehrer verkaufen?",
-      "description": "Teilen Sie Ihre Unterrichtsmaterialien mit tausenden von Lehrpersonen in der Schweiz und verdienen Sie dabei."
-    },
-    "features": {
-      "commission": {
-        "title": "Passives Einkommen",
-        "description": "Setzen Sie Ihre eigenen Preise und verdienen Sie 70% pro Verkauf"
-      },
-      "community": {
-        "title": "Tausende erreichen",
-        "description": "Vernetzen Sie sich mit Lehrpersonen in der ganzen Schweiz"
-      },
-      "curriculum": {
-        "title": "Einfacher Upload",
-        "description": "Einmal hochladen, wiederholt verkaufen ohne Aufwand"
-      }
-    },
-    "ctaButton": "Jetzt verkaufen",
-    "freeNote": "Kostenlose Registrierung. Keine monatlichen Gebühren."
-  },
-  "previewBadge": {
-    "buttonText": "Vorschau",
-    "watermark": {
-      "label": "Mit Wasserzeichen",
-      "tooltip": "Vollständige Ansicht mit Wasserzeichen – Sie sehen das gesamte Material vor dem Kauf",
-      "inline": "Vollständige Vorschau mit Wasserzeichen"
-    },
-    "pages": {
-      "label": "Erste {count} Seiten gratis",
-      "tooltip": "Die ersten {count} Seiten sind kostenlos einsehbar, um die Qualität zu beurteilen",
-      "inline": "Erste {count} Seiten kostenlos"
-    }
-  },
-  "termsPage": {
-    "title": "Nutzungsbedingungen",
-    "lastUpdated": "Zuletzt aktualisiert: Januar 2026",
-    "general": {
-      "introduction": {
-        "title": "1. Einführung",
-        "content": "Willkommen bei EasyLehrer. Durch den Zugriff auf unsere Plattform oder deren Nutzung erklären Sie sich mit diesen Nutzungsbedingungen einverstanden. EasyLehrer ist eine Schweizer Plattform, die Lehrpersonen verbindet, um hochwertige Unterrichtsmaterialien zu kaufen, zu verkaufen und zu teilen, die auf den Schweizer Lehrplan (Lehrplan 21) abgestimmt sind."
-      },
-      "account": {
-        "title": "2. Kontobedingungen",
-        "content": "Um bestimmte Funktionen von EasyLehrer nutzen zu können, müssen Sie ein Konto erstellen. Sie erklären sich damit einverstanden:",
-        "items": {
-          "accurate": "Bei der Registrierung genaue und vollständige Angaben zu machen",
-          "secure": "Ihr Passwort sicher aufzubewahren und Ihre Kontodaten nicht weiterzugeben",
-          "age": "Mindestens 18 Jahre alt zu sein oder die elterliche Zustimmung zur Nutzung der Plattform zu haben",
-          "oneAccount": "Nur ein Konto pro Person zu führen"
-        }
-      },
-      "acceptableUse": {
-        "title": "3. Zulässige Nutzung",
-        "content": "Sie erklären sich damit einverstanden, EasyLehrer nur für rechtmässige Zwecke und in Übereinstimmung mit diesen Bedingungen zu nutzen. Sie dürfen nicht:",
-        "items": {
-          "lawful": "Die Plattform für illegale oder unbefugte Zwecke nutzen",
-          "noAbuse": "Andere Nutzer belästigen, missbrauchen oder schädigen",
-          "noScraping": "Versuchen, Inhalte ohne Erlaubnis zu scrapen, zu kopieren oder weiterzuverbreiten",
-          "respectOthers": "Die geistigen Eigentumsrechte anderer verletzen"
-        }
-      },
-      "intellectualProperty": {
-        "title": "4. Geistiges Eigentum",
-        "content": "Alle Inhalte auf EasyLehrer, einschliesslich des Plattformdesigns, der Logos und der Originalmaterialien, sind durch Urheberrechte und andere Gesetze zum Schutz des geistigen Eigentums geschützt. Von Verkäufern hochgeladene Unterrichtsmaterialien bleiben Eigentum ihrer jeweiligen Ersteller, die den Käufern eine eingeschränkte Lizenz zur Nutzung für Bildungszwecke gewähren."
-      },
-      "purchases": {
-        "title": "5. Käufe und Downloads",
-        "content": "Wenn Sie Unterrichtsmaterialien auf EasyLehrer kaufen:",
-        "items": {
-          "personal": "Erhalten Sie eine persönliche, nicht übertragbare Lizenz zur Nutzung der Materialien",
-          "noRedistribution": "Dürfen Sie gekaufte Materialien nicht weiterverbreiten, weiterverkaufen oder teilen",
-          "refunds": "Rückerstattungsanfragen werden von unserem Support-Team von Fall zu Fall bearbeitet"
-        }
-      },
-      "liability": {
-        "title": "6. Haftungsbeschränkung",
-        "content": "EasyLehrer stellt die Plattform \"wie besehen\" zur Verfügung und übernimmt keine Garantien hinsichtlich der Qualität, Genauigkeit oder Eignung der von Drittanbietern verkauften Unterrichtsmaterialien. Wir haften nicht für indirekte, zufällige oder Folgeschäden, die sich aus Ihrer Nutzung der Plattform ergeben."
-      },
-      "governingLaw": {
-        "title": "7. Anwendbares Recht",
-        "content": "Diese Nutzungsbedingungen unterliegen dem schweizerischen Recht. Alle Streitigkeiten werden vor den Gerichten in Zürich, Schweiz, beigelegt."
-      }
-    },
-    "contact": {
-      "title": "Fragen?",
-      "content": "Wenn Sie Fragen zu diesen Nutzungsbedingungen haben, kontaktieren Sie uns bitte über unsere Kontaktseite."
-    }
-  },
-  "cookieConsent": {
-    "title": "Cookie-Einstellungen",
-    "description": "Wir verwenden Cookies, um Ihre Erfahrung auf unserer Website zu verbessern. Essentielle Cookies sind für die Grundfunktionen notwendig. Statistik-Cookies helfen uns, die Website zu verbessern.",
-    "privacyLink": "Mehr in unserer Datenschutzerklärung",
-    "acceptAll": "Alle akzeptieren",
-    "essentialOnly": "Nur essentielle",
-    "close": "Schliessen"
-  },
-  "cookiesPage": {
-    "title": "Cookie-Richtlinie",
-    "lastUpdated": "Stand: Januar 2026",
-    "intro": "Diese Cookie-Richtlinie erklärt, wie EasyLehrer Cookies und ähnliche Technologien verwendet, wenn Sie unsere Website besuchen. Wir setzen auf Transparenz bezüglich der Daten, die wir erheben und wie wir sie nutzen.",
-    "sections": {
-      "what": {
-        "title": "1. Was sind Cookies?",
-        "content": "Cookies sind kleine Textdateien, die auf Ihrem Gerät gespeichert werden, wenn Sie eine Website besuchen. Sie helfen Websites, Ihre Präferenzen zu speichern und Ihr Surferlebnis zu verbessern. Cookies können 'Session'-Cookies (werden beim Schliessen des Browsers gelöscht) oder 'persistente' Cookies (bleiben bis zum Ablauf oder Löschen) sein."
-      },
-      "howWeUse": {
-        "title": "2. Wie wir Cookies verwenden",
-        "content": "Wir verwenden Cookies, um wesentliche Website-Funktionen bereitzustellen, Ihre Einstellungen (wie Sprachpräferenzen) zu speichern, Sie angemeldet zu halten und zu verstehen, wie Besucher unsere Plattform nutzen, damit wir sie verbessern können."
-      },
-      "types": {
-        "title": "3. Arten von Cookies, die wir verwenden",
-        "table": {
-          "name": "Cookie-Name",
-          "purpose": "Zweck",
-          "duration": "Dauer",
-          "year": "Jahr",
-          "days": "Tage",
-          "session": "Sitzung"
-        },
-        "essential": {
-          "title": "Essentielle Cookies",
-          "badge": "Immer aktiv",
-          "content": "Diese Cookies sind für das ordnungsgemässe Funktionieren der Website erforderlich. Sie ermöglichen Kernfunktionen wie Sicherheit, Authentifizierung und Barrierefreiheit. Sie können diese Cookies nicht deaktivieren.",
-          "cookies": {
-            "consent": "Speichert Ihre Cookie-Präferenzen",
-            "session": "Hält Sie in Ihrem Konto angemeldet",
-            "csrf": "Schützt vor Cross-Site-Request-Forgery-Angriffen",
-            "locale": "Speichert Ihre Sprachpräferenz"
-          }
-        },
-        "analytics": {
-          "title": "Statistik-Cookies",
-          "badge": "Optional",
-          "content": "Diese Cookies helfen uns zu verstehen, wie Besucher mit unserer Website interagieren, indem sie anonym Informationen sammeln und melden. Dies hilft uns, das Website-Erlebnis zu verbessern.",
-          "note": "Wir verwenden derzeit keine Statistik-Cookies. Sollten wir diese in Zukunft hinzufügen, werden sie nur mit Ihrer ausdrücklichen Zustimmung aktiviert."
-        }
-      },
-      "managing": {
-        "title": "4. Verwaltung Ihrer Cookie-Einstellungen",
-        "content": "Wenn Sie unsere Website zum ersten Mal besuchen, sehen Sie ein Cookie-Banner, in dem Sie wählen können, ob Sie alle Cookies oder nur essentielle Cookies akzeptieren möchten. Sie können Ihre Einstellungen jederzeit ändern, indem Sie die Browser-Cookies löschen und die Website erneut besuchen.",
-        "browser": "Sie können Cookies auch über Ihre Browser-Einstellungen verwalten:"
-      },
-      "changes": {
-        "title": "5. Änderungen dieser Richtlinie",
-        "content": "Wir können diese Cookie-Richtlinie von Zeit zu Zeit aktualisieren, um Änderungen in der Technologie, Gesetzgebung oder unseren Datenpraktiken widerzuspiegeln. Alle Änderungen werden auf dieser Seite mit einem aktualisierten Revisionsdatum veröffentlicht."
-      }
-    },
-    "contact": {
-      "title": "Fragen?",
-      "description": "Bei Fragen zu unserer Verwendung von Cookies kontaktieren Sie uns bitte.",
-      "email": "datenschutz@easylehrer.ch"
-    },
-    "links": {
-      "privacy": "Datenschutzerklärung",
-      "impressum": "Impressum",
-      "terms": "Allgemeine Geschäftsbedingungen"
-    }
-  },
-  "faqPage": {
-    "title": "Häufige Fragen",
-    "subtitle": "Finden Sie Antworten auf die wichtigsten Fragen rund um EasyLehrer",
-    "categories": {
-      "general": "Allgemein",
-      "buying": "Materialien kaufen",
-      "selling": "Materialien verkaufen",
-      "technical": "Technisches"
-    },
-    "general": {
-      "q1": {
-        "question": "Was ist EasyLehrer?",
-        "answer": "EasyLehrer ist eine Schweizer Plattform, auf der Lehrpersonen hochwertige Unterrichtsmaterialien kaufen und verkaufen können. Alle Materialien sind speziell für den Schweizer Lehrplan 21 konzipiert und von erfahrenen Lehrpersonen erstellt."
-      },
-      "q2": {
-        "question": "Für wen ist EasyLehrer geeignet?",
-        "answer": "EasyLehrer richtet sich an alle Lehrpersonen in der Schweiz - von der Primarstufe bis zur Sekundarstufe. Unsere Materialien sind für den Zyklus 1, 2 und 3 verfügbar und decken alle Fachbereiche des Lehrplans 21 ab."
-      },
-      "q3": {
-        "question": "Warum EasyLehrer statt anderen Plattformen?",
-        "answer": "EasyLehrer ist 100% auf die Schweiz ausgerichtet. Alle Materialien verwenden Schweizer Rechtschreibung (ss statt ß), sind auf den Lehrplan 21 abgestimmt und die Preise sind in Schweizer Franken. Zudem ist unser Server in der Schweiz gehostet."
-      },
-      "q4": {
-        "question": "Muss ich ein Konto erstellen?",
-        "answer": "Zum Stöbern und Ansehen der Materialvorschauen benötigen Sie kein Konto. Für den Kauf oder Verkauf von Materialien ist jedoch eine kostenlose Registrierung erforderlich."
-      },
-      "q5": {
-        "question": "Wie kann ich den Support kontaktieren?",
-        "answer": "Sie erreichen uns über das Kontaktformular auf unserer Website oder per E-Mail. Wir bemühen uns, alle Anfragen innerhalb von 24 Stunden zu beantworten."
-      }
-    },
-    "buying": {
-      "q1": {
-        "question": "Welche Dateiformate gibt es?",
-        "answer": "Die meisten Materialien sind als PDF und/oder Word-Dokument (DOCX) verfügbar. Das genaue Format ist bei jedem Material angegeben. Word-Dokumente können Sie nach dem Download bearbeiten."
-      },
-      "q2": {
-        "question": "Sind die Materialien editierbar?",
-        "answer": "Das hängt vom Dateiformat ab. Word-Dokumente (DOCX) sind vollständig editierbar. PDF-Dateien können nicht direkt bearbeitet werden, eignen sich aber ideal zum Ausdrucken."
-      },
-      "q3": {
-        "question": "Darf ich das Material an Kollegen weitergeben?",
-        "answer": "Die Lizenz gilt für eine einzelne Lehrperson. Das Weitergeben an Kollegen oder das Hochladen in schulinterne Netzwerke ist nicht gestattet. Für Schullizenzen kontaktieren Sie uns bitte direkt."
-      },
-      "q4": {
-        "question": "Wie funktioniert die Bezahlung?",
-        "answer": "Wir akzeptieren Kreditkarten (Visa, Mastercard), TWINT und für Schulen auch Rechnung mit QR-Code. Alle Preise sind in Schweizer Franken inkl. MWST."
-      },
-      "q5": {
-        "question": "Kann ich Materialien zurückgeben?",
-        "answer": "Da es sich um digitale Produkte handelt, ist eine Rückgabe nach dem Download grundsätzlich nicht möglich. Bei technischen Problemen oder falls das Material nicht der Beschreibung entspricht, kontaktieren Sie bitte unseren Support."
-      }
-    },
-    "selling": {
-      "q1": {
-        "question": "Wie kann ich Materialien verkaufen?",
-        "answer": "Registrieren Sie sich als Verkäufer, verbinden Sie Ihr Konto mit Stripe für die Auszahlungen und laden Sie Ihre Materialien hoch. Nach einer kurzen Prüfung werden Ihre Materialien veröffentlicht."
-      },
-      "q2": {
-        "question": "Wie hoch ist die Provision?",
-        "answer": "EasyLehrer behält 30% des Verkaufspreises als Plattformgebühr. Sie erhalten 70% jedes Verkaufs direkt auf Ihr Bankkonto ausgezahlt."
-      },
-      "q3": {
-        "question": "Wann erhalte ich meine Auszahlung?",
-        "answer": "Auszahlungen erfolgen automatisch über Stripe, sobald Ihr Guthaben CHF 50 erreicht. Die Überweisung auf Ihr Bankkonto dauert in der Regel 2-3 Werktage."
-      },
-      "q4": {
-        "question": "Welche Anforderungen gibt es an die Materialien?",
-        "answer": "Ihre Materialien müssen original sein, den Lehrplan 21 berücksichtigen und Schweizer Rechtschreibung verwenden (ss statt ß). Urheberrechtlich geschützte Inhalte Dritter sind nicht erlaubt."
-      },
-      "q5": {
-        "question": "Was bedeutet LP21-konform?",
-        "answer": "LP21-konform bedeutet, dass Ihr Material auf die Kompetenzen des Lehrplans 21 abgestimmt ist. Beim Hochladen können Sie die entsprechenden Kompetenzcodes (z.B. MA.1.A.1) auswählen."
-      }
-    },
-    "technical": {
-      "q1": {
-        "question": "Wie lade ich gekaufte Materialien herunter?",
-        "answer": "Nach dem Kauf finden Sie alle erworbenen Materialien in Ihrer Bibliothek unter 'Mein Konto'. Dort können Sie die Dateien jederzeit erneut herunterladen."
-      },
-      "q2": {
-        "question": "Ich habe Probleme beim Download. Was tun?",
-        "answer": "Versuchen Sie zunächst, die Seite neu zu laden oder einen anderen Browser zu verwenden. Falls das Problem bestehen bleibt, kontaktieren Sie bitte unseren Support mit Angabe der Bestellnummer."
-      },
-      "q3": {
-        "question": "Sind meine Daten sicher?",
-        "answer": "Ja, wir nehmen Datenschutz sehr ernst. Unsere Server befinden sich in der Schweiz, und wir halten uns strikt an das Schweizer Datenschutzgesetz (nDSG) sowie die DSGVO. Mehr dazu in unserer Datenschutzerklärung."
-      },
-      "q4": {
-        "question": "Welche Browser werden unterstützt?",
-        "answer": "EasyLehrer funktioniert mit allen modernen Browsern: Chrome, Firefox, Safari und Edge. Wir empfehlen, stets die aktuelle Version Ihres Browsers zu verwenden."
-      }
-    },
-    "contact": {
-      "title": "Ihre Frage nicht gefunden?",
-      "description": "Unser Support-Team hilft Ihnen gerne weiter.",
-      "button": "Kontaktieren Sie uns"
-    }
-  },
-  "impressumPage": {
-    "title": "Impressum",
-    "company": {
-      "title": "Unternehmen",
-      "name": "EasyLehrer (Beta)",
-      "address": {
-        "street": "GmbH-Eintragung ausstehend",
-        "city": "Schweiz",
-        "country": "Schweiz"
-      }
-    },
-    "contact": {
-      "title": "Kontakt",
-      "email": "kontakt@easylehrer.ch",
-      "website": "www.easylehrer.ch"
-    },
-    "legal": {
-      "title": "Rechtliche Angaben",
-      "uid": {
-        "label": "UID-Nummer",
-        "value": "Eintragung ausstehend"
-      },
-      "register": {
-        "label": "Handelsregister",
-        "value": "GmbH-Eintragung in Bearbeitung"
-      }
-    },
-    "responsible": {
-      "title": "Verantwortliche Person",
-      "name": "Das EasyLehrer-Team",
-      "role": "Gründer"
-    },
-    "disclaimer": {
-      "title": "Haftungsausschluss",
-      "liability": {
-        "title": "Haftung für Inhalte",
-        "content": "Die Inhalte unserer Seiten wurden mit grösster Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen."
-      },
-      "links": {
-        "title": "Haftung für Links",
-        "content": "Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen."
-      },
-      "copyright": {
-        "title": "Urheberrecht",
-        "content": "Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem Schweizer Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung ausserhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung."
-      }
-    },
-    "links": {
-      "privacy": "Datenschutzerklärung",
-      "terms": "Allgemeine Geschäftsbedingungen"
-    }
-  },
-  "privacyPage": {
-    "title": "Datenschutzerklärung",
-    "lastUpdated": "Stand: Januar 2026",
-    "intro": "Der Schutz Ihrer persönlichen Daten ist uns wichtig. Diese Datenschutzerklärung informiert Sie über die Erhebung, Verarbeitung und Nutzung Ihrer personenbezogenen Daten bei der Nutzung von EasyLehrer. Wir halten uns an das Schweizer Datenschutzgesetz (nDSG) sowie die EU-Datenschutz-Grundverordnung (DSGVO).",
-    "sections": {
-      "responsible": {
-        "title": "1. Verantwortliche Stelle",
-        "content": "Verantwortlich für die Datenverarbeitung auf dieser Website ist:",
-        "company": "EasyLehrer (Beta)",
-        "address": "GmbH-Eintragung ausstehend, Schweiz",
-        "emailLabel": "E-Mail",
-        "email": "datenschutz@easylehrer.ch"
-      },
-      "collection": {
-        "title": "2. Welche Daten wir erheben",
-        "intro": "Wir erheben verschiedene Arten von Daten, um unsere Dienste bereitzustellen und zu verbessern:",
-        "account": {
-          "title": "Kontodaten",
-          "items": {
-            "name": "Name und Vorname",
-            "email": "E-Mail-Adresse",
-            "password": "Passwort (verschlüsselt gespeichert)",
-            "profile": "Profilinformationen (optional: Schule, Kanton, Unterrichtsfächer)"
-          }
-        },
-        "payment": {
-          "title": "Zahlungsdaten",
-          "items": {
-            "transaction": "Transaktionsdaten (Käufe, Verkäufe)",
-            "billing": "Rechnungsadresse (für Verkäufer)"
-          },
-          "stripe": "Zahlungsabwicklung erfolgt über Stripe. Wir speichern keine Kreditkartendaten. Siehe Stripe-Datenschutzrichtlinie."
-        }
-      },
-      "purpose": {
-        "title": "3. Zweck der Datenverarbeitung",
-        "items": {
-          "account": "Bereitstellung und Verwaltung Ihres Benutzerkontos",
-          "transactions": "Abwicklung von Käufen und Verkäufen",
-          "communication": "Kommunikation bezüglich Ihrer Bestellungen und unserer Dienste",
-          "improvement": "Verbesserung unserer Website und Dienste",
-          "legal": "Erfüllung rechtlicher Verpflichtungen"
-        }
-      },
-      "cookies": {
-        "title": "4. Cookies",
-        "intro": "Wir verwenden Cookies, um die Funktionalität unserer Website sicherzustellen und Ihre Erfahrung zu verbessern.",
-        "essential": {
-          "title": "Essenzielle Cookies",
-          "content": "Diese Cookies sind für den Betrieb der Website erforderlich. Sie ermöglichen grundlegende Funktionen wie Anmeldung und Warenkorb."
-        },
-        "analytics": {
-          "title": "Analyse-Cookies (optional)",
-          "content": "Mit Ihrer Zustimmung verwenden wir Analyse-Cookies, um zu verstehen, wie Besucher unsere Website nutzen. Diese Daten helfen uns, die Website zu verbessern."
-        }
-      },
-      "sharing": {
-        "title": "5. Datenweitergabe",
-        "intro": "Wir verkaufen Ihre Daten nicht. Wir teilen Ihre Daten nur mit:",
-        "items": {
-          "stripe": "Stripe - für die sichere Zahlungsabwicklung",
-          "hosting": "Hosting-Anbieter - Server befinden sich in der Schweiz",
-          "email": "E-Mail-Dienstleister - für Transaktions-E-Mails"
-        }
-      },
-      "storage": {
-        "title": "6. Datenspeicherung",
-        "location": "Ihre Daten werden auf Servern in der Schweiz gespeichert. Bei der Nutzung von Drittanbietern stellen wir sicher, dass angemessene Datenschutzgarantien vorhanden sind.",
-        "retention": "Wir speichern Ihre Daten nur so lange, wie es für die angegebenen Zwecke erforderlich ist oder gesetzlich vorgeschrieben."
-      },
-      "rights": {
-        "title": "7. Ihre Rechte",
-        "intro": "Sie haben folgende Rechte bezüglich Ihrer personenbezogenen Daten:",
-        "items": {
-          "access": "Recht auf Auskunft über Ihre gespeicherten Daten",
-          "rectification": "Recht auf Berichtigung unrichtiger Daten",
-          "deletion": "Recht auf Löschung Ihrer Daten",
-          "restriction": "Recht auf Einschränkung der Verarbeitung",
-          "portability": "Recht auf Datenübertragbarkeit",
-          "objection": "Recht auf Widerspruch gegen die Verarbeitung"
-        },
-        "contact": "Um diese Rechte auszuüben, kontaktieren Sie uns bitte unter der unten angegebenen E-Mail-Adresse."
-      },
-      "security": {
-        "title": "8. Datensicherheit",
-        "content": "Wir setzen technische und organisatorische Sicherheitsmassnahmen ein, um Ihre Daten vor unbefugtem Zugriff, Verlust oder Missbrauch zu schützen. Dazu gehören Verschlüsselung, sichere Server und regelmässige Sicherheitsüberprüfungen."
-      },
-      "changes": {
-        "title": "9. Änderungen dieser Datenschutzerklärung",
-        "content": "Wir können diese Datenschutzerklärung von Zeit zu Zeit aktualisieren. Die aktuelle Version ist stets auf dieser Seite verfügbar. Bei wesentlichen Änderungen informieren wir Sie per E-Mail."
-      }
-    },
-    "contact": {
-      "title": "Fragen zum Datenschutz?",
-      "description": "Für Fragen oder Anliegen bezüglich Ihrer Daten kontaktieren Sie uns:",
-      "email": "datenschutz@easylehrer.ch"
-    },
-    "links": {
-      "impressum": "Impressum",
-      "terms": "Allgemeine Geschäftsbedingungen"
-    }
-  },
-  "profile": {
-    "notFound": "Profil nicht gefunden",
-    "notFoundDescription": "Das gesuchte Profil existiert nicht oder wurde entfernt.",
-    "loading": "Profil wird geladen...",
-    "verifiedSeller": "Verifizierter Verkäufer",
-    "memberSince": "Mitglied seit",
-    "follow": "Folgen",
-    "following": "Gefolgt",
-    "unfollow": "Entfolgen",
-    "editProfile": "Profil bearbeiten",
-    "stats": {
-      "resources": "Ressourcen",
-      "followers": "Follower",
-      "following": "Folgt"
-    },
-    "tabs": {
-      "uploads": "Alle Uploads",
-      "collections": "Sammlungen"
-    },
-    "bestUploads": "Beste Uploads",
-    "noUploads": "Noch keine Uploads vorhanden",
-    "noUploadsOwn": "Laden Sie Ihre erste Ressource hoch!",
-    "noUploadsOther": "Dieser Benutzer hat noch keine Ressourcen hochgeladen.",
-    "noCollections": "Noch keine Sammlungen vorhanden",
-    "noCollectionsOwn": "Erstellen Sie Ihre erste Sammlung!",
-    "noCollectionsOther": "Dieser Benutzer hat noch keine öffentlichen Sammlungen.",
-    "loadMore": "Mehr laden"
-  },
-  "collections": {
-    "title": "Meine Sammlungen",
-    "description": "Organisieren Sie Ihre Ressourcen in Sammlungen",
-    "newCollection": "Neue Sammlung",
-    "noCollections": "Noch keine Sammlungen",
-    "createFirst": "Erste Sammlung erstellen",
-    "selectCollection": "Wählen Sie eine Sammlung aus",
-    "orCreateNew": "oder erstellen Sie eine neue Sammlung",
-    "noResources": "Noch keine Ressourcen in dieser Sammlung",
-    "dragDropHint": "Ziehen Sie Ressourcen per Drag & Drop hierher oder fügen Sie sie über die Ressourcen-Seite hinzu.",
-    "toUploads": "Zu meinen Uploads",
-    "reorderHint": "Ziehen Sie Ressourcen, um die Reihenfolge zu ändern",
-    "viewPublic": "Öffentlich ansehen",
-    "form": {
-      "name": "Name",
-      "namePlaceholder": "z.B. Mathematik Zyklus 2",
-      "description": "Beschreibung",
-      "descriptionPlaceholder": "Optionale Beschreibung...",
-      "isPublic": "Öffentlich sichtbar auf meinem Profil",
-      "save": "Speichern",
-      "create": "Erstellen",
-      "cancel": "Abbrechen",
-      "saving": "Speichern...",
-      "editCollection": "Sammlung bearbeiten",
-      "newCollection": "Neue Sammlung"
-    },
-    "confirmDelete": "Sind Sie sicher, dass Sie diese Sammlung löschen möchten?"
-  },
-  "following": {
-    "title": "Folge ich",
-    "description": "Lehrpersonen und Verkäufer, denen Sie folgen",
-    "followedProfiles": "Gefolgte Profile",
-    "noFollowing": "Sie folgen noch niemandem",
-    "noFollowingDescription": "Entdecken Sie interessante Lehrpersonen und folgen Sie ihnen, um ihre neuesten Materialien zu sehen.",
-    "discoverProfiles": "Profile entdecken",
-    "unfollow": "Entfolgen",
-    "unfollowing": "Entfolgen...",
-    "followedSince": "Gefolgt seit",
-    "stats": {
-      "title": "Statistiken",
-      "followedProfiles": "Gefolgte Profile",
-      "availableResources": "Verfügbare Ressourcen"
-    },
-    "discoverMore": {
-      "title": "Mehr entdecken",
-      "description": "Finden Sie weitere interessante Lehrpersonen und deren Materialien.",
-      "link": "Ressourcen durchsuchen"
-    }
-  },
-  "search": {
-    "tabs": {
-      "resources": "Ressourcen",
-      "profiles": "Profile"
-    },
-    "profiles": {
-      "placeholder": "Nach Lehrpersonen suchen...",
-      "loading": "Profile werden geladen...",
-      "noResults": "Keine Profile gefunden",
-      "noResultsWithQuery": "Versuchen Sie es mit anderen Suchbegriffen",
-      "noResultsEmpty": "Geben Sie einen Suchbegriff ein, um Profile zu finden",
-      "found": "Profile gefunden",
-      "seller": "Verkäufer"
-    }
   }
 }

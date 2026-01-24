@@ -2,18 +2,18 @@ services:
   # PostgreSQL Database
   db:
     image: postgres:16-alpine
-    container_name: easy-lehrer-db
+    container_name: currico-db
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-      POSTGRES_DB: ${POSTGRES_DB:-easy_lehrer}
+      POSTGRES_DB: ${POSTGRES_DB:-currico}
     ports:
       - "${DB_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-easy_lehrer}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-currico}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -23,11 +23,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    container_name: easy-lehrer-app
+    container_name: currico-app
     restart: unless-stopped
     environment:
       - NODE_ENV=development
-      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-easy_lehrer}?schema=public
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-currico}?schema=public
       - NEXT_TELEMETRY_DISABLED=1
     ports:
       - "${APP_PORT:-3000}:3000"
@@ -44,6 +44,6 @@ services:
 
 volumes:
   postgres_data:
-    name: easy-lehrer-postgres-data
+    name: currico-postgres-data
   next_cache:
-    name: easy-lehrer-next-cache
+    name: currico-next-cache

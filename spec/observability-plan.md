@@ -1,4 +1,4 @@
-# Implementation Plan: OpenTelemetry + Sentry for Easy-Lehrer
+# Implementation Plan: OpenTelemetry + Sentry for Currico
 
 ## Overview
 
@@ -83,11 +83,11 @@ npm install @vercel/otel @sentry/nextjs prom-client
 SENTRY_DSN="https://xxx@sentry.io/xxx"
 NEXT_PUBLIC_SENTRY_DSN="https://xxx@sentry.io/xxx"
 SENTRY_ORG="your-org"
-SENTRY_PROJECT="easy-lehrer"
+SENTRY_PROJECT="currico"
 SENTRY_AUTH_TOKEN="sntrys_xxx"
 
 # OpenTelemetry
-OTEL_SERVICE_NAME="easy-lehrer"
+OTEL_SERVICE_NAME="currico"
 ```
 
 ## Key Code Snippets
@@ -98,7 +98,7 @@ import { registerOTel } from '@vercel/otel';
 
 export async function register() {
   if (process.env.NEXT_RUNTIME === 'nodejs') {
-    registerOTel({ serviceName: 'easy-lehrer' });
+    registerOTel({ serviceName: 'currico' });
   }
 }
 ```
@@ -303,7 +303,7 @@ export default function GlobalError({
 services:
   prometheus:
     image: prom/prometheus:v2.50.0
-    container_name: easy-lehrer-prometheus
+    container_name: currico-prometheus
     volumes:
       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
@@ -319,7 +319,7 @@ services:
 
   grafana:
     image: grafana/grafana:10.3.0
-    container_name: easy-lehrer-grafana
+    container_name: currico-grafana
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
@@ -344,7 +344,7 @@ global:
   scrape_interval: 15s
 
 scrape_configs:
-  - job_name: 'easy-lehrer'
+  - job_name: 'currico'
     static_configs:
       - targets: ['app:3000']
     metrics_path: '/api/metrics'

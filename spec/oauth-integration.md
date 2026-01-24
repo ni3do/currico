@@ -1,4 +1,4 @@
-# OAuth Integration Plan for Easy-Lehrer
+# OAuth Integration Plan for Currico
 
 ## Executive Summary
 
@@ -137,7 +137,7 @@ Files involved:
 4. Click **Create Credentials > OAuth client ID**
 5. Select **Web application**
 6. Configure:
-   - **Name:** Easy-Lehrer
+   - **Name:** Currico
    - **Authorized JavaScript origins:**
      - `http://localhost:3000` (dev)
      - `https://your-production-domain.ch` (prod)
@@ -165,7 +165,7 @@ Add same variables to Dokploy production environment.
 2. Navigate to **Azure Active Directory > App registrations**
 3. Click **New registration**
 4. Configure:
-   - **Name:** Easy-Lehrer
+   - **Name:** Currico
    - **Supported account types:** "Accounts in any organizational directory and personal Microsoft accounts"
    - **Redirect URI:** Web - `http://localhost:3000/api/auth/callback/microsoft-entra-id`
 
