@@ -170,34 +170,85 @@ export default function AboutPage() {
 
         {/* Founders Section */}
         <section className="py-20 lg:py-28">
-          <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-            <div className="text-center">
-              <div className="bg-primary/10 mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-full">
-                <svg
-                  className="text-primary h-10 w-10"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+          <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+            <div className="mb-12 text-center">
+              <h2 className="text-primary mb-4 text-2xl font-semibold sm:text-3xl">
+                {t("founders.title")}
+              </h2>
+              <p className="text-text-muted mx-auto max-w-2xl text-lg">{t("founders.subtitle")}</p>
+            </div>
+
+            {/* Founder Cards */}
+            <div className="mb-12 grid gap-8 md:grid-cols-2">
+              {/* Founder 1 - Tech */}
+              <div className="card p-6 text-center md:p-8">
+                <div className="bg-bg-secondary border-primary/20 mx-auto mb-6 h-32 w-32 overflow-hidden rounded-full border-4">
+                  <div className="flex h-full w-full items-center justify-center">
+                    <svg
+                      className="text-text-muted h-16 w-16"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <h3 className="text-text mb-1 text-xl font-bold">{t("founders.founder1.name")}</h3>
+                <p className="text-primary mb-4 font-medium">{t("founders.founder1.role")}</p>
+                <p className="text-text-muted leading-relaxed">{t("founders.founder1.bio")}</p>
+              </div>
+
+              {/* Founder 2 - Education */}
+              <div className="card p-6 text-center md:p-8">
+                <div className="bg-bg-secondary border-primary/20 mx-auto mb-6 h-32 w-32 overflow-hidden rounded-full border-4">
+                  <div className="flex h-full w-full items-center justify-center">
+                    <svg
+                      className="text-text-muted h-16 w-16"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <h3 className="text-text mb-1 text-xl font-bold">{t("founders.founder2.name")}</h3>
+                <p className="text-primary mb-4 font-medium">{t("founders.founder2.role")}</p>
+                <p className="text-text-muted leading-relaxed">{t("founders.founder2.bio")}</p>
+              </div>
+            </div>
+
+            {/* Story & CTA */}
+            <div className="text-text-secondary mx-auto max-w-3xl space-y-6 text-center text-lg leading-relaxed">
+              <p>{t("founders.story")}</p>
+            </div>
+            <div className="border-primary/20 bg-primary/5 mt-10 rounded-xl border p-6 text-center">
+              <p className="text-primary mb-4 text-lg font-medium">{t("founders.highlight")}</p>
+              <a
+                href="mailto:contact@easylehrer.ch"
+                className="text-primary inline-flex items-center gap-2 font-medium hover:underline"
+              >
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                   />
                 </svg>
-              </div>
-              <h2 className="text-primary mb-8 text-2xl font-semibold sm:text-3xl">
-                {t("founders.title")}
-              </h2>
-            </div>
-            <div className="text-text-secondary space-y-6 text-lg leading-relaxed">
-              <p>{t("founders.paragraph1")}</p>
-              <p>{t("founders.paragraph2")}</p>
-              <p>{t("founders.paragraph3")}</p>
-            </div>
-            <div className="border-primary/20 bg-primary/5 mt-10 rounded-xl border p-6 text-center">
-              <p className="text-primary text-lg font-medium">{t("founders.highlight")}</p>
+                contact@easylehrer.ch
+              </a>
             </div>
           </div>
         </section>

@@ -22,7 +22,8 @@
         "help": "Help",
         "imprint": "Imprint",
         "privacy": "Privacy",
-        "terms": "Terms"
+        "terms": "Terms",
+        "cookies": "Cookies"
       }
     },
     "buttons": {
@@ -523,11 +524,20 @@
       "imageAlt": "Team collaborating together"
     },
     "founders": {
-      "title": "Who's Behind EasyLehrer?",
-      "paragraph1": "We are two founders with different but perfectly complementary backgrounds: one of us comes from computer science, the other from education. Together, we recognized how much time and energy teachers invest in preparation every day — often at the expense of their own free time and quality of life.",
-      "paragraph2": "From this realization, the idea for EasyLehrer was born. We wanted to create a platform that truly makes teachers' daily lives easier: thoughtfully designed, practical, and tailored to Swiss needs.",
-      "paragraph3": "But we also know: a great platform isn't built in isolation. That's why your opinion is invaluable to us. Only through your feedback, ideas, and experiences from everyday school life can we continuously improve EasyLehrer. Together, we're building a platform that truly works — for you and with you.",
-      "highlight": "Your expertise makes the difference. Let's transform the teaching profession together."
+      "title": "Meet the Team",
+      "subtitle": "Two backgrounds, one mission: making teaching easier for Swiss educators.",
+      "founder1": {
+        "name": "[Founder Name]",
+        "role": "Co-Founder & Tech",
+        "bio": "With a background in computer science, I bring the technical expertise to build a platform that's fast, reliable, and easy to use. My goal is to create tools that save teachers time, not add complexity."
+      },
+      "founder2": {
+        "name": "[Founder Name]",
+        "role": "Co-Founder & Education",
+        "bio": "As an experienced educator, I understand firsthand the daily challenges teachers face. I ensure that everything we build is practical, pedagogically sound, and truly aligned with Swiss classroom needs."
+      },
+      "story": "We started EasyLehrer because we saw how much time teachers spend on preparation — often at the expense of their own wellbeing. By combining tech and teaching expertise, we're building a platform that truly works for Swiss educators.",
+      "highlight": "Have questions or ideas? We'd love to hear from you."
     },
     "cta": {
       "title": "Ready for Less Preparation Stress?",
@@ -1123,6 +1133,68 @@
     "essentialOnly": "Essential Only",
     "close": "Close"
   },
+  "cookiesPage": {
+    "title": "Cookie Policy",
+    "lastUpdated": "Last updated: January 2026",
+    "intro": "This Cookie Policy explains how EasyLehrer uses cookies and similar technologies when you visit our website. We are committed to transparency about the data we collect and how we use it.",
+    "sections": {
+      "what": {
+        "title": "1. What Are Cookies?",
+        "content": "Cookies are small text files that are stored on your device when you visit a website. They help websites remember your preferences and improve your browsing experience. Cookies can be 'session' cookies (deleted when you close your browser) or 'persistent' cookies (remain until they expire or you delete them)."
+      },
+      "howWeUse": {
+        "title": "2. How We Use Cookies",
+        "content": "We use cookies to provide essential website functionality, remember your preferences (like language settings), keep you signed in, and understand how visitors use our platform so we can improve it."
+      },
+      "types": {
+        "title": "3. Types of Cookies We Use",
+        "table": {
+          "name": "Cookie Name",
+          "purpose": "Purpose",
+          "duration": "Duration",
+          "year": "year",
+          "days": "days",
+          "session": "Session"
+        },
+        "essential": {
+          "title": "Essential Cookies",
+          "badge": "Always Active",
+          "content": "These cookies are necessary for the website to function properly. They enable core functionality such as security, authentication, and accessibility. You cannot disable these cookies.",
+          "cookies": {
+            "consent": "Stores your cookie preferences",
+            "session": "Keeps you signed in to your account",
+            "csrf": "Protects against cross-site request forgery attacks",
+            "locale": "Remembers your language preference"
+          }
+        },
+        "analytics": {
+          "title": "Analytics Cookies",
+          "badge": "Optional",
+          "content": "These cookies help us understand how visitors interact with our website by collecting and reporting information anonymously. This helps us improve the website experience.",
+          "note": "We currently do not use analytics cookies. If we add them in the future, they will only be activated with your explicit consent."
+        }
+      },
+      "managing": {
+        "title": "4. Managing Your Cookie Preferences",
+        "content": "When you first visit our website, you'll see a cookie consent banner where you can choose to accept all cookies or only essential cookies. You can change your preferences at any time by clearing your browser cookies and revisiting the site.",
+        "browser": "You can also manage cookies through your browser settings:"
+      },
+      "changes": {
+        "title": "5. Changes to This Policy",
+        "content": "We may update this Cookie Policy from time to time to reflect changes in technology, legislation, or our data practices. Any changes will be posted on this page with an updated revision date."
+      }
+    },
+    "contact": {
+      "title": "Questions?",
+      "description": "If you have any questions about our use of cookies, please contact us.",
+      "email": "privacy@easylehrer.ch"
+    },
+    "links": {
+      "privacy": "Privacy Policy",
+      "impressum": "Legal Notice",
+      "terms": "Terms of Service"
+    }
+  },
   "faqPage": {
     "title": "Frequently Asked Questions",
     "subtitle": "Find answers to the most common questions about EasyLehrer",
@@ -1226,10 +1298,10 @@
     "title": "Legal Notice",
     "company": {
       "title": "Company",
-      "name": "[Enter company name]",
+      "name": "EasyLehrer (Beta)",
       "address": {
-        "street": "[Street and number]",
-        "city": "[Postal code City]",
+        "street": "GmbH registration pending",
+        "city": "Switzerland",
         "country": "Switzerland"
       }
     },
@@ -1242,17 +1314,17 @@
       "title": "Legal Information",
       "uid": {
         "label": "UID Number",
-        "value": "[CHE-XXX.XXX.XXX]"
+        "value": "Registration pending"
       },
       "register": {
         "label": "Commercial Register",
-        "value": "[Commercial Register Canton]"
+        "value": "GmbH registration in progress"
       }
     },
     "responsible": {
       "title": "Responsible Person",
-      "name": "[Name of responsible person]",
-      "role": "Managing Director"
+      "name": "The EasyLehrer Team",
+      "role": "Founders"
     },
     "disclaimer": {
       "title": "Disclaimer",
@@ -1282,8 +1354,8 @@
       "responsible": {
         "title": "1. Responsible Party",
         "content": "Responsible for data processing on this website is:",
-        "company": "[Enter company name]",
-        "address": "[Enter address], Switzerland",
+        "company": "EasyLehrer (Beta)",
+        "address": "GmbH registration pending, Switzerland",
         "emailLabel": "Email",
         "email": "privacy@easylehrer.ch"
       },

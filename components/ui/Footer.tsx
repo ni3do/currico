@@ -48,6 +48,12 @@ export default function Footer() {
             >
               {tCommon("footer.links.terms")}
             </Link>
+            <Link
+              href="/cookies"
+              className="text-text-muted hover:text-primary text-sm transition-colors"
+            >
+              {tCommon("footer.links.cookies")}
+            </Link>
           </nav>
         </div>
       </div>

@@ -24,7 +24,8 @@
         "help": "Hilfe",
         "imprint": "Impressum",
         "privacy": "Datenschutz",
-        "terms": "AGB"
+        "terms": "AGB",
+        "cookies": "Cookies"
       }
     },
     "buttons": {
@@ -515,11 +516,20 @@
       "imageAlt": "Team bei der Zusammenarbeit"
     },
     "founders": {
-      "title": "Wer steckt hinter EasyLehrer?",
-      "paragraph1": "Wir sind zwei Gründer mit unterschiedlichen, aber sich perfekt ergänzenden Hintergründen: Einer von uns kommt aus der Informatik, der andere aus der Pädagogik. Gemeinsam haben wir erkannt, wie viel Zeit und Energie Lehrpersonen täglich in die Vorbereitung investieren — oft auf Kosten der eigenen Freizeit und Lebensqualität.",
-      "paragraph2": "Aus dieser Erkenntnis entstand die Idee zu EasyLehrer. Wir wollten eine Plattform schaffen, die den Alltag von Lehrpersonen wirklich erleichtert: durchdacht, praxisnah und auf Schweizer Bedürfnisse zugeschnitten.",
-      "paragraph3": "Aber wir wissen auch: Eine gute Plattform entsteht nicht im stillen Kämmerlein. Deshalb ist Ihre Meinung für uns Gold wert. Nur durch Ihr Feedback, Ihre Ideen und Ihre Erfahrungen aus dem Schulalltag können wir EasyLehrer kontinuierlich verbessern. Gemeinsam gestalten wir eine Plattform, die wirklich funktioniert — für Sie und mit Ihnen.",
-      "highlight": "Ihre Expertise macht den Unterschied. Lassen Sie uns gemeinsam den Lehreralltag verändern."
+      "title": "Das Team kennenlernen",
+      "subtitle": "Zwei Hintergründe, eine Mission: Den Unterrichtsalltag für Schweizer Lehrpersonen erleichtern.",
+      "founder1": {
+        "name": "[Gründer Name]",
+        "role": "Co-Founder & Technik",
+        "bio": "Mit einem Hintergrund in der Informatik bringe ich das technische Know-how mit, um eine Plattform zu bauen, die schnell, zuverlässig und einfach zu bedienen ist. Mein Ziel: Tools, die Zeit sparen, statt Komplexität hinzuzufügen."
+      },
+      "founder2": {
+        "name": "[Gründer Name]",
+        "role": "Co-Founder & Pädagogik",
+        "bio": "Als erfahrene Lehrperson kenne ich die täglichen Herausforderungen im Klassenzimmer aus erster Hand. Ich stelle sicher, dass alles, was wir bauen, praxistauglich, pädagogisch sinnvoll und auf Schweizer Bedürfnisse zugeschnitten ist."
+      },
+      "story": "Wir haben EasyLehrer gegründet, weil wir gesehen haben, wie viel Zeit Lehrpersonen in die Vorbereitung investieren — oft auf Kosten des eigenen Wohlbefindens. Durch die Kombination von Tech und Unterrichtserfahrung bauen wir eine Plattform, die wirklich für Schweizer Lehrpersonen funktioniert.",
+      "highlight": "Haben Sie Fragen oder Ideen? Wir freuen uns von Ihnen zu hören."
     },
     "cta": {
       "title": "Bereit für weniger Vorbereitungsstress?",
@@ -1115,6 +1125,68 @@
     "essentialOnly": "Nur essentielle",
     "close": "Schliessen"
   },
+  "cookiesPage": {
+    "title": "Cookie-Richtlinie",
+    "lastUpdated": "Stand: Januar 2026",
+    "intro": "Diese Cookie-Richtlinie erklärt, wie EasyLehrer Cookies und ähnliche Technologien verwendet, wenn Sie unsere Website besuchen. Wir setzen auf Transparenz bezüglich der Daten, die wir erheben und wie wir sie nutzen.",
+    "sections": {
+      "what": {
+        "title": "1. Was sind Cookies?",
+        "content": "Cookies sind kleine Textdateien, die auf Ihrem Gerät gespeichert werden, wenn Sie eine Website besuchen. Sie helfen Websites, Ihre Präferenzen zu speichern und Ihr Surferlebnis zu verbessern. Cookies können 'Session'-Cookies (werden beim Schliessen des Browsers gelöscht) oder 'persistente' Cookies (bleiben bis zum Ablauf oder Löschen) sein."
+      },
+      "howWeUse": {
+        "title": "2. Wie wir Cookies verwenden",
+        "content": "Wir verwenden Cookies, um wesentliche Website-Funktionen bereitzustellen, Ihre Einstellungen (wie Sprachpräferenzen) zu speichern, Sie angemeldet zu halten und zu verstehen, wie Besucher unsere Plattform nutzen, damit wir sie verbessern können."
+      },
+      "types": {
+        "title": "3. Arten von Cookies, die wir verwenden",
+        "table": {
+          "name": "Cookie-Name",
+          "purpose": "Zweck",
+          "duration": "Dauer",
+          "year": "Jahr",
+          "days": "Tage",
+          "session": "Sitzung"
+        },
+        "essential": {
+          "title": "Essentielle Cookies",
+          "badge": "Immer aktiv",
+          "content": "Diese Cookies sind für das ordnungsgemässe Funktionieren der Website erforderlich. Sie ermöglichen Kernfunktionen wie Sicherheit, Authentifizierung und Barrierefreiheit. Sie können diese Cookies nicht deaktivieren.",
+          "cookies": {
+            "consent": "Speichert Ihre Cookie-Präferenzen",
+            "session": "Hält Sie in Ihrem Konto angemeldet",
+            "csrf": "Schützt vor Cross-Site-Request-Forgery-Angriffen",
+            "locale": "Speichert Ihre Sprachpräferenz"
+          }
+        },
+        "analytics": {
+          "title": "Statistik-Cookies",
+          "badge": "Optional",
+          "content": "Diese Cookies helfen uns zu verstehen, wie Besucher mit unserer Website interagieren, indem sie anonym Informationen sammeln und melden. Dies hilft uns, das Website-Erlebnis zu verbessern.",
+          "note": "Wir verwenden derzeit keine Statistik-Cookies. Sollten wir diese in Zukunft hinzufügen, werden sie nur mit Ihrer ausdrücklichen Zustimmung aktiviert."
+        }
+      },
+      "managing": {
+        "title": "4. Verwaltung Ihrer Cookie-Einstellungen",
+        "content": "Wenn Sie unsere Website zum ersten Mal besuchen, sehen Sie ein Cookie-Banner, in dem Sie wählen können, ob Sie alle Cookies oder nur essentielle Cookies akzeptieren möchten. Sie können Ihre Einstellungen jederzeit ändern, indem Sie die Browser-Cookies löschen und die Website erneut besuchen.",
+        "browser": "Sie können Cookies auch über Ihre Browser-Einstellungen verwalten:"
+      },
+      "changes": {
+        "title": "5. Änderungen dieser Richtlinie",
+        "content": "Wir können diese Cookie-Richtlinie von Zeit zu Zeit aktualisieren, um Änderungen in der Technologie, Gesetzgebung oder unseren Datenpraktiken widerzuspiegeln. Alle Änderungen werden auf dieser Seite mit einem aktualisierten Revisionsdatum veröffentlicht."
+      }
+    },
+    "contact": {
+      "title": "Fragen?",
+      "description": "Bei Fragen zu unserer Verwendung von Cookies kontaktieren Sie uns bitte.",
+      "email": "datenschutz@easylehrer.ch"
+    },
+    "links": {
+      "privacy": "Datenschutzerklärung",
+      "impressum": "Impressum",
+      "terms": "Allgemeine Geschäftsbedingungen"
+    }
+  },
   "faqPage": {
     "title": "Häufige Fragen",
     "subtitle": "Finden Sie Antworten auf die wichtigsten Fragen rund um EasyLehrer",
@@ -1218,10 +1290,10 @@
     "title": "Impressum",
     "company": {
       "title": "Unternehmen",
-      "name": "[Firmenname eintragen]",
+      "name": "EasyLehrer (Beta)",
       "address": {
-        "street": "[Strasse und Hausnummer]",
-        "city": "[PLZ Ort]",
+        "street": "GmbH-Eintragung ausstehend",
+        "city": "Schweiz",
         "country": "Schweiz"
       }
     },
@@ -1234,17 +1306,17 @@
       "title": "Rechtliche Angaben",
       "uid": {
         "label": "UID-Nummer",
-        "value": "[CHE-XXX.XXX.XXX]"
+        "value": "Eintragung ausstehend"
       },
       "register": {
         "label": "Handelsregister",
-        "value": "[Handelsregisteramt Kanton]"
+        "value": "GmbH-Eintragung in Bearbeitung"
       }
     },
     "responsible": {
       "title": "Verantwortliche Person",
-      "name": "[Name der verantwortlichen Person]",
-      "role": "Geschäftsführer/in"
+      "name": "Das EasyLehrer-Team",
+      "role": "Gründer"
     },
     "disclaimer": {
       "title": "Haftungsausschluss",
@@ -1274,8 +1346,8 @@
       "responsible": {
         "title": "1. Verantwortliche Stelle",
         "content": "Verantwortlich für die Datenverarbeitung auf dieser Website ist:",
-        "company": "[Firmenname eintragen]",
-        "address": "[Adresse eintragen], Schweiz",
+        "company": "EasyLehrer (Beta)",
+        "address": "GmbH-Eintragung ausstehend, Schweiz",
         "emailLabel": "E-Mail",
         "email": "datenschutz@easylehrer.ch"
       },
