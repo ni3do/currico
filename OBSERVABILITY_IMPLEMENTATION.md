@@ -688,7 +688,7 @@ OTEL_SERVICE_NAME="easy-lehrer"
 - [x] `app/api/health/route.ts` - Health check endpoint
 - [x] `app/api/metrics/route.ts` - Prometheus scrape endpoint
 - [x] `app/global-error.tsx` - Root error boundary
-- [ ] `app/[locale]/error.tsx` - Localized error boundary
+- [x] `app/[locale]/error.tsx` - Localized error boundary
 - [ ] `instrumentation.ts` - OpenTelemetry registration
 - [ ] `sentry.client.config.ts` - Client Sentry config
 - [ ] `sentry.server.config.ts` - Server Sentry config
@@ -702,8 +702,8 @@ OTEL_SERVICE_NAME="easy-lehrer"
 - [ ] `next.config.ts` - Add `instrumentationHook`, wrap with Sentry
 - [ ] `Dockerfile` - Copy instrumentation.ts
 - [ ] `.env.example` - Add Sentry/OTEL vars
-- [ ] `messages/de.json` - Add error translations
-- [ ] `messages/en.json` - Add error translations
+- [x] `messages/de.json` - Add error translations
+- [x] `messages/en.json` - Add error translations
 
 ---
 
