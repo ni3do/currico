@@ -656,9 +656,9 @@ OTEL_SERVICE_NAME="easy-lehrer"
 - [x] `app/global-error.tsx` - Root error boundary
 - [x] `app/[locale]/error.tsx` - Localized error boundary
 - [x] `instrumentation.ts` - OpenTelemetry registration
-- [ ] `sentry.client.config.ts` - Client Sentry config
-- [ ] `sentry.server.config.ts` - Server Sentry config
-- [ ] `sentry.edge.config.ts` - Edge Sentry config
+- [x] `sentry.client.config.ts` - Client Sentry config
+- [x] `sentry.server.config.ts` - Server Sentry config
+- [x] `sentry.edge.config.ts` - Edge Sentry config
 - [ ] `monitoring/prometheus.yml` - Prometheus config
 - [ ] `monitoring/grafana/provisioning/datasources/datasources.yml`
 - [ ] `monitoring/grafana/provisioning/dashboards/dashboards.yml`
