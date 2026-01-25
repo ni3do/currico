@@ -90,6 +90,13 @@ export default function ResourceDetailPage() {
   const [downloading, setDownloading] = useState(false);
   const [wishlistLoading, setWishlistLoading] = useState(false);
 
+  // Report form state
+  const [reportReason, setReportReason] = useState("inappropriate");
+  const [reportDescription, setReportDescription] = useState("");
+  const [reportSubmitting, setReportSubmitting] = useState(false);
+  const [reportStatus, setReportStatus] = useState<"idle" | "success" | "error">("idle");
+  const [reportErrorMessage, setReportErrorMessage] = useState("");
+
   const fetchResource = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -188,6 +195,66 @@ export default function ResourceDetailPage() {
       console.error("Wishlist error:", error);
     } finally {
       setWishlistLoading(false);
+    }
+  };
+
+  // Handle report submission
+  const handleReportSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (sessionStatus !== "authenticated") {
+      window.location.href = "/login";
+      return;
+    }
+
+    setReportSubmitting(true);
+    setReportErrorMessage("");
+
+    try {
+      const response = await fetch("/api/reports", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          reason: reportReason,
+          description: reportDescription || undefined,
+          resource_id: id,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Fehler beim Senden der Meldung");
+      }
+
+      setReportStatus("success");
+      // Close modal after showing success message
+      setTimeout(() => {
+        setShowReportModal(false);
+        // Reset form state after closing
+        setReportStatus("idle");
+        setReportReason("inappropriate");
+        setReportDescription("");
+      }, 2000);
+    } catch (error) {
+      setReportStatus("error");
+      setReportErrorMessage(error instanceof Error ? error.message : "Ein unerwarteter Fehler ist aufgetreten");
+    } finally {
+      setReportSubmitting(false);
+    }
+  };
+
+  // Reset report modal state when closing
+  const handleCloseReportModal = () => {
+    setShowReportModal(false);
+    // Only reset if not showing success
+    if (reportStatus !== "success") {
+      setReportStatus("idle");
+      setReportReason("inappropriate");
+      setReportDescription("");
+      setReportErrorMessage("");
     }
   };
 
@@ -574,7 +641,7 @@ export default function ResourceDetailPage() {
             <div className="mb-4 flex items-center justify-between">
               <h3 className="text-xl font-semibold text-text">Ressource melden</h3>
               <button
-                onClick={() => setShowReportModal(false)}
+                onClick={handleCloseReportModal}
                 className="text-text-muted hover:text-text"
               >
                 <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -588,44 +655,106 @@ export default function ResourceDetailPage() {
               </button>
             </div>
 
-            <form className="space-y-4">
-              <div>
-                <label className="mb-2 block text-sm font-medium text-text">
-                  Grund
-                </label>
-                <select className="input">
-                  <option>Unangemessener Inhalt</option>
-                  <option>Urheberrechtsverletzung</option>
-                  <option>Qualitätsprobleme</option>
-                  <option>Falsches Fach/Zyklus</option>
-                  <option>Anderes</option>
-                </select>
+            {reportStatus === "success" ? (
+              <div className="flex flex-col items-center justify-center py-8 text-center">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-success-light">
+                  <svg
+                    className="h-6 w-6 text-success"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                </div>
+                <h4 className="mb-2 font-semibold text-text">Vielen Dank für Ihre Meldung</h4>
+                <p className="text-sm text-text-muted">
+                  Wir werden die Ressource überprüfen.
+                </p>
               </div>
+            ) : (
+              <form onSubmit={handleReportSubmit} className="space-y-4">
+                <div>
+                  <label htmlFor="report-reason" className="mb-2 block text-sm font-medium text-text">
+                    Grund
+                  </label>
+                  <select
+                    id="report-reason"
+                    name="reason"
+                    value={reportReason}
+                    onChange={(e) => setReportReason(e.target.value)}
+                    className="input"
+                    required
+                  >
+                    <option value="inappropriate">Unangemessener Inhalt</option>
+                    <option value="copyright">Urheberrechtsverletzung</option>
+                    <option value="quality">Qualitätsprobleme</option>
+                    <option value="spam">Spam</option>
+                    <option value="fraud">Betrug</option>
+                    <option value="other">Anderes</option>
+                  </select>
+                </div>
 
-              <div>
-                <label className="mb-2 block text-sm font-medium text-text">
-                  Kommentar (optional)
-                </label>
-                <textarea
-                  rows={4}
-                  className="input min-h-[100px] resize-y"
-                  placeholder="Bitte beschreiben Sie das Problem..."
-                />
-              </div>
+                <div>
+                  <label htmlFor="report-description" className="mb-2 block text-sm font-medium text-text">
+                    Kommentar (optional)
+                  </label>
+                  <textarea
+                    id="report-description"
+                    name="description"
+                    value={reportDescription}
+                    onChange={(e) => setReportDescription(e.target.value)}
+                    rows={4}
+                    maxLength={1000}
+                    className="input min-h-[100px] resize-y"
+                    placeholder="Bitte beschreiben Sie das Problem..."
+                  />
+                </div>
 
-              <div className="flex gap-3">
-                <button type="submit" className="btn-danger flex-1 px-4 py-3">
-                  Melden
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowReportModal(false)}
-                  className="btn-secondary px-6 py-3"
-                >
-                  Abbrechen
-                </button>
-              </div>
-            </form>
+                {/* Error Message */}
+                {reportStatus === "error" && reportErrorMessage && (
+                  <div className="flex items-center gap-3 rounded-lg border border-error/50 bg-error/10 p-3">
+                    <svg
+                      className="h-5 w-5 flex-shrink-0 text-error"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    <p className="text-sm text-error">{reportErrorMessage}</p>
+                  </div>
+                )}
+
+                <div className="flex gap-3">
+                  <button
+                    type="submit"
+                    disabled={reportSubmitting}
+                    className="btn-danger flex-1 px-4 py-3 disabled:opacity-50"
+                  >
+                    {reportSubmitting ? "Wird gesendet..." : "Melden"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleCloseReportModal}
+                    disabled={reportSubmitting}
+                    className="btn-secondary px-6 py-3 disabled:opacity-50"
+                  >
+                    Abbrechen
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       )}
