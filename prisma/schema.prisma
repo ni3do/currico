@@ -91,22 +91,12 @@ model User {
   cycles       Json    @default("[]")
   cantons      Json    @default("[]")
 
-  // ============ PRIVATE ADMIN DATA ============
-  password_hash    String? @db.VarChar(255)
-  legal_first_name String? @db.VarChar(100)
-  legal_last_name  String? @db.VarChar(100)
-  iban             String? @db.VarChar(34)
-  address_street   String? @db.VarChar(255)
-  address_city     String? @db.VarChar(100)
-  address_postal   String? @db.VarChar(10)
-  address_country  String  @default("CH") @db.VarChar(2)
+  // ============ PRIVATE DATA ============
+  password_hash String? @db.VarChar(255)
 
   // ============ LOGIC/STATUS FIELDS ============
-  role            UserRole @default(BUYER)
-  is_seller       Boolean  @default(false)
-  seller_verified Boolean  @default(false)
-  payout_enabled  Boolean  @default(false)
-  is_protected    Boolean  @default(false)
+  role         UserRole @default(BUYER)
+  is_protected Boolean  @default(false)
 
   // ============ STRIPE CONNECT ============
   stripe_account_id          String?   @db.VarChar(255)
@@ -141,7 +131,6 @@ model User {
   collections Collection[]
 
   @@index([role])
-  @@index([is_seller])
   @@map("users")
 }
 

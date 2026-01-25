@@ -21,10 +21,10 @@ export async function GET() {
     // Check if user is a seller
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: { is_seller: true, role: true },
+      select: { role: true },
     });
 
-    if (!user?.is_seller && user?.role !== "SELLER") {
+    if (user?.role !== "SELLER") {
       return NextResponse.json({ error: "Nur für Verkäufer zugänglich" }, { status: 403 });
     }
 
