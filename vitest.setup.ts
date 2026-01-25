@@ -117,6 +117,7 @@ vi.mock("@/lib/db", () => {
     $transaction: vi.fn().mockImplementation(async (callback: (tx: typeof mockPrisma) => Promise<unknown>) => {
       return callback(mockPrisma);
     }),
+    $queryRawUnsafe: vi.fn(),
   };
 
   return {

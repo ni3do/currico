@@ -151,13 +151,11 @@ describe("GET /api/resources", () => {
 
     await GET(request);
 
+    // MySQL doesn't support mode: "insensitive", so we just use contains
     expect(mockResourceFindMany).toHaveBeenCalledWith(
       expect.objectContaining({
         where: expect.objectContaining({
-          OR: [
-            { title: { contains: "math", mode: "insensitive" } },
-            { description: { contains: "math", mode: "insensitive" } },
-          ],
+          OR: [{ title: { contains: "math" } }, { description: { contains: "math" } }],
         }),
       })
     );
