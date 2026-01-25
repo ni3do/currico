@@ -10,18 +10,10 @@
  */
 
 import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { Pool } from "pg";
 import { writeFileSync, mkdirSync, existsSync, rmSync } from "fs";
 import path from "path";
 
-// Create Prisma client with the same config as the project
-const pool = new Pool({
-  connectionString:
-    process.env.DATABASE_URL || "postgresql://postgres:postgres@localhost:5432/easy_lehrer",
-});
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
+const prisma = new PrismaClient();
 
 // Test data IDs
 const TEST_SELLER_ID = "test-seller-upload-flow";
@@ -295,8 +287,8 @@ async function testLibraryContainsResource() {
     id: string;
     title: string;
     price: number;
-    subjects: string[];
-    cycles: string[];
+    subjects: unknown; // Json type
+    cycles: unknown; // Json type
     preview_url: string | null;
     seller: { id: string; display_name: string | null };
     acquired_at: Date;

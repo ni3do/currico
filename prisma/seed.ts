@@ -1,16 +1,10 @@
 import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { Pool } from "pg";
 import { hash } from "bcryptjs";
 import * as fs from "fs";
 import * as path from "path";
 import { seedCurriculum } from "./seed-curriculum";
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
+const prisma = new PrismaClient();
 
 // Pre-defined IDs for consistent upserts
 const TEST_USER_ID = "test-user-id";
@@ -200,5 +194,4 @@ main()
   })
   .finally(async () => {
     await prisma.$disconnect();
-    await pool.end();
   });

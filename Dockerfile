@@ -48,7 +48,7 @@ COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 # Install runtime dependencies for migrations/seeding with cache
 RUN --mount=type=cache,target=/root/.npm \
     --mount=type=cache,target=/root/.cache/prisma \
-    npm install --no-save prisma @prisma/client @prisma/adapter-pg pg postgres-array bcryptjs tsx dotenv && \
+    npm install --no-save prisma @prisma/client mysql2 bcryptjs tsx dotenv && \
     npx prisma generate
 
 # Copy startup script

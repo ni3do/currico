@@ -1,11 +1,13 @@
 // Prisma schema for Easy Lehrer - Swiss Teaching Materials Marketplace
+// Database: MySQL 8.0
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 // ============================================================
@@ -13,53 +15,56 @@ datasource db {
 // ============================================================
 
 model Account {
-  id                String  @id @default(cuid())
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
+  id                String  @id @db.VarChar(50)
+  userId            String  @db.VarChar(50)
+  type              String  @db.VarChar(50)
+  provider          String  @db.VarChar(50)
+  providerAccountId String  @db.VarChar(255)
   refresh_token     String? @db.Text
   access_token      String? @db.Text
   expires_at        Int?
-  token_type        String?
-  scope             String?
+  token_type        String? @db.VarChar(50)
+  scope             String? @db.VarChar(500)
   id_token          String? @db.Text
-  session_state     String?
+  session_state     String? @db.VarChar(255)
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@index([userId])
   @@map("accounts")
 }
 
 model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
+  id           String   @id @db.VarChar(50)
+  sessionToken String   @unique @db.VarChar(255)
+  userId       String   @db.VarChar(50)
+  expires      DateTime @db.DateTime(0)
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([userId])
   @@map("sessions")
 }
 
 model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
+  identifier String   @db.VarChar(255)
+  token      String   @unique @db.VarChar(255)
+  expires    DateTime @db.DateTime(0)
 
   @@unique([identifier, token])
   @@map("verification_tokens")
 }
 
 model EmailVerificationToken {
-  id         String   @id @default(cuid())
-  token      String   @unique
-  expires    DateTime
-  created_at DateTime @default(now())
+  id         String   @id @db.VarChar(50)
+  token      String   @unique @db.VarChar(255)
+  expires    DateTime @db.DateTime(0)
+  created_at DateTime @default(now()) @db.DateTime(0)
 
-  user_id String
+  user_id String @db.VarChar(50)
   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
+  @@index([user_id])
   @@map("email_verification_tokens")
 }
 
@@ -69,47 +74,47 @@ model EmailVerificationToken {
 
 model User {
   // ============ IDENTITY (System) ============
-  id         String   @id @default(cuid())
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id         String   @id @default(cuid()) @db.VarChar(50)
+  created_at DateTime @default(now()) @db.DateTime(0)
+  updated_at DateTime @updatedAt @db.DateTime(0)
 
   // ============ NEXTAUTH.JS REQUIRED FIELDS ============
-  name          String? // Display name from OAuth provider
-  email         String    @unique
-  emailVerified DateTime? // When email was verified
-  image         String? // Avatar from OAuth provider
+  name          String?   @db.VarChar(255)
+  email         String    @unique @db.VarChar(255)
+  emailVerified DateTime? @db.DateTime(0)
+  image         String?   @db.VarChar(500)
 
   // ============ PUBLIC PROFILE DATA ============
-  display_name String? // Custom pseudonym for privacy (e.g., "Frau M.")
-  bio          String?  @db.Text // "About me" - max 500 chars
-  subjects     String[] // ["Mathematik", "Deutsch", "NMG"]
-  cycles       String[] // ["Zyklus 1", "Zyklus 2", "Zyklus 3"]
-  cantons      String[] // ["Zürich", "Bern"] - Swiss cantons
+  display_name String? @db.VarChar(100)
+  bio          String? @db.Text
+  subjects     Json    @default("[]")
+  cycles       Json    @default("[]")
+  cantons      Json    @default("[]")
 
   // ============ PRIVATE ADMIN DATA ============
-  password_hash    String? // For credential-based auth
-  legal_first_name String? // For invoices/payouts
-  legal_last_name  String? // For invoices/payouts
-  iban             String? // Swiss IBAN for payouts
-  address_street   String?
-  address_city     String?
-  address_postal   String? // Postal code
-  address_country  String  @default("CH")
+  password_hash    String? @db.VarChar(255)
+  legal_first_name String? @db.VarChar(100)
+  legal_last_name  String? @db.VarChar(100)
+  iban             String? @db.VarChar(34)
+  address_street   String? @db.VarChar(255)
+  address_city     String? @db.VarChar(100)
+  address_postal   String? @db.VarChar(10)
+  address_country  String  @default("CH") @db.VarChar(2)
 
   // ============ LOGIC/STATUS FIELDS ============
   role            UserRole @default(BUYER)
   is_seller       Boolean  @default(false)
-  seller_verified Boolean  @default(false) // Admin-verified seller
-  payout_enabled  Boolean  @default(false) // True when IBAN validated
-  is_protected    Boolean  @default(false) // Protected users cannot be deleted (e.g., super admin)
+  seller_verified Boolean  @default(false)
+  payout_enabled  Boolean  @default(false)
+  is_protected    Boolean  @default(false)
 
   // ============ STRIPE CONNECT ============
-  stripe_account_id          String? // Stripe Connect account ID
+  stripe_account_id          String?   @db.VarChar(255)
   stripe_onboarding_complete Boolean   @default(false)
   stripe_charges_enabled     Boolean   @default(false)
   stripe_payouts_enabled     Boolean   @default(false)
-  stripe_customer_id         String? // Stripe Customer ID for buyers
-  seller_terms_accepted_at   DateTime? // When seller accepted terms
+  stripe_customer_id         String?   @db.VarChar(255)
+  seller_terms_accepted_at   DateTime? @db.DateTime(0)
 
   // ============ RELATIONS ============
   accounts                Account[]
@@ -135,6 +140,8 @@ model User {
   // Collection relations
   collections Collection[]
 
+  @@index([role])
+  @@index([is_seller])
   @@map("users")
 }
 
@@ -156,34 +163,34 @@ enum ResourceStatus {
 // ============================================================
 
 model Resource {
-  id         String   @id @default(cuid())
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id         String   @id @default(cuid()) @db.VarChar(50)
+  created_at DateTime @default(now()) @db.DateTime(0)
+  updated_at DateTime @updatedAt @db.DateTime(0)
 
-  title       String
-  description String  @db.Text
-  price       Int // Price in cents (e.g., 500 = 5.00 CHF)
-  file_url    String // URL to the resource file
-  preview_url String? // Preview image URL
+  title       String @db.VarChar(255)
+  description String @db.Text
+  price       Int    @db.Int
+  file_url    String @db.VarChar(500)
+  preview_url String? @db.VarChar(500)
 
-  subjects String[]
-  cycles   String[]
+  subjects Json @default("[]")
+  cycles   Json @default("[]")
 
   is_published Boolean @default(false)
-  is_approved  Boolean @default(false) // Admin approval
+  is_approved  Boolean @default(false)
 
   // Document verification workflow
-  status    ResourceStatus @default(PENDING) // pending, verified, rejected
-  is_public Boolean        @default(false) // Only visible to others when true
+  status    ResourceStatus @default(PENDING)
+  is_public Boolean        @default(false)
 
   // Swiss Quality Checks
-  eszett_checked Boolean @default(false) // Checked for ß (should use ss)
-  swiss_verified Boolean @default(false) // Admin verified Swiss quality
-  language       String  @default("de") // de, fr, it
+  eszett_checked Boolean @default(false)
+  swiss_verified Boolean @default(false)
+  language       String  @default("de") @db.VarChar(5)
 
   // Relations
-  seller_id    String
-  seller       User          @relation(fields: [seller_id], references: [id])
+  seller_id    String       @db.VarChar(50)
+  seller       User         @relation(fields: [seller_id], references: [id])
   transactions Transaction[]
   downloads    Download[]
   wishlists    Wishlist[]
@@ -194,7 +201,7 @@ model Resource {
   lehrmittel   ResourceLehrmittel[]
 
   // LP21 cross-curricular features
-  is_mi_integrated Boolean               @default(false) // Medien & Informatik integration
+  is_mi_integrated Boolean               @default(false)
   transversals     ResourceTransversal[]
   bne_themes       ResourceBne[]
 
@@ -204,6 +211,10 @@ model Resource {
   // Collection relations
   collectionItems CollectionItem[]
 
+  @@index([seller_id])
+  @@index([is_published, is_public])
+  @@index([status])
+  @@index([created_at])
   @@map("resources")
 }
 
@@ -212,49 +223,54 @@ model Resource {
 // ============================================================
 
 model Transaction {
-  id         String   @id @default(cuid())
-  created_at DateTime @default(now())
+  id         String   @id @default(cuid()) @db.VarChar(50)
+  created_at DateTime @default(now()) @db.DateTime(0)
 
-  amount Int // Amount in cents
+  amount Int              @db.Int
   status TransactionStatus @default(PENDING)
 
   // Payment tracking
-  stripe_payment_intent_id   String? @unique
-  stripe_checkout_session_id String?
-  payment_method             String? // "card", "twint", "invoice"
+  stripe_payment_intent_id   String? @unique @db.VarChar(255)
+  stripe_checkout_session_id String? @db.VarChar(255)
+  payment_method             String? @db.VarChar(50)
 
   // Swiss QR-Bill invoice fields
-  invoice_number  String? @unique
-  invoice_pdf_url String?
+  invoice_number  String? @unique @db.VarChar(50)
+  invoice_pdf_url String? @db.VarChar(500)
 
   // Fee breakdown (stored for historical accuracy)
-  platform_fee_amount  Int? // Platform fee in cents
-  seller_payout_amount Int? // Amount to seller in cents
+  platform_fee_amount  Int? @db.Int
+  seller_payout_amount Int? @db.Int
 
   // Guest checkout
-  guest_email String? // Email for guest (non-authenticated) purchases
+  guest_email String? @db.VarChar(255)
 
   // Relations
-  buyer_id       String?
+  buyer_id       String?         @db.VarChar(50)
   buyer          User?           @relation(fields: [buyer_id], references: [id])
-  resource_id    String
+  resource_id    String          @db.VarChar(50)
   resource       Resource        @relation(fields: [resource_id], references: [id])
   downloadTokens DownloadToken[]
 
+  @@index([buyer_id])
+  @@index([resource_id])
+  @@index([status])
   @@map("transactions")
 }
 
 model DownloadToken {
-  id             String   @id @default(cuid())
-  token          String   @unique
-  expires_at     DateTime
-  download_count Int      @default(0)
-  max_downloads  Int      @default(5)
-  created_at     DateTime @default(now())
+  id             String   @id @default(cuid()) @db.VarChar(50)
+  token          String   @unique @db.VarChar(255)
+  expires_at     DateTime @db.DateTime(0)
+  download_count Int      @default(0) @db.SmallInt
+  max_downloads  Int      @default(5) @db.SmallInt
+  created_at     DateTime @default(now()) @db.DateTime(0)
 
-  transaction_id String
+  transaction_id String      @db.VarChar(50)
   transaction    Transaction @relation(fields: [transaction_id], references: [id], onDelete: Cascade)
 
+  @@index([transaction_id])
+  @@index([expires_at])
   @@map("download_tokens")
 }
 
@@ -270,31 +286,33 @@ enum TransactionStatus {
 // ============================================================
 
 model Report {
-  id         String   @id @default(cuid())
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id         String   @id @default(cuid()) @db.VarChar(50)
+  created_at DateTime @default(now()) @db.DateTime(0)
+  updated_at DateTime @updatedAt @db.DateTime(0)
 
-  reason      String // Category: "copyright", "inappropriate", "spam", "fraud", "other"
-  description String?      @db.Text // Detailed description from reporter
+  reason      String       @db.VarChar(50)
+  description String?      @db.Text
   status      ReportStatus @default(OPEN)
-  resolution  String?      @db.Text // Admin notes on resolution
+  resolution  String?      @db.Text
 
   // What is being reported (either a resource or a user)
-  resource_id String?
+  resource_id String?   @db.VarChar(50)
   resource    Resource? @relation(fields: [resource_id], references: [id], onDelete: SetNull)
 
-  reported_user_id String?
+  reported_user_id String? @db.VarChar(50)
   reported_user    User?   @relation("ReportedUser", fields: [reported_user_id], references: [id], onDelete: SetNull)
 
   // Who submitted the report
-  reporter_id String
+  reporter_id String @db.VarChar(50)
   reporter    User   @relation("Reporter", fields: [reporter_id], references: [id], onDelete: Cascade)
 
   // Admin who handled the report
-  handled_by_id String?
+  handled_by_id String?   @db.VarChar(50)
   handled_by    User?     @relation("ReportHandler", fields: [handled_by_id], references: [id], onDelete: SetNull)
-  handled_at    DateTime?
+  handled_at    DateTime? @db.DateTime(0)
 
+  @@index([reporter_id])
+  @@index([status])
   @@map("reports")
 }
 
@@ -310,16 +328,17 @@ enum ReportStatus {
 // ============================================================
 
 model ContactMessage {
-  id         String   @id @default(cuid())
-  created_at DateTime @default(now())
+  id         String   @id @default(cuid()) @db.VarChar(50)
+  created_at DateTime @default(now()) @db.DateTime(0)
 
-  name    String
-  email   String
-  phone   String?
-  subject String
+  name    String               @db.VarChar(100)
+  email   String               @db.VarChar(255)
+  phone   String?              @db.VarChar(50)
+  subject String               @db.VarChar(255)
   message String               @db.Text
   status  ContactMessageStatus @default(NEW)
 
+  @@index([status])
   @@map("contact_messages")
 }
 
@@ -335,12 +354,12 @@ enum ContactMessageStatus {
 // ============================================================
 
 model Curriculum {
-  id      String  @id @default(cuid())
-  code    String  @unique // "LP21", "PER"
-  name_de String
-  name_fr String?
-  name_it String?
-  region  String // "de-CH", "fr-CH", "it-CH"
+  id      String  @id @default(cuid()) @db.VarChar(50)
+  code    String  @unique @db.VarChar(10)
+  name_de String  @db.VarChar(100)
+  name_fr String? @db.VarChar(100)
+  name_it String? @db.VarChar(100)
+  region  String  @db.VarChar(10)
 
   subjects CurriculumSubject[]
 
@@ -348,48 +367,51 @@ model Curriculum {
 }
 
 model CurriculumSubject {
-  id      String  @id @default(cuid())
-  code    String // "MA", "D", "NMG", etc.
-  name_de String
-  name_fr String?
-  name_it String?
-  color   String? // LP21 official color scheme (hex)
-  icon    String? // Optional icon identifier
+  id      String  @id @default(cuid()) @db.VarChar(50)
+  code    String  @db.VarChar(10)
+  name_de String  @db.VarChar(100)
+  name_fr String? @db.VarChar(100)
+  name_it String? @db.VarChar(100)
+  color   String? @db.VarChar(7)
+  icon    String? @db.VarChar(50)
 
-  curriculum_id String
+  curriculum_id String     @db.VarChar(50)
   curriculum    Curriculum @relation(fields: [curriculum_id], references: [id], onDelete: Cascade)
 
   competencies CurriculumCompetency[]
 
   @@unique([curriculum_id, code])
+  @@index([curriculum_id])
   @@map("curriculum_subjects")
 }
 
 model CurriculumCompetency {
-  id             String  @id @default(cuid())
-  code           String  @unique // "MA.1.A.1", "MA.1.A.2", etc.
+  id             String  @id @default(cuid()) @db.VarChar(50)
+  code           String  @unique @db.VarChar(20)
   description_de String  @db.Text
   description_fr String? @db.Text
   description_it String? @db.Text
-  cycle          Int // 1, 2, or 3
+  cycle          Int     @db.TinyInt
 
   // Hierarchy levels for LP21
-  kompetenzbereich String? // Competency Area (Level 2)
-  handlungsaspekt  String? // Action/Theme Aspect (Level 3)
+  kompetenzbereich String? @db.VarChar(100)
+  handlungsaspekt  String? @db.VarChar(100)
 
   // Requirement level: "grund" (basic) | "erweitert" (extended) | null (both)
-  anforderungsstufe String?
+  anforderungsstufe String? @db.VarChar(20)
 
   // Self-referential hierarchy for nested competencies
-  parent_id String?
+  parent_id String?                @db.VarChar(50)
   parent    CurriculumCompetency?  @relation("CompetencyHierarchy", fields: [parent_id], references: [id], onDelete: SetNull)
   children  CurriculumCompetency[] @relation("CompetencyHierarchy")
 
-  subject_id String
+  subject_id String            @db.VarChar(50)
   subject    CurriculumSubject @relation(fields: [subject_id], references: [id], onDelete: Cascade)
 
   resources ResourceCompetency[]
 
+  @@index([subject_id])
+  @@index([cycle])
   @@map("curriculum_competencies")
 }
 
@@ -398,15 +420,16 @@ model CurriculumCompetency {
 // ============================================================
 
 model Lehrmittel {
-  id        String   @id @default(cuid())
-  name      String
-  publisher String
-  subject   String // Subject code: "MA", "D", "F", etc.
-  cantons   String[] // Which cantons use this textbook
-  cycles    Int[] // Which cycles: [1], [1,2], [2,3], etc.
+  id        String @id @default(cuid()) @db.VarChar(50)
+  name      String @db.VarChar(255)
+  publisher String @db.VarChar(100)
+  subject   String @db.VarChar(10)
+  cantons   Json   @default("[]")
+  cycles    Json   @default("[]")
 
   resources ResourceLehrmittel[]
 
+  @@index([subject])
   @@map("lehrmittel")
 }
 
@@ -415,15 +438,15 @@ model Lehrmittel {
 // ============================================================
 
 model TransversalCompetency {
-  id             String  @id @default(cuid())
-  code           String  @unique // "PK.1", "SK.1", "MK.1"
-  category       String // "personale" | "soziale" | "methodische"
-  name_de        String
-  name_fr        String?
+  id             String  @id @default(cuid()) @db.VarChar(50)
+  code           String  @unique @db.VarChar(10)
+  category       String  @db.VarChar(20)
+  name_de        String  @db.VarChar(100)
+  name_fr        String? @db.VarChar(100)
   description_de String  @db.Text
   description_fr String? @db.Text
-  icon           String? // Icon identifier
-  color          String? // Hex color code
+  icon           String? @db.VarChar(50)
+  color          String? @db.VarChar(7)
 
   resources ResourceTransversal[]
 
@@ -435,15 +458,15 @@ model TransversalCompetency {
 // ============================================================
 
 model BneTheme {
-  id             String  @id @default(cuid())
-  code           String  @unique // "BNE.1", "BNE.2", etc.
-  name_de        String
-  name_fr        String?
+  id             String  @id @default(cuid()) @db.VarChar(50)
+  code           String  @unique @db.VarChar(10)
+  name_de        String  @db.VarChar(100)
+  name_fr        String? @db.VarChar(100)
   description_de String  @db.Text
   description_fr String? @db.Text
-  sdg_number     Int? // UN Sustainable Development Goal alignment (1-17)
-  icon           String? // Icon identifier
-  color          String? // Hex color code
+  sdg_number     Int?    @db.TinyInt
+  icon           String? @db.VarChar(50)
+  color          String? @db.VarChar(7)
 
   resources ResourceBne[]
 
@@ -455,42 +478,46 @@ model BneTheme {
 // ============================================================
 
 model ResourceCompetency {
-  resource_id   String
+  resource_id   String               @db.VarChar(50)
   resource      Resource             @relation(fields: [resource_id], references: [id], onDelete: Cascade)
-  competency_id String
+  competency_id String               @db.VarChar(50)
   competency    CurriculumCompetency @relation(fields: [competency_id], references: [id], onDelete: Cascade)
 
   @@id([resource_id, competency_id])
+  @@index([competency_id])
   @@map("resource_competencies")
 }
 
 model ResourceLehrmittel {
-  resource_id   String
+  resource_id   String     @db.VarChar(50)
   resource      Resource   @relation(fields: [resource_id], references: [id], onDelete: Cascade)
-  lehrmittel_id String
+  lehrmittel_id String     @db.VarChar(50)
   lehrmittel    Lehrmittel @relation(fields: [lehrmittel_id], references: [id], onDelete: Cascade)
 
   @@id([resource_id, lehrmittel_id])
+  @@index([lehrmittel_id])
   @@map("resource_lehrmittel")
 }
 
 model ResourceTransversal {
-  resource_id    String
+  resource_id    String                @db.VarChar(50)
   resource       Resource              @relation(fields: [resource_id], references: [id], onDelete: Cascade)
-  transversal_id String
+  transversal_id String                @db.VarChar(50)
   transversal    TransversalCompetency @relation(fields: [transversal_id], references: [id], onDelete: Cascade)
 
   @@id([resource_id, transversal_id])
+  @@index([transversal_id])
   @@map("resource_transversals")
 }
 
 model ResourceBne {
-  resource_id String
+  resource_id String   @db.VarChar(50)
   resource    Resource @relation(fields: [resource_id], references: [id], onDelete: Cascade)
-  bne_id      String
+  bne_id      String   @db.VarChar(50)
   bne         BneTheme @relation(fields: [bne_id], references: [id], onDelete: Cascade)
 
   @@id([resource_id, bne_id])
+  @@index([bne_id])
   @@map("resource_bne")
 }
 
@@ -499,16 +526,17 @@ model ResourceBne {
 // ============================================================
 
 model Download {
-  id         String   @id @default(cuid())
-  created_at DateTime @default(now())
+  id         String   @id @default(cuid()) @db.VarChar(50)
+  created_at DateTime @default(now()) @db.DateTime(0)
 
   // Relations
-  user_id     String
+  user_id     String   @db.VarChar(50)
   user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  resource_id String
+  resource_id String   @db.VarChar(50)
   resource    Resource @relation(fields: [resource_id], references: [id], onDelete: Cascade)
 
   @@unique([user_id, resource_id])
+  @@index([resource_id])
   @@map("downloads")
 }
 
@@ -517,16 +545,17 @@ model Download {
 // ============================================================
 
 model Wishlist {
-  id         String   @id @default(cuid())
-  created_at DateTime @default(now())
+  id         String   @id @default(cuid()) @db.VarChar(50)
+  created_at DateTime @default(now()) @db.DateTime(0)
 
   // Relations
-  user_id     String
+  user_id     String   @db.VarChar(50)
   user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  resource_id String
+  resource_id String   @db.VarChar(50)
   resource    Resource @relation(fields: [resource_id], references: [id], onDelete: Cascade)
 
   @@unique([user_id, resource_id])
+  @@index([resource_id])
   @@map("wishlists")
 }
 
@@ -535,14 +564,15 @@ model Wishlist {
 // ============================================================
 
 model Follow {
-  id          String   @id @default(cuid())
-  created_at  DateTime @default(now())
-  follower_id String
+  id          String   @id @default(cuid()) @db.VarChar(50)
+  created_at  DateTime @default(now()) @db.DateTime(0)
+  follower_id String   @db.VarChar(50)
   follower    User     @relation("Followers", fields: [follower_id], references: [id], onDelete: Cascade)
-  followed_id String
+  followed_id String   @db.VarChar(50)
   followed    User     @relation("Following", fields: [followed_id], references: [id], onDelete: Cascade)
 
   @@unique([follower_id, followed_id])
+  @@index([followed_id])
   @@map("follows")
 }
 
@@ -551,33 +581,35 @@ model Follow {
 // ============================================================
 
 model Collection {
-  id          String   @id @default(cuid())
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
-  name        String
+  id          String   @id @default(cuid()) @db.VarChar(50)
+  created_at  DateTime @default(now()) @db.DateTime(0)
+  updated_at  DateTime @updatedAt @db.DateTime(0)
+  name        String   @db.VarChar(100)
   description String?  @db.Text
-  is_public   Boolean  @default(true) // Visible on public profile
-  position    Int      @default(0) // For ordering collections
+  is_public   Boolean  @default(true)
+  position    Int      @default(0) @db.SmallInt
 
-  owner_id String
+  owner_id String @db.VarChar(50)
   owner    User   @relation(fields: [owner_id], references: [id], onDelete: Cascade)
 
   items CollectionItem[]
 
+  @@index([owner_id])
   @@map("collections")
 }
 
 model CollectionItem {
-  id         String   @id @default(cuid())
-  created_at DateTime @default(now())
-  position   Int      @default(0) // For ordering items within collection
+  id         String   @id @default(cuid()) @db.VarChar(50)
+  created_at DateTime @default(now()) @db.DateTime(0)
+  position   Int      @default(0) @db.SmallInt
 
-  collection_id String
+  collection_id String     @db.VarChar(50)
   collection    Collection @relation(fields: [collection_id], references: [id], onDelete: Cascade)
-  resource_id   String
+  resource_id   String     @db.VarChar(50)
   resource      Resource   @relation(fields: [resource_id], references: [id], onDelete: Cascade)
 
   @@unique([collection_id, resource_id])
+  @@index([resource_id])
   @@map("collection_items")
 }
 
@@ -586,33 +618,36 @@ model CollectionItem {
 // ============================================================
 
 model Bundle {
-  id              String         @id @default(cuid())
-  created_at      DateTime       @default(now())
-  updated_at      DateTime       @updatedAt
-  title           String
+  id              String         @id @default(cuid()) @db.VarChar(50)
+  created_at      DateTime       @default(now()) @db.DateTime(0)
+  updated_at      DateTime       @updatedAt @db.DateTime(0)
+  title           String         @db.VarChar(255)
   description     String?        @db.Text
-  price           Int // Price in cents
-  subject         String[]
-  cycle           String[]
-  cover_image_url String?
+  price           Int            @db.Int
+  subject         Json           @default("[]")
+  cycle           Json           @default("[]")
+  cover_image_url String?        @db.VarChar(500)
   is_published    Boolean        @default(false)
   status          ResourceStatus @default(PENDING)
 
-  seller_id String
+  seller_id String @db.VarChar(50)
   seller    User   @relation(fields: [seller_id], references: [id], onDelete: Cascade)
 
   resources BundleResource[]
 
+  @@index([seller_id])
+  @@index([is_published])
   @@map("bundles")
 }
 
 model BundleResource {
-  id          String   @id @default(cuid())
-  bundle_id   String
+  id          String   @id @default(cuid()) @db.VarChar(50)
+  bundle_id   String   @db.VarChar(50)
   bundle      Bundle   @relation(fields: [bundle_id], references: [id], onDelete: Cascade)
-  resource_id String
+  resource_id String   @db.VarChar(50)
   resource    Resource @relation(fields: [resource_id], references: [id], onDelete: Cascade)
 
   @@unique([bundle_id, resource_id])
+  @@index([resource_id])
   @@map("bundle_resources")
 }

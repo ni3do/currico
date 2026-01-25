@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { toStringArray } from "@/lib/json-array";
 import { auth } from "@/lib/auth";
 import { formatPrice } from "@/lib/utils/price";
 
@@ -12,10 +13,7 @@ export async function GET() {
   try {
     const session = await auth();
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "Nicht autorisiert" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Nicht autorisiert" }, { status: 401 });
     }
 
     const userId = session.user.id;
@@ -27,10 +25,7 @@ export async function GET() {
     });
 
     if (!user?.is_seller && user?.role !== "SELLER") {
-      return NextResponse.json(
-        { error: "Nur für Verkäufer zugänglich" },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: "Nur für Verkäufer zugänglich" }, { status: 403 });
     }
 
     // Fetch seller's published resources
@@ -51,25 +46,26 @@ export async function GET() {
     });
 
     // Transform resources for bundle selection
-    const transformedResources = resources.map((resource) => ({
-      id: resource.id,
-      title: resource.title,
-      price: resource.price,
-      priceFormatted: formatPrice(resource.price, { showFreeLabel: true }),
-      subject: resource.subjects[0] || "",
-      subjects: resource.subjects,
-      cycles: resource.cycles,
-      previewUrl: resource.preview_url,
-    }));
+    const transformedResources = resources.map((resource) => {
+      const subjects = toStringArray(resource.subjects);
+      const cycles = toStringArray(resource.cycles);
+      return {
+        id: resource.id,
+        title: resource.title,
+        price: resource.price,
+        priceFormatted: formatPrice(resource.price, { showFreeLabel: true }),
+        subject: subjects[0] || "",
+        subjects,
+        cycles,
+        previewUrl: resource.preview_url,
+      };
+    });
 
     return NextResponse.json({
       resources: transformedResources,
     });
   } catch (error) {
     console.error("Error fetching seller resources:", error);
-    return NextResponse.json(
-      { error: "Fehler beim Laden der Ressourcen" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Fehler beim Laden der Ressourcen" }, { status: 500 });
   }
 }
