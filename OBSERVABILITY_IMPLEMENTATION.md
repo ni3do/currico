@@ -180,43 +180,9 @@ export async function register() {
 }
 ```
 
-#### Task 2.2: Update `next.config.ts`
+#### Task 2.2: ~~Update `next.config.ts`~~ (SKIPPED)
 
-Add instrumentation hook to experimental config:
-
-```typescript
-import type { NextConfig } from "next";
-import createNextIntlPlugin from 'next-intl/plugin';
-
-const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
-
-const nextConfig: NextConfig = {
-  output: 'standalone',
-  turbopack: {},
-  experimental: {
-    instrumentationHook: true,  // ADD THIS
-  },
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-      },
-    ],
-  },
-  webpack: (config, { dev }) => {
-    if (dev) {
-      config.watchOptions = {
-        poll: 1000,
-        aggregateTimeout: 300,
-      };
-    }
-    return config;
-  },
-};
-
-export default withNextIntl(nextConfig);
-```
+**Note:** In Next.js 16+, the `instrumentation.ts` file is automatically detected at the project root. The `instrumentationHook` experimental flag is no longer needed and has been removed from the config types.
 
 #### Task 2.3: Verify Instrumentation
 
@@ -689,7 +655,7 @@ OTEL_SERVICE_NAME="easy-lehrer"
 - [x] `app/api/metrics/route.ts` - Prometheus scrape endpoint
 - [x] `app/global-error.tsx` - Root error boundary
 - [x] `app/[locale]/error.tsx` - Localized error boundary
-- [ ] `instrumentation.ts` - OpenTelemetry registration
+- [x] `instrumentation.ts` - OpenTelemetry registration
 - [ ] `sentry.client.config.ts` - Client Sentry config
 - [ ] `sentry.server.config.ts` - Server Sentry config
 - [ ] `sentry.edge.config.ts` - Edge Sentry config
@@ -699,7 +665,7 @@ OTEL_SERVICE_NAME="easy-lehrer"
 - [ ] `docker-compose.monitoring.yml` - Monitoring stack
 
 ### Files to Modify
-- [ ] `next.config.ts` - Add `instrumentationHook`, wrap with Sentry
+- [ ] `next.config.ts` - Wrap with Sentry (Note: `instrumentationHook` not needed in Next.js 16+, instrumentation.ts is auto-detected)
 - [ ] `Dockerfile` - Copy instrumentation.ts
 - [ ] `.env.example` - Add Sentry/OTEL vars
 - [x] `messages/de.json` - Add error translations
