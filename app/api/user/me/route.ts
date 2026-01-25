@@ -26,7 +26,6 @@ export async function GET() {
         name: true,
         display_name: true,
         role: true,
-        is_seller: true,
       },
     });
 

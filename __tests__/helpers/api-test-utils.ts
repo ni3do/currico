@@ -21,7 +21,7 @@ export function createMockRequest(
     urlObj.searchParams.set(key, value);
   });
 
-  const requestInit: RequestInit = {
+  const requestInit: { method: string; headers: Record<string, string>; body?: string } = {
     method,
     headers: {
       "Content-Type": "application/json",

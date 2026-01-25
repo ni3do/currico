@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import { Link, useRouter } from "@/i18n/navigation";
 import { isValidEmail } from "@/lib/validations/common";
-import { DecorationBg } from "@/components/ui/DecorationBg";
 import TopBar from "@/components/ui/TopBar";
 
 export default function LoginPage() {
@@ -53,22 +53,18 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen geometric-bg relative flex flex-col">
-      <DecorationBg />
-
+    <div className="flex min-h-screen flex-col">
       <TopBar />
 
       {/* Main Content - Centered Glass Card */}
-      <main className="relative z-10 flex-1 flex items-center justify-center px-4 py-8 sm:px-6">
+      <main className="relative z-10 flex flex-1 items-center justify-center px-4 py-8 sm:px-6">
         <div className="w-full max-w-md">
           {/* Glass-morphic Card */}
           <div className="glass-card p-8 sm:p-10">
             {/* Title */}
             <div className="mb-8 text-center">
-              <h1 className="text-3xl font-bold text-[var(--color-text)]">{t("title")}</h1>
-              <p className="mt-3 text-[var(--color-text-muted)]">
-                {t("subtitle")}
-              </p>
+              <h1 className="text-3xl font-bold text-text">{t("title")}</h1>
+              <p className="mt-3 text-text-muted">{t("subtitle")}</p>
             </div>
 
             {/* Login Form */}
@@ -77,7 +73,7 @@ export default function LoginPage() {
               <div>
                 <label
                   htmlFor="email"
-                  className="mb-2 block text-sm font-medium text-[var(--color-text)]"
+                  className="mb-2 block text-sm font-medium text-text"
                 >
                   {t("form.emailLabel")}
                 </label>
@@ -87,15 +83,15 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className={`w-full rounded-lg border bg-[var(--color-surface)] px-4 py-3.5 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-[3px] transition-all ${
+                  className={`w-full rounded-lg border bg-surface px-4 py-3.5 text-text transition-all placeholder:text-text-muted focus:ring-[3px] focus:outline-none ${
                     email && !isValidEmail(email)
-                      ? "border-[var(--color-error)] focus:border-[var(--color-error)] focus:ring-[var(--color-error)]/20"
-                      : "border-[var(--color-border)] focus:border-[var(--color-primary)] focus:ring-[var(--color-primary)]/20"
+                      ? "border-error focus:border-error focus:ring-error/20"
+                      : "border-border focus:border-primary focus:ring-primary/20"
                   }`}
                   placeholder={t("form.emailPlaceholder")}
                 />
                 {email && !isValidEmail(email) && (
-                  <p className="mt-2 text-sm text-[var(--color-error)] animate-fade-in">
+                  <p className="animate-fade-in mt-2 text-sm text-error">
                     {t("form.emailError")}
                   </p>
                 )}
@@ -106,13 +102,13 @@ export default function LoginPage() {
                 <div className="mb-2 flex items-center justify-between">
                   <label
                     htmlFor="password"
-                    className="text-sm font-medium text-[var(--color-text)]"
+                    className="text-sm font-medium text-text"
                   >
                     {t("form.passwordLabel")}
                   </label>
                   <Link
                     href="/coming-soon"
-                    className="text-sm text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-colors font-medium"
+                    className="text-sm font-medium text-primary transition-colors hover:text-primary-hover"
                   >
                     {t("form.forgotPassword")}
                   </Link>
@@ -123,7 +119,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3.5 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-[3px] focus:ring-[var(--color-primary)]/20 transition-all"
+                  className="w-full rounded-lg border border-border bg-surface px-4 py-3.5 text-text transition-all placeholder:text-text-muted focus:border-primary focus:ring-[3px] focus:ring-primary/20 focus:outline-none"
                   placeholder={t("form.passwordPlaceholder")}
                 />
               </div>
@@ -133,11 +129,11 @@ export default function LoginPage() {
                 <input
                   type="checkbox"
                   id="remember"
-                  className="h-4 w-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 cursor-pointer"
+                  className="h-4 w-4 cursor-pointer rounded border-border text-primary focus:ring-2 focus:ring-primary/20"
                 />
                 <label
                   htmlFor="remember"
-                  className="ml-2.5 text-sm text-[var(--color-text-muted)] cursor-pointer"
+                  className="ml-2.5 cursor-pointer text-sm text-text-muted"
                 >
                   {t("form.rememberMe")}
                 </label>
@@ -145,7 +141,7 @@ export default function LoginPage() {
 
               {/* Error Message */}
               {error && (
-                <div className="rounded-lg bg-[var(--badge-error-bg)] border border-[var(--color-error)] px-4 py-3 text-sm text-[var(--color-error)] animate-fade-in">
+                <div className="animate-fade-in rounded-lg border border-error bg-error/10 px-4 py-3 text-sm text-error">
                   {error}
                 </div>
               )}
@@ -154,7 +150,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full rounded-lg bg-[var(--color-primary)] px-6 py-3.5 font-semibold text-white text-center transition-all hover:-translate-y-0.5 hover:bg-[var(--color-primary-hover)] hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none disabled:hover:bg-[var(--color-primary)]"
+                className="w-full rounded-lg bg-primary px-6 py-3.5 text-center font-semibold text-text-on-accent transition-all hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:bg-primary disabled:hover:shadow-none"
               >
                 {isLoading ? t("form.submitting") : t("form.submitButton")}
               </button>
@@ -164,10 +160,10 @@ export default function LoginPage() {
             <div className="my-8">
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-[var(--color-border)]"></div>
+                  <div className="w-full border-t border-border"></div>
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="bg-[var(--color-surface)]/90 px-4 text-[var(--color-text-muted)]">
+                  <span className="bg-surface/90 px-4 text-text-muted">
                     {t("divider")}
                   </span>
                 </div>
@@ -179,7 +175,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => signIn("google")}
-                className="flex items-center justify-center gap-3 rounded-lg bg-[var(--color-surface)] px-4 py-3.5 text-[var(--color-text)] font-medium hover:bg-[var(--color-surface-elevated)] transition-all"
+                className="flex items-center justify-center gap-3 rounded-lg bg-surface px-4 py-3.5 font-medium text-text transition-all hover:bg-surface-elevated"
               >
                 <svg className="h-5 w-5" viewBox="0 0 24 24">
                   <path
@@ -202,14 +198,42 @@ export default function LoginPage() {
                 {t("oauth.google")}
               </button>
 
+              <button
+                type="button"
+                onClick={() => signIn("microsoft-entra-id")}
+                className="flex items-center justify-center gap-3 rounded-lg bg-[var(--color-surface)] px-4 py-3.5 font-medium text-[var(--color-text)] transition-all hover:bg-[var(--color-surface-elevated)]"
+              >
+                <svg className="h-5 w-5" viewBox="0 0 23 23">
+                  <path fill="#f35325" d="M1 1h10v10H1z" />
+                  <path fill="#81bc06" d="M12 1h10v10H12z" />
+                  <path fill="#05a6f0" d="M1 12h10v10H1z" />
+                  <path fill="#ffba08" d="M12 12h10v10H12z" />
+                </svg>
+                {t("oauth.microsoft")}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => signIn("eduid")}
+                className="flex items-center justify-center gap-3 rounded-lg bg-[var(--color-surface)] px-4 py-3.5 font-medium text-[var(--color-text)] transition-all hover:bg-[var(--color-surface-elevated)]"
+              >
+                <Image
+                  src="/eduid-logo.svg"
+                  alt="edu-ID"
+                  width={20}
+                  height={20}
+                  className="h-5 w-5"
+                />
+                {t("oauth.eduid")}
+              </button>
             </div>
 
             {/* Register Link */}
-            <p className="mt-8 text-center text-[var(--color-text-muted)]">
+            <p className="mt-8 text-center text-text-muted">
               {t("register.prompt")}{" "}
               <Link
                 href="/register"
-                className="font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-colors"
+                className="font-semibold text-primary transition-colors hover:text-primary-hover"
               >
                 {t("register.link")}
               </Link>
@@ -222,10 +246,15 @@ export default function LoginPage() {
       <footer className="relative z-10 px-6 py-6 sm:px-8">
         <Link
           href="/"
-          className="inline-flex items-center text-sm text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors font-medium"
+          className="inline-flex items-center text-sm font-medium text-text-muted transition-colors hover:text-primary"
         >
-          <svg className="mr-1.5 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          <svg className="mr-1.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
           </svg>
           {tCommon("buttons.backToHome")}
         </Link>

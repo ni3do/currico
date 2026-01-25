@@ -1,0 +1,552 @@
+"use client";
+
+import { useState, useEffect, use } from "react";
+import Image from "next/image";
+import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
+import TopBar from "@/components/ui/TopBar";
+import Footer from "@/components/ui/Footer";
+import { ResourceCard } from "@/components/ui/ResourceCard";
+import { Users, FileText, FolderOpen, Calendar, MapPin } from "lucide-react";
+
+interface ProfileData {
+  id: string;
+  name: string | null;
+  display_name: string | null;
+  image: string | null;
+  bio: string | null;
+  subjects: string[];
+  cycles: string[];
+  cantons: string[];
+  role: string;
+  created_at: string;
+  stats: {
+    resourceCount: number;
+    followerCount: number;
+    followingCount: number;
+    collectionCount: number;
+  };
+  isFollowing: boolean;
+  isOwnProfile: boolean;
+}
+
+interface Resource {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  preview_url: string | null;
+  subjects: string[];
+  cycles: string[];
+  created_at: string;
+  downloadCount: number;
+  salesCount: number;
+}
+
+interface Collection {
+  id: string;
+  name: string;
+  description: string | null;
+  itemCount: number;
+  previewItems: {
+    id: string;
+    title: string;
+    preview_url: string | null;
+  }[];
+}
+
+export default function PublicProfilePage({
+  params,
+}: {
+  params: Promise<{ id: string; locale: string }>;
+}) {
+  const { id } = use(params);
+  const t = useTranslations("profile");
+  const [profile, setProfile] = useState<ProfileData | null>(null);
+  const [bestResources, setBestResources] = useState<Resource[]>([]);
+  const [allResources, setAllResources] = useState<Resource[]>([]);
+  const [collections, setCollections] = useState<Collection[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [followLoading, setFollowLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState<"uploads" | "collections">("uploads");
+  const [resourcePage, setResourcePage] = useState(1);
+  const [hasMoreResources, setHasMoreResources] = useState(false);
+
+  // Fetch profile data
+  useEffect(() => {
+    async function fetchData() {
+      setLoading(true);
+      try {
+        // Fetch profile, best resources, all resources, and collections in parallel
+        const [profileRes, bestRes, allRes, collectionsRes] = await Promise.all([
+          fetch(`/api/users/${id}/public`),
+          fetch(`/api/users/${id}/resources?best=true`),
+          fetch(`/api/users/${id}/resources?page=1&limit=12`),
+          fetch(`/api/users/${id}/collections`),
+        ]);
+
+        if (profileRes.ok) {
+          const profileData = await profileRes.json();
+          setProfile(profileData);
+        }
+
+        if (bestRes.ok) {
+          const bestData = await bestRes.json();
+          setBestResources(bestData.resources);
+        }
+
+        if (allRes.ok) {
+          const allData = await allRes.json();
+          setAllResources(allData.resources);
+          setHasMoreResources(allData.pagination?.totalPages > 1);
+        }
+
+        if (collectionsRes.ok) {
+          const collectionsData = await collectionsRes.json();
+          setCollections(collectionsData.collections);
+        }
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, [id]);
+
+  // Handle follow/unfollow
+  const handleFollowToggle = async () => {
+    if (!profile || profile.isOwnProfile) return;
+
+    setFollowLoading(true);
+    try {
+      const method = profile.isFollowing ? "DELETE" : "POST";
+      const response = await fetch(`/api/users/${id}/follow`, { method });
+
+      if (response.ok) {
+        const data = await response.json();
+        setProfile((prev) =>
+          prev
+            ? {
+                ...prev,
+                isFollowing: !prev.isFollowing,
+                stats: {
+                  ...prev.stats,
+                  followerCount: data.followerCount,
+                },
+              }
+            : null
+        );
+      }
+    } catch (error) {
+      console.error("Error toggling follow:", error);
+    } finally {
+      setFollowLoading(false);
+    }
+  };
+
+  // Load more resources
+  const loadMoreResources = async () => {
+    const nextPage = resourcePage + 1;
+    try {
+      const response = await fetch(`/api/users/${id}/resources?page=${nextPage}&limit=12`);
+      if (response.ok) {
+        const data = await response.json();
+        setAllResources((prev) => [...prev, ...data.resources]);
+        setResourcePage(nextPage);
+        setHasMoreResources(data.pagination?.page < data.pagination?.totalPages);
+      }
+    } catch (error) {
+      console.error("Error loading more resources:", error);
+    }
+  };
+
+  const displayName = profile?.display_name || profile?.name || "Benutzer";
+  const formatPrice = (cents: number) =>
+    cents === 0 ? "Gratis" : `CHF ${(cents / 100).toFixed(2)}`;
+
+  const getSubjectPillClass = (subject: string): string => {
+    const subjectMap: Record<string, string> = {
+      Deutsch: "pill-deutsch",
+      Mathematik: "pill-mathe",
+      NMG: "pill-nmg",
+      BG: "pill-gestalten",
+      Musik: "pill-musik",
+      Sport: "pill-sport",
+      Englisch: "pill-fremdsprachen",
+      Franzosisch: "pill-fremdsprachen",
+    };
+    return subjectMap[subject] || "pill-primary";
+  };
+
+  if (loading) {
+    return (
+      <div className="bg-bg flex min-h-screen flex-col">
+        <TopBar />
+        <main className="flex flex-1 items-center justify-center">
+          <div className="text-text-muted flex items-center gap-3">
+            <svg className="h-6 w-6 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              />
+            </svg>
+            <span>Profil wird geladen...</span>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <div className="bg-bg flex min-h-screen flex-col">
+        <TopBar />
+        <main className="flex flex-1 items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-text mb-2 text-2xl font-bold">Profil nicht gefunden</h1>
+            <p className="text-text-muted mb-4">
+              Das gesuchte Profil existiert nicht oder wurde entfernt.
+            </p>
+            <Link href="/resources" className="btn-primary px-6 py-3">
+              Ressourcen durchsuchen
+            </Link>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-bg flex min-h-screen flex-col">
+      <TopBar />
+
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
+        {/* Profile Header */}
+        <div className="card mb-8 p-8">
+          <div className="flex flex-col gap-6 md:flex-row md:items-start">
+            {/* Avatar */}
+            <div className="flex-shrink-0">
+              {profile.image ? (
+                <Image
+                  src={profile.image}
+                  alt={displayName}
+                  width={120}
+                  height={120}
+                  className="border-border rounded-full border-4 object-cover"
+                />
+              ) : (
+                <div className="from-primary to-success flex h-[120px] w-[120px] items-center justify-center rounded-full bg-gradient-to-br text-4xl font-bold text-white">
+                  {displayName.charAt(0).toUpperCase()}
+                </div>
+              )}
+            </div>
+
+            {/* Profile Info */}
+            <div className="flex-1">
+              <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h1 className="text-text text-2xl font-bold">{displayName}</h1>
+                  {profile.role === "SELLER" && (
+                    <span className="bg-success/20 text-success mt-1 inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium">
+                      <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                          fillRule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      Verifizierter Verkäufer
+                    </span>
+                  )}
+                </div>
+
+                {/* Follow Button */}
+                {!profile.isOwnProfile && (
+                  <button
+                    onClick={handleFollowToggle}
+                    disabled={followLoading}
+                    className={`flex items-center gap-2 rounded-lg px-6 py-2.5 font-medium transition-colors ${
+                      profile.isFollowing
+                        ? "border-border bg-surface text-text hover:bg-surface-elevated border"
+                        : "bg-primary hover:bg-primary-hover text-white"
+                    }`}
+                  >
+                    {followLoading ? (
+                      <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                        />
+                      </svg>
+                    ) : profile.isFollowing ? (
+                      <>
+                        <Users className="h-4 w-4" />
+                        Gefolgt
+                      </>
+                    ) : (
+                      <>
+                        <Users className="h-4 w-4" />
+                        Folgen
+                      </>
+                    )}
+                  </button>
+                )}
+
+                {profile.isOwnProfile && (
+                  <Link
+                    href="/profile/edit"
+                    className="border-border bg-surface text-text hover:bg-surface-elevated flex items-center gap-2 rounded-lg border px-6 py-2.5 font-medium transition-colors"
+                  >
+                    Profil bearbeiten
+                  </Link>
+                )}
+              </div>
+
+              {/* Bio */}
+              {profile.bio && <p className="text-text-muted mb-4">{profile.bio}</p>}
+
+              {/* Meta Info */}
+              <div className="text-text-muted flex flex-wrap gap-4 text-sm">
+                {profile.cantons.length > 0 && (
+                  <div className="flex items-center gap-1">
+                    <MapPin className="h-4 w-4" />
+                    {profile.cantons.join(", ")}
+                  </div>
+                )}
+                <div className="flex items-center gap-1">
+                  <Calendar className="h-4 w-4" />
+                  Mitglied seit{" "}
+                  {new Date(profile.created_at).toLocaleDateString("de-CH", {
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </div>
+              </div>
+
+              {/* Subjects */}
+              {profile.subjects.length > 0 && (
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {profile.subjects.map((subject) => (
+                    <span key={subject} className={`pill ${getSubjectPillClass(subject)}`}>
+                      {subject}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Stats */}
+            <div className="border-border flex gap-6 border-t pt-4 md:border-t-0 md:border-l md:pt-0 md:pl-6">
+              <div className="text-center">
+                <div className="text-primary text-2xl font-bold">{profile.stats.resourceCount}</div>
+                <div className="text-text-muted text-xs">Ressourcen</div>
+              </div>
+              <div className="text-center">
+                <div className="text-success text-2xl font-bold">{profile.stats.followerCount}</div>
+                <div className="text-text-muted text-xs">Follower</div>
+              </div>
+              <div className="text-center">
+                <div className="text-accent text-2xl font-bold">{profile.stats.followingCount}</div>
+                <div className="text-text-muted text-xs">Folgt</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Best Uploads Section */}
+        {bestResources.length > 0 && (
+          <section className="mb-8">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-text text-xl font-bold">Beste Uploads</h2>
+            </div>
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {bestResources.slice(0, 3).map((resource) => (
+                <ResourceCard
+                  key={resource.id}
+                  id={resource.id}
+                  title={resource.title}
+                  description={resource.description}
+                  subject={resource.subjects[0] || ""}
+                  cycle={resource.cycles[0] || ""}
+                  priceFormatted={formatPrice(resource.price)}
+                  previewUrl={resource.preview_url}
+                  seller={{ displayName }}
+                  subjectPillClass={getSubjectPillClass(resource.subjects[0] || "")}
+                />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Tabs */}
+        <div className="border-border mb-6 flex gap-4 border-b">
+          <button
+            onClick={() => setActiveTab("uploads")}
+            className={`flex items-center gap-2 pb-4 text-sm font-medium transition-colors ${
+              activeTab === "uploads"
+                ? "border-primary text-primary border-b-2"
+                : "text-text-muted hover:text-text"
+            }`}
+          >
+            <FileText className="h-4 w-4" />
+            Alle Uploads ({profile.stats.resourceCount})
+          </button>
+          <button
+            onClick={() => setActiveTab("collections")}
+            className={`flex items-center gap-2 pb-4 text-sm font-medium transition-colors ${
+              activeTab === "collections"
+                ? "border-primary text-primary border-b-2"
+                : "text-text-muted hover:text-text"
+            }`}
+          >
+            <FolderOpen className="h-4 w-4" />
+            Sammlungen ({profile.stats.collectionCount})
+          </button>
+        </div>
+
+        {/* All Uploads Tab */}
+        {activeTab === "uploads" && (
+          <section>
+            {allResources.length === 0 ? (
+              <div className="card flex flex-col items-center justify-center py-16">
+                <FileText className="text-text-faint mb-4 h-12 w-12" />
+                <p className="text-text">Noch keine Uploads vorhanden</p>
+                <p className="text-text-muted text-sm">
+                  {profile.isOwnProfile
+                    ? "Laden Sie Ihre erste Ressource hoch!"
+                    : "Dieser Benutzer hat noch keine Ressourcen hochgeladen."}
+                </p>
+              </div>
+            ) : (
+              <>
+                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  {allResources.map((resource) => (
+                    <ResourceCard
+                      key={resource.id}
+                      id={resource.id}
+                      title={resource.title}
+                      description={resource.description}
+                      subject={resource.subjects[0] || ""}
+                      cycle={resource.cycles[0] || ""}
+                      priceFormatted={formatPrice(resource.price)}
+                      previewUrl={resource.preview_url}
+                      seller={{ displayName }}
+                      subjectPillClass={getSubjectPillClass(resource.subjects[0] || "")}
+                    />
+                  ))}
+                </div>
+
+                {hasMoreResources && (
+                  <div className="mt-8 text-center">
+                    <button onClick={loadMoreResources} className="btn-secondary px-8 py-3">
+                      Mehr laden
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
+          </section>
+        )}
+
+        {/* Collections Tab */}
+        {activeTab === "collections" && (
+          <section>
+            {collections.length === 0 ? (
+              <div className="card flex flex-col items-center justify-center py-16">
+                <FolderOpen className="text-text-faint mb-4 h-12 w-12" />
+                <p className="text-text">Noch keine Sammlungen vorhanden</p>
+                <p className="text-text-muted text-sm">
+                  {profile.isOwnProfile
+                    ? "Erstellen Sie Ihre erste Sammlung!"
+                    : "Dieser Benutzer hat noch keine öffentlichen Sammlungen."}
+                </p>
+              </div>
+            ) : (
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {collections.map((collection) => (
+                  <Link
+                    key={collection.id}
+                    href={`/collections/${collection.id}`}
+                    className="card group overflow-hidden transition-all hover:-translate-y-1 hover:shadow-lg"
+                  >
+                    {/* Preview Grid */}
+                    <div className="bg-bg-secondary grid h-40 grid-cols-2 gap-1 p-1">
+                      {collection.previewItems.slice(0, 4).map((item, idx) => (
+                        <div
+                          key={item.id}
+                          className="bg-surface relative overflow-hidden rounded-sm"
+                        >
+                          {item.preview_url ? (
+                            <Image
+                              src={item.preview_url}
+                              alt={item.title}
+                              fill
+                              className="object-cover"
+                            />
+                          ) : (
+                            <div className="flex h-full w-full items-center justify-center">
+                              <FileText className="text-text-faint h-6 w-6" />
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                      {collection.previewItems.length < 4 &&
+                        Array.from({ length: 4 - collection.previewItems.length }).map((_, idx) => (
+                          <div
+                            key={`empty-${idx}`}
+                            className="bg-surface flex items-center justify-center rounded-sm"
+                          >
+                            <div className="border-border h-6 w-6 rounded border-2 border-dashed" />
+                          </div>
+                        ))}
+                    </div>
+
+                    {/* Collection Info */}
+                    <div className="p-4">
+                      <h3 className="text-text group-hover:text-primary mb-1 font-semibold">
+                        {collection.name}
+                      </h3>
+                      {collection.description && (
+                        <p className="text-text-muted mb-2 line-clamp-2 text-sm">
+                          {collection.description}
+                        </p>
+                      )}
+                      <div className="text-text-muted flex items-center gap-1 text-sm">
+                        <FileText className="h-4 w-4" />
+                        {collection.itemCount} Ressourcen
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+      </main>
+
+      <Footer />
+    </div>
+  );
+}

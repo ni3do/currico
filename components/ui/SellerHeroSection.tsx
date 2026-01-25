@@ -1,0 +1,145 @@
+"use client";
+
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
+import { Coins, Users, Upload, ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
+import { FadeIn, StaggerChildren, StaggerItem, motion } from "./animations";
+
+interface SellerHeroSectionProps {
+  className?: string;
+}
+
+export function SellerHeroSection({ className = "" }: SellerHeroSectionProps) {
+  const t = useTranslations("sellerHero");
+
+  const features = [
+    {
+      icon: <Coins className="h-5 w-5" />,
+      title: t("features.commission.title"),
+      description: t("features.commission.description"),
+      bgGradient: "from-[var(--ctp-yellow)]/20 to-[var(--ctp-peach)]/10",
+      iconColor: "text-[var(--ctp-yellow)]",
+    },
+    {
+      icon: <Users className="h-5 w-5" />,
+      title: t("features.community.title"),
+      description: t("features.community.description"),
+      bgGradient: "from-[var(--ctp-blue)]/20 to-[var(--ctp-sapphire)]/10",
+      iconColor: "text-[var(--ctp-sapphire)]",
+    },
+    {
+      icon: <Upload className="h-5 w-5" />,
+      title: t("features.curriculum.title"),
+      description: t("features.curriculum.description"),
+      bgGradient: "from-[var(--ctp-teal)]/20 to-[var(--ctp-green)]/10",
+      iconColor: "text-[var(--ctp-teal)]",
+    },
+  ];
+
+  return (
+    <section
+      className={`seller-hero-premium bg-surface relative overflow-hidden rounded-2xl ${className}`}
+    >
+      {/* Subtle gradient accent */}
+      <div
+        className="absolute inset-0 opacity-50"
+        style={{
+          background: `linear-gradient(135deg,
+            color-mix(in srgb, var(--ctp-blue) 8%, transparent) 0%,
+            color-mix(in srgb, var(--ctp-teal) 5%, transparent) 100%
+          )`,
+        }}
+      />
+
+      {/* Content */}
+      <div className="relative z-10 mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
+        {/* Centered Header */}
+        <FadeIn direction="up" className="mx-auto max-w-2xl text-center">
+          {/* Premium Badge */}
+          <motion.div
+            className="mb-4 inline-flex items-center gap-2 rounded-full border border-[var(--ctp-blue)]/30 bg-[var(--ctp-blue)]/10 px-4 py-1.5"
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.2 }}
+          >
+            <motion.span
+              animate={{ rotate: [0, 15, -15, 0] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              <Sparkles className="h-3.5 w-3.5 text-[var(--ctp-blue)]" />
+            </motion.span>
+            <span className="text-xs font-semibold text-[var(--ctp-blue)]">
+              70% Provision für Sie
+            </span>
+          </motion.div>
+
+          {/* Headline */}
+          <h2 className="text-text text-2xl leading-tight font-bold tracking-tight sm:text-3xl">
+            {t("headline")}
+          </h2>
+
+          {/* Subheadline */}
+          <p className="text-text-secondary mx-auto mt-3 max-w-xl text-sm leading-relaxed sm:text-base">
+            {t("subheadline")}
+          </p>
+        </FadeIn>
+
+        {/* Feature Cards Grid */}
+        <StaggerChildren
+          staggerDelay={0.1}
+          className="mx-auto mt-8 grid max-w-4xl gap-4 sm:grid-cols-3"
+        >
+          {features.map((feature, index) => (
+            <StaggerItem key={index}>
+              <motion.div
+                className="group border-border bg-bg hover:border-border relative overflow-hidden rounded-xl border p-5 transition-shadow duration-200 hover:shadow-sm"
+                whileHover={{ y: -5, scale: 1.02 }}
+                transition={{ duration: 0.2 }}
+              >
+                {/* Icon */}
+                <motion.div
+                  className={`mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br ${feature.bgGradient} ${feature.iconColor}`}
+                  whileHover={{ rotate: 10, scale: 1.1 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {feature.icon}
+                </motion.div>
+
+                {/* Content */}
+                <h3 className="text-text text-sm font-semibold">{feature.title}</h3>
+                <p className="text-text-muted mt-1.5 text-xs leading-relaxed">
+                  {feature.description}
+                </p>
+              </motion.div>
+            </StaggerItem>
+          ))}
+        </StaggerChildren>
+
+        {/* Bottom CTA Section */}
+        <FadeIn
+          direction="up"
+          delay={0.3}
+          className="mx-auto mt-8 flex max-w-xl flex-col items-center gap-3 text-center"
+        >
+          {/* CTA Button */}
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Link
+              href="/become-seller"
+              className="btn-primary group inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-semibold"
+            >
+              <span>{t("ctaButton")}</span>
+              <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+            </Link>
+          </motion.div>
+
+          {/* Free Note */}
+          <p className="text-text-muted flex items-center gap-1.5 text-xs">
+            <CheckCircle2 className="h-3.5 w-3.5 text-[var(--ctp-green)]" />
+            {t("freeNote")}
+          </p>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
+export default SellerHeroSection;

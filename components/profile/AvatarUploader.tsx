@@ -8,11 +8,7 @@ interface AvatarUploaderProps {
   onUpload: (file: File) => Promise<void>;
 }
 
-export function AvatarUploader({
-  currentAvatarUrl,
-  displayName,
-  onUpload,
-}: AvatarUploaderProps) {
+export function AvatarUploader({ currentAvatarUrl, displayName, onUpload }: AvatarUploaderProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -67,16 +63,12 @@ export function AvatarUploader({
     <div className="flex flex-col items-center">
       <div className="relative">
         {/* Avatar display */}
-        <div className="relative h-24 w-24 overflow-hidden rounded-full border-4 border-[var(--color-border)] bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-success)]">
+        <div className="relative h-24 w-24 overflow-hidden rounded-full border-4 border-border bg-gradient-to-br from-primary to-success">
           {displayedAvatar ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={displayedAvatar}
-              alt={displayName}
-              className="h-full w-full object-cover"
-            />
+            <img src={displayedAvatar} alt={displayName} className="h-full w-full object-cover" />
           ) : (
-            <div className="flex h-full w-full items-center justify-center text-2xl font-bold text-white">
+            <div className="flex h-full w-full items-center justify-center text-2xl font-bold text-text-on-accent">
               {initials}
             </div>
           )}
@@ -94,14 +86,9 @@ export function AvatarUploader({
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={isUploading}
-          className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-[var(--color-primary)] text-white hover:bg-[var(--color-success)] transition-colors disabled:opacity-50"
+          className="absolute right-0 bottom-0 flex h-8 w-8 items-center justify-center rounded-full border-2 border-bg bg-primary text-text-on-accent transition-colors hover:bg-success disabled:opacity-50"
         >
-          <svg
-            className="h-4 w-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -128,14 +115,12 @@ export function AvatarUploader({
       />
 
       {/* Instructions */}
-      <p className="mt-3 text-center text-xs text-[var(--color-text-muted)]">
+      <p className="mt-3 text-center text-xs text-text-muted">
         JPG, PNG oder WebP. Max 2MB.
       </p>
 
       {/* Error message */}
-      {error && (
-        <p className="mt-2 text-center text-sm text-[var(--color-error)]">{error}</p>
-      )}
+      {error && <p className="mt-2 text-center text-sm text-error">{error}</p>}
     </div>
   );
 }

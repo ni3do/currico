@@ -51,6 +51,18 @@ model VerificationToken {
   @@map("verification_tokens")
 }
 
+model EmailVerificationToken {
+  id         String   @id @default(cuid())
+  token      String   @unique
+  expires    DateTime
+  created_at DateTime @default(now())
+
+  user_id String
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("email_verification_tokens")
+}
+
 // ============================================================
 // USER MODEL - Seller Profile
 // ============================================================
@@ -93,18 +105,35 @@ model User {
 
   // ============ STRIPE CONNECT ============
   stripe_account_id          String? // Stripe Connect account ID
-  stripe_onboarding_complete Boolean @default(false)
+  stripe_onboarding_complete Boolean   @default(false)
+  stripe_charges_enabled     Boolean   @default(false)
+  stripe_payouts_enabled     Boolean   @default(false)
+  stripe_customer_id         String? // Stripe Customer ID for buyers
+  seller_terms_accepted_at   DateTime? // When seller accepted terms
 
   // ============ RELATIONS ============
-  accounts     Account[]
-  sessions     Session[]
-  resources    Resource[]
-  transactions Transaction[]
+  accounts                Account[]
+  sessions                Session[]
+  resources               Resource[]
+  transactions            Transaction[]
+  downloads               Download[]
+  wishlists               Wishlist[]
+  emailVerificationTokens EmailVerificationToken[]
 
   // Report relations
   reports_submitted Report[] @relation("Reporter")
   reports_received  Report[] @relation("ReportedUser")
   reports_handled   Report[] @relation("ReportHandler")
+
+  // Following relations
+  followers Follow[] @relation("Following")
+  following Follow[] @relation("Followers")
+
+  // Bundle relations
+  bundles Bundle[]
+
+  // Collection relations
+  collections Collection[]
 
   @@map("users")
 }
@@ -144,8 +173,8 @@ model Resource {
   is_approved  Boolean @default(false) // Admin approval
 
   // Document verification workflow
-  status      ResourceStatus @default(PENDING) // pending, verified, rejected
-  is_public   Boolean @default(false) // Only visible to others when true
+  status    ResourceStatus @default(PENDING) // pending, verified, rejected
+  is_public Boolean        @default(false) // Only visible to others when true
 
   // Swiss Quality Checks
   eszett_checked Boolean @default(false) // Checked for ß (should use ss)
@@ -156,11 +185,24 @@ model Resource {
   seller_id    String
   seller       User          @relation(fields: [seller_id], references: [id])
   transactions Transaction[]
+  downloads    Download[]
+  wishlists    Wishlist[]
   reports      Report[]
 
   // Curriculum alignment
   competencies ResourceCompetency[]
   lehrmittel   ResourceLehrmittel[]
+
+  // LP21 cross-curricular features
+  is_mi_integrated Boolean               @default(false) // Medien & Informatik integration
+  transversals     ResourceTransversal[]
+  bne_themes       ResourceBne[]
+
+  // Bundle relations
+  bundleResources BundleResource[]
+
+  // Collection relations
+  collectionItems CollectionItem[]
 
   @@map("resources")
 }
@@ -189,13 +231,31 @@ model Transaction {
   platform_fee_amount  Int? // Platform fee in cents
   seller_payout_amount Int? // Amount to seller in cents
 
+  // Guest checkout
+  guest_email String? // Email for guest (non-authenticated) purchases
+
   // Relations
-  buyer_id    String
-  buyer       User     @relation(fields: [buyer_id], references: [id])
-  resource_id String
-  resource    Resource @relation(fields: [resource_id], references: [id])
+  buyer_id       String?
+  buyer          User?           @relation(fields: [buyer_id], references: [id])
+  resource_id    String
+  resource       Resource        @relation(fields: [resource_id], references: [id])
+  downloadTokens DownloadToken[]
 
   @@map("transactions")
+}
+
+model DownloadToken {
+  id             String   @id @default(cuid())
+  token          String   @unique
+  expires_at     DateTime
+  download_count Int      @default(0)
+  max_downloads  Int      @default(5)
+  created_at     DateTime @default(now())
+
+  transaction_id String
+  transaction    Transaction @relation(fields: [transaction_id], references: [id], onDelete: Cascade)
+
+  @@map("download_tokens")
 }
 
 enum TransactionStatus {
@@ -293,6 +353,8 @@ model CurriculumSubject {
   name_de String
   name_fr String?
   name_it String?
+  color   String? // LP21 official color scheme (hex)
+  icon    String? // Optional icon identifier
 
   curriculum_id String
   curriculum    Curriculum @relation(fields: [curriculum_id], references: [id], onDelete: Cascade)
@@ -314,6 +376,14 @@ model CurriculumCompetency {
   // Hierarchy levels for LP21
   kompetenzbereich String? // Competency Area (Level 2)
   handlungsaspekt  String? // Action/Theme Aspect (Level 3)
+
+  // Requirement level: "grund" (basic) | "erweitert" (extended) | null (both)
+  anforderungsstufe String?
+
+  // Self-referential hierarchy for nested competencies
+  parent_id String?
+  parent    CurriculumCompetency?  @relation("CompetencyHierarchy", fields: [parent_id], references: [id], onDelete: SetNull)
+  children  CurriculumCompetency[] @relation("CompetencyHierarchy")
 
   subject_id String
   subject    CurriculumSubject @relation(fields: [subject_id], references: [id], onDelete: Cascade)
@@ -341,6 +411,46 @@ model Lehrmittel {
 }
 
 // ============================================================
+// TRANSVERSAL COMPETENCIES - Überfachliche Kompetenzen
+// ============================================================
+
+model TransversalCompetency {
+  id             String  @id @default(cuid())
+  code           String  @unique // "PK.1", "SK.1", "MK.1"
+  category       String // "personale" | "soziale" | "methodische"
+  name_de        String
+  name_fr        String?
+  description_de String  @db.Text
+  description_fr String? @db.Text
+  icon           String? // Icon identifier
+  color          String? // Hex color code
+
+  resources ResourceTransversal[]
+
+  @@map("transversal_competencies")
+}
+
+// ============================================================
+// BNE THEMES - Bildung für Nachhaltige Entwicklung
+// ============================================================
+
+model BneTheme {
+  id             String  @id @default(cuid())
+  code           String  @unique // "BNE.1", "BNE.2", etc.
+  name_de        String
+  name_fr        String?
+  description_de String  @db.Text
+  description_fr String? @db.Text
+  sdg_number     Int? // UN Sustainable Development Goal alignment (1-17)
+  icon           String? // Icon identifier
+  color          String? // Hex color code
+
+  resources ResourceBne[]
+
+  @@map("bne_themes")
+}
+
+// ============================================================
 // JUNCTION TABLES - Many-to-many relations
 // ============================================================
 
@@ -362,4 +472,147 @@ model ResourceLehrmittel {
 
   @@id([resource_id, lehrmittel_id])
   @@map("resource_lehrmittel")
+}
+
+model ResourceTransversal {
+  resource_id    String
+  resource       Resource              @relation(fields: [resource_id], references: [id], onDelete: Cascade)
+  transversal_id String
+  transversal    TransversalCompetency @relation(fields: [transversal_id], references: [id], onDelete: Cascade)
+
+  @@id([resource_id, transversal_id])
+  @@map("resource_transversals")
+}
+
+model ResourceBne {
+  resource_id String
+  resource    Resource @relation(fields: [resource_id], references: [id], onDelete: Cascade)
+  bne_id      String
+  bne         BneTheme @relation(fields: [bne_id], references: [id], onDelete: Cascade)
+
+  @@id([resource_id, bne_id])
+  @@map("resource_bne")
+}
+
+// ============================================================
+// DOWNLOAD MODEL - Track free resource downloads
+// ============================================================
+
+model Download {
+  id         String   @id @default(cuid())
+  created_at DateTime @default(now())
+
+  // Relations
+  user_id     String
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  resource_id String
+  resource    Resource @relation(fields: [resource_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, resource_id])
+  @@map("downloads")
+}
+
+// ============================================================
+// WISHLIST MODEL - Save resources for later
+// ============================================================
+
+model Wishlist {
+  id         String   @id @default(cuid())
+  created_at DateTime @default(now())
+
+  // Relations
+  user_id     String
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  resource_id String
+  resource    Resource @relation(fields: [resource_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, resource_id])
+  @@map("wishlists")
+}
+
+// ============================================================
+// FOLLOW MODEL - User follows sellers
+// ============================================================
+
+model Follow {
+  id          String   @id @default(cuid())
+  created_at  DateTime @default(now())
+  follower_id String
+  follower    User     @relation("Followers", fields: [follower_id], references: [id], onDelete: Cascade)
+  followed_id String
+  followed    User     @relation("Following", fields: [followed_id], references: [id], onDelete: Cascade)
+
+  @@unique([follower_id, followed_id])
+  @@map("follows")
+}
+
+// ============================================================
+// COLLECTION MODEL - User-created resource collections/folders
+// ============================================================
+
+model Collection {
+  id          String   @id @default(cuid())
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  name        String
+  description String?  @db.Text
+  is_public   Boolean  @default(true) // Visible on public profile
+  position    Int      @default(0) // For ordering collections
+
+  owner_id String
+  owner    User   @relation(fields: [owner_id], references: [id], onDelete: Cascade)
+
+  items CollectionItem[]
+
+  @@map("collections")
+}
+
+model CollectionItem {
+  id         String   @id @default(cuid())
+  created_at DateTime @default(now())
+  position   Int      @default(0) // For ordering items within collection
+
+  collection_id String
+  collection    Collection @relation(fields: [collection_id], references: [id], onDelete: Cascade)
+  resource_id   String
+  resource      Resource   @relation(fields: [resource_id], references: [id], onDelete: Cascade)
+
+  @@unique([collection_id, resource_id])
+  @@map("collection_items")
+}
+
+// ============================================================
+// BUNDLE MODEL - Resource bundles at discounted prices
+// ============================================================
+
+model Bundle {
+  id              String         @id @default(cuid())
+  created_at      DateTime       @default(now())
+  updated_at      DateTime       @updatedAt
+  title           String
+  description     String?        @db.Text
+  price           Int // Price in cents
+  subject         String[]
+  cycle           String[]
+  cover_image_url String?
+  is_published    Boolean        @default(false)
+  status          ResourceStatus @default(PENDING)
+
+  seller_id String
+  seller    User   @relation(fields: [seller_id], references: [id], onDelete: Cascade)
+
+  resources BundleResource[]
+
+  @@map("bundles")
+}
+
+model BundleResource {
+  id          String   @id @default(cuid())
+  bundle_id   String
+  bundle      Bundle   @relation(fields: [bundle_id], references: [id], onDelete: Cascade)
+  resource_id String
+  resource    Resource @relation(fields: [resource_id], references: [id], onDelete: Cascade)
+
+  @@unique([bundle_id, resource_id])
+  @@map("bundle_resources")
 }

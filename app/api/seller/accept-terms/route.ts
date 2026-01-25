@@ -1,0 +1,120 @@
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/db";
+import { auth } from "@/lib/auth";
+
+/**
+ * POST /api/seller/accept-terms
+ * Record seller terms acceptance timestamp
+ * Access: Authenticated users with verified email only
+ */
+export async function POST() {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { error: "Nicht autorisiert" },
+        { status: 401 }
+      );
+    }
+
+    const userId = session.user.id;
+
+    // Get user data to check requirements
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        emailVerified: true,
+        seller_terms_accepted_at: true,
+      },
+    });
+
+    if (!user) {
+      return NextResponse.json(
+        { error: "Benutzer nicht gefunden" },
+        { status: 404 }
+      );
+    }
+
+    // Require email verification before accepting terms
+    if (!user.emailVerified) {
+      return NextResponse.json(
+        { error: "E-Mail muss zuerst verifiziert werden" },
+        { status: 400 }
+      );
+    }
+
+    // Check if already accepted
+    if (user.seller_terms_accepted_at) {
+      return NextResponse.json({
+        success: true,
+        alreadyAccepted: true,
+        acceptedAt: user.seller_terms_accepted_at.toISOString(),
+      });
+    }
+
+    // Record terms acceptance
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        seller_terms_accepted_at: new Date(),
+      },
+      select: {
+        seller_terms_accepted_at: true,
+      },
+    });
+
+    return NextResponse.json({
+      success: true,
+      alreadyAccepted: false,
+      acceptedAt: updatedUser.seller_terms_accepted_at?.toISOString(),
+    });
+  } catch (error) {
+    console.error("Error accepting seller terms:", error);
+    return NextResponse.json(
+      { error: "Fehler beim Akzeptieren der Bedingungen" },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * GET /api/seller/accept-terms
+ * Check if user has accepted seller terms
+ * Access: Authenticated users only
+ */
+export async function GET() {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { error: "Nicht autorisiert" },
+        { status: 401 }
+      );
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: {
+        seller_terms_accepted_at: true,
+      },
+    });
+
+    if (!user) {
+      return NextResponse.json(
+        { error: "Benutzer nicht gefunden" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      accepted: !!user.seller_terms_accepted_at,
+      acceptedAt: user.seller_terms_accepted_at?.toISOString() ?? null,
+    });
+  } catch (error) {
+    console.error("Error checking seller terms:", error);
+    return NextResponse.json(
+      { error: "Fehler beim Laden der Bedingungen" },
+      { status: 500 }
+    );
+  }
+}

@@ -11,6 +11,7 @@ COPY package.json package-lock.json* ./
 
 # Use cache mount for faster dependency installation
 RUN --mount=type=cache,target=/root/.npm \
+    npm cache clean --force && \
     npm ci
 
 # Build the application

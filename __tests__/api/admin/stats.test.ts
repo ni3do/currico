@@ -32,9 +32,9 @@ describe("GET /api/admin/stats", () => {
     mockUserCount
       .mockResolvedValueOnce(100) // totalUsers
       .mockResolvedValueOnce(5) // newUsersToday
-      .mockResolvedValueOnce(10) // schoolCount
       .mockResolvedValueOnce(20) // sellerCount
-      .mockResolvedValueOnce(70); // buyerCount
+      .mockResolvedValueOnce(70) // buyerCount
+      .mockResolvedValueOnce(10); // adminCount
 
     mockResourceCount
       .mockResolvedValueOnce(50) // totalResources
@@ -102,9 +102,9 @@ describe("GET /api/admin/stats", () => {
     mockUserCount
       .mockResolvedValueOnce(100) // totalUsers
       .mockResolvedValueOnce(5) // newUsersToday
-      .mockResolvedValueOnce(10) // schoolCount
       .mockResolvedValueOnce(20) // sellerCount
-      .mockResolvedValueOnce(70); // buyerCount
+      .mockResolvedValueOnce(70) // buyerCount
+      .mockResolvedValueOnce(10); // adminCount
 
     mockResourceCount.mockResolvedValue(0);
     mockTransactionAggregate.mockResolvedValue({ _sum: { amount: 0 } });
@@ -112,13 +112,13 @@ describe("GET /api/admin/stats", () => {
 
     const response = await GET();
     const data = await parseResponse<{
-      userBreakdown: { buyers: number; sellers: number; schools: number };
+      userBreakdown: { buyers: number; sellers: number; admins: number };
     }>(response);
 
     expect(response.status).toBe(200);
     expect(data.userBreakdown.buyers).toBe(70);
     expect(data.userBreakdown.sellers).toBe(20);
-    expect(data.userBreakdown.schools).toBe(10);
+    expect(data.userBreakdown.admins).toBe(10);
   });
 
   it("returns 500 on database error", async () => {

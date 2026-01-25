@@ -1,6 +1,80 @@
 @import "tailwindcss";
 
 /* =================================================================
+   TAILWIND THEME INTEGRATION
+   Uses `inline` to resolve CSS variables at runtime for theme switching
+   Usage: bg-primary, text-text, border-border, etc.
+   ================================================================= */
+@theme inline {
+  /* Background Colors */
+  --color-bg: var(--ctp-base);
+  --color-bg-secondary: var(--ctp-mantle);
+  --color-bg-tertiary: var(--ctp-crust);
+  --color-surface: var(--ctp-surface0);
+  --color-surface-hover: var(--ctp-surface1);
+  --color-surface-elevated: var(--ctp-surface1);
+
+  /* Text Colors */
+  --color-text: var(--ctp-text);
+  --color-text-secondary: var(--ctp-subtext1);
+  --color-text-muted: var(--ctp-subtext0);
+  --color-text-faint: var(--ctp-overlay2);
+  --color-text-on-accent: var(--ctp-crust);
+
+  /* Border Colors */
+  --color-border: var(--ctp-surface2);
+  --color-border-subtle: var(--ctp-surface1);
+  --color-border-strong: var(--ctp-overlay0);
+  --color-border-focus: var(--ctp-blue);
+
+  /* Primary/Interactive */
+  --color-primary: var(--ctp-blue);
+  --color-primary-hover: var(--ctp-sapphire);
+
+  /* Accent */
+  --color-accent: var(--ctp-teal);
+  --color-accent-hover: var(--ctp-sapphire);
+
+  /* Action (Kaufen) */
+  --color-action: var(--ctp-teal);
+  --color-action-hover: var(--ctp-sapphire);
+
+  /* Price */
+  --color-price: var(--ctp-peach);
+
+  /* Status Colors */
+  --color-success: var(--ctp-green);
+  --color-warning: var(--ctp-yellow);
+  --color-error: var(--ctp-red);
+  --color-info: var(--ctp-sky);
+
+  /* Subject Colors (Lehrplan 21) */
+  --color-subject-deutsch: var(--ctp-red);
+  --color-subject-mathe: var(--ctp-blue);
+  --color-subject-nmg: var(--ctp-green);
+  --color-subject-gestalten: var(--ctp-pink);
+  --color-subject-musik: var(--ctp-mauve);
+  --color-subject-sport: var(--ctp-peach);
+  --color-subject-fremdsprachen: var(--ctp-sapphire);
+  --color-subject-medien: var(--ctp-sky);
+
+  /* Price Badge Color (warm accent) */
+  --color-price-badge: var(--ctp-peach);
+
+  /* Focus */
+  --color-focus: var(--ctp-lavender);
+
+  /* Border Radius */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-full: 9999px;
+}
+
+/* =================================================================
    EASYLEHRER DESIGN SYSTEM
    Catppuccin Theme - Light (Latte) / Dark (Mocha)
    ================================================================= */
@@ -144,16 +218,41 @@
   --primary-light: color-mix(in srgb, var(--ctp-blue) 15%, transparent);
 
   /* Secondary/Accent Colors */
-  --color-accent: var(--ctp-mauve);
-  --color-accent-hover: var(--ctp-pink);
-  --color-accent-light: color-mix(in srgb, var(--ctp-mauve) 15%, transparent);
+  --color-accent: var(--ctp-teal);
+  --color-accent-hover: var(--ctp-sapphire);
+  --color-accent-light: color-mix(in srgb, var(--ctp-teal) 15%, transparent);
 
+  /* Legacy mappings */
   --accent: var(--ctp-teal);
   --accent-hover: var(--ctp-sapphire);
   --accent-light: color-mix(in srgb, var(--ctp-teal) 15%, transparent);
 
   --secondary: var(--ctp-green);
   --secondary-light: color-mix(in srgb, var(--ctp-green) 15%, transparent);
+
+  /* =================================================================
+     ACTION & PRICE COLORS (per Design Guidelines)
+     ================================================================= */
+  /* Action/Kaufen - Teal for purchase CTAs */
+  --color-action: var(--ctp-teal);
+  --color-action-hover: var(--ctp-sapphire);
+  --color-action-light: color-mix(in srgb, var(--ctp-teal) 15%, transparent);
+
+  /* Price/Highlight - Peach for CHF prices */
+  --color-price: var(--ctp-peach);
+  --color-price-light: color-mix(in srgb, var(--ctp-peach) 15%, transparent);
+
+  /* =================================================================
+     SUBJECT COLORS (Lehrplan 21 Fächer)
+     ================================================================= */
+  --color-subject-deutsch: var(--ctp-red);
+  --color-subject-mathe: var(--ctp-blue);
+  --color-subject-nmg: var(--ctp-green);
+  --color-subject-gestalten: var(--ctp-pink);
+  --color-subject-musik: var(--ctp-mauve);
+  --color-subject-sport: var(--ctp-peach);
+  --color-subject-fremdsprachen: var(--ctp-sapphire);
+  --color-subject-medien: var(--ctp-sky);
 
   /* =================================================================
      STATUS COLORS
@@ -211,6 +310,11 @@
   --btn-danger-text: var(--ctp-crust);
   --btn-danger-hover-bg: var(--ctp-maroon);
 
+  /* Action Button (Kaufen/Teal) */
+  --btn-action-bg: var(--ctp-teal);
+  --btn-action-text: var(--ctp-crust);
+  --btn-action-hover-bg: var(--ctp-sapphire);
+
   /* =================================================================
      BADGE/PILL TOKENS - 20% opacity backgrounds with full color text
      ================================================================= */
@@ -239,9 +343,9 @@
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
   --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.03);
   --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.08), 0 4px 8px rgba(0, 0, 0, 0.04);
-  --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.10), 0 10px 20px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.05);
   --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.05);
-  --shadow-card-hover: 0 20px 40px rgba(0, 0, 0, 0.10);
+  --shadow-card-hover: 0 20px 40px rgba(0, 0, 0, 0.1);
   --shadow-glass: 0 25px 60px rgba(0, 0, 0, 0.15);
 
   /* =================================================================
@@ -279,13 +383,13 @@
 /* Dark theme shadow adjustments */
 :root[data-theme="dark"] {
   --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.15);
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.10);
-  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.10);
-  --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.20), 0 4px 8px rgba(0, 0, 0, 0.12);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.12);
   --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.25), 0 10px 20px rgba(0, 0, 0, 0.15);
   --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.15);
   --shadow-card-hover: 0 20px 40px rgba(0, 0, 0, 0.25);
-  --shadow-glass: 0 25px 60px rgba(0, 0, 0, 0.30);
+  --shadow-glass: 0 25px 60px rgba(0, 0, 0, 0.3);
 }
 
 /* =================================================================
@@ -294,17 +398,30 @@
 body {
   background-color: var(--color-bg);
   color: var(--color-text-secondary);
-  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family:
+    var(--font-inter),
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.6;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 /* =================================================================
    TYPOGRAPHY
    ================================================================= */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   color: var(--color-text);
   font-weight: 700;
   line-height: 1.25;
@@ -434,20 +551,59 @@ a {
   background-color: var(--btn-danger-hover-bg);
 }
 
+/* Action - Teal for purchase CTAs */
+.btn-action {
+  background-color: var(--btn-action-bg);
+  color: var(--btn-action-text);
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease;
+}
+
+.btn-action:hover {
+  background-color: var(--btn-action-hover-bg);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--ctp-teal) 30%, transparent);
+}
+
+.btn-action:active {
+  transform: translateY(0);
+}
+
 /* =================================================================
    CARD STYLES
    ================================================================= */
 .card {
   background: var(--color-bg);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.04),
+    0 4px 12px rgba(0, 0, 0, 0.03);
   border: 1px solid var(--color-border-subtle);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .card:hover {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-card-hover);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.08),
+    0 16px 32px rgba(0, 0, 0, 0.06);
+}
+
+/* Dark theme card shadows */
+:root[data-theme="dark"] .card {
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.12),
+    0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+:root[data-theme="dark"] .card:hover {
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.2),
+    0 16px 32px rgba(0, 0, 0, 0.15);
 }
 
 /* =================================================================
@@ -492,6 +648,47 @@ a {
   color: var(--badge-error-text);
 }
 
+/* Subject Pills (Lehrplan 21 Fächer) */
+.pill-deutsch {
+  background-color: color-mix(in srgb, var(--color-subject-deutsch) 20%, transparent);
+  color: var(--color-subject-deutsch);
+}
+
+.pill-mathe {
+  background-color: color-mix(in srgb, var(--color-subject-mathe) 20%, transparent);
+  color: var(--color-subject-mathe);
+}
+
+.pill-nmg {
+  background-color: color-mix(in srgb, var(--color-subject-nmg) 20%, transparent);
+  color: var(--color-subject-nmg);
+}
+
+.pill-gestalten {
+  background-color: color-mix(in srgb, var(--color-subject-gestalten) 20%, transparent);
+  color: var(--color-subject-gestalten);
+}
+
+.pill-musik {
+  background-color: color-mix(in srgb, var(--color-subject-musik) 20%, transparent);
+  color: var(--color-subject-musik);
+}
+
+.pill-sport {
+  background-color: color-mix(in srgb, var(--color-subject-sport) 20%, transparent);
+  color: var(--color-subject-sport);
+}
+
+.pill-fremdsprachen {
+  background-color: color-mix(in srgb, var(--color-subject-fremdsprachen) 20%, transparent);
+  color: var(--color-subject-fremdsprachen);
+}
+
+.pill-medien {
+  background-color: color-mix(in srgb, var(--color-subject-medien) 20%, transparent);
+  color: var(--color-subject-medien);
+}
+
 /* =================================================================
    INPUT STYLES
    ================================================================= */
@@ -503,7 +700,9 @@ a {
   background: var(--color-bg);
   color: var(--color-text);
   font-size: 1rem;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .input::placeholder {
@@ -514,6 +713,310 @@ a {
   outline: none;
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px var(--color-focus-ring);
+}
+
+/* =================================================================
+   EARNINGS CALCULATOR SLIDER
+   ================================================================= */
+.earnings-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(
+    to right,
+    var(--color-primary) 0%,
+    var(--color-primary) var(--value, 50%),
+    var(--color-border) var(--value, 50%),
+    var(--color-border) 100%
+  );
+  background: var(--color-border);
+  outline: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.earnings-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  cursor: grab;
+  border: 3px solid var(--color-bg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.earnings-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.earnings-slider::-webkit-slider-thumb:active {
+  cursor: grabbing;
+  transform: scale(1.05);
+}
+
+.earnings-slider::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  cursor: grab;
+  border: 3px solid var(--color-bg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.earnings-slider::-moz-range-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.earnings-slider::-moz-range-track {
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--color-border);
+}
+
+.earnings-slider:focus {
+  outline: none;
+}
+
+.earnings-slider:focus::-webkit-slider-thumb {
+  box-shadow:
+    0 0 0 4px var(--color-focus-ring),
+    0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.earnings-slider:focus::-moz-range-thumb {
+  box-shadow:
+    0 0 0 4px var(--color-focus-ring),
+    0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Earnings amount animation */
+.earnings-amount {
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease;
+}
+
+.earnings-amount:hover {
+  transform: scale(1.02);
+}
+
+/* =================================================================
+   PREMIUM SLIDER STYLES (Modern SaaS look)
+   ================================================================= */
+.premium-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 10px;
+  border-radius: 9999px;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.premium-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  cursor: grab;
+  border: 4px solid white;
+  box-shadow:
+    0 4px 12px rgba(59, 130, 246, 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.premium-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  box-shadow:
+    0 6px 16px rgba(59, 130, 246, 0.5),
+    0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+.premium-slider::-webkit-slider-thumb:active {
+  cursor: grabbing;
+  transform: scale(1.1);
+}
+
+.premium-slider::-moz-range-thumb {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  cursor: grab;
+  border: 4px solid white;
+  box-shadow:
+    0 4px 12px rgba(59, 130, 246, 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.premium-slider::-moz-range-thumb:hover {
+  transform: scale(1.15);
+  box-shadow:
+    0 6px 16px rgba(59, 130, 246, 0.5),
+    0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+.premium-slider::-moz-range-track {
+  height: 10px;
+  border-radius: 9999px;
+  background: #e5e7eb;
+}
+
+.premium-slider:focus {
+  outline: none;
+}
+
+.premium-slider:focus::-webkit-slider-thumb {
+  box-shadow:
+    0 0 0 4px rgba(59, 130, 246, 0.2),
+    0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.premium-slider:focus::-moz-range-thumb {
+  box-shadow:
+    0 0 0 4px rgba(59, 130, 246, 0.2),
+    0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+/* =================================================================
+   SELLER CALCULATOR SLIDER - Theme-aware premium slider
+   Uses Catppuccin design tokens for proper light/dark support
+   ================================================================= */
+.seller-calculator-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 10px;
+  border-radius: 9999px;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.seller-calculator-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--ctp-blue) 0%, var(--ctp-sapphire) 100%);
+  cursor: grab;
+  border: 4px solid var(--ctp-base);
+  box-shadow:
+    0 4px 14px color-mix(in srgb, var(--ctp-blue) 40%, transparent),
+    0 2px 4px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.seller-calculator-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  box-shadow:
+    0 6px 20px color-mix(in srgb, var(--ctp-blue) 50%, transparent),
+    0 3px 6px rgba(0, 0, 0, 0.12);
+}
+
+.seller-calculator-slider::-webkit-slider-thumb:active {
+  cursor: grabbing;
+  transform: scale(1.1);
+}
+
+.seller-calculator-slider::-moz-range-thumb {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--ctp-blue) 0%, var(--ctp-sapphire) 100%);
+  cursor: grab;
+  border: 4px solid var(--ctp-base);
+  box-shadow:
+    0 4px 14px color-mix(in srgb, var(--ctp-blue) 40%, transparent),
+    0 2px 4px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.seller-calculator-slider::-moz-range-thumb:hover {
+  transform: scale(1.15);
+  box-shadow:
+    0 6px 20px color-mix(in srgb, var(--ctp-blue) 50%, transparent),
+    0 3px 6px rgba(0, 0, 0, 0.12);
+}
+
+.seller-calculator-slider::-moz-range-track {
+  height: 10px;
+  border-radius: 9999px;
+  background: var(--ctp-surface1);
+}
+
+.seller-calculator-slider:focus {
+  outline: none;
+}
+
+.seller-calculator-slider:focus::-webkit-slider-thumb {
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--ctp-blue) 25%, transparent),
+    0 4px 14px color-mix(in srgb, var(--ctp-blue) 40%, transparent);
+}
+
+.seller-calculator-slider:focus::-moz-range-thumb {
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--ctp-blue) 25%, transparent),
+    0 4px 14px color-mix(in srgb, var(--ctp-blue) 40%, transparent);
+}
+
+/* =================================================================
+   PREVIEW BADGE STYLES
+   ================================================================= */
+.preview-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: var(--radius-full);
+  transition: all 0.15s ease;
+}
+
+.preview-badge-watermark {
+  background-color: color-mix(in srgb, var(--color-info) 15%, transparent);
+  color: var(--color-info);
+  border: 1px solid color-mix(in srgb, var(--color-info) 30%, transparent);
+}
+
+.preview-badge-watermark:hover {
+  background-color: color-mix(in srgb, var(--color-info) 20%, transparent);
+}
+
+.preview-badge-pages {
+  background-color: color-mix(in srgb, var(--color-success) 15%, transparent);
+  color: var(--color-success);
+  border: 1px solid color-mix(in srgb, var(--color-success) 30%, transparent);
+}
+
+.preview-badge-pages:hover {
+  background-color: color-mix(in srgb, var(--color-success) 20%, transparent);
 }
 
 /* =================================================================
@@ -600,6 +1103,485 @@ a {
   animation: fade-in 0.3s ease-out forwards;
 }
 
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.5s ease-out forwards;
+}
+
+@keyframes fade-in-down {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-down {
+  animation: fade-in-down 0.5s ease-out forwards;
+}
+
+@keyframes fade-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in-left {
+  animation: fade-in-left 0.5s ease-out forwards;
+}
+
+@keyframes fade-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in-right {
+  animation: fade-in-right 0.5s ease-out forwards;
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-scale-in {
+  animation: scale-in 0.3s ease-out forwards;
+}
+
+@keyframes slide-in-bottom {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-in-bottom {
+  animation: slide-in-bottom 0.4s ease-out forwards;
+}
+
+@keyframes slide-out-bottom {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+
+.animate-slide-out-bottom {
+  animation: slide-out-bottom 0.3s ease-in forwards;
+}
+
+@keyframes bounce-subtle {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.animate-bounce-subtle {
+  animation: bounce-subtle 2s ease-in-out infinite;
+}
+
+@keyframes pulse-subtle {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 2s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--color-primary) 10%, transparent) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+@keyframes wiggle {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-3deg);
+  }
+  75% {
+    transform: rotate(3deg);
+  }
+}
+
+.animate-wiggle {
+  animation: wiggle 0.3s ease-in-out;
+}
+
+@keyframes heartBeat {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.3);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  75% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Animation delay utilities */
+.animation-delay-100 {
+  animation-delay: 100ms;
+}
+.animation-delay-200 {
+  animation-delay: 200ms;
+}
+.animation-delay-300 {
+  animation-delay: 300ms;
+}
+.animation-delay-400 {
+  animation-delay: 400ms;
+}
+.animation-delay-500 {
+  animation-delay: 500ms;
+}
+.animation-delay-600 {
+  animation-delay: 600ms;
+}
+.animation-delay-700 {
+  animation-delay: 700ms;
+}
+.animation-delay-800 {
+  animation-delay: 800ms;
+}
+
+/* Stagger children animation helper */
+.stagger-children > *:nth-child(1) {
+  animation-delay: 0ms;
+}
+.stagger-children > *:nth-child(2) {
+  animation-delay: 50ms;
+}
+.stagger-children > *:nth-child(3) {
+  animation-delay: 100ms;
+}
+.stagger-children > *:nth-child(4) {
+  animation-delay: 150ms;
+}
+.stagger-children > *:nth-child(5) {
+  animation-delay: 200ms;
+}
+.stagger-children > *:nth-child(6) {
+  animation-delay: 250ms;
+}
+.stagger-children > *:nth-child(7) {
+  animation-delay: 300ms;
+}
+.stagger-children > *:nth-child(8) {
+  animation-delay: 350ms;
+}
+.stagger-children > *:nth-child(9) {
+  animation-delay: 400ms;
+}
+.stagger-children > *:nth-child(10) {
+  animation-delay: 450ms;
+}
+.stagger-children > *:nth-child(11) {
+  animation-delay: 500ms;
+}
+.stagger-children > *:nth-child(12) {
+  animation-delay: 550ms;
+}
+
+/* Initial state for stagger animations */
+.stagger-children > * {
+  opacity: 0;
+}
+
+.stagger-children.animate > * {
+  animation: fade-in-up 0.4s ease-out forwards;
+}
+
+/* Hover animations for interactive elements */
+.hover-lift {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.hover-scale {
+  transition: transform 0.2s ease;
+}
+
+.hover-scale:hover {
+  transform: scale(1.02);
+}
+
+.hover-glow {
+  transition: box-shadow 0.3s ease;
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 20px color-mix(in srgb, var(--color-primary) 30%, transparent);
+}
+
+/* Tab indicator animation */
+.tab-indicator {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Accordion/collapse animation */
+.accordion-content {
+  overflow: hidden;
+  transition:
+    height 0.3s ease-out,
+    opacity 0.3s ease-out;
+}
+
+/* Modal animations */
+.modal-backdrop {
+  transition: opacity 0.2s ease;
+}
+
+.modal-content {
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.modal-enter {
+  opacity: 0;
+  transform: scale(0.95) translateY(10px);
+}
+
+.modal-enter-active {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+.modal-exit {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+.modal-exit-active {
+  opacity: 0;
+  transform: scale(0.95) translateY(10px);
+}
+
+/* Dropdown animations */
+.dropdown-menu {
+  transform-origin: top center;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.dropdown-menu[data-state="closed"] {
+  opacity: 0;
+  transform: scaleY(0.95);
+  pointer-events: none;
+}
+
+.dropdown-menu[data-state="open"] {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+/* Toast/notification slide in */
+@keyframes toast-slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes toast-slide-out {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.toast-enter {
+  animation: toast-slide-in 0.3s ease-out forwards;
+}
+
+.toast-exit {
+  animation: toast-slide-out 0.2s ease-in forwards;
+}
+
+/* Checkbox/toggle animations */
+.checkbox-check {
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.checkbox-check[data-checked="false"] {
+  transform: scale(0);
+  opacity: 0;
+}
+
+.checkbox-check[data-checked="true"] {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* Loading skeleton animation */
+@keyframes skeleton-loading {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-surface) 0px,
+    var(--color-surface-hover) 40px,
+    var(--color-surface) 80px
+  );
+  background-size: 200px 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+  border-radius: var(--radius-sm);
+}
+
+/* Progress bar animation */
+@keyframes progress-indeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(400%);
+  }
+}
+
+.progress-indeterminate {
+  animation: progress-indeterminate 1.5s ease-in-out infinite;
+}
+
+/* Ripple effect */
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: currentColor;
+  animation: ripple 0.6s linear;
+  pointer-events: none;
+}
+
 /* Theme transition for smooth switching */
 * {
   transition-property: background-color, border-color, color;
@@ -612,4 +1594,255 @@ html.theme-transition *::before,
 html.theme-transition *::after {
   transition-duration: 0.2s !important;
   transition-timing-function: ease !important;
+}
+
+/* =================================================================
+   HERO SECTION STYLES
+   ================================================================= */
+.hero-section {
+  background-color: var(--ctp-mantle);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative background pattern - subtle dots */
+.hero-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    color-mix(in srgb, var(--ctp-blue) 8%, transparent) 1px,
+    transparent 0
+  );
+  background-size: 32px 32px;
+  pointer-events: none;
+}
+
+/* Hero image container with floating effect */
+.hero-image-container {
+  position: relative;
+}
+
+/* Decorative circle behind the image */
+.hero-image-container::before {
+  content: "";
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  width: 120%;
+  height: 120%;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--ctp-blue) 15%, transparent) 0%,
+    color-mix(in srgb, var(--ctp-teal) 10%, transparent) 100%
+  );
+  border-radius: 50%;
+  z-index: 0;
+  filter: blur(40px);
+}
+
+/* Secondary decorative element - small accent circle */
+.hero-image-container::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: -30px;
+  width: 80px;
+  height: 80px;
+  background: var(--ctp-teal);
+  border-radius: 50%;
+  opacity: 0.15;
+  z-index: 0;
+}
+
+/* Hero image styling */
+.hero-image {
+  position: relative;
+  z-index: 1;
+  border-radius: var(--radius-xl);
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.15),
+    0 12px 24px -8px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.hero-image:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 30px 60px -12px rgba(0, 0, 0, 0.2),
+    0 18px 36px -12px rgba(0, 0, 0, 0.12);
+}
+
+/* Hero CTA Button - Extra prominent */
+.hero-cta {
+  background: linear-gradient(135deg, var(--ctp-blue) 0%, var(--ctp-sapphire) 100%);
+  color: var(--btn-primary-text);
+  font-weight: 700;
+  font-size: 1.125rem;
+  padding: 1rem 2rem;
+  min-height: 56px;
+  border: none;
+  border-radius: var(--radius-lg);
+  box-shadow:
+    0 4px 14px color-mix(in srgb, var(--ctp-blue) 40%, transparent),
+    0 2px 6px color-mix(in srgb, var(--ctp-blue) 20%, transparent);
+  transition: all 0.25s ease;
+}
+
+.hero-cta:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 8px 24px color-mix(in srgb, var(--ctp-blue) 50%, transparent),
+    0 4px 12px color-mix(in srgb, var(--ctp-blue) 30%, transparent);
+  background: linear-gradient(135deg, var(--ctp-sapphire) 0%, var(--ctp-blue) 100%);
+}
+
+.hero-cta:active {
+  transform: translateY(-1px);
+}
+
+/* Hero secondary button */
+.hero-cta-secondary {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.875rem 1.75rem;
+  min-height: 52px;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  transition: all 0.2s ease;
+}
+
+.hero-cta-secondary:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background-color: var(--color-primary-light);
+}
+
+/* Floating decorative shapes */
+.hero-decoration {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.hero-decoration-1 {
+  top: 10%;
+  left: 5%;
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--ctp-teal) 20%, transparent),
+    color-mix(in srgb, var(--ctp-blue) 10%, transparent)
+  );
+  filter: blur(30px);
+}
+
+.hero-decoration-2 {
+  bottom: 15%;
+  right: 10%;
+  width: 180px;
+  height: 180px;
+  background: linear-gradient(
+    45deg,
+    color-mix(in srgb, var(--ctp-mauve) 15%, transparent),
+    color-mix(in srgb, var(--ctp-pink) 10%, transparent)
+  );
+  filter: blur(40px);
+}
+
+.hero-decoration-3 {
+  top: 60%;
+  left: 15%;
+  width: 60px;
+  height: 60px;
+  background: var(--ctp-green);
+  opacity: 0.1;
+}
+
+/* =================================================================
+   BUTTON CONTRAST FIX
+   Fixes invisible buttons caused by Catppuccin theme contrast issues
+   The --ctp-crust color (#dce0e8) is too light for text on colored backgrounds
+   ================================================================= */
+
+/* =================================================================
+   1. FIX: Override text-on-accent for better contrast
+   ================================================================= */
+:root {
+  /* Force white text on accent backgrounds for light theme */
+  --btn-primary-text: #ffffff;
+  --btn-action-text: #ffffff;
+  --btn-danger-text: #ffffff;
+  --color-text-on-accent: #ffffff;
+}
+
+:root[data-theme="dark"] {
+  /* Dark theme uses dark text on bright accent colors */
+  --btn-primary-text: #1e1e2e;
+  --btn-action-text: #1e1e2e;
+  --btn-danger-text: #1e1e2e;
+  --color-text-on-accent: #1e1e2e;
+}
+
+/* =================================================================
+   2. PRIMARY BUTTONS - Ensure visibility
+   ================================================================= */
+button[type="submit"],
+input[type="submit"],
+.btn-primary {
+  color: var(--btn-primary-text);
+}
+
+/* Tailwind class overrides for buttons with bg-primary */
+.bg-primary {
+  color: var(--btn-primary-text);
+}
+
+/* =================================================================
+   3. ACTION BUTTONS (Teal)
+   ================================================================= */
+.btn-action {
+  color: var(--btn-action-text);
+}
+
+.bg-action {
+  color: var(--btn-action-text);
+}
+
+/* =================================================================
+   4. DANGER BUTTONS
+   ================================================================= */
+.btn-danger {
+  color: var(--btn-danger-text);
+}
+
+/* =================================================================
+   5. HERO CTA - Ensure gradient buttons have white text
+   ================================================================= */
+.hero-cta {
+  color: #ffffff;
+}
+
+/* =================================================================
+   6. SEARCH BUTTON IN HERO
+   ================================================================= */
+.hero-section button[type="submit"],
+form button.bg-primary {
+  color: #ffffff;
+}
+
+/* =================================================================
+   7. Ensure Tailwind text-text-on-accent class works correctly
+   ================================================================= */
+.text-text-on-accent {
+  color: var(--color-text-on-accent);
 }

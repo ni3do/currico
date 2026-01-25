@@ -2,6 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { Link } from "@/i18n/navigation";
+import {
+  Users,
+  FileText,
+  AlertTriangle,
+  TrendingUp,
+  Clock,
+  ArrowRight,
+  Download,
+  DollarSign,
+} from "lucide-react";
 
 interface AdminStats {
   totalUsers: number;
@@ -44,196 +54,201 @@ export default function AdminDashboardPage() {
 
   if (loading) {
     return (
-      <div className="p-8 flex items-center justify-center">
-        <div className="text-[var(--color-text-muted)]">Laden...</div>
+      <div className="flex items-center justify-center p-8">
+        <div className="border-primary h-8 w-8 animate-spin rounded-full border-b-2"></div>
       </div>
     );
   }
 
   return (
-    <div className="p-6 lg:p-8 max-w-7xl mx-auto">
-      {/* Page Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--color-text)]">Dashboard</h1>
-        <p className="mt-2 text-[var(--color-text-muted)]">
-          Willkommen im Admin-Bereich. Hier sehen Sie eine Übersicht aller wichtigen Kennzahlen.
-        </p>
-      </div>
-
+    <div className="space-y-6">
       {/* Key Metrics */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {/* Total Users */}
-        <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
-          <div className="flex items-center gap-3 mb-3">
+        <div className="border-border bg-surface rounded-2xl border p-6">
+          <div className="mb-3 flex items-center gap-3">
             <div className="rounded-lg bg-gradient-to-br from-[var(--ctp-blue)] to-[var(--ctp-sapphire)] p-2.5">
-              <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-              </svg>
+              <Users className="h-5 w-5 text-white" />
             </div>
-            <h3 className="text-sm font-medium text-[var(--color-text-muted)]">Benutzer</h3>
+            <h3 className="text-text-muted text-sm font-medium">Benutzer</h3>
           </div>
-          <div className="text-3xl font-bold text-[var(--color-text)]">{stats?.totalUsers || 0}</div>
-          <p className="text-sm text-[var(--color-text-muted)] mt-1">
-            +{stats?.newUsersToday || 0} heute
-          </p>
+          <div className="text-text text-3xl font-bold">{stats?.totalUsers || 0}</div>
+          <p className="text-text-muted mt-1 text-sm">+{stats?.newUsersToday || 0} heute</p>
         </div>
 
         {/* Pending Documents */}
-        <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
-          <div className="flex items-center gap-3 mb-3">
+        <div className="border-border bg-surface rounded-2xl border p-6">
+          <div className="mb-3 flex items-center gap-3">
             <div className="rounded-lg bg-gradient-to-br from-[var(--ctp-yellow)] to-[var(--ctp-peach)] p-2.5">
-              <svg className="h-5 w-5 text-[var(--ctp-crust)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+              <Clock className="h-5 w-5 text-[var(--ctp-crust)]" />
             </div>
-            <h3 className="text-sm font-medium text-[var(--color-text-muted)]">Ausstehend</h3>
+            <h3 className="text-text-muted text-sm font-medium">Ausstehend</h3>
           </div>
-          <div className="text-3xl font-bold text-[var(--color-text)]">{stats?.pendingApproval || 0}</div>
-          <p className="text-sm text-[var(--color-text-muted)] mt-1">
-            Dokumente zur Prüfung
-          </p>
+          <div className="text-text text-3xl font-bold">{stats?.pendingApproval || 0}</div>
+          <p className="text-text-muted mt-1 text-sm">Dokumente zur Prüfung</p>
         </div>
 
         {/* Open Reports */}
-        <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
-          <div className="flex items-center gap-3 mb-3">
+        <div className="border-border bg-surface rounded-2xl border p-6">
+          <div className="mb-3 flex items-center gap-3">
             <div className="rounded-lg bg-gradient-to-br from-[var(--ctp-red)] to-[var(--ctp-maroon)] p-2.5">
-              <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
+              <AlertTriangle className="h-5 w-5 text-white" />
             </div>
-            <h3 className="text-sm font-medium text-[var(--color-text-muted)]">Meldungen</h3>
+            <h3 className="text-text-muted text-sm font-medium">Meldungen</h3>
           </div>
-          <div className="text-3xl font-bold text-[var(--color-text)]">{stats?.openReports || 0}</div>
-          <p className="text-sm text-[var(--color-text-muted)] mt-1">
-            Offene Meldungen
-          </p>
+          <div className="text-text text-3xl font-bold">{stats?.openReports || 0}</div>
+          <p className="text-text-muted mt-1 text-sm">Offene Meldungen</p>
         </div>
 
         {/* Total Revenue */}
-        <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
-          <div className="flex items-center gap-3 mb-3">
+        <div className="border-border bg-surface rounded-2xl border p-6">
+          <div className="mb-3 flex items-center gap-3">
             <div className="rounded-lg bg-gradient-to-br from-[var(--ctp-green)] to-[var(--ctp-teal)] p-2.5">
-              <svg className="h-5 w-5 text-[var(--ctp-crust)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+              <DollarSign className="h-5 w-5 text-[var(--ctp-crust)]" />
             </div>
-            <h3 className="text-sm font-medium text-[var(--color-text-muted)]">Umsatz</h3>
+            <h3 className="text-text-muted text-sm font-medium">Umsatz</h3>
           </div>
-          <div className="text-3xl font-bold text-[var(--color-text)]">
+          <div className="text-text text-3xl font-bold">
             CHF {stats?.totalRevenue?.toFixed(2) || "0.00"}
           </div>
-          <p className="text-sm text-[var(--color-text-muted)] mt-1">
+          <p className="text-text-muted mt-1 text-sm">
             +CHF {stats?.revenueToday?.toFixed(2) || "0.00"} heute
           </p>
         </div>
       </div>
 
       {/* Quick Actions */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-8">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Link
           href="/admin/documents"
-          className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 hover:border-[var(--color-primary)] transition-colors group"
+          className="group border-border bg-surface hover:border-primary rounded-2xl border p-6 transition-colors"
         >
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-semibold text-[var(--color-text)] group-hover:text-[var(--color-primary)]">
-                Dokumente prüfen
-              </h3>
-              <p className="text-sm text-[var(--color-text-muted)] mt-1">
+              <h3 className="text-text group-hover:text-primary font-semibold">Dokumente prüfen</h3>
+              <p className="text-text-muted mt-1 text-sm">
                 {stats?.pendingApproval || 0} ausstehend
               </p>
             </div>
-            <svg className="h-6 w-6 text-[var(--color-text-muted)] group-hover:text-[var(--color-primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
+            <ArrowRight className="text-text-muted group-hover:text-primary h-5 w-5 transition-transform group-hover:translate-x-1" />
           </div>
         </Link>
 
         <Link
           href="/admin/reports"
-          className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 hover:border-[var(--color-primary)] transition-colors group"
+          className="group border-border bg-surface hover:border-primary rounded-2xl border p-6 transition-colors"
         >
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-semibold text-[var(--color-text)] group-hover:text-[var(--color-primary)]">
+              <h3 className="text-text group-hover:text-primary font-semibold">
                 Meldungen bearbeiten
               </h3>
-              <p className="text-sm text-[var(--color-text-muted)] mt-1">
-                {stats?.openReports || 0} offen
-              </p>
+              <p className="text-text-muted mt-1 text-sm">{stats?.openReports || 0} offen</p>
             </div>
-            <svg className="h-6 w-6 text-[var(--color-text-muted)] group-hover:text-[var(--color-primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
+            <ArrowRight className="text-text-muted group-hover:text-primary h-5 w-5 transition-transform group-hover:translate-x-1" />
           </div>
         </Link>
 
         <Link
           href="/admin/users"
-          className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 hover:border-[var(--color-primary)] transition-colors group"
+          className="group border-border bg-surface hover:border-primary rounded-2xl border p-6 transition-colors"
         >
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-semibold text-[var(--color-text)] group-hover:text-[var(--color-primary)]">
+              <h3 className="text-text group-hover:text-primary font-semibold">
                 Benutzer verwalten
               </h3>
-              <p className="text-sm text-[var(--color-text-muted)] mt-1">
-                {stats?.totalUsers || 0} registriert
-              </p>
+              <p className="text-text-muted mt-1 text-sm">{stats?.totalUsers || 0} registriert</p>
             </div>
-            <svg className="h-6 w-6 text-[var(--color-text-muted)] group-hover:text-[var(--color-primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
+            <ArrowRight className="text-text-muted group-hover:text-primary h-5 w-5 transition-transform group-hover:translate-x-1" />
           </div>
         </Link>
       </div>
 
-      {/* User Breakdown */}
+      {/* Statistics Grid */}
       <div className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
-          <h3 className="font-semibold text-[var(--color-text)] mb-4">Benutzer nach Rolle</h3>
+        {/* User Breakdown */}
+        <div className="border-border bg-surface rounded-2xl border p-6">
+          <h3 className="text-text mb-4 font-semibold">Benutzer nach Rolle</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-3 h-3 rounded-full bg-[var(--ctp-blue)]"></div>
-                <span className="text-[var(--color-text-muted)]">Käufer</span>
+                <div className="h-3 w-3 rounded-full bg-[var(--ctp-blue)]"></div>
+                <span className="text-text-muted">Käufer</span>
               </div>
-              <span className="font-medium text-[var(--color-text)]">{stats?.userBreakdown?.buyers || 0}</span>
+              <span className="text-text font-medium">{stats?.userBreakdown?.buyers || 0}</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-3 h-3 rounded-full bg-[var(--ctp-green)]"></div>
-                <span className="text-[var(--color-text-muted)]">Verkäufer</span>
+                <div className="h-3 w-3 rounded-full bg-[var(--ctp-green)]"></div>
+                <span className="text-text-muted">Verkäufer</span>
               </div>
-              <span className="font-medium text-[var(--color-text)]">{stats?.userBreakdown?.sellers || 0}</span>
+              <span className="text-text font-medium">{stats?.userBreakdown?.sellers || 0}</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-3 h-3 rounded-full bg-[var(--ctp-mauve)]"></div>
-                <span className="text-[var(--color-text-muted)]">Schulen</span>
+                <div className="h-3 w-3 rounded-full bg-[var(--ctp-mauve)]"></div>
+                <span className="text-text-muted">Schulen</span>
               </div>
-              <span className="font-medium text-[var(--color-text)]">{stats?.userBreakdown?.schools || 0}</span>
+              <span className="text-text font-medium">{stats?.userBreakdown?.schools || 0}</span>
             </div>
           </div>
         </div>
 
-        <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
-          <h3 className="font-semibold text-[var(--color-text)] mb-4">Ressourcen</h3>
+        {/* Resources Overview */}
+        <div className="border-border bg-surface rounded-2xl border p-6">
+          <h3 className="text-text mb-4 font-semibold">Ressourcen</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-[var(--color-text-muted)]">Total Ressourcen</span>
-              <span className="font-medium text-[var(--color-text)]">{stats?.totalResources || 0}</span>
+              <div className="flex items-center gap-3">
+                <FileText className="text-text-muted h-4 w-4" />
+                <span className="text-text-muted">Total Ressourcen</span>
+              </div>
+              <span className="text-text font-medium">{stats?.totalResources || 0}</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-[var(--color-text-muted)]">Ausstehende Prüfungen</span>
-              <span className="font-medium text-[var(--ctp-yellow)]">{stats?.pendingApproval || 0}</span>
+              <div className="flex items-center gap-3">
+                <Clock className="text-warning h-4 w-4" />
+                <span className="text-text-muted">Ausstehende Prüfungen</span>
+              </div>
+              <span className="text-warning font-medium">{stats?.pendingApproval || 0}</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-[var(--color-text-muted)]">Aktive Schulen</span>
-              <span className="font-medium text-[var(--color-text)]">{stats?.activeSchools || 0}</span>
+              <div className="flex items-center gap-3">
+                <Users className="text-text-muted h-4 w-4" />
+                <span className="text-text-muted">Aktive Schulen</span>
+              </div>
+              <span className="text-text font-medium">{stats?.activeSchools || 0}</span>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Revenue Chart Placeholder */}
+      <div className="border-border bg-surface rounded-2xl border p-6">
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="text-text font-semibold">Umsatz (letzte 7 Tage)</h3>
+          <div className="text-success flex items-center gap-2 text-sm">
+            <TrendingUp className="h-4 w-4" />
+            <span>+12.5%</span>
+          </div>
+        </div>
+        <div className="flex h-40 items-end justify-between gap-2">
+          {(stats?.weeklyRevenue || [0, 0, 0, 0, 0, 0, 0]).map((value, index) => {
+            const maxValue = Math.max(...(stats?.weeklyRevenue || [1]), 1);
+            const height = (value / maxValue) * 100;
+            return (
+              <div key={index} className="flex flex-1 flex-col items-center gap-2">
+                <div
+                  className="from-primary/50 to-primary w-full rounded-t-lg bg-gradient-to-t transition-all"
+                  style={{ height: `${Math.max(height, 4)}%` }}
+                />
+                <span className="text-text-muted text-xs">
+                  {["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"][index]}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

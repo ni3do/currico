@@ -28,10 +28,7 @@ export function MultiSelect({
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     }
@@ -58,25 +55,25 @@ export function MultiSelect({
 
   return (
     <div ref={containerRef} className="relative">
-      <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
+      <label className="mb-2 block text-sm font-medium text-text">
         {label}
-        {required && <span className="ml-1 text-[var(--color-error)]">*</span>}
+        {required && <span className="ml-1 text-error">*</span>}
       </label>
 
       {/* Selected tags */}
       <div
         onClick={() => setIsOpen(!isOpen)}
-        className={`min-h-[42px] w-full cursor-pointer rounded-lg border bg-[var(--color-bg)] px-3 py-2 ${
+        className={`min-h-[42px] w-full cursor-pointer rounded-lg border bg-bg px-3 py-2 ${
           error
-            ? "border-[var(--color-error)]"
-            : "border-[var(--color-border)] focus-within:border-[var(--color-primary)]"
+            ? "border-error"
+            : "border-border focus-within:border-primary"
         }`}
       >
         <div className="flex flex-wrap gap-2">
           {selected.map((item) => (
             <span
               key={item}
-              className="inline-flex items-center gap-1 rounded-full bg-[var(--color-primary)]/20 px-2 py-1 text-sm text-[var(--color-primary)]"
+              className="inline-flex items-center gap-1 rounded-full bg-primary/20 px-2 py-1 text-sm text-primary"
             >
               {item}
               <button
@@ -85,14 +82,9 @@ export function MultiSelect({
                   e.stopPropagation();
                   removeOption(item);
                 }}
-                className="ml-1 hover:text-[var(--color-error)]"
+                className="ml-1 hover:text-error"
               >
-                <svg
-                  className="h-3 w-3"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -104,24 +96,24 @@ export function MultiSelect({
             </span>
           ))}
           {selected.length === 0 && (
-            <span className="text-[var(--color-text-muted)]">{placeholder}</span>
+            <span className="text-text-muted">{placeholder}</span>
           )}
         </div>
       </div>
 
-      {error && <p className="mt-1 text-sm text-[var(--color-error)]">{error}</p>}
+      {error && <p className="mt-1 text-sm text-error">{error}</p>}
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] shadow-lg">
+        <div className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-lg border border-border bg-surface shadow-lg">
           {/* Search input */}
-          <div className="sticky top-0 border-b border-[var(--color-border)] bg-[var(--color-surface)] p-2">
+          <div className="sticky top-0 border-b border-border bg-surface p-2">
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Suchen..."
-              className="w-full rounded-md border border-[var(--color-border)] bg-[var(--color-bg)] px-3 py-1.5 text-sm text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none"
+              className="w-full rounded-md border border-border bg-bg px-3 py-1.5 text-sm text-text focus:border-primary focus:outline-none"
               onClick={(e) => e.stopPropagation()}
             />
           </div>
@@ -129,7 +121,7 @@ export function MultiSelect({
           {/* Options */}
           <div className="p-1">
             {filteredOptions.length === 0 ? (
-              <div className="px-3 py-2 text-sm text-[var(--color-text-muted)]">
+              <div className="px-3 py-2 text-sm text-text-muted">
                 Keine Optionen gefunden
               </div>
             ) : (
@@ -140,20 +132,20 @@ export function MultiSelect({
                   onClick={() => toggleOption(option)}
                   className={`flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm transition-colors ${
                     selected.includes(option)
-                      ? "bg-[var(--color-primary)]/20 text-[var(--color-primary)]"
-                      : "text-[var(--color-text)] hover:bg-[var(--color-surface-elevated)]"
+                      ? "bg-primary/20 text-primary"
+                      : "text-text hover:bg-surface-elevated"
                   }`}
                 >
                   <span
                     className={`flex h-4 w-4 items-center justify-center rounded border ${
                       selected.includes(option)
-                        ? "border-[var(--color-primary)] bg-[var(--color-primary)]"
-                        : "border-[var(--color-border)]"
+                        ? "border-primary bg-primary"
+                        : "border-border"
                     }`}
                   >
                     {selected.includes(option) && (
                       <svg
-                        className="h-3 w-3 text-white"
+                        className="h-3 w-3 text-text-on-accent"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"

@@ -1,488 +1,2050 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { Link } from "@/i18n/navigation";
+import {
+  Menu,
+  ChevronDown,
+  TrendingUp,
+  Download,
+  FileText,
+  ExternalLink,
+  User,
+  Palette,
+  Bell,
+  Shield,
+  Camera,
+  Mail,
+  MapPin,
+  BookOpen,
+  GraduationCap,
+  Check,
+  X,
+  Trash2,
+} from "lucide-react";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
+import { ThemeSettings } from "@/components/ui/ThemeToggle";
+import { AvatarUploader } from "@/components/profile/AvatarUploader";
+import { EmailVerificationBanner } from "@/components/account/EmailVerificationBanner";
+import { StripeConnectStatus } from "@/components/account/StripeConnectStatus";
+import { AccountSidebar } from "@/components/account/AccountSidebar";
+import { MultiSelect } from "@/components/ui/MultiSelect";
+import { SWISS_SUBJECTS, SWISS_CYCLES, SWISS_CANTONS } from "@/lib/validations/user";
+import { motion, AnimatePresence } from "framer-motion";
+
+interface LibraryItem {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  priceFormatted: string;
+  subject: string;
+  cycle: string;
+  verified: boolean;
+  type: "purchased" | "free";
+  acquiredAt: string;
+  seller: {
+    id: string;
+    displayName: string | null;
+    image: string | null;
+  };
+}
+
+interface UploadedItem {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  priceFormatted: string;
+  subject: string;
+  cycle: string;
+  verified: boolean;
+  status: string;
+  isApproved: boolean;
+  type: "uploaded";
+  createdAt: string;
+  downloadCount: number;
+  purchaseCount: number;
+}
+
+interface WishlistItem {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  priceFormatted: string;
+  subject: string;
+  cycle: string;
+  addedAt: string;
+  seller: {
+    id: string;
+    displayName: string | null;
+    image: string | null;
+  };
+}
+
+interface UserStats {
+  purchasedResources: number;
+  downloadedResources: number;
+  totalInLibrary: number;
+  wishlistItems: number;
+  uploadedResources: number;
+  followedSellers: number;
+}
+
+interface SellerStats {
+  netEarnings: string;
+  totalDownloads: number;
+  followers: number;
+}
+
+interface SellerResource {
+  id: string;
+  title: string;
+  type: string;
+  status: string;
+  downloads: number;
+  netEarnings: string;
+}
+
+interface Transaction {
+  id: string;
+  resource: string;
+  date: string;
+  gross: string;
+  platformFee: string;
+  sellerPayout: string;
+}
+
+interface UserData {
+  id: string;
+  name: string | null;
+  email: string;
+  emailVerified: string | null;
+  image: string | null;
+  displayName: string | null;
+  subjects: string[];
+  cycles: string[];
+  cantons: string[];
+  isSeller: boolean;
+}
+
+interface FollowedSeller {
+  id: string;
+  displayName: string | null;
+  image: string | null;
+  newResources?: number;
+}
+
+// Subject color mapping for pills
+const SUBJECT_PILL_CLASSES: Record<string, string> = {
+  Deutsch: "pill-deutsch",
+  Mathematik: "pill-mathe",
+  NMG: "pill-nmg",
+  BG: "pill-gestalten",
+  Musik: "pill-musik",
+  Sport: "pill-sport",
+  Englisch: "pill-fremdsprachen",
+  Französisch: "pill-fremdsprachen",
+  "Medien und Informatik": "pill-medien",
+};
 
 export default function AccountPage() {
-  const [activeTab, setActiveTab] = useState<"overview" | "library" | "wishlist" | "settings">("overview");
+  const [activeTab, setActiveTab] = useState<
+    "overview" | "library" | "uploads" | "wishlist" | "settings"
+  >("overview");
+  const [settingsSection, setSettingsSection] = useState<
+    "profile" | "appearance" | "notifications" | "account"
+  >("profile");
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  // Redirect to login if not authenticated
-  if (status === "loading") {
+  // State for API data
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [stats, setStats] = useState<UserStats | null>(null);
+  const [libraryItems, setLibraryItems] = useState<LibraryItem[]>([]);
+  const [uploadedItems, setUploadedItems] = useState<UploadedItem[]>([]);
+  const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
+  const [followedSellers, setFollowedSellers] = useState<FollowedSeller[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [uploadedLoading, setUploadedLoading] = useState(false);
+  const [downloading, setDownloading] = useState<string | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Seller dashboard state
+  const [sellerStats, setSellerStats] = useState<SellerStats>({
+    netEarnings: "CHF 0.00",
+    totalDownloads: 0,
+    followers: 0,
+  });
+  const [sellerResources, setSellerResources] = useState<SellerResource[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [openActionMenu, setOpenActionMenu] = useState<string | null>(null);
+  const actionMenuRef = useRef<HTMLDivElement>(null);
+
+  // Avatar management state
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const [isDeletingAvatar, setIsDeletingAvatar] = useState(false);
+  const [avatarMessage, setAvatarMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
+
+  // Profile editing state
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
+  const [profileFormData, setProfileFormData] = useState<{
+    display_name: string;
+    subjects: string[];
+    cycles: string[];
+    cantons: string[];
+  }>({
+    display_name: "",
+    subjects: [],
+    cycles: [],
+    cantons: [],
+  });
+  const [profileErrors, setProfileErrors] = useState<Record<string, string>>({});
+  const [profileMessage, setProfileMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
+
+  // Close action menu when clicking outside or pressing Escape
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (actionMenuRef.current && !actionMenuRef.current.contains(event.target as Node)) {
+        setOpenActionMenu(null);
+      }
+    }
+
+    function handleEscapeKey(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setOpenActionMenu(null);
+      }
+    }
+
+    if (openActionMenu) {
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("keydown", handleEscapeKey);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+        document.removeEventListener("keydown", handleEscapeKey);
+      };
+    }
+  }, [openActionMenu]);
+
+  // Fetch user stats and profile
+  const fetchUserStats = useCallback(async () => {
+    try {
+      const response = await fetch("/api/user/stats");
+      if (response.ok) {
+        const data = await response.json();
+        setUserData(data.user);
+        setStats(data.stats);
+        setAvatarUrl(data.user?.image || null);
+      }
+    } catch (error) {
+      console.error("Error fetching user stats:", error);
+    }
+  }, []);
+
+  // Fetch library items (acquired)
+  const fetchLibrary = useCallback(async (search?: string) => {
+    try {
+      const params = new URLSearchParams({ type: "acquired" });
+      if (search) params.set("search", search);
+      const response = await fetch(`/api/user/library?${params.toString()}`);
+      if (response.ok) {
+        const data = await response.json();
+        setLibraryItems(data.items);
+      }
+    } catch (error) {
+      console.error("Error fetching library:", error);
+    }
+  }, []);
+
+  // Fetch uploaded items
+  const fetchUploaded = useCallback(async (search?: string) => {
+    setUploadedLoading(true);
+    try {
+      const params = new URLSearchParams({ type: "uploaded" });
+      if (search) params.set("search", search);
+      const response = await fetch(`/api/user/library?${params.toString()}`);
+      if (response.ok) {
+        const data = await response.json();
+        setUploadedItems(data.items);
+      }
+    } catch (error) {
+      console.error("Error fetching uploaded:", error);
+    } finally {
+      setUploadedLoading(false);
+    }
+  }, []);
+
+  // Fetch wishlist items
+  const fetchWishlist = useCallback(async () => {
+    try {
+      const response = await fetch("/api/user/wishlist");
+      if (response.ok) {
+        const data = await response.json();
+        setWishlistItems(data.items);
+      }
+    } catch (error) {
+      console.error("Error fetching wishlist:", error);
+    }
+  }, []);
+
+  // Fetch seller dashboard data
+  const fetchSellerData = useCallback(async () => {
+    try {
+      const response = await fetch("/api/seller/dashboard");
+      if (response.ok) {
+        const data = await response.json();
+        setSellerStats(data.stats);
+        setSellerResources(data.resources);
+        setTransactions(data.transactions);
+      }
+    } catch (error) {
+      console.error("Error fetching seller data:", error);
+    }
+  }, []);
+
+  // Fetch followed sellers
+  const fetchFollowedSellers = useCallback(async () => {
+    try {
+      const response = await fetch("/api/user/following");
+      if (response.ok) {
+        const data = await response.json();
+        setFollowedSellers(data.sellers || []);
+      }
+    } catch (error) {
+      console.error("Error fetching followed sellers:", error);
+    }
+  }, []);
+
+  // Handle redirects in useEffect to avoid setState during render
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login");
+    } else if (status === "authenticated" && session?.user?.role === "ADMIN") {
+      router.push("/admin");
+    }
+  }, [status, session?.user?.role, router]);
+
+  // Fetch data when authenticated
+  useEffect(() => {
+    if (status === "authenticated") {
+      setLoading(true);
+      Promise.all([
+        fetchUserStats(),
+        fetchLibrary(),
+        fetchUploaded(),
+        fetchWishlist(),
+        fetchSellerData(),
+        fetchFollowedSellers(),
+      ]).finally(() => {
+        setLoading(false);
+      });
+    }
+  }, [
+    status,
+    fetchUserStats,
+    fetchLibrary,
+    fetchUploaded,
+    fetchWishlist,
+    fetchSellerData,
+    fetchFollowedSellers,
+  ]);
+
+  // Handle search
+  useEffect(() => {
+    if (status === "authenticated" && searchQuery) {
+      const debounce = setTimeout(() => {
+        fetchLibrary(searchQuery);
+        fetchUploaded(searchQuery);
+      }, 300);
+      return () => clearTimeout(debounce);
+    }
+  }, [searchQuery, status, fetchLibrary, fetchUploaded]);
+
+  // Handle download
+  const handleDownload = async (resourceId: string) => {
+    setDownloading(resourceId);
+    try {
+      window.open(`/api/resources/${resourceId}/download`, "_blank");
+    } catch (error) {
+      console.error("Download error:", error);
+    } finally {
+      setDownloading(null);
+    }
+  };
+
+  // Handle wishlist removal
+  const handleRemoveFromWishlist = async (resourceId: string) => {
+    try {
+      const response = await fetch(`/api/user/wishlist?resourceId=${resourceId}`, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        setWishlistItems((prev) => prev.filter((item) => item.id !== resourceId));
+        if (stats) {
+          setStats({ ...stats, wishlistItems: stats.wishlistItems - 1 });
+        }
+      }
+    } catch (error) {
+      console.error("Error removing from wishlist:", error);
+    }
+  };
+
+  // Handle avatar upload
+  const handleAvatarUpload = async (file: File) => {
+    setIsUploadingAvatar(true);
+    setAvatarMessage(null);
+
+    const formData = new FormData();
+    formData.append("avatar", file);
+
+    try {
+      const response = await fetch("/api/users/me/avatar", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Fehler beim Hochladen");
+      }
+
+      const data = await response.json();
+      setAvatarUrl(data.url);
+      if (userData) {
+        setUserData({ ...userData, image: data.url });
+      }
+      setAvatarMessage({ type: "success", text: "Profilbild erfolgreich hochgeladen!" });
+      setTimeout(() => setAvatarMessage(null), 3000);
+    } catch (error) {
+      console.error("Error uploading avatar:", error);
+      setAvatarMessage({
+        type: "error",
+        text: "Fehler beim Hochladen. Bitte versuchen Sie es erneut.",
+      });
+    } finally {
+      setIsUploadingAvatar(false);
+    }
+  };
+
+  // Handle avatar deletion
+  const handleAvatarDelete = async () => {
+    if (isDeletingAvatar) return;
+
+    setIsDeletingAvatar(true);
+    setAvatarMessage(null);
+
+    try {
+      const response = await fetch("/api/users/me/avatar", {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Fehler beim Löschen");
+      }
+
+      setAvatarUrl(null);
+      if (userData) {
+        setUserData({ ...userData, image: null });
+      }
+      setAvatarMessage({ type: "success", text: "Profilbild erfolgreich entfernt!" });
+      setTimeout(() => setAvatarMessage(null), 3000);
+    } catch (error) {
+      console.error("Error deleting avatar:", error);
+      setAvatarMessage({
+        type: "error",
+        text: "Fehler beim Löschen. Bitte versuchen Sie es erneut.",
+      });
+    } finally {
+      setIsDeletingAvatar(false);
+    }
+  };
+
+  // Start editing profile
+  const handleStartEditingProfile = () => {
+    setProfileFormData({
+      display_name: userData?.name || userData?.displayName || "",
+      subjects: userData?.subjects || [],
+      cycles: userData?.cycles || [],
+      cantons: userData?.cantons || [],
+    });
+    setProfileErrors({});
+    setProfileMessage(null);
+    setIsEditingProfile(true);
+  };
+
+  // Cancel editing profile
+  const handleCancelEditingProfile = () => {
+    setIsEditingProfile(false);
+    setProfileErrors({});
+    setProfileMessage(null);
+  };
+
+  // Handle profile form field change
+  const handleProfileFieldChange = (field: string, value: string | string[]) => {
+    setProfileFormData((prev) => ({ ...prev, [field]: value }));
+    if (profileErrors[field]) {
+      setProfileErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    }
+  };
+
+  // Save profile
+  const handleSaveProfile = async () => {
+    const errors: Record<string, string> = {};
+
+    if (!profileFormData.display_name || profileFormData.display_name.length < 2) {
+      errors.display_name = "Name muss mindestens 2 Zeichen haben";
+    }
+    if (profileFormData.subjects.length === 0) {
+      errors.subjects = "Mindestens ein Fach auswählen";
+    }
+    if (profileFormData.cycles.length === 0) {
+      errors.cycles = "Mindestens einen Zyklus auswählen";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setProfileErrors(errors);
+      return;
+    }
+
+    setIsSavingProfile(true);
+    setProfileMessage(null);
+
+    try {
+      const response = await fetch("/api/users/me", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          display_name: profileFormData.display_name,
+          subjects: profileFormData.subjects,
+          cycles: profileFormData.cycles,
+          cantons: profileFormData.cantons,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Fehler beim Speichern");
+      }
+
+      const updatedUser = await response.json();
+
+      // Update local state with new data
+      if (userData) {
+        setUserData({
+          ...userData,
+          name: updatedUser.display_name || updatedUser.name,
+          displayName: updatedUser.display_name,
+          subjects: updatedUser.subjects || [],
+          cycles: updatedUser.cycles || [],
+          cantons: updatedUser.cantons || [],
+        });
+      }
+
+      setProfileMessage({ type: "success", text: "Profil erfolgreich gespeichert!" });
+      setIsEditingProfile(false);
+      setTimeout(() => setProfileMessage(null), 3000);
+    } catch (error) {
+      console.error("Error saving profile:", error);
+      setProfileMessage({
+        type: "error",
+        text: "Fehler beim Speichern. Bitte versuchen Sie es erneut.",
+      });
+    } finally {
+      setIsSavingProfile(false);
+    }
+  };
+
+  // Get subject pill class
+  const getSubjectPillClass = (subject: string): string => {
+    return SUBJECT_PILL_CLASSES[subject] || "pill-neutral";
+  };
+
+  // Show loading state while checking auth or redirecting
+  if (status === "loading" || status === "unauthenticated" || session?.user?.role === "ADMIN") {
     return (
-      <div className="min-h-screen bg-[var(--color-bg)] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--color-primary)]"></div>
+      <div className="bg-bg flex min-h-screen items-center justify-center">
+        <div className="border-primary h-8 w-8 animate-spin rounded-full border-b-2"></div>
       </div>
     );
   }
 
-  if (status === "unauthenticated") {
-    router.push("/login");
-    return null;
-  }
-
-  // User data from session or fallback
-  const userData = {
+  // Fallback data from session
+  const displayData = userData || {
+    id: "",
     name: session?.user?.name || "Benutzer",
     email: session?.user?.email || "",
+    emailVerified: null,
     image: session?.user?.image || null,
-    canton: "Zürich",
-    subjects: ["Mathematik", "Deutsch", "NMG"],
-    cycles: ["Zyklus 2"],
+    displayName: null,
+    subjects: [],
+    cycles: [],
+    cantons: [],
+    isSeller: false,
   };
 
-  // Mock statistics
-  const stats = {
-    purchasedResources: 12,
-    wishlistItems: 5,
-    followedSellers: 3,
+  const displayStats = stats || {
+    purchasedResources: 0,
+    downloadedResources: 0,
+    totalInLibrary: 0,
+    wishlistItems: 0,
     uploadedResources: 0,
+    followedSellers: 0,
   };
 
-  // Mock library items
-  const libraryItems = [
-    { id: 1, title: "Bruchrechnen Übungsblätter", type: "PDF", subject: "Mathematik", cycle: "Zyklus 2", verified: true },
-    { id: 2, title: "Leseverständnis Texte", type: "PDF", subject: "Deutsch", cycle: "Zyklus 2", verified: true },
-    { id: 3, title: "NMG Experimente Set", type: "Bundle", subject: "NMG", cycle: "Zyklus 2", verified: true },
-  ];
-
-  // Mock wishlist items
-  const wishlistItems = [
-    { id: 1, title: "Geometrie Arbeitsblätter", subject: "Mathematik", cycle: "Zyklus 2", price: 15.00 },
-    { id: 2, title: "Französisch Vokabeltrainer", subject: "Französisch", cycle: "Zyklus 2", price: 12.00 },
-  ];
+  // Count pending resources
+  const pendingResourcesCount = sellerResources.filter(
+    (r) => r.status !== "Verified" && r.status !== "AI-Checked"
+  ).length;
 
   return (
-    <div className="min-h-screen bg-[var(--color-bg)]">
+    <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        {/* Page Header with User Info */}
-        <div className="mb-8">
-          <div className="flex items-center gap-4 mb-4">
-            {userData.image ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={userData.image}
-                alt={userData.name}
-                className="w-16 h-16 rounded-full border-2 border-[var(--color-border)]"
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
+        {/* Page Header */}
+        <div className="mb-6">
+          <div className="text-text-muted mb-2 flex items-center gap-2 text-sm">
+            <Link href="/" className="hover:text-primary transition-colors">
+              Home
+            </Link>
+            <span>/</span>
+            <span className="text-text-secondary">Mein Konto</span>
+          </div>
+          <h1 className="text-text text-2xl font-bold">Mein Konto</h1>
+        </div>
+
+        {/* Main Layout: Sidebar + Content */}
+        <div className="flex flex-col gap-6 lg:flex-row">
+          {/* Mobile Menu Toggle */}
+          <div className="lg:hidden">
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="border-border bg-bg-secondary text-text-secondary hover:border-primary hover:text-primary flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-3 text-sm font-medium transition-colors"
+            >
+              <Menu className="h-5 w-5" />
+              <span>Menü</span>
+              <ChevronDown
+                className={`h-4 w-4 transition-transform ${mobileMenuOpen ? "rotate-180" : ""}`}
               />
-            ) : (
-              <div className="w-16 h-16 rounded-full bg-[var(--color-primary)] flex items-center justify-center">
-                <span className="text-2xl font-bold text-white">
-                  {userData.name.charAt(0).toUpperCase()}
-                </span>
-              </div>
-            )}
-            <div>
-              <h1 className="text-2xl font-semibold text-[var(--color-text)]">{userData.name}</h1>
-              <p className="text-[var(--color-text-muted)]">{userData.email}</p>
+            </button>
+
+            {/* Mobile Sidebar */}
+            <AnimatePresence>
+              {mobileMenuOpen && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="mt-4 overflow-hidden"
+                >
+                  <AccountSidebar
+                    userData={displayData}
+                    stats={displayStats}
+                    followedSellers={followedSellers}
+                    activeTab={activeTab}
+                    onTabChange={(tab) => {
+                      setActiveTab(tab);
+                      setMobileMenuOpen(false);
+                    }}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Desktop Sidebar */}
+          <div className="hidden w-72 flex-shrink-0 lg:block">
+            <div className="sticky top-24">
+              <AccountSidebar
+                userData={displayData}
+                stats={displayStats}
+                followedSellers={followedSellers}
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+              />
             </div>
           </div>
-        </div>
 
-        {/* Navigation Tabs */}
-        <div className="mb-8 border-b border-[var(--color-border)]">
-          <nav className="flex gap-8">
-            <button
-              onClick={() => setActiveTab("overview")}
-              className={`pb-4 text-sm font-medium transition-colors ${
-                activeTab === "overview"
-                  ? "border-b-2 border-[var(--color-primary)] text-[var(--color-primary)]"
-                  : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
-              }`}
-            >
-              Übersicht
-            </button>
-            <button
-              onClick={() => setActiveTab("library")}
-              className={`pb-4 text-sm font-medium transition-colors ${
-                activeTab === "library"
-                  ? "border-b-2 border-[var(--color-primary)] text-[var(--color-primary)]"
-                  : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
-              }`}
-            >
-              Meine Bibliothek
-            </button>
-            <button
-              onClick={() => setActiveTab("wishlist")}
-              className={`pb-4 text-sm font-medium transition-colors ${
-                activeTab === "wishlist"
-                  ? "border-b-2 border-[var(--color-primary)] text-[var(--color-primary)]"
-                  : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
-              }`}
-            >
-              Wunschliste
-            </button>
-            <button
-              onClick={() => setActiveTab("settings")}
-              className={`pb-4 text-sm font-medium transition-colors ${
-                activeTab === "settings"
-                  ? "border-b-2 border-[var(--color-primary)] text-[var(--color-primary)]"
-                  : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
-              }`}
-            >
-              Einstellungen
-            </button>
-          </nav>
-        </div>
+          {/* Main Content Area */}
+          <div className="min-w-0 flex-1">
+            <AnimatePresence mode="wait">
+              {/* Overview Tab */}
+              {activeTab === "overview" && (
+                <motion.div
+                  key="overview"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <div className="space-y-6">
+                    {/* Email Verification Banner */}
+                    {userData && !userData.emailVerified && (
+                      <EmailVerificationBanner email={userData.email} />
+                    )}
 
-        {/* Overview Tab */}
-        {activeTab === "overview" && (
-          <div className="grid gap-8 lg:grid-cols-3">
-            {/* Main Content */}
-            <div className="lg:col-span-2 space-y-6">
-              {/* Statistics Cards */}
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="rounded-xl bg-[var(--color-surface)] p-6 border border-[var(--color-border)]">
-                  <div className="text-3xl font-bold text-[var(--color-primary)]">{stats.purchasedResources}</div>
-                  <div className="text-sm text-[var(--color-text-muted)] mt-1">Gekaufte Ressourcen</div>
-                </div>
-                <div className="rounded-xl bg-[var(--color-surface)] p-6 border border-[var(--color-border)]">
-                  <div className="text-3xl font-bold text-[var(--color-accent)]">{stats.wishlistItems}</div>
-                  <div className="text-sm text-[var(--color-text-muted)] mt-1">Auf der Wunschliste</div>
-                </div>
-                <div className="rounded-xl bg-[var(--color-surface)] p-6 border border-[var(--color-border)]">
-                  <div className="text-3xl font-bold text-[var(--color-success)]">{stats.followedSellers}</div>
-                  <div className="text-sm text-[var(--color-text-muted)] mt-1">Gefolgte Verkäufer</div>
-                </div>
-                <div className="rounded-xl bg-[var(--color-surface)] p-6 border border-[var(--color-border)]">
-                  <div className="text-3xl font-bold text-[var(--color-text-muted)]">{stats.uploadedResources}</div>
-                  <div className="text-sm text-[var(--color-text-muted)] mt-1">Eigene Ressourcen</div>
-                </div>
-              </div>
+                    {/* Stripe Connect Status */}
+                    {userData && userData.emailVerified && (
+                      <StripeConnectStatus isSeller={userData.isSeller} />
+                    )}
 
-              {/* Profile Information */}
-              <div className="rounded-xl bg-[var(--color-surface)] p-6 border border-[var(--color-border)]">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-lg font-semibold text-[var(--color-text)]">Profilinformationen</h2>
-                  <Link
-                    href="/profile/edit"
-                    className="text-sm text-[var(--color-primary)] hover:underline font-medium"
-                  >
-                    Bearbeiten
-                  </Link>
-                </div>
-
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-sm font-medium text-[var(--color-text)]">Kanton</label>
-                    <p className="text-[var(--color-text-secondary)] mt-1">{userData.canton}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-[var(--color-text)]">Unterrichtsfächer</label>
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {userData.subjects.map((subject) => (
-                        <span
-                          key={subject}
-                          className="px-3 py-1 bg-[var(--color-surface)] text-[var(--color-text-secondary)] text-sm rounded-md"
-                        >
-                          {subject}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-[var(--color-text)]">Zyklen</label>
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {userData.cycles.map((cycle) => (
-                        <span
-                          key={cycle}
-                          className="px-3 py-1 bg-[var(--color-primary-light)] text-[var(--color-primary)] text-sm rounded-md"
-                        >
-                          {cycle}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Recent Library Items */}
-              <div className="rounded-xl bg-[var(--color-surface)] p-6 border border-[var(--color-border)]">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-lg font-semibold text-[var(--color-text)]">Letzte Käufe</h2>
-                  <button
-                    onClick={() => setActiveTab("library")}
-                    className="text-sm text-[var(--color-primary)] hover:underline font-medium"
-                  >
-                    Alle anzeigen
-                  </button>
-                </div>
-
-                <div className="space-y-3">
-                  {libraryItems.slice(0, 3).map((item) => (
-                    <div
-                      key={item.id}
-                      className="flex items-center justify-between p-4 bg-[var(--color-bg)] rounded-lg border border-[var(--color-border)]"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 bg-[var(--color-surface-elevated)] rounded-md flex items-center justify-center">
-                          <svg className="w-5 h-5 text-[var(--color-text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                          </svg>
-                        </div>
-                        <div>
-                          <h3 className="font-medium text-[var(--color-text)]">{item.title}</h3>
-                          <p className="text-sm text-[var(--color-text-muted)]">{item.subject} - {item.cycle}</p>
+                    {/* KPI Metrics Row */}
+                    <div className="grid gap-3 sm:gap-4 md:grid-cols-3">
+                      {/* Einnahmen (Earnings) */}
+                      <div className="border-border bg-surface rounded-2xl border p-6">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <p className="text-text-muted text-sm font-medium">Einnahmen</p>
+                            <p className="text-text mt-2 text-3xl font-bold">
+                              {loading ? "-" : sellerStats.netEarnings}
+                            </p>
+                          </div>
+                          <div className="bg-success/10 flex h-12 w-12 items-center justify-center rounded-xl">
+                            <TrendingUp className="text-success h-6 w-6" />
+                          </div>
                         </div>
                       </div>
-                      <button className="px-4 py-2 bg-[var(--color-primary)] text-white text-sm font-medium rounded-md hover:bg-[var(--color-primary-hover)] transition-colors">
-                        Öffnen
-                      </button>
+
+                      {/* Downloads */}
+                      <div className="border-border bg-surface rounded-2xl border p-6">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <p className="text-text-muted text-sm font-medium">Downloads</p>
+                            <p className="text-text mt-2 text-3xl font-bold">
+                              {loading ? "-" : sellerStats.totalDownloads}
+                            </p>
+                          </div>
+                          <div className="bg-primary/10 flex h-12 w-12 items-center justify-center rounded-xl">
+                            <Download className="text-primary h-6 w-6" />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Beiträge (Contributions) */}
+                      <div className="border-border bg-surface rounded-2xl border p-6">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <p className="text-text-muted text-sm font-medium">Beiträge</p>
+                            <p className="text-text mt-2 text-3xl font-bold">
+                              {loading ? "-" : sellerResources.length}
+                            </p>
+                          </div>
+                          <div className="bg-accent/10 flex h-12 w-12 items-center justify-center rounded-xl">
+                            <FileText className="text-accent h-6 w-6" />
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  ))}
-                </div>
-              </div>
-            </div>
 
-            {/* Sidebar */}
-            <div className="space-y-6">
-              {/* Quick Actions */}
-              <div className="rounded-xl bg-[var(--color-surface)] p-6 border border-[var(--color-border)]">
-                <h3 className="font-semibold text-[var(--color-text)] mb-4">Schnellaktionen</h3>
-                <div className="space-y-3">
-                  <Link
-                    href="/resources"
-                    className="flex items-center gap-3 p-3 rounded-lg border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:bg-[var(--color-primary-light)] transition-colors"
-                  >
-                    <svg className="w-5 h-5 text-[var(--color-text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                    <span className="text-sm text-[var(--color-text-secondary)]">Ressourcen durchsuchen</span>
-                  </Link>
-                  <Link
-                    href="/upload"
-                    className="flex items-center gap-3 p-3 rounded-lg border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:bg-[var(--color-primary-light)] transition-colors"
-                  >
-                    <svg className="w-5 h-5 text-[var(--color-text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                    </svg>
-                    <span className="text-sm text-[var(--color-text-secondary)]">Material hochladen</span>
-                  </Link>
-                  <Link
-                    href="/dashboard/seller"
-                    className="flex items-center gap-3 p-3 rounded-lg border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:bg-[var(--color-primary-light)] transition-colors"
-                  >
-                    <svg className="w-5 h-5 text-[var(--color-text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                    </svg>
-                    <span className="text-sm text-[var(--color-text-secondary)]">Verkäufer Dashboard</span>
-                  </Link>
-                  <Link
-                    href="/following"
-                    className="flex items-center gap-3 p-3 rounded-lg border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:bg-[var(--color-primary-light)] transition-colors"
-                  >
-                    <svg className="w-5 h-5 text-[var(--color-text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
-                    <span className="text-sm text-[var(--color-text-secondary)]">Gefolgte Verkäufer</span>
-                  </Link>
-                </div>
-              </div>
+                    {/* Resources Table */}
+                    <div className="border-border bg-surface overflow-hidden rounded-2xl border">
+                      <div className="border-border bg-bg-secondary flex items-center justify-between border-b p-4">
+                        <h2 className="text-text text-lg font-semibold">Meine Ressourcen</h2>
+                        <Link
+                          href="/upload"
+                          className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors"
+                        >
+                          <span>+</span>
+                          Neue Ressource
+                        </Link>
+                      </div>
 
-            </div>
-          </div>
-        )}
+                      <div className="p-4">
+                        {loading ? (
+                          <div className="text-text-muted py-12 text-center">
+                            <div className="border-primary mx-auto mb-3 h-8 w-8 animate-spin rounded-full border-4 border-t-transparent"></div>
+                            Laden...
+                          </div>
+                        ) : sellerResources.length === 0 ? (
+                          <div className="py-12 text-center">
+                            <FileText className="text-text-faint mx-auto mb-4 h-16 w-16" />
+                            <h3 className="text-text mb-2 text-lg font-medium">
+                              Noch keine Ressourcen hochgeladen
+                            </h3>
+                            <p className="text-text-muted mb-4 text-sm">
+                              Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen.
+                            </p>
+                            <Link
+                              href="/upload"
+                              className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition-colors"
+                            >
+                              Erste Ressource hochladen
+                            </Link>
+                          </div>
+                        ) : (
+                          <div className="overflow-x-auto">
+                            <table className="w-full">
+                              <thead>
+                                <tr className="text-text-muted text-left text-xs font-medium tracking-wider uppercase">
+                                  <th className="pb-4">Titel</th>
+                                  <th className="pb-4">Status</th>
+                                  <th className="pb-4 text-right">Downloads</th>
+                                  <th className="pb-4 text-right">Einnahmen</th>
+                                  <th className="pb-4 text-right">Aktionen</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-border divide-y">
+                                {sellerResources.map((resource) => (
+                                  <tr
+                                    key={resource.id}
+                                    className="group hover:bg-bg transition-colors"
+                                  >
+                                    <td className="py-4 pr-4">
+                                      <Link href={`/resources/${resource.id}`} className="block">
+                                        <div className="text-text group-hover:text-primary text-sm font-medium">
+                                          {resource.title}
+                                        </div>
+                                        <div className="text-text-muted mt-0.5 text-xs">
+                                          {resource.type}
+                                        </div>
+                                      </Link>
+                                    </td>
+                                    <td className="py-4 pr-4">
+                                      <span
+                                        className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${
+                                          resource.status === "Verified"
+                                            ? "bg-success/10 text-success"
+                                            : resource.status === "AI-Checked"
+                                              ? "bg-accent/10 text-accent"
+                                              : "bg-warning/10 text-warning"
+                                        }`}
+                                      >
+                                        {resource.status === "Verified"
+                                          ? "Verifiziert"
+                                          : resource.status === "AI-Checked"
+                                            ? "KI-Geprüft"
+                                            : "Ausstehend"}
+                                      </span>
+                                    </td>
+                                    <td className="text-text py-4 pr-4 text-right text-sm font-medium">
+                                      {resource.downloads}
+                                    </td>
+                                    <td className="text-success py-4 pr-4 text-right text-sm font-semibold">
+                                      {resource.netEarnings}
+                                    </td>
+                                    <td className="py-4 text-right">
+                                      <div
+                                        className="relative inline-block"
+                                        ref={openActionMenu === resource.id ? actionMenuRef : null}
+                                      >
+                                        <button
+                                          onClick={() =>
+                                            setOpenActionMenu(
+                                              openActionMenu === resource.id ? null : resource.id
+                                            )
+                                          }
+                                          className="text-text-muted hover:bg-surface-hover hover:text-text rounded-lg p-2 transition-colors"
+                                          aria-label="Aktionen"
+                                        >
+                                          <svg
+                                            className="h-5 w-5"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                          >
+                                            <path
+                                              strokeLinecap="round"
+                                              strokeLinejoin="round"
+                                              strokeWidth={2}
+                                              d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
+                                            />
+                                          </svg>
+                                        </button>
+                                        {openActionMenu === resource.id && (
+                                          <div className="border-border bg-surface absolute right-0 z-10 mt-1 w-40 rounded-xl border py-1.5 shadow-lg">
+                                            <Link
+                                              href={`/resources/${resource.id}`}
+                                              className="text-text hover:bg-bg flex items-center gap-2.5 px-4 py-2 text-sm transition-colors"
+                                              onClick={() => setOpenActionMenu(null)}
+                                            >
+                                              <ExternalLink className="h-4 w-4" />
+                                              Ansehen
+                                            </Link>
+                                            <Link
+                                              href={`/resources/${resource.id}/edit`}
+                                              className="text-text hover:bg-bg flex items-center gap-2.5 px-4 py-2 text-sm transition-colors"
+                                              onClick={() => setOpenActionMenu(null)}
+                                            >
+                                              <svg
+                                                className="h-4 w-4"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                              >
+                                                <path
+                                                  strokeLinecap="round"
+                                                  strokeLinejoin="round"
+                                                  strokeWidth={2}
+                                                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                                />
+                                              </svg>
+                                              Bearbeiten
+                                            </Link>
+                                            <button
+                                              onClick={() => setOpenActionMenu(null)}
+                                              className="text-error hover:bg-error/10 flex w-full items-center gap-2.5 px-4 py-2 text-sm transition-colors"
+                                            >
+                                              <svg
+                                                className="h-4 w-4"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                              >
+                                                <path
+                                                  strokeLinecap="round"
+                                                  strokeLinejoin="round"
+                                                  strokeWidth={2}
+                                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                                />
+                                              </svg>
+                                              Löschen
+                                            </button>
+                                          </div>
+                                        )}
+                                      </div>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
+                      </div>
+                    </div>
 
-        {/* Library Tab */}
-        {activeTab === "library" && (
-          <div className="rounded-xl bg-[var(--color-surface)] p-6 border border-[var(--color-border)]">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-xl font-semibold text-[var(--color-text)]">Meine Bibliothek</h2>
-                <p className="text-sm text-[var(--color-text-muted)] mt-1">Alle gekauften Ressourcen und Downloads</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <input
-                  type="text"
-                  placeholder="Suchen..."
-                  className="px-4 py-2 border border-[var(--color-border)] rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:border-[var(--color-primary)]"
-                />
-              </div>
-            </div>
+                    {/* Recent Downloads */}
+                    <div className="border-border bg-surface rounded-2xl border">
+                      <div className="border-border flex items-center justify-between border-b p-4">
+                        <h2 className="text-text text-lg font-semibold">Letzte Downloads</h2>
+                        <button
+                          onClick={() => setActiveTab("library")}
+                          className="text-primary text-sm font-medium hover:underline"
+                        >
+                          Alle anzeigen
+                        </button>
+                      </div>
+                      <div className="p-4">
+                        {loading ? (
+                          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                            {[1, 2, 3].map((i) => (
+                              <div key={i} className="bg-bg animate-pulse rounded-xl p-4">
+                                <div className="bg-surface-hover mb-2 h-4 w-3/4 rounded"></div>
+                                <div className="bg-surface-hover h-3 w-1/2 rounded"></div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : libraryItems.length > 0 ? (
+                          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                            {libraryItems.slice(0, 6).map((item) => (
+                              <div
+                                key={item.id}
+                                className="group border-border bg-bg hover:border-primary flex items-center justify-between rounded-xl border p-4 transition-all hover:shadow-sm"
+                              >
+                                <div className="mr-3 min-w-0 flex-1">
+                                  <h3 className="text-text group-hover:text-primary truncate text-sm font-medium">
+                                    {item.title}
+                                  </h3>
+                                  <div className="mt-1 flex items-center gap-2">
+                                    <span
+                                      className={`pill text-xs ${getSubjectPillClass(item.subject)}`}
+                                    >
+                                      {item.subject}
+                                    </span>
+                                    <span className="text-text-muted text-xs">{item.cycle}</span>
+                                  </div>
+                                </div>
+                                <button
+                                  onClick={() => handleDownload(item.id)}
+                                  disabled={downloading === item.id}
+                                  className="text-primary hover:bg-primary/10 shrink-0 rounded-lg p-2 transition-colors disabled:opacity-50"
+                                  title="Herunterladen"
+                                >
+                                  <Download className="h-5 w-5" />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="py-8 text-center">
+                            <Download className="text-text-faint mx-auto mb-3 h-10 w-10" />
+                            <p className="text-text-muted mb-2 text-sm">Noch keine Ressourcen</p>
+                            <Link
+                              href="/resources"
+                              className="text-primary text-sm font-medium hover:underline"
+                            >
+                              Entdecken
+                            </Link>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
 
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {libraryItems.map((item) => (
-                <div
-                  key={item.id}
-                  className="rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] p-4 hover:border-[var(--color-primary)] transition-colors"
+              {/* Library Tab - Acquired Resources Only */}
+              {activeTab === "library" && (
+                <motion.div
+                  key="library"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="px-2 py-1 bg-[var(--color-surface)] text-[var(--color-text-muted)] text-xs font-medium rounded">
-                      {item.type}
-                    </span>
-                    {item.verified && (
-                      <span className="px-2 py-1 bg-[var(--badge-success-bg)] text-[var(--badge-success-text)] text-xs font-medium rounded">
-                        Verifiziert
-                      </span>
+                  <div className="border-border bg-surface rounded-xl border p-6">
+                    <div className="mb-6 flex items-center justify-between">
+                      <div>
+                        <h2 className="text-text text-xl font-semibold">Erworbene Ressourcen</h2>
+                        <p className="text-text-muted mt-1 text-sm">
+                          Ressourcen, die Sie erworben haben
+                        </p>
+                      </div>
+                    </div>
+
+                    {loading ? (
+                      <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+                        {[1, 2, 3].map((i) => (
+                          <div
+                            key={i}
+                            className="border-border bg-bg animate-pulse rounded-lg border p-4"
+                          >
+                            <div className="bg-surface-hover mb-3 h-4 w-16 rounded"></div>
+                            <div className="bg-surface-hover mb-2 h-5 w-full rounded"></div>
+                            <div className="bg-surface-hover mb-4 h-4 w-24 rounded"></div>
+                            <div className="bg-surface-hover h-10 w-full rounded"></div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : libraryItems.length > 0 ? (
+                      <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+                        {libraryItems.map((item) => (
+                          <div
+                            key={item.id}
+                            className="border-border bg-bg hover:border-primary rounded-lg border p-4 transition-colors"
+                          >
+                            <div className="mb-3 flex items-center justify-between">
+                              <span
+                                className={`pill text-xs ${item.type === "purchased" ? "pill-primary" : "pill-success"}`}
+                              >
+                                {item.type === "purchased" ? "Gekauft" : "Gratis"}
+                              </span>
+                              {item.verified && (
+                                <span className="pill pill-success text-xs">Verifiziert</span>
+                              )}
+                            </div>
+                            <h3 className="text-text mb-1 font-semibold">{item.title}</h3>
+                            <div className="mb-2 flex items-center gap-2">
+                              <span className={`pill text-xs ${getSubjectPillClass(item.subject)}`}>
+                                {item.subject}
+                              </span>
+                              <span className="text-text-muted text-xs">{item.cycle}</span>
+                            </div>
+                            <p className="text-text-muted mb-4 text-xs">
+                              Von: {item.seller.displayName || "Unbekannt"}
+                            </p>
+                            <button
+                              onClick={() => handleDownload(item.id)}
+                              disabled={downloading === item.id}
+                              className="bg-primary text-text-on-accent hover:bg-primary-hover w-full rounded-md px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
+                            >
+                              {downloading === item.id ? "Wird geladen..." : "Herunterladen"}
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="py-12 text-center">
+                        <Download className="text-text-faint mx-auto mb-4 h-16 w-16" />
+                        <h3 className="text-text mb-2 text-lg font-medium">
+                          Noch keine erworbenen Ressourcen
+                        </h3>
+                        <p className="text-text-muted mb-4">
+                          Entdecken Sie unsere Ressourcen und beginnen Sie Ihre Sammlung.
+                        </p>
+                        <Link
+                          href="/resources"
+                          className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
+                        >
+                          Ressourcen entdecken
+                        </Link>
+                      </div>
                     )}
                   </div>
-                  <h3 className="font-semibold text-[var(--color-text)] mb-1">{item.title}</h3>
-                  <p className="text-sm text-[var(--color-text-muted)] mb-4">{item.subject} - {item.cycle}</p>
-                  <button className="w-full px-4 py-2 bg-[var(--color-primary)] text-white text-sm font-medium rounded-md hover:bg-[var(--color-primary-hover)] transition-colors">
-                    Herunterladen
-                  </button>
-                </div>
-              ))}
-            </div>
+                </motion.div>
+              )}
 
-            {libraryItems.length === 0 && (
-              <div className="text-center py-12">
-                <svg className="w-16 h-16 text-[var(--color-text-faint)] mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                </svg>
-                <h3 className="text-lg font-medium text-[var(--color-text)] mb-2">Ihre Bibliothek ist leer</h3>
-                <p className="text-[var(--color-text-muted)] mb-4">Entdecken Sie unsere Ressourcen und beginnen Sie Ihre Sammlung.</p>
-                <Link
-                  href="/resources"
-                  className="inline-flex items-center px-4 py-2 bg-[var(--color-primary)] text-white text-sm font-medium rounded-md hover:bg-[var(--color-primary-hover)] transition-colors"
+              {/* Uploads Tab */}
+              {activeTab === "uploads" && (
+                <motion.div
+                  key="uploads"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  Ressourcen entdecken
-                </Link>
-              </div>
-            )}
+                  <div className="border-border bg-surface rounded-xl border p-6">
+                    <div className="mb-6 flex items-center justify-between">
+                      <div>
+                        <h2 className="text-text text-xl font-semibold">Meine Uploads</h2>
+                        <p className="text-text-muted mt-1 text-sm">
+                          Ressourcen, die Sie hochgeladen haben
+                        </p>
+                      </div>
+                      <Link
+                        href="/upload"
+                        className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors"
+                      >
+                        <span>+</span>
+                        Neue Ressource
+                      </Link>
+                    </div>
+
+                    {loading || uploadedLoading ? (
+                      <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+                        {[1, 2, 3].map((i) => (
+                          <div
+                            key={i}
+                            className="border-border bg-bg animate-pulse rounded-lg border p-4"
+                          >
+                            <div className="bg-surface-hover mb-3 h-4 w-16 rounded"></div>
+                            <div className="bg-surface-hover mb-2 h-5 w-full rounded"></div>
+                            <div className="bg-surface-hover mb-4 h-4 w-24 rounded"></div>
+                            <div className="bg-surface-hover h-10 w-full rounded"></div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : uploadedItems.length > 0 ? (
+                      <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+                        {uploadedItems.map((item) => (
+                          <div
+                            key={item.id}
+                            className="border-border bg-bg hover:border-primary rounded-lg border p-4 transition-colors"
+                          >
+                            <div className="mb-3 flex items-center justify-between">
+                              <span
+                                className={`pill text-xs ${
+                                  item.status === "VERIFIED"
+                                    ? "pill-success"
+                                    : item.status === "PENDING"
+                                      ? "pill-warning"
+                                      : "pill-neutral"
+                                }`}
+                              >
+                                {item.status === "VERIFIED"
+                                  ? "Verifiziert"
+                                  : item.status === "PENDING"
+                                    ? "Ausstehend"
+                                    : item.status}
+                              </span>
+                              <span className="text-price text-sm font-semibold">
+                                {item.priceFormatted}
+                              </span>
+                            </div>
+                            <Link href={`/resources/${item.id}`}>
+                              <h3 className="text-text hover:text-primary mb-1 font-semibold">
+                                {item.title}
+                              </h3>
+                            </Link>
+                            <div className="mb-3 flex items-center gap-2">
+                              <span className={`pill text-xs ${getSubjectPillClass(item.subject)}`}>
+                                {item.subject}
+                              </span>
+                              <span className="text-text-muted text-xs">{item.cycle}</span>
+                            </div>
+                            <div className="text-text-muted mb-4 flex items-center justify-between text-xs">
+                              <span>{item.downloadCount} Downloads</span>
+                              <span>{item.purchaseCount} Verkäufe</span>
+                            </div>
+                            <Link
+                              href={`/resources/${item.id}`}
+                              className="bg-primary text-text-on-accent hover:bg-primary-hover block w-full rounded-md px-4 py-2 text-center text-sm font-medium transition-colors"
+                            >
+                              Ansehen
+                            </Link>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="py-12 text-center">
+                        <FileText className="text-text-faint mx-auto mb-4 h-16 w-16" />
+                        <h3 className="text-text mb-2 text-lg font-medium">
+                          Noch keine hochgeladenen Ressourcen
+                        </h3>
+                        <p className="text-text-muted mb-4">
+                          Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen.
+                        </p>
+                        <Link
+                          href="/upload"
+                          className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
+                        >
+                          Material hochladen
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Wishlist Tab */}
+              {activeTab === "wishlist" && (
+                <motion.div
+                  key="wishlist"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <div className="border-border bg-surface rounded-xl border p-6">
+                    <div className="mb-6 flex items-center justify-between">
+                      <div>
+                        <h2 className="text-text text-xl font-semibold">Wunschliste</h2>
+                        <p className="text-text-muted mt-1 text-sm">
+                          Gespeicherte Ressourcen für später
+                        </p>
+                      </div>
+                    </div>
+
+                    {loading ? (
+                      <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+                        {[1, 2].map((i) => (
+                          <div
+                            key={i}
+                            className="border-border bg-bg animate-pulse rounded-lg border p-4"
+                          >
+                            <div className="bg-surface-hover mb-3 h-4 w-16 rounded"></div>
+                            <div className="bg-surface-hover mb-2 h-5 w-full rounded"></div>
+                            <div className="bg-surface-hover mb-4 h-4 w-24 rounded"></div>
+                            <div className="bg-surface-hover h-10 w-full rounded"></div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : wishlistItems.length > 0 ? (
+                      <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+                        {wishlistItems.map((item) => (
+                          <div
+                            key={item.id}
+                            className="border-border bg-bg hover:border-primary rounded-lg border p-4 transition-colors"
+                          >
+                            <div className="mb-3 flex items-center justify-between">
+                              <span className={`pill text-xs ${getSubjectPillClass(item.subject)}`}>
+                                {item.subject}
+                              </span>
+                              <button
+                                onClick={() => handleRemoveFromWishlist(item.id)}
+                                className="text-error hover:text-error/80"
+                              >
+                                <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                                  <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                </svg>
+                              </button>
+                            </div>
+                            <Link href={`/resources/${item.id}`}>
+                              <h3 className="text-text hover:text-primary mb-1 font-semibold">
+                                {item.title}
+                              </h3>
+                            </Link>
+                            <p className="text-text-muted mb-4 text-sm">{item.cycle}</p>
+                            <div className="flex items-center justify-between">
+                              <span
+                                className={`text-lg font-bold ${item.price === 0 ? "text-success" : "text-price"}`}
+                              >
+                                {item.priceFormatted}
+                              </span>
+                              <Link
+                                href={`/resources/${item.id}`}
+                                className="bg-primary text-text-on-accent hover:bg-primary-hover rounded-md px-4 py-2 text-sm font-medium transition-colors"
+                              >
+                                Ansehen
+                              </Link>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="py-12 text-center">
+                        <svg
+                          className="text-text-faint mx-auto mb-4 h-16 w-16"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                          />
+                        </svg>
+                        <h3 className="text-text mb-2 text-lg font-medium">
+                          Ihre Wunschliste ist leer
+                        </h3>
+                        <p className="text-text-muted mb-4">
+                          Speichern Sie interessante Ressourcen für später.
+                        </p>
+                        <Link
+                          href="/resources"
+                          className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
+                        >
+                          Ressourcen entdecken
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Settings Tab */}
+              {activeTab === "settings" && (
+                <motion.div
+                  key="settings"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <div className="flex flex-col gap-6 lg:flex-row">
+                    {/* Settings Navigation Sidebar */}
+                    <div className="lg:w-64 lg:flex-shrink-0">
+                      <nav className="border-border bg-surface rounded-xl border p-2">
+                        <div className="space-y-1">
+                          <button
+                            onClick={() => setSettingsSection("profile")}
+                            className={`flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-sm font-medium transition-colors ${
+                              settingsSection === "profile"
+                                ? "bg-primary/10 text-primary"
+                                : "text-text-secondary hover:bg-bg hover:text-text"
+                            }`}
+                          >
+                            <User className="h-5 w-5" />
+                            <div>
+                              <div>Profil</div>
+                              <div className="text-text-muted text-xs font-normal">
+                                Name, Foto, Fächer
+                              </div>
+                            </div>
+                          </button>
+                          <button
+                            onClick={() => setSettingsSection("appearance")}
+                            className={`flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-sm font-medium transition-colors ${
+                              settingsSection === "appearance"
+                                ? "bg-primary/10 text-primary"
+                                : "text-text-secondary hover:bg-bg hover:text-text"
+                            }`}
+                          >
+                            <Palette className="h-5 w-5" />
+                            <div>
+                              <div>Darstellung</div>
+                              <div className="text-text-muted text-xs font-normal">
+                                Theme, Sprache
+                              </div>
+                            </div>
+                          </button>
+                          <button
+                            onClick={() => setSettingsSection("notifications")}
+                            className={`flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-sm font-medium transition-colors ${
+                              settingsSection === "notifications"
+                                ? "bg-primary/10 text-primary"
+                                : "text-text-secondary hover:bg-bg hover:text-text"
+                            }`}
+                          >
+                            <Bell className="h-5 w-5" />
+                            <div>
+                              <div>Benachrichtigungen</div>
+                              <div className="text-text-muted text-xs font-normal">
+                                E-Mail, Updates
+                              </div>
+                            </div>
+                          </button>
+                          <button
+                            onClick={() => setSettingsSection("account")}
+                            className={`flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-sm font-medium transition-colors ${
+                              settingsSection === "account"
+                                ? "bg-primary/10 text-primary"
+                                : "text-text-secondary hover:bg-bg hover:text-text"
+                            }`}
+                          >
+                            <Shield className="h-5 w-5" />
+                            <div>
+                              <div>Konto</div>
+                              <div className="text-text-muted text-xs font-normal">
+                                Sicherheit, Daten
+                              </div>
+                            </div>
+                          </button>
+                        </div>
+                      </nav>
+                    </div>
+
+                    {/* Settings Content */}
+                    <div className="min-w-0 flex-1">
+                      <AnimatePresence mode="wait">
+                        {/* Profile Section */}
+                        {settingsSection === "profile" && (
+                          <motion.div
+                            key="profile-settings"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            transition={{ duration: 0.15 }}
+                            className="space-y-6"
+                          >
+                            {/* Section Header */}
+                            <div>
+                              <h2 className="text-text text-xl font-semibold">Profil bearbeiten</h2>
+                              <p className="text-text-muted mt-1 text-sm">
+                                Verwalten Sie Ihre persönlichen Informationen und Präferenzen
+                              </p>
+                            </div>
+
+                            {/* Success/Error Message */}
+                            {(profileMessage || avatarMessage) && (
+                              <div
+                                className={`flex items-center gap-3 rounded-xl border p-4 ${
+                                  (profileMessage?.type || avatarMessage?.type) === "success"
+                                    ? "border-success/30 bg-success/5"
+                                    : "border-error/30 bg-error/5"
+                                }`}
+                              >
+                                <div
+                                  className={`flex h-8 w-8 items-center justify-center rounded-full ${
+                                    (profileMessage?.type || avatarMessage?.type) === "success"
+                                      ? "bg-success/10"
+                                      : "bg-error/10"
+                                  }`}
+                                >
+                                  {(profileMessage?.type || avatarMessage?.type) === "success" ? (
+                                    <Check className="text-success h-4 w-4" />
+                                  ) : (
+                                    <X className="text-error h-4 w-4" />
+                                  )}
+                                </div>
+                                <span
+                                  className={`text-sm font-medium ${
+                                    (profileMessage?.type || avatarMessage?.type) === "success"
+                                      ? "text-success"
+                                      : "text-error"
+                                  }`}
+                                >
+                                  {profileMessage?.text || avatarMessage?.text}
+                                </span>
+                              </div>
+                            )}
+
+                            {/* Profile Picture Card */}
+                            <div className="border-border bg-surface rounded-xl border">
+                              <div className="border-border border-b p-5">
+                                <div className="flex items-center gap-3">
+                                  <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+                                    <Camera className="text-primary h-5 w-5" />
+                                  </div>
+                                  <div>
+                                    <h3 className="text-text font-semibold">Profilbild</h3>
+                                    <p className="text-text-muted text-sm">
+                                      JPG, PNG oder GIF. Max. 2MB
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="p-5">
+                                <div className="flex items-center gap-6">
+                                  <div className="relative">
+                                    <AvatarUploader
+                                      currentAvatarUrl={avatarUrl}
+                                      displayName={displayData.name || "Benutzer"}
+                                      onUpload={handleAvatarUpload}
+                                    />
+                                    {isUploadingAvatar && (
+                                      <div className="bg-bg/80 absolute inset-0 flex items-center justify-center rounded-full">
+                                        <div className="border-primary h-6 w-6 animate-spin rounded-full border-2 border-t-transparent"></div>
+                                      </div>
+                                    )}
+                                  </div>
+                                  <div className="flex flex-col gap-2">
+                                    <p className="text-text-secondary text-sm">
+                                      Klicken Sie auf das Bild, um ein neues Foto hochzuladen
+                                    </p>
+                                    {avatarUrl && (
+                                      <button
+                                        onClick={handleAvatarDelete}
+                                        disabled={isDeletingAvatar}
+                                        className="text-error hover:bg-error/10 inline-flex w-fit items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors disabled:opacity-50"
+                                      >
+                                        <Trash2 className="h-4 w-4" />
+                                        {isDeletingAvatar ? "Wird entfernt..." : "Entfernen"}
+                                      </button>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Personal Information Card */}
+                            <div className="border-border bg-surface rounded-xl border">
+                              <div className="border-border flex items-center justify-between border-b p-5">
+                                <div className="flex items-center gap-3">
+                                  <div className="bg-accent/10 flex h-10 w-10 items-center justify-center rounded-lg">
+                                    <User className="text-accent h-5 w-5" />
+                                  </div>
+                                  <div>
+                                    <h3 className="text-text font-semibold">Persönliche Daten</h3>
+                                    <p className="text-text-muted text-sm">
+                                      Name und Kontaktinformationen
+                                    </p>
+                                  </div>
+                                </div>
+                                {!isEditingProfile && (
+                                  <button
+                                    onClick={handleStartEditingProfile}
+                                    className="bg-primary text-text-on-accent hover:bg-primary-hover rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+                                  >
+                                    Bearbeiten
+                                  </button>
+                                )}
+                              </div>
+                              <div className="p-5">
+                                {isEditingProfile ? (
+                                  <div className="space-y-5">
+                                    <div className="grid gap-5 sm:grid-cols-2">
+                                      <div>
+                                        <label className="text-text mb-2 block text-sm font-medium">
+                                          Anzeigename <span className="text-error">*</span>
+                                        </label>
+                                        <input
+                                          type="text"
+                                          value={profileFormData.display_name}
+                                          onChange={(e) =>
+                                            handleProfileFieldChange("display_name", e.target.value)
+                                          }
+                                          placeholder="z.B. Frau M. oder Maria S."
+                                          className={`border-border bg-bg text-text placeholder:text-text-muted focus:ring-primary/20 w-full rounded-lg border px-4 py-2.5 text-sm focus:ring-2 focus:outline-none ${
+                                            profileErrors.display_name
+                                              ? "border-error focus:border-error"
+                                              : "focus:border-primary"
+                                          }`}
+                                        />
+                                        {profileErrors.display_name && (
+                                          <p className="text-error mt-1.5 text-xs">
+                                            {profileErrors.display_name}
+                                          </p>
+                                        )}
+                                      </div>
+                                      <div>
+                                        <label className="text-text mb-2 block text-sm font-medium">
+                                          E-Mail-Adresse
+                                        </label>
+                                        <div className="relative">
+                                          <Mail className="text-text-muted absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+                                          <input
+                                            type="email"
+                                            value={displayData.email}
+                                            disabled
+                                            className="border-border bg-surface text-text-muted w-full cursor-not-allowed rounded-lg border py-2.5 pr-4 pl-10 text-sm"
+                                          />
+                                        </div>
+                                        <p className="text-text-muted mt-1.5 text-xs">
+                                          Kontaktieren Sie uns, um Ihre E-Mail zu ändern
+                                        </p>
+                                      </div>
+                                    </div>
+
+                                    <div className="border-border border-t pt-5">
+                                      <MultiSelect
+                                        label="Kantone"
+                                        options={SWISS_CANTONS}
+                                        selected={profileFormData.cantons}
+                                        onChange={(value) =>
+                                          handleProfileFieldChange("cantons", value)
+                                        }
+                                        placeholder="Kantone auswählen (optional)..."
+                                      />
+                                    </div>
+
+                                    <div className="flex justify-end gap-3 pt-2">
+                                      <button
+                                        type="button"
+                                        onClick={handleCancelEditingProfile}
+                                        disabled={isSavingProfile}
+                                        className="border-border text-text-secondary hover:bg-bg rounded-lg border px-5 py-2.5 text-sm font-medium transition-colors disabled:opacity-50"
+                                      >
+                                        Abbrechen
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={handleSaveProfile}
+                                        disabled={isSavingProfile}
+                                        className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-medium transition-colors disabled:opacity-50"
+                                      >
+                                        {isSavingProfile ? (
+                                          <>
+                                            <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                                            Speichern...
+                                          </>
+                                        ) : (
+                                          <>
+                                            <Check className="h-4 w-4" />
+                                            Speichern
+                                          </>
+                                        )}
+                                      </button>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <div className="grid gap-6 sm:grid-cols-2">
+                                    <div className="flex items-start gap-3">
+                                      <div className="bg-bg flex h-10 w-10 items-center justify-center rounded-lg">
+                                        <User className="text-text-muted h-5 w-5" />
+                                      </div>
+                                      <div>
+                                        <p className="text-text-muted text-xs font-medium tracking-wide uppercase">
+                                          Name
+                                        </p>
+                                        <p className="text-text mt-0.5 font-medium">
+                                          {displayData.name || "-"}
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <div className="flex items-start gap-3">
+                                      <div className="bg-bg flex h-10 w-10 items-center justify-center rounded-lg">
+                                        <Mail className="text-text-muted h-5 w-5" />
+                                      </div>
+                                      <div>
+                                        <p className="text-text-muted text-xs font-medium tracking-wide uppercase">
+                                          E-Mail
+                                        </p>
+                                        <p className="text-text mt-0.5 font-medium">
+                                          {displayData.email}
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <div className="flex items-start gap-3">
+                                      <div className="bg-bg flex h-10 w-10 items-center justify-center rounded-lg">
+                                        <MapPin className="text-text-muted h-5 w-5" />
+                                      </div>
+                                      <div>
+                                        <p className="text-text-muted text-xs font-medium tracking-wide uppercase">
+                                          Kantone
+                                        </p>
+                                        <p className="text-text mt-0.5 font-medium">
+                                          {displayData.cantons && displayData.cantons.length > 0
+                                            ? displayData.cantons.join(", ")
+                                            : "-"}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Teaching Preferences Card */}
+                            <div className="border-border bg-surface rounded-xl border">
+                              <div className="border-border flex items-center justify-between border-b p-5">
+                                <div className="flex items-center gap-3">
+                                  <div className="bg-success/10 flex h-10 w-10 items-center justify-center rounded-lg">
+                                    <BookOpen className="text-success h-5 w-5" />
+                                  </div>
+                                  <div>
+                                    <h3 className="text-text font-semibold">
+                                      Unterrichtspräferenzen
+                                    </h3>
+                                    <p className="text-text-muted text-sm">
+                                      Fächer und Schulstufen für personalisierte Empfehlungen
+                                    </p>
+                                  </div>
+                                </div>
+                                {!isEditingProfile && (
+                                  <button
+                                    onClick={handleStartEditingProfile}
+                                    className="text-primary text-sm font-medium hover:underline"
+                                  >
+                                    Bearbeiten
+                                  </button>
+                                )}
+                              </div>
+                              <div className="p-5">
+                                {isEditingProfile ? (
+                                  <div className="space-y-5">
+                                    <MultiSelect
+                                      label="Fächer"
+                                      options={SWISS_SUBJECTS}
+                                      selected={profileFormData.subjects}
+                                      onChange={(value) =>
+                                        handleProfileFieldChange("subjects", value)
+                                      }
+                                      placeholder="Fächer auswählen..."
+                                      required
+                                      error={profileErrors.subjects}
+                                    />
+                                    <MultiSelect
+                                      label="Zyklen"
+                                      options={SWISS_CYCLES}
+                                      selected={profileFormData.cycles}
+                                      onChange={(value) =>
+                                        handleProfileFieldChange("cycles", value)
+                                      }
+                                      placeholder="Zyklen auswählen..."
+                                      required
+                                      error={profileErrors.cycles}
+                                    />
+                                  </div>
+                                ) : (
+                                  <div className="grid gap-6 sm:grid-cols-2">
+                                    <div>
+                                      <div className="flex items-center gap-2">
+                                        <BookOpen className="text-text-muted h-4 w-4" />
+                                        <p className="text-text-muted text-xs font-medium tracking-wide uppercase">
+                                          Fächer
+                                        </p>
+                                      </div>
+                                      <div className="mt-2 flex flex-wrap gap-1.5">
+                                        {displayData.subjects && displayData.subjects.length > 0 ? (
+                                          displayData.subjects.map((subject) => (
+                                            <span
+                                              key={subject}
+                                              className={`pill text-xs ${getSubjectPillClass(subject)}`}
+                                            >
+                                              {subject}
+                                            </span>
+                                          ))
+                                        ) : (
+                                          <span className="text-text-muted text-sm">
+                                            Keine Fächer ausgewählt
+                                          </span>
+                                        )}
+                                      </div>
+                                    </div>
+                                    <div>
+                                      <div className="flex items-center gap-2">
+                                        <GraduationCap className="text-text-muted h-4 w-4" />
+                                        <p className="text-text-muted text-xs font-medium tracking-wide uppercase">
+                                          Zyklen
+                                        </p>
+                                      </div>
+                                      <div className="mt-2 flex flex-wrap gap-1.5">
+                                        {displayData.cycles && displayData.cycles.length > 0 ? (
+                                          displayData.cycles.map((cycle) => (
+                                            <span key={cycle} className="pill pill-primary text-xs">
+                                              {cycle}
+                                            </span>
+                                          ))
+                                        ) : (
+                                          <span className="text-text-muted text-sm">
+                                            Keine Zyklen ausgewählt
+                                          </span>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </motion.div>
+                        )}
+
+                        {/* Appearance Section */}
+                        {settingsSection === "appearance" && (
+                          <motion.div
+                            key="appearance-settings"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            transition={{ duration: 0.15 }}
+                            className="space-y-6"
+                          >
+                            {/* Section Header */}
+                            <div>
+                              <h2 className="text-text text-xl font-semibold">Darstellung</h2>
+                              <p className="text-text-muted mt-1 text-sm">
+                                Passen Sie das Aussehen der Anwendung an Ihre Vorlieben an
+                              </p>
+                            </div>
+
+                            {/* Theme Settings Card */}
+                            <div className="border-border bg-surface rounded-xl border">
+                              <div className="border-border border-b p-5">
+                                <div className="flex items-center gap-3">
+                                  <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+                                    <Palette className="text-primary h-5 w-5" />
+                                  </div>
+                                  <div>
+                                    <h3 className="text-text font-semibold">Farbschema</h3>
+                                    <p className="text-text-muted text-sm">
+                                      Wählen Sie zwischen Hell, Dunkel oder System
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="p-5">
+                                <ThemeSettings />
+                              </div>
+                            </div>
+                          </motion.div>
+                        )}
+
+                        {/* Notifications Section */}
+                        {settingsSection === "notifications" && (
+                          <motion.div
+                            key="notifications-settings"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            transition={{ duration: 0.15 }}
+                            className="space-y-6"
+                          >
+                            {/* Section Header */}
+                            <div>
+                              <h2 className="text-text text-xl font-semibold">
+                                Benachrichtigungen
+                              </h2>
+                              <p className="text-text-muted mt-1 text-sm">
+                                Verwalten Sie, welche Benachrichtigungen Sie erhalten möchten
+                              </p>
+                            </div>
+
+                            {/* Email Notifications Card */}
+                            <div className="border-border bg-surface rounded-xl border">
+                              <div className="border-border border-b p-5">
+                                <div className="flex items-center gap-3">
+                                  <div className="bg-accent/10 flex h-10 w-10 items-center justify-center rounded-lg">
+                                    <Mail className="text-accent h-5 w-5" />
+                                  </div>
+                                  <div>
+                                    <h3 className="text-text font-semibold">
+                                      E-Mail-Benachrichtigungen
+                                    </h3>
+                                    <p className="text-text-muted text-sm">
+                                      Wichtige Updates per E-Mail erhalten
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="divide-border divide-y">
+                                <label className="hover:bg-bg flex cursor-pointer items-center justify-between p-5 transition-colors">
+                                  <div className="flex items-start gap-4">
+                                    <div className="bg-success/10 mt-0.5 flex h-8 w-8 items-center justify-center rounded-lg">
+                                      <FileText className="text-success h-4 w-4" />
+                                    </div>
+                                    <div>
+                                      <span className="text-text font-medium">Neue Ressourcen</span>
+                                      <p className="text-text-muted mt-0.5 text-sm">
+                                        Erhalten Sie Benachrichtigungen, wenn Verkäufer, denen Sie
+                                        folgen, neue Materialien hochladen
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <div className="relative ml-4">
+                                    <input
+                                      type="checkbox"
+                                      defaultChecked
+                                      className="peer sr-only"
+                                    />
+                                    <div className="bg-border peer-checked:bg-primary h-6 w-11 rounded-full transition-colors after:absolute after:top-0.5 after:left-0.5 after:h-5 after:w-5 after:rounded-full after:bg-white after:transition-transform after:content-[''] peer-checked:after:translate-x-5"></div>
+                                  </div>
+                                </label>
+                                <label className="hover:bg-bg flex cursor-pointer items-center justify-between p-5 transition-colors">
+                                  <div className="flex items-start gap-4">
+                                    <div className="bg-price/10 mt-0.5 flex h-8 w-8 items-center justify-center rounded-lg">
+                                      <TrendingUp className="text-price h-4 w-4" />
+                                    </div>
+                                    <div>
+                                      <span className="text-text font-medium">Preisänderungen</span>
+                                      <p className="text-text-muted mt-0.5 text-sm">
+                                        Benachrichtigungen bei Preisänderungen von Ressourcen auf
+                                        Ihrer Wunschliste
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <div className="relative ml-4">
+                                    <input
+                                      type="checkbox"
+                                      defaultChecked
+                                      className="peer sr-only"
+                                    />
+                                    <div className="bg-border peer-checked:bg-primary h-6 w-11 rounded-full transition-colors after:absolute after:top-0.5 after:left-0.5 after:h-5 after:w-5 after:rounded-full after:bg-white after:transition-transform after:content-[''] peer-checked:after:translate-x-5"></div>
+                                  </div>
+                                </label>
+                                <label className="hover:bg-bg flex cursor-pointer items-center justify-between p-5 transition-colors">
+                                  <div className="flex items-start gap-4">
+                                    <div className="bg-primary/10 mt-0.5 flex h-8 w-8 items-center justify-center rounded-lg">
+                                      <Bell className="text-primary h-4 w-4" />
+                                    </div>
+                                    <div>
+                                      <span className="text-text font-medium">Newsletter</span>
+                                      <p className="text-text-muted mt-0.5 text-sm">
+                                        Wöchentliche Updates mit Tipps, neuen Funktionen und
+                                        ausgewählten Ressourcen
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <div className="relative ml-4">
+                                    <input type="checkbox" className="peer sr-only" />
+                                    <div className="bg-border peer-checked:bg-primary h-6 w-11 rounded-full transition-colors after:absolute after:top-0.5 after:left-0.5 after:h-5 after:w-5 after:rounded-full after:bg-white after:transition-transform after:content-[''] peer-checked:after:translate-x-5"></div>
+                                  </div>
+                                </label>
+                              </div>
+                            </div>
+                          </motion.div>
+                        )}
+
+                        {/* Account Section */}
+                        {settingsSection === "account" && (
+                          <motion.div
+                            key="account-settings"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            transition={{ duration: 0.15 }}
+                            className="space-y-6"
+                          >
+                            {/* Section Header */}
+                            <div>
+                              <h2 className="text-text text-xl font-semibold">
+                                Konto & Sicherheit
+                              </h2>
+                              <p className="text-text-muted mt-1 text-sm">
+                                Verwalten Sie Ihre Kontoeinstellungen und Sicherheitsoptionen
+                              </p>
+                            </div>
+
+                            {/* Account Info Card */}
+                            <div className="border-border bg-surface rounded-xl border">
+                              <div className="border-border border-b p-5">
+                                <div className="flex items-center gap-3">
+                                  <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+                                    <Shield className="text-primary h-5 w-5" />
+                                  </div>
+                                  <div>
+                                    <h3 className="text-text font-semibold">Kontostatus</h3>
+                                    <p className="text-text-muted text-sm">
+                                      Informationen zu Ihrem Konto
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="p-5">
+                                <div className="grid gap-4 sm:grid-cols-2">
+                                  <div className="border-border rounded-lg border p-4">
+                                    <p className="text-text-muted text-xs font-medium tracking-wide uppercase">
+                                      Kontotyp
+                                    </p>
+                                    <p className="text-text mt-1 font-semibold">
+                                      {displayData.isSeller ? "Verkäufer" : "Käufer"}
+                                    </p>
+                                  </div>
+                                  <div className="border-border rounded-lg border p-4">
+                                    <p className="text-text-muted text-xs font-medium tracking-wide uppercase">
+                                      E-Mail-Status
+                                    </p>
+                                    <div className="mt-1 flex items-center gap-2">
+                                      {displayData.emailVerified ? (
+                                        <>
+                                          <div className="bg-success/20 rounded-full p-1">
+                                            <Check className="text-success h-3 w-3" />
+                                          </div>
+                                          <span className="text-success font-semibold">
+                                            Verifiziert
+                                          </span>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <div className="bg-warning/20 rounded-full p-1">
+                                            <X className="text-warning h-3 w-3" />
+                                          </div>
+                                          <span className="text-warning font-semibold">
+                                            Nicht verifiziert
+                                          </span>
+                                        </>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Data Export Card */}
+                            <div className="border-border bg-surface rounded-xl border">
+                              <div className="border-border border-b p-5">
+                                <div className="flex items-center gap-3">
+                                  <div className="bg-accent/10 flex h-10 w-10 items-center justify-center rounded-lg">
+                                    <Download className="text-accent h-5 w-5" />
+                                  </div>
+                                  <div>
+                                    <h3 className="text-text font-semibold">Datenexport</h3>
+                                    <p className="text-text-muted text-sm">
+                                      Laden Sie eine Kopie Ihrer Daten herunter
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="p-5">
+                                <p className="text-text-secondary mb-4 text-sm">
+                                  Sie können jederzeit eine Kopie Ihrer persönlichen Daten
+                                  anfordern. Der Download enthält Ihre Profilinformationen, Käufe
+                                  und hochgeladenen Ressourcen.
+                                </p>
+                                <button className="border-border text-text hover:border-primary hover:text-primary inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors">
+                                  <Download className="h-4 w-4" />
+                                  Daten exportieren
+                                </button>
+                              </div>
+                            </div>
+
+                            {/* Danger Zone Card */}
+                            <div className="border-error/30 bg-error/5 rounded-xl border">
+                              <div className="border-error/30 border-b p-5">
+                                <div className="flex items-center gap-3">
+                                  <div className="bg-error/10 flex h-10 w-10 items-center justify-center rounded-lg">
+                                    <Trash2 className="text-error h-5 w-5" />
+                                  </div>
+                                  <div>
+                                    <h3 className="text-error font-semibold">Gefahrenzone</h3>
+                                    <p className="text-text-muted text-sm">
+                                      Unwiderrufliche Aktionen
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="p-5">
+                                <p className="text-text-secondary mb-4 text-sm">
+                                  Das Löschen Ihres Kontos ist unwiderruflich. Alle Ihre Daten,
+                                  hochgeladenen Ressourcen und Käufe werden permanent gelöscht.
+                                </p>
+                                <button className="border-error text-error hover:bg-error hover:text-text-on-accent inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors">
+                                  <Trash2 className="h-4 w-4" />
+                                  Konto löschen
+                                </button>
+                              </div>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
-        )}
-
-        {/* Wishlist Tab */}
-        {activeTab === "wishlist" && (
-          <div className="rounded-xl bg-[var(--color-surface)] p-6 border border-[var(--color-border)]">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-xl font-semibold text-[var(--color-text)]">Wunschliste</h2>
-                <p className="text-sm text-[var(--color-text-muted)] mt-1">Gespeicherte Ressourcen für später</p>
-              </div>
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {wishlistItems.map((item) => (
-                <div
-                  key={item.id}
-                  className="rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] p-4 hover:border-[var(--color-primary)] transition-colors"
-                >
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="px-2 py-1 bg-[var(--color-surface)] text-[var(--color-text-muted)] text-xs font-medium rounded">
-                      {item.subject}
-                    </span>
-                    <button className="text-[var(--color-error)] hover:text-[var(--color-error-hover)]">
-                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                      </svg>
-                    </button>
-                  </div>
-                  <h3 className="font-semibold text-[var(--color-text)] mb-1">{item.title}</h3>
-                  <p className="text-sm text-[var(--color-text-muted)] mb-4">{item.cycle}</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-lg font-bold text-[var(--color-primary)]">CHF {item.price.toFixed(2)}</span>
-                    <button className="px-4 py-2 bg-[var(--color-primary)] text-white text-sm font-medium rounded-md hover:bg-[var(--color-primary-hover)] transition-colors">
-                      Kaufen
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {wishlistItems.length === 0 && (
-              <div className="text-center py-12">
-                <svg className="w-16 h-16 text-[var(--color-text-faint)] mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                </svg>
-                <h3 className="text-lg font-medium text-[var(--color-text)] mb-2">Ihre Wunschliste ist leer</h3>
-                <p className="text-[var(--color-text-muted)] mb-4">Speichern Sie interessante Ressourcen für später.</p>
-                <Link
-                  href="/resources"
-                  className="inline-flex items-center px-4 py-2 bg-[var(--color-primary)] text-white text-sm font-medium rounded-md hover:bg-[var(--color-primary-hover)] transition-colors"
-                >
-                  Ressourcen entdecken
-                </Link>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Settings Tab */}
-        {activeTab === "settings" && (
-          <div className="max-w-2xl space-y-6">
-            {/* Profile Settings */}
-            <div className="rounded-xl bg-[var(--color-surface)] p-6 border border-[var(--color-border)]">
-              <h2 className="text-lg font-semibold text-[var(--color-text)] mb-4">Profileinstellungen</h2>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-[var(--color-text)] mb-1">Name</label>
-                  <input
-                    type="text"
-                    value={userData.name}
-                    disabled
-                    className="w-full px-4 py-2 border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] text-[var(--color-text-muted)]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-[var(--color-text)] mb-1">E-Mail</label>
-                  <input
-                    type="email"
-                    value={userData.email}
-                    disabled
-                    className="w-full px-4 py-2 border border-[var(--color-border)] rounded-md bg-[var(--color-surface)] text-[var(--color-text-muted)]"
-                  />
-                  <p className="text-xs text-[var(--color-text-muted)] mt-1">E-Mail kann nicht geändert werden.</p>
-                </div>
-              </div>
-              <div className="mt-6">
-                <Link
-                  href="/profile/edit"
-                  className="inline-flex items-center px-4 py-2 bg-[var(--color-primary)] text-white text-sm font-medium rounded-md hover:bg-[var(--color-primary-hover)] transition-colors"
-                >
-                  Profil bearbeiten
-                </Link>
-              </div>
-            </div>
-
-            {/* Notification Settings */}
-            <div className="rounded-xl bg-[var(--color-surface)] p-6 border border-[var(--color-border)]">
-              <h2 className="text-lg font-semibold text-[var(--color-text)] mb-4">Benachrichtigungen</h2>
-              <div className="space-y-4">
-                <label className="flex items-center justify-between">
-                  <div>
-                    <span className="font-medium text-[var(--color-text)]">Neue Ressourcen</span>
-                    <p className="text-sm text-[var(--color-text-muted)]">Benachrichtigungen über neue Materialien von gefolgten Verkäufern</p>
-                  </div>
-                  <input type="checkbox" defaultChecked className="w-5 h-5 text-[var(--color-primary)] rounded" />
-                </label>
-                <label className="flex items-center justify-between">
-                  <div>
-                    <span className="font-medium text-[var(--color-text)]">Preisänderungen</span>
-                    <p className="text-sm text-[var(--color-text-muted)]">Benachrichtigungen bei Preisänderungen auf der Wunschliste</p>
-                  </div>
-                  <input type="checkbox" defaultChecked className="w-5 h-5 text-[var(--color-primary)] rounded" />
-                </label>
-                <label className="flex items-center justify-between">
-                  <div>
-                    <span className="font-medium text-[var(--color-text)]">Newsletter</span>
-                    <p className="text-sm text-[var(--color-text-muted)]">Wöchentliche Updates und Tipps</p>
-                  </div>
-                  <input type="checkbox" className="w-5 h-5 text-[var(--color-primary)] rounded" />
-                </label>
-              </div>
-            </div>
-
-            {/* Danger Zone */}
-            <div className="rounded-xl bg-[var(--color-surface)] p-6 border border-[var(--color-error)]/30">
-              <h2 className="text-lg font-semibold text-[var(--color-error)] mb-4">Gefahrenzone</h2>
-              <p className="text-sm text-[var(--color-text-muted)] mb-4">
-                Diese Aktionen sind unwiderruflich. Bitte seien Sie vorsichtig.
-              </p>
-              <button className="px-4 py-2 border border-[var(--color-error)] text-[var(--color-error)] text-sm font-medium rounded-md hover:bg-[var(--badge-error-bg)] transition-colors">
-                Konto löschen
-              </button>
-            </div>
-          </div>
-        )}
+        </div>
       </main>
 
       <Footer />

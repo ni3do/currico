@@ -3,8 +3,64 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import Google from "next-auth/providers/google";
 import MicrosoftEntraID from "next-auth/providers/microsoft-entra-id";
 import Credentials from "next-auth/providers/credentials";
+import type { OIDCConfig } from "next-auth/providers";
 import bcrypt from "bcryptjs";
 import { prisma } from "./db";
+
+// Custom Switch edu-ID provider (Swiss educational identity)
+function EduID(): OIDCConfig<{
+  sub: string;
+  name?: string;
+  email?: string;
+  email_verified?: boolean;
+}> {
+  const isTest = process.env.EDUID_USE_TEST === "true";
+  const baseUrl = isTest
+    ? "https://login.test.eduid.ch"
+    : "https://login.eduid.ch";
+
+  return {
+    id: "eduid",
+    name: "Switch edu-ID",
+    type: "oidc",
+    issuer: baseUrl,
+    clientId: process.env.EDUID_CLIENT_ID!,
+    clientSecret: process.env.EDUID_CLIENT_SECRET!,
+    authorization: {
+      params: {
+        scope: "openid profile email",
+      },
+    },
+    profile(profile) {
+      return {
+        id: profile.sub,
+        name: profile.name,
+        email: profile.email,
+        image: null,
+      };
+    },
+  };
+}
+
+// Extend NextAuth types to include role
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string;
+      email: string;
+      name?: string | null;
+      image?: string | null;
+      role: "BUYER" | "SELLER" | "ADMIN";
+    };
+  }
+}
+
+declare module "@auth/core/jwt" {
+  interface JWT {
+    id?: string;
+    role?: "BUYER" | "SELLER" | "ADMIN";
+  }
+}
 
 const nextAuth = NextAuth({
   adapter: PrismaAdapter(prisma),
@@ -23,6 +79,7 @@ const nextAuth = NextAuth({
       clientSecret: process.env.MICROSOFT_CLIENT_SECRET!,
       issuer: `https://login.microsoftonline.com/${process.env.MICROSOFT_TENANT_ID || "common"}/v2.0`,
     }),
+    EduID(),
     Credentials({
       name: "credentials",
       credentials: {
@@ -64,15 +121,30 @@ const nextAuth = NextAuth({
     async signIn() {
       return true;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       if (user) {
-        token.id = user.id;
+        token.id = user.id as string;
+        // Fetch role from database
+        const dbUser = await prisma.user.findUnique({
+          where: { id: user.id as string },
+          select: { role: true },
+        });
+        token.role = (dbUser?.role ?? "BUYER") as "BUYER" | "SELLER" | "ADMIN";
+      }
+      // Refresh role on session update
+      if (trigger === "update" && token.id) {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: { role: true },
+        });
+        token.role = (dbUser?.role ?? "BUYER") as "BUYER" | "SELLER" | "ADMIN";
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user && token.id) {
         session.user.id = token.id as string;
+        session.user.role = (token.role ?? "BUYER") as "BUYER" | "SELLER" | "ADMIN";
       }
       return session;
     },

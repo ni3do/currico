@@ -7,11 +7,7 @@ import { PayoutForm } from "@/components/profile/PayoutForm";
 import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
-import {
-  SWISS_SUBJECTS,
-  SWISS_CYCLES,
-  SWISS_CANTONS,
-} from "@/lib/validations/user";
+import { SWISS_SUBJECTS, SWISS_CYCLES, SWISS_CANTONS } from "@/lib/validations/user";
 
 interface ProfileFormData {
   display_name: string;
@@ -141,9 +137,7 @@ export default function EditProfilePage() {
     // IBAN with asterisks means it's already set on the server
     const ibanIsSet = formData.iban && formData.iban.includes("*");
     const hasNewPayoutInfo =
-      formData.legal_first_name ||
-      formData.legal_last_name ||
-      (formData.iban && !ibanIsSet);
+      formData.legal_first_name || formData.legal_last_name || (formData.iban && !ibanIsSet);
 
     if (hasNewPayoutInfo) {
       if (!formData.legal_first_name) {
@@ -224,24 +218,29 @@ export default function EditProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--color-bg)]">
+    <div className="flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-4xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[var(--color-text)]">Profil bearbeiten</h1>
-          <p className="mt-2 text-[var(--color-text-muted)]">
+          <h1 className="text-3xl font-bold text-text">Profil bearbeiten</h1>
+          <p className="mt-2 text-text-muted">
             Verwalten Sie Ihre öffentlichen Profilinformationen und Auszahlungsdaten
           </p>
         </div>
 
         {/* Success Message */}
         {successMessage && (
-          <div className="mb-6 rounded-lg border border-[var(--color-success)]/50 bg-[var(--color-success)]/10 p-4 text-[var(--color-success)]">
+          <div className="mb-6 rounded-lg border border-success/50 bg-success/10 p-4 text-success">
             <div className="flex items-center gap-2">
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
               {successMessage}
             </div>
@@ -250,7 +249,7 @@ export default function EditProfilePage() {
 
         {/* Error Message */}
         {errors.submit && (
-          <div className="mb-6 rounded-lg border border-[var(--color-error)]/50 bg-[var(--color-error)]/10 p-4 text-[var(--color-error)]">
+          <div className="mb-6 rounded-lg border border-error/50 bg-error/10 p-4 text-error">
             {errors.submit}
           </div>
         )}
@@ -258,190 +257,192 @@ export default function EditProfilePage() {
         {/* Loading State */}
         {isLoading ? (
           <div className="flex items-center justify-center py-16">
-            <div className="h-12 w-12 animate-spin rounded-full border-4 border-[var(--color-primary)] border-t-transparent"></div>
+            <div className="h-12 w-12 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
           </div>
         ) : (
-        <form onSubmit={handleSubmit} className="space-y-8">
-          {/* Public Profile Section */}
-          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8">
-            <h2 className="mb-6 text-xl font-semibold text-[var(--color-text)]">
-              Öffentliches Profil
-            </h2>
-            <p className="mb-6 text-sm text-[var(--color-text-muted)]">
-              Diese Informationen sind für alle sichtbar
-            </p>
-
-            <div className="grid gap-8 lg:grid-cols-[200px_1fr]">
-              {/* Avatar */}
-              <div className="flex justify-center lg:justify-start">
-                <AvatarUploader
-                  currentAvatarUrl={formData.avatar_url}
-                  displayName={formData.display_name}
-                  onUpload={handleAvatarUpload}
-                />
-              </div>
-
-              {/* Form Fields */}
-              <div className="space-y-6">
-                {/* Display Name */}
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
-                    Profilname <span className="text-[var(--color-error)]">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.display_name}
-                    onChange={(e) => handleChange("display_name", e.target.value)}
-                    placeholder="z.B. Frau M. oder Maria S."
-                    className={`w-full rounded-lg border bg-[var(--color-bg)] px-4 py-2 text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 ${
-                      errors.display_name
-                        ? "border-[var(--color-error)] focus:border-[var(--color-error)]"
-                        : "border-[var(--color-border)] focus:border-[var(--color-primary)]"
-                    }`}
-                  />
-                  {errors.display_name && (
-                    <p className="mt-1 text-sm text-[var(--color-error)]">{errors.display_name}</p>
-                  )}
-                  <p className="mt-1 text-xs text-[var(--color-text-muted)]">
-                    Tipp: Verwenden Sie ein Pseudonym für mehr Privatsphäre
-                  </p>
-                </div>
-
-                {/* Bio */}
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
-                    Über mich
-                  </label>
-                  <textarea
-                    value={formData.bio}
-                    onChange={(e) => handleChange("bio", e.target.value)}
-                    placeholder="Erzählen Sie etwas über sich und Ihre Unterrichtserfahrung..."
-                    rows={4}
-                    maxLength={500}
-                    className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-2 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
-                  />
-                  <p className="mt-1 text-right text-xs text-[var(--color-text-muted)]">
-                    {formData.bio.length}/500 Zeichen
-                  </p>
-                </div>
-
-                {/* Subjects */}
-                <MultiSelect
-                  label="Unterrichtsfächer"
-                  options={SWISS_SUBJECTS}
-                  selected={formData.subjects}
-                  onChange={(value) => handleChange("subjects", value)}
-                  placeholder="Fächer auswählen..."
-                  required
-                  error={errors.subjects}
-                />
-
-                {/* Cycles */}
-                <MultiSelect
-                  label="Unterrichtete Zyklen"
-                  options={SWISS_CYCLES}
-                  selected={formData.cycles}
-                  onChange={(value) => handleChange("cycles", value)}
-                  placeholder="Zyklen auswählen..."
-                  required
-                  error={errors.cycles}
-                />
-
-                {/* Cantons */}
-                <MultiSelect
-                  label="Kantone"
-                  options={SWISS_CANTONS}
-                  selected={formData.cantons}
-                  onChange={(value) => handleChange("cantons", value)}
-                  placeholder="Kantone auswählen (optional)..."
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Payout Information Section */}
-          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8">
-            <h2 className="mb-6 text-xl font-semibold text-[var(--color-text)]">
-              Auszahlungsinformationen
-            </h2>
-            <p className="mb-6 text-sm text-[var(--color-text-muted)]">
-              Diese Informationen sind <strong>nicht öffentlich</strong> und werden nur
-              für Rechnungen und Auszahlungen verwendet
-            </p>
-
-            <PayoutForm
-              legalFirstName={formData.legal_first_name}
-              legalLastName={formData.legal_last_name}
-              iban={formData.iban}
-              addressStreet={formData.address_street}
-              addressCity={formData.address_city}
-              addressPostal={formData.address_postal}
-              onChange={handleChange}
-              errors={errors}
-            />
-          </div>
-
-          {/* Email Section (Read-only) */}
-          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8">
-            <h2 className="mb-6 text-xl font-semibold text-[var(--color-text)]">
-              Konto-Einstellungen
-            </h2>
-
-            <div>
-              <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
-                E-Mail-Adresse
-              </label>
-              <input
-                type="email"
-                value={formData.email}
-                disabled
-                className="w-full cursor-not-allowed rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-4 py-2 text-[var(--color-text-muted)]"
-              />
-              <p className="mt-1 text-xs text-[var(--color-text-muted)]">
-                E-Mail kann nicht geändert werden. Kontaktieren Sie den Support bei Problemen.
+          <form onSubmit={handleSubmit} className="space-y-8">
+            {/* Public Profile Section */}
+            <div className="rounded-2xl border border-border bg-surface p-8">
+              <h2 className="mb-6 text-xl font-semibold text-text">
+                Öffentliches Profil
+              </h2>
+              <p className="mb-6 text-sm text-text-muted">
+                Diese Informationen sind für alle sichtbar
               </p>
-            </div>
-          </div>
 
-          {/* Submit Button */}
-          <div className="flex justify-end gap-4">
-            <Link
-              href="/profile"
-              className="rounded-lg border border-[var(--color-border)] px-6 py-3 font-medium text-[var(--color-text)] hover:bg-[var(--color-surface-elevated)] transition-colors"
-            >
-              Abbrechen
-            </Link>
-            <button
-              type="submit"
-              disabled={isSaving}
-              className="rounded-lg bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-success)] px-6 py-3 font-medium text-white hover:opacity-90 transition-opacity disabled:opacity-50"
-            >
-              {isSaving ? (
-                <span className="flex items-center gap-2">
-                  <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24">
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                      fill="none"
+              <div className="grid gap-8 lg:grid-cols-[200px_1fr]">
+                {/* Avatar */}
+                <div className="flex justify-center lg:justify-start">
+                  <AvatarUploader
+                    currentAvatarUrl={formData.avatar_url}
+                    displayName={formData.display_name}
+                    onUpload={handleAvatarUpload}
+                  />
+                </div>
+
+                {/* Form Fields */}
+                <div className="space-y-6">
+                  {/* Display Name */}
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-text">
+                      Profilname <span className="text-error">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.display_name}
+                      onChange={(e) => handleChange("display_name", e.target.value)}
+                      placeholder="z.B. Frau M. oder Maria S."
+                      className={`w-full rounded-lg border bg-bg px-4 py-2 text-text focus:ring-2 focus:ring-primary/20 focus:outline-none ${
+                        errors.display_name
+                          ? "border-error focus:border-error"
+                          : "border-border focus:border-primary"
+                      }`}
                     />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    {errors.display_name && (
+                      <p className="mt-1 text-sm text-error">
+                        {errors.display_name}
+                      </p>
+                    )}
+                    <p className="mt-1 text-xs text-text-muted">
+                      Tipp: Verwenden Sie ein Pseudonym für mehr Privatsphäre
+                    </p>
+                  </div>
+
+                  {/* Bio */}
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-text">
+                      Über mich
+                    </label>
+                    <textarea
+                      value={formData.bio}
+                      onChange={(e) => handleChange("bio", e.target.value)}
+                      placeholder="Erzählen Sie etwas über sich und Ihre Unterrichtserfahrung..."
+                      rows={4}
+                      maxLength={500}
+                      className="w-full rounded-lg border border-border bg-bg px-4 py-2 text-text focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
                     />
-                  </svg>
-                  Speichern...
-                </span>
-              ) : (
-                "Änderungen speichern"
-              )}
-            </button>
-          </div>
-        </form>
+                    <p className="mt-1 text-right text-xs text-text-muted">
+                      {formData.bio.length}/500 Zeichen
+                    </p>
+                  </div>
+
+                  {/* Subjects */}
+                  <MultiSelect
+                    label="Unterrichtsfächer"
+                    options={SWISS_SUBJECTS}
+                    selected={formData.subjects}
+                    onChange={(value) => handleChange("subjects", value)}
+                    placeholder="Fächer auswählen..."
+                    required
+                    error={errors.subjects}
+                  />
+
+                  {/* Cycles */}
+                  <MultiSelect
+                    label="Unterrichtete Zyklen"
+                    options={SWISS_CYCLES}
+                    selected={formData.cycles}
+                    onChange={(value) => handleChange("cycles", value)}
+                    placeholder="Zyklen auswählen..."
+                    required
+                    error={errors.cycles}
+                  />
+
+                  {/* Cantons */}
+                  <MultiSelect
+                    label="Kantone"
+                    options={SWISS_CANTONS}
+                    selected={formData.cantons}
+                    onChange={(value) => handleChange("cantons", value)}
+                    placeholder="Kantone auswählen (optional)..."
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Payout Information Section */}
+            <div className="rounded-2xl border border-border bg-surface p-8">
+              <h2 className="mb-6 text-xl font-semibold text-text">
+                Auszahlungsinformationen
+              </h2>
+              <p className="mb-6 text-sm text-text-muted">
+                Diese Informationen sind <strong>nicht öffentlich</strong> und werden nur für
+                Rechnungen und Auszahlungen verwendet
+              </p>
+
+              <PayoutForm
+                legalFirstName={formData.legal_first_name}
+                legalLastName={formData.legal_last_name}
+                iban={formData.iban}
+                addressStreet={formData.address_street}
+                addressCity={formData.address_city}
+                addressPostal={formData.address_postal}
+                onChange={handleChange}
+                errors={errors}
+              />
+            </div>
+
+            {/* Email Section (Read-only) */}
+            <div className="rounded-2xl border border-border bg-surface p-8">
+              <h2 className="mb-6 text-xl font-semibold text-text">
+                Konto-Einstellungen
+              </h2>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-text">
+                  E-Mail-Adresse
+                </label>
+                <input
+                  type="email"
+                  value={formData.email}
+                  disabled
+                  className="w-full cursor-not-allowed rounded-lg border border-border bg-surface-elevated px-4 py-2 text-text-muted"
+                />
+                <p className="mt-1 text-xs text-text-muted">
+                  E-Mail kann nicht geändert werden. Kontaktieren Sie den Support bei Problemen.
+                </p>
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <div className="flex justify-end gap-4">
+              <Link
+                href="/profile"
+                className="rounded-lg border border-border px-6 py-3 font-medium text-text transition-colors hover:bg-surface-elevated"
+              >
+                Abbrechen
+              </Link>
+              <button
+                type="submit"
+                disabled={isSaving}
+                className="rounded-lg bg-primary px-6 py-3 font-medium text-text-on-accent transition-colors hover:bg-primary-hover disabled:bg-surface disabled:opacity-50"
+              >
+                {isSaving ? (
+                  <span className="flex items-center gap-2">
+                    <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24">
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                        fill="none"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
+                    </svg>
+                    Speichern...
+                  </span>
+                ) : (
+                  "Änderungen speichern"
+                )}
+              </button>
+            </div>
+          </form>
         )}
       </main>
 

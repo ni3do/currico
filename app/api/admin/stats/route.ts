@@ -22,9 +22,9 @@ export async function GET() {
       pendingApproval,
       totalTransactions,
       todayTransactions,
-      schoolCount,
       sellerCount,
       buyerCount,
+      adminCount,
       openReports,
     ] = await Promise.all([
       prisma.user.count(),
@@ -43,9 +43,9 @@ export async function GET() {
         _sum: { amount: true },
         where: { status: "COMPLETED", created_at: { gte: todayStart } },
       }),
-      prisma.user.count({ where: { role: "SCHOOL" } }),
       prisma.user.count({ where: { role: "SELLER" } }),
       prisma.user.count({ where: { role: "BUYER" } }),
+      prisma.user.count({ where: { role: "ADMIN" } }),
       prisma.report.count({ where: { status: { in: ["OPEN", "IN_REVIEW"] } } }),
     ]);
 
@@ -74,12 +74,11 @@ export async function GET() {
       pendingApproval,
       totalRevenue: (totalTransactions._sum.amount || 0) / 100, // Convert cents to CHF
       revenueToday: (todayTransactions._sum.amount || 0) / 100,
-      activeSchools: schoolCount,
       openReports,
       userBreakdown: {
         buyers: buyerCount,
         sellers: sellerCount,
-        schools: schoolCount,
+        admins: adminCount,
       },
       weeklyRevenue: weeklyRevenue.map((r) => (r._sum.amount || 0) / 100),
     };

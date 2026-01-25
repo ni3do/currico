@@ -7,13 +7,7 @@ import { SWISS_SUBJECTS, SWISS_CYCLES } from "./user";
 
 export const RESOURCE_LANGUAGES = ["de", "fr", "it", "en"] as const;
 
-export const RESOURCE_TYPES = [
-  "pdf",
-  "word",
-  "powerpoint",
-  "excel",
-  "other",
-] as const;
+export const RESOURCE_TYPES = ["pdf", "word", "powerpoint", "excel", "other"] as const;
 
 // File size limits (in bytes)
 export const MAX_RESOURCE_FILE_SIZE = 50 * 1024 * 1024; // 50MB
@@ -59,11 +53,7 @@ export const ALLOWED_RESOURCE_TYPES: Record<string, string[]> = {
 };
 
 // Allowed MIME types for preview images
-export const ALLOWED_PREVIEW_TYPES = [
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-];
+export const ALLOWED_PREVIEW_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
 // Magic bytes for file validation
 export const MAGIC_BYTES: Record<string, number[][]> = {
@@ -78,9 +68,7 @@ export const MAGIC_BYTES: Record<string, number[][]> = {
   "application/vnd.openxmlformats-officedocument.presentationml.presentation": [
     [0x50, 0x4b, 0x03, 0x04],
   ],
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [
-    [0x50, 0x4b, 0x03, 0x04],
-  ],
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [[0x50, 0x4b, 0x03, 0x04]],
   // Legacy Office formats
   "application/msword": [[0xd0, 0xcf, 0x11, 0xe0]], // OLE compound document
   "application/vnd.ms-powerpoint": [[0xd0, 0xcf, 0x11, 0xe0]],
@@ -160,28 +148,20 @@ export type UpdateResourceInput = z.infer<typeof updateResourceSchema>;
 /**
  * Validate file magic bytes to ensure file content matches declared type
  */
-export function validateMagicBytes(
-  buffer: Buffer,
-  mimeType: string
-): boolean {
+export function validateMagicBytes(buffer: Buffer, mimeType: string): boolean {
   const signatures = MAGIC_BYTES[mimeType];
   if (!signatures) {
     // No signature defined, skip validation
     return true;
   }
 
-  return signatures.some((signature) =>
-    signature.every((byte, index) => buffer[index] === byte)
-  );
+  return signatures.some((signature) => signature.every((byte, index) => buffer[index] === byte));
 }
 
 /**
  * Check if a MIME type is allowed for resource files
  */
-export function isAllowedResourceType(
-  mimeType: string,
-  resourceType: string
-): boolean {
+export function isAllowedResourceType(mimeType: string, resourceType: string): boolean {
   const allowedTypes = ALLOWED_RESOURCE_TYPES[resourceType];
   return allowedTypes ? allowedTypes.includes(mimeType) : false;
 }
@@ -200,11 +180,9 @@ export function getExtensionFromMimeType(mimeType: string): string {
   const extensions: Record<string, string> = {
     "application/pdf": "pdf",
     "application/msword": "doc",
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-      "docx",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "docx",
     "application/vnd.ms-powerpoint": "ppt",
-    "application/vnd.openxmlformats-officedocument.presentationml.presentation":
-      "pptx",
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation": "pptx",
     "application/vnd.ms-excel": "xls",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "xlsx",
     "image/jpeg": "jpg",
@@ -212,12 +190,4 @@ export function getExtensionFromMimeType(mimeType: string): string {
     "image/webp": "webp",
   };
   return extensions[mimeType] || "bin";
-}
-
-/**
- * Format price in cents to Swiss Francs string
- */
-export function formatPrice(priceInCents: number): string {
-  const francs = priceInCents / 100;
-  return `CHF ${francs.toFixed(2)}`;
 }

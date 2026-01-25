@@ -70,11 +70,11 @@ spec/
 __tests__/
 tests/
 
-# Prisma migrations (not needed for dev push)
-prisma/migrations/
-
 # Large/unnecessary files
-*.sql
 *.dump
 *.tar
 *.zip
+
+# Exclude SQL files except prisma migrations
+/*.sql
+!prisma/migrations/

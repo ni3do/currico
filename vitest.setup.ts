@@ -67,9 +67,32 @@ vi.mock("@/lib/db", () => {
     findFirst: vi.fn(),
     create: vi.fn(),
     update: vi.fn(),
+    updateMany: vi.fn(),
     delete: vi.fn(),
     count: vi.fn(),
     aggregate: vi.fn(),
+  };
+
+  const mockDownload = {
+    findUnique: vi.fn(),
+    findMany: vi.fn(),
+    findFirst: vi.fn(),
+    create: vi.fn(),
+    createMany: vi.fn(),
+    update: vi.fn(),
+    upsert: vi.fn(),
+    delete: vi.fn(),
+    count: vi.fn(),
+  };
+
+  const mockDownloadToken = {
+    findUnique: vi.fn(),
+    findMany: vi.fn(),
+    findFirst: vi.fn(),
+    create: vi.fn(),
+    update: vi.fn(),
+    delete: vi.fn(),
+    count: vi.fn(),
   };
 
   const mockReport = {
@@ -82,14 +105,22 @@ vi.mock("@/lib/db", () => {
     count: vi.fn(),
   };
 
+  // $transaction mock that executes the callback with the same mock methods
+  const mockPrisma = {
+    user: mockUser,
+    resource: mockResource,
+    contactMessage: mockContactMessage,
+    transaction: mockTransaction,
+    download: mockDownload,
+    downloadToken: mockDownloadToken,
+    report: mockReport,
+    $transaction: vi.fn().mockImplementation(async (callback: (tx: typeof mockPrisma) => Promise<unknown>) => {
+      return callback(mockPrisma);
+    }),
+  };
+
   return {
-    prisma: {
-      user: mockUser,
-      resource: mockResource,
-      contactMessage: mockContactMessage,
-      transaction: mockTransaction,
-      report: mockReport,
-    },
+    prisma: mockPrisma,
     publicUserSelect: {},
     privateUserSelect: {},
     adminUserSelect: {},

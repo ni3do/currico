@@ -4,13 +4,13 @@ import Footer from "@/components/ui/Footer";
 
 export default function ComingSoonPage() {
   return (
-    <div className="min-h-screen bg-[var(--color-bg)] flex flex-col">
+    <div className="flex min-h-screen flex-col">
       <TopBar />
-      <main className="flex-1 flex items-center justify-center px-4 py-16">
-        <div className="text-center max-w-2xl">
-          <div className="flex items-center justify-center w-16 h-16 bg-[var(--color-primary-light)] rounded-full mx-auto mb-6">
+      <main className="flex flex-1 items-center justify-center px-4 py-16">
+        <div className="max-w-2xl text-center">
+          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-primary-light">
             <svg
-              className="w-8 h-8 text-[var(--color-primary)]"
+              className="h-8 w-8 text-primary"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -23,23 +23,16 @@ export default function ComingSoonPage() {
               />
             </svg>
           </div>
-          <h1 className="text-4xl font-bold text-[var(--color-text)] mb-4">
-            Bald verfügbar
-          </h1>
-          <p className="text-lg text-[var(--color-text-muted)] mb-8">
-            Diese Funktion ist noch in Entwicklung. Wir arbeiten daran, sie so
-            schnell wie möglich verfügbar zu machen.
+          <h1 className="mb-4 text-4xl font-bold text-text">Bald verfügbar</h1>
+          <p className="mb-8 text-lg text-text-muted">
+            Diese Funktion ist noch in Entwicklung. Wir arbeiten daran, sie so schnell wie möglich
+            verfügbar zu machen.
           </p>
           <Link
             href="/"
-            className="inline-flex items-center justify-center rounded-lg bg-[var(--color-primary)] px-6 py-3.5 font-semibold text-white hover:bg-[var(--color-primary-hover)] transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(0,82,204,0.25)]"
+            className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3.5 font-semibold text-text-on-accent transition-all hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-[0_8px_20px_rgba(0,82,204,0.25)]"
           >
-            <svg
-              className="mr-2 w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"

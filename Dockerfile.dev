@@ -32,5 +32,5 @@ RUN --mount=type=cache,target=/root/.cache/prisma \
 
 EXPOSE 3000
 
-# Sync database schema and start dev server
-CMD ["sh", "-c", "npx prisma db push --accept-data-loss && npm run dev"]
+# Sync database schema, seed data, and start dev server
+CMD ["sh", "-c", "npx prisma db push --accept-data-loss && npx prisma db seed && npm run dev"]

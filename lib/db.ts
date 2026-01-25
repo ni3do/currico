@@ -39,8 +39,8 @@ export const publicUserSelect = {
   subjects: true,
   cycles: true,
   cantons: true,
-  is_seller: true,
-  seller_verified: true,
+  role: true,
+  stripe_charges_enabled: true, // Show if seller can receive payments
   created_at: true,
 } as const;
 
@@ -49,20 +49,17 @@ export const privateUserSelect = {
   ...publicUserSelect,
   email: true,
   emailVerified: true,
-  legal_first_name: true,
-  legal_last_name: true,
-  iban: true,
-  address_street: true,
-  address_city: true,
-  address_postal: true,
-  address_country: true,
-  payout_enabled: true,
-  role: true,
+  stripe_customer_id: true,
+  stripe_account_id: true,
+  stripe_onboarding_complete: true,
+  stripe_payouts_enabled: true,
+  seller_terms_accepted_at: true,
 } as const;
 
 // Admin view - full access
 export const adminUserSelect = {
   ...privateUserSelect,
   password_hash: false, // Never expose password hash
+  is_protected: true,
   updated_at: true,
 } as const;

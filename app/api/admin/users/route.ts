@@ -40,8 +40,8 @@ export async function GET(request: NextRequest) {
           display_name: true,
           email: true,
           role: true,
-          is_seller: true,
-          seller_verified: true,
+          stripe_onboarding_complete: true,
+          stripe_charges_enabled: true,
           is_protected: true,
           emailVerified: true,
           created_at: true,
@@ -61,12 +61,13 @@ export async function GET(request: NextRequest) {
     ]);
 
     // Transform users to include status
+    // Status is based on email verification and Stripe setup for sellers
     const transformedUsers = users.map((user) => ({
       ...user,
       status: user.emailVerified
-        ? user.seller_verified || !user.is_seller
-          ? "active"
-          : "pending"
+        ? user.role === "SELLER" && !user.stripe_charges_enabled
+          ? "pending"
+          : "active"
         : "pending",
       resourceCount: user._count.resources,
       transactionCount: user._count.transactions,

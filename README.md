@@ -1,6 +1,6 @@
-# Easy Lehrer
+# EasyLehrer
 
-Educational resource marketplace for Swiss teachers
+Marktplatz für Unterrichtsmaterialien für Schweizer Lehrpersonen
 
 ## Getting Started
 
@@ -14,6 +14,7 @@ Educational resource marketplace for Swiss teachers
 ### Running the Development Server
 
 1. Start the dev server:
+
    ```bash
    npm run dev
    ```

@@ -1,35 +1,71 @@
 "use client";
 
-import { useState } from "react";
-import { Link } from "@/i18n/navigation";
+import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
+import { Link, useRouter } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 
-// TODO: Replace mock data with real API call to fetch seller's resources
-// This page is a work-in-progress - bundle feature not yet implemented
-const mockResources = [
-  { id: 1, title: "Bruchrechnen Übungsblätter", subject: "Mathematik", price: "CHF 12.00" },
-  { id: 2, title: "Geometrie Arbeitsblätter", subject: "Mathematik", price: "CHF 8.00" },
-  { id: 3, title: "Kopfrechnen Training", subject: "Mathematik", price: "CHF 10.00" },
-  { id: 4, title: "Textaufgaben Zyklus 2", subject: "Mathematik", price: "CHF 15.00" },
-];
+interface SellerResource {
+  id: string;
+  title: string;
+  price: number;
+  priceFormatted: string;
+  subject: string;
+  subjects: string[];
+  cycles: string[];
+}
 
 export default function CreateBundlePage() {
+  const router = useRouter();
+  const [resources, setResources] = useState<SellerResource[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [coverImagePreview, setCoverImagePreview] = useState<string | null>(null);
+  const coverImageInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     price: "",
-    selectedResources: [] as number[],
+    selectedResources: [] as string[],
     subject: "",
     cycle: "",
     coverImage: null as File | null,
   });
 
+  useEffect(() => {
+    async function fetchResources() {
+      try {
+        const response = await fetch("/api/seller/resources");
+        if (!response.ok) {
+          if (response.status === 401) {
+            router.push("/login");
+            return;
+          }
+          if (response.status === 403) {
+            setError("Sie müssen Verkäufer sein, um Bundles zu erstellen.");
+            setLoading(false);
+            return;
+          }
+          throw new Error("Fehler beim Laden der Ressourcen");
+        }
+        const data = await response.json();
+        setResources(data.resources);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Ein Fehler ist aufgetreten");
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchResources();
+  }, [router]);
+
   const updateFormData = (field: string, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const toggleResource = (resourceId: number) => {
+  const toggleResource = (resourceId: string) => {
     const isSelected = formData.selectedResources.includes(resourceId);
     const newSelection = isSelected
       ? formData.selectedResources.filter((id) => id !== resourceId)
@@ -38,274 +74,413 @@ export default function CreateBundlePage() {
   };
 
   const calculateTotal = () => {
-    return mockResources
+    return resources
       .filter((r) => formData.selectedResources.includes(r.id))
-      .reduce((sum, r) => sum + parseFloat(r.price.replace("CHF ", "")), 0);
+      .reduce((sum, r) => sum + r.price, 0);
   };
 
   const calculateDiscount = () => {
     const total = calculateTotal();
-    const bundlePrice = parseFloat(formData.price) || 0;
+    const bundlePrice = (parseFloat(formData.price) || 0) * 100; // Convert to cents
     return total > 0 ? Math.round(((total - bundlePrice) / total) * 100) : 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleCoverImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith("image/")) {
+        setError("Bitte wählen Sie eine Bilddatei aus.");
+        return;
+      }
+      // Validate file size (5MB max)
+      if (file.size > 5 * 1024 * 1024) {
+        setError("Das Bild darf maximal 5 MB gross sein.");
+        return;
+      }
+      setError(null);
+      updateFormData("coverImage", file);
+      // Create preview URL
+      const previewUrl = URL.createObjectURL(file);
+      setCoverImagePreview(previewUrl);
+    }
+  };
+
+  const removeCoverImage = () => {
+    updateFormData("coverImage", null);
+    if (coverImagePreview) {
+      URL.revokeObjectURL(coverImagePreview);
+      setCoverImagePreview(null);
+    }
+    if (coverImageInputRef.current) {
+      coverImageInputRef.current.value = "";
+    }
+  };
+
+  const uploadCoverImage = async (file: File): Promise<string | null> => {
+    const uploadFormData = new FormData();
+    uploadFormData.append("file", file);
+    uploadFormData.append("type", "preview");
+
+    const response = await fetch("/api/upload", {
+      method: "POST",
+      body: uploadFormData,
+    });
+
+    if (!response.ok) {
+      throw new Error("Fehler beim Hochladen des Cover-Bildes");
+    }
+
+    const data = await response.json();
+    return data.url;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement bundle creation API call
-    // 1. Create Bundle model in prisma/schema.prisma
-    // 2. Create /api/bundles POST endpoint
-    // 3. Submit form data to create bundle
-    void formData; // Placeholder until API is implemented
+    setSubmitting(true);
+    setError(null);
+
+    try {
+      // Upload cover image if provided
+      let coverImageUrl: string | null = null;
+      if (formData.coverImage) {
+        coverImageUrl = await uploadCoverImage(formData.coverImage);
+      }
+
+      const response = await fetch("/api/bundles", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: formData.title,
+          description: formData.description,
+          price: Math.round(parseFloat(formData.price) * 100), // Convert to cents
+          subject: [formData.subject],
+          cycle: [formData.cycle],
+          resourceIds: formData.selectedResources,
+          coverImageUrl,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Fehler beim Erstellen des Bundles");
+      }
+
+      router.push("/account");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Ein Fehler ist aufgetreten");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-[var(--color-bg)]">
+    <div className="flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-4xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-[var(--color-text)]">Bundle erstellen</h1>
-          <p className="mt-2 text-[var(--color-text-muted)]">
+          <h1 className="text-text text-3xl font-bold">Bundle erstellen</h1>
+          <p className="text-text-muted mt-2">
             Kombinieren Sie mehrere Ressourcen zu einem vergünstigten Paket
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-8">
-          {/* Basic Information */}
-          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8">
-            <h2 className="mb-6 text-xl font-semibold text-[var(--color-text)]">
-              Bundle-Informationen
-            </h2>
-
-            <div className="space-y-6">
-              <div>
-                <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
-                  Bundle-Titel *
-                </label>
-                <input
-                  type="text"
-                  value={formData.title}
-                  onChange={(e) => updateFormData("title", e.target.value)}
-                  required
-                  className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
-                  placeholder="z.B. Mathematik Komplett-Paket Zyklus 2"
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
-                  Beschreibung *
-                </label>
-                <textarea
-                  value={formData.description}
-                  onChange={(e) => updateFormData("description", e.target.value)}
-                  required
-                  rows={4}
-                  className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
-                  placeholder="Beschreiben Sie das Bundle und welchen Mehrwert es bietet..."
-                />
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
-                    Hauptfach *
-                  </label>
-                  <select
-                    value={formData.subject}
-                    onChange={(e) => updateFormData("subject", e.target.value)}
-                    required
-                    className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
-                  >
-                    <option value="">Wählen Sie...</option>
-                    <option value="Mathematik">Mathematik</option>
-                    <option value="Deutsch">Deutsch</option>
-                    <option value="Englisch">Englisch</option>
-                    <option value="Französisch">Französisch</option>
-                    <option value="NMG">NMG</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
-                    Zyklus *
-                  </label>
-                  <select
-                    value={formData.cycle}
-                    onChange={(e) => updateFormData("cycle", e.target.value)}
-                    required
-                    className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-[var(--color-text)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
-                  >
-                    <option value="">Wählen Sie...</option>
-                    <option value="1">Zyklus 1</option>
-                    <option value="2">Zyklus 2</option>
-                    <option value="3">Zyklus 3</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
-                  Cover-Bild
-                </label>
-                <div className="rounded-xl border-2 border-dashed border-[var(--color-border)] bg-[var(--color-bg)] p-8 text-center">
-                  <svg
-                    className="mx-auto h-12 w-12 text-[var(--color-text-muted)]"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
-                  <p className="mt-2 text-sm text-[var(--color-text)]">
-                    Cover-Bild hochladen (optional)
-                  </p>
-                  <p className="mt-1 text-xs text-[var(--color-text-muted)]">
-                    PNG, JPG bis 5 MB - empfohlen: 1200x630 px
-                  </p>
-                  <input type="file" className="hidden" accept="image/png,image/jpeg" />
-                </div>
-              </div>
-            </div>
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="border-primary h-8 w-8 animate-spin rounded-full border-4 border-t-transparent"></div>
           </div>
-
-          {/* Select Resources */}
-          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8">
-            <h2 className="mb-6 text-xl font-semibold text-[var(--color-text)]">
-              Ressourcen auswählen
-            </h2>
-
-            <p className="mb-4 text-sm text-[var(--color-text-muted)]">
-              Wählen Sie mindestens 2 Ihrer veröffentlichten Ressourcen für dieses Bundle
+        ) : error && resources.length === 0 ? (
+          <div className="border-error/30 bg-error/10 rounded-xl border p-6 text-center">
+            <p className="text-error">{error}</p>
+            <Link href="/account" className="text-primary mt-4 inline-block hover:underline">
+              Zurück zum Konto
+            </Link>
+          </div>
+        ) : resources.length === 0 ? (
+          <div className="border-border bg-surface rounded-xl border p-8 text-center">
+            <p className="text-text-muted">
+              Sie haben noch keine veröffentlichten Ressourcen. Laden Sie zuerst Ressourcen hoch, um
+              ein Bundle zu erstellen.
             </p>
-
-            <div className="space-y-3">
-              {mockResources.map((resource) => (
-                <label
-                  key={resource.id}
-                  className={`flex cursor-pointer items-center gap-4 rounded-xl border-2 p-4 transition-all ${
-                    formData.selectedResources.includes(resource.id)
-                      ? "border-[var(--color-primary)] bg-[var(--color-primary)]/10"
-                      : "border-[var(--color-border)] bg-[var(--color-bg)] hover:border-[var(--color-primary)]/50"
-                  }`}
-                >
-                  <input
-                    type="checkbox"
-                    checked={formData.selectedResources.includes(resource.id)}
-                    onChange={() => toggleResource(resource.id)}
-                    className="h-5 w-5 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20"
-                  />
-                  <div className="flex-1">
-                    <div className="font-medium text-[var(--color-text)]">{resource.title}</div>
-                    <div className="text-sm text-[var(--color-text-muted)]">{resource.subject}</div>
-                  </div>
-                  <div className="font-semibold text-[var(--color-primary)]">{resource.price}</div>
-                </label>
-              ))}
-            </div>
-
-            {formData.selectedResources.length > 0 && (
-              <div className="mt-6 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-[var(--color-text-muted)]">
-                    {formData.selectedResources.length} Ressourcen ausgewählt
-                  </span>
-                  <div className="text-right">
-                    <div className="text-sm text-[var(--color-text-muted)]">
-                      Gesamt-Einzelpreis
-                    </div>
-                    <div className="text-lg font-bold text-[var(--color-text)]">
-                      CHF {calculateTotal().toFixed(2)}
-                    </div>
-                  </div>
-                </div>
+            <Link
+              href="/upload"
+              className="bg-primary text-text-on-accent mt-4 inline-block rounded-xl px-6 py-3 font-semibold"
+            >
+              Ressource hochladen
+            </Link>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-8">
+            {error && (
+              <div className="border-error/30 bg-error/10 rounded-xl border p-4">
+                <p className="text-error">{error}</p>
               </div>
             )}
-          </div>
+            {/* Basic Information */}
+            <div className="border-border bg-surface rounded-2xl border p-8">
+              <h2 className="text-text mb-6 text-xl font-semibold">Bundle-Informationen</h2>
 
-          {/* Pricing */}
-          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8">
-            <h2 className="mb-6 text-xl font-semibold text-[var(--color-text)]">
-              Bundle-Preis
-            </h2>
+              <div className="space-y-6">
+                <div>
+                  <label className="text-text mb-2 block text-sm font-medium">Bundle-Titel *</label>
+                  <input
+                    type="text"
+                    value={formData.title}
+                    onChange={(e) => updateFormData("title", e.target.value)}
+                    required
+                    className="border-border bg-bg text-text placeholder:text-text-muted focus:border-primary focus:ring-primary/20 w-full rounded-xl border px-4 py-3 focus:ring-2 focus:outline-none"
+                    placeholder="z.B. Mathematik Komplett-Paket Zyklus 2"
+                  />
+                </div>
 
-            <div>
-              <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
-                Bundle-Preis (CHF) *
-              </label>
-              <div className="relative">
-                <input
-                  type="number"
-                  value={formData.price}
-                  onChange={(e) => updateFormData("price", e.target.value)}
-                  required
-                  min="0"
-                  step="0.50"
-                  className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 pl-12 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
-                  placeholder="25.00"
-                />
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]">
-                  CHF
-                </span>
+                <div>
+                  <label className="text-text mb-2 block text-sm font-medium">Beschreibung *</label>
+                  <textarea
+                    value={formData.description}
+                    onChange={(e) => updateFormData("description", e.target.value)}
+                    required
+                    rows={4}
+                    className="border-border bg-bg text-text placeholder:text-text-muted focus:border-primary focus:ring-primary/20 w-full rounded-xl border px-4 py-3 focus:ring-2 focus:outline-none"
+                    placeholder="Beschreiben Sie das Bundle und welchen Mehrwert es bietet..."
+                  />
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label className="text-text mb-2 block text-sm font-medium">Hauptfach *</label>
+                    <select
+                      value={formData.subject}
+                      onChange={(e) => updateFormData("subject", e.target.value)}
+                      required
+                      className="border-border bg-bg text-text focus:border-primary focus:ring-primary/20 w-full rounded-xl border px-4 py-3 focus:ring-2 focus:outline-none"
+                    >
+                      <option value="">Wählen Sie...</option>
+                      <option value="Mathematik">Mathematik</option>
+                      <option value="Deutsch">Deutsch</option>
+                      <option value="Englisch">Englisch</option>
+                      <option value="Französisch">Französisch</option>
+                      <option value="NMG">NMG</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-text mb-2 block text-sm font-medium">Zyklus *</label>
+                    <select
+                      value={formData.cycle}
+                      onChange={(e) => updateFormData("cycle", e.target.value)}
+                      required
+                      className="border-border bg-bg text-text focus:border-primary focus:ring-primary/20 w-full rounded-xl border px-4 py-3 focus:ring-2 focus:outline-none"
+                    >
+                      <option value="">Wählen Sie...</option>
+                      <option value="1">Zyklus 1</option>
+                      <option value="2">Zyklus 2</option>
+                      <option value="3">Zyklus 3</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-text mb-2 block text-sm font-medium">Cover-Bild</label>
+                  {coverImagePreview ? (
+                    <div className="border-primary bg-primary/5 relative rounded-xl border-2 p-4">
+                      <div className="relative aspect-video w-full overflow-hidden rounded-lg">
+                        <Image
+                          src={coverImagePreview}
+                          alt="Cover-Vorschau"
+                          fill
+                          className="object-cover"
+                          unoptimized
+                        />
+                      </div>
+                      <div className="mt-3 flex items-center justify-between">
+                        <p className="text-text text-sm font-medium">{formData.coverImage?.name}</p>
+                        <button
+                          type="button"
+                          onClick={removeCoverImage}
+                          className="text-error hover:bg-error/10 flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm transition-colors"
+                        >
+                          <svg
+                            className="h-4 w-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                          Entfernen
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      onClick={() => coverImageInputRef.current?.click()}
+                      className="border-border bg-bg hover:border-primary cursor-pointer rounded-xl border-2 border-dashed p-8 text-center transition-colors"
+                    >
+                      <svg
+                        className="text-text-muted mx-auto h-12 w-12"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
+                      </svg>
+                      <p className="text-text mt-2 text-sm">Cover-Bild hochladen (optional)</p>
+                      <p className="text-text-muted mt-1 text-xs">
+                        PNG, JPG bis 5 MB - empfohlen: 1200x630 px
+                      </p>
+                    </div>
+                  )}
+                  <input
+                    ref={coverImageInputRef}
+                    type="file"
+                    className="hidden"
+                    accept="image/png,image/jpeg"
+                    onChange={handleCoverImageChange}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Select Resources */}
+            <div className="border-border bg-surface rounded-2xl border p-8">
+              <h2 className="text-text mb-6 text-xl font-semibold">Ressourcen auswählen</h2>
+
+              <p className="text-text-muted mb-4 text-sm">
+                Wählen Sie mindestens 2 Ihrer veröffentlichten Ressourcen für dieses Bundle
+              </p>
+
+              <div className="space-y-3">
+                {resources.map((resource) => (
+                  <label
+                    key={resource.id}
+                    className={`flex cursor-pointer items-center gap-4 rounded-xl border-2 p-4 transition-all ${
+                      formData.selectedResources.includes(resource.id)
+                        ? "border-primary bg-primary/10"
+                        : "border-border bg-bg hover:border-primary/50"
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={formData.selectedResources.includes(resource.id)}
+                      onChange={() => toggleResource(resource.id)}
+                      className="border-border text-primary focus:ring-primary/20 h-5 w-5 rounded focus:ring-2"
+                    />
+                    <div className="flex-1">
+                      <div className="text-text font-medium">{resource.title}</div>
+                      <div className="text-text-muted text-sm">{resource.subject}</div>
+                    </div>
+                    <div className="text-primary font-semibold">{resource.priceFormatted}</div>
+                  </label>
+                ))}
               </div>
 
-              {formData.price && formData.selectedResources.length > 0 && (
-                <div className="mt-4 rounded-xl border border-[var(--color-success)]/30 bg-[var(--color-success)]/10 p-4">
-                  <div className="flex items-center gap-2">
-                    <svg
-                      className="h-5 w-5 text-[var(--color-success)]"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    <div>
-                      <div className="font-semibold text-[var(--color-success)]">
-                        {calculateDiscount()}% Ersparnis!
-                      </div>
-                      <div className="text-sm text-[var(--color-text-muted)]">
-                        Käufer sparen CHF{" "}
-                        {(calculateTotal() - parseFloat(formData.price)).toFixed(2)} im
-                        Vergleich zum Einzelkauf
+              {formData.selectedResources.length > 0 && (
+                <div className="border-border bg-bg mt-6 rounded-xl border p-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-text-muted text-sm">
+                      {formData.selectedResources.length} Ressourcen ausgewählt
+                    </span>
+                    <div className="text-right">
+                      <div className="text-text-muted text-sm">Gesamt-Einzelpreis</div>
+                      <div className="text-text text-lg font-bold">
+                        CHF {(calculateTotal() / 100).toFixed(2)}
                       </div>
                     </div>
                   </div>
                 </div>
               )}
-
-              <p className="mt-2 text-xs text-[var(--color-text-muted)]">
-                Sie erhalten 85% des Verkaufspreises (15% Plattformgebühr)
-              </p>
             </div>
-          </div>
 
-          {/* Submit Buttons */}
-          <div className="flex gap-4">
-            <Link
-              href="/dashboard/seller"
-              className="flex-1 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-6 py-4 text-center font-semibold text-[var(--color-text)] hover:bg-[var(--color-surface-elevated)] transition-colors"
-            >
-              Abbrechen
-            </Link>
-            <button
-              type="submit"
-              disabled={formData.selectedResources.length < 2}
-              className="flex-1 rounded-xl bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-success)] px-6 py-4 font-semibold text-white hover:opacity-90 transition-opacity shadow-lg shadow-[var(--color-primary)]/20 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Bundle erstellen
-            </button>
-          </div>
-        </form>
+            {/* Pricing */}
+            <div className="border-border bg-surface rounded-2xl border p-8">
+              <h2 className="text-text mb-6 text-xl font-semibold">Bundle-Preis</h2>
+
+              <div>
+                <label className="text-text mb-2 block text-sm font-medium">
+                  Bundle-Preis (CHF) *
+                </label>
+                <div className="relative">
+                  <input
+                    type="number"
+                    value={formData.price}
+                    onChange={(e) => updateFormData("price", e.target.value)}
+                    required
+                    min="0"
+                    step="0.50"
+                    className="border-border bg-bg text-text placeholder:text-text-muted focus:border-primary focus:ring-primary/20 w-full rounded-xl border px-4 py-3 pl-12 focus:ring-2 focus:outline-none"
+                    placeholder="25.00"
+                  />
+                  <span className="text-text-muted absolute top-1/2 left-4 -translate-y-1/2">
+                    CHF
+                  </span>
+                </div>
+
+                {formData.price &&
+                  formData.selectedResources.length > 0 &&
+                  calculateDiscount() > 0 && (
+                    <div className="border-success/30 bg-success/10 mt-4 rounded-xl border p-4">
+                      <div className="flex items-center gap-2">
+                        <svg
+                          className="text-success h-5 w-5"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        <div>
+                          <div className="text-success font-semibold">
+                            {calculateDiscount()}% Ersparnis!
+                          </div>
+                          <div className="text-text-muted text-sm">
+                            Käufer sparen CHF{" "}
+                            {(calculateTotal() / 100 - parseFloat(formData.price)).toFixed(2)} im
+                            Vergleich zum Einzelkauf
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                <p className="text-text-muted mt-2 text-xs">
+                  Sie erhalten 85% des Verkaufspreises (15% Plattformgebühr)
+                </p>
+              </div>
+            </div>
+
+            {/* Submit Buttons */}
+            <div className="flex gap-4">
+              <Link
+                href="/account"
+                className="border-border bg-surface text-text hover:bg-surface-elevated flex-1 rounded-xl border px-6 py-4 text-center font-semibold transition-colors"
+              >
+                Abbrechen
+              </Link>
+              <button
+                type="submit"
+                disabled={formData.selectedResources.length < 2 || submitting}
+                className="bg-primary text-text-on-accent shadow-primary/20 hover:bg-primary-hover flex-1 rounded-xl px-6 py-4 font-semibold shadow-lg transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {submitting ? "Wird erstellt..." : "Bundle erstellen"}
+              </button>
+            </div>
+          </form>
+        )}
       </main>
 
       <Footer />
