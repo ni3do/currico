@@ -687,7 +687,7 @@ OTEL_SERVICE_NAME="easy-lehrer"
 - [x] `lib/api-error.ts` - Centralized API error handling
 - [x] `app/api/health/route.ts` - Health check endpoint
 - [x] `app/api/metrics/route.ts` - Prometheus scrape endpoint
-- [ ] `app/global-error.tsx` - Root error boundary
+- [x] `app/global-error.tsx` - Root error boundary
 - [ ] `app/[locale]/error.tsx` - Localized error boundary
 - [ ] `instrumentation.ts` - OpenTelemetry registration
 - [ ] `sentry.client.config.ts` - Client Sentry config
