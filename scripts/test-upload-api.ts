@@ -6,18 +6,11 @@
  */
 
 import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { Pool } from "pg";
 import bcrypt from "bcryptjs";
-import { readFileSync, existsSync, rmSync } from "fs";
+import { existsSync } from "fs";
 import path from "path";
 
-const pool = new Pool({
-  connectionString:
-    process.env.DATABASE_URL || "postgresql://postgres:postgres@localhost:5432/easy_lehrer",
-});
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
+const prisma = new PrismaClient();
 
 const BASE_URL = "http://localhost:3000";
 const TEST_USER_EMAIL = "upload-test@test.local";
@@ -199,11 +192,13 @@ async function verifyResourceExists(resourceId: string) {
   });
 
   if (resource) {
+    const subjects = Array.isArray(resource.subjects) ? resource.subjects : [];
+    const cycles = Array.isArray(resource.cycles) ? resource.cycles : [];
     console.log(`✅ Resource found in database:`);
     console.log(`   ID: ${resource.id}`);
     console.log(`   Title: ${resource.title}`);
-    console.log(`   Subjects: ${resource.subjects.join(", ")}`);
-    console.log(`   Cycles: ${resource.cycles.join(", ")}`);
+    console.log(`   Subjects: ${subjects.join(", ")}`);
+    console.log(`   Cycles: ${cycles.join(", ")}`);
     console.log(`   Seller: ${resource.seller.display_name}`);
     console.log(`   File URL: ${resource.file_url}`);
     console.log(`   Published: ${resource.is_published}`);

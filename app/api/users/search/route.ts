@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma, publicUserSelect } from "@/lib/db";
+import { toStringArray } from "@/lib/json-array";
 import { parsePagination, paginationResponse } from "@/lib/api";
 
 /**
@@ -37,14 +38,35 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    // Filter by subjects (has any of the specified subjects)
-    if (subjects.length > 0) {
-      where.subjects = { hasSome: subjects };
-    }
+    // For MySQL with JSON columns, use raw SQL for array overlap checks
+    if (subjects.length > 0 || cycles.length > 0) {
+      const conditions: string[] = [];
+      const params: string[] = [];
 
-    // Filter by cycles
-    if (cycles.length > 0) {
-      where.cycles = { hasSome: cycles };
+      if (subjects.length > 0) {
+        // JSON_OVERLAPS checks if any value in the array matches
+        conditions.push(`JSON_OVERLAPS(subjects, ?)`);
+        params.push(JSON.stringify(subjects));
+      }
+
+      if (cycles.length > 0) {
+        conditions.push(`JSON_OVERLAPS(cycles, ?)`);
+        params.push(JSON.stringify(cycles));
+      }
+
+      const sqlConditions = conditions.join(" AND ");
+      const query = `SELECT id FROM users WHERE ${sqlConditions}`;
+      const results = await prisma.$queryRawUnsafe<{ id: string }[]>(query, ...params);
+      const filteredIds = results.map((r) => r.id);
+
+      if (filteredIds.length === 0) {
+        return NextResponse.json({
+          profiles: [],
+          pagination: paginationResponse(page, limit, 0),
+        });
+      }
+
+      where.id = { in: filteredIds };
     }
 
     // Filter by role
@@ -81,9 +103,9 @@ export async function GET(request: NextRequest) {
       name: u.display_name || u.name,
       image: u.image,
       bio: u.bio,
-      subjects: u.subjects,
-      cycles: u.cycles,
-      cantons: u.cantons,
+      subjects: toStringArray(u.subjects),
+      cycles: toStringArray(u.cycles),
+      cantons: toStringArray(u.cantons),
       role: u.role,
       created_at: u.created_at,
       resourceCount: u._count.resources,

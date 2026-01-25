@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { toStringArray } from "@/lib/json-array";
 import { formatPrice } from "@/lib/utils/price";
 import { checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
 import {
@@ -9,7 +10,6 @@ import {
   unauthorized,
   forbidden,
   badRequest,
-  notFound,
   serverError,
 } from "@/lib/api";
 import {
@@ -21,8 +21,7 @@ import {
   MAX_RESOURCE_FILE_SIZE,
   MAX_PREVIEW_FILE_SIZE,
 } from "@/lib/validations/resource";
-import { mkdir, writeFile, unlink } from "fs/promises";
-import path from "path";
+import { getStorage } from "@/lib/storage";
 
 /**
  * GET /api/resources
@@ -83,19 +82,43 @@ export async function GET(request: NextRequest) {
       is_public: true, // Only show verified/public resources
     };
 
-    if (subject) {
-      where.subjects = { has: subject };
-    }
+    // For MySQL with JSON columns, we use raw SQL for array contains checks
+    // First, get IDs that match the JSON array filters
+    let jsonFilteredIds: string[] | null = null;
 
-    if (cycle) {
-      where.cycles = { has: cycle };
+    if (subject || cycle) {
+      const conditions: string[] = [];
+      const params: (string | number)[] = [];
+
+      if (subject) {
+        conditions.push(`JSON_CONTAINS(subjects, ?)`);
+        params.push(JSON.stringify(subject));
+      }
+
+      if (cycle) {
+        conditions.push(`JSON_CONTAINS(cycles, ?)`);
+        params.push(JSON.stringify(cycle));
+      }
+
+      const sqlConditions = conditions.join(" AND ");
+      const query = `SELECT id FROM resources WHERE is_published = 1 AND is_public = 1 AND ${sqlConditions}`;
+
+      const results = await prisma.$queryRawUnsafe<{ id: string }[]>(query, ...params);
+      jsonFilteredIds = results.map((r) => r.id);
+
+      // If no results match the JSON filters, return empty
+      if (jsonFilteredIds.length === 0) {
+        return NextResponse.json({
+          resources: [],
+          pagination: { page, limit, total: 0, totalPages: 0 },
+        });
+      }
+
+      where.id = { in: jsonFilteredIds };
     }
 
     if (search) {
-      where.OR = [
-        { title: { contains: search, mode: "insensitive" } },
-        { description: { contains: search, mode: "insensitive" } },
-      ];
+      where.OR = [{ title: { contains: search } }, { description: { contains: search } }];
     }
 
     // M&I integration filter
@@ -111,7 +134,6 @@ export async function GET(request: NextRequest) {
         where: {
           code: {
             contains: competencyCode.toUpperCase(),
-            mode: "insensitive",
           },
         },
         select: { id: true, code: true },
@@ -151,7 +173,6 @@ export async function GET(request: NextRequest) {
         where: {
           code: {
             contains: transversalCode.toUpperCase(),
-            mode: "insensitive",
           },
         },
         select: { id: true },
@@ -177,7 +198,6 @@ export async function GET(request: NextRequest) {
         where: {
           code: {
             contains: bneCode.toUpperCase(),
-            mode: "insensitive",
           },
         },
         select: { id: true },
@@ -286,43 +306,47 @@ export async function GET(request: NextRequest) {
     ]);
 
     // Transform resources for frontend
-    const transformedResources = resources.map((resource) => ({
-      id: resource.id,
-      title: resource.title,
-      description: resource.description,
-      price: resource.price,
-      priceFormatted: formatPrice(resource.price),
-      subject: resource.subjects[0] || "Allgemein",
-      cycle: resource.cycles[0] || "",
-      subjects: resource.subjects,
-      cycles: resource.cycles,
-      previewUrl: resource.preview_url,
-      createdAt: resource.created_at,
-      seller: resource.seller,
-      isMiIntegrated: resource.is_mi_integrated,
-      competencies: (resource.competencies ?? []).map((rc) => ({
-        id: rc.competency.id,
-        code: rc.competency.code,
-        description_de: rc.competency.description_de,
-        anforderungsstufe: rc.competency.anforderungsstufe,
-        subjectCode: rc.competency.subject.code,
-        subjectColor: rc.competency.subject.color,
-      })),
-      transversals: (resource.transversals ?? []).map((rt) => ({
-        id: rt.transversal.id,
-        code: rt.transversal.code,
-        name_de: rt.transversal.name_de,
-        icon: rt.transversal.icon,
-        color: rt.transversal.color,
-      })),
-      bneThemes: (resource.bne_themes ?? []).map((rb) => ({
-        id: rb.bne.id,
-        code: rb.bne.code,
-        name_de: rb.bne.name_de,
-        icon: rb.bne.icon,
-        color: rb.bne.color,
-      })),
-    }));
+    const transformedResources = resources.map((resource) => {
+      const subjects = toStringArray(resource.subjects);
+      const cycles = toStringArray(resource.cycles);
+      return {
+        id: resource.id,
+        title: resource.title,
+        description: resource.description,
+        price: resource.price,
+        priceFormatted: formatPrice(resource.price),
+        subject: subjects[0] || "Allgemein",
+        cycle: cycles[0] || "",
+        subjects,
+        cycles,
+        previewUrl: resource.preview_url,
+        createdAt: resource.created_at,
+        seller: resource.seller,
+        isMiIntegrated: resource.is_mi_integrated,
+        competencies: (resource.competencies ?? []).map((rc) => ({
+          id: rc.competency.id,
+          code: rc.competency.code,
+          description_de: rc.competency.description_de,
+          anforderungsstufe: rc.competency.anforderungsstufe,
+          subjectCode: rc.competency.subject.code,
+          subjectColor: rc.competency.subject.color,
+        })),
+        transversals: (resource.transversals ?? []).map((rt) => ({
+          id: rt.transversal.id,
+          code: rt.transversal.code,
+          name_de: rt.transversal.name_de,
+          icon: rt.transversal.icon,
+          color: rt.transversal.color,
+        })),
+        bneThemes: (resource.bne_themes ?? []).map((rb) => ({
+          id: rb.bne.id,
+          code: rb.bne.code,
+          name_de: rb.bne.name_de,
+          icon: rb.bne.icon,
+          color: rb.bne.color,
+        })),
+      };
+    });
 
     return NextResponse.json({
       resources: transformedResources,
@@ -438,6 +462,9 @@ export async function POST(request: NextRequest) {
       return badRequest("Dateiinhalt stimmt nicht mit dem Dateityp überein");
     }
 
+    // Get storage provider
+    const storage = getStorage();
+
     // Create resource in database first to get ID
     const resource = await prisma.resource.create({
       data: {
@@ -456,34 +483,41 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Create upload directory
-    const uploadsDir = path.join(process.cwd(), "public", "uploads", "resources", userId);
-    await mkdir(uploadsDir, { recursive: true });
-
-    // Save main file
-    const fileExt = getExtensionFromMimeType(file.type);
-    const fileName = `${resource.id}-${Date.now()}.${fileExt}`;
-    const filePath = path.join(uploadsDir, fileName);
-    await writeFile(filePath, fileBuffer);
-    const fileUrl = `/uploads/resources/${userId}/${fileName}`;
-
-    // Helper to clean up on preview validation failure
-    const cleanupOnError = async () => {
+    // Helper to clean up on error
+    const cleanupOnError = async (fileKey?: string, previewKey?: string) => {
       await prisma.resource.delete({ where: { id: resource.id } });
-      await unlink(filePath).catch(() => {}); // Clean up main file, ignore errors
+      if (fileKey) {
+        await storage.delete(fileKey, "resource").catch(() => {});
+      }
+      if (previewKey) {
+        await storage.delete(previewKey, "preview").catch(() => {});
+      }
     };
+
+    // Upload main file to private bucket
+    const fileExt = getExtensionFromMimeType(file.type);
+    const mainFileResult = await storage.upload(fileBuffer, {
+      category: "resource",
+      userId,
+      filename: `${resource.id}.${fileExt}`,
+      contentType: file.type,
+      metadata: {
+        resourceId: resource.id,
+        originalName: file.name,
+      },
+    });
 
     // Handle preview file
     let previewUrl: string | null = null;
     if (previewFile) {
       // User uploaded a preview file
       if (previewFile.size > MAX_PREVIEW_FILE_SIZE) {
-        await cleanupOnError();
+        await cleanupOnError(mainFileResult.key);
         return badRequest("Vorschaubild zu gross (maximal 5MB)");
       }
 
       if (!isAllowedPreviewType(previewFile.type)) {
-        await cleanupOnError();
+        await cleanupOnError(mainFileResult.key);
         return badRequest("Ungültiger Vorschaubild-Typ (JPEG, PNG oder WebP)");
       }
 
@@ -491,28 +525,42 @@ export async function POST(request: NextRequest) {
       const previewBuffer = Buffer.from(previewBytes);
 
       if (!validateMagicBytes(previewBuffer, previewFile.type)) {
-        await cleanupOnError();
+        await cleanupOnError(mainFileResult.key);
         return badRequest("Vorschaubild-Inhalt stimmt nicht mit dem Dateityp überein");
       }
 
       const previewExt = getExtensionFromMimeType(previewFile.type);
-      const previewFileName = `${resource.id}-preview-${Date.now()}.${previewExt}`;
-      const previewPath = path.join(uploadsDir, previewFileName);
-      await writeFile(previewPath, previewBuffer);
-      previewUrl = `/uploads/resources/${userId}/${previewFileName}`;
+      const previewResult = await storage.upload(previewBuffer, {
+        category: "preview",
+        userId,
+        filename: `${resource.id}-preview.${previewExt}`,
+        contentType: previewFile.type,
+        metadata: {
+          resourceId: resource.id,
+        },
+      });
+
+      // Use public URL for previews (they're in the public bucket)
+      previewUrl = previewResult.publicUrl || previewResult.key;
     } else {
       // No preview uploaded - try to auto-generate from main file
-      // Use dynamic import to avoid build-time issues with pdf-to-img native deps
       try {
         const { canGeneratePreview, generatePreview } =
           await import("@/lib/utils/preview-generator");
         if (canGeneratePreview(file.type)) {
           const generatedPreview = await generatePreview(fileBuffer, file.type);
           if (generatedPreview) {
-            const previewFileName = `${resource.id}-preview-${Date.now()}.png`;
-            const previewPath = path.join(uploadsDir, previewFileName);
-            await writeFile(previewPath, generatedPreview);
-            previewUrl = `/uploads/resources/${userId}/${previewFileName}`;
+            const previewResult = await storage.upload(generatedPreview, {
+              category: "preview",
+              userId,
+              filename: `${resource.id}-preview.png`,
+              contentType: "image/png",
+              metadata: {
+                resourceId: resource.id,
+                generated: "true",
+              },
+            });
+            previewUrl = previewResult.publicUrl || previewResult.key;
           }
         }
       } catch (previewError) {
@@ -522,10 +570,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Update resource with file URLs
+    // For the file_url, store the storage key (not the full URL)
     const updatedResource = await prisma.resource.update({
       where: { id: resource.id },
       data: {
-        file_url: fileUrl,
+        file_url: mainFileResult.key,
         preview_url: previewUrl,
       },
       select: {

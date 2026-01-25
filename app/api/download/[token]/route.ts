@@ -2,6 +2,41 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { readFile } from "fs/promises";
 import path from "path";
+import { getStorage, isLegacyLocalPath, getLegacyFilePath } from "@/lib/storage";
+
+/**
+ * Content type map for file extensions
+ */
+const contentTypes: Record<string, string> = {
+  ".pdf": "application/pdf",
+  ".doc": "application/msword",
+  ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  ".xls": "application/vnd.ms-excel",
+  ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  ".ppt": "application/vnd.ms-powerpoint",
+  ".pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  ".zip": "application/zip",
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+};
+
+/**
+ * Get content type from file path/key
+ */
+function getContentType(filePath: string): string {
+  const ext = path.extname(filePath).toLowerCase();
+  return contentTypes[ext] || "application/octet-stream";
+}
+
+/**
+ * Create a safe filename from resource title
+ */
+function getSafeFilename(title: string, filePath: string): string {
+  const ext = path.extname(filePath).toLowerCase();
+  const safeTitle = title.replace(/[^a-zA-Z0-9äöüÄÖÜß\s-]/g, "").trim();
+  return `${safeTitle}${ext}`;
+}
 
 /**
  * GET /api/download/[token]
@@ -74,44 +109,59 @@ export async function GET(
     }
 
     const resource = downloadToken.transaction.resource;
+    const storage = getStorage();
+    const filename = getSafeFilename(resource.title, resource.file_url);
+    const contentType = getContentType(resource.file_url);
 
-    // Get the file path
-    const filePath = path.join(process.cwd(), "public", resource.file_url);
+    // Increment download count before serving the file
+    await prisma.downloadToken.update({
+      where: { id: downloadToken.id },
+      data: { download_count: { increment: 1 } },
+    });
 
+    // Check if this is a legacy local path (starts with /uploads/)
+    if (isLegacyLocalPath(resource.file_url)) {
+      // Handle legacy local file
+      const filePath = getLegacyFilePath(resource.file_url);
+      try {
+        const fileBuffer = await readFile(filePath);
+        return new NextResponse(new Uint8Array(fileBuffer), {
+          headers: {
+            "Content-Type": contentType,
+            "Content-Disposition": `attachment; filename="${encodeURIComponent(filename)}"`,
+            "Content-Length": fileBuffer.length.toString(),
+          },
+        });
+      } catch {
+        console.error("Legacy file not found:", filePath);
+        return NextResponse.json(
+          { error: "file_not_found", message: "File not found" },
+          { status: 404 }
+        );
+      }
+    }
+
+    // For S3 storage, redirect to signed URL
+    if (!storage.isLocal()) {
+      try {
+        const signedUrl = await storage.getSignedUrl(resource.file_url, {
+          expiresIn: 3600, // 1 hour
+          downloadFilename: filename,
+        });
+        return NextResponse.redirect(signedUrl);
+      } catch (error) {
+        console.error("Failed to generate signed URL:", error);
+        return NextResponse.json(
+          { error: "server_error", message: "Failed to generate download link" },
+          { status: 500 }
+        );
+      }
+    }
+
+    // For local storage, read and stream the file
     try {
-      // Read the file
-      const fileBuffer = await readFile(filePath);
-
-      // Increment download count
-      await prisma.downloadToken.update({
-        where: { id: downloadToken.id },
-        data: { download_count: { increment: 1 } },
-      });
-
-      // Determine content type based on file extension
-      const ext = path.extname(resource.file_url).toLowerCase();
-      const contentTypes: Record<string, string> = {
-        ".pdf": "application/pdf",
-        ".doc": "application/msword",
-        ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        ".xls": "application/vnd.ms-excel",
-        ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        ".ppt": "application/vnd.ms-powerpoint",
-        ".pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-        ".zip": "application/zip",
-        ".png": "image/png",
-        ".jpg": "image/jpeg",
-        ".jpeg": "image/jpeg",
-      };
-
-      const contentType = contentTypes[ext] || "application/octet-stream";
-
-      // Create a safe filename
-      const safeTitle = resource.title.replace(/[^a-zA-Z0-9äöüÄÖÜß\s-]/g, "").trim();
-      const filename = `${safeTitle}${ext}`;
-
-      // Return the file
-      return new NextResponse(fileBuffer, {
+      const fileBuffer = await storage.getFile(resource.file_url, "resource");
+      return new NextResponse(new Uint8Array(fileBuffer), {
         headers: {
           "Content-Type": contentType,
           "Content-Disposition": `attachment; filename="${encodeURIComponent(filename)}"`,
@@ -119,7 +169,7 @@ export async function GET(
         },
       });
     } catch {
-      console.error("File not found:", filePath);
+      console.error("File not found:", resource.file_url);
       return NextResponse.json(
         { error: "file_not_found", message: "File not found" },
         { status: 404 }

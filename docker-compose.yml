@@ -1,19 +1,20 @@
 services:
-  # PostgreSQL Database
+  # MySQL Database
   db:
-    image: postgres:16-alpine
+    image: mysql:8.0
     container_name: easy-lehrer-db
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-      POSTGRES_DB: ${POSTGRES_DB:-easy_lehrer}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-easy_lehrer}
+      MYSQL_USER: ${MYSQL_USER:-mysql}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-mysql}
     ports:
-      - "${DB_PORT:-5432}:5432"
+      - "${DB_PORT:-3306}:3306"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-easy_lehrer}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-rootpassword}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -27,8 +28,12 @@ services:
     restart: unless-stopped
     environment:
       - NODE_ENV=development
-      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-easy_lehrer}?schema=public
+      - APP_ENV=development
+      # Use root for dev to allow shadow database creation for migrations
+      - DATABASE_URL=mysql://root:${MYSQL_ROOT_PASSWORD:-rootpassword}@db:3306/${MYSQL_DATABASE:-easy_lehrer}
       - NEXT_TELEMETRY_DISABLED=1
+      - AUTH_SECRET=${AUTH_SECRET}
+      - AUTH_URL=${AUTH_URL:-http://localhost:3000}
     ports:
       - "${APP_PORT:-3000}:3000"
     volumes:
@@ -43,7 +48,7 @@ services:
         condition: service_healthy
 
 volumes:
-  postgres_data:
-    name: easy-lehrer-postgres-data
+  mysql_data:
+    name: easy-lehrer-mysql-data
   next_cache:
     name: easy-lehrer-next-cache

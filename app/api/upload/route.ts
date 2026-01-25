@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUserId } from "@/lib/auth";
-import { writeFile, mkdir } from "fs/promises";
-import { existsSync } from "fs";
 import path from "path";
-import crypto from "crypto";
+import { getStorage } from "@/lib/storage";
+import type { FileCategory } from "@/lib/storage";
 
 // Maximum file sizes
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB for main files
@@ -42,10 +41,7 @@ export async function POST(request: NextRequest) {
     const file = formData.get("file") as File;
 
     if (!file) {
-      return NextResponse.json(
-        { error: "No file provided" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
     // Validate file type
@@ -74,42 +70,36 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate unique filename
-    const ext = path.extname(file.name);
-    const hash = crypto.randomBytes(16).toString("hex");
-    const filename = `${hash}${ext}`;
+    // Get storage provider
+    const storage = getStorage();
 
-    // Determine upload directory
-    const subdir = isPreview ? "previews" : "resources";
-    const uploadDir = path.join(process.cwd(), "public", "uploads", subdir);
+    // Determine category based on file type
+    const category: FileCategory = isPreview ? "preview" : "resource";
 
-    // Create directory if it doesn't exist
-    if (!existsSync(uploadDir)) {
-      await mkdir(uploadDir, { recursive: true });
-    }
-
-    // Save file
-    const filePath = path.join(uploadDir, filename);
+    // Read file buffer
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
-    await writeFile(filePath, buffer);
 
-    // Return public URL
-    const publicUrl = `/uploads/${subdir}/${filename}`;
+    // Upload to storage
+    const result = await storage.upload(buffer, {
+      category,
+      userId,
+      filename: file.name,
+      contentType: file.type,
+    });
 
+    // Return the storage key and public URL if available
     return NextResponse.json({
       success: true,
-      url: publicUrl,
-      filename,
+      key: result.key,
+      url: result.publicUrl || result.key,
+      filename: path.basename(result.key),
       originalName: file.name,
-      size: file.size,
-      type: file.type,
+      size: result.size,
+      type: result.contentType,
     });
   } catch (error) {
     console.error("Error uploading file:", error);
-    return NextResponse.json(
-      { error: "Failed to upload file" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to upload file" }, { status: 500 });
   }
 }
