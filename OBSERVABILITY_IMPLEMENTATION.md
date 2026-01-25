@@ -659,15 +659,15 @@ OTEL_SERVICE_NAME="easy-lehrer"
 - [x] `sentry.client.config.ts` - Client Sentry config
 - [x] `sentry.server.config.ts` - Server Sentry config
 - [x] `sentry.edge.config.ts` - Edge Sentry config
-- [ ] `monitoring/prometheus.yml` - Prometheus config
-- [ ] `monitoring/grafana/provisioning/datasources/datasources.yml`
-- [ ] `monitoring/grafana/provisioning/dashboards/dashboards.yml`
-- [ ] `docker-compose.monitoring.yml` - Monitoring stack
+- [x] `monitoring/prometheus.yml` - Prometheus config
+- [x] `monitoring/grafana/provisioning/datasources/datasources.yml`
+- [x] `monitoring/grafana/provisioning/dashboards/dashboards.yml`
+- [x] `docker-compose.monitoring.yml` - Monitoring stack
 
 ### Files to Modify
-- [ ] `next.config.ts` - Wrap with Sentry (Note: `instrumentationHook` not needed in Next.js 16+, instrumentation.ts is auto-detected)
-- [ ] `Dockerfile` - Copy instrumentation.ts
-- [ ] `.env.example` - Add Sentry/OTEL vars
+- [x] `next.config.ts` - Wrap with Sentry (Note: `instrumentationHook` not needed in Next.js 16+, instrumentation.ts is auto-detected)
+- [x] `Dockerfile` - Copy instrumentation.ts
+- [x] `.env.example` - Add Sentry/OTEL vars
 - [x] `messages/de.json` - Add error translations
 - [x] `messages/en.json` - Add error translations
 

@@ -60,6 +60,9 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# Copy instrumentation file for OpenTelemetry
+COPY --from=builder /app/instrumentation.ts ./instrumentation.ts
+
 # Set final ownership
 RUN chown -R nextjs:nodejs /app
 
