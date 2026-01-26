@@ -9,10 +9,8 @@ WORKDIR /app
 
 COPY package.json package-lock.json* ./
 
-# Use cache mount for faster dependency installation
-RUN --mount=type=cache,target=/root/.npm \
-    npm cache clean --force && \
-    npm ci
+# Install dependencies (no cache to ensure correct versions)
+RUN npm cache clean --force && npm ci
 
 # Build the application
 FROM base AS builder
@@ -22,8 +20,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Ensure public directory exists, generate Prisma client, and build
-RUN --mount=type=cache,target=/root/.cache/prisma \
-    mkdir -p public && \
+RUN mkdir -p public && \
     npm run db:generate && \
     npm run build
 
@@ -40,28 +37,29 @@ RUN addgroup --system --gid 1001 nodejs && \
     mkdir .next && \
     chown nextjs:nodejs .next
 
-# Copy package.json and prisma files first (needed for npm install, changes less often)
+# Copy build artifacts first (standalone includes minimal node_modules)
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+# Copy package.json and prisma files
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
-
-# Install runtime dependencies for migrations/seeding with cache
-RUN --mount=type=cache,target=/root/.npm \
-    --mount=type=cache,target=/root/.cache/prisma \
-    npm install --no-save prisma @prisma/client mysql2 bcryptjs tsx dotenv && \
-    npx prisma generate
 
 # Copy startup script
 COPY --from=builder /app/scripts/start.sh ./start.sh
 RUN chmod +x ./start.sh
 
-# Copy build artifacts last - these change most frequently
-COPY --from=builder /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
 # Copy instrumentation file for OpenTelemetry
 COPY --from=builder /app/instrumentation.ts ./instrumentation.ts
+
+# Install runtime dependencies for migrations/seeding
+# Remove standalone's minimal node_modules and install fresh with pinned Prisma 6
+RUN rm -rf node_modules && \
+    npm cache clean --force && \
+    npm install --no-save prisma@6.19.2 @prisma/client@6.19.2 mysql2 bcryptjs tsx dotenv next react react-dom && \
+    ./node_modules/.bin/prisma generate && \
+    ./node_modules/.bin/prisma --version
 
 # Set final ownership
 RUN chown -R nextjs:nodejs /app

@@ -1,10 +1,32 @@
 import { PrismaClient } from "@prisma/client";
+import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import { hash } from "bcryptjs";
 import * as fs from "fs";
 import * as path from "path";
 import { seedCurriculum } from "./seed-curriculum";
 
-const prisma = new PrismaClient();
+// Parse DATABASE_URL for adapter config
+function parseDbUrl(url: string) {
+  const parsed = new URL(url);
+  return {
+    host: parsed.hostname,
+    port: parseInt(parsed.port) || 3306,
+    user: parsed.username,
+    password: parsed.password,
+    database: parsed.pathname.slice(1),
+  };
+}
+
+const dbConfig = parseDbUrl(process.env.DATABASE_URL!);
+const adapter = new PrismaMariaDb({
+  host: dbConfig.host,
+  port: dbConfig.port,
+  user: dbConfig.user,
+  password: dbConfig.password,
+  database: dbConfig.database,
+  connectionLimit: 5,
+});
+const prisma = new PrismaClient({ adapter });
 
 // Pre-defined IDs for consistent upserts
 const TEST_USER_ID = "test-user-id";

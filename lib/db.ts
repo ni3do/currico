@@ -1,11 +1,35 @@
 import { PrismaClient } from "@prisma/client";
+import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
+// Parse DATABASE_URL for adapter config
+function parseDbUrl(url: string) {
+  const parsed = new URL(url);
+  return {
+    host: parsed.hostname,
+    port: parseInt(parsed.port) || 3306,
+    user: parsed.username,
+    password: parsed.password,
+    database: parsed.pathname.slice(1),
+  };
+}
+
 function createPrismaClient() {
+  const dbConfig = parseDbUrl(process.env.DATABASE_URL!);
+  const adapter = new PrismaMariaDb({
+    host: dbConfig.host,
+    port: dbConfig.port,
+    user: dbConfig.user,
+    password: dbConfig.password,
+    database: dbConfig.database,
+    connectionLimit: 10,
+  });
+
   return new PrismaClient({
+    adapter,
     log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
   });
 }

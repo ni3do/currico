@@ -17,20 +17,19 @@ ENV CHOKIDAR_USEPOLLING=true
 # Copy package files for dependency caching
 COPY package.json package-lock.json* ./
 
-# Install dependencies with npm cache mount for faster rebuilds
-RUN --mount=type=cache,target=/root/.npm \
-    npm ci
+# Install dependencies (no cache to ensure correct versions)
+RUN npm cache clean --force && npm ci
 
-# Copy Prisma schema and generate client with cache
+# Copy Prisma schema and config, generate client
 COPY prisma ./prisma/
 COPY prisma.config.ts ./
-RUN --mount=type=cache,target=/root/.cache/prisma \
-    npx prisma generate
+RUN ./node_modules/.bin/prisma generate && \
+    echo "Prisma version:" && ./node_modules/.bin/prisma --version
 
 # Note: Source code is mounted as volume in docker-compose.yml
 # No need to COPY . . since it would be overwritten anyway
 
 EXPOSE 3000
 
-# Sync database schema, seed data, and start dev server
-CMD ["sh", "-c", "npx prisma db push --accept-data-loss && npx prisma db seed && npm run dev"]
+# Install deps at runtime (volume mount creates empty node_modules), sync DB, seed, and start
+CMD ["sh", "-c", "npm install && ./node_modules/.bin/prisma generate && ./node_modules/.bin/prisma db push --accept-data-loss && ./node_modules/.bin/prisma db seed && npm run dev"]
