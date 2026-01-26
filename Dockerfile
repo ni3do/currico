@@ -48,7 +48,7 @@ COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 # Install runtime dependencies for migrations/seeding with cache
 RUN --mount=type=cache,target=/root/.npm \
     --mount=type=cache,target=/root/.cache/prisma \
-    npm install --no-save prisma @prisma/client @prisma/adapter-pg pg postgres-array bcryptjs tsx dotenv && \
+    npm install --no-save prisma @prisma/client mysql2 bcryptjs tsx dotenv && \
     npx prisma generate
 
 # Copy startup script
@@ -59,6 +59,9 @@ RUN chmod +x ./start.sh
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+# Copy instrumentation file for OpenTelemetry
+COPY --from=builder /app/instrumentation.ts ./instrumentation.ts
 
 # Set final ownership
 RUN chown -R nextjs:nodejs /app

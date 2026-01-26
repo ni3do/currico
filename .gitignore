@@ -36,3 +36,5 @@ prisma/dev.db-journal
 # uploaded files (keep directory structure via .gitkeep)
 public/uploads/*
 !public/uploads/**/.gitkeep
+
+IMPLEMENTATION_PLAN.md

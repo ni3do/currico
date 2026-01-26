@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { toStringArray } from "@/lib/json-array";
 import { getCurrentUserId } from "@/lib/auth";
 
 // ============================================================
@@ -74,8 +75,10 @@ export async function checkSellerProfile(userId: string): Promise<string[]> {
 
   const missing: string[] = [];
   if (!user.display_name) missing.push("Profilname");
-  if (!user.subjects || user.subjects.length === 0) missing.push("Fächer");
-  if (!user.cycles || user.cycles.length === 0) missing.push("Zyklen");
+  const subjects = toStringArray(user.subjects);
+  const cycles = toStringArray(user.cycles);
+  if (subjects.length === 0) missing.push("Fächer");
+  if (cycles.length === 0) missing.push("Zyklen");
   if (!user.stripe_onboarding_complete || !user.stripe_charges_enabled) {
     missing.push("Stripe-Verifizierung");
   }

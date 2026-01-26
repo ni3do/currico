@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { toStringArray, toNumberArray } from "@/lib/json-array";
 
 /**
  * GET /api/curriculum
@@ -97,27 +98,44 @@ export async function GET(request: Request) {
       },
     });
 
-    // Build lehrmittel query
-    const lehrmittelWhere: {
-      subject?: string;
-      cantons?: { has: string };
-      cycles?: { has: number };
-    } = {};
+    // Build lehrmittel query - for MySQL with JSON columns, use raw SQL for filtering
+    let lehrmittelIds: string[] | null = null;
 
-    if (subjectCode) {
-      lehrmittelWhere.subject = subjectCode;
-    }
+    if ((canton && canton !== "all") || cycle) {
+      const conditions: string[] = [];
+      const params: string[] = [];
 
-    if (canton && canton !== "all") {
-      lehrmittelWhere.cantons = { has: canton };
-    }
+      if (subjectCode) {
+        conditions.push(`subject = ?`);
+        params.push(subjectCode);
+      }
 
-    if (cycle) {
-      lehrmittelWhere.cycles = { has: parseInt(cycle, 10) };
+      if (canton && canton !== "all") {
+        conditions.push(`JSON_CONTAINS(cantons, ?)`);
+        params.push(JSON.stringify(canton));
+      }
+
+      if (cycle) {
+        conditions.push(`JSON_CONTAINS(cycles, ?)`);
+        params.push(JSON.stringify(parseInt(cycle, 10)));
+      }
+
+      const sqlConditions = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
+      const query = `SELECT id FROM lehrmittel ${sqlConditions}`;
+      const results = await prisma.$queryRawUnsafe<{ id: string }[]>(query, ...params);
+      lehrmittelIds = results.map((r) => r.id);
     }
 
     // Fetch lehrmittel
-    const lehrmittel = await prisma.lehrmittel.findMany({
+    const lehrmittelWhere: Record<string, unknown> = {};
+    if (subjectCode && !lehrmittelIds) {
+      lehrmittelWhere.subject = subjectCode;
+    }
+    if (lehrmittelIds !== null) {
+      lehrmittelWhere.id = { in: lehrmittelIds };
+    }
+
+    const lehrmittelResults = await prisma.lehrmittel.findMany({
       where: lehrmittelWhere,
       orderBy: { name: "asc" },
       select: {
@@ -129,6 +147,13 @@ export async function GET(request: Request) {
         cycles: true,
       },
     });
+
+    // Transform lehrmittel to use proper arrays
+    const lehrmittel = lehrmittelResults.map((l) => ({
+      ...l,
+      cantons: toStringArray(l.cantons),
+      cycles: toNumberArray(l.cycles),
+    }));
 
     // Group competencies by kompetenzbereich for better UI
     type GroupedCompetency = {

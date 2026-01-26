@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { toStringArray } from "@/lib/json-array";
 import { canUploadResources } from "@/lib/validations/user";
 import { getCurrentUserId } from "@/lib/auth";
 
@@ -14,10 +15,7 @@ export async function GET() {
     const userId = await getCurrentUserId();
 
     if (!userId) {
-      return NextResponse.json(
-        { error: "Nicht authentifiziert" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
     }
 
     const user = await prisma.user.findUnique({
@@ -33,16 +31,13 @@ export async function GET() {
     });
 
     if (!user) {
-      return NextResponse.json(
-        { error: "Benutzer nicht gefunden" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Benutzer nicht gefunden" }, { status: 404 });
     }
 
     const result = canUploadResources({
       display_name: user.display_name,
-      subjects: Array.isArray(user.subjects) ? user.subjects : [],
-      cycles: Array.isArray(user.cycles) ? user.cycles : [],
+      subjects: toStringArray(user.subjects),
+      cycles: toStringArray(user.cycles),
       role: user.role,
       stripe_charges_enabled: user.stripe_charges_enabled,
       emailVerified: user.emailVerified,
@@ -51,9 +46,6 @@ export async function GET() {
     return NextResponse.json(result);
   } catch (error) {
     console.error("Error checking upload eligibility:", error);
-    return NextResponse.json(
-      { error: "Interner Serverfehler" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
   }
 }
