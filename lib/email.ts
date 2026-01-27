@@ -169,7 +169,7 @@ export async function sendPurchaseConfirmationEmail({
   const downloadLink =
     isGuest && downloadToken
       ? `${baseUrl}/${locale}/download/${downloadToken}`
-      : `${baseUrl}/${locale}/account/library`;
+      : `${baseUrl}/${locale}/account?tab=library`;
 
   const subject =
     locale === "de"

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import {
@@ -157,10 +157,21 @@ const SUBJECT_PILL_CLASSES: Record<string, string> = {
   "Medien und Informatik": "pill-medien",
 };
 
+type TabType = "overview" | "library" | "uploads" | "wishlist" | "settings";
+
+const VALID_TABS: TabType[] = ["overview", "library", "uploads", "wishlist", "settings"];
+
+function isValidTab(tab: string | null): tab is TabType {
+  return tab !== null && VALID_TABS.includes(tab as TabType);
+}
+
 export default function AccountPage() {
-  const [activeTab, setActiveTab] = useState<
-    "overview" | "library" | "uploads" | "wishlist" | "settings"
-  >("overview");
+  const searchParams = useSearchParams();
+  const initialTab = searchParams.get("tab");
+
+  const [activeTab, setActiveTab] = useState<TabType>(
+    isValidTab(initialTab) ? initialTab : "overview"
+  );
   const [settingsSection, setSettingsSection] = useState<
     "profile" | "appearance" | "notifications" | "account"
   >("profile");
