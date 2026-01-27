@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { SWISS_SUBJECTS, SWISS_CYCLES } from "./user";
 
 // ============================================================
 // CONSTANTS
@@ -80,6 +79,7 @@ export const MAGIC_BYTES: Record<string, number[][]> = {
 // ============================================================
 
 // Schema for creating a new resource
+// Note: subjects and cycles accept any strings - validation against database happens at API level
 export const createResourceSchema = z.object({
   title: z
     .string()
@@ -94,12 +94,8 @@ export const createResourceSchema = z.object({
     .int("Preis muss eine ganze Zahl sein")
     .min(0, "Preis darf nicht negativ sein")
     .max(100000, "Preis darf maximal 1000 CHF sein"), // Max 1000 CHF in cents
-  subjects: z
-    .array(z.enum(SWISS_SUBJECTS as unknown as [string, ...string[]]))
-    .min(1, "Mindestens ein Fach auswählen"),
-  cycles: z
-    .array(z.enum(SWISS_CYCLES as unknown as [string, ...string[]]))
-    .min(1, "Mindestens einen Zyklus auswählen"),
+  subjects: z.array(z.string().min(1)).min(1, "Mindestens ein Fach auswählen"),
+  cycles: z.array(z.string().min(1)).min(1, "Mindestens einen Zyklus auswählen"),
   language: z.enum(RESOURCE_LANGUAGES).optional().default("de"),
   resourceType: z.enum(RESOURCE_TYPES).optional().default("pdf"),
   is_published: z.boolean().optional().default(false),
@@ -123,14 +119,8 @@ export const updateResourceSchema = z.object({
     .min(0, "Preis darf nicht negativ sein")
     .max(100000, "Preis darf maximal 1000 CHF sein")
     .optional(),
-  subjects: z
-    .array(z.enum(SWISS_SUBJECTS as unknown as [string, ...string[]]))
-    .min(1, "Mindestens ein Fach auswählen")
-    .optional(),
-  cycles: z
-    .array(z.enum(SWISS_CYCLES as unknown as [string, ...string[]]))
-    .min(1, "Mindestens einen Zyklus auswählen")
-    .optional(),
+  subjects: z.array(z.string().min(1)).min(1, "Mindestens ein Fach auswählen").optional(),
+  cycles: z.array(z.string().min(1)).min(1, "Mindestens einen Zyklus auswählen").optional(),
   is_published: z.boolean().optional(),
 });
 
