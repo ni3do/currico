@@ -33,6 +33,7 @@ import { EmailVerificationBanner } from "@/components/account/EmailVerificationB
 import { StripeConnectStatus } from "@/components/account/StripeConnectStatus";
 import { AccountSidebar } from "@/components/account/AccountSidebar";
 import { MultiSelect } from "@/components/ui/MultiSelect";
+import { DashboardResourceCard } from "@/components/ui/DashboardResourceCard";
 import { SWISS_SUBJECTS, SWISS_CYCLES, SWISS_CANTONS } from "@/lib/validations/user";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -47,6 +48,7 @@ interface LibraryItem {
   verified: boolean;
   type: "purchased" | "free";
   acquiredAt: string;
+  previewUrl?: string | null;
   seller: {
     id: string;
     displayName: string | null;
@@ -69,6 +71,7 @@ interface UploadedItem {
   createdAt: string;
   downloadCount: number;
   purchaseCount: number;
+  previewUrl?: string | null;
 }
 
 interface WishlistItem {
@@ -80,6 +83,7 @@ interface WishlistItem {
   subject: string;
   cycle: string;
   addedAt: string;
+  previewUrl?: string | null;
   seller: {
     id: string;
     displayName: string | null;
@@ -1022,54 +1026,48 @@ export default function AccountPage() {
                     </div>
 
                     {loading ? (
-                      <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+                      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         {[1, 2, 3].map((i) => (
-                          <div
-                            key={i}
-                            className="border-border bg-bg animate-pulse rounded-lg border p-4"
-                          >
-                            <div className="bg-surface-hover mb-3 h-4 w-16 rounded"></div>
-                            <div className="bg-surface-hover mb-2 h-5 w-full rounded"></div>
-                            <div className="bg-surface-hover mb-4 h-4 w-24 rounded"></div>
-                            <div className="bg-surface-hover h-10 w-full rounded"></div>
+                          <div key={i} className="card animate-pulse overflow-hidden">
+                            <div className="bg-bg-secondary aspect-[16/9]"></div>
+                            <div className="p-4">
+                              <div className="bg-surface-hover mb-3 h-5 w-20 rounded-full"></div>
+                              <div className="bg-surface-hover mb-2 h-3 w-24 rounded"></div>
+                              <div className="bg-surface-hover mb-2 h-5 w-full rounded"></div>
+                              <div className="bg-surface-hover mb-4 h-4 w-32 rounded"></div>
+                              <div className="bg-surface-hover h-10 w-full rounded-lg"></div>
+                            </div>
                           </div>
                         ))}
                       </div>
                     ) : libraryItems.length > 0 ? (
-                      <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+                      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         {libraryItems.map((item) => (
-                          <div
+                          <DashboardResourceCard
                             key={item.id}
-                            className="border-border bg-bg hover:border-primary rounded-lg border p-4 transition-colors"
-                          >
-                            <div className="mb-3 flex items-center justify-between">
-                              <span
-                                className={`pill text-xs ${item.type === "purchased" ? "pill-primary" : "pill-success"}`}
-                              >
-                                {item.type === "purchased" ? "Gekauft" : "Gratis"}
-                              </span>
-                              {item.verified && (
-                                <span className="pill pill-success text-xs">Verifiziert</span>
-                              )}
-                            </div>
-                            <h3 className="text-text mb-1 font-semibold">{item.title}</h3>
-                            <div className="mb-2 flex items-center gap-2">
-                              <span className={`pill text-xs ${getSubjectPillClass(item.subject)}`}>
-                                {item.subject}
-                              </span>
-                              <span className="text-text-muted text-xs">{item.cycle}</span>
-                            </div>
-                            <p className="text-text-muted mb-4 text-xs">
-                              Von: {item.seller.displayName || "Unbekannt"}
-                            </p>
-                            <button
-                              onClick={() => handleDownload(item.id)}
-                              disabled={downloading === item.id}
-                              className="bg-primary text-text-on-accent hover:bg-primary-hover w-full rounded-md px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
-                            >
-                              {downloading === item.id ? "Wird geladen..." : "Herunterladen"}
-                            </button>
-                          </div>
+                            id={item.id}
+                            title={item.title}
+                            description={item.description}
+                            subject={item.subject}
+                            cycle={item.cycle}
+                            previewUrl={item.previewUrl}
+                            badge={{
+                              label: item.type === "purchased" ? "Gekauft" : "Gratis",
+                              variant: item.type === "purchased" ? "primary" : "success",
+                            }}
+                            secondaryBadge={
+                              item.verified
+                                ? { label: "Verifiziert", variant: "success" }
+                                : undefined
+                            }
+                            seller={{ displayName: item.seller.displayName }}
+                            primaryAction={{
+                              label: "Herunterladen",
+                              icon: "download",
+                              onClick: () => handleDownload(item.id),
+                              loading: downloading === item.id,
+                            }}
+                          />
                         ))}
                       </div>
                     ) : (
@@ -1120,68 +1118,59 @@ export default function AccountPage() {
                     </div>
 
                     {loading || uploadedLoading ? (
-                      <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+                      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         {[1, 2, 3].map((i) => (
-                          <div
-                            key={i}
-                            className="border-border bg-bg animate-pulse rounded-lg border p-4"
-                          >
-                            <div className="bg-surface-hover mb-3 h-4 w-16 rounded"></div>
-                            <div className="bg-surface-hover mb-2 h-5 w-full rounded"></div>
-                            <div className="bg-surface-hover mb-4 h-4 w-24 rounded"></div>
-                            <div className="bg-surface-hover h-10 w-full rounded"></div>
+                          <div key={i} className="card animate-pulse overflow-hidden">
+                            <div className="bg-bg-secondary aspect-[16/9]"></div>
+                            <div className="p-4">
+                              <div className="bg-surface-hover mb-3 h-5 w-20 rounded-full"></div>
+                              <div className="bg-surface-hover mb-2 h-3 w-24 rounded"></div>
+                              <div className="bg-surface-hover mb-2 h-5 w-full rounded"></div>
+                              <div className="bg-surface-hover mb-4 h-4 w-32 rounded"></div>
+                              <div className="bg-surface-hover h-10 w-full rounded-lg"></div>
+                            </div>
                           </div>
                         ))}
                       </div>
                     ) : uploadedItems.length > 0 ? (
-                      <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+                      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         {uploadedItems.map((item) => (
-                          <div
+                          <DashboardResourceCard
                             key={item.id}
-                            className="border-border bg-bg hover:border-primary rounded-lg border p-4 transition-colors"
-                          >
-                            <div className="mb-3 flex items-center justify-between">
-                              <span
-                                className={`pill text-xs ${
-                                  item.status === "VERIFIED"
-                                    ? "pill-success"
-                                    : item.status === "PENDING"
-                                      ? "pill-warning"
-                                      : "pill-neutral"
-                                }`}
-                              >
-                                {item.status === "VERIFIED"
+                            id={item.id}
+                            title={item.title}
+                            description={item.description}
+                            subject={item.subject}
+                            cycle={item.cycle}
+                            previewUrl={item.previewUrl}
+                            badge={{
+                              label:
+                                item.status === "VERIFIED"
                                   ? "Verifiziert"
                                   : item.status === "PENDING"
                                     ? "Ausstehend"
-                                    : item.status}
-                              </span>
-                              <span className="text-price text-sm font-semibold">
-                                {item.priceFormatted}
-                              </span>
-                            </div>
-                            <Link href={`/resources/${item.id}`}>
-                              <h3 className="text-text hover:text-primary mb-1 font-semibold">
-                                {item.title}
-                              </h3>
-                            </Link>
-                            <div className="mb-3 flex items-center gap-2">
-                              <span className={`pill text-xs ${getSubjectPillClass(item.subject)}`}>
-                                {item.subject}
-                              </span>
-                              <span className="text-text-muted text-xs">{item.cycle}</span>
-                            </div>
-                            <div className="text-text-muted mb-4 flex items-center justify-between text-xs">
-                              <span>{item.downloadCount} Downloads</span>
-                              <span>{item.purchaseCount} Verkäufe</span>
-                            </div>
-                            <Link
-                              href={`/resources/${item.id}`}
-                              className="bg-primary text-text-on-accent hover:bg-primary-hover block w-full rounded-md px-4 py-2 text-center text-sm font-medium transition-colors"
-                            >
-                              Ansehen
-                            </Link>
-                          </div>
+                                    : item.status,
+                              variant:
+                                item.status === "VERIFIED"
+                                  ? "success"
+                                  : item.status === "PENDING"
+                                    ? "warning"
+                                    : "neutral",
+                            }}
+                            price={{
+                              formatted: item.priceFormatted,
+                              isFree: item.price === 0,
+                            }}
+                            stats={{
+                              downloads: item.downloadCount,
+                              purchases: item.purchaseCount,
+                            }}
+                            primaryAction={{
+                              label: "Ansehen",
+                              icon: "view",
+                              href: `/resources/${item.id}`,
+                            }}
+                          />
                         ))}
                       </div>
                     ) : (
@@ -1225,59 +1214,43 @@ export default function AccountPage() {
                     </div>
 
                     {loading ? (
-                      <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+                      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         {[1, 2].map((i) => (
-                          <div
-                            key={i}
-                            className="border-border bg-bg animate-pulse rounded-lg border p-4"
-                          >
-                            <div className="bg-surface-hover mb-3 h-4 w-16 rounded"></div>
-                            <div className="bg-surface-hover mb-2 h-5 w-full rounded"></div>
-                            <div className="bg-surface-hover mb-4 h-4 w-24 rounded"></div>
-                            <div className="bg-surface-hover h-10 w-full rounded"></div>
+                          <div key={i} className="card animate-pulse overflow-hidden">
+                            <div className="bg-bg-secondary aspect-[16/9]"></div>
+                            <div className="p-4">
+                              <div className="bg-surface-hover mb-3 h-5 w-20 rounded-full"></div>
+                              <div className="bg-surface-hover mb-2 h-3 w-24 rounded"></div>
+                              <div className="bg-surface-hover mb-2 h-5 w-full rounded"></div>
+                              <div className="bg-surface-hover mb-4 h-4 w-32 rounded"></div>
+                              <div className="bg-surface-hover h-10 w-full rounded-lg"></div>
+                            </div>
                           </div>
                         ))}
                       </div>
                     ) : wishlistItems.length > 0 ? (
-                      <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+                      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         {wishlistItems.map((item) => (
-                          <div
+                          <DashboardResourceCard
                             key={item.id}
-                            className="border-border bg-bg hover:border-primary rounded-lg border p-4 transition-colors"
-                          >
-                            <div className="mb-3 flex items-center justify-between">
-                              <span className={`pill text-xs ${getSubjectPillClass(item.subject)}`}>
-                                {item.subject}
-                              </span>
-                              <button
-                                onClick={() => handleRemoveFromWishlist(item.id)}
-                                className="text-error hover:text-error/80"
-                              >
-                                <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                                  <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                                </svg>
-                              </button>
-                            </div>
-                            <Link href={`/resources/${item.id}`}>
-                              <h3 className="text-text hover:text-primary mb-1 font-semibold">
-                                {item.title}
-                              </h3>
-                            </Link>
-                            <p className="text-text-muted mb-4 text-sm">{item.cycle}</p>
-                            <div className="flex items-center justify-between">
-                              <span
-                                className={`text-lg font-bold ${item.price === 0 ? "text-success" : "text-price"}`}
-                              >
-                                {item.priceFormatted}
-                              </span>
-                              <Link
-                                href={`/resources/${item.id}`}
-                                className="bg-primary text-text-on-accent hover:bg-primary-hover rounded-md px-4 py-2 text-sm font-medium transition-colors"
-                              >
-                                Ansehen
-                              </Link>
-                            </div>
-                          </div>
+                            id={item.id}
+                            title={item.title}
+                            description={item.description}
+                            subject={item.subject}
+                            cycle={item.cycle}
+                            previewUrl={item.previewUrl}
+                            price={{
+                              formatted: item.priceFormatted,
+                              isFree: item.price === 0,
+                            }}
+                            seller={{ displayName: item.seller.displayName }}
+                            onRemove={() => handleRemoveFromWishlist(item.id)}
+                            primaryAction={{
+                              label: "Ansehen",
+                              icon: "view",
+                              href: `/resources/${item.id}`,
+                            }}
+                          />
                         ))}
                       </div>
                     ) : (

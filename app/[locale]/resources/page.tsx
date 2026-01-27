@@ -2,13 +2,13 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { SlidersHorizontal, ChevronDown, FileText, Users } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { ResourceCard } from "@/components/ui/ResourceCard";
+import { ProfileCard } from "@/components/ui/ProfileCard";
 import { LP21FilterSidebar, type LP21FilterState } from "@/components/search/LP21FilterSidebar";
 import { FACHBEREICHE } from "@/lib/data/lehrplan21";
 
@@ -277,79 +277,18 @@ export default function ResourcesPage() {
                 </p>
                 <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
                   {profiles.map((profile) => (
-                    <Link
+                    <ProfileCard
                       key={profile.id}
-                      href={`/profile/${profile.id}`}
-                      className="card group overflow-hidden transition-all hover:-translate-y-1 hover:shadow-lg"
-                    >
-                      <div className="p-5">
-                        <div className="mb-4 flex items-center gap-4">
-                          {profile.image ? (
-                            <Image
-                              src={profile.image}
-                              alt={profile.name}
-                              width={56}
-                              height={56}
-                              className="border-border rounded-full border-2 object-cover"
-                            />
-                          ) : (
-                            <div className="from-primary to-success flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br text-xl font-bold text-white">
-                              {profile.name.charAt(0).toUpperCase()}
-                            </div>
-                          )}
-                          <div className="min-w-0 flex-1">
-                            <h3 className="text-text group-hover:text-primary truncate font-semibold">
-                              {profile.name}
-                            </h3>
-                            {profile.role === "SELLER" && (
-                              <span className="text-success inline-flex items-center gap-1 text-xs">
-                                <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
-                                  <path
-                                    fillRule="evenodd"
-                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                    clipRule="evenodd"
-                                  />
-                                </svg>
-                                Verkäufer
-                              </span>
-                            )}
-                          </div>
-                        </div>
-
-                        {profile.bio && (
-                          <p className="text-text-muted mb-3 line-clamp-2 text-sm">{profile.bio}</p>
-                        )}
-
-                        {profile.subjects.length > 0 && (
-                          <div className="mb-3 flex flex-wrap gap-1">
-                            {profile.subjects.slice(0, 3).map((subject) => (
-                              <span
-                                key={subject}
-                                className={`pill text-xs ${getSubjectPillClass(subject)}`}
-                              >
-                                {subject}
-                              </span>
-                            ))}
-                            {profile.subjects.length > 3 && (
-                              <span className="text-text-muted text-xs">
-                                +{profile.subjects.length - 3}
-                              </span>
-                            )}
-                          </div>
-                        )}
-
-                        <div className="border-border text-text-muted flex items-center gap-4 border-t pt-3 text-sm">
-                          <span className="flex items-center gap-1">
-                            <FileText className="h-4 w-4" />
-                            {profile.resourceCount}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Users className="h-4 w-4" />
-                            {profile.followerCount}
-                          </span>
-                        </div>
-                      </div>
-                    </Link>
+                      id={profile.id}
+                      name={profile.name}
+                      image={profile.image}
+                      bio={profile.bio}
+                      subjects={profile.subjects}
+                      resourceCount={profile.resourceCount}
+                      followerCount={profile.followerCount}
+                      isVerified={profile.role === "SELLER"}
+                      getSubjectPillClass={getSubjectPillClass}
+                    />
                   ))}
                 </div>
               </>

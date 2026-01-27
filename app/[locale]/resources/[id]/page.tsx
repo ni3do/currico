@@ -240,7 +240,9 @@ export default function ResourceDetailPage() {
       }, 2000);
     } catch (error) {
       setReportStatus("error");
-      setReportErrorMessage(error instanceof Error ? error.message : "Ein unerwarteter Fehler ist aufgetreten");
+      setReportErrorMessage(
+        error instanceof Error ? error.message : "Ein unerwarteter Fehler ist aufgetreten"
+      );
     } finally {
       setReportSubmitting(false);
     }
@@ -265,32 +267,32 @@ export default function ResourceDetailPage() {
         <TopBar />
         <main className="mx-auto max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
           <div className="animate-pulse">
-            <div className="mb-8 h-4 w-48 rounded bg-surface" />
+            <div className="bg-surface mb-8 h-4 w-48 rounded" />
             <div className="grid gap-8 lg:grid-cols-3">
               <div className="lg:col-span-2">
                 <div className="card rounded-2xl p-8">
                   <div className="mb-4 flex gap-3">
-                    <div className="h-6 w-16 rounded-full bg-surface" />
-                    <div className="h-6 w-24 rounded-full bg-surface" />
+                    <div className="bg-surface h-6 w-16 rounded-full" />
+                    <div className="bg-surface h-6 w-24 rounded-full" />
                   </div>
-                  <div className="mb-6 h-10 w-3/4 rounded bg-surface" />
-                  <div className="mb-4 h-4 w-full rounded bg-surface" />
-                  <div className="mb-4 h-4 w-5/6 rounded bg-surface" />
-                  <div className="mb-8 h-4 w-2/3 rounded bg-surface" />
+                  <div className="bg-surface mb-6 h-10 w-3/4 rounded" />
+                  <div className="bg-surface mb-4 h-4 w-full rounded" />
+                  <div className="bg-surface mb-4 h-4 w-5/6 rounded" />
+                  <div className="bg-surface mb-8 h-4 w-2/3 rounded" />
                   <div className="flex gap-4">
-                    <div className="h-12 w-32 rounded bg-surface" />
-                    <div className="h-12 flex-1 rounded bg-surface" />
+                    <div className="bg-surface h-12 w-32 rounded" />
+                    <div className="bg-surface h-12 flex-1 rounded" />
                   </div>
                 </div>
               </div>
               <div className="lg:col-span-1">
                 <div className="card rounded-2xl p-6">
-                  <div className="mb-4 h-5 w-24 rounded bg-surface" />
+                  <div className="bg-surface mb-4 h-5 w-24 rounded" />
                   <div className="flex gap-3">
-                    <div className="h-12 w-12 rounded-full bg-surface" />
+                    <div className="bg-surface h-12 w-12 rounded-full" />
                     <div>
-                      <div className="mb-2 h-4 w-32 rounded bg-surface" />
-                      <div className="h-3 w-24 rounded bg-surface" />
+                      <div className="bg-surface mb-2 h-4 w-32 rounded" />
+                      <div className="bg-surface h-3 w-24 rounded" />
                     </div>
                   </div>
                 </div>
@@ -309,10 +311,8 @@ export default function ResourceDetailPage() {
         <TopBar />
         <main className="mx-auto max-w-7xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="mb-4 text-4xl font-bold text-text">
-              Ressource nicht gefunden
-            </h1>
-            <p className="mb-8 text-text-muted">
+            <h1 className="text-text mb-4 text-4xl font-bold">Ressource nicht gefunden</h1>
+            <p className="text-text-muted mb-8">
               Die gesuchte Ressource existiert nicht oder ist nicht mehr verfügbar.
             </p>
             <Link
@@ -333,8 +333,8 @@ export default function ResourceDetailPage() {
         <TopBar />
         <main className="mx-auto max-w-7xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="mb-4 text-4xl font-bold text-text">Fehler beim Laden</h1>
-            <p className="mb-8 text-text-muted">
+            <h1 className="text-text mb-4 text-4xl font-bold">Fehler beim Laden</h1>
+            <p className="text-text-muted mb-8">
               Die Ressource konnte nicht geladen werden. Bitte versuchen Sie es später erneut.
             </p>
             <button
@@ -355,15 +355,12 @@ export default function ResourceDetailPage() {
 
       <main className="mx-auto max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
         {/* Breadcrumb */}
-        <nav className="mb-8 flex items-center gap-2 text-sm text-text-muted">
+        <nav className="text-text-muted mb-8 flex items-center gap-2 text-sm">
           <Link href="/resources" className="hover:text-primary">
             Ressourcen
           </Link>
           <span>/</span>
-          <Link
-            href={`/resources?subject=${resource.subject}`}
-            className="hover:text-primary"
-          >
+          <Link href={`/resources?subject=${resource.subject}`} className="hover:text-primary">
             {resource.subject}
           </Link>
           <span>/</span>
@@ -395,18 +392,16 @@ export default function ResourceDetailPage() {
                         />
                       ))}
                   {resource.competencies && resource.competencies.length > 2 && (
-                    <span className="text-xs text-text-muted">
+                    <span className="text-text-muted text-xs">
                       +{resource.competencies.length - 2}
                     </span>
                   )}
                 </div>
-                <h1 className="text-3xl font-bold text-text">{resource.title}</h1>
+                <h1 className="text-text text-3xl font-bold">{resource.title}</h1>
               </div>
 
               {/* Description */}
-              <p className="mb-6 leading-relaxed text-text-muted">
-                {resource.description}
-              </p>
+              <p className="text-text-muted mb-6 leading-relaxed">{resource.description}</p>
 
               {/* LP21 Curriculum Box */}
               {(resource.competencies?.length ||
@@ -466,28 +461,24 @@ export default function ResourceDetailPage() {
               </div>
 
               {/* Metadata Block */}
-              <div className="mb-8 rounded-xl border border-border bg-bg p-6">
-                <h3 className="mb-4 font-semibold text-text">Details</h3>
+              <div className="border-border bg-bg mb-8 rounded-xl border p-6">
+                <h3 className="text-text mb-4 font-semibold">Details</h3>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
-                    <div className="text-sm text-text-muted">Fach</div>
-                    <div className="font-medium text-text">{resource.subject}</div>
+                    <div className="text-text-muted text-sm">Fach</div>
+                    <div className="text-text font-medium">{resource.subject}</div>
                   </div>
                   <div>
-                    <div className="text-sm text-text-muted">Zyklus</div>
-                    <div className="font-medium text-text">
-                      {resource.cycle || "-"}
-                    </div>
+                    <div className="text-text-muted text-sm">Zyklus</div>
+                    <div className="text-text font-medium">{resource.cycle || "-"}</div>
                   </div>
                   <div>
-                    <div className="text-sm text-text-muted">Downloads</div>
-                    <div className="font-medium text-text">
-                      {resource.downloadCount}
-                    </div>
+                    <div className="text-text-muted text-sm">Downloads</div>
+                    <div className="text-text font-medium">{resource.downloadCount}</div>
                   </div>
                   <div>
-                    <div className="text-sm text-text-muted">Veröffentlicht</div>
-                    <div className="font-medium text-text">
+                    <div className="text-text-muted text-sm">Veröffentlicht</div>
+                    <div className="text-text font-medium">
                       {new Date(resource.createdAt).toLocaleDateString("de-CH")}
                     </div>
                   </div>
@@ -497,8 +488,8 @@ export default function ResourceDetailPage() {
               {/* Preview Section */}
               {resource.previewUrl && (
                 <div className="mb-8">
-                  <h3 className="mb-4 text-xl font-semibold text-text">Vorschau</h3>
-                  <div className="relative aspect-[3/4] max-w-sm overflow-hidden rounded-xl border border-border bg-bg">
+                  <h3 className="text-text mb-4 text-xl font-semibold">Vorschau</h3>
+                  <div className="border-border bg-bg relative aspect-[3/4] max-w-sm overflow-hidden rounded-xl border">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={resource.previewUrl}
@@ -506,13 +497,13 @@ export default function ResourceDetailPage() {
                       className="h-full w-full object-cover"
                     />
                     {/* Watermark overlay */}
-                    <div className="absolute inset-0 flex items-center justify-center bg-bg/30 backdrop-blur-[1px]">
-                      <span className="rotate-[-45deg] text-4xl font-bold text-text-muted opacity-30">
+                    <div className="bg-bg/30 absolute inset-0 flex items-center justify-center backdrop-blur-[1px]">
+                      <span className="text-text-muted rotate-[-45deg] text-4xl font-bold opacity-30">
                         VORSCHAU
                       </span>
                     </div>
                   </div>
-                  <p className="mt-4 text-sm text-text-muted">
+                  <p className="text-text-muted mt-4 text-sm">
                     Vollständige Dateien sind nach dem Kauf verfügbar
                   </p>
                 </div>
@@ -521,20 +512,18 @@ export default function ResourceDetailPage() {
               {/* Report Button */}
               <button
                 onClick={() => setShowReportModal(true)}
-                className="text-sm text-text-muted transition-colors hover:text-error"
+                className="text-text-muted hover:text-error text-sm transition-colors"
               >
                 Ressource melden
               </button>
             </div>
 
             {/* Reviews Section - Coming Soon */}
-            <div className="mt-12 border-t border-border pt-8">
-              <h2 className="mb-6 text-2xl font-bold text-text">Bewertungen</h2>
-              <div className="rounded-xl border border-border bg-bg p-8 text-center">
-                <p className="mb-2 text-text-muted">
-                  Bewertungen sind bald verfügbar
-                </p>
-                <p className="text-sm text-text-faint">
+            <div className="border-border mt-12 border-t pt-8">
+              <h2 className="text-text mb-6 text-2xl font-bold">Bewertungen</h2>
+              <div className="border-border bg-bg rounded-xl border p-8 text-center">
+                <p className="text-text-muted mb-2">Bewertungen sind bald verfügbar</p>
+                <p className="text-text-faint text-sm">
                   Diese Funktion wird in Kürze freigeschaltet
                 </p>
               </div>
@@ -543,10 +532,8 @@ export default function ResourceDetailPage() {
             {/* Related Resources */}
             {relatedResources.length > 0 && (
               <div className="mt-12">
-                <h2 className="mb-6 text-2xl font-bold text-text">
-                  Ähnliche Ressourcen
-                </h2>
-                <div className="grid gap-6 sm:grid-cols-3">
+                <h2 className="text-text mb-6 text-2xl font-bold">Ähnliche Ressourcen</h2>
+                <div className="grid gap-4 sm:grid-cols-3 sm:gap-5">
                   {relatedResources.map((related) => (
                     <ResourceCard
                       key={related.id}
@@ -556,7 +543,6 @@ export default function ResourceDetailPage() {
                       cycle={related.cycle}
                       priceFormatted={related.priceFormatted}
                       previewUrl={related.previewUrl}
-                      verified={related.verified}
                       variant="compact"
                     />
                   ))}
@@ -569,7 +555,7 @@ export default function ResourceDetailPage() {
           <div className="lg:col-span-1">
             {/* Seller Info */}
             <div className="card sticky top-24 p-6">
-              <h3 className="mb-4 font-semibold text-text">Erstellt von</h3>
+              <h3 className="text-text mb-4 font-semibold">Erstellt von</h3>
               <div className="mb-4 flex items-center gap-3">
                 {resource.seller.image ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -579,21 +565,17 @@ export default function ResourceDetailPage() {
                     className="h-12 w-12 rounded-full object-cover"
                   />
                 ) : (
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-lg font-bold text-text-on-accent">
+                  <div className="bg-primary text-text-on-accent flex h-12 w-12 items-center justify-center rounded-full text-lg font-bold">
                     {(resource.seller.displayName || "A").charAt(0).toUpperCase()}
                   </div>
                 )}
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-medium text-text">
+                    <span className="text-text font-medium">
                       {resource.seller.displayName || "Anonym"}
                     </span>
                     {resource.seller.verified && (
-                      <svg
-                        className="h-4 w-4 text-primary"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
+                      <svg className="text-primary h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                         <path
                           fillRule="evenodd"
                           d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -602,7 +584,7 @@ export default function ResourceDetailPage() {
                       </svg>
                     )}
                   </div>
-                  <div className="text-sm text-text-muted">
+                  <div className="text-text-muted text-sm">
                     {resource.seller.resourceCount} Ressourcen
                   </div>
                 </div>
@@ -621,10 +603,10 @@ export default function ResourceDetailPage() {
               </button>
 
               {/* More from Seller */}
-              <div className="mt-6 border-t border-border pt-6">
+              <div className="border-border mt-6 border-t pt-6">
                 <Link
                   href={`/resources?seller=${resource.seller.id}`}
-                  className="text-sm font-medium text-primary transition-colors hover:text-primary-hover"
+                  className="text-primary hover:text-primary-hover text-sm font-medium transition-colors"
                 >
                   Alle Ressourcen ansehen
                 </Link>
@@ -636,14 +618,11 @@ export default function ResourceDetailPage() {
 
       {/* Report Modal */}
       {showReportModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ctp-crust/50 backdrop-blur-sm">
+        <div className="bg-ctp-crust/50 fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
           <div className="card mx-4 w-full max-w-md p-6">
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-xl font-semibold text-text">Ressource melden</h3>
-              <button
-                onClick={handleCloseReportModal}
-                className="text-text-muted hover:text-text"
-              >
+              <h3 className="text-text text-xl font-semibold">Ressource melden</h3>
+              <button onClick={handleCloseReportModal} className="text-text-muted hover:text-text">
                 <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
@@ -657,9 +636,9 @@ export default function ResourceDetailPage() {
 
             {reportStatus === "success" ? (
               <div className="flex flex-col items-center justify-center py-8 text-center">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-success-light">
+                <div className="bg-success-light mb-4 flex h-12 w-12 items-center justify-center rounded-full">
                   <svg
-                    className="h-6 w-6 text-success"
+                    className="text-success h-6 w-6"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -672,15 +651,16 @@ export default function ResourceDetailPage() {
                     />
                   </svg>
                 </div>
-                <h4 className="mb-2 font-semibold text-text">Vielen Dank für Ihre Meldung</h4>
-                <p className="text-sm text-text-muted">
-                  Wir werden die Ressource überprüfen.
-                </p>
+                <h4 className="text-text mb-2 font-semibold">Vielen Dank für Ihre Meldung</h4>
+                <p className="text-text-muted text-sm">Wir werden die Ressource überprüfen.</p>
               </div>
             ) : (
               <form onSubmit={handleReportSubmit} className="space-y-4">
                 <div>
-                  <label htmlFor="report-reason" className="mb-2 block text-sm font-medium text-text">
+                  <label
+                    htmlFor="report-reason"
+                    className="text-text mb-2 block text-sm font-medium"
+                  >
                     Grund
                   </label>
                   <select
@@ -701,7 +681,10 @@ export default function ResourceDetailPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="report-description" className="mb-2 block text-sm font-medium text-text">
+                  <label
+                    htmlFor="report-description"
+                    className="text-text mb-2 block text-sm font-medium"
+                  >
                     Kommentar (optional)
                   </label>
                   <textarea
@@ -718,9 +701,9 @@ export default function ResourceDetailPage() {
 
                 {/* Error Message */}
                 {reportStatus === "error" && reportErrorMessage && (
-                  <div className="flex items-center gap-3 rounded-lg border border-error/50 bg-error/10 p-3">
+                  <div className="border-error/50 bg-error/10 flex items-center gap-3 rounded-lg border p-3">
                     <svg
-                      className="h-5 w-5 flex-shrink-0 text-error"
+                      className="text-error h-5 w-5 flex-shrink-0"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -732,7 +715,7 @@ export default function ResourceDetailPage() {
                         d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                       />
                     </svg>
-                    <p className="text-sm text-error">{reportErrorMessage}</p>
+                    <p className="text-error text-sm">{reportErrorMessage}</p>
                   </div>
                 )}
 

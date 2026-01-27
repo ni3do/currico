@@ -62,7 +62,6 @@ const FACHBEREICH_ICONS: Record<string, React.ElementType> = {
 // Price options
 const PRICE_OPTIONS = [
   { id: "free", label: "Kostenlos", value: 0 },
-  { id: "paid", label: "Kostenpflichtig", value: -1 },
   { id: "under5", label: "< CHF 5", value: 5 },
   { id: "under10", label: "< CHF 10", value: 10 },
   { id: "under25", label: "< CHF 25", value: 25 },
@@ -348,10 +347,15 @@ export function LP21FilterSidebar({
   // New filter handlers
   const handlePriceTypeChange = useCallback(
     (priceType: string | null) => {
+      // Find the price option to get its value
+      const option = PRICE_OPTIONS.find((o) => o.id === priceType);
+      const newPriceType = filters.priceType === priceType ? null : priceType;
+
       onFiltersChange({
         ...filters,
-        priceType: filters.priceType === priceType ? null : priceType,
-        maxPrice: null, // Reset slider when selecting preset
+        priceType: newPriceType,
+        // Set slider to the option's value for smooth snapping
+        maxPrice: newPriceType && option ? option.value : null,
       });
     },
     [filters, onFiltersChange]
@@ -671,17 +675,30 @@ function FachbereichAccordion({
         }),
       }}
     >
-      {/* Header with color strip */}
-      <div className="flex items-stretch">
-        {/* Color strip */}
-        <div className="w-1 flex-shrink-0" style={{ backgroundColor: fachbereich.color }} />
+      {/* Header with color strip/background */}
+      <div
+        className="relative flex items-stretch transition-all duration-200"
+        style={{
+          backgroundColor: isSelected ? `${fachbereich.color}25` : undefined,
+        }}
+      >
+        {/* Color strip - expands when selected */}
+        <div
+          className="flex-shrink-0 transition-all duration-200"
+          style={{
+            backgroundColor: fachbereich.color,
+            width: isSelected ? "6px" : "4px",
+          }}
+        />
 
         {/* Content */}
         <div className="flex flex-1 items-center">
           {/* Expand toggle */}
           <button
             onClick={onToggleExpand}
-            className="text-text-muted hover:text-text flex h-full items-center px-2"
+            className={`flex h-full items-center px-2 transition-colors ${
+              isSelected ? "text-text hover:text-text" : "text-text-muted hover:text-text"
+            }`}
           >
             {isExpanded ? (
               <ChevronDown className="h-4 w-4" />
@@ -691,21 +708,18 @@ function FachbereichAccordion({
           </button>
 
           {/* Main button */}
-          <button
-            onClick={onSelect}
-            className="flex flex-1 items-center gap-2 py-1.5 pr-3 text-left"
-          >
+          <button onClick={onSelect} className="flex flex-1 items-center gap-2 py-2 pr-3 text-left">
             <span
-              className="flex h-6 w-6 items-center justify-center rounded-md"
+              className="flex h-6 w-6 items-center justify-center rounded-md transition-all duration-200"
               style={{
-                backgroundColor: `${fachbereich.color}20`,
-                color: fachbereich.color,
+                backgroundColor: isSelected ? fachbereich.color : `${fachbereich.color}20`,
+                color: isSelected ? "white" : fachbereich.color,
               }}
             >
               <Icon className="h-3.5 w-3.5" />
             </span>
             <div
-              className={`truncate text-sm font-medium ${isSelected ? "" : "text-text"}`}
+              className={`truncate text-sm font-semibold ${isSelected ? "" : "text-text"}`}
               style={isSelected ? { color: fachbereich.color } : undefined}
             >
               {fachbereich.name}
@@ -761,12 +775,28 @@ function KompetenzbereichItem({
   onKompetenzSelect,
 }: KompetenzbereichItemProps) {
   return (
-    <div>
-      <div className="flex items-center">
+    <div className="overflow-hidden rounded-md">
+      <div
+        className="flex items-stretch transition-all duration-200"
+        style={{
+          backgroundColor: isSelected ? `${fachbereichColor}20` : undefined,
+        }}
+      >
+        {/* Color strip - full height, visible when selected */}
+        <div
+          className="flex-shrink-0 transition-all duration-200"
+          style={{
+            backgroundColor: isSelected ? fachbereichColor : "transparent",
+            width: isSelected ? "4px" : "0px",
+          }}
+        />
+
         {/* Expand toggle */}
         <button
           onClick={onToggleExpand}
-          className="text-text-muted hover:text-text flex items-center px-1.5"
+          className={`flex items-center px-1.5 transition-colors ${
+            isSelected ? "text-text" : "text-text-muted hover:text-text"
+          }`}
         >
           {isExpanded ? (
             <ChevronDown className="h-3.5 w-3.5" />
@@ -778,38 +808,67 @@ function KompetenzbereichItem({
         {/* Main button */}
         <button
           onClick={onSelect}
-          className={`flex flex-1 items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm transition-colors ${
-            isSelected
-              ? "bg-primary/10 text-primary"
-              : "text-text-secondary hover:bg-surface-hover hover:text-text"
+          className={`flex flex-1 items-center gap-2 py-1.5 pr-2 text-left text-sm transition-colors ${
+            isSelected ? "" : "text-text-secondary hover:text-text"
           }`}
         >
           <span className="font-mono text-xs font-semibold" style={{ color: fachbereichColor }}>
             {kompetenzbereich.code}
           </span>
-          <span className="flex-1 truncate">{kompetenzbereich.name}</span>
+          <span
+            className={`flex-1 truncate ${isSelected ? "font-medium" : ""}`}
+            style={isSelected ? { color: fachbereichColor } : undefined}
+          >
+            {kompetenzbereich.name}
+          </span>
         </button>
       </div>
 
       {/* Kompetenzen */}
       {isExpanded && kompetenzbereich.kompetenzen.length > 0 && (
-        <div className="border-border mt-1 ml-6 space-y-0.5 border-l-2 pl-3">
-          {kompetenzbereich.kompetenzen.map((k) => (
-            <button
-              key={k.code}
-              onClick={() => onKompetenzSelect(k.code)}
-              className={`flex w-full items-center gap-2 rounded px-2 py-1 text-left text-xs transition-colors ${
-                selectedKompetenz === k.code
-                  ? "bg-primary/10 text-primary"
-                  : "text-text-muted hover:bg-surface-hover hover:text-text"
-              }`}
-            >
-              <span className="font-mono font-medium" style={{ color: fachbereichColor }}>
-                {k.code}
-              </span>
-              <span className="flex-1 truncate">{k.name}</span>
-            </button>
-          ))}
+        <div
+          className="mt-1 ml-5 space-y-0.5 border-l-2 pl-3"
+          style={{ borderColor: `${fachbereichColor}40` }}
+        >
+          {kompetenzbereich.kompetenzen.map((k) => {
+            const isKompetenzSelected = selectedKompetenz === k.code;
+            return (
+              <div
+                key={k.code}
+                className="overflow-hidden rounded transition-all duration-200"
+                style={{
+                  backgroundColor: isKompetenzSelected ? `${fachbereichColor}15` : undefined,
+                }}
+              >
+                <div className="flex items-stretch">
+                  {/* Color strip for kompetenz */}
+                  <div
+                    className="flex-shrink-0 transition-all duration-200"
+                    style={{
+                      backgroundColor: isKompetenzSelected ? fachbereichColor : "transparent",
+                      width: isKompetenzSelected ? "3px" : "0px",
+                    }}
+                  />
+                  <button
+                    onClick={() => onKompetenzSelect(k.code)}
+                    className={`flex w-full items-center gap-2 px-2 py-1 text-left text-xs transition-colors ${
+                      isKompetenzSelected ? "" : "text-text-muted hover:text-text"
+                    }`}
+                  >
+                    <span className="font-mono font-medium" style={{ color: fachbereichColor }}>
+                      {k.code}
+                    </span>
+                    <span
+                      className={`flex-1 truncate ${isKompetenzSelected ? "font-medium" : ""}`}
+                      style={isKompetenzSelected ? { color: fachbereichColor } : undefined}
+                    >
+                      {k.name}
+                    </span>
+                  </button>
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
@@ -830,6 +889,9 @@ function PriceFilter({
   onPriceTypeChange,
   onMaxPriceChange,
 }: PriceFilterProps) {
+  // Calculate the effective value for display and slider position
+  const effectiveValue = maxPrice ?? 100;
+
   return (
     <div>
       <div className="mb-3 flex items-center gap-2">
@@ -839,36 +901,54 @@ function PriceFilter({
 
       {/* Price preset buttons */}
       <div className="mb-4 flex flex-wrap gap-1.5">
-        {PRICE_OPTIONS.map((option) => (
-          <button
-            key={option.id}
-            onClick={() => onPriceTypeChange(option.id)}
-            className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
-              selectedPriceType === option.id
-                ? "bg-primary text-white"
-                : "bg-surface border-border text-text-secondary hover:border-primary/50 hover:text-text border"
-            }`}
-          >
-            {option.label}
-          </button>
-        ))}
+        {PRICE_OPTIONS.map((option) => {
+          // Check if this option is selected based on priceType OR if slider matches the value
+          const isSelected =
+            selectedPriceType === option.id ||
+            (selectedPriceType === null && maxPrice === option.value);
+          return (
+            <button
+              key={option.id}
+              onClick={() => onPriceTypeChange(option.id)}
+              className={`rounded-full px-3 py-1 text-xs font-medium transition-all duration-200 ${
+                isSelected
+                  ? "bg-primary text-white"
+                  : "bg-surface border-border text-text-secondary hover:border-primary/50 hover:text-text border"
+              }`}
+            >
+              {option.label}
+            </button>
+          );
+        })}
       </div>
 
       {/* Price slider */}
       <div className="space-y-2">
         <div className="text-text-muted flex items-center justify-between text-xs">
           <span>Max. Preis</span>
-          <span className="text-text font-medium">CHF {maxPrice ?? 100}</span>
+          <span className="text-text font-medium transition-all duration-200">
+            CHF {effectiveValue}
+          </span>
         </div>
-        <input
-          type="range"
-          min="0"
-          max="100"
-          step="5"
-          value={maxPrice ?? 100}
-          onChange={(e) => onMaxPriceChange(Number(e.target.value))}
-          className="bg-surface accent-primary h-2 w-full cursor-pointer appearance-none rounded-lg"
-        />
+        <div className="relative">
+          {/* Track background */}
+          <div className="bg-surface-hover absolute top-1/2 h-2 w-full -translate-y-1/2 rounded-lg" />
+          {/* Filled track */}
+          <div
+            className="bg-primary absolute top-1/2 h-2 -translate-y-1/2 rounded-l-lg transition-all duration-200 ease-out"
+            style={{ width: `${effectiveValue}%` }}
+          />
+          {/* Range input */}
+          <input
+            type="range"
+            min="0"
+            max="100"
+            step="5"
+            value={effectiveValue}
+            onChange={(e) => onMaxPriceChange(Number(e.target.value))}
+            className="[&::-webkit-slider-thumb]:bg-primary [&::-moz-range-thumb]:bg-primary relative z-10 h-2 w-full cursor-pointer appearance-none bg-transparent [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:shadow-md [&::-moz-range-thumb]:transition-transform [&::-moz-range-thumb]:duration-200 [&::-moz-range-thumb]:hover:scale-110 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:duration-200 [&::-webkit-slider-thumb]:hover:scale-110"
+          />
+        </div>
         <div className="text-text-faint flex justify-between text-xs">
           <span>CHF 0</span>
           <span>CHF 100</span>

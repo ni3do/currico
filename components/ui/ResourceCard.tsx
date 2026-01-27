@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
-import { InlinePreviewInfo, type PreviewType } from "./PreviewBadge";
 
 export interface ResourceCardProps {
   id: string;
@@ -26,10 +25,6 @@ export interface ResourceCardProps {
   subjectPillClass?: string;
   /** Show/hide the price badge overlay on image */
   showPriceBadge?: boolean;
-  /** Preview type for trust badge - "watermark" or "pages" */
-  previewType?: PreviewType;
-  /** Number of free preview pages (when previewType is "pages") */
-  previewPageCount?: number;
 }
 
 export function ResourceCard({
@@ -40,15 +35,12 @@ export function ResourceCard({
   cycle,
   priceFormatted,
   previewUrl,
-  verified = true,
   seller,
   footer,
   variant = "default",
   href,
   subjectPillClass,
   showPriceBadge = true,
-  previewType,
-  previewPageCount = 2,
 }: ResourceCardProps) {
   const isCompact = variant === "compact";
   const linkHref = href ?? `/resources/${id}`;
@@ -73,7 +65,7 @@ export function ResourceCard({
   const cardContent = (
     <>
       {/* Preview Image with Price Badge */}
-      <div className="relative aspect-[16/9] w-full overflow-hidden bg-bg-secondary">
+      <div className="bg-bg-secondary relative aspect-[16/9] w-full overflow-hidden">
         {previewUrl ? (
           <Image
             src={previewUrl}
@@ -103,9 +95,7 @@ export function ResourceCard({
         {shouldShowPriceBadge && (
           <span
             className={`absolute top-3 right-3 rounded-full px-3 py-1 text-sm font-bold shadow-md ${
-              isFree
-                ? "bg-success text-white"
-                : "bg-price text-white"
+              isFree ? "bg-success text-white" : "bg-price text-white"
             } ${isCompact ? "px-2 py-0.5 text-xs" : ""}`}
           >
             {priceFormatted}
@@ -117,11 +107,13 @@ export function ResourceCard({
       <div className={`flex flex-1 flex-col ${isCompact ? "p-4" : "p-5"}`}>
         {/* Eyebrow Tag - Subject & Level */}
         <div className={`${isCompact ? "mb-2" : "mb-3"}`}>
-          <span className={`text-xs font-semibold uppercase tracking-wide ${getSubjectColor(subjectPillClass)}`}>
+          <span
+            className={`text-xs font-semibold tracking-wide uppercase ${getSubjectColor(subjectPillClass)}`}
+          >
             {subject}
             {cycle && (
               <>
-                <span className="mx-1.5 text-text-faint">•</span>
+                <span className="text-text-faint mx-1.5">•</span>
                 <span className="text-text-muted">{cycle}</span>
               </>
             )}
@@ -130,7 +122,7 @@ export function ResourceCard({
 
         {/* Title - Primary Heading Style */}
         <h3
-          className={`line-clamp-2 font-bold text-text transition-colors group-hover:text-primary ${
+          className={`text-text group-hover:text-primary line-clamp-2 font-bold transition-colors ${
             isCompact ? "text-base" : "mb-2 text-lg leading-snug"
           }`}
         >
@@ -139,63 +131,39 @@ export function ResourceCard({
 
         {/* Description - Muted Body Text (default variant only) */}
         {!isCompact && description && (
-          <p className="mb-4 line-clamp-2 text-sm leading-relaxed text-text-muted">
-            {description}
-          </p>
+          <p className="text-text-muted mb-4 line-clamp-2 text-sm leading-relaxed">{description}</p>
         )}
 
         {/* Spacer */}
         {!isCompact && <div className="mt-auto" />}
 
         {/* Footer */}
-        {!isCompact && (
-          footer ?? (
-            <div className="flex items-center justify-between border-t border-border-subtle pt-4">
-              <div className="flex flex-col gap-1">
-                <span className="text-sm text-text-muted">
-                  {seller?.displayName || "Anonymous"}
-                </span>
-                {previewType && (
-                  <InlinePreviewInfo previewType={previewType} pageCount={previewPageCount} />
-                )}
-              </div>
-              {/* Verified Badge + Arrow */}
-              <div className="flex items-center gap-2">
-                {verified && (
-                  <span className="flex items-center gap-1 text-xs font-medium text-success">
-                    <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </span>
-                )}
-                <svg
-                  className="h-5 w-5 text-text-muted transition-transform duration-200 group-hover:translate-x-1 group-hover:text-primary"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </div>
+        {!isCompact &&
+          (footer ?? (
+            <div className="border-border-subtle flex items-center justify-between border-t pt-4">
+              <span className="text-text-muted text-sm">{seller?.displayName || "Anonymous"}</span>
+              <svg
+                className="text-text-muted group-hover:text-primary h-5 w-5 transition-transform duration-200 group-hover:translate-x-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
             </div>
-          )
-        )}
+          ))}
       </div>
     </>
   );
 
-  const cardClasses = isCompact
-    ? "card group flex h-full flex-col overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
-    : "card group flex h-full flex-col overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-1.5 hover:shadow-xl";
+  // Consistent hover effect for both variants
+  const cardClasses =
+    "card group flex h-full flex-col overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-lg";
 
   return (
     <Link href={linkHref} className={cardClasses}>
