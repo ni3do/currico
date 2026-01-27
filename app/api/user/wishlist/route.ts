@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { toStringArray } from "@/lib/json-array";
 import { formatPrice } from "@/lib/utils/price";
 import { requireAuth, unauthorized } from "@/lib/api";
 
@@ -53,24 +54,28 @@ export async function GET(request: NextRequest) {
     // Transform and filter only publicly available resources
     const items = wishlistItems
       .filter((w) => w.resource.is_published && w.resource.is_approved && w.resource.is_public)
-      .map((w) => ({
-        id: w.resource.id,
-        title: w.resource.title,
-        description: w.resource.description,
-        price: w.resource.price,
-        priceFormatted: formatPrice(w.resource.price),
-        previewUrl: w.resource.preview_url,
-        subjects: w.resource.subjects,
-        cycles: w.resource.cycles,
-        subject: w.resource.subjects[0] || "Allgemein",
-        cycle: w.resource.cycles[0] || "",
-        addedAt: w.created_at,
-        seller: {
-          id: w.resource.seller.id,
-          displayName: w.resource.seller.display_name,
-          image: w.resource.seller.image,
-        },
-      }));
+      .map((w) => {
+        const subjects = toStringArray(w.resource.subjects);
+        const cycles = toStringArray(w.resource.cycles);
+        return {
+          id: w.resource.id,
+          title: w.resource.title,
+          description: w.resource.description,
+          price: w.resource.price,
+          priceFormatted: formatPrice(w.resource.price),
+          previewUrl: w.resource.preview_url,
+          subjects,
+          cycles,
+          subject: subjects[0] || "Allgemein",
+          cycle: cycles[0] || "",
+          addedAt: w.created_at,
+          seller: {
+            id: w.resource.seller.id,
+            displayName: w.resource.seller.display_name,
+            image: w.resource.seller.image,
+          },
+        };
+      });
 
     const totalCount = await prisma.wishlist.count({
       where: { user_id: userId },

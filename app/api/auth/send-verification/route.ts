@@ -6,11 +6,7 @@ import {
   generateVerificationToken,
   VERIFICATION_TOKEN_EXPIRY_HOURS,
 } from "@/lib/email";
-import {
-  checkRateLimit,
-  getClientIP,
-  rateLimitHeaders,
-} from "@/lib/rateLimit";
+import { checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
 
 export async function POST(request: NextRequest) {
   // Rate limiting check
@@ -34,10 +30,7 @@ export async function POST(request: NextRequest) {
   const session = await auth();
 
   if (!session?.user?.id) {
-    return NextResponse.json(
-      { error: "Nicht authentifiziert" },
-      { status: 401 }
-    );
+    return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
   }
 
   try {
@@ -52,18 +45,12 @@ export async function POST(request: NextRequest) {
     });
 
     if (!user) {
-      return NextResponse.json(
-        { error: "Benutzer nicht gefunden" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Benutzer nicht gefunden" }, { status: 404 });
     }
 
     // Check if already verified
     if (user.emailVerified) {
-      return NextResponse.json(
-        { error: "E-Mail-Adresse ist bereits bestätigt" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "E-Mail-Adresse ist bereits bestätigt" }, { status: 400 });
     }
 
     // Delete any existing verification tokens for this user
@@ -73,13 +60,12 @@ export async function POST(request: NextRequest) {
 
     // Generate new token
     const token = generateVerificationToken();
-    const expires = new Date(
-      Date.now() + VERIFICATION_TOKEN_EXPIRY_HOURS * 60 * 60 * 1000
-    );
+    const expires = new Date(Date.now() + VERIFICATION_TOKEN_EXPIRY_HOURS * 60 * 60 * 1000);
 
     // Store token in database
     await prisma.emailVerificationToken.create({
       data: {
+        id: crypto.randomUUID(),
         token,
         expires,
         user_id: user.id,
@@ -106,9 +92,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Send verification error:", error);
-    return NextResponse.json(
-      { error: "Ein Fehler ist aufgetreten" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Ein Fehler ist aufgetreten" }, { status: 500 });
   }
 }

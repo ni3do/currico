@@ -1,4 +1,12 @@
 {
+  "error": {
+    "title": "An error occurred",
+    "description": "Please try again or contact support.",
+    "retry": "Try again",
+    "notFound": "Page not found",
+    "unauthorized": "Unauthorized",
+    "serverError": "Server error"
+  },
   "common": {
     "brand": {
       "logoText": "EL",

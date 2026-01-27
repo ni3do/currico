@@ -6,19 +6,12 @@
  */
 
 import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { Pool } from "pg";
 import { createResourceSchema } from "../lib/validations/resource";
 import { SWISS_SUBJECTS, SWISS_CYCLES } from "../lib/validations/user";
 import { writeFileSync, mkdirSync, existsSync } from "fs";
 import path from "path";
 
-const pool = new Pool({
-  connectionString:
-    process.env.DATABASE_URL || "postgresql://postgres:postgres@localhost:5432/easy_lehrer",
-});
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
+const prisma = new PrismaClient();
 
 console.log("🧪 Upload Validation Test");
 console.log("=========================\n");
@@ -189,11 +182,13 @@ async function testDatabaseInsertion() {
     },
   });
 
+  const subjects = Array.isArray(resource.subjects) ? resource.subjects : [];
+  const cycles = Array.isArray(resource.cycles) ? resource.cycles : [];
   console.log(`   ✅ Resource created successfully:`);
   console.log(`      ID: ${resource.id}`);
   console.log(`      Title: ${resource.title}`);
-  console.log(`      Subjects: ${resource.subjects.join(", ")}`);
-  console.log(`      Cycles: ${resource.cycles.join(", ")}`);
+  console.log(`      Subjects: ${subjects.join(", ")}`);
+  console.log(`      Cycles: ${cycles.join(", ")}`);
   console.log(`      File: ${resource.file_url}`);
 
   return resource;

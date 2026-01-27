@@ -1,7 +1,20 @@
 #!/bin/sh
 set -e
 
-# Check for required environment variable
+# Check for required environment variables
+if [ -z "$APP_ENV" ]; then
+  echo "ERROR: APP_ENV environment variable is not set"
+  echo "Please set APP_ENV to 'production' or 'development'"
+  exit 1
+fi
+
+if [ "$APP_ENV" != "production" ] && [ "$APP_ENV" != "development" ]; then
+  echo "ERROR: APP_ENV must be 'production' or 'development', got: $APP_ENV"
+  exit 1
+fi
+
+echo "Environment: $APP_ENV"
+
 if [ -z "$DATABASE_URL" ]; then
   echo "ERROR: DATABASE_URL environment variable is not set"
   echo "Please configure DATABASE_URL in your Dokploy service settings"

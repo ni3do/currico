@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { toStringArray } from "@/lib/json-array";
 import { getCurrentUserId } from "@/lib/auth";
 import { updateResourceSchema } from "@/lib/validations/resource";
 import { formatPrice } from "@/lib/utils/price";
@@ -10,10 +11,7 @@ import path from "path";
  * GET /api/resources/[id]
  * Fetch a single published and approved resource by ID
  */
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
 
@@ -51,34 +49,51 @@ export async function GET(
 
     // Return 404 if not found or not publicly visible
     if (!resource || !resource.is_published || !resource.is_approved) {
-      return NextResponse.json(
-        { error: "Ressource nicht gefunden" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Ressource nicht gefunden" }, { status: 404 });
     }
 
-    // Fetch related resources from the same subject
-    const relatedResources = await prisma.resource.findMany({
-      where: {
-        id: { not: id },
-        is_published: true,
-        is_approved: true,
-        subjects: { hasSome: resource.subjects },
-      },
-      select: {
-        id: true,
-        title: true,
-        price: true,
-        subjects: true,
-        cycles: true,
-        is_approved: true,
-        preview_url: true,
-      },
-      take: 3,
-      orderBy: { created_at: "desc" },
-    });
+    // Fetch related resources from the same subject using raw SQL for JSON overlap
+    const resourceSubjects = toStringArray(resource.subjects);
+    let relatedResources: {
+      id: string;
+      title: string;
+      price: number;
+      subjects: unknown;
+      cycles: unknown;
+      is_approved: boolean;
+      preview_url: string | null;
+    }[] = [];
+
+    if (resourceSubjects.length > 0) {
+      // Get IDs of related resources using JSON_OVERLAPS
+      const relatedIds = await prisma.$queryRawUnsafe<{ id: string }[]>(
+        `SELECT id FROM resources WHERE id != ? AND is_published = 1 AND is_approved = 1 AND JSON_OVERLAPS(subjects, ?) LIMIT 3`,
+        id,
+        JSON.stringify(resourceSubjects)
+      );
+
+      if (relatedIds.length > 0) {
+        relatedResources = await prisma.resource.findMany({
+          where: {
+            id: { in: relatedIds.map((r) => r.id) },
+          },
+          select: {
+            id: true,
+            title: true,
+            price: true,
+            subjects: true,
+            cycles: true,
+            is_approved: true,
+            preview_url: true,
+          },
+          orderBy: { created_at: "desc" },
+        });
+      }
+    }
 
     // Transform the response
+    const subjects = toStringArray(resource.subjects);
+    const cycles = toStringArray(resource.cycles);
     const transformedResource = {
       id: resource.id,
       title: resource.title,
@@ -87,10 +102,10 @@ export async function GET(
       priceFormatted: formatPrice(resource.price),
       fileUrl: resource.file_url,
       previewUrl: resource.preview_url,
-      subjects: resource.subjects,
-      cycles: resource.cycles,
-      subject: resource.subjects[0] || "Allgemein",
-      cycle: resource.cycles[0] || "",
+      subjects,
+      cycles,
+      subject: subjects[0] || "Allgemein",
+      cycle: cycles[0] || "",
       createdAt: resource.created_at,
       downloadCount: resource._count.transactions,
       seller: {
@@ -102,16 +117,20 @@ export async function GET(
       },
     };
 
-    const transformedRelated = relatedResources.map((r) => ({
-      id: r.id,
-      title: r.title,
-      price: r.price,
-      priceFormatted: formatPrice(r.price),
-      subject: r.subjects[0] || "Allgemein",
-      cycle: r.cycles[0] || "",
-      verified: r.is_approved,
-      previewUrl: r.preview_url,
-    }));
+    const transformedRelated = relatedResources.map((r) => {
+      const rSubjects = toStringArray(r.subjects);
+      const rCycles = toStringArray(r.cycles);
+      return {
+        id: r.id,
+        title: r.title,
+        price: r.price,
+        priceFormatted: formatPrice(r.price),
+        subject: rSubjects[0] || "Allgemein",
+        cycle: rCycles[0] || "",
+        verified: r.is_approved,
+        previewUrl: r.preview_url,
+      };
+    });
 
     return NextResponse.json({
       resource: transformedResource,
@@ -119,10 +138,7 @@ export async function GET(
     });
   } catch (error) {
     console.error("Error fetching resource:", error);
-    return NextResponse.json(
-      { error: "Fehler beim Laden der Ressource" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Fehler beim Laden der Ressource" }, { status: 500 });
   }
 }
 
@@ -130,17 +146,11 @@ export async function GET(
  * PATCH /api/resources/[id]
  * Update a resource (owner only)
  */
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   // Authentication check
   const userId = await getCurrentUserId();
   if (!userId) {
-    return NextResponse.json(
-      { error: "Nicht authentifiziert" },
-      { status: 401 }
-    );
+    return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
   }
 
   try {
@@ -157,10 +167,7 @@ export async function PATCH(
     });
 
     if (!resource) {
-      return NextResponse.json(
-        { error: "Ressource nicht gefunden" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Ressource nicht gefunden" }, { status: 404 });
     }
 
     // Check ownership
@@ -229,10 +236,7 @@ export async function PATCH(
     });
   } catch (error) {
     console.error("Error updating resource:", error);
-    return NextResponse.json(
-      { error: "Interner Serverfehler" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
   }
 }
 
@@ -247,10 +251,7 @@ export async function DELETE(
   // Authentication check
   const userId = await getCurrentUserId();
   if (!userId) {
-    return NextResponse.json(
-      { error: "Nicht authentifiziert" },
-      { status: 401 }
-    );
+    return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
   }
 
   try {
@@ -271,10 +272,7 @@ export async function DELETE(
     });
 
     if (!resource) {
-      return NextResponse.json(
-        { error: "Ressource nicht gefunden" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Ressource nicht gefunden" }, { status: 404 });
     }
 
     // Check ownership
@@ -325,9 +323,6 @@ export async function DELETE(
     });
   } catch (error) {
     console.error("Error deleting resource:", error);
-    return NextResponse.json(
-      { error: "Interner Serverfehler" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
   }
 }

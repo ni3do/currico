@@ -94,6 +94,9 @@ describe("GET /api/resources", () => {
   });
 
   it("filters by subject", async () => {
+    // Mock the raw query for JSON filtering
+    const mockQueryRawUnsafe = prisma.$queryRawUnsafe as ReturnType<typeof vi.fn>;
+    mockQueryRawUnsafe.mockResolvedValue([{ id: "res-1" }]);
     mockResourceFindMany.mockResolvedValue([]);
     mockResourceCount.mockResolvedValue(0);
 
@@ -103,16 +106,21 @@ describe("GET /api/resources", () => {
 
     await GET(request);
 
+    // Should use raw SQL for JSON filtering
+    expect(mockQueryRawUnsafe).toHaveBeenCalled();
     expect(mockResourceFindMany).toHaveBeenCalledWith(
       expect.objectContaining({
         where: expect.objectContaining({
-          subjects: { has: "Mathematik" },
+          id: { in: ["res-1"] },
         }),
       })
     );
   });
 
   it("filters by cycle", async () => {
+    // Mock the raw query for JSON filtering
+    const mockQueryRawUnsafe = prisma.$queryRawUnsafe as ReturnType<typeof vi.fn>;
+    mockQueryRawUnsafe.mockResolvedValue([{ id: "res-2" }]);
     mockResourceFindMany.mockResolvedValue([]);
     mockResourceCount.mockResolvedValue(0);
 
@@ -122,10 +130,12 @@ describe("GET /api/resources", () => {
 
     await GET(request);
 
+    // Should use raw SQL for JSON filtering
+    expect(mockQueryRawUnsafe).toHaveBeenCalled();
     expect(mockResourceFindMany).toHaveBeenCalledWith(
       expect.objectContaining({
         where: expect.objectContaining({
-          cycles: { has: "Zyklus 2" },
+          id: { in: ["res-2"] },
         }),
       })
     );
@@ -141,13 +151,11 @@ describe("GET /api/resources", () => {
 
     await GET(request);
 
+    // MySQL doesn't support mode: "insensitive", so we just use contains
     expect(mockResourceFindMany).toHaveBeenCalledWith(
       expect.objectContaining({
         where: expect.objectContaining({
-          OR: [
-            { title: { contains: "math", mode: "insensitive" } },
-            { description: { contains: "math", mode: "insensitive" } },
-          ],
+          OR: [{ title: { contains: "math" } }, { description: { contains: "math" } }],
         }),
       })
     );

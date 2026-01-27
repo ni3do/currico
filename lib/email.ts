@@ -1,17 +1,39 @@
-import { Resend } from "resend";
+import * as nodemailer from "nodemailer";
+import type { Transporter } from "nodemailer";
 
 const APP_NAME = "EasyLehrer";
 
-function getResendClient(): Resend {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    throw new Error("RESEND_API_KEY environment variable is not set");
+let transporter: Transporter | null = null;
+
+function getTransporter(): Transporter {
+  if (transporter) {
+    return transporter;
   }
-  return new Resend(apiKey);
+
+  const host = process.env.SMTP_HOST;
+  const port = parseInt(process.env.SMTP_PORT || "587", 10);
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASSWORD;
+
+  if (!host || !user || !pass) {
+    throw new Error("SMTP configuration incomplete. Required: SMTP_HOST, SMTP_USER, SMTP_PASSWORD");
+  }
+
+  transporter = nodemailer.createTransport({
+    host,
+    port,
+    secure: port === 465, // true for 465 (SSL), false for 587 (STARTTLS)
+    auth: {
+      user,
+      pass,
+    },
+  });
+
+  return transporter;
 }
 
 function getFromEmail(): string {
-  return process.env.EMAIL_FROM || "noreply@easylehrer.ch";
+  return process.env.EMAIL_FROM || process.env.SMTP_USER || "noreply@currico.ch";
 }
 
 interface SendEmailResult {
@@ -84,19 +106,14 @@ export async function sendVerificationEmail(
 `;
 
   try {
-    const resend = getResendClient();
-    const { error } = await resend.emails.send({
+    const transport = getTransporter();
+    await transport.sendMail({
       from: getFromEmail(),
       to: email,
       subject,
       text: textContent,
       html: htmlContent,
     });
-
-    if (error) {
-      console.error("Failed to send verification email:", error);
-      return { success: false, error: error.message };
-    }
 
     return { success: true };
   } catch (err) {
@@ -114,9 +131,7 @@ export async function sendVerificationEmail(
 export function generateVerificationToken(): string {
   const array = new Uint8Array(32);
   crypto.getRandomValues(array);
-  return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join(
-    ""
-  );
+  return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
 /**
@@ -150,9 +165,10 @@ export async function sendPurchaseConfirmationEmail({
   const formattedPrice = (amount / 100).toFixed(2);
 
   // Build the appropriate download/library link
-  const downloadLink = isGuest && downloadToken
-    ? `${baseUrl}/${locale}/download/${downloadToken}`
-    : `${baseUrl}/${locale}/account/library`;
+  const downloadLink =
+    isGuest && downloadToken
+      ? `${baseUrl}/${locale}/download/${downloadToken}`
+      : `${baseUrl}/${locale}/account/library`;
 
   const subject =
     locale === "de"
@@ -253,19 +269,14 @@ export async function sendPurchaseConfirmationEmail({
 `;
 
   try {
-    const resend = getResendClient();
-    const { error } = await resend.emails.send({
+    const transport = getTransporter();
+    await transport.sendMail({
       from: getFromEmail(),
       to: email,
       subject,
       text: textContent,
       html: htmlContent,
     });
-
-    if (error) {
-      console.error("Failed to send purchase confirmation email:", error);
-      return { success: false, error: error.message };
-    }
 
     return { success: true };
   } catch (err) {
@@ -292,8 +303,8 @@ export async function sendContactNotificationEmail({
   message: string;
 }): Promise<SendEmailResult> {
   try {
-    const resend = getResendClient();
-    const adminEmail = process.env.ADMIN_EMAIL || "admin@easylehrer.ch";
+    const transport = getTransporter();
+    const adminEmail = process.env.ADMIN_EMAIL || "admin@currico.ch";
 
     const subjectLabels: Record<string, string> = {
       general: "Allgemeine Anfrage",
@@ -303,9 +314,10 @@ export async function sendContactNotificationEmail({
       feedback: "Feedback",
     };
 
-    const { error } = await resend.emails.send({
+    await transport.sendMail({
       from: getFromEmail(),
       to: adminEmail,
+      replyTo: email,
       subject: `[${APP_NAME}] Neue Kontaktanfrage: ${subjectLabels[subject] || subject}`,
       text: `Neue Kontaktanfrage von ${name} (${email})
 
@@ -336,14 +348,27 @@ Diese E-Mail wurde automatisch generiert.`,
 </html>`,
     });
 
-    if (error) {
-      console.error("Failed to send contact notification email:", error);
-      return { success: false, error: error.message };
-    }
-
     return { success: true };
   } catch (err) {
     console.error("Error sending contact notification email:", err);
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : "Unknown error",
+    };
+  }
+}
+
+/**
+ * Verify SMTP connection is working
+ * Useful for health checks and debugging
+ */
+export async function verifyEmailConnection(): Promise<SendEmailResult> {
+  try {
+    const transport = getTransporter();
+    await transport.verify();
+    return { success: true };
+  } catch (err) {
+    console.error("SMTP connection verification failed:", err);
     return {
       success: false,
       error: err instanceof Error ? err.message : "Unknown error",

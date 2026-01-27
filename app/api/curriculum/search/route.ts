@@ -44,11 +44,10 @@ export async function GET(request: Request) {
     const searchConditions: Array<Record<string, unknown>> = [];
 
     if (type === "code" || type === "all") {
-      // Search by exact code match
+      // Search by exact code match (MySQL collation is case-insensitive by default)
       searchConditions.push({
         code: {
           contains: query.toUpperCase(),
-          mode: "insensitive",
         },
       });
 
@@ -58,24 +57,21 @@ export async function GET(request: Request) {
     }
 
     if (type === "text" || type === "all") {
-      // Search in description
+      // Search in description (MySQL collation is case-insensitive by default)
       searchConditions.push({
         description_de: {
           contains: query,
-          mode: "insensitive",
         },
       });
       searchConditions.push({
         description_fr: {
           contains: query,
-          mode: "insensitive",
         },
       });
       // Search in kompetenzbereich
       searchConditions.push({
         kompetenzbereich: {
           contains: query,
-          mode: "insensitive",
         },
       });
     }
@@ -141,9 +137,9 @@ export async function GET(request: Request) {
       const transversals = await prisma.transversalCompetency.findMany({
         where: {
           OR: [
-            { code: { contains: query.toUpperCase(), mode: "insensitive" } },
-            { name_de: { contains: query, mode: "insensitive" } },
-            { description_de: { contains: query, mode: "insensitive" } },
+            { code: { contains: query.toUpperCase() } },
+            { name_de: { contains: query } },
+            { description_de: { contains: query } },
           ],
         },
         take: 10,
@@ -173,9 +169,9 @@ export async function GET(request: Request) {
       const bneThemes = await prisma.bneTheme.findMany({
         where: {
           OR: [
-            { code: { contains: query.toUpperCase(), mode: "insensitive" } },
-            { name_de: { contains: query, mode: "insensitive" } },
-            { description_de: { contains: query, mode: "insensitive" } },
+            { code: { contains: query.toUpperCase() } },
+            { name_de: { contains: query } },
+            { description_de: { contains: query } },
           ],
         },
         take: 10,

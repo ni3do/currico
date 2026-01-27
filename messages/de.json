@@ -1,4 +1,12 @@
 {
+  "error": {
+    "title": "Ein Fehler ist aufgetreten",
+    "description": "Bitte versuchen Sie es erneut oder kontaktieren Sie den Support.",
+    "retry": "Erneut versuchen",
+    "notFound": "Seite nicht gefunden",
+    "unauthorized": "Nicht autorisiert",
+    "serverError": "Serverfehler"
+  },
   "common": {
     "brand": {
       "logoText": "EL",
