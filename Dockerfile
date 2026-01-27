@@ -54,10 +54,10 @@ RUN chmod +x ./start.sh
 COPY --from=builder /app/instrumentation.ts ./instrumentation.ts
 
 # Install runtime dependencies for migrations/seeding
-# Remove standalone's minimal node_modules and install fresh with pinned Prisma 6
+# Remove standalone's minimal node_modules and install fresh with Prisma 7 + MariaDB adapter
 RUN rm -rf node_modules && \
     npm cache clean --force && \
-    npm install --no-save prisma@6.19.2 @prisma/client@6.19.2 mysql2 bcryptjs tsx dotenv next react react-dom && \
+    npm install --no-save prisma@7.2.0 @prisma/client@7.2.0 @prisma/adapter-mariadb@7.2.0 bcryptjs tsx dotenv next react react-dom && \
     ./node_modules/.bin/prisma generate && \
     ./node_modules/.bin/prisma --version
 
