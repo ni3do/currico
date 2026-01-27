@@ -10,7 +10,7 @@ import Footer from "@/components/ui/Footer";
 import { ResourceCard } from "@/components/ui/ResourceCard";
 import { ProfileCard } from "@/components/ui/ProfileCard";
 import { LP21FilterSidebar, type LP21FilterState } from "@/components/search/LP21FilterSidebar";
-import { FACHBEREICHE } from "@/lib/data/lehrplan21";
+import { useCurriculum } from "@/lib/hooks/useCurriculum";
 
 interface Resource {
   id: string;
@@ -72,6 +72,9 @@ export default function ResourcesPage() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [profileSearchQuery, setProfileSearchQuery] = useState("");
 
+  // Fetch curriculum data from API
+  const { fachbereiche, getFachbereichByCode } = useCurriculum();
+
   // LP21 filter state
   const [filters, setFilters] = useState<LP21FilterState>({
     zyklus: null,
@@ -86,46 +89,52 @@ export default function ResourcesPage() {
   });
 
   // Map Fachbereich code to subject name for API compatibility
-  const mapFachbereichToSubject = (code: string | null): string => {
-    if (!code) return "";
-    const fachbereich = FACHBEREICHE.find((f) => f.code === code);
-    return fachbereich?.name || code;
-  };
+  const mapFachbereichToSubject = useCallback(
+    (code: string | null): string => {
+      if (!code) return "";
+      const fachbereich = getFachbereichByCode(code);
+      return fachbereich?.name || code;
+    },
+    [getFachbereichByCode]
+  );
 
-  const fetchResources = useCallback(async (currentFilters: LP21FilterState) => {
-    setLoading(true);
-    try {
-      const params = new URLSearchParams();
+  const fetchResources = useCallback(
+    async (currentFilters: LP21FilterState) => {
+      setLoading(true);
+      try {
+        const params = new URLSearchParams();
 
-      // Map LP21 filters to API parameters
-      if (currentFilters.fachbereich) {
-        params.set("subject", mapFachbereichToSubject(currentFilters.fachbereich));
-      }
-      if (currentFilters.zyklus) {
-        params.set("cycle", currentFilters.zyklus.toString());
-      }
-      if (currentFilters.searchQuery) {
-        params.set("search", currentFilters.searchQuery);
-      }
-      // Use the most specific competency level available
-      if (currentFilters.kompetenz) {
-        params.set("competency", currentFilters.kompetenz);
-      } else if (currentFilters.kompetenzbereich) {
-        params.set("competency", currentFilters.kompetenzbereich);
-      }
+        // Map LP21 filters to API parameters
+        if (currentFilters.fachbereich) {
+          params.set("subject", mapFachbereichToSubject(currentFilters.fachbereich));
+        }
+        if (currentFilters.zyklus) {
+          params.set("cycle", currentFilters.zyklus.toString());
+        }
+        if (currentFilters.searchQuery) {
+          params.set("search", currentFilters.searchQuery);
+        }
+        // Use the most specific competency level available
+        if (currentFilters.kompetenz) {
+          params.set("competency", currentFilters.kompetenz);
+        } else if (currentFilters.kompetenzbereich) {
+          params.set("competency", currentFilters.kompetenzbereich);
+        }
 
-      const response = await fetch(`/api/resources?${params.toString()}`);
-      if (response.ok) {
-        const data = await response.json();
-        setResources(data.resources);
-        setPagination(data.pagination);
+        const response = await fetch(`/api/resources?${params.toString()}`);
+        if (response.ok) {
+          const data = await response.json();
+          setResources(data.resources);
+          setPagination(data.pagination);
+        }
+      } catch (error) {
+        console.error("Error fetching resources:", error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Error fetching resources:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    },
+    [mapFachbereichToSubject]
+  );
 
   useEffect(() => {
     fetchResources(filters);
@@ -366,8 +375,7 @@ export default function ResourcesPage() {
                     <p className="text-text-muted mt-1 text-xs">
                       {[
                         filters.zyklus && `Zyklus ${filters.zyklus}`,
-                        filters.fachbereich &&
-                          FACHBEREICHE.find((f) => f.code === filters.fachbereich)?.shortName,
+                        filters.fachbereich && getFachbereichByCode(filters.fachbereich)?.shortName,
                         filters.kompetenzbereich,
                         filters.kompetenz,
                         filters.searchQuery && `"${filters.searchQuery}"`,

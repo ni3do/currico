@@ -1,6 +1,12 @@
 /**
  * Lehrplan 21 Data Structure
  *
+ * This file contains the static LP21 curriculum data used for:
+ * 1. Seeding the database (prisma/seed-curriculum.ts)
+ * 2. Fallback when API is unavailable
+ *
+ * For runtime use, prefer fetching from the API via useCurriculum hook.
+ *
  * Hierarchical structure:
  * - Level 1: Fachbereich (Subject Area)
  * - Level 2: Kompetenzbereich (Competence Area)
@@ -9,39 +15,12 @@
  * Each Fachbereich is available in specific Zyklen (Cycles 1-3)
  */
 
-// Types
-export interface Kompetenz {
-  code: string;
-  name: string;
-  description?: string;
-}
+// Re-export types from the centralized types file
+export type { Kompetenz, Kompetenzbereich, Fachbereich, Zyklus } from "../curriculum-types";
 
-export interface Kompetenzbereich {
-  code: string;
-  name: string;
-  kompetenzen: Kompetenz[];
-}
+import type { Fachbereich, Zyklus, Kompetenzbereich, Kompetenz } from "../curriculum-types";
 
-export interface Fachbereich {
-  code: string;
-  name: string;
-  shortName: string;
-  color: string;
-  colorClass: string;
-  icon: string;
-  cycles: number[];
-  kompetenzbereiche: Kompetenzbereich[];
-}
-
-export interface Zyklus {
-  id: number;
-  name: string;
-  shortName: string;
-  grades: string[];
-  description: string;
-}
-
-// Zyklen (Cycles)
+// Zyklen (Cycles) - Static data, doesn't need to be in DB
 export const ZYKLEN: Zyklus[] = [
   {
     id: 1,
