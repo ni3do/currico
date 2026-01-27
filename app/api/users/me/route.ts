@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma, privateUserSelect } from "@/lib/db";
+import { toStringArray } from "@/lib/json-array";
 import { updateProfileSchema } from "@/lib/validations/user";
 import { getCurrentUserId } from "@/lib/auth";
 
@@ -13,10 +14,7 @@ export async function GET() {
     const userId = await getCurrentUserId();
 
     if (!userId) {
-      return NextResponse.json(
-        { error: "Nicht authentifiziert" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
     }
 
     const user = await prisma.user.findUnique({
@@ -25,19 +23,19 @@ export async function GET() {
     });
 
     if (!user) {
-      return NextResponse.json(
-        { error: "Benutzer nicht gefunden" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Benutzer nicht gefunden" }, { status: 404 });
     }
 
-    return NextResponse.json(user);
+    // Ensure JSON array fields are proper arrays
+    return NextResponse.json({
+      ...user,
+      subjects: toStringArray(user.subjects),
+      cycles: toStringArray(user.cycles),
+      cantons: toStringArray(user.cantons),
+    });
   } catch (error) {
     console.error("Error fetching user profile:", error);
-    return NextResponse.json(
-      { error: "Interner Serverfehler" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
   }
 }
 
@@ -51,10 +49,7 @@ export async function PATCH(request: NextRequest) {
     const userId = await getCurrentUserId();
 
     if (!userId) {
-      return NextResponse.json(
-        { error: "Nicht authentifiziert" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
     }
 
     const body = await request.json();
@@ -86,12 +81,15 @@ export async function PATCH(request: NextRequest) {
       select: privateUserSelect,
     });
 
-    return NextResponse.json(updatedUser);
+    // Ensure JSON array fields are proper arrays
+    return NextResponse.json({
+      ...updatedUser,
+      subjects: toStringArray(updatedUser.subjects),
+      cycles: toStringArray(updatedUser.cycles),
+      cantons: toStringArray(updatedUser.cantons),
+    });
   } catch (error) {
     console.error("Error updating user profile:", error);
-    return NextResponse.json(
-      { error: "Interner Serverfehler" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
   }
 }

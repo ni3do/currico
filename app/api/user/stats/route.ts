@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { toStringArray } from "@/lib/json-array";
 import { requireAuth, unauthorized, notFound } from "@/lib/api";
 
 /**
@@ -68,9 +69,9 @@ export async function GET() {
         image: user.image,
         displayName: user.display_name,
         bio: user.bio,
-        subjects: user.subjects,
-        cycles: user.cycles,
-        cantons: user.cantons,
+        subjects: toStringArray(user.subjects),
+        cycles: toStringArray(user.cycles),
+        cantons: toStringArray(user.cantons),
         isSeller: user.role === "SELLER",
         stripeChargesEnabled: user.stripe_charges_enabled,
       },

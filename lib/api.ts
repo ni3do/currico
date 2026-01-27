@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { toStringArray } from "@/lib/json-array";
 import { getCurrentUserId } from "@/lib/auth";
 
 // ============================================================
@@ -58,14 +57,18 @@ export async function requireSeller(userId: string) {
 /**
  * Check seller profile completion for uploading
  * Returns array of missing field names, or empty array if complete
+ *
+ * Required fields:
+ * - display_name: Profile name
+ * - emailVerified: Email must be verified
+ * - stripe_onboarding_complete + stripe_charges_enabled: Stripe verification
  */
 export async function checkSellerProfile(userId: string): Promise<string[]> {
   const user = await prisma.user.findUnique({
     where: { id: userId },
     select: {
       display_name: true,
-      subjects: true,
-      cycles: true,
+      emailVerified: true,
       stripe_onboarding_complete: true,
       stripe_charges_enabled: true,
     },
@@ -75,10 +78,7 @@ export async function checkSellerProfile(userId: string): Promise<string[]> {
 
   const missing: string[] = [];
   if (!user.display_name) missing.push("Profilname");
-  const subjects = toStringArray(user.subjects);
-  const cycles = toStringArray(user.cycles);
-  if (subjects.length === 0) missing.push("Fächer");
-  if (cycles.length === 0) missing.push("Zyklen");
+  if (!user.emailVerified) missing.push("E-Mail-Verifizierung");
   if (!user.stripe_onboarding_complete || !user.stripe_charges_enabled) {
     missing.push("Stripe-Verifizierung");
   }
