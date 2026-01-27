@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { auth } from "@/lib/auth";
-import {
-  createConnectAccount,
-  createAccountOnboardingLink,
-} from "@/lib/stripe";
+import { createConnectAccount, createAccountOnboardingLink } from "@/lib/stripe";
 
 /**
  * POST /api/seller/connect
@@ -15,10 +12,7 @@ export async function POST(request: NextRequest) {
   try {
     const session = await auth();
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "Nicht autorisiert" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Nicht autorisiert" }, { status: 401 });
     }
 
     const userId = session.user.id;
@@ -35,18 +29,12 @@ export async function POST(request: NextRequest) {
     });
 
     if (!user) {
-      return NextResponse.json(
-        { error: "Benutzer nicht gefunden" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Benutzer nicht gefunden" }, { status: 404 });
     }
 
     // Require email verification
     if (!user.emailVerified) {
-      return NextResponse.json(
-        { error: "E-Mail muss zuerst verifiziert werden" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "E-Mail muss zuerst verifiziert werden" }, { status: 400 });
     }
 
     // Require seller terms acceptance
@@ -58,8 +46,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Construct base URL from request
-    const protocol = request.headers.get("x-forwarded-proto") || "https";
+    // Force HTTPS in production (required for Stripe live mode)
     const host = request.headers.get("host") || "localhost:3000";
+    const isLocalhost = host.includes("localhost") || host.includes("127.0.0.1");
+    const protocol = isLocalhost ? "http" : "https";
     const baseUrl = `${protocol}://${host}`;
 
     // URLs for Stripe onboarding flow
@@ -86,11 +76,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create onboarding link
-    const accountLink = await createAccountOnboardingLink(
-      stripeAccountId,
-      refreshUrl,
-      returnUrl
-    );
+    const accountLink = await createAccountOnboardingLink(stripeAccountId, refreshUrl, returnUrl);
 
     return NextResponse.json({
       success: true,
@@ -102,15 +88,9 @@ export async function POST(request: NextRequest) {
 
     // Handle Stripe-specific errors
     if (error instanceof Error && error.message.includes("STRIPE_SECRET_KEY")) {
-      return NextResponse.json(
-        { error: "Stripe ist nicht konfiguriert" },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: "Stripe ist nicht konfiguriert" }, { status: 500 });
     }
 
-    return NextResponse.json(
-      { error: "Fehler beim Erstellen des Stripe-Kontos" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Fehler beim Erstellen des Stripe-Kontos" }, { status: 500 });
   }
 }
