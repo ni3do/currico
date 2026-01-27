@@ -30,11 +30,5 @@ if [ -n "$ADMIN_EMAIL" ] && [ -n "$ADMIN_PASSWORD" ]; then
   npx tsx prisma/bootstrap-admin.ts
 fi
 
-# Seed database only in development (unless SKIP_SEED is set)
-if [ "$APP_ENV" = "development" ] && [ "$SKIP_SEED" != "true" ]; then
-  echo "Seeding database with development data..."
-  npx tsx prisma/seed.ts || echo "Seeding completed (or already seeded)"
-fi
-
 echo "Starting application..."
 exec node server.js
