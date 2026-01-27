@@ -7,6 +7,7 @@ import {
   VERIFICATION_TOKEN_EXPIRY_HOURS,
 } from "@/lib/email";
 import { checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
+import { locales, defaultLocale, type Locale } from "@/i18n/config";
 
 export async function POST(request: NextRequest) {
   // Rate limiting check
@@ -72,9 +73,12 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Get locale from request headers or default to 'de'
+    // Get locale from request headers, but only use available locales
     const acceptLanguage = request.headers.get("accept-language") || "";
-    const locale = acceptLanguage.includes("en") ? "en" : "de";
+    const preferredLocale = acceptLanguage.startsWith("en") ? "en" : "de";
+    const locale: Locale = locales.includes(preferredLocale as Locale)
+      ? (preferredLocale as Locale)
+      : defaultLocale;
 
     // Send verification email
     const result = await sendVerificationEmail(user.email, token, locale);
