@@ -231,6 +231,11 @@ export default function AccountPage() {
     text: string;
   } | null>(null);
 
+  // Email verification resend state
+  const [verificationSending, setVerificationSending] = useState(false);
+  const [verificationSent, setVerificationSent] = useState(false);
+  const [verificationError, setVerificationError] = useState<string | null>(null);
+
   // Close action menu when clicking outside or pressing Escape
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -486,6 +491,34 @@ export default function AccountPage() {
       });
     } finally {
       setIsDeletingAvatar(false);
+    }
+  };
+
+  // Resend email verification
+  const handleResendVerification = async () => {
+    if (verificationSending) return;
+
+    setVerificationSending(true);
+    setVerificationError(null);
+
+    try {
+      const response = await fetch("/api/auth/send-verification", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Fehler beim Senden");
+      }
+
+      setVerificationSent(true);
+    } catch (error) {
+      setVerificationError(error instanceof Error ? error.message : "Ein Fehler ist aufgetreten");
+    } finally {
+      setVerificationSending(false);
     }
   };
 
@@ -1939,25 +1972,54 @@ export default function AccountPage() {
                                     <p className="text-text-muted text-xs font-medium tracking-wide uppercase">
                                       E-Mail-Status
                                     </p>
-                                    <div className="mt-1 flex items-center gap-2">
+                                    <div className="mt-1">
                                       {displayData.emailVerified ? (
-                                        <>
+                                        <div className="flex items-center gap-2">
                                           <div className="bg-success/20 rounded-full p-1">
                                             <Check className="text-success h-3 w-3" />
                                           </div>
                                           <span className="text-success font-semibold">
                                             Verifiziert
                                           </span>
-                                        </>
-                                      ) : (
-                                        <>
-                                          <div className="bg-warning/20 rounded-full p-1">
-                                            <X className="text-warning h-3 w-3" />
+                                        </div>
+                                      ) : verificationSent ? (
+                                        <div className="flex items-center gap-2">
+                                          <div className="bg-success/20 rounded-full p-1">
+                                            <Mail className="text-success h-3 w-3" />
                                           </div>
-                                          <span className="text-warning font-semibold">
-                                            Nicht verifiziert
+                                          <span className="text-success text-sm font-semibold">
+                                            E-Mail gesendet!
                                           </span>
-                                        </>
+                                        </div>
+                                      ) : (
+                                        <button
+                                          onClick={handleResendVerification}
+                                          disabled={verificationSending}
+                                          className="group flex items-center gap-2 transition-colors hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-50"
+                                        >
+                                          <div className="bg-warning/20 rounded-full p-1">
+                                            {verificationSending ? (
+                                              <div className="border-warning h-3 w-3 animate-spin rounded-full border border-t-transparent" />
+                                            ) : (
+                                              <X className="text-warning h-3 w-3" />
+                                            )}
+                                          </div>
+                                          <span className="text-warning font-semibold group-hover:underline">
+                                            {verificationSending
+                                              ? "Wird gesendet..."
+                                              : "Nicht verifiziert"}
+                                          </span>
+                                          {!verificationSending && (
+                                            <span className="text-text-muted text-xs">
+                                              (Klicken zum Senden)
+                                            </span>
+                                          )}
+                                        </button>
+                                      )}
+                                      {verificationError && (
+                                        <p className="text-error mt-1 text-xs">
+                                          {verificationError}
+                                        </p>
                                       )}
                                     </div>
                                   </div>

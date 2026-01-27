@@ -1540,13 +1540,15 @@
     },
     "success": {
       "title": "Email verified!",
-      "message": "Your email address has been successfully verified. You can now log in.",
-      "loginButton": "Go to login"
+      "message": "Your email address has been successfully verified.",
+      "loginButton": "Go to login",
+      "dashboardButton": "Go to dashboard"
     },
     "alreadyVerified": {
       "title": "Already verified",
       "message": "Your email address has already been verified.",
-      "loginButton": "Go to login"
+      "loginButton": "Go to login",
+      "dashboardButton": "Go to dashboard"
     },
     "error": {
       "title": "Verification failed",
