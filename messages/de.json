@@ -1525,6 +1525,32 @@
       "link": "Ressourcen durchsuchen"
     }
   },
+  "verifyEmailPage": {
+    "loading": {
+      "title": "E-Mail wird bestätigt...",
+      "message": "Bitte warten Sie einen Moment."
+    },
+    "success": {
+      "title": "E-Mail bestätigt!",
+      "message": "Ihre E-Mail-Adresse wurde erfolgreich bestätigt. Sie können sich jetzt anmelden.",
+      "loginButton": "Zur Anmeldung"
+    },
+    "alreadyVerified": {
+      "title": "Bereits bestätigt",
+      "message": "Ihre E-Mail-Adresse wurde bereits bestätigt.",
+      "loginButton": "Zur Anmeldung"
+    },
+    "error": {
+      "title": "Bestätigung fehlgeschlagen",
+      "loginButton": "Zur Anmeldung"
+    },
+    "errors": {
+      "missingToken": "Der Bestätigungslink ist ungültig. Bitte fordern Sie einen neuen Link an.",
+      "invalidToken": "Der Bestätigungslink ist ungültig oder wurde bereits verwendet.",
+      "tokenExpired": "Der Bestätigungslink ist abgelaufen. Bitte fordern Sie einen neuen Link an.",
+      "generic": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut."
+    }
+  },
   "search": {
     "tabs": {
       "resources": "Ressourcen",

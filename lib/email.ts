@@ -23,6 +23,7 @@ function getTransporter(): Transporter {
     host,
     port,
     secure: port === 465, // true for 465 (SSL), false for 587 (STARTTLS)
+    requireTLS: port === 587, // Require STARTTLS for port 587
     auth: {
       user,
       pass,
@@ -168,7 +169,7 @@ export async function sendPurchaseConfirmationEmail({
   const downloadLink =
     isGuest && downloadToken
       ? `${baseUrl}/${locale}/download/${downloadToken}`
-      : `${baseUrl}/${locale}/account/library`;
+      : `${baseUrl}/${locale}/account?tab=library`;
 
   const subject =
     locale === "de"
