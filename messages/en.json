@@ -1533,6 +1533,32 @@
       "link": "Browse resources"
     }
   },
+  "verifyEmailPage": {
+    "loading": {
+      "title": "Verifying email...",
+      "message": "Please wait a moment."
+    },
+    "success": {
+      "title": "Email verified!",
+      "message": "Your email address has been successfully verified. You can now log in.",
+      "loginButton": "Go to login"
+    },
+    "alreadyVerified": {
+      "title": "Already verified",
+      "message": "Your email address has already been verified.",
+      "loginButton": "Go to login"
+    },
+    "error": {
+      "title": "Verification failed",
+      "loginButton": "Go to login"
+    },
+    "errors": {
+      "missingToken": "The verification link is invalid. Please request a new link.",
+      "invalidToken": "The verification link is invalid or has already been used.",
+      "tokenExpired": "The verification link has expired. Please request a new link.",
+      "generic": "An error occurred. Please try again later."
+    }
+  },
   "search": {
     "tabs": {
       "resources": "Resources",

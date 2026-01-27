@@ -23,6 +23,7 @@ function getTransporter(): Transporter {
     host,
     port,
     secure: port === 465, // true for 465 (SSL), false for 587 (STARTTLS)
+    requireTLS: port === 587, // Require STARTTLS for port 587
     auth: {
       user,
       pass,
