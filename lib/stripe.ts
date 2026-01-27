@@ -57,6 +57,7 @@ export async function createConnectAccount(
     email,
     metadata,
     capabilities: {
+      card_payments: { requested: true },
       transfers: { requested: true },
     },
     settings: {
