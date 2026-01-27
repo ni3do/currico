@@ -254,19 +254,50 @@ export default function AboutPage() {
         </section>
 
         {/* CTA Section */}
-        <section className="bg-bg-secondary py-20 lg:py-28">
-          <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
+        <section className="relative overflow-hidden py-20 lg:py-28">
+          {/* Gradient background */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: `linear-gradient(135deg,
+                color-mix(in srgb, var(--ctp-blue) 12%, var(--ctp-mantle)) 0%,
+                color-mix(in srgb, var(--ctp-teal) 8%, var(--ctp-mantle)) 50%,
+                color-mix(in srgb, var(--ctp-mauve) 6%, var(--ctp-mantle)) 100%
+              )`,
+            }}
+          />
+          {/* Decorative blurred shapes */}
+          <div
+            className="absolute top-0 right-0 h-96 w-96 rounded-full opacity-40 blur-3xl"
+            style={{ background: `linear-gradient(135deg, var(--ctp-blue), var(--ctp-sapphire))` }}
+          />
+          <div
+            className="absolute bottom-0 left-0 h-64 w-64 rounded-full opacity-30 blur-3xl"
+            style={{ background: `linear-gradient(135deg, var(--ctp-teal), var(--ctp-green))` }}
+          />
+
+          <div className="relative z-10 mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
             <h2 className="text-text mb-6 text-2xl font-bold sm:text-3xl lg:text-4xl">
               {t("cta.title")}
             </h2>
-            <p className="text-text-muted mx-auto mb-10 max-w-2xl text-lg">{t("cta.subtitle")}</p>
-            <div className="flex flex-col justify-center gap-4 sm:flex-row">
+            <p className="text-text-muted mx-auto mb-10 max-w-2xl text-lg leading-relaxed">
+              {t("cta.subtitle")}
+            </p>
+            <div className="flex flex-col justify-center gap-4 sm:flex-row sm:gap-6">
               <Link
                 href={`/${locale}/resources`}
-                className="btn-primary inline-flex items-center justify-center"
+                className="group inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--ctp-blue)] px-8 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-200 hover:-translate-y-1 hover:bg-[var(--ctp-sapphire)] hover:shadow-xl"
+                style={{
+                  boxShadow: `0 4px 14px color-mix(in srgb, var(--ctp-blue) 40%, transparent)`,
+                }}
               >
                 {t("cta.button")}
-                <svg className="ml-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg
+                  className="h-5 w-5 transition-transform duration-200 group-hover:translate-x-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -277,7 +308,7 @@ export default function AboutPage() {
               </Link>
               <Link
                 href={`/${locale}/register`}
-                className="btn-secondary inline-flex items-center justify-center"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-[var(--ctp-blue)] bg-transparent px-8 py-4 text-lg font-semibold text-[var(--ctp-blue)] transition-all duration-200 hover:-translate-y-1 hover:bg-[var(--ctp-blue)] hover:text-white hover:shadow-lg"
               >
                 {t("cta.secondaryButton")}
               </Link>
