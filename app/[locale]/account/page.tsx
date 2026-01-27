@@ -34,7 +34,10 @@ import { StripeConnectStatus } from "@/components/account/StripeConnectStatus";
 import { AccountSidebar } from "@/components/account/AccountSidebar";
 import { MultiSelect } from "@/components/ui/MultiSelect";
 import { DashboardResourceCard } from "@/components/ui/DashboardResourceCard";
-import { SWISS_SUBJECTS, SWISS_CYCLES, SWISS_CANTONS } from "@/lib/validations/user";
+import { SWISS_CANTONS } from "@/lib/validations/user";
+
+// Cycles are stable, can be hardcoded
+const CYCLES = ["Zyklus 1", "Zyklus 2", "Zyklus 3"];
 import { motion, AnimatePresence } from "framer-motion";
 
 interface LibraryItem {
@@ -236,6 +239,9 @@ export default function AccountPage() {
   const [verificationSent, setVerificationSent] = useState(false);
   const [verificationError, setVerificationError] = useState<string | null>(null);
 
+  // Subject options from database
+  const [subjectOptions, setSubjectOptions] = useState<string[]>([]);
+
   // Close action menu when clicking outside or pressing Escape
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -349,6 +355,20 @@ export default function AccountPage() {
     }
   }, []);
 
+  // Fetch curriculum data for subject options
+  const fetchCurriculum = useCallback(async () => {
+    try {
+      const response = await fetch("/api/curriculum?curriculum=LP21");
+      if (response.ok) {
+        const data = await response.json();
+        const subjects = data.subjects?.map((s: { name_de: string }) => s.name_de) || [];
+        setSubjectOptions(subjects);
+      }
+    } catch (error) {
+      console.error("Error fetching curriculum:", error);
+    }
+  }, []);
+
   // Handle redirects in useEffect to avoid setState during render
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -369,6 +389,7 @@ export default function AccountPage() {
         fetchWishlist(),
         fetchSellerData(),
         fetchFollowedSellers(),
+        fetchCurriculum(),
       ]).finally(() => {
         setLoading(false);
       });
@@ -381,6 +402,7 @@ export default function AccountPage() {
     fetchWishlist,
     fetchSellerData,
     fetchFollowedSellers,
+    fetchCurriculum,
   ]);
 
   // Handle search
@@ -1703,7 +1725,7 @@ export default function AccountPage() {
                                   <div className="space-y-5">
                                     <MultiSelect
                                       label="Fächer"
-                                      options={SWISS_SUBJECTS}
+                                      options={subjectOptions}
                                       selected={profileFormData.subjects}
                                       onChange={(value) =>
                                         handleProfileFieldChange("subjects", value)
@@ -1714,7 +1736,7 @@ export default function AccountPage() {
                                     />
                                     <MultiSelect
                                       label="Zyklen"
-                                      options={SWISS_CYCLES}
+                                      options={CYCLES}
                                       selected={profileFormData.cycles}
                                       onChange={(value) =>
                                         handleProfileFieldChange("cycles", value)

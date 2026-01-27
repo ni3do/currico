@@ -6,7 +6,10 @@ import { MultiSelect } from "@/components/ui/MultiSelect";
 import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
-import { SWISS_SUBJECTS, SWISS_CYCLES, SWISS_CANTONS } from "@/lib/validations/user";
+import { SWISS_CANTONS } from "@/lib/validations/user";
+
+// Cycles are stable, can be hardcoded
+const CYCLES = ["Zyklus 1", "Zyklus 2", "Zyklus 3"];
 
 interface ProfileFormData {
   display_name: string;
@@ -34,33 +37,47 @@ export default function EditProfilePage() {
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [successMessage, setSuccessMessage] = useState("");
+  const [subjectOptions, setSubjectOptions] = useState<string[]>([]);
 
   useEffect(() => {
-    async function fetchProfile() {
+    async function fetchData() {
       try {
-        const response = await fetch("/api/users/me");
-        if (!response.ok) {
+        // Fetch profile and curriculum data in parallel
+        const [profileRes, curriculumRes] = await Promise.all([
+          fetch("/api/users/me"),
+          fetch("/api/curriculum?curriculum=LP21"),
+        ]);
+
+        if (!profileRes.ok) {
           throw new Error("Fehler beim Laden des Profils");
         }
-        const data = await response.json();
+        const profileData = await profileRes.json();
         setFormData({
-          display_name: data.display_name || data.name || "",
-          avatar_url: data.image || null,
-          bio: data.bio || "",
-          subjects: data.subjects || [],
-          cycles: data.cycles || [],
-          cantons: data.cantons || [],
-          email: data.email || "",
+          display_name: profileData.display_name || profileData.name || "",
+          avatar_url: profileData.image || null,
+          bio: profileData.bio || "",
+          subjects: profileData.subjects || [],
+          cycles: profileData.cycles || [],
+          cantons: profileData.cantons || [],
+          email: profileData.email || "",
         });
+
+        if (curriculumRes.ok) {
+          const curriculumData = await curriculumRes.json();
+          // Extract subject names from curriculum data
+          const subjects =
+            curriculumData.subjects?.map((s: { name_de: string }) => s.name_de) || [];
+          setSubjectOptions(subjects);
+        }
       } catch (err) {
-        console.error("Error fetching profile:", err);
+        console.error("Error fetching data:", err);
         setErrors({ submit: "Fehler beim Laden des Profils" });
       } finally {
         setIsLoading(false);
       }
     }
 
-    fetchProfile();
+    fetchData();
   }, []);
 
   const handleChange = (field: string, value: string | string[]) => {
@@ -263,7 +280,7 @@ export default function EditProfilePage() {
                   {/* Subjects */}
                   <MultiSelect
                     label="Unterrichtsfächer"
-                    options={SWISS_SUBJECTS}
+                    options={subjectOptions}
                     selected={formData.subjects}
                     onChange={(value) => handleChange("subjects", value)}
                     placeholder="Fächer auswählen..."
@@ -274,7 +291,7 @@ export default function EditProfilePage() {
                   {/* Cycles */}
                   <MultiSelect
                     label="Unterrichtete Zyklen"
-                    options={SWISS_CYCLES}
+                    options={CYCLES}
                     selected={formData.cycles}
                     onChange={(value) => handleChange("cycles", value)}
                     placeholder="Zyklen auswählen..."

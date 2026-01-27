@@ -4,26 +4,8 @@ import { z } from "zod";
 // CONSTANTS - Swiss Education System
 // ============================================================
 
-export const SWISS_SUBJECTS = [
-  "Mathematik",
-  "Deutsch",
-  "Französisch",
-  "Englisch",
-  "Natur, Mensch, Gesellschaft", // NMG
-  "Bildnerisches Gestalten",
-  "Textiles und Technisches Gestalten",
-  "Musik",
-  "Bewegung und Sport",
-  "Medien und Informatik",
-  "Berufliche Orientierung",
-  "Religionen, Kulturen, Ethik",
-] as const;
-
-export const SWISS_CYCLES = [
-  "Zyklus 1", // Kindergarten - 2. Klasse
-  "Zyklus 2", // 3. - 6. Klasse
-  "Zyklus 3", // 7. - 9. Klasse (Sekundarstufe I)
-] as const;
+// Note: Subjects and cycles are fetched from the database via /api/curriculum
+// SWISS_CANTONS remains hardcoded as it's stable political data
 
 export const SWISS_CANTONS = [
   "Aargau",
