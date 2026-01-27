@@ -2,9 +2,6 @@
   "name": "easy-lehrer",
   "version": "1.0.0",
   "description": "Educational resource marketplace for Swiss teachers",
-  "prisma": {
-    "seed": "npx tsx prisma/seed.ts"
-  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -22,7 +19,7 @@
     "db:migrate:deploy": "prisma migrate deploy",
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset",
-    "db:seed": "prisma db seed",
+    "db:bootstrap-admin": "tsx prisma/bootstrap-admin.ts",
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
     "docker:logs": "docker compose logs -f",

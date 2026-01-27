@@ -24,12 +24,16 @@ fi
 echo "Running database migrations..."
 npx prisma migrate deploy
 
-# Seed database unless SKIP_SEED is set to "true"
-if [ "$SKIP_SEED" != "true" ]; then
-  echo "Seeding database..."
+# Bootstrap admin user if credentials are provided
+if [ -n "$ADMIN_EMAIL" ] && [ -n "$ADMIN_PASSWORD" ]; then
+  echo "Bootstrapping admin user..."
+  npx tsx prisma/bootstrap-admin.ts
+fi
+
+# Seed database only in development (unless SKIP_SEED is set)
+if [ "$APP_ENV" = "development" ] && [ "$SKIP_SEED" != "true" ]; then
+  echo "Seeding database with development data..."
   npx tsx prisma/seed.ts || echo "Seeding completed (or already seeded)"
-else
-  echo "Skipping database seed (SKIP_SEED=true)"
 fi
 
 echo "Starting application..."
