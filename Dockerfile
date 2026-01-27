@@ -11,18 +11,22 @@ COPY package.json package-lock.json* ./
 
 # Use cache mount for faster dependency installation
 RUN --mount=type=cache,target=/root/.npm \
-    npm cache clean --force && \
-    npm ci
+    npm ci --prefer-offline
 
 # Build the application
 FROM base AS builder
 WORKDIR /app
 
+# Skip telemetry and Sentry source map upload during build
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV SENTRY_SUPPRESS_TURBOPACK_WARNING=1
+
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Ensure public directory exists, generate Prisma client, and build
+# Generate Prisma client and build with Next.js cache
 RUN --mount=type=cache,target=/root/.cache/prisma \
+    --mount=type=cache,target=/app/.next/cache \
     mkdir -p public && \
     npm run db:generate && \
     npm run build
@@ -40,16 +44,19 @@ RUN addgroup --system --gid 1001 nodejs && \
     mkdir .next && \
     chown nextjs:nodejs .next
 
-# Copy package.json and prisma files first (needed for npm install, changes less often)
+# Copy prisma files and dependencies from builder (already generated)
 COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/tsconfig.json ./tsconfig.json
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
+COPY --from=builder /app/lib ./lib
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
 
-# Install runtime dependencies for migrations/seeding with cache
+# Install only runtime dependencies needed for migrations/bootstrap
 RUN --mount=type=cache,target=/root/.npm \
-    --mount=type=cache,target=/root/.cache/prisma \
-    npm install --no-save prisma @prisma/client mysql2 bcryptjs tsx dotenv && \
-    npx prisma generate
+    npm install --no-save bcryptjs tsx dotenv
 
 # Copy startup script
 COPY --from=builder /app/scripts/start.sh ./start.sh

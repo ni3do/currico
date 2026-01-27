@@ -2,11 +2,37 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { toStringArray, toNumberArray } from "@/lib/json-array";
 
+// Static ZYKLEN data - these don't change
+const ZYKLEN = [
+  {
+    id: 1,
+    name: "Zyklus 1",
+    shortName: "Z1",
+    grades: ["KG", "1", "2"],
+    description: "Kindergarten – 2. Klasse",
+  },
+  {
+    id: 2,
+    name: "Zyklus 2",
+    shortName: "Z2",
+    grades: ["3", "4", "5", "6"],
+    description: "3. – 6. Klasse",
+  },
+  {
+    id: 3,
+    name: "Zyklus 3",
+    shortName: "Z3",
+    grades: ["7", "8", "9"],
+    description: "7. – 9. Klasse",
+  },
+];
+
 /**
  * GET /api/curriculum
  *
  * Fetches curriculum data for the upload form.
  * Query params:
+ *   - format: "filter" to return data structured for LP21FilterSidebar
  *   - curriculum: "LP21" | "PER" (default: LP21)
  *   - subject: subject code to filter competencies (e.g., "MA")
  *   - cycle: cycle number to filter competencies (1, 2, 3)
@@ -19,6 +45,13 @@ import { toStringArray, toNumberArray } from "@/lib/json-array";
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
+    const format = searchParams.get("format");
+
+    // Handle filter format for LP21FilterSidebar
+    if (format === "filter") {
+      return handleFilterFormat();
+    }
+
     const curriculumCode = searchParams.get("curriculum") || "LP21";
     const subjectCode = searchParams.get("subject");
     const cycle = searchParams.get("cycle");
@@ -323,5 +356,134 @@ export async function GET(request: Request) {
   } catch (error) {
     console.error("Error fetching curriculum:", error);
     return NextResponse.json({ error: "Failed to fetch curriculum data" }, { status: 500 });
+  }
+}
+
+/**
+ * Handle format=filter request for LP21FilterSidebar
+ * Returns data structured for the filter sidebar with nested hierarchy
+ */
+async function handleFilterFormat() {
+  try {
+    // Fetch LP21 curriculum with all subjects and competencies
+    const curriculum = await prisma.curriculum.findUnique({
+      where: { code: "LP21" },
+      include: {
+        subjects: {
+          orderBy: { code: "asc" },
+          include: {
+            competencies: {
+              orderBy: { code: "asc" },
+            },
+          },
+        },
+      },
+    });
+
+    if (!curriculum) {
+      return NextResponse.json({ error: "LP21 curriculum not found" }, { status: 404 });
+    }
+
+    // Color class mapping based on subject code
+    const colorClassMap: Record<string, string> = {
+      D: "subject-deutsch",
+      FS1E: "subject-fremdsprachen",
+      FS2F: "subject-fremdsprachen",
+      MA: "subject-mathe",
+      NMG: "subject-nmg",
+      NT: "subject-nmg",
+      WAH: "subject-nmg",
+      RZG: "subject-nmg",
+      ERG: "subject-nmg",
+      BG: "subject-gestalten",
+      TTG: "subject-gestalten",
+      MU: "subject-musik",
+      BS: "subject-sport",
+      MI: "subject-medien",
+      BO: "subject-default",
+    };
+
+    // Short name mapping
+    const shortNameMap: Record<string, string> = {
+      D: "DE",
+      FS1E: "English",
+      FS2F: "Französisch",
+      MA: "MA",
+      NMG: "NMG",
+      NT: "NT",
+      WAH: "WAH",
+      RZG: "RZG",
+      ERG: "ERG",
+      BG: "BG",
+      TTG: "TTG",
+      MU: "Musik",
+      BS: "BS",
+      MI: "MI",
+      BO: "BO",
+    };
+
+    // Transform subjects into Fachbereiche with nested hierarchy
+    const fachbereiche = curriculum.subjects.map((subject) => {
+      // Get all unique cycles from competencies
+      const cycles = [...new Set(subject.competencies.map((c) => c.cycle))].sort();
+
+      // Group competencies by kompetenzbereich
+      const kompetenzbereichMap = new Map<
+        string,
+        { code: string; name: string; kompetenzen: { code: string; name: string }[] }
+      >();
+
+      for (const comp of subject.competencies) {
+        if (!comp.kompetenzbereich) continue;
+
+        // The kompetenzbereich code should be like "D.1", "MA.2", etc.
+        const kbCode = comp.kompetenzbereich;
+
+        if (!kompetenzbereichMap.has(kbCode)) {
+          // Find the parent competency that represents the kompetenzbereich
+          const parentComp = subject.competencies.find(
+            (c) => c.code.startsWith(kbCode + "_") && !c.handlungsaspekt
+          );
+          kompetenzbereichMap.set(kbCode, {
+            code: kbCode,
+            name: parentComp?.description_de || kbCode,
+            kompetenzen: [],
+          });
+        }
+
+        // Add individual kompetenzen (those with handlungsaspekt)
+        if (comp.handlungsaspekt) {
+          const kb = kompetenzbereichMap.get(kbCode)!;
+          // Extract the base code without the cycle suffix
+          const baseCode = comp.handlungsaspekt;
+          // Only add if not already present (avoid duplicates across cycles)
+          if (!kb.kompetenzen.some((k) => k.code === baseCode)) {
+            kb.kompetenzen.push({
+              code: baseCode,
+              name: comp.description_de,
+            });
+          }
+        }
+      }
+
+      return {
+        code: subject.code,
+        name: subject.name_de,
+        shortName: shortNameMap[subject.code] || subject.code,
+        color: subject.color || "#7c7f93",
+        colorClass: colorClassMap[subject.code] || "subject-default",
+        icon: subject.icon || "book-open",
+        cycles,
+        kompetenzbereiche: Array.from(kompetenzbereichMap.values()),
+      };
+    });
+
+    return NextResponse.json({
+      zyklen: ZYKLEN,
+      fachbereiche,
+    });
+  } catch (error) {
+    console.error("Error fetching curriculum filter data:", error);
+    return NextResponse.json({ error: "Failed to fetch curriculum filter data" }, { status: 500 });
   }
 }
