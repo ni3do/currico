@@ -1532,13 +1532,15 @@
     },
     "success": {
       "title": "E-Mail bestätigt!",
-      "message": "Ihre E-Mail-Adresse wurde erfolgreich bestätigt. Sie können sich jetzt anmelden.",
-      "loginButton": "Zur Anmeldung"
+      "message": "Ihre E-Mail-Adresse wurde erfolgreich bestätigt.",
+      "loginButton": "Zur Anmeldung",
+      "dashboardButton": "Zum Dashboard"
     },
     "alreadyVerified": {
       "title": "Bereits bestätigt",
       "message": "Ihre E-Mail-Adresse wurde bereits bestätigt.",
-      "loginButton": "Zur Anmeldung"
+      "loginButton": "Zur Anmeldung",
+      "dashboardButton": "Zum Dashboard"
     },
     "error": {
       "title": "Bestätigung fehlgeschlagen",
