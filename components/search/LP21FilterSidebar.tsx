@@ -29,16 +29,15 @@ import {
   Table,
   Package,
   File,
+  Loader2,
 } from "lucide-react";
-import {
-  ZYKLEN,
-  FACHBEREICHE,
-  getFachbereicheByZyklus,
-  searchByCode,
-  type Fachbereich,
-  type Kompetenzbereich,
-  type Kompetenz,
-} from "@/lib/data/lehrplan21";
+import { useCurriculum, ZYKLEN } from "@/lib/hooks/useCurriculum";
+import type {
+  Fachbereich,
+  Kompetenzbereich,
+  Kompetenz,
+  CurriculumSearchResult,
+} from "@/lib/curriculum-types";
 
 // Icon mapping for Fachbereiche
 const FACHBEREICH_ICONS: Record<string, React.ElementType> = {
@@ -111,6 +110,16 @@ export function LP21FilterSidebar({
 }: LP21FilterSidebarProps) {
   const t = useTranslations("resourcesPage");
 
+  // Fetch curriculum data from API
+  const {
+    fachbereiche,
+    zyklen,
+    loading: curriculumLoading,
+    error: curriculumError,
+    getFachbereicheByZyklus,
+    searchByCode,
+  } = useCurriculum();
+
   // Local state for UI
   const [expandedFachbereiche, setExpandedFachbereiche] = useState<Set<string>>(new Set());
   const [expandedKompetenzbereiche, setExpandedKompetenzbereiche] = useState<Set<string>>(
@@ -121,10 +130,10 @@ export function LP21FilterSidebar({
   // Get available Fachbereiche based on selected Zyklus
   const availableFachbereiche = useMemo(() => {
     if (filters.zyklus === null) {
-      return FACHBEREICHE;
+      return fachbereiche;
     }
     return getFachbereicheByZyklus(filters.zyklus);
-  }, [filters.zyklus]);
+  }, [filters.zyklus, fachbereiche, getFachbereicheByZyklus]);
 
   // Search results
   const searchResults = useMemo(() => {
@@ -132,7 +141,7 @@ export function LP21FilterSidebar({
       return [];
     }
     return searchByCode(filters.searchQuery).slice(0, 10);
-  }, [filters.searchQuery]);
+  }, [filters.searchQuery, searchByCode]);
 
   // Check if any filters are active
   const hasActiveFilters =
@@ -213,7 +222,7 @@ export function LP21FilterSidebar({
   );
 
   const handleSearchResultSelect = useCallback(
-    (result: ReturnType<typeof searchByCode>[0]) => {
+    (result: CurriculumSearchResult) => {
       let newFilters: LP21FilterState = {
         ...filters,
         searchQuery: "",
@@ -414,7 +423,11 @@ export function LP21FilterSidebar({
 
         {/* Active Filter Chips */}
         {hasActiveFilters && (
-          <ActiveFilterChips filters={filters} onRemoveFilter={handleRemoveFilter} />
+          <ActiveFilterChips
+            filters={filters}
+            fachbereiche={fachbereiche}
+            onRemoveFilter={handleRemoveFilter}
+          />
         )}
 
         {/* Search Input */}
@@ -474,22 +487,32 @@ export function LP21FilterSidebar({
         {/* Fachbereiche Tree */}
         <div className="space-y-2">
           <h3 className="label-meta mb-3">Fachbereich</h3>
-          {availableFachbereiche.map((fb) => (
-            <FachbereichAccordion
-              key={fb.code}
-              fachbereich={fb}
-              isSelected={filters.fachbereich === fb.code}
-              isExpanded={expandedFachbereiche.has(fb.code)}
-              selectedKompetenzbereich={filters.kompetenzbereich}
-              selectedKompetenz={filters.kompetenz}
-              expandedKompetenzbereiche={expandedKompetenzbereiche}
-              onSelect={() => handleFachbereichChange(fb.code)}
-              onToggleExpand={() => toggleFachbereichExpansion(fb.code)}
-              onKompetenzbereichSelect={handleKompetenzbereichChange}
-              onKompetenzbereichToggle={toggleKompetenzbereichExpansion}
-              onKompetenzSelect={handleKompetenzChange}
-            />
-          ))}
+          {curriculumLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="text-primary h-6 w-6 animate-spin" />
+            </div>
+          ) : curriculumError ? (
+            <div className="text-error py-4 text-center text-sm">
+              Fehler beim Laden der Fachbereiche
+            </div>
+          ) : (
+            availableFachbereiche.map((fb) => (
+              <FachbereichAccordion
+                key={fb.code}
+                fachbereich={fb}
+                isSelected={filters.fachbereich === fb.code}
+                isExpanded={expandedFachbereiche.has(fb.code)}
+                selectedKompetenzbereich={filters.kompetenzbereich}
+                selectedKompetenz={filters.kompetenz}
+                expandedKompetenzbereiche={expandedKompetenzbereiche}
+                onSelect={() => handleFachbereichChange(fb.code)}
+                onToggleExpand={() => toggleFachbereichExpansion(fb.code)}
+                onKompetenzbereichSelect={handleKompetenzbereichChange}
+                onKompetenzbereichToggle={toggleKompetenzbereichExpansion}
+                onKompetenzSelect={handleKompetenzChange}
+              />
+            ))
+          )}
         </div>
 
         <div className="divider my-5" />
@@ -560,10 +583,11 @@ function ZyklusToggle({ selectedZyklus, onZyklusChange }: ZyklusToggleProps) {
 // ============ ACTIVE FILTER CHIPS ============
 interface ActiveFilterChipsProps {
   filters: LP21FilterState;
+  fachbereiche: Fachbereich[];
   onRemoveFilter: (type: "zyklus" | "fachbereich" | "kompetenzbereich" | "kompetenz") => void;
 }
 
-function ActiveFilterChips({ filters, onRemoveFilter }: ActiveFilterChipsProps) {
+function ActiveFilterChips({ filters, fachbereiche, onRemoveFilter }: ActiveFilterChipsProps) {
   const chips: {
     type: "zyklus" | "fachbereich" | "kompetenzbereich" | "kompetenz";
     label: string;
@@ -578,7 +602,7 @@ function ActiveFilterChips({ filters, onRemoveFilter }: ActiveFilterChipsProps) 
   }
 
   if (filters.fachbereich) {
-    const fb = FACHBEREICHE.find((f) => f.code === filters.fachbereich);
+    const fb = fachbereiche.find((f) => f.code === filters.fachbereich);
     if (fb) {
       chips.push({ type: "fachbereich", label: fb.shortName, color: fb.color });
     }
