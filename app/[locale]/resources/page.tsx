@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
+import { useSearchParams } from "next/navigation";
 import { SlidersHorizontal, ChevronDown, FileText, Users } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import TopBar from "@/components/ui/TopBar";
@@ -52,6 +53,8 @@ interface Profile {
 export default function ResourcesPage() {
   const t = useTranslations("resourcesPage");
   const tCommon = useTranslations("common");
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<"resources" | "profiles">("resources");
   const [resources, setResources] = useState<Resource[]>([]);
   const [profiles, setProfiles] = useState<Profile[]>([]);
@@ -75,18 +78,57 @@ export default function ResourcesPage() {
   // Fetch curriculum data from API
   const { fachbereiche, getFachbereichByCode } = useCurriculum();
 
-  // LP21 filter state
-  const [filters, setFilters] = useState<LP21FilterState>({
-    zyklus: null,
-    fachbereich: null,
-    kompetenzbereich: null,
-    kompetenz: null,
-    searchQuery: "",
-    priceType: null,
-    maxPrice: null,
-    formats: [],
-    materialScope: null,
-  });
+  // Initialize filters from URL params
+  const initialFilters = useMemo<LP21FilterState>(() => {
+    const zyklus = searchParams.get("zyklus");
+    const fachbereich = searchParams.get("fachbereich");
+    const kompetenzbereich = searchParams.get("kompetenzbereich");
+    const kompetenz = searchParams.get("kompetenz");
+
+    return {
+      zyklus: zyklus ? parseInt(zyklus) : null,
+      fachbereich: fachbereich || null,
+      kompetenzbereich: kompetenzbereich || null,
+      kompetenz: kompetenz || null,
+      searchQuery: searchParams.get("search") || "",
+      priceType: searchParams.get("priceType") || null,
+      maxPrice: searchParams.get("maxPrice") ? parseInt(searchParams.get("maxPrice")!) : null,
+      formats: searchParams.get("formats")?.split(",").filter(Boolean) || [],
+      materialScope: searchParams.get("materialScope") || null,
+    };
+  }, [searchParams]);
+
+  // LP21 filter state - initialize from URL
+  const [filters, setFilters] = useState<LP21FilterState>(initialFilters);
+
+  // Sync filters with URL when they change from URL (e.g., navigation)
+  useEffect(() => {
+    setFilters(initialFilters);
+  }, [initialFilters]);
+
+  // Update URL when filters change from sidebar
+  const handleFiltersChange = useCallback(
+    (newFilters: LP21FilterState) => {
+      setFilters(newFilters);
+
+      // Build URL params
+      const params = new URLSearchParams();
+      if (newFilters.zyklus) params.set("zyklus", newFilters.zyklus.toString());
+      if (newFilters.fachbereich) params.set("fachbereich", newFilters.fachbereich);
+      if (newFilters.kompetenzbereich) params.set("kompetenzbereich", newFilters.kompetenzbereich);
+      if (newFilters.kompetenz) params.set("kompetenz", newFilters.kompetenz);
+      if (newFilters.searchQuery) params.set("search", newFilters.searchQuery);
+      if (newFilters.priceType) params.set("priceType", newFilters.priceType);
+      if (newFilters.maxPrice !== null) params.set("maxPrice", newFilters.maxPrice.toString());
+      if (newFilters.formats.length > 0) params.set("formats", newFilters.formats.join(","));
+      if (newFilters.materialScope) params.set("materialScope", newFilters.materialScope);
+
+      // Update URL without navigation
+      const newUrl = params.toString() ? `/resources?${params.toString()}` : "/resources";
+      router.replace(newUrl, { scroll: false });
+    },
+    [router]
+  );
 
   // Map Fachbereich code to subject name for API compatibility
   const mapFachbereichToSubject = useCallback(
@@ -376,7 +418,7 @@ export default function ResourcesPage() {
                     transition={{ duration: 0.2 }}
                     className="mt-4 overflow-hidden"
                   >
-                    <LP21FilterSidebar filters={filters} onFiltersChange={setFilters} />
+                    <LP21FilterSidebar filters={filters} onFiltersChange={handleFiltersChange} />
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -384,7 +426,7 @@ export default function ResourcesPage() {
 
             {/* Desktop Sidebar */}
             <div className="hidden w-72 flex-shrink-0 lg:block">
-              <LP21FilterSidebar filters={filters} onFiltersChange={setFilters} />
+              <LP21FilterSidebar filters={filters} onFiltersChange={handleFiltersChange} />
             </div>
 
             {/* Main Content Area */}
