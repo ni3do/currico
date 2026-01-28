@@ -101,6 +101,7 @@
   },
   "overrides": {
     "hono": "4.11.4",
-    "@auth/core": "0.41.1"
+    "@auth/core": "0.41.1",
+    "@swc/helpers": "0.5.18"
   }
 }
