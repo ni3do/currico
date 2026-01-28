@@ -29,11 +29,9 @@ if [ -n "$ADMIN_EMAIL" ] && [ -n "$ADMIN_PASSWORD" ]; then
   npx tsx prisma/bootstrap-admin.ts
 fi
 
-# Seed curriculum data if requested
-if [ "$SEED_CURRICULUM" = "true" ]; then
-  echo "Seeding curriculum data..."
-  npx tsx prisma/seed.ts
-fi
+# Seed curriculum data (idempotent - skips if already seeded)
+echo "Seeding curriculum data..."
+npx tsx prisma/seed.ts
 
 echo "Starting application..."
 exec node server.js
