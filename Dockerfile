@@ -27,7 +27,7 @@ COPY --from=deps /app/node_modules ./node_modules
 
 # Copy config files first (change less frequently)
 COPY package.json package-lock.json tsconfig.json next.config.ts postcss.config.mjs ./
-COPY prisma.config.ts sentry.*.config.ts ./
+COPY prisma.config.ts sentry.*.config.ts proxy.ts ./
 COPY i18n ./i18n
 
 # Copy Prisma schema (changes infrequently)
