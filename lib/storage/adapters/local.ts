@@ -20,7 +20,8 @@ export class LocalStorageAdapter implements StorageProvider {
 
   constructor(uploadDir?: string, publicUrl?: string) {
     this.uploadDir = uploadDir || path.join(process.cwd(), "public", "uploads");
-    this.publicUrl = publicUrl || "/uploads";
+    // Use /api/uploads for standalone mode compatibility (runtime uploads aren't served from public/)
+    this.publicUrl = publicUrl || "/api/uploads";
   }
 
   /**
