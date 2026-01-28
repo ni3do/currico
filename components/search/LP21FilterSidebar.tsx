@@ -303,25 +303,25 @@ export function LP21FilterSidebar({
 
   const toggleFachbereichExpansion = useCallback((code: string) => {
     setExpandedFachbereiche((prev) => {
-      const next = new Set(prev);
-      if (next.has(code)) {
-        next.delete(code);
-      } else {
-        next.add(code);
+      // If already expanded, collapse it
+      if (prev.has(code)) {
+        return new Set();
       }
-      return next;
+      // Otherwise, expand only this one (close all others)
+      return new Set([code]);
     });
+    // Also collapse any expanded Kompetenzbereiche when switching Fachbereich
+    setExpandedKompetenzbereiche(new Set());
   }, []);
 
   const toggleKompetenzbereichExpansion = useCallback((code: string) => {
     setExpandedKompetenzbereiche((prev) => {
-      const next = new Set(prev);
-      if (next.has(code)) {
-        next.delete(code);
-      } else {
-        next.add(code);
+      // If already expanded, collapse it
+      if (prev.has(code)) {
+        return new Set();
       }
-      return next;
+      // Otherwise, expand only this one (close all others)
+      return new Set([code]);
     });
   }, []);
 
@@ -394,14 +394,16 @@ export function LP21FilterSidebar({
         </div>
 
         {/* Active Filter Chips */}
-        {hasActiveFilters && (
-          <ActiveFilterChips
-            filters={filters}
-            fachbereiche={fachbereiche}
-            zyklen={zyklen}
-            onRemoveFilter={handleRemoveFilter}
-          />
-        )}
+        <AnimatePresence>
+          {hasActiveFilters && (
+            <ActiveFilterChips
+              filters={filters}
+              fachbereiche={fachbereiche}
+              zyklen={zyklen}
+              onRemoveFilter={handleRemoveFilter}
+            />
+          )}
+        </AnimatePresence>
 
         {/* Search Input */}
         <div className="relative mb-5">
@@ -592,69 +594,117 @@ function ActiveFilterChips({
   const chips: {
     type: "zyklus" | "fachbereich" | "kompetenzbereich" | "kompetenz";
     label: string;
-    color?: string;
+    color: string;
+    icon?: string;
   }[] = [];
+
+  // Get the selected Fachbereich for color inheritance
+  const selectedFb = filters.fachbereich
+    ? fachbereiche.find((f) => f.code === filters.fachbereich)
+    : null;
 
   if (filters.zyklus !== null) {
     const zyklus = zyklen.find((z) => z.id === filters.zyklus);
     if (zyklus) {
-      chips.push({ type: "zyklus", label: zyklus.name });
+      chips.push({
+        type: "zyklus",
+        label: zyklus.shortName,
+        color: "#1e66f5", // Primary blue for Zyklus
+      });
     }
   }
 
-  if (filters.fachbereich) {
-    const fb = fachbereiche.find((f) => f.code === filters.fachbereich);
-    if (fb) {
-      chips.push({ type: "fachbereich", label: fb.shortName, color: fb.color });
-    }
+  if (filters.fachbereich && selectedFb) {
+    chips.push({
+      type: "fachbereich",
+      label: selectedFb.shortName,
+      color: selectedFb.color,
+    });
   }
 
   if (filters.kompetenzbereich) {
-    chips.push({ type: "kompetenzbereich", label: filters.kompetenzbereich });
+    // Find the parent Fachbereich for color
+    const parentFb = fachbereiche.find((fb) =>
+      fb.kompetenzbereiche.some((kb) => kb.code === filters.kompetenzbereich)
+    );
+    chips.push({
+      type: "kompetenzbereich",
+      label: filters.kompetenzbereich,
+      color: parentFb?.color || selectedFb?.color || "#1e66f5",
+    });
   }
 
   if (filters.kompetenz) {
-    chips.push({ type: "kompetenz", label: filters.kompetenz });
+    // Find the parent Fachbereich for color
+    let kompetenzColor = selectedFb?.color || "#1e66f5";
+    for (const fb of fachbereiche) {
+      for (const kb of fb.kompetenzbereiche) {
+        if (kb.kompetenzen.some((k) => k.code === filters.kompetenz)) {
+          kompetenzColor = fb.color;
+          break;
+        }
+      }
+    }
+    chips.push({
+      type: "kompetenz",
+      label: filters.kompetenz,
+      color: kompetenzColor,
+    });
   }
 
   if (chips.length === 0) return null;
 
   return (
-    <div className="mb-4 flex flex-wrap gap-2">
-      {chips.map((chip) => (
-        <span
-          key={chip.type}
-          className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium"
-          style={{
-            backgroundColor: chip.color ? `${chip.color}20` : undefined,
-            color: chip.color || undefined,
-          }}
-        >
-          {!chip.color && (
-            <span className="bg-primary/10 text-primary rounded-full px-2.5 py-1">
-              {chip.label}
-              <button
-                onClick={() => onRemoveFilter(chip.type)}
-                className="hover:bg-primary/20 ml-1.5 rounded-full p-0.5"
+    <motion.div
+      initial={{ opacity: 0, height: 0 }}
+      animate={{ opacity: 1, height: "auto" }}
+      exit={{ opacity: 0, height: 0 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
+      className="mb-5 overflow-hidden"
+    >
+      <div className="bg-surface/50 border-border/50 rounded-lg border p-3">
+        <div className="mb-2 flex items-center gap-2">
+          <Tag className="text-text-muted h-3.5 w-3.5" />
+          <span className="text-text-muted text-xs font-medium">Aktive Filter</span>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <AnimatePresence mode="popLayout">
+            {chips.map((chip, index) => (
+              <motion.span
+                key={chip.type}
+                initial={{ opacity: 0, scale: 0.8, y: -10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.8, y: -10 }}
+                transition={{
+                  duration: 0.2,
+                  delay: index * 0.05,
+                  ease: "easeOut",
+                }}
+                className="group inline-flex items-center gap-1.5 rounded-full py-1.5 pr-1.5 pl-3 text-xs font-semibold shadow-sm transition-shadow hover:shadow-md"
+                style={{
+                  backgroundColor: `${chip.color}18`,
+                  color: chip.color,
+                  border: `1px solid ${chip.color}30`,
+                }}
               >
-                <X className="h-3 w-3" />
-              </button>
-            </span>
-          )}
-          {chip.color && (
-            <>
-              {chip.label}
-              <button
-                onClick={() => onRemoveFilter(chip.type)}
-                className="ml-0.5 rounded-full p-0.5 hover:bg-black/10"
-              >
-                <X className="h-3 w-3" />
-              </button>
-            </>
-          )}
-        </span>
-      ))}
-    </div>
+                {chip.label}
+                <motion.button
+                  onClick={() => onRemoveFilter(chip.type)}
+                  className="flex h-5 w-5 items-center justify-center rounded-full transition-colors"
+                  style={{
+                    backgroundColor: `${chip.color}20`,
+                  }}
+                  whileHover={{ scale: 1.1, backgroundColor: `${chip.color}35` }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <X className="h-3 w-3" />
+                </motion.button>
+              </motion.span>
+            ))}
+          </AnimatePresence>
+        </div>
+      </div>
+    </motion.div>
   );
 }
 
@@ -694,36 +744,29 @@ function FachbereichAccordion({
   return (
     <motion.div
       className={`overflow-hidden rounded-lg border transition-colors ${
-        isSelected ? "border-transparent ring-2" : "border-border hover:border-border-subtle"
+        isSelected ? "border-transparent" : "border-border hover:border-border-subtle"
       }`}
       style={{
         ...(isSelected && {
-          ringColor: fachbereich.color,
-          backgroundColor: `${fachbereich.color}08`,
+          boxShadow: `0 0 0 2px ${fachbereich.color}`,
         }),
       }}
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: index * 0.03 }}
     >
-      {/* Header with color strip/background */}
+      {/* Header with subtle background color */}
       <motion.div
-        className="relative flex items-stretch"
+        className="relative flex items-center rounded-lg"
         style={{
-          backgroundColor: isSelected ? `${fachbereich.color}25` : undefined,
+          backgroundColor: isSelected ? `${fachbereich.color}20` : `${fachbereich.color}08`,
         }}
-        whileHover={{ x: 2 }}
+        whileHover={{
+          backgroundColor: isSelected ? `${fachbereich.color}25` : `${fachbereich.color}15`,
+          x: 2,
+        }}
         transition={{ duration: 0.15 }}
       >
-        {/* Color strip - expands when selected */}
-        <motion.div
-          className="flex-shrink-0"
-          style={{ backgroundColor: fachbereich.color }}
-          initial={false}
-          animate={{ width: isSelected ? 6 : 4 }}
-          transition={{ duration: 0.2 }}
-        />
-
         {/* Content */}
         <div className="flex flex-1 items-center">
           {/* Expand toggle - only show if there are subcategories */}
@@ -843,22 +886,16 @@ function KompetenzbereichItem({
       transition={{ delay: index * 0.02 }}
     >
       <motion.div
-        className="flex items-stretch"
+        className="flex items-center rounded-md"
         style={{
-          backgroundColor: isSelected ? `${fachbereichColor}20` : undefined,
+          backgroundColor: isSelected ? `${fachbereichColor}18` : `${fachbereichColor}06`,
         }}
-        whileHover={{ x: 2 }}
+        whileHover={{
+          backgroundColor: isSelected ? `${fachbereichColor}22` : `${fachbereichColor}12`,
+          x: 2,
+        }}
         transition={{ duration: 0.15 }}
       >
-        {/* Color strip - full height, visible when selected */}
-        <motion.div
-          className="flex-shrink-0"
-          style={{ backgroundColor: isSelected ? fachbereichColor : "transparent" }}
-          initial={false}
-          animate={{ width: isSelected ? 4 : 0 }}
-          transition={{ duration: 0.2 }}
-        />
-
         {/* Expand toggle - only show if there are children */}
         {hasChildren ? (
           <motion.button
@@ -891,6 +928,7 @@ function KompetenzbereichItem({
           <span
             className={`flex-1 truncate ${isSelected ? "font-medium" : ""}`}
             style={isSelected ? { color: fachbereichColor } : undefined}
+            title={kompetenzbereich.name}
           >
             {kompetenzbereich.name}
           </span>
@@ -918,24 +956,21 @@ function KompetenzbereichItem({
                     key={k.code}
                     className="overflow-hidden rounded"
                     style={{
-                      backgroundColor: isKompetenzSelected ? `${fachbereichColor}15` : undefined,
+                      backgroundColor: isKompetenzSelected
+                        ? `${fachbereichColor}15`
+                        : `${fachbereichColor}05`,
                     }}
                     initial={{ opacity: 0, x: -5 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: kIndex * 0.02 }}
-                    whileHover={{ x: 2 }}
+                    whileHover={{
+                      backgroundColor: isKompetenzSelected
+                        ? `${fachbereichColor}20`
+                        : `${fachbereichColor}10`,
+                      x: 2,
+                    }}
                   >
-                    <div className="flex items-stretch">
-                      {/* Color strip for kompetenz */}
-                      <motion.div
-                        className="flex-shrink-0"
-                        style={{
-                          backgroundColor: isKompetenzSelected ? fachbereichColor : "transparent",
-                        }}
-                        initial={false}
-                        animate={{ width: isKompetenzSelected ? 3 : 0 }}
-                        transition={{ duration: 0.2 }}
-                      />
+                    <div className="flex items-center">
                       <motion.button
                         onClick={() => onKompetenzSelect(k.code)}
                         className={`flex w-full items-center gap-2 px-2 py-1 text-left text-xs transition-colors ${
@@ -949,6 +984,7 @@ function KompetenzbereichItem({
                         <span
                           className={`flex-1 truncate ${isKompetenzSelected ? "font-medium" : ""}`}
                           style={isKompetenzSelected ? { color: fachbereichColor } : undefined}
+                          title={k.name}
                         >
                           {k.name}
                         </span>
