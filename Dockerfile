@@ -26,7 +26,7 @@ ENV SENTRY_SUPPRESS_UPLOADING_SOURCEMAPS=1
 COPY --from=deps /app/node_modules ./node_modules
 
 # Copy config files first (change less frequently)
-COPY package.json tsconfig.json next.config.ts postcss.config.mjs ./
+COPY package.json package-lock.json tsconfig.json next.config.ts postcss.config.mjs ./
 COPY prisma.config.ts sentry.*.config.ts ./
 COPY i18n ./i18n
 
@@ -52,6 +52,22 @@ COPY scripts ./scripts
 RUN --mount=type=cache,target=/app/.next/cache \
     npm run build
 
+# Prune node_modules to production dependencies only
+FROM base AS pruner
+WORKDIR /app
+
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/package-lock.json ./package-lock.json
+
+# Install production dependencies + tsx (needed for runtime scripts)
+# Use --ignore-scripts to skip husky prepare script (dev dependency)
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci --omit=dev --prefer-offline --ignore-scripts && \
+    npm install tsx --prefer-offline --ignore-scripts
+
+# Copy pre-generated Prisma client
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+
 # Production image
 FROM base AS runner
 WORKDIR /app
@@ -74,21 +90,8 @@ COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 COPY --from=builder /app/tsconfig.json ./tsconfig.json
 COPY --from=builder /app/lib ./lib
 
-# Copy pre-generated Prisma client from builder
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
-COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
-# Copy .bin symlinks for CLI tools (prisma, tsx)
-COPY --from=builder /app/node_modules/.bin ./node_modules/.bin
-
-# Copy runtime dependencies needed for migrations (tsx, dotenv, bcryptjs already in these)
-COPY --from=builder /app/node_modules/tsx ./node_modules/tsx
-COPY --from=builder /app/node_modules/dotenv ./node_modules/dotenv
-COPY --from=builder /app/node_modules/bcryptjs ./node_modules/bcryptjs
-# tsx dependencies
-COPY --from=builder /app/node_modules/esbuild ./node_modules/esbuild
-COPY --from=builder /app/node_modules/get-tsconfig ./node_modules/get-tsconfig
-COPY --from=builder /app/node_modules/resolve-pkg-maps ./node_modules/resolve-pkg-maps
+# Copy pruned node_modules with all production dependencies
+COPY --from=pruner /app/node_modules ./node_modules
 
 # Copy startup scripts with correct ownership
 COPY --from=builder --chown=nextjs:nodejs /app/scripts/start.sh ./start.sh
