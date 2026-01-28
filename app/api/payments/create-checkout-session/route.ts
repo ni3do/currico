@@ -229,7 +229,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Create pending transaction record
-    await prisma.transaction.create({
+    const transaction = await prisma.transaction.create({
       data: {
         buyer_id: isGuestCheckout ? null : userId,
         guest_email: isGuestCheckout ? guestEmail : null,
@@ -241,6 +241,14 @@ export async function POST(request: NextRequest) {
         seller_payout_amount: resource.price - applicationFeeAmount,
       },
     });
+
+    console.log("[PAYMENT] ========== CHECKOUT SESSION CREATED ==========");
+    console.log("[PAYMENT] Transaction ID:", transaction.id);
+    console.log("[PAYMENT] Stripe Session ID:", checkoutSession.id);
+    console.log("[PAYMENT] Resource ID:", resourceId);
+    console.log("[PAYMENT] Buyer ID:", userId);
+    console.log("[PAYMENT] Is Guest:", isGuestCheckout);
+    console.log("[PAYMENT] Amount:", resource.price);
 
     return NextResponse.json({
       checkoutUrl: checkoutSession.url,
