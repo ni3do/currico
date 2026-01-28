@@ -2,31 +2,35 @@
 
 ## Overview
 
-Integrate Stripe Connect with TWINT support for the Easy-Lehrer marketplace. The codebase already has Stripe fields in the Prisma schema - this plan covers the complete implementation from account setup to production deployment.
+Integrate Stripe Connect with TWINT support for the Currico marketplace. The codebase already has Stripe fields in the Prisma schema - this plan covers the complete implementation from account setup to production deployment.
 
 ---
 
 ## Part 1: Account & Provider Setup
 
 ### Step 1.1: Create Stripe Account
+
 - [ ] Sign up at https://dashboard.stripe.com/register
 - [ ] Complete business verification (Swiss company details)
 - [ ] Add bank account for receiving platform fees
 
 ### Step 1.2: Enable Stripe Connect
+
 - [ ] Go to Dashboard → Connect → Settings
 - [ ] Choose "Express" account type (recommended for marketplaces)
-- [ ] Configure branding (Easy-Lehrer logo, colors)
+- [ ] Configure branding (Currico logo, colors)
 - [ ] Set payout schedule preferences
 
 ### Step 1.3: Enable TWINT Payment Method
+
 - [ ] Go to Dashboard → Payments → Payment methods
 - [ ] Enable TWINT (requires Swiss Stripe account)
 - [ ] Configure TWINT display settings
 
 ### Step 1.4: Configure Webhooks
+
 - [ ] Go to Dashboard → Developers → Webhooks
-- [ ] Add endpoint: `https://easy-lehrer.ch/api/payments/webhook`
+- [ ] Add endpoint: `https://currico.ch/api/payments/webhook`
 - [ ] Select events:
   - `checkout.session.completed`
   - `payment_intent.succeeded`
@@ -36,10 +40,11 @@ Integrate Stripe Connect with TWINT support for the Easy-Lehrer marketplace. The
 - [ ] Copy webhook signing secret
 
 ### Step 1.5: Get API Keys
+
 - [ ] Copy test mode keys for development:
-  - `STRIPE_SECRET_KEY` (sk_test_...)
-  - `STRIPE_PUBLISHABLE_KEY` (pk_test_...)
-  - `STRIPE_WEBHOOK_SECRET` (whsec_...)
+  - `STRIPE_SECRET_KEY` (sk*test*...)
+  - `STRIPE_PUBLISHABLE_KEY` (pk*test*...)
+  - `STRIPE_WEBHOOK_SECRET` (whsec\_...)
 - [ ] Store production keys securely for deployment
 
 ---
@@ -47,6 +52,7 @@ Integrate Stripe Connect with TWINT support for the Easy-Lehrer marketplace. The
 ## Part 2: Environment Configuration
 
 ### Step 2.1: Add Environment Variables
+
 **File:** `.env` (and `.env.example`)
 
 ```env
@@ -65,6 +71,7 @@ NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
 ## Part 3: Backend Implementation
 
 ### Step 3.1: Create Stripe Client Utility
+
 **File:** `lib/stripe.ts`
 
 ```typescript
@@ -83,6 +90,7 @@ export function calculatePlatformFee(amountCents: number): number {
 ```
 
 ### Step 3.2: Create Checkout Session Endpoint
+
 **File:** `app/api/payments/create-checkout-session/route.ts`
 
 - Validates user authentication
@@ -96,6 +104,7 @@ export function calculatePlatformFee(amountCents: number): number {
 - Returns checkout session URL
 
 ### Step 3.3: Create Webhook Handler
+
 **File:** `app/api/payments/webhook/route.ts`
 
 - Verifies Stripe signature
@@ -106,14 +115,18 @@ export function calculatePlatformFee(amountCents: number): number {
 - Implements idempotency (check if already processed)
 
 ### Step 3.4: Create Seller Connect Endpoints
+
 **Files:**
+
 - `app/api/seller/connect/route.ts` - Create Connect account, generate onboarding link
 - `app/api/seller/connect/status/route.ts` - Check onboarding completion status
 
 ### Step 3.5: Add Rate Limit Configuration
+
 **File:** `lib/rateLimit.ts`
 
 Add new endpoints:
+
 ```typescript
 "payments:checkout": { limit: 10, windowMs: 60 * 1000 },
 "payments:webhook": { limit: 100, windowMs: 60 * 1000 },
@@ -125,6 +138,7 @@ Add new endpoints:
 ## Part 4: Frontend Implementation
 
 ### Step 4.1: Create Checkout Button Component
+
 **File:** `components/checkout/CheckoutButton.tsx`
 
 - Props: `resourceId`, `price`, `sellerStripeAccountId`
@@ -133,6 +147,7 @@ Add new endpoints:
 - Redirects to Stripe Checkout
 
 ### Step 4.2: Update Resource Detail Page
+
 **File:** `app/[locale]/resources/[id]/page.tsx` (line ~220)
 
 - Replace empty button with CheckoutButton component
@@ -140,11 +155,14 @@ Add new endpoints:
 - Handle already-purchased resources (show download instead)
 
 ### Step 4.3: Create Success/Cancel Pages
+
 **Files:**
+
 - `app/[locale]/checkout/success/page.tsx` - Thank you, download link
 - `app/[locale]/checkout/cancel/page.tsx` - Retry option
 
 ### Step 4.4: Update Seller Dashboard
+
 **File:** `app/[locale]/dashboard/seller/page.tsx`
 
 - Add Stripe Connect onboarding prompt if not connected
@@ -152,6 +170,7 @@ Add new endpoints:
 - Link to Stripe Express Dashboard
 
 ### Step 4.5: Add Seller Onboarding Component
+
 **File:** `components/seller/StripeConnectSetup.tsx`
 
 - Shows onboarding progress
@@ -165,16 +184,19 @@ Add new endpoints:
 The existing schema already includes necessary fields:
 
 **User model:**
+
 - `stripe_account_id` ✅
 - `stripe_onboarding_complete` ✅
 
 **Transaction model:**
+
 - `stripe_payment_intent_id` ✅
 - `stripe_checkout_session_id` ✅
 - `platform_fee_amount` ✅
 - `seller_payout_amount` ✅
 
 **Optional additions for production:**
+
 - Add `stripe_payout_id` to Transaction for settlement tracking
 - Add webhook event logging table for debugging
 
@@ -185,6 +207,7 @@ The existing schema already includes necessary fields:
 **Files:** `messages/de.json`, `messages/en.json`
 
 Add keys for:
+
 - Checkout flow messages
 - Payment method labels (Card, TWINT)
 - Success/error states
@@ -195,28 +218,33 @@ Add keys for:
 ## Part 7: Testing & Verification
 
 ### Step 7.1: Test Card Payments
+
 - Use test card: `4242 4242 4242 4242`
 - Verify Transaction created with COMPLETED status
 - Verify seller dashboard shows new sale
 - Verify buyer can access/download resource
 
 ### Step 7.2: Test TWINT Payments
+
 - Stripe test mode simulates TWINT flow
 - Verify redirect to TWINT and back
 - Verify same success flow as card
 
 ### Step 7.3: Test Webhook Handling
+
 - Use Stripe CLI: `stripe listen --forward-to localhost:3000/api/payments/webhook`
 - Trigger test events
 - Verify Transaction status updates
 
 ### Step 7.4: Test Seller Onboarding
+
 - Create test seller account
 - Complete Express onboarding flow
 - Verify `stripe_onboarding_complete` set to true
 - Test payout flow
 
 ### Step 7.5: Test Edge Cases
+
 - Purchase already-owned resource (should prevent)
 - Seller not onboarded (should show error)
 - Free resource (should bypass Stripe)
@@ -226,23 +254,23 @@ Add keys for:
 
 ## File Summary
 
-| File | Action |
-|------|--------|
-| `.env` | Add Stripe keys |
-| `lib/stripe.ts` | Create - Stripe client |
-| `lib/rateLimit.ts` | Modify - Add payment endpoints |
-| `app/api/payments/create-checkout-session/route.ts` | Create |
-| `app/api/payments/webhook/route.ts` | Create |
-| `app/api/seller/connect/route.ts` | Create |
-| `app/api/seller/connect/status/route.ts` | Create |
-| `components/checkout/CheckoutButton.tsx` | Create |
-| `components/seller/StripeConnectSetup.tsx` | Create |
-| `app/[locale]/resources/[id]/page.tsx` | Modify - Add checkout |
-| `app/[locale]/checkout/success/page.tsx` | Create |
-| `app/[locale]/checkout/cancel/page.tsx` | Create |
-| `app/[locale]/dashboard/seller/page.tsx` | Modify - Add Connect UI |
-| `messages/de.json` | Modify - Add translations |
-| `messages/en.json` | Modify - Add translations |
+| File                                                | Action                         |
+| --------------------------------------------------- | ------------------------------ |
+| `.env`                                              | Add Stripe keys                |
+| `lib/stripe.ts`                                     | Create - Stripe client         |
+| `lib/rateLimit.ts`                                  | Modify - Add payment endpoints |
+| `app/api/payments/create-checkout-session/route.ts` | Create                         |
+| `app/api/payments/webhook/route.ts`                 | Create                         |
+| `app/api/seller/connect/route.ts`                   | Create                         |
+| `app/api/seller/connect/status/route.ts`            | Create                         |
+| `components/checkout/CheckoutButton.tsx`            | Create                         |
+| `components/seller/StripeConnectSetup.tsx`          | Create                         |
+| `app/[locale]/resources/[id]/page.tsx`              | Modify - Add checkout          |
+| `app/[locale]/checkout/success/page.tsx`            | Create                         |
+| `app/[locale]/checkout/cancel/page.tsx`             | Create                         |
+| `app/[locale]/dashboard/seller/page.tsx`            | Modify - Add Connect UI        |
+| `messages/de.json`                                  | Modify - Add translations      |
+| `messages/en.json`                                  | Modify - Add translations      |
 
 ---
 

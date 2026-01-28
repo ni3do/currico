@@ -11,12 +11,16 @@ export interface Kompetenz {
   code: string;
   name: string;
   description?: string;
+  /** Handlungsaspekte / Themen (Detail) - stored but not displayed in navigation */
+  handlungsaspekte?: string[];
 }
 
 export interface Kompetenzbereich {
   code: string;
   name: string;
   kompetenzen: Kompetenz[];
+  /** Handlungsaspekte / Themen (Detail) - stored but not displayed in navigation */
+  handlungsaspekte?: string[];
 }
 
 export interface Fachbereich {

@@ -1,7 +1,7 @@
 import * as nodemailer from "nodemailer";
 import type { Transporter } from "nodemailer";
 
-const APP_NAME = "EasyLehrer";
+const APP_NAME = "Currico";
 
 let transporter: Transporter | null = null;
 

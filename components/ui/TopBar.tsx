@@ -5,6 +5,7 @@ import { signOut, useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { ChevronDown, ChevronRight } from "lucide-react";
 
 export default function TopBar() {
   const t = useTranslations("common");

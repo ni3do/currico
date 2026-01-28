@@ -2,14 +2,14 @@
 
 ## Implementation Status
 
-| Phase | Status |
-|-------|--------|
-| Phase 1: Install and Configure | Complete |
-| Phase 2: Create Message Files | Complete |
-| Phase 3: Restructure App Directory | Complete |
-| Phase 4: Update Components | In Progress |
-| Phase 5: Add Language Switcher | Complete |
-| Phase 6: Cleanup | Complete |
+| Phase                              | Status      |
+| ---------------------------------- | ----------- |
+| Phase 1: Install and Configure     | Complete    |
+| Phase 2: Create Message Files      | Complete    |
+| Phase 3: Restructure App Directory | Complete    |
+| Phase 4: Update Components         | In Progress |
+| Phase 5: Add Language Switcher     | Complete    |
+| Phase 6: Cleanup                   | Complete    |
 
 **Current State:** Core i18n infrastructure is in place. All pages migrated to `[locale]` structure. Locale switcher added to TopBar. Some components still need `useTranslations` conversion from `content.ts` pattern.
 
@@ -17,7 +17,7 @@
 
 ## Overview
 
-Add internationalization to Easy-Lehrer using `next-intl`, the recommended i18n library for Next.js App Router. This will migrate the existing `lib/content.ts` (German text) to JSON message files and enable locale-based routing.
+Add internationalization to Currico using `next-intl`, the recommended i18n library for Next.js App Router. This will migrate the existing `lib/content.ts` (German text) to JSON message files and enable locale-based routing.
 
 **Current state:** All German text centralized in `lib/content.ts`, some hardcoded strings in components.
 **Target state:** JSON translation files per locale, locale-prefixed routes (`/de/...`, `/en/...`), language switcher.
@@ -55,6 +55,7 @@ Add internationalization to Easy-Lehrer using `next-intl`, the recommended i18n 
    - Same structure, English translations (can start with placeholders)
 
 **Structure mirrors current content.ts:**
+
 ```
 {
   "common": { "brand", "navigation", "footer", "buttons" },
@@ -102,9 +103,10 @@ app/
    - Export locale-aware `Link`, `useRouter`, `usePathname`
 
 2. Update all components to use `useTranslations`:
+
    ```tsx
-   import { useTranslations } from 'next-intl';
-   const t = useTranslations('homePage');
+   import { useTranslations } from "next-intl";
+   const t = useTranslations("homePage");
    // {t('hero.title')} instead of {homePage.hero.title}
    ```
 
@@ -120,6 +122,7 @@ app/
 ## Phase 5: Add Language Switcher
 
 Create `components/ui/LocaleSwitcher.tsx`:
+
 - Dropdown to switch between locales
 - Add to TopBar component
 
@@ -134,16 +137,16 @@ Create `components/ui/LocaleSwitcher.tsx`:
 
 ## Critical Files to Modify
 
-| File | Change |
-|------|--------|
-| `next.config.ts` | Add next-intl plugin |
-| `app/layout.tsx` | Minimal wrapper (just `{children}`) |
-| `app/[locale]/layout.tsx` | New - locale provider, html lang attr |
-| `components/ui/TopBar.tsx` | Use `useTranslations`, add LocaleSwitcher |
-| `app/login/page.tsx` | Move to `[locale]/`, use translations |
-| `app/register/page.tsx` | Move to `[locale]/`, fix hardcoded strings |
-| `app/resources/page.tsx` | Move to `[locale]/`, use translations |
-| All other pages | Move to `[locale]/` folder |
+| File                       | Change                                     |
+| -------------------------- | ------------------------------------------ |
+| `next.config.ts`           | Add next-intl plugin                       |
+| `app/layout.tsx`           | Minimal wrapper (just `{children}`)        |
+| `app/[locale]/layout.tsx`  | New - locale provider, html lang attr      |
+| `components/ui/TopBar.tsx` | Use `useTranslations`, add LocaleSwitcher  |
+| `app/login/page.tsx`       | Move to `[locale]/`, use translations      |
+| `app/register/page.tsx`    | Move to `[locale]/`, fix hardcoded strings |
+| `app/resources/page.tsx`   | Move to `[locale]/`, use translations      |
+| All other pages            | Move to `[locale]/` folder                 |
 
 ---
 

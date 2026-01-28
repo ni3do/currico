@@ -1,6 +1,6 @@
 # Stripe Connect Architecture Guide
 
-This document explains how Stripe Connect works for the Easy-Lehrer marketplace, including account types, money flow, and the various processes involved.
+This document explains how Stripe Connect works for the Currico marketplace, including account types, money flow, and the various processes involved.
 
 ---
 
@@ -35,19 +35,19 @@ This removes the platform from being a "money transmitter" (which requires licen
 
 ### Why Use Connect Instead of Regular Stripe?
 
-| Regular Stripe | Stripe Connect |
-|----------------|----------------|
-| One merchant account | Multiple connected accounts |
-| You receive all money | Money splits automatically |
-| You handle payouts manually | Stripe handles payouts |
+| Regular Stripe                    | Stripe Connect                     |
+| --------------------------------- | ---------------------------------- |
+| One merchant account              | Multiple connected accounts        |
+| You receive all money             | Money splits automatically         |
+| You handle payouts manually       | Stripe handles payouts             |
 | You're responsible for seller KYC | Stripe handles seller verification |
-| Simple e-commerce | Marketplaces, platforms |
+| Simple e-commerce                 | Marketplaces, platforms            |
 
 ---
 
 ## Account Types Explained
 
-Stripe Connect offers three account types. Easy-Lehrer uses **Express**.
+Stripe Connect offers three account types. Currico uses **Express**.
 
 ### Express Accounts (Recommended)
 
@@ -83,7 +83,7 @@ Platform builds all UI and handles all verification. Maximum control, maximum re
 
 **Best for:** Large enterprises with dedicated compliance teams.
 
-### Why Express for Easy-Lehrer?
+### Why Express for Currico?
 
 - Teachers don't need to understand Stripe
 - Stripe handles Swiss compliance and tax requirements
@@ -98,7 +98,7 @@ Platform builds all UI and handles all verification. Maximum control, maximum re
 ```
 ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
 │    BUYER     │     │   PLATFORM   │     │    SELLER    │
-│  (Teacher)   │     │ (Easy-Lehrer)│     │  (Teacher)   │
+│  (Teacher)   │     │ (Currico)│     │  (Teacher)   │
 ├──────────────┤     ├──────────────┤     ├──────────────┤
 │              │     │              │     │              │
 │ Pays for     │────>│ Orchestrates │────>│ Receives     │
@@ -111,7 +111,7 @@ Platform builds all UI and handles all verification. Maximum control, maximum re
 └──────────────┘     └──────────────┘     └──────────────┘
 ```
 
-### Platform Account (Easy-Lehrer)
+### Platform Account (Currico)
 
 - The main Stripe account
 - Receives platform fees (15%)
@@ -166,7 +166,7 @@ Platform builds all UI and handles all verification. Maximum control, maximum re
 │   │          │ Platform Fee    │          │ Seller Payout   ││   │
 │   │          │ CHF 1.50 (15%)  │          │ CHF 7.91 (85%)  ││   │
 │   │          │                 │          │                 ││   │
-│   │          │ → Easy-Lehrer   │          │ → Teacher IBAN  ││   │
+│   │          │ → Currico   │          │ → Teacher IBAN  ││   │
 │   │          └─────────────────┘          └─────────────────┘│   │
 │   └─────────────────────────────────────────────────────────┘   │
 │                                                                  │
@@ -175,12 +175,12 @@ Platform builds all UI and handles all verification. Maximum control, maximum re
 
 ### Fee Breakdown
 
-| Component | Amount | Recipient |
-|-----------|--------|-----------|
-| Gross payment | CHF 10.00 | — |
-| Stripe processing | ~CHF 0.59 | Stripe |
-| Platform fee (15%) | CHF 1.50 | Easy-Lehrer |
-| Seller payout | CHF 7.91 | Teacher |
+| Component          | Amount    | Recipient |
+| ------------------ | --------- | --------- |
+| Gross payment      | CHF 10.00 | —         |
+| Stripe processing  | ~CHF 0.59 | Stripe    |
+| Platform fee (15%) | CHF 1.50  | Currico   |
+| Seller payout      | CHF 7.91  | Teacher   |
 
 **Note:** The 15% platform fee is calculated on the gross amount. Stripe fees come off the top before the split.
 
@@ -197,7 +197,7 @@ Platform builds all UI and handles all verification. Maximum control, maximum re
 │                                                                     │
 │  1. INITIATE CHECKOUT                                               │
 │     ┌──────────┐      ┌──────────────┐      ┌──────────┐           │
-│     │  Buyer   │ ──── │ Easy-Lehrer  │ ──── │  Stripe  │           │
+│     │  Buyer   │ ──── │ Currico  │ ──── │  Stripe  │           │
 │     │  clicks  │ POST │   creates    │ API  │  returns │           │
 │     │  "Buy"   │ ───> │   session    │ ───> │  URL     │           │
 │     └──────────┘      └──────────────┘      └──────────┘           │
@@ -218,7 +218,7 @@ Platform builds all UI and handles all verification. Maximum control, maximum re
 │                                                                     │
 │  3. CONFIRMATION                                                    │
 │     ┌──────────┐      ┌──────────────┐      ┌──────────┐           │
-│     │  Stripe  │ ──── │ Easy-Lehrer  │ ──── │  Buyer   │           │
+│     │  Stripe  │ ──── │ Currico  │ ──── │  Buyer   │           │
 │     │  sends   │ POST │   updates    │ ───> │ sees     │           │
 │     │ webhook  │ ───> │  database    │      │ success  │           │
 │     └──────────┘      └──────────────┘      └──────────┘           │
@@ -256,8 +256,8 @@ When creating a checkout session, we specify:
   },
 
   // Redirect URLs
-  success_url: 'https://easy-lehrer.ch/checkout/success?session_id={CHECKOUT_SESSION_ID}',
-  cancel_url: 'https://easy-lehrer.ch/resources/123',
+  success_url: 'https://currico.ch/checkout/success?session_id={CHECKOUT_SESSION_ID}',
+  cancel_url: 'https://currico.ch/resources/123',
 }
 ```
 
@@ -362,12 +362,8 @@ Webhooks are HTTP callbacks that Stripe sends to your server when events occur. 
 Webhooks must be verified to prevent fake events:
 
 ```javascript
-const sig = request.headers['stripe-signature'];
-const event = stripe.webhooks.constructEvent(
-  body,
-  sig,
-  process.env.STRIPE_WEBHOOK_SECRET
-);
+const sig = request.headers["stripe-signature"];
+const event = stripe.webhooks.constructEvent(body, sig, process.env.STRIPE_WEBHOOK_SECRET);
 ```
 
 ### Idempotency
@@ -377,10 +373,10 @@ Webhooks can be sent multiple times. Always check if already processed:
 ```javascript
 // Check if we already processed this event
 const existing = await prisma.transaction.findUnique({
-  where: { stripe_checkout_session_id: session.id }
+  where: { stripe_checkout_session_id: session.id },
 });
 
-if (existing?.status === 'COMPLETED') {
+if (existing?.status === "COMPLETED") {
   return; // Already processed, skip
 }
 ```
@@ -400,7 +396,7 @@ Before sellers can receive payments, they must complete Stripe's onboarding (KYC
 │                                                                     │
 │  1. INITIATE                                                        │
 │     ┌──────────────┐      ┌──────────────┐      ┌──────────────┐   │
-│     │   Seller     │      │ Easy-Lehrer  │      │    Stripe    │   │
+│     │   Seller     │      │ Currico  │      │    Stripe    │   │
 │     │   clicks     │ ──── │   creates    │ ──── │   returns    │   │
 │     │ "Connect"    │      │  Express     │      │  onboarding  │   │
 │     │              │      │  account     │      │    URL       │   │
@@ -421,7 +417,7 @@ Before sellers can receive payments, they must complete Stripe's onboarding (KYC
 │                                                        │            │
 │  3. VERIFICATION                                       ▼            │
 │     ┌──────────────┐      ┌──────────────┐      ┌──────────────┐   │
-│     │   Stripe     │      │ Easy-Lehrer  │      │   Seller     │   │
+│     │   Stripe     │      │ Currico  │      │   Seller     │   │
 │     │  verifies    │ ──── │   updates    │ ──── │   can now    │   │
 │     │   seller     │ hook │  database    │      │    sell      │   │
 │     └──────────────┘      └──────────────┘      └──────────────┘   │
@@ -435,9 +431,9 @@ Before sellers can receive payments, they must complete Stripe's onboarding (KYC
 // Check if seller can receive payments
 const account = await stripe.accounts.retrieve(seller.stripe_account_id);
 
-account.charges_enabled  // Can accept payments
-account.payouts_enabled  // Can receive payouts
-account.details_submitted // Completed onboarding form
+account.charges_enabled; // Can accept payments
+account.payouts_enabled; // Can receive payouts
+account.details_submitted; // Completed onboarding form
 
 // All three must be true for fully functional seller
 ```
@@ -447,8 +443,8 @@ account.details_submitted // Completed onboarding form
 ```javascript
 // Create Express account
 const account = await stripe.accounts.create({
-  type: 'express',
-  country: 'CH',
+  type: "express",
+  country: "CH",
   email: seller.email,
   capabilities: {
     card_payments: { requested: true },
@@ -459,9 +455,9 @@ const account = await stripe.accounts.create({
 // Generate onboarding link
 const accountLink = await stripe.accountLinks.create({
   account: account.id,
-  refresh_url: 'https://easy-lehrer.ch/seller/connect/refresh',
-  return_url: 'https://easy-lehrer.ch/seller/connect/complete',
-  type: 'account_onboarding',
+  refresh_url: "https://currico.ch/seller/connect/refresh",
+  return_url: "https://currico.ch/seller/connect/complete",
+  type: "account_onboarding",
 });
 
 // Redirect seller to accountLink.url
@@ -500,18 +496,18 @@ const accountLink = await stripe.accountLinks.create({
 
 Sellers can have different payout schedules:
 
-| Schedule | When |
-|----------|------|
-| Daily | Every business day |
-| Weekly | Every week (e.g., Monday) |
-| Monthly | Once per month |
-| Manual | Only when requested |
+| Schedule | When                      |
+| -------- | ------------------------- |
+| Daily    | Every business day        |
+| Weekly   | Every week (e.g., Monday) |
+| Monthly  | Once per month            |
+| Manual   | Only when requested       |
 
 For Express accounts, Stripe sets a default schedule (usually 2-day rolling).
 
 ### Platform Payouts
 
-The platform (Easy-Lehrer) receives its 15% fee separately:
+The platform (Currico) receives its 15% fee separately:
 
 - Accumulates in platform Stripe balance
 - Can set up automatic payouts to platform bank account
@@ -570,7 +566,7 @@ By default, Stripe fees come off the top before splitting. Options:
 2. **Platform pays:** Deduct Stripe fee from application_fee_amount
 3. **Buyer pays:** Add Stripe fee to the price
 
-Easy-Lehrer uses the default approach.
+Currico uses the default approach.
 
 ---
 
@@ -601,14 +597,14 @@ Easy-Lehrer uses the default approach.
 ```javascript
 // Full refund, including platform fee
 await stripe.refunds.create({
-  payment_intent: 'pi_xxx',
-  refund_application_fee: true,  // Platform also refunded
+  payment_intent: "pi_xxx",
+  refund_application_fee: true, // Platform also refunded
 });
 
 // Full refund, platform keeps fee
 await stripe.refunds.create({
-  payment_intent: 'pi_xxx',
-  refund_application_fee: false,  // Platform keeps 15%
+  payment_intent: "pi_xxx",
+  refund_application_fee: false, // Platform keeps 15%
 });
 ```
 
@@ -628,17 +624,17 @@ When a buyer disputes a charge with their bank:
 
 ## Glossary
 
-| Term | Definition |
-|------|------------|
+| Term                  | Definition                                             |
+| --------------------- | ------------------------------------------------------ |
 | **Connected Account** | Seller's Stripe Express account linked to the platform |
-| **Platform Account** | Easy-Lehrer's main Stripe account |
-| **Application Fee** | Platform's commission (15%) taken from each payment |
-| **Payment Intent** | Stripe object representing a payment attempt |
-| **Checkout Session** | Stripe-hosted payment page |
-| **Webhook** | HTTP callback sent by Stripe when events occur |
-| **Payout** | Transfer from Stripe balance to bank account |
-| **KYC** | Know Your Customer - identity verification |
-| **Express Dashboard** | Stripe-hosted dashboard for sellers to view earnings |
+| **Platform Account**  | Currico's main Stripe account                          |
+| **Application Fee**   | Platform's commission (15%) taken from each payment    |
+| **Payment Intent**    | Stripe object representing a payment attempt           |
+| **Checkout Session**  | Stripe-hosted payment page                             |
+| **Webhook**           | HTTP callback sent by Stripe when events occur         |
+| **Payout**            | Transfer from Stripe balance to bank account           |
+| **KYC**               | Know Your Customer - identity verification             |
+| **Express Dashboard** | Stripe-hosted dashboard for sellers to view earnings   |
 
 ---
 

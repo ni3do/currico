@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { FileText, Users } from "lucide-react";
+import { getSubjectPillClass as defaultGetSubjectPillClass } from "@/lib/constants/subject-colors";
 
 export interface ProfileCardProps {
   id: string;
@@ -16,22 +17,6 @@ export interface ProfileCardProps {
   /** Custom pill class getter function */
   getSubjectPillClass?: (subject: string) => string;
 }
-
-const defaultGetSubjectPillClass = (subject: string): string => {
-  const subjectMap: Record<string, string> = {
-    Deutsch: "pill-deutsch",
-    Mathematik: "pill-mathe",
-    NMG: "pill-nmg",
-    BG: "pill-gestalten",
-    Musik: "pill-musik",
-    Sport: "pill-sport",
-    Englisch: "pill-fremdsprachen",
-    Franzosisch: "pill-fremdsprachen",
-    French: "pill-fremdsprachen",
-    English: "pill-fremdsprachen",
-  };
-  return subjectMap[subject] || "pill-primary";
-};
 
 export function ProfileCard({
   id,

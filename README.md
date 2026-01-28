@@ -1,4 +1,4 @@
-# EasyLehrer
+# Currico
 
 Marktplatz für Unterrichtsmaterialien für Schweizer Lehrpersonen
 
