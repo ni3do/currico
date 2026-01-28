@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 FROM node:20-alpine AS base
-RUN apk add --no-cache libc6-compat openssl
+RUN apk add --no-cache libc6-compat openssl su-exec
 
 # Install dependencies only when needed
 FROM base AS deps
@@ -73,8 +73,12 @@ COPY --from=builder /app/instrumentation.ts ./instrumentation.ts
 # Set final ownership
 RUN chown -R nextjs:nodejs /app
 
-USER nextjs
+# Copy the entrypoint script that handles volume permissions
+COPY --from=builder /app/scripts/entrypoint.sh ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh
 
 EXPOSE 3000
 
+# Run entrypoint as root to fix permissions, then drop to nextjs
+ENTRYPOINT ["./entrypoint.sh"]
 CMD ["./start.sh"]
