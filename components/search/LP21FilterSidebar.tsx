@@ -20,12 +20,13 @@ import {
   Loader2,
   Palette,
 } from "lucide-react";
-import { useCurriculum, ZYKLEN } from "@/lib/hooks/useCurriculum";
+import { useCurriculum } from "@/lib/hooks/useCurriculum";
 import { FACHBEREICH_ICONS } from "@/lib/constants/subject-icons";
 import type {
   Fachbereich,
   Kompetenzbereich,
   Kompetenz,
+  Zyklus,
   CurriculumSearchResult,
 } from "@/lib/curriculum-types";
 
@@ -397,6 +398,7 @@ export function LP21FilterSidebar({
           <ActiveFilterChips
             filters={filters}
             fachbereiche={fachbereiche}
+            zyklen={zyklen}
             onRemoveFilter={handleRemoveFilter}
           />
         )}
@@ -451,7 +453,11 @@ export function LP21FilterSidebar({
         </div>
 
         {/* Zyklus Toggle */}
-        <ZyklusToggle selectedZyklus={filters.zyklus} onZyklusChange={handleZyklusChange} />
+        <ZyklusToggle
+          zyklen={zyklen}
+          selectedZyklus={filters.zyklus}
+          onZyklusChange={handleZyklusChange}
+        />
 
         <div className="divider my-5" />
 
@@ -516,16 +522,17 @@ export function LP21FilterSidebar({
 
 // ============ ZYKLUS TOGGLE ============
 interface ZyklusToggleProps {
+  zyklen: Zyklus[];
   selectedZyklus: number | null;
   onZyklusChange: (zyklus: number | null) => void;
 }
 
-function ZyklusToggle({ selectedZyklus, onZyklusChange }: ZyklusToggleProps) {
+function ZyklusToggle({ zyklen, selectedZyklus, onZyklusChange }: ZyklusToggleProps) {
   return (
     <div>
       <h3 className="label-meta mb-3">Zyklus</h3>
       <div className="flex gap-2">
-        {ZYKLEN.map((zyklus, index) => {
+        {zyklen.map((zyklus, index) => {
           const isActive = selectedZyklus === zyklus.id;
           return (
             <motion.button
@@ -572,10 +579,16 @@ function ZyklusToggle({ selectedZyklus, onZyklusChange }: ZyklusToggleProps) {
 interface ActiveFilterChipsProps {
   filters: LP21FilterState;
   fachbereiche: Fachbereich[];
+  zyklen: Zyklus[];
   onRemoveFilter: (type: "zyklus" | "fachbereich" | "kompetenzbereich" | "kompetenz") => void;
 }
 
-function ActiveFilterChips({ filters, fachbereiche, onRemoveFilter }: ActiveFilterChipsProps) {
+function ActiveFilterChips({
+  filters,
+  fachbereiche,
+  zyklen,
+  onRemoveFilter,
+}: ActiveFilterChipsProps) {
   const chips: {
     type: "zyklus" | "fachbereich" | "kompetenzbereich" | "kompetenz";
     label: string;
@@ -583,7 +596,7 @@ function ActiveFilterChips({ filters, fachbereiche, onRemoveFilter }: ActiveFilt
   }[] = [];
 
   if (filters.zyklus !== null) {
-    const zyklus = ZYKLEN.find((z) => z.id === filters.zyklus);
+    const zyklus = zyklen.find((z) => z.id === filters.zyklus);
     if (zyklus) {
       chips.push({ type: "zyklus", label: zyklus.name });
     }

@@ -6,9 +6,6 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronRight } from "lucide-react";
-import { FACHBEREICHE, ZYKLEN } from "@/lib/data/lehrplan21";
-import { FACHBEREICH_ICONS } from "@/lib/constants/subject-icons";
-import type { Fachbereich, Kompetenzbereich } from "@/lib/curriculum-types";
 
 export default function TopBar() {
   const t = useTranslations("common");

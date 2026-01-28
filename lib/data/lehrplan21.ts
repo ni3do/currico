@@ -1,11 +1,8 @@
 /**
  * Lehrplan 21 Data Structure
  *
- * This file contains the static LP21 curriculum data used for:
- * 1. Seeding the database (prisma/seed-curriculum.ts)
- * 2. Fallback when API is unavailable
- *
- * For runtime use, prefer fetching from the API via useCurriculum hook.
+ * This file contains the static LP21 curriculum data used ONLY for seeding the database.
+ * All runtime access should go through the API via useCurriculum hook.
  *
  * Hierarchical structure:
  * - Level 1: Fachbereich (Subject Area)
@@ -20,32 +17,7 @@
 // Re-export types from the centralized types file
 export type { Kompetenz, Kompetenzbereich, Fachbereich, Zyklus } from "../curriculum-types";
 
-import type { Fachbereich, Zyklus, Kompetenzbereich, Kompetenz } from "../curriculum-types";
-
-// Zyklen (Cycles) - Static data, doesn't need to be in DB
-export const ZYKLEN: Zyklus[] = [
-  {
-    id: 1,
-    name: "Zyklus 1",
-    shortName: "Z1",
-    grades: ["KG", "1", "2"],
-    description: "Kindergarten – 2. Klasse",
-  },
-  {
-    id: 2,
-    name: "Zyklus 2",
-    shortName: "Z2",
-    grades: ["3", "4", "5", "6"],
-    description: "3. – 6. Klasse",
-  },
-  {
-    id: 3,
-    name: "Zyklus 3",
-    shortName: "Z3",
-    grades: ["7", "8", "9"],
-    description: "7. – 9. Klasse",
-  },
-];
+import type { Fachbereich, Kompetenzbereich, Kompetenz } from "../curriculum-types";
 
 // Fachbereiche with full LP21 hierarchy
 // Each subject has a unique color from the Catppuccin Latte palette

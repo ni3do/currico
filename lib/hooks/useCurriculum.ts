@@ -7,10 +7,6 @@ import type {
   CurriculumFilterResponse,
   CurriculumSearchResult,
 } from "@/lib/curriculum-types";
-import { FACHBEREICHE as STATIC_FACHBEREICHE, ZYKLEN } from "@/lib/data/lehrplan21";
-
-// Re-export ZYKLEN for backwards compatibility
-export { ZYKLEN } from "@/lib/data/lehrplan21";
 
 interface UseCurriculumOptions {
   cycle?: number;
@@ -33,6 +29,7 @@ const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 export function useCurriculum(options?: UseCurriculumOptions): UseCurriculumReturn {
   const [fachbereiche, setFachbereiche] = useState<Fachbereich[]>([]);
+  const [zyklen, setZyklen] = useState<Zyklus[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const fetchedRef = useRef(false);
@@ -46,6 +43,7 @@ export function useCurriculum(options?: UseCurriculumOptions): UseCurriculumRetu
       const now = Date.now();
       if (cachedData && now - cacheTimestamp < CACHE_DURATION) {
         setFachbereiche(cachedData.fachbereiche);
+        setZyklen(cachedData.zyklen);
         setLoading(false);
         return;
       }
@@ -69,12 +67,11 @@ export function useCurriculum(options?: UseCurriculumOptions): UseCurriculumRetu
         cacheTimestamp = Date.now();
 
         setFachbereiche(data.fachbereiche);
+        setZyklen(data.zyklen);
         setError(null);
       } catch (err) {
-        // Fallback to static data when API fails (e.g., database not seeded)
-        console.warn("Error fetching curriculum from API, falling back to static data:", err);
-        setFachbereiche(STATIC_FACHBEREICHE);
-        setError(null);
+        console.error("Error fetching curriculum from API:", err);
+        setError(err instanceof Error ? err : new Error("Failed to fetch curriculum"));
       } finally {
         setLoading(false);
       }
@@ -153,7 +150,7 @@ export function useCurriculum(options?: UseCurriculumOptions): UseCurriculumRetu
 
   return {
     fachbereiche,
-    zyklen: ZYKLEN,
+    zyklen,
     loading,
     error,
     getFachbereicheByZyklus,
