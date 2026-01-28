@@ -9,6 +9,7 @@ import Footer from "@/components/ui/Footer";
 import { ResourceCard } from "@/components/ui/ResourceCard";
 import { CurriculumBox } from "@/components/curriculum";
 import { LP21Badge } from "@/components/curriculum/LP21Badge";
+import { CheckoutButton } from "@/components/checkout/CheckoutButton";
 
 interface Competency {
   id: string;
@@ -425,17 +426,22 @@ export default function ResourceDetailPage() {
                 >
                   {resource.priceFormatted}
                 </div>
-                <button
-                  onClick={resource.price === 0 ? handleDownload : undefined}
-                  disabled={downloading}
-                  className="btn-primary flex-1 px-8 py-4 disabled:opacity-50"
-                >
-                  {downloading
-                    ? "Wird heruntergeladen..."
-                    : resource.price === 0
-                      ? "Kostenlos herunterladen"
-                      : "Jetzt kaufen"}
-                </button>
+                {resource.price === 0 ? (
+                  <button
+                    onClick={handleDownload}
+                    disabled={downloading}
+                    className="btn-primary flex-1 px-8 py-4 disabled:opacity-50"
+                  >
+                    {downloading ? "Wird heruntergeladen..." : "Kostenlos herunterladen"}
+                  </button>
+                ) : (
+                  <CheckoutButton
+                    resourceId={resource.id}
+                    price={resource.price}
+                    priceFormatted={resource.priceFormatted}
+                    className="flex-1"
+                  />
+                )}
                 <button
                   onClick={handleWishlistToggle}
                   disabled={wishlistLoading}
