@@ -3,22 +3,7 @@
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { Download, Eye, Trash2, ShoppingCart, FileText } from "lucide-react";
-
-// Get subject color for eyebrow tag
-function getSubjectColor(subject: string): string {
-  const colorMap: Record<string, string> = {
-    Deutsch: "text-subject-deutsch",
-    Mathematik: "text-subject-mathe",
-    NMG: "text-subject-nmg",
-    BG: "text-subject-gestalten",
-    Musik: "text-subject-musik",
-    Sport: "text-subject-sport",
-    Englisch: "text-subject-fremdsprachen",
-    Französisch: "text-subject-fremdsprachen",
-    "Medien und Informatik": "text-subject-medien",
-  };
-  return colorMap[subject] || "text-text-muted";
-}
+import { getSubjectTextColorByName } from "@/lib/constants/subject-colors";
 
 export interface DashboardResourceCardProps {
   id: string;
@@ -185,7 +170,7 @@ export function DashboardResourceCard({
         {/* Subject + Cycle Eyebrow */}
         <div className="mb-2">
           <span
-            className={`text-xs font-semibold tracking-wide uppercase ${getSubjectColor(subject)}`}
+            className={`text-xs font-semibold tracking-wide uppercase ${getSubjectTextColorByName(subject)}`}
           >
             {subject}
             {cycle && (

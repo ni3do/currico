@@ -1,4 +1,4 @@
-# OAuth Integration Plan for Easy-Lehrer
+# OAuth Integration Plan for Currico
 
 ## Executive Summary
 
@@ -8,43 +8,44 @@
 
 ### Already Implemented (just need credentials)
 
-| Provider | Status | Environment Variables |
-|----------|--------|----------------------|
-| Google OAuth | Code ready | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` |
+| Provider           | Status     | Environment Variables                                                   |
+| ------------------ | ---------- | ----------------------------------------------------------------------- |
+| Google OAuth       | Code ready | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`                              |
 | Microsoft Entra ID | Code ready | `MICROSOFT_CLIENT_ID`, `MICROSOFT_CLIENT_SECRET`, `MICROSOFT_TENANT_ID` |
 
 Files involved:
+
 - `lib/auth.ts:20-30` - Provider configuration
 - `app/[locale]/login/page.tsx` - Google button
 - `app/[locale]/register/page.tsx` - Google + Microsoft buttons
 
 ### Needs Implementation
 
-| Provider | Protocol | Effort |
-|----------|----------|--------|
+| Provider      | Protocol                       | Effort  |
+| ------------- | ------------------------------ | ------- |
 | Switch edu-ID | OIDC (authorization code flow) | ~1 hour |
 
 ---
 
 ## Issues Found in Current Implementation
 
-| Issue | Location | Problem | Fix |
-|-------|----------|---------|-----|
-| Wrong provider ID | `register/page.tsx:289` | Uses `signIn("azure-ad")` but provider is `microsoft-entra-id` | Change to `signIn("microsoft-entra-id")` |
-| Missing Microsoft button | `login/page.tsx` | Only shows Google, inconsistent with register page | Add Microsoft button |
-| Missing edu-ID | All auth files | Not yet implemented | Add provider + UI |
+| Issue                    | Location                | Problem                                                        | Fix                                      |
+| ------------------------ | ----------------------- | -------------------------------------------------------------- | ---------------------------------------- |
+| Wrong provider ID        | `register/page.tsx:289` | Uses `signIn("azure-ad")` but provider is `microsoft-entra-id` | Change to `signIn("microsoft-entra-id")` |
+| Missing Microsoft button | `login/page.tsx`        | Only shows Google, inconsistent with register page             | Add Microsoft button                     |
+| Missing edu-ID           | All auth files          | Not yet implemented                                            | Add provider + UI                        |
 
 ---
 
 ## Implementation Decisions
 
-| Decision | Choice |
-|----------|--------|
+| Decision            | Choice                                  |
+| ------------------- | --------------------------------------- |
 | Providers to enable | Google + Microsoft + edu-ID (all three) |
-| Pages with OAuth | Both login AND register pages |
-| Button order | Google → Microsoft → edu-ID |
-| edu-ID logo | Official Switch edu-ID logo |
-| edu-ID setup | Add code now (ready for credentials) |
+| Pages with OAuth    | Both login AND register pages           |
+| Button order        | Google → Microsoft → edu-ID             |
+| edu-ID logo         | Official Switch edu-ID logo             |
+| edu-ID setup        | Add code now (ready for credentials)    |
 
 ---
 
@@ -110,19 +111,19 @@ Files involved:
 
 ### Files to Modify (6)
 
-| File | Changes |
-|------|---------|
-| `lib/auth.ts` | Add EduID provider function + register in array |
-| `app/[locale]/login/page.tsx` | Add Microsoft + edu-ID buttons |
-| `app/[locale]/register/page.tsx` | Fix Microsoft ID, add edu-ID button |
-| `messages/de.json` | Add Microsoft (if missing) + edu-ID translations |
-| `messages/en.json` | Add Microsoft (if missing) + edu-ID translations |
-| `.env.example` | Add edu-ID environment variables |
+| File                             | Changes                                          |
+| -------------------------------- | ------------------------------------------------ |
+| `lib/auth.ts`                    | Add EduID provider function + register in array  |
+| `app/[locale]/login/page.tsx`    | Add Microsoft + edu-ID buttons                   |
+| `app/[locale]/register/page.tsx` | Fix Microsoft ID, add edu-ID button              |
+| `messages/de.json`               | Add Microsoft (if missing) + edu-ID translations |
+| `messages/en.json`               | Add Microsoft (if missing) + edu-ID translations |
+| `.env.example`                   | Add edu-ID environment variables                 |
 
 ### Files to Create (1)
 
-| File | Content |
-|------|---------|
+| File                    | Content                     |
+| ----------------------- | --------------------------- |
 | `public/eduid-logo.svg` | Official Switch edu-ID logo |
 
 ---
@@ -137,7 +138,7 @@ Files involved:
 4. Click **Create Credentials > OAuth client ID**
 5. Select **Web application**
 6. Configure:
-   - **Name:** Easy-Lehrer
+   - **Name:** Currico
    - **Authorized JavaScript origins:**
      - `http://localhost:3000` (dev)
      - `https://your-production-domain.ch` (prod)
@@ -165,7 +166,7 @@ Add same variables to Dokploy production environment.
 2. Navigate to **Azure Active Directory > App registrations**
 3. Click **New registration**
 4. Configure:
-   - **Name:** Easy-Lehrer
+   - **Name:** Currico
    - **Supported account types:** "Accounts in any organizational directory and personal Microsoft accounts"
    - **Redirect URI:** Web - `http://localhost:3000/api/auth/callback/microsoft-entra-id`
 
@@ -226,9 +227,7 @@ function EduID(): OIDCConfig<{
   email_verified?: boolean;
 }> {
   const isTest = process.env.EDUID_USE_TEST === "true";
-  const baseUrl = isTest
-    ? "https://login.test.eduid.ch"
-    : "https://login.eduid.ch";
+  const baseUrl = isTest ? "https://login.test.eduid.ch" : "https://login.eduid.ch";
 
   return {
     id: "eduid",
@@ -283,18 +282,8 @@ EDUID_USE_TEST="true"  # Set to "false" for production
 Add edu-ID sign-in button alongside Google/Microsoft:
 
 ```tsx
-<Button
-  variant="outline"
-  className="w-full"
-  onClick={() => signIn("eduid", { callbackUrl: "/" })}
->
-  <Image
-    src="/eduid-logo.svg"
-    alt="edu-ID"
-    width={20}
-    height={20}
-    className="mr-2"
-  />
+<Button variant="outline" className="w-full" onClick={() => signIn("eduid", { callbackUrl: "/" })}>
+  <Image src="/eduid-logo.svg" alt="edu-ID" width={20} height={20} className="mr-2" />
   {t("continueWithEduID")}
 </Button>
 ```
@@ -302,6 +291,7 @@ Add edu-ID sign-in button alongside Google/Microsoft:
 ### Step 3.5: Add Translations
 
 **File:** `messages/de.json`
+
 ```json
 {
   "continueWithEduID": "Mit edu-ID fortfahren"
@@ -309,6 +299,7 @@ Add edu-ID sign-in button alongside Google/Microsoft:
 ```
 
 **File:** `messages/en.json`
+
 ```json
 {
   "continueWithEduID": "Continue with edu-ID"
@@ -319,38 +310,42 @@ Add edu-ID sign-in button alongside Google/Microsoft:
 
 ## Files to Modify
 
-| File | Change |
-|------|--------|
-| `lib/auth.ts` | Add EduID provider function and include in providers array |
-| `.env.example` | Add `EDUID_CLIENT_ID`, `EDUID_CLIENT_SECRET`, `EDUID_USE_TEST` |
-| `app/[locale]/login/page.tsx` | Add edu-ID button |
-| `app/[locale]/register/page.tsx` | Add edu-ID button |
-| `messages/de.json` | Add translation |
-| `messages/en.json` | Add translation |
-| `public/eduid-logo.svg` | Add Switch edu-ID logo |
+| File                             | Change                                                         |
+| -------------------------------- | -------------------------------------------------------------- |
+| `lib/auth.ts`                    | Add EduID provider function and include in providers array     |
+| `.env.example`                   | Add `EDUID_CLIENT_ID`, `EDUID_CLIENT_SECRET`, `EDUID_USE_TEST` |
+| `app/[locale]/login/page.tsx`    | Add edu-ID button                                              |
+| `app/[locale]/register/page.tsx` | Add edu-ID button                                              |
+| `messages/de.json`               | Add translation                                                |
+| `messages/en.json`               | Add translation                                                |
+| `public/eduid-logo.svg`          | Add Switch edu-ID logo                                         |
 
 ---
 
 ## Verification
 
 ### Google OAuth
+
 1. Add credentials to `.env`
 2. Run `docker compose up`
 3. Click "Continue with Google" on login page
 4. Verify redirect to Google, then back to app with session
 
 ### Microsoft OAuth
+
 1. Add credentials to `.env`
 2. Click "Continue with Microsoft" on register page
 3. Verify redirect to Microsoft, then back to app with session
 
 ### edu-ID (after implementation)
+
 1. Register test app at SWITCH Resource Registry
 2. Set `EDUID_USE_TEST=true` with test credentials
 3. Click "Continue with edu-ID"
 4. Verify redirect to `login.test.eduid.ch`, then back with session
 
 ### Account Linking
+
 1. Login with Google
 2. Logout
 3. Login with edu-ID using same email

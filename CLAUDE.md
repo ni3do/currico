@@ -2,7 +2,7 @@
 
 ## Project
 
-Easy-Lehrer: Swiss platform for teachers to buy, sell, and share teaching materials.
+Currico: Swiss platform for teachers to buy, sell, and share teaching materials.
 
 ## Stack
 
@@ -41,5 +41,6 @@ Deployed via Dokploy. Uses `Dockerfile` with multi-stage build.
 ## Specs
 
 See `spec/index.md` for feature documentation. Key files:
+
 - `spec/features.md` - All features organized by implementation status
 - `spec/design-system.md` - Catppuccin theme tokens and components

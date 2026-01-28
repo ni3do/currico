@@ -7,7 +7,7 @@ Add a simple test user to the database for development/testing purposes.
 Run this command to create a test user via docker exec:
 
 ```bash
-docker exec easy-lehrer-db psql -U postgres -d easy_lehrer -c "
+docker exec currico-db psql -U postgres -d currico -c "
 INSERT INTO users (
   id,
   email,
@@ -45,6 +45,7 @@ INSERT INTO users (
 ```
 
 This creates a test user with:
+
 - **Email:** test@test.com
 - **Password:** test (bcrypt hashed)
 - **Display Name:** Test User

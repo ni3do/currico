@@ -28,9 +28,12 @@ export const publicUserSelect = {
   subjects: true,
   cycles: true,
   cantons: true,
+  instagram: true,
+  pinterest: true,
   role: true,
   stripe_charges_enabled: true, // Show if seller can receive payments
   created_at: true,
+  is_private: true,
 } as const;
 
 // Private profile - visible only to the user themselves
@@ -43,6 +46,16 @@ export const privateUserSelect = {
   stripe_onboarding_complete: true,
   stripe_payouts_enabled: true,
   seller_terms_accepted_at: true,
+  // Notification preferences
+  notify_new_from_followed: true,
+  notify_recommendations: true,
+  notify_material_updates: true,
+  notify_review_reminders: true,
+  notify_wishlist_price_drops: true,
+  notify_welcome_offers: true,
+  notify_sales: true,
+  notify_newsletter: true,
+  notify_platform_updates: true,
 } as const;
 
 // Admin view - full access

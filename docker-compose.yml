@@ -2,11 +2,11 @@ services:
   # MySQL Database
   db:
     image: mysql:8.0
-    container_name: easy-lehrer-db
+    container_name: currico-db
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-easy_lehrer}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-currico}
       MYSQL_USER: ${MYSQL_USER:-mysql}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-mysql}
     ports:
@@ -24,13 +24,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    container_name: easy-lehrer-app
+    container_name: currico-app
     restart: unless-stopped
     environment:
       - NODE_ENV=development
       - APP_ENV=development
       # Use root for dev to allow shadow database creation for migrations
-      - DATABASE_URL=mysql://root:${MYSQL_ROOT_PASSWORD:-rootpassword}@db:3306/${MYSQL_DATABASE:-easy_lehrer}
+      - DATABASE_URL=mysql://root:${MYSQL_ROOT_PASSWORD:-rootpassword}@db:3306/${MYSQL_DATABASE:-currico}
       - NEXT_TELEMETRY_DISABLED=1
       - AUTH_SECRET=${AUTH_SECRET}
       - AUTH_URL=${AUTH_URL:-http://localhost:3000}
@@ -49,6 +49,6 @@ services:
 
 volumes:
   mysql_data:
-    name: easy-lehrer-mysql-data
+    name: currico-mysql-data
   next_cache:
-    name: easy-lehrer-next-cache
+    name: currico-next-cache

@@ -54,6 +54,37 @@ export async function GET(
       isFollowing = !!follow;
     }
 
+    const isOwnProfile = currentUserId === id;
+
+    // If profile is private and it's not the user's own profile, hide extra info
+    if (user.is_private && !isOwnProfile) {
+      return NextResponse.json({
+        id: user.id,
+        name: user.name,
+        display_name: user.display_name,
+        image: user.image,
+        role: user.role,
+        created_at: user.created_at,
+        is_private: true,
+        // Hide these fields for private profiles
+        bio: null,
+        subjects: [],
+        cycles: [],
+        cantons: [],
+        instagram: null,
+        pinterest: null,
+        stripe_charges_enabled: user.stripe_charges_enabled,
+        stats: {
+          resourceCount: user._count.resources,
+          followerCount: 0, // Hide follower count
+          followingCount: 0, // Hide following count
+          collectionCount: 0, // Hide collection count
+        },
+        isFollowing,
+        isOwnProfile: false,
+      });
+    }
+
     return NextResponse.json({
       ...user,
       stats: {
@@ -63,7 +94,7 @@ export async function GET(
         collectionCount: user._count.collections,
       },
       isFollowing,
-      isOwnProfile: currentUserId === id,
+      isOwnProfile,
     });
   } catch (error) {
     console.error("Error fetching public profile:", error);

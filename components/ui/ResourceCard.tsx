@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
+import { getSubjectTextColor } from "@/lib/constants/subject-colors";
 
 export interface ResourceCardProps {
   id: string;
@@ -46,21 +47,6 @@ export function ResourceCard({
   const linkHref = href ?? `/resources/${id}`;
   const isFree = priceFormatted === "Gratis" || priceFormatted === "Free";
   const shouldShowPriceBadge = showPriceBadge && priceFormatted;
-
-  // Get subject color for eyebrow tag
-  const getSubjectColor = (pillClass?: string): string => {
-    const colorMap: Record<string, string> = {
-      "pill-deutsch": "text-subject-deutsch",
-      "pill-mathe": "text-subject-mathe",
-      "pill-nmg": "text-subject-nmg",
-      "pill-gestalten": "text-subject-gestalten",
-      "pill-musik": "text-subject-musik",
-      "pill-sport": "text-subject-sport",
-      "pill-fremdsprachen": "text-subject-fremdsprachen",
-      "pill-medien": "text-subject-medien",
-    };
-    return colorMap[pillClass ?? ""] || "text-text-muted";
-  };
 
   const cardContent = (
     <>
@@ -108,7 +94,7 @@ export function ResourceCard({
         {/* Eyebrow Tag - Subject & Level */}
         <div className={`${isCompact ? "mb-2" : "mb-3"}`}>
           <span
-            className={`text-xs font-semibold tracking-wide uppercase ${getSubjectColor(subjectPillClass)}`}
+            className={`text-xs font-semibold tracking-wide uppercase ${getSubjectTextColor(subjectPillClass)}`}
           >
             {subject}
             {cycle && (

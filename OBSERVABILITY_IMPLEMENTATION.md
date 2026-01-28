@@ -8,7 +8,8 @@
 
 ## Overview
 
-This plan adds production-grade observability to Easy-Lehrer:
+This plan adds production-grade observability to Currico:
+
 - **OpenTelemetry** for distributed tracing and RED metrics
 - **Sentry** for error tracking (client + server + edge)
 - **Prometheus** endpoint for metrics scraping
@@ -20,6 +21,7 @@ This plan adds production-grade observability to Easy-Lehrer:
 ## Current State Analysis
 
 ### Existing Infrastructure
+
 - **Framework:** Next.js 16 (App Router, Turbopack, `output: 'standalone'`)
 - **Database:** MySQL 8.0 with Prisma ORM
 - **i18n:** next-intl with de/en locales
@@ -28,6 +30,7 @@ This plan adds production-grade observability to Easy-Lehrer:
 - **Docker:** Multi-stage Dockerfile with `scripts/start.sh` entrypoint
 
 ### What's Missing
+
 - No instrumentation hook
 - No error boundaries (`app/**/error.tsx` does not exist)
 - No health or metrics endpoints
@@ -41,11 +44,13 @@ This plan adds production-grade observability to Easy-Lehrer:
 ### Phase 1: Metrics Foundation
 
 #### Task 1.1: Install Dependencies
+
 ```bash
 npm install @vercel/otel @sentry/nextjs prom-client
 ```
 
 **Packages:**
+
 - `@vercel/otel` - OpenTelemetry integration for Next.js
 - `@sentry/nextjs` - Sentry SDK with Next.js-specific features
 - `prom-client` - Prometheus metrics library
@@ -55,8 +60,9 @@ npm install @vercel/otel @sentry/nextjs prom-client
 Create the metrics registry with RED metrics (Request rate, Error rate, Duration).
 
 **File:** `lib/metrics.ts`
+
 ```typescript
-import client from 'prom-client';
+import client from "prom-client";
 
 // Create a custom registry to avoid conflicts
 const register = new client.Registry();
@@ -66,34 +72,34 @@ client.collectDefaultMetrics({ register });
 
 // HTTP request counter (R in RED)
 export const httpRequestsTotal = new client.Counter({
-  name: 'http_requests_total',
-  help: 'Total number of HTTP requests',
-  labelNames: ['method', 'route', 'status_code'],
+  name: "http_requests_total",
+  help: "Total number of HTTP requests",
+  labelNames: ["method", "route", "status_code"],
   registers: [register],
 });
 
 // HTTP request duration histogram (D in RED)
 export const httpRequestDuration = new client.Histogram({
-  name: 'http_request_duration_seconds',
-  help: 'Duration of HTTP requests in seconds',
-  labelNames: ['method', 'route', 'status_code'],
+  name: "http_request_duration_seconds",
+  help: "Duration of HTTP requests in seconds",
+  labelNames: ["method", "route", "status_code"],
   buckets: [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10],
   registers: [register],
 });
 
 // HTTP request error counter (E in RED)
 export const httpRequestErrors = new client.Counter({
-  name: 'http_request_errors_total',
-  help: 'Total number of HTTP request errors',
-  labelNames: ['method', 'route', 'error_type'],
+  name: "http_request_errors_total",
+  help: "Total number of HTTP request errors",
+  labelNames: ["method", "route", "error_type"],
   registers: [register],
 });
 
 // Database query duration
 export const dbQueryDuration = new client.Histogram({
-  name: 'db_query_duration_seconds',
-  help: 'Duration of database queries in seconds',
-  labelNames: ['operation'],
+  name: "db_query_duration_seconds",
+  help: "Duration of database queries in seconds",
+  labelNames: ["operation"],
   buckets: [0.001, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1],
   registers: [register],
 });
@@ -104,39 +110,41 @@ export { register };
 #### Task 1.3: Create `app/api/metrics/route.ts`
 
 **File:** `app/api/metrics/route.ts`
+
 ```typescript
-import { NextResponse } from 'next/server';
-import { register } from '@/lib/metrics';
+import { NextResponse } from "next/server";
+import { register } from "@/lib/metrics";
 
 export async function GET() {
   const metrics = await register.metrics();
   return new NextResponse(metrics, {
-    headers: { 'Content-Type': register.contentType },
+    headers: { "Content-Type": register.contentType },
   });
 }
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 ```
 
 #### Task 1.4: Create `app/api/health/route.ts`
 
 **File:** `app/api/health/route.ts`
+
 ```typescript
-import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/db";
 
 export async function GET() {
   const checks: Record<string, { status: string; latencyMs?: number }> = {};
-  let overallStatus: 'healthy' | 'unhealthy' = 'healthy';
+  let overallStatus: "healthy" | "unhealthy" = "healthy";
 
   // Database check
   try {
     const dbStart = Date.now();
     await prisma.$queryRaw`SELECT 1`;
-    checks.database = { status: 'up', latencyMs: Date.now() - dbStart };
+    checks.database = { status: "up", latencyMs: Date.now() - dbStart };
   } catch {
-    checks.database = { status: 'down' };
-    overallStatus = 'unhealthy';
+    checks.database = { status: "down" };
+    overallStatus = "unhealthy";
   }
 
   const response = {
@@ -146,16 +154,17 @@ export async function GET() {
   };
 
   return NextResponse.json(response, {
-    status: overallStatus === 'healthy' ? 200 : 503,
+    status: overallStatus === "healthy" ? 200 : 503,
   });
 }
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 ```
 
 #### Task 1.5: Verify Endpoints
 
 After implementation, verify:
+
 ```bash
 curl http://localhost:3000/api/health
 curl http://localhost:3000/api/metrics
@@ -168,13 +177,14 @@ curl http://localhost:3000/api/metrics
 #### Task 2.1: Create `instrumentation.ts`
 
 **File:** `instrumentation.ts` (project root)
+
 ```typescript
-import { registerOTel } from '@vercel/otel';
+import { registerOTel } from "@vercel/otel";
 
 export async function register() {
-  if (process.env.NEXT_RUNTIME === 'nodejs') {
+  if (process.env.NEXT_RUNTIME === "nodejs") {
     registerOTel({
-      serviceName: process.env.OTEL_SERVICE_NAME || 'easy-lehrer',
+      serviceName: process.env.OTEL_SERVICE_NAME || "currico",
     });
   }
 }
@@ -199,6 +209,7 @@ npx @sentry/wizard@latest -i nextjs
 ```
 
 This wizard will:
+
 - Create `sentry.client.config.ts`
 - Create `sentry.server.config.ts`
 - Create `sentry.edge.config.ts`
@@ -208,14 +219,15 @@ This wizard will:
 #### Task 3.2: Configure `sentry.client.config.ts`
 
 **File:** `sentry.client.config.ts`
+
 ```typescript
-import * as Sentry from '@sentry/nextjs';
+import * as Sentry from "@sentry/nextjs";
 
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
 
   // Performance monitoring
-  tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
+  tracesSampleRate: process.env.NODE_ENV === "production" ? 0.1 : 1.0,
 
   // Session replay (optional, for debugging UX issues)
   replaysSessionSampleRate: 0.1,
@@ -228,23 +240,22 @@ Sentry.init({
   environment: process.env.NODE_ENV,
 
   // Integrations
-  integrations: [
-    Sentry.replayIntegration(),
-  ],
+  integrations: [Sentry.replayIntegration()],
 });
 ```
 
 #### Task 3.3: Configure `sentry.server.config.ts`
 
 **File:** `sentry.server.config.ts`
+
 ```typescript
-import * as Sentry from '@sentry/nextjs';
+import * as Sentry from "@sentry/nextjs";
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
 
   // Performance monitoring
-  tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
+  tracesSampleRate: process.env.NODE_ENV === "production" ? 0.1 : 1.0,
 
   // Only enable when DSN is set
   enabled: !!process.env.SENTRY_DSN,
@@ -257,12 +268,13 @@ Sentry.init({
 #### Task 3.4: Configure `sentry.edge.config.ts`
 
 **File:** `sentry.edge.config.ts`
+
 ```typescript
-import * as Sentry from '@sentry/nextjs';
+import * as Sentry from "@sentry/nextjs";
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
-  tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
+  tracesSampleRate: process.env.NODE_ENV === "production" ? 0.1 : 1.0,
   enabled: !!process.env.SENTRY_DSN,
   environment: process.env.NODE_ENV,
 });
@@ -271,15 +283,16 @@ Sentry.init({
 #### Task 3.5: Update `next.config.ts` with Sentry Wrapper
 
 **File:** `next.config.ts` (final version)
+
 ```typescript
 import type { NextConfig } from "next";
-import { withSentryConfig } from '@sentry/nextjs';
-import createNextIntlPlugin from 'next-intl/plugin';
+import { withSentryConfig } from "@sentry/nextjs";
+import createNextIntlPlugin from "next-intl/plugin";
 
-const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
+const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
 const nextConfig: NextConfig = {
-  output: 'standalone',
+  output: "standalone",
   turbopack: {},
   experimental: {
     instrumentationHook: true,
@@ -287,8 +300,8 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
+        protocol: "https",
+        hostname: "images.unsplash.com",
       },
     ],
   },
@@ -321,6 +334,7 @@ export default process.env.SENTRY_DSN
 #### Task 3.6: Create Global Error Boundary
 
 **File:** `app/global-error.tsx`
+
 ```typescript
 'use client';
 
@@ -366,6 +380,7 @@ export default function GlobalError({
 #### Task 3.7: Create Localized Error Boundary
 
 **File:** `app/[locale]/error.tsx`
+
 ```typescript
 'use client';
 
@@ -414,30 +429,28 @@ export default function LocaleError({
 #### Task 4.1: Create `lib/api-error.ts`
 
 **File:** `lib/api-error.ts`
+
 ```typescript
-import * as Sentry from '@sentry/nextjs';
-import { NextResponse } from 'next/server';
-import { httpRequestErrors } from './metrics';
+import * as Sentry from "@sentry/nextjs";
+import { NextResponse } from "next/server";
+import { httpRequestErrors } from "./metrics";
 
 export class ApiError extends Error {
   constructor(
     message: string,
     public statusCode: number = 500,
-    public code?: string,
+    public code?: string
   ) {
     super(message);
-    this.name = 'ApiError';
+    this.name = "ApiError";
   }
 }
 
-export function handleApiError(
-  error: unknown,
-  context: { route: string; method: string }
-) {
+export function handleApiError(error: unknown, context: { route: string; method: string }) {
   // Report to Sentry
   Sentry.withScope((scope) => {
-    scope.setTag('route', context.route);
-    scope.setTag('method', context.method);
+    scope.setTag("route", context.route);
+    scope.setTag("method", context.method);
     Sentry.captureException(error);
   });
 
@@ -445,7 +458,7 @@ export function handleApiError(
   httpRequestErrors.inc({
     method: context.method,
     route: context.route,
-    error_type: error instanceof ApiError ? 'api_error' : 'unknown_error',
+    error_type: error instanceof ApiError ? "api_error" : "unknown_error",
   });
 
   // Log to console
@@ -459,16 +472,14 @@ export function handleApiError(
     );
   }
 
-  return NextResponse.json(
-    { error: 'Internal Server Error' },
-    { status: 500 }
-  );
+  return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
 }
 ```
 
 #### Task 4.2: Add i18n Error Messages
 
 **Add to `messages/de.json`:**
+
 ```json
 {
   "error": {
@@ -483,6 +494,7 @@ export function handleApiError(
 ```
 
 **Add to `messages/en.json`:**
+
 ```json
 {
   "error": {
@@ -512,13 +524,13 @@ export async function GET(request: NextRequest) {
 }
 
 // After
-import { handleApiError } from '@/lib/api-error';
+import { handleApiError } from "@/lib/api-error";
 
 export async function GET(request: NextRequest) {
   try {
     // ... logic
   } catch (error) {
-    return handleApiError(error, { route: '/api/example', method: 'GET' });
+    return handleApiError(error, { route: "/api/example", method: "GET" });
   }
 }
 ```
@@ -530,22 +542,24 @@ export async function GET(request: NextRequest) {
 #### Task 5.1: Create Prometheus Config
 
 **File:** `monitoring/prometheus.yml`
+
 ```yaml
 global:
   scrape_interval: 15s
   evaluation_interval: 15s
 
 scrape_configs:
-  - job_name: 'easy-lehrer'
+  - job_name: "currico"
     static_configs:
-      - targets: ['app:3000']
-    metrics_path: '/api/metrics'
+      - targets: ["app:3000"]
+    metrics_path: "/api/metrics"
     scrape_interval: 10s
 ```
 
 #### Task 5.2: Create Grafana Provisioning
 
 **File:** `monitoring/grafana/provisioning/datasources/datasources.yml`
+
 ```yaml
 apiVersion: 1
 
@@ -559,13 +573,14 @@ datasources:
 ```
 
 **File:** `monitoring/grafana/provisioning/dashboards/dashboards.yml`
+
 ```yaml
 apiVersion: 1
 
 providers:
-  - name: 'default'
+  - name: "default"
     orgId: 1
-    folder: ''
+    folder: ""
     type: file
     disableDeletion: false
     editable: true
@@ -576,26 +591,27 @@ providers:
 #### Task 5.3: Create Docker Compose for Monitoring
 
 **File:** `docker-compose.monitoring.yml`
+
 ```yaml
 services:
   prometheus:
     image: prom/prometheus:v2.50.0
-    container_name: easy-lehrer-prometheus
+    container_name: currico-prometheus
     volumes:
       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
     ports:
       - "9090:9090"
     command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--web.enable-lifecycle'
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.enable-lifecycle"
     networks:
       - default
 
   grafana:
     image: grafana/grafana:10.3.0
-    container_name: easy-lehrer-grafana
+    container_name: currico-grafana
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
@@ -641,7 +657,7 @@ SENTRY_PROJECT=""
 SENTRY_AUTH_TOKEN=""
 
 # OpenTelemetry
-OTEL_SERVICE_NAME="easy-lehrer"
+OTEL_SERVICE_NAME="currico"
 ```
 
 ---
@@ -649,6 +665,7 @@ OTEL_SERVICE_NAME="easy-lehrer"
 ## File Checklist
 
 ### New Files to Create
+
 - [x] `lib/metrics.ts` - Prometheus metrics registry
 - [x] `lib/api-error.ts` - Centralized API error handling
 - [x] `app/api/health/route.ts` - Health check endpoint
@@ -665,6 +682,7 @@ OTEL_SERVICE_NAME="easy-lehrer"
 - [x] `docker-compose.monitoring.yml` - Monitoring stack
 
 ### Files to Modify
+
 - [x] `next.config.ts` - Wrap with Sentry (Note: `instrumentationHook` not needed in Next.js 16+, instrumentation.ts is auto-detected)
 - [x] `Dockerfile` - Copy instrumentation.ts
 - [x] `.env.example` - Add Sentry/OTEL vars
@@ -676,24 +694,28 @@ OTEL_SERVICE_NAME="easy-lehrer"
 ## Verification Steps
 
 ### 1. Health Endpoint
+
 ```bash
 curl http://localhost:3000/api/health
 # Expected: {"status":"healthy","timestamp":"...","checks":{"database":{"status":"up","latencyMs":...}}}
 ```
 
 ### 2. Metrics Endpoint
+
 ```bash
 curl http://localhost:3000/api/metrics
 # Expected: Prometheus format metrics output
 ```
 
 ### 3. Sentry Test
+
 ```bash
 # Trigger test error in browser console or create test endpoint
 # Verify error appears in Sentry dashboard
 ```
 
 ### 4. Monitoring Stack
+
 ```bash
 docker compose -f docker-compose.yml -f docker-compose.monitoring.yml up
 # Prometheus: http://localhost:9090
@@ -715,6 +737,7 @@ docker compose -f docker-compose.yml -f docker-compose.monitoring.yml up
 ## Rollback Plan
 
 If issues arise:
+
 1. Remove `withSentryConfig` wrapper from `next.config.ts`
 2. Remove `instrumentationHook: true` from experimental config
 3. Dependencies can remain installed (unused code is tree-shaken)
@@ -726,18 +749,18 @@ If issues arise:
 
 The following API routes use the current error handling pattern and can be incrementally migrated to use `handleApiError`:
 
-| Route | Priority |
-|-------|----------|
-| `app/api/resources/route.ts` | High |
-| `app/api/resources/[id]/route.ts` | High |
-| `app/api/resources/[id]/download/route.ts` | High |
-| `app/api/payments/webhook/route.ts` | High |
-| `app/api/payments/create-checkout-session/route.ts` | High |
-| `app/api/auth/register/route.ts` | Medium |
-| `app/api/seller/connect/route.ts` | Medium |
-| `app/api/upload/route.ts` | Medium |
-| `app/api/admin/*` | Low |
-| `app/api/user/*` | Low |
-| `app/api/collections/*` | Low |
+| Route                                               | Priority |
+| --------------------------------------------------- | -------- |
+| `app/api/resources/route.ts`                        | High     |
+| `app/api/resources/[id]/route.ts`                   | High     |
+| `app/api/resources/[id]/download/route.ts`          | High     |
+| `app/api/payments/webhook/route.ts`                 | High     |
+| `app/api/payments/create-checkout-session/route.ts` | High     |
+| `app/api/auth/register/route.ts`                    | Medium   |
+| `app/api/seller/connect/route.ts`                   | Medium   |
+| `app/api/upload/route.ts`                           | Medium   |
+| `app/api/admin/*`                                   | Low      |
+| `app/api/user/*`                                    | Low      |
+| `app/api/collections/*`                             | Low      |
 
 Migration can be done incrementally as routes are touched for other changes.

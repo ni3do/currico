@@ -1,4 +1,4 @@
-# EasyLehrer Product Roadmap
+# Currico Product Roadmap
 
 **Version:** 2.0
 **Last Updated:** January 2026
@@ -11,7 +11,7 @@
 
 This roadmap addresses the critical gap between our current MVP state and a production-ready platform that Swiss teachers will trust. The focus is on three pillars: **Trust**, **Supply**, and **Conversion**.
 
-**Current State:** Hosted on `easy-lehrer.siwachter.com` (subdomain)
+**Current State:** Hosted on `currico.siwachter.com` (subdomain)
 **Goal:** Launch-ready platform with Swiss credibility and legal safety
 
 ---
@@ -36,11 +36,11 @@ This roadmap addresses the critical gap between our current MVP state and a prod
 > As a Swiss teacher visiting the platform, I want to see a `.ch` domain so that I trust this is a legitimate Swiss service and not a student project or foreign platform.
 
 **Problem:**
-The current subdomain (`easy-lehrer.siwachter.com`) signals "hobby project" to skeptical teachers. Swiss educators expect professional, local platforms.
+The current subdomain (`currico.siwachter.com`) signals "hobby project" to skeptical teachers. Swiss educators expect professional, local platforms.
 
 **Acceptance Criteria:**
 
-- [ ] Register `easylehrer.ch` domain
+- [ ] Register `currico.ch` domain
 - [ ] Configure DNS and SSL certificates
 - [ ] Set up 301 redirects from old subdomain
 - [ ] Update all internal links and OAuth callbacks
@@ -312,7 +312,7 @@ Current messaging focuses on "Make Money" which feels transactional. Teachers re
 2. Comparison Table Component:
    | Platform      | Deine Provision |
    |---------------|-----------------|
-   | EasyLehrer    | 70%            |
+   | Currico    | 70%            |
    | eduki.com     | 50%            |
    | Lehrermarkt   | 60%            |
 
@@ -427,7 +427,7 @@ The site feels anonymous. Teachers want to know the humans behind the platform.
 Page Structure: /[locale]/about
 
 1. Hero Section
-   - Headline: "Wir sind EasyLehrer"
+   - Headline: "Wir sind Currico"
    - Subhead: "Zwei Pädagogen mit einer Mission"
 
 2. Team Grid
@@ -600,7 +600,7 @@ Placement:
 
 | #    | Task                                          | Priority | Status |
 | ---- | --------------------------------------------- | -------- | ------ |
-| 1.1  | Migrate to `easylehrer.ch` domain             | P0       | ⬜     |
+| 1.1  | Migrate to `currico.ch` domain                | P0       | ⬜     |
 | 1.2a | Implement Zyklus filter (Cycle 1, 2, 3)       | P0       | ⬜     |
 | 1.2b | Implement LP21 competence code search         | P0       | ⬜     |
 | 1.2c | Add dialect toggle (CH-DE vs. High German)    | P0       | ⬜     |

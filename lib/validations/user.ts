@@ -51,6 +51,17 @@ export const updateProfileSchema = z.object({
   subjects: z.array(z.string()).min(1, "Mindestens ein Fach auswählen"),
   cycles: z.array(z.string()).min(1, "Mindestens einen Zyklus auswählen"),
   cantons: z.array(z.string()).optional(),
+  instagram: z
+    .string()
+    .max(100, "Instagram-Name darf maximal 100 Zeichen haben")
+    .optional()
+    .nullable(),
+  pinterest: z
+    .string()
+    .max(100, "Pinterest-Name darf maximal 100 Zeichen haben")
+    .optional()
+    .nullable(),
+  is_private: z.boolean().optional(),
 });
 
 // Registration schema
@@ -71,12 +82,26 @@ export const registerSchema = z.object({
   role: z.enum(["BUYER", "SELLER"]),
 });
 
+// Notification preferences update schema
+export const updateNotificationPreferencesSchema = z.object({
+  notify_new_from_followed: z.boolean().optional(),
+  notify_recommendations: z.boolean().optional(),
+  notify_material_updates: z.boolean().optional(),
+  notify_review_reminders: z.boolean().optional(),
+  notify_wishlist_price_drops: z.boolean().optional(),
+  notify_welcome_offers: z.boolean().optional(),
+  notify_sales: z.boolean().optional(),
+  notify_newsletter: z.boolean().optional(),
+  notify_platform_updates: z.boolean().optional(),
+});
+
 // ============================================================
 // TYPE EXPORTS
 // ============================================================
 
 export type UpdateProfile = z.infer<typeof updateProfileSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
+export type UpdateNotificationPreferences = z.infer<typeof updateNotificationPreferencesSchema>;
 
 // ============================================================
 // VALIDATION HELPERS

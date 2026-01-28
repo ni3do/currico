@@ -1,9 +1,24 @@
 "use client";
 
+import { useState } from "react";
 import { Link } from "@/i18n/navigation";
 import Image from "next/image";
-import { Home, Library, Heart, Settings, Search, Upload, Users } from "lucide-react";
+import {
+  Home,
+  Library,
+  Heart,
+  Settings,
+  Search,
+  Upload,
+  Users,
+  User,
+  Palette,
+  Bell,
+  Shield,
+  ChevronDown,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { ProfileCompletionProgress } from "./ProfileCompletionProgress";
 
 // Navigation items
 const NAV_ITEMS = [
@@ -11,10 +26,25 @@ const NAV_ITEMS = [
   { id: "library", label: "Bibliothek", icon: Library },
   { id: "uploads", label: "Meine Uploads", icon: Upload },
   { id: "wishlist", label: "Wunschliste", icon: Heart },
-  { id: "settings", label: "Einstellungen", icon: Settings },
 ] as const;
 
-type TabType = "overview" | "library" | "uploads" | "wishlist" | "settings";
+// Settings sub-items
+const SETTINGS_SUB_ITEMS = [
+  { id: "settings-profile", label: "Profil", icon: User },
+  { id: "settings-appearance", label: "Darstellung", icon: Palette },
+  { id: "settings-notifications", label: "Benachrichtigungen", icon: Bell },
+  { id: "settings-account", label: "Konto", icon: Shield },
+] as const;
+
+type TabType =
+  | "overview"
+  | "library"
+  | "uploads"
+  | "wishlist"
+  | "settings-profile"
+  | "settings-appearance"
+  | "settings-notifications"
+  | "settings-account";
 
 interface UserData {
   name: string | null;
@@ -24,6 +54,9 @@ interface UserData {
   cycles: string[];
   cantons: string[];
   isSeller: boolean;
+  displayName?: string | null;
+  bio?: string | null;
+  emailVerified?: string | null;
 }
 
 interface UserStats {
@@ -57,6 +90,11 @@ export function AccountSidebar({
   onTabChange,
   className = "",
 }: AccountSidebarProps) {
+  const isSettingsActive = activeTab.startsWith("settings-");
+  const [userExpandedSettings, setUserExpandedSettings] = useState(false);
+  // Settings section is expanded when a settings tab is active OR user manually expanded it
+  const settingsExpanded = isSettingsActive || userExpandedSettings;
+
   return (
     <aside className={`border-border bg-bg-secondary rounded-xl border shadow-sm ${className}`}>
       <div className="p-5">
@@ -107,7 +145,97 @@ export function AccountSidebar({
               </motion.button>
             );
           })}
+
+          {/* Settings with sub-items */}
+          <div>
+            <motion.button
+              onClick={() => setUserExpandedSettings(!settingsExpanded)}
+              className={`relative flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+                isSettingsActive
+                  ? "text-primary"
+                  : "text-text-secondary hover:bg-surface-hover hover:text-text"
+              }`}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: NAV_ITEMS.length * 0.05 }}
+              whileHover={{ x: 4 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              {isSettingsActive && (
+                <motion.div
+                  layoutId="activeTab"
+                  className="bg-primary/10 absolute inset-0 rounded-lg"
+                  initial={false}
+                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                />
+              )}
+              <span className="relative z-10 flex items-center gap-3">
+                <Settings className={`h-5 w-5 ${isSettingsActive ? "text-primary" : ""}`} />
+                Einstellungen
+              </span>
+              <motion.span
+                className="relative z-10 ml-auto"
+                animate={{ rotate: settingsExpanded ? 180 : 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <ChevronDown className="h-4 w-4" />
+              </motion.span>
+            </motion.button>
+
+            <AnimatePresence>
+              {settingsExpanded && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="overflow-hidden"
+                >
+                  <div className="border-border mt-1 ml-4 space-y-1 border-l pl-3">
+                    {SETTINGS_SUB_ITEMS.map((item, index) => {
+                      const Icon = item.icon;
+                      const isActive = activeTab === item.id;
+                      return (
+                        <motion.button
+                          key={item.id}
+                          onClick={() => onTabChange(item.id as TabType)}
+                          className={`relative flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-medium transition-colors ${
+                            isActive
+                              ? "bg-primary/10 text-primary"
+                              : "text-text-secondary hover:bg-surface-hover hover:text-text"
+                          }`}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.05 }}
+                          whileHover={{ x: 4 }}
+                          whileTap={{ scale: 0.98 }}
+                        >
+                          <Icon className={`h-4 w-4 ${isActive ? "text-primary" : ""}`} />
+                          {item.label}
+                        </motion.button>
+                      );
+                    })}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </nav>
+
+        {/* Profile Completion Progress */}
+        <ProfileCompletionProgress
+          profile={{
+            name: userData.name,
+            displayName: userData.displayName,
+            image: userData.image,
+            subjects: userData.subjects,
+            cycles: userData.cycles,
+            cantons: userData.cantons,
+            emailVerified: userData.emailVerified,
+          }}
+          onNavigateToSettings={() => onTabChange("settings-profile")}
+          className="mb-5"
+        />
 
         <div className="divider my-5" />
 

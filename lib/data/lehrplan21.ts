@@ -1,58 +1,33 @@
 /**
  * Lehrplan 21 Data Structure
  *
- * This file contains the static LP21 curriculum data used for:
- * 1. Seeding the database (prisma/seed-curriculum.ts)
- * 2. Fallback when API is unavailable
- *
- * For runtime use, prefer fetching from the API via useCurriculum hook.
+ * This file contains the static LP21 curriculum data used ONLY for seeding the database.
+ * All runtime access should go through the API via useCurriculum hook.
  *
  * Hierarchical structure:
  * - Level 1: Fachbereich (Subject Area)
  * - Level 2: Kompetenzbereich (Competence Area)
- * - Level 3: Kompetenz (Competence)
+ * - Level 3: Kompetenz / Handlungsaspekt (Competence / Action Aspect)
  *
  * Each Fachbereich is available in specific Zyklen (Cycles 1-3)
+ *
+ * Handlungsaspekte / Themen (Detail) are stored but NOT displayed in navigation.
  */
 
 // Re-export types from the centralized types file
 export type { Kompetenz, Kompetenzbereich, Fachbereich, Zyklus } from "../curriculum-types";
 
-import type { Fachbereich, Zyklus, Kompetenzbereich, Kompetenz } from "../curriculum-types";
-
-// Zyklen (Cycles) - Static data, doesn't need to be in DB
-export const ZYKLEN: Zyklus[] = [
-  {
-    id: 1,
-    name: "Zyklus 1",
-    shortName: "Z1",
-    grades: ["KG", "1", "2"],
-    description: "Kindergarten – 2. Klasse",
-  },
-  {
-    id: 2,
-    name: "Zyklus 2",
-    shortName: "Z2",
-    grades: ["3", "4", "5", "6"],
-    description: "3. – 6. Klasse",
-  },
-  {
-    id: 3,
-    name: "Zyklus 3",
-    shortName: "Z3",
-    grades: ["7", "8", "9"],
-    description: "7. – 9. Klasse",
-  },
-];
+import type { Fachbereich, Kompetenzbereich, Kompetenz } from "../curriculum-types";
 
 // Fachbereiche with full LP21 hierarchy
+// Each subject has a unique color from the Catppuccin Latte palette
 export const FACHBEREICHE: Fachbereich[] = [
   // ============ SPRACHEN ============
   {
     code: "D",
     name: "Deutsch",
     shortName: "DE",
-    color: "#d20f39", // Red
+    color: "#d20f39", // Red - Catppuccin Red
     colorClass: "subject-deutsch",
     icon: "book-open",
     cycles: [1, 2, 3],
@@ -60,200 +35,406 @@ export const FACHBEREICHE: Fachbereich[] = [
       {
         code: "D.1",
         name: "Hören",
+        handlungsaspekte: ["Zuhören", "Verstehen"],
         kompetenzen: [
-          { code: "D.1.A", name: "Grundfertigkeiten" },
-          { code: "D.1.B", name: "Verstehen in dialogischen Hörsituationen" },
-          { code: "D.1.C", name: "Verstehen in monologischen Hörsituationen" },
+          {
+            code: "D.1.A",
+            name: "Zuhören",
+            handlungsaspekte: ["Aufmerksam zuhören", "Hörverstehen entwickeln"],
+          },
+          {
+            code: "D.1.B",
+            name: "Verstehen",
+            handlungsaspekte: ["Gehörtes verstehen", "Informationen verarbeiten"],
+          },
         ],
       },
       {
         code: "D.2",
         name: "Lesen",
+        handlungsaspekte: ["Grundfertigkeiten", "Verstehen", "Reflexion"],
         kompetenzen: [
-          { code: "D.2.A", name: "Grundfertigkeiten" },
-          { code: "D.2.B", name: "Verstehen von Sachtexten" },
-          { code: "D.2.C", name: "Verstehen literarischer Texte" },
-          { code: "D.2.D", name: "Reflexion über das Leseverhalten" },
+          {
+            code: "D.2.A",
+            name: "Grundfertigkeiten",
+            handlungsaspekte: ["Lesetechnik", "Leseflüssigkeit"],
+          },
+          {
+            code: "D.2.B",
+            name: "Verstehen",
+            handlungsaspekte: ["Texte verstehen", "Informationen entnehmen"],
+          },
+          {
+            code: "D.2.C",
+            name: "Reflexion",
+            handlungsaspekte: ["Über Gelesenes nachdenken", "Texte beurteilen"],
+          },
         ],
       },
       {
         code: "D.3",
         name: "Sprechen",
+        handlungsaspekte: ["Dialogisches Sprechen", "Monologisches Sprechen", "Sprachreflexion"],
         kompetenzen: [
-          { code: "D.3.A", name: "Grundfertigkeiten" },
-          { code: "D.3.B", name: "Monologisches Sprechen" },
-          { code: "D.3.C", name: "Dialogisches Sprechen" },
+          {
+            code: "D.3.A",
+            name: "Dialogisches Sprechen",
+            handlungsaspekte: ["Gespräche führen", "Sich austauschen"],
+          },
+          {
+            code: "D.3.B",
+            name: "Monologisches Sprechen",
+            handlungsaspekte: ["Vortragen", "Erzählen", "Präsentieren"],
+          },
+          {
+            code: "D.3.C",
+            name: "Sprachreflexion",
+            handlungsaspekte: ["Über Sprache nachdenken", "Sprachbewusstsein"],
+          },
         ],
       },
       {
         code: "D.4",
         name: "Schreiben",
+        handlungsaspekte: [
+          "Grundfertigkeiten",
+          "Schreibprozesse",
+          "Schreibprodukte",
+          "Texte verfassen",
+          "Schreibkompetenz reflektieren",
+        ],
         kompetenzen: [
-          { code: "D.4.A", name: "Grundfertigkeiten" },
-          { code: "D.4.B", name: "Schreibprodukte" },
-          { code: "D.4.C", name: "Schreibprozess: Ideen finden und planen" },
-          { code: "D.4.D", name: "Schreibprozess: formulieren" },
-          { code: "D.4.E", name: "Schreibprozess: inhaltlich überarbeiten" },
-          { code: "D.4.F", name: "Schreibprozess: sprachformal überarbeiten" },
-          { code: "D.4.G", name: "Reflexion über Schreibprozess und Schreibprodukte" },
+          {
+            code: "D.4.A",
+            name: "Grundfertigkeiten",
+            handlungsaspekte: ["Handschrift", "Tastaturschreiben"],
+          },
+          {
+            code: "D.4.B",
+            name: "Schreibprozesse",
+            handlungsaspekte: ["Planen", "Formulieren", "Überarbeiten"],
+          },
+          {
+            code: "D.4.C",
+            name: "Schreibprodukte",
+            handlungsaspekte: ["Textsorten", "Textmuster"],
+          },
+          {
+            code: "D.4.D",
+            name: "Texte verfassen",
+            handlungsaspekte: ["Inhaltlich gestalten", "Sprachlich gestalten"],
+          },
+          {
+            code: "D.4.E",
+            name: "Schreibkompetenz reflektieren",
+            handlungsaspekte: ["Eigene Texte beurteilen", "Schreibstrategien"],
+          },
         ],
       },
       {
         code: "D.5",
         name: "Sprache(n) im Fokus",
+        handlungsaspekte: [
+          "Verfahren & Proben",
+          "Grammatikbegriffe",
+          "Rechtschreibung",
+          "Sprachgebrauch untersuchen",
+        ],
         kompetenzen: [
-          { code: "D.5.A", name: "Verfahren und Proben" },
-          { code: "D.5.B", name: "Sprachgebrauch untersuchen" },
-          { code: "D.5.C", name: "Sprachformales untersuchen" },
-          { code: "D.5.D", name: "Grammatikbegriffe" },
-          { code: "D.5.E", name: "Rechtschreibregeln" },
+          {
+            code: "D.5.A",
+            name: "Verfahren & Proben",
+            handlungsaspekte: ["Sprachliche Proben anwenden"],
+          },
+          {
+            code: "D.5.B",
+            name: "Grammatikbegriffe",
+            handlungsaspekte: ["Wortarten", "Satzglieder", "Satzarten"],
+          },
+          {
+            code: "D.5.C",
+            name: "Rechtschreibung",
+            handlungsaspekte: ["Rechtschreibregeln", "Zeichensetzung"],
+          },
+          {
+            code: "D.5.D",
+            name: "Sprachgebrauch untersuchen",
+            handlungsaspekte: ["Sprache vergleichen", "Sprachvarietäten"],
+          },
         ],
       },
       {
         code: "D.6",
         name: "Literatur im Fokus",
+        handlungsaspekte: ["Lesen & Genießen", "Literatur erschließen", "Mit Literatur umgehen"],
         kompetenzen: [
-          { code: "D.6.A", name: "Auseinandersetzung mit literarischen Texten" },
-          { code: "D.6.B", name: "Auseinandersetzung mit verschiedenen Autor/innen und Kulturen" },
-          { code: "D.6.C", name: "Literarische Texte: Beschaffenheit und Wirkung" },
+          {
+            code: "D.6.A",
+            name: "Lesen & Genießen",
+            handlungsaspekte: ["Lesefreude entwickeln", "Literarische Texte erleben"],
+          },
+          {
+            code: "D.6.B",
+            name: "Literatur erschließen",
+            handlungsaspekte: ["Texte analysieren", "Gattungen kennen"],
+          },
+          {
+            code: "D.6.C",
+            name: "Mit Literatur umgehen",
+            handlungsaspekte: ["Kreativ mit Texten umgehen", "Literatur präsentieren"],
+          },
         ],
       },
     ],
   },
   {
-    code: "FS1E",
-    name: "English",
-    shortName: "English",
-    color: "#209fb5", // Sapphire
-    colorClass: "subject-fremdsprachen",
-    icon: "globe",
-    cycles: [2, 3],
-    kompetenzbereiche: [
-      {
-        code: "FS1E.1",
-        name: "Hören",
-        kompetenzen: [
-          { code: "FS1E.1.A", name: "Monologische und dialogische Texte hören und verstehen" },
-          { code: "FS1E.1.B", name: "Strategien" },
-          { code: "FS1E.1.C", name: "Sprachmittlung" },
-        ],
-      },
-      {
-        code: "FS1E.2",
-        name: "Lesen",
-        kompetenzen: [
-          { code: "FS1E.2.A", name: "Texte lesen und verstehen" },
-          { code: "FS1E.2.B", name: "Strategien" },
-          { code: "FS1E.2.C", name: "Sprachmittlung" },
-        ],
-      },
-      {
-        code: "FS1E.3",
-        name: "Sprechen",
-        kompetenzen: [
-          { code: "FS1E.3.A", name: "Dialogisches Sprechen" },
-          { code: "FS1E.3.B", name: "Monologisches Sprechen" },
-          { code: "FS1E.3.C", name: "Strategien" },
-          { code: "FS1E.3.D", name: "Sprachmittlung" },
-        ],
-      },
-      {
-        code: "FS1E.4",
-        name: "Schreiben",
-        kompetenzen: [
-          { code: "FS1E.4.A", name: "Schriftliche Texte verfassen" },
-          { code: "FS1E.4.B", name: "Strategien" },
-          { code: "FS1E.4.C", name: "Sprachmittlung" },
-        ],
-      },
-      {
-        code: "FS1E.5",
-        name: "Sprache(n) im Fokus",
-        kompetenzen: [
-          { code: "FS1E.5.A", name: "Bewusstheit für Sprache" },
-          { code: "FS1E.5.B", name: "Wortschatz" },
-          { code: "FS1E.5.C", name: "Aussprache" },
-          { code: "FS1E.5.D", name: "Grammatik" },
-          { code: "FS1E.5.E", name: "Rechtschreibung" },
-          { code: "FS1E.5.F", name: "Sprachlernreflexion und -planung" },
-        ],
-      },
-      {
-        code: "FS1E.6",
-        name: "Kulturen im Fokus",
-        kompetenzen: [
-          { code: "FS1E.6.A", name: "Kenntnisse" },
-          { code: "FS1E.6.B", name: "Haltungen" },
-          { code: "FS1E.6.C", name: "Handlungen" },
-        ],
-      },
-    ],
-  },
-  {
-    code: "FS2F",
+    code: "FR",
     name: "Französisch",
-    shortName: "Französisch",
-    color: "#209fb5", // Sapphire
-    colorClass: "subject-fremdsprachen",
+    shortName: "FR",
+    color: "#1e66f5", // Blue - Catppuccin Blue
+    colorClass: "subject-franzoesisch",
     icon: "globe",
     cycles: [2, 3],
     kompetenzbereiche: [
       {
-        code: "FS2F.1",
+        code: "FR.1",
         name: "Hören",
+        handlungsaspekte: ["Verstehen von gesprochener Sprache"],
         kompetenzen: [
-          { code: "FS2F.1.A", name: "Monologische und dialogische Texte hören und verstehen" },
-          { code: "FS2F.1.B", name: "Strategien" },
-          { code: "FS2F.1.C", name: "Sprachmittlung" },
+          {
+            code: "FR.1.A",
+            name: "Monologische Texte verstehen",
+            handlungsaspekte: ["Hörtexte verstehen"],
+          },
+          {
+            code: "FR.1.B",
+            name: "Dialogische Texte verstehen",
+            handlungsaspekte: ["Gespräche verstehen"],
+          },
         ],
       },
       {
-        code: "FS2F.2",
+        code: "FR.2",
         name: "Lesen",
+        handlungsaspekte: ["Verstehen von geschriebener Sprache"],
         kompetenzen: [
-          { code: "FS2F.2.A", name: "Texte lesen und verstehen" },
-          { code: "FS2F.2.B", name: "Strategien" },
-          { code: "FS2F.2.C", name: "Sprachmittlung" },
+          {
+            code: "FR.2.A",
+            name: "Texte lesen und verstehen",
+            handlungsaspekte: ["Lesetexte verstehen", "Informationen entnehmen"],
+          },
+          { code: "FR.2.B", name: "Lesestrategien", handlungsaspekte: ["Strategien anwenden"] },
         ],
       },
       {
-        code: "FS2F.3",
+        code: "FR.3",
         name: "Sprechen",
+        handlungsaspekte: ["Zusammenhängendes Sprechen", "An Gesprächen teilnehmen"],
         kompetenzen: [
-          { code: "FS2F.3.A", name: "Dialogisches Sprechen" },
-          { code: "FS2F.3.B", name: "Monologisches Sprechen" },
-          { code: "FS2F.3.C", name: "Strategien" },
-          { code: "FS2F.3.D", name: "Sprachmittlung" },
+          {
+            code: "FR.3.A",
+            name: "Zusammenhängendes Sprechen",
+            handlungsaspekte: ["Monologisch sprechen", "Präsentieren"],
+          },
+          {
+            code: "FR.3.B",
+            name: "An Gesprächen teilnehmen",
+            handlungsaspekte: ["Dialogisch sprechen", "Interagieren"],
+          },
         ],
       },
       {
-        code: "FS2F.4",
+        code: "FR.4",
         name: "Schreiben",
+        handlungsaspekte: ["Texte schreiben und gestalten"],
         kompetenzen: [
-          { code: "FS2F.4.A", name: "Schriftliche Texte verfassen" },
-          { code: "FS2F.4.B", name: "Strategien" },
-          { code: "FS2F.4.C", name: "Sprachmittlung" },
+          {
+            code: "FR.4.A",
+            name: "Texte schreiben",
+            handlungsaspekte: ["Schriftliche Texte verfassen"],
+          },
+          {
+            code: "FR.4.B",
+            name: "Texte gestalten",
+            handlungsaspekte: ["Texte überarbeiten", "Schreibstrategien"],
+          },
         ],
       },
       {
-        code: "FS2F.5",
+        code: "FR.5",
         name: "Sprache(n) im Fokus",
+        handlungsaspekte: [
+          "Bewusstheit für Sprache",
+          "Wortschatz",
+          "Grammatik",
+          "Aussprache",
+          "Lernstrategien",
+        ],
         kompetenzen: [
-          { code: "FS2F.5.A", name: "Bewusstheit für Sprache" },
-          { code: "FS2F.5.B", name: "Wortschatz" },
-          { code: "FS2F.5.C", name: "Aussprache" },
-          { code: "FS2F.5.D", name: "Grammatik" },
-          { code: "FS2F.5.E", name: "Rechtschreibung" },
-          { code: "FS2F.5.F", name: "Sprachlernreflexion und -planung" },
+          {
+            code: "FR.5.A",
+            name: "Bewusstheit für Sprache",
+            handlungsaspekte: ["Sprachvergleich", "Mehrsprachigkeit"],
+          },
+          {
+            code: "FR.5.B",
+            name: "Wortschatz",
+            handlungsaspekte: ["Wortschatz aufbauen", "Wortschatz anwenden"],
+          },
+          { code: "FR.5.C", name: "Grammatik", handlungsaspekte: ["Grammatische Strukturen"] },
+          {
+            code: "FR.5.D",
+            name: "Aussprache",
+            handlungsaspekte: ["Aussprache üben", "Intonation"],
+          },
+          {
+            code: "FR.5.E",
+            name: "Lernstrategien",
+            handlungsaspekte: ["Lernstrategien entwickeln", "Selbstständig lernen"],
+          },
         ],
       },
       {
-        code: "FS2F.6",
+        code: "FR.6",
         name: "Kulturen im Fokus",
+        handlungsaspekte: ["Kennen & Verstehen", "Begegnung & Umgang"],
         kompetenzen: [
-          { code: "FS2F.6.A", name: "Kenntnisse" },
-          { code: "FS2F.6.B", name: "Haltungen" },
-          { code: "FS2F.6.C", name: "Handlungen" },
+          {
+            code: "FR.6.A",
+            name: "Kennen & Verstehen",
+            handlungsaspekte: ["Kulturelle Eigenheiten kennen"],
+          },
+          {
+            code: "FR.6.B",
+            name: "Begegnung & Umgang",
+            handlungsaspekte: ["Interkulturelle Kompetenz", "Respektvoller Umgang"],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    code: "EN",
+    name: "Englisch",
+    shortName: "EN",
+    color: "#7287fd", // Lavender - Catppuccin Lavender
+    colorClass: "subject-englisch",
+    icon: "globe",
+    cycles: [2, 3],
+    kompetenzbereiche: [
+      {
+        code: "EN.1",
+        name: "Hören",
+        handlungsaspekte: ["Verstehen von gesprochener Sprache"],
+        kompetenzen: [
+          {
+            code: "EN.1.A",
+            name: "Monologische Texte verstehen",
+            handlungsaspekte: ["Hörtexte verstehen"],
+          },
+          {
+            code: "EN.1.B",
+            name: "Dialogische Texte verstehen",
+            handlungsaspekte: ["Gespräche verstehen"],
+          },
+        ],
+      },
+      {
+        code: "EN.2",
+        name: "Lesen",
+        handlungsaspekte: ["Verstehen von geschriebener Sprache"],
+        kompetenzen: [
+          {
+            code: "EN.2.A",
+            name: "Texte lesen und verstehen",
+            handlungsaspekte: ["Lesetexte verstehen", "Informationen entnehmen"],
+          },
+          { code: "EN.2.B", name: "Lesestrategien", handlungsaspekte: ["Strategien anwenden"] },
+        ],
+      },
+      {
+        code: "EN.3",
+        name: "Sprechen",
+        handlungsaspekte: ["Zusammenhängendes Sprechen", "An Gesprächen teilnehmen"],
+        kompetenzen: [
+          {
+            code: "EN.3.A",
+            name: "Zusammenhängendes Sprechen",
+            handlungsaspekte: ["Monologisch sprechen", "Präsentieren"],
+          },
+          {
+            code: "EN.3.B",
+            name: "An Gesprächen teilnehmen",
+            handlungsaspekte: ["Dialogisch sprechen", "Interagieren"],
+          },
+        ],
+      },
+      {
+        code: "EN.4",
+        name: "Schreiben",
+        handlungsaspekte: ["Texte schreiben und gestalten"],
+        kompetenzen: [
+          {
+            code: "EN.4.A",
+            name: "Texte schreiben",
+            handlungsaspekte: ["Schriftliche Texte verfassen"],
+          },
+          {
+            code: "EN.4.B",
+            name: "Texte gestalten",
+            handlungsaspekte: ["Texte überarbeiten", "Schreibstrategien"],
+          },
+        ],
+      },
+      {
+        code: "EN.5",
+        name: "Sprache(n) im Fokus",
+        handlungsaspekte: [
+          "Bewusstheit für Sprache",
+          "Wortschatz",
+          "Grammatik",
+          "Aussprache",
+          "Lernstrategien",
+        ],
+        kompetenzen: [
+          {
+            code: "EN.5.A",
+            name: "Bewusstheit für Sprache",
+            handlungsaspekte: ["Sprachvergleich", "Mehrsprachigkeit"],
+          },
+          {
+            code: "EN.5.B",
+            name: "Wortschatz",
+            handlungsaspekte: ["Wortschatz aufbauen", "Wortschatz anwenden"],
+          },
+          { code: "EN.5.C", name: "Grammatik", handlungsaspekte: ["Grammatische Strukturen"] },
+          {
+            code: "EN.5.D",
+            name: "Aussprache",
+            handlungsaspekte: ["Aussprache üben", "Intonation"],
+          },
+          {
+            code: "EN.5.E",
+            name: "Lernstrategien",
+            handlungsaspekte: ["Lernstrategien entwickeln", "Selbstständig lernen"],
+          },
+        ],
+      },
+      {
+        code: "EN.6",
+        name: "Kulturen im Fokus",
+        handlungsaspekte: ["Kennen & Verstehen", "Begegnung & Umgang"],
+        kompetenzen: [
+          {
+            code: "EN.6.A",
+            name: "Kennen & Verstehen",
+            handlungsaspekte: ["Kulturelle Eigenheiten kennen"],
+          },
+          {
+            code: "EN.6.B",
+            name: "Begegnung & Umgang",
+            handlungsaspekte: ["Interkulturelle Kompetenz", "Respektvoller Umgang"],
+          },
         ],
       },
     ],
@@ -264,7 +445,7 @@ export const FACHBEREICHE: Fachbereich[] = [
     code: "MA",
     name: "Mathematik",
     shortName: "MA",
-    color: "#1e66f5", // Blue
+    color: "#df8e1d", // Yellow - Catppuccin Yellow
     colorClass: "subject-mathe",
     icon: "calculator",
     cycles: [1, 2, 3],
@@ -272,39 +453,96 @@ export const FACHBEREICHE: Fachbereich[] = [
       {
         code: "MA.1",
         name: "Zahl und Variable",
+        handlungsaspekte: [
+          "Zählkompetenz & Zahlenraum",
+          "Operationen & Rechenwege",
+          "Funktionale Zusammenhänge & Terme",
+        ],
         kompetenzen: [
-          { code: "MA.1.A", name: "Verstehen und Darstellen von Zahlen" },
-          { code: "MA.1.B", name: "Zahlen schätzen und runden" },
-          { code: "MA.1.C", name: "Addieren, Subtrahieren, Multiplizieren, Dividieren" },
+          {
+            code: "MA.1.A",
+            name: "Zählkompetenz & Zahlenraum",
+            handlungsaspekte: ["Zahlen verstehen", "Zahlenraum erweitern"],
+          },
+          {
+            code: "MA.1.B",
+            name: "Operationen & Rechenwege",
+            handlungsaspekte: ["Grundoperationen", "Rechenstrategien"],
+          },
+          {
+            code: "MA.1.C",
+            name: "Funktionale Zusammenhänge & Terme",
+            handlungsaspekte: ["Variablen", "Terme", "Gleichungen"],
+          },
         ],
       },
       {
         code: "MA.2",
         name: "Form und Raum",
+        handlungsaspekte: [
+          "Operieren mit Figuren & Körpern",
+          "Erforschen & Argumentieren",
+          "Koordinaten & Pläne",
+        ],
         kompetenzen: [
-          { code: "MA.2.A", name: "Geometrische Figuren erforschen und beschreiben" },
-          { code: "MA.2.B", name: "Geometrische Beziehungen nutzen" },
-          { code: "MA.2.C", name: "Geometrische Konstruktionen" },
+          {
+            code: "MA.2.A",
+            name: "Operieren mit Figuren & Körpern",
+            handlungsaspekte: ["Geometrische Formen", "Konstruieren"],
+          },
+          {
+            code: "MA.2.B",
+            name: "Erforschen & Argumentieren",
+            handlungsaspekte: ["Geometrische Zusammenhänge", "Beweisen"],
+          },
+          {
+            code: "MA.2.C",
+            name: "Koordinaten & Pläne",
+            handlungsaspekte: ["Koordinatensystem", "Pläne lesen und erstellen"],
+          },
         ],
       },
       {
         code: "MA.3",
-        name: "Grössen, Funktionen, Daten und Zufall",
+        name: "Grössen, Funktionen, Daten",
+        handlungsaspekte: [
+          "Grössen schätzen & messen",
+          "Erforschen & Argumentieren (Sachrechnen)",
+          "Daten darstellen & interpretieren",
+          "Wahrscheinlichkeit",
+        ],
         kompetenzen: [
-          { code: "MA.3.A", name: "Grössen operieren und benennen" },
-          { code: "MA.3.B", name: "Beziehungen und Veränderungen beschreiben" },
-          { code: "MA.3.C", name: "Daten erheben, ordnen, darstellen und interpretieren" },
+          {
+            code: "MA.3.A",
+            name: "Grössen schätzen & messen",
+            handlungsaspekte: ["Masseinheiten", "Schätzen", "Messen"],
+          },
+          {
+            code: "MA.3.B",
+            name: "Erforschen & Argumentieren",
+            handlungsaspekte: ["Sachrechnen", "Problemlösen"],
+          },
+          {
+            code: "MA.3.C",
+            name: "Daten darstellen & interpretieren",
+            handlungsaspekte: ["Diagramme", "Statistik"],
+          },
+          {
+            code: "MA.3.D",
+            name: "Wahrscheinlichkeit",
+            handlungsaspekte: ["Zufall", "Wahrscheinlichkeitsrechnung"],
+          },
         ],
       },
     ],
   },
 
-  // ============ NATUR, MENSCH, GESELLSCHAFT ============
+  // ============ NATUR, MENSCH, GESELLSCHAFT (Zyklus 1 & 2) ============
   {
     code: "NMG",
-    name: "NMG",
+    name: "Natur, Mensch, Gesellschaft",
     shortName: "NMG",
-    color: "#40a02b", // Green
+    color: "#40a02b", // Green - Catppuccin Green
     colorClass: "subject-nmg",
     icon: "leaf",
     cycles: [1, 2],
@@ -312,407 +550,383 @@ export const FACHBEREICHE: Fachbereich[] = [
       {
         code: "NMG.1",
         name: "Identität, Körper, Gesundheit",
+        handlungsaspekte: [
+          "Entwicklung & Identität",
+          "Körperfunktionen & -pflege",
+          "Ernährung & Gesundheit",
+          "Sicherheit & Erste Hilfe",
+        ],
         kompetenzen: [
-          { code: "NMG.1.1", name: "Sich und den eigenen Körper wahrnehmen" },
-          { code: "NMG.1.2", name: "Gefühle und Bedürfnisse wahrnehmen und ausdrücken" },
-          { code: "NMG.1.3", name: "Zusammenhänge von Ernährung und Wohlbefinden erkennen" },
-          { code: "NMG.1.4", name: "Gefahren und Risiken einschätzen" },
-          { code: "NMG.1.5", name: "Sexuelle Entwicklung" },
-          { code: "NMG.1.6", name: "Geschlechterrollen und Gleichstellung" },
+          {
+            code: "NMG.1.A",
+            name: "Entwicklung & Identität",
+            handlungsaspekte: ["Eigene Entwicklung", "Identität erforschen"],
+          },
+          {
+            code: "NMG.1.B",
+            name: "Körperfunktionen & -pflege",
+            handlungsaspekte: ["Körper kennenlernen", "Hygiene"],
+          },
+          {
+            code: "NMG.1.C",
+            name: "Ernährung & Gesundheit",
+            handlungsaspekte: ["Gesunde Ernährung", "Wohlbefinden"],
+          },
+          {
+            code: "NMG.1.D",
+            name: "Sicherheit & Erste Hilfe",
+            handlungsaspekte: ["Gefahren erkennen", "Erste Hilfe"],
+          },
         ],
       },
       {
         code: "NMG.2",
         name: "Tiere, Pflanzen, Lebensräume",
+        handlungsaspekte: [
+          "Tiere & Pflanzen erkunden",
+          "Lebensräume erkunden",
+          "Beziehungen in der Natur",
+          "Artenschutz",
+          "Evolution (Ansätze)",
+        ],
         kompetenzen: [
-          { code: "NMG.2.1", name: "Tiere und Pflanzen in ihren Lebensräumen erkunden" },
-          { code: "NMG.2.2", name: "Wachstum und Entwicklung von Tieren und Pflanzen" },
-          { code: "NMG.2.3", name: "Beziehungen von Pflanzen und Tieren" },
-          { code: "NMG.2.4", name: "Artenvielfalt und ökologische Kreisläufe" },
-          { code: "NMG.2.5", name: "Verantwortung im Umgang mit Tieren und Pflanzen" },
-          { code: "NMG.2.6", name: "Nutzung von Tieren und Pflanzen" },
+          {
+            code: "NMG.2.A",
+            name: "Tiere & Pflanzen erkunden",
+            handlungsaspekte: ["Beobachten", "Bestimmen"],
+          },
+          {
+            code: "NMG.2.B",
+            name: "Lebensräume erkunden",
+            handlungsaspekte: ["Ökosysteme", "Habitate"],
+          },
+          {
+            code: "NMG.2.C",
+            name: "Beziehungen in der Natur",
+            handlungsaspekte: ["Nahrungsketten", "Symbiosen"],
+          },
+          { code: "NMG.2.D", name: "Artenschutz", handlungsaspekte: ["Biodiversität", "Schutz"] },
+          {
+            code: "NMG.2.E",
+            name: "Evolution (Ansätze)",
+            handlungsaspekte: ["Entwicklung des Lebens"],
+          },
         ],
       },
       {
         code: "NMG.3",
         name: "Stoffe, Energie, Bewegungen",
+        handlungsaspekte: [
+          "Stoffeigenschaften",
+          "Stoffumwandlungen",
+          "Energieformen",
+          "Bewegung & Kraft",
+        ],
         kompetenzen: [
-          { code: "NMG.3.1", name: "Stoffeigenschaften erkunden und beschreiben" },
-          { code: "NMG.3.2", name: "Stoffumwandlungen untersuchen" },
-          { code: "NMG.3.3", name: "Bewegungen und Kräfte erforschen" },
-          { code: "NMG.3.4", name: "Energie wahrnehmen und nutzen" },
+          {
+            code: "NMG.3.A",
+            name: "Stoffeigenschaften",
+            handlungsaspekte: ["Materialien untersuchen"],
+          },
+          {
+            code: "NMG.3.B",
+            name: "Stoffumwandlungen",
+            handlungsaspekte: ["Aggregatzustände", "Mischen und Trennen"],
+          },
+          {
+            code: "NMG.3.C",
+            name: "Energieformen",
+            handlungsaspekte: ["Energie erkennen", "Energieumwandlung"],
+          },
+          {
+            code: "NMG.3.D",
+            name: "Bewegung & Kraft",
+            handlungsaspekte: ["Kräfte erfahren", "Bewegungen untersuchen"],
+          },
         ],
       },
       {
         code: "NMG.4",
-        name: "Phänomene der belebten und unbelebten Natur",
+        name: "Phänomene der Natur",
+        handlungsaspekte: [
+          "Wetter & Jahreszeiten",
+          "Erde & Universum",
+          "Naturphänomene erforschen",
+          "Umweltprobleme",
+        ],
         kompetenzen: [
-          { code: "NMG.4.1", name: "Wetter und Witterung" },
-          { code: "NMG.4.2", name: "Tag und Nacht, Jahreszeiten" },
-          { code: "NMG.4.3", name: "Naturereignisse und Naturgefahren" },
-          { code: "NMG.4.4", name: "Himmelskörper und Universum" },
-          { code: "NMG.4.5", name: "Technische Geräte und ihre Funktionsweise" },
+          {
+            code: "NMG.4.A",
+            name: "Wetter & Jahreszeiten",
+            handlungsaspekte: ["Wetterbeobachtung", "Jahreszeitenwechsel"],
+          },
+          {
+            code: "NMG.4.B",
+            name: "Erde & Universum",
+            handlungsaspekte: ["Sonnensystem", "Tag und Nacht"],
+          },
+          {
+            code: "NMG.4.C",
+            name: "Naturphänomene erforschen",
+            handlungsaspekte: ["Experimente", "Beobachtungen"],
+          },
+          {
+            code: "NMG.4.D",
+            name: "Umweltprobleme",
+            handlungsaspekte: ["Umweltschutz", "Nachhaltigkeit"],
+          },
         ],
       },
       {
         code: "NMG.5",
-        name: "Technische Entwicklungen",
+        name: "Technik",
+        handlungsaspekte: [
+          "Technische Geräte bedienen",
+          "Funktionsweisen verstehen",
+          "Erfindungen & Entwicklungen",
+          "Technikfolgen",
+        ],
         kompetenzen: [
-          { code: "NMG.5.1", name: "Bedeutung von Technik im Alltag" },
-          { code: "NMG.5.2", name: "Entwicklungen und Veränderungen durch Technik" },
-          { code: "NMG.5.3", name: "Chancen und Risiken von Technik abwägen" },
+          {
+            code: "NMG.5.A",
+            name: "Technische Geräte bedienen",
+            handlungsaspekte: ["Alltagstechnik nutzen"],
+          },
+          {
+            code: "NMG.5.B",
+            name: "Funktionsweisen verstehen",
+            handlungsaspekte: ["Wie Dinge funktionieren"],
+          },
+          {
+            code: "NMG.5.C",
+            name: "Erfindungen & Entwicklungen",
+            handlungsaspekte: ["Technikgeschichte", "Innovation"],
+          },
+          {
+            code: "NMG.5.D",
+            name: "Technikfolgen",
+            handlungsaspekte: ["Auswirkungen von Technik"],
+          },
         ],
       },
       {
         code: "NMG.6",
         name: "Arbeit, Produktion, Konsum",
+        handlungsaspekte: [
+          "Arbeitswelten erkunden",
+          "Produktionsabläufe",
+          "Geld & Konsum",
+          "Werbung",
+        ],
         kompetenzen: [
-          { code: "NMG.6.1", name: "Produkte und ihre Herstellung" },
-          { code: "NMG.6.2", name: "Konsum und Konsumverhalten" },
-          { code: "NMG.6.3", name: "Berufe und Arbeitsteilung" },
-          { code: "NMG.6.4", name: "Tauschen und Handeln, Geld und Wirtschaft" },
-          { code: "NMG.6.5", name: "Wohlstand und Ungleichheit" },
+          {
+            code: "NMG.6.A",
+            name: "Arbeitswelten erkunden",
+            handlungsaspekte: ["Berufe kennenlernen"],
+          },
+          {
+            code: "NMG.6.B",
+            name: "Produktionsabläufe",
+            handlungsaspekte: ["Herstellung von Produkten"],
+          },
+          {
+            code: "NMG.6.C",
+            name: "Geld & Konsum",
+            handlungsaspekte: ["Umgang mit Geld", "Kaufentscheidungen"],
+          },
+          {
+            code: "NMG.6.D",
+            name: "Werbung",
+            handlungsaspekte: ["Werbung erkennen und verstehen"],
+          },
         ],
       },
       {
         code: "NMG.7",
-        name: "Lebensweisen und Lebensräume",
+        name: "Lebensweisen & Menschen",
+        handlungsaspekte: [
+          "Soziales Umfeld",
+          "Wohnen & Zusammenleben",
+          "Lebensformen & Kulturen",
+          "Migration & Mobilität",
+        ],
         kompetenzen: [
-          { code: "NMG.7.1", name: "Räume wahrnehmen und sich orientieren" },
-          { code: "NMG.7.2", name: "Lebensräume und Lebensweisen vergleichen" },
-          { code: "NMG.7.3", name: "Mobilität und Verkehr" },
-          { code: "NMG.7.4", name: "Raumnutzung und Raumveränderung" },
+          {
+            code: "NMG.7.A",
+            name: "Soziales Umfeld",
+            handlungsaspekte: ["Familie", "Freunde", "Nachbarschaft"],
+          },
+          {
+            code: "NMG.7.B",
+            name: "Wohnen & Zusammenleben",
+            handlungsaspekte: ["Verschiedene Wohnformen"],
+          },
+          {
+            code: "NMG.7.C",
+            name: "Lebensformen & Kulturen",
+            handlungsaspekte: ["Kulturelle Vielfalt"],
+          },
+          {
+            code: "NMG.7.D",
+            name: "Migration & Mobilität",
+            handlungsaspekte: ["Menschen unterwegs", "Einwanderung"],
+          },
         ],
       },
       {
         code: "NMG.8",
-        name: "Menschen nutzen Räume",
+        name: "Räume nutzen",
+        handlungsaspekte: [
+          "Schulweg & Umgebung",
+          "Karten & Orientierung",
+          "Raumplanung & Verkehr",
+          "Raumnutzung vergleichen",
+        ],
         kompetenzen: [
-          { code: "NMG.8.1", name: "Raumwahrnehmung und Raumvorstellung" },
-          { code: "NMG.8.2", name: "Räume erkunden und darstellen" },
-          { code: "NMG.8.3", name: "Einflüsse des Menschen auf Räume" },
+          { code: "NMG.8.A", name: "Schulweg & Umgebung", handlungsaspekte: ["Nahraum erkunden"] },
+          {
+            code: "NMG.8.B",
+            name: "Karten & Orientierung",
+            handlungsaspekte: ["Karten lesen", "Sich orientieren"],
+          },
+          {
+            code: "NMG.8.C",
+            name: "Raumplanung & Verkehr",
+            handlungsaspekte: ["Verkehrswege", "Siedlungen"],
+          },
+          {
+            code: "NMG.8.D",
+            name: "Raumnutzung vergleichen",
+            handlungsaspekte: ["Verschiedene Räume"],
+          },
         ],
       },
       {
         code: "NMG.9",
         name: "Zeit, Dauer, Wandel",
+        handlungsaspekte: [
+          "Zeitbegriffe & Zeitmessung",
+          "Vergangenheit, Gegenwart, Zukunft",
+          "Geschichte & Quellen",
+          "Historische Veränderungen",
+        ],
         kompetenzen: [
-          { code: "NMG.9.1", name: "Zeit messen und wahrnehmen" },
-          { code: "NMG.9.2", name: "Veränderungen über die Zeit" },
-          { code: "NMG.9.3", name: "Geschichte und Geschichten" },
-          { code: "NMG.9.4", name: "Alltagsleben früher und heute" },
+          {
+            code: "NMG.9.A",
+            name: "Zeitbegriffe & Zeitmessung",
+            handlungsaspekte: ["Zeit verstehen", "Zeit messen"],
+          },
+          {
+            code: "NMG.9.B",
+            name: "Vergangenheit, Gegenwart, Zukunft",
+            handlungsaspekte: ["Zeitliche Einordnung"],
+          },
+          {
+            code: "NMG.9.C",
+            name: "Geschichte & Quellen",
+            handlungsaspekte: ["Historische Quellen", "Geschichten erzählen"],
+          },
+          {
+            code: "NMG.9.D",
+            name: "Historische Veränderungen",
+            handlungsaspekte: ["Wandel verstehen"],
+          },
         ],
       },
       {
         code: "NMG.10",
-        name: "Gemeinschaft und Gesellschaft",
+        name: "Gemeinschaft & Gesellschaft",
+        handlungsaspekte: [
+          "Gruppen & Regeln",
+          "Konflikte lösen",
+          "Demokratie & Mitbestimmung",
+          "Rechte & Pflichten",
+        ],
         kompetenzen: [
-          { code: "NMG.10.1", name: "Zusammenleben in Gemeinschaften" },
-          { code: "NMG.10.2", name: "Regeln und Rechte" },
-          { code: "NMG.10.3", name: "Demokratie und Mitbestimmung" },
-          { code: "NMG.10.4", name: "Konflikte und Konfliktlösungen" },
-          { code: "NMG.10.5", name: "Vielfalt in der Gesellschaft" },
+          {
+            code: "NMG.10.A",
+            name: "Gruppen & Regeln",
+            handlungsaspekte: ["Regeln verstehen", "Zusammenleben"],
+          },
+          {
+            code: "NMG.10.B",
+            name: "Konflikte lösen",
+            handlungsaspekte: ["Streit schlichten", "Kompromisse finden"],
+          },
+          {
+            code: "NMG.10.C",
+            name: "Demokratie & Mitbestimmung",
+            handlungsaspekte: ["Mitbestimmen", "Abstimmen"],
+          },
+          {
+            code: "NMG.10.D",
+            name: "Rechte & Pflichten",
+            handlungsaspekte: ["Kinderrechte", "Verantwortung"],
+          },
         ],
       },
       {
         code: "NMG.11",
-        name: "Grunderfahrungen, Werte, Normen",
+        name: "Grunderfahrungen & Werte",
+        handlungsaspekte: [
+          "Gefühle & Bedürfnisse",
+          "Freundschaft & Liebe",
+          "Philosophieren",
+          "Ethik & Moral",
+        ],
         kompetenzen: [
-          { code: "NMG.11.1", name: "Philosophieren und Nachdenken" },
-          { code: "NMG.11.2", name: "Werte und Normen erkunden" },
-          { code: "NMG.11.3", name: "Situationen beurteilen" },
-          { code: "NMG.11.4", name: "Verantwortung übernehmen" },
+          {
+            code: "NMG.11.A",
+            name: "Gefühle & Bedürfnisse",
+            handlungsaspekte: ["Gefühle erkennen", "Bedürfnisse benennen"],
+          },
+          {
+            code: "NMG.11.B",
+            name: "Freundschaft & Liebe",
+            handlungsaspekte: ["Beziehungen pflegen"],
+          },
+          {
+            code: "NMG.11.C",
+            name: "Philosophieren",
+            handlungsaspekte: ["Nachdenken", "Fragen stellen"],
+          },
+          {
+            code: "NMG.11.D",
+            name: "Ethik & Moral",
+            handlungsaspekte: ["Gut und Böse", "Werte reflektieren"],
+          },
         ],
       },
       {
         code: "NMG.12",
-        name: "Religionen und Weltsichten",
-        kompetenzen: [
-          { code: "NMG.12.1", name: "Religiöse Traditionen und Ausdrucksformen kennenlernen" },
-          { code: "NMG.12.2", name: "Weltbilder und Vorstellungen" },
-          { code: "NMG.12.3", name: "Feste und Bräuche" },
-          { code: "NMG.12.4", name: "Unterschiedliche Überzeugungen" },
-          { code: "NMG.12.5", name: "Respektvoller Umgang mit Vielfalt" },
+        name: "Religionen & Weltsichten",
+        handlungsaspekte: [
+          "Religiöse Spuren",
+          "Feste & Bräuche",
+          "Religiöse Schriften & Lehren",
+          "Religionen im Vergleich",
         ],
-      },
-    ],
-  },
-
-  // ============ NMG ZYKLUS 3 FÄCHER ============
-  {
-    code: "NT",
-    name: "Natur und Technik",
-    shortName: "NT",
-    color: "#40a02b", // Green
-    colorClass: "subject-nmg",
-    icon: "flask",
-    cycles: [3],
-    kompetenzbereiche: [
-      {
-        code: "NT.1",
-        name: "Wesen und Bedeutung von Naturwissenschaften",
         kompetenzen: [
-          { code: "NT.1.1", name: "Naturwissenschaftliche Arbeitsweisen" },
-          { code: "NT.1.2", name: "Modelle und Theorien" },
-          { code: "NT.1.3", name: "Naturwissenschaften und Gesellschaft" },
-        ],
-      },
-      {
-        code: "NT.2",
-        name: "Stoffe erkunden",
-        kompetenzen: [
-          { code: "NT.2.1", name: "Stoffeigenschaften" },
-          { code: "NT.2.2", name: "Stoffumwandlungen" },
-          { code: "NT.2.3", name: "Atome und Periodensystem" },
-        ],
-      },
-      {
-        code: "NT.3",
-        name: "Chemische Reaktionen",
-        kompetenzen: [
-          { code: "NT.3.1", name: "Chemische Reaktionen erkennen" },
-          { code: "NT.3.2", name: "Verbrennung und Oxidation" },
-          { code: "NT.3.3", name: "Säuren und Basen" },
-        ],
-      },
-      {
-        code: "NT.4",
-        name: "Sinne und Signale",
-        kompetenzen: [
-          { code: "NT.4.1", name: "Sinnesorgane" },
-          { code: "NT.4.2", name: "Nervensystem" },
-          { code: "NT.4.3", name: "Reize und Signale" },
-        ],
-      },
-      {
-        code: "NT.5",
-        name: "Energie",
-        kompetenzen: [
-          { code: "NT.5.1", name: "Energieformen und Energieumwandlung" },
-          { code: "NT.5.2", name: "Energieträger und Ressourcen" },
-          { code: "NT.5.3", name: "Nachhaltiger Umgang mit Energie" },
-        ],
-      },
-      {
-        code: "NT.6",
-        name: "Bewegung und Kraft",
-        kompetenzen: [
-          { code: "NT.6.1", name: "Bewegungen beschreiben" },
-          { code: "NT.6.2", name: "Kräfte und ihre Wirkungen" },
-          { code: "NT.6.3", name: "Newtonsche Gesetze" },
-        ],
-      },
-      {
-        code: "NT.7",
-        name: "Elektrizität",
-        kompetenzen: [
-          { code: "NT.7.1", name: "Elektrische Stromkreise" },
-          { code: "NT.7.2", name: "Elektrische Grössen" },
-          { code: "NT.7.3", name: "Elektromagnetismus" },
-        ],
-      },
-      {
-        code: "NT.8",
-        name: "Fortpflanzung und Entwicklung",
-        kompetenzen: [
-          { code: "NT.8.1", name: "Fortpflanzung bei Pflanzen und Tieren" },
-          { code: "NT.8.2", name: "Genetik und Vererbung" },
-          { code: "NT.8.3", name: "Evolution" },
-        ],
-      },
-      {
-        code: "NT.9",
-        name: "Ökosysteme",
-        kompetenzen: [
-          { code: "NT.9.1", name: "Ökosysteme erforschen" },
-          { code: "NT.9.2", name: "Stoffkreisläufe und Energiefluss" },
-          { code: "NT.9.3", name: "Mensch und Umwelt" },
-        ],
-      },
-    ],
-  },
-  {
-    code: "WAH",
-    name: "WAH",
-    shortName: "WAH",
-    color: "#40a02b", // Green
-    colorClass: "subject-nmg",
-    icon: "briefcase",
-    cycles: [3],
-    kompetenzbereiche: [
-      {
-        code: "WAH.1",
-        name: "Produktions- und Arbeitswelten",
-        kompetenzen: [
-          { code: "WAH.1.1", name: "Berufswahl und Arbeitswelt" },
-          { code: "WAH.1.2", name: "Produktion und Dienstleistungen" },
-          { code: "WAH.1.3", name: "Wirtschaftskreisläufe" },
-        ],
-      },
-      {
-        code: "WAH.2",
-        name: "Märkte und Handel",
-        kompetenzen: [
-          { code: "WAH.2.1", name: "Markt und Preis" },
-          { code: "WAH.2.2", name: "Globaler Handel" },
-          { code: "WAH.2.3", name: "Fairer Handel" },
-        ],
-      },
-      {
-        code: "WAH.3",
-        name: "Konsum",
-        kompetenzen: [
-          { code: "WAH.3.1", name: "Konsumentscheidungen" },
-          { code: "WAH.3.2", name: "Budget und Schulden" },
-          { code: "WAH.3.3", name: "Nachhaltiger Konsum" },
-        ],
-      },
-      {
-        code: "WAH.4",
-        name: "Ernährung und Gesundheit",
-        kompetenzen: [
-          { code: "WAH.4.1", name: "Gesunde Ernährung" },
-          { code: "WAH.4.2", name: "Lebensmittelproduktion" },
-          { code: "WAH.4.3", name: "Nahrungszubereitung" },
-          { code: "WAH.4.4", name: "Esskultur und Traditionen" },
-          { code: "WAH.4.5", name: "Lebensmittelsicherheit" },
-        ],
-      },
-    ],
-  },
-  {
-    code: "RZG",
-    name: "RZG",
-    shortName: "RZG",
-    color: "#40a02b", // Green
-    colorClass: "subject-nmg",
-    icon: "map",
-    cycles: [3],
-    kompetenzbereiche: [
-      {
-        code: "RZG.1",
-        name: "Natürliche Grundlagen der Erde",
-        kompetenzen: [
-          { code: "RZG.1.1", name: "Aufbau und Dynamik der Erde" },
-          { code: "RZG.1.2", name: "Klima und Klimazonen" },
-          { code: "RZG.1.3", name: "Naturgefahren und Naturkatastrophen" },
-        ],
-      },
-      {
-        code: "RZG.2",
-        name: "Lebensweisen und Lebensräume",
-        kompetenzen: [
-          { code: "RZG.2.1", name: "Bevölkerung und Migration" },
-          { code: "RZG.2.2", name: "Städte und Siedlungen" },
-          { code: "RZG.2.3", name: "Landwirtschaft und Ernährung" },
-        ],
-      },
-      {
-        code: "RZG.3",
-        name: "Schweiz in Europa und der Welt",
-        kompetenzen: [
-          { code: "RZG.3.1", name: "Schweizer Geographie" },
-          { code: "RZG.3.2", name: "Europa als Lebensraum" },
-          { code: "RZG.3.3", name: "Globalisierung und Vernetzung" },
-        ],
-      },
-      {
-        code: "RZG.4",
-        name: "Menschen machen Geschichte",
-        kompetenzen: [
-          { code: "RZG.4.1", name: "Quellen und Darstellungen" },
-          { code: "RZG.4.2", name: "Kontinuität und Wandel" },
-        ],
-      },
-      {
-        code: "RZG.5",
-        name: "Weltgeschichte",
-        kompetenzen: [
-          { code: "RZG.5.1", name: "Frühe Hochkulturen" },
-          { code: "RZG.5.2", name: "Antike" },
-          { code: "RZG.5.3", name: "Mittelalter" },
-        ],
-      },
-      {
-        code: "RZG.6",
-        name: "Schweizer Geschichte",
-        kompetenzen: [
-          { code: "RZG.6.1", name: "Entstehung der Eidgenossenschaft" },
-          { code: "RZG.6.2", name: "Neuzeit und Bundesstaat" },
-          { code: "RZG.6.3", name: "20. und 21. Jahrhundert" },
-        ],
-      },
-      {
-        code: "RZG.7",
-        name: "Geschichtskultur",
-        kompetenzen: [
-          { code: "RZG.7.1", name: "Erinnerungskultur" },
-          { code: "RZG.7.2", name: "Geschichtliche Darstellungen analysieren" },
-        ],
-      },
-      {
-        code: "RZG.8",
-        name: "Politik und Demokratie",
-        kompetenzen: [
-          { code: "RZG.8.1", name: "Schweizer Staatsaufbau" },
-          { code: "RZG.8.2", name: "Demokratie und Menschenrechte" },
-          { code: "RZG.8.3", name: "Internationale Organisationen" },
-        ],
-      },
-    ],
-  },
-  {
-    code: "ERG",
-    name: "ERG",
-    shortName: "ERG",
-    color: "#40a02b", // Green
-    colorClass: "subject-nmg",
-    icon: "users",
-    cycles: [3],
-    kompetenzbereiche: [
-      {
-        code: "ERG.1",
-        name: "Existenzielle Grunderfahrungen",
-        kompetenzen: [
-          { code: "ERG.1.1", name: "Lebensfragen" },
-          { code: "ERG.1.2", name: "Glück und Sinn" },
-        ],
-      },
-      {
-        code: "ERG.2",
-        name: "Werte und Normen",
-        kompetenzen: [
-          { code: "ERG.2.1", name: "Werte reflektieren" },
-          { code: "ERG.2.2", name: "Ethisch urteilen" },
-        ],
-      },
-      {
-        code: "ERG.3",
-        name: "Spannungsfelder",
-        kompetenzen: [
-          { code: "ERG.3.1", name: "Individuum und Gemeinschaft" },
-          { code: "ERG.3.2", name: "Freiheit und Verantwortung" },
-        ],
-      },
-      {
-        code: "ERG.4",
-        name: "Religionen und Weltanschauungen",
-        kompetenzen: [
-          { code: "ERG.4.1", name: "Weltreligionen" },
-          { code: "ERG.4.2", name: "Religiöse Praxis" },
-          { code: "ERG.4.3", name: "Religion und Gesellschaft" },
-        ],
-      },
-      {
-        code: "ERG.5",
-        name: "Ich und die Gemeinschaft",
-        kompetenzen: [
-          { code: "ERG.5.1", name: "Identität und Rolle" },
-          { code: "ERG.5.2", name: "Beziehungen gestalten" },
-          { code: "ERG.5.3", name: "Konflikte lösen" },
-          { code: "ERG.5.4", name: "Vielfalt und Zusammenleben" },
-          { code: "ERG.5.5", name: "Verantwortung für andere" },
-          { code: "ERG.5.6", name: "Gesellschaftliches Engagement" },
+          {
+            code: "NMG.12.A",
+            name: "Religiöse Spuren",
+            handlungsaspekte: ["Religion im Alltag entdecken"],
+          },
+          {
+            code: "NMG.12.B",
+            name: "Feste & Bräuche",
+            handlungsaspekte: ["Religiöse Feiertage", "Traditionen"],
+          },
+          {
+            code: "NMG.12.C",
+            name: "Religiöse Schriften & Lehren",
+            handlungsaspekte: ["Heilige Texte kennenlernen"],
+          },
+          {
+            code: "NMG.12.D",
+            name: "Religionen im Vergleich",
+            handlungsaspekte: ["Verschiedene Religionen", "Gemeinsamkeiten und Unterschiede"],
+          },
         ],
       },
     ],
@@ -723,72 +937,152 @@ export const FACHBEREICHE: Fachbereich[] = [
     code: "BG",
     name: "Bildnerisches Gestalten",
     shortName: "BG",
-    color: "#ea76cb", // Pink
-    colorClass: "subject-gestalten",
+    color: "#ea76cb", // Pink - Catppuccin Pink
+    colorClass: "subject-bg",
     icon: "palette",
     cycles: [1, 2, 3],
     kompetenzbereiche: [
       {
         code: "BG.1",
-        name: "Wahrnehmung und Kommunikation",
+        name: "Wahrnehmung & Kommunikation",
+        handlungsaspekte: ["Sehen & Verstehen", "Präsentieren & Kommunizieren"],
         kompetenzen: [
-          { code: "BG.1.A", name: "Wahrnehmung und Reflexion" },
-          { code: "BG.1.B", name: "Präsentation und Dokumentation" },
+          {
+            code: "BG.1.A",
+            name: "Sehen & Verstehen",
+            handlungsaspekte: ["Wahrnehmen", "Beobachten", "Reflektieren"],
+          },
+          {
+            code: "BG.1.B",
+            name: "Präsentieren & Kommunizieren",
+            handlungsaspekte: ["Arbeiten zeigen", "Über Bilder sprechen"],
+          },
         ],
       },
       {
         code: "BG.2",
-        name: "Prozesse und Produkte",
+        name: "Prozesse & Produkte",
+        handlungsaspekte: [
+          "Bildnerische Verfahren & Materialien",
+          "Bildnerische Grundelemente",
+          "Bildnerische Konzepte (Fläche, Raum, Zeit)",
+        ],
         kompetenzen: [
-          { code: "BG.2.A", name: "Bildnerischer Prozess" },
-          { code: "BG.2.B", name: "Bildnerische Grundelemente" },
-          { code: "BG.2.C", name: "Bildnerische Verfahren und kunstorientierte Methoden" },
+          {
+            code: "BG.2.A",
+            name: "Bildnerische Verfahren & Materialien",
+            handlungsaspekte: ["Techniken anwenden", "Materialien erkunden"],
+          },
+          {
+            code: "BG.2.B",
+            name: "Bildnerische Grundelemente",
+            handlungsaspekte: ["Form", "Farbe", "Linie", "Fläche"],
+          },
+          {
+            code: "BG.2.C",
+            name: "Bildnerische Konzepte",
+            handlungsaspekte: ["Fläche", "Raum", "Zeit", "Bewegung"],
+          },
         ],
       },
       {
         code: "BG.3",
-        name: "Kontexte und Orientierung",
+        name: "Kontexte & Orientierung",
+        handlungsaspekte: ["Kunst & Kulturgeschichte", "Kultur & Gesellschaft"],
         kompetenzen: [
-          { code: "BG.3.A", name: "Kunst- und Bildverständnis" },
-          { code: "BG.3.B", name: "Kultur und Geschichte" },
+          {
+            code: "BG.3.A",
+            name: "Kunst & Kulturgeschichte",
+            handlungsaspekte: ["Kunstwerke kennenlernen", "Kunstgeschichte"],
+          },
+          {
+            code: "BG.3.B",
+            name: "Kultur & Gesellschaft",
+            handlungsaspekte: ["Kunst im Alltag", "Visuelle Kultur"],
+          },
         ],
       },
     ],
   },
   {
     code: "TTG",
-    name: "TTG",
+    name: "Textiles und Technisches Gestalten",
     shortName: "TTG",
-    color: "#ea76cb", // Pink
-    colorClass: "subject-gestalten",
+    color: "#fe640b", // Peach - Catppuccin Peach
+    colorClass: "subject-ttg",
     icon: "scissors",
     cycles: [1, 2, 3],
     kompetenzbereiche: [
       {
         code: "TTG.1",
-        name: "Wahrnehmung und Kommunikation",
+        name: "Wahrnehmung & Kommunikation",
+        handlungsaspekte: ["Wahrnehmen & Beschreiben", "Dokumentieren & Präsentieren"],
         kompetenzen: [
-          { code: "TTG.1.A", name: "Wahrnehmung und Reflexion" },
-          { code: "TTG.1.B", name: "Dokumentation und Präsentation" },
+          {
+            code: "TTG.1.A",
+            name: "Wahrnehmen & Beschreiben",
+            handlungsaspekte: ["Beobachten", "Analysieren"],
+          },
+          {
+            code: "TTG.1.B",
+            name: "Dokumentieren & Präsentieren",
+            handlungsaspekte: ["Prozesse festhalten", "Ergebnisse zeigen"],
+          },
         ],
       },
       {
         code: "TTG.2",
-        name: "Prozesse und Produkte",
+        name: "Prozesse & Produkte",
+        handlungsaspekte: [
+          "Material",
+          "Verfahren (Verarbeitung)",
+          "Funktion & Konstruktion",
+          "Gestaltungselemente",
+          "Technik & Designprozess",
+        ],
         kompetenzen: [
-          { code: "TTG.2.A", name: "Gestaltungs- und Designprozess" },
-          { code: "TTG.2.B", name: "Funktion und Konstruktion" },
-          { code: "TTG.2.C", name: "Material, Werkzeug und Maschine" },
-          { code: "TTG.2.D", name: "Verfahren" },
-          { code: "TTG.2.E", name: "Gestaltungselemente" },
+          {
+            code: "TTG.2.A",
+            name: "Material",
+            handlungsaspekte: ["Materialien erkunden", "Eigenschaften verstehen"],
+          },
+          {
+            code: "TTG.2.B",
+            name: "Verfahren",
+            handlungsaspekte: ["Verarbeitungstechniken", "Handwerkliche Fertigkeiten"],
+          },
+          {
+            code: "TTG.2.C",
+            name: "Funktion & Konstruktion",
+            handlungsaspekte: ["Funktionale Gestaltung", "Konstruktionsprinzipien"],
+          },
+          {
+            code: "TTG.2.D",
+            name: "Gestaltungselemente",
+            handlungsaspekte: ["Form", "Farbe", "Oberfläche"],
+          },
+          {
+            code: "TTG.2.E",
+            name: "Technik & Designprozess",
+            handlungsaspekte: ["Entwerfen", "Planen", "Umsetzen"],
+          },
         ],
       },
       {
         code: "TTG.3",
-        name: "Kontexte und Orientierung",
+        name: "Kontexte & Orientierung",
+        handlungsaspekte: ["Kultur & Geschichte", "Technik, Umwelt & Wirtschaft"],
         kompetenzen: [
-          { code: "TTG.3.A", name: "Design- und Technikverständnis" },
-          { code: "TTG.3.B", name: "Kultur und Geschichte" },
+          {
+            code: "TTG.3.A",
+            name: "Kultur & Geschichte",
+            handlungsaspekte: ["Design- und Technikgeschichte"],
+          },
+          {
+            code: "TTG.3.B",
+            name: "Technik, Umwelt & Wirtschaft",
+            handlungsaspekte: ["Nachhaltigkeit", "Ressourcen"],
+          },
         ],
       },
     ],
@@ -798,64 +1092,134 @@ export const FACHBEREICHE: Fachbereich[] = [
   {
     code: "MU",
     name: "Musik",
-    shortName: "Musik",
-    color: "#8839ef", // Mauve
+    shortName: "MU",
+    color: "#7c3aed", // Violet - Distinct purple
     colorClass: "subject-musik",
     icon: "music",
     cycles: [1, 2, 3],
     kompetenzbereiche: [
       {
         code: "MU.1",
-        name: "Singen und Sprechen",
+        name: "Singen & Sprechen",
+        handlungsaspekte: ["Stimme bilden", "Liederrepertoire", "Experimentieren"],
         kompetenzen: [
-          { code: "MU.1.A", name: "Stimme im Ensemble" },
-          { code: "MU.1.B", name: "Liedrepertoire" },
-          { code: "MU.1.C", name: "Stimme als Ausdrucksmittel" },
+          {
+            code: "MU.1.A",
+            name: "Stimme bilden",
+            handlungsaspekte: ["Stimmbildung", "Atemtechnik"],
+          },
+          {
+            code: "MU.1.B",
+            name: "Liederrepertoire",
+            handlungsaspekte: ["Lieder lernen", "Liedgut pflegen"],
+          },
+          {
+            code: "MU.1.C",
+            name: "Experimentieren",
+            handlungsaspekte: ["Mit der Stimme experimentieren"],
+          },
         ],
       },
       {
         code: "MU.2",
-        name: "Hören und Sich-Orientieren",
+        name: "Hören & Sich-Orientieren",
+        handlungsaspekte: [
+          "Akustische Orientierung",
+          "Musik hören & verstehen",
+          "Bedeutung & Funktion",
+        ],
         kompetenzen: [
-          { code: "MU.2.A", name: "Akustische Orientierung" },
-          { code: "MU.2.B", name: "Bedeutung und Funktion von Musik" },
-          { code: "MU.2.C", name: "Musikalische Merkmale" },
+          {
+            code: "MU.2.A",
+            name: "Akustische Orientierung",
+            handlungsaspekte: ["Klänge unterscheiden", "Geräusche erkennen"],
+          },
+          {
+            code: "MU.2.B",
+            name: "Musik hören & verstehen",
+            handlungsaspekte: ["Aktiv zuhören", "Musik analysieren"],
+          },
+          {
+            code: "MU.2.C",
+            name: "Bedeutung & Funktion",
+            handlungsaspekte: ["Musik im Alltag", "Musikfunktionen"],
+          },
         ],
       },
       {
         code: "MU.3",
-        name: "Bewegen und Tanzen",
+        name: "Bewegen & Tanzen",
+        handlungsaspekte: ["Körperwahrnehmung", "Bewegung zur Musik", "Tanzen"],
         kompetenzen: [
-          { code: "MU.3.A", name: "Körperausdruck" },
-          { code: "MU.3.B", name: "Bewegungsabläufe" },
-          { code: "MU.3.C", name: "Tanzformen" },
+          {
+            code: "MU.3.A",
+            name: "Körperwahrnehmung",
+            handlungsaspekte: ["Körper spüren", "Koordination"],
+          },
+          {
+            code: "MU.3.B",
+            name: "Bewegung zur Musik",
+            handlungsaspekte: ["Rhythmisch bewegen", "Bewegungsfolgen"],
+          },
+          { code: "MU.3.C", name: "Tanzen", handlungsaspekte: ["Tanzformen", "Choreografien"] },
         ],
       },
       {
         code: "MU.4",
         name: "Musizieren",
+        handlungsaspekte: ["Instrumente kennen", "Instrumentalspiel", "Ensemblespiel"],
         kompetenzen: [
-          { code: "MU.4.A", name: "Musizieren im Ensemble" },
-          { code: "MU.4.B", name: "Instrument als Ausdrucksmittel" },
-          { code: "MU.4.C", name: "Instrumentenkunde" },
+          {
+            code: "MU.4.A",
+            name: "Instrumente kennen",
+            handlungsaspekte: ["Instrumentenkunde", "Klangfarben"],
+          },
+          {
+            code: "MU.4.B",
+            name: "Instrumentalspiel",
+            handlungsaspekte: ["Instrumente spielen", "Technik entwickeln"],
+          },
+          {
+            code: "MU.4.C",
+            name: "Ensemblespiel",
+            handlungsaspekte: ["Zusammen musizieren", "Aufeinander hören"],
+          },
         ],
       },
       {
         code: "MU.5",
         name: "Gestaltungsprozesse",
+        handlungsaspekte: ["Improvisieren", "Komponieren", "Aufführen"],
         kompetenzen: [
-          { code: "MU.5.A", name: "Musik erkunden" },
-          { code: "MU.5.B", name: "Musik erfinden" },
-          { code: "MU.5.C", name: "Musik aufführen" },
+          {
+            code: "MU.5.A",
+            name: "Improvisieren",
+            handlungsaspekte: ["Spontan musizieren", "Kreativ gestalten"],
+          },
+          { code: "MU.5.B", name: "Komponieren", handlungsaspekte: ["Musik erfinden", "Notieren"] },
+          { code: "MU.5.C", name: "Aufführen", handlungsaspekte: ["Präsentieren", "Vortragen"] },
         ],
       },
       {
         code: "MU.6",
         name: "Praxis des musikalischen Wissens",
+        handlungsaspekte: ["Rhythmus, Melodie, Harmonie", "Notation", "Geschichte & Gesellschaft"],
         kompetenzen: [
-          { code: "MU.6.A", name: "Notation" },
-          { code: "MU.6.B", name: "Rhythmus und Metrum" },
-          { code: "MU.6.C", name: "Melodie und Harmonie" },
+          {
+            code: "MU.6.A",
+            name: "Rhythmus, Melodie, Harmonie",
+            handlungsaspekte: ["Musikalische Grundlagen"],
+          },
+          {
+            code: "MU.6.B",
+            name: "Notation",
+            handlungsaspekte: ["Noten lesen", "Noten schreiben"],
+          },
+          {
+            code: "MU.6.C",
+            name: "Geschichte & Gesellschaft",
+            handlungsaspekte: ["Musikgeschichte", "Musik und Gesellschaft"],
+          },
         ],
       },
     ],
@@ -866,7 +1230,7 @@ export const FACHBEREICHE: Fachbereich[] = [
     code: "BS",
     name: "Bewegung und Sport",
     shortName: "BS",
-    color: "#fe640b", // Peach
+    color: "#dc2626", // Red-Orange - Sporty energetic color
     colorClass: "subject-sport",
     icon: "activity",
     cycles: [1, 2, 3],
@@ -874,56 +1238,104 @@ export const FACHBEREICHE: Fachbereich[] = [
       {
         code: "BS.1",
         name: "Laufen, Springen, Werfen",
+        handlungsaspekte: ["Leichtathletik-Grundformen"],
         kompetenzen: [
-          { code: "BS.1.A", name: "Laufen" },
-          { code: "BS.1.B", name: "Springen" },
-          { code: "BS.1.C", name: "Werfen" },
-          { code: "BS.1.D", name: "Leichtathletik" },
+          { code: "BS.1.A", name: "Laufen", handlungsaspekte: ["Lauftechniken", "Ausdauer"] },
+          {
+            code: "BS.1.B",
+            name: "Springen",
+            handlungsaspekte: ["Sprungtechniken", "Koordination"],
+          },
+          {
+            code: "BS.1.C",
+            name: "Werfen",
+            handlungsaspekte: ["Wurftechniken", "Zielgenauigkeit"],
+          },
         ],
       },
       {
         code: "BS.2",
         name: "Bewegen an Geräten",
+        handlungsaspekte: ["Turnen, Klettern, Balancieren"],
         kompetenzen: [
-          { code: "BS.2.A", name: "Grundbewegungen" },
-          { code: "BS.2.B", name: "Geräteturnen" },
-          { code: "BS.2.C", name: "Parkour" },
+          { code: "BS.2.A", name: "Turnen", handlungsaspekte: ["Geräteturnen", "Bodenturnen"] },
+          {
+            code: "BS.2.B",
+            name: "Klettern",
+            handlungsaspekte: ["Klettertechniken", "Sicherheit"],
+          },
+          {
+            code: "BS.2.C",
+            name: "Balancieren",
+            handlungsaspekte: ["Gleichgewicht", "Körperspannung"],
+          },
         ],
       },
       {
         code: "BS.3",
-        name: "Darstellen und Tanzen",
+        name: "Darstellen & Tanzen",
+        handlungsaspekte: ["Ausdruck, Rhythmus, Gestaltung"],
         kompetenzen: [
-          { code: "BS.3.A", name: "Körperwahrnehmung" },
-          { code: "BS.3.B", name: "Darstellen" },
-          { code: "BS.3.C", name: "Tanzen" },
+          {
+            code: "BS.3.A",
+            name: "Ausdruck",
+            handlungsaspekte: ["Bewegungsausdruck", "Darstellung"],
+          },
+          { code: "BS.3.B", name: "Rhythmus", handlungsaspekte: ["Rhythmische Bewegung"] },
+          {
+            code: "BS.3.C",
+            name: "Gestaltung",
+            handlungsaspekte: ["Bewegungsgestaltung", "Choreografie"],
+          },
         ],
       },
       {
         code: "BS.4",
         name: "Spielen",
+        handlungsaspekte: ["Kleine Spiele", "Sportspiele (Ballspiele etc.)"],
         kompetenzen: [
-          { code: "BS.4.A", name: "Spielfähigkeit" },
-          { code: "BS.4.B", name: "Sportspiele" },
-          { code: "BS.4.C", name: "Rückschlagspiele" },
+          {
+            code: "BS.4.A",
+            name: "Kleine Spiele",
+            handlungsaspekte: ["Fangspiele", "Laufspiele", "Kooperationsspiele"],
+          },
+          {
+            code: "BS.4.B",
+            name: "Sportspiele",
+            handlungsaspekte: ["Ballspiele", "Mannschaftsspiele", "Rückschlagspiele"],
+          },
         ],
       },
       {
         code: "BS.5",
         name: "Gleiten, Rollen, Fahren",
+        handlungsaspekte: ["Wintersport, Radfahren, Trendsportarten"],
         kompetenzen: [
-          { code: "BS.5.A", name: "Auf Rollen und Rädern" },
-          { code: "BS.5.B", name: "Auf Schnee und Eis" },
-          { code: "BS.5.C", name: "Im Wasser" },
+          { code: "BS.5.A", name: "Rollen & Fahren", handlungsaspekte: ["Rollsport", "Radfahren"] },
+          {
+            code: "BS.5.B",
+            name: "Wintersport",
+            handlungsaspekte: ["Skifahren", "Schlittschuhlaufen"],
+          },
+          { code: "BS.5.C", name: "Trendsportarten", handlungsaspekte: ["Neue Bewegungsformen"] },
         ],
       },
       {
         code: "BS.6",
         name: "Bewegen im Wasser",
+        handlungsaspekte: ["Schwimmen, Tauchen, Wassersicherheit"],
         kompetenzen: [
-          { code: "BS.6.A", name: "Sicherheit im Wasser" },
-          { code: "BS.6.B", name: "Schwimmtechniken" },
-          { code: "BS.6.C", name: "Tauchen und Wasserspiele" },
+          {
+            code: "BS.6.A",
+            name: "Schwimmen",
+            handlungsaspekte: ["Schwimmtechniken", "Schwimmstile"],
+          },
+          { code: "BS.6.B", name: "Tauchen", handlungsaspekte: ["Tauchtechniken", "Unterwasser"] },
+          {
+            code: "BS.6.C",
+            name: "Wassersicherheit",
+            handlungsaspekte: ["Sicherheit im Wasser", "Rettungsschwimmen"],
+          },
         ],
       },
     ],
@@ -934,28 +1346,662 @@ export const FACHBEREICHE: Fachbereich[] = [
     code: "MI",
     name: "Medien und Informatik",
     shortName: "MI",
-    color: "#04a5e5", // Sky
-    colorClass: "subject-medien",
+    color: "#04a5e5", // Sky - Catppuccin Sky
+    colorClass: "subject-mi",
     icon: "monitor",
     cycles: [1, 2, 3],
     kompetenzbereiche: [
       {
         code: "MI.1",
         name: "Medien",
+        handlungsaspekte: [
+          "Medien verstehen",
+          "Medien produzieren",
+          "Medienkommunikation",
+          "Medieneinflüsse",
+        ],
         kompetenzen: [
-          { code: "MI.1.1", name: "Medien verstehen und verantwortungsvoll nutzen" },
-          { code: "MI.1.2", name: "Medien und Medienbeiträge produzieren" },
-          { code: "MI.1.3", name: "Medien und Medienbeiträge verstehen und reflektieren" },
-          { code: "MI.1.4", name: "Mit Medien kommunizieren und kooperieren" },
+          {
+            code: "MI.1.A",
+            name: "Medien verstehen",
+            handlungsaspekte: ["Medienarten kennen", "Medien kritisch betrachten"],
+          },
+          {
+            code: "MI.1.B",
+            name: "Medien produzieren",
+            handlungsaspekte: ["Eigene Medien erstellen", "Kreativ gestalten"],
+          },
+          {
+            code: "MI.1.C",
+            name: "Medienkommunikation",
+            handlungsaspekte: ["Kommunizieren mit Medien", "Social Media"],
+          },
+          {
+            code: "MI.1.D",
+            name: "Medieneinflüsse",
+            handlungsaspekte: ["Wirkung von Medien", "Medienkompetenz"],
+          },
         ],
       },
       {
         code: "MI.2",
         name: "Informatik",
+        handlungsaspekte: ["Datenstrukturen", "Algorithmen", "Informatiksysteme"],
         kompetenzen: [
-          { code: "MI.2.1", name: "Datenstrukturen" },
-          { code: "MI.2.2", name: "Algorithmen" },
-          { code: "MI.2.3", name: "Informatiksysteme" },
+          {
+            code: "MI.2.A",
+            name: "Datenstrukturen",
+            handlungsaspekte: ["Daten organisieren", "Datenformate"],
+          },
+          {
+            code: "MI.2.B",
+            name: "Algorithmen",
+            handlungsaspekte: ["Programmieren", "Problemlösen"],
+          },
+          {
+            code: "MI.2.C",
+            name: "Informatiksysteme",
+            handlungsaspekte: ["Computer verstehen", "Netzwerke"],
+          },
+        ],
+      },
+    ],
+  },
+
+  // ============ ZYKLUS 3 SPEZIFISCHE FÄCHER ============
+  {
+    code: "NT",
+    name: "Natur und Technik",
+    shortName: "NT",
+    color: "#179299", // Teal - Catppuccin Teal
+    colorClass: "subject-nt",
+    icon: "flask",
+    cycles: [3],
+    kompetenzbereiche: [
+      {
+        code: "NT.1",
+        name: "Wesen der Naturwissenschaften",
+        handlungsaspekte: ["Arbeitsweisen, Modelle, Geschichte der Naturwissenschaften"],
+        kompetenzen: [
+          {
+            code: "NT.1.A",
+            name: "Naturwissenschaftliche Arbeitsweisen",
+            handlungsaspekte: ["Beobachten", "Experimentieren", "Hypothesen bilden"],
+          },
+          {
+            code: "NT.1.B",
+            name: "Modelle & Theorien",
+            handlungsaspekte: ["Modelle verstehen", "Theorien anwenden"],
+          },
+          {
+            code: "NT.1.C",
+            name: "Geschichte der Naturwissenschaften",
+            handlungsaspekte: ["Entwicklung der Wissenschaft", "Entdeckungen"],
+          },
+        ],
+      },
+      {
+        code: "NT.2",
+        name: "Stoffe (Chemie)",
+        handlungsaspekte: ["Eigenschaften, Trennverfahren, Teilchenmodell, Reaktionen"],
+        kompetenzen: [
+          {
+            code: "NT.2.A",
+            name: "Stoffeigenschaften",
+            handlungsaspekte: ["Eigenschaften untersuchen", "Stoffklassen"],
+          },
+          {
+            code: "NT.2.B",
+            name: "Trennverfahren",
+            handlungsaspekte: ["Gemische trennen", "Verfahren anwenden"],
+          },
+          {
+            code: "NT.2.C",
+            name: "Teilchenmodell",
+            handlungsaspekte: ["Aufbau der Materie", "Atome und Moleküle"],
+          },
+          {
+            code: "NT.2.D",
+            name: "Chemische Reaktionen",
+            handlungsaspekte: ["Reaktionsgleichungen", "Reaktionstypen"],
+          },
+        ],
+      },
+      {
+        code: "NT.3",
+        name: "Energie (Physik)",
+        handlungsaspekte: ["Energieformen, Umwandlung, Kraft, Elektrizität, Optik, Schall"],
+        kompetenzen: [
+          {
+            code: "NT.3.A",
+            name: "Energieformen & Umwandlung",
+            handlungsaspekte: ["Energieformen", "Energieerhaltung"],
+          },
+          {
+            code: "NT.3.B",
+            name: "Kraft & Bewegung",
+            handlungsaspekte: ["Newtonsche Gesetze", "Mechanik"],
+          },
+          {
+            code: "NT.3.C",
+            name: "Elektrizität",
+            handlungsaspekte: ["Stromkreise", "Elektromagnetismus"],
+          },
+          { code: "NT.3.D", name: "Optik & Schall", handlungsaspekte: ["Licht", "Schallwellen"] },
+        ],
+      },
+      {
+        code: "NT.4",
+        name: "Organismen (Biologie)",
+        handlungsaspekte: ["Bau & Funktion (Mensch/Tier/Pflanze), Genetik, Evolution"],
+        kompetenzen: [
+          {
+            code: "NT.4.A",
+            name: "Bau & Funktion",
+            handlungsaspekte: ["Körpersysteme", "Organe", "Zellen"],
+          },
+          { code: "NT.4.B", name: "Genetik", handlungsaspekte: ["Vererbung", "DNA", "Gene"] },
+          {
+            code: "NT.4.C",
+            name: "Evolution",
+            handlungsaspekte: ["Evolutionstheorie", "Anpassung", "Selektion"],
+          },
+        ],
+      },
+      {
+        code: "NT.5",
+        name: "Lebensräume",
+        handlungsaspekte: ["Ökosysteme, Biodiversität, Nachhaltigkeit"],
+        kompetenzen: [
+          {
+            code: "NT.5.A",
+            name: "Ökosysteme",
+            handlungsaspekte: ["Ökosysteme verstehen", "Stoffkreisläufe"],
+          },
+          {
+            code: "NT.5.B",
+            name: "Biodiversität",
+            handlungsaspekte: ["Artenvielfalt", "Artenschutz"],
+          },
+          {
+            code: "NT.5.C",
+            name: "Nachhaltigkeit",
+            handlungsaspekte: ["Nachhaltige Entwicklung", "Umweltschutz"],
+          },
+        ],
+      },
+      {
+        code: "NT.6",
+        name: "Sinne & Signale",
+        handlungsaspekte: ["Reizaufnahme, Nervensystem, Kommunikation (biologisch)"],
+        kompetenzen: [
+          { code: "NT.6.A", name: "Reizaufnahme", handlungsaspekte: ["Sinnesorgane", "Reize"] },
+          {
+            code: "NT.6.B",
+            name: "Nervensystem",
+            handlungsaspekte: ["Nerven", "Gehirn", "Reflexe"],
+          },
+          {
+            code: "NT.6.C",
+            name: "Biologische Kommunikation",
+            handlungsaspekte: ["Hormonsystem", "Signalübertragung"],
+          },
+        ],
+      },
+      {
+        code: "NT.7",
+        name: "Technische Entwicklungen",
+        handlungsaspekte: ["Mechanik, Antriebe, Steuerung, Automatisierung"],
+        kompetenzen: [
+          {
+            code: "NT.7.A",
+            name: "Mechanik & Antriebe",
+            handlungsaspekte: ["Maschinen", "Motoren"],
+          },
+          {
+            code: "NT.7.B",
+            name: "Steuerung & Regelung",
+            handlungsaspekte: ["Steuerungstechnik", "Feedback-Systeme"],
+          },
+          {
+            code: "NT.7.C",
+            name: "Automatisierung",
+            handlungsaspekte: ["Robotik", "Automatische Systeme"],
+          },
+        ],
+      },
+      {
+        code: "NT.8",
+        name: "Stoffe im Alltag",
+        handlungsaspekte: ["Werkstoffe, Abfall, Recycling"],
+        kompetenzen: [
+          {
+            code: "NT.8.A",
+            name: "Werkstoffe",
+            handlungsaspekte: ["Materialien im Alltag", "Eigenschaften"],
+          },
+          {
+            code: "NT.8.B",
+            name: "Abfall & Recycling",
+            handlungsaspekte: ["Entsorgung", "Wiederverwertung", "Kreislaufwirtschaft"],
+          },
+        ],
+      },
+      {
+        code: "NT.9",
+        name: "Energie im Alltag",
+        handlungsaspekte: ["Energieversorgung, Mobilität, Energieeffizienz"],
+        kompetenzen: [
+          {
+            code: "NT.9.A",
+            name: "Energieversorgung",
+            handlungsaspekte: ["Energiequellen", "Energienetze"],
+          },
+          { code: "NT.9.B", name: "Mobilität", handlungsaspekte: ["Verkehr", "Antriebsarten"] },
+          {
+            code: "NT.9.C",
+            name: "Energieeffizienz",
+            handlungsaspekte: ["Energie sparen", "Nachhaltiger Umgang"],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    code: "WAH",
+    name: "Wirtschaft, Arbeit, Haushalt",
+    shortName: "WAH",
+    color: "#dd7878", // Flamingo - Catppuccin Flamingo
+    colorClass: "subject-wah",
+    icon: "briefcase",
+    cycles: [3],
+    kompetenzbereiche: [
+      {
+        code: "WAH.1",
+        name: "Produktions- & Arbeitswelten",
+        handlungsaspekte: ["Wertschöpfung, Betriebswirtschaft, Berufsfelder"],
+        kompetenzen: [
+          {
+            code: "WAH.1.A",
+            name: "Wertschöpfung",
+            handlungsaspekte: ["Produktion verstehen", "Wertschöpfungsketten"],
+          },
+          {
+            code: "WAH.1.B",
+            name: "Betriebswirtschaft",
+            handlungsaspekte: ["Unternehmen", "Wirtschaftskreisläufe"],
+          },
+          {
+            code: "WAH.1.C",
+            name: "Berufsfelder",
+            handlungsaspekte: ["Berufe erkunden", "Arbeitswelt"],
+          },
+        ],
+      },
+      {
+        code: "WAH.2",
+        name: "Märkte & Handel",
+        handlungsaspekte: ["Preisbildung, Marktmechanismen, Globalisierung"],
+        kompetenzen: [
+          {
+            code: "WAH.2.A",
+            name: "Preisbildung",
+            handlungsaspekte: ["Angebot und Nachfrage", "Preismechanismen"],
+          },
+          {
+            code: "WAH.2.B",
+            name: "Marktmechanismen",
+            handlungsaspekte: ["Marktwirtschaft", "Wettbewerb"],
+          },
+          {
+            code: "WAH.2.C",
+            name: "Globalisierung",
+            handlungsaspekte: ["Welthandel", "Internationale Verflechtung"],
+          },
+        ],
+      },
+      {
+        code: "WAH.3",
+        name: "Umgang mit Geld",
+        handlungsaspekte: ["Einnahmen/Ausgaben, Budget, Schulden, Versicherungen"],
+        kompetenzen: [
+          {
+            code: "WAH.3.A",
+            name: "Einnahmen & Ausgaben",
+            handlungsaspekte: ["Geld verwalten", "Finanzen überblicken"],
+          },
+          {
+            code: "WAH.3.B",
+            name: "Budget",
+            handlungsaspekte: ["Budgetplanung", "Haushaltsführung"],
+          },
+          {
+            code: "WAH.3.C",
+            name: "Schulden & Versicherungen",
+            handlungsaspekte: ["Schuldenprävention", "Absicherung"],
+          },
+        ],
+      },
+      {
+        code: "WAH.4",
+        name: "Ernährung & Gesundheit",
+        handlungsaspekte: ["Nahrungsmittelzubereitung, Physiologie, Esskultur"],
+        kompetenzen: [
+          {
+            code: "WAH.4.A",
+            name: "Nahrungsmittelzubereitung",
+            handlungsaspekte: ["Kochen", "Lebensmittelverarbeitung"],
+          },
+          {
+            code: "WAH.4.B",
+            name: "Physiologie",
+            handlungsaspekte: ["Ernährungsphysiologie", "Nährstoffe"],
+          },
+          {
+            code: "WAH.4.C",
+            name: "Esskultur",
+            handlungsaspekte: ["Essgewohnheiten", "Traditionen"],
+          },
+        ],
+      },
+      {
+        code: "WAH.5",
+        name: "Konsum & Lebensstil",
+        handlungsaspekte: ["Konsumentscheidungen, Ökologie, Rechte als Konsument"],
+        kompetenzen: [
+          {
+            code: "WAH.5.A",
+            name: "Konsumentscheidungen",
+            handlungsaspekte: ["Bewusst konsumieren", "Kaufentscheidungen"],
+          },
+          {
+            code: "WAH.5.B",
+            name: "Ökologie",
+            handlungsaspekte: ["Nachhaltiger Konsum", "Umweltauswirkungen"],
+          },
+          {
+            code: "WAH.5.C",
+            name: "Konsumentenrechte",
+            handlungsaspekte: ["Rechte kennen", "Verbraucherschutz"],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    code: "RZG",
+    name: "Räume, Zeiten, Gesellschaften",
+    shortName: "RZG",
+    color: "#e64553", // Maroon - Catppuccin Maroon
+    colorClass: "subject-rzg",
+    icon: "map",
+    cycles: [3],
+    kompetenzbereiche: [
+      {
+        code: "RZG.1",
+        name: "Erde als Lebensraum",
+        handlungsaspekte: ["Klima, Wetter, Endogene/Exogene Kräfte (Geologie)"],
+        kompetenzen: [
+          {
+            code: "RZG.1.A",
+            name: "Klima & Wetter",
+            handlungsaspekte: ["Klimazonen", "Wetterphänomene"],
+          },
+          {
+            code: "RZG.1.B",
+            name: "Endogene Kräfte",
+            handlungsaspekte: ["Vulkanismus", "Erdbeben", "Plattentektonik"],
+          },
+          {
+            code: "RZG.1.C",
+            name: "Exogene Kräfte",
+            handlungsaspekte: ["Erosion", "Verwitterung", "Sedimentation"],
+          },
+        ],
+      },
+      {
+        code: "RZG.2",
+        name: "Lebensräume nutzen",
+        handlungsaspekte: ["Bevölkerung, Stadtentwicklung, Ressourcen"],
+        kompetenzen: [
+          {
+            code: "RZG.2.A",
+            name: "Bevölkerung",
+            handlungsaspekte: ["Bevölkerungsentwicklung", "Migration"],
+          },
+          {
+            code: "RZG.2.B",
+            name: "Stadtentwicklung",
+            handlungsaspekte: ["Urbanisierung", "Siedlungsformen"],
+          },
+          {
+            code: "RZG.2.C",
+            name: "Ressourcen",
+            handlungsaspekte: ["Ressourcennutzung", "Rohstoffe"],
+          },
+        ],
+      },
+      {
+        code: "RZG.3",
+        name: "Mensch-Umwelt",
+        handlungsaspekte: ["Naturgefahren, Nachhaltigkeit, Tourismus"],
+        kompetenzen: [
+          {
+            code: "RZG.3.A",
+            name: "Naturgefahren",
+            handlungsaspekte: ["Naturkatastrophen", "Risikomanagement"],
+          },
+          {
+            code: "RZG.3.B",
+            name: "Nachhaltigkeit",
+            handlungsaspekte: ["Nachhaltige Entwicklung", "Umweltschutz"],
+          },
+          {
+            code: "RZG.3.C",
+            name: "Tourismus",
+            handlungsaspekte: ["Tourismusentwicklung", "Auswirkungen"],
+          },
+        ],
+      },
+      {
+        code: "RZG.4",
+        name: "Orientierung",
+        handlungsaspekte: ["Kartenarbeit, Topografie, Globales Verständnis"],
+        kompetenzen: [
+          { code: "RZG.4.A", name: "Kartenarbeit", handlungsaspekte: ["Karten lesen", "GIS"] },
+          {
+            code: "RZG.4.B",
+            name: "Topografie",
+            handlungsaspekte: ["Landschaftsformen", "Topografisches Wissen"],
+          },
+          {
+            code: "RZG.4.C",
+            name: "Globales Verständnis",
+            handlungsaspekte: ["Weltbild", "Globale Zusammenhänge"],
+          },
+        ],
+      },
+      {
+        code: "RZG.5",
+        name: "Zeit & Wandel",
+        handlungsaspekte: ["Epochen (Antike bis Neuzeit), Modernisierung"],
+        kompetenzen: [
+          {
+            code: "RZG.5.A",
+            name: "Antike & Mittelalter",
+            handlungsaspekte: ["Frühe Hochkulturen", "Mittelalter"],
+          },
+          {
+            code: "RZG.5.B",
+            name: "Neuzeit",
+            handlungsaspekte: ["Renaissance", "Aufklärung", "Industrialisierung"],
+          },
+          {
+            code: "RZG.5.C",
+            name: "Modernisierung",
+            handlungsaspekte: ["Gesellschaftlicher Wandel", "Moderne"],
+          },
+        ],
+      },
+      {
+        code: "RZG.6",
+        name: "Kontinuitäten & Umbrüche",
+        handlungsaspekte: ["Weltkriege, Kalter Krieg, Imperialismus, Revolutionen"],
+        kompetenzen: [
+          {
+            code: "RZG.6.A",
+            name: "Weltkriege",
+            handlungsaspekte: ["Erster Weltkrieg", "Zweiter Weltkrieg"],
+          },
+          {
+            code: "RZG.6.B",
+            name: "Kalter Krieg",
+            handlungsaspekte: ["Ost-West-Konflikt", "Nachkriegsordnung"],
+          },
+          {
+            code: "RZG.6.C",
+            name: "Imperialismus & Revolutionen",
+            handlungsaspekte: ["Kolonialismus", "Revolutionen"],
+          },
+        ],
+      },
+      {
+        code: "RZG.7",
+        name: "Politik & Demokratie",
+        handlungsaspekte: ["Politisches System Schweiz, Menschenrechte, Partizipation"],
+        kompetenzen: [
+          {
+            code: "RZG.7.A",
+            name: "Politisches System Schweiz",
+            handlungsaspekte: ["Föderalismus", "Direkte Demokratie"],
+          },
+          {
+            code: "RZG.7.B",
+            name: "Menschenrechte",
+            handlungsaspekte: ["Grundrechte", "Internationale Abkommen"],
+          },
+          {
+            code: "RZG.7.C",
+            name: "Partizipation",
+            handlungsaspekte: ["Politische Teilhabe", "Bürgerengagement"],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    code: "ERG",
+    name: "Ethik, Religionen, Gemeinschaft",
+    shortName: "ERG",
+    color: "#8839ef", // Mauve - Catppuccin Mauve
+    colorClass: "subject-erg",
+    icon: "users",
+    cycles: [3],
+    kompetenzbereiche: [
+      {
+        code: "ERG.1",
+        name: "Existenzielle Erfahrungen",
+        handlungsaspekte: ["Leben/Tod, Glück, Freiheit, Verantwortung"],
+        kompetenzen: [
+          {
+            code: "ERG.1.A",
+            name: "Leben & Tod",
+            handlungsaspekte: ["Lebensfragen", "Umgang mit Vergänglichkeit"],
+          },
+          {
+            code: "ERG.1.B",
+            name: "Glück & Sinn",
+            handlungsaspekte: ["Glücksvorstellungen", "Lebenssinn"],
+          },
+          {
+            code: "ERG.1.C",
+            name: "Freiheit & Verantwortung",
+            handlungsaspekte: ["Freiheitsbegriff", "Verantwortung übernehmen"],
+          },
+        ],
+      },
+      {
+        code: "ERG.2",
+        name: "Werte & Normen",
+        handlungsaspekte: ["Ethische Dilemmata, Gerechtigkeit, Toleranz"],
+        kompetenzen: [
+          {
+            code: "ERG.2.A",
+            name: "Ethische Dilemmata",
+            handlungsaspekte: ["Entscheidungssituationen", "Ethisch urteilen"],
+          },
+          {
+            code: "ERG.2.B",
+            name: "Gerechtigkeit",
+            handlungsaspekte: ["Gerechtigkeitsvorstellungen", "Fairness"],
+          },
+          { code: "ERG.2.C", name: "Toleranz", handlungsaspekte: ["Akzeptanz", "Respekt"] },
+        ],
+      },
+      {
+        code: "ERG.3",
+        name: "Spuren von Religionen",
+        handlungsaspekte: ["Architektur, Kunst, Musik, Sprache religiös gedeutet"],
+        kompetenzen: [
+          {
+            code: "ERG.3.A",
+            name: "Religiöse Architektur",
+            handlungsaspekte: ["Sakralbauten", "Symbole"],
+          },
+          {
+            code: "ERG.3.B",
+            name: "Religiöse Kunst & Musik",
+            handlungsaspekte: ["Religiöse Kunstwerke", "Sakrale Musik"],
+          },
+          {
+            code: "ERG.3.C",
+            name: "Religiöse Sprache",
+            handlungsaspekte: ["Religiöse Begriffe", "Texte"],
+          },
+        ],
+      },
+      {
+        code: "ERG.4",
+        name: "Religionen verstehen",
+        handlungsaspekte: ["Die 5 Weltreligionen, Säkularisierung, religiöse Praxis"],
+        kompetenzen: [
+          {
+            code: "ERG.4.A",
+            name: "Weltreligionen",
+            handlungsaspekte: ["Christentum", "Islam", "Judentum", "Buddhismus", "Hinduismus"],
+          },
+          {
+            code: "ERG.4.B",
+            name: "Säkularisierung",
+            handlungsaspekte: ["Religiöser Wandel", "Säkulare Gesellschaft"],
+          },
+          {
+            code: "ERG.4.C",
+            name: "Religiöse Praxis",
+            handlungsaspekte: ["Rituale", "Feste", "Traditionen"],
+          },
+        ],
+      },
+      {
+        code: "ERG.5",
+        name: "Ich & Gemeinschaft",
+        handlungsaspekte: ["Identität, Rollenbilder, Konfliktmanagement"],
+        kompetenzen: [
+          {
+            code: "ERG.5.A",
+            name: "Identität",
+            handlungsaspekte: ["Selbstwahrnehmung", "Identitätsentwicklung"],
+          },
+          {
+            code: "ERG.5.B",
+            name: "Rollenbilder",
+            handlungsaspekte: ["Geschlechterrollen", "Soziale Rollen"],
+          },
+          {
+            code: "ERG.5.C",
+            name: "Konfliktmanagement",
+            handlungsaspekte: ["Konflikte lösen", "Mediation"],
+          },
         ],
       },
     ],
@@ -966,43 +2012,179 @@ export const FACHBEREICHE: Fachbereich[] = [
     code: "BO",
     name: "Berufliche Orientierung",
     shortName: "BO",
-    color: "#7c7f93", // Gray
-    colorClass: "subject-default",
+    color: "#209fb5", // Sapphire - Catppuccin Sapphire
+    colorClass: "subject-bo",
     icon: "compass",
     cycles: [3],
     kompetenzbereiche: [
       {
         code: "BO.1",
         name: "Persönlichkeitsprofil",
+        handlungsaspekte: ["Interessen, Stärken, Fähigkeiten analysieren"],
         kompetenzen: [
-          { code: "BO.1.1", name: "Interessen und Fähigkeiten erkunden" },
-          { code: "BO.1.2", name: "Stärken und Schwächen analysieren" },
+          {
+            code: "BO.1.A",
+            name: "Interessen erkunden",
+            handlungsaspekte: ["Eigene Interessen erkennen"],
+          },
+          {
+            code: "BO.1.B",
+            name: "Stärken & Fähigkeiten",
+            handlungsaspekte: ["Kompetenzen analysieren", "Potenziale erkennen"],
+          },
         ],
       },
       {
         code: "BO.2",
-        name: "Bildungswege, Berufs- und Arbeitswelt",
+        name: "Bildungswege",
+        handlungsaspekte: ["Lehre, Mittelschule, Brückenangebote kennenlernen"],
         kompetenzen: [
-          { code: "BO.2.1", name: "Bildungssystem Schweiz" },
-          { code: "BO.2.2", name: "Berufsfelder erkunden" },
-          { code: "BO.2.3", name: "Arbeitswelt verstehen" },
+          {
+            code: "BO.2.A",
+            name: "Berufliche Grundbildung",
+            handlungsaspekte: ["Lehre", "Berufsausbildung"],
+          },
+          {
+            code: "BO.2.B",
+            name: "Weiterführende Schulen",
+            handlungsaspekte: ["Mittelschule", "Gymnasium"],
+          },
+          {
+            code: "BO.2.C",
+            name: "Brückenangebote",
+            handlungsaspekte: ["Zwischenlösungen", "Vorbereitung"],
+          },
         ],
       },
       {
         code: "BO.3",
-        name: "Entscheidung und Planung",
+        name: "Entscheidung",
+        handlungsaspekte: ["Schnupperlehren, Auswahlprozess, Umgang mit Absagen"],
         kompetenzen: [
-          { code: "BO.3.1", name: "Entscheidungsprozess" },
-          { code: "BO.3.2", name: "Bewerbungsprozess" },
+          {
+            code: "BO.3.A",
+            name: "Schnupperlehren",
+            handlungsaspekte: ["Berufe ausprobieren", "Einblicke gewinnen"],
+          },
+          {
+            code: "BO.3.B",
+            name: "Auswahlprozess",
+            handlungsaspekte: ["Entscheidungen treffen", "Alternativen prüfen"],
+          },
+          {
+            code: "BO.3.C",
+            name: "Umgang mit Absagen",
+            handlungsaspekte: ["Resilienz", "Neue Wege finden"],
+          },
         ],
       },
       {
         code: "BO.4",
-        name: "Umsetzung",
+        name: "Planung & Umsetzung",
+        handlungsaspekte: ["Bewerbungsdossier, Vorstellungsgespräch"],
         kompetenzen: [
-          { code: "BO.4.1", name: "Schnupperlehren" },
-          { code: "BO.4.2", name: "Bewerbungen" },
-          { code: "BO.4.3", name: "Übergänge gestalten" },
+          {
+            code: "BO.4.A",
+            name: "Bewerbungsdossier",
+            handlungsaspekte: ["Lebenslauf", "Bewerbungsschreiben"],
+          },
+          {
+            code: "BO.4.B",
+            name: "Vorstellungsgespräch",
+            handlungsaspekte: ["Vorbereitung", "Auftreten"],
+          },
+        ],
+      },
+    ],
+  },
+
+  // ============ PROJEKTUNTERRICHT (NEU) ============
+  {
+    code: "PU",
+    name: "Projektunterricht",
+    shortName: "PU",
+    color: "#6c6f85", // Overlay - Catppuccin Overlay
+    colorClass: "subject-pu",
+    icon: "clipboard-list",
+    cycles: [3],
+    kompetenzbereiche: [
+      {
+        code: "PU.1",
+        name: "Initiierung",
+        handlungsaspekte: ["Ideenfindung, Zielsetzung"],
+        kompetenzen: [
+          {
+            code: "PU.1.A",
+            name: "Ideenfindung",
+            handlungsaspekte: ["Kreativtechniken", "Brainstorming"],
+          },
+          {
+            code: "PU.1.B",
+            name: "Zielsetzung",
+            handlungsaspekte: ["Ziele definieren", "Fragestellungen formulieren"],
+          },
+        ],
+      },
+      {
+        code: "PU.2",
+        name: "Planung",
+        handlungsaspekte: ["Ressourcen, Zeitplan, Meilensteine"],
+        kompetenzen: [
+          {
+            code: "PU.2.A",
+            name: "Ressourcen",
+            handlungsaspekte: ["Material", "Hilfsmittel", "Unterstützung"],
+          },
+          {
+            code: "PU.2.B",
+            name: "Zeitplan",
+            handlungsaspekte: ["Zeitmanagement", "Termine setzen"],
+          },
+          {
+            code: "PU.2.C",
+            name: "Meilensteine",
+            handlungsaspekte: ["Etappenziele", "Fortschrittskontrolle"],
+          },
+        ],
+      },
+      {
+        code: "PU.3",
+        name: "Durchführung",
+        handlungsaspekte: ["Umsetzung, Problemlösung, Begleitung"],
+        kompetenzen: [
+          {
+            code: "PU.3.A",
+            name: "Umsetzung",
+            handlungsaspekte: ["Arbeitsprozess", "Dokumentation"],
+          },
+          {
+            code: "PU.3.B",
+            name: "Problemlösung",
+            handlungsaspekte: ["Herausforderungen bewältigen", "Anpassungen vornehmen"],
+          },
+          {
+            code: "PU.3.C",
+            name: "Begleitung",
+            handlungsaspekte: ["Zusammenarbeit", "Feedback einholen"],
+          },
+        ],
+      },
+      {
+        code: "PU.4",
+        name: "Abschluss",
+        handlungsaspekte: ["Präsentation, Reflexion, Auswertung"],
+        kompetenzen: [
+          {
+            code: "PU.4.A",
+            name: "Präsentation",
+            handlungsaspekte: ["Ergebnisse vorstellen", "Visualisierung"],
+          },
+          {
+            code: "PU.4.B",
+            name: "Reflexion",
+            handlungsaspekte: ["Prozess reflektieren", "Learnings formulieren"],
+          },
+          { code: "PU.4.C", name: "Auswertung", handlungsaspekte: ["Evaluation", "Bewertung"] },
         ],
       },
     ],

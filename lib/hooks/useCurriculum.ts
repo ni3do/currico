@@ -8,31 +8,6 @@ import type {
   CurriculumSearchResult,
 } from "@/lib/curriculum-types";
 
-// Static ZYKLEN data - these don't change and don't need to be in DB
-export const ZYKLEN: Zyklus[] = [
-  {
-    id: 1,
-    name: "Zyklus 1",
-    shortName: "Z1",
-    grades: ["KG", "1", "2"],
-    description: "Kindergarten – 2. Klasse",
-  },
-  {
-    id: 2,
-    name: "Zyklus 2",
-    shortName: "Z2",
-    grades: ["3", "4", "5", "6"],
-    description: "3. – 6. Klasse",
-  },
-  {
-    id: 3,
-    name: "Zyklus 3",
-    shortName: "Z3",
-    grades: ["7", "8", "9"],
-    description: "7. – 9. Klasse",
-  },
-];
-
 interface UseCurriculumOptions {
   cycle?: number;
 }
@@ -54,6 +29,7 @@ const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 export function useCurriculum(options?: UseCurriculumOptions): UseCurriculumReturn {
   const [fachbereiche, setFachbereiche] = useState<Fachbereich[]>([]);
+  const [zyklen, setZyklen] = useState<Zyklus[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const fetchedRef = useRef(false);
@@ -67,6 +43,7 @@ export function useCurriculum(options?: UseCurriculumOptions): UseCurriculumRetu
       const now = Date.now();
       if (cachedData && now - cacheTimestamp < CACHE_DURATION) {
         setFachbereiche(cachedData.fachbereiche);
+        setZyklen(cachedData.zyklen);
         setLoading(false);
         return;
       }
@@ -90,10 +67,11 @@ export function useCurriculum(options?: UseCurriculumOptions): UseCurriculumRetu
         cacheTimestamp = Date.now();
 
         setFachbereiche(data.fachbereiche);
+        setZyklen(data.zyklen);
         setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err : new Error("Unknown error"));
-        console.error("Error fetching curriculum:", err);
+        console.error("Error fetching curriculum from API:", err);
+        setError(err instanceof Error ? err : new Error("Failed to fetch curriculum"));
       } finally {
         setLoading(false);
       }
@@ -172,7 +150,7 @@ export function useCurriculum(options?: UseCurriculumOptions): UseCurriculumRetu
 
   return {
     fachbereiche,
-    zyklen: ZYKLEN,
+    zyklen,
     loading,
     error,
     getFachbereicheByZyklus,

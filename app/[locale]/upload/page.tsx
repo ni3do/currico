@@ -265,6 +265,70 @@ export default function UploadPage() {
   // Check if form can be published
   const canPublish = allLegalChecked && formData.files.length > 0 && !eszettCheck.hasAny;
 
+  // Step validation - returns array of error messages for each step
+  const getStepErrors = (step: number): { message: string; field: string }[] => {
+    const errors: { message: string; field: string }[] = [];
+
+    switch (step) {
+      case 1:
+        if (!formData.title.trim()) {
+          errors.push({ message: "Titel fehlt", field: "title" });
+        }
+        if (!formData.description.trim()) {
+          errors.push({ message: "Beschreibung fehlt", field: "description" });
+        }
+        break;
+      case 2:
+        if (!formData.cycle) {
+          errors.push({ message: "Zyklus fehlt", field: "cycle" });
+        }
+        if (!formData.subject) {
+          errors.push({ message: "Fach fehlt", field: "subject" });
+        }
+        break;
+      case 3:
+        if (formData.priceType === "paid" && !formData.price) {
+          errors.push({ message: "Preis fehlt", field: "price" });
+        }
+        break;
+      case 4:
+        if (formData.files.length === 0) {
+          errors.push({ message: "Datei fehlt", field: "files" });
+        }
+        if (!allLegalChecked) {
+          errors.push({ message: "Rechtliche Bestätigungen fehlen", field: "legal" });
+        }
+        break;
+    }
+    return errors;
+  };
+
+  // Check if a step has all required fields filled
+  const isStepValid = (step: number): boolean => {
+    return getStepErrors(step).length === 0;
+  };
+
+  // Get the step number that contains an error (for error modal)
+  const getErrorStep = (errorMessage: string): number | null => {
+    if (errorMessage.includes("Titel") || errorMessage.includes("Beschreibung")) return 1;
+    if (errorMessage.includes("Zyklus") || errorMessage.includes("Fach")) return 2;
+    if (errorMessage.includes("Preis")) return 3;
+    if (errorMessage.includes("Datei")) return 4;
+    return null;
+  };
+
+  // Navigate to error step
+  const goToErrorStep = () => {
+    if (error) {
+      const step = getErrorStep(error);
+      if (step) {
+        setCurrentStep(step as Step);
+        setUploadStatus("idle");
+        setError(null);
+      }
+    }
+  };
+
   return (
     <div className="flex min-h-screen flex-col">
       <TopBar />
@@ -272,8 +336,8 @@ export default function UploadPage() {
       <main className="mx-auto max-w-3xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-text">Ressource hochladen</h1>
-          <p className="mt-2 text-text-muted">
+          <h1 className="text-text text-3xl font-bold">Ressource hochladen</h1>
+          <p className="text-text-muted mt-2">
             Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen
           </p>
         </div>
@@ -281,35 +345,109 @@ export default function UploadPage() {
         {/* Progress Indicator */}
         <div className="mb-8">
           <div className="flex items-center justify-center">
-            {[1, 2, 3, 4].map((step) => (
-              <div key={step} className="flex items-center">
-                <div className="flex flex-col items-center">
-                  <div
-                    className={`flex h-10 w-10 items-center justify-center rounded-full border-2 font-semibold transition-all ${
-                      step <= currentStep
-                        ? "border-primary bg-primary text-text-on-accent"
-                        : "border-border bg-surface text-text-muted"
-                    }`}
-                  >
-                    {step}
+            {[1, 2, 3, 4].map((step) => {
+              const isCompleted = step < currentStep;
+              const isCurrent = step === currentStep;
+              const isClickable = step < currentStep;
+              const stepErrors = getStepErrors(step);
+              const hasWarning = isCompleted && stepErrors.length > 0;
+
+              const stepLabels: Record<number, string> = {
+                1: "Basics",
+                2: "Lehrplan",
+                3: "Preis",
+                4: "Dateien",
+              };
+
+              return (
+                <div key={step} className="flex items-center">
+                  <div className="flex flex-col items-center">
+                    <button
+                      type="button"
+                      onClick={() => isClickable && setCurrentStep(step as Step)}
+                      disabled={!isClickable}
+                      className={`group relative flex h-12 w-12 items-center justify-center rounded-full border-2 font-semibold transition-all duration-300 ${
+                        hasWarning
+                          ? "border-warning bg-warning text-text-on-accent hover:shadow-warning/30 cursor-pointer hover:scale-110 hover:shadow-lg"
+                          : isCompleted
+                            ? "border-success bg-success text-text-on-accent hover:shadow-success/30 cursor-pointer hover:scale-110 hover:shadow-lg"
+                            : isCurrent
+                              ? "border-primary bg-primary text-text-on-accent shadow-primary/30 ring-primary/20 scale-110 shadow-lg ring-4"
+                              : "border-border bg-surface text-text-muted cursor-not-allowed"
+                      }`}
+                      aria-label={`${stepLabels[step]}${hasWarning ? " (unvollständig)" : isCompleted ? " (abgeschlossen)" : isCurrent ? " (aktuell)" : ""}`}
+                    >
+                      {hasWarning ? (
+                        <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 20 20">
+                          <path
+                            fillRule="evenodd"
+                            d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      ) : isCompleted ? (
+                        <svg
+                          className="h-6 w-6 animate-[bounceIn_0.3s_ease-out]"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={3}
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
+                      ) : (
+                        <span className={isCurrent ? "animate-pulse" : ""}>{step}</span>
+                      )}
+                      {/* Tooltip for clickable steps */}
+                      {isClickable && (
+                        <span className="bg-surface-elevated text-text absolute -bottom-8 left-1/2 -translate-x-1/2 rounded px-2 py-1 text-xs whitespace-nowrap opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+                          {hasWarning
+                            ? `${stepLabels[step]} vervollständigen`
+                            : `Zurück zu ${stepLabels[step]}`}
+                        </span>
+                      )}
+                    </button>
+                    <span
+                      className={`mt-3 text-xs font-medium whitespace-nowrap transition-colors duration-300 ${
+                        hasWarning
+                          ? "text-warning"
+                          : isCompleted
+                            ? "text-success"
+                            : isCurrent
+                              ? "text-primary font-semibold"
+                              : "text-text-muted"
+                      }`}
+                    >
+                      {stepLabels[step]}
+                    </span>
                   </div>
-                  <span className="mt-2 text-xs whitespace-nowrap text-text-muted">
-                    {step === 1 && "Basics"}
-                    {step === 2 && "Lehrplan"}
-                    {step === 3 && "Preis"}
-                    {step === 4 && "Dateien"}
-                  </span>
+                  {step < 4 && (
+                    <div className="bg-border relative mx-3 mb-6 h-1 w-16 overflow-hidden rounded-full sm:mx-4 sm:w-24">
+                      <div
+                        className={`absolute inset-y-0 left-0 rounded-full transition-all duration-500 ease-out ${
+                          step < currentStep
+                            ? hasWarning
+                              ? "from-warning to-warning w-full bg-gradient-to-r"
+                              : "from-success to-success w-full bg-gradient-to-r"
+                            : step === currentStep
+                              ? "from-primary to-primary/50 w-1/2 bg-gradient-to-r"
+                              : "w-0"
+                        }`}
+                      />
+                    </div>
+                  )}
                 </div>
-                {step < 4 && (
-                  <div
-                    className={`mx-3 mb-6 h-0.5 w-16 sm:mx-4 sm:w-24 ${
-                      step < currentStep ? "bg-primary" : "bg-border"
-                    }`}
-                  />
-                )}
-              </div>
-            ))}
+              );
+            })}
           </div>
+          {/* Progress text */}
+          <p className="text-text-muted mt-4 text-center text-sm">
+            Schritt {currentStep} von 4{currentStep === 4 && " – Fast geschafft!"}
+          </p>
         </div>
 
         {/* Error Display */}
@@ -333,28 +471,26 @@ export default function UploadPage() {
         )}
 
         {/* Form */}
-        <div className="rounded-2xl border border-border bg-surface p-8">
+        <div className="border-border bg-surface rounded-2xl border p-8">
           {/* Step 1: Basics */}
           {currentStep === 1 && (
             <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-text">Grundinformationen</h2>
+              <h2 className="text-text text-xl font-semibold">Grundinformationen</h2>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-text">
-                  Titel *
-                </label>
+                <label className="text-text mb-2 block text-sm font-medium">Titel *</label>
                 <input
                   type="text"
                   value={formData.title}
                   onChange={(e) => updateFormData("title", e.target.value)}
                   required
-                  className="w-full rounded-xl border border-border bg-bg px-4 py-3 text-text placeholder:text-text-faint focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
-                  placeholder="z.B. Bruchrechnen Übungsblätter"
+                  className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 w-full rounded-xl border px-4 py-3 focus:ring-2 focus:outline-none"
+                  placeholder="z.B. Bruchrechnen Übungsblätter Zyklus 2"
                 />
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-text">
+                <label className="text-text mb-2 block text-sm font-medium">
                   Kurzbeschreibung *
                 </label>
                 <textarea
@@ -362,36 +498,35 @@ export default function UploadPage() {
                   onChange={(e) => updateFormData("description", e.target.value)}
                   required
                   rows={4}
-                  className="w-full rounded-xl border border-border bg-bg px-4 py-3 text-text placeholder:text-text-faint focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
-                  placeholder="Beschreiben Sie Ihre Ressource in 2-3 Sätzen..."
+                  className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 w-full rounded-xl border px-4 py-3 focus:ring-2 focus:outline-none"
+                  placeholder="Beschreiben Sie Ihre Ressource kurz..."
                 />
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-text">
-                    Sprache *
-                  </label>
+                  <label className="text-text mb-2 block text-sm font-medium">Sprache *</label>
                   <select
                     value={formData.language}
                     onChange={(e) => updateFormData("language", e.target.value)}
-                    className="w-full rounded-xl border border-border bg-bg px-4 py-3 text-text focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
+                    className="border-border bg-bg text-text focus:border-primary focus:ring-primary/20 w-full rounded-xl border px-4 py-3 focus:ring-2 focus:outline-none"
                   >
                     <option value="de">Deutsch</option>
                     <option value="en">Englisch</option>
                     <option value="fr">Französisch</option>
                     <option value="it">Italienisch</option>
                   </select>
+                  <p className="text-text-faint mt-1 text-xs">Sprache des Inhalts</p>
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-text">
+                  <label className="text-text mb-2 block text-sm font-medium">
                     Ressourcentyp *
                   </label>
                   <select
                     value={formData.resourceType}
                     onChange={(e) => updateFormData("resourceType", e.target.value)}
-                    className="w-full rounded-xl border border-border bg-bg px-4 py-3 text-text focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
+                    className="border-border bg-bg text-text focus:border-primary focus:ring-primary/20 w-full rounded-xl border px-4 py-3 focus:ring-2 focus:outline-none"
                   >
                     <option value="pdf">PDF</option>
                     <option value="word">Word</option>
@@ -399,15 +534,16 @@ export default function UploadPage() {
                     <option value="excel">Excel</option>
                     <option value="other">Andere</option>
                   </select>
+                  <p className="text-text-faint mt-1 text-xs">Dateiformat der Ressource</p>
                 </div>
               </div>
 
               {/* Eszett (ß) Warning */}
               {eszettCheck.hasAny && (
-                <div className="rounded-xl border border-warning/50 bg-warning/10 p-4">
+                <div className="border-warning/50 bg-warning/10 rounded-xl border p-4">
                   <div className="flex items-start gap-3">
                     <svg
-                      className="h-5 w-5 flex-shrink-0 text-warning"
+                      className="text-warning h-5 w-5 flex-shrink-0"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -418,27 +554,25 @@ export default function UploadPage() {
                       />
                     </svg>
                     <div className="flex-1">
-                      <h4 className="font-medium text-warning">
-                        Eszett (ß) gefunden
-                      </h4>
-                      <p className="mt-1 text-sm text-text">
+                      <h4 className="text-warning font-medium">Eszett (ß) gefunden</h4>
+                      <p className="text-text mt-1 text-sm">
                         Ihr Text enthält {eszettCheck.totalCount} Eszett-Zeichen (ß). In der Schweiz
                         wird stattdessen &quot;ss&quot; verwendet.
                       </p>
                       {eszettCheck.title.hasEszett && (
-                        <p className="mt-1 text-xs text-text-muted">
+                        <p className="text-text-muted mt-1 text-xs">
                           Titel: {eszettCheck.title.count}x gefunden
                         </p>
                       )}
                       {eszettCheck.description.hasEszett && (
-                        <p className="text-xs text-text-muted">
+                        <p className="text-text-muted text-xs">
                           Beschreibung: {eszettCheck.description.count}x gefunden
                         </p>
                       )}
                       <button
                         type="button"
                         onClick={handleFixEszett}
-                        className="mt-3 inline-flex items-center gap-2 rounded-lg bg-warning px-4 py-2 text-sm font-medium text-text-on-accent transition-colors hover:bg-warning/90"
+                        className="bg-warning text-text-on-accent hover:bg-warning/90 mt-3 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
                       >
                         <svg
                           className="h-4 w-4"
@@ -465,7 +599,7 @@ export default function UploadPage() {
           {/* Step 2: Curriculum */}
           {currentStep === 2 && (
             <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-text">Lehrplan-Zuordnung</h2>
+              <h2 className="text-text text-xl font-semibold">Lehrplan-Zuordnung</h2>
 
               <CurriculumSelector
                 cycle={formData.cycle}
@@ -489,14 +623,10 @@ export default function UploadPage() {
           {/* Step 3: Properties */}
           {currentStep === 3 && (
             <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-text">
-                Eigenschaften & Preis
-              </h2>
+              <h2 className="text-text text-xl font-semibold">Eigenschaften & Preis</h2>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-text">
-                  Preistyp *
-                </label>
+                <label className="text-text mb-2 block text-sm font-medium">Preistyp *</label>
                 <div className="grid grid-cols-2 gap-4">
                   <label
                     className={`flex cursor-pointer items-center gap-3 rounded-xl border-2 p-4 transition-all ${
@@ -511,11 +641,11 @@ export default function UploadPage() {
                       value="free"
                       checked={formData.priceType === "free"}
                       onChange={(e) => updateFormData("priceType", e.target.value)}
-                      className="h-4 w-4 text-primary focus:ring-2 focus:ring-primary/20"
+                      className="text-primary focus:ring-primary/20 h-4 w-4 focus:ring-2"
                     />
                     <div>
-                      <div className="font-medium text-text">Kostenlos</div>
-                      <div className="text-xs text-text-muted">Frei zugänglich</div>
+                      <div className="text-text font-medium">Kostenlos</div>
+                      <div className="text-text-muted text-xs">Frei zugänglich</div>
                     </div>
                   </label>
 
@@ -532,11 +662,11 @@ export default function UploadPage() {
                       value="paid"
                       checked={formData.priceType === "paid"}
                       onChange={(e) => updateFormData("priceType", e.target.value)}
-                      className="h-4 w-4 text-primary focus:ring-2 focus:ring-primary/20"
+                      className="text-primary focus:ring-primary/20 h-4 w-4 focus:ring-2"
                     />
                     <div>
-                      <div className="font-medium text-text">Kostenpflichtig</div>
-                      <div className="text-xs text-text-muted">Preis festlegen</div>
+                      <div className="text-text font-medium">Kostenpflichtig</div>
+                      <div className="text-text-muted text-xs">Preis festlegen</div>
                     </div>
                   </label>
                 </div>
@@ -544,25 +674,24 @@ export default function UploadPage() {
 
               {formData.priceType === "paid" && (
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-text">
-                    Preis (CHF) *
-                  </label>
+                  <label className="text-text mb-2 block text-sm font-medium">Preis (CHF) *</label>
                   <div className="relative">
                     <input
                       type="number"
                       value={formData.price}
                       onChange={(e) => updateFormData("price", e.target.value)}
                       min="0"
+                      max="25"
                       step="0.50"
-                      className="w-full rounded-xl border border-border bg-bg px-4 py-3 pl-12 text-text placeholder:text-text-faint focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
-                      placeholder="12.00"
+                      className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 w-full rounded-xl border px-4 py-3 pl-12 focus:ring-2 focus:outline-none"
+                      placeholder="z.B. 12.00"
                     />
-                    <span className="absolute top-1/2 left-4 -translate-y-1/2 text-text-muted">
+                    <span className="text-text-muted absolute top-1/2 left-4 -translate-y-1/2">
                       CHF
                     </span>
                   </div>
-                  <p className="mt-1 text-xs text-text-muted">
-                    Sie erhalten 85% des Verkaufspreises (15% Plattformgebühr)
+                  <p className="text-text-muted mt-1 text-xs">
+                    Sie erhalten 70% des Verkaufspreises (30% Plattformgebühr)
                   </p>
                 </div>
               )}
@@ -573,28 +702,15 @@ export default function UploadPage() {
                     type="checkbox"
                     checked={formData.editable}
                     onChange={(e) => updateFormData("editable", e.target.checked)}
-                    className="h-4 w-4 rounded border-border bg-bg text-primary focus:ring-2 focus:ring-primary/20"
+                    className="border-border bg-bg text-primary focus:ring-primary/20 h-4 w-4 rounded focus:ring-2"
                   />
                   <div>
-                    <div className="text-sm font-medium text-text">Editierbar</div>
-                    <div className="text-xs text-text-muted">
+                    <div className="text-text text-sm font-medium">Editierbar</div>
+                    <div className="text-text-muted text-xs">
                       Käufer können die Datei bearbeiten (z.B. Word-Dokument)
                     </div>
                   </div>
                 </label>
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-medium text-text">
-                  Lizenzumfang *
-                </label>
-                <select
-                  value={formData.licenseScope}
-                  onChange={(e) => updateFormData("licenseScope", e.target.value)}
-                  className="w-full rounded-xl border border-border bg-bg px-4 py-3 text-text focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
-                >
-                  <option value="individual">Einzellizenz</option>
-                </select>
               </div>
             </div>
           )}
@@ -602,29 +718,25 @@ export default function UploadPage() {
           {/* Step 4: Files */}
           {currentStep === 4 && (
             <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-text">Dateien & Vorschau</h2>
+              <h2 className="text-text text-xl font-semibold">Dateien & Vorschau</h2>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-text">
-                  Hauptdatei(en) *
-                </label>
+                <label className="text-text mb-2 block text-sm font-medium">Hauptdatei(en) *</label>
                 {/* Loading state with progress bar */}
                 {isLoadingFiles && (
-                  <div className="rounded-xl border-2 border-primary bg-primary/5 p-8">
+                  <div className="border-primary bg-primary/5 rounded-xl border-2 p-8">
                     <div className="text-center">
-                      <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-primary/30 border-t-primary" />
-                      <p className="mb-4 text-sm font-medium text-text">
-                        Datei wird geladen...
-                      </p>
+                      <div className="border-primary/30 border-t-primary mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4" />
+                      <p className="text-text mb-4 text-sm font-medium">Datei wird geladen...</p>
                       {/* Progress bar */}
                       <div className="mx-auto max-w-xs">
-                        <div className="h-3 overflow-hidden rounded-full bg-border">
+                        <div className="bg-border h-3 overflow-hidden rounded-full">
                           <div
-                            className="h-full bg-gradient-to-r from-primary to-success transition-all duration-300 ease-out"
+                            className="from-primary to-success h-full bg-gradient-to-r transition-all duration-300 ease-out"
                             style={{ width: `${fileLoadingProgress}%` }}
                           />
                         </div>
-                        <p className="mt-2 text-sm font-medium text-primary">
+                        <p className="text-primary mt-2 text-sm font-medium">
                           {fileLoadingProgress}%
                         </p>
                       </div>
@@ -634,10 +746,10 @@ export default function UploadPage() {
                 {!isLoadingFiles && formData.files.length === 0 && (
                   <div
                     onClick={() => mainFileInputRef.current?.click()}
-                    className="cursor-pointer rounded-xl border-2 border-dashed border-border bg-bg p-8 text-center transition-colors hover:border-primary"
+                    className="border-border bg-bg hover:border-primary cursor-pointer rounded-xl border-2 border-dashed p-8 text-center transition-colors"
                   >
                     <svg
-                      className="mx-auto h-12 w-12 text-text-muted"
+                      className="text-text-muted mx-auto h-12 w-12"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -649,10 +761,10 @@ export default function UploadPage() {
                         d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
                       />
                     </svg>
-                    <p className="mt-2 text-sm text-text">
+                    <p className="text-text mt-2 text-sm">
                       Klicken Sie hier oder ziehen Sie Dateien hinein
                     </p>
-                    <p className="mt-1 text-xs text-text-muted">
+                    <p className="text-text-muted mt-1 text-xs">
                       PDF, Word, PowerPoint, Excel bis 50 MB
                     </p>
                     <input
@@ -666,12 +778,12 @@ export default function UploadPage() {
                   </div>
                 )}
                 {!isLoadingFiles && formData.files.length > 0 && (
-                  <div className="rounded-xl border-2 border-primary bg-primary/5 p-4">
+                  <div className="border-primary bg-primary/5 rounded-xl border-2 p-4">
                     <div className="space-y-3">
                       {formData.files.map((file, index) => (
                         <div
                           key={index}
-                          className="flex items-center gap-4 rounded-lg border border-border bg-surface p-3 transition-colors hover:bg-surface-elevated"
+                          className="border-border bg-surface hover:bg-surface-elevated flex items-center gap-4 rounded-lg border p-3 transition-colors"
                         >
                           <div
                             className="flex flex-1 cursor-pointer items-center gap-4"
@@ -719,7 +831,7 @@ export default function UploadPage() {
                                 </svg>
                               ) : (
                                 <svg
-                                  className="h-10 w-10 text-text-muted"
+                                  className="text-text-muted h-10 w-10"
                                   fill="currentColor"
                                   viewBox="0 0 24 24"
                                 >
@@ -728,16 +840,14 @@ export default function UploadPage() {
                               )}
                             </div>
                             <div className="min-w-0 flex-1">
-                              <p className="truncate text-sm font-medium text-text">
-                                {file.name}
-                              </p>
-                              <p className="text-xs text-text-muted">
+                              <p className="text-text truncate text-sm font-medium">{file.name}</p>
+                              <p className="text-text-muted text-xs">
                                 {(file.size / 1024 / 1024).toFixed(2)} MB
                               </p>
                             </div>
                             {/* External link icon to indicate clickable */}
                             <svg
-                              className="h-4 w-4 flex-shrink-0 text-text-muted"
+                              className="text-text-muted h-4 w-4 flex-shrink-0"
                               fill="none"
                               stroke="currentColor"
                               viewBox="0 0 24 24"
@@ -759,7 +869,7 @@ export default function UploadPage() {
                                 files: prev.files.filter((_, i) => i !== index),
                               }));
                             }}
-                            className="flex-shrink-0 rounded-lg p-2 text-text-muted transition-colors hover:bg-error/10 hover:text-error"
+                            className="text-text-muted hover:bg-error/10 hover:text-error flex-shrink-0 rounded-lg p-2 transition-colors"
                           >
                             <svg
                               className="h-5 w-5"
@@ -781,7 +891,7 @@ export default function UploadPage() {
                     <button
                       type="button"
                       onClick={() => mainFileInputRef.current?.click()}
-                      className="mt-3 w-full rounded-lg border border-dashed border-border bg-bg p-3 text-sm text-text-muted transition-colors hover:border-primary hover:text-primary"
+                      className="border-border bg-bg text-text-muted hover:border-primary hover:text-primary mt-3 w-full rounded-lg border border-dashed p-3 text-sm transition-colors"
                     >
                       + Weitere Datei hinzufugen
                     </button>
@@ -797,10 +907,10 @@ export default function UploadPage() {
                 )}
               </div>
 
-              <div className="rounded-xl border border-success/30 bg-success/5 p-4">
+              <div className="border-success/30 bg-success/5 rounded-xl border p-4">
                 <div className="flex gap-3">
                   <svg
-                    className="h-5 w-5 flex-shrink-0 text-success"
+                    className="text-success h-5 w-5 flex-shrink-0"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -810,7 +920,7 @@ export default function UploadPage() {
                       clipRule="evenodd"
                     />
                   </svg>
-                  <div className="text-sm text-text">
+                  <div className="text-text text-sm">
                     <strong>Automatische Vorschau:</strong> Fur PDF-Dateien wird automatisch eine
                     Vorschau aus der ersten Seite erstellt. Sie mussen kein separates Vorschaubild
                     hochladen.
@@ -819,19 +929,19 @@ export default function UploadPage() {
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-text">
+                <label className="text-text mb-2 block text-sm font-medium">
                   Eigenes Vorschaubild (optional)
                 </label>
-                <p className="mb-2 text-xs text-text-muted">
+                <p className="text-text-muted mb-2 text-xs">
                   Falls Sie ein eigenes Vorschaubild verwenden mochten, konnen Sie es hier
                   hochladen.
                 </p>
                 <div
                   onClick={() => previewFileInputRef.current?.click()}
-                  className="cursor-pointer rounded-xl border-2 border-dashed border-border bg-bg p-6 text-center transition-colors hover:border-primary"
+                  className="border-border bg-bg hover:border-primary cursor-pointer rounded-xl border-2 border-dashed p-6 text-center transition-colors"
                 >
                   <svg
-                    className="mx-auto h-10 w-10 text-text-muted"
+                    className="text-text-muted mx-auto h-10 w-10"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -843,9 +953,9 @@ export default function UploadPage() {
                       d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                     />
                   </svg>
-                  <p className="mt-2 text-sm text-text-muted">PNG, JPG bis 5 MB</p>
+                  <p className="text-text-muted mt-2 text-sm">PNG, JPG bis 5 MB</p>
                   {formData.previewFiles.length > 0 && (
-                    <p className="mt-2 text-sm font-medium text-primary">
+                    <p className="text-primary mt-2 text-sm font-medium">
                       {formData.previewFiles.length} Vorschaubild(er) ausgewählt
                     </p>
                   )}
@@ -860,10 +970,10 @@ export default function UploadPage() {
                 </div>
               </div>
 
-              <div className="rounded-xl border border-border bg-bg p-4">
+              <div className="border-border bg-bg rounded-xl border p-4">
                 <div className="flex gap-3">
                   <svg
-                    className="h-5 w-5 flex-shrink-0 text-info"
+                    className="text-info h-5 w-5 flex-shrink-0"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -873,18 +983,18 @@ export default function UploadPage() {
                       clipRule="evenodd"
                     />
                   </svg>
-                  <div className="text-sm text-text-muted">
-                    <strong className="text-text">Hinweis:</strong> Die vollständigen
-                    Dateien sind nur für Käufer zugänglich. Die Vorschau zeigt nur die erste Seite.
+                  <div className="text-text-muted text-sm">
+                    <strong className="text-text">Hinweis:</strong> Die vollständigen Dateien sind
+                    nur für Käufer zugänglich. Die Vorschau zeigt nur die erste Seite.
                   </div>
                 </div>
               </div>
 
               {/* Legal Copyright Confirmations */}
-              <div className="rounded-xl border border-border bg-surface-elevated p-6">
-                <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-text">
+              <div className="border-border bg-surface-elevated rounded-xl border p-6">
+                <h3 className="text-text mb-4 flex items-center gap-2 text-lg font-semibold">
                   <svg
-                    className="h-5 w-5 text-primary"
+                    className="text-primary h-5 w-5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -898,24 +1008,22 @@ export default function UploadPage() {
                   </svg>
                   Rechtliche Bestätigungen
                 </h3>
-                <p className="mb-4 text-sm text-text-muted">
+                <p className="text-text-muted mb-4 text-sm">
                   Bitte bestätigen Sie die folgenden Punkte, um Ihre Ressource zu veröffentlichen:
                 </p>
 
                 <div className="space-y-4">
                   {/* Own Content */}
-                  <label className="flex cursor-pointer items-start gap-3 rounded-lg p-3 transition-colors hover:bg-bg">
+                  <label className="hover:bg-bg flex cursor-pointer items-start gap-3 rounded-lg p-3 transition-colors">
                     <input
                       type="checkbox"
                       checked={formData.legalOwnContent}
                       onChange={(e) => updateFormData("legalOwnContent", e.target.checked)}
-                      className="mt-0.5 h-5 w-5 rounded border-border bg-bg text-primary focus:ring-2 focus:ring-primary/20"
+                      className="border-border bg-bg text-primary focus:ring-primary/20 mt-0.5 h-5 w-5 rounded focus:ring-2"
                     />
                     <div>
-                      <div className="font-medium text-text">
-                        Eigene Inhalte oder CC0-Lizenz
-                      </div>
-                      <div className="text-sm text-text-muted">
+                      <div className="text-text font-medium">Eigene Inhalte oder CC0-Lizenz</div>
+                      <div className="text-text-muted text-sm">
                         Ich habe alle Bilder, Grafiken und Texte selbst erstellt oder verwende nur
                         Materialien mit CC0-Lizenz (Public Domain).
                       </div>
@@ -923,18 +1031,16 @@ export default function UploadPage() {
                   </label>
 
                   {/* No Textbook Scans */}
-                  <label className="flex cursor-pointer items-start gap-3 rounded-lg p-3 transition-colors hover:bg-bg">
+                  <label className="hover:bg-bg flex cursor-pointer items-start gap-3 rounded-lg p-3 transition-colors">
                     <input
                       type="checkbox"
                       checked={formData.legalNoTextbookScans}
                       onChange={(e) => updateFormData("legalNoTextbookScans", e.target.checked)}
-                      className="mt-0.5 h-5 w-5 rounded border-border bg-bg text-primary focus:ring-2 focus:ring-primary/20"
+                      className="border-border bg-bg text-primary focus:ring-primary/20 mt-0.5 h-5 w-5 rounded focus:ring-2"
                     />
                     <div>
-                      <div className="font-medium text-text">
-                        Keine Lehrmittel-Scans
-                      </div>
-                      <div className="text-sm text-text-muted">
+                      <div className="text-text font-medium">Keine Lehrmittel-Scans</div>
+                      <div className="text-text-muted text-sm">
                         Ich habe keine Seiten aus Lehrmitteln, Schulbüchern oder anderen
                         urheberrechtlich geschützten Werken eingescannt oder kopiert.
                       </div>
@@ -942,18 +1048,18 @@ export default function UploadPage() {
                   </label>
 
                   {/* No Trademarks */}
-                  <label className="flex cursor-pointer items-start gap-3 rounded-lg p-3 transition-colors hover:bg-bg">
+                  <label className="hover:bg-bg flex cursor-pointer items-start gap-3 rounded-lg p-3 transition-colors">
                     <input
                       type="checkbox"
                       checked={formData.legalNoTrademarks}
                       onChange={(e) => updateFormData("legalNoTrademarks", e.target.checked)}
-                      className="mt-0.5 h-5 w-5 rounded border-border bg-bg text-primary focus:ring-2 focus:ring-primary/20"
+                      className="border-border bg-bg text-primary focus:ring-primary/20 mt-0.5 h-5 w-5 rounded focus:ring-2"
                     />
                     <div>
-                      <div className="font-medium text-text">
+                      <div className="text-text font-medium">
                         Keine geschützten Marken oder Charaktere
                       </div>
-                      <div className="text-sm text-text-muted">
+                      <div className="text-text-muted text-sm">
                         Meine Ressource enthält keine geschützten Marken, Logos oder Figuren (z.B.
                         Disney, Marvel, Pokémon, etc.).
                       </div>
@@ -961,18 +1067,16 @@ export default function UploadPage() {
                   </label>
 
                   {/* Swiss German */}
-                  <label className="flex cursor-pointer items-start gap-3 rounded-lg p-3 transition-colors hover:bg-bg">
+                  <label className="hover:bg-bg flex cursor-pointer items-start gap-3 rounded-lg p-3 transition-colors">
                     <input
                       type="checkbox"
                       checked={formData.legalSwissGerman}
                       onChange={(e) => updateFormData("legalSwissGerman", e.target.checked)}
-                      className="mt-0.5 h-5 w-5 rounded border-border bg-bg text-primary focus:ring-2 focus:ring-primary/20"
+                      className="border-border bg-bg text-primary focus:ring-primary/20 mt-0.5 h-5 w-5 rounded focus:ring-2"
                     />
                     <div>
-                      <div className="font-medium text-text">
-                        Schweizer Rechtschreibung
-                      </div>
-                      <div className="text-sm text-text-muted">
+                      <div className="text-text font-medium">Schweizer Rechtschreibung</div>
+                      <div className="text-text-muted text-sm">
                         Meine Ressource verwendet die Schweizer Rechtschreibung (kein Eszett
                         &quot;ß&quot;, stattdessen &quot;ss&quot;).
                       </div>
@@ -980,20 +1084,23 @@ export default function UploadPage() {
                   </label>
 
                   {/* Terms Accepted */}
-                  <label className="flex cursor-pointer items-start gap-3 rounded-lg border-t border-border p-3 pt-4 transition-colors hover:bg-bg">
+                  <label className="border-border hover:bg-bg flex cursor-pointer items-start gap-3 rounded-lg border-t p-3 pt-4 transition-colors">
                     <input
                       type="checkbox"
                       checked={formData.legalTermsAccepted}
                       onChange={(e) => updateFormData("legalTermsAccepted", e.target.checked)}
-                      className="mt-0.5 h-5 w-5 rounded border-border bg-bg text-primary focus:ring-2 focus:ring-primary/20"
+                      className="border-border bg-bg text-primary focus:ring-primary/20 mt-0.5 h-5 w-5 rounded focus:ring-2"
                     />
                     <div>
-                      <div className="font-medium text-text">
-                        Verkäufervereinbarung akzeptieren
-                      </div>
-                      <div className="text-sm text-text-muted">
+                      <div className="text-text font-medium">Verkäufervereinbarung akzeptieren</div>
+                      <div className="text-text-muted text-sm">
                         Ich akzeptiere die{" "}
-                        <Link href="/terms" className="text-primary hover:underline">
+                        <Link
+                          href="/terms"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary hover:underline"
+                        >
                           Verkäufervereinbarung
                         </Link>{" "}
                         und bestätige, dass ich die Rechte habe, diese Ressource zu verkaufen.
@@ -1004,7 +1111,7 @@ export default function UploadPage() {
 
                 {/* Validation Summary */}
                 {!allLegalChecked && (
-                  <div className="mt-4 rounded-lg bg-warning/10 p-3 text-sm text-warning">
+                  <div className="bg-warning/10 text-warning mt-4 rounded-lg p-3 text-sm">
                     <div className="flex items-center gap-2">
                       <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                         <path
@@ -1019,7 +1126,7 @@ export default function UploadPage() {
                 )}
 
                 {eszettCheck.hasAny && (
-                  <div className="mt-4 rounded-lg bg-error/10 p-3 text-sm text-error">
+                  <div className="bg-error/10 text-error mt-4 rounded-lg p-3 text-sm">
                     <div className="flex items-center gap-2">
                       <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                         <path
@@ -1038,11 +1145,11 @@ export default function UploadPage() {
           )}
 
           {/* Navigation Buttons */}
-          <div className="mt-8 flex justify-between border-t border-border pt-6">
+          <div className="border-border mt-8 flex justify-between border-t pt-6">
             <button
               onClick={handleBack}
               disabled={currentStep === 1}
-              className="rounded-lg border border-border px-6 py-3 font-medium text-text transition-colors hover:bg-surface-elevated disabled:cursor-not-allowed disabled:opacity-50"
+              className="border-border text-text hover:bg-surface-elevated rounded-lg border px-6 py-3 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
             >
               Zurück
             </button>
@@ -1050,7 +1157,7 @@ export default function UploadPage() {
             {currentStep < 4 ? (
               <button
                 onClick={handleNext}
-                className="rounded-lg bg-primary px-8 py-3 font-semibold text-text-on-accent shadow-primary/20 shadow-lg transition-colors hover:bg-primary-hover"
+                className="bg-primary text-text-on-accent shadow-primary/20 hover:bg-primary-hover rounded-lg px-8 py-3 font-semibold shadow-lg transition-colors"
               >
                 Weiter
               </button>
@@ -1058,7 +1165,7 @@ export default function UploadPage() {
               <button
                 onClick={handlePublish}
                 disabled={!canPublish || uploadStatus !== "idle"}
-                className="rounded-lg bg-primary px-8 py-3 font-semibold text-text-on-accent shadow-primary/20 shadow-lg transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+                className="bg-primary text-text-on-accent shadow-primary/20 hover:bg-primary-hover rounded-lg px-8 py-3 font-semibold shadow-lg transition-colors disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Veröffentlichen
               </button>
@@ -1072,15 +1179,13 @@ export default function UploadPage() {
       {/* Upload Progress / Success / Error Modal */}
       {uploadStatus !== "idle" && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="mx-4 w-full max-w-md rounded-2xl bg-surface p-8 shadow-2xl">
+          <div className="bg-surface mx-4 w-full max-w-md rounded-2xl p-8 shadow-2xl">
             {/* Uploading State */}
             {uploadStatus === "uploading" && (
               <div className="text-center">
-                <div className="mx-auto mb-4 h-16 w-16 animate-spin rounded-full border-4 border-primary/30 border-t-primary" />
-                <h3 className="mb-2 text-xl font-semibold text-text">
-                  Wird hochgeladen...
-                </h3>
-                <p className="mb-4 text-sm text-text-muted">
+                <div className="border-primary/30 border-t-primary mx-auto mb-4 h-16 w-16 animate-spin rounded-full border-4" />
+                <h3 className="text-text mb-2 text-xl font-semibold">Wird hochgeladen...</h3>
+                <p className="text-text-muted mb-4 text-sm">
                   {formData.files[0]?.name && (
                     <span className="block truncate">
                       {formData.files[0].name} ({(formData.files[0].size / 1024 / 1024).toFixed(2)}{" "}
@@ -1090,24 +1195,22 @@ export default function UploadPage() {
                   Bitte warten Sie, dies kann einen Moment dauern.
                 </p>
                 {/* Progress bar */}
-                <div className="h-3 overflow-hidden rounded-full bg-border">
+                <div className="bg-border h-3 overflow-hidden rounded-full">
                   <div
-                    className="h-full bg-gradient-to-r from-primary to-success transition-all duration-300 ease-out"
+                    className="from-primary to-success h-full bg-gradient-to-r transition-all duration-300 ease-out"
                     style={{ width: `${uploadProgress}%` }}
                   />
                 </div>
-                <p className="mt-2 text-sm font-medium text-text">
-                  {uploadProgress}%
-                </p>
+                <p className="text-text mt-2 text-sm font-medium">{uploadProgress}%</p>
               </div>
             )}
 
             {/* Success State */}
             {uploadStatus === "success" && (
               <div className="text-center">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-success/20">
+                <div className="bg-success/20 mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full">
                   <svg
-                    className="h-8 w-8 text-success"
+                    className="text-success h-8 w-8"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -1120,19 +1223,19 @@ export default function UploadPage() {
                     />
                   </svg>
                 </div>
-                <h3 className="mb-2 text-xl font-semibold text-text">
+                <h3 className="text-text mb-2 text-xl font-semibold">
                   Ressource erfolgreich erstellt!
                 </h3>
-                <p className="mb-4 text-sm text-text-muted">
+                <p className="text-text-muted mb-4 text-sm">
                   Ihre Ressource wurde hochgeladen und wartet auf Freigabe durch unser Team.
                 </p>
-                <div className="rounded-lg bg-info/10 p-3 text-sm text-info">
+                <div className="bg-info/10 text-info rounded-lg p-3 text-sm">
                   <p>Sie werden in Kürze zum Dashboard weitergeleitet...</p>
                 </div>
                 {createdResourceId && (
                   <button
                     onClick={() => router.push(`/resources/${createdResourceId}`)}
-                    className="mt-4 rounded-lg bg-primary px-6 py-2 font-medium text-text-on-accent transition-colors hover:bg-primary/90"
+                    className="bg-primary text-text-on-accent hover:bg-primary/90 mt-4 rounded-lg px-6 py-2 font-medium transition-colors"
                   >
                     Zur Ressource
                   </button>
@@ -1143,9 +1246,9 @@ export default function UploadPage() {
             {/* Error State */}
             {uploadStatus === "error" && (
               <div className="text-center">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-error/20">
+                <div className="bg-error/20 mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full">
                   <svg
-                    className="h-8 w-8 text-error"
+                    className="text-error h-8 w-8"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -1158,28 +1261,56 @@ export default function UploadPage() {
                     />
                   </svg>
                 </div>
-                <h3 className="mb-2 text-xl font-semibold text-text">
-                  Fehler beim Hochladen
-                </h3>
-                <p className="mb-4 text-sm text-error">
+                <h3 className="text-text mb-2 text-xl font-semibold">Fehler beim Hochladen</h3>
+                <p className="text-error mb-4 text-sm">
                   {error || "Ein unbekannter Fehler ist aufgetreten."}
                 </p>
+                {/* Show which step has the error */}
+                {error && getErrorStep(error) && (
+                  <div className="bg-warning/10 text-warning mb-4 rounded-lg p-3 text-sm">
+                    <div className="flex items-center justify-center gap-2">
+                      <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                          fillRule="evenodd"
+                          d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      Bitte überprüfen Sie Schritt {getErrorStep(error)}:{" "}
+                      {
+                        { 1: "Basics", 2: "Lehrplan", 3: "Preis", 4: "Dateien" }[
+                          getErrorStep(error)!
+                        ]
+                      }
+                    </div>
+                  </div>
+                )}
                 <div className="flex justify-center gap-3">
                   <button
                     onClick={() => {
                       setUploadStatus("idle");
                       setError(null);
                     }}
-                    className="rounded-lg border border-border px-6 py-2 font-medium text-text transition-colors hover:bg-surface-elevated"
+                    className="border-border text-text hover:bg-surface-elevated rounded-lg border px-6 py-2 font-medium transition-colors"
                   >
-                    Zurück
+                    Schliessen
                   </button>
-                  <button
-                    onClick={handlePublish}
-                    className="rounded-lg bg-primary px-6 py-2 font-medium text-text-on-accent transition-colors hover:bg-primary/90"
-                  >
-                    Erneut versuchen
-                  </button>
+                  {error && getErrorStep(error) && (
+                    <button
+                      onClick={goToErrorStep}
+                      className="bg-warning text-text-on-accent hover:bg-warning/90 rounded-lg px-6 py-2 font-medium transition-colors"
+                    >
+                      Zu Schritt {getErrorStep(error)}
+                    </button>
+                  )}
+                  {(!error || !getErrorStep(error)) && (
+                    <button
+                      onClick={handlePublish}
+                      className="bg-primary text-text-on-accent hover:bg-primary/90 rounded-lg px-6 py-2 font-medium transition-colors"
+                    >
+                      Erneut versuchen
+                    </button>
+                  )}
                 </div>
               </div>
             )}

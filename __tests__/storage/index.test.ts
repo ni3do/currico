@@ -137,8 +137,10 @@ describe("Storage Factory", () => {
     it("returns full filesystem path", () => {
       const result = getLegacyFilePath("/uploads/resources/user123/file.pdf");
       expect(result).toContain("public");
-      expect(result).toContain("/uploads/resources/user123/file.pdf");
-      expect(result).toMatch(/^\/.*\/public\/uploads\/resources\/user123\/file\.pdf$/);
+      // Normalize path separators for cross-platform compatibility
+      const normalizedResult = result.replace(/\\/g, "/");
+      expect(normalizedResult).toContain("/uploads/resources/user123/file.pdf");
+      expect(normalizedResult).toMatch(/.*\/public\/uploads\/resources\/user123\/file\.pdf$/);
     });
   });
 });

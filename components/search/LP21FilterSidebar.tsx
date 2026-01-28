@@ -2,25 +2,13 @@
 
 import { useState, useMemo, useCallback } from "react";
 import { useTranslations } from "next-intl";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ChevronDown,
   ChevronRight,
   X,
   Search,
   BookOpen,
-  Calculator,
-  Leaf,
-  Globe,
-  Palette,
-  Scissors,
-  Music,
-  Activity,
-  Monitor,
-  Compass,
-  FlaskConical,
-  Briefcase,
-  Map,
-  Users,
   Tag,
   FileText,
   FileType,
@@ -30,33 +18,17 @@ import {
   Package,
   File,
   Loader2,
+  Palette,
 } from "lucide-react";
-import { useCurriculum, ZYKLEN } from "@/lib/hooks/useCurriculum";
+import { useCurriculum } from "@/lib/hooks/useCurriculum";
+import { FACHBEREICH_ICONS } from "@/lib/constants/subject-icons";
 import type {
   Fachbereich,
   Kompetenzbereich,
   Kompetenz,
+  Zyklus,
   CurriculumSearchResult,
 } from "@/lib/curriculum-types";
-
-// Icon mapping for Fachbereiche
-const FACHBEREICH_ICONS: Record<string, React.ElementType> = {
-  D: BookOpen,
-  FS1E: Globe,
-  FS2F: Globe,
-  MA: Calculator,
-  NMG: Leaf,
-  NT: FlaskConical,
-  WAH: Briefcase,
-  RZG: Map,
-  ERG: Users,
-  BG: Palette,
-  TTG: Scissors,
-  MU: Music,
-  BS: Activity,
-  MI: Monitor,
-  BO: Compass,
-};
 
 // Price options
 const PRICE_OPTIONS = [
@@ -331,25 +303,25 @@ export function LP21FilterSidebar({
 
   const toggleFachbereichExpansion = useCallback((code: string) => {
     setExpandedFachbereiche((prev) => {
-      const next = new Set(prev);
-      if (next.has(code)) {
-        next.delete(code);
-      } else {
-        next.add(code);
+      // If already expanded, collapse it
+      if (prev.has(code)) {
+        return new Set();
       }
-      return next;
+      // Otherwise, expand only this one (close all others)
+      return new Set([code]);
     });
+    // Also collapse any expanded Kompetenzbereiche when switching Fachbereich
+    setExpandedKompetenzbereiche(new Set());
   }, []);
 
   const toggleKompetenzbereichExpansion = useCallback((code: string) => {
     setExpandedKompetenzbereiche((prev) => {
-      const next = new Set(prev);
-      if (next.has(code)) {
-        next.delete(code);
-      } else {
-        next.add(code);
+      // If already expanded, collapse it
+      if (prev.has(code)) {
+        return new Set();
       }
-      return next;
+      // Otherwise, expand only this one (close all others)
+      return new Set([code]);
     });
   }, []);
 
@@ -422,13 +394,16 @@ export function LP21FilterSidebar({
         </div>
 
         {/* Active Filter Chips */}
-        {hasActiveFilters && (
-          <ActiveFilterChips
-            filters={filters}
-            fachbereiche={fachbereiche}
-            onRemoveFilter={handleRemoveFilter}
-          />
-        )}
+        <AnimatePresence>
+          {hasActiveFilters && (
+            <ActiveFilterChips
+              filters={filters}
+              fachbereiche={fachbereiche}
+              zyklen={zyklen}
+              onRemoveFilter={handleRemoveFilter}
+            />
+          )}
+        </AnimatePresence>
 
         {/* Search Input */}
         <div className="relative mb-5">
@@ -480,7 +455,11 @@ export function LP21FilterSidebar({
         </div>
 
         {/* Zyklus Toggle */}
-        <ZyklusToggle selectedZyklus={filters.zyklus} onZyklusChange={handleZyklusChange} />
+        <ZyklusToggle
+          zyklen={zyklen}
+          selectedZyklus={filters.zyklus}
+          onZyklusChange={handleZyklusChange}
+        />
 
         <div className="divider my-5" />
 
@@ -496,7 +475,7 @@ export function LP21FilterSidebar({
               Fehler beim Laden der Fachbereiche
             </div>
           ) : (
-            availableFachbereiche.map((fb) => (
+            availableFachbereiche.map((fb, index) => (
               <FachbereichAccordion
                 key={fb.code}
                 fachbereich={fb}
@@ -510,6 +489,7 @@ export function LP21FilterSidebar({
                 onKompetenzbereichSelect={handleKompetenzbereichChange}
                 onKompetenzbereichToggle={toggleKompetenzbereichExpansion}
                 onKompetenzSelect={handleKompetenzChange}
+                index={index}
               />
             ))
           )}
@@ -544,37 +524,54 @@ export function LP21FilterSidebar({
 
 // ============ ZYKLUS TOGGLE ============
 interface ZyklusToggleProps {
+  zyklen: Zyklus[];
   selectedZyklus: number | null;
   onZyklusChange: (zyklus: number | null) => void;
 }
 
-function ZyklusToggle({ selectedZyklus, onZyklusChange }: ZyklusToggleProps) {
+function ZyklusToggle({ zyklen, selectedZyklus, onZyklusChange }: ZyklusToggleProps) {
   return (
     <div>
       <h3 className="label-meta mb-3">Zyklus</h3>
       <div className="flex gap-2">
-        {ZYKLEN.map((zyklus) => (
-          <button
-            key={zyklus.id}
-            onClick={() => onZyklusChange(zyklus.id)}
-            className={`group relative flex-1 rounded-lg border-2 px-3 py-2.5 text-center transition-all ${
-              selectedZyklus === zyklus.id
-                ? "border-primary bg-primary/10 text-primary"
-                : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:bg-surface-hover"
-            }`}
-          >
-            <div className="text-sm font-semibold">{zyklus.shortName}</div>
-            <div
-              className={`text-xs ${selectedZyklus === zyklus.id ? "text-primary/80" : "text-text-muted"}`}
+        {zyklen.map((zyklus, index) => {
+          const isActive = selectedZyklus === zyklus.id;
+          return (
+            <motion.button
+              key={zyklus.id}
+              onClick={() => onZyklusChange(zyklus.id)}
+              className={`group relative flex-1 rounded-lg border-2 px-3 py-2.5 text-center transition-colors ${
+                isActive
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:bg-surface-hover"
+              }`}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
-              {zyklus.id === 1 ? "KG-2" : zyklus.id === 2 ? "3-6" : "7-9"}
-            </div>
-            {/* Tooltip on hover */}
-            <div className="bg-text text-bg pointer-events-none absolute -top-10 left-1/2 z-50 -translate-x-1/2 rounded px-2 py-1 text-xs whitespace-nowrap opacity-0 transition-opacity group-hover:opacity-100">
-              {zyklus.description}
-            </div>
-          </button>
-        ))}
+              {isActive && (
+                <motion.div
+                  layoutId="activeZyklus"
+                  className="bg-primary/10 absolute inset-0 rounded-lg"
+                  initial={false}
+                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                />
+              )}
+              <div className="relative z-10 text-sm font-semibold">{zyklus.shortName}</div>
+              <div
+                className={`relative z-10 text-xs ${isActive ? "text-primary/80" : "text-text-muted"}`}
+              >
+                {zyklus.id === 1 ? "KG-2" : zyklus.id === 2 ? "3-6" : "7-9"}
+              </div>
+              {/* Tooltip on hover */}
+              <div className="bg-text text-bg pointer-events-none absolute -top-10 left-1/2 z-50 -translate-x-1/2 rounded px-2 py-1 text-xs whitespace-nowrap opacity-0 transition-opacity group-hover:opacity-100">
+                {zyklus.description}
+              </div>
+            </motion.button>
+          );
+        })}
       </div>
     </div>
   );
@@ -584,76 +581,130 @@ function ZyklusToggle({ selectedZyklus, onZyklusChange }: ZyklusToggleProps) {
 interface ActiveFilterChipsProps {
   filters: LP21FilterState;
   fachbereiche: Fachbereich[];
+  zyklen: Zyklus[];
   onRemoveFilter: (type: "zyklus" | "fachbereich" | "kompetenzbereich" | "kompetenz") => void;
 }
 
-function ActiveFilterChips({ filters, fachbereiche, onRemoveFilter }: ActiveFilterChipsProps) {
+function ActiveFilterChips({
+  filters,
+  fachbereiche,
+  zyklen,
+  onRemoveFilter,
+}: ActiveFilterChipsProps) {
   const chips: {
     type: "zyklus" | "fachbereich" | "kompetenzbereich" | "kompetenz";
     label: string;
-    color?: string;
+    color: string;
+    icon?: string;
   }[] = [];
 
+  // Get the selected Fachbereich for color inheritance
+  const selectedFb = filters.fachbereich
+    ? fachbereiche.find((f) => f.code === filters.fachbereich)
+    : null;
+
   if (filters.zyklus !== null) {
-    const zyklus = ZYKLEN.find((z) => z.id === filters.zyklus);
+    const zyklus = zyklen.find((z) => z.id === filters.zyklus);
     if (zyklus) {
-      chips.push({ type: "zyklus", label: zyklus.name });
+      chips.push({
+        type: "zyklus",
+        label: zyklus.shortName,
+        color: "#1e66f5", // Primary blue for Zyklus
+      });
     }
   }
 
-  if (filters.fachbereich) {
-    const fb = fachbereiche.find((f) => f.code === filters.fachbereich);
-    if (fb) {
-      chips.push({ type: "fachbereich", label: fb.shortName, color: fb.color });
-    }
+  if (filters.fachbereich && selectedFb) {
+    chips.push({
+      type: "fachbereich",
+      label: selectedFb.shortName,
+      color: selectedFb.color,
+    });
   }
 
   if (filters.kompetenzbereich) {
-    chips.push({ type: "kompetenzbereich", label: filters.kompetenzbereich });
+    // Find the parent Fachbereich for color
+    const parentFb = fachbereiche.find((fb) =>
+      fb.kompetenzbereiche.some((kb) => kb.code === filters.kompetenzbereich)
+    );
+    chips.push({
+      type: "kompetenzbereich",
+      label: filters.kompetenzbereich,
+      color: parentFb?.color || selectedFb?.color || "#1e66f5",
+    });
   }
 
   if (filters.kompetenz) {
-    chips.push({ type: "kompetenz", label: filters.kompetenz });
+    // Find the parent Fachbereich for color
+    let kompetenzColor = selectedFb?.color || "#1e66f5";
+    for (const fb of fachbereiche) {
+      for (const kb of fb.kompetenzbereiche) {
+        if (kb.kompetenzen.some((k) => k.code === filters.kompetenz)) {
+          kompetenzColor = fb.color;
+          break;
+        }
+      }
+    }
+    chips.push({
+      type: "kompetenz",
+      label: filters.kompetenz,
+      color: kompetenzColor,
+    });
   }
 
   if (chips.length === 0) return null;
 
   return (
-    <div className="mb-4 flex flex-wrap gap-2">
-      {chips.map((chip) => (
-        <span
-          key={chip.type}
-          className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium"
-          style={{
-            backgroundColor: chip.color ? `${chip.color}20` : undefined,
-            color: chip.color || undefined,
-          }}
-        >
-          {!chip.color && (
-            <span className="bg-primary/10 text-primary rounded-full px-2.5 py-1">
-              {chip.label}
-              <button
-                onClick={() => onRemoveFilter(chip.type)}
-                className="hover:bg-primary/20 ml-1.5 rounded-full p-0.5"
+    <motion.div
+      initial={{ opacity: 0, height: 0 }}
+      animate={{ opacity: 1, height: "auto" }}
+      exit={{ opacity: 0, height: 0 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
+      className="mb-5 overflow-hidden"
+    >
+      <div className="bg-surface/50 border-border/50 rounded-lg border p-3">
+        <div className="mb-2 flex items-center gap-2">
+          <Tag className="text-text-muted h-3.5 w-3.5" />
+          <span className="text-text-muted text-xs font-medium">Aktive Filter</span>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <AnimatePresence mode="popLayout">
+            {chips.map((chip, index) => (
+              <motion.span
+                key={chip.type}
+                initial={{ opacity: 0, scale: 0.8, y: -10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.8, y: -10 }}
+                transition={{
+                  duration: 0.2,
+                  delay: index * 0.05,
+                  ease: "easeOut",
+                }}
+                className="group inline-flex items-center gap-1.5 rounded-full py-1.5 pr-1.5 pl-3 text-xs font-semibold shadow-sm transition-shadow hover:shadow-md"
+                style={{
+                  backgroundColor: `${chip.color}18`,
+                  color: chip.color,
+                  border: `1px solid ${chip.color}30`,
+                }}
               >
-                <X className="h-3 w-3" />
-              </button>
-            </span>
-          )}
-          {chip.color && (
-            <>
-              {chip.label}
-              <button
-                onClick={() => onRemoveFilter(chip.type)}
-                className="ml-0.5 rounded-full p-0.5 hover:bg-black/10"
-              >
-                <X className="h-3 w-3" />
-              </button>
-            </>
-          )}
-        </span>
-      ))}
-    </div>
+                {chip.label}
+                <motion.button
+                  onClick={() => onRemoveFilter(chip.type)}
+                  className="flex h-5 w-5 items-center justify-center rounded-full transition-colors"
+                  style={{
+                    backgroundColor: `${chip.color}20`,
+                  }}
+                  whileHover={{ scale: 1.1, backgroundColor: `${chip.color}35` }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <X className="h-3 w-3" />
+                </motion.button>
+              </motion.span>
+            ))}
+          </AnimatePresence>
+        </div>
+      </div>
+    </motion.div>
   );
 }
 
@@ -670,6 +721,7 @@ interface FachbereichAccordionProps {
   onKompetenzbereichSelect: (code: string | null) => void;
   onKompetenzbereichToggle: (code: string) => void;
   onKompetenzSelect: (code: string | null) => void;
+  index?: number;
 }
 
 function FachbereichAccordion({
@@ -684,95 +736,119 @@ function FachbereichAccordion({
   onKompetenzbereichSelect,
   onKompetenzbereichToggle,
   onKompetenzSelect,
+  index = 0,
 }: FachbereichAccordionProps) {
   const Icon = FACHBEREICH_ICONS[fachbereich.code] || BookOpen;
+  const hasChildren = fachbereich.kompetenzbereiche.length > 0;
 
   return (
-    <div
-      className={`overflow-hidden rounded-lg border transition-all ${
-        isSelected ? "border-transparent ring-2" : "border-border hover:border-border-subtle"
+    <motion.div
+      className={`overflow-hidden rounded-lg border transition-colors ${
+        isSelected ? "border-transparent" : "border-border hover:border-border-subtle"
       }`}
       style={{
         ...(isSelected && {
-          ringColor: fachbereich.color,
-          backgroundColor: `${fachbereich.color}08`,
+          boxShadow: `0 0 0 2px ${fachbereich.color}`,
         }),
       }}
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: index * 0.03 }}
     >
-      {/* Header with color strip/background */}
-      <div
-        className="relative flex items-stretch transition-all duration-200"
+      {/* Header with subtle background color */}
+      <motion.div
+        className="relative flex items-center rounded-lg"
         style={{
-          backgroundColor: isSelected ? `${fachbereich.color}25` : undefined,
+          backgroundColor: isSelected ? `${fachbereich.color}20` : `${fachbereich.color}08`,
         }}
+        whileHover={{
+          backgroundColor: isSelected ? `${fachbereich.color}25` : `${fachbereich.color}15`,
+          x: 2,
+        }}
+        transition={{ duration: 0.15 }}
       >
-        {/* Color strip - expands when selected */}
-        <div
-          className="flex-shrink-0 transition-all duration-200"
-          style={{
-            backgroundColor: fachbereich.color,
-            width: isSelected ? "6px" : "4px",
-          }}
-        />
-
         {/* Content */}
         <div className="flex flex-1 items-center">
-          {/* Expand toggle */}
-          <button
-            onClick={onToggleExpand}
-            className={`flex h-full items-center px-2 transition-colors ${
-              isSelected ? "text-text hover:text-text" : "text-text-muted hover:text-text"
-            }`}
-          >
-            {isExpanded ? (
-              <ChevronDown className="h-4 w-4" />
-            ) : (
-              <ChevronRight className="h-4 w-4" />
-            )}
-          </button>
+          {/* Expand toggle - only show if there are subcategories */}
+          {hasChildren ? (
+            <motion.button
+              onClick={onToggleExpand}
+              className={`flex h-full items-center px-2 transition-colors ${
+                isSelected ? "text-text hover:text-text" : "text-text-muted hover:text-text"
+              }`}
+              whileTap={{ scale: 0.9 }}
+            >
+              <motion.span animate={{ rotate: isExpanded ? 90 : 0 }} transition={{ duration: 0.2 }}>
+                <ChevronRight className="h-4 w-4" />
+              </motion.span>
+            </motion.button>
+          ) : (
+            // Spacer to maintain alignment when there's no expand button
+            <div className="w-8" />
+          )}
 
           {/* Main button */}
-          <button onClick={onSelect} className="flex flex-1 items-center gap-2 py-2 pr-3 text-left">
-            <span
-              className="flex h-6 w-6 items-center justify-center rounded-md transition-all duration-200"
-              style={{
+          <motion.button
+            onClick={onSelect}
+            className="flex flex-1 items-center gap-2.5 py-2 pr-3 text-left"
+            whileTap={{ scale: 0.98 }}
+          >
+            <motion.span
+              className="flex h-7 min-w-7 items-center justify-center rounded-md px-1.5 text-xs font-bold"
+              initial={false}
+              animate={{
                 backgroundColor: isSelected ? fachbereich.color : `${fachbereich.color}20`,
                 color: isSelected ? "white" : fachbereich.color,
               }}
+              transition={{ duration: 0.2 }}
             >
-              <Icon className="h-3.5 w-3.5" />
-            </span>
-            <div
-              className={`truncate text-sm font-semibold ${isSelected ? "" : "text-text"}`}
-              style={isSelected ? { color: fachbereich.color } : undefined}
-            >
-              {fachbereich.name}
+              {fachbereich.shortName}
+            </motion.span>
+            <div className="min-w-0 flex-1">
+              <div
+                className={`truncate text-sm leading-tight font-medium ${isSelected ? "" : "text-text"}`}
+                style={isSelected ? { color: fachbereich.color } : undefined}
+                title={fachbereich.name}
+              >
+                {fachbereich.name}
+              </div>
             </div>
-          </button>
+          </motion.button>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Expanded content - Kompetenzbereiche */}
-      {isExpanded && (
-        <div className="border-border bg-bg/50 border-t px-2 py-2">
-          <div className="space-y-1">
-            {fachbereich.kompetenzbereiche.map((kb) => (
-              <KompetenzbereichItem
-                key={kb.code}
-                kompetenzbereich={kb}
-                fachbereichColor={fachbereich.color}
-                isSelected={selectedKompetenzbereich === kb.code}
-                isExpanded={expandedKompetenzbereiche.has(kb.code)}
-                selectedKompetenz={selectedKompetenz}
-                onSelect={() => onKompetenzbereichSelect(kb.code)}
-                onToggleExpand={() => onKompetenzbereichToggle(kb.code)}
-                onKompetenzSelect={onKompetenzSelect}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
+      {/* Expanded content - Kompetenzbereiche (only if there are children) */}
+      <AnimatePresence>
+        {isExpanded && hasChildren && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <div className="border-border bg-bg/50 border-t px-2 py-2">
+              <div className="space-y-1">
+                {fachbereich.kompetenzbereiche.map((kb, kbIndex) => (
+                  <KompetenzbereichItem
+                    key={kb.code}
+                    kompetenzbereich={kb}
+                    fachbereichColor={fachbereich.color}
+                    isSelected={selectedKompetenzbereich === kb.code}
+                    isExpanded={expandedKompetenzbereiche.has(kb.code)}
+                    selectedKompetenz={selectedKompetenz}
+                    onSelect={() => onKompetenzbereichSelect(kb.code)}
+                    onToggleExpand={() => onKompetenzbereichToggle(kb.code)}
+                    onKompetenzSelect={onKompetenzSelect}
+                    index={kbIndex}
+                  />
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }
 
@@ -786,6 +862,7 @@ interface KompetenzbereichItemProps {
   onSelect: () => void;
   onToggleExpand: () => void;
   onKompetenzSelect: (code: string | null) => void;
+  index?: number;
 }
 
 function KompetenzbereichItem({
@@ -797,44 +874,53 @@ function KompetenzbereichItem({
   onSelect,
   onToggleExpand,
   onKompetenzSelect,
+  index = 0,
 }: KompetenzbereichItemProps) {
-  return (
-    <div className="overflow-hidden rounded-md">
-      <div
-        className="flex items-stretch transition-all duration-200"
-        style={{
-          backgroundColor: isSelected ? `${fachbereichColor}20` : undefined,
-        }}
-      >
-        {/* Color strip - full height, visible when selected */}
-        <div
-          className="flex-shrink-0 transition-all duration-200"
-          style={{
-            backgroundColor: isSelected ? fachbereichColor : "transparent",
-            width: isSelected ? "4px" : "0px",
-          }}
-        />
+  const hasChildren = kompetenzbereich.kompetenzen.length > 0;
 
-        {/* Expand toggle */}
-        <button
-          onClick={onToggleExpand}
-          className={`flex items-center px-1.5 transition-colors ${
-            isSelected ? "text-text" : "text-text-muted hover:text-text"
-          }`}
-        >
-          {isExpanded ? (
-            <ChevronDown className="h-3.5 w-3.5" />
-          ) : (
-            <ChevronRight className="h-3.5 w-3.5" />
-          )}
-        </button>
+  return (
+    <motion.div
+      className="overflow-hidden rounded-md"
+      initial={{ opacity: 0, x: -10 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: index * 0.02 }}
+    >
+      <motion.div
+        className="flex items-center rounded-md"
+        style={{
+          backgroundColor: isSelected ? `${fachbereichColor}18` : `${fachbereichColor}06`,
+        }}
+        whileHover={{
+          backgroundColor: isSelected ? `${fachbereichColor}22` : `${fachbereichColor}12`,
+          x: 2,
+        }}
+        transition={{ duration: 0.15 }}
+      >
+        {/* Expand toggle - only show if there are children */}
+        {hasChildren ? (
+          <motion.button
+            onClick={onToggleExpand}
+            className={`flex items-center px-1.5 transition-colors ${
+              isSelected ? "text-text" : "text-text-muted hover:text-text"
+            }`}
+            whileTap={{ scale: 0.9 }}
+          >
+            <motion.span animate={{ rotate: isExpanded ? 90 : 0 }} transition={{ duration: 0.2 }}>
+              <ChevronRight className="h-3.5 w-3.5" />
+            </motion.span>
+          </motion.button>
+        ) : (
+          // Spacer to maintain alignment when there's no expand button
+          <div className="w-6" />
+        )}
 
         {/* Main button */}
-        <button
+        <motion.button
           onClick={onSelect}
           className={`flex flex-1 items-center gap-2 py-1.5 pr-2 text-left text-sm transition-colors ${
             isSelected ? "" : "text-text-secondary hover:text-text"
           }`}
+          whileTap={{ scale: 0.98 }}
         >
           <span className="font-mono text-xs font-semibold" style={{ color: fachbereichColor }}>
             {kompetenzbereich.code}
@@ -842,60 +928,76 @@ function KompetenzbereichItem({
           <span
             className={`flex-1 truncate ${isSelected ? "font-medium" : ""}`}
             style={isSelected ? { color: fachbereichColor } : undefined}
+            title={kompetenzbereich.name}
           >
             {kompetenzbereich.name}
           </span>
-        </button>
-      </div>
+        </motion.button>
+      </motion.div>
 
-      {/* Kompetenzen */}
-      {isExpanded && kompetenzbereich.kompetenzen.length > 0 && (
-        <div
-          className="mt-1 ml-5 space-y-0.5 border-l-2 pl-3"
-          style={{ borderColor: `${fachbereichColor}40` }}
-        >
-          {kompetenzbereich.kompetenzen.map((k) => {
-            const isKompetenzSelected = selectedKompetenz === k.code;
-            return (
-              <div
-                key={k.code}
-                className="overflow-hidden rounded transition-all duration-200"
-                style={{
-                  backgroundColor: isKompetenzSelected ? `${fachbereichColor}15` : undefined,
-                }}
-              >
-                <div className="flex items-stretch">
-                  {/* Color strip for kompetenz */}
-                  <div
-                    className="flex-shrink-0 transition-all duration-200"
+      {/* Kompetenzen (only if there are children) */}
+      <AnimatePresence>
+        {isExpanded && hasChildren && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <div
+              className="mt-1 ml-5 space-y-0.5 border-l-2 pl-3"
+              style={{ borderColor: `${fachbereichColor}40` }}
+            >
+              {kompetenzbereich.kompetenzen.map((k, kIndex) => {
+                const isKompetenzSelected = selectedKompetenz === k.code;
+                return (
+                  <motion.div
+                    key={k.code}
+                    className="overflow-hidden rounded"
                     style={{
-                      backgroundColor: isKompetenzSelected ? fachbereichColor : "transparent",
-                      width: isKompetenzSelected ? "3px" : "0px",
+                      backgroundColor: isKompetenzSelected
+                        ? `${fachbereichColor}15`
+                        : `${fachbereichColor}05`,
                     }}
-                  />
-                  <button
-                    onClick={() => onKompetenzSelect(k.code)}
-                    className={`flex w-full items-center gap-2 px-2 py-1 text-left text-xs transition-colors ${
-                      isKompetenzSelected ? "" : "text-text-muted hover:text-text"
-                    }`}
+                    initial={{ opacity: 0, x: -5 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: kIndex * 0.02 }}
+                    whileHover={{
+                      backgroundColor: isKompetenzSelected
+                        ? `${fachbereichColor}20`
+                        : `${fachbereichColor}10`,
+                      x: 2,
+                    }}
                   >
-                    <span className="font-mono font-medium" style={{ color: fachbereichColor }}>
-                      {k.code}
-                    </span>
-                    <span
-                      className={`flex-1 truncate ${isKompetenzSelected ? "font-medium" : ""}`}
-                      style={isKompetenzSelected ? { color: fachbereichColor } : undefined}
-                    >
-                      {k.name}
-                    </span>
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </div>
+                    <div className="flex items-center">
+                      <motion.button
+                        onClick={() => onKompetenzSelect(k.code)}
+                        className={`flex w-full items-center gap-2 px-2 py-1 text-left text-xs transition-colors ${
+                          isKompetenzSelected ? "" : "text-text-muted hover:text-text"
+                        }`}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <span className="font-mono font-medium" style={{ color: fachbereichColor }}>
+                          {k.code}
+                        </span>
+                        <span
+                          className={`flex-1 truncate ${isKompetenzSelected ? "font-medium" : ""}`}
+                          style={isKompetenzSelected ? { color: fachbereichColor } : undefined}
+                          title={k.name}
+                        >
+                          {k.name}
+                        </span>
+                      </motion.button>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }
 
@@ -913,8 +1015,10 @@ function PriceFilter({
   onPriceTypeChange,
   onMaxPriceChange,
 }: PriceFilterProps) {
+  const MAX_PRICE = 50;
   // Calculate the effective value for display and slider position
-  const effectiveValue = maxPrice ?? 100;
+  const effectiveValue = maxPrice ?? MAX_PRICE;
+  const sliderPercent = (effectiveValue / MAX_PRICE) * 100;
 
   return (
     <div>
@@ -925,23 +1029,28 @@ function PriceFilter({
 
       {/* Price preset buttons */}
       <div className="mb-4 flex flex-wrap gap-1.5">
-        {PRICE_OPTIONS.map((option) => {
+        {PRICE_OPTIONS.map((option, index) => {
           // Check if this option is selected based on priceType OR if slider matches the value
           const isSelected =
             selectedPriceType === option.id ||
             (selectedPriceType === null && maxPrice === option.value);
           return (
-            <button
+            <motion.button
               key={option.id}
               onClick={() => onPriceTypeChange(option.id)}
-              className={`rounded-full px-3 py-1 text-xs font-medium transition-all duration-200 ${
+              className={`relative rounded-full px-3 py-1 text-xs font-medium transition-colors ${
                 isSelected
                   ? "bg-primary text-white"
                   : "bg-surface border-border text-text-secondary hover:border-primary/50 hover:text-text border"
               }`}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: index * 0.03 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
               {option.label}
-            </button>
+            </motion.button>
           );
         })}
       </div>
@@ -950,32 +1059,41 @@ function PriceFilter({
       <div className="space-y-2">
         <div className="text-text-muted flex items-center justify-between text-xs">
           <span>Max. Preis</span>
-          <span className="text-text font-medium transition-all duration-200">
+          <motion.span
+            className="text-text font-medium"
+            key={effectiveValue}
+            initial={{ scale: 1.1 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.15 }}
+          >
             CHF {effectiveValue}
-          </span>
+          </motion.span>
         </div>
-        <div className="relative">
+        <div className="relative flex h-5 items-center">
           {/* Track background */}
-          <div className="bg-surface-hover absolute top-1/2 h-2 w-full -translate-y-1/2 rounded-lg" />
-          {/* Filled track */}
-          <div
-            className="bg-primary absolute top-1/2 h-2 -translate-y-1/2 rounded-l-lg transition-all duration-200 ease-out"
-            style={{ width: `${effectiveValue}%` }}
+          <div className="bg-surface-hover absolute h-2 w-full rounded-full" />
+          {/* Filled track - account for thumb width (16px = 1rem) */}
+          <motion.div
+            className="bg-primary absolute h-2 rounded-full"
+            style={{ left: 0 }}
+            initial={false}
+            animate={{ width: `calc(${sliderPercent}% + ${(100 - sliderPercent) * 0.08}px)` }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
           />
           {/* Range input */}
           <input
             type="range"
             min="0"
-            max="100"
-            step="5"
+            max={MAX_PRICE}
+            step="1"
             value={effectiveValue}
             onChange={(e) => onMaxPriceChange(Number(e.target.value))}
-            className="[&::-webkit-slider-thumb]:bg-primary [&::-moz-range-thumb]:bg-primary relative z-10 h-2 w-full cursor-pointer appearance-none bg-transparent [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:shadow-md [&::-moz-range-thumb]:transition-transform [&::-moz-range-thumb]:duration-200 [&::-moz-range-thumb]:hover:scale-110 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:duration-200 [&::-webkit-slider-thumb]:hover:scale-110"
+            className="[&::-moz-range-thumb]:bg-primary [&::-webkit-slider-thumb]:bg-primary relative z-10 h-5 w-full cursor-pointer appearance-none bg-transparent [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:shadow-md [&::-moz-range-thumb]:transition-transform [&::-moz-range-thumb]:duration-200 [&::-moz-range-thumb]:hover:scale-110 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:duration-200 [&::-webkit-slider-thumb]:hover:scale-110"
           />
         </div>
         <div className="text-text-faint flex justify-between text-xs">
           <span>CHF 0</span>
-          <span>CHF 100</span>
+          <span>CHF {MAX_PRICE}</span>
         </div>
       </div>
     </div>
@@ -997,22 +1115,38 @@ function FormatFilter({ selectedFormats, onFormatToggle }: FormatFilterProps) {
       </div>
 
       <div className="grid grid-cols-2 gap-2">
-        {FORMAT_OPTIONS.map((format) => {
+        {FORMAT_OPTIONS.map((format, index) => {
           const Icon = format.icon;
           const isSelected = selectedFormats.includes(format.id);
           return (
-            <button
+            <motion.button
               key={format.id}
               onClick={() => onFormatToggle(format.id)}
-              className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors ${
+              className={`relative flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors ${
                 isSelected
                   ? "border-primary bg-primary/10 text-primary"
                   : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:text-text"
               }`}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: index * 0.03 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
               <Icon className="h-4 w-4" />
               <span className="font-medium">{format.label}</span>
-            </button>
+              <AnimatePresence>
+                {isSelected && (
+                  <motion.span
+                    className="bg-primary absolute -top-1 -right-1 h-2 w-2 rounded-full"
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    exit={{ scale: 0 }}
+                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                  />
+                )}
+              </AnimatePresence>
+            </motion.button>
           );
         })}
       </div>
@@ -1035,22 +1169,37 @@ function MaterialScopeFilter({ selectedScope, onScopeChange }: MaterialScopeFilt
       </div>
 
       <div className="flex gap-2">
-        {MATERIAL_SCOPE_OPTIONS.map((option) => {
+        {MATERIAL_SCOPE_OPTIONS.map((option, index) => {
           const Icon = option.icon;
           const isSelected = selectedScope === option.id;
           return (
-            <button
+            <motion.button
               key={option.id}
               onClick={() => onScopeChange(option.id)}
-              className={`flex flex-1 items-center justify-center gap-2 rounded-lg border-2 px-3 py-2.5 text-sm transition-all ${
+              className={`relative flex flex-1 items-center justify-center gap-2 rounded-lg border-2 px-3 py-2.5 text-sm transition-colors ${
                 isSelected
                   ? "border-primary bg-primary/10 text-primary"
                   : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:text-text"
               }`}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
-              <Icon className="h-4 w-4" />
-              <span className="font-medium">{option.label}</span>
-            </button>
+              {isSelected && (
+                <motion.div
+                  layoutId="activeMaterialScope"
+                  className="bg-primary/10 absolute inset-0 rounded-lg"
+                  initial={false}
+                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                />
+              )}
+              <span className="relative z-10 flex items-center gap-2">
+                <Icon className="h-4 w-4" />
+                <span className="font-medium">{option.label}</span>
+              </span>
+            </motion.button>
           );
         })}
       </div>
