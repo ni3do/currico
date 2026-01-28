@@ -387,25 +387,28 @@ async function handleFilterFormat() {
     // Color class mapping based on subject code
     const colorClassMap: Record<string, string> = {
       D: "subject-deutsch",
+      FS: "subject-fremdsprachen",
       FS1E: "subject-fremdsprachen",
       FS2F: "subject-fremdsprachen",
       MA: "subject-mathe",
       NMG: "subject-nmg",
-      NT: "subject-nmg",
-      WAH: "subject-nmg",
-      RZG: "subject-nmg",
-      ERG: "subject-nmg",
+      NT: "subject-nt",
+      WAH: "subject-wah",
+      RZG: "subject-rzg",
+      ERG: "subject-erg",
       BG: "subject-gestalten",
-      TTG: "subject-gestalten",
+      TTG: "subject-ttg",
       MU: "subject-musik",
       BS: "subject-sport",
       MI: "subject-medien",
-      BO: "subject-default",
+      BO: "subject-bo",
+      PU: "subject-pu",
     };
 
     // Short name mapping
     const shortNameMap: Record<string, string> = {
       D: "DE",
+      FS: "FS",
       FS1E: "English",
       FS2F: "Französisch",
       MA: "MA",
@@ -416,10 +419,11 @@ async function handleFilterFormat() {
       ERG: "ERG",
       BG: "BG",
       TTG: "TTG",
-      MU: "Musik",
+      MU: "MU",
       BS: "BS",
       MI: "MI",
       BO: "BO",
+      PU: "PU",
     };
 
     // Transform subjects into Fachbereiche with nested hierarchy

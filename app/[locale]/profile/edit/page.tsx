@@ -19,6 +19,9 @@ interface ProfileFormData {
   cycles: string[];
   cantons: string[];
   email: string;
+  instagram: string;
+  pinterest: string;
+  is_private: boolean;
 }
 
 const emptyFormData: ProfileFormData = {
@@ -29,6 +32,9 @@ const emptyFormData: ProfileFormData = {
   cycles: [],
   cantons: [],
   email: "",
+  instagram: "",
+  pinterest: "",
+  is_private: false,
 };
 
 export default function EditProfilePage() {
@@ -60,6 +66,9 @@ export default function EditProfilePage() {
           cycles: profileData.cycles || [],
           cantons: profileData.cantons || [],
           email: profileData.email || "",
+          instagram: profileData.instagram || "",
+          pinterest: profileData.pinterest || "",
+          is_private: profileData.is_private || false,
         });
 
         if (curriculumRes.ok) {
@@ -80,7 +89,7 @@ export default function EditProfilePage() {
     fetchData();
   }, []);
 
-  const handleChange = (field: string, value: string | string[]) => {
+  const handleChange = (field: string, value: string | string[] | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear error when field is modified
     if (errors[field]) {
@@ -151,6 +160,9 @@ export default function EditProfilePage() {
         subjects: formData.subjects,
         cycles: formData.cycles,
         cantons: formData.cantons,
+        instagram: formData.instagram || null,
+        pinterest: formData.pinterest || null,
+        is_private: formData.is_private,
       };
 
       const response = await fetch("/api/users/me", {
@@ -307,8 +319,104 @@ export default function EditProfilePage() {
                     onChange={(value) => handleChange("cantons", value)}
                     placeholder="Kantone auswählen (optional)..."
                   />
+
+                  {/* Social Media */}
+                  <div className="border-border border-t pt-6">
+                    <h3 className="text-text mb-4 text-lg font-medium">Social Media</h3>
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      {/* Instagram */}
+                      <div>
+                        <label className="text-text mb-2 block text-sm font-medium">
+                          Instagram
+                        </label>
+                        <div className="relative">
+                          <span className="text-text-muted absolute top-1/2 left-3 -translate-y-1/2 text-sm">
+                            @
+                          </span>
+                          <input
+                            type="text"
+                            value={formData.instagram}
+                            onChange={(e) => handleChange("instagram", e.target.value)}
+                            placeholder="deinname"
+                            className="border-border bg-bg text-text focus:border-primary focus:ring-primary/20 w-full rounded-lg border py-2 pr-4 pl-8 focus:ring-2 focus:outline-none"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Pinterest */}
+                      <div>
+                        <label className="text-text mb-2 block text-sm font-medium">
+                          Pinterest
+                        </label>
+                        <div className="relative">
+                          <span className="text-text-muted absolute top-1/2 left-3 -translate-y-1/2 text-sm">
+                            @
+                          </span>
+                          <input
+                            type="text"
+                            value={formData.pinterest}
+                            onChange={(e) => handleChange("pinterest", e.target.value)}
+                            placeholder="deinname"
+                            className="border-border bg-bg text-text focus:border-primary focus:ring-primary/20 w-full rounded-lg border py-2 pr-4 pl-8 focus:ring-2 focus:outline-none"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
+            </div>
+
+            {/* Privacy Settings Section */}
+            <div className="border-border bg-surface rounded-2xl border p-8">
+              <h2 className="text-text mb-6 text-xl font-semibold">Privatsphäre-Einstellungen</h2>
+
+              <label className="flex cursor-pointer items-center gap-3">
+                <div className="relative">
+                  <input
+                    type="checkbox"
+                    checked={formData.is_private}
+                    onChange={(e) => handleChange("is_private", e.target.checked)}
+                    className="peer sr-only"
+                  />
+                  <div className="border-border peer-checked:border-primary peer-checked:bg-primary flex h-5 w-5 items-center justify-center rounded border-2 transition-colors">
+                    {formData.is_private && (
+                      <svg
+                        className="h-3 w-3 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={3}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    )}
+                  </div>
+                </div>
+                <span className="text-text text-sm font-medium">
+                  Mein Profil soll privat bleiben
+                </span>
+                <div className="group relative">
+                  <svg
+                    className="text-text-muted h-4 w-4 cursor-help"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle cx="12" cy="12" r="10" strokeWidth="2" />
+                    <path strokeWidth="2" d="M12 16v-4M12 8h.01" />
+                  </svg>
+                  <div className="bg-surface-elevated border-border text-text invisible absolute bottom-full left-1/2 z-10 mb-2 w-64 -translate-x-1/2 rounded-lg border p-3 text-xs opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100">
+                    Wenn aktiviert, werden nur Ihr Name und Avatar auf Ihrem öffentlichen Profil
+                    angezeigt. Ihre Bio, Fächer, Zyklen, Kantone, Statistiken und Social-Media-Links
+                    bleiben verborgen.
+                  </div>
+                </div>
+              </label>
             </div>
 
             {/* Email Section (Read-only) */}

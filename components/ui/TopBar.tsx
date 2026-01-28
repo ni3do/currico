@@ -5,6 +5,45 @@ import { signOut, useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  ChevronDown,
+  ChevronRight,
+  BookOpen,
+  Calculator,
+  Leaf,
+  Globe,
+  Palette,
+  Scissors,
+  Music,
+  Activity,
+  Monitor,
+  Compass,
+  FlaskConical,
+  Briefcase,
+  Map,
+  Users,
+} from "lucide-react";
+import { FACHBEREICHE, ZYKLEN } from "@/lib/data/lehrplan21";
+import type { Fachbereich, Kompetenzbereich } from "@/lib/curriculum-types";
+
+// Icon mapping for subjects
+const SUBJECT_ICONS: Record<string, React.ElementType> = {
+  D: BookOpen,
+  FS1E: Globe,
+  FS2F: Globe,
+  MA: Calculator,
+  NMG: Leaf,
+  NT: FlaskConical,
+  WAH: Briefcase,
+  RZG: Map,
+  ERG: Users,
+  BG: Palette,
+  TTG: Scissors,
+  MU: Music,
+  BS: Activity,
+  MI: Monitor,
+  BO: Compass,
+};
 
 export default function TopBar() {
   const t = useTranslations("common");

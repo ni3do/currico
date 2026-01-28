@@ -69,7 +69,7 @@ export async function PATCH(request: NextRequest) {
     const data = validationResult.data;
 
     // Update user - transform arrays for Prisma
-    const { subjects, cycles, cantons, ...restData } = data;
+    const { subjects, cycles, cantons, instagram, pinterest, is_private, ...restData } = data;
     const updatedUser = await prisma.user.update({
       where: { id: userId },
       data: {
@@ -77,6 +77,9 @@ export async function PATCH(request: NextRequest) {
         ...(subjects && { subjects: { set: subjects } }),
         ...(cycles && { cycles: { set: cycles } }),
         ...(cantons && { cantons: { set: cantons } }),
+        instagram: instagram ?? null,
+        pinterest: pinterest ?? null,
+        ...(is_private !== undefined && { is_private }),
       },
       select: privateUserSelect,
     });

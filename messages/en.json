@@ -1482,7 +1482,13 @@
     "noCollections": "No collections yet",
     "noCollectionsOwn": "Create your first collection!",
     "noCollectionsOther": "This user doesn't have any public collections.",
-    "loadMore": "Load more"
+    "loadMore": "Load more",
+    "privacy": {
+      "label": "Keep my profile private",
+      "tooltip": "When enabled, only your name and avatar will be shown on your public profile. Your bio, subjects, cycles, cantons, statistics, and social media links will be hidden.",
+      "notice": "This profile is private. Only public resources are displayed.",
+      "sectionTitle": "Privacy Settings"
+    }
   },
   "collections": {
     "title": "My Collections",
@@ -1574,6 +1580,63 @@
       "noResultsEmpty": "Enter a search term to find profiles",
       "found": "profiles found",
       "seller": "Seller"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "subtitle": "Manage which notifications you receive",
+    "saving": "Saving...",
+    "saved": "Saved",
+    "error": "Error saving",
+    "categories": {
+      "favoriteAuthors": {
+        "title": "Favorite Authors",
+        "newFromFollowed": {
+          "label": "New materials from favorite authors",
+          "description": "Notification when sellers you follow upload new materials matching your subjects"
+        }
+      },
+      "recommendations": {
+        "title": "Personalized Recommendations",
+        "materialRecommendations": {
+          "label": "Material recommendations via email",
+          "description": "Popular materials matching your download history"
+        }
+      },
+      "purchased": {
+        "title": "Purchased Materials",
+        "materialUpdates": {
+          "label": "Updates for purchased materials",
+          "description": "Notification when purchased material gets a free update"
+        },
+        "reviewReminders": {
+          "label": "Review reminders",
+          "description": "Reminders to rate and review purchased materials"
+        },
+        "wishlistPriceDrops": {
+          "label": "Wishlist price changes",
+          "description": "Notification when items on your wishlist have price reductions"
+        }
+      },
+      "promotions": {
+        "title": "Promotions & Special Offers",
+        "welcomeOffers": {
+          "label": "Welcome offers",
+          "description": "Welcome emails and individual offers"
+        },
+        "sales": {
+          "label": "Site-wide sales",
+          "description": "Notifications about platform-wide discount promotions"
+        },
+        "newsletter": {
+          "label": "Subscribe to newsletter",
+          "description": "Weekly updates with tips, new features, and selected resources"
+        },
+        "platformUpdates": {
+          "label": "Platform updates",
+          "description": "News about new features and platform improvements"
+        }
+      }
     }
   }
 }

@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback } from "react";
 import { useTranslations } from "next-intl";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ChevronDown,
   ChevronRight,
@@ -30,6 +31,7 @@ import {
   Package,
   File,
   Loader2,
+  ClipboardList,
 } from "lucide-react";
 import { useCurriculum, ZYKLEN } from "@/lib/hooks/useCurriculum";
 import type {
@@ -42,8 +44,9 @@ import type {
 // Icon mapping for Fachbereiche
 const FACHBEREICH_ICONS: Record<string, React.ElementType> = {
   D: BookOpen,
-  FS1E: Globe,
-  FS2F: Globe,
+  FS: Globe, // Unified Fremdsprachen
+  FS1E: Globe, // Legacy - English
+  FS2F: Globe, // Legacy - French
   MA: Calculator,
   NMG: Leaf,
   NT: FlaskConical,
@@ -56,6 +59,7 @@ const FACHBEREICH_ICONS: Record<string, React.ElementType> = {
   BS: Activity,
   MI: Monitor,
   BO: Compass,
+  PU: ClipboardList, // Projektunterricht
 };
 
 // Price options
@@ -496,7 +500,7 @@ export function LP21FilterSidebar({
               Fehler beim Laden der Fachbereiche
             </div>
           ) : (
-            availableFachbereiche.map((fb) => (
+            availableFachbereiche.map((fb, index) => (
               <FachbereichAccordion
                 key={fb.code}
                 fachbereich={fb}
@@ -510,6 +514,7 @@ export function LP21FilterSidebar({
                 onKompetenzbereichSelect={handleKompetenzbereichChange}
                 onKompetenzbereichToggle={toggleKompetenzbereichExpansion}
                 onKompetenzSelect={handleKompetenzChange}
+                index={index}
               />
             ))
           )}
@@ -553,28 +558,44 @@ function ZyklusToggle({ selectedZyklus, onZyklusChange }: ZyklusToggleProps) {
     <div>
       <h3 className="label-meta mb-3">Zyklus</h3>
       <div className="flex gap-2">
-        {ZYKLEN.map((zyklus) => (
-          <button
-            key={zyklus.id}
-            onClick={() => onZyklusChange(zyklus.id)}
-            className={`group relative flex-1 rounded-lg border-2 px-3 py-2.5 text-center transition-all ${
-              selectedZyklus === zyklus.id
-                ? "border-primary bg-primary/10 text-primary"
-                : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:bg-surface-hover"
-            }`}
-          >
-            <div className="text-sm font-semibold">{zyklus.shortName}</div>
-            <div
-              className={`text-xs ${selectedZyklus === zyklus.id ? "text-primary/80" : "text-text-muted"}`}
+        {ZYKLEN.map((zyklus, index) => {
+          const isActive = selectedZyklus === zyklus.id;
+          return (
+            <motion.button
+              key={zyklus.id}
+              onClick={() => onZyklusChange(zyklus.id)}
+              className={`group relative flex-1 rounded-lg border-2 px-3 py-2.5 text-center transition-colors ${
+                isActive
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:bg-surface-hover"
+              }`}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
-              {zyklus.id === 1 ? "KG-2" : zyklus.id === 2 ? "3-6" : "7-9"}
-            </div>
-            {/* Tooltip on hover */}
-            <div className="bg-text text-bg pointer-events-none absolute -top-10 left-1/2 z-50 -translate-x-1/2 rounded px-2 py-1 text-xs whitespace-nowrap opacity-0 transition-opacity group-hover:opacity-100">
-              {zyklus.description}
-            </div>
-          </button>
-        ))}
+              {isActive && (
+                <motion.div
+                  layoutId="activeZyklus"
+                  className="bg-primary/10 absolute inset-0 rounded-lg"
+                  initial={false}
+                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                />
+              )}
+              <div className="relative z-10 text-sm font-semibold">{zyklus.shortName}</div>
+              <div
+                className={`relative z-10 text-xs ${isActive ? "text-primary/80" : "text-text-muted"}`}
+              >
+                {zyklus.id === 1 ? "KG-2" : zyklus.id === 2 ? "3-6" : "7-9"}
+              </div>
+              {/* Tooltip on hover */}
+              <div className="bg-text text-bg pointer-events-none absolute -top-10 left-1/2 z-50 -translate-x-1/2 rounded px-2 py-1 text-xs whitespace-nowrap opacity-0 transition-opacity group-hover:opacity-100">
+                {zyklus.description}
+              </div>
+            </motion.button>
+          );
+        })}
       </div>
     </div>
   );
@@ -670,6 +691,7 @@ interface FachbereichAccordionProps {
   onKompetenzbereichSelect: (code: string | null) => void;
   onKompetenzbereichToggle: (code: string) => void;
   onKompetenzSelect: (code: string | null) => void;
+  index?: number;
 }
 
 function FachbereichAccordion({
@@ -684,12 +706,14 @@ function FachbereichAccordion({
   onKompetenzbereichSelect,
   onKompetenzbereichToggle,
   onKompetenzSelect,
+  index = 0,
 }: FachbereichAccordionProps) {
   const Icon = FACHBEREICH_ICONS[fachbereich.code] || BookOpen;
+  const hasChildren = fachbereich.kompetenzbereiche.length > 0;
 
   return (
-    <div
-      className={`overflow-hidden rounded-lg border transition-all ${
+    <motion.div
+      className={`overflow-hidden rounded-lg border transition-colors ${
         isSelected ? "border-transparent ring-2" : "border-border hover:border-border-subtle"
       }`}
       style={{
@@ -698,81 +722,110 @@ function FachbereichAccordion({
           backgroundColor: `${fachbereich.color}08`,
         }),
       }}
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: index * 0.03 }}
     >
       {/* Header with color strip/background */}
-      <div
-        className="relative flex items-stretch transition-all duration-200"
+      <motion.div
+        className="relative flex items-stretch"
         style={{
           backgroundColor: isSelected ? `${fachbereich.color}25` : undefined,
         }}
+        whileHover={{ x: 2 }}
+        transition={{ duration: 0.15 }}
       >
         {/* Color strip - expands when selected */}
-        <div
-          className="flex-shrink-0 transition-all duration-200"
-          style={{
-            backgroundColor: fachbereich.color,
-            width: isSelected ? "6px" : "4px",
-          }}
+        <motion.div
+          className="flex-shrink-0"
+          style={{ backgroundColor: fachbereich.color }}
+          initial={false}
+          animate={{ width: isSelected ? 6 : 4 }}
+          transition={{ duration: 0.2 }}
         />
 
         {/* Content */}
         <div className="flex flex-1 items-center">
-          {/* Expand toggle */}
-          <button
-            onClick={onToggleExpand}
-            className={`flex h-full items-center px-2 transition-colors ${
-              isSelected ? "text-text hover:text-text" : "text-text-muted hover:text-text"
-            }`}
-          >
-            {isExpanded ? (
-              <ChevronDown className="h-4 w-4" />
-            ) : (
-              <ChevronRight className="h-4 w-4" />
-            )}
-          </button>
+          {/* Expand toggle - only show if there are subcategories */}
+          {hasChildren ? (
+            <motion.button
+              onClick={onToggleExpand}
+              className={`flex h-full items-center px-2 transition-colors ${
+                isSelected ? "text-text hover:text-text" : "text-text-muted hover:text-text"
+              }`}
+              whileTap={{ scale: 0.9 }}
+            >
+              <motion.span animate={{ rotate: isExpanded ? 90 : 0 }} transition={{ duration: 0.2 }}>
+                <ChevronRight className="h-4 w-4" />
+              </motion.span>
+            </motion.button>
+          ) : (
+            // Spacer to maintain alignment when there's no expand button
+            <div className="w-8" />
+          )}
 
           {/* Main button */}
-          <button onClick={onSelect} className="flex flex-1 items-center gap-2 py-2 pr-3 text-left">
-            <span
-              className="flex h-6 w-6 items-center justify-center rounded-md transition-all duration-200"
-              style={{
+          <motion.button
+            onClick={onSelect}
+            className="flex flex-1 items-center gap-2.5 py-2 pr-3 text-left"
+            whileTap={{ scale: 0.98 }}
+          >
+            <motion.span
+              className="flex h-7 min-w-7 items-center justify-center rounded-md px-1.5 text-xs font-bold"
+              initial={false}
+              animate={{
                 backgroundColor: isSelected ? fachbereich.color : `${fachbereich.color}20`,
                 color: isSelected ? "white" : fachbereich.color,
               }}
+              transition={{ duration: 0.2 }}
             >
-              <Icon className="h-3.5 w-3.5" />
-            </span>
-            <div
-              className={`truncate text-sm font-semibold ${isSelected ? "" : "text-text"}`}
-              style={isSelected ? { color: fachbereich.color } : undefined}
-            >
-              {fachbereich.name}
+              {fachbereich.shortName}
+            </motion.span>
+            <div className="min-w-0 flex-1">
+              <div
+                className={`truncate text-sm leading-tight font-medium ${isSelected ? "" : "text-text"}`}
+                style={isSelected ? { color: fachbereich.color } : undefined}
+                title={fachbereich.name}
+              >
+                {fachbereich.name}
+              </div>
             </div>
-          </button>
+          </motion.button>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Expanded content - Kompetenzbereiche */}
-      {isExpanded && (
-        <div className="border-border bg-bg/50 border-t px-2 py-2">
-          <div className="space-y-1">
-            {fachbereich.kompetenzbereiche.map((kb) => (
-              <KompetenzbereichItem
-                key={kb.code}
-                kompetenzbereich={kb}
-                fachbereichColor={fachbereich.color}
-                isSelected={selectedKompetenzbereich === kb.code}
-                isExpanded={expandedKompetenzbereiche.has(kb.code)}
-                selectedKompetenz={selectedKompetenz}
-                onSelect={() => onKompetenzbereichSelect(kb.code)}
-                onToggleExpand={() => onKompetenzbereichToggle(kb.code)}
-                onKompetenzSelect={onKompetenzSelect}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
+      {/* Expanded content - Kompetenzbereiche (only if there are children) */}
+      <AnimatePresence>
+        {isExpanded && hasChildren && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <div className="border-border bg-bg/50 border-t px-2 py-2">
+              <div className="space-y-1">
+                {fachbereich.kompetenzbereiche.map((kb, kbIndex) => (
+                  <KompetenzbereichItem
+                    key={kb.code}
+                    kompetenzbereich={kb}
+                    fachbereichColor={fachbereich.color}
+                    isSelected={selectedKompetenzbereich === kb.code}
+                    isExpanded={expandedKompetenzbereiche.has(kb.code)}
+                    selectedKompetenz={selectedKompetenz}
+                    onSelect={() => onKompetenzbereichSelect(kb.code)}
+                    onToggleExpand={() => onKompetenzbereichToggle(kb.code)}
+                    onKompetenzSelect={onKompetenzSelect}
+                    index={kbIndex}
+                  />
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }
 
@@ -786,6 +839,7 @@ interface KompetenzbereichItemProps {
   onSelect: () => void;
   onToggleExpand: () => void;
   onKompetenzSelect: (code: string | null) => void;
+  index?: number;
 }
 
 function KompetenzbereichItem({
@@ -797,44 +851,59 @@ function KompetenzbereichItem({
   onSelect,
   onToggleExpand,
   onKompetenzSelect,
+  index = 0,
 }: KompetenzbereichItemProps) {
+  const hasChildren = kompetenzbereich.kompetenzen.length > 0;
+
   return (
-    <div className="overflow-hidden rounded-md">
-      <div
-        className="flex items-stretch transition-all duration-200"
+    <motion.div
+      className="overflow-hidden rounded-md"
+      initial={{ opacity: 0, x: -10 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: index * 0.02 }}
+    >
+      <motion.div
+        className="flex items-stretch"
         style={{
           backgroundColor: isSelected ? `${fachbereichColor}20` : undefined,
         }}
+        whileHover={{ x: 2 }}
+        transition={{ duration: 0.15 }}
       >
         {/* Color strip - full height, visible when selected */}
-        <div
-          className="flex-shrink-0 transition-all duration-200"
-          style={{
-            backgroundColor: isSelected ? fachbereichColor : "transparent",
-            width: isSelected ? "4px" : "0px",
-          }}
+        <motion.div
+          className="flex-shrink-0"
+          style={{ backgroundColor: isSelected ? fachbereichColor : "transparent" }}
+          initial={false}
+          animate={{ width: isSelected ? 4 : 0 }}
+          transition={{ duration: 0.2 }}
         />
 
-        {/* Expand toggle */}
-        <button
-          onClick={onToggleExpand}
-          className={`flex items-center px-1.5 transition-colors ${
-            isSelected ? "text-text" : "text-text-muted hover:text-text"
-          }`}
-        >
-          {isExpanded ? (
-            <ChevronDown className="h-3.5 w-3.5" />
-          ) : (
-            <ChevronRight className="h-3.5 w-3.5" />
-          )}
-        </button>
+        {/* Expand toggle - only show if there are children */}
+        {hasChildren ? (
+          <motion.button
+            onClick={onToggleExpand}
+            className={`flex items-center px-1.5 transition-colors ${
+              isSelected ? "text-text" : "text-text-muted hover:text-text"
+            }`}
+            whileTap={{ scale: 0.9 }}
+          >
+            <motion.span animate={{ rotate: isExpanded ? 90 : 0 }} transition={{ duration: 0.2 }}>
+              <ChevronRight className="h-3.5 w-3.5" />
+            </motion.span>
+          </motion.button>
+        ) : (
+          // Spacer to maintain alignment when there's no expand button
+          <div className="w-6" />
+        )}
 
         {/* Main button */}
-        <button
+        <motion.button
           onClick={onSelect}
           className={`flex flex-1 items-center gap-2 py-1.5 pr-2 text-left text-sm transition-colors ${
             isSelected ? "" : "text-text-secondary hover:text-text"
           }`}
+          whileTap={{ scale: 0.98 }}
         >
           <span className="font-mono text-xs font-semibold" style={{ color: fachbereichColor }}>
             {kompetenzbereich.code}
@@ -845,57 +914,74 @@ function KompetenzbereichItem({
           >
             {kompetenzbereich.name}
           </span>
-        </button>
-      </div>
+        </motion.button>
+      </motion.div>
 
-      {/* Kompetenzen */}
-      {isExpanded && kompetenzbereich.kompetenzen.length > 0 && (
-        <div
-          className="mt-1 ml-5 space-y-0.5 border-l-2 pl-3"
-          style={{ borderColor: `${fachbereichColor}40` }}
-        >
-          {kompetenzbereich.kompetenzen.map((k) => {
-            const isKompetenzSelected = selectedKompetenz === k.code;
-            return (
-              <div
-                key={k.code}
-                className="overflow-hidden rounded transition-all duration-200"
-                style={{
-                  backgroundColor: isKompetenzSelected ? `${fachbereichColor}15` : undefined,
-                }}
-              >
-                <div className="flex items-stretch">
-                  {/* Color strip for kompetenz */}
-                  <div
-                    className="flex-shrink-0 transition-all duration-200"
+      {/* Kompetenzen (only if there are children) */}
+      <AnimatePresence>
+        {isExpanded && hasChildren && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <div
+              className="mt-1 ml-5 space-y-0.5 border-l-2 pl-3"
+              style={{ borderColor: `${fachbereichColor}40` }}
+            >
+              {kompetenzbereich.kompetenzen.map((k, kIndex) => {
+                const isKompetenzSelected = selectedKompetenz === k.code;
+                return (
+                  <motion.div
+                    key={k.code}
+                    className="overflow-hidden rounded"
                     style={{
-                      backgroundColor: isKompetenzSelected ? fachbereichColor : "transparent",
-                      width: isKompetenzSelected ? "3px" : "0px",
+                      backgroundColor: isKompetenzSelected ? `${fachbereichColor}15` : undefined,
                     }}
-                  />
-                  <button
-                    onClick={() => onKompetenzSelect(k.code)}
-                    className={`flex w-full items-center gap-2 px-2 py-1 text-left text-xs transition-colors ${
-                      isKompetenzSelected ? "" : "text-text-muted hover:text-text"
-                    }`}
+                    initial={{ opacity: 0, x: -5 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: kIndex * 0.02 }}
+                    whileHover={{ x: 2 }}
                   >
-                    <span className="font-mono font-medium" style={{ color: fachbereichColor }}>
-                      {k.code}
-                    </span>
-                    <span
-                      className={`flex-1 truncate ${isKompetenzSelected ? "font-medium" : ""}`}
-                      style={isKompetenzSelected ? { color: fachbereichColor } : undefined}
-                    >
-                      {k.name}
-                    </span>
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </div>
+                    <div className="flex items-stretch">
+                      {/* Color strip for kompetenz */}
+                      <motion.div
+                        className="flex-shrink-0"
+                        style={{
+                          backgroundColor: isKompetenzSelected ? fachbereichColor : "transparent",
+                        }}
+                        initial={false}
+                        animate={{ width: isKompetenzSelected ? 3 : 0 }}
+                        transition={{ duration: 0.2 }}
+                      />
+                      <motion.button
+                        onClick={() => onKompetenzSelect(k.code)}
+                        className={`flex w-full items-center gap-2 px-2 py-1 text-left text-xs transition-colors ${
+                          isKompetenzSelected ? "" : "text-text-muted hover:text-text"
+                        }`}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <span className="font-mono font-medium" style={{ color: fachbereichColor }}>
+                          {k.code}
+                        </span>
+                        <span
+                          className={`flex-1 truncate ${isKompetenzSelected ? "font-medium" : ""}`}
+                          style={isKompetenzSelected ? { color: fachbereichColor } : undefined}
+                        >
+                          {k.name}
+                        </span>
+                      </motion.button>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }
 
@@ -925,23 +1011,28 @@ function PriceFilter({
 
       {/* Price preset buttons */}
       <div className="mb-4 flex flex-wrap gap-1.5">
-        {PRICE_OPTIONS.map((option) => {
+        {PRICE_OPTIONS.map((option, index) => {
           // Check if this option is selected based on priceType OR if slider matches the value
           const isSelected =
             selectedPriceType === option.id ||
             (selectedPriceType === null && maxPrice === option.value);
           return (
-            <button
+            <motion.button
               key={option.id}
               onClick={() => onPriceTypeChange(option.id)}
-              className={`rounded-full px-3 py-1 text-xs font-medium transition-all duration-200 ${
+              className={`relative rounded-full px-3 py-1 text-xs font-medium transition-colors ${
                 isSelected
                   ? "bg-primary text-white"
                   : "bg-surface border-border text-text-secondary hover:border-primary/50 hover:text-text border"
               }`}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: index * 0.03 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
               {option.label}
-            </button>
+            </motion.button>
           );
         })}
       </div>
@@ -950,17 +1041,25 @@ function PriceFilter({
       <div className="space-y-2">
         <div className="text-text-muted flex items-center justify-between text-xs">
           <span>Max. Preis</span>
-          <span className="text-text font-medium transition-all duration-200">
+          <motion.span
+            className="text-text font-medium"
+            key={effectiveValue}
+            initial={{ scale: 1.1 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.15 }}
+          >
             CHF {effectiveValue}
-          </span>
+          </motion.span>
         </div>
         <div className="relative">
           {/* Track background */}
           <div className="bg-surface-hover absolute top-1/2 h-2 w-full -translate-y-1/2 rounded-lg" />
           {/* Filled track */}
-          <div
-            className="bg-primary absolute top-1/2 h-2 -translate-y-1/2 rounded-l-lg transition-all duration-200 ease-out"
-            style={{ width: `${effectiveValue}%` }}
+          <motion.div
+            className="bg-primary absolute top-1/2 h-2 -translate-y-1/2 rounded-l-lg"
+            initial={false}
+            animate={{ width: `${effectiveValue}%` }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
           />
           {/* Range input */}
           <input
@@ -997,22 +1096,38 @@ function FormatFilter({ selectedFormats, onFormatToggle }: FormatFilterProps) {
       </div>
 
       <div className="grid grid-cols-2 gap-2">
-        {FORMAT_OPTIONS.map((format) => {
+        {FORMAT_OPTIONS.map((format, index) => {
           const Icon = format.icon;
           const isSelected = selectedFormats.includes(format.id);
           return (
-            <button
+            <motion.button
               key={format.id}
               onClick={() => onFormatToggle(format.id)}
-              className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors ${
+              className={`relative flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors ${
                 isSelected
                   ? "border-primary bg-primary/10 text-primary"
                   : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:text-text"
               }`}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: index * 0.03 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
               <Icon className="h-4 w-4" />
               <span className="font-medium">{format.label}</span>
-            </button>
+              <AnimatePresence>
+                {isSelected && (
+                  <motion.span
+                    className="bg-primary absolute -top-1 -right-1 h-2 w-2 rounded-full"
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    exit={{ scale: 0 }}
+                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                  />
+                )}
+              </AnimatePresence>
+            </motion.button>
           );
         })}
       </div>
@@ -1035,22 +1150,37 @@ function MaterialScopeFilter({ selectedScope, onScopeChange }: MaterialScopeFilt
       </div>
 
       <div className="flex gap-2">
-        {MATERIAL_SCOPE_OPTIONS.map((option) => {
+        {MATERIAL_SCOPE_OPTIONS.map((option, index) => {
           const Icon = option.icon;
           const isSelected = selectedScope === option.id;
           return (
-            <button
+            <motion.button
               key={option.id}
               onClick={() => onScopeChange(option.id)}
-              className={`flex flex-1 items-center justify-center gap-2 rounded-lg border-2 px-3 py-2.5 text-sm transition-all ${
+              className={`relative flex flex-1 items-center justify-center gap-2 rounded-lg border-2 px-3 py-2.5 text-sm transition-colors ${
                 isSelected
                   ? "border-primary bg-primary/10 text-primary"
                   : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:text-text"
               }`}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
-              <Icon className="h-4 w-4" />
-              <span className="font-medium">{option.label}</span>
-            </button>
+              {isSelected && (
+                <motion.div
+                  layoutId="activeMaterialScope"
+                  className="bg-primary/10 absolute inset-0 rounded-lg"
+                  initial={false}
+                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                />
+              )}
+              <span className="relative z-10 flex items-center gap-2">
+                <Icon className="h-4 w-4" />
+                <span className="font-medium">{option.label}</span>
+              </span>
+            </motion.button>
           );
         })}
       </div>

@@ -48,15 +48,23 @@
   --color-error: var(--ctp-red);
   --color-info: var(--ctp-sky);
 
-  /* Subject Colors (Lehrplan 21) */
+  /* Subject Colors (Lehrplan 21) - All Fachbereiche */
   --color-subject-deutsch: var(--ctp-red);
-  --color-subject-mathe: var(--ctp-blue);
+  --color-subject-mathe: var(--ctp-yellow);
   --color-subject-nmg: var(--ctp-green);
   --color-subject-gestalten: var(--ctp-pink);
   --color-subject-musik: var(--ctp-mauve);
-  --color-subject-sport: var(--ctp-peach);
-  --color-subject-fremdsprachen: var(--ctp-sapphire);
+  --color-subject-sport: #dc2626;
+  --color-subject-fremdsprachen: var(--ctp-blue);
   --color-subject-medien: var(--ctp-sky);
+  /* Zyklus 3 specific */
+  --color-subject-nt: var(--ctp-teal);
+  --color-subject-wah: var(--ctp-flamingo);
+  --color-subject-rzg: var(--ctp-maroon);
+  --color-subject-erg: var(--ctp-mauve);
+  --color-subject-bo: var(--ctp-sapphire);
+  --color-subject-ttg: var(--ctp-peach);
+  --color-subject-pu: #6c6f85;
 
   /* Price Badge Color (warm accent) */
   --color-price-badge: var(--ctp-peach);
@@ -243,16 +251,24 @@
   --color-price-light: color-mix(in srgb, var(--ctp-peach) 15%, transparent);
 
   /* =================================================================
-     SUBJECT COLORS (Lehrplan 21 Fächer)
+     SUBJECT COLORS (Lehrplan 21 Fächer) - All Fachbereiche
      ================================================================= */
   --color-subject-deutsch: var(--ctp-red);
-  --color-subject-mathe: var(--ctp-blue);
+  --color-subject-mathe: var(--ctp-yellow);
   --color-subject-nmg: var(--ctp-green);
   --color-subject-gestalten: var(--ctp-pink);
   --color-subject-musik: var(--ctp-mauve);
-  --color-subject-sport: var(--ctp-peach);
-  --color-subject-fremdsprachen: var(--ctp-sapphire);
+  --color-subject-sport: #ef4444;
+  --color-subject-fremdsprachen: var(--ctp-blue);
   --color-subject-medien: var(--ctp-sky);
+  /* Zyklus 3 specific */
+  --color-subject-nt: var(--ctp-teal);
+  --color-subject-wah: var(--ctp-flamingo);
+  --color-subject-rzg: var(--ctp-maroon);
+  --color-subject-erg: var(--ctp-mauve);
+  --color-subject-bo: var(--ctp-sapphire);
+  --color-subject-ttg: var(--ctp-peach);
+  --color-subject-pu: var(--ctp-overlay1);
 
   /* =================================================================
      STATUS COLORS
@@ -687,6 +703,42 @@ a {
 .pill-medien {
   background-color: color-mix(in srgb, var(--color-subject-medien) 20%, transparent);
   color: var(--color-subject-medien);
+}
+
+/* Zyklus 3 specific subject pills */
+.pill-nt {
+  background-color: color-mix(in srgb, var(--color-subject-nt) 20%, transparent);
+  color: var(--color-subject-nt);
+}
+
+.pill-wah {
+  background-color: color-mix(in srgb, var(--color-subject-wah) 20%, transparent);
+  color: var(--color-subject-wah);
+}
+
+.pill-rzg {
+  background-color: color-mix(in srgb, var(--color-subject-rzg) 20%, transparent);
+  color: var(--color-subject-rzg);
+}
+
+.pill-erg {
+  background-color: color-mix(in srgb, var(--color-subject-erg) 20%, transparent);
+  color: var(--color-subject-erg);
+}
+
+.pill-bo {
+  background-color: color-mix(in srgb, var(--color-subject-bo) 20%, transparent);
+  color: var(--color-subject-bo);
+}
+
+.pill-ttg {
+  background-color: color-mix(in srgb, var(--color-subject-ttg) 20%, transparent);
+  color: var(--color-subject-ttg);
+}
+
+.pill-pu {
+  background-color: color-mix(in srgb, var(--color-subject-pu) 20%, transparent);
+  color: var(--color-subject-pu);
 }
 
 /* =================================================================
@@ -1312,6 +1364,27 @@ a {
   100% {
     transform: scale(1);
   }
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-bounce-in {
+  animation: bounceIn 0.3s ease-out forwards;
 }
 
 /* Animation delay utilities */

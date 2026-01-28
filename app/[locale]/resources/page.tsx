@@ -171,19 +171,46 @@ export default function ResourcesPage() {
     }
   }, [activeTab, profileSearchQuery, fetchProfiles]);
 
-  // Get subject pill class based on subject name
+  // Get subject pill class based on subject name or code
   const getSubjectPillClass = (subject: string): string => {
     const subjectMap: Record<string, string> = {
+      // By name
       Deutsch: "pill-deutsch",
       Mathematik: "pill-mathe",
+      "Natur, Mensch, Gesellschaft": "pill-nmg",
       NMG: "pill-nmg",
+      "Bildnerisches Gestalten": "pill-gestalten",
       BG: "pill-gestalten",
+      "Textiles und Technisches Gestalten": "pill-ttg",
+      TTG: "pill-ttg",
       Musik: "pill-musik",
-      Sport: "pill-sport",
+      MU: "pill-musik",
+      "Bewegung und Sport": "pill-sport",
+      BS: "pill-sport",
+      Fremdsprachen: "pill-fremdsprachen",
+      FS: "pill-fremdsprachen",
       Englisch: "pill-fremdsprachen",
-      Franzosisch: "pill-fremdsprachen",
+      Französisch: "pill-fremdsprachen",
       French: "pill-fremdsprachen",
       English: "pill-fremdsprachen",
+      "Medien und Informatik": "pill-medien",
+      MI: "pill-medien",
+      // Zyklus 3 specific
+      "Natur und Technik": "pill-nt",
+      NT: "pill-nt",
+      "Wirtschaft, Arbeit, Haushalt": "pill-wah",
+      WAH: "pill-wah",
+      "Räume, Zeiten, Gesellschaften": "pill-rzg",
+      RZG: "pill-rzg",
+      "Ethik, Religionen, Gemeinschaft": "pill-erg",
+      ERG: "pill-erg",
+      "Berufliche Orientierung": "pill-bo",
+      BO: "pill-bo",
+      Projektunterricht: "pill-pu",
+      PU: "pill-pu",
+      // By code
+      D: "pill-deutsch",
+      MA: "pill-mathe",
     };
     return subjectMap[subject] || "pill-primary";
   };

@@ -54,6 +54,16 @@ export async function GET() {
             cantons: true,
             role: true,
             stripe_charges_enabled: true,
+            // Notification preferences
+            notify_new_from_followed: true,
+            notify_recommendations: true,
+            notify_material_updates: true,
+            notify_review_reminders: true,
+            notify_wishlist_price_drops: true,
+            notify_welcome_offers: true,
+            notify_sales: true,
+            notify_newsletter: true,
+            notify_platform_updates: true,
           },
         }),
       ]);
@@ -74,6 +84,16 @@ export async function GET() {
         cantons: toStringArray(user.cantons),
         isSeller: user.role === "SELLER",
         stripeChargesEnabled: user.stripe_charges_enabled,
+        // Notification preferences
+        notify_new_from_followed: user.notify_new_from_followed,
+        notify_recommendations: user.notify_recommendations,
+        notify_material_updates: user.notify_material_updates,
+        notify_review_reminders: user.notify_review_reminders,
+        notify_wishlist_price_drops: user.notify_wishlist_price_drops,
+        notify_welcome_offers: user.notify_welcome_offers,
+        notify_sales: user.notify_sales,
+        notify_newsletter: user.notify_newsletter,
+        notify_platform_updates: user.notify_platform_updates,
       },
       stats: {
         purchasedResources: purchasedCount,

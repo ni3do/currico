@@ -27,15 +27,23 @@ Catppuccin theme with Latte (light) and Mocha (dark) variants. Auto-adapts to us
 /* Status */
 --color-success / --color-warning / --color-error / --color-info
 
-/* Subject Colors (Lehrplan 21) */
+/* Subject Colors (Lehrplan 21 - All Fachbereiche) */
 --color-subject-deutsch       /* Red */
---color-subject-mathe         /* Blue */
+--color-subject-mathe         /* Yellow */
 --color-subject-nmg           /* Green */
 --color-subject-gestalten     /* Pink */
 --color-subject-musik         /* Mauve */
---color-subject-sport         /* Peach */
---color-subject-fremdsprachen /* Sapphire */
+--color-subject-sport         /* Red-Orange */
+--color-subject-fremdsprachen /* Blue */
 --color-subject-medien        /* Sky */
+/* Zyklus 3 specific */
+--color-subject-nt            /* Teal */
+--color-subject-wah           /* Flamingo */
+--color-subject-rzg           /* Maroon */
+--color-subject-erg           /* Mauve */
+--color-subject-bo            /* Sapphire */
+--color-subject-ttg           /* Peach */
+--color-subject-pu            /* Overlay (Gray) */
 
 /* Buttons (contrast-safe) */
 --btn-primary-bg / --btn-primary-text
@@ -46,12 +54,12 @@ Catppuccin theme with Latte (light) and Mocha (dark) variants. Auto-adapts to us
 
 ## Radius & Shadow
 
-| Token | Value | Usage |
-|-------|-------|-------|
-| `--radius-md` | 8px | Buttons, inputs |
-| `--radius-lg` | 12px | Cards |
-| `--radius-full` | 9999px | Pills, avatars |
-| `--shadow-card` | - | Card elevation |
+| Token           | Value  | Usage           |
+| --------------- | ------ | --------------- |
+| `--radius-md`   | 8px    | Buttons, inputs |
+| `--radius-lg`   | 12px   | Cards           |
+| `--radius-full` | 9999px | Pills, avatars  |
+| `--shadow-card` | -      | Card elevation  |
 
 ## Component Classes
 
@@ -63,22 +71,23 @@ Catppuccin theme with Latte (light) and Mocha (dark) variants. Auto-adapts to us
 
 **Pills:** `.pill` + `.pill-primary` `.pill-success` `.pill-warning` `.pill-error` `.pill-neutral` `.pill-accent`
 
-**Subject Pills:** `.pill-deutsch` `.pill-mathe` `.pill-nmg` `.pill-gestalten` `.pill-musik` `.pill-sport` `.pill-fremdsprachen` `.pill-medien`
+**Subject Pills:** `.pill-deutsch` `.pill-mathe` `.pill-nmg` `.pill-gestalten` `.pill-musik` `.pill-sport` `.pill-fremdsprachen` `.pill-medien` `.pill-nt` `.pill-wah` `.pill-rzg` `.pill-erg` `.pill-bo` `.pill-ttg` `.pill-pu`
 
 **Nav:** `.nav-link` `.nav-link-active`
 
 ## Tailwind Integration
 
 Colors are registered via `@theme` block. Use directly as utilities:
+
 ```tsx
 // Instead of
-className="text-[var(--color-text)]"
+className = "text-[var(--color-text)]";
 
 // Use
-className="text-text"
-className="bg-primary"
-className="border-border"
-className="text-subject-deutsch"
+className = "text-text";
+className = "bg-primary";
+className = "border-border";
+className = "text-subject-deutsch";
 ```
 
 ## Theme Toggle

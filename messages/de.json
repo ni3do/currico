@@ -1474,7 +1474,13 @@
     "noCollections": "Noch keine Sammlungen vorhanden",
     "noCollectionsOwn": "Erstellen Sie Ihre erste Sammlung!",
     "noCollectionsOther": "Dieser Benutzer hat noch keine öffentlichen Sammlungen.",
-    "loadMore": "Mehr laden"
+    "loadMore": "Mehr laden",
+    "privacy": {
+      "label": "Mein Profil soll privat bleiben",
+      "tooltip": "Wenn aktiviert, werden nur Ihr Name und Avatar auf Ihrem öffentlichen Profil angezeigt. Ihre Bio, Fächer, Zyklen, Kantone, Statistiken und Social-Media-Links bleiben verborgen.",
+      "notice": "Dieses Profil ist privat. Nur öffentliche Ressourcen werden angezeigt.",
+      "sectionTitle": "Privatsphäre-Einstellungen"
+    }
   },
   "collections": {
     "title": "Meine Sammlungen",
@@ -1566,6 +1572,63 @@
       "noResultsEmpty": "Geben Sie einen Suchbegriff ein, um Profile zu finden",
       "found": "Profile gefunden",
       "seller": "Verkäufer"
+    }
+  },
+  "notifications": {
+    "title": "Benachrichtigungen",
+    "subtitle": "Verwalten Sie, welche Benachrichtigungen Sie erhalten möchten",
+    "saving": "Wird gespeichert...",
+    "saved": "Gespeichert",
+    "error": "Fehler beim Speichern",
+    "categories": {
+      "favoriteAuthors": {
+        "title": "Lieblings-Autor*innen",
+        "newFromFollowed": {
+          "label": "Neue Materialien von Lieblings-Autor*innen",
+          "description": "Benachrichtigung bei neuen Uploads von Verkäufern, denen Sie folgen, passend zu Ihren Fächern"
+        }
+      },
+      "recommendations": {
+        "title": "Personalisierte Empfehlungen",
+        "materialRecommendations": {
+          "label": "Material-Empfehlungen per E-Mail",
+          "description": "Beliebte Materialien, die zu Ihren Downloads passen"
+        }
+      },
+      "purchased": {
+        "title": "Erworbene Materialien",
+        "materialUpdates": {
+          "label": "Updates für gekaufte Materialien",
+          "description": "Benachrichtigung, wenn ein gekauftes Material ein kostenloses Update erhält"
+        },
+        "reviewReminders": {
+          "label": "Erinnerungen zur Bewertung",
+          "description": "Erinnerungen, gekaufte Materialien zu bewerten"
+        },
+        "wishlistPriceDrops": {
+          "label": "Preisänderungen auf der Wunschliste",
+          "description": "Benachrichtigung bei Preissenkungen von Artikeln auf Ihrer Wunschliste"
+        }
+      },
+      "promotions": {
+        "title": "Rabatt- und Sonderaktionen",
+        "welcomeOffers": {
+          "label": "Willkommensangebote",
+          "description": "Willkommens-E-Mails und individuelle Angebote"
+        },
+        "sales": {
+          "label": "Website-weite Aktionen",
+          "description": "Benachrichtigungen über plattformweite Rabattaktionen"
+        },
+        "newsletter": {
+          "label": "Newsletter abonnieren",
+          "description": "Wöchentliche Updates mit Tipps, neuen Funktionen und ausgewählten Ressourcen"
+        },
+        "platformUpdates": {
+          "label": "Plattform-Updates",
+          "description": "Neuigkeiten über neue Funktionen und Verbesserungen der Plattform"
+        }
+      }
     }
   }
 }

@@ -91,12 +91,17 @@ model User {
   cycles       Json    @default("[]")
   cantons      Json    @default("[]")
 
+  // Social Media Links (usernames only)
+  instagram    String? @db.VarChar(100)
+  pinterest    String? @db.VarChar(100)
+
   // ============ PRIVATE DATA ============
   password_hash String? @db.VarChar(255)
 
   // ============ LOGIC/STATUS FIELDS ============
   role         UserRole @default(BUYER)
   is_protected Boolean  @default(false)
+  is_private   Boolean  @default(false)
 
   // ============ STRIPE CONNECT ============
   stripe_account_id          String?   @db.VarChar(255)
@@ -105,6 +110,17 @@ model User {
   stripe_payouts_enabled     Boolean   @default(false)
   stripe_customer_id         String?   @db.VarChar(255)
   seller_terms_accepted_at   DateTime? @db.DateTime(0)
+
+  // ============ NOTIFICATION PREFERENCES ============
+  notify_new_from_followed    Boolean @default(true)
+  notify_recommendations      Boolean @default(true)
+  notify_material_updates     Boolean @default(true)
+  notify_review_reminders     Boolean @default(true)
+  notify_wishlist_price_drops Boolean @default(true)
+  notify_welcome_offers       Boolean @default(true)
+  notify_sales                Boolean @default(true)
+  notify_newsletter           Boolean @default(false)
+  notify_platform_updates     Boolean @default(true)
 
   // ============ RELATIONS ============
   accounts                Account[]

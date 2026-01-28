@@ -230,7 +230,7 @@ export default function CreateBundlePage() {
                     value={formData.title}
                     onChange={(e) => updateFormData("title", e.target.value)}
                     required
-                    className="border-border bg-bg text-text placeholder:text-text-muted focus:border-primary focus:ring-primary/20 w-full rounded-xl border px-4 py-3 focus:ring-2 focus:outline-none"
+                    className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 w-full rounded-xl border px-4 py-3 focus:ring-2 focus:outline-none"
                     placeholder="z.B. Mathematik Komplett-Paket Zyklus 2"
                   />
                 </div>
@@ -242,7 +242,7 @@ export default function CreateBundlePage() {
                     onChange={(e) => updateFormData("description", e.target.value)}
                     required
                     rows={4}
-                    className="border-border bg-bg text-text placeholder:text-text-muted focus:border-primary focus:ring-primary/20 w-full rounded-xl border px-4 py-3 focus:ring-2 focus:outline-none"
+                    className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 w-full rounded-xl border px-4 py-3 focus:ring-2 focus:outline-none"
                     placeholder="Beschreiben Sie das Bundle und welchen Mehrwert es bietet..."
                   />
                 </div>
@@ -254,14 +254,28 @@ export default function CreateBundlePage() {
                       value={formData.subject}
                       onChange={(e) => updateFormData("subject", e.target.value)}
                       required
-                      className="border-border bg-bg text-text focus:border-primary focus:ring-primary/20 w-full rounded-xl border px-4 py-3 focus:ring-2 focus:outline-none"
+                      className={`border-border bg-bg focus:border-primary focus:ring-primary/20 w-full rounded-xl border px-4 py-3 focus:ring-2 focus:outline-none ${
+                        formData.subject === "" ? "text-text-faint" : "text-text"
+                      }`}
                     >
-                      <option value="">Wählen Sie...</option>
-                      <option value="Mathematik">Mathematik</option>
-                      <option value="Deutsch">Deutsch</option>
-                      <option value="Englisch">Englisch</option>
-                      <option value="Französisch">Französisch</option>
-                      <option value="NMG">NMG</option>
+                      <option value="" disabled hidden>
+                        Fach auswählen...
+                      </option>
+                      <option value="Mathematik" className="text-text">
+                        Mathematik
+                      </option>
+                      <option value="Deutsch" className="text-text">
+                        Deutsch
+                      </option>
+                      <option value="Englisch" className="text-text">
+                        Englisch
+                      </option>
+                      <option value="Französisch" className="text-text">
+                        Französisch
+                      </option>
+                      <option value="NMG" className="text-text">
+                        NMG
+                      </option>
                     </select>
                   </div>
 
@@ -271,12 +285,22 @@ export default function CreateBundlePage() {
                       value={formData.cycle}
                       onChange={(e) => updateFormData("cycle", e.target.value)}
                       required
-                      className="border-border bg-bg text-text focus:border-primary focus:ring-primary/20 w-full rounded-xl border px-4 py-3 focus:ring-2 focus:outline-none"
+                      className={`border-border bg-bg focus:border-primary focus:ring-primary/20 w-full rounded-xl border px-4 py-3 focus:ring-2 focus:outline-none ${
+                        formData.cycle === "" ? "text-text-faint" : "text-text"
+                      }`}
                     >
-                      <option value="">Wählen Sie...</option>
-                      <option value="1">Zyklus 1</option>
-                      <option value="2">Zyklus 2</option>
-                      <option value="3">Zyklus 3</option>
+                      <option value="" disabled hidden>
+                        Zyklus auswählen...
+                      </option>
+                      <option value="1" className="text-text">
+                        Zyklus 1
+                      </option>
+                      <option value="2" className="text-text">
+                        Zyklus 2
+                      </option>
+                      <option value="3" className="text-text">
+                        Zyklus 3
+                      </option>
                     </select>
                   </div>
                 </div>
@@ -418,9 +442,10 @@ export default function CreateBundlePage() {
                     onChange={(e) => updateFormData("price", e.target.value)}
                     required
                     min="0"
+                    max="25"
                     step="0.50"
-                    className="border-border bg-bg text-text placeholder:text-text-muted focus:border-primary focus:ring-primary/20 w-full rounded-xl border px-4 py-3 pl-12 focus:ring-2 focus:outline-none"
-                    placeholder="25.00"
+                    className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 w-full rounded-xl border px-4 py-3 pl-12 focus:ring-2 focus:outline-none"
+                    placeholder="z.B. 25.00"
                   />
                   <span className="text-text-muted absolute top-1/2 left-4 -translate-y-1/2">
                     CHF
@@ -458,7 +483,7 @@ export default function CreateBundlePage() {
                   )}
 
                 <p className="text-text-muted mt-2 text-xs">
-                  Sie erhalten 85% des Verkaufspreises (15% Plattformgebühr)
+                  Sie erhalten 70% des Verkaufspreises (30% Plattformgebühr)
                 </p>
               </div>
             </div>
