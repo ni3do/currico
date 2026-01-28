@@ -14,6 +14,12 @@ else
   chmod -R 755 /app/public/uploads
 fi
 
+# Run database migrations as root (Prisma needs write access to engines dir)
+if [ -n "$DATABASE_URL" ]; then
+  echo "Running database migrations..."
+  npx prisma migrate deploy
+fi
+
 # Drop privileges and run the command as nextjs user
 echo "Switching to nextjs user..."
 exec su-exec nextjs "$@"
