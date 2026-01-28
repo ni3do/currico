@@ -21,8 +21,7 @@ if [ -z "$DATABASE_URL" ]; then
   exit 1
 fi
 
-echo "Running database migrations..."
-npx prisma migrate deploy
+# Note: Migrations run in entrypoint.sh as root (Prisma needs write access to engines dir)
 
 # Bootstrap admin user if credentials are provided
 if [ -n "$ADMIN_EMAIL" ] && [ -n "$ADMIN_PASSWORD" ]; then
