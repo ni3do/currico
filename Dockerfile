@@ -20,15 +20,36 @@ WORKDIR /app
 # Skip telemetry and Sentry source map upload during build
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV SENTRY_SUPPRESS_TURBOPACK_WARNING=1
+# Disable Sentry source map upload in Docker builds
+ENV SENTRY_SUPPRESS_UPLOADING_SOURCEMAPS=1
 
 COPY --from=deps /app/node_modules ./node_modules
-COPY . .
 
-# Generate Prisma client and build with Next.js cache
+# Copy config files first (change less frequently)
+COPY package.json tsconfig.json next.config.ts postcss.config.mjs ./
+COPY prisma.config.ts sentry.*.config.ts ./
+COPY i18n ./i18n
+
+# Copy Prisma schema (changes infrequently)
+COPY prisma ./prisma
+
+# Generate Prisma client (cached separately from build)
 RUN --mount=type=cache,target=/root/.cache/prisma \
-    --mount=type=cache,target=/app/.next/cache \
-    mkdir -p public && \
-    npm run db:generate && \
+    npm run db:generate
+
+# Copy source files (change most frequently) - ordered by change frequency
+COPY public ./public
+COPY messages ./messages
+COPY components ./components
+COPY lib ./lib
+COPY app ./app
+COPY instrumentation.ts ./
+
+# Copy scripts needed for runtime
+COPY scripts ./scripts
+
+# Build with Next.js cache
+RUN --mount=type=cache,target=/app/.next/cache \
     npm run build
 
 # Production image
@@ -41,41 +62,44 @@ ENV PORT=3000
 # System setup - rarely changes, cache this layer
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs && \
-    mkdir .next && \
-    chown nextjs:nodejs .next
+    mkdir -p .next uploads && \
+    chown nextjs:nodejs .next uploads
 
-# Copy prisma files and dependencies from builder (already generated)
+# Copy package.json for runtime reference
 COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/tsconfig.json ./tsconfig.json
+
+# Copy Prisma files needed for migrations
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
+COPY --from=builder /app/tsconfig.json ./tsconfig.json
 COPY --from=builder /app/lib ./lib
+
+# Copy pre-generated Prisma client from builder
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
 
-# Install only runtime dependencies needed for migrations/bootstrap
-RUN --mount=type=cache,target=/root/.npm \
-    npm install --no-save bcryptjs tsx dotenv
+# Copy runtime dependencies needed for migrations (tsx, dotenv, bcryptjs already in these)
+COPY --from=builder /app/node_modules/tsx ./node_modules/tsx
+COPY --from=builder /app/node_modules/dotenv ./node_modules/dotenv
+COPY --from=builder /app/node_modules/bcryptjs ./node_modules/bcryptjs
+# tsx dependencies
+COPY --from=builder /app/node_modules/esbuild ./node_modules/esbuild
+COPY --from=builder /app/node_modules/get-tsconfig ./node_modules/get-tsconfig
+COPY --from=builder /app/node_modules/resolve-pkg-maps ./node_modules/resolve-pkg-maps
 
-# Copy startup script
-COPY --from=builder /app/scripts/start.sh ./start.sh
-RUN chmod +x ./start.sh
+# Copy startup scripts with correct ownership
+COPY --from=builder --chown=nextjs:nodejs /app/scripts/start.sh ./start.sh
+COPY --from=builder --chown=nextjs:nodejs /app/scripts/entrypoint.sh ./entrypoint.sh
+RUN chmod +x ./start.sh ./entrypoint.sh
 
-# Copy build artifacts last - these change most frequently
+# Copy build artifacts with correct ownership (most frequent changes - copy last)
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 # Copy instrumentation file for OpenTelemetry
 COPY --from=builder /app/instrumentation.ts ./instrumentation.ts
-
-# Set final ownership
-RUN chown -R nextjs:nodejs /app
-
-# Copy the entrypoint script that handles volume permissions
-COPY --from=builder /app/scripts/entrypoint.sh ./entrypoint.sh
-RUN chmod +x ./entrypoint.sh
 
 EXPOSE 3000
 
