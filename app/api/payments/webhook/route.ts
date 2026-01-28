@@ -12,22 +12,31 @@ import Stripe from "stripe";
  * Access: Public (verified via Stripe signature)
  */
 export async function POST(request: NextRequest) {
+  console.log("[PAYMENT WEBHOOK] ========== WEBHOOK RECEIVED ==========");
+  console.log("[PAYMENT WEBHOOK] Timestamp:", new Date().toISOString());
+
   let event: Stripe.Event;
 
   // Get the raw request body for signature verification
   const payload = await request.text();
   const signature = request.headers.get("stripe-signature");
 
+  console.log("[PAYMENT WEBHOOK] Payload length:", payload.length);
+  console.log("[PAYMENT WEBHOOK] Signature present:", !!signature);
+
   if (!signature) {
-    console.error("Webhook: Missing stripe-signature header");
+    console.error("[PAYMENT WEBHOOK] ERROR: Missing stripe-signature header");
     return NextResponse.json({ error: "Missing stripe-signature header" }, { status: 400 });
   }
 
   // Verify webhook signature
   try {
     event = constructWebhookEvent(payload, signature);
+    console.log("[PAYMENT WEBHOOK] Signature verified successfully");
+    console.log("[PAYMENT WEBHOOK] Event type:", event.type);
+    console.log("[PAYMENT WEBHOOK] Event ID:", event.id);
   } catch (error) {
-    console.error("Webhook signature verification failed:", error);
+    console.error("[PAYMENT WEBHOOK] ERROR: Signature verification failed:", error);
     return NextResponse.json({ error: "Webhook signature verification failed" }, { status: 400 });
   }
 
@@ -144,7 +153,11 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session):
       : session.payment_intent?.id;
   const paymentStatus = session.payment_status;
 
-  console.log(`Webhook: Processing checkout.session.completed for ${sessionId}`);
+  console.log("[PAYMENT WEBHOOK] ========== CHECKOUT SESSION COMPLETED ==========");
+  console.log("[PAYMENT WEBHOOK] Session ID:", sessionId);
+  console.log("[PAYMENT WEBHOOK] Payment Intent ID:", paymentIntentId);
+  console.log("[PAYMENT WEBHOOK] Payment Status:", paymentStatus);
+  console.log("[PAYMENT WEBHOOK] Metadata:", JSON.stringify(session.metadata));
 
   // Only process successful payments
   if (paymentStatus !== "paid") {

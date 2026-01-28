@@ -105,10 +105,21 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     const hasPurchased = resource.transactions.length > 0;
     const hasDownloaded = resource.downloads.length > 0;
 
+    console.log("[DOWNLOAD] ========== ACCESS CHECK ==========");
+    console.log("[DOWNLOAD] Resource ID:", id);
+    console.log("[DOWNLOAD] User ID:", userId);
+    console.log("[DOWNLOAD] Is Owner:", isOwner);
+    console.log("[DOWNLOAD] Is Free:", isFree);
+    console.log("[DOWNLOAD] Has Purchased (COMPLETED transactions):", hasPurchased);
+    console.log("[DOWNLOAD] Transactions found:", resource.transactions.length);
+    console.log("[DOWNLOAD] Has Download record:", hasDownloaded);
+
     // Grant access if: owner, free resource, or has purchased
     const hasAccess = isOwner || isFree || hasPurchased;
+    console.log("[DOWNLOAD] Final hasAccess:", hasAccess);
 
     if (!hasAccess) {
+      console.log("[DOWNLOAD] ACCESS DENIED - user needs to purchase");
       return NextResponse.json(
         { error: "Bitte kaufen Sie diese Ressource, um sie herunterzuladen" },
         { status: 403 }
