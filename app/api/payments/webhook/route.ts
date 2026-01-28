@@ -20,10 +20,7 @@ export async function POST(request: NextRequest) {
 
   if (!signature) {
     console.error("Webhook: Missing stripe-signature header");
-    return NextResponse.json(
-      { error: "Missing stripe-signature header" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Missing stripe-signature header" }, { status: 400 });
   }
 
   // Verify webhook signature
@@ -31,10 +28,7 @@ export async function POST(request: NextRequest) {
     event = constructWebhookEvent(payload, signature);
   } catch (error) {
     console.error("Webhook signature verification failed:", error);
-    return NextResponse.json(
-      { error: "Webhook signature verification failed" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Webhook signature verification failed" }, { status: 400 });
   }
 
   // Handle the event
@@ -60,10 +54,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ received: true });
   } catch (error) {
     console.error(`Webhook: Error handling ${event.type}:`, error);
-    return NextResponse.json(
-      { error: "Webhook handler failed" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Webhook handler failed" }, { status: 500 });
   }
 }
 
@@ -112,11 +103,7 @@ async function handleAccountUpdated(account: Stripe.Account): Promise<void> {
 
   // Upgrade user to SELLER role if onboarding is complete and charges are enabled
   // This is the official path to becoming a seller
-  if (
-    chargesEnabled &&
-    detailsSubmitted &&
-    user.role === "BUYER"
-  ) {
+  if (chargesEnabled && detailsSubmitted && user.role === "BUYER") {
     updateData.role = "SELLER";
     console.log(`Webhook: Upgrading user ${user.id} to SELLER role`);
   }
@@ -149,13 +136,12 @@ async function handleAccountUpdated(account: Stripe.Account): Promise<void> {
  * Handle checkout.session.completed webhook event
  * Updates transaction to COMPLETED and grants resource access to buyer
  */
-async function handleCheckoutSessionCompleted(
-  session: Stripe.Checkout.Session
-): Promise<void> {
+async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session): Promise<void> {
   const sessionId = session.id;
-  const paymentIntentId = typeof session.payment_intent === "string"
-    ? session.payment_intent
-    : session.payment_intent?.id;
+  const paymentIntentId =
+    typeof session.payment_intent === "string"
+      ? session.payment_intent
+      : session.payment_intent?.id;
   const paymentStatus = session.payment_status;
 
   console.log(`Webhook: Processing checkout.session.completed for ${sessionId}`);
@@ -254,9 +240,7 @@ async function handleCheckoutSessionCompleted(
   });
 
   // Send purchase confirmation email
-  const buyerEmail = isGuestCheckout
-    ? transaction.guest_email
-    : transaction.buyer?.email;
+  const buyerEmail = isGuestCheckout ? transaction.guest_email : transaction.buyer?.email;
 
   if (buyerEmail) {
     const emailResult = await sendPurchaseConfirmationEmail({
@@ -274,25 +258,24 @@ async function handleCheckoutSessionCompleted(
         `Webhook: Sent purchase confirmation email to ${buyerEmail} for transaction ${transaction.id}`
       );
     } else {
+      // Log as critical error for visibility - transaction completed but buyer won't receive email
       console.error(
-        `Webhook: Failed to send purchase confirmation email to ${buyerEmail}: ${emailResult.error}`
+        `CRITICAL: Email failed for completed transaction ${transaction.id} to ${buyerEmail}: ${emailResult.error}`
       );
     }
   } else {
-    console.warn(
-      `Webhook: No email address available for transaction ${transaction.id}`
-    );
+    console.warn(`Webhook: No email address available for transaction ${transaction.id}`);
   }
 
   if (isGuestCheckout) {
     console.log(
       `Webhook: Completed guest transaction ${transaction.id} for ${transaction.guest_email}, ` +
-      `resource ${transaction.resource_id}, token: ${downloadToken}`
+        `resource ${transaction.resource_id}, token: ${downloadToken}`
     );
   } else {
     console.log(
       `Webhook: Completed transaction ${transaction.id} for buyer ${transaction.buyer_id}, ` +
-      `granted access to resource ${transaction.resource_id}`
+        `granted access to resource ${transaction.resource_id}`
     );
   }
 }
@@ -301,9 +284,7 @@ async function handleCheckoutSessionCompleted(
  * Handle payment_intent.payment_failed webhook event
  * Marks pending transactions as failed when payment fails
  */
-async function handlePaymentIntentFailed(
-  paymentIntent: Stripe.PaymentIntent
-): Promise<void> {
+async function handlePaymentIntentFailed(paymentIntent: Stripe.PaymentIntent): Promise<void> {
   const paymentIntentId = paymentIntent.id;
   const metadata = paymentIntent.metadata;
 
@@ -363,7 +344,7 @@ async function handlePaymentIntentFailed(
 
   console.log(
     `Webhook: Marked transaction ${transaction.id} as FAILED ` +
-    `for payment intent ${paymentIntentId}: ${failureMessage}`
+      `for payment intent ${paymentIntentId}: ${failureMessage}`
   );
 }
 
