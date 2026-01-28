@@ -78,6 +78,8 @@ COPY --from=builder /app/lib ./lib
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
+# Copy .bin symlinks for CLI tools (prisma, tsx)
+COPY --from=builder /app/node_modules/.bin ./node_modules/.bin
 
 # Copy runtime dependencies needed for migrations (tsx, dotenv, bcryptjs already in these)
 COPY --from=builder /app/node_modules/tsx ./node_modules/tsx

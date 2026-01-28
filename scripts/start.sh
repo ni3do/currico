@@ -33,7 +33,7 @@ fi
 # Seed curriculum data if requested
 if [ "$SEED_CURRICULUM" = "true" ]; then
   echo "Seeding curriculum data..."
-  npx tsx prisma/seed-curriculum.ts
+  npx tsx prisma/seed.ts
 fi
 
 echo "Starting application..."
