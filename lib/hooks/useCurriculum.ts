@@ -7,31 +7,10 @@ import type {
   CurriculumFilterResponse,
   CurriculumSearchResult,
 } from "@/lib/curriculum-types";
+import { FACHBEREICHE as STATIC_FACHBEREICHE, ZYKLEN } from "@/lib/data/lehrplan21";
 
-// Static ZYKLEN data - these don't change and don't need to be in DB
-export const ZYKLEN: Zyklus[] = [
-  {
-    id: 1,
-    name: "Zyklus 1",
-    shortName: "Z1",
-    grades: ["KG", "1", "2"],
-    description: "Kindergarten – 2. Klasse",
-  },
-  {
-    id: 2,
-    name: "Zyklus 2",
-    shortName: "Z2",
-    grades: ["3", "4", "5", "6"],
-    description: "3. – 6. Klasse",
-  },
-  {
-    id: 3,
-    name: "Zyklus 3",
-    shortName: "Z3",
-    grades: ["7", "8", "9"],
-    description: "7. – 9. Klasse",
-  },
-];
+// Re-export ZYKLEN for backwards compatibility
+export { ZYKLEN } from "@/lib/data/lehrplan21";
 
 interface UseCurriculumOptions {
   cycle?: number;
@@ -92,8 +71,10 @@ export function useCurriculum(options?: UseCurriculumOptions): UseCurriculumRetu
         setFachbereiche(data.fachbereiche);
         setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err : new Error("Unknown error"));
-        console.error("Error fetching curriculum:", err);
+        // Fallback to static data when API fails (e.g., database not seeded)
+        console.warn("Error fetching curriculum from API, falling back to static data:", err);
+        setFachbereiche(STATIC_FACHBEREICHE);
+        setError(null);
       } finally {
         setLoading(false);
       }

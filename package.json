@@ -1,5 +1,5 @@
 {
-  "name": "easy-lehrer",
+  "name": "currico",
   "version": "1.0.0",
   "description": "Educational resource marketplace for Swiss teachers",
   "scripts": {
@@ -20,6 +20,7 @@
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset",
     "db:seed-curriculum": "tsx prisma/seed-curriculum.ts",
+    "db:fix-curriculum": "tsx prisma/cleanup-and-reseed-curriculum.ts",
     "db:bootstrap-admin": "tsx prisma/bootstrap-admin.ts",
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
@@ -48,7 +49,6 @@
     "dotenv": "^17.2.3",
     "framer-motion": "^12.29.0",
     "lucide-react": "^0.562.0",
-    "mysql2": "^3.11.0",
     "next": "^16.1.1",
     "next-auth": "^5.0.0-beta.30",
     "next-intl": "^4.7.0",

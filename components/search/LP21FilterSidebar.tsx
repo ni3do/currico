@@ -9,19 +9,6 @@ import {
   X,
   Search,
   BookOpen,
-  Calculator,
-  Leaf,
-  Globe,
-  Palette,
-  Scissors,
-  Music,
-  Activity,
-  Monitor,
-  Compass,
-  FlaskConical,
-  Briefcase,
-  Map,
-  Users,
   Tag,
   FileText,
   FileType,
@@ -31,36 +18,16 @@ import {
   Package,
   File,
   Loader2,
-  ClipboardList,
+  Palette,
 } from "lucide-react";
 import { useCurriculum, ZYKLEN } from "@/lib/hooks/useCurriculum";
+import { FACHBEREICH_ICONS } from "@/lib/constants/subject-icons";
 import type {
   Fachbereich,
   Kompetenzbereich,
   Kompetenz,
   CurriculumSearchResult,
 } from "@/lib/curriculum-types";
-
-// Icon mapping for Fachbereiche
-const FACHBEREICH_ICONS: Record<string, React.ElementType> = {
-  D: BookOpen,
-  FS: Globe, // Unified Fremdsprachen
-  FS1E: Globe, // Legacy - English
-  FS2F: Globe, // Legacy - French
-  MA: Calculator,
-  NMG: Leaf,
-  NT: FlaskConical,
-  WAH: Briefcase,
-  RZG: Map,
-  ERG: Users,
-  BG: Palette,
-  TTG: Scissors,
-  MU: Music,
-  BS: Activity,
-  MI: Monitor,
-  BO: Compass,
-  PU: ClipboardList, // Projektunterricht
-};
 
 // Price options
 const PRICE_OPTIONS = [
@@ -999,8 +966,10 @@ function PriceFilter({
   onPriceTypeChange,
   onMaxPriceChange,
 }: PriceFilterProps) {
+  const MAX_PRICE = 50;
   // Calculate the effective value for display and slider position
-  const effectiveValue = maxPrice ?? 100;
+  const effectiveValue = maxPrice ?? MAX_PRICE;
+  const sliderPercent = (effectiveValue / MAX_PRICE) * 100;
 
   return (
     <div>
@@ -1051,30 +1020,31 @@ function PriceFilter({
             CHF {effectiveValue}
           </motion.span>
         </div>
-        <div className="relative">
+        <div className="relative flex h-5 items-center">
           {/* Track background */}
-          <div className="bg-surface-hover absolute top-1/2 h-2 w-full -translate-y-1/2 rounded-lg" />
-          {/* Filled track */}
+          <div className="bg-surface-hover absolute h-2 w-full rounded-full" />
+          {/* Filled track - account for thumb width (16px = 1rem) */}
           <motion.div
-            className="bg-primary absolute top-1/2 h-2 -translate-y-1/2 rounded-l-lg"
+            className="bg-primary absolute h-2 rounded-full"
+            style={{ left: 0 }}
             initial={false}
-            animate={{ width: `${effectiveValue}%` }}
+            animate={{ width: `calc(${sliderPercent}% + ${(100 - sliderPercent) * 0.08}px)` }}
             transition={{ duration: 0.15, ease: "easeOut" }}
           />
           {/* Range input */}
           <input
             type="range"
             min="0"
-            max="100"
-            step="5"
+            max={MAX_PRICE}
+            step="1"
             value={effectiveValue}
             onChange={(e) => onMaxPriceChange(Number(e.target.value))}
-            className="[&::-webkit-slider-thumb]:bg-primary [&::-moz-range-thumb]:bg-primary relative z-10 h-2 w-full cursor-pointer appearance-none bg-transparent [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:shadow-md [&::-moz-range-thumb]:transition-transform [&::-moz-range-thumb]:duration-200 [&::-moz-range-thumb]:hover:scale-110 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:duration-200 [&::-webkit-slider-thumb]:hover:scale-110"
+            className="[&::-moz-range-thumb]:bg-primary [&::-webkit-slider-thumb]:bg-primary relative z-10 h-5 w-full cursor-pointer appearance-none bg-transparent [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:shadow-md [&::-moz-range-thumb]:transition-transform [&::-moz-range-thumb]:duration-200 [&::-moz-range-thumb]:hover:scale-110 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:duration-200 [&::-webkit-slider-thumb]:hover:scale-110"
           />
         </div>
         <div className="text-text-faint flex justify-between text-xs">
           <span>CHF 0</span>
-          <span>CHF 100</span>
+          <span>CHF {MAX_PRICE}</span>
         </div>
       </div>
     </div>
