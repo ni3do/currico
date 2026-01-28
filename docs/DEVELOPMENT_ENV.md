@@ -1,6 +1,6 @@
 # Development Environment Variables
 
-This document lists environment variables for local development of Easy-Lehrer.
+This document lists environment variables for local development of Currico.
 
 ## Quick Start
 
@@ -17,13 +17,13 @@ This starts the app at `http://localhost:3000` with a MySQL database.
 
 ### Database
 
-| Variable              | Description                          | Default                                   |
-| --------------------- | ------------------------------------ | ----------------------------------------- |
-| `DATABASE_URL`        | MySQL connection string              | `mysql://mysql:mysql@db:3306/easy_lehrer` |
-| `MYSQL_ROOT_PASSWORD` | MySQL root password (docker-compose) | `rootpassword`                            |
-| `MYSQL_DATABASE`      | Database name                        | `easy_lehrer`                             |
-| `MYSQL_USER`          | Database user                        | `mysql`                                   |
-| `MYSQL_PASSWORD`      | Database password                    | `mysql`                                   |
+| Variable              | Description                          | Default                               |
+| --------------------- | ------------------------------------ | ------------------------------------- |
+| `DATABASE_URL`        | MySQL connection string              | `mysql://mysql:mysql@db:3306/currico` |
+| `MYSQL_ROOT_PASSWORD` | MySQL root password (docker-compose) | `rootpassword`                        |
+| `MYSQL_DATABASE`      | Database name                        | `currico`                             |
+| `MYSQL_USER`          | Database user                        | `mysql`                               |
+| `MYSQL_PASSWORD`      | Database password                    | `mysql`                               |
 
 **Note:** Use `db` as hostname when running with Docker Compose, or `localhost` when running MySQL separately.
 
@@ -59,11 +59,11 @@ To test S3 integration locally, set `STORAGE_PROVIDER=s3` and configure the S3 v
 
 Emails are logged to console in development. To test actual email sending:
 
-| Variable         | Description                                       |
-| ---------------- | ------------------------------------------------- |
-| `RESEND_API_KEY` | Resend API key (get free tier at resend.com)      |
-| `EMAIL_FROM`     | Sender address (default: `noreply@easylehrer.ch`) |
-| `ADMIN_EMAIL`    | Admin notification email                          |
+| Variable         | Description                                    |
+| ---------------- | ---------------------------------------------- |
+| `RESEND_API_KEY` | Resend API key (get free tier at resend.com)   |
+| `EMAIL_FROM`     | Sender address (default: `noreply@currico.ch`) |
+| `ADMIN_EMAIL`    | Admin notification email                       |
 
 ### Stripe (Test Mode)
 
@@ -120,9 +120,9 @@ The bare minimum to get started:
 
 ```env
 # Database (works with docker-compose defaults)
-DATABASE_URL="mysql://mysql:mysql@db:3306/easy_lehrer"
+DATABASE_URL="mysql://mysql:mysql@db:3306/currico"
 MYSQL_ROOT_PASSWORD=rootpassword
-MYSQL_DATABASE=easy_lehrer
+MYSQL_DATABASE=currico
 MYSQL_USER=mysql
 MYSQL_PASSWORD=mysql
 
@@ -142,9 +142,9 @@ STORAGE_PROVIDER="local"
 # ===========================================
 # Database Configuration
 # ===========================================
-DATABASE_URL="mysql://mysql:mysql@db:3306/easy_lehrer"
+DATABASE_URL="mysql://mysql:mysql@db:3306/currico"
 MYSQL_ROOT_PASSWORD=rootpassword
-MYSQL_DATABASE=easy_lehrer
+MYSQL_DATABASE=currico
 MYSQL_USER=mysql
 MYSQL_PASSWORD=mysql
 
@@ -169,8 +169,8 @@ STORAGE_PROVIDER="local"
 # Email (optional - logs to console if not set)
 # ===========================================
 RESEND_API_KEY=""
-EMAIL_FROM="noreply@easylehrer.ch"
-ADMIN_EMAIL="admin@easylehrer.ch"
+EMAIL_FROM="noreply@currico.ch"
+ADMIN_EMAIL="admin@currico.ch"
 
 # ===========================================
 # Stripe Test Mode (optional)
@@ -201,13 +201,13 @@ EDUID_USE_TEST="true"
 If using Docker Compose, ensure you're using `db` as the hostname:
 
 ```env
-DATABASE_URL="mysql://mysql:mysql@db:3306/easy_lehrer"
+DATABASE_URL="mysql://mysql:mysql@db:3306/currico"
 ```
 
 If running MySQL locally (not in Docker):
 
 ```env
-DATABASE_URL="mysql://mysql:mysql@localhost:3306/easy_lehrer"
+DATABASE_URL="mysql://mysql:mysql@localhost:3306/currico"
 ```
 
 ### Prisma client not generated
@@ -264,8 +264,8 @@ To test the S3 integration without Infomaniak:
    S3_REGION="us-east-1"
    S3_ACCESS_KEY_ID="minioadmin"
    S3_SECRET_ACCESS_KEY="minioadmin"
-   S3_PUBLIC_BUCKET="easylehrer-public"
-   S3_PRIVATE_BUCKET="easylehrer-private"
-   S3_PUBLIC_BUCKET_URL="http://localhost:9000/easylehrer-public"
-   NEXT_PUBLIC_STORAGE_PUBLIC_URL="http://localhost:9000/easylehrer-public"
+   S3_PUBLIC_BUCKET="currico-public"
+   S3_PRIVATE_BUCKET="currico-private"
+   S3_PUBLIC_BUCKET_URL="http://localhost:9000/currico-public"
+   NEXT_PUBLIC_STORAGE_PUBLIC_URL="http://localhost:9000/currico-public"
    ```

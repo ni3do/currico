@@ -1,4 +1,4 @@
-// Prisma schema for Easy Lehrer - Swiss Teaching Materials Marketplace
+// Prisma schema for Currico - Swiss Teaching Materials Marketplace
 // Database: MySQL 8.0
 
 generator client {

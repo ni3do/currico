@@ -216,80 +216,80 @@ export const FACHBEREICHE: Fachbereich[] = [
     ],
   },
   {
-    code: "FS",
-    name: "Fremdsprachen",
-    shortName: "FS",
+    code: "FR",
+    name: "Französisch",
+    shortName: "FR",
     color: "#1e66f5", // Blue - Catppuccin Blue
-    colorClass: "subject-fremdsprachen",
+    colorClass: "subject-franzoesisch",
     icon: "globe",
     cycles: [2, 3],
     kompetenzbereiche: [
       {
-        code: "FS.1",
+        code: "FR.1",
         name: "Hören",
-        handlungsaspekte: ["Verstehen von gesprochener Sprache (Englisch/Französisch)"],
+        handlungsaspekte: ["Verstehen von gesprochener Sprache"],
         kompetenzen: [
           {
-            code: "FS.1.A",
+            code: "FR.1.A",
             name: "Monologische Texte verstehen",
             handlungsaspekte: ["Hörtexte verstehen"],
           },
           {
-            code: "FS.1.B",
+            code: "FR.1.B",
             name: "Dialogische Texte verstehen",
             handlungsaspekte: ["Gespräche verstehen"],
           },
         ],
       },
       {
-        code: "FS.2",
+        code: "FR.2",
         name: "Lesen",
         handlungsaspekte: ["Verstehen von geschriebener Sprache"],
         kompetenzen: [
           {
-            code: "FS.2.A",
+            code: "FR.2.A",
             name: "Texte lesen und verstehen",
             handlungsaspekte: ["Lesetexte verstehen", "Informationen entnehmen"],
           },
-          { code: "FS.2.B", name: "Lesestrategien", handlungsaspekte: ["Strategien anwenden"] },
+          { code: "FR.2.B", name: "Lesestrategien", handlungsaspekte: ["Strategien anwenden"] },
         ],
       },
       {
-        code: "FS.3",
+        code: "FR.3",
         name: "Sprechen",
         handlungsaspekte: ["Zusammenhängendes Sprechen", "An Gesprächen teilnehmen"],
         kompetenzen: [
           {
-            code: "FS.3.A",
+            code: "FR.3.A",
             name: "Zusammenhängendes Sprechen",
             handlungsaspekte: ["Monologisch sprechen", "Präsentieren"],
           },
           {
-            code: "FS.3.B",
+            code: "FR.3.B",
             name: "An Gesprächen teilnehmen",
             handlungsaspekte: ["Dialogisch sprechen", "Interagieren"],
           },
         ],
       },
       {
-        code: "FS.4",
+        code: "FR.4",
         name: "Schreiben",
         handlungsaspekte: ["Texte schreiben und gestalten"],
         kompetenzen: [
           {
-            code: "FS.4.A",
+            code: "FR.4.A",
             name: "Texte schreiben",
             handlungsaspekte: ["Schriftliche Texte verfassen"],
           },
           {
-            code: "FS.4.B",
+            code: "FR.4.B",
             name: "Texte gestalten",
             handlungsaspekte: ["Texte überarbeiten", "Schreibstrategien"],
           },
         ],
       },
       {
-        code: "FS.5",
+        code: "FR.5",
         name: "Sprache(n) im Fokus",
         handlungsaspekte: [
           "Bewusstheit für Sprache",
@@ -300,40 +300,166 @@ export const FACHBEREICHE: Fachbereich[] = [
         ],
         kompetenzen: [
           {
-            code: "FS.5.A",
+            code: "FR.5.A",
             name: "Bewusstheit für Sprache",
             handlungsaspekte: ["Sprachvergleich", "Mehrsprachigkeit"],
           },
           {
-            code: "FS.5.B",
+            code: "FR.5.B",
             name: "Wortschatz",
             handlungsaspekte: ["Wortschatz aufbauen", "Wortschatz anwenden"],
           },
-          { code: "FS.5.C", name: "Grammatik", handlungsaspekte: ["Grammatische Strukturen"] },
+          { code: "FR.5.C", name: "Grammatik", handlungsaspekte: ["Grammatische Strukturen"] },
           {
-            code: "FS.5.D",
+            code: "FR.5.D",
             name: "Aussprache",
             handlungsaspekte: ["Aussprache üben", "Intonation"],
           },
           {
-            code: "FS.5.E",
+            code: "FR.5.E",
             name: "Lernstrategien",
             handlungsaspekte: ["Lernstrategien entwickeln", "Selbstständig lernen"],
           },
         ],
       },
       {
-        code: "FS.6",
+        code: "FR.6",
         name: "Kulturen im Fokus",
         handlungsaspekte: ["Kennen & Verstehen", "Begegnung & Umgang"],
         kompetenzen: [
           {
-            code: "FS.6.A",
+            code: "FR.6.A",
             name: "Kennen & Verstehen",
             handlungsaspekte: ["Kulturelle Eigenheiten kennen"],
           },
           {
-            code: "FS.6.B",
+            code: "FR.6.B",
+            name: "Begegnung & Umgang",
+            handlungsaspekte: ["Interkulturelle Kompetenz", "Respektvoller Umgang"],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    code: "EN",
+    name: "Englisch",
+    shortName: "EN",
+    color: "#7287fd", // Lavender - Catppuccin Lavender
+    colorClass: "subject-englisch",
+    icon: "globe",
+    cycles: [2, 3],
+    kompetenzbereiche: [
+      {
+        code: "EN.1",
+        name: "Hören",
+        handlungsaspekte: ["Verstehen von gesprochener Sprache"],
+        kompetenzen: [
+          {
+            code: "EN.1.A",
+            name: "Monologische Texte verstehen",
+            handlungsaspekte: ["Hörtexte verstehen"],
+          },
+          {
+            code: "EN.1.B",
+            name: "Dialogische Texte verstehen",
+            handlungsaspekte: ["Gespräche verstehen"],
+          },
+        ],
+      },
+      {
+        code: "EN.2",
+        name: "Lesen",
+        handlungsaspekte: ["Verstehen von geschriebener Sprache"],
+        kompetenzen: [
+          {
+            code: "EN.2.A",
+            name: "Texte lesen und verstehen",
+            handlungsaspekte: ["Lesetexte verstehen", "Informationen entnehmen"],
+          },
+          { code: "EN.2.B", name: "Lesestrategien", handlungsaspekte: ["Strategien anwenden"] },
+        ],
+      },
+      {
+        code: "EN.3",
+        name: "Sprechen",
+        handlungsaspekte: ["Zusammenhängendes Sprechen", "An Gesprächen teilnehmen"],
+        kompetenzen: [
+          {
+            code: "EN.3.A",
+            name: "Zusammenhängendes Sprechen",
+            handlungsaspekte: ["Monologisch sprechen", "Präsentieren"],
+          },
+          {
+            code: "EN.3.B",
+            name: "An Gesprächen teilnehmen",
+            handlungsaspekte: ["Dialogisch sprechen", "Interagieren"],
+          },
+        ],
+      },
+      {
+        code: "EN.4",
+        name: "Schreiben",
+        handlungsaspekte: ["Texte schreiben und gestalten"],
+        kompetenzen: [
+          {
+            code: "EN.4.A",
+            name: "Texte schreiben",
+            handlungsaspekte: ["Schriftliche Texte verfassen"],
+          },
+          {
+            code: "EN.4.B",
+            name: "Texte gestalten",
+            handlungsaspekte: ["Texte überarbeiten", "Schreibstrategien"],
+          },
+        ],
+      },
+      {
+        code: "EN.5",
+        name: "Sprache(n) im Fokus",
+        handlungsaspekte: [
+          "Bewusstheit für Sprache",
+          "Wortschatz",
+          "Grammatik",
+          "Aussprache",
+          "Lernstrategien",
+        ],
+        kompetenzen: [
+          {
+            code: "EN.5.A",
+            name: "Bewusstheit für Sprache",
+            handlungsaspekte: ["Sprachvergleich", "Mehrsprachigkeit"],
+          },
+          {
+            code: "EN.5.B",
+            name: "Wortschatz",
+            handlungsaspekte: ["Wortschatz aufbauen", "Wortschatz anwenden"],
+          },
+          { code: "EN.5.C", name: "Grammatik", handlungsaspekte: ["Grammatische Strukturen"] },
+          {
+            code: "EN.5.D",
+            name: "Aussprache",
+            handlungsaspekte: ["Aussprache üben", "Intonation"],
+          },
+          {
+            code: "EN.5.E",
+            name: "Lernstrategien",
+            handlungsaspekte: ["Lernstrategien entwickeln", "Selbstständig lernen"],
+          },
+        ],
+      },
+      {
+        code: "EN.6",
+        name: "Kulturen im Fokus",
+        handlungsaspekte: ["Kennen & Verstehen", "Begegnung & Umgang"],
+        kompetenzen: [
+          {
+            code: "EN.6.A",
+            name: "Kennen & Verstehen",
+            handlungsaspekte: ["Kulturelle Eigenheiten kennen"],
+          },
+          {
+            code: "EN.6.B",
             name: "Begegnung & Umgang",
             handlungsaspekte: ["Interkulturelle Kompetenz", "Respektvoller Umgang"],
           },

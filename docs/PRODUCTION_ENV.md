@@ -1,6 +1,6 @@
 # Production Environment Variables
 
-This document lists all environment variables required for production deployment of Easy-Lehrer.
+This document lists all environment variables required for production deployment of Currico.
 
 ## Required Variables
 
@@ -8,40 +8,40 @@ These variables **must** be set for the application to function in production.
 
 ### Database
 
-| Variable       | Description             | Example                                   |
-| -------------- | ----------------------- | ----------------------------------------- |
-| `DATABASE_URL` | MySQL connection string | `mysql://user:pass@host:3306/easy_lehrer` |
+| Variable       | Description             | Example                               |
+| -------------- | ----------------------- | ------------------------------------- |
+| `DATABASE_URL` | MySQL connection string | `mysql://user:pass@host:3306/currico` |
 
 ### Authentication
 
-| Variable      | Description                                                  | Example                 |
-| ------------- | ------------------------------------------------------------ | ----------------------- |
-| `AUTH_SECRET` | NextAuth secret key. Generate with `openssl rand -base64 32` | `abc123...`             |
-| `AUTH_URL`    | Public URL of your application                               | `https://easylehrer.ch` |
+| Variable      | Description                                                  | Example              |
+| ------------- | ------------------------------------------------------------ | -------------------- |
+| `AUTH_SECRET` | NextAuth secret key. Generate with `openssl rand -base64 32` | `abc123...`          |
+| `AUTH_URL`    | Public URL of your application                               | `https://currico.ch` |
 
 ### Storage (S3/Infomaniak Object Storage)
 
 For production, set `STORAGE_PROVIDER=s3` and configure all S3 variables.
 
-| Variable                         | Description                                      | Example                                              |
-| -------------------------------- | ------------------------------------------------ | ---------------------------------------------------- |
-| `STORAGE_PROVIDER`               | Storage backend: `local` or `s3`                 | `s3`                                                 |
-| `S3_ENDPOINT`                    | S3-compatible endpoint URL                       | `https://s3.pub1.infomaniak.cloud`                   |
-| `S3_REGION`                      | S3 region                                        | `pub1`                                               |
-| `S3_ACCESS_KEY_ID`               | Access key from Infomaniak console               | `your-access-key`                                    |
-| `S3_SECRET_ACCESS_KEY`           | Secret key from Infomaniak console               | `your-secret-key`                                    |
-| `S3_PUBLIC_BUCKET`               | Bucket name for public files (previews, avatars) | `easylehrer-public`                                  |
-| `S3_PRIVATE_BUCKET`              | Bucket name for private files (resources)        | `easylehrer-private`                                 |
-| `S3_PUBLIC_BUCKET_URL`           | Public CDN URL for the public bucket             | `https://easylehrer-public.s3.pub1.infomaniak.cloud` |
-| `NEXT_PUBLIC_STORAGE_PUBLIC_URL` | Same as S3_PUBLIC_BUCKET_URL (client-side)       | `https://easylehrer-public.s3.pub1.infomaniak.cloud` |
+| Variable                         | Description                                      | Example                                           |
+| -------------------------------- | ------------------------------------------------ | ------------------------------------------------- |
+| `STORAGE_PROVIDER`               | Storage backend: `local` or `s3`                 | `s3`                                              |
+| `S3_ENDPOINT`                    | S3-compatible endpoint URL                       | `https://s3.pub1.infomaniak.cloud`                |
+| `S3_REGION`                      | S3 region                                        | `pub1`                                            |
+| `S3_ACCESS_KEY_ID`               | Access key from Infomaniak console               | `your-access-key`                                 |
+| `S3_SECRET_ACCESS_KEY`           | Secret key from Infomaniak console               | `your-secret-key`                                 |
+| `S3_PUBLIC_BUCKET`               | Bucket name for public files (previews, avatars) | `currico-public`                                  |
+| `S3_PRIVATE_BUCKET`              | Bucket name for private files (resources)        | `currico-private`                                 |
+| `S3_PUBLIC_BUCKET_URL`           | Public CDN URL for the public bucket             | `https://currico-public.s3.pub1.infomaniak.cloud` |
+| `NEXT_PUBLIC_STORAGE_PUBLIC_URL` | Same as S3_PUBLIC_BUCKET_URL (client-side)       | `https://currico-public.s3.pub1.infomaniak.cloud` |
 
 ### Email (Resend)
 
-| Variable         | Description                   | Example                 |
-| ---------------- | ----------------------------- | ----------------------- |
-| `RESEND_API_KEY` | API key from Resend dashboard | `re_abc123...`          |
-| `EMAIL_FROM`     | Sender email address          | `noreply@easylehrer.ch` |
-| `ADMIN_EMAIL`    | Admin notification email      | `admin@easylehrer.ch`   |
+| Variable         | Description                   | Example              |
+| ---------------- | ----------------------------- | -------------------- |
+| `RESEND_API_KEY` | API key from Resend dashboard | `re_abc123...`       |
+| `EMAIL_FROM`     | Sender email address          | `noreply@currico.ch` |
+| `ADMIN_EMAIL`    | Admin notification email      | `admin@currico.ch`   |
 
 ### Stripe Payments
 
@@ -53,9 +53,9 @@ For production, set `STORAGE_PROVIDER=s3` and configure all S3 variables.
 
 ### Application URL
 
-| Variable              | Description                            | Example                 |
-| --------------------- | -------------------------------------- | ----------------------- |
-| `NEXT_PUBLIC_APP_URL` | Public application URL (for redirects) | `https://easylehrer.ch` |
+| Variable              | Description                            | Example              |
+| --------------------- | -------------------------------------- | -------------------- |
+| `NEXT_PUBLIC_APP_URL` | Public application URL (for redirects) | `https://currico.ch` |
 
 ---
 
@@ -102,12 +102,12 @@ These enable additional features but are not required.
 
 Create two buckets:
 
-- `easylehrer-public` - For preview images and avatars
-- `easylehrer-private` - For resource files (PDFs, documents)
+- `currico-public` - For preview images and avatars
+- `currico-private` - For resource files (PDFs, documents)
 
 ### 3. Configure Public Bucket
 
-Set a bucket policy on `easylehrer-public` to allow public read access:
+Set a bucket policy on `currico-public` to allow public read access:
 
 ```json
 {
@@ -118,7 +118,7 @@ Set a bucket policy on `easylehrer-public` to allow public read access:
       "Effect": "Allow",
       "Principal": "*",
       "Action": "s3:GetObject",
-      "Resource": "arn:aws:s3:::easylehrer-public/*"
+      "Resource": "arn:aws:s3:::currico-public/*"
     }
   ]
 }
@@ -138,10 +138,10 @@ S3_ENDPOINT=https://s3.pub1.infomaniak.cloud
 S3_REGION=pub1
 S3_ACCESS_KEY_ID=your-access-key-id
 S3_SECRET_ACCESS_KEY=your-secret-access-key
-S3_PUBLIC_BUCKET=easylehrer-public
-S3_PRIVATE_BUCKET=easylehrer-private
-S3_PUBLIC_BUCKET_URL=https://easylehrer-public.s3.pub1.infomaniak.cloud
-NEXT_PUBLIC_STORAGE_PUBLIC_URL=https://easylehrer-public.s3.pub1.infomaniak.cloud
+S3_PUBLIC_BUCKET=currico-public
+S3_PRIVATE_BUCKET=currico-private
+S3_PUBLIC_BUCKET_URL=https://currico-public.s3.pub1.infomaniak.cloud
+NEXT_PUBLIC_STORAGE_PUBLIC_URL=https://currico-public.s3.pub1.infomaniak.cloud
 ```
 
 ---
@@ -150,11 +150,11 @@ NEXT_PUBLIC_STORAGE_PUBLIC_URL=https://easylehrer-public.s3.pub1.infomaniak.clou
 
 ```env
 # Database
-DATABASE_URL="mysql://produser:securepassword@db.example.com:3306/easy_lehrer"
+DATABASE_URL="mysql://produser:securepassword@db.example.com:3306/currico"
 
 # Authentication
 AUTH_SECRET="generate-with-openssl-rand-base64-32"
-AUTH_URL="https://easylehrer.ch"
+AUTH_URL="https://currico.ch"
 
 # Storage
 STORAGE_PROVIDER="s3"
@@ -162,15 +162,15 @@ S3_ENDPOINT="https://s3.pub1.infomaniak.cloud"
 S3_REGION="pub1"
 S3_ACCESS_KEY_ID="your-access-key"
 S3_SECRET_ACCESS_KEY="your-secret-key"
-S3_PUBLIC_BUCKET="easylehrer-public"
-S3_PRIVATE_BUCKET="easylehrer-private"
-S3_PUBLIC_BUCKET_URL="https://easylehrer-public.s3.pub1.infomaniak.cloud"
-NEXT_PUBLIC_STORAGE_PUBLIC_URL="https://easylehrer-public.s3.pub1.infomaniak.cloud"
+S3_PUBLIC_BUCKET="currico-public"
+S3_PRIVATE_BUCKET="currico-private"
+S3_PUBLIC_BUCKET_URL="https://currico-public.s3.pub1.infomaniak.cloud"
+NEXT_PUBLIC_STORAGE_PUBLIC_URL="https://currico-public.s3.pub1.infomaniak.cloud"
 
 # Email
 RESEND_API_KEY="re_..."
-EMAIL_FROM="noreply@easylehrer.ch"
-ADMIN_EMAIL="admin@easylehrer.ch"
+EMAIL_FROM="noreply@currico.ch"
+ADMIN_EMAIL="admin@currico.ch"
 
 # Stripe
 STRIPE_SECRET_KEY="sk_live_..."
@@ -178,7 +178,7 @@ STRIPE_WEBHOOK_SECRET="whsec_..."
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_live_..."
 
 # App URL
-NEXT_PUBLIC_APP_URL="https://easylehrer.ch"
+NEXT_PUBLIC_APP_URL="https://currico.ch"
 
 # OAuth (optional)
 GOOGLE_CLIENT_ID=""

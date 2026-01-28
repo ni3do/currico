@@ -9,8 +9,8 @@
   },
   "common": {
     "brand": {
-      "logoText": "EL",
-      "name": "EasyLehrer",
+      "logoText": "C",
+      "name": "Currico",
       "tagline": "Swiss Education Platform"
     },
     "navigation": {
@@ -25,7 +25,7 @@
       "account": "My Account"
     },
     "footer": {
-      "copyright": "\u00a9 2026 EasyLehrer",
+      "copyright": "\u00a9 2026 Currico",
       "links": {
         "help": "Help",
         "imprint": "Imprint",
@@ -137,7 +137,7 @@
       }
     },
     "features": {
-      "title": "Why EasyLehrer?",
+      "title": "Why Currico?",
       "description": "A platform that meets the standards of Swiss educational institutions.",
       "feature1": {
         "title": "Quality Checked",
@@ -170,7 +170,7 @@
       "title": "What Teachers Say",
       "description": "Trusted by educators across Switzerland",
       "testimonial1": {
-        "quote": "EasyLehrer has transformed my lesson planning. I find quality materials in minutes instead of hours. The Lehrplan 21 filtering is incredibly helpful.",
+        "quote": "Currico has transformed my lesson planning. I find quality materials in minutes instead of hours. The Lehrplan 21 filtering is incredibly helpful.",
         "name": "Sarah M.",
         "role": "Primary Teacher",
         "location": "Zürich"
@@ -221,7 +221,7 @@
   },
   "registerPage": {
     "title": "Create Account",
-    "subtitle": "Join the EasyLehrer Platform",
+    "subtitle": "Join the Currico Platform",
     "accountTypes": {
       "teacher": "Educator"
     },
@@ -507,11 +507,11 @@
     "mission": {
       "title": "Our Mission",
       "paragraph1": "Sunday afternoons at your desk? Nights spent formatting worksheets? We believe: Great teaching doesn't mean sacrificing yourself.",
-      "paragraph2": "The demands on Swiss educators are constantly increasing. Individualization, digitalization, and administrative hurdles require time – time that's often missing in everyday life. This is exactly where EasyLehrer comes in.",
+      "paragraph2": "The demands on Swiss educators are constantly increasing. Individualization, digitalization, and administrative hurdles require time – time that's often missing in everyday life. This is exactly where Currico comes in.",
       "paragraph3": "We see ourselves as your digital assistant. We bridge the gap between high didactic standards and limited preparation time. Our goal is to have your back, so you can invest your energy where it's needed most: with your students."
     },
     "values": {
-      "title": "Why EasyLehrer?",
+      "title": "Why Currico?",
       "value1": {
         "title": "Time Savings, Not Stress",
         "description": "Our materials are ready to use immediately. Find, print, teach. Your evening belongs to you again."
@@ -527,7 +527,7 @@
     },
     "origin": {
       "title": "From Practice, For Practice",
-      "paragraph1": "EasyLehrer is not an anonymous tech corporation. The platform emerged from a genuine need: colleagues were looking for a central hub for modern Swiss teaching materials, without having to wade through confusing databases.",
+      "paragraph1": "Currico is not an anonymous tech corporation. The platform emerged from a genuine need: colleagues were looking for a central hub for modern Swiss teaching materials, without having to wade through confusing databases.",
       "paragraph2": "What started as a small exchange has become a growing community. We connect creativity with didactics and ensure that good work is fairly rewarded.",
       "imageAlt": "Team collaborating together"
     },
@@ -544,7 +544,7 @@
         "role": "Co-Founder & Education",
         "bio": "As an experienced educator, I understand firsthand the daily challenges teachers face. I ensure that everything we build is practical, pedagogically sound, and truly aligned with Swiss classroom needs."
       },
-      "story": "We started EasyLehrer because we saw how much time teachers spend on preparation — often at the expense of their own wellbeing. By combining tech and teaching expertise, we're building a platform that truly works for Swiss educators.",
+      "story": "We started Currico because we saw how much time teachers spend on preparation — often at the expense of their own wellbeing. By combining tech and teaching expertise, we're building a platform that truly works for Swiss educators.",
       "highlight": "Have questions or ideas? We'd love to hear from you."
     },
     "cta": {
@@ -579,7 +579,7 @@
       },
       "messageLabel": "Your Message",
       "messagePlaceholder": "Tell us what's on your mind...",
-      "consentText": "I agree that EasyLehrer may store and use the information I've provided to respond to my inquiry. I can withdraw my consent at any time. Read our Privacy Policy for details.",
+      "consentText": "I agree that Currico may store and use the information I've provided to respond to my inquiry. I can withdraw my consent at any time. Read our Privacy Policy for details.",
       "submitButton": "Send Message",
       "submitting": "Sending...",
       "successTitle": "Message Sent!",
@@ -599,28 +599,28 @@
     },
     "faq": {
       "title": "Looking for Quick Answers?",
-      "description": "Check our Help Center for answers to common questions about accounts, resources, and selling on EasyLehrer."
+      "description": "Check our Help Center for answers to common questions about accounts, resources, and selling on Currico."
     }
   },
   "metadata": {
-    "title": "EasyLehrer - Teaching Materials for Educators",
+    "title": "Currico - Teaching Materials for Educators",
     "description": "Discover high-quality teaching materials for Swiss educators"
   },
   "sellerTerms": {
     "pageTitle": "Seller Terms & Conditions",
-    "pageSubtitle": "Please read these terms carefully before becoming a seller on EasyLehrer",
+    "pageSubtitle": "Please read these terms carefully before becoming a seller on Currico",
     "lastUpdated": "Last updated: January 2026",
     "sections": {
       "overview": {
         "title": "1. Overview",
-        "content": "These Seller Terms govern your use of EasyLehrer as a seller of teaching materials. By accepting these terms and completing the seller onboarding process, you agree to be bound by these conditions."
+        "content": "These Seller Terms govern your use of Currico as a seller of teaching materials. By accepting these terms and completing the seller onboarding process, you agree to be bound by these conditions."
       },
       "platformFee": {
         "title": "2. Platform Fee",
-        "content": "EasyLehrer charges a platform fee of 30% on all sales. This means:",
+        "content": "Currico charges a platform fee of 30% on all sales. This means:",
         "breakdown": {
           "seller": "You receive 70% of each sale",
-          "platform": "EasyLehrer retains 30% as a platform fee",
+          "platform": "Currico retains 30% as a platform fee",
           "example": "Example: For a CHF 10.00 resource, you receive CHF 7.00"
         },
         "note": "Payment processing fees (Stripe fees) are included in the platform fee and are not charged separately to you."
@@ -671,7 +671,7 @@
       },
       "termination": {
         "title": "7. Account Termination",
-        "content": "EasyLehrer reserves the right to:",
+        "content": "Currico reserves the right to:",
         "rights": {
           "remove": "Remove content that violates these terms",
           "suspend": "Suspend or terminate seller accounts for policy violations",
@@ -685,7 +685,7 @@
     },
     "acceptance": {
       "checkbox": "I have read and accept the Seller Terms & Conditions",
-      "feeAcknowledgment": "I understand that EasyLehrer charges a 30% platform fee on all sales"
+      "feeAcknowledgment": "I understand that Currico charges a 30% platform fee on all sales"
     }
   },
   "curriculum": {
@@ -792,7 +792,7 @@
       "subtitle": "Join hundreds of Swiss teachers who earn extra income by sharing their carefully crafted teaching materials with colleagues."
     },
     "benefits": {
-      "title": "Why Sell on EasyLehrer?",
+      "title": "Why Sell on Currico?",
       "earn": {
         "title": "Earn 70% of Every Sale",
         "description": "Set your own prices. We handle payments and deliver files - you keep 70% of each sale."
@@ -1045,7 +1045,7 @@
     "headline": "Share Your Teaching Materials",
     "subheadline": "You've created great worksheets, lesson plans, or exams? Share them with colleagues across Switzerland and earn money while helping other teachers save time.",
     "whySell": {
-      "title": "Why Sell on EasyLehrer?",
+      "title": "Why Sell on Currico?",
       "description": "Share your teaching materials with thousands of teachers across Switzerland and earn money."
     },
     "features": {
@@ -1084,11 +1084,11 @@
     "general": {
       "introduction": {
         "title": "1. Introduction",
-        "content": "Welcome to EasyLehrer. By accessing or using our platform, you agree to be bound by these Terms of Service. EasyLehrer is a Swiss platform connecting educators to buy, sell, and share high-quality teaching materials aligned with the Swiss curriculum (Lehrplan 21)."
+        "content": "Welcome to Currico. By accessing or using our platform, you agree to be bound by these Terms of Service. Currico is a Swiss platform connecting educators to buy, sell, and share high-quality teaching materials aligned with the Swiss curriculum (Lehrplan 21)."
       },
       "account": {
         "title": "2. Account Terms",
-        "content": "To use certain features of EasyLehrer, you must create an account. You agree to:",
+        "content": "To use certain features of Currico, you must create an account. You agree to:",
         "items": {
           "accurate": "Provide accurate and complete information during registration",
           "secure": "Keep your password secure and not share your account credentials",
@@ -1098,7 +1098,7 @@
       },
       "acceptableUse": {
         "title": "3. Acceptable Use",
-        "content": "You agree to use EasyLehrer only for lawful purposes and in accordance with these terms. You must not:",
+        "content": "You agree to use Currico only for lawful purposes and in accordance with these terms. You must not:",
         "items": {
           "lawful": "Use the platform for any illegal or unauthorized purpose",
           "noAbuse": "Harass, abuse, or harm other users",
@@ -1108,11 +1108,11 @@
       },
       "intellectualProperty": {
         "title": "4. Intellectual Property",
-        "content": "All content on EasyLehrer, including the platform design, logos, and original materials, is protected by copyright and other intellectual property laws. Teaching materials uploaded by sellers remain the property of their respective creators, who grant buyers a limited license to use them for educational purposes."
+        "content": "All content on Currico, including the platform design, logos, and original materials, is protected by copyright and other intellectual property laws. Teaching materials uploaded by sellers remain the property of their respective creators, who grant buyers a limited license to use them for educational purposes."
       },
       "purchases": {
         "title": "5. Purchases and Downloads",
-        "content": "When you purchase teaching materials on EasyLehrer:",
+        "content": "When you purchase teaching materials on Currico:",
         "items": {
           "personal": "You receive a personal, non-transferable license to use the materials",
           "noRedistribution": "You may not redistribute, resell, or share purchased materials",
@@ -1121,7 +1121,7 @@
       },
       "liability": {
         "title": "6. Limitation of Liability",
-        "content": "EasyLehrer provides the platform 'as is' and makes no warranties regarding the quality, accuracy, or fitness of teaching materials sold by third-party sellers. We are not liable for any indirect, incidental, or consequential damages arising from your use of the platform."
+        "content": "Currico provides the platform 'as is' and makes no warranties regarding the quality, accuracy, or fitness of teaching materials sold by third-party sellers. We are not liable for any indirect, incidental, or consequential damages arising from your use of the platform."
       },
       "governingLaw": {
         "title": "7. Governing Law",
@@ -1144,7 +1144,7 @@
   "cookiesPage": {
     "title": "Cookie Policy",
     "lastUpdated": "Last updated: January 2026",
-    "intro": "This Cookie Policy explains how EasyLehrer uses cookies and similar technologies when you visit our website. We are committed to transparency about the data we collect and how we use it.",
+    "intro": "This Cookie Policy explains how Currico uses cookies and similar technologies when you visit our website. We are committed to transparency about the data we collect and how we use it.",
     "sections": {
       "what": {
         "title": "1. What Are Cookies?",
@@ -1195,7 +1195,7 @@
     "contact": {
       "title": "Questions?",
       "description": "If you have any questions about our use of cookies, please contact us.",
-      "email": "privacy@easylehrer.ch"
+      "email": "privacy@currico.ch"
     },
     "links": {
       "privacy": "Privacy Policy",
@@ -1205,7 +1205,7 @@
   },
   "faqPage": {
     "title": "Frequently Asked Questions",
-    "subtitle": "Find answers to the most common questions about EasyLehrer",
+    "subtitle": "Find answers to the most common questions about Currico",
     "categories": {
       "general": "General",
       "buying": "Buying Materials",
@@ -1214,16 +1214,16 @@
     },
     "general": {
       "q1": {
-        "question": "What is EasyLehrer?",
-        "answer": "EasyLehrer is a Swiss platform where teachers can buy and sell high-quality teaching materials. All materials are specifically designed for the Swiss Lehrplan 21 curriculum and created by experienced teachers."
+        "question": "What is Currico?",
+        "answer": "Currico is a Swiss platform where teachers can buy and sell high-quality teaching materials. All materials are specifically designed for the Swiss Lehrplan 21 curriculum and created by experienced teachers."
       },
       "q2": {
-        "question": "Who is EasyLehrer for?",
-        "answer": "EasyLehrer is aimed at all teachers in Switzerland - from primary to secondary level. Our materials are available for Cycle 1, 2, and 3 and cover all subject areas of the Lehrplan 21."
+        "question": "Who is Currico for?",
+        "answer": "Currico is aimed at all teachers in Switzerland - from primary to secondary level. Our materials are available for Cycle 1, 2, and 3 and cover all subject areas of the Lehrplan 21."
       },
       "q3": {
-        "question": "Why EasyLehrer instead of other platforms?",
-        "answer": "EasyLehrer is 100% focused on Switzerland. All materials use Swiss spelling (ss instead of ß), are aligned with Lehrplan 21, and prices are in Swiss Francs. Additionally, our server is hosted in Switzerland."
+        "question": "Why Currico instead of other platforms?",
+        "answer": "Currico is 100% focused on Switzerland. All materials use Swiss spelling (ss instead of ß), are aligned with Lehrplan 21, and prices are in Swiss Francs. Additionally, our server is hosted in Switzerland."
       },
       "q4": {
         "question": "Do I need to create an account?",
@@ -1263,7 +1263,7 @@
       },
       "q2": {
         "question": "What is the commission rate?",
-        "answer": "EasyLehrer keeps 30% of the sale price as a platform fee. You receive 70% of each sale directly to your bank account."
+        "answer": "Currico keeps 30% of the sale price as a platform fee. You receive 70% of each sale directly to your bank account."
       },
       "q3": {
         "question": "When will I receive my payout?",
@@ -1293,7 +1293,7 @@
       },
       "q4": {
         "question": "Which browsers are supported?",
-        "answer": "EasyLehrer works with all modern browsers: Chrome, Firefox, Safari, and Edge. We recommend always using the latest version of your browser."
+        "answer": "Currico works with all modern browsers: Chrome, Firefox, Safari, and Edge. We recommend always using the latest version of your browser."
       }
     },
     "contact": {
@@ -1306,7 +1306,7 @@
     "title": "Legal Notice",
     "company": {
       "title": "Company",
-      "name": "EasyLehrer (Beta)",
+      "name": "Currico (Beta)",
       "address": {
         "street": "GmbH registration pending",
         "city": "Switzerland",
@@ -1315,8 +1315,8 @@
     },
     "contact": {
       "title": "Contact",
-      "email": "contact@easylehrer.ch",
-      "website": "www.easylehrer.ch"
+      "email": "contact@currico.ch",
+      "website": "www.currico.ch"
     },
     "legal": {
       "title": "Legal Information",
@@ -1331,7 +1331,7 @@
     },
     "responsible": {
       "title": "Responsible Person",
-      "name": "The EasyLehrer Team",
+      "name": "The Currico Team",
       "role": "Founders"
     },
     "disclaimer": {
@@ -1357,15 +1357,15 @@
   "privacyPage": {
     "title": "Privacy Policy",
     "lastUpdated": "Last updated: January 2026",
-    "intro": "Protecting your personal data is important to us. This privacy policy informs you about the collection, processing, and use of your personal data when using EasyLehrer. We comply with the Swiss Data Protection Act (nDSG) and the EU General Data Protection Regulation (GDPR).",
+    "intro": "Protecting your personal data is important to us. This privacy policy informs you about the collection, processing, and use of your personal data when using Currico. We comply with the Swiss Data Protection Act (nDSG) and the EU General Data Protection Regulation (GDPR).",
     "sections": {
       "responsible": {
         "title": "1. Responsible Party",
         "content": "Responsible for data processing on this website is:",
-        "company": "EasyLehrer (Beta)",
+        "company": "Currico (Beta)",
         "address": "GmbH registration pending, Switzerland",
         "emailLabel": "Email",
-        "email": "privacy@easylehrer.ch"
+        "email": "privacy@currico.ch"
       },
       "collection": {
         "title": "2. Data We Collect",
@@ -1449,7 +1449,7 @@
     "contact": {
       "title": "Questions About Privacy?",
       "description": "For questions or concerns about your data, contact us:",
-      "email": "privacy@easylehrer.ch"
+      "email": "privacy@currico.ch"
     },
     "links": {
       "impressum": "Legal Notice",

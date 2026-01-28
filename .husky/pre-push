@@ -10,14 +10,14 @@ echo "🐳 Testing Docker build..."
 echo "💡 Tip: Set SKIP_DOCKER_CHECK=1 to skip this check: SKIP_DOCKER_CHECK=1 git push"
 
 # Test if Docker build succeeds
-if docker build -t easy-lehrer-test . > /dev/null 2>&1; then
+if docker build -t currico-test . > /dev/null 2>&1; then
   echo "✅ Docker build successful"
   # Clean up test image
-  docker rmi easy-lehrer-test > /dev/null 2>&1
+  docker rmi currico-test > /dev/null 2>&1
   exit 0
 else
   echo "❌ Docker build failed. Please fix the Dockerfile before pushing."
-  echo "Run 'docker build -t easy-lehrer-test .' to see the error details."
+  echo "Run 'docker build -t currico-test .' to see the error details."
   echo "To skip this check: SKIP_DOCKER_CHECK=1 git push"
   exit 1
 fi

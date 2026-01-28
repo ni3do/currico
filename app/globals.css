@@ -56,6 +56,8 @@
   --color-subject-musik: var(--ctp-mauve);
   --color-subject-sport: #dc2626;
   --color-subject-fremdsprachen: var(--ctp-blue);
+  --color-subject-franzoesisch: var(--ctp-blue);
+  --color-subject-englisch: var(--ctp-lavender);
   --color-subject-medien: var(--ctp-sky);
   /* Zyklus 3 specific */
   --color-subject-nt: var(--ctp-teal);
@@ -83,7 +85,7 @@
 }
 
 /* =================================================================
-   EASYLEHRER DESIGN SYSTEM
+   CURRICO DESIGN SYSTEM
    Catppuccin Theme - Light (Latte) / Dark (Mocha)
    ================================================================= */
 
@@ -260,6 +262,8 @@
   --color-subject-musik: var(--ctp-mauve);
   --color-subject-sport: #ef4444;
   --color-subject-fremdsprachen: var(--ctp-blue);
+  --color-subject-franzoesisch: var(--ctp-blue);
+  --color-subject-englisch: var(--ctp-lavender);
   --color-subject-medien: var(--ctp-sky);
   /* Zyklus 3 specific */
   --color-subject-nt: var(--ctp-teal);
@@ -698,6 +702,16 @@ a {
 .pill-fremdsprachen {
   background-color: color-mix(in srgb, var(--color-subject-fremdsprachen) 20%, transparent);
   color: var(--color-subject-fremdsprachen);
+}
+
+.pill-franzoesisch {
+  background-color: color-mix(in srgb, var(--color-subject-franzoesisch) 20%, transparent);
+  color: var(--color-subject-franzoesisch);
+}
+
+.pill-englisch {
+  background-color: color-mix(in srgb, var(--color-subject-englisch) 20%, transparent);
+  color: var(--color-subject-englisch);
 }
 
 .pill-medien {

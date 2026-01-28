@@ -18,7 +18,7 @@ interface WelcomeGuideProps {
   ) => void;
 }
 
-const STORAGE_KEY = "easy-lehrer-welcome-dismissed";
+const STORAGE_KEY = "currico-welcome-dismissed";
 
 const FEATURES = [
   {

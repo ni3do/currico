@@ -5,7 +5,7 @@ import { Providers } from "./providers";
 import { DecorationBg } from "@/components/ui/DecorationBg";
 
 export const metadata: Metadata = {
-  title: "EasyLehrer - Unterrichtsmaterial für Lehrpersonen",
+  title: "Currico - Unterrichtsmaterial für Lehrpersonen",
   description: "Entdecken Sie hochwertige Unterrichtsmaterialien für Schweizer Lehrpersonen",
 };
 
