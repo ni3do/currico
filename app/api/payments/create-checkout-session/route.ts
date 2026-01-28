@@ -25,10 +25,7 @@ export async function POST(request: NextRequest) {
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json(
-      { error: "Invalid JSON body" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
   const parsed = createCheckoutSessionSchema.safeParse(body);
@@ -43,10 +40,7 @@ export async function POST(request: NextRequest) {
 
   // Require either authentication or guest email
   if (!userId && !guestEmail) {
-    return NextResponse.json(
-      { error: "Authentication or guest email required" },
-      { status: 401 }
-    );
+    return NextResponse.json({ error: "Authentication or guest email required" }, { status: 401 });
   }
 
   // Determine buyer email for Stripe customer
@@ -62,10 +56,7 @@ export async function POST(request: NextRequest) {
       select: { email: true },
     });
     if (!user) {
-      return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
     buyerEmail = user.email;
   }
@@ -94,10 +85,7 @@ export async function POST(request: NextRequest) {
 
     // Validate resource exists and is available for purchase
     if (!resource) {
-      return NextResponse.json(
-        { error: "Resource not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Resource not found" }, { status: 404 });
     }
 
     if (!resource.is_published || !resource.is_approved) {
@@ -109,10 +97,7 @@ export async function POST(request: NextRequest) {
 
     // Prevent purchasing own resources (only applies to authenticated users)
     if (userId && resource.seller_id === userId) {
-      return NextResponse.json(
-        { error: "Cannot purchase your own resource" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Cannot purchase your own resource" }, { status: 400 });
     }
 
     // Check if user/guest already owns this resource
@@ -125,10 +110,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (existingPurchase) {
-      return NextResponse.json(
-        { error: "You already own this resource" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "You already own this resource" }, { status: 400 });
     }
 
     // Validate seller can receive payments
@@ -164,10 +146,7 @@ export async function POST(request: NextRequest) {
       });
 
       if (!buyer) {
-        return NextResponse.json(
-          { error: "User not found" },
-          { status: 404 }
-        );
+        return NextResponse.json({ error: "User not found" }, { status: 404 });
       }
 
       stripeCustomerId = buyer.stripe_customer_id || "";
@@ -247,10 +226,6 @@ export async function POST(request: NextRequest) {
       metadata: stripeMetadata,
       success_url: successUrl,
       cancel_url: cancelUrl,
-      // TWINT and card payments for Swiss market
-      payment_method_types: ["card"],
-      // Note: TWINT can be added once enabled in Stripe dashboard
-      // payment_method_types: ["card", "twint"],
     });
 
     // Create pending transaction record
@@ -282,9 +257,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    return NextResponse.json(
-      { error: "Failed to create checkout session" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to create checkout session" }, { status: 500 });
   }
 }
