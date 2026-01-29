@@ -18,14 +18,14 @@ Set up comprehensive E2E testing infrastructure using Playwright for the Currico
 
 ### 1.1 Playwright Configuration
 
-- [ ] Create `playwright.config.ts` with base configuration
+- [x] Create `playwright.config.ts` with base configuration
   - Configure base URL for localhost:3000
   - Set up Chrome, Firefox, and Safari (webkit) projects
   - Configure screenshots on failure
   - Set reasonable timeouts (30s action, 60s navigation)
   - Enable trace collection on first retry
 
-- [ ] Create `e2e/` directory structure
+- [x] Create `e2e/` directory structure
   - `e2e/tests/` - test files
   - `e2e/fixtures/` - custom fixtures and page objects
   - `e2e/utils/` - helper functions
