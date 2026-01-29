@@ -1,92 +1,274 @@
 # Playwright E2E Testing Implementation Plan
 
-This plan sets up comprehensive end-to-end browser testing for Currico using Playwright.
+## Overview
 
-## Phase 1: Playwright Infrastructure Setup
+Set up comprehensive E2E testing infrastructure using Playwright for the Currico teaching materials marketplace. The goal is automated browser testing of critical user journeys across both locales (de/en).
 
-- [x] Install Playwright dependencies (`@playwright/test`) and add npm scripts (`test:e2e`, `test:e2e:ui`, `test:e2e:headed`)
-- [ ] Create `playwright.config.ts` with projects for chromium, firefox, webkit and webServer config for dev server
-- [ ] Create `e2e/fixtures/test-fixtures.ts` with authenticated user fixtures (buyer, seller, admin) using storageState
-- [ ] Create `e2e/helpers/test-utils.ts` with common helpers (login, waitForNavigation, assertToast, etc.)
-- [ ] Create `e2e/helpers/db-seed.ts` with test data seeding utilities (createTestUser, createTestResource, cleanup)
-- [x] Add `e2e/.auth/` directory to `.gitignore` for storing authentication state files
+## Current State
 
-## Phase 2: Authentication E2E Tests
+- Playwright is installed (`@playwright/test: ^1.58.0`)
+- npm scripts configured (`test:e2e`, `test:e2e:ui`, `test:e2e:headed`)
+- No `playwright.config.ts` exists
+- No test files or `e2e/` directory exists
+- No test fixtures or utilities exist
 
-- [ ] Create `e2e/auth/login.spec.ts` testing: successful login, invalid credentials, form validation, redirect after login
-- [ ] Create `e2e/auth/register.spec.ts` testing: successful registration, duplicate email, password validation, terms checkbox
-- [ ] Create `e2e/auth/logout.spec.ts` testing: logout from various pages, session cleared
-- [ ] Create `e2e/auth/protected-routes.spec.ts` testing: redirect to login for protected pages (/account, /admin, /upload)
+---
 
-## Phase 3: Public Pages E2E Tests
+## Phase 1: Infrastructure Setup
 
-- [ ] Create `e2e/public/homepage.spec.ts` testing: hero section renders, search works, navigation links, locale switcher
-- [ ] Create `e2e/public/resources-browse.spec.ts` testing: resource grid loads, pagination, subject filter chips work
-- [ ] Create `e2e/public/resource-detail.spec.ts` testing: resource info displays, seller info, price shown, buy button visible
-- [ ] Create `e2e/public/static-pages.spec.ts` testing: /about, /faq, /terms, /privacy, /contact pages load without errors
+### 1.1 Playwright Configuration
 
-## Phase 4: Buyer Flow E2E Tests
+- [ ] Create `playwright.config.ts` with base configuration
+  - Configure base URL for localhost:3000
+  - Set up Chrome, Firefox, and Safari (webkit) projects
+  - Configure screenshots on failure
+  - Set reasonable timeouts (30s action, 60s navigation)
+  - Enable trace collection on first retry
 
-- [ ] Create `e2e/buyer/account-dashboard.spec.ts` testing: dashboard loads, library section, settings accessible
-- [ ] Create `e2e/buyer/wishlist.spec.ts` testing: add to wishlist, remove from wishlist, wishlist page shows items
-- [ ] Create `e2e/buyer/collections.spec.ts` testing: create collection, add resource, remove resource, delete collection
-- [ ] Create `e2e/buyer/profile.spec.ts` testing: edit profile form, avatar upload preview, save changes
+- [ ] Create `e2e/` directory structure
+  - `e2e/tests/` - test files
+  - `e2e/fixtures/` - custom fixtures and page objects
+  - `e2e/utils/` - helper functions
 
-## Phase 5: Seller Flow E2E Tests
+### 1.2 Test Utilities & Fixtures
 
-- [ ] Create `e2e/seller/become-seller.spec.ts` testing: navigation to become-seller, terms acceptance flow
-- [ ] Create `e2e/seller/dashboard.spec.ts` testing: seller dashboard loads with stats, resources list, transaction history
-- [ ] Create `e2e/seller/upload-resource.spec.ts` testing: 4-step wizard navigation, form validation, draft saving
-- [ ] Create `e2e/seller/manage-resources.spec.ts` testing: edit resource, unpublish resource, view resource stats
+- [ ] Create auth fixture (`e2e/fixtures/auth.fixture.ts`)
+  - Implement `authenticatedPage` fixture for logged-in tests
+  - Implement `adminPage` fixture for admin tests
+  - Support session storage reuse for faster tests
 
-## Phase 6: Admin Flow E2E Tests
+- [ ] Create database fixture (`e2e/fixtures/db.fixture.ts`)
+  - Implement test user creation/cleanup
+  - Implement test resource creation/cleanup
+  - Use Prisma directly for setup/teardown
 
-- [ ] Create `e2e/admin/admin-access.spec.ts` testing: admin can access /admin, non-admin redirected
-- [ ] Create `e2e/admin/dashboard.spec.ts` testing: stats cards load, recent activity shown
-- [ ] Create `e2e/admin/user-management.spec.ts` testing: user list pagination, search users, view user detail
-- [ ] Create `e2e/admin/resource-moderation.spec.ts` testing: pending resources list, approve/reject workflow
-- [ ] Create `e2e/admin/reports.spec.ts` testing: reports list, status change flow (Open → In Review → Resolved)
+- [ ] Create locale fixture (`e2e/fixtures/locale.fixture.ts`)
+  - Support testing both de and en locales
+  - Parameterized tests for locale coverage
 
-## Phase 7: Checkout & Download E2E Tests
+---
 
-- [ ] Create `e2e/checkout/guest-checkout.spec.ts` testing: guest email form, redirect to Stripe (mocked)
-- [ ] Create `e2e/checkout/authenticated-checkout.spec.ts` testing: logged-in user checkout, Stripe redirect
-- [ ] Create `e2e/checkout/success-page.spec.ts` testing: success page displays purchase info, download link
-- [ ] Create `e2e/download/download-token.spec.ts` testing: download via token, expiry handling, download count
+## Phase 2: Core User Journey Tests
 
-## Phase 8: Internationalization E2E Tests
+### 2.1 Public Pages (No Auth Required)
 
-- [ ] Create `e2e/i18n/locale-switching.spec.ts` testing: switch de→en, URL updates, content changes
-- [ ] Create `e2e/i18n/locale-persistence.spec.ts` testing: locale preserved on navigation, correct default locale
+- [ ] Test homepage (`e2e/tests/homepage.spec.ts`)
+  - Verify page loads with correct title
+  - Verify navigation links work
+  - Verify locale switcher functions
+  - Test responsive design (mobile/desktop viewports)
 
-## Phase 9: Accessibility & Error Handling E2E Tests
+- [ ] Test resources catalog (`e2e/tests/catalog.spec.ts`)
+  - Verify resource grid loads
+  - Test LP21 filter sidebar interactions
+  - Test search functionality
+  - Test cycle/subject filters
+  - Verify resource cards display correctly
+  - Test pagination if resources exist
 
-- [ ] Create `e2e/accessibility/keyboard-navigation.spec.ts` testing: tab order, focus management, skip links
-- [ ] Create `e2e/accessibility/aria-labels.spec.ts` testing: buttons have labels, images have alt text
-- [ ] Create `e2e/errors/404-page.spec.ts` testing: 404 page displays for unknown routes
-- [ ] Create `e2e/errors/api-error-handling.spec.ts` testing: graceful error messages when API fails
+- [ ] Test resource detail page (`e2e/tests/resource-detail.spec.ts`)
+  - Verify resource info displays
+  - Test preview gallery if images exist
+  - Verify buy/download CTA visible
+  - Test related resources section
 
-## Phase 10: CI/CD Integration
+- [ ] Test static pages (`e2e/tests/static-pages.spec.ts`)
+  - About page loads
+  - FAQ page loads
+  - Terms page loads
+  - Privacy page loads
+  - Contact page loads
+  - Impressum page loads
 
-- [ ] Create `.github/workflows/e2e-tests.yml` running Playwright on PR and push to main
-- [ ] Configure Playwright to generate HTML report and upload as artifact
-- [ ] Add Playwright sharding for parallel test execution in CI
-- [ ] Create `e2e/global-setup.ts` for CI database seeding and test user creation
+### 2.2 Authentication Flow
+
+- [ ] Test login page (`e2e/tests/auth/login.spec.ts`)
+  - Form validation (empty fields, invalid email)
+  - Successful login with valid credentials
+  - Error message on invalid credentials
+  - OAuth buttons are visible and clickable
+  - Remember me checkbox functions
+  - Redirect to account page on success
+  - Admin redirect to admin page
+
+- [ ] Test registration page (`e2e/tests/auth/register.spec.ts`)
+  - Form validation (all required fields)
+  - Email format validation
+  - Password minimum length (8 chars)
+  - Password confirmation match
+  - Terms checkbox required
+  - Successful registration creates account
+  - Auto-login after registration
+
+- [ ] Test logout flow (`e2e/tests/auth/logout.spec.ts`)
+  - Logout button in account area
+  - Session cleared on logout
+  - Redirect to appropriate page
+
+### 2.3 Protected User Pages
+
+- [ ] Test account page (`e2e/tests/account.spec.ts`)
+  - Requires authentication (redirects if not logged in)
+  - Displays user info correctly
+  - Shows user's resources/purchases
+
+- [ ] Test profile pages (`e2e/tests/profile.spec.ts`)
+  - Public profile view works
+  - Profile edit requires auth
+  - Profile edit saves changes
+
+---
+
+## Phase 3: Seller & Admin Features
+
+### 3.1 Seller Features
+
+- [ ] Test seller onboarding (`e2e/tests/seller/onboarding.spec.ts`)
+  - Become seller page accessible
+  - Terms acceptance flow
+  - Redirect to Stripe Connect
+
+- [ ] Test seller dashboard (`e2e/tests/seller/dashboard.spec.ts`)
+  - Dashboard loads with metrics
+  - Resources list displays
+  - Transaction history visible
+
+- [ ] Test resource upload (`e2e/tests/seller/upload.spec.ts`)
+  - Multi-step wizard navigation
+  - Form validation at each step
+  - File upload interaction
+  - Curriculum tag selection
+
+### 3.2 Admin Features
+
+- [ ] Test admin dashboard (`e2e/tests/admin/dashboard.spec.ts`)
+  - Admin-only access (non-admin redirected)
+  - Stats cards display
+  - Navigation to sub-sections
+
+- [ ] Test admin users management (`e2e/tests/admin/users.spec.ts`)
+  - User list loads
+  - User search works
+  - User detail view
+
+- [ ] Test admin resources management (`e2e/tests/admin/resources.spec.ts`)
+  - Resource list with quality status
+  - Status change functionality
+  - Resource detail view
+
+- [ ] Test admin reports (`e2e/tests/admin/reports.spec.ts`)
+  - Report list loads
+  - Report status workflow
+
+---
+
+## Phase 4: E-commerce Flow
+
+### 4.1 Purchase Flow
+
+- [ ] Test checkout initiation (`e2e/tests/checkout/initiate.spec.ts`)
+  - Buy button creates checkout session
+  - Redirect to Stripe checkout (mock or verify redirect)
+  - Requires authentication
+
+- [ ] Test checkout success page (`e2e/tests/checkout/success.spec.ts`)
+  - Success page displays confirmation
+  - Download link available
+  - Order details shown
+
+- [ ] Test checkout cancel page (`e2e/tests/checkout/cancel.spec.ts`)
+  - Cancel page displays appropriately
+  - Link to return to resources
+
+### 4.2 Download Flow
+
+- [ ] Test download token flow (`e2e/tests/download.spec.ts`)
+  - Valid token allows download
+  - Invalid token shows error
+  - Expired token handled
+
+---
+
+## Phase 5: Cross-Cutting Concerns
+
+### 5.1 Internationalization
+
+- [ ] Test locale switching (`e2e/tests/i18n.spec.ts`)
+  - Switch from DE to EN
+  - Switch from EN to DE
+  - URL updates with locale
+  - Content updates to match locale
+  - Form labels change language
+
+### 5.2 Error Handling
+
+- [ ] Test error pages (`e2e/tests/errors.spec.ts`)
+  - 404 page for invalid routes
+  - Graceful handling of API errors
+  - Network error handling (offline simulation)
+
+### 5.3 Responsive Design
+
+- [ ] Test mobile viewports (`e2e/tests/responsive.spec.ts`)
+  - Mobile navigation (hamburger menu)
+  - Mobile filter panel toggle
+  - Touch-friendly interactions
+  - Viewport-specific layouts
+
+---
+
+## Phase 6: CI/CD Integration
+
+### 6.1 GitHub Actions
+
+- [ ] Create workflow file (`.github/workflows/e2e.yml`)
+  - Run on PR and push to main
+  - Install dependencies with caching
+  - Start Next.js dev server
+  - Run Playwright tests
+  - Upload test artifacts (screenshots, traces)
+  - Report test results
+
+- [ ] Add test database configuration
+  - Use separate test database
+  - Run migrations before tests
+  - Seed required test data
+
+---
+
+## Test Data Requirements
+
+For comprehensive E2E testing, the following test data must exist or be created:
+
+1. **Test Users**
+   - Regular user (teacher account)
+   - Seller user (with Stripe Connect)
+   - Admin user
+
+2. **Test Resources**
+   - At least 5 resources for catalog testing
+   - Various subjects and cycles
+   - Different price points (free and paid)
+
+3. **Test Transactions**
+   - Sample purchase records for seller dashboard
 
 ---
 
 ## Acceptance Criteria
 
-Each test file must:
-1. Pass in CI with chromium, firefox, and webkit
-2. Use page objects or fixtures for reusability
-3. Not depend on external services (Stripe, OAuth providers) - use mocks
-4. Clean up test data after each test suite
-5. Have descriptive test names explaining the expected behavior
+Each task is considered complete when:
 
-## Test Data Strategy
+1. **Config tasks**: File exists, tests can run with `npm run test:e2e`
+2. **Fixture tasks**: Fixture works in at least one test
+3. **Test tasks**: Test passes locally and covers stated functionality
+4. **CI tasks**: Pipeline runs and reports results on PRs
 
-- Use Prisma to seed minimal test data before each test suite
-- Create isolated test users with unique emails (e.g., `test-{timestamp}@example.com`)
-- Reset database state between test suites using transactions or truncation
-- Store authentication state in `e2e/.auth/` for session reuse across tests
+---
+
+## Notes
+
+- OAuth providers (Google, Microsoft, edu-ID) cannot be E2E tested directly; test that buttons render and initiate flow
+- Stripe checkout redirect can be verified but actual payment flow requires mock mode
+- File uploads may need mock or small test files
+- All tests should work with both German and English locales where applicable
