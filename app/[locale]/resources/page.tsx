@@ -297,12 +297,12 @@ export default function ResourcesPage() {
     [router, filters, sortBy, buildUrlParams]
   );
 
-  // Map Fachbereich code to subject code for API compatibility
+  // Map Fachbereich code to subject name for API compatibility
   const mapFachbereichToSubject = useCallback(
     (code: string | null): string => {
       if (!code) return "";
       const fachbereich = getFachbereichByCode(code);
-      return fachbereich?.code || code;
+      return fachbereich?.name || code;
     },
     [getFachbereichByCode]
   );
