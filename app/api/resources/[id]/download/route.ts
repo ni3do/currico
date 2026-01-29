@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getCurrentUserId } from "@/lib/auth";
+import { requireAdmin } from "@/lib/admin-auth";
 import { readFile } from "fs/promises";
 import path from "path";
 import { getStorage, isLegacyLocalPath, getLegacyFilePath } from "@/lib/storage";
@@ -42,6 +43,7 @@ function getSafeFilename(title: string, filePath: string): string {
 /**
  * GET /api/resources/[id]/download
  * Download a resource file
+ * - Admins can download any resource
  * - Free resources: any authenticated user can download
  * - Paid resources: only users who have purchased can download
  * - Owners can always download their own resources
@@ -55,6 +57,10 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       { status: 401 }
     );
   }
+
+  // Check if user is admin
+  const admin = await requireAdmin();
+  const isAdmin = !!admin;
 
   try {
     const { id } = await params;
@@ -91,31 +97,45 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: "Ressource nicht gefunden" }, { status: 404 });
     }
 
-    // Check if resource is accessible (published, approved, public) or user is owner
+    // Check if resource is accessible
+    // Admins can access any resource
     const isOwner = resource.seller_id === userId;
     const isPubliclyAccessible =
       resource.is_published && resource.is_approved && resource.is_public;
 
-    if (!isOwner && !isPubliclyAccessible) {
+    if (!isAdmin && !isOwner && !isPubliclyAccessible) {
       return NextResponse.json({ error: "Diese Ressource ist nicht verfügbar" }, { status: 403 });
     }
 
-    // Check access rights
+    // Check access rights for downloads
+    // Admins always have access
     const isFree = resource.price === 0;
     const hasPurchased = resource.transactions.length > 0;
     const hasDownloaded = resource.downloads.length > 0;
+    const isVerified = resource.is_approved;
 
     console.log("[DOWNLOAD] ========== ACCESS CHECK ==========");
     console.log("[DOWNLOAD] Resource ID:", id);
     console.log("[DOWNLOAD] User ID:", userId);
+    console.log("[DOWNLOAD] Is Admin:", isAdmin);
     console.log("[DOWNLOAD] Is Owner:", isOwner);
     console.log("[DOWNLOAD] Is Free:", isFree);
+    console.log("[DOWNLOAD] Is Verified:", isVerified);
     console.log("[DOWNLOAD] Has Purchased (COMPLETED transactions):", hasPurchased);
     console.log("[DOWNLOAD] Transactions found:", resource.transactions.length);
     console.log("[DOWNLOAD] Has Download record:", hasDownloaded);
 
-    // Grant access if: owner, free resource, or has purchased
-    const hasAccess = isOwner || isFree || hasPurchased;
+    // Regular users cannot download unverified resources (except owners/admins)
+    if (!isAdmin && !isOwner && !isVerified) {
+      console.log("[DOWNLOAD] ACCESS DENIED - resource not yet verified");
+      return NextResponse.json(
+        { error: "Diese Ressource wird noch überprüft und kann noch nicht heruntergeladen werden" },
+        { status: 403 }
+      );
+    }
+
+    // Grant access if: admin, owner, free resource, or has purchased
+    const hasAccess = isAdmin || isOwner || isFree || hasPurchased;
     console.log("[DOWNLOAD] Final hasAccess:", hasAccess);
 
     if (!hasAccess) {
@@ -208,6 +228,10 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     return NextResponse.json({ error: "Bitte melden Sie sich an" }, { status: 401 });
   }
 
+  // Check if user is admin
+  const admin = await requireAdmin();
+  const isAdmin = !!admin;
+
   try {
     const { id } = await params;
 
@@ -236,18 +260,27 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       return NextResponse.json({ error: "Ressource nicht gefunden" }, { status: 404 });
     }
 
-    // Check access
+    // Check access - admins can access any resource
     const isOwner = resource.seller_id === userId;
+
+    // Regular users cannot download unverified resources
+    if (!isAdmin && !isOwner && !resource.is_approved) {
+      return NextResponse.json(
+        { error: "Diese Ressource wird noch überprüft" },
+        { status: 403 }
+      );
+    }
+
     const isPubliclyAccessible =
       resource.is_published && resource.is_approved && resource.is_public;
 
-    if (!isOwner && !isPubliclyAccessible) {
+    if (!isAdmin && !isOwner && !isPubliclyAccessible) {
       return NextResponse.json({ error: "Diese Ressource ist nicht verfügbar" }, { status: 403 });
     }
 
     const isFree = resource.price === 0;
     const hasPurchased = resource.transactions.length > 0;
-    const hasAccess = isOwner || isFree || hasPurchased;
+    const hasAccess = isAdmin || isOwner || isFree || hasPurchased;
 
     if (!hasAccess) {
       return NextResponse.json(
