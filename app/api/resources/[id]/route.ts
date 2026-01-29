@@ -29,6 +29,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         cycles: true,
         is_published: true,
         is_approved: true,
+        status: true,
         created_at: true,
         seller: {
           select: {
@@ -47,8 +48,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       },
     });
 
-    // Return 404 if not found or not publicly visible
-    if (!resource || !resource.is_published || !resource.is_approved) {
+    // Return 404 if not found or not published
+    // Note: We show resources even if not approved, but mark them as pending
+    if (!resource || !resource.is_published) {
       return NextResponse.json({ error: "Ressource nicht gefunden" }, { status: 404 });
     }
 
@@ -108,6 +110,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       cycle: cycles[0] || "",
       createdAt: resource.created_at,
       downloadCount: resource._count.transactions,
+      isApproved: resource.is_approved,
+      status: resource.status,
       seller: {
         id: resource.seller.id,
         displayName: resource.seller.display_name,
