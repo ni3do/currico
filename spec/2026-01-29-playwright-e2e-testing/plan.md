@@ -25,7 +25,7 @@ This plan outlines the tasks to expand E2E test coverage for the Currico platfor
 
 Create page objects for high-traffic, high-value pages.
 
-- [ ] Create RegisterPage page object (`e2e/pages/register.page.ts`)
+- [x] Create RegisterPage page object (`e2e/pages/register.page.ts`)
   - Form fields: email, password, displayName, role selector
   - OAuth buttons
   - Validation error handling
