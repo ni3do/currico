@@ -100,7 +100,9 @@ export class S3StorageAdapter implements StorageProvider {
       // Build public URL for public bucket items
       let publicUrl: string | undefined;
       if (category !== "resource") {
-        publicUrl = `${this.config.publicBucketUrl}/${key}`;
+        // Remove trailing slash from base URL to avoid double slashes
+        const baseUrl = this.config.publicBucketUrl.replace(/\/+$/, '');
+        publicUrl = `${baseUrl}/${key}`;
       }
 
       return {
@@ -143,7 +145,9 @@ export class S3StorageAdapter implements StorageProvider {
   }
 
   getPublicUrl(key: string): string {
-    return `${this.config.publicBucketUrl}/${key}`;
+    // Remove trailing slash from base URL to avoid double slashes
+    const baseUrl = this.config.publicBucketUrl.replace(/\/+$/, '');
+    return `${baseUrl}/${key}`;
   }
 
   async delete(key: string, category: FileCategory): Promise<void> {
