@@ -112,6 +112,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     const isFree = resource.price === 0;
     const hasPurchased = resource.transactions.length > 0;
     const hasDownloaded = resource.downloads.length > 0;
+    const isVerified = resource.is_approved;
 
     console.log("[DOWNLOAD] ========== ACCESS CHECK ==========");
     console.log("[DOWNLOAD] Resource ID:", id);
@@ -119,9 +120,19 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     console.log("[DOWNLOAD] Is Admin:", isAdmin);
     console.log("[DOWNLOAD] Is Owner:", isOwner);
     console.log("[DOWNLOAD] Is Free:", isFree);
+    console.log("[DOWNLOAD] Is Verified:", isVerified);
     console.log("[DOWNLOAD] Has Purchased (COMPLETED transactions):", hasPurchased);
     console.log("[DOWNLOAD] Transactions found:", resource.transactions.length);
     console.log("[DOWNLOAD] Has Download record:", hasDownloaded);
+
+    // Regular users cannot download unverified resources (except owners/admins)
+    if (!isAdmin && !isOwner && !isVerified) {
+      console.log("[DOWNLOAD] ACCESS DENIED - resource not yet verified");
+      return NextResponse.json(
+        { error: "Diese Ressource wird noch überprüft und kann noch nicht heruntergeladen werden" },
+        { status: 403 }
+      );
+    }
 
     // Grant access if: admin, owner, free resource, or has purchased
     const hasAccess = isAdmin || isOwner || isFree || hasPurchased;
@@ -251,6 +262,15 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
     // Check access - admins can access any resource
     const isOwner = resource.seller_id === userId;
+
+    // Regular users cannot download unverified resources
+    if (!isAdmin && !isOwner && !resource.is_approved) {
+      return NextResponse.json(
+        { error: "Diese Ressource wird noch überprüft" },
+        { status: 403 }
+      );
+    }
+
     const isPubliclyAccessible =
       resource.is_published && resource.is_approved && resource.is_public;
 

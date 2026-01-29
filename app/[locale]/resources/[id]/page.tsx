@@ -449,7 +449,13 @@ export default function ResourceDetailPage() {
                 >
                   {resource.priceFormatted}
                 </div>
-                {resource.price === 0 ? (
+                {!resource.isApproved ? (
+                  <div className="flex-1 rounded-lg border border-warning/50 bg-warning/10 px-8 py-4 text-center">
+                    <span className="font-medium text-warning">
+                      Verfügbar nach Überprüfung
+                    </span>
+                  </div>
+                ) : resource.price === 0 ? (
                   <button
                     onClick={handleDownload}
                     disabled={downloading}
