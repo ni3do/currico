@@ -4,12 +4,12 @@ This plan sets up comprehensive end-to-end browser testing for Currico using Pla
 
 ## Phase 1: Playwright Infrastructure Setup
 
-- [ ] Install Playwright dependencies (`@playwright/test`) and add npm scripts (`test:e2e`, `test:e2e:ui`, `test:e2e:headed`)
+- [x] Install Playwright dependencies (`@playwright/test`) and add npm scripts (`test:e2e`, `test:e2e:ui`, `test:e2e:headed`)
 - [ ] Create `playwright.config.ts` with projects for chromium, firefox, webkit and webServer config for dev server
 - [ ] Create `e2e/fixtures/test-fixtures.ts` with authenticated user fixtures (buyer, seller, admin) using storageState
 - [ ] Create `e2e/helpers/test-utils.ts` with common helpers (login, waitForNavigation, assertToast, etc.)
 - [ ] Create `e2e/helpers/db-seed.ts` with test data seeding utilities (createTestUser, createTestResource, cleanup)
-- [ ] Add `e2e/.auth/` directory to `.gitignore` for storing authentication state files
+- [x] Add `e2e/.auth/` directory to `.gitignore` for storing authentication state files
 
 ## Phase 2: Authentication E2E Tests
 
