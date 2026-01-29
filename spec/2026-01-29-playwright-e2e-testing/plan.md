@@ -1,346 +1,234 @@
 # Playwright E2E Testing Implementation Plan
 
-This plan outlines the tasks to expand E2E test coverage for the Currico platform. The infrastructure is already in place (playwright.config.ts, global setup, auth fixtures, page objects). This plan focuses on creating comprehensive test coverage for all user flows.
+This plan covers the implementation of comprehensive E2E browser tests for Currico using Playwright.
 
 ## Current State
 
 **Implemented:**
-- ✓ Playwright configuration with multi-browser, multi-locale support
-- ✓ Global setup with authenticated session storage
-- ✓ Auth fixtures for buyer, seller, admin, school roles
-- ✓ Base page object class
-- ✓ Login page object and tests
-- ✓ Smoke tests
-- ✓ Test users and seed data script
+- ✅ Playwright configuration with multi-browser/locale support
+- ✅ Global setup for authentication
+- ✅ Auth fixtures (buyerPage, sellerPage, adminPage, schoolPage)
+- ✅ Base page object pattern
+- ✅ LoginPage and RegisterPage page objects
+- ✅ Test user definitions and seed script
+- ✅ Smoke tests and login flow tests
 
-**Gap Analysis:**
-- Missing page objects for most pages (33 pages, only 1 has page object)
-- Missing tests for resources catalog, admin, seller dashboard, registration, etc.
-- No visual regression tests
-- No API testing utilities
-
----
-
-## Phase 1: Core Page Objects
-
-Create page objects for high-traffic, high-value pages.
-
-- [x] Create RegisterPage page object (`e2e/pages/register.page.ts`)
-  - Form fields: email, password, displayName, role selector
-  - OAuth buttons
-  - Validation error handling
-  - Success redirect verification
-
-- [ ] Create HomePage page object (`e2e/pages/home.page.ts`)
-  - Navigation elements
-  - Featured resources section
-  - Search functionality
-  - CTA buttons
-
-- [ ] Create ResourcesPage page object (`e2e/pages/resources.page.ts`)
-  - Resource grid/list
-  - Filter sidebar (subject, cycle, price range)
-  - Search bar
-  - Sorting controls
-  - Pagination
-
-- [ ] Create ResourceDetailPage page object (`e2e/pages/resource-detail.page.ts`)
-  - Title, description, price display
-  - Buy/Download CTA
-  - Preview gallery
-  - Seller info section
-  - Wishlist button
-  - Related resources
-
-- [ ] Create AccountPage page object (`e2e/pages/account.page.ts`)
-  - Profile summary
-  - Recent purchases
-  - Collections/wishlists
-  - Settings link
-  - Logout functionality
-
-- [ ] Create ProfileEditPage page object (`e2e/pages/profile-edit.page.ts`)
-  - Edit form fields
-  - Avatar upload area
-  - Save/cancel actions
-  - Validation handling
+**Missing:**
+- Page objects for catalog, resources, admin, seller dashboard, account, etc.
+- Test suites for core user flows
+- Registration flow tests
+- Catalog browsing and filtering tests
+- Resource detail page tests
+- Seller dashboard tests
+- Admin panel tests
+- Account management tests
 
 ---
 
-## Phase 2: Authentication & Registration Tests
+## Phase 1: Page Object Foundation
 
-- [ ] Create registration flow tests (`e2e/tests/auth/register.spec.ts`)
-  - Successful registration with valid data
-  - Email validation error handling
-  - Password strength validation
-  - Duplicate email handling
-  - Role selection (buyer vs seller)
-  - OAuth button presence verification
+Create page objects for all major application pages to enable clean, maintainable tests.
 
-- [ ] Expand login tests with edge cases (`e2e/tests/auth/login.spec.ts`)
-  - Remember me functionality verification
-  - Session persistence after browser close
-  - Concurrent session handling
-  - Logout flow verification
+### Core Public Pages
 
-- [ ] Create password reset flow tests (`e2e/tests/auth/password-reset.spec.ts`)
-  - Request reset email (UI only, can't test email receipt)
-  - Invalid email handling
-  - Navigation from login page
+- [x] Create HomePage page object (e2e/pages/home.page.ts)
+  - Navigation links, hero section, featured resources
+  - Locale switcher interaction
+  - Acceptance: Can navigate from home to login, register, catalog
 
----
+- [x] Create CatalogPage page object (e2e/pages/catalog.page.ts)
+  - Resource grid, search input, filters sidebar
+  - Pagination controls
+  - Acceptance: Can search, filter by subject/cycle, navigate pages
 
-## Phase 3: Resource Catalog Tests
+- [x] Create ResourceDetailPage page object (e2e/pages/resource-detail.page.ts)
+  - Title, description, price, CTA button
+  - Preview gallery, metadata, seller info
+  - Wishlist button, report link
+  - Acceptance: Can view resource, add to wishlist, access seller profile
 
-- [ ] Create resource browsing tests (`e2e/tests/resources/browse.spec.ts`)
-  - Page loads with resource grid
-  - Resource cards display correct info (title, price, subject)
-  - Clicking card navigates to detail page
-  - Empty state handling
+### Authenticated User Pages
 
-- [ ] Create resource filtering tests (`e2e/tests/resources/filter.spec.ts`)
-  - Filter by subject
-  - Filter by cycle
-  - Filter by price (free/paid)
-  - Combined filters
-  - Filter persistence after navigation
-  - Clear filters functionality
+- [x] Create AccountPage page object (e2e/pages/account.page.ts)
+  - Profile info, edit link, purchases list
+  - Collections/wishlist links
+  - Acceptance: Can view account info, navigate to edit profile
 
-- [ ] Create resource search tests (`e2e/tests/resources/search.spec.ts`)
-  - Search by title
-  - Search by keyword
-  - No results handling
-  - Search result highlighting
+- [x] Create ProfileEditPage page object (e2e/pages/profile-edit.page.ts)
+  - Name, bio, avatar upload form fields
+  - Save/cancel buttons
+  - Acceptance: Can update profile fields
 
-- [ ] Create resource detail tests (`e2e/tests/resources/detail.spec.ts`)
-  - Detail page displays all metadata
-  - Preview gallery navigation
-  - Seller info link works
-  - Related resources displayed
-  - Buy button visibility (paid)
-  - Download button visibility (free)
+- [x] Create CollectionsPage page object (e2e/pages/collections.page.ts)
+  - Collection list, create collection button
+  - Collection cards with resource count
+  - Acceptance: Can view collections, navigate to collection detail
 
----
+### Seller Pages
 
-## Phase 4: Wishlist & Collections Tests
+- [x] Create SellerDashboardPage page object (e2e/pages/seller-dashboard.page.ts)
+  - Metrics cards (earnings, downloads, followers)
+  - Resources table, transactions list
+  - Create resource button
+  - Acceptance: Can view metrics, navigate to resource management
 
-- [ ] Create wishlist tests (`e2e/tests/wishlist/wishlist.spec.ts`)
-  - Add resource to wishlist (authenticated)
-  - Remove resource from wishlist
-  - Wishlist heart icon state
-  - Wishlist page displays saved items
-  - Unauthenticated wishlist redirect to login
+- [x] Create UploadPage page object (e2e/pages/upload.page.ts)
+  - Multi-step wizard (basics, curriculum, properties, files)
+  - Form validation, step navigation
+  - Acceptance: Can navigate wizard steps, validate form inputs
 
-- [ ] Create collections tests (`e2e/tests/collections/collections.spec.ts`)
-  - View collections page
-  - Create new collection
-  - Add resource to collection
-  - Remove resource from collection
-  - Delete collection
-  - Collection visibility toggle
+### Admin Pages
 
----
+- [x] Create AdminDashboardPage page object (e2e/pages/admin-dashboard.page.ts)
+  - Stats overview, navigation to sub-pages
+  - Acceptance: Can access admin sections
 
-## Phase 5: Admin Panel Tests
+- [x] Create AdminUsersPage page object (e2e/pages/admin-users.page.ts)
+  - User list table, role filters
+  - User detail/edit modal
+  - Acceptance: Can search users, view user details
 
-Create admin page objects and tests for quality assurance workflows.
+- [x] Create AdminReportsPage page object (e2e/pages/admin-reports.page.ts)
+  - Reports list, status filters
+  - Report detail view, status change actions
+  - Acceptance: Can view reports, change report status
 
-- [ ] Create AdminDashboardPage page object (`e2e/pages/admin/dashboard.page.ts`)
-  - Stats overview
-  - Navigation to sub-sections
-  - Quick actions
-
-- [ ] Create AdminUsersPage page object (`e2e/pages/admin/users.page.ts`)
-  - User list table
-  - Search/filter users
-  - User detail view
-  - Role change controls
-
-- [ ] Create AdminDocumentsPage page object (`e2e/pages/admin/documents.page.ts`)
-  - Documents queue list
-  - Status filter (Pending, AI-Checked, Verified)
-  - Document detail view
-  - Status change controls
-
-- [ ] Create AdminReportsPage page object (`e2e/pages/admin/reports.page.ts`)
-  - Reports list
-  - Status filter (Open, In Review, Resolved)
-  - Report detail view
-  - Resolution actions
-
-- [ ] Create admin dashboard tests (`e2e/tests/admin/dashboard.spec.ts`)
-  - Admin can access dashboard
-  - Stats display correctly
-  - Navigation works
-  - Non-admin redirect handling
-
-- [ ] Create admin user management tests (`e2e/tests/admin/users.spec.ts`)
-  - View user list
-  - Search for users
-  - View user details
-  - Role restrictions (can't demote self)
-
-- [ ] Create admin document moderation tests (`e2e/tests/admin/documents.spec.ts`)
-  - View pending documents
-  - Change document status
-  - Add internal notes
-  - Filter by status
-
-- [ ] Create admin reports tests (`e2e/tests/admin/reports.spec.ts`)
-  - View open reports
-  - Update report status
-  - Resolve/dismiss reports
+- [x] Update e2e/pages/index.ts to export all new page objects
+  - Acceptance: All page objects importable from single entry point
 
 ---
 
-## Phase 6: Seller Dashboard Tests
+## Phase 2: Core User Flow Tests
 
-- [ ] Create SellerDashboardPage page object (`e2e/pages/seller/dashboard.page.ts`)
-  - Earnings overview
-  - Resources list
-  - Recent transactions
-  - Upload CTA
+### Authentication Tests
 
-- [ ] Create seller dashboard tests (`e2e/tests/seller/dashboard.spec.ts`)
-  - Seller can access dashboard
-  - Earnings display correctly
-  - Resources listed with stats
-  - Transaction history visible
+- [x] Create registration flow test suite (e2e/tests/auth/register.spec.ts)
+  - Test: displays registration form with all fields
+  - Test: validates email format
+  - Test: validates password requirements
+  - Test: validates password confirmation match
+  - Test: requires terms acceptance
+  - Test: shows error for duplicate email
+  - Test: successful registration redirects to account
+  - Acceptance: All tests pass on chromium-de project
 
-- [ ] Create seller onboarding tests (`e2e/tests/seller/onboarding.spec.ts`)
-  - Become seller page loads
-  - Terms acceptance flow
-  - Stripe Connect redirect (UI verification only)
-  - Onboarding completion page
+### Catalog Tests
 
----
+- [x] Create catalog browsing test suite (e2e/tests/catalog/browse.spec.ts)
+  - Test: displays resource grid on page load
+  - Test: search filters resources by title
+  - Test: subject filter shows relevant resources
+  - Test: clicking resource card navigates to detail page
+  - Acceptance: All tests pass, verify with seeded test resources
 
-## Phase 7: Upload Flow Tests (UI Only)
+### Resource Tests
 
-The upload functionality is UI-only (no backend), so tests verify UI behavior.
-
-- [ ] Create UploadPage page object (`e2e/pages/upload.page.ts`)
-  - Step indicators
-  - Form fields per step
-  - Navigation (next/back)
-  - Validation messages
-
-- [ ] Create upload wizard tests (`e2e/tests/upload/wizard.spec.ts`)
-  - Step 1: Basics form validation
-  - Step 2: Curriculum tag selection
-  - Step 3: Properties and pricing
-  - Step navigation (forward/back)
-  - Form state persistence between steps
-  - Cancel flow
+- [x] Create resource detail test suite (e2e/tests/resources/detail.spec.ts)
+  - Test: displays resource title and description
+  - Test: shows price and purchase CTA
+  - Test: displays seller information
+  - Test: preview gallery shows images
+  - Test: authenticated user can add to wishlist
+  - Acceptance: Tests use TEST_RESOURCE_IDS from fixtures
 
 ---
 
-## Phase 8: Checkout Flow Tests (UI Only)
+## Phase 3: Authenticated User Flow Tests
 
-- [ ] Create checkout success/cancel tests (`e2e/tests/checkout/flow.spec.ts`)
-  - Success page displays confirmation
-  - Cancel page displays message
-  - Navigation from checkout pages
+### Account Management
 
----
+- [x] Create account page test suite (e2e/tests/account/account.spec.ts)
+  - Test: buyer sees account overview
+  - Test: can navigate to profile edit
+  - Test: can view purchase history
+  - Test: can access collections/wishlist
+  - Acceptance: Uses buyerPage fixture for authentication
 
-## Phase 9: Static Pages Tests
+### Seller Dashboard
 
-- [ ] Create static pages tests (`e2e/tests/static/pages.spec.ts`)
-  - About page loads
-  - FAQ page loads
-  - Terms page loads
-  - Privacy page loads
-  - Impressum page loads
-  - Cookies page loads
-  - Contact page loads and form displays
-
----
-
-## Phase 10: Internationalization Tests
-
-- [ ] Create i18n tests (`e2e/tests/i18n/locale.spec.ts`)
-  - German locale page content
-  - English locale page content
-  - Language switcher functionality
-  - URL locale prefix handling
-  - Locale persistence
+- [x] Create seller dashboard test suite (e2e/tests/seller/dashboard.spec.ts)
+  - Test: displays earnings metrics
+  - Test: shows resources list with status
+  - Test: can navigate to create new resource
+  - Test: transactions list shows recent activity
+  - Acceptance: Uses sellerPage fixture for authentication
 
 ---
 
-## Phase 11: Mobile Responsiveness Tests
+## Phase 4: Admin Flow Tests
 
-- [ ] Create mobile navigation tests (`e2e/tests/mobile/navigation.spec.ts`)
-  - Mobile menu toggle
-  - Mobile menu navigation
-  - Touch-friendly interactions
+### Admin Panel
 
-- [ ] Create mobile layout tests (`e2e/tests/mobile/layout.spec.ts`)
-  - Resource grid adapts to mobile
-  - Forms are usable on mobile
-  - Buttons have appropriate touch targets
+- [x] Create admin dashboard test suite (e2e/tests/admin/dashboard.spec.ts)
+  - Test: admin can access dashboard
+  - Test: displays platform statistics
+  - Test: navigation links to all admin sections work
+  - Acceptance: Uses adminPage fixture for authentication
 
----
+- [x] Create admin users test suite (e2e/tests/admin/users.spec.ts)
+  - Test: displays user list
+  - Test: can search users by email
+  - Test: can filter by role
+  - Test: can view user details
+  - Acceptance: Test users visible in list
 
-## Phase 12: Accessibility Tests
-
-- [ ] Create accessibility audit tests (`e2e/tests/a11y/audit.spec.ts`)
-  - Run axe-core on key pages
-  - Verify keyboard navigation
-  - Check focus management
-  - Screen reader landmark regions
-
----
-
-## Phase 13: Error Handling Tests
-
-- [ ] Create error page tests (`e2e/tests/errors/pages.spec.ts`)
-  - 404 page for invalid routes
-  - Error boundary handling
-  - API error display to users
+- [x] Create admin reports test suite (e2e/tests/admin/reports.spec.ts)
+  - Test: displays reports list
+  - Test: can filter by status
+  - Test: can view report details
+  - Acceptance: Uses seeded test data or creates report via UI
 
 ---
 
-## Phase 14: Test Infrastructure Improvements
+## Phase 5: Cross-Cutting Tests
 
-- [ ] Add npm script for seeding test data (`package.json`)
-  - Add `test:e2e:seed` script
-  - Integrate seed into global setup
+### Internationalization
 
-- [ ] Create test data factory utilities (`e2e/fixtures/factories.ts`)
-  - Resource factory
-  - User factory
-  - Collection factory
+- [x] Create i18n test suite (e2e/tests/i18n/locale-switching.spec.ts)
+  - Test: default locale is German (de)
+  - Test: can switch to English via locale switcher
+  - Test: URLs include locale prefix
+  - Test: content updates when locale changes
+  - Acceptance: Run on both chromium-de and chromium-en projects
 
-- [ ] Add visual regression testing setup
-  - Install @playwright/test visual comparisons
-  - Create baseline screenshots for key pages
-  - Add visual comparison to smoke tests
+### Responsive Design
+
+- [x] Create mobile responsiveness test suite (e2e/tests/responsive/mobile.spec.ts)
+  - Test: navigation collapses to hamburger menu
+  - Test: catalog displays in single column
+  - Test: forms are usable on mobile viewport
+  - Acceptance: Run on mobile-chrome-de project
+
+### Accessibility
+
+- [x] Create accessibility test suite (e2e/tests/accessibility/a11y.spec.ts)
+  - Test: login page has no critical a11y violations
+  - Test: catalog page has proper heading structure
+  - Test: forms have associated labels
+  - Acceptance: Use @axe-core/playwright for automated checks
 
 ---
 
-## Acceptance Criteria
+## Phase 6: CI/CD Integration
 
-Each phase is complete when:
-1. All page objects compile without TypeScript errors
-2. All tests pass on chromium-de project
-3. Tests use the auth fixtures appropriately (buyerPage, sellerPage, adminPage)
-4. Page objects follow the established BasePage pattern
-5. Tests are organized in logical describe blocks
-6. No hardcoded timeouts (use Playwright's built-in waiting)
+### Pipeline Configuration
 
-## Running Tests
+- [x] Add Playwright to CI workflow (.github/workflows/e2e.yml)
+  - Run on PR and push to main
+  - Use Docker for consistent environment
+  - Upload test artifacts on failure
+  - Acceptance: Tests run in GitHub Actions
 
-```bash
-# Run all E2E tests
-npm run test:e2e
+- [x] Configure test parallelization for CI
+  - Shard tests across multiple jobs
+  - Set appropriate worker count
+  - Acceptance: CI runs complete in under 10 minutes
 
-# Run with UI mode for debugging
-npm run test:e2e:ui
+---
 
-# Run specific test file
-npx playwright test e2e/tests/auth/login.spec.ts
+## Notes
 
-# Run tests for a specific project (browser/locale)
-npx playwright test --project=chromium-de
-```
+- All tests should be idempotent and not depend on test execution order
+- Use the seeded test data (TEST_BUYER, TEST_SELLER, TEST_ADMIN) for consistent test state
+- Page objects should handle cookie banner dismissal automatically
+- Tests should work across German and English locales where applicable
