@@ -100,6 +100,16 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: "Diese Ressource ist nicht verfügbar" }, { status: 403 });
     }
 
+    // Prevent downloading unverified resources (unless owner)
+    if (!isOwner && !resource.is_approved) {
+      return NextResponse.json(
+        {
+          error: "Diese Ressource ist noch nicht verifiziert und kann nicht heruntergeladen werden",
+        },
+        { status: 403 }
+      );
+    }
+
     // Check access rights
     const isFree = resource.price === 0;
     const hasPurchased = resource.transactions.length > 0;
@@ -243,6 +253,16 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
     if (!isOwner && !isPubliclyAccessible) {
       return NextResponse.json({ error: "Diese Ressource ist nicht verfügbar" }, { status: 403 });
+    }
+
+    // Prevent downloading unverified resources (unless owner)
+    if (!isOwner && !resource.is_approved) {
+      return NextResponse.json(
+        {
+          error: "Diese Ressource ist noch nicht verifiziert und kann nicht heruntergeladen werden",
+        },
+        { status: 403 }
+      );
     }
 
     const isFree = resource.price === 0;

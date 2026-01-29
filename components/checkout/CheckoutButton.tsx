@@ -85,7 +85,8 @@ export function CheckoutButton({
       <button
         onClick={handleCheckout}
         disabled={disabled || loading}
-        className={`btn-primary flex items-center justify-center gap-2 px-8 py-4 disabled:opacity-50 ${className}`}
+        className={`btn-primary flex items-center justify-center gap-2 px-8 py-4 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+        title={disabled ? "Diese Ressource muss zuerst verifiziert werden" : ""}
       >
         {loading ? (
           <>
@@ -111,15 +112,15 @@ export function CheckoutButton({
             </svg>
             {t("processing")}
           </>
+        ) : disabled ? (
+          "Verifizierung ausstehend"
         ) : (
           <>
             {t("buyNow")} - {priceFormatted}
           </>
         )}
       </button>
-      {error && (
-        <p className="text-center text-sm text-[var(--color-error)]">{error}</p>
-      )}
+      {error && <p className="text-center text-sm text-[var(--color-error)]">{error}</p>}
     </div>
   );
 }

@@ -359,15 +359,26 @@ export default function ResourceDetailPage() {
       <main className="mx-auto max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
         {/* Pending Review Banner */}
         {!resource.isApproved && (
-          <div className="mb-6 rounded-lg border border-warning/50 bg-warning/10 p-4">
+          <div className="border-warning/50 bg-warning/10 mb-6 rounded-lg border p-4">
             <div className="flex items-center gap-3">
-              <svg className="h-5 w-5 flex-shrink-0 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg
+                className="text-warning h-5 w-5 flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
               <div>
-                <p className="font-medium text-warning">Diese Ressource wird noch überprüft</p>
-                <p className="text-sm text-text-muted">
+                <p className="text-warning font-medium">Diese Ressource wird noch überprüft</p>
+                <p className="text-text-muted text-sm">
                   Die Ressource ist sichtbar, aber noch nicht von unserem Team verifiziert worden.
+                  Kauf und Download sind erst nach erfolgreicher Verifizierung möglich.
                 </p>
               </div>
             </div>
@@ -452,10 +463,17 @@ export default function ResourceDetailPage() {
                 {resource.price === 0 ? (
                   <button
                     onClick={handleDownload}
-                    disabled={downloading}
-                    className="btn-primary flex-1 px-8 py-4 disabled:opacity-50"
+                    disabled={downloading || !resource.isApproved}
+                    className="btn-primary flex-1 px-8 py-4 disabled:cursor-not-allowed disabled:opacity-50"
+                    title={
+                      !resource.isApproved ? "Diese Ressource muss zuerst verifiziert werden" : ""
+                    }
                   >
-                    {downloading ? "Wird heruntergeladen..." : "Kostenlos herunterladen"}
+                    {downloading
+                      ? "Wird heruntergeladen..."
+                      : !resource.isApproved
+                        ? "Verifizierung ausstehend"
+                        : "Kostenlos herunterladen"}
                   </button>
                 ) : (
                   <CheckoutButton
@@ -463,6 +481,7 @@ export default function ResourceDetailPage() {
                     price={resource.price}
                     priceFormatted={resource.priceFormatted}
                     className="flex-1"
+                    disabled={!resource.isApproved}
                   />
                 )}
                 <button
