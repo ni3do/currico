@@ -1,4 +1,14 @@
 import { defineConfig, devices } from '@playwright/test';
+import path from 'path';
+
+// Storage state paths for authenticated sessions
+const AUTH_DIR = path.join(__dirname, '.auth');
+export const STORAGE_STATES = {
+  buyer: path.join(AUTH_DIR, 'buyer.json'),
+  seller: path.join(AUTH_DIR, 'seller.json'),
+  admin: path.join(AUTH_DIR, 'admin.json'),
+  school: path.join(AUTH_DIR, 'school.json'),
+} as const;
 
 /**
  * Playwright configuration for Currico E2E testing.
@@ -7,6 +17,9 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   // Test directory
   testDir: './e2e/tests',
+
+  // Global setup runs once before all tests to authenticate test users
+  globalSetup: './e2e/global-setup.ts',
 
   // Run tests in files in parallel
   fullyParallel: true,

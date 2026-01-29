@@ -10,10 +10,10 @@
 
 ### 1.1 Authentication & Test Data
 
-- [ ] Create test data seed script (`e2e/fixtures/seed-test-data.ts`) with test users for each role (buyer, seller, admin)
-- [ ] Create authentication fixture (`e2e/fixtures/auth.fixture.ts`) with login helper that creates authenticated browser state
-- [ ] Add `storageState` support to Playwright config for persisting auth sessions between tests
-- [ ] Create test user credentials constants file (`e2e/fixtures/test-users.ts`) with typed test user data
+- [x] Create test data seed script (`e2e/fixtures/seed-test-data.ts`) with test users for each role (buyer, seller, admin)
+- [x] Create authentication fixture (`e2e/fixtures/auth.fixture.ts`) with login helper that creates authenticated browser state
+- [x] Add `storageState` support to Playwright config for persisting auth sessions between tests
+- [x] Create test user credentials constants file (`e2e/fixtures/test-users.ts`) with typed test user data
 
 ### 1.2 Page Object Models
 
