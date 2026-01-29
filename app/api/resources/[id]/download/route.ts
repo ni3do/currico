@@ -92,14 +92,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: "Ressource nicht gefunden" }, { status: 404 });
     }
 
-    // Check if resource is accessible (published, approved, public) or user is owner
+    // Check if resource is accessible or user is owner
     const isOwner = resource.seller_id === userId;
-    const isPubliclyAccessible =
-      resource.is_published && resource.is_approved && resource.is_public;
-
-    if (!isOwner && !isPubliclyAccessible) {
-      return NextResponse.json({ error: "Diese Ressource ist nicht verfügbar" }, { status: 403 });
-    }
 
     // Prevent downloading unverified resources (unless owner)
     if (!isOwner && !resource.is_approved) {
@@ -109,6 +103,14 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         },
         { status: 403 }
       );
+    }
+
+    // Check if resource is publicly accessible
+    const isPubliclyAccessible =
+      resource.is_published && resource.is_approved && resource.is_public;
+
+    if (!isOwner && !isPubliclyAccessible) {
+      return NextResponse.json({ error: "Diese Ressource ist nicht verfügbar" }, { status: 403 });
     }
 
     // Check access rights
@@ -249,12 +251,6 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
     // Check access
     const isOwner = resource.seller_id === userId;
-    const isPubliclyAccessible =
-      resource.is_published && resource.is_approved && resource.is_public;
-
-    if (!isOwner && !isPubliclyAccessible) {
-      return NextResponse.json({ error: "Diese Ressource ist nicht verfügbar" }, { status: 403 });
-    }
 
     // Prevent downloading unverified resources (unless owner)
     if (!isOwner && !resource.is_approved) {
@@ -264,6 +260,14 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
         },
         { status: 403 }
       );
+    }
+
+    // Check if resource is publicly accessible
+    const isPubliclyAccessible =
+      resource.is_published && resource.is_approved && resource.is_public;
+
+    if (!isOwner && !isPubliclyAccessible) {
+      return NextResponse.json({ error: "Diese Ressource ist nicht verfügbar" }, { status: 403 });
     }
 
     const isFree = resource.price === 0;
