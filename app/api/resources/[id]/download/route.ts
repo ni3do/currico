@@ -42,9 +42,10 @@ function getSafeFilename(title: string, filePath: string): string {
 /**
  * GET /api/resources/[id]/download
  * Download a resource file
- * - Free resources: any authenticated user can download
- * - Paid resources: only users who have purchased can download
+ * - Free resources: any authenticated user can download (if verified)
+ * - Paid resources: only users who have purchased can download (if verified)
  * - Owners can always download their own resources
+ * - Unverified resources cannot be downloaded by non-owners
  */
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   // Authentication check
