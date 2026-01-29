@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
 import { getCurrentUserId } from "@/lib/auth";
+import { requireAdmin } from "@/lib/admin-auth";
 import { updateResourceSchema } from "@/lib/validations/resource";
 import { formatPrice } from "@/lib/utils/price";
 import { unlink } from "fs/promises";
@@ -9,11 +10,17 @@ import path from "path";
 
 /**
  * GET /api/resources/[id]
- * Fetch a single published and approved resource by ID
+ * Fetch a single resource by ID
+ * - Admins can view any resource
+ * - Regular users can only view published resources
  */
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
+
+    // Check if user is admin
+    const admin = await requireAdmin();
+    const isAdmin = !!admin;
 
     // Fetch the resource with seller info and counts
     const resource = await prisma.resource.findUnique({
@@ -31,6 +38,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         is_approved: true,
         status: true,
         created_at: true,
+        seller_id: true,
         seller: {
           select: {
             id: true,
@@ -48,9 +56,17 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       },
     });
 
-    // Return 404 if not found or not published
-    // Note: We show resources even if not approved, but mark them as pending
-    if (!resource || !resource.is_published) {
+    // Return 404 if not found
+    if (!resource) {
+      return NextResponse.json({ error: "Ressource nicht gefunden" }, { status: 404 });
+    }
+
+    // Check visibility: admins and resource owners can see any resource
+    // Regular users can only see published resources
+    const userId = await getCurrentUserId();
+    const isOwner = userId === resource.seller_id;
+
+    if (!isAdmin && !isOwner && !resource.is_published) {
       return NextResponse.json({ error: "Ressource nicht gefunden" }, { status: 404 });
     }
 
