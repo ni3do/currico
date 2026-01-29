@@ -1,8 +1,9 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
-import { FileText, Users } from "lucide-react";
+import { FileText, Users, UserPlus, UserCheck } from "lucide-react";
 import { getSubjectPillClass as defaultGetSubjectPillClass } from "@/lib/constants/subject-colors";
 
 export interface ProfileCardProps {
@@ -16,6 +17,12 @@ export interface ProfileCardProps {
   isVerified?: boolean;
   /** Custom pill class getter function */
   getSubjectPillClass?: (subject: string) => string;
+  /** Whether the current user is following this profile */
+  isFollowing?: boolean;
+  /** Callback when follow button is clicked */
+  onFollowToggle?: (id: string, currentState: boolean) => Promise<boolean>;
+  /** Show/hide the follow button */
+  showFollowButton?: boolean;
 }
 
 export function ProfileCard({
@@ -28,14 +35,46 @@ export function ProfileCard({
   followerCount,
   isVerified = false,
   getSubjectPillClass = defaultGetSubjectPillClass,
+  isFollowing: initialFollowing = false,
+  onFollowToggle,
+  showFollowButton = false,
 }: ProfileCardProps) {
+  const [isFollowing, setIsFollowing] = useState(initialFollowing);
+  const [followLoading, setFollowLoading] = useState(false);
+  const [displayedFollowerCount, setDisplayedFollowerCount] = useState(followerCount);
+
+  // Sync with parent's follow state
+  useEffect(() => {
+    setIsFollowing(initialFollowing);
+  }, [initialFollowing]);
+
+  // Sync follower count from props
+  useEffect(() => {
+    setDisplayedFollowerCount(followerCount);
+  }, [followerCount]);
+
+  const handleFollowClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!onFollowToggle || followLoading) return;
+
+    setFollowLoading(true);
+    try {
+      const success = await onFollowToggle(id, isFollowing);
+      if (success) {
+        setIsFollowing(!isFollowing);
+        setDisplayedFollowerCount((prev) => (isFollowing ? prev - 1 : prev + 1));
+      }
+    } finally {
+      setFollowLoading(false);
+    }
+  };
+
   return (
-    <Link
-      href={`/profile/${id}`}
-      className="card group flex h-full flex-col overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
-    >
+    <Link href={`/profile/${id}`} className="card group flex h-full flex-col overflow-hidden">
       <div className="flex flex-1 flex-col p-5">
-        {/* Header: Avatar + Name */}
+        {/* Header: Avatar + Name + Follow Button */}
         <div className="mb-4 flex items-center gap-3">
           {image ? (
             <Image
@@ -51,7 +90,7 @@ export function ProfileCard({
             </div>
           )}
           <div className="min-w-0 flex-1">
-            <h3 className="text-text group-hover:text-primary truncate font-semibold transition-colors">
+            <h3 className="text-text group-hover:text-primary truncate font-semibold transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]">
               {name}
             </h3>
             {isVerified && (
@@ -67,6 +106,42 @@ export function ProfileCard({
               </span>
             )}
           </div>
+          {/* Follow Button */}
+          {showFollowButton && (
+            <button
+              onClick={handleFollowClick}
+              disabled={followLoading}
+              className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 active:scale-95 disabled:opacity-50 ${
+                isFollowing
+                  ? "border-primary text-primary hover:bg-primary/10 border"
+                  : "bg-primary hover:bg-primary-hover text-white"
+              }`}
+              aria-label={isFollowing ? "Entfolgen" : "Folgen"}
+            >
+              {followLoading ? (
+                <svg className="h-3.5 w-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  />
+                </svg>
+              ) : isFollowing ? (
+                <UserCheck className="h-3.5 w-3.5" />
+              ) : (
+                <UserPlus className="h-3.5 w-3.5" />
+              )}
+              {isFollowing ? "Gefolgt" : "Folgen"}
+            </button>
+          )}
         </div>
 
         {/* Bio */}
@@ -92,17 +167,17 @@ export function ProfileCard({
         {/* Footer: Stats */}
         <div className="border-border-subtle flex items-center justify-between border-t pt-4">
           <div className="text-text-muted flex items-center gap-4 text-sm">
-            <span className="flex items-center gap-1.5">
+            <span className="flex items-center gap-1.5 transition-colors duration-300">
               <FileText className="h-4 w-4" />
               {resourceCount}
             </span>
-            <span className="flex items-center gap-1.5">
+            <span className="flex items-center gap-1.5 transition-colors duration-300">
               <Users className="h-4 w-4" />
-              {followerCount}
+              {displayedFollowerCount}
             </span>
           </div>
           <svg
-            className="text-text-muted group-hover:text-primary h-5 w-5 transition-transform duration-200 group-hover:translate-x-1"
+            className="text-text-muted group-hover:text-primary h-5 w-5 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-1.5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"

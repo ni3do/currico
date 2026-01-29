@@ -150,9 +150,10 @@ export function LP21FilterSidebar({
         kompetenzbereich: null,
         kompetenz: null,
       });
-      // Expand the Fachbereich when selected
+      // Expand only this Fachbereich when selected (accordion behavior)
       if (code && filters.fachbereich !== code) {
-        setExpandedFachbereiche((prev) => new Set([...prev, code]));
+        setExpandedFachbereiche(new Set([code]));
+        setExpandedKompetenzbereiche(new Set());
       }
     },
     [filters, onFiltersChange]
@@ -212,7 +213,8 @@ export function LP21FilterSidebar({
             kompetenzbereich: null,
             kompetenz: null,
           };
-          setExpandedFachbereiche((prev) => new Set([...prev, result.code]));
+          setExpandedFachbereiche(new Set([result.code]));
+          setExpandedKompetenzbereiche(new Set());
           break;
         case "kompetenzbereich":
           newFilters = {
@@ -222,8 +224,8 @@ export function LP21FilterSidebar({
             kompetenzbereich: result.code,
             kompetenz: null,
           };
-          setExpandedFachbereiche((prev) => new Set([...prev, result.fachbereich.code]));
-          setExpandedKompetenzbereiche((prev) => new Set([...prev, result.code]));
+          setExpandedFachbereiche(new Set([result.fachbereich.code]));
+          setExpandedKompetenzbereiche(new Set([result.code]));
           break;
         case "kompetenz":
           newFilters = {
@@ -233,11 +235,11 @@ export function LP21FilterSidebar({
             kompetenzbereich: result.kompetenzbereich?.code ?? null,
             kompetenz: result.code,
           };
-          setExpandedFachbereiche((prev) => new Set([...prev, result.fachbereich.code]));
+          setExpandedFachbereiche(new Set([result.fachbereich.code]));
           if (result.kompetenzbereich) {
-            setExpandedKompetenzbereiche(
-              (prev) => new Set([...prev, result.kompetenzbereich!.code])
-            );
+            setExpandedKompetenzbereiche(new Set([result.kompetenzbereich!.code]));
+          } else {
+            setExpandedKompetenzbereiche(new Set());
           }
           break;
       }
@@ -545,18 +547,18 @@ function ZyklusToggle({ zyklen, selectedZyklus, onZyklusChange }: ZyklusTogglePr
                   ? "border-primary bg-primary/10 text-primary"
                   : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:bg-surface-hover"
               }`}
-              initial={{ opacity: 0, y: -10 }}
+              initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              transition={{ delay: index * 0.04, duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={{ scale: 1.015, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
+              whileTap={{ scale: 0.97, transition: { duration: 0.1 } }}
             >
               {isActive && (
                 <motion.div
                   layoutId="activeZyklus"
                   className="bg-primary/10 absolute inset-0 rounded-lg"
                   initial={false}
-                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  transition={{ type: "spring", stiffness: 350, damping: 28 }}
                 />
               )}
               <div className="relative z-10 text-sm font-semibold">{zyklus.shortName}</div>
@@ -566,7 +568,7 @@ function ZyklusToggle({ zyklen, selectedZyklus, onZyklusChange }: ZyklusTogglePr
                 {zyklus.id === 1 ? "KG-2" : zyklus.id === 2 ? "3-6" : "7-9"}
               </div>
               {/* Tooltip on hover */}
-              <div className="bg-text text-bg pointer-events-none absolute -top-10 left-1/2 z-50 -translate-x-1/2 rounded px-2 py-1 text-xs whitespace-nowrap opacity-0 transition-opacity group-hover:opacity-100">
+              <div className="bg-text text-bg pointer-events-none absolute -top-10 left-1/2 z-50 -translate-x-1/2 rounded px-2 py-1 text-xs whitespace-nowrap opacity-0 transition-opacity duration-200 group-hover:opacity-100">
                 {zyklus.description}
               </div>
             </motion.button>
@@ -659,7 +661,7 @@ function ActiveFilterChips({
       initial={{ opacity: 0, height: 0 }}
       animate={{ opacity: 1, height: "auto" }}
       exit={{ opacity: 0, height: 0 }}
-      transition={{ duration: 0.2, ease: "easeOut" }}
+      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
       className="mb-5 overflow-hidden"
     >
       <div className="bg-surface/50 border-border/50 rounded-lg border p-3">
@@ -672,15 +674,15 @@ function ActiveFilterChips({
             {chips.map((chip, index) => (
               <motion.span
                 key={chip.type}
-                initial={{ opacity: 0, scale: 0.8, y: -10 }}
+                initial={{ opacity: 0, scale: 0.9, y: -8 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.8, y: -10 }}
+                exit={{ opacity: 0, scale: 0.9, y: -8 }}
                 transition={{
-                  duration: 0.2,
-                  delay: index * 0.05,
-                  ease: "easeOut",
+                  duration: 0.25,
+                  delay: index * 0.04,
+                  ease: [0.22, 1, 0.36, 1],
                 }}
-                className="group inline-flex items-center gap-1.5 rounded-full py-1.5 pr-1.5 pl-3 text-xs font-semibold shadow-sm transition-shadow hover:shadow-md"
+                className="group inline-flex items-center gap-1.5 rounded-full py-1.5 pr-1.5 pl-3 text-xs font-semibold shadow-sm transition-shadow duration-300 hover:shadow-md"
                 style={{
                   backgroundColor: `${chip.color}18`,
                   color: chip.color,
@@ -824,25 +826,32 @@ function FachbereichAccordion({
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             className="overflow-hidden"
           >
             <div className="border-border bg-bg/50 border-t px-2 py-2">
               <div className="space-y-1">
-                {fachbereich.kompetenzbereiche.map((kb, kbIndex) => (
-                  <KompetenzbereichItem
-                    key={kb.code}
-                    kompetenzbereich={kb}
-                    fachbereichColor={fachbereich.color}
-                    isSelected={selectedKompetenzbereich === kb.code}
-                    isExpanded={expandedKompetenzbereiche.has(kb.code)}
-                    selectedKompetenz={selectedKompetenz}
-                    onSelect={() => onKompetenzbereichSelect(kb.code)}
-                    onToggleExpand={() => onKompetenzbereichToggle(kb.code)}
-                    onKompetenzSelect={onKompetenzSelect}
-                    index={kbIndex}
-                  />
-                ))}
+                {[...fachbereich.kompetenzbereiche]
+                  .sort((a, b) => {
+                    // Extract the numeric part from codes like "D.1", "MA.2", etc.
+                    const numA = parseInt(a.code.split(".").pop() || "0", 10);
+                    const numB = parseInt(b.code.split(".").pop() || "0", 10);
+                    return numA - numB;
+                  })
+                  .map((kb, kbIndex) => (
+                    <KompetenzbereichItem
+                      key={kb.code}
+                      kompetenzbereich={kb}
+                      fachbereichColor={fachbereich.color}
+                      isSelected={selectedKompetenzbereich === kb.code}
+                      isExpanded={expandedKompetenzbereiche.has(kb.code)}
+                      selectedKompetenz={selectedKompetenz}
+                      onSelect={() => onKompetenzbereichSelect(kb.code)}
+                      onToggleExpand={() => onKompetenzbereichToggle(kb.code)}
+                      onKompetenzSelect={onKompetenzSelect}
+                      index={kbIndex}
+                    />
+                  ))}
               </div>
             </div>
           </motion.div>
