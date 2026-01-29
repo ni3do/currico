@@ -214,6 +214,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
  * Record a download without actually downloading the file
  * Returns the download URL for the client to use
  */
+
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   // Authentication check
   const userId = await getCurrentUserId();
