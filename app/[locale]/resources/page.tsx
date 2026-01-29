@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
+import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
@@ -74,9 +75,139 @@ export default function ResourcesPage() {
   const [profilesLoading, setProfilesLoading] = useState(false);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [profileSearchQuery, setProfileSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<string>(searchParams.get("sort") || "newest");
+  const [currentPage, setCurrentPage] = useState<number>(
+    parseInt(searchParams.get("page") || "1", 10)
+  );
+  const [wishlistedIds, setWishlistedIds] = useState<Set<string>>(new Set());
+
+  // Auth session for wishlist
+  const { status: sessionStatus } = useSession();
+  const isAuthenticated = sessionStatus === "authenticated";
 
   // Fetch curriculum data from API
   const { fachbereiche, getFachbereichByCode } = useCurriculum();
+
+  // Fetch user's wishlist
+  useEffect(() => {
+    const fetchWishlist = async () => {
+      if (!isAuthenticated) return;
+      try {
+        const response = await fetch("/api/user/wishlist");
+        if (response.ok) {
+          const data = await response.json();
+          const ids = new Set<string>(data.items.map((item: { id: string }) => item.id));
+          setWishlistedIds(ids);
+        }
+      } catch (error) {
+        console.error("Error fetching wishlist:", error);
+      }
+    };
+    fetchWishlist();
+  }, [isAuthenticated]);
+
+  // Handle wishlist toggle
+  const handleWishlistToggle = useCallback(
+    async (resourceId: string, currentState: boolean): Promise<boolean> => {
+      if (!isAuthenticated) {
+        router.push("/login");
+        return false;
+      }
+
+      try {
+        if (currentState) {
+          // Remove from wishlist
+          const response = await fetch(`/api/user/wishlist?resourceId=${resourceId}`, {
+            method: "DELETE",
+          });
+          if (response.ok) {
+            setWishlistedIds((prev) => {
+              const next = new Set(prev);
+              next.delete(resourceId);
+              return next;
+            });
+            return true;
+          }
+        } else {
+          // Add to wishlist
+          const response = await fetch("/api/user/wishlist", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ resourceId }),
+          });
+          if (response.ok) {
+            setWishlistedIds((prev) => new Set(prev).add(resourceId));
+            return true;
+          }
+        }
+      } catch (error) {
+        console.error("Error toggling wishlist:", error);
+      }
+      return false;
+    },
+    [isAuthenticated, router]
+  );
+
+  // State for followed profile IDs
+  const [followingIds, setFollowingIds] = useState<Set<string>>(new Set());
+
+  // Fetch user's following list
+  useEffect(() => {
+    const fetchFollowing = async () => {
+      if (!isAuthenticated) return;
+      try {
+        const response = await fetch("/api/user/following");
+        if (response.ok) {
+          const data = await response.json();
+          const ids = new Set<string>(data.sellers.map((item: { id: string }) => item.id));
+          setFollowingIds(ids);
+        }
+      } catch (error) {
+        console.error("Error fetching following:", error);
+      }
+    };
+    fetchFollowing();
+  }, [isAuthenticated]);
+
+  // Handle follow toggle
+  const handleFollowToggle = useCallback(
+    async (profileId: string, currentState: boolean): Promise<boolean> => {
+      if (!isAuthenticated) {
+        router.push("/login");
+        return false;
+      }
+
+      try {
+        if (currentState) {
+          // Unfollow
+          const response = await fetch(`/api/users/${profileId}/follow`, {
+            method: "DELETE",
+          });
+          if (response.ok) {
+            setFollowingIds((prev) => {
+              const next = new Set(prev);
+              next.delete(profileId);
+              return next;
+            });
+            return true;
+          }
+        } else {
+          // Follow
+          const response = await fetch(`/api/users/${profileId}/follow`, {
+            method: "POST",
+          });
+          if (response.ok) {
+            setFollowingIds((prev) => new Set(prev).add(profileId));
+            return true;
+          }
+        }
+      } catch (error) {
+        console.error("Error toggling follow:", error);
+      }
+      return false;
+    },
+    [isAuthenticated, router]
+  );
 
   // Initialize filters from URL params
   const initialFilters = useMemo<LP21FilterState>(() => {
@@ -106,45 +237,84 @@ export default function ResourcesPage() {
     setFilters(initialFilters);
   }, [initialFilters]);
 
-  // Update URL when filters change from sidebar
+  // Build URL params helper
+  const buildUrlParams = useCallback(
+    (currentFilters: LP21FilterState, currentSort: string, page: number = 1) => {
+      const params = new URLSearchParams();
+      if (currentFilters.zyklus) params.set("zyklus", currentFilters.zyklus.toString());
+      if (currentFilters.fachbereich) params.set("fachbereich", currentFilters.fachbereich);
+      if (currentFilters.kompetenzbereich)
+        params.set("kompetenzbereich", currentFilters.kompetenzbereich);
+      if (currentFilters.kompetenz) params.set("kompetenz", currentFilters.kompetenz);
+      if (currentFilters.searchQuery) params.set("search", currentFilters.searchQuery);
+      if (currentFilters.priceType) params.set("priceType", currentFilters.priceType);
+      if (currentFilters.maxPrice !== null)
+        params.set("maxPrice", currentFilters.maxPrice.toString());
+      if (currentFilters.formats.length > 0)
+        params.set("formats", currentFilters.formats.join(","));
+      if (currentFilters.materialScope) params.set("materialScope", currentFilters.materialScope);
+      if (currentSort && currentSort !== "newest") params.set("sort", currentSort);
+      if (page > 1) params.set("page", page.toString());
+      return params;
+    },
+    []
+  );
+
+  // Update URL when filters change from sidebar (reset to page 1)
   const handleFiltersChange = useCallback(
     (newFilters: LP21FilterState) => {
       setFilters(newFilters);
-
-      // Build URL params
-      const params = new URLSearchParams();
-      if (newFilters.zyklus) params.set("zyklus", newFilters.zyklus.toString());
-      if (newFilters.fachbereich) params.set("fachbereich", newFilters.fachbereich);
-      if (newFilters.kompetenzbereich) params.set("kompetenzbereich", newFilters.kompetenzbereich);
-      if (newFilters.kompetenz) params.set("kompetenz", newFilters.kompetenz);
-      if (newFilters.searchQuery) params.set("search", newFilters.searchQuery);
-      if (newFilters.priceType) params.set("priceType", newFilters.priceType);
-      if (newFilters.maxPrice !== null) params.set("maxPrice", newFilters.maxPrice.toString());
-      if (newFilters.formats.length > 0) params.set("formats", newFilters.formats.join(","));
-      if (newFilters.materialScope) params.set("materialScope", newFilters.materialScope);
-
-      // Update URL without navigation
+      setCurrentPage(1);
+      const params = buildUrlParams(newFilters, sortBy, 1);
       const newUrl = params.toString() ? `/resources?${params.toString()}` : "/resources";
       router.replace(newUrl, { scroll: false });
     },
-    [router]
+    [router, sortBy, buildUrlParams]
   );
 
-  // Map Fachbereich code to subject name for API compatibility
+  // Handle sort change (reset to page 1)
+  const handleSortChange = useCallback(
+    (newSort: string) => {
+      setSortBy(newSort);
+      setCurrentPage(1);
+      const params = buildUrlParams(filters, newSort, 1);
+      const newUrl = params.toString() ? `/resources?${params.toString()}` : "/resources";
+      router.replace(newUrl, { scroll: false });
+    },
+    [router, filters, buildUrlParams]
+  );
+
+  // Handle page change
+  const handlePageChange = useCallback(
+    (newPage: number) => {
+      setCurrentPage(newPage);
+      const params = buildUrlParams(filters, sortBy, newPage);
+      const newUrl = params.toString() ? `/resources?${params.toString()}` : "/resources";
+      router.replace(newUrl, { scroll: false });
+      // Scroll to top of results
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    },
+    [router, filters, sortBy, buildUrlParams]
+  );
+
+  // Map Fachbereich code to subject code for API compatibility
   const mapFachbereichToSubject = useCallback(
     (code: string | null): string => {
       if (!code) return "";
       const fachbereich = getFachbereichByCode(code);
-      return fachbereich?.name || code;
+      return fachbereich?.code || code;
     },
     [getFachbereichByCode]
   );
 
   const fetchResources = useCallback(
-    async (currentFilters: LP21FilterState) => {
+    async (currentFilters: LP21FilterState, currentSort: string, page: number = 1) => {
       setLoading(true);
       try {
         const params = new URLSearchParams();
+
+        // Pagination
+        params.set("page", page.toString());
 
         // Map LP21 filters to API parameters
         if (currentFilters.fachbereich) {
@@ -163,6 +333,26 @@ export default function ResourcesPage() {
           params.set("competency", currentFilters.kompetenzbereich);
         }
 
+        // Price filter
+        if (currentFilters.maxPrice !== null) {
+          params.set("maxPrice", currentFilters.maxPrice.toString());
+        }
+
+        // Format filter
+        if (currentFilters.formats.length > 0) {
+          params.set("formats", currentFilters.formats.join(","));
+        }
+
+        // Material scope filter (single vs bundle)
+        if (currentFilters.materialScope) {
+          params.set("materialScope", currentFilters.materialScope);
+        }
+
+        // Sort parameter
+        if (currentSort) {
+          params.set("sort", currentSort);
+        }
+
         const response = await fetch(`/api/resources?${params.toString()}`);
         if (response.ok) {
           const data = await response.json();
@@ -179,8 +369,8 @@ export default function ResourcesPage() {
   );
 
   useEffect(() => {
-    fetchResources(filters);
-  }, [filters, fetchResources]);
+    fetchResources(filters, sortBy, currentPage);
+  }, [filters, sortBy, currentPage, fetchResources]);
 
   // Fetch profiles
   const fetchProfiles = useCallback(async (query: string) => {
@@ -279,28 +469,40 @@ export default function ResourcesPage() {
         </div>
 
         {/* Tabs: Resources / Profiles */}
-        <div className="border-border mb-6 flex gap-4 border-b">
+        <div className="border-border relative mb-6 flex gap-4 border-b">
           <button
             onClick={() => setActiveTab("resources")}
-            className={`flex items-center gap-2 pb-4 text-sm font-medium transition-colors ${
-              activeTab === "resources"
-                ? "border-primary text-primary border-b-2"
-                : "text-text-muted hover:text-text"
+            className={`relative flex items-center gap-2 pb-4 text-sm font-medium transition-colors duration-300 ${
+              activeTab === "resources" ? "text-primary" : "text-text-muted hover:text-text"
             }`}
           >
             <FileText className="h-4 w-4" />
             Ressourcen
+            {activeTab === "resources" && (
+              <motion.div
+                className="bg-primary absolute right-0 -bottom-px left-0 h-0.5"
+                layoutId="activeTabIndicator"
+                initial={false}
+                transition={{ type: "spring", stiffness: 350, damping: 30 }}
+              />
+            )}
           </button>
           <button
             onClick={() => setActiveTab("profiles")}
-            className={`flex items-center gap-2 pb-4 text-sm font-medium transition-colors ${
-              activeTab === "profiles"
-                ? "border-primary text-primary border-b-2"
-                : "text-text-muted hover:text-text"
+            className={`relative flex items-center gap-2 pb-4 text-sm font-medium transition-colors duration-300 ${
+              activeTab === "profiles" ? "text-primary" : "text-text-muted hover:text-text"
             }`}
           >
             <Users className="h-4 w-4" />
             Profile
+            {activeTab === "profiles" && (
+              <motion.div
+                className="bg-primary absolute right-0 -bottom-px left-0 h-0.5"
+                layoutId="activeTabIndicator"
+                initial={false}
+                transition={{ type: "spring", stiffness: 350, damping: 30 }}
+              />
+            )}
           </button>
         </div>
 
@@ -356,22 +558,51 @@ export default function ResourcesPage() {
                   <span className="text-text font-semibold">{profilePagination.total}</span> Profile
                   gefunden
                 </p>
-                <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
+                <motion.div
+                  className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3"
+                  initial="hidden"
+                  animate="visible"
+                  variants={{
+                    hidden: { opacity: 0 },
+                    visible: {
+                      opacity: 1,
+                      transition: {
+                        staggerChildren: 0.06,
+                        delayChildren: 0.02,
+                      },
+                    },
+                  }}
+                >
                   {profiles.map((profile) => (
-                    <ProfileCard
+                    <motion.div
                       key={profile.id}
-                      id={profile.id}
-                      name={profile.name}
-                      image={profile.image}
-                      bio={profile.bio}
-                      subjects={profile.subjects}
-                      resourceCount={profile.resourceCount}
-                      followerCount={profile.followerCount}
-                      isVerified={profile.role === "SELLER"}
-                      getSubjectPillClass={getSubjectPillClass}
-                    />
+                      variants={{
+                        hidden: { opacity: 0, y: 16, scale: 0.98 },
+                        visible: {
+                          opacity: 1,
+                          y: 0,
+                          scale: 1,
+                          transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
+                        },
+                      }}
+                    >
+                      <ProfileCard
+                        id={profile.id}
+                        name={profile.name}
+                        image={profile.image}
+                        bio={profile.bio}
+                        subjects={profile.subjects}
+                        resourceCount={profile.resourceCount}
+                        followerCount={profile.followerCount}
+                        isVerified={profile.role === "SELLER"}
+                        getSubjectPillClass={getSubjectPillClass}
+                        showFollowButton={true}
+                        isFollowing={followingIds.has(profile.id)}
+                        onFollowToggle={handleFollowToggle}
+                      />
+                    </motion.div>
                   ))}
-                </div>
+                </motion.div>
               </>
             )}
           </div>
@@ -404,7 +635,7 @@ export default function ResourcesPage() {
                   </span>
                 )}
                 <ChevronDown
-                  className={`h-4 w-4 transition-transform ${mobileFiltersOpen ? "rotate-180" : ""}`}
+                  className={`h-4 w-4 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${mobileFiltersOpen ? "rotate-180" : ""}`}
                 />
               </button>
 
@@ -415,7 +646,7 @@ export default function ResourcesPage() {
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: "auto" }}
                     exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.2 }}
+                    transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                     className="mt-4 overflow-hidden"
                   >
                     <LP21FilterSidebar filters={filters} onFiltersChange={handleFiltersChange} />
@@ -463,10 +694,12 @@ export default function ResourcesPage() {
                   <label className="text-text-muted text-sm whitespace-nowrap">
                     {t("results.sortLabel")}
                   </label>
-                  <select className="border-border bg-bg text-text-secondary focus:border-primary focus:ring-focus-ring rounded-lg border px-3 py-2.5 text-sm focus:ring-2 focus:outline-none">
+                  <select
+                    value={sortBy}
+                    onChange={(e) => handleSortChange(e.target.value)}
+                    className="border-border bg-bg text-text-secondary focus:border-primary focus:ring-focus-ring rounded-lg border px-3 py-2.5 text-sm focus:ring-2 focus:outline-none"
+                  >
                     <option value="newest">{t("results.sortOptions.newest")}</option>
-                    <option value="popular">{t("results.sortOptions.popular")}</option>
-                    <option value="rating">{t("results.sortOptions.rating")}</option>
                     <option value="price-low">{t("results.sortOptions.priceLow")}</option>
                     <option value="price-high">{t("results.sortOptions.priceHigh")}</option>
                   </select>
@@ -514,31 +747,62 @@ export default function ResourcesPage() {
                   <p className="text-text-muted text-sm">{t("empty.description")}</p>
                 </div>
               ) : (
-                <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3">
+                <motion.div
+                  className="grid gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3"
+                  initial="hidden"
+                  animate="visible"
+                  variants={{
+                    hidden: { opacity: 0 },
+                    visible: {
+                      opacity: 1,
+                      transition: {
+                        staggerChildren: 0.05,
+                        delayChildren: 0.02,
+                      },
+                    },
+                  }}
+                >
                   {resources.map((resource) => (
-                    <ResourceCard
+                    <motion.div
                       key={resource.id}
-                      id={resource.id}
-                      title={resource.title}
-                      description={resource.description}
-                      subject={resource.subject}
-                      cycle={resource.cycle}
-                      priceFormatted={resource.priceFormatted}
-                      previewUrl={resource.previewUrl}
-                      seller={{ displayName: resource.seller.display_name }}
-                      subjectPillClass={getSubjectPillClass(resource.subject)}
-                    />
+                      variants={{
+                        hidden: { opacity: 0, y: 16, scale: 0.98 },
+                        visible: {
+                          opacity: 1,
+                          y: 0,
+                          scale: 1,
+                          transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
+                        },
+                      }}
+                    >
+                      <ResourceCard
+                        id={resource.id}
+                        title={resource.title}
+                        description={resource.description}
+                        subject={resource.subject}
+                        cycle={resource.cycle}
+                        priceFormatted={resource.priceFormatted}
+                        previewUrl={resource.previewUrl}
+                        seller={{ displayName: resource.seller.display_name }}
+                        subjectPillClass={getSubjectPillClass(resource.subject)}
+                        showWishlist={true}
+                        isWishlisted={wishlistedIds.has(resource.id)}
+                        onWishlistToggle={handleWishlistToggle}
+                      />
+                    </motion.div>
                   ))}
-                </div>
+                </motion.div>
               )}
 
               {/* Pagination */}
               {pagination.totalPages > 1 && (
                 <div className="mt-12 flex justify-center">
                   <nav className="flex items-center gap-1">
+                    {/* Previous button */}
                     <button
+                      onClick={() => handlePageChange(currentPage - 1)}
                       className="text-text-muted hover:bg-surface rounded-md px-3 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
-                      disabled={pagination.page === 1}
+                      disabled={currentPage === 1}
                     >
                       <svg
                         className="h-5 w-5"
@@ -554,23 +818,66 @@ export default function ResourcesPage() {
                         />
                       </svg>
                     </button>
-                    {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map(
-                      (pageNum) => (
-                        <button
-                          key={pageNum}
-                          className={`min-w-[40px] rounded-md px-4 py-2 text-sm font-medium transition-colors ${
-                            pageNum === pagination.page
-                              ? "bg-primary text-text-on-accent"
-                              : "text-text-secondary hover:bg-surface"
-                          }`}
-                        >
-                          {pageNum}
-                        </button>
-                      )
-                    )}
+
+                    {/* Page numbers with ellipsis for large page counts */}
+                    {(() => {
+                      const pages: (number | string)[] = [];
+                      const totalPages = pagination.totalPages;
+                      const current = currentPage;
+
+                      if (totalPages <= 7) {
+                        // Show all pages
+                        for (let i = 1; i <= totalPages; i++) pages.push(i);
+                      } else {
+                        // Always show first page
+                        pages.push(1);
+
+                        if (current > 3) {
+                          pages.push("...");
+                        }
+
+                        // Show pages around current
+                        const start = Math.max(2, current - 1);
+                        const end = Math.min(totalPages - 1, current + 1);
+                        for (let i = start; i <= end; i++) pages.push(i);
+
+                        if (current < totalPages - 2) {
+                          pages.push("...");
+                        }
+
+                        // Always show last page
+                        pages.push(totalPages);
+                      }
+
+                      return pages.map((pageNum, idx) =>
+                        pageNum === "..." ? (
+                          <span
+                            key={`ellipsis-${idx}`}
+                            className="text-text-muted px-2 py-2 text-sm"
+                          >
+                            ...
+                          </span>
+                        ) : (
+                          <button
+                            key={pageNum}
+                            onClick={() => handlePageChange(pageNum as number)}
+                            className={`min-w-[40px] rounded-md px-4 py-2 text-sm font-medium transition-all duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                              pageNum === currentPage
+                                ? "bg-primary text-text-on-accent shadow-sm"
+                                : "text-text-secondary hover:bg-surface hover:scale-105 active:scale-95"
+                            }`}
+                          >
+                            {pageNum}
+                          </button>
+                        )
+                      );
+                    })()}
+
+                    {/* Next button */}
                     <button
+                      onClick={() => handlePageChange(currentPage + 1)}
                       className="text-text-secondary hover:bg-surface rounded-md px-3 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
-                      disabled={pagination.page === pagination.totalPages}
+                      disabled={currentPage === pagination.totalPages}
                     >
                       <svg
                         className="h-5 w-5"

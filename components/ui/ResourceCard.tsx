@@ -1,7 +1,9 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
+import { Heart } from "lucide-react";
 import { getSubjectTextColor } from "@/lib/constants/subject-colors";
 
 export interface ResourceCardProps {
@@ -26,6 +28,12 @@ export interface ResourceCardProps {
   subjectPillClass?: string;
   /** Show/hide the price badge overlay on image */
   showPriceBadge?: boolean;
+  /** Whether this resource is in the user's wishlist */
+  isWishlisted?: boolean;
+  /** Callback when wishlist button is clicked */
+  onWishlistToggle?: (id: string, currentState: boolean) => Promise<boolean>;
+  /** Show/hide the wishlist heart icon */
+  showWishlist?: boolean;
 }
 
 export function ResourceCard({
@@ -42,11 +50,39 @@ export function ResourceCard({
   href,
   subjectPillClass,
   showPriceBadge = true,
+  isWishlisted: initialWishlisted = false,
+  onWishlistToggle,
+  showWishlist = false,
 }: ResourceCardProps) {
+  const [isWishlisted, setIsWishlisted] = useState(initialWishlisted);
+  const [wishlistLoading, setWishlistLoading] = useState(false);
+
+  // Sync with parent's wishlist state (e.g., when wishlist is fetched after mount)
+  useEffect(() => {
+    setIsWishlisted(initialWishlisted);
+  }, [initialWishlisted]);
+
   const isCompact = variant === "compact";
   const linkHref = href ?? `/resources/${id}`;
   const isFree = priceFormatted === "Gratis" || priceFormatted === "Free";
   const shouldShowPriceBadge = showPriceBadge && priceFormatted;
+
+  const handleWishlistClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!onWishlistToggle || wishlistLoading) return;
+
+    setWishlistLoading(true);
+    try {
+      const success = await onWishlistToggle(id, isWishlisted);
+      if (success) {
+        setIsWishlisted(!isWishlisted);
+      }
+    } finally {
+      setWishlistLoading(false);
+    }
+  };
 
   const cardContent = (
     <>
@@ -57,7 +93,7 @@ export function ResourceCard({
             src={previewUrl}
             alt={title}
             fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
@@ -87,6 +123,24 @@ export function ResourceCard({
             {priceFormatted}
           </span>
         )}
+
+        {/* Wishlist Heart - Top Left */}
+        {showWishlist && (
+          <button
+            onClick={handleWishlistClick}
+            disabled={wishlistLoading}
+            className={`absolute top-3 left-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 shadow-md backdrop-blur-sm transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-110 hover:bg-white active:scale-95 disabled:opacity-50 ${
+              isWishlisted ? "text-red-500" : "text-text-muted hover:text-red-500"
+            }`}
+            aria-label={isWishlisted ? "Aus Wunschliste entfernen" : "Zur Wunschliste hinzufügen"}
+          >
+            <Heart
+              className={`h-5 w-5 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${wishlistLoading ? "animate-pulse" : ""} ${isWishlisted ? "scale-100" : "scale-90 group-hover:scale-100"}`}
+              fill={isWishlisted ? "currentColor" : "none"}
+              strokeWidth={2}
+            />
+          </button>
+        )}
       </div>
 
       {/* Content */}
@@ -108,7 +162,7 @@ export function ResourceCard({
 
         {/* Title - Primary Heading Style */}
         <h3
-          className={`text-text group-hover:text-primary line-clamp-2 font-bold transition-colors ${
+          className={`text-text group-hover:text-primary line-clamp-2 font-bold transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
             isCompact ? "text-base" : "mb-2 text-lg leading-snug"
           }`}
         >
@@ -127,9 +181,11 @@ export function ResourceCard({
         {!isCompact &&
           (footer ?? (
             <div className="border-border-subtle flex items-center justify-between border-t pt-4">
-              <span className="text-text-muted text-sm">{seller?.displayName || "Anonymous"}</span>
+              <span className="text-text-muted text-sm transition-colors duration-300">
+                {seller?.displayName || "Anonymous"}
+              </span>
               <svg
-                className="text-text-muted group-hover:text-primary h-5 w-5 transition-transform duration-200 group-hover:translate-x-1"
+                className="text-text-muted group-hover:text-primary h-5 w-5 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-1.5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -147,9 +203,8 @@ export function ResourceCard({
     </>
   );
 
-  // Consistent hover effect for both variants
-  const cardClasses =
-    "card group flex h-full flex-col overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-lg";
+  // Consistent hover effect for both variants - smooth premium feel
+  const cardClasses = "card group flex h-full flex-col overflow-hidden cursor-pointer";
 
   return (
     <Link href={linkHref} className={cardClasses}>

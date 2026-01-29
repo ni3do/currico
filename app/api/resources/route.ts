@@ -30,8 +30,8 @@ import { getStorage } from "@/lib/storage";
  * Query params:
  *   - page: page number (default: 1)
  *   - limit: results per page (default: 20, max: 100)
- *   - subject: filter by subject
- *   - cycle: filter by cycle
+ *   - subject: filter by subject code (e.g., "MA", "DE", "NMG")
+ *   - cycle: filter by cycle (1, 2, or 3)
  *   - search: search in title and description
  *   - sort: "newest" | "price-low" | "price-high"
  *   - competency: filter by LP21 competency code (fuzzy match)
@@ -39,6 +39,8 @@ import { getStorage } from "@/lib/storage";
  *   - bne: filter by BNE theme code
  *   - mi_integrated: "true" to show only M&I integrated resources
  *   - lehrmittel: filter by lehrmittel ID
+ *   - maxPrice: maximum price in CHF (e.g., "10" for CHF 10)
+ *   - formats: comma-separated format IDs (pdf,word,ppt,excel,image,canva)
  */
 export async function GET(request: NextRequest) {
   // Rate limiting check
@@ -73,6 +75,11 @@ export async function GET(request: NextRequest) {
     const bneCode = searchParams.get("bne");
     const miIntegrated = searchParams.get("mi_integrated") === "true";
     const lehrmittelId = searchParams.get("lehrmittel");
+
+    // Additional filters
+    const maxPrice = searchParams.get("maxPrice");
+    const formats = searchParams.get("formats");
+    const materialScope = searchParams.get("materialScope");
 
     const skip = (page - 1) * limit;
 
@@ -225,6 +232,53 @@ export async function GET(request: NextRequest) {
         },
       };
     }
+
+    // Price filter (maxPrice in CHF, stored in cents)
+    if (maxPrice !== null) {
+      const maxPriceValue = parseInt(maxPrice, 10);
+      if (!isNaN(maxPriceValue)) {
+        // Convert CHF to cents (price stored in cents)
+        // maxPrice=0 means free resources only
+        where.price = {
+          lte: maxPriceValue * 100,
+        };
+      }
+    }
+
+    // Format filter (pdf, word, ppt, excel, image, canva)
+    if (formats) {
+      const formatList = formats.split(",").map((f) => f.trim().toLowerCase());
+      // Map format IDs to file extensions/types
+      const formatMapping: Record<string, string[]> = {
+        pdf: ["pdf"],
+        word: ["doc", "docx"],
+        ppt: ["ppt", "pptx"],
+        excel: ["xls", "xlsx"],
+        image: ["jpg", "jpeg", "png", "gif", "webp"],
+        canva: ["canva"],
+      };
+      const allowedExtensions: string[] = [];
+      for (const format of formatList) {
+        if (formatMapping[format]) {
+          allowedExtensions.push(...formatMapping[format]);
+        }
+      }
+      if (allowedExtensions.length > 0) {
+        // Filter by file_url extension using AND with OR conditions
+        where.AND = [
+          ...(Array.isArray(where.AND) ? where.AND : []),
+          {
+            OR: allowedExtensions.map((ext) => ({
+              file_url: { endsWith: `.${ext}` },
+            })),
+          },
+        ];
+      }
+    }
+
+    // Material scope filter - single resources only (bundles have their own endpoint)
+    // Note: "bundle" scope would need to query the Bundle model separately
+    // For now, the resources endpoint only returns individual resources
 
     // Build orderBy
     let orderBy: Record<string, string> = { created_at: "desc" };
