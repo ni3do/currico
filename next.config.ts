@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'images.unsplash.com',
       },
+      {
+        // Infomaniak S3 storage for uploaded files
+        protocol: 'https',
+        hostname: '*.s3.swiss-backup04.infomaniak.com',
+      },
     ],
   },
   webpack: (config, { dev }) => {
