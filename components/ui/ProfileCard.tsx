@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
-import { FileText, Users, UserPlus, UserCheck } from "lucide-react";
+import { FileText, Users, UserPlus, UserCheck, CheckCircle } from "lucide-react";
 import { getSubjectPillClass as defaultGetSubjectPillClass } from "@/lib/constants/subject-colors";
 
 export interface ProfileCardProps {
@@ -95,13 +95,7 @@ export function ProfileCard({
             </h3>
             {isVerified && (
               <span className="text-success inline-flex items-center gap-1 text-xs">
-                <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+                <CheckCircle className="h-3.5 w-3.5" />
                 Verifiziert
               </span>
             )}
@@ -169,11 +163,11 @@ export function ProfileCard({
           <div className="text-text-muted flex items-center gap-4 text-sm">
             <span className="flex items-center gap-1.5 transition-colors duration-300">
               <FileText className="h-4 w-4" />
-              {resourceCount}
+              <span className="font-medium">{resourceCount}</span>
             </span>
             <span className="flex items-center gap-1.5 transition-colors duration-300">
               <Users className="h-4 w-4" />
-              {displayedFollowerCount}
+              <span className="font-medium">{displayedFollowerCount}</span>
             </span>
           </div>
           <svg

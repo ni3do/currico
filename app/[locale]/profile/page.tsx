@@ -14,11 +14,41 @@ interface ProfileData {
   cycles: string[];
 }
 
+interface WishlistItem {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  priceFormatted: string;
+  previewUrl: string | null;
+  subject: string;
+  cycle: string;
+  seller: {
+    id: string;
+    displayName: string | null;
+    image: string | null;
+  };
+}
+
+interface WishlistData {
+  items: WishlistItem[];
+  stats: {
+    totalItems: number;
+  };
+}
+
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<"profile" | "library" | "wishlist">("profile");
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const [wishlistData, setWishlistData] = useState<WishlistData | null>(null);
+  const [wishlistLoading, setWishlistLoading] = useState(false);
+  const [wishlistError, setWishlistError] = useState<string | null>(null);
+  const [removingId, setRemovingId] = useState<string | null>(null);
+
+  const [followingCount, setFollowingCount] = useState<number | null>(null);
 
   useEffect(() => {
     async function fetchProfile() {
@@ -44,6 +74,76 @@ export default function ProfilePage() {
     fetchProfile();
   }, []);
 
+  useEffect(() => {
+    async function fetchWishlist() {
+      setWishlistLoading(true);
+      setWishlistError(null);
+      try {
+        const response = await fetch("/api/user/wishlist");
+        if (!response.ok) {
+          if (response.status === 401) {
+            setWishlistError("Bitte melden Sie sich an");
+            return;
+          }
+          throw new Error("Fehler beim Laden der Wunschliste");
+        }
+        const data = await response.json();
+        setWishlistData(data);
+      } catch (err) {
+        console.error("Error fetching wishlist:", err);
+        setWishlistError("Fehler beim Laden der Wunschliste");
+      } finally {
+        setWishlistLoading(false);
+      }
+    }
+
+    // Fetch on initial load for stats, or when switching to wishlist tab
+    if (!wishlistData) {
+      fetchWishlist();
+    }
+  }, [wishlistData]);
+
+  useEffect(() => {
+    async function fetchFollowing() {
+      try {
+        const response = await fetch("/api/user/following");
+        if (response.ok) {
+          const data = await response.json();
+          setFollowingCount(data.sellers?.length ?? 0);
+        }
+      } catch (err) {
+        console.error("Error fetching following:", err);
+      }
+    }
+
+    fetchFollowing();
+  }, []);
+
+  async function handleRemoveFromWishlist(resourceId: string) {
+    setRemovingId(resourceId);
+    try {
+      const response = await fetch(`/api/user/wishlist?resourceId=${resourceId}`, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        setWishlistData((prev) => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            items: prev.items.filter((item) => item.id !== resourceId),
+            stats: {
+              totalItems: prev.stats.totalItems - 1,
+            },
+          };
+        });
+      }
+    } catch (err) {
+      console.error("Error removing from wishlist:", err);
+    } finally {
+      setRemovingId(null);
+    }
+  }
+
   const displayName = profileData?.display_name || profileData?.name || "Benutzer";
   const displayCanton = profileData?.cantons?.[0] || "Nicht angegeben";
 
@@ -54,19 +154,19 @@ export default function ProfilePage() {
       <main className="mx-auto max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-text">Mein Profil</h1>
-          <p className="mt-2 text-text-muted">
+          <h1 className="text-text text-3xl font-bold">Mein Profil</h1>
+          <p className="text-text-muted mt-2">
             Verwalten Sie Ihre Kontoinformationen und Einstellungen
           </p>
         </div>
 
         {/* Tabs */}
-        <div className="mb-8 flex gap-4 border-b border-border">
+        <div className="border-border mb-8 flex gap-4 border-b">
           <button
             onClick={() => setActiveTab("profile")}
             className={`pb-4 text-sm font-medium transition-colors ${
               activeTab === "profile"
-                ? "border-b-2 border-primary text-primary"
+                ? "border-primary text-primary border-b-2"
                 : "text-text-muted hover:text-text"
             }`}
           >
@@ -76,7 +176,7 @@ export default function ProfilePage() {
             onClick={() => setActiveTab("library")}
             className={`pb-4 text-sm font-medium transition-colors ${
               activeTab === "library"
-                ? "border-b-2 border-primary text-primary"
+                ? "border-primary text-primary border-b-2"
                 : "text-text-muted hover:text-text"
             }`}
           >
@@ -86,7 +186,7 @@ export default function ProfilePage() {
             onClick={() => setActiveTab("wishlist")}
             className={`pb-4 text-sm font-medium transition-colors ${
               activeTab === "wishlist"
-                ? "border-b-2 border-primary text-primary"
+                ? "border-primary text-primary border-b-2"
                 : "text-text-muted hover:text-text"
             }`}
           >
@@ -99,14 +199,12 @@ export default function ProfilePage() {
           <div className="grid gap-8 lg:grid-cols-3">
             {/* Main Profile Information */}
             <div className="lg:col-span-2">
-              <div className="rounded-2xl border border-border bg-surface p-8">
+              <div className="border-border bg-surface rounded-2xl border p-8">
                 <div className="mb-6 flex items-center justify-between">
-                  <h2 className="text-xl font-semibold text-text">
-                    Profil Informationen
-                  </h2>
+                  <h2 className="text-text text-xl font-semibold">Profil Informationen</h2>
                   <Link
                     href="/profile/edit"
-                    className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-text transition-colors hover:bg-surface-elevated"
+                    className="border-border text-text hover:bg-surface-elevated rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
                   >
                     Bearbeiten
                   </Link>
@@ -114,41 +212,33 @@ export default function ProfilePage() {
 
                 {isLoading ? (
                   <div className="flex items-center justify-center py-8">
-                    <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+                    <div className="border-primary h-8 w-8 animate-spin rounded-full border-4 border-t-transparent"></div>
                   </div>
                 ) : error ? (
-                  <div className="rounded-lg bg-error/10 p-4 text-center text-error">
-                    {error}
-                  </div>
+                  <div className="bg-error/10 text-error rounded-lg p-4 text-center">{error}</div>
                 ) : profileData ? (
                   <div className="space-y-6">
                     {/* Name */}
                     <div>
-                      <label className="mb-2 block text-sm font-medium text-text">
-                        Name
-                      </label>
+                      <label className="text-text mb-2 block text-sm font-medium">Name</label>
                       <div className="text-text-muted">{displayName}</div>
                     </div>
 
                     {/* Email */}
                     <div>
-                      <label className="mb-2 block text-sm font-medium text-text">
-                        E-Mail
-                      </label>
+                      <label className="text-text mb-2 block text-sm font-medium">E-Mail</label>
                       <div className="text-text-muted">{profileData.email}</div>
                     </div>
 
                     {/* Canton */}
                     <div>
-                      <label className="mb-2 block text-sm font-medium text-text">
-                        Kanton
-                      </label>
+                      <label className="text-text mb-2 block text-sm font-medium">Kanton</label>
                       <div className="text-text-muted">{displayCanton}</div>
                     </div>
 
                     {/* Subjects */}
                     <div>
-                      <label className="mb-2 block text-sm font-medium text-text">
+                      <label className="text-text mb-2 block text-sm font-medium">
                         Unterrichtsfächer
                       </label>
                       <div className="flex flex-wrap gap-2">
@@ -156,15 +246,13 @@ export default function ProfilePage() {
                           profileData.subjects.map((subject) => (
                             <span
                               key={subject}
-                              className="rounded-full bg-bg px-3 py-1 text-sm text-text"
+                              className="bg-bg text-text rounded-full px-3 py-1 text-sm"
                             >
                               {subject}
                             </span>
                           ))
                         ) : (
-                          <span className="text-text-muted">
-                            Keine Fächer ausgewählt
-                          </span>
+                          <span className="text-text-muted">Keine Fächer ausgewählt</span>
                         )}
                       </div>
                     </div>
@@ -176,43 +264,49 @@ export default function ProfilePage() {
             {/* Sidebar Stats */}
             <div className="space-y-6">
               {/* Account Stats */}
-              <div className="rounded-2xl border border-border bg-surface p-6">
-                <h3 className="mb-4 font-semibold text-text">Statistiken</h3>
+              <div className="border-border bg-surface rounded-2xl border p-6">
+                <h3 className="text-text mb-4 font-semibold">Statistiken</h3>
                 <div className="space-y-4">
                   <div>
-                    <div className="text-2xl font-bold text-primary">12</div>
-                    <div className="text-sm text-text-muted">
-                      Gekaufte Ressourcen
+                    <div className="text-primary text-2xl font-bold">12</div>
+                    <div className="text-text-muted text-sm">Gekaufte Ressourcen</div>
+                  </div>
+                  <div>
+                    <div className="text-success text-2xl font-bold">
+                      {wishlistData?.stats.totalItems ?? "–"}
                     </div>
+                    <div className="text-text-muted text-sm">Wunschliste</div>
                   </div>
                   <div>
-                    <div className="text-2xl font-bold text-success">5</div>
-                    <div className="text-sm text-text-muted">Wunschliste</div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-accent">3</div>
-                    <div className="text-sm text-text-muted">Gefolgte Verkäufer</div>
+                    <div className="text-accent text-2xl font-bold">{followingCount ?? "–"}</div>
+                    <div className="text-text-muted text-sm">Gefolgte Verkäufer</div>
                   </div>
                 </div>
               </div>
 
               {/* Quick Actions */}
-              <div className="rounded-2xl border border-border bg-surface p-6">
-                <h3 className="mb-4 font-semibold text-text">Schnellaktionen</h3>
+              <div className="border-border bg-surface rounded-2xl border p-6">
+                <h3 className="text-text mb-4 font-semibold">Schnellaktionen</h3>
                 <div className="space-y-3">
                   <Link
                     href="/resources"
-                    className="block rounded-lg border border-border bg-bg px-4 py-3 text-sm text-text transition-colors hover:bg-surface-elevated"
+                    className="border-border bg-bg text-text hover:bg-surface-elevated block rounded-lg border px-4 py-3 text-sm transition-colors"
                   >
                     Ressourcen durchsuchen
                   </Link>
                   <Link
+                    href="/following"
+                    className="border-border bg-bg text-text hover:bg-surface-elevated block rounded-lg border px-4 py-3 text-sm transition-colors"
+                  >
+                    Gefolgte Verkäufer
+                  </Link>
+                  <Link
                     href="/profile/edit"
-                    className="block rounded-lg border border-border bg-bg px-4 py-3 text-sm text-text transition-colors hover:bg-surface-elevated"
+                    className="border-border bg-bg text-text hover:bg-surface-elevated block rounded-lg border px-4 py-3 text-sm transition-colors"
                   >
                     Verkäufer werden
                   </Link>
-                  <button className="w-full rounded-lg border border-error px-4 py-3 text-sm text-error transition-colors hover:bg-error/10">
+                  <button className="border-error text-error hover:bg-error/10 w-full rounded-lg border px-4 py-3 text-sm transition-colors">
                     Abmelden
                   </button>
                 </div>
@@ -223,32 +317,23 @@ export default function ProfilePage() {
 
         {/* Library Tab */}
         {activeTab === "library" && (
-          <div className="rounded-2xl border border-border bg-surface p-8">
-            <h2 className="mb-6 text-xl font-semibold text-text">
-              Meine Bibliothek
-            </h2>
+          <div className="border-border bg-surface rounded-2xl border p-8">
+            <h2 className="text-text mb-6 text-xl font-semibold">Meine Bibliothek</h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {/* Mock library items */}
               {[1, 2, 3].map((item) => (
-                <div
-                  key={item}
-                  className="rounded-xl border border-border bg-bg p-4"
-                >
+                <div key={item} className="border-border bg-bg rounded-xl border p-4">
                   <div className="mb-3 flex items-center justify-between">
-                    <span className="rounded-full bg-surface px-2 py-1 text-xs text-text-muted">
+                    <span className="bg-surface text-text-muted rounded-full px-2 py-1 text-xs">
                       PDF
                     </span>
-                    <span className="rounded-full bg-success/20 px-2 py-1 text-xs font-medium text-success">
+                    <span className="bg-success/20 text-success rounded-full px-2 py-1 text-xs font-medium">
                       ✓ Verifiziert
                     </span>
                   </div>
-                  <h3 className="mb-2 font-semibold text-text">
-                    Bruchrechnen Übungsblätter
-                  </h3>
-                  <p className="mb-4 text-sm text-text-muted">
-                    Mathematik • Zyklus 2
-                  </p>
-                  <button className="w-full rounded-lg bg-primary px-4 py-2 text-sm font-medium text-text-on-accent transition-colors hover:bg-primary-hover">
+                  <h3 className="text-text mb-2 font-semibold">Bruchrechnen Übungsblätter</h3>
+                  <p className="text-text-muted mb-4 text-sm">Mathematik • Zyklus 2</p>
+                  <button className="bg-primary text-text-on-accent hover:bg-primary-hover w-full rounded-lg px-4 py-2 text-sm font-medium transition-colors">
                     Herunterladen
                   </button>
                 </div>
@@ -259,38 +344,83 @@ export default function ProfilePage() {
 
         {/* Wishlist Tab */}
         {activeTab === "wishlist" && (
-          <div className="rounded-2xl border border-border bg-surface p-8">
-            <h2 className="mb-6 text-xl font-semibold text-text">Wunschliste</h2>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {/* Mock wishlist items */}
-              {[1, 2].map((item) => (
-                <div
-                  key={item}
-                  className="rounded-xl border border-border bg-bg p-4"
+          <div className="border-border bg-surface rounded-2xl border p-8">
+            <h2 className="text-text mb-6 text-xl font-semibold">Wunschliste</h2>
+
+            {wishlistLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="border-primary h-8 w-8 animate-spin rounded-full border-4 border-t-transparent"></div>
+              </div>
+            ) : wishlistError ? (
+              <div className="bg-error/10 text-error rounded-lg p-4 text-center">
+                {wishlistError}
+              </div>
+            ) : wishlistData?.items.length === 0 ? (
+              <div className="py-12 text-center">
+                <svg
+                  className="text-text-muted mx-auto h-12 w-12"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  <div className="mb-3 flex items-center justify-between">
-                    <span className="rounded-full bg-surface px-2 py-1 text-xs text-text-muted">
-                      Bundle
-                    </span>
-                    <button className="text-error hover:text-error/80">
-                      <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                      </svg>
-                    </button>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                  />
+                </svg>
+                <h3 className="text-text mt-4 text-lg font-medium">Ihre Wunschliste ist leer</h3>
+                <p className="text-text-muted mt-2">
+                  Speichern Sie interessante Ressourcen für später.
+                </p>
+                <Link
+                  href="/resources"
+                  className="bg-primary text-text-on-accent hover:bg-primary-hover mt-4 inline-block rounded-lg px-6 py-2 text-sm font-medium transition-colors"
+                >
+                  Ressourcen entdecken
+                </Link>
+              </div>
+            ) : (
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {wishlistData?.items.map((item) => (
+                  <div key={item.id} className="border-border bg-bg rounded-xl border p-4">
+                    <div className="mb-3 flex items-center justify-between">
+                      <span className="bg-surface text-text-muted rounded-full px-2 py-1 text-xs">
+                        {item.subject}
+                      </span>
+                      <button
+                        onClick={() => handleRemoveFromWishlist(item.id)}
+                        disabled={removingId === item.id}
+                        className="text-error hover:text-error/80 transition-colors disabled:opacity-50"
+                        aria-label="Aus Wunschliste entfernen"
+                      >
+                        {removingId === item.id ? (
+                          <div className="border-error h-5 w-5 animate-spin rounded-full border-2 border-t-transparent"></div>
+                        ) : (
+                          <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                          </svg>
+                        )}
+                      </button>
+                    </div>
+                    <h3 className="text-text mb-2 line-clamp-2 font-semibold">{item.title}</h3>
+                    <p className="text-text-muted mb-3 text-sm">
+                      {item.subject} {item.cycle && `• ${item.cycle}`}
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-primary text-lg font-bold">{item.priceFormatted}</span>
+                      <Link
+                        href={`/resources/${item.id}`}
+                        className="bg-primary text-text-on-accent hover:bg-primary-hover rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+                      >
+                        Ansehen
+                      </Link>
+                    </div>
                   </div>
-                  <h3 className="mb-2 font-semibold text-text">
-                    NMG Experimente Bundle
-                  </h3>
-                  <p className="mb-3 text-sm text-text-muted">NMG • Zyklus 2</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-lg font-bold text-primary">CHF 25.00</span>
-                    <button className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-text-on-accent transition-colors hover:bg-primary-hover">
-                      Kaufen
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </main>

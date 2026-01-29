@@ -19,9 +19,15 @@ import {
   File,
   Loader2,
   Palette,
+  Users,
 } from "lucide-react";
 import { useCurriculum } from "@/lib/hooks/useCurriculum";
 import { FACHBEREICH_ICONS } from "@/lib/constants/subject-icons";
+import {
+  parseSearchQuery,
+  getSuggestedFilters,
+  type ParsedSearchQuery,
+} from "@/lib/search-query-parser";
 import type {
   Fachbereich,
   Kompetenzbereich,
@@ -54,8 +60,17 @@ const MATERIAL_SCOPE_OPTIONS = [
   { id: "bundle", label: "Bundle", icon: Package },
 ] as const;
 
+// Search type options
+const SEARCH_TYPE_OPTIONS = [
+  { id: "resources", label: "Ressourcen", icon: FileText },
+  { id: "profiles", label: "Profile", icon: Users },
+] as const;
+
+export type SearchType = "resources" | "profiles";
+
 // Types for filter state
 export interface LP21FilterState {
+  searchType: SearchType;
   zyklus: number | null;
   fachbereich: string | null;
   kompetenzbereich: string | null;
@@ -98,6 +113,7 @@ export function LP21FilterSidebar({
     new Set()
   );
   const [searchFocused, setSearchFocused] = useState(false);
+  const [parsedQuery, setParsedQuery] = useState<ParsedSearchQuery | null>(null);
 
   // Get available Fachbereiche based on selected Zyklus
   const availableFachbereiche = useMemo(() => {
@@ -115,7 +131,7 @@ export function LP21FilterSidebar({
     return searchByCode(filters.searchQuery).slice(0, 10);
   }, [filters.searchQuery, searchByCode]);
 
-  // Check if any filters are active
+  // Check if any filters are active (searchType is always set, so don't count it)
   const hasActiveFilters =
     filters.zyklus !== null ||
     filters.fachbereich !== null ||
@@ -126,6 +142,24 @@ export function LP21FilterSidebar({
     filters.maxPrice !== null ||
     filters.formats.length > 0 ||
     filters.materialScope !== null;
+
+  // Handler for search type change
+  const handleSearchTypeChange = useCallback(
+    (searchType: SearchType) => {
+      onFiltersChange({
+        ...filters,
+        searchType,
+        // Reset only price/format/scope filters when switching to profiles (keep curriculum filters)
+        ...(searchType === "profiles" && {
+          priceType: null,
+          maxPrice: null,
+          formats: [],
+          materialScope: null,
+        }),
+      });
+    },
+    [filters, onFiltersChange]
+  );
 
   // Handlers
   const handleZyklusChange = useCallback(
@@ -190,9 +224,52 @@ export function LP21FilterSidebar({
         ...filters,
         searchQuery: query,
       });
+
+      // Parse the query for smart suggestions
+      if (query.length >= 2) {
+        const parsed = parseSearchQuery(query);
+        if (parsed.detectedTerms.length > 0) {
+          setParsedQuery(parsed);
+        } else {
+          setParsedQuery(null);
+        }
+      } else {
+        setParsedQuery(null);
+      }
     },
     [filters, onFiltersChange]
   );
+
+  // Apply smart search suggestions
+  const handleApplySmartSearch = useCallback(() => {
+    if (!parsedQuery) return;
+
+    const suggestions = getSuggestedFilters(parsedQuery);
+    const newFilters = { ...filters };
+
+    if (suggestions.zyklus !== undefined) {
+      newFilters.zyklus = suggestions.zyklus;
+    }
+    if (suggestions.fachbereich !== undefined) {
+      newFilters.fachbereich = suggestions.fachbereich;
+      // Expand the selected Fachbereich
+      setExpandedFachbereiche(new Set([suggestions.fachbereich]));
+    }
+    if (suggestions.kompetenzbereich !== undefined) {
+      newFilters.kompetenzbereich = suggestions.kompetenzbereich;
+      // Expand the Kompetenzbereich
+      setExpandedKompetenzbereiche(new Set([suggestions.kompetenzbereich]));
+    }
+    if (suggestions.kompetenz !== undefined) {
+      newFilters.kompetenz = suggestions.kompetenz;
+    }
+
+    // Keep remaining terms as search query
+    newFilters.searchQuery = parsedQuery.remainingTerms.join(" ");
+
+    onFiltersChange(newFilters);
+    setParsedQuery(null);
+  }, [parsedQuery, filters, onFiltersChange]);
 
   const handleSearchResultSelect = useCallback(
     (result: CurriculumSearchResult) => {
@@ -251,6 +328,7 @@ export function LP21FilterSidebar({
 
   const handleClearAll = useCallback(() => {
     onFiltersChange({
+      searchType: filters.searchType, // Preserve search type
       zyklus: null,
       fachbereich: null,
       kompetenzbereich: null,
@@ -263,10 +341,10 @@ export function LP21FilterSidebar({
     });
     setExpandedFachbereiche(new Set());
     setExpandedKompetenzbereiche(new Set());
-  }, [onFiltersChange]);
+  }, [onFiltersChange, filters.searchType]);
 
   const handleRemoveFilter = useCallback(
-    (type: "zyklus" | "fachbereich" | "kompetenzbereich" | "kompetenz") => {
+    (type: FilterType, value?: string) => {
       switch (type) {
         case "zyklus":
           onFiltersChange({
@@ -296,6 +374,26 @@ export function LP21FilterSidebar({
           onFiltersChange({
             ...filters,
             kompetenz: null,
+          });
+          break;
+        case "price":
+          onFiltersChange({
+            ...filters,
+            priceType: null,
+            maxPrice: null,
+          });
+          break;
+        case "format":
+          // Remove specific format if value provided, otherwise clear all
+          onFiltersChange({
+            ...filters,
+            formats: value ? filters.formats.filter((f) => f !== value) : [],
+          });
+          break;
+        case "materialScope":
+          onFiltersChange({
+            ...filters,
+            materialScope: null,
           });
           break;
       }
@@ -395,6 +493,11 @@ export function LP21FilterSidebar({
           )}
         </div>
 
+        {/* Search Type Toggle */}
+        <SearchTypeToggle selectedType={filters.searchType} onTypeChange={handleSearchTypeChange} />
+
+        <div className="divider my-5" />
+
         {/* Active Filter Chips */}
         <AnimatePresence>
           {hasActiveFilters && (
@@ -417,7 +520,11 @@ export function LP21FilterSidebar({
               onChange={(e) => handleSearchChange(e.target.value)}
               onFocus={() => setSearchFocused(true)}
               onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
-              placeholder="Suche: Stichwort oder Code (z.B. MA.1.A)"
+              placeholder={
+                filters.searchType === "profiles"
+                  ? "Nach Lehrpersonen suchen..."
+                  : "Suche: Stichwort oder Code (z.B. MA.1.A)"
+              }
               className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 w-full rounded-lg border py-2.5 pr-4 pl-10 text-sm focus:ring-2 focus:outline-none"
             />
           </div>
@@ -455,6 +562,15 @@ export function LP21FilterSidebar({
             </div>
           )}
         </div>
+
+        {/* Smart Search Suggestions */}
+        <SmartSearchSuggestions
+          parsedQuery={parsedQuery}
+          fachbereiche={fachbereiche}
+          zyklen={zyklen}
+          onApply={handleApplySmartSearch}
+          onDismiss={() => setParsedQuery(null)}
+        />
 
         {/* Zyklus Toggle */}
         <ZyklusToggle
@@ -497,30 +613,84 @@ export function LP21FilterSidebar({
           )}
         </div>
 
-        <div className="divider my-5" />
+        {/* Show price/format/scope filters only for resources */}
+        {filters.searchType === "resources" && (
+          <>
+            <div className="divider my-5" />
 
-        {/* Price Filter */}
-        <PriceFilter
-          selectedPriceType={filters.priceType}
-          maxPrice={filters.maxPrice}
-          onPriceTypeChange={handlePriceTypeChange}
-          onMaxPriceChange={handleMaxPriceChange}
-        />
+            {/* Price Filter */}
+            <PriceFilter
+              selectedPriceType={filters.priceType}
+              maxPrice={filters.maxPrice}
+              onPriceTypeChange={handlePriceTypeChange}
+              onMaxPriceChange={handleMaxPriceChange}
+            />
 
-        <div className="divider my-5" />
+            <div className="divider my-5" />
 
-        {/* Format Filter */}
-        <FormatFilter selectedFormats={filters.formats} onFormatToggle={handleFormatToggle} />
+            {/* Format Filter */}
+            <FormatFilter selectedFormats={filters.formats} onFormatToggle={handleFormatToggle} />
 
-        <div className="divider my-5" />
+            <div className="divider my-5" />
 
-        {/* Material Scope Filter */}
-        <MaterialScopeFilter
-          selectedScope={filters.materialScope}
-          onScopeChange={handleMaterialScopeChange}
-        />
+            {/* Material Scope Filter */}
+            <MaterialScopeFilter
+              selectedScope={filters.materialScope}
+              onScopeChange={handleMaterialScopeChange}
+            />
+          </>
+        )}
       </div>
     </aside>
+  );
+}
+
+// ============ SEARCH TYPE TOGGLE ============
+interface SearchTypeToggleProps {
+  selectedType: SearchType;
+  onTypeChange: (type: SearchType) => void;
+}
+
+function SearchTypeToggle({ selectedType, onTypeChange }: SearchTypeToggleProps) {
+  return (
+    <div>
+      <h3 className="label-meta mb-3">Suche nach</h3>
+      <div className="flex gap-2">
+        {SEARCH_TYPE_OPTIONS.map((option, index) => {
+          const Icon = option.icon;
+          const isActive = selectedType === option.id;
+          return (
+            <motion.button
+              key={option.id}
+              onClick={() => onTypeChange(option.id as SearchType)}
+              className={`group relative flex flex-1 items-center justify-center gap-2 rounded-lg border-2 px-3 py-2.5 text-center transition-colors ${
+                isActive
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:bg-surface-hover"
+              }`}
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.04, duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={{ scale: 1.015, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
+              whileTap={{ scale: 0.97, transition: { duration: 0.1 } }}
+            >
+              {isActive && (
+                <motion.div
+                  layoutId="activeSearchType"
+                  className="bg-primary/10 absolute inset-0 rounded-lg"
+                  initial={false}
+                  transition={{ type: "spring", stiffness: 350, damping: 28 }}
+                />
+              )}
+              <span className="relative z-10 flex items-center gap-2">
+                <Icon className="h-4 w-4" />
+                <span className="text-sm font-semibold">{option.label}</span>
+              </span>
+            </motion.button>
+          );
+        })}
+      </div>
+    </div>
   );
 }
 
@@ -580,11 +750,20 @@ function ZyklusToggle({ zyklen, selectedZyklus, onZyklusChange }: ZyklusTogglePr
 }
 
 // ============ ACTIVE FILTER CHIPS ============
+type FilterType =
+  | "zyklus"
+  | "fachbereich"
+  | "kompetenzbereich"
+  | "kompetenz"
+  | "price"
+  | "format"
+  | "materialScope";
+
 interface ActiveFilterChipsProps {
   filters: LP21FilterState;
   fachbereiche: Fachbereich[];
   zyklen: Zyklus[];
-  onRemoveFilter: (type: "zyklus" | "fachbereich" | "kompetenzbereich" | "kompetenz") => void;
+  onRemoveFilter: (type: FilterType, value?: string) => void;
 }
 
 function ActiveFilterChips({
@@ -594,17 +773,21 @@ function ActiveFilterChips({
   onRemoveFilter,
 }: ActiveFilterChipsProps) {
   const chips: {
-    type: "zyklus" | "fachbereich" | "kompetenzbereich" | "kompetenz";
+    type: FilterType;
     label: string;
     color: string;
-    icon?: string;
+    value?: string;
   }[] = [];
+
+  // Neutral grey for non-curriculum filters (Catppuccin overlay)
+  const NEUTRAL_GREY = "#7c7f93";
 
   // Get the selected Fachbereich for color inheritance
   const selectedFb = filters.fachbereich
     ? fachbereiche.find((f) => f.code === filters.fachbereich)
     : null;
 
+  // Always show Zyklus if selected
   if (filters.zyklus !== null) {
     const zyklus = zyklen.find((z) => z.id === filters.zyklus);
     if (zyklus) {
@@ -616,28 +799,10 @@ function ActiveFilterChips({
     }
   }
 
-  if (filters.fachbereich && selectedFb) {
-    chips.push({
-      type: "fachbereich",
-      label: selectedFb.shortName,
-      color: selectedFb.color,
-    });
-  }
-
-  if (filters.kompetenzbereich) {
-    // Find the parent Fachbereich for color
-    const parentFb = fachbereiche.find((fb) =>
-      fb.kompetenzbereiche.some((kb) => kb.code === filters.kompetenzbereich)
-    );
-    chips.push({
-      type: "kompetenzbereich",
-      label: filters.kompetenzbereich,
-      color: parentFb?.color || selectedFb?.color || "#1e66f5",
-    });
-  }
-
+  // For Fachbereich hierarchy: only show the deepest selected level
+  // Priority: kompetenz > kompetenzbereich > fachbereich
   if (filters.kompetenz) {
-    // Find the parent Fachbereich for color
+    // Show only the most specific: Kompetenz
     let kompetenzColor = selectedFb?.color || "#1e66f5";
     for (const fb of fachbereiche) {
       for (const kb of fb.kompetenzbereiche) {
@@ -652,6 +817,67 @@ function ActiveFilterChips({
       label: filters.kompetenz,
       color: kompetenzColor,
     });
+  } else if (filters.kompetenzbereich) {
+    // Show only Kompetenzbereich
+    const parentFb = fachbereiche.find((fb) =>
+      fb.kompetenzbereiche.some((kb) => kb.code === filters.kompetenzbereich)
+    );
+    chips.push({
+      type: "kompetenzbereich",
+      label: filters.kompetenzbereich,
+      color: parentFb?.color || selectedFb?.color || "#1e66f5",
+    });
+  } else if (filters.fachbereich && selectedFb) {
+    // Show only Fachbereich
+    chips.push({
+      type: "fachbereich",
+      label: selectedFb.shortName,
+      color: selectedFb.color,
+    });
+  }
+
+  // Price filter chip
+  if (filters.priceType !== null || filters.maxPrice !== null) {
+    const priceOption = PRICE_OPTIONS.find((o) => o.id === filters.priceType);
+    const priceLabel = priceOption
+      ? priceOption.label
+      : filters.maxPrice !== null
+        ? `< CHF ${filters.maxPrice}`
+        : "";
+    if (priceLabel) {
+      chips.push({
+        type: "price",
+        label: priceLabel,
+        color: NEUTRAL_GREY,
+      });
+    }
+  }
+
+  // Format filter chips (one chip per selected format)
+  if (filters.formats.length > 0) {
+    filters.formats.forEach((formatId) => {
+      const format = FORMAT_OPTIONS.find((f) => f.id === formatId);
+      if (format) {
+        chips.push({
+          type: "format",
+          label: format.label,
+          color: NEUTRAL_GREY,
+          value: formatId,
+        });
+      }
+    });
+  }
+
+  // Material scope filter chip
+  if (filters.materialScope !== null) {
+    const scope = MATERIAL_SCOPE_OPTIONS.find((s) => s.id === filters.materialScope);
+    if (scope) {
+      chips.push({
+        type: "materialScope",
+        label: scope.label,
+        color: NEUTRAL_GREY,
+      });
+    }
   }
 
   if (chips.length === 0) return null;
@@ -673,7 +899,7 @@ function ActiveFilterChips({
           <AnimatePresence mode="popLayout">
             {chips.map((chip, index) => (
               <motion.span
-                key={chip.type}
+                key={chip.value ? `${chip.type}-${chip.value}` : chip.type}
                 initial={{ opacity: 0, scale: 0.9, y: -8 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9, y: -8 }}
@@ -691,7 +917,7 @@ function ActiveFilterChips({
               >
                 {chip.label}
                 <motion.button
-                  onClick={() => onRemoveFilter(chip.type)}
+                  onClick={() => onRemoveFilter(chip.type, chip.value)}
                   className="flex h-5 w-5 items-center justify-center rounded-full transition-colors"
                   style={{
                     backgroundColor: `${chip.color}20`,
@@ -1213,6 +1439,137 @@ function MaterialScopeFilter({ selectedScope, onScopeChange }: MaterialScopeFilt
         })}
       </div>
     </div>
+  );
+}
+
+// ============ SMART SEARCH SUGGESTIONS ============
+interface SmartSearchSuggestionsProps {
+  parsedQuery: ParsedSearchQuery | null;
+  fachbereiche: Fachbereich[];
+  zyklen: Zyklus[];
+  onApply: () => void;
+  onDismiss: () => void;
+}
+
+function SmartSearchSuggestions({
+  parsedQuery,
+  fachbereiche,
+  zyklen,
+  onApply,
+  onDismiss,
+}: SmartSearchSuggestionsProps) {
+  if (!parsedQuery || parsedQuery.detectedTerms.length === 0) {
+    return null;
+  }
+
+  const suggestions = getSuggestedFilters(parsedQuery);
+  const suggestedFachbereich = suggestions.fachbereich
+    ? fachbereiche.find((fb) => fb.code === suggestions.fachbereich)
+    : null;
+  const suggestedZyklus = suggestions.zyklus
+    ? zyklen.find((z) => z.id === suggestions.zyklus)
+    : null;
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0, y: -10, height: 0 }}
+        animate={{ opacity: 1, y: 0, height: "auto" }}
+        exit={{ opacity: 0, y: -10, height: 0 }}
+        transition={{ duration: 0.2 }}
+        className="mb-5 overflow-hidden"
+      >
+        <div className="bg-primary/5 border-primary/20 rounded-lg border p-3">
+          <div className="mb-2 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Search className="text-primary h-4 w-4" />
+              <span className="text-primary text-xs font-semibold">Erkannt</span>
+            </div>
+            <button
+              onClick={onDismiss}
+              className="text-text-muted hover:text-text rounded p-0.5 transition-colors"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </div>
+
+          {/* Show detected items */}
+          <div className="mb-3 flex flex-wrap gap-2">
+            {suggestedZyklus && (
+              <span className="bg-primary/10 text-primary group relative inline-flex cursor-help items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium">
+                <span className="text-primary/70">Stufe:</span>
+                {suggestedZyklus.shortName}
+                {/* Tooltip */}
+                <span className="bg-text text-bg pointer-events-none absolute bottom-full left-0 z-50 mb-1 rounded px-2 py-1 text-xs whitespace-nowrap opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
+                  {suggestedZyklus.description}
+                </span>
+              </span>
+            )}
+            {suggestedFachbereich && (
+              <span
+                className="group relative inline-flex cursor-help items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium"
+                style={{
+                  backgroundColor: `${suggestedFachbereich.color}15`,
+                  color: suggestedFachbereich.color,
+                }}
+              >
+                <span style={{ opacity: 0.7 }}>Fach:</span>
+                {suggestedFachbereich.shortName}
+                {/* Tooltip */}
+                <span className="bg-text text-bg pointer-events-none absolute bottom-full left-0 z-50 mb-1 rounded px-2 py-1 text-xs whitespace-nowrap opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
+                  {suggestedFachbereich.name}
+                </span>
+              </span>
+            )}
+            {suggestions.kompetenzbereich && (
+              <span
+                className="group relative inline-flex cursor-help items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium"
+                style={{
+                  backgroundColor: suggestedFachbereich
+                    ? `${suggestedFachbereich.color}15`
+                    : "#1e66f515",
+                  color: suggestedFachbereich?.color || "#1e66f5",
+                }}
+              >
+                <span style={{ opacity: 0.7 }}>Bereich:</span>
+                {suggestions.kompetenzbereich}
+                {/* Tooltip */}
+                <span className="bg-text text-bg pointer-events-none absolute bottom-full left-0 z-50 mb-1 rounded px-2 py-1 text-xs whitespace-nowrap opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
+                  {(() => {
+                    // Find the kompetenzbereich name from code
+                    for (const fb of fachbereiche) {
+                      const kb = fb.kompetenzbereiche.find(
+                        (k) => k.code === suggestions.kompetenzbereich
+                      );
+                      if (kb) return kb.name;
+                    }
+                    return suggestions.kompetenzbereich;
+                  })()}
+                </span>
+              </span>
+            )}
+          </div>
+
+          {/* Apply button */}
+          <motion.button
+            onClick={onApply}
+            className="bg-primary hover:bg-primary/90 flex w-full items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-white transition-colors"
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.99 }}
+          >
+            <ChevronRight className="h-4 w-4" />
+            Filter anwenden
+          </motion.button>
+
+          {/* Remaining terms info */}
+          {parsedQuery.remainingTerms.length > 0 && (
+            <p className="text-text-muted mt-2 text-xs">
+              Suche nach: &quot;{parsedQuery.remainingTerms.join(" ")}&quot;
+            </p>
+          )}
+        </div>
+      </motion.div>
+    </AnimatePresence>
   );
 }
 
