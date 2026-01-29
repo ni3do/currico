@@ -591,7 +591,7 @@
     },
     "faq": {
       "title": "Schnelle Antworten gesucht?",
-      "description": "In unserem Hilfe-Center finden Sie Antworten auf häufige Fragen zu Konten, Materialien und dem Verkauf auf Currico."
+      "description": "In unserem Hilfe-Center finden Sie Antworten auf häufige Fragen zu Konten, Ressourcen und dem Verkauf auf Currico."
     }
   },
   "metadata": {
@@ -1478,7 +1478,7 @@
     "privacy": {
       "label": "Mein Profil soll privat bleiben",
       "tooltip": "Wenn aktiviert, werden nur Ihr Name und Avatar auf Ihrem öffentlichen Profil angezeigt. Ihre Bio, Fächer, Zyklen, Kantone, Statistiken und Social-Media-Links bleiben verborgen.",
-      "notice": "Dieses Profil ist privat. Nur öffentliche Materialien werden angezeigt.",
+      "notice": "Dieses Profil ist privat. Nur öffentliche Ressourcen werden angezeigt.",
       "sectionTitle": "Privatsphäre-Einstellungen"
     }
   },
@@ -1529,6 +1529,34 @@
       "title": "Mehr entdecken",
       "description": "Finden Sie weitere interessante Lehrpersonen und deren Materialien.",
       "link": "Material durchsuchen"
+    }
+  },
+  "verifyEmailPage": {
+    "loading": {
+      "title": "E-Mail wird bestätigt...",
+      "message": "Bitte warten Sie einen Moment."
+    },
+    "success": {
+      "title": "E-Mail bestätigt!",
+      "message": "Ihre E-Mail-Adresse wurde erfolgreich bestätigt.",
+      "loginButton": "Zur Anmeldung",
+      "dashboardButton": "Zum Dashboard"
+    },
+    "alreadyVerified": {
+      "title": "Bereits bestätigt",
+      "message": "Ihre E-Mail-Adresse wurde bereits bestätigt.",
+      "loginButton": "Zur Anmeldung",
+      "dashboardButton": "Zum Dashboard"
+    },
+    "error": {
+      "title": "Bestätigung fehlgeschlagen",
+      "loginButton": "Zur Anmeldung"
+    },
+    "errors": {
+      "missingToken": "Der Bestätigungslink ist ungültig. Bitte fordern Sie einen neuen Link an.",
+      "invalidToken": "Der Bestätigungslink ist ungültig oder wurde bereits verwendet.",
+      "tokenExpired": "Der Bestätigungslink ist abgelaufen. Bitte fordern Sie einen neuen Link an.",
+      "generic": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut."
     }
   },
   "verifyEmailPage": {
@@ -1622,7 +1650,7 @@
         },
         "newsletter": {
           "label": "Newsletter abonnieren",
-          "description": "Wöchentliche Updates mit Tipps, neuen Funktionen und ausgewähltem Material"
+          "description": "Wöchentliche Updates mit Tipps, neuen Funktionen und ausgewählten Ressourcen"
         },
         "platformUpdates": {
           "label": "Plattform-Updates",
