@@ -1,337 +1,346 @@
 # Playwright E2E Testing Implementation Plan
 
-**Date:** 2026-01-29
-**Status:** In Progress
-**Goal:** Comprehensive E2E test coverage for Currico platform
+This plan outlines the tasks to expand E2E test coverage for the Currico platform. The infrastructure is already in place (playwright.config.ts, global setup, auth fixtures, page objects). This plan focuses on creating comprehensive test coverage for all user flows.
+
+## Current State
+
+**Implemented:**
+- ✓ Playwright configuration with multi-browser, multi-locale support
+- ✓ Global setup with authenticated session storage
+- ✓ Auth fixtures for buyer, seller, admin, school roles
+- ✓ Base page object class
+- ✓ Login page object and tests
+- ✓ Smoke tests
+- ✓ Test users and seed data script
+
+**Gap Analysis:**
+- Missing page objects for most pages (33 pages, only 1 has page object)
+- Missing tests for resources catalog, admin, seller dashboard, registration, etc.
+- No visual regression tests
+- No API testing utilities
 
 ---
 
-## Overview
+## Phase 1: Core Page Objects
 
-This plan covers creating E2E tests for the Currico platform using Playwright. The existing infrastructure includes:
-- Playwright config with multi-browser/locale support (Chrome, Firefox, Safari; de/en)
-- Auth fixtures for buyer, seller, admin, and school users
-- Global setup for session caching
-- Seed script for test data
-- Basic smoke tests
+Create page objects for high-traffic, high-value pages.
 
----
+- [ ] Create RegisterPage page object (`e2e/pages/register.page.ts`)
+  - Form fields: email, password, displayName, role selector
+  - OAuth buttons
+  - Validation error handling
+  - Success redirect verification
 
-## Phase 1: Test Infrastructure Enhancement
+- [ ] Create HomePage page object (`e2e/pages/home.page.ts`)
+  - Navigation elements
+  - Featured resources section
+  - Search functionality
+  - CTA buttons
 
-### 1.1 Page Object Models
+- [ ] Create ResourcesPage page object (`e2e/pages/resources.page.ts`)
+  - Resource grid/list
+  - Filter sidebar (subject, cycle, price range)
+  - Search bar
+  - Sorting controls
+  - Pagination
 
-- [x] Create base page object class with common utilities
-- [x] Create `LoginPage` page object with form interactions
-- [ ] Create `RegisterPage` page object with registration flow
-- [ ] Create `ResourcesPage` page object for catalog browsing
-- [ ] Create `ResourceDetailPage` page object with purchase/download actions
-- [ ] Create `AccountPage` page object for user dashboard
-- [ ] Create `AdminDashboardPage` page object for admin flows
-- [ ] Create `UploadPage` page object for resource upload wizard
+- [ ] Create ResourceDetailPage page object (`e2e/pages/resource-detail.page.ts`)
+  - Title, description, price display
+  - Buy/Download CTA
+  - Preview gallery
+  - Seller info section
+  - Wishlist button
+  - Related resources
 
-### 1.2 Test Data Fixtures
+- [ ] Create AccountPage page object (`e2e/pages/account.page.ts`)
+  - Profile summary
+  - Recent purchases
+  - Collections/wishlists
+  - Settings link
+  - Logout functionality
 
-- [x] Test users defined in `e2e/fixtures/test-users.ts`
-- [x] Seed script creates test resources (free, paid, pending)
-- [ ] Add test data for collections
-- [ ] Add test data for wishlists
-- [ ] Create factory functions for generating unique test data
-
----
-
-## Phase 2: Authentication Tests
-
-### 2.1 Login Flow
-
-- [ ] Test successful login with valid credentials redirects buyer to /account
-- [ ] Test successful login with admin credentials redirects to /admin
-- [ ] Test login with invalid email shows validation error
-- [ ] Test login with wrong password shows error message
-- [ ] Test login form email field validates format
-- [ ] Test "Remember me" checkbox persists session
-
-### 2.2 Registration Flow
-
-- [ ] Test successful registration creates account and logs in
-- [ ] Test registration with existing email shows duplicate error
-- [ ] Test password validation requires 8+ characters
-- [ ] Test password confirmation must match
-- [ ] Test terms checkbox is required
-- [ ] Test OAuth buttons are present (Google, Microsoft, edu-ID)
-
-### 2.3 Session Management
-
-- [ ] Test authenticated user can access protected routes
-- [ ] Test unauthenticated user is redirected from protected routes to login
-- [ ] Test logout clears session and redirects to home
+- [ ] Create ProfileEditPage page object (`e2e/pages/profile-edit.page.ts`)
+  - Edit form fields
+  - Avatar upload area
+  - Save/cancel actions
+  - Validation handling
 
 ---
 
-## Phase 3: Catalog & Resource Tests
+## Phase 2: Authentication & Registration Tests
 
-### 3.1 Resources Page
+- [ ] Create registration flow tests (`e2e/tests/auth/register.spec.ts`)
+  - Successful registration with valid data
+  - Email validation error handling
+  - Password strength validation
+  - Duplicate email handling
+  - Role selection (buyer vs seller)
+  - OAuth button presence verification
 
-- [ ] Test resources page loads and displays resource grid
-- [ ] Test search input filters resources by keyword
-- [ ] Test LP21 filter sidebar filters by Zyklus
-- [ ] Test LP21 filter sidebar filters by Fachbereich
-- [ ] Test filter URL params sync with sidebar state
-- [ ] Test clearing filters resets results
-- [ ] Test pagination works correctly
-- [ ] Test sort dropdown changes result order
-- [ ] Test mobile filter toggle opens/closes sidebar
-- [ ] Test profiles tab displays user search
+- [ ] Expand login tests with edge cases (`e2e/tests/auth/login.spec.ts`)
+  - Remember me functionality verification
+  - Session persistence after browser close
+  - Concurrent session handling
+  - Logout flow verification
 
-### 3.2 Resource Detail Page
-
-- [ ] Test resource detail page loads with correct data
-- [ ] Test breadcrumb navigation works correctly
-- [ ] Test LP21 badges display correctly
-- [ ] Test metadata block shows subject, cycle, downloads
-- [ ] Test free resource shows download button (not checkout)
-- [ ] Test paid resource shows checkout button with price
-- [ ] Test wishlist button toggles state for authenticated user
-- [ ] Test wishlist button redirects unauthenticated user to login
-- [ ] Test follow seller button toggles state
-- [ ] Test "Report resource" modal opens and submits
-- [ ] Test related resources section displays similar items
-- [ ] Test 404 page shown for non-existent resource
-
-### 3.3 Free Resource Download
-
-- [ ] Test authenticated user can download free resource
-- [ ] Test download link opens in new tab
-- [ ] Test unauthenticated user is prompted to login
+- [ ] Create password reset flow tests (`e2e/tests/auth/password-reset.spec.ts`)
+  - Request reset email (UI only, can't test email receipt)
+  - Invalid email handling
+  - Navigation from login page
 
 ---
 
-## Phase 4: User Dashboard Tests
+## Phase 3: Resource Catalog Tests
 
-### 4.1 Account Page
+- [ ] Create resource browsing tests (`e2e/tests/resources/browse.spec.ts`)
+  - Page loads with resource grid
+  - Resource cards display correct info (title, price, subject)
+  - Clicking card navigates to detail page
+  - Empty state handling
 
-- [ ] Test account page loads for authenticated buyer
-- [ ] Test account page shows user's purchased resources
-- [ ] Test account page shows user's wishlisted items
-- [ ] Test account page shows collections
-- [ ] Test user can edit profile information
-- [ ] Test user can upload avatar
+- [ ] Create resource filtering tests (`e2e/tests/resources/filter.spec.ts`)
+  - Filter by subject
+  - Filter by cycle
+  - Filter by price (free/paid)
+  - Combined filters
+  - Filter persistence after navigation
+  - Clear filters functionality
 
-### 4.2 Seller Dashboard
+- [ ] Create resource search tests (`e2e/tests/resources/search.spec.ts`)
+  - Search by title
+  - Search by keyword
+  - No results handling
+  - Search result highlighting
 
-- [ ] Test seller dashboard loads with metrics
-- [ ] Test dashboard shows net earnings, downloads, followers
-- [ ] Test resource list shows seller's uploaded resources
-- [ ] Test "Create new resource" button navigates to upload
+- [ ] Create resource detail tests (`e2e/tests/resources/detail.spec.ts`)
+  - Detail page displays all metadata
+  - Preview gallery navigation
+  - Seller info link works
+  - Related resources displayed
+  - Buy button visibility (paid)
+  - Download button visibility (free)
+
+---
+
+## Phase 4: Wishlist & Collections Tests
+
+- [ ] Create wishlist tests (`e2e/tests/wishlist/wishlist.spec.ts`)
+  - Add resource to wishlist (authenticated)
+  - Remove resource from wishlist
+  - Wishlist heart icon state
+  - Wishlist page displays saved items
+  - Unauthenticated wishlist redirect to login
+
+- [ ] Create collections tests (`e2e/tests/collections/collections.spec.ts`)
+  - View collections page
+  - Create new collection
+  - Add resource to collection
+  - Remove resource from collection
+  - Delete collection
+  - Collection visibility toggle
 
 ---
 
 ## Phase 5: Admin Panel Tests
 
-### 5.1 Admin Dashboard
+Create admin page objects and tests for quality assurance workflows.
 
-- [ ] Test admin dashboard loads for admin user
-- [ ] Test admin redirected from dashboard if not admin role
-- [ ] Test dashboard shows key metrics (users, pending, reports, revenue)
-- [ ] Test quick action links navigate to correct pages
+- [ ] Create AdminDashboardPage page object (`e2e/pages/admin/dashboard.page.ts`)
+  - Stats overview
+  - Navigation to sub-sections
+  - Quick actions
 
-### 5.2 Document Review
+- [ ] Create AdminUsersPage page object (`e2e/pages/admin/users.page.ts`)
+  - User list table
+  - Search/filter users
+  - User detail view
+  - Role change controls
 
-- [ ] Test documents page lists pending resources
-- [ ] Test admin can change resource status to AI-Checked
-- [ ] Test admin can change resource status to Verified
-- [ ] Test admin can add internal notes
+- [ ] Create AdminDocumentsPage page object (`e2e/pages/admin/documents.page.ts`)
+  - Documents queue list
+  - Status filter (Pending, AI-Checked, Verified)
+  - Document detail view
+  - Status change controls
 
-### 5.3 User Management
+- [ ] Create AdminReportsPage page object (`e2e/pages/admin/reports.page.ts`)
+  - Reports list
+  - Status filter (Open, In Review, Resolved)
+  - Report detail view
+  - Resolution actions
 
-- [ ] Test users page lists all users
-- [ ] Test admin can search users by email
-- [ ] Test admin can view user details
-- [ ] Test admin can change user role
+- [ ] Create admin dashboard tests (`e2e/tests/admin/dashboard.spec.ts`)
+  - Admin can access dashboard
+  - Stats display correctly
+  - Navigation works
+  - Non-admin redirect handling
 
-### 5.4 Reports Management
+- [ ] Create admin user management tests (`e2e/tests/admin/users.spec.ts`)
+  - View user list
+  - Search for users
+  - View user details
+  - Role restrictions (can't demote self)
 
-- [ ] Test reports page lists open reports
-- [ ] Test admin can view report details
-- [ ] Test admin can change report status to In Review
-- [ ] Test admin can resolve or dismiss report
+- [ ] Create admin document moderation tests (`e2e/tests/admin/documents.spec.ts`)
+  - View pending documents
+  - Change document status
+  - Add internal notes
+  - Filter by status
 
----
-
-## Phase 6: Upload Flow Tests
-
-### 6.1 Upload Wizard Steps
-
-- [ ] Test upload page accessible only for sellers
-- [ ] Test Step 1: Basics form validates required fields
-- [ ] Test Step 1: Title and description are required
-- [ ] Test Step 2: Curriculum filters are selectable
-- [ ] Test Step 3: Price, editability, license options work
-- [ ] Test Step 4: File upload UI renders correctly
-- [ ] Test wizard navigation between steps
-- [ ] Test form data persists across step changes
-
----
-
-## Phase 7: i18n Tests
-
-### 7.1 Locale Switching
-
-- [ ] Test German locale loads German translations
-- [ ] Test English locale loads English translations
-- [ ] Test locale switcher changes URL and content
-- [ ] Test navigation preserves locale prefix
-
-### 7.2 Content Translation
-
-- [ ] Test login page displays correctly in German
-- [ ] Test login page displays correctly in English
-- [ ] Test resources page displays correctly in both locales
-- [ ] Test error messages display in correct locale
+- [ ] Create admin reports tests (`e2e/tests/admin/reports.spec.ts`)
+  - View open reports
+  - Update report status
+  - Resolve/dismiss reports
 
 ---
 
-## Phase 8: Mobile Responsiveness Tests
+## Phase 6: Seller Dashboard Tests
 
-### 8.1 Mobile Navigation
+- [ ] Create SellerDashboardPage page object (`e2e/pages/seller/dashboard.page.ts`)
+  - Earnings overview
+  - Resources list
+  - Recent transactions
+  - Upload CTA
 
-- [ ] Test mobile menu toggle works
-- [ ] Test mobile menu displays navigation links
-- [ ] Test mobile filter sidebar opens as bottom sheet
+- [ ] Create seller dashboard tests (`e2e/tests/seller/dashboard.spec.ts`)
+  - Seller can access dashboard
+  - Earnings display correctly
+  - Resources listed with stats
+  - Transaction history visible
 
-### 8.2 Mobile Forms
-
-- [ ] Test login form is usable on mobile viewport
-- [ ] Test registration form is usable on mobile viewport
-- [ ] Test resource cards display correctly on mobile
-
----
-
-## Phase 9: Error Handling & Edge Cases
-
-### 9.1 API Error States
-
-- [ ] Test network error shows retry option
-- [ ] Test 500 error shows error page
-- [ ] Test unauthorized API call redirects to login
-
-### 9.2 Form Validation
-
-- [ ] Test all forms show inline validation errors
-- [ ] Test forms prevent submission with invalid data
-- [ ] Test error messages clear on valid input
+- [ ] Create seller onboarding tests (`e2e/tests/seller/onboarding.spec.ts`)
+  - Become seller page loads
+  - Terms acceptance flow
+  - Stripe Connect redirect (UI verification only)
+  - Onboarding completion page
 
 ---
 
-## Phase 10: Checkout Flow Tests (Stripe)
+## Phase 7: Upload Flow Tests (UI Only)
 
-### 10.1 Checkout Process
+The upload functionality is UI-only (no backend), so tests verify UI behavior.
 
-- [ ] Test checkout button creates Stripe session
-- [ ] Test redirect to Stripe checkout page
-- [ ] Test success page loads after successful payment
-- [ ] Test cancel page loads after cancelled payment
-- [ ] Test download token is generated on success
+- [ ] Create UploadPage page object (`e2e/pages/upload.page.ts`)
+  - Step indicators
+  - Form fields per step
+  - Navigation (next/back)
+  - Validation messages
 
----
-
-## Implementation Order
-
-Priority order based on risk and usage:
-
-1. **Phase 2: Authentication** - Core functionality, security critical
-2. **Phase 3: Catalog & Resources** - Primary user journey
-3. **Phase 4: User Dashboard** - Authenticated user experience
-4. **Phase 5: Admin Panel** - Content moderation critical
-5. **Phase 7: i18n** - Swiss localization important
-6. **Phase 8: Mobile** - Mobile-first user base
-7. **Phase 10: Checkout** - Revenue critical
-8. **Phase 6: Upload** - Seller onboarding
-9. **Phase 9: Error Handling** - Edge cases
-10. **Phase 1: Page Objects** - Refactor as tests grow
+- [ ] Create upload wizard tests (`e2e/tests/upload/wizard.spec.ts`)
+  - Step 1: Basics form validation
+  - Step 2: Curriculum tag selection
+  - Step 3: Properties and pricing
+  - Step navigation (forward/back)
+  - Form state persistence between steps
+  - Cancel flow
 
 ---
 
-## Test File Structure
+## Phase 8: Checkout Flow Tests (UI Only)
 
-```
-e2e/
-├── fixtures/
-│   ├── auth.fixture.ts        # Auth fixtures (exists)
-│   ├── test-users.ts          # Test user data (exists)
-│   └── seed-test-data.ts      # DB seeding (exists)
-├── pages/                     # Page Object Models (to create)
-│   ├── base.page.ts
-│   ├── login.page.ts
-│   ├── register.page.ts
-│   ├── resources.page.ts
-│   ├── resource-detail.page.ts
-│   ├── account.page.ts
-│   ├── admin.page.ts
-│   └── upload.page.ts
-├── tests/
-│   ├── smoke.spec.ts          # Smoke tests (exists)
-│   ├── auth/
-│   │   ├── login.spec.ts
-│   │   ├── register.spec.ts
-│   │   └── session.spec.ts
-│   ├── catalog/
-│   │   ├── resources.spec.ts
-│   │   ├── resource-detail.spec.ts
-│   │   └── download.spec.ts
-│   ├── user/
-│   │   ├── account.spec.ts
-│   │   └── seller-dashboard.spec.ts
-│   ├── admin/
-│   │   ├── dashboard.spec.ts
-│   │   ├── documents.spec.ts
-│   │   ├── users.spec.ts
-│   │   └── reports.spec.ts
-│   ├── upload/
-│   │   └── wizard.spec.ts
-│   ├── i18n/
-│   │   └── locale.spec.ts
-│   ├── mobile/
-│   │   ├── navigation.spec.ts
-│   │   └── forms.spec.ts
-│   └── checkout/
-│       └── stripe.spec.ts
-└── utils/
-    └── test-helpers.ts        # Utilities (exists)
-```
+- [ ] Create checkout success/cancel tests (`e2e/tests/checkout/flow.spec.ts`)
+  - Success page displays confirmation
+  - Cancel page displays message
+  - Navigation from checkout pages
 
 ---
+
+## Phase 9: Static Pages Tests
+
+- [ ] Create static pages tests (`e2e/tests/static/pages.spec.ts`)
+  - About page loads
+  - FAQ page loads
+  - Terms page loads
+  - Privacy page loads
+  - Impressum page loads
+  - Cookies page loads
+  - Contact page loads and form displays
+
+---
+
+## Phase 10: Internationalization Tests
+
+- [ ] Create i18n tests (`e2e/tests/i18n/locale.spec.ts`)
+  - German locale page content
+  - English locale page content
+  - Language switcher functionality
+  - URL locale prefix handling
+  - Locale persistence
+
+---
+
+## Phase 11: Mobile Responsiveness Tests
+
+- [ ] Create mobile navigation tests (`e2e/tests/mobile/navigation.spec.ts`)
+  - Mobile menu toggle
+  - Mobile menu navigation
+  - Touch-friendly interactions
+
+- [ ] Create mobile layout tests (`e2e/tests/mobile/layout.spec.ts`)
+  - Resource grid adapts to mobile
+  - Forms are usable on mobile
+  - Buttons have appropriate touch targets
+
+---
+
+## Phase 12: Accessibility Tests
+
+- [ ] Create accessibility audit tests (`e2e/tests/a11y/audit.spec.ts`)
+  - Run axe-core on key pages
+  - Verify keyboard navigation
+  - Check focus management
+  - Screen reader landmark regions
+
+---
+
+## Phase 13: Error Handling Tests
+
+- [ ] Create error page tests (`e2e/tests/errors/pages.spec.ts`)
+  - 404 page for invalid routes
+  - Error boundary handling
+  - API error display to users
+
+---
+
+## Phase 14: Test Infrastructure Improvements
+
+- [ ] Add npm script for seeding test data (`package.json`)
+  - Add `test:e2e:seed` script
+  - Integrate seed into global setup
+
+- [ ] Create test data factory utilities (`e2e/fixtures/factories.ts`)
+  - Resource factory
+  - User factory
+  - Collection factory
+
+- [ ] Add visual regression testing setup
+  - Install @playwright/test visual comparisons
+  - Create baseline screenshots for key pages
+  - Add visual comparison to smoke tests
+
+---
+
+## Acceptance Criteria
+
+Each phase is complete when:
+1. All page objects compile without TypeScript errors
+2. All tests pass on chromium-de project
+3. Tests use the auth fixtures appropriately (buyerPage, sellerPage, adminPage)
+4. Page objects follow the established BasePage pattern
+5. Tests are organized in logical describe blocks
+6. No hardcoded timeouts (use Playwright's built-in waiting)
 
 ## Running Tests
 
 ```bash
-# Run all tests
-npx playwright test
+# Run all E2E tests
+npm run test:e2e
+
+# Run with UI mode for debugging
+npm run test:e2e:ui
 
 # Run specific test file
 npx playwright test e2e/tests/auth/login.spec.ts
 
-# Run tests for specific project (browser/locale)
+# Run tests for a specific project (browser/locale)
 npx playwright test --project=chromium-de
-
-# Run tests with UI mode
-npx playwright test --ui
-
-# Run tests in headed mode
-npx playwright test --headed
-
-# Generate report
-npx playwright show-report
 ```
-
----
-
-## CI Integration Notes
-
-The Playwright config already supports CI mode:
-- Single worker for stability (`workers: 1`)
-- 2 retries on failure
-- GitHub Actions reporter
-- HTML report generation
-
-Tests should be added to CI pipeline in `.github/workflows/` when ready.
