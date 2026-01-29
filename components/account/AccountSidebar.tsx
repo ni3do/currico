@@ -16,6 +16,7 @@ import {
   Bell,
   Shield,
   ChevronDown,
+  Package,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ProfileCompletionProgress } from "./ProfileCompletionProgress";
@@ -25,6 +26,7 @@ const NAV_ITEMS = [
   { id: "overview", label: "Übersicht", icon: Home },
   { id: "library", label: "Bibliothek", icon: Library },
   { id: "uploads", label: "Meine Uploads", icon: Upload },
+  { id: "bundles", label: "Bundles", icon: Package },
   { id: "wishlist", label: "Wunschliste", icon: Heart },
 ] as const;
 
@@ -40,6 +42,7 @@ type TabType =
   | "overview"
   | "library"
   | "uploads"
+  | "bundles"
   | "wishlist"
   | "settings-profile"
   | "settings-appearance"

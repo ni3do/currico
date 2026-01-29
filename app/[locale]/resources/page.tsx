@@ -5,13 +5,17 @@ import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
-import { SlidersHorizontal, ChevronDown, FileText, Users } from "lucide-react";
+import { SlidersHorizontal, ChevronDown, Users } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { ResourceCard } from "@/components/ui/ResourceCard";
 import { ProfileCard } from "@/components/ui/ProfileCard";
-import { LP21FilterSidebar, type LP21FilterState } from "@/components/search/LP21FilterSidebar";
+import {
+  LP21FilterSidebar,
+  type LP21FilterState,
+  type SearchType,
+} from "@/components/search/LP21FilterSidebar";
 import { useCurriculum } from "@/lib/hooks/useCurriculum";
 
 interface Resource {
@@ -56,7 +60,6 @@ export default function ResourcesPage() {
   const tCommon = useTranslations("common");
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [activeTab, setActiveTab] = useState<"resources" | "profiles">("resources");
   const [resources, setResources] = useState<Resource[]>([]);
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [pagination, setPagination] = useState<Pagination>({
@@ -74,7 +77,6 @@ export default function ResourcesPage() {
   const [loading, setLoading] = useState(true);
   const [profilesLoading, setProfilesLoading] = useState(false);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-  const [profileSearchQuery, setProfileSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<string>(searchParams.get("sort") || "newest");
   const [currentPage, setCurrentPage] = useState<number>(
     parseInt(searchParams.get("page") || "1", 10)
@@ -215,8 +217,10 @@ export default function ResourcesPage() {
     const fachbereich = searchParams.get("fachbereich");
     const kompetenzbereich = searchParams.get("kompetenzbereich");
     const kompetenz = searchParams.get("kompetenz");
+    const searchType = searchParams.get("searchType") as SearchType | null;
 
     return {
+      searchType: searchType === "profiles" ? "profiles" : "resources",
       zyklus: zyklus ? parseInt(zyklus) : null,
       fachbereich: fachbereich || null,
       kompetenzbereich: kompetenzbereich || null,
@@ -241,6 +245,7 @@ export default function ResourcesPage() {
   const buildUrlParams = useCallback(
     (currentFilters: LP21FilterState, currentSort: string, page: number = 1) => {
       const params = new URLSearchParams();
+      if (currentFilters.searchType === "profiles") params.set("searchType", "profiles");
       if (currentFilters.zyklus) params.set("zyklus", currentFilters.zyklus.toString());
       if (currentFilters.fachbereich) params.set("fachbereich", currentFilters.fachbereich);
       if (currentFilters.kompetenzbereich)
@@ -372,12 +377,14 @@ export default function ResourcesPage() {
     fetchResources(filters, sortBy, currentPage);
   }, [filters, sortBy, currentPage, fetchResources]);
 
-  // Fetch profiles
-  const fetchProfiles = useCallback(async (query: string) => {
+  // Fetch profiles with optional filters
+  const fetchProfiles = useCallback(async (currentFilters: LP21FilterState) => {
     setProfilesLoading(true);
     try {
       const params = new URLSearchParams();
-      if (query) params.set("q", query);
+      if (currentFilters.searchQuery) params.set("q", currentFilters.searchQuery);
+      if (currentFilters.fachbereich) params.set("subject", currentFilters.fachbereich);
+      if (currentFilters.zyklus) params.set("cycle", currentFilters.zyklus.toString());
       params.set("limit", "12");
 
       const response = await fetch(`/api/users/search?${params.toString()}`);
@@ -393,15 +400,15 @@ export default function ResourcesPage() {
     }
   }, []);
 
-  // Fetch profiles when tab changes or search query changes
+  // Fetch profiles when search type changes or filters change
   useEffect(() => {
-    if (activeTab === "profiles") {
+    if (filters.searchType === "profiles") {
       const debounce = setTimeout(() => {
-        fetchProfiles(profileSearchQuery);
+        fetchProfiles(filters);
       }, 300);
       return () => clearTimeout(debounce);
     }
-  }, [activeTab, profileSearchQuery, fetchProfiles]);
+  }, [filters, fetchProfiles]);
 
   // Get subject pill class based on subject name or code
   const getSubjectPillClass = (subject: string): string => {
@@ -468,148 +475,8 @@ export default function ResourcesPage() {
           <p className="text-text-muted mt-1">{t("header.description")}</p>
         </div>
 
-        {/* Tabs: Resources / Profiles */}
-        <div className="border-border relative mb-6 flex gap-4 border-b">
-          <button
-            onClick={() => setActiveTab("resources")}
-            className={`relative flex items-center gap-2 pb-4 text-sm font-medium transition-colors duration-300 ${
-              activeTab === "resources" ? "text-primary" : "text-text-muted hover:text-text"
-            }`}
-          >
-            <FileText className="h-4 w-4" />
-            Ressourcen
-            {activeTab === "resources" && (
-              <motion.div
-                className="bg-primary absolute right-0 -bottom-px left-0 h-0.5"
-                layoutId="activeTabIndicator"
-                initial={false}
-                transition={{ type: "spring", stiffness: 350, damping: 30 }}
-              />
-            )}
-          </button>
-          <button
-            onClick={() => setActiveTab("profiles")}
-            className={`relative flex items-center gap-2 pb-4 text-sm font-medium transition-colors duration-300 ${
-              activeTab === "profiles" ? "text-primary" : "text-text-muted hover:text-text"
-            }`}
-          >
-            <Users className="h-4 w-4" />
-            Profile
-            {activeTab === "profiles" && (
-              <motion.div
-                className="bg-primary absolute right-0 -bottom-px left-0 h-0.5"
-                layoutId="activeTabIndicator"
-                initial={false}
-                transition={{ type: "spring", stiffness: 350, damping: 30 }}
-              />
-            )}
-          </button>
-        </div>
-
-        {/* Profiles Tab Content */}
-        {activeTab === "profiles" && (
-          <div className="space-y-6">
-            {/* Search Bar */}
-            <div className="bg-bg-secondary rounded-lg p-4">
-              <input
-                type="text"
-                value={profileSearchQuery}
-                onChange={(e) => setProfileSearchQuery(e.target.value)}
-                placeholder="Nach Lehrpersonen suchen..."
-                className="border-border bg-bg text-text placeholder:text-text-muted focus:border-primary focus:ring-primary/20 w-full rounded-lg border px-4 py-3 focus:ring-2 focus:outline-none"
-              />
-            </div>
-
-            {/* Results */}
-            {profilesLoading ? (
-              <div className="flex items-center justify-center py-16">
-                <div className="text-text-muted flex items-center gap-3">
-                  <svg className="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                    />
-                  </svg>
-                  <span>Profile werden geladen...</span>
-                </div>
-              </div>
-            ) : profiles.length === 0 ? (
-              <div className="border-border-subtle bg-bg-secondary flex flex-col items-center justify-center rounded-lg border py-16">
-                <Users className="text-text-faint mb-4 h-12 w-12" />
-                <p className="text-text mb-2 text-lg font-medium">Keine Profile gefunden</p>
-                <p className="text-text-muted text-sm">
-                  {profileSearchQuery
-                    ? "Versuchen Sie es mit anderen Suchbegriffen"
-                    : "Geben Sie einen Suchbegriff ein, um Profile zu finden"}
-                </p>
-              </div>
-            ) : (
-              <>
-                <p className="text-text-muted text-sm">
-                  <span className="text-text font-semibold">{profilePagination.total}</span> Profile
-                  gefunden
-                </p>
-                <motion.div
-                  className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3"
-                  initial="hidden"
-                  animate="visible"
-                  variants={{
-                    hidden: { opacity: 0 },
-                    visible: {
-                      opacity: 1,
-                      transition: {
-                        staggerChildren: 0.06,
-                        delayChildren: 0.02,
-                      },
-                    },
-                  }}
-                >
-                  {profiles.map((profile) => (
-                    <motion.div
-                      key={profile.id}
-                      variants={{
-                        hidden: { opacity: 0, y: 16, scale: 0.98 },
-                        visible: {
-                          opacity: 1,
-                          y: 0,
-                          scale: 1,
-                          transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
-                        },
-                      }}
-                    >
-                      <ProfileCard
-                        id={profile.id}
-                        name={profile.name}
-                        image={profile.image}
-                        bio={profile.bio}
-                        subjects={profile.subjects}
-                        resourceCount={profile.resourceCount}
-                        followerCount={profile.followerCount}
-                        isVerified={profile.role === "SELLER"}
-                        getSubjectPillClass={getSubjectPillClass}
-                        showFollowButton={true}
-                        isFollowing={followingIds.has(profile.id)}
-                        onFollowToggle={handleFollowToggle}
-                      />
-                    </motion.div>
-                  ))}
-                </motion.div>
-              </>
-            )}
-          </div>
-        )}
-
-        {/* Resources Tab: Main Layout: Sidebar + Content */}
-        {activeTab === "resources" && (
+        {/* Main Layout: Sidebar + Content */}
+        {
           <div className="flex flex-col gap-6 lg:flex-row">
             {/* Mobile Filter Toggle */}
             <div className="lg:hidden">
@@ -662,140 +529,251 @@ export default function ResourcesPage() {
 
             {/* Main Content Area */}
             <div className="min-w-0 flex-1">
-              {/* Top Control Bar: Results + Sort */}
-              <div className="bg-bg-secondary mb-6 flex flex-col gap-4 rounded-lg p-4 sm:flex-row sm:items-center sm:justify-between">
-                {/* Results Count + Active Filters Summary */}
-                <div>
-                  <p className="text-text-muted text-sm">
-                    <span className="text-text font-semibold">{pagination.total}</span>{" "}
-                    {t("results.countLabel")}
-                  </p>
-                  {(filters.zyklus ||
-                    filters.fachbereich ||
-                    filters.kompetenzbereich ||
-                    filters.kompetenz ||
-                    filters.searchQuery) && (
-                    <p className="text-text-muted mt-1 text-xs">
-                      {[
-                        filters.zyklus && `Zyklus ${filters.zyklus}`,
-                        filters.fachbereich && getFachbereichByCode(filters.fachbereich)?.shortName,
-                        filters.kompetenzbereich,
-                        filters.kompetenz,
-                        filters.searchQuery && `"${filters.searchQuery}"`,
-                      ]
-                        .filter(Boolean)
-                        .join(" · ")}
-                    </p>
-                  )}
-                </div>
+              {/* Resources View */}
+              {filters.searchType === "resources" && (
+                <>
+                  {/* Top Control Bar: Results + Sort */}
+                  <div className="bg-bg-secondary mb-6 flex flex-col gap-4 rounded-lg p-4 sm:flex-row sm:items-center sm:justify-between">
+                    {/* Results Count + Active Filters Summary */}
+                    <div>
+                      <p className="text-text-muted text-sm">
+                        <span className="text-text font-semibold">{pagination.total}</span>{" "}
+                        {t("results.countLabel")}
+                      </p>
+                      {(filters.zyklus ||
+                        filters.fachbereich ||
+                        filters.kompetenzbereich ||
+                        filters.kompetenz ||
+                        filters.searchQuery) && (
+                        <p className="text-text-muted mt-1 text-xs">
+                          {[
+                            filters.zyklus && `Zyklus ${filters.zyklus}`,
+                            filters.fachbereich &&
+                              getFachbereichByCode(filters.fachbereich)?.shortName,
+                            filters.kompetenzbereich,
+                            filters.kompetenz,
+                            filters.searchQuery && `"${filters.searchQuery}"`,
+                          ]
+                            .filter(Boolean)
+                            .join(" · ")}
+                        </p>
+                      )}
+                    </div>
 
-                {/* Sort Dropdown */}
-                <div className="flex items-center gap-2">
-                  <label className="text-text-muted text-sm whitespace-nowrap">
-                    {t("results.sortLabel")}
-                  </label>
-                  <select
-                    value={sortBy}
-                    onChange={(e) => handleSortChange(e.target.value)}
-                    className="border-border bg-bg text-text-secondary focus:border-primary focus:ring-focus-ring rounded-lg border px-3 py-2.5 text-sm focus:ring-2 focus:outline-none"
-                  >
-                    <option value="newest">{t("results.sortOptions.newest")}</option>
-                    <option value="price-low">{t("results.sortOptions.priceLow")}</option>
-                    <option value="price-high">{t("results.sortOptions.priceHigh")}</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Resource Grid */}
-              {loading ? (
-                <div className="flex items-center justify-center py-16">
-                  <div className="text-text-muted flex items-center gap-3">
-                    <svg className="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      />
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      />
-                    </svg>
-                    <span>{t("loading")}</span>
+                    {/* Sort Dropdown */}
+                    <div className="flex items-center gap-2">
+                      <label className="text-text-muted text-sm whitespace-nowrap">
+                        {t("results.sortLabel")}
+                      </label>
+                      <select
+                        value={sortBy}
+                        onChange={(e) => handleSortChange(e.target.value)}
+                        className="border-border bg-bg text-text-secondary focus:border-primary focus:ring-focus-ring rounded-lg border px-3 py-2.5 text-sm focus:ring-2 focus:outline-none"
+                      >
+                        <option value="newest">{t("results.sortOptions.newest")}</option>
+                        <option value="price-low">{t("results.sortOptions.priceLow")}</option>
+                        <option value="price-high">{t("results.sortOptions.priceHigh")}</option>
+                      </select>
+                    </div>
                   </div>
-                </div>
-              ) : resources.length === 0 ? (
-                <div className="border-border-subtle bg-bg-secondary flex flex-col items-center justify-center rounded-lg border py-16">
-                  <svg
-                    className="text-text-faint mb-4 h-12 w-12"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                  <p className="text-text mb-2 text-lg font-medium">{t("empty.title")}</p>
-                  <p className="text-text-muted text-sm">{t("empty.description")}</p>
-                </div>
-              ) : (
-                <motion.div
-                  className="grid gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3"
-                  initial="hidden"
-                  animate="visible"
-                  variants={{
-                    hidden: { opacity: 0 },
-                    visible: {
-                      opacity: 1,
-                      transition: {
-                        staggerChildren: 0.05,
-                        delayChildren: 0.02,
-                      },
-                    },
-                  }}
-                >
-                  {resources.map((resource) => (
+
+                  {/* Resource Grid */}
+                  {loading ? (
+                    <div className="flex items-center justify-center py-16">
+                      <div className="text-text-muted flex items-center gap-3">
+                        <svg className="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          />
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          />
+                        </svg>
+                        <span>{t("loading")}</span>
+                      </div>
+                    </div>
+                  ) : resources.length === 0 ? (
+                    <div className="border-border-subtle bg-bg-secondary flex flex-col items-center justify-center rounded-lg border py-16">
+                      <svg
+                        className="text-text-faint mb-4 h-12 w-12"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={1.5}
+                          d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                      <p className="text-text mb-2 text-lg font-medium">{t("empty.title")}</p>
+                      <p className="text-text-muted text-sm">{t("empty.description")}</p>
+                    </div>
+                  ) : (
                     <motion.div
-                      key={resource.id}
+                      className="grid gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3"
+                      initial="hidden"
+                      animate="visible"
                       variants={{
-                        hidden: { opacity: 0, y: 16, scale: 0.98 },
+                        hidden: { opacity: 0 },
                         visible: {
                           opacity: 1,
-                          y: 0,
-                          scale: 1,
-                          transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
+                          transition: {
+                            staggerChildren: 0.05,
+                            delayChildren: 0.02,
+                          },
                         },
                       }}
                     >
-                      <ResourceCard
-                        id={resource.id}
-                        title={resource.title}
-                        description={resource.description}
-                        subject={resource.subject}
-                        cycle={resource.cycle}
-                        priceFormatted={resource.priceFormatted}
-                        previewUrl={resource.previewUrl}
-                        seller={{ displayName: resource.seller.display_name }}
-                        subjectPillClass={getSubjectPillClass(resource.subject)}
-                        showWishlist={true}
-                        isWishlisted={wishlistedIds.has(resource.id)}
-                        onWishlistToggle={handleWishlistToggle}
-                      />
+                      {resources.map((resource) => (
+                        <motion.div
+                          key={resource.id}
+                          variants={{
+                            hidden: { opacity: 0, y: 16, scale: 0.98 },
+                            visible: {
+                              opacity: 1,
+                              y: 0,
+                              scale: 1,
+                              transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
+                            },
+                          }}
+                        >
+                          <ResourceCard
+                            id={resource.id}
+                            title={resource.title}
+                            description={resource.description}
+                            subject={resource.subject}
+                            cycle={resource.cycle}
+                            priceFormatted={resource.priceFormatted}
+                            previewUrl={resource.previewUrl}
+                            seller={{ displayName: resource.seller.display_name }}
+                            subjectPillClass={getSubjectPillClass(resource.subject)}
+                            showWishlist={true}
+                            isWishlisted={wishlistedIds.has(resource.id)}
+                            onWishlistToggle={handleWishlistToggle}
+                          />
+                        </motion.div>
+                      ))}
                     </motion.div>
-                  ))}
-                </motion.div>
+                  )}
+                </>
               )}
 
-              {/* Pagination */}
-              {pagination.totalPages > 1 && (
+              {/* Profiles View */}
+              {filters.searchType === "profiles" && (
+                <>
+                  {/* Top Control Bar: Results Count */}
+                  <div className="bg-bg-secondary mb-6 rounded-lg p-4">
+                    <p className="text-text-muted text-sm">
+                      <span className="text-text font-semibold">{profilePagination.total}</span>{" "}
+                      Profile gefunden
+                    </p>
+                    {(filters.zyklus || filters.fachbereich || filters.searchQuery) && (
+                      <p className="text-text-muted mt-1 text-xs">
+                        {[
+                          filters.zyklus && `Zyklus ${filters.zyklus}`,
+                          filters.fachbereich &&
+                            getFachbereichByCode(filters.fachbereich)?.shortName,
+                          filters.searchQuery && `"${filters.searchQuery}"`,
+                        ]
+                          .filter(Boolean)
+                          .join(" · ")}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Profile Grid */}
+                  {profilesLoading ? (
+                    <div className="flex items-center justify-center py-16">
+                      <div className="text-text-muted flex items-center gap-3">
+                        <svg className="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          />
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                          />
+                        </svg>
+                        <span>Profile werden geladen...</span>
+                      </div>
+                    </div>
+                  ) : profiles.length === 0 ? (
+                    <div className="border-border-subtle bg-bg-secondary flex flex-col items-center justify-center rounded-lg border py-16">
+                      <Users className="text-text-faint mb-4 h-12 w-12" />
+                      <p className="text-text mb-2 text-lg font-medium">Keine Profile gefunden</p>
+                      <p className="text-text-muted text-sm">
+                        {filters.searchQuery
+                          ? "Versuchen Sie es mit anderen Suchbegriffen"
+                          : "Geben Sie einen Suchbegriff ein, um Profile zu finden"}
+                      </p>
+                    </div>
+                  ) : (
+                    <motion.div
+                      className="grid gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3"
+                      initial="hidden"
+                      animate="visible"
+                      variants={{
+                        hidden: { opacity: 0 },
+                        visible: {
+                          opacity: 1,
+                          transition: {
+                            staggerChildren: 0.06,
+                            delayChildren: 0.02,
+                          },
+                        },
+                      }}
+                    >
+                      {profiles.map((profile) => (
+                        <motion.div
+                          key={profile.id}
+                          variants={{
+                            hidden: { opacity: 0, y: 16, scale: 0.98 },
+                            visible: {
+                              opacity: 1,
+                              y: 0,
+                              scale: 1,
+                              transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
+                            },
+                          }}
+                        >
+                          <ProfileCard
+                            id={profile.id}
+                            name={profile.name}
+                            image={profile.image}
+                            bio={profile.bio}
+                            subjects={profile.subjects}
+                            resourceCount={profile.resourceCount}
+                            followerCount={profile.followerCount}
+                            isVerified={profile.role === "SELLER"}
+                            getSubjectPillClass={getSubjectPillClass}
+                            showFollowButton={true}
+                            isFollowing={followingIds.has(profile.id)}
+                            onFollowToggle={handleFollowToggle}
+                          />
+                        </motion.div>
+                      ))}
+                    </motion.div>
+                  )}
+                </>
+              )}
+
+              {/* Pagination - only for resources */}
+              {filters.searchType === "resources" && pagination.totalPages > 1 && (
                 <div className="mt-12 flex justify-center">
                   <nav className="flex items-center gap-1">
                     {/* Previous button */}
@@ -898,7 +876,7 @@ export default function ResourcesPage() {
               )}
             </div>
           </div>
-        )}
+        }
       </main>
 
       <Footer />

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
-import { FileText, Users, UserPlus, UserCheck } from "lucide-react";
+import { FileText, Users, UserPlus, UserCheck, CheckCircle } from "lucide-react";
 import { getSubjectPillClass as defaultGetSubjectPillClass } from "@/lib/constants/subject-colors";
 
 export interface ProfileCardProps {
@@ -72,84 +72,105 @@ export function ProfileCard({
   };
 
   return (
-    <Link href={`/profile/${id}`} className="card group flex h-full flex-col overflow-hidden">
-      <div className="flex flex-1 flex-col p-5">
-        {/* Header: Avatar + Name + Follow Button */}
-        <div className="mb-4 flex items-center gap-3">
+    <Link
+      href={`/profile/${id}`}
+      className="card group flex h-full cursor-pointer flex-col overflow-hidden"
+    >
+      {/* Profile Header Image - 16:9 aspect ratio like ResourceCard */}
+      <div className="bg-bg-secondary relative aspect-[16/9] w-full overflow-hidden">
+        {/* Background pattern/gradient */}
+        <div className="from-primary/20 via-accent/10 to-success/20 absolute inset-0 bg-gradient-to-br" />
+
+        {/* Decorative circles */}
+        <div className="bg-primary/10 absolute -top-8 -right-8 h-32 w-32 rounded-full" />
+        <div className="bg-accent/10 absolute -bottom-4 -left-4 h-24 w-24 rounded-full" />
+
+        {/* Centered Avatar */}
+        <div className="absolute inset-0 flex items-center justify-center">
           {image ? (
-            <Image
-              src={image}
-              alt={name}
-              width={48}
-              height={48}
-              className="border-border h-12 w-12 rounded-full border-2 object-cover"
-            />
-          ) : (
-            <div className="from-primary to-success flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br text-lg font-bold text-white">
-              {name.charAt(0).toUpperCase()}
-            </div>
-          )}
-          <div className="min-w-0 flex-1">
-            <h3 className="text-text group-hover:text-primary truncate font-semibold transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]">
-              {name}
-            </h3>
-            {isVerified && (
-              <span className="text-success inline-flex items-center gap-1 text-xs">
-                <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                Verifiziert
-              </span>
-            )}
-          </div>
-          {/* Follow Button */}
-          {showFollowButton && (
-            <button
-              onClick={handleFollowClick}
-              disabled={followLoading}
-              className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 active:scale-95 disabled:opacity-50 ${
-                isFollowing
-                  ? "border-primary text-primary hover:bg-primary/10 border"
-                  : "bg-primary hover:bg-primary-hover text-white"
-              }`}
-              aria-label={isFollowing ? "Entfolgen" : "Folgen"}
-            >
-              {followLoading ? (
-                <svg className="h-3.5 w-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                  />
-                </svg>
-              ) : isFollowing ? (
-                <UserCheck className="h-3.5 w-3.5" />
-              ) : (
-                <UserPlus className="h-3.5 w-3.5" />
+            <div className="relative">
+              <Image
+                src={image}
+                alt={name}
+                width={80}
+                height={80}
+                className="border-surface h-20 w-20 rounded-full border-4 object-cover shadow-lg transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]"
+              />
+              {isVerified && (
+                <div className="bg-success absolute -right-1 -bottom-1 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white shadow-sm">
+                  <CheckCircle className="h-4 w-4 text-white" fill="currentColor" />
+                </div>
               )}
-              {isFollowing ? "Gefolgt" : "Folgen"}
-            </button>
+            </div>
+          ) : (
+            <div className="relative">
+              <div className="from-primary to-success flex h-20 w-20 items-center justify-center rounded-full border-4 border-white bg-gradient-to-br text-2xl font-bold text-white shadow-lg transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]">
+                {name.charAt(0).toUpperCase()}
+              </div>
+              {isVerified && (
+                <div className="bg-success absolute -right-1 -bottom-1 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white shadow-sm">
+                  <CheckCircle className="h-4 w-4 text-white" fill="currentColor" />
+                </div>
+              )}
+            </div>
           )}
         </div>
 
+        {/* Follow Button - Top Right */}
+        {showFollowButton && (
+          <button
+            onClick={handleFollowClick}
+            disabled={followLoading}
+            className={`absolute top-3 right-3 flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium shadow-md backdrop-blur-sm transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 active:scale-95 disabled:opacity-50 ${
+              isFollowing
+                ? "border-primary/50 text-primary border bg-white/90"
+                : "bg-primary hover:bg-primary-hover text-white"
+            }`}
+            aria-label={isFollowing ? "Entfolgen" : "Folgen"}
+          >
+            {followLoading ? (
+              <svg className="h-3.5 w-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                />
+              </svg>
+            ) : isFollowing ? (
+              <UserCheck className="h-3.5 w-3.5" />
+            ) : (
+              <UserPlus className="h-3.5 w-3.5" />
+            )}
+            {isFollowing ? "Gefolgt" : "Folgen"}
+          </button>
+        )}
+      </div>
+
+      {/* Content */}
+      <div className="flex flex-1 flex-col p-5">
+        {/* Name */}
+        <h3 className="text-text group-hover:text-primary mb-2 text-center text-lg font-bold transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]">
+          {name}
+        </h3>
+
         {/* Bio */}
-        {bio && <p className="text-text-muted mb-3 line-clamp-2 text-sm">{bio}</p>}
+        {bio && (
+          <p className="text-text-muted mb-3 line-clamp-2 text-center text-sm leading-relaxed">
+            {bio}
+          </p>
+        )}
 
         {/* Subject Pills */}
         {subjects.length > 0 && (
-          <div className="mb-4 flex flex-wrap gap-1.5">
+          <div className="mb-4 flex flex-wrap justify-center gap-1.5">
             {subjects.slice(0, 3).map((subject) => (
               <span key={subject} className={`pill text-xs ${getSubjectPillClass(subject)}`}>
                 {subject}
@@ -169,11 +190,11 @@ export function ProfileCard({
           <div className="text-text-muted flex items-center gap-4 text-sm">
             <span className="flex items-center gap-1.5 transition-colors duration-300">
               <FileText className="h-4 w-4" />
-              {resourceCount}
+              <span className="font-medium">{resourceCount}</span>
             </span>
             <span className="flex items-center gap-1.5 transition-colors duration-300">
               <Users className="h-4 w-4" />
-              {displayedFollowerCount}
+              <span className="font-medium">{displayedFollowerCount}</span>
             </span>
           </div>
           <svg

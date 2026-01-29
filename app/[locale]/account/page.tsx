@@ -31,6 +31,8 @@ import {
   Tag,
   Newspaper,
   Megaphone,
+  Package,
+  MoreVertical,
 } from "lucide-react";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
@@ -100,6 +102,22 @@ interface WishlistItem {
     displayName: string | null;
     image: string | null;
   };
+}
+
+interface SellerBundle {
+  id: string;
+  title: string;
+  description: string | null;
+  price: number;
+  priceFormatted: string;
+  subject: string;
+  cycle: string;
+  status: string;
+  isPublished: boolean;
+  resourceCount: number;
+  savingsPercent: number;
+  savingsFormatted: string;
+  createdAt: string;
 }
 
 interface UserStats {
@@ -182,6 +200,7 @@ type TabType =
   | "overview"
   | "library"
   | "uploads"
+  | "bundles"
   | "wishlist"
   | "settings-profile"
   | "settings-appearance"
@@ -192,6 +211,7 @@ const VALID_TABS: TabType[] = [
   "overview",
   "library",
   "uploads",
+  "bundles",
   "wishlist",
   "settings-profile",
   "settings-appearance",
@@ -237,9 +257,13 @@ export default function AccountPage() {
     followers: 0,
   });
   const [sellerResources, setSellerResources] = useState<SellerResource[]>([]);
+  const [sellerBundles, setSellerBundles] = useState<SellerBundle[]>([]);
+  const [bundlesLoading, setBundlesLoading] = useState(false);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [openActionMenu, setOpenActionMenu] = useState<string | null>(null);
+  const [openBundleActionMenu, setOpenBundleActionMenu] = useState<string | null>(null);
   const actionMenuRef = useRef<HTMLDivElement>(null);
+  const bundleActionMenuRef = useRef<HTMLDivElement>(null);
 
   // Avatar management state
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
@@ -302,15 +326,22 @@ export default function AccountPage() {
       if (actionMenuRef.current && !actionMenuRef.current.contains(event.target as Node)) {
         setOpenActionMenu(null);
       }
+      if (
+        bundleActionMenuRef.current &&
+        !bundleActionMenuRef.current.contains(event.target as Node)
+      ) {
+        setOpenBundleActionMenu(null);
+      }
     }
 
     function handleEscapeKey(event: KeyboardEvent) {
       if (event.key === "Escape") {
         setOpenActionMenu(null);
+        setOpenBundleActionMenu(null);
       }
     }
 
-    if (openActionMenu) {
+    if (openActionMenu || openBundleActionMenu) {
       document.addEventListener("mousedown", handleClickOutside);
       document.addEventListener("keydown", handleEscapeKey);
       return () => {
@@ -318,7 +349,7 @@ export default function AccountPage() {
         document.removeEventListener("keydown", handleEscapeKey);
       };
     }
-  }, [openActionMenu]);
+  }, [openActionMenu, openBundleActionMenu]);
 
   // Fetch user stats and profile
   const fetchUserStats = useCallback(async () => {
@@ -410,6 +441,22 @@ export default function AccountPage() {
     }
   }, []);
 
+  // Fetch seller bundles
+  const fetchSellerBundles = useCallback(async () => {
+    setBundlesLoading(true);
+    try {
+      const response = await fetch("/api/seller/bundles");
+      if (response.ok) {
+        const data = await response.json();
+        setSellerBundles(data.bundles);
+      }
+    } catch (error) {
+      console.error("Error fetching seller bundles:", error);
+    } finally {
+      setBundlesLoading(false);
+    }
+  }, []);
+
   // Fetch followed sellers
   const fetchFollowedSellers = useCallback(async () => {
     try {
@@ -458,6 +505,7 @@ export default function AccountPage() {
         fetchSellerData(),
         fetchFollowedSellers(),
         fetchCurriculum(),
+        fetchSellerBundles(),
       ]).finally(() => {
         setLoading(false);
       });
@@ -471,6 +519,7 @@ export default function AccountPage() {
     fetchSellerData,
     fetchFollowedSellers,
     fetchCurriculum,
+    fetchSellerBundles,
   ]);
 
   // Handle search
@@ -511,6 +560,42 @@ export default function AccountPage() {
     } catch (error) {
       console.error("Error removing from wishlist:", error);
     }
+  };
+
+  // Handle bundle deletion
+  const handleDeleteBundle = async (bundleId: string) => {
+    if (!confirm("Möchten Sie dieses Bundle wirklich löschen?")) return;
+
+    try {
+      const response = await fetch(`/api/bundles/${bundleId}`, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        setSellerBundles((prev) => prev.filter((b) => b.id !== bundleId));
+      }
+    } catch (error) {
+      console.error("Error deleting bundle:", error);
+    }
+    setOpenBundleActionMenu(null);
+  };
+
+  // Handle bundle publish toggle
+  const handleToggleBundlePublish = async (bundleId: string, currentlyPublished: boolean) => {
+    try {
+      const response = await fetch(`/api/bundles/${bundleId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isPublished: !currentlyPublished }),
+      });
+      if (response.ok) {
+        setSellerBundles((prev) =>
+          prev.map((b) => (b.id === bundleId ? { ...b, isPublished: !currentlyPublished } : b))
+        );
+      }
+    } catch (error) {
+      console.error("Error toggling bundle publish:", error);
+    }
+    setOpenBundleActionMenu(null);
   };
 
   // Handle avatar upload
@@ -1361,6 +1446,188 @@ export default function AccountPage() {
                           className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
                         >
                           Material hochladen
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Bundles Tab */}
+              {activeTab === "bundles" && (
+                <motion.div
+                  key="bundles"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <div className="border-border bg-surface rounded-xl border p-6">
+                    <div className="mb-6 flex items-center justify-between">
+                      <div>
+                        <h2 className="text-text text-xl font-semibold">Meine Bundles</h2>
+                        <p className="text-text-muted mt-1 text-sm">
+                          Ressourcen-Pakete zu reduzierten Preisen
+                        </p>
+                      </div>
+                      <Link
+                        href="/upload/bundle"
+                        className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors"
+                      >
+                        <span>+</span>
+                        Neues Bundle
+                      </Link>
+                    </div>
+
+                    {loading || bundlesLoading ? (
+                      <div className="text-text-muted py-12 text-center">
+                        <div className="border-primary mx-auto mb-3 h-8 w-8 animate-spin rounded-full border-4 border-t-transparent"></div>
+                        Laden...
+                      </div>
+                    ) : sellerBundles.length > 0 ? (
+                      <div className="overflow-x-auto">
+                        <table className="w-full">
+                          <thead>
+                            <tr className="text-text-muted text-left text-xs font-medium tracking-wider uppercase">
+                              <th className="pb-4">Titel</th>
+                              <th className="pb-4">Status</th>
+                              <th className="pb-4 text-center">Ressourcen</th>
+                              <th className="pb-4 text-right">Preis</th>
+                              <th className="pb-4 text-right">Ersparnis</th>
+                              <th className="pb-4 text-right">Aktionen</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-border divide-y">
+                            {sellerBundles.map((bundle) => (
+                              <tr key={bundle.id} className="group hover:bg-bg transition-colors">
+                                <td className="py-4 pr-4">
+                                  <Link href={`/bundles/${bundle.id}`} className="block">
+                                    <div className="text-text group-hover:text-primary flex items-center gap-2 text-sm font-medium">
+                                      <Package className="h-4 w-4 flex-shrink-0" />
+                                      {bundle.title}
+                                    </div>
+                                    <div className="text-text-muted mt-0.5 text-xs">
+                                      {bundle.subject} · {bundle.cycle}
+                                    </div>
+                                  </Link>
+                                </td>
+                                <td className="py-4 pr-4">
+                                  <div className="flex flex-col gap-1">
+                                    <span
+                                      className={`inline-flex w-fit rounded-full px-2.5 py-1 text-xs font-medium ${
+                                        bundle.status === "VERIFIED"
+                                          ? "bg-success/10 text-success"
+                                          : bundle.status === "PENDING"
+                                            ? "bg-warning/10 text-warning"
+                                            : "bg-error/10 text-error"
+                                      }`}
+                                    >
+                                      {bundle.status === "VERIFIED"
+                                        ? "Verifiziert"
+                                        : bundle.status === "PENDING"
+                                          ? "Ausstehend"
+                                          : "Abgelehnt"}
+                                    </span>
+                                    <span
+                                      className={`text-xs ${
+                                        bundle.isPublished ? "text-success" : "text-text-muted"
+                                      }`}
+                                    >
+                                      {bundle.isPublished ? "Veröffentlicht" : "Entwurf"}
+                                    </span>
+                                  </div>
+                                </td>
+                                <td className="text-text py-4 pr-4 text-center text-sm font-medium">
+                                  {bundle.resourceCount}
+                                </td>
+                                <td className="text-text py-4 pr-4 text-right text-sm font-medium">
+                                  {bundle.priceFormatted}
+                                </td>
+                                <td className="py-4 pr-4 text-right">
+                                  {bundle.savingsPercent > 0 && (
+                                    <span className="text-success text-sm font-medium">
+                                      {bundle.savingsPercent}%
+                                    </span>
+                                  )}
+                                </td>
+                                <td className="py-4 text-right">
+                                  <div
+                                    className="relative inline-block"
+                                    ref={
+                                      openBundleActionMenu === bundle.id
+                                        ? bundleActionMenuRef
+                                        : null
+                                    }
+                                  >
+                                    <button
+                                      onClick={() =>
+                                        setOpenBundleActionMenu(
+                                          openBundleActionMenu === bundle.id ? null : bundle.id
+                                        )
+                                      }
+                                      className="text-text-muted hover:bg-surface-hover hover:text-text rounded-lg p-2 transition-colors"
+                                      aria-label="Aktionen"
+                                    >
+                                      <MoreVertical className="h-5 w-5" />
+                                    </button>
+                                    {openBundleActionMenu === bundle.id && (
+                                      <div className="border-border bg-surface absolute right-0 z-10 mt-1 w-48 rounded-xl border py-1.5 shadow-lg">
+                                        <Link
+                                          href={`/bundles/${bundle.id}`}
+                                          className="text-text hover:bg-bg flex items-center gap-2.5 px-4 py-2 text-sm transition-colors"
+                                          onClick={() => setOpenBundleActionMenu(null)}
+                                        >
+                                          <ExternalLink className="h-4 w-4" />
+                                          Ansehen
+                                        </Link>
+                                        <button
+                                          onClick={() =>
+                                            handleToggleBundlePublish(bundle.id, bundle.isPublished)
+                                          }
+                                          className="text-text hover:bg-bg flex w-full items-center gap-2.5 px-4 py-2 text-sm transition-colors"
+                                        >
+                                          {bundle.isPublished ? (
+                                            <>
+                                              <X className="h-4 w-4" />
+                                              Veröffentlichung aufheben
+                                            </>
+                                          ) : (
+                                            <>
+                                              <Check className="h-4 w-4" />
+                                              Veröffentlichen
+                                            </>
+                                          )}
+                                        </button>
+                                        <button
+                                          onClick={() => handleDeleteBundle(bundle.id)}
+                                          className="text-error hover:bg-error/10 flex w-full items-center gap-2.5 px-4 py-2 text-sm transition-colors"
+                                        >
+                                          <Trash2 className="h-4 w-4" />
+                                          Löschen
+                                        </button>
+                                      </div>
+                                    )}
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    ) : (
+                      <div className="py-12 text-center">
+                        <Package className="text-text-faint mx-auto mb-4 h-16 w-16" />
+                        <h3 className="text-text mb-2 text-lg font-medium">
+                          Noch keine Bundles erstellt
+                        </h3>
+                        <p className="text-text-muted mb-4">
+                          Bündeln Sie mehrere Ressourcen zu einem reduzierten Preis.
+                        </p>
+                        <Link
+                          href="/upload/bundle"
+                          className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
+                        >
+                          Erstes Bundle erstellen
                         </Link>
                       </div>
                     )}

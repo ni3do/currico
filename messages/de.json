@@ -14,7 +14,7 @@
       "tagline": "Bildungsplattform Schweiz"
     },
     "navigation": {
-      "resources": "Ressourcen",
+      "resources": "Material",
       "aboutUs": "Über uns",
       "contact": "Kontakt",
       "login": "Anmelden",
@@ -147,7 +147,7 @@
       },
       "feature2": {
         "title": "Lehrplan 21 konform",
-        "description": "Alle Ressourcen sind nach Kompetenzbereichen und Zyklen des Lehrplan 21 kategorisiert."
+        "description": "Alle Materialien sind nach Kompetenzbereichen und Zyklen des Lehrplan 21 kategorisiert."
       },
       "feature3": {
         "title": "Sofort einsetzbar",
@@ -385,7 +385,7 @@
         "paid": "Kostenpflichtig"
       },
       "typeFilter": {
-        "label": "Ressourcentyp",
+        "label": "Materialtyp",
         "all": "Alle",
         "pdf": "PDF",
         "word": "Word",
@@ -402,7 +402,7 @@
       "resetButton": "Zurücksetzen"
     },
     "results": {
-      "countLabel": "Ressourcen gefunden",
+      "countLabel": "Materialien gefunden",
       "sortLabel": "Sortieren:",
       "sortOptions": {
         "newest": "Neueste",
@@ -426,14 +426,14 @@
     },
     "loading": "Wird geladen...",
     "empty": {
-      "title": "Keine Ressourcen gefunden",
+      "title": "Keine Materialien gefunden",
       "description": "Versuchen Sie andere Suchbegriffe oder Filter"
     }
   },
   "sellerDashboard": {
     "header": {
       "title": "Verkäufer Dashboard",
-      "subtitle": "Verwalten Sie Ihre Ressourcen und überwachen Sie Ihre Verkäufe"
+      "subtitle": "Verwalten Sie Ihre Materialien und überwachen Sie Ihre Verkäufe"
     },
     "stats": {
       "earnings": {
@@ -442,7 +442,7 @@
       },
       "downloads": {
         "title": "Downloads",
-        "subtitle": "Alle Ressourcen"
+        "subtitle": "Alle Materialien"
       },
       "followers": {
         "title": "Follower",
@@ -454,7 +454,7 @@
       "createBundle": "+ Bundle erstellen"
     },
     "tabs": {
-      "resources": "Meine Ressourcen",
+      "resources": "Meine Materialien",
       "transactions": "Transaktionen"
     },
     "resourcesTable": {
@@ -591,7 +591,7 @@
     },
     "faq": {
       "title": "Schnelle Antworten gesucht?",
-      "description": "In unserem Hilfe-Center finden Sie Antworten auf häufige Fragen zu Konten, Ressourcen und dem Verkauf auf Currico."
+      "description": "In unserem Hilfe-Center finden Sie Antworten auf häufige Fragen zu Konten, Materialien und dem Verkauf auf Currico."
     }
   },
   "metadata": {
@@ -654,7 +654,7 @@
         "title": "6. Pflichten des Verkäufers",
         "content": "Als Verkäufer sind Sie verantwortlich für:",
         "items": {
-          "accuracy": "Die Richtigkeit Ihrer Ressourcenbeschreibungen",
+          "accuracy": "Die Richtigkeit Ihrer Materialbeschreibungen",
           "support": "Die Beantwortung von Käuferfragen zu Ihren Materialien",
           "updates": "Die Aktualisierung von Materialien bei entdeckten Fehlern",
           "taxes": "Die Erfüllung Ihrer eigenen steuerlichen Pflichten für erzielte Einnahmen",
@@ -1459,7 +1459,7 @@
     "unfollow": "Entfolgen",
     "editProfile": "Profil bearbeiten",
     "stats": {
-      "resources": "Ressourcen",
+      "resources": "Material",
       "followers": "Follower",
       "following": "Folgt"
     },
@@ -1470,7 +1470,7 @@
     "bestUploads": "Beste Uploads",
     "noUploads": "Noch keine Uploads vorhanden",
     "noUploadsOwn": "Laden Sie Ihre erste Ressource hoch!",
-    "noUploadsOther": "Dieser Benutzer hat noch keine Ressourcen hochgeladen.",
+    "noUploadsOther": "Dieser Benutzer hat noch keine Materialien hochgeladen.",
     "noCollections": "Noch keine Sammlungen vorhanden",
     "noCollectionsOwn": "Erstellen Sie Ihre erste Sammlung!",
     "noCollectionsOther": "Dieser Benutzer hat noch keine öffentlichen Sammlungen.",
@@ -1478,22 +1478,22 @@
     "privacy": {
       "label": "Mein Profil soll privat bleiben",
       "tooltip": "Wenn aktiviert, werden nur Ihr Name und Avatar auf Ihrem öffentlichen Profil angezeigt. Ihre Bio, Fächer, Zyklen, Kantone, Statistiken und Social-Media-Links bleiben verborgen.",
-      "notice": "Dieses Profil ist privat. Nur öffentliche Ressourcen werden angezeigt.",
+      "notice": "Dieses Profil ist privat. Nur öffentliche Materialien werden angezeigt.",
       "sectionTitle": "Privatsphäre-Einstellungen"
     }
   },
   "collections": {
     "title": "Meine Sammlungen",
-    "description": "Organisieren Sie Ihre Ressourcen in Sammlungen",
+    "description": "Organisieren Sie Ihre Materialien in Sammlungen",
     "newCollection": "Neue Sammlung",
     "noCollections": "Noch keine Sammlungen",
     "createFirst": "Erste Sammlung erstellen",
     "selectCollection": "Wählen Sie eine Sammlung aus",
     "orCreateNew": "oder erstellen Sie eine neue Sammlung",
-    "noResources": "Noch keine Ressourcen in dieser Sammlung",
-    "dragDropHint": "Ziehen Sie Ressourcen per Drag & Drop hierher oder fügen Sie sie über die Ressourcen-Seite hinzu.",
+    "noResources": "Noch keine Materialien in dieser Sammlung",
+    "dragDropHint": "Ziehen Sie Materialien per Drag & Drop hierher oder fügen Sie sie über die Material-Seite hinzu.",
     "toUploads": "Zu meinen Uploads",
-    "reorderHint": "Ziehen Sie Ressourcen, um die Reihenfolge zu ändern",
+    "reorderHint": "Ziehen Sie Materialien, um die Reihenfolge zu ändern",
     "viewPublic": "Öffentlich ansehen",
     "form": {
       "name": "Name",
@@ -1523,12 +1523,12 @@
     "stats": {
       "title": "Statistiken",
       "followedProfiles": "Gefolgte Profile",
-      "availableResources": "Verfügbare Ressourcen"
+      "availableResources": "Verfügbare Materialien"
     },
     "discoverMore": {
       "title": "Mehr entdecken",
       "description": "Finden Sie weitere interessante Lehrpersonen und deren Materialien.",
-      "link": "Ressourcen durchsuchen"
+      "link": "Material durchsuchen"
     }
   },
   "verifyEmailPage": {
@@ -1561,7 +1561,7 @@
   },
   "search": {
     "tabs": {
-      "resources": "Ressourcen",
+      "resources": "Material",
       "profiles": "Profile"
     },
     "profiles": {
@@ -1622,7 +1622,7 @@
         },
         "newsletter": {
           "label": "Newsletter abonnieren",
-          "description": "Wöchentliche Updates mit Tipps, neuen Funktionen und ausgewählten Ressourcen"
+          "description": "Wöchentliche Updates mit Tipps, neuen Funktionen und ausgewähltem Material"
         },
         "platformUpdates": {
           "label": "Plattform-Updates",
