@@ -67,29 +67,30 @@ CREATE TABLE `users` (
     `subjects` JSON NOT NULL,
     `cycles` JSON NOT NULL,
     `cantons` JSON NOT NULL,
+    `instagram` VARCHAR(100) NULL,
+    `pinterest` VARCHAR(100) NULL,
     `password_hash` VARCHAR(255) NULL,
-    `legal_first_name` VARCHAR(100) NULL,
-    `legal_last_name` VARCHAR(100) NULL,
-    `iban` VARCHAR(34) NULL,
-    `address_street` VARCHAR(255) NULL,
-    `address_city` VARCHAR(100) NULL,
-    `address_postal` VARCHAR(10) NULL,
-    `address_country` VARCHAR(2) NOT NULL DEFAULT 'CH',
     `role` ENUM('BUYER', 'SELLER', 'SCHOOL', 'ADMIN') NOT NULL DEFAULT 'BUYER',
-    `is_seller` BOOLEAN NOT NULL DEFAULT false,
-    `seller_verified` BOOLEAN NOT NULL DEFAULT false,
-    `payout_enabled` BOOLEAN NOT NULL DEFAULT false,
     `is_protected` BOOLEAN NOT NULL DEFAULT false,
+    `is_private` BOOLEAN NOT NULL DEFAULT false,
     `stripe_account_id` VARCHAR(255) NULL,
     `stripe_onboarding_complete` BOOLEAN NOT NULL DEFAULT false,
     `stripe_charges_enabled` BOOLEAN NOT NULL DEFAULT false,
     `stripe_payouts_enabled` BOOLEAN NOT NULL DEFAULT false,
     `stripe_customer_id` VARCHAR(255) NULL,
     `seller_terms_accepted_at` DATETIME(0) NULL,
+    `notify_new_from_followed` BOOLEAN NOT NULL DEFAULT true,
+    `notify_recommendations` BOOLEAN NOT NULL DEFAULT true,
+    `notify_material_updates` BOOLEAN NOT NULL DEFAULT true,
+    `notify_review_reminders` BOOLEAN NOT NULL DEFAULT true,
+    `notify_wishlist_price_drops` BOOLEAN NOT NULL DEFAULT true,
+    `notify_welcome_offers` BOOLEAN NOT NULL DEFAULT true,
+    `notify_sales` BOOLEAN NOT NULL DEFAULT true,
+    `notify_newsletter` BOOLEAN NOT NULL DEFAULT false,
+    `notify_platform_updates` BOOLEAN NOT NULL DEFAULT true,
 
     UNIQUE INDEX `users_email_key`(`email`),
     INDEX `users_role_idx`(`role`),
-    INDEX `users_is_seller_idx`(`is_seller`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -524,3 +525,4 @@ ALTER TABLE `bundle_resources` ADD CONSTRAINT `bundle_resources_bundle_id_fkey` 
 
 -- AddForeignKey
 ALTER TABLE `bundle_resources` ADD CONSTRAINT `bundle_resources_resource_id_fkey` FOREIGN KEY (`resource_id`) REFERENCES `resources`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
