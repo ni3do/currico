@@ -131,26 +131,30 @@ export async function GET(request: Request) {
       },
     });
 
-    // Build lehrmittel query - for MySQL with JSON columns, use raw SQL for filtering
+    // Build lehrmittel query - for PostgreSQL with JSONB columns, use raw SQL for filtering
     let lehrmittelIds: string[] | null = null;
 
     if ((canton && canton !== "all") || cycle) {
       const conditions: string[] = [];
-      const params: string[] = [];
+      const params: (string | number)[] = [];
+      let paramIndex = 1;
 
       if (subjectCode) {
-        conditions.push(`subject = ?`);
+        conditions.push(`subject = $${paramIndex}`);
         params.push(subjectCode);
+        paramIndex++;
       }
 
       if (canton && canton !== "all") {
-        conditions.push(`JSON_CONTAINS(cantons, ?)`);
+        conditions.push(`cantons::jsonb @> $${paramIndex}::jsonb`);
         params.push(JSON.stringify(canton));
+        paramIndex++;
       }
 
       if (cycle) {
-        conditions.push(`JSON_CONTAINS(cycles, ?)`);
+        conditions.push(`cycles::jsonb @> $${paramIndex}::jsonb`);
         params.push(JSON.stringify(parseInt(cycle, 10)));
+        paramIndex++;
       }
 
       const sqlConditions = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";

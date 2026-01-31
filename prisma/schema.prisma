@@ -1,5 +1,5 @@
 // Prisma schema for Currico - Swiss Teaching Materials Marketplace
-// Database: MySQL 8.0
+// Database: PostgreSQL 16
 
 generator client {
   provider      = "prisma-client-js"
@@ -7,7 +7,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -40,7 +40,7 @@ model Session {
   id           String   @id @db.VarChar(50)
   sessionToken String   @unique @db.VarChar(255)
   userId       String   @db.VarChar(50)
-  expires      DateTime @db.DateTime(0)
+  expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
@@ -50,7 +50,7 @@ model Session {
 model VerificationToken {
   identifier String   @db.VarChar(255)
   token      String   @unique @db.VarChar(255)
-  expires    DateTime @db.DateTime(0)
+  expires    DateTime
 
   @@unique([identifier, token])
   @@map("verification_tokens")
@@ -59,8 +59,8 @@ model VerificationToken {
 model EmailVerificationToken {
   id         String   @id @db.VarChar(50)
   token      String   @unique @db.VarChar(255)
-  expires    DateTime @db.DateTime(0)
-  created_at DateTime @default(now()) @db.DateTime(0)
+  expires    DateTime
+  created_at DateTime @default(now())
 
   user_id String @db.VarChar(50)
   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
@@ -76,13 +76,13 @@ model EmailVerificationToken {
 model User {
   // ============ IDENTITY (System) ============
   id         String   @id @default(cuid()) @db.VarChar(50)
-  created_at DateTime @default(now()) @db.DateTime(0)
-  updated_at DateTime @updatedAt @db.DateTime(0)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   // ============ NEXTAUTH.JS REQUIRED FIELDS ============
   name          String?   @db.VarChar(255)
   email         String    @unique @db.VarChar(255)
-  emailVerified DateTime? @db.DateTime(0)
+  emailVerified DateTime?
   image         String?   @db.VarChar(500)
 
   // ============ PUBLIC PROFILE DATA ============
@@ -110,7 +110,7 @@ model User {
   stripe_charges_enabled     Boolean   @default(false)
   stripe_payouts_enabled     Boolean   @default(false)
   stripe_customer_id         String?   @db.VarChar(255)
-  seller_terms_accepted_at   DateTime? @db.DateTime(0)
+  seller_terms_accepted_at   DateTime?
 
   // ============ NOTIFICATION PREFERENCES ============
   notify_new_from_followed    Boolean @default(true)
@@ -170,12 +170,12 @@ enum ResourceStatus {
 
 model Resource {
   id         String   @id @default(cuid()) @db.VarChar(50)
-  created_at DateTime @default(now()) @db.DateTime(0)
-  updated_at DateTime @updatedAt @db.DateTime(0)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   title       String @db.VarChar(255)
   description String @db.Text
-  price       Int    @db.Int
+  price       Int   
   file_url    String @db.VarChar(500)
   preview_url String? @db.VarChar(500)
 
@@ -230,9 +230,9 @@ model Resource {
 
 model Transaction {
   id         String   @id @default(cuid()) @db.VarChar(50)
-  created_at DateTime @default(now()) @db.DateTime(0)
+  created_at DateTime @default(now())
 
-  amount Int              @db.Int
+  amount Int             
   status TransactionStatus @default(PENDING)
 
   // Payment tracking
@@ -245,8 +245,8 @@ model Transaction {
   invoice_pdf_url String? @db.VarChar(500)
 
   // Fee breakdown (stored for historical accuracy)
-  platform_fee_amount  Int? @db.Int
-  seller_payout_amount Int? @db.Int
+  platform_fee_amount  Int?
+  seller_payout_amount Int?
 
   // Guest checkout
   guest_email String? @db.VarChar(255)
@@ -267,10 +267,10 @@ model Transaction {
 model DownloadToken {
   id             String   @id @default(cuid()) @db.VarChar(50)
   token          String   @unique @db.VarChar(255)
-  expires_at     DateTime @db.DateTime(0)
+  expires_at     DateTime
   download_count Int      @default(0) @db.SmallInt
   max_downloads  Int      @default(5) @db.SmallInt
-  created_at     DateTime @default(now()) @db.DateTime(0)
+  created_at     DateTime @default(now())
 
   transaction_id String      @db.VarChar(50)
   transaction    Transaction @relation(fields: [transaction_id], references: [id], onDelete: Cascade)
@@ -293,8 +293,8 @@ enum TransactionStatus {
 
 model Report {
   id         String   @id @default(cuid()) @db.VarChar(50)
-  created_at DateTime @default(now()) @db.DateTime(0)
-  updated_at DateTime @updatedAt @db.DateTime(0)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   reason      String       @db.VarChar(50)
   description String?      @db.Text
@@ -315,7 +315,7 @@ model Report {
   // Admin who handled the report
   handled_by_id String?   @db.VarChar(50)
   handled_by    User?     @relation("ReportHandler", fields: [handled_by_id], references: [id], onDelete: SetNull)
-  handled_at    DateTime? @db.DateTime(0)
+  handled_at    DateTime?
 
   @@index([reporter_id])
   @@index([status])
@@ -335,7 +335,7 @@ enum ReportStatus {
 
 model ContactMessage {
   id         String   @id @default(cuid()) @db.VarChar(50)
-  created_at DateTime @default(now()) @db.DateTime(0)
+  created_at DateTime @default(now())
 
   name    String               @db.VarChar(100)
   email   String               @db.VarChar(255)
@@ -397,7 +397,7 @@ model CurriculumCompetency {
   description_de String  @db.Text
   description_fr String? @db.Text
   description_it String? @db.Text
-  cycle          Int     @db.TinyInt
+  cycle          Int     @db.SmallInt
 
   // Hierarchy levels for LP21
   kompetenzbereich String? @db.VarChar(100)
@@ -470,7 +470,7 @@ model BneTheme {
   name_fr        String? @db.VarChar(100)
   description_de String  @db.Text
   description_fr String? @db.Text
-  sdg_number     Int?    @db.TinyInt
+  sdg_number     Int?    @db.SmallInt
   icon           String? @db.VarChar(50)
   color          String? @db.VarChar(7)
 
@@ -533,7 +533,7 @@ model ResourceBne {
 
 model Download {
   id         String   @id @default(cuid()) @db.VarChar(50)
-  created_at DateTime @default(now()) @db.DateTime(0)
+  created_at DateTime @default(now())
 
   // Relations
   user_id     String   @db.VarChar(50)
@@ -552,7 +552,7 @@ model Download {
 
 model Wishlist {
   id         String   @id @default(cuid()) @db.VarChar(50)
-  created_at DateTime @default(now()) @db.DateTime(0)
+  created_at DateTime @default(now())
 
   // Relations
   user_id     String   @db.VarChar(50)
@@ -571,7 +571,7 @@ model Wishlist {
 
 model Follow {
   id          String   @id @default(cuid()) @db.VarChar(50)
-  created_at  DateTime @default(now()) @db.DateTime(0)
+  created_at  DateTime @default(now())
   follower_id String   @db.VarChar(50)
   follower    User     @relation("Followers", fields: [follower_id], references: [id], onDelete: Cascade)
   followed_id String   @db.VarChar(50)
@@ -588,8 +588,8 @@ model Follow {
 
 model Collection {
   id          String   @id @default(cuid()) @db.VarChar(50)
-  created_at  DateTime @default(now()) @db.DateTime(0)
-  updated_at  DateTime @updatedAt @db.DateTime(0)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
   name        String   @db.VarChar(100)
   description String?  @db.Text
   is_public   Boolean  @default(true)
@@ -606,7 +606,7 @@ model Collection {
 
 model CollectionItem {
   id         String   @id @default(cuid()) @db.VarChar(50)
-  created_at DateTime @default(now()) @db.DateTime(0)
+  created_at DateTime @default(now())
   position   Int      @default(0) @db.SmallInt
 
   collection_id String     @db.VarChar(50)
@@ -625,11 +625,11 @@ model CollectionItem {
 
 model Bundle {
   id              String         @id @default(cuid()) @db.VarChar(50)
-  created_at      DateTime       @default(now()) @db.DateTime(0)
-  updated_at      DateTime       @updatedAt @db.DateTime(0)
+  created_at      DateTime       @default(now())
+  updated_at      DateTime       @updatedAt
   title           String         @db.VarChar(255)
   description     String?        @db.Text
-  price           Int            @db.Int
+  price           Int           
   subject         Json           @default("[]")
   cycle           Json           @default("[]")
   cover_image_url String?        @db.VarChar(500)
