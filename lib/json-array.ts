@@ -1,10 +1,10 @@
 import { Prisma } from "@prisma/client";
 
 /**
- * MySQL JSON array query helpers
+ * PostgreSQL JSONB array query helpers
  *
  * These helpers generate raw SQL conditions for querying JSON array columns
- * in MySQL, replacing PostgreSQL's native array operators (.has, .hasSome).
+ * in PostgreSQL using native JSONB operators.
  */
 
 /**
@@ -16,8 +16,8 @@ import { Prisma } from "@prisma/client";
  * @returns Prisma raw SQL fragment for use in where clauses
  *
  * @example
- * // PostgreSQL: where.subjects = { has: "Mathematik" }
- * // MySQL: jsonArrayContains("subjects", "Mathematik")
+ * // PostgreSQL: subjects::jsonb @> '"Mathematik"'::jsonb
+ * jsonArrayContains("subjects", "Mathematik")
  */
 export function jsonArrayContains(
   column: string,
@@ -25,7 +25,8 @@ export function jsonArrayContains(
   table?: string
 ): Prisma.Sql {
   const columnRef = table ? `${table}.${column}` : column;
-  return Prisma.sql`JSON_CONTAINS(${Prisma.raw(columnRef)}, ${JSON.stringify(value)})`;
+  // Use @> operator: checks if left contains right
+  return Prisma.sql`${Prisma.raw(columnRef)}::jsonb @> ${JSON.stringify(value)}::jsonb`;
 }
 
 /**
@@ -37,8 +38,8 @@ export function jsonArrayContains(
  * @returns Prisma raw SQL fragment for use in where clauses
  *
  * @example
- * // PostgreSQL: where.subjects = { hasSome: ["Mathematik", "Deutsch"] }
- * // MySQL: jsonArrayHasSome("subjects", ["Mathematik", "Deutsch"])
+ * // PostgreSQL: subjects::jsonb ?| ARRAY['Mathematik', 'Deutsch']
+ * jsonArrayHasSome("subjects", ["Mathematik", "Deutsch"])
  */
 export function jsonArrayHasSome(
   column: string,
@@ -52,9 +53,10 @@ export function jsonArrayHasSome(
 
   const columnRef = table ? `${table}.${column}` : column;
 
-  // Use JSON_OVERLAPS for MySQL 8.0.17+
-  // JSON_OVERLAPS returns true if the two JSON documents have any common key-value pairs or array elements
-  return Prisma.sql`JSON_OVERLAPS(${Prisma.raw(columnRef)}, ${JSON.stringify(values)})`;
+  // Use ?| operator: checks if any of the array elements exist as top-level keys
+  // For JSONB arrays, we need to convert to text[] for ?| to work properly
+  const stringValues = values.map(String);
+  return Prisma.sql`${Prisma.raw(columnRef)}::jsonb ?| ${stringValues}::text[]`;
 }
 
 /**
@@ -77,8 +79,8 @@ export function jsonArrayHasEvery(
 
   const columnRef = table ? `${table}.${column}` : column;
 
-  // JSON_CONTAINS checks if the first argument contains the second
-  return Prisma.sql`JSON_CONTAINS(${Prisma.raw(columnRef)}, ${JSON.stringify(values)})`;
+  // Use @> operator with a JSON array: checks if left contains right
+  return Prisma.sql`${Prisma.raw(columnRef)}::jsonb @> ${JSON.stringify(values)}::jsonb`;
 }
 
 /**

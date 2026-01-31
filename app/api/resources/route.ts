@@ -88,26 +88,29 @@ export async function GET(request: NextRequest) {
       is_public: true, // Only show verified/public resources
     };
 
-    // For MySQL with JSON columns, we use raw SQL for array contains checks
+    // For PostgreSQL with JSONB columns, we use raw SQL for array contains checks
     // First, get IDs that match the JSON array filters
     let jsonFilteredIds: string[] | null = null;
 
     if (subject || cycle) {
       const conditions: string[] = [];
       const params: (string | number)[] = [];
+      let paramIndex = 1;
 
       if (subject) {
-        conditions.push(`JSON_CONTAINS(subjects, ?)`);
+        conditions.push(`subjects::jsonb @> $${paramIndex}::jsonb`);
         params.push(JSON.stringify(subject));
+        paramIndex++;
       }
 
       if (cycle) {
-        conditions.push(`JSON_CONTAINS(cycles, ?)`);
+        conditions.push(`cycles::jsonb @> $${paramIndex}::jsonb`);
         params.push(JSON.stringify(cycle));
+        paramIndex++;
       }
 
       const sqlConditions = conditions.join(" AND ");
-      const query = `SELECT id FROM resources WHERE is_published = 1 AND is_public = 1 AND ${sqlConditions}`;
+      const query = `SELECT id FROM resources WHERE is_published = true AND is_public = true AND ${sqlConditions}`;
 
       const results = await prisma.$queryRawUnsafe<{ id: string }[]>(query, ...params);
       jsonFilteredIds = results.map((r) => r.id);

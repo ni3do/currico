@@ -38,25 +38,28 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    // For MySQL with JSON columns, use raw SQL for array overlap checks
+    // For PostgreSQL with JSONB columns, use raw SQL for array overlap checks
     if (subjects.length > 0 || cycles.length > 0) {
       const conditions: string[] = [];
-      const params: string[] = [];
+      const params: string[][] = [];
+      let paramIndex = 1;
 
       if (subjects.length > 0) {
-        // JSON_OVERLAPS checks if any value in the array matches
-        conditions.push(`JSON_OVERLAPS(subjects, ?)`);
-        params.push(JSON.stringify(subjects));
+        // ?| operator checks if any value in the text array exists in the JSONB array
+        conditions.push(`subjects::jsonb ?| $${paramIndex}::text[]`);
+        params.push(subjects);
+        paramIndex++;
       }
 
       if (cycles.length > 0) {
-        conditions.push(`JSON_OVERLAPS(cycles, ?)`);
-        params.push(JSON.stringify(cycles));
+        conditions.push(`cycles::jsonb ?| $${paramIndex}::text[]`);
+        params.push(cycles);
+        paramIndex++;
       }
 
       const sqlConditions = conditions.join(" AND ");
       const query = `SELECT id FROM users WHERE ${sqlConditions}`;
-      const results = await prisma.$queryRawUnsafe<{ id: string }[]>(query, ...params);
+      const results = await prisma.$queryRawUnsafe<{ id: string }[]>(query, ...params.flat());
       const filteredIds = results.map((r) => r.id);
 
       if (filteredIds.length === 0) {

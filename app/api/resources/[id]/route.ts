@@ -83,11 +83,11 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     }[] = [];
 
     if (resourceSubjects.length > 0) {
-      // Get IDs of related resources using JSON_OVERLAPS
+      // Get IDs of related resources using PostgreSQL JSONB ?| operator
       const relatedIds = await prisma.$queryRawUnsafe<{ id: string }[]>(
-        `SELECT id FROM resources WHERE id != ? AND is_published = 1 AND is_approved = 1 AND JSON_OVERLAPS(subjects, ?) LIMIT 3`,
+        `SELECT id FROM resources WHERE id != $1 AND is_published = true AND is_approved = true AND subjects::jsonb ?| $2::text[] LIMIT 3`,
         id,
-        JSON.stringify(resourceSubjects)
+        resourceSubjects
       );
 
       if (relatedIds.length > 0) {
