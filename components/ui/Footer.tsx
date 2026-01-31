@@ -25,7 +25,7 @@ export default function Footer() {
           {/* Right: Links */}
           <nav className="flex flex-wrap items-center justify-center gap-3 sm:gap-5">
             <Link
-              href="/faq"
+              href="/hilfe"
               className="text-text-muted hover:text-primary text-sm transition-colors"
             >
               {tCommon("footer.links.help")}

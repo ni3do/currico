@@ -1,7 +1,6 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Shield, Mail } from "lucide-react";
@@ -108,25 +107,58 @@ export default function PrivacyPage() {
               </h3>
               <p>{t("sections.cookies.analytics.content")}</p>
 
-              {/* Section 5: Data Sharing */}
+              {/* Section 5: Payment Processors */}
+              <h2 className="text-text-primary mt-8 text-xl font-semibold">
+                {t("sections.paymentProcessors.title")}
+              </h2>
+              <p>{t("sections.paymentProcessors.intro")}</p>
+
+              {/* Stripe */}
+              <div className="bg-bg-secondary mt-4 rounded-lg p-4">
+                <h3 className="text-text-primary text-lg font-medium">
+                  {t("sections.paymentProcessors.stripe.title")}
+                </h3>
+                <p className="mt-2">{t("sections.paymentProcessors.stripe.content")}</p>
+                <p className="mt-2 text-sm">{t("sections.paymentProcessors.stripe.dataShared")}</p>
+                <p className="text-sm">{t("sections.paymentProcessors.stripe.location")}</p>
+                <p className="text-primary mt-2 text-sm">
+                  {t("sections.paymentProcessors.stripe.link")}
+                </p>
+              </div>
+
+              {/* TWINT */}
+              <div className="bg-bg-secondary mt-4 rounded-lg p-4">
+                <h3 className="text-text-primary text-lg font-medium">
+                  {t("sections.paymentProcessors.twint.title")}
+                </h3>
+                <p className="mt-2">{t("sections.paymentProcessors.twint.content")}</p>
+                <p className="mt-2 text-sm">{t("sections.paymentProcessors.twint.dataShared")}</p>
+                <p className="text-sm">{t("sections.paymentProcessors.twint.location")}</p>
+                <p className="text-primary mt-2 text-sm">
+                  {t("sections.paymentProcessors.twint.link")}
+                </p>
+              </div>
+
+              {/* Section 6: Data Sharing */}
               <h2 className="text-text-primary mt-8 text-xl font-semibold">
                 {t("sections.sharing.title")}
               </h2>
               <p>{t("sections.sharing.intro")}</p>
               <ul className="ml-4 list-disc space-y-1">
                 <li>{t("sections.sharing.items.stripe")}</li>
+                <li>{t("sections.sharing.items.twint")}</li>
                 <li>{t("sections.sharing.items.hosting")}</li>
                 <li>{t("sections.sharing.items.email")}</li>
               </ul>
 
-              {/* Section 6: Data Storage */}
+              {/* Section 7: Data Storage */}
               <h2 className="text-text-primary mt-8 text-xl font-semibold">
                 {t("sections.storage.title")}
               </h2>
               <p>{t("sections.storage.location")}</p>
               <p className="mt-2">{t("sections.storage.retention")}</p>
 
-              {/* Section 7: Your Rights */}
+              {/* Section 8: Your Rights */}
               <h2 className="text-text-primary mt-8 text-xl font-semibold">
                 {t("sections.rights.title")}
               </h2>
@@ -140,18 +172,25 @@ export default function PrivacyPage() {
                 <li>{t("sections.rights.items.objection")}</li>
               </ul>
               <p className="mt-4">{t("sections.rights.contact")}</p>
+              <p className="mt-2 text-sm">{t("sections.rights.complaint")}</p>
 
-              {/* Section 8: Security */}
+              {/* Section 9: Security */}
               <h2 className="text-text-primary mt-8 text-xl font-semibold">
                 {t("sections.security.title")}
               </h2>
               <p>{t("sections.security.content")}</p>
 
-              {/* Section 9: Changes */}
+              {/* Section 10: Changes */}
               <h2 className="text-text-primary mt-8 text-xl font-semibold">
                 {t("sections.changes.title")}
               </h2>
               <p>{t("sections.changes.content")}</p>
+
+              {/* Section 11: Jurisdiction */}
+              <h2 className="text-text-primary mt-8 text-xl font-semibold">
+                {t("sections.jurisdiction.title")}
+              </h2>
+              <p>{t("sections.jurisdiction.content")}</p>
             </div>
 
             {/* Contact CTA */}
@@ -165,22 +204,6 @@ export default function PrivacyPage() {
               >
                 {t("contact.email")}
               </a>
-            </div>
-
-            {/* Links to other legal pages */}
-            <div className="mt-8 flex flex-wrap gap-4">
-              <Link
-                href="/impressum"
-                className="border-border bg-bg-primary text-text-primary hover:bg-bg-secondary inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
-              >
-                {t("links.impressum")}
-              </Link>
-              <Link
-                href="/terms"
-                className="border-border bg-bg-primary text-text-primary hover:bg-bg-secondary inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
-              >
-                {t("links.terms")}
-              </Link>
             </div>
           </div>
         </section>

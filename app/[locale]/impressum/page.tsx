@@ -120,22 +120,6 @@ export default function ImpressumPage() {
                 </div>
               </div>
             </div>
-
-            {/* Links to other legal pages */}
-            <div className="mt-8 flex flex-wrap gap-4">
-              <Link
-                href="/privacy"
-                className="border-border bg-bg-primary text-text-primary hover:bg-bg-secondary inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
-              >
-                {t("links.privacy")}
-              </Link>
-              <Link
-                href="/terms"
-                className="border-border bg-bg-primary text-text-primary hover:bg-bg-secondary inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
-              >
-                {t("links.terms")}
-              </Link>
-            </div>
           </div>
         </section>
       </main>

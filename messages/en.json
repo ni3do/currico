@@ -646,8 +646,45 @@
           "lp21": "Are properly aligned with Lehrplan 21 where applicable"
         }
       },
+      "copyrightWarranty": {
+        "title": "5. Copyright Warranty & Indemnification",
+        "content": "As a seller, you warrant and agree that:",
+        "warranties": {
+          "ownership": "You are the sole author and owner of all materials you upload, or you have obtained all necessary rights and licenses to sell them",
+          "noInfringement": "Your materials do not infringe any third-party copyrights, trademarks, or other intellectual property rights",
+          "noThirdParty": "Your materials do not contain content copied from textbooks, websites, or other sources without proper authorization"
+        },
+        "indemnification": {
+          "title": "Indemnification (Freistellung)",
+          "content": "You agree to indemnify, defend, and hold harmless Currico, its operators, employees, and affiliates from and against any and all claims, damages, losses, costs, and expenses (including reasonable legal fees) arising from or related to:",
+          "items": {
+            "infringement": "Any claim that your materials infringe the intellectual property rights of any third party",
+            "breach": "Any breach of your warranties under these terms",
+            "content": "The content, quality, or accuracy of your teaching materials"
+          }
+        }
+      },
+      "noticeTakedown": {
+        "title": "6. Notice and Takedown Procedure",
+        "content": "Currico respects intellectual property rights and responds to proper notices of claimed copyright infringement.",
+        "procedure": {
+          "title": "How to Report Copyright Infringement",
+          "content": "If you believe that content on Currico infringes your copyright, please send a notice to copyright@currico.ch containing:",
+          "items": {
+            "identify": "Identification of the copyrighted work you claim has been infringed",
+            "location": "The URL or other specific location on Currico where the allegedly infringing material is located",
+            "contact": "Your contact information (name, address, phone number, email)",
+            "statement": "A statement that you have a good faith belief that the use is not authorized by the copyright owner",
+            "signature": "Your physical or electronic signature"
+          }
+        },
+        "response": {
+          "title": "Our Response",
+          "content": "Upon receiving a valid notice, Currico will promptly remove or disable access to the allegedly infringing content and notify the seller. Sellers may submit a counter-notice if they believe the takedown was made in error."
+        }
+      },
       "prohibited": {
-        "title": "5. Prohibited Content",
+        "title": "7. Prohibited Content",
         "content": "The following content is strictly prohibited:",
         "items": {
           "copyright": "Copyrighted material you don't have rights to sell",
@@ -659,7 +696,7 @@
         }
       },
       "responsibilities": {
-        "title": "6. Seller Responsibilities",
+        "title": "8. Seller Responsibilities",
         "content": "As a seller, you are responsible for:",
         "items": {
           "accuracy": "Ensuring the accuracy of your resource descriptions",
@@ -670,16 +707,16 @@
         }
       },
       "termination": {
-        "title": "7. Account Termination",
+        "title": "9. Account Termination",
         "content": "Currico reserves the right to:",
         "rights": {
-          "remove": "Remove content that violates these terms",
-          "suspend": "Suspend or terminate seller accounts for policy violations",
-          "withhold": "Withhold payouts if fraudulent activity is suspected"
+          "remove": "Remove content that violates these terms or is subject to a valid copyright complaint",
+          "suspend": "Suspend or terminate seller accounts for policy violations or repeated copyright infringements",
+          "withhold": "Withhold payouts if fraudulent activity is suspected or pending resolution of copyright claims"
         }
       },
       "changes": {
-        "title": "8. Changes to Terms",
+        "title": "10. Changes to Terms",
         "content": "We may update these terms from time to time. Significant changes will be communicated via email. Continued use of the platform after changes constitutes acceptance of the new terms."
       }
     },
@@ -918,6 +955,10 @@
   "checkout": {
     "buyNow": "Buy Now",
     "processing": "Processing...",
+    "digitalConsent": {
+      "label": "I agree that the digital content is available immediately and I acknowledge that I lose my right of withdrawal once the download starts.",
+      "required": "Please accept the terms for digital content to continue."
+    },
     "errors": {
       "alreadyOwned": "You already own this resource",
       "ownResource": "You cannot purchase your own resource",
@@ -1086,8 +1127,19 @@
         "title": "1. Introduction",
         "content": "Welcome to Currico. By accessing or using our platform, you agree to be bound by these Terms of Service. Currico is a Swiss platform connecting educators to buy, sell, and share high-quality teaching materials aligned with the Swiss curriculum (Lehrplan 21)."
       },
+      "marketplaceModel": {
+        "title": "2. Marketplace Model",
+        "content": "Currico operates as an online marketplace (Vermittlungsplattform) and acts solely as an intermediary between sellers and buyers. Important clarifications:",
+        "items": {
+          "intermediary": "Currico merely facilitates the connection between teachers who sell materials (Sellers) and teachers who purchase materials (Buyers)",
+          "contract": "The purchase contract for teaching materials is concluded directly between the Buyer and the Seller, not with Currico",
+          "noParty": "Currico is not a party to any sales contract and does not become the owner of any teaching materials at any time",
+          "sellerResponsibility": "The Seller is solely responsible for the content, quality, accuracy, and legal compliance of their teaching materials",
+          "disputes": "Any disputes regarding purchased materials must be resolved between Buyer and Seller directly, though Currico may assist in mediation"
+        }
+      },
       "account": {
-        "title": "2. Account Terms",
+        "title": "3. Account Terms",
         "content": "To use certain features of Currico, you must create an account. You agree to:",
         "items": {
           "accurate": "Provide accurate and complete information during registration",
@@ -1097,7 +1149,7 @@
         }
       },
       "acceptableUse": {
-        "title": "3. Acceptable Use",
+        "title": "4. Acceptable Use",
         "content": "You agree to use Currico only for lawful purposes and in accordance with these terms. You must not:",
         "items": {
           "lawful": "Use the platform for any illegal or unauthorized purpose",
@@ -1107,11 +1159,11 @@
         }
       },
       "intellectualProperty": {
-        "title": "4. Intellectual Property",
+        "title": "5. Intellectual Property",
         "content": "All content on Currico, including the platform design, logos, and original materials, is protected by copyright and other intellectual property laws. Teaching materials uploaded by sellers remain the property of their respective creators, who grant buyers a limited license to use them for educational purposes."
       },
       "purchases": {
-        "title": "5. Purchases and Downloads",
+        "title": "6. Purchases and Downloads",
         "content": "When you purchase teaching materials on Currico:",
         "items": {
           "personal": "You receive a personal, non-transferable license to use the materials",
@@ -1119,13 +1171,23 @@
           "refunds": "Refund requests are handled on a case-by-case basis through our support team"
         }
       },
+      "digitalWithdrawal": {
+        "title": "7. Right of Withdrawal for Digital Content",
+        "content": "For digital products (downloads), the following applies under Swiss law and EU consumer protection regulations:",
+        "items": {
+          "noWithdrawal": "You expressly agree that digital content will be made available immediately after purchase",
+          "waiver": "By completing your purchase and initiating the download, you acknowledge that you lose your right of withdrawal (Widerrufsrecht) once the download begins",
+          "consent": "Before completing any purchase of digital content, you will be asked to confirm: 'I agree that the digital content is available immediately and I acknowledge that I lose my right of withdrawal once the download starts'",
+          "exception": "This waiver does not apply if the downloaded content is defective or materially different from the description"
+        }
+      },
       "liability": {
-        "title": "6. Limitation of Liability",
-        "content": "Currico provides the platform 'as is' and makes no warranties regarding the quality, accuracy, or fitness of teaching materials sold by third-party sellers. We are not liable for any indirect, incidental, or consequential damages arising from your use of the platform."
+        "title": "8. Limitation of Liability",
+        "content": "Currico provides the platform 'as is' and makes no warranties regarding the quality, accuracy, or fitness of teaching materials sold by third-party sellers. As an intermediary, Currico is not liable for any indirect, incidental, or consequential damages arising from the content of teaching materials. Currico's liability is limited to cases of gross negligence or intentional misconduct."
       },
       "governingLaw": {
-        "title": "7. Governing Law",
-        "content": "These Terms of Service are governed by the laws of Switzerland. Any disputes shall be resolved in the courts of Zurich, Switzerland."
+        "title": "9. Governing Law and Jurisdiction",
+        "content": "These Terms of Service are governed by the laws of Switzerland. The exclusive place of jurisdiction for all disputes arising from or in connection with these terms is Zurich, Switzerland."
       }
     },
     "contact": {
@@ -1294,13 +1356,22 @@
       "q4": {
         "question": "Which browsers are supported?",
         "answer": "Currico works with all modern browsers: Chrome, Firefox, Safari, and Edge. We recommend always using the latest version of your browser."
+      },
+      "q5": {
+        "question": "Does Currico work on mobile devices?",
+        "answer": "Yes, Currico is fully responsive and works on smartphones and tablets. You can browse and purchase materials on any device. However, for editing Word documents, we recommend using a computer."
       }
     },
     "contact": {
       "title": "Didn't find your question?",
       "description": "Our support team is happy to help.",
       "button": "Contact Us"
-    }
+    },
+    "quickHelp": {
+      "title": "Quick Help",
+      "searchPlaceholder": "Select a category or browse through the questions..."
+    },
+    "questionsInCategory": "{count} questions in this category"
   },
   "impressumPage": {
     "title": "Legal Notice",
@@ -1357,7 +1428,7 @@
   "privacyPage": {
     "title": "Privacy Policy",
     "lastUpdated": "Last updated: January 2026",
-    "intro": "Protecting your personal data is important to us. This privacy policy informs you about the collection, processing, and use of your personal data when using Currico. We comply with the Swiss Data Protection Act (nDSG) and the EU General Data Protection Regulation (GDPR).",
+    "intro": "Protecting your personal data is important to us. This privacy policy informs you about the collection, processing, and use of your personal data when using Currico. We comply with the Swiss Data Protection Act (nDSG, effective September 1, 2023) and the EU General Data Protection Regulation (GDPR).",
     "sections": {
       "responsible": {
         "title": "1. Responsible Party",
@@ -1375,17 +1446,17 @@
           "items": {
             "name": "First and last name",
             "email": "Email address",
-            "password": "Password (stored encrypted)",
+            "password": "Password (stored encrypted using industry-standard hashing)",
             "profile": "Profile information (optional: school, canton, subjects)"
           }
         },
         "payment": {
           "title": "Payment Data",
           "items": {
-            "transaction": "Transaction data (purchases, sales)",
+            "transaction": "Transaction data (purchases, sales, timestamps)",
             "billing": "Billing address (for sellers)"
           },
-          "stripe": "Payment processing is handled by Stripe. We do not store credit card data. See Stripe's Privacy Policy."
+          "note": "We do not store credit card numbers, TWINT account details, or other sensitive payment credentials on our servers."
         }
       },
       "purpose": {
@@ -1400,50 +1471,74 @@
       },
       "cookies": {
         "title": "4. Cookies",
-        "intro": "We use cookies to ensure the functionality of our website and improve your experience.",
+        "intro": "We use cookies to ensure the functionality of our website and improve your experience. For detailed information, please see our Cookie Policy.",
         "essential": {
           "title": "Essential Cookies",
-          "content": "These cookies are necessary for the website to function. They enable basic features like login and shopping cart."
+          "content": "These cookies are necessary for the website to function. They enable basic features like login and language preferences."
         },
         "analytics": {
           "title": "Analytics Cookies (optional)",
           "content": "With your consent, we use analytics cookies to understand how visitors use our website. This data helps us improve the site."
         }
       },
+      "paymentProcessors": {
+        "title": "5. Payment Processors",
+        "intro": "We use the following third-party payment processors to handle transactions securely:",
+        "stripe": {
+          "title": "Stripe",
+          "content": "Stripe, Inc. processes credit card payments and seller payouts. When you make a payment, Stripe collects your payment card data directly. Stripe is certified to PCI Service Provider Level 1, the most stringent level of certification.",
+          "dataShared": "Data shared with Stripe: Email address, billing address, transaction amount, IP address.",
+          "location": "Data processing location: Stripe may process data in the USA. Stripe participates in the EU-US Data Privacy Framework.",
+          "link": "Stripe Privacy Policy: https://stripe.com/privacy"
+        },
+        "twint": {
+          "title": "TWINT",
+          "content": "TWINT AG processes mobile payments for Swiss customers. When you pay with TWINT, you authorize the payment through your TWINT app.",
+          "dataShared": "Data shared with TWINT: Transaction amount, merchant identifier.",
+          "location": "Data processing location: Switzerland.",
+          "link": "TWINT Privacy Policy: https://www.twint.ch/en/privacy-policy/"
+        }
+      },
       "sharing": {
-        "title": "5. Data Sharing",
-        "intro": "We do not sell your data. We only share your data with:",
+        "title": "6. Data Sharing",
+        "intro": "We do not sell your data. We share your data only with the following service providers:",
         "items": {
-          "stripe": "Stripe - for secure payment processing",
+          "stripe": "Stripe - for secure payment processing (USA, with EU-US Data Privacy Framework)",
+          "twint": "TWINT - for Swiss mobile payments (Switzerland)",
           "hosting": "Hosting provider - servers are located in Switzerland",
           "email": "Email service provider - for transactional emails"
         }
       },
       "storage": {
-        "title": "6. Data Storage",
-        "location": "Your data is stored on servers in Switzerland. When using third-party providers, we ensure appropriate data protection guarantees are in place.",
-        "retention": "We only store your data for as long as necessary for the stated purposes or as required by law."
+        "title": "7. Data Storage and International Transfers",
+        "location": "Your data is primarily stored on servers located in Switzerland. For services involving international data transfers (such as Stripe), we ensure that appropriate safeguards are in place, including Standard Contractual Clauses (SCCs) or adequacy decisions.",
+        "retention": "We retain your data only as long as necessary for the stated purposes or as required by law. Account data is deleted upon account closure, subject to statutory retention periods (typically 10 years for financial records under Swiss law)."
       },
       "rights": {
-        "title": "7. Your Rights",
-        "intro": "You have the following rights regarding your personal data:",
+        "title": "8. Your Rights",
+        "intro": "Under the Swiss nDSG and GDPR, you have the following rights regarding your personal data:",
         "items": {
           "access": "Right to access your stored data",
           "rectification": "Right to rectification of incorrect data",
-          "deletion": "Right to deletion of your data",
+          "deletion": "Right to deletion of your data ('right to be forgotten')",
           "restriction": "Right to restriction of processing",
           "portability": "Right to data portability",
           "objection": "Right to object to processing"
         },
-        "contact": "To exercise these rights, please contact us at the email address below."
+        "contact": "To exercise these rights, please contact us at privacy@currico.ch. We will respond within 30 days.",
+        "complaint": "You also have the right to lodge a complaint with the Swiss Federal Data Protection and Information Commissioner (FDPIC) or, if applicable, with a supervisory authority in the EU."
       },
       "security": {
-        "title": "8. Data Security",
-        "content": "We implement technical and organizational security measures to protect your data from unauthorized access, loss, or misuse. This includes encryption, secure servers, and regular security audits."
+        "title": "9. Data Security",
+        "content": "We implement technical and organizational security measures to protect your data from unauthorized access, loss, or misuse. This includes TLS encryption for all data in transit, encrypted storage for sensitive data, secure servers, and regular security audits."
       },
       "changes": {
-        "title": "9. Changes to This Privacy Policy",
+        "title": "10. Changes to This Privacy Policy",
         "content": "We may update this privacy policy from time to time. The current version is always available on this page. For significant changes, we will notify you by email."
+      },
+      "jurisdiction": {
+        "title": "11. Governing Law and Jurisdiction",
+        "content": "This Privacy Policy is governed by Swiss law. The exclusive place of jurisdiction for all disputes is Zurich, Switzerland."
       }
     },
     "contact": {
@@ -1580,6 +1675,21 @@
       "noResultsEmpty": "Enter a search term to find profiles",
       "found": "profiles found",
       "seller": "Seller"
+    }
+  },
+  "hilfePage": {
+    "title": "Help Center",
+    "subtitle": "Find answers to your questions about Currico",
+    "searchPlaceholder": "Search for answers...",
+    "clearSearch": "Clear",
+    "resultsCount": "{count} results found",
+    "categories": {
+      "all": "All"
+    },
+    "noResults": {
+      "title": "No results found",
+      "description": "We couldn't find an answer to your question. Our team is happy to help you personally.",
+      "contactButton": "Contact Support"
     }
   },
   "notifications": {

@@ -23,11 +23,18 @@ export function CheckoutButton({
   const { status: sessionStatus } = useSession();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [digitalConsent, setDigitalConsent] = useState(false);
 
   const handleCheckout = async () => {
     // Redirect to login if not authenticated
     if (sessionStatus !== "authenticated") {
       window.location.href = "/login";
+      return;
+    }
+
+    // Require digital consent checkbox
+    if (!digitalConsent) {
+      setError(t("digitalConsent.required"));
       return;
     }
 
@@ -81,7 +88,23 @@ export function CheckoutButton({
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-3">
+      {/* Digital Content Consent Checkbox (Swiss/EU legal requirement) */}
+      <label className="flex cursor-pointer items-start gap-2 text-sm">
+        <input
+          type="checkbox"
+          checked={digitalConsent}
+          onChange={(e) => {
+            setDigitalConsent(e.target.checked);
+            if (e.target.checked && error === t("digitalConsent.required")) {
+              setError(null);
+            }
+          }}
+          className="mt-0.5 h-4 w-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
+        />
+        <span className="text-text-secondary">{t("digitalConsent.label")}</span>
+      </label>
+
       <button
         onClick={handleCheckout}
         disabled={disabled || loading}
@@ -117,9 +140,7 @@ export function CheckoutButton({
           </>
         )}
       </button>
-      {error && (
-        <p className="text-center text-sm text-[var(--color-error)]">{error}</p>
-      )}
+      {error && <p className="text-center text-sm text-[var(--color-error)]">{error}</p>}
     </div>
   );
 }

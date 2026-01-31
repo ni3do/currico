@@ -591,7 +591,7 @@
     },
     "faq": {
       "title": "Schnelle Antworten gesucht?",
-      "description": "In unserem Hilfe-Center finden Sie Antworten auf häufige Fragen zu Konten, Ressourcen und dem Verkauf auf Currico."
+      "description": "In unserem Hilfe-Center finden Sie Antworten auf häufige Fragen zu Konten, Materialien und dem Verkauf auf Currico."
     }
   },
   "metadata": {
@@ -638,8 +638,45 @@
           "lp21": "Wo zutreffend, korrekt auf den Lehrplan 21 abgestimmt sind"
         }
       },
+      "copyrightWarranty": {
+        "title": "5. Urheberrechtsgarantie und Freistellung",
+        "content": "Als Verkäufer garantieren und bestätigen Sie:",
+        "warranties": {
+          "ownership": "Sie sind der alleinige Urheber und Eigentümer aller von Ihnen hochgeladenen Materialien, oder Sie haben alle erforderlichen Rechte und Lizenzen zu deren Verkauf erworben",
+          "noInfringement": "Ihre Materialien verletzen keine Urheberrechte, Markenrechte oder sonstigen geistigen Eigentumsrechte Dritter",
+          "noThirdParty": "Ihre Materialien enthalten keine Inhalte, die ohne entsprechende Genehmigung aus Lehrbüchern, Websites oder anderen Quellen kopiert wurden"
+        },
+        "indemnification": {
+          "title": "Freistellung",
+          "content": "Sie verpflichten sich, Currico, seine Betreiber, Mitarbeiter und verbundenen Unternehmen von allen Ansprüchen, Schäden, Verlusten, Kosten und Aufwendungen (einschliesslich angemessener Anwaltskosten) freizustellen, die entstehen aus oder im Zusammenhang stehen mit:",
+          "items": {
+            "infringement": "Behauptungen, dass Ihre Materialien die geistigen Eigentumsrechte Dritter verletzen",
+            "breach": "Verletzungen Ihrer Garantien im Rahmen dieser Bedingungen",
+            "content": "Dem Inhalt, der Qualität oder der Richtigkeit Ihrer Unterrichtsmaterialien"
+          }
+        }
+      },
+      "noticeTakedown": {
+        "title": "6. Melde- und Löschverfahren (Notice and Takedown)",
+        "content": "Currico respektiert geistige Eigentumsrechte und reagiert auf ordnungsgemässe Meldungen von behaupteten Urheberrechtsverletzungen.",
+        "procedure": {
+          "title": "So melden Sie eine Urheberrechtsverletzung",
+          "content": "Wenn Sie der Meinung sind, dass Inhalte auf Currico Ihr Urheberrecht verletzen, senden Sie bitte eine Meldung an copyright@currico.ch mit folgenden Angaben:",
+          "items": {
+            "identify": "Bezeichnung des urheberrechtlich geschützten Werks, dessen Verletzung Sie behaupten",
+            "location": "Die URL oder andere spezifische Stelle auf Currico, an der sich das angeblich verletzende Material befindet",
+            "contact": "Ihre Kontaktdaten (Name, Adresse, Telefonnummer, E-Mail)",
+            "statement": "Eine Erklärung, dass Sie in gutem Glauben davon ausgehen, dass die Nutzung nicht vom Urheberrechtsinhaber genehmigt ist",
+            "signature": "Ihre physische oder elektronische Unterschrift"
+          }
+        },
+        "response": {
+          "title": "Unsere Reaktion",
+          "content": "Nach Eingang einer gültigen Meldung wird Currico den angeblich verletzenden Inhalt umgehend entfernen oder den Zugang sperren und den Verkäufer benachrichtigen. Verkäufer können eine Gegendarstellung einreichen, wenn sie der Meinung sind, dass die Entfernung irrtümlich erfolgte."
+        }
+      },
       "prohibited": {
-        "title": "5. Verbotene Inhalte",
+        "title": "7. Verbotene Inhalte",
         "content": "Folgende Inhalte sind strengstens untersagt:",
         "items": {
           "copyright": "Urheberrechtlich geschütztes Material, für das Sie keine Verkaufsrechte haben",
@@ -651,7 +688,7 @@
         }
       },
       "responsibilities": {
-        "title": "6. Pflichten des Verkäufers",
+        "title": "8. Pflichten des Verkäufers",
         "content": "Als Verkäufer sind Sie verantwortlich für:",
         "items": {
           "accuracy": "Die Richtigkeit Ihrer Materialbeschreibungen",
@@ -662,16 +699,16 @@
         }
       },
       "termination": {
-        "title": "7. Kontoauflösung",
+        "title": "9. Kontoauflösung",
         "content": "Currico behält sich das Recht vor:",
         "rights": {
-          "remove": "Inhalte zu entfernen, die gegen diese Bedingungen verstossen",
-          "suspend": "Verkäuferkonten bei Richtlinienverstössen zu sperren oder zu kündigen",
-          "withhold": "Auszahlungen bei Verdacht auf betrügerische Aktivitäten zurückzuhalten"
+          "remove": "Inhalte zu entfernen, die gegen diese Bedingungen verstossen oder Gegenstand einer gültigen Urheberrechtsbeschwerde sind",
+          "suspend": "Verkäuferkonten bei Richtlinienverstössen oder wiederholten Urheberrechtsverletzungen zu sperren oder zu kündigen",
+          "withhold": "Auszahlungen bei Verdacht auf betrügerische Aktivitäten oder bis zur Klärung von Urheberrechtsansprüchen zurückzuhalten"
         }
       },
       "changes": {
-        "title": "8. Änderungen der Bedingungen",
+        "title": "10. Änderungen der Bedingungen",
         "content": "Wir können diese Bedingungen von Zeit zu Zeit aktualisieren. Wesentliche Änderungen werden per E-Mail mitgeteilt. Die weitere Nutzung der Plattform nach Änderungen gilt als Zustimmung zu den neuen Bedingungen."
       }
     },
@@ -910,6 +947,10 @@
   "checkout": {
     "buyNow": "Jetzt kaufen",
     "processing": "Wird verarbeitet...",
+    "digitalConsent": {
+      "label": "Ich stimme der sofortigen Ausführung des Vertrags zu und bestätige, dass ich mein Widerrufsrecht mit Beginn des Downloads verliere.",
+      "required": "Bitte akzeptieren Sie die Bedingungen für digitale Inhalte, um fortzufahren."
+    },
     "errors": {
       "alreadyOwned": "Sie besitzen diese Ressource bereits",
       "ownResource": "Sie können Ihre eigene Ressource nicht kaufen",
@@ -1071,15 +1112,26 @@
     }
   },
   "termsPage": {
-    "title": "Nutzungsbedingungen",
+    "title": "Allgemeine Geschäftsbedingungen (AGB)",
     "lastUpdated": "Zuletzt aktualisiert: Januar 2026",
     "general": {
       "introduction": {
         "title": "1. Einführung",
-        "content": "Willkommen bei Currico. Durch den Zugriff auf unsere Plattform oder deren Nutzung erklären Sie sich mit diesen Nutzungsbedingungen einverstanden. Currico ist eine Schweizer Plattform, die Lehrpersonen verbindet, um hochwertige Unterrichtsmaterialien zu kaufen, zu verkaufen und zu teilen, die auf den Schweizer Lehrplan (Lehrplan 21) abgestimmt sind."
+        "content": "Willkommen bei Currico. Durch den Zugriff auf unsere Plattform oder deren Nutzung erklären Sie sich mit diesen Allgemeinen Geschäftsbedingungen einverstanden. Currico ist eine Schweizer Plattform, die Lehrpersonen verbindet, um hochwertige Unterrichtsmaterialien zu kaufen, zu verkaufen und zu teilen, die auf den Schweizer Lehrplan (Lehrplan 21) abgestimmt sind."
+      },
+      "marketplaceModel": {
+        "title": "2. Marktplatzmodell",
+        "content": "Currico betreibt einen Online-Marktplatz (Vermittlungsplattform) und fungiert ausschliesslich als Vermittler zwischen Verkäufern und Käufern. Wichtige Klarstellungen:",
+        "items": {
+          "intermediary": "Currico vermittelt lediglich den Kontakt zwischen Lehrpersonen, die Materialien verkaufen (Verkäufer), und Lehrpersonen, die Materialien kaufen (Käufer)",
+          "contract": "Der Kaufvertrag für Unterrichtsmaterialien kommt direkt zwischen dem Käufer und dem Verkäufer zustande, nicht mit Currico",
+          "noParty": "Currico ist nicht Vertragspartei eines Kaufvertrags und wird zu keinem Zeitpunkt Eigentümer von Unterrichtsmaterialien",
+          "sellerResponsibility": "Der Verkäufer ist allein verantwortlich für den Inhalt, die Qualität, die Richtigkeit und die Rechtskonformität seiner Unterrichtsmaterialien",
+          "disputes": "Streitigkeiten über gekaufte Materialien sind direkt zwischen Käufer und Verkäufer zu klären, wobei Currico bei der Vermittlung behilflich sein kann"
+        }
       },
       "account": {
-        "title": "2. Kontobedingungen",
+        "title": "3. Kontobedingungen",
         "content": "Um bestimmte Funktionen von Currico nutzen zu können, müssen Sie ein Konto erstellen. Sie erklären sich damit einverstanden:",
         "items": {
           "accurate": "Bei der Registrierung genaue und vollständige Angaben zu machen",
@@ -1089,7 +1141,7 @@
         }
       },
       "acceptableUse": {
-        "title": "3. Zulässige Nutzung",
+        "title": "4. Zulässige Nutzung",
         "content": "Sie erklären sich damit einverstanden, Currico nur für rechtmässige Zwecke und in Übereinstimmung mit diesen Bedingungen zu nutzen. Sie dürfen nicht:",
         "items": {
           "lawful": "Die Plattform für illegale oder unbefugte Zwecke nutzen",
@@ -1099,11 +1151,11 @@
         }
       },
       "intellectualProperty": {
-        "title": "4. Geistiges Eigentum",
+        "title": "5. Geistiges Eigentum",
         "content": "Alle Inhalte auf Currico, einschliesslich des Plattformdesigns, der Logos und der Originalmaterialien, sind durch Urheberrechte und andere Gesetze zum Schutz des geistigen Eigentums geschützt. Von Verkäufern hochgeladene Unterrichtsmaterialien bleiben Eigentum ihrer jeweiligen Ersteller, die den Käufern eine eingeschränkte Lizenz zur Nutzung für Bildungszwecke gewähren."
       },
       "purchases": {
-        "title": "5. Käufe und Downloads",
+        "title": "6. Käufe und Downloads",
         "content": "Wenn Sie Unterrichtsmaterialien auf Currico kaufen:",
         "items": {
           "personal": "Erhalten Sie eine persönliche, nicht übertragbare Lizenz zur Nutzung der Materialien",
@@ -1111,18 +1163,28 @@
           "refunds": "Rückerstattungsanfragen werden von unserem Support-Team von Fall zu Fall bearbeitet"
         }
       },
+      "digitalWithdrawal": {
+        "title": "7. Widerrufsrecht bei digitalen Inhalten",
+        "content": "Für digitale Produkte (Downloads) gilt nach Schweizer Recht und EU-Verbraucherschutzvorschriften folgendes:",
+        "items": {
+          "noWithdrawal": "Sie stimmen ausdrücklich zu, dass digitale Inhalte sofort nach dem Kauf zur Verfügung gestellt werden",
+          "waiver": "Mit Abschluss des Kaufs und Beginn des Downloads bestätigen Sie, dass Sie Ihr Widerrufsrecht verlieren, sobald der Download beginnt",
+          "consent": "Vor Abschluss eines Kaufs digitaler Inhalte werden Sie aufgefordert zu bestätigen: 'Ich stimme der sofortigen Ausführung des Vertrags zu und bestätige, dass ich mein Widerrufsrecht mit Beginn des Downloads verliere'",
+          "exception": "Dieser Verzicht gilt nicht, wenn der heruntergeladene Inhalt mangelhaft ist oder wesentlich von der Beschreibung abweicht"
+        }
+      },
       "liability": {
-        "title": "6. Haftungsbeschränkung",
-        "content": "Currico stellt die Plattform \"wie besehen\" zur Verfügung und übernimmt keine Garantien hinsichtlich der Qualität, Genauigkeit oder Eignung der von Drittanbietern verkauften Unterrichtsmaterialien. Wir haften nicht für indirekte, zufällige oder Folgeschäden, die sich aus Ihrer Nutzung der Plattform ergeben."
+        "title": "8. Haftungsbeschränkung",
+        "content": "Currico stellt die Plattform \"wie besehen\" zur Verfügung und übernimmt keine Garantien hinsichtlich der Qualität, Genauigkeit oder Eignung der von Drittanbietern verkauften Unterrichtsmaterialien. Als Vermittler haftet Currico nicht für indirekte, zufällige oder Folgeschäden, die sich aus dem Inhalt von Unterrichtsmaterialien ergeben. Die Haftung von Currico ist auf Fälle grober Fahrlässigkeit oder vorsätzlichen Fehlverhaltens beschränkt."
       },
       "governingLaw": {
-        "title": "7. Anwendbares Recht",
-        "content": "Diese Nutzungsbedingungen unterliegen dem schweizerischen Recht. Alle Streitigkeiten werden vor den Gerichten in Zürich, Schweiz, beigelegt."
+        "title": "9. Anwendbares Recht und Gerichtsstand",
+        "content": "Diese Allgemeinen Geschäftsbedingungen unterliegen schweizerischem Recht. Ausschliesslicher Gerichtsstand für alle Streitigkeiten aus oder im Zusammenhang mit diesen Bedingungen ist Zürich, Schweiz."
       }
     },
     "contact": {
       "title": "Fragen?",
-      "content": "Wenn Sie Fragen zu diesen Nutzungsbedingungen haben, kontaktieren Sie uns bitte über unsere Kontaktseite."
+      "content": "Wenn Sie Fragen zu diesen Allgemeinen Geschäftsbedingungen haben, kontaktieren Sie uns bitte über unsere Kontaktseite."
     }
   },
   "cookieConsent": {
@@ -1286,13 +1348,22 @@
       "q4": {
         "question": "Welche Browser werden unterstützt?",
         "answer": "Currico funktioniert mit allen modernen Browsern: Chrome, Firefox, Safari und Edge. Wir empfehlen, stets die aktuelle Version Ihres Browsers zu verwenden."
+      },
+      "q5": {
+        "question": "Funktioniert Currico auch auf dem Handy?",
+        "answer": "Ja, Currico ist vollständig responsiv und funktioniert auf Smartphones und Tablets. Sie können Materialien auf jedem Gerät durchstöbern und kaufen. Zum Bearbeiten von Word-Dokumenten empfehlen wir jedoch einen Computer."
       }
     },
     "contact": {
       "title": "Ihre Frage nicht gefunden?",
       "description": "Unser Support-Team hilft Ihnen gerne weiter.",
       "button": "Kontaktieren Sie uns"
-    }
+    },
+    "quickHelp": {
+      "title": "Schnelle Hilfe",
+      "searchPlaceholder": "Wählen Sie eine Kategorie oder durchstöbern Sie die Fragen..."
+    },
+    "questionsInCategory": "{count} Fragen in dieser Kategorie"
   },
   "impressumPage": {
     "title": "Impressum",
@@ -1349,7 +1420,7 @@
   "privacyPage": {
     "title": "Datenschutzerklärung",
     "lastUpdated": "Stand: Januar 2026",
-    "intro": "Der Schutz Ihrer persönlichen Daten ist uns wichtig. Diese Datenschutzerklärung informiert Sie über die Erhebung, Verarbeitung und Nutzung Ihrer personenbezogenen Daten bei der Nutzung von Currico. Wir halten uns an das Schweizer Datenschutzgesetz (nDSG) sowie die EU-Datenschutz-Grundverordnung (DSGVO).",
+    "intro": "Der Schutz Ihrer persönlichen Daten ist uns wichtig. Diese Datenschutzerklärung informiert Sie über die Erhebung, Verarbeitung und Nutzung Ihrer personenbezogenen Daten bei der Nutzung von Currico. Wir halten uns an das Schweizer Datenschutzgesetz (nDSG, in Kraft seit 1. September 2023) sowie die EU-Datenschutz-Grundverordnung (DSGVO).",
     "sections": {
       "responsible": {
         "title": "1. Verantwortliche Stelle",
@@ -1367,17 +1438,17 @@
           "items": {
             "name": "Name und Vorname",
             "email": "E-Mail-Adresse",
-            "password": "Passwort (verschlüsselt gespeichert)",
+            "password": "Passwort (verschlüsselt mit branchenüblichem Hashing gespeichert)",
             "profile": "Profilinformationen (optional: Schule, Kanton, Unterrichtsfächer)"
           }
         },
         "payment": {
           "title": "Zahlungsdaten",
           "items": {
-            "transaction": "Transaktionsdaten (Käufe, Verkäufe)",
+            "transaction": "Transaktionsdaten (Käufe, Verkäufe, Zeitstempel)",
             "billing": "Rechnungsadresse (für Verkäufer)"
           },
-          "stripe": "Zahlungsabwicklung erfolgt über Stripe. Wir speichern keine Kreditkartendaten. Siehe Stripe-Datenschutzrichtlinie."
+          "note": "Wir speichern keine Kreditkartennummern, TWINT-Kontodaten oder andere sensible Zahlungsinformationen auf unseren Servern."
         }
       },
       "purpose": {
@@ -1392,50 +1463,74 @@
       },
       "cookies": {
         "title": "4. Cookies",
-        "intro": "Wir verwenden Cookies, um die Funktionalität unserer Website sicherzustellen und Ihre Erfahrung zu verbessern.",
+        "intro": "Wir verwenden Cookies, um die Funktionalität unserer Website sicherzustellen und Ihre Erfahrung zu verbessern. Detaillierte Informationen finden Sie in unserer Cookie-Richtlinie.",
         "essential": {
           "title": "Essenzielle Cookies",
-          "content": "Diese Cookies sind für den Betrieb der Website erforderlich. Sie ermöglichen grundlegende Funktionen wie Anmeldung und Warenkorb."
+          "content": "Diese Cookies sind für den Betrieb der Website erforderlich. Sie ermöglichen grundlegende Funktionen wie Anmeldung und Spracheinstellungen."
         },
         "analytics": {
           "title": "Analyse-Cookies (optional)",
           "content": "Mit Ihrer Zustimmung verwenden wir Analyse-Cookies, um zu verstehen, wie Besucher unsere Website nutzen. Diese Daten helfen uns, die Website zu verbessern."
         }
       },
+      "paymentProcessors": {
+        "title": "5. Zahlungsdienstleister",
+        "intro": "Wir nutzen folgende Drittanbieter für die sichere Zahlungsabwicklung:",
+        "stripe": {
+          "title": "Stripe",
+          "content": "Stripe, Inc. wickelt Kreditkartenzahlungen und Verkäuferauszahlungen ab. Bei einer Zahlung erfasst Stripe Ihre Zahlungskartendaten direkt. Stripe ist nach PCI Service Provider Level 1 zertifiziert, der strengsten Zertifizierungsstufe.",
+          "dataShared": "An Stripe übermittelte Daten: E-Mail-Adresse, Rechnungsadresse, Transaktionsbetrag, IP-Adresse.",
+          "location": "Datenverarbeitung: Stripe kann Daten in den USA verarbeiten. Stripe nimmt am EU-US Data Privacy Framework teil.",
+          "link": "Stripe Datenschutzrichtlinie: https://stripe.com/de-ch/privacy"
+        },
+        "twint": {
+          "title": "TWINT",
+          "content": "TWINT AG wickelt mobile Zahlungen für Schweizer Kunden ab. Bei einer TWINT-Zahlung autorisieren Sie die Zahlung über Ihre TWINT-App.",
+          "dataShared": "An TWINT übermittelte Daten: Transaktionsbetrag, Händlerkennung.",
+          "location": "Datenverarbeitung: Schweiz.",
+          "link": "TWINT Datenschutzrichtlinie: https://www.twint.ch/datenschutz/"
+        }
+      },
       "sharing": {
-        "title": "5. Datenweitergabe",
-        "intro": "Wir verkaufen Ihre Daten nicht. Wir teilen Ihre Daten nur mit:",
+        "title": "6. Datenweitergabe",
+        "intro": "Wir verkaufen Ihre Daten nicht. Wir teilen Ihre Daten nur mit folgenden Dienstleistern:",
         "items": {
-          "stripe": "Stripe - für die sichere Zahlungsabwicklung",
+          "stripe": "Stripe - für die sichere Zahlungsabwicklung (USA, mit EU-US Data Privacy Framework)",
+          "twint": "TWINT - für Schweizer Mobile-Zahlungen (Schweiz)",
           "hosting": "Hosting-Anbieter - Server befinden sich in der Schweiz",
           "email": "E-Mail-Dienstleister - für Transaktions-E-Mails"
         }
       },
       "storage": {
-        "title": "6. Datenspeicherung",
-        "location": "Ihre Daten werden auf Servern in der Schweiz gespeichert. Bei der Nutzung von Drittanbietern stellen wir sicher, dass angemessene Datenschutzgarantien vorhanden sind.",
-        "retention": "Wir speichern Ihre Daten nur so lange, wie es für die angegebenen Zwecke erforderlich ist oder gesetzlich vorgeschrieben."
+        "title": "7. Datenspeicherung und internationale Übermittlung",
+        "location": "Ihre Daten werden primär auf Servern in der Schweiz gespeichert. Bei Diensten mit internationaler Datenübermittlung (wie Stripe) stellen wir sicher, dass angemessene Schutzmassnahmen vorhanden sind, einschliesslich Standardvertragsklauseln (SCCs) oder Angemessenheitsbeschlüsse.",
+        "retention": "Wir speichern Ihre Daten nur so lange, wie es für die angegebenen Zwecke erforderlich ist oder gesetzlich vorgeschrieben. Kontodaten werden bei Kontoauflösung gelöscht, vorbehaltlich gesetzlicher Aufbewahrungsfristen (typischerweise 10 Jahre für Finanzunterlagen nach Schweizer Recht)."
       },
       "rights": {
-        "title": "7. Ihre Rechte",
-        "intro": "Sie haben folgende Rechte bezüglich Ihrer personenbezogenen Daten:",
+        "title": "8. Ihre Rechte",
+        "intro": "Nach dem Schweizer nDSG und der DSGVO haben Sie folgende Rechte bezüglich Ihrer personenbezogenen Daten:",
         "items": {
           "access": "Recht auf Auskunft über Ihre gespeicherten Daten",
           "rectification": "Recht auf Berichtigung unrichtiger Daten",
-          "deletion": "Recht auf Löschung Ihrer Daten",
+          "deletion": "Recht auf Löschung Ihrer Daten ('Recht auf Vergessenwerden')",
           "restriction": "Recht auf Einschränkung der Verarbeitung",
           "portability": "Recht auf Datenübertragbarkeit",
           "objection": "Recht auf Widerspruch gegen die Verarbeitung"
         },
-        "contact": "Um diese Rechte auszuüben, kontaktieren Sie uns bitte unter der unten angegebenen E-Mail-Adresse."
+        "contact": "Um diese Rechte auszuüben, kontaktieren Sie uns bitte unter datenschutz@currico.ch. Wir antworten innerhalb von 30 Tagen.",
+        "complaint": "Sie haben auch das Recht, eine Beschwerde beim Eidgenössischen Datenschutz- und Öffentlichkeitsbeauftragten (EDÖB) oder, falls anwendbar, bei einer Aufsichtsbehörde in der EU einzureichen."
       },
       "security": {
-        "title": "8. Datensicherheit",
-        "content": "Wir setzen technische und organisatorische Sicherheitsmassnahmen ein, um Ihre Daten vor unbefugtem Zugriff, Verlust oder Missbrauch zu schützen. Dazu gehören Verschlüsselung, sichere Server und regelmässige Sicherheitsüberprüfungen."
+        "title": "9. Datensicherheit",
+        "content": "Wir setzen technische und organisatorische Sicherheitsmassnahmen ein, um Ihre Daten vor unbefugtem Zugriff, Verlust oder Missbrauch zu schützen. Dazu gehören TLS-Verschlüsselung für alle Daten während der Übertragung, verschlüsselte Speicherung sensibler Daten, sichere Server und regelmässige Sicherheitsüberprüfungen."
       },
       "changes": {
-        "title": "9. Änderungen dieser Datenschutzerklärung",
+        "title": "10. Änderungen dieser Datenschutzerklärung",
         "content": "Wir können diese Datenschutzerklärung von Zeit zu Zeit aktualisieren. Die aktuelle Version ist stets auf dieser Seite verfügbar. Bei wesentlichen Änderungen informieren wir Sie per E-Mail."
+      },
+      "jurisdiction": {
+        "title": "11. Anwendbares Recht und Gerichtsstand",
+        "content": "Diese Datenschutzerklärung unterliegt schweizerischem Recht. Ausschliesslicher Gerichtsstand für alle Streitigkeiten ist Zürich, Schweiz."
       }
     },
     "contact": {
@@ -1478,7 +1573,7 @@
     "privacy": {
       "label": "Mein Profil soll privat bleiben",
       "tooltip": "Wenn aktiviert, werden nur Ihr Name und Avatar auf Ihrem öffentlichen Profil angezeigt. Ihre Bio, Fächer, Zyklen, Kantone, Statistiken und Social-Media-Links bleiben verborgen.",
-      "notice": "Dieses Profil ist privat. Nur öffentliche Ressourcen werden angezeigt.",
+      "notice": "Dieses Profil ist privat. Nur öffentliche Materialien werden angezeigt.",
       "sectionTitle": "Privatsphäre-Einstellungen"
     }
   },
@@ -1602,6 +1697,21 @@
       "seller": "Verkäufer"
     }
   },
+  "hilfePage": {
+    "title": "Hilfe-Center",
+    "subtitle": "Finden Sie Antworten auf Ihre Fragen zu Currico",
+    "searchPlaceholder": "Nach Antworten suchen...",
+    "clearSearch": "Löschen",
+    "resultsCount": "{count} Ergebnisse gefunden",
+    "categories": {
+      "all": "Alle"
+    },
+    "noResults": {
+      "title": "Keine Ergebnisse gefunden",
+      "description": "Wir konnten keine Antwort auf Ihre Frage finden. Unser Team hilft Ihnen gerne persönlich weiter.",
+      "contactButton": "Support kontaktieren"
+    }
+  },
   "notifications": {
     "title": "Benachrichtigungen",
     "subtitle": "Verwalten Sie, welche Benachrichtigungen Sie erhalten möchten",
@@ -1650,7 +1760,7 @@
         },
         "newsletter": {
           "label": "Newsletter abonnieren",
-          "description": "Wöchentliche Updates mit Tipps, neuen Funktionen und ausgewählten Ressourcen"
+          "description": "Wöchentliche Updates mit Tipps, neuen Funktionen und ausgewähltem Material"
         },
         "platformUpdates": {
           "label": "Plattform-Updates",

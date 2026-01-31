@@ -1,7 +1,6 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Cookie, Mail, Check, X } from "lucide-react";
@@ -192,28 +191,6 @@ export default function CookiesPage() {
               >
                 {t("contact.email")}
               </a>
-            </div>
-
-            {/* Links to other legal pages */}
-            <div className="mt-8 flex flex-wrap gap-4">
-              <Link
-                href="/privacy"
-                className="border-border bg-bg-primary text-text-primary hover:bg-bg-secondary inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
-              >
-                {t("links.privacy")}
-              </Link>
-              <Link
-                href="/impressum"
-                className="border-border bg-bg-primary text-text-primary hover:bg-bg-secondary inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
-              >
-                {t("links.impressum")}
-              </Link>
-              <Link
-                href="/terms"
-                className="border-border bg-bg-primary text-text-primary hover:bg-bg-secondary inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
-              >
-                {t("links.terms")}
-              </Link>
             </div>
           </div>
         </section>
