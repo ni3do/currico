@@ -5,8 +5,7 @@ import { formatPrice } from "@/lib/utils/price";
 import { checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
 import {
   requireAuth,
-  requireSeller,
-  checkSellerProfile,
+  checkCanUpload,
   unauthorized,
   forbidden,
   badRequest,
@@ -441,16 +440,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const seller = await requireSeller(userId);
-    if (!seller) return forbidden("Nur Verkäufer können Ressourcen erstellen");
-
-    // Check seller profile completion
-    const missingFields = await checkSellerProfile(userId);
-    if (missingFields.length > 0) {
-      return badRequest("Bitte vervollständigen Sie Ihr Profil", { missing: missingFields });
-    }
-
-    // Parse form data
+    // Parse form data first to get the price
     const formData = await request.formData();
 
     // Extract metadata
@@ -494,6 +484,26 @@ export async function POST(request: NextRequest) {
     }
 
     const data = parsed.data;
+
+    // Check upload permissions based on price
+    // Free resources (price = 0): Any user with verified email can upload
+    // Paid resources (price > 0): Requires Stripe verification
+    const uploadCheck = await checkCanUpload(userId, data.price);
+    if (!uploadCheck.canUpload) {
+      if (uploadCheck.missing && uploadCheck.missing.length > 0) {
+        // For paid resources without Stripe, give a helpful message
+        if (data.price > 0 && uploadCheck.missing.includes("Stripe-Verifizierung")) {
+          return badRequest(
+            "Um kostenpflichtige Ressourcen zu verkaufen, müssen Sie zuerst Ihr Stripe-Konto einrichten",
+            { missing: uploadCheck.missing }
+          );
+        }
+        return badRequest("Bitte vervollständigen Sie Ihr Profil", {
+          missing: uploadCheck.missing,
+        });
+      }
+      return forbidden(uploadCheck.error || "Zugriff verweigert");
+    }
 
     // Handle file upload
     const file = formData.get("file") as File | null;
@@ -598,12 +608,20 @@ export async function POST(request: NextRequest) {
       previewUrl = previewResult.publicUrl || previewResult.key;
     } else {
       // No preview uploaded - try to auto-generate from main file
+      // This is best-effort and should never block the upload
       try {
-        const { canGeneratePreview, generatePreview } =
-          await import("@/lib/utils/preview-generator");
-        if (canGeneratePreview(file.type)) {
-          const generatedPreview = await generatePreview(fileBuffer, file.type);
-          if (generatedPreview) {
+        // Dynamic import may fail if native dependencies are missing (e.g., in some Docker environments)
+        const previewModule = await import("@/lib/utils/preview-generator").catch(() => null);
+
+        if (previewModule && previewModule.canGeneratePreview(file.type)) {
+          const generatedPreview = await previewModule.generatePreview(fileBuffer, file.type);
+
+          // Validate that we got actual buffer data before uploading
+          if (
+            generatedPreview &&
+            Buffer.isBuffer(generatedPreview) &&
+            generatedPreview.length > 0
+          ) {
             const previewResult = await storage.upload(generatedPreview, {
               category: "preview",
               userId,
@@ -619,6 +637,7 @@ export async function POST(request: NextRequest) {
         }
       } catch (previewError) {
         // Preview generation failed, but we continue without a preview
+        // This can happen due to missing native dependencies (canvas, pdf-to-img) in some environments
         console.error("Auto-preview generation failed:", previewError);
       }
     }

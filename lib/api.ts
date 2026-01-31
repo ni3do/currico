@@ -61,9 +61,15 @@ export async function requireSeller(userId: string) {
  * Required fields:
  * - display_name: Profile name
  * - emailVerified: Email must be verified
- * - stripe_onboarding_complete + stripe_charges_enabled: Stripe verification
+ * - stripe_onboarding_complete + stripe_charges_enabled: Stripe verification (only for paid resources)
+ *
+ * @param userId - The user ID to check
+ * @param requireStripe - If true, require Stripe verification (for paid resources)
  */
-export async function checkSellerProfile(userId: string): Promise<string[]> {
+export async function checkSellerProfile(
+  userId: string,
+  requireStripe: boolean = true
+): Promise<string[]> {
   const user = await prisma.user.findUnique({
     where: { id: userId },
     select: {
@@ -79,11 +85,59 @@ export async function checkSellerProfile(userId: string): Promise<string[]> {
   const missing: string[] = [];
   if (!user.display_name) missing.push("Profilname");
   if (!user.emailVerified) missing.push("E-Mail-Verifizierung");
-  if (!user.stripe_onboarding_complete || !user.stripe_charges_enabled) {
+
+  // Only require Stripe for paid resources
+  if (requireStripe && (!user.stripe_onboarding_complete || !user.stripe_charges_enabled)) {
     missing.push("Stripe-Verifizierung");
   }
 
   return missing;
+}
+
+/**
+ * Check if user can upload resources
+ * Any authenticated user with verified email can upload free resources
+ * Only verified sellers can upload paid resources
+ *
+ * @returns Object with canUpload boolean and optional error message
+ */
+export async function checkCanUpload(
+  userId: string,
+  price: number
+): Promise<{ canUpload: boolean; error?: string; missing?: string[] }> {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      display_name: true,
+      emailVerified: true,
+      role: true,
+      stripe_onboarding_complete: true,
+      stripe_charges_enabled: true,
+    },
+  });
+
+  if (!user) {
+    return { canUpload: false, error: "Benutzer nicht gefunden" };
+  }
+
+  const missing: string[] = [];
+
+  // Basic requirements for all uploads
+  if (!user.display_name) missing.push("Profilname");
+  if (!user.emailVerified) missing.push("E-Mail-Verifizierung");
+
+  // Paid resources require Stripe verification
+  if (price > 0) {
+    if (!user.stripe_onboarding_complete || !user.stripe_charges_enabled) {
+      missing.push("Stripe-Verifizierung");
+    }
+  }
+
+  if (missing.length > 0) {
+    return { canUpload: false, missing };
+  }
+
+  return { canUpload: true };
 }
 
 // ============================================================
