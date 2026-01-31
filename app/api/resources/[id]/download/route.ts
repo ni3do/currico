@@ -265,10 +265,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
     // Regular users cannot download unverified resources
     if (!isAdmin && !isOwner && !resource.is_approved) {
-      return NextResponse.json(
-        { error: "Diese Ressource wird noch überprüft" },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: "Diese Ressource wird noch überprüft" }, { status: 403 });
     }
 
     const isPubliclyAccessible =

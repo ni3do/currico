@@ -101,7 +101,7 @@ export class S3StorageAdapter implements StorageProvider {
       let publicUrl: string | undefined;
       if (category !== "resource") {
         // Remove trailing slash from base URL to avoid double slashes
-        const baseUrl = this.config.publicBucketUrl.replace(/\/+$/, '');
+        const baseUrl = this.config.publicBucketUrl.replace(/\/+$/, "");
         publicUrl = `${baseUrl}/${key}`;
       }
 
@@ -146,7 +146,7 @@ export class S3StorageAdapter implements StorageProvider {
 
   getPublicUrl(key: string): string {
     // Remove trailing slash from base URL to avoid double slashes
-    const baseUrl = this.config.publicBucketUrl.replace(/\/+$/, '');
+    const baseUrl = this.config.publicBucketUrl.replace(/\/+$/, "");
     return `${baseUrl}/${key}`;
   }
 

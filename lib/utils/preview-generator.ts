@@ -31,10 +31,9 @@ export async function generatePdfPreview(pdfBuffer: Buffer): Promise<Buffer | nu
     // -png: output PNG format
     // -f 1 -l 1: only first page
     // -r 150: 150 DPI resolution (good balance of quality/size)
-    await execAsync(
-      `pdftoppm -png -f 1 -l 1 -r 150 "${inputPath}" "${outputPrefix}"`,
-      { timeout: 30000 }
-    );
+    await execAsync(`pdftoppm -png -f 1 -l 1 -r 150 "${inputPath}" "${outputPrefix}"`, {
+      timeout: 30000,
+    });
 
     // pdftoppm outputs files like output-1.png
     const outputPath = `${outputPrefix}-1.png`;

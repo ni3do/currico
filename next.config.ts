@@ -1,22 +1,32 @@
 import type { NextConfig } from "next";
-import { withSentryConfig } from '@sentry/nextjs';
-import createNextIntlPlugin from 'next-intl/plugin';
+import { withSentryConfig } from "@sentry/nextjs";
+import createNextIntlPlugin from "next-intl/plugin";
 
-const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
+const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
 const nextConfig: NextConfig = {
-  output: 'standalone',
+  output: "standalone",
   turbopack: {},
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
+        protocol: "https",
+        hostname: "images.unsplash.com",
       },
       {
         // Infomaniak S3 storage for uploaded files
-        protocol: 'https',
-        hostname: '*.s3.swiss-backup04.infomaniak.com',
+        protocol: "https",
+        hostname: "*.s3.pub1.infomaniak.cloud",
+      },
+      {
+        // Test storage domain for E2E test data
+        protocol: "https",
+        hostname: "storage.test",
+      },
+      {
+        // Infomaniak S3 storage for uploaded files
+        protocol: "https",
+        hostname: "*.s3.swiss-backup04.infomaniak.com",
       },
     ],
   },
