@@ -5,6 +5,7 @@ FROM node:20-alpine AS base
 # openssl: TLS/SSL support
 # su-exec: drop privileges for entrypoint
 # cairo, pango, etc: required for sharp/canvas/pdf-to-img PDF rendering
+# poppler-utils: PDF to image conversion (pdftoppm)
 RUN apk add --no-cache \
     libc6-compat \
     openssl \
@@ -14,7 +15,8 @@ RUN apk add --no-cache \
     giflib \
     libjpeg-turbo \
     librsvg \
-    pixman
+    pixman \
+    poppler-utils
 
 # Install dependencies only when needed
 FROM base AS deps
