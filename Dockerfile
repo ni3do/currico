@@ -1,7 +1,22 @@
 # syntax=docker/dockerfile:1
 
 FROM node:20-alpine AS base
-RUN apk add --no-cache libc6-compat openssl su-exec
+# libc6-compat: glibc compatibility
+# openssl: TLS/SSL support
+# su-exec: drop privileges for entrypoint
+# cairo, pango, etc: required for sharp/canvas/pdf-to-img PDF rendering
+# poppler-utils: PDF to image conversion (pdftoppm)
+RUN apk add --no-cache \
+    libc6-compat \
+    openssl \
+    su-exec \
+    cairo \
+    pango \
+    giflib \
+    libjpeg-turbo \
+    librsvg \
+    pixman \
+    poppler-utils
 
 # Install dependencies only when needed
 FROM base AS deps

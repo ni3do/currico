@@ -51,6 +51,8 @@ interface Resource {
   cycle: string;
   createdAt: string;
   downloadCount: number;
+  isApproved: boolean;
+  status: "PENDING" | "VERIFIED" | "REJECTED";
   seller: {
     id: string;
     displayName: string | null;
@@ -355,6 +357,33 @@ export default function ResourceDetailPage() {
       <TopBar />
 
       <main className="mx-auto max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
+        {/* Pending Review Banner */}
+        {!resource.isApproved && (
+          <div className="border-warning/50 bg-warning/10 mb-6 rounded-lg border p-4">
+            <div className="flex items-center gap-3">
+              <svg
+                className="text-warning h-5 w-5 flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <div>
+                <p className="text-warning font-medium">Diese Ressource wird noch überprüft</p>
+                <p className="text-text-muted text-sm">
+                  Die Ressource ist sichtbar, aber noch nicht von unserem Team verifiziert worden.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Breadcrumb */}
         <nav className="text-text-muted mb-8 flex items-center gap-2 text-sm">
           <Link href="/resources" className="hover:text-primary">
@@ -377,7 +406,11 @@ export default function ResourceDetailPage() {
               <div className="mb-6">
                 <div className="mb-4 flex flex-wrap items-center gap-3">
                   <span className="pill pill-neutral">PDF</span>
-                  <span className="pill pill-success">Verifiziert</span>
+                  {resource.isApproved ? (
+                    <span className="pill pill-success">Verifiziert</span>
+                  ) : (
+                    <span className="pill pill-warning">Wird überprüft</span>
+                  )}
                   {/* LP21 badges for primary competencies */}
                   {resource.competencies &&
                     resource.competencies
@@ -426,7 +459,11 @@ export default function ResourceDetailPage() {
                 >
                   {resource.priceFormatted}
                 </div>
-                {resource.price === 0 ? (
+                {!resource.isApproved ? (
+                  <div className="border-warning/50 bg-warning/10 flex-1 rounded-lg border px-8 py-4 text-center">
+                    <span className="text-warning font-medium">Verfügbar nach Überprüfung</span>
+                  </div>
+                ) : resource.price === 0 ? (
                   <button
                     onClick={handleDownload}
                     disabled={downloading}

@@ -12,10 +12,7 @@ export async function GET() {
   try {
     const session = await auth();
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "Nicht autorisiert" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Nicht autorisiert" }, { status: 401 });
     }
 
     const userId = session.user.id;
@@ -34,10 +31,7 @@ export async function GET() {
     });
 
     if (!user) {
-      return NextResponse.json(
-        { error: "Benutzer nicht gefunden" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Benutzer nicht gefunden" }, { status: 404 });
     }
 
     // If user doesn't have a Stripe account yet, return minimal status
@@ -82,9 +76,7 @@ export async function GET() {
     let dashboardUrl: string | null = null;
     if (stripeAccount.charges_enabled) {
       try {
-        const loginLink = await createExpressDashboardLink(
-          user.stripe_account_id
-        );
+        const loginLink = await createExpressDashboardLink(user.stripe_account_id);
         dashboardUrl = loginLink.url;
       } catch {
         // Dashboard link might not be available in some cases
@@ -97,20 +89,40 @@ export async function GET() {
     const payoutsEnabled = stripeAccount.payouts_enabled ?? false;
     const detailsSubmitted = stripeAccount.details_submitted ?? false;
 
-    if (
-      user.stripe_charges_enabled !== chargesEnabled ||
-      user.stripe_payouts_enabled !== payoutsEnabled ||
-      user.stripe_onboarding_complete !== detailsSubmitted
-    ) {
+    // Prepare update data
+    const updateData: {
+      stripe_charges_enabled?: boolean;
+      stripe_payouts_enabled?: boolean;
+      stripe_onboarding_complete?: boolean;
+      role?: "SELLER";
+    } = {};
+
+    if (user.stripe_charges_enabled !== chargesEnabled) {
+      updateData.stripe_charges_enabled = chargesEnabled;
+    }
+    if (user.stripe_payouts_enabled !== payoutsEnabled) {
+      updateData.stripe_payouts_enabled = payoutsEnabled;
+    }
+    if (user.stripe_onboarding_complete !== detailsSubmitted) {
+      updateData.stripe_onboarding_complete = detailsSubmitted;
+    }
+
+    // Upgrade user to SELLER role if onboarding is complete and charges are enabled
+    // This is a fallback in case the webhook didn't process
+    if (chargesEnabled && detailsSubmitted && user.role === "BUYER") {
+      updateData.role = "SELLER";
+      console.log(`Status sync: Upgrading user ${userId} to SELLER role`);
+    }
+
+    if (Object.keys(updateData).length > 0) {
       await prisma.user.update({
         where: { id: userId },
-        data: {
-          stripe_charges_enabled: chargesEnabled,
-          stripe_payouts_enabled: payoutsEnabled,
-          stripe_onboarding_complete: detailsSubmitted,
-        },
+        data: updateData,
       });
     }
+
+    // Return the updated role (SELLER if just upgraded)
+    const currentRole = updateData.role || user.role;
 
     return NextResponse.json({
       hasAccount: true,
@@ -120,15 +132,14 @@ export async function GET() {
       detailsSubmitted,
       onboardingComplete: detailsSubmitted,
       termsAccepted: !!user.seller_terms_accepted_at,
-      role: user.role,
+      role: currentRole,
       dashboardUrl,
       requirements: stripeAccount.requirements
         ? {
             currentlyDue: stripeAccount.requirements.currently_due || [],
             eventuallyDue: stripeAccount.requirements.eventually_due || [],
             pastDue: stripeAccount.requirements.past_due || [],
-            pendingVerification:
-              stripeAccount.requirements.pending_verification || [],
+            pendingVerification: stripeAccount.requirements.pending_verification || [],
           }
         : null,
     });
@@ -136,19 +147,10 @@ export async function GET() {
     console.error("Error getting Stripe Connect status:", error);
 
     // Handle Stripe-specific errors
-    if (
-      error instanceof Error &&
-      error.message.includes("STRIPE_SECRET_KEY")
-    ) {
-      return NextResponse.json(
-        { error: "Stripe ist nicht konfiguriert" },
-        { status: 500 }
-      );
+    if (error instanceof Error && error.message.includes("STRIPE_SECRET_KEY")) {
+      return NextResponse.json({ error: "Stripe ist nicht konfiguriert" }, { status: 500 });
     }
 
-    return NextResponse.json(
-      { error: "Fehler beim Abrufen des Stripe-Status" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Fehler beim Abrufen des Stripe-Status" }, { status: 500 });
   }
 }
