@@ -33,6 +33,19 @@ export default function TermsPage() {
               </h2>
               <p>{t("general.introduction.content")}</p>
 
+              {/* Marketplace Model */}
+              <h2 className="text-text-primary mt-8 text-xl font-semibold">
+                {t("general.marketplaceModel.title")}
+              </h2>
+              <p>{t("general.marketplaceModel.content")}</p>
+              <ul className="ml-4 list-disc space-y-1">
+                <li>{t("general.marketplaceModel.items.intermediary")}</li>
+                <li>{t("general.marketplaceModel.items.contract")}</li>
+                <li>{t("general.marketplaceModel.items.noParty")}</li>
+                <li>{t("general.marketplaceModel.items.sellerResponsibility")}</li>
+                <li>{t("general.marketplaceModel.items.disputes")}</li>
+              </ul>
+
               {/* Account Terms */}
               <h2 className="text-text-primary mt-8 text-xl font-semibold">
                 {t("general.account.title")}
@@ -72,6 +85,18 @@ export default function TermsPage() {
                 <li>{t("general.purchases.items.personal")}</li>
                 <li>{t("general.purchases.items.noRedistribution")}</li>
                 <li>{t("general.purchases.items.refunds")}</li>
+              </ul>
+
+              {/* Digital Withdrawal Rights */}
+              <h2 className="text-text-primary mt-8 text-xl font-semibold">
+                {t("general.digitalWithdrawal.title")}
+              </h2>
+              <p>{t("general.digitalWithdrawal.content")}</p>
+              <ul className="ml-4 list-disc space-y-1">
+                <li>{t("general.digitalWithdrawal.items.noWithdrawal")}</li>
+                <li>{t("general.digitalWithdrawal.items.waiver")}</li>
+                <li>{t("general.digitalWithdrawal.items.consent")}</li>
+                <li>{t("general.digitalWithdrawal.items.exception")}</li>
               </ul>
 
               {/* Limitation of Liability */}
@@ -145,6 +170,49 @@ export default function TermsPage() {
                 <li>{tSellerTerms("sections.contentPolicies.requirements.quality")}</li>
                 <li>{tSellerTerms("sections.contentPolicies.requirements.lp21")}</li>
               </ul>
+
+              {/* Copyright Warranty & Indemnification */}
+              <h3 className="text-text-primary mt-6 text-lg font-semibold">
+                {tSellerTerms("sections.copyrightWarranty.title")}
+              </h3>
+              <p>{tSellerTerms("sections.copyrightWarranty.content")}</p>
+              <ul className="ml-4 list-disc space-y-1">
+                <li>{tSellerTerms("sections.copyrightWarranty.warranties.ownership")}</li>
+                <li>{tSellerTerms("sections.copyrightWarranty.warranties.noInfringement")}</li>
+                <li>{tSellerTerms("sections.copyrightWarranty.warranties.noThirdParty")}</li>
+              </ul>
+              <h4 className="text-text-primary mt-4 font-medium">
+                {tSellerTerms("sections.copyrightWarranty.indemnification.title")}
+              </h4>
+              <p>{tSellerTerms("sections.copyrightWarranty.indemnification.content")}</p>
+              <ul className="ml-4 list-disc space-y-1">
+                <li>
+                  {tSellerTerms("sections.copyrightWarranty.indemnification.items.infringement")}
+                </li>
+                <li>{tSellerTerms("sections.copyrightWarranty.indemnification.items.breach")}</li>
+                <li>{tSellerTerms("sections.copyrightWarranty.indemnification.items.content")}</li>
+              </ul>
+
+              {/* Notice and Takedown */}
+              <h3 className="text-text-primary mt-6 text-lg font-semibold">
+                {tSellerTerms("sections.noticeTakedown.title")}
+              </h3>
+              <p>{tSellerTerms("sections.noticeTakedown.content")}</p>
+              <h4 className="text-text-primary mt-4 font-medium">
+                {tSellerTerms("sections.noticeTakedown.procedure.title")}
+              </h4>
+              <p>{tSellerTerms("sections.noticeTakedown.procedure.content")}</p>
+              <ul className="ml-4 list-disc space-y-1">
+                <li>{tSellerTerms("sections.noticeTakedown.procedure.items.identify")}</li>
+                <li>{tSellerTerms("sections.noticeTakedown.procedure.items.location")}</li>
+                <li>{tSellerTerms("sections.noticeTakedown.procedure.items.contact")}</li>
+                <li>{tSellerTerms("sections.noticeTakedown.procedure.items.statement")}</li>
+                <li>{tSellerTerms("sections.noticeTakedown.procedure.items.signature")}</li>
+              </ul>
+              <h4 className="text-text-primary mt-4 font-medium">
+                {tSellerTerms("sections.noticeTakedown.response.title")}
+              </h4>
+              <p>{tSellerTerms("sections.noticeTakedown.response.content")}</p>
 
               {/* Prohibited Content */}
               <h3 className="text-text-primary mt-6 text-lg font-semibold">
