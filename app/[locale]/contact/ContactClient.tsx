@@ -296,10 +296,10 @@ export default function ContactClient() {
                           {t("direct.email.description")}
                         </p>
                         <a
-                          href="mailto:hello@currico.ch"
+                          href="mailto:info@currico.ch"
                           className="text-primary hover:text-primary-hover font-medium transition-colors"
                         >
-                          hello@currico.ch
+                          info@currico.ch
                         </a>
                       </div>
                     </div>

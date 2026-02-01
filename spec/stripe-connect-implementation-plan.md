@@ -62,7 +62,7 @@ STRIPE_PUBLISHABLE_KEY=pk_test_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 
 # Platform Configuration
-PLATFORM_FEE_PERCENT=15
+PLATFORM_FEE_PERCENT=30
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
 ```
 
@@ -82,7 +82,7 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   typescript: true,
 });
 
-export const PLATFORM_FEE_PERCENT = 15;
+export const PLATFORM_FEE_PERCENT = 30;
 
 export function calculatePlatformFee(amountCents: number): number {
   return Math.round(amountCents * (PLATFORM_FEE_PERCENT / 100));
@@ -98,7 +98,7 @@ export function calculatePlatformFee(amountCents: number): number {
 - Checks seller has completed Stripe onboarding
 - Creates Stripe Checkout Session with:
   - `payment_method_types: ['card', 'twint']`
-  - `application_fee_amount` (15% platform fee)
+  - `application_fee_amount` (30% platform fee)
   - `transfer_data.destination` (seller's Stripe account)
 - Creates Transaction record with PENDING status
 - Returns checkout session URL

@@ -34,7 +34,7 @@ function getTransporter(): Transporter {
 }
 
 function getFromEmail(): string {
-  return process.env.EMAIL_FROM || process.env.SMTP_USER || "noreply@currico.ch";
+  return process.env.EMAIL_FROM || process.env.SMTP_USER || "info@currico.ch";
 }
 
 interface SendEmailResult {
@@ -305,7 +305,7 @@ export async function sendContactNotificationEmail({
 }): Promise<SendEmailResult> {
   try {
     const transport = getTransporter();
-    const adminEmail = process.env.ADMIN_EMAIL || "admin@currico.ch";
+    const adminEmail = process.env.ADMIN_EMAIL || "info@currico.ch";
 
     const subjectLabels: Record<string, string> = {
       general: "Allgemeine Anfrage",

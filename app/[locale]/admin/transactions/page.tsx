@@ -316,7 +316,7 @@ export default function AdminTransactionsPage() {
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="text-text-muted">
-                            Plattformgebühr (15%)
+                            Plattformgebühr (30%)
                           </span>
                           <span className="font-semibold text-error">
                             - CHF {transaction.platformFee.toFixed(2)}
