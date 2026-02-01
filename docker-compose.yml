@@ -25,15 +25,13 @@ services:
       dockerfile: Dockerfile.dev
     container_name: currico-app
     restart: unless-stopped
+    env_file:
+      - .env
     environment:
+      # These override values from .env file (needed for Docker networking)
       - NODE_ENV=development
-      - APP_ENV=development
-      # PostgreSQL connection URL
       - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-currico}
       - NEXT_TELEMETRY_DISABLED=1
-      - AUTH_SECRET=${AUTH_SECRET}
-      - AUTH_URL=${AUTH_URL:-http://localhost:3000}
-      - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
     ports:
       - "${APP_PORT:-3000}:3000"
     volumes:
