@@ -669,7 +669,7 @@
         "content": "Currico respects intellectual property rights and responds to proper notices of claimed copyright infringement.",
         "procedure": {
           "title": "How to Report Copyright Infringement",
-          "content": "If you believe that content on Currico infringes your copyright, please send a notice to copyright@currico.ch containing:",
+          "content": "If you believe that content on Currico infringes your copyright, please send a notice to info@currico.ch containing:",
           "items": {
             "identify": "Identification of the copyrighted work you claim has been infringed",
             "location": "The URL or other specific location on Currico where the allegedly infringing material is located",
@@ -1257,7 +1257,7 @@
     "contact": {
       "title": "Questions?",
       "description": "If you have any questions about our use of cookies, please contact us.",
-      "email": "privacy@currico.ch"
+      "email": "info@currico.ch"
     },
     "links": {
       "privacy": "Privacy Policy",
@@ -1386,7 +1386,7 @@
     },
     "contact": {
       "title": "Contact",
-      "email": "contact@currico.ch",
+      "email": "info@currico.ch",
       "website": "www.currico.ch"
     },
     "legal": {
@@ -1436,7 +1436,7 @@
         "company": "Currico (Beta)",
         "address": "GmbH registration pending, Switzerland",
         "emailLabel": "Email",
-        "email": "privacy@currico.ch"
+        "email": "info@currico.ch"
       },
       "collection": {
         "title": "2. Data We Collect",
@@ -1525,7 +1525,7 @@
           "portability": "Right to data portability",
           "objection": "Right to object to processing"
         },
-        "contact": "To exercise these rights, please contact us at privacy@currico.ch. We will respond within 30 days.",
+        "contact": "To exercise these rights, please contact us at info@currico.ch. We will respond within 30 days.",
         "complaint": "You also have the right to lodge a complaint with the Swiss Federal Data Protection and Information Commissioner (FDPIC) or, if applicable, with a supervisory authority in the EU."
       },
       "security": {
@@ -1544,7 +1544,7 @@
     "contact": {
       "title": "Questions About Privacy?",
       "description": "For questions or concerns about your data, contact us:",
-      "email": "privacy@currico.ch"
+      "email": "info@currico.ch"
     },
     "links": {
       "impressum": "Legal Notice",

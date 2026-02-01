@@ -661,7 +661,7 @@
         "content": "Currico respektiert geistige Eigentumsrechte und reagiert auf ordnungsgemässe Meldungen von behaupteten Urheberrechtsverletzungen.",
         "procedure": {
           "title": "So melden Sie eine Urheberrechtsverletzung",
-          "content": "Wenn Sie der Meinung sind, dass Inhalte auf Currico Ihr Urheberrecht verletzen, senden Sie bitte eine Meldung an copyright@currico.ch mit folgenden Angaben:",
+          "content": "Wenn Sie der Meinung sind, dass Inhalte auf Currico Ihr Urheberrecht verletzen, senden Sie bitte eine Meldung an info@currico.ch mit folgenden Angaben:",
           "items": {
             "identify": "Bezeichnung des urheberrechtlich geschützten Werks, dessen Verletzung Sie behaupten",
             "location": "Die URL oder andere spezifische Stelle auf Currico, an der sich das angeblich verletzende Material befindet",
@@ -1249,7 +1249,7 @@
     "contact": {
       "title": "Fragen?",
       "description": "Bei Fragen zu unserer Verwendung von Cookies kontaktieren Sie uns bitte.",
-      "email": "datenschutz@currico.ch"
+      "email": "info@currico.ch"
     },
     "links": {
       "privacy": "Datenschutzerklärung",
@@ -1378,7 +1378,7 @@
     },
     "contact": {
       "title": "Kontakt",
-      "email": "kontakt@currico.ch",
+      "email": "info@currico.ch",
       "website": "www.currico.ch"
     },
     "legal": {
@@ -1428,7 +1428,7 @@
         "company": "Currico (Beta)",
         "address": "GmbH-Eintragung ausstehend, Schweiz",
         "emailLabel": "E-Mail",
-        "email": "datenschutz@currico.ch"
+        "email": "info@currico.ch"
       },
       "collection": {
         "title": "2. Welche Daten wir erheben",
@@ -1517,7 +1517,7 @@
           "portability": "Recht auf Datenübertragbarkeit",
           "objection": "Recht auf Widerspruch gegen die Verarbeitung"
         },
-        "contact": "Um diese Rechte auszuüben, kontaktieren Sie uns bitte unter datenschutz@currico.ch. Wir antworten innerhalb von 30 Tagen.",
+        "contact": "Um diese Rechte auszuüben, kontaktieren Sie uns bitte unter info@currico.ch. Wir antworten innerhalb von 30 Tagen.",
         "complaint": "Sie haben auch das Recht, eine Beschwerde beim Eidgenössischen Datenschutz- und Öffentlichkeitsbeauftragten (EDÖB) oder, falls anwendbar, bei einer Aufsichtsbehörde in der EU einzureichen."
       },
       "security": {
@@ -1536,7 +1536,7 @@
     "contact": {
       "title": "Fragen zum Datenschutz?",
       "description": "Für Fragen oder Anliegen bezüglich Ihrer Daten kontaktieren Sie uns:",
-      "email": "datenschutz@currico.ch"
+      "email": "info@currico.ch"
     },
     "links": {
       "impressum": "Impressum",

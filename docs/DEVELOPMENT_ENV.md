@@ -62,7 +62,7 @@ Emails are logged to console in development. To test actual email sending:
 | Variable         | Description                                    |
 | ---------------- | ---------------------------------------------- |
 | `RESEND_API_KEY` | Resend API key (get free tier at resend.com)   |
-| `EMAIL_FROM`     | Sender address (default: `noreply@currico.ch`) |
+| `EMAIL_FROM`     | Sender address (default: `info@currico.ch`) |
 | `ADMIN_EMAIL`    | Admin notification email                       |
 
 ### Stripe (Test Mode)
@@ -169,8 +169,8 @@ STORAGE_PROVIDER="local"
 # Email (optional - logs to console if not set)
 # ===========================================
 RESEND_API_KEY=""
-EMAIL_FROM="noreply@currico.ch"
-ADMIN_EMAIL="admin@currico.ch"
+EMAIL_FROM="info@currico.ch"
+ADMIN_EMAIL="info@currico.ch"
 
 # ===========================================
 # Stripe Test Mode (optional)
