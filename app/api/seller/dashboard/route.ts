@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { formatPrice, getResourceStatus } from "@/lib/utils/price";
 import { requireAuth, requireSeller, unauthorized, forbidden } from "@/lib/api";
+import { PLATFORM_FEE_PERCENT } from "@/lib/constants";
 
 /**
  * GET /api/seller/dashboard
@@ -70,7 +71,7 @@ export async function GET() {
     ]);
 
     // Calculate stats
-    const platformFeeRate = 0.15; // 15%
+    const platformFeeRate = PLATFORM_FEE_PERCENT / 100;
     const totalGross = totalEarnings._sum.amount || 0;
     const totalNet = totalGross * (1 - platformFeeRate);
     const totalDownloads = resources.reduce((sum, r) => sum + r._count.transactions, 0);

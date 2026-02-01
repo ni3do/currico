@@ -114,7 +114,7 @@ Platform builds all UI and handles all verification. Maximum control, maximum re
 ### Platform Account (Currico)
 
 - The main Stripe account
-- Receives platform fees (15%)
+- Receives platform fees (30%)
 - Creates checkout sessions
 - Manages webhooks
 - Has API keys
@@ -123,7 +123,7 @@ Platform builds all UI and handles all verification. Maximum control, maximum re
 
 - Express accounts linked to the platform
 - Each seller has a unique `stripe_account_id` (acct_xxx)
-- Receives 85% of each sale
+- Receives 70% of each sale
 - Can view earnings in Stripe Express Dashboard
 - Payouts go to their Swiss IBAN
 
@@ -164,7 +164,7 @@ Platform builds all UI and handles all verification. Maximum control, maximum re
 │   │                    ▼                             ▼      │   │
 │   │          ┌─────────────────┐          ┌─────────────────┐│   │
 │   │          │ Platform Fee    │          │ Seller Payout   ││   │
-│   │          │ CHF 1.50 (15%)  │          │ CHF 7.91 (85%)  ││   │
+│   │          │ CHF 3.00 (30%)  │          │ CHF 6.41 (70%)  ││   │
 │   │          │                 │          │                 ││   │
 │   │          │ → Currico   │          │ → Teacher IBAN  ││   │
 │   │          └─────────────────┘          └─────────────────┘│   │
@@ -179,10 +179,10 @@ Platform builds all UI and handles all verification. Maximum control, maximum re
 | ------------------ | --------- | --------- |
 | Gross payment      | CHF 10.00 | —         |
 | Stripe processing  | ~CHF 0.59 | Stripe    |
-| Platform fee (15%) | CHF 1.50  | Currico   |
-| Seller payout      | CHF 7.91  | Teacher   |
+| Platform fee (30%) | CHF 3.00  | Currico   |
+| Seller payout      | CHF 6.41  | Teacher   |
 
-**Note:** The 15% platform fee is calculated on the gross amount. Stripe fees come off the top before the split.
+**Note:** The 30% platform fee is calculated on the gross amount. Stripe fees come off the top before the split.
 
 ---
 
@@ -247,7 +247,7 @@ When creating a checkout session, we specify:
     quantity: 1,
   }],
 
-  // Platform fee (15%)
+  // Platform fee (30%)
   payment_intent_data: {
     application_fee_amount: 150,  // CHF 1.50 in cents
     transfer_data: {
@@ -507,7 +507,7 @@ For Express accounts, Stripe sets a default schedule (usually 2-day rolling).
 
 ### Platform Payouts
 
-The platform (Currico) receives its 15% fee separately:
+The platform (Currico) receives its 30% fee separately:
 
 - Accumulates in platform Stripe balance
 - Can set up automatic payouts to platform bank account
@@ -524,7 +524,7 @@ The `application_fee_amount` parameter tells Stripe to keep a portion for the pl
 ```javascript
 // In checkout session creation
 payment_intent_data: {
-  application_fee_amount: 150,  // 15% of CHF 10.00 = CHF 1.50 (150 cents)
+  application_fee_amount: 300,  // 30% of CHF 10.00 = CHF 3.00 (300 cents)
   transfer_data: {
     destination: 'acct_seller123',
   },
@@ -604,7 +604,7 @@ await stripe.refunds.create({
 // Full refund, platform keeps fee
 await stripe.refunds.create({
   payment_intent: "pi_xxx",
-  refund_application_fee: false, // Platform keeps 15%
+  refund_application_fee: false, // Platform keeps 30%
 });
 ```
 
@@ -628,7 +628,7 @@ When a buyer disputes a charge with their bank:
 | --------------------- | ------------------------------------------------------ |
 | **Connected Account** | Seller's Stripe Express account linked to the platform |
 | **Platform Account**  | Currico's main Stripe account                          |
-| **Application Fee**   | Platform's commission (15%) taken from each payment    |
+| **Application Fee**   | Platform's commission (30%) taken from each payment    |
 | **Payment Intent**    | Stripe object representing a payment attempt           |
 | **Checkout Session**  | Stripe-hosted payment page                             |
 | **Webhook**           | HTTP callback sent by Stripe when events occur         |
