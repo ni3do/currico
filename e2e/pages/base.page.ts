@@ -5,7 +5,7 @@
  * like navigation helpers, wait utilities, and element interactions.
  */
 
-import { Page, Locator, expect } from '@playwright/test';
+import { Page, Locator, expect } from "@playwright/test";
 
 export abstract class BasePage {
   readonly page: Page;
@@ -42,7 +42,7 @@ export abstract class BasePage {
    * Override in subclasses if specific load indicators are needed.
    */
   async waitForPageLoad(): Promise<void> {
-    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.waitForLoadState("domcontentloaded");
   }
 
   /**
@@ -134,7 +134,7 @@ export abstract class BasePage {
    * Check if an element has a specific CSS class.
    */
   async hasClass(locator: Locator, className: string): Promise<boolean> {
-    const classes = await locator.getAttribute('class');
+    const classes = await locator.getAttribute("class");
     return classes?.includes(className) ?? false;
   }
 
@@ -148,9 +148,26 @@ export abstract class BasePage {
   /**
    * Get the locale from the current URL.
    */
-  getLocale(): 'de' | 'en' {
+  getLocale(): "de" | "en" {
     const url = this.getUrl();
-    if (url.includes('/en')) return 'en';
-    return 'de';
+    if (url.includes("/en")) return "en";
+    return "de";
+  }
+
+  /**
+   * Dismiss the cookie consent dialog if present.
+   * This is useful when the dialog blocks interactions.
+   */
+  async dismissCookieConsent(): Promise<void> {
+    const cookieDialog = this.page.locator(
+      '[role="dialog"][aria-labelledby="cookie-consent-title"]'
+    );
+    if (await cookieDialog.isVisible().catch(() => false)) {
+      const acceptButton = cookieDialog.getByRole("button", { name: /akzeptieren|accept/i });
+      if (await acceptButton.isVisible().catch(() => false)) {
+        await acceptButton.click();
+        await cookieDialog.waitFor({ state: "hidden", timeout: 5000 }).catch(() => {});
+      }
+    }
   }
 }
