@@ -8,7 +8,6 @@
 export { BasePage } from "./base.page";
 export { LoginPage } from "./login.page";
 export { RegisterPage } from "./register.page";
-export { CatalogPage } from "./catalog.page";
 export { ResourceDetailPage } from "./resource-detail.page";
 export { AccountPage } from "./account.page";
 export { AdminDocumentsPage } from "./admin-documents.page";
