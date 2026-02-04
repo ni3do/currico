@@ -478,6 +478,8 @@ p {
 /* Smooth scrolling */
 html {
   scroll-behavior: smooth;
+  /* Prevent layout shift when scrollbar appears/disappears between pages */
+  scrollbar-gutter: stable;
 }
 
 /* =================================================================
@@ -2020,7 +2022,7 @@ html.theme-transition *::after {
     color-mix(in srgb, var(--ctp-teal) 10%, transparent) 100%
   );
   border-radius: 50%;
-  z-index: 0;
+  z-index: -1;
   filter: blur(40px);
 }
 
@@ -2035,7 +2037,7 @@ html.theme-transition *::after {
   background: var(--ctp-teal);
   border-radius: 50%;
   opacity: 0.15;
-  z-index: 0;
+  z-index: -1;
 }
 
 /* Hero image styling */
