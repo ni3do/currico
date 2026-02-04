@@ -65,10 +65,10 @@ export default function AdminDashboardPage() {
       {/* Key Metrics */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {/* Total Users */}
-        <div className="border-border bg-surface rounded-2xl border p-6">
+        <div className="border-border bg-surface rounded-xl border p-5">
           <div className="mb-3 flex items-center gap-3">
-            <div className="rounded-lg bg-gradient-to-br from-[var(--ctp-blue)] to-[var(--ctp-sapphire)] p-2.5">
-              <Users className="h-5 w-5 text-white" />
+            <div className="from-primary to-primary-hover rounded-lg bg-gradient-to-br p-2.5">
+              <Users className="text-text-on-accent h-5 w-5" />
             </div>
             <h3 className="text-text-muted text-sm font-medium">Benutzer</h3>
           </div>
@@ -77,10 +77,10 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Pending Documents */}
-        <div className="border-border bg-surface rounded-2xl border p-6">
+        <div className="border-border bg-surface rounded-xl border p-5">
           <div className="mb-3 flex items-center gap-3">
-            <div className="rounded-lg bg-gradient-to-br from-[var(--ctp-yellow)] to-[var(--ctp-peach)] p-2.5">
-              <Clock className="h-5 w-5 text-[var(--ctp-crust)]" />
+            <div className="from-warning to-price rounded-lg bg-gradient-to-br p-2.5">
+              <Clock className="text-text-on-accent h-5 w-5" />
             </div>
             <h3 className="text-text-muted text-sm font-medium">Ausstehend</h3>
           </div>
@@ -89,10 +89,10 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Open Reports */}
-        <div className="border-border bg-surface rounded-2xl border p-6">
+        <div className="border-border bg-surface rounded-xl border p-5">
           <div className="mb-3 flex items-center gap-3">
-            <div className="rounded-lg bg-gradient-to-br from-[var(--ctp-red)] to-[var(--ctp-maroon)] p-2.5">
-              <AlertTriangle className="h-5 w-5 text-white" />
+            <div className="from-error to-error rounded-lg bg-gradient-to-br p-2.5">
+              <AlertTriangle className="text-text-on-accent h-5 w-5" />
             </div>
             <h3 className="text-text-muted text-sm font-medium">Meldungen</h3>
           </div>
@@ -101,10 +101,10 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Total Revenue */}
-        <div className="border-border bg-surface rounded-2xl border p-6">
+        <div className="border-border bg-surface rounded-xl border p-5">
           <div className="mb-3 flex items-center gap-3">
-            <div className="rounded-lg bg-gradient-to-br from-[var(--ctp-green)] to-[var(--ctp-teal)] p-2.5">
-              <DollarSign className="h-5 w-5 text-[var(--ctp-crust)]" />
+            <div className="from-success to-accent rounded-lg bg-gradient-to-br p-2.5">
+              <DollarSign className="text-text-on-accent h-5 w-5" />
             </div>
             <h3 className="text-text-muted text-sm font-medium">Umsatz</h3>
           </div>
@@ -121,7 +121,7 @@ export default function AdminDashboardPage() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Link
           href="/admin/documents"
-          className="group border-border bg-surface hover:border-primary rounded-2xl border p-6 transition-colors"
+          className="group border-border bg-surface hover:border-primary rounded-xl border p-6 transition-all hover:shadow-md"
         >
           <div className="flex items-center justify-between">
             <div>
@@ -136,7 +136,7 @@ export default function AdminDashboardPage() {
 
         <Link
           href="/admin/reports"
-          className="group border-border bg-surface hover:border-primary rounded-2xl border p-6 transition-colors"
+          className="group border-border bg-surface hover:border-primary rounded-xl border p-6 transition-all hover:shadow-md"
         >
           <div className="flex items-center justify-between">
             <div>
@@ -151,7 +151,7 @@ export default function AdminDashboardPage() {
 
         <Link
           href="/admin/users"
-          className="group border-border bg-surface hover:border-primary rounded-2xl border p-6 transition-colors"
+          className="group border-border bg-surface hover:border-primary rounded-xl border p-6 transition-all hover:shadow-md"
         >
           <div className="flex items-center justify-between">
             <div>
@@ -168,26 +168,26 @@ export default function AdminDashboardPage() {
       {/* Statistics Grid */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* User Breakdown */}
-        <div className="border-border bg-surface rounded-2xl border p-6">
+        <div className="border-border bg-surface rounded-xl border p-6">
           <h3 className="text-text mb-4 font-semibold">Benutzer nach Rolle</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="h-3 w-3 rounded-full bg-[var(--ctp-blue)]"></div>
+                <div className="bg-primary h-3 w-3 rounded-full"></div>
                 <span className="text-text-muted">Käufer</span>
               </div>
               <span className="text-text font-medium">{stats?.userBreakdown?.buyers || 0}</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="h-3 w-3 rounded-full bg-[var(--ctp-green)]"></div>
+                <div className="bg-success h-3 w-3 rounded-full"></div>
                 <span className="text-text-muted">Verkäufer</span>
               </div>
               <span className="text-text font-medium">{stats?.userBreakdown?.sellers || 0}</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="h-3 w-3 rounded-full bg-[var(--ctp-mauve)]"></div>
+                <div className="bg-focus h-3 w-3 rounded-full"></div>
                 <span className="text-text-muted">Schulen</span>
               </div>
               <span className="text-text font-medium">{stats?.userBreakdown?.schools || 0}</span>
@@ -196,7 +196,7 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Resources Overview */}
-        <div className="border-border bg-surface rounded-2xl border p-6">
+        <div className="border-border bg-surface rounded-xl border p-6">
           <h3 className="text-text mb-4 font-semibold">Ressourcen</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -225,7 +225,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Revenue Chart Placeholder */}
-      <div className="border-border bg-surface rounded-2xl border p-6">
+      <div className="border-border bg-surface rounded-xl border p-6">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="text-text font-semibold">Umsatz (letzte 7 Tage)</h3>
           <div className="text-success flex items-center gap-2 text-sm">

@@ -40,6 +40,12 @@ export const SWISS_CANTONS = [
 // ZOD SCHEMAS
 // ============================================================
 
+// Teaching experience options
+export const TEACHING_EXPERIENCE_OPTIONS = ["0-2", "3-5", "6-10", "11-20", "20+"] as const;
+
+// Platform language options
+export const LANGUAGE_OPTIONS = ["de", "en"] as const;
+
 // Profile update schema
 // Note: Payout information is now handled via Stripe Connect, not stored locally
 export const updateProfileSchema = z.object({
@@ -48,9 +54,19 @@ export const updateProfileSchema = z.object({
     .min(2, "Name muss mindestens 2 Zeichen haben")
     .max(50, "Name darf maximal 50 Zeichen haben"),
   bio: z.string().max(500, "Bio darf maximal 500 Zeichen haben").optional().nullable(),
-  subjects: z.array(z.string()).min(1, "Mindestens ein Fach auswählen"),
-  cycles: z.array(z.string()).min(1, "Mindestens einen Zyklus auswählen"),
+  subjects: z.array(z.string()).optional(),
+  cycles: z.array(z.string()).optional(),
   cantons: z.array(z.string()).optional(),
+  website: z
+    .string()
+    .url("Ungültige URL")
+    .max(255, "URL darf maximal 255 Zeichen haben")
+    .optional()
+    .nullable()
+    .or(z.literal("")),
+  school: z.string().max(150, "Schulname darf maximal 150 Zeichen haben").optional().nullable(),
+  teaching_experience: z.enum(TEACHING_EXPERIENCE_OPTIONS).optional().nullable(),
+  preferred_language: z.enum(LANGUAGE_OPTIONS).optional(),
   instagram: z
     .string()
     .max(100, "Instagram-Name darf maximal 100 Zeichen haben")

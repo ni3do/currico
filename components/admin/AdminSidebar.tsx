@@ -12,25 +12,95 @@ import {
   TrendingUp,
   Clock,
   AlertCircle,
+  ShieldCheck,
+  Briefcase,
+  MessageSquare,
 } from "lucide-react";
 
-// Navigation items
-const NAV_ITEMS = [
-  { id: "overview", href: "/admin", label: "Übersicht", icon: Home },
-  { id: "users", href: "/admin/users", label: "Benutzer", icon: Users },
-  { id: "documents", href: "/admin/documents", label: "Dokumente", icon: FileText },
-  { id: "reports", href: "/admin/reports", label: "Meldungen", icon: AlertTriangle },
-  { id: "transactions", href: "/admin/transactions", label: "Transaktionen", icon: CreditCard },
-  { id: "settings", href: "/admin/settings", label: "Einstellungen", icon: Settings },
+// Color classes for each tab (active state) - using semantic tokens where available
+const TAB_STYLES: Record<string, { bg: string; text: string; dot: string }> = {
+  overview: {
+    bg: "bg-error/10",
+    text: "text-error",
+    dot: "bg-error",
+  },
+  documents: {
+    bg: "bg-primary/10",
+    text: "text-primary",
+    dot: "bg-primary",
+  },
+  messages: {
+    bg: "bg-accent/10",
+    text: "text-accent",
+    dot: "bg-accent",
+  },
+  reports: {
+    bg: "bg-error/10",
+    text: "text-error",
+    dot: "bg-error",
+  },
+  users: {
+    bg: "bg-info/10",
+    text: "text-info",
+    dot: "bg-info",
+  },
+  transactions: {
+    bg: "bg-price/10",
+    text: "text-price",
+    dot: "bg-price",
+  },
+  settings: {
+    bg: "bg-focus/10",
+    text: "text-focus",
+    dot: "bg-focus",
+  },
+};
+
+// Navigation sections with grouped items
+const NAV_SECTIONS = [
+  {
+    id: "main",
+    label: null,
+    icon: null,
+    items: [{ id: "overview", href: "/admin", label: "Übersicht", icon: Home }],
+  },
+  {
+    id: "moderation",
+    label: "Moderation",
+    icon: ShieldCheck,
+    items: [
+      { id: "documents", href: "/admin/documents", label: "Dokumente", icon: FileText },
+      { id: "messages", href: "/admin/messages", label: "Nachrichten", icon: MessageSquare },
+      { id: "reports", href: "/admin/reports", label: "Meldungen", icon: AlertTriangle },
+    ],
+  },
+  {
+    id: "management",
+    label: "Verwaltung",
+    icon: Briefcase,
+    items: [
+      { id: "users", href: "/admin/users", label: "Benutzer", icon: Users },
+      { id: "transactions", href: "/admin/transactions", label: "Transaktionen", icon: CreditCard },
+      { id: "settings", href: "/admin/settings", label: "Einstellungen", icon: Settings },
+    ],
+  },
 ] as const;
 
-type TabType = "overview" | "users" | "documents" | "reports" | "transactions" | "settings";
+type TabType =
+  | "overview"
+  | "users"
+  | "documents"
+  | "messages"
+  | "reports"
+  | "transactions"
+  | "settings";
 
 interface AdminStats {
   totalUsers: number;
   newUsersToday: number;
   pendingApproval: number;
   openReports: number;
+  newMessages: number;
   totalRevenue: number;
   revenueToday: number;
 }
@@ -51,13 +121,18 @@ export function AdminSidebar({
   className = "",
 }: AdminSidebarProps) {
   return (
-    <aside className={`border-border bg-bg-secondary rounded-xl border shadow-sm ${className}`}>
+    <aside
+      className={`border-border bg-bg-secondary relative overflow-hidden rounded-xl border shadow-sm ${className}`}
+    >
       <div className="p-5">
         {/* Admin Profile */}
         <div className="mb-5">
           <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[var(--ctp-mauve)] to-[var(--ctp-pink)]">
-              <Shield className="h-6 w-6 text-white" />
+            <div className="relative">
+              <div className="bg-error absolute -inset-1 rounded-full opacity-20 blur-sm"></div>
+              <div className="bg-error relative flex h-12 w-12 items-center justify-center rounded-full">
+                <Shield className="text-text-on-accent h-6 w-6" />
+              </div>
             </div>
             <div className="min-w-0 flex-1">
               <h2 className="text-text truncate text-sm font-semibold">
@@ -88,6 +163,19 @@ export function AdminSidebar({
                     </span>
                     <span className="bg-warning/10 text-warning rounded-full px-2 py-0.5 text-xs font-medium">
                       {stats.pendingApproval}
+                    </span>
+                  </div>
+                )}
+
+                {/* New Messages */}
+                {stats.newMessages > 0 && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-text-secondary flex items-center gap-2 text-sm">
+                      <MessageSquare className="text-accent h-4 w-4" />
+                      Nachrichten
+                    </span>
+                    <span className="bg-accent/10 text-accent rounded-full px-2 py-0.5 text-xs font-medium">
+                      {stats.newMessages}
                     </span>
                   </div>
                 )}
@@ -134,59 +222,58 @@ export function AdminSidebar({
         )}
 
         {/* Navigation */}
-        <nav className="mb-5 space-y-1">
-          <h3 className="label-meta mb-3">Navigation</h3>
-          {NAV_ITEMS.map((item) => {
-            const Icon = item.icon;
-            const isActive = activeTab === item.id;
+        <nav className="mb-5 space-y-4">
+          {NAV_SECTIONS.map((section) => {
+            const SectionIcon = section.icon;
             return (
-              <Link
-                key={item.id}
-                href={item.href}
-                className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${
-                  isActive
-                    ? "bg-primary/10 text-primary"
-                    : "text-text-secondary hover:bg-surface-hover hover:text-text"
-                }`}
-              >
-                <Icon className={`h-5 w-5 ${isActive ? "text-primary" : ""}`} />
-                {item.label}
-                {/* Show badge for pending items */}
-                {item.id === "documents" && stats?.pendingApproval ? (
-                  <span className="bg-warning/10 text-warning ml-auto rounded-full px-2 py-0.5 text-xs font-medium">
-                    {stats.pendingApproval}
-                  </span>
-                ) : item.id === "reports" && stats?.openReports ? (
-                  <span className="bg-error/10 text-error ml-auto rounded-full px-2 py-0.5 text-xs font-medium">
-                    {stats.openReports}
-                  </span>
-                ) : isActive ? (
-                  <span className="bg-primary ml-auto h-2 w-2 rounded-full" />
-                ) : null}
-              </Link>
+              <div key={section.id}>
+                {section.label && (
+                  <h3 className="label-meta mb-2 flex items-center gap-2">
+                    {SectionIcon && <SectionIcon className="text-error h-3.5 w-3.5" />}
+                    {section.label}
+                  </h3>
+                )}
+                <div className="space-y-1">
+                  {section.items.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = activeTab === item.id;
+                    const styles = TAB_STYLES[item.id] || TAB_STYLES.overview;
+                    return (
+                      <Link
+                        key={item.id}
+                        href={item.href}
+                        className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${
+                          isActive
+                            ? `${styles.bg} ${styles.text}`
+                            : "text-text-secondary hover:bg-surface-hover hover:text-text"
+                        }`}
+                      >
+                        <Icon className={`h-5 w-5 ${isActive ? styles.text : ""}`} />
+                        {item.label}
+                        {/* Show badge for pending items */}
+                        {item.id === "documents" && stats?.pendingApproval ? (
+                          <span className="bg-warning/10 text-warning ml-auto rounded-full px-2 py-0.5 text-xs font-medium">
+                            {stats.pendingApproval}
+                          </span>
+                        ) : item.id === "messages" && stats?.newMessages ? (
+                          <span className="bg-accent/10 text-accent ml-auto rounded-full px-2 py-0.5 text-xs font-medium">
+                            {stats.newMessages}
+                          </span>
+                        ) : item.id === "reports" && stats?.openReports ? (
+                          <span className="bg-error/10 text-error ml-auto rounded-full px-2 py-0.5 text-xs font-medium">
+                            {stats.openReports}
+                          </span>
+                        ) : isActive ? (
+                          <span className={`ml-auto h-2 w-2 rounded-full ${styles.dot}`} />
+                        ) : null}
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
             );
           })}
         </nav>
-
-        <div className="divider my-5" />
-
-        {/* Quick Actions */}
-        <div className="space-y-2">
-          <Link
-            href="/admin/documents"
-            className="bg-primary text-text-on-accent hover:bg-primary-hover flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors"
-          >
-            <FileText className="h-4 w-4" />
-            Dokumente prüfen
-          </Link>
-          <Link
-            href="/admin/users"
-            className="border-border bg-bg text-text-secondary hover:border-primary hover:text-primary flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
-          >
-            <Users className="h-4 w-4" />
-            Benutzer verwalten
-          </Link>
-        </div>
       </div>
     </aside>
   );

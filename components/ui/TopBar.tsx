@@ -58,30 +58,12 @@ export default function TopBar() {
 
           <nav className="hidden items-center lg:flex">
             <div className="border-border mr-6 flex items-center border-r pr-6">
-              {!isAdmin && (
-                <Link
-                  href="/resources"
-                  className="text-text-secondary hover:text-primary px-4 py-2 text-sm font-medium transition-colors"
-                >
-                  {t("navigation.resources")}
-                </Link>
-              )}
-              {isAdmin && (
-                <Link
-                  href="/admin"
-                  className="text-text-secondary hover:text-primary flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors"
-                >
-                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                    />
-                  </svg>
-                  Admin Panel
-                </Link>
-              )}
+              <Link
+                href="/resources"
+                className="text-text-secondary hover:text-primary px-4 py-2 text-sm font-medium transition-colors"
+              >
+                {t("navigation.resources")}
+              </Link>
               <Link
                 href="/about"
                 className="text-text-secondary hover:text-primary px-4 py-2 text-sm font-medium transition-colors"
@@ -104,10 +86,13 @@ export default function TopBar() {
                     className="text-text-secondary hover:bg-surface hover:text-primary flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
                   >
                     {isAdmin ? (
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[var(--ctp-mauve)] to-[var(--ctp-pink)]">
-                        <span className="text-text-on-accent text-sm font-bold">
-                          {(session.user?.name || "A").charAt(0).toUpperCase()}
-                        </span>
+                      <div className="relative">
+                        <div className="bg-error absolute -inset-1 rounded-full opacity-20 blur-sm"></div>
+                        <div className="bg-error relative flex h-8 w-8 items-center justify-center rounded-full">
+                          <span className="text-text-on-accent text-sm font-bold">
+                            {(session.user?.name || "A").charAt(0).toUpperCase()}
+                          </span>
+                        </div>
                       </div>
                     ) : session.user?.image ? (
                       // eslint-disable-next-line @next/next/no-img-element
@@ -120,7 +105,7 @@ export default function TopBar() {
                       </div>
                     )}
                     <span className="max-w-[120px] truncate">
-                      {isAdmin ? "Admin" : session.user?.name || t("navigation.account")}
+                      {session.user?.name || t("navigation.account")}
                     </span>
                     <svg
                       className={`h-4 w-4 transition-transform ${isUserMenuOpen ? "rotate-180" : ""}`}
@@ -147,9 +132,29 @@ export default function TopBar() {
                         transition={{ duration: 0.15, ease: "easeOut" }}
                         className="border-border bg-surface absolute right-0 z-50 mt-2 w-48 origin-top-right rounded-lg border py-1 shadow-lg"
                       >
-                        {!isAdmin && (
+                        <Link
+                          href="/account"
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="text-text hover:bg-bg flex items-center gap-2 px-4 py-2 text-sm transition-colors"
+                        >
+                          <svg
+                            className="h-4 w-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                            />
+                          </svg>
+                          {t("navigation.profile")}
+                        </Link>
+                        {isAdmin && (
                           <Link
-                            href="/account"
+                            href="/admin"
                             onClick={() => setIsUserMenuOpen(false)}
                             className="text-text hover:bg-bg flex items-center gap-2 px-4 py-2 text-sm transition-colors"
                           >
@@ -163,10 +168,10 @@ export default function TopBar() {
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
                                 strokeWidth={2}
-                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
                               />
                             </svg>
-                            {t("navigation.account")}
+                            Admin Panel
                           </Link>
                         )}
                         <div className="border-border my-1 border-t"></div>
@@ -252,47 +257,18 @@ export default function TopBar() {
               className="border-border overflow-hidden border-t lg:hidden"
             >
               <nav className="flex flex-col space-y-2 py-4">
-                {!isAdmin && (
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.05 }}
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.05 }}
+                >
+                  <Link
+                    href="/resources"
+                    className="text-text-secondary hover:text-primary block px-4 py-2 text-sm font-medium transition-colors"
                   >
-                    <Link
-                      href="/resources"
-                      className="text-text-secondary hover:text-primary block px-4 py-2 text-sm font-medium transition-colors"
-                    >
-                      {t("navigation.resources")}
-                    </Link>
-                  </motion.div>
-                )}
-                {isAdmin && (
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.05 }}
-                  >
-                    <Link
-                      href="/admin"
-                      className="text-text-secondary hover:text-primary flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors"
-                    >
-                      <svg
-                        className="h-4 w-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                        />
-                      </svg>
-                      Admin Panel
-                    </Link>
-                  </motion.div>
-                )}
+                    {t("navigation.resources")}
+                  </Link>
+                </motion.div>
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -325,33 +301,45 @@ export default function TopBar() {
                 >
                   {session ? (
                     <>
-                      {!isAdmin && (
+                      <Link
+                        href="/account"
+                        className="text-text-secondary hover:text-primary flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors"
+                      >
+                        <svg
+                          className="h-5 w-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                          />
+                        </svg>
+                        {t("navigation.profile")}
+                      </Link>
+                      {isAdmin && (
                         <Link
-                          href="/account"
+                          href="/admin"
                           className="text-text-secondary hover:text-primary flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors"
                         >
-                          {session.user?.image ? (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img src={session.user.image} alt="" className="h-6 w-6 rounded-full" />
-                          ) : (
-                            <div className="bg-primary flex h-6 w-6 items-center justify-center rounded-full">
-                              <span className="text-text-on-accent text-xs font-bold">
-                                {(session.user?.name || "U").charAt(0).toUpperCase()}
-                              </span>
-                            </div>
-                          )}
-                          {t("navigation.account")}
+                          <svg
+                            className="h-5 w-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                            />
+                          </svg>
+                          Admin Panel
                         </Link>
-                      )}
-                      {isAdmin && (
-                        <div className="text-text-secondary flex items-center gap-2 px-4 py-2 text-sm font-medium">
-                          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-[var(--ctp-mauve)] to-[var(--ctp-pink)]">
-                            <span className="text-text-on-accent text-xs font-bold">
-                              {(session.user?.name || "A").charAt(0).toUpperCase()}
-                            </span>
-                          </div>
-                          <span className="text-[var(--ctp-mauve)]">Admin</span>
-                        </div>
                       )}
                       <button
                         onClick={() => signOut()}

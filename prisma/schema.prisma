@@ -92,6 +92,12 @@ model User {
   cycles       Json    @default("[]")
   cantons      Json    @default("[]")
 
+  // Additional profile fields
+  website             String? @db.VarChar(255)
+  school              String? @db.VarChar(150)
+  teaching_experience String? @db.VarChar(20)
+  preferred_language  String  @default("de") @db.VarChar(5)
+
   // Social Media Links (usernames only)
   instagram    String? @db.VarChar(100)
   pinterest    String? @db.VarChar(100)
@@ -103,6 +109,11 @@ model User {
   role         UserRole @default(BUYER)
   is_protected Boolean  @default(false)
   is_private   Boolean  @default(false)
+
+  // ============ TEACHER VERIFICATION ============
+  is_teacher_verified          Boolean   @default(false)
+  teacher_verified_at          DateTime?
+  teacher_verification_method  String?   @db.VarChar(50) // "email_domain" | "manual" | "eduid"
 
   // ============ STRIPE CONNECT ============
   stripe_account_id          String?   @db.VarChar(255)
@@ -147,6 +158,13 @@ model User {
   // Collection relations
   collections Collection[]
 
+  // Review and rating relations
+  resourceLikes ResourceLike[]
+  reviews       Review[]
+  comments      Comment[]
+  commentReplies CommentReply[]
+  commentLikes  CommentLike[]
+
   @@index([role])
   @@map("users")
 }
@@ -175,9 +193,13 @@ model Resource {
 
   title       String @db.VarChar(255)
   description String @db.Text
-  price       Int   
+  price       Int
   file_url    String @db.VarChar(500)
   preview_url String? @db.VarChar(500)
+
+  // Multi-page preview support
+  preview_urls  Json @default("[]")   // Array of preview image URLs for pages 1-3
+  preview_count Int  @default(1) @db.SmallInt
 
   subjects Json @default("[]")
   cycles   Json @default("[]")
@@ -193,6 +215,9 @@ model Resource {
   eszett_checked Boolean @default(false)
   swiss_verified Boolean @default(false)
   language       String  @default("de") @db.VarChar(5)
+
+  // Full-text search vector (managed by database trigger)
+  search_vector  Unsupported("tsvector")?
 
   // Relations
   seller_id    String       @db.VarChar(50)
@@ -216,6 +241,11 @@ model Resource {
 
   // Collection relations
   collectionItems CollectionItem[]
+
+  // Review and rating relations
+  likes    ResourceLike[]
+  reviews  Review[]
+  comments Comment[]
 
   @@index([seller_id])
   @@index([is_published, is_public])
@@ -656,4 +686,86 @@ model BundleResource {
   @@unique([bundle_id, resource_id])
   @@index([resource_id])
   @@map("bundle_resources")
+}
+
+// ============================================================
+// RATING & REVIEW MODELS - User feedback on resources
+// ============================================================
+
+// Resource Like - simple like toggle (heart icon)
+model ResourceLike {
+  id          String   @id @default(cuid()) @db.VarChar(50)
+  created_at  DateTime @default(now())
+  user_id     String   @db.VarChar(50)
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  resource_id String   @db.VarChar(50)
+  resource    Resource @relation(fields: [resource_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, resource_id])
+  @@index([resource_id])
+  @@map("resource_likes")
+}
+
+// Review - star rating (1-5) with optional text
+model Review {
+  id          String   @id @default(cuid()) @db.VarChar(50)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  rating      Int      @db.SmallInt // 1-5
+  title       String?  @db.VarChar(100)
+  content     String?  @db.Text
+  user_id     String   @db.VarChar(50)
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  resource_id String   @db.VarChar(50)
+  resource    Resource @relation(fields: [resource_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, resource_id])
+  @@index([resource_id])
+  @@map("reviews")
+}
+
+// Comment - discussion on resources
+model Comment {
+  id          String         @id @default(cuid()) @db.VarChar(50)
+  created_at  DateTime       @default(now())
+  updated_at  DateTime       @updatedAt
+  content     String         @db.Text
+  user_id     String         @db.VarChar(50)
+  user        User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  resource_id String         @db.VarChar(50)
+  resource    Resource       @relation(fields: [resource_id], references: [id], onDelete: Cascade)
+  replies     CommentReply[]
+  likes       CommentLike[]
+
+  @@index([resource_id])
+  @@map("comments")
+}
+
+// CommentReply - single-level replies to comments
+model CommentReply {
+  id         String   @id @default(cuid()) @db.VarChar(50)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  content    String   @db.Text
+  user_id    String   @db.VarChar(50)
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  comment_id String   @db.VarChar(50)
+  comment    Comment  @relation(fields: [comment_id], references: [id], onDelete: Cascade)
+
+  @@index([comment_id])
+  @@map("comment_replies")
+}
+
+// CommentLike - likes on comments
+model CommentLike {
+  id         String   @id @default(cuid()) @db.VarChar(50)
+  created_at DateTime @default(now())
+  user_id    String   @db.VarChar(50)
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  comment_id String   @db.VarChar(50)
+  comment    Comment  @relation(fields: [comment_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, comment_id])
+  @@index([comment_id])
+  @@map("comment_likes")
 }

@@ -55,10 +55,8 @@ export function StripeConnectStatus({ isSeller }: StripeConnectStatusProps) {
     fetchStatus();
   }, [fetchStatus]);
 
-  const isFullySetup =
-    stripeStatus?.chargesEnabled && stripeStatus?.detailsSubmitted;
-  const isPending =
-    stripeStatus?.hasAccount && !stripeStatus?.chargesEnabled;
+  const isFullySetup = stripeStatus?.chargesEnabled && stripeStatus?.detailsSubmitted;
+  const isPending = stripeStatus?.hasAccount && !stripeStatus?.chargesEnabled;
   const hasRequirements =
     stripeStatus?.requirements &&
     (stripeStatus.requirements.currentlyDue.length > 0 ||
@@ -67,12 +65,12 @@ export function StripeConnectStatus({ isSeller }: StripeConnectStatusProps) {
   // Loading state
   if (isLoading) {
     return (
-      <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
+      <div className="border-border bg-surface rounded-2xl border p-6">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 animate-pulse rounded-full bg-[var(--color-bg)]" />
+          <div className="bg-bg h-10 w-10 animate-pulse rounded-full" />
           <div className="flex-1 space-y-2">
-            <div className="h-4 w-32 animate-pulse rounded bg-[var(--color-bg)]" />
-            <div className="h-3 w-48 animate-pulse rounded bg-[var(--color-bg)]" />
+            <div className="bg-bg h-4 w-32 animate-pulse rounded" />
+            <div className="bg-bg h-3 w-48 animate-pulse rounded" />
           </div>
         </div>
       </div>
@@ -82,11 +80,11 @@ export function StripeConnectStatus({ isSeller }: StripeConnectStatusProps) {
   // Error state
   if (error) {
     return (
-      <div className="rounded-2xl border border-[var(--color-error)]/30 bg-[var(--color-error)]/5 p-6">
+      <div className="border-error/30 bg-error/5 rounded-2xl border p-6">
         <div className="flex items-start gap-4">
-          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[var(--color-error)]/10">
+          <div className="bg-error/10 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full">
             <svg
-              className="h-5 w-5 text-[var(--color-error)]"
+              className="text-error h-5 w-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -100,19 +98,15 @@ export function StripeConnectStatus({ isSeller }: StripeConnectStatusProps) {
             </svg>
           </div>
           <div className="flex-1">
-            <h3 className="font-semibold text-[var(--color-text)]">
-              {t("error.title")}
-            </h3>
-            <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-              {error}
-            </p>
+            <h3 className="text-text font-semibold">{t("error.title")}</h3>
+            <p className="text-text-muted mt-1 text-sm">{error}</p>
             <button
               onClick={() => {
                 setError(null);
                 setIsLoading(true);
                 fetchStatus();
               }}
-              className="mt-3 text-sm font-medium text-[var(--color-primary)] hover:underline"
+              className="text-primary mt-3 text-sm font-medium hover:underline"
             >
               {t("error.tryAgain")}
             </button>
@@ -125,11 +119,11 @@ export function StripeConnectStatus({ isSeller }: StripeConnectStatusProps) {
   // Fully setup - show success state
   if (isFullySetup) {
     return (
-      <div className="rounded-2xl border border-[var(--color-success)]/30 bg-[var(--color-success)]/5 p-6">
+      <div className="border-success/30 bg-success/5 rounded-2xl border p-6">
         <div className="flex items-start gap-4">
-          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[var(--color-success)]/20">
+          <div className="bg-success/20 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full">
             <svg
-              className="h-5 w-5 text-[var(--color-success)]"
+              className="text-success h-5 w-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -143,18 +137,14 @@ export function StripeConnectStatus({ isSeller }: StripeConnectStatusProps) {
             </svg>
           </div>
           <div className="flex-1">
-            <h3 className="font-semibold text-[var(--color-text)]">
-              {t("active.title")}
-            </h3>
-            <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-              {t("active.description")}
-            </p>
+            <h3 className="text-text font-semibold">{t("active.title")}</h3>
+            <p className="text-text-muted mt-1 text-sm">{t("active.description")}</p>
 
             {/* Status indicators */}
             <div className="mt-4 flex flex-wrap gap-3">
-              <div className="flex items-center gap-1.5 rounded-full bg-[var(--color-success)]/10 px-3 py-1">
+              <div className="bg-success/10 flex items-center gap-1.5 rounded-full px-3 py-1">
                 <svg
-                  className="h-4 w-4 text-[var(--color-success)]"
+                  className="text-success h-4 w-4"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -166,15 +156,15 @@ export function StripeConnectStatus({ isSeller }: StripeConnectStatusProps) {
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span className="text-xs font-medium text-[var(--color-success)]">
+                <span className="text-success text-xs font-medium">
                   {t("active.chargesEnabled")}
                 </span>
               </div>
-              <div className="flex items-center gap-1.5 rounded-full bg-[var(--color-success)]/10 px-3 py-1">
+              <div className="bg-success/10 flex items-center gap-1.5 rounded-full px-3 py-1">
                 {stripeStatus?.payoutsEnabled ? (
                   <>
                     <svg
-                      className="h-4 w-4 text-[var(--color-success)]"
+                      className="text-success h-4 w-4"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -186,14 +176,14 @@ export function StripeConnectStatus({ isSeller }: StripeConnectStatusProps) {
                         d="M5 13l4 4L19 7"
                       />
                     </svg>
-                    <span className="text-xs font-medium text-[var(--color-success)]">
+                    <span className="text-success text-xs font-medium">
                       {t("active.payoutsEnabled")}
                     </span>
                   </>
                 ) : (
                   <>
                     <svg
-                      className="h-4 w-4 text-[var(--color-warning)]"
+                      className="text-warning h-4 w-4"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -205,7 +195,7 @@ export function StripeConnectStatus({ isSeller }: StripeConnectStatusProps) {
                         d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                       />
                     </svg>
-                    <span className="text-xs font-medium text-[var(--color-warning)]">
+                    <span className="text-warning text-xs font-medium">
                       {t("active.payoutsPending")}
                     </span>
                   </>
@@ -219,14 +209,9 @@ export function StripeConnectStatus({ isSeller }: StripeConnectStatusProps) {
                 href={stripeStatus.dashboardUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-4 inline-flex items-center gap-2 rounded-lg bg-[var(--color-surface)] px-4 py-2 text-sm font-medium text-[var(--color-text)] shadow-sm transition-all hover:bg-[var(--color-bg)] hover:shadow"
+                className="bg-surface text-text hover:bg-bg-secondary mt-4 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium shadow-sm transition-all hover:shadow"
               >
-                <svg
-                  className="h-4 w-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -246,11 +231,11 @@ export function StripeConnectStatus({ isSeller }: StripeConnectStatusProps) {
   // Pending state - onboarding incomplete
   if (isPending) {
     return (
-      <div className="rounded-2xl border border-[var(--color-warning)]/30 bg-[var(--color-warning)]/5 p-6">
+      <div className="border-warning/30 bg-warning/5 rounded-2xl border p-6">
         <div className="flex items-start gap-4">
-          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[var(--color-warning)]/20">
+          <div className="bg-warning/20 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full">
             <svg
-              className="h-5 w-5 text-[var(--color-warning)]"
+              className="text-warning h-5 w-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -264,31 +249,24 @@ export function StripeConnectStatus({ isSeller }: StripeConnectStatusProps) {
             </svg>
           </div>
           <div className="flex-1">
-            <h3 className="font-semibold text-[var(--color-text)]">
-              {t("pending.title")}
-            </h3>
-            <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-              {hasRequirements
-                ? t("pending.requirementsNeeded")
-                : t("pending.description")}
+            <h3 className="text-text font-semibold">{t("pending.title")}</h3>
+            <p className="text-text-muted mt-1 text-sm">
+              {hasRequirements ? t("pending.requirementsNeeded") : t("pending.description")}
             </p>
 
             {hasRequirements && stripeStatus?.requirements && (
-              <div className="mt-3 rounded-lg bg-[var(--color-bg)] p-3">
-                <p className="mb-2 text-xs font-medium text-[var(--color-text-secondary)]">
+              <div className="bg-bg mt-3 rounded-lg p-3">
+                <p className="text-text-secondary mb-2 text-xs font-medium">
                   {t("pending.requiredInfo")}
                 </p>
-                <ul className="list-inside list-disc space-y-1 text-xs text-[var(--color-text-muted)]">
-                  {stripeStatus.requirements.currentlyDue
-                    .slice(0, 3)
-                    .map((req, index) => (
-                      <li key={index}>{req.replace(/_/g, " ")}</li>
-                    ))}
+                <ul className="text-text-muted list-inside list-disc space-y-1 text-xs">
+                  {stripeStatus.requirements.currentlyDue.slice(0, 3).map((req, index) => (
+                    <li key={index}>{req.replace(/_/g, " ")}</li>
+                  ))}
                   {stripeStatus.requirements.currentlyDue.length > 3 && (
                     <li>
                       {t("pending.andMore", {
-                        count:
-                          stripeStatus.requirements.currentlyDue.length - 3,
+                        count: stripeStatus.requirements.currentlyDue.length - 3,
                       })}
                     </li>
                   )}
@@ -298,15 +276,10 @@ export function StripeConnectStatus({ isSeller }: StripeConnectStatusProps) {
 
             <Link
               href="/become-seller"
-              className="mt-4 inline-flex items-center gap-2 rounded-lg bg-[var(--color-warning)] px-4 py-2 text-sm font-medium text-[var(--ctp-base)] transition-colors hover:bg-[var(--color-warning)]/90"
+              className="bg-warning text-text-on-accent hover:bg-warning-hover mt-4 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
             >
               {t("pending.continueSetup")}
-              <svg
-                className="h-4 w-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -324,11 +297,11 @@ export function StripeConnectStatus({ isSeller }: StripeConnectStatusProps) {
   // No account - show invitation to become a seller
   if (!isSeller && !stripeStatus?.hasAccount) {
     return (
-      <div className="rounded-2xl border border-[var(--color-primary)]/30 bg-gradient-to-br from-[var(--color-primary)]/5 to-[var(--color-accent)]/5 p-6">
+      <div className="border-primary/30 from-primary/5 to-accent/5 rounded-2xl border bg-gradient-to-br p-6">
         <div className="flex items-start gap-4">
-          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[var(--color-primary)]/20">
+          <div className="bg-primary/20 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full">
             <svg
-              className="h-5 w-5 text-[var(--color-primary)]"
+              className="text-primary h-5 w-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -342,22 +315,18 @@ export function StripeConnectStatus({ isSeller }: StripeConnectStatusProps) {
             </svg>
           </div>
           <div className="flex-1">
-            <h3 className="font-semibold text-[var(--color-text)]">
-              {t("invite.title")}
-            </h3>
-            <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-              {t("invite.description")}
-            </p>
+            <h3 className="text-text font-semibold">{t("invite.title")}</h3>
+            <p className="text-text-muted mt-1 text-sm">{t("invite.description")}</p>
 
             {/* Benefits */}
             <div className="mt-4 flex flex-wrap gap-2">
-              <div className="flex items-center gap-1.5 rounded-full bg-[var(--color-bg)] px-3 py-1">
-                <span className="text-xs font-medium text-[var(--color-text-secondary)]">
+              <div className="bg-bg flex items-center gap-1.5 rounded-full px-3 py-1">
+                <span className="text-text-secondary text-xs font-medium">
                   {t("invite.benefit1")}
                 </span>
               </div>
-              <div className="flex items-center gap-1.5 rounded-full bg-[var(--color-bg)] px-3 py-1">
-                <span className="text-xs font-medium text-[var(--color-text-secondary)]">
+              <div className="bg-bg flex items-center gap-1.5 rounded-full px-3 py-1">
+                <span className="text-text-secondary text-xs font-medium">
                   {t("invite.benefit2")}
                 </span>
               </div>
@@ -365,15 +334,10 @@ export function StripeConnectStatus({ isSeller }: StripeConnectStatusProps) {
 
             <Link
               href="/become-seller"
-              className="mt-4 inline-flex items-center gap-2 rounded-lg bg-[var(--color-primary)] px-4 py-2 text-sm font-medium text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--color-primary-hover)]"
+              className="bg-primary text-text-on-accent hover:bg-primary-hover mt-4 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
             >
               {t("invite.cta")}
-              <svg
-                className="h-4 w-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"

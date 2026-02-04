@@ -3,10 +3,12 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
+import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import {
   Plus,
   FolderOpen,
@@ -45,6 +47,7 @@ interface Collection {
 export default function CollectionsPage() {
   const { status } = useSession();
   const router = useRouter();
+  const tCommon = useTranslations("common");
   const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -244,15 +247,16 @@ export default function CollectionsPage() {
       <TopBar />
 
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-6 flex items-center justify-between">
+        {/* Page Header */}
+        <div className="mb-6 flex items-start justify-between gap-4">
           <div>
+            <Breadcrumb items={[{ label: tCommon("breadcrumb.collections") }]} />
             <h1 className="text-text text-2xl font-bold">Meine Sammlungen</h1>
             <p className="text-text-muted mt-1">Organisieren Sie Ihre Ressourcen in Sammlungen</p>
           </div>
           <button
             onClick={() => setShowCreateModal(true)}
-            className="bg-primary hover:bg-primary-hover flex items-center gap-2 rounded-lg px-4 py-2.5 font-medium text-white transition-colors"
+            className="bg-primary hover:bg-primary-hover flex shrink-0 items-center gap-2 rounded-lg px-4 py-2.5 font-medium text-white transition-colors"
           >
             <Plus className="h-4 w-4" />
             Neue Sammlung

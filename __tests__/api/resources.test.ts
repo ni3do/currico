@@ -94,9 +94,9 @@ describe("GET /api/resources", () => {
   });
 
   it("filters by subject", async () => {
-    // Mock the raw query for JSON filtering
-    const mockQueryRawUnsafe = prisma.$queryRawUnsafe as ReturnType<typeof vi.fn>;
-    mockQueryRawUnsafe.mockResolvedValue([{ id: "res-1" }]);
+    // Mock the raw query for JSON filtering (PostgreSQL uses $queryRaw with tagged templates)
+    const mockQueryRaw = prisma.$queryRaw as ReturnType<typeof vi.fn>;
+    mockQueryRaw.mockResolvedValue([{ id: "res-1" }]);
     mockResourceFindMany.mockResolvedValue([]);
     mockResourceCount.mockResolvedValue(0);
 
@@ -107,7 +107,7 @@ describe("GET /api/resources", () => {
     await GET(request);
 
     // Should use raw SQL for JSON filtering
-    expect(mockQueryRawUnsafe).toHaveBeenCalled();
+    expect(mockQueryRaw).toHaveBeenCalled();
     expect(mockResourceFindMany).toHaveBeenCalledWith(
       expect.objectContaining({
         where: expect.objectContaining({
@@ -118,9 +118,9 @@ describe("GET /api/resources", () => {
   });
 
   it("filters by cycle", async () => {
-    // Mock the raw query for JSON filtering
-    const mockQueryRawUnsafe = prisma.$queryRawUnsafe as ReturnType<typeof vi.fn>;
-    mockQueryRawUnsafe.mockResolvedValue([{ id: "res-2" }]);
+    // Mock the raw query for JSON filtering (PostgreSQL uses $queryRaw with tagged templates)
+    const mockQueryRaw = prisma.$queryRaw as ReturnType<typeof vi.fn>;
+    mockQueryRaw.mockResolvedValue([{ id: "res-2" }]);
     mockResourceFindMany.mockResolvedValue([]);
     mockResourceCount.mockResolvedValue(0);
 
@@ -131,7 +131,7 @@ describe("GET /api/resources", () => {
     await GET(request);
 
     // Should use raw SQL for JSON filtering
-    expect(mockQueryRawUnsafe).toHaveBeenCalled();
+    expect(mockQueryRaw).toHaveBeenCalled();
     expect(mockResourceFindMany).toHaveBeenCalledWith(
       expect.objectContaining({
         where: expect.objectContaining({
@@ -142,6 +142,9 @@ describe("GET /api/resources", () => {
   });
 
   it("supports search query", async () => {
+    // PostgreSQL uses full-text search via $queryRaw
+    const mockQueryRaw = prisma.$queryRaw as ReturnType<typeof vi.fn>;
+    mockQueryRaw.mockResolvedValue([{ id: "res-1", rank: 0.5 }]);
     mockResourceFindMany.mockResolvedValue([]);
     mockResourceCount.mockResolvedValue(0);
 
@@ -151,11 +154,12 @@ describe("GET /api/resources", () => {
 
     await GET(request);
 
-    // MySQL doesn't support mode: "insensitive", so we just use contains
+    // PostgreSQL full-text search uses $queryRaw with plainto_tsquery
+    expect(mockQueryRaw).toHaveBeenCalled();
     expect(mockResourceFindMany).toHaveBeenCalledWith(
       expect.objectContaining({
         where: expect.objectContaining({
-          OR: [{ title: { contains: "math" } }, { description: { contains: "math" } }],
+          id: { in: ["res-1"] },
         }),
       })
     );

@@ -108,17 +108,12 @@ export function DashboardResourceCard({
         : Eye;
 
   return (
-    <div className="card group flex h-full flex-col overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+    <div className="card group flex h-full flex-col overflow-hidden">
       {/* Preview Image */}
       <Link href={`/resources/${id}`} className="block">
         <div className="bg-bg-secondary relative aspect-[16/9] w-full overflow-hidden">
           {previewUrl ? (
-            <Image
-              src={previewUrl}
-              alt={title}
-              fill
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
-            />
+            <Image src={previewUrl} alt={title} fill className="image-zoom object-cover" />
           ) : (
             <div className="flex h-full w-full items-center justify-center">
               <FileText className="text-text-faint h-12 w-12" />

@@ -9,6 +9,7 @@ import { SlidersHorizontal, ChevronDown, Users } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
+import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { ResourceCard } from "@/components/ui/ResourceCard";
 import { ProfileCard } from "@/components/ui/ProfileCard";
 import {
@@ -464,13 +465,7 @@ export default function ResourcesPage() {
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="mb-6">
-          <div className="text-text-muted mb-2 flex items-center gap-2 text-sm">
-            <Link href="/" className="hover:text-primary transition-colors">
-              {t("breadcrumb.home")}
-            </Link>
-            <span>/</span>
-            <span className="text-text-secondary">{tCommon("navigation.resources")}</span>
-          </div>
+          <Breadcrumb items={[{ label: tCommon("navigation.resources") }]} />
           <h1 className="text-text text-2xl font-bold">{t("header.title")}</h1>
           <p className="text-text-muted mt-1">{t("header.description")}</p>
         </div>

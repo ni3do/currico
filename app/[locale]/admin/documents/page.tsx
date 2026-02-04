@@ -166,14 +166,9 @@ export default function AdminDocumentsPage() {
   return (
     <div className="space-y-6">
       {/* Info Box */}
-      <div className="rounded-xl border border-[var(--ctp-blue)]/30 bg-[var(--ctp-blue)]/10 p-4">
-        <div className="flex items-start gap-3">
-          <svg
-            className="mt-0.5 h-5 w-5 text-[var(--ctp-blue)]"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+      <div className="info-box">
+        <div className="info-box-content">
+          <svg className="info-box-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -182,8 +177,8 @@ export default function AdminDocumentsPage() {
             />
           </svg>
           <div>
-            <p className="text-sm font-medium text-[var(--ctp-blue)]">Verifizierungsworkflow</p>
-            <p className="mt-1 text-sm text-text-muted">
+            <p className="info-box-title">Verifizierungsworkflow</p>
+            <p className="info-box-text">
               Neue Uploads haben den Status &quot;Ausstehend&quot; und sind nur für den Besitzer
               sichtbar. Nach der Verifizierung werden Dokumente öffentlich und für alle Benutzer
               zugänglich.
@@ -192,83 +187,71 @@ export default function AdminDocumentsPage() {
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-col gap-4 sm:flex-row">
-        <select
-          value={statusFilter}
-          onChange={(e) => {
-            setStatusFilter(e.target.value);
-            setPage(1);
-          }}
-          className="rounded-lg border border-border bg-surface px-4 py-2.5 text-text focus:border-primary focus:outline-none"
-        >
-          <option value="all">Alle Status</option>
-          <option value="pending">Ausstehend</option>
-          <option value="approved">Verifiziert</option>
-          <option value="draft">Entwurf</option>
-        </select>
+      {/* Status Tabs */}
+      <div className="tab-container">
+        {[
+          { value: "all", label: "Alle" },
+          { value: "pending", label: "Ausstehend" },
+          { value: "approved", label: "Verifiziert" },
+          { value: "draft", label: "Entwurf" },
+        ].map((tab) => (
+          <button
+            key={tab.value}
+            onClick={() => {
+              setStatusFilter(tab.value);
+              setPage(1);
+            }}
+            className={`tab-button ${statusFilter === tab.value ? "tab-button-active" : ""}`}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
       {/* Stats Bar */}
-      <div className="text-sm text-text-muted">{total} Dokumente gefunden</div>
+      <div className="text-text-muted text-sm">{total} Dokumente gefunden</div>
 
       {/* Resources Table */}
-      <div className="overflow-hidden rounded-2xl border border-border bg-surface">
+      <div className="border-border bg-surface overflow-hidden rounded-2xl border">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-bg">
               <tr>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-text">
-                  Titel
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-text">
-                  Verkäufer
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-text">
-                  Fach
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-text">
-                  Status
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-text">
+                <th className="text-text px-6 py-4 text-left text-sm font-semibold">Titel</th>
+                <th className="text-text px-6 py-4 text-left text-sm font-semibold">Verkäufer</th>
+                <th className="text-text px-6 py-4 text-left text-sm font-semibold">Fach</th>
+                <th className="text-text px-6 py-4 text-left text-sm font-semibold">Status</th>
+                <th className="text-text px-6 py-4 text-left text-sm font-semibold">
                   Sichtbarkeit
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-text">
-                  Hochgeladen
-                </th>
-                <th className="px-6 py-4 text-right text-sm font-semibold text-text">
-                  Aktionen
-                </th>
+                <th className="text-text px-6 py-4 text-left text-sm font-semibold">Hochgeladen</th>
+                <th className="text-text px-6 py-4 text-right text-sm font-semibold">Aktionen</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-border">
+            <tbody className="divide-border divide-y">
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-text-muted">
+                  <td colSpan={7} className="text-text-muted px-6 py-12 text-center">
                     Laden...
                   </td>
                 </tr>
               ) : resources.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-text-muted">
+                  <td colSpan={7} className="text-text-muted px-6 py-12 text-center">
                     Keine Dokumente gefunden
                   </td>
                 </tr>
               ) : (
                 resources.map((resource) => (
-                  <tr key={resource.id} className="transition-colors hover:bg-bg">
+                  <tr key={resource.id} className="hover:bg-bg transition-colors">
                     <td className="px-6 py-4">
-                      <div className="font-medium text-text">{resource.title}</div>
-                      <div className="text-sm text-text-muted">
-                        {resource.priceFormatted}
-                      </div>
+                      <div className="text-text font-medium">{resource.title}</div>
+                      <div className="text-text-muted text-sm">{resource.priceFormatted}</div>
                     </td>
-                    <td className="px-6 py-4 text-text-muted">
+                    <td className="text-text-muted px-6 py-4">
                       {resource.seller.display_name || resource.seller.email}
                     </td>
-                    <td className="px-6 py-4 text-text-muted">
-                      {resource.subjects[0] || "-"}
-                    </td>
+                    <td className="text-text-muted px-6 py-4">{resource.subjects[0] || "-"}</td>
                     <td className="px-6 py-4">
                       <span
                         className={`rounded-full px-3 py-1 text-xs font-medium ${statusColors[resource.status] || statusColors.PENDING}`}
@@ -290,7 +273,7 @@ export default function AdminDocumentsPage() {
                           Öffentlich
                         </span>
                       ) : (
-                        <span className="flex items-center gap-1 text-text-muted">
+                        <span className="text-text-muted flex items-center gap-1">
                           <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                             <path
                               fillRule="evenodd"
@@ -303,13 +286,13 @@ export default function AdminDocumentsPage() {
                         </span>
                       )}
                     </td>
-                    <td className="px-6 py-4 text-text-muted">
+                    <td className="text-text-muted px-6 py-4">
                       {new Date(resource.created_at).toLocaleDateString("de-CH")}
                     </td>
                     <td className="px-6 py-4 text-right">
                       <button
                         onClick={() => openResourceModal(resource)}
-                        className="rounded-lg bg-primary px-4 py-1.5 text-xs font-medium text-text-on-accent transition-colors hover:bg-primary-hover"
+                        className="btn-primary rounded-lg px-4 py-1.5 text-xs"
                       >
                         Prüfen
                       </button>
@@ -328,17 +311,17 @@ export default function AdminDocumentsPage() {
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="rounded-lg border border-border bg-surface px-4 py-2 text-sm font-medium text-text hover:bg-bg disabled:cursor-not-allowed disabled:opacity-50"
+            className="border-border bg-surface text-text hover:bg-bg rounded-lg border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50"
           >
             Zurück
           </button>
-          <span className="text-sm text-text-muted">
+          <span className="text-text-muted text-sm">
             Seite {page} von {totalPages}
           </span>
           <button
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
-            className="rounded-lg border border-border bg-surface px-4 py-2 text-sm font-medium text-text hover:bg-bg disabled:cursor-not-allowed disabled:opacity-50"
+            className="border-border bg-surface text-text hover:bg-bg rounded-lg border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50"
           >
             Weiter
           </button>
@@ -347,10 +330,10 @@ export default function AdminDocumentsPage() {
 
       {/* Resource Detail Modal */}
       {showModal && selectedResource && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-bg/80 backdrop-blur-sm">
-          <div className="mx-4 max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-border bg-surface p-6">
+        <div className="modal-overlay">
+          <div className="modal-content modal-lg mx-4">
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-xl font-semibold text-text">Dokument prüfen</h3>
+              <h3 className="text-text text-xl font-semibold">Dokument prüfen</h3>
               <button
                 onClick={() => {
                   setShowModal(false);
@@ -372,51 +355,42 @@ export default function AdminDocumentsPage() {
             {/* Resource Details */}
             <div className="mb-6 space-y-4">
               <div>
-                <h4 className="text-lg font-semibold text-text">
-                  {selectedResource.title}
-                </h4>
-                <p className="mt-1 text-sm text-text-muted">
-                  {selectedResource.description}
-                </p>
+                <h4 className="text-text text-lg font-semibold">{selectedResource.title}</h4>
+                <p className="text-text-muted mt-1 text-sm">{selectedResource.description}</p>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="rounded-lg border border-border p-4">
-                  <div className="mb-1 text-sm text-text-muted">Verkäufer</div>
+                <div className="border-border rounded-lg border p-4">
+                  <div className="text-text-muted mb-1 text-sm">Verkäufer</div>
                   <div className="text-text">
                     {selectedResource.seller.display_name || selectedResource.seller.email}
                   </div>
                 </div>
-                <div className="rounded-lg border border-border p-4">
-                  <div className="mb-1 text-sm text-text-muted">Preis</div>
-                  <div className="font-medium text-text">
-                    {selectedResource.priceFormatted}
-                  </div>
+                <div className="border-border rounded-lg border p-4">
+                  <div className="text-text-muted mb-1 text-sm">Preis</div>
+                  <div className="text-text font-medium">{selectedResource.priceFormatted}</div>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="rounded-lg border border-border p-4">
-                  <div className="mb-1 text-sm text-text-muted">Fächer</div>
+                <div className="border-border rounded-lg border p-4">
+                  <div className="text-text-muted mb-1 text-sm">Fächer</div>
                   <div className="flex flex-wrap gap-1">
                     {selectedResource.subjects.map((subject) => (
                       <span
                         key={subject}
-                        className="rounded-full bg-bg px-2 py-1 text-xs text-text"
+                        className="bg-bg text-text rounded-full px-2 py-1 text-xs"
                       >
                         {subject}
                       </span>
                     ))}
                   </div>
                 </div>
-                <div className="rounded-lg border border-border p-4">
-                  <div className="mb-1 text-sm text-text-muted">Zyklen</div>
+                <div className="border-border rounded-lg border p-4">
+                  <div className="text-text-muted mb-1 text-sm">Zyklen</div>
                   <div className="flex flex-wrap gap-1">
                     {selectedResource.cycles.map((cycle) => (
-                      <span
-                        key={cycle}
-                        className="rounded-full bg-bg px-2 py-1 text-xs text-text"
-                      >
+                      <span key={cycle} className="bg-bg text-text rounded-full px-2 py-1 text-xs">
                         {cycle}
                       </span>
                     ))}
@@ -425,18 +399,16 @@ export default function AdminDocumentsPage() {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="rounded-lg border border-border p-4">
-                  <div className="mb-1 text-sm text-text-muted">
-                    Aktueller Status
-                  </div>
+                <div className="border-border rounded-lg border p-4">
+                  <div className="text-text-muted mb-1 text-sm">Aktueller Status</div>
                   <span
                     className={`rounded-full px-3 py-1 text-xs font-medium ${statusColors[selectedResource.status] || statusColors.PENDING}`}
                   >
                     {statusLabels[selectedResource.status] || selectedResource.status}
                   </span>
                 </div>
-                <div className="rounded-lg border border-border p-4">
-                  <div className="mb-1 text-sm text-text-muted">Sichtbarkeit</div>
+                <div className="border-border rounded-lg border p-4">
+                  <div className="text-text-muted mb-1 text-sm">Sichtbarkeit</div>
                   <div className="text-text">
                     {selectedResource.is_public ? "Öffentlich" : "Nur für Besitzer"}
                   </div>
@@ -445,13 +417,13 @@ export default function AdminDocumentsPage() {
 
               {/* File Preview Link */}
               {selectedResource.file_url && (
-                <div className="rounded-lg border border-border p-4">
-                  <div className="mb-2 text-sm text-text-muted">Dokument</div>
+                <div className="border-border rounded-lg border p-4">
+                  <div className="text-text-muted mb-2 text-sm">Dokument</div>
                   <a
                     href={selectedResource.file_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-primary hover:underline"
+                    className="text-primary inline-flex items-center gap-2 hover:underline"
                   >
                     <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
@@ -468,10 +440,8 @@ export default function AdminDocumentsPage() {
             </div>
 
             {/* Action Buttons */}
-            <div className="border-t border-border pt-4">
-              <div className="mb-3 text-sm font-medium text-text">
-                Aktion wählen:
-              </div>
+            <div className="border-border border-t pt-4">
+              <div className="text-text mb-3 text-sm font-medium">Aktion wählen:</div>
               <div className="grid grid-cols-3 gap-3">
                 {selectedResource.status !== "VERIFIED" && (
                   <button
@@ -533,7 +503,7 @@ export default function AdminDocumentsPage() {
                   setShowModal(false);
                   setSelectedResource(null);
                 }}
-                className="w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-sm font-medium text-text hover:bg-bg"
+                className="border-border bg-surface text-text hover:bg-bg w-full rounded-lg border px-4 py-2.5 text-sm font-medium"
               >
                 Schliessen
               </button>

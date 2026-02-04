@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
+import { Breadcrumb } from "@/components/ui/Breadcrumb";
 
 interface UserData {
   emailVerified: string | null;
@@ -23,6 +24,7 @@ export default function BecomeSellerPage() {
   const [isStripeLoading, setIsStripeLoading] = useState(false);
   const [stripeError, setStripeError] = useState<string | null>(null);
   const t = useTranslations("becomeSeller");
+  const tCommon = useTranslations("common");
   const tTerms = useTranslations("sellerTerms");
 
   // Fetch user data to get emailVerified status and terms acceptance
@@ -137,36 +139,37 @@ export default function BecomeSellerPage() {
       <TopBar />
 
       <main className="flex-1">
+        {/* Breadcrumb */}
+        <div className="mx-auto max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">
+          <Breadcrumb items={[{ label: tCommon("breadcrumb.becomeSeller") }]} />
+        </div>
+
         {/* Hero Section */}
-        <section className="relative overflow-hidden bg-gradient-to-br from-[var(--ctp-blue)]/10 to-[var(--ctp-sapphire)]/10">
+        <section className="from-primary/10 to-primary-hover/10 relative overflow-hidden bg-gradient-to-br">
           <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
             <div className="text-center">
-              <span className="mb-4 inline-block rounded-full bg-[var(--color-primary)]/10 px-4 py-1.5 text-sm font-medium text-[var(--color-primary)]">
+              <span className="bg-primary/10 text-primary mb-4 inline-block rounded-full px-4 py-1.5 text-sm font-medium">
                 {t("hero.badge")}
               </span>
-              <h1 className="text-3xl font-bold tracking-tight text-[var(--color-text)] sm:text-4xl lg:text-5xl">
+              <h1 className="text-text text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
                 {t("hero.title")}
               </h1>
-              <p className="mx-auto mt-6 max-w-2xl text-lg text-[var(--color-text-muted)]">
-                {t("hero.subtitle")}
-              </p>
+              <p className="text-text-muted mx-auto mt-6 max-w-2xl text-lg">{t("hero.subtitle")}</p>
             </div>
           </div>
         </section>
 
         {/* Benefits Section */}
-        <section className="py-16 lg:py-20">
+        <section className="section-padding">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h2 className="mb-12 text-center text-2xl font-semibold text-[var(--color-text)] sm:text-3xl">
-              {t("benefits.title")}
-            </h2>
+            <h2 className="heading-2 mb-12 text-center">{t("benefits.title")}</h2>
 
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {/* Benefit 1 - Earn */}
-              <div className="card p-8 text-center">
-                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-success-light)]">
+              <div className="card p-6 text-center">
+                <div className="bg-success/15 mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full">
                   <svg
-                    className="h-8 w-8 text-[var(--color-success)]"
+                    className="text-success h-8 w-8"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -179,19 +182,15 @@ export default function BecomeSellerPage() {
                     />
                   </svg>
                 </div>
-                <h3 className="mb-3 text-lg font-bold text-[var(--color-text)]">
-                  {t("benefits.earn.title")}
-                </h3>
-                <p className="leading-relaxed text-[var(--color-text-muted)]">
-                  {t("benefits.earn.description")}
-                </p>
+                <h3 className="heading-4 mb-3">{t("benefits.earn.title")}</h3>
+                <p className="text-text-muted leading-relaxed">{t("benefits.earn.description")}</p>
               </div>
 
               {/* Benefit 2 - Reach */}
-              <div className="card p-8 text-center">
-                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-primary-light)]">
+              <div className="card p-6 text-center">
+                <div className="bg-primary/15 mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full">
                   <svg
-                    className="h-8 w-8 text-[var(--color-primary)]"
+                    className="text-primary h-8 w-8"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -204,19 +203,15 @@ export default function BecomeSellerPage() {
                     />
                   </svg>
                 </div>
-                <h3 className="mb-3 text-lg font-bold text-[var(--color-text)]">
-                  {t("benefits.reach.title")}
-                </h3>
-                <p className="leading-relaxed text-[var(--color-text-muted)]">
-                  {t("benefits.reach.description")}
-                </p>
+                <h3 className="heading-4 mb-3">{t("benefits.reach.title")}</h3>
+                <p className="text-text-muted leading-relaxed">{t("benefits.reach.description")}</p>
               </div>
 
               {/* Benefit 3 - Simple */}
-              <div className="card p-8 text-center sm:col-span-2 lg:col-span-1">
-                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-accent-light)]">
+              <div className="card p-6 text-center sm:col-span-2 lg:col-span-1">
+                <div className="bg-accent/15 mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full">
                   <svg
-                    className="h-8 w-8 text-[var(--color-accent)]"
+                    className="text-accent h-8 w-8"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -229,10 +224,8 @@ export default function BecomeSellerPage() {
                     />
                   </svg>
                 </div>
-                <h3 className="mb-3 text-lg font-bold text-[var(--color-text)]">
-                  {t("benefits.simple.title")}
-                </h3>
-                <p className="leading-relaxed text-[var(--color-text-muted)]">
+                <h3 className="heading-4 mb-3">{t("benefits.simple.title")}</h3>
+                <p className="text-text-muted leading-relaxed">
                   {t("benefits.simple.description")}
                 </p>
               </div>
@@ -241,15 +234,13 @@ export default function BecomeSellerPage() {
         </section>
 
         {/* Requirements Section */}
-        <section className="bg-[var(--color-bg-secondary)] py-12">
+        <section className="section-padding bg-bg-secondary">
           <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-            <h2 className="mb-6 text-xl font-semibold text-[var(--color-text)]">
-              {t("requirements.title")}
-            </h2>
+            <h2 className="heading-3 mb-6">{t("requirements.title")}</h2>
             <ul className="space-y-3">
-              <li className="flex items-center gap-3 text-[var(--color-text-secondary)]">
+              <li className="text-text-secondary flex items-center gap-3">
                 <svg
-                  className="h-5 w-5 flex-shrink-0 text-[var(--color-success)]"
+                  className="text-success h-5 w-5 flex-shrink-0"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -263,9 +254,9 @@ export default function BecomeSellerPage() {
                 </svg>
                 {t("requirements.emailVerified")}
               </li>
-              <li className="flex items-center gap-3 text-[var(--color-text-secondary)]">
+              <li className="text-text-secondary flex items-center gap-3">
                 <svg
-                  className="h-5 w-5 flex-shrink-0 text-[var(--color-success)]"
+                  className="text-success h-5 w-5 flex-shrink-0"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -279,9 +270,9 @@ export default function BecomeSellerPage() {
                 </svg>
                 {t("requirements.acceptTerms")}
               </li>
-              <li className="flex items-center gap-3 text-[var(--color-text-secondary)]">
+              <li className="text-text-secondary flex items-center gap-3">
                 <svg
-                  className="h-5 w-5 flex-shrink-0 text-[var(--color-success)]"
+                  className="text-success h-5 w-5 flex-shrink-0"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -300,34 +291,30 @@ export default function BecomeSellerPage() {
         </section>
 
         {/* Seller Terms Section */}
-        <section className="py-16 lg:py-20">
+        <section className="section-padding">
           <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
             <div className="mb-8 text-center">
-              <h2 className="text-2xl font-semibold text-[var(--color-text)] sm:text-3xl">
-                {t("termsSection.title")}
-              </h2>
-              <p className="mt-2 text-[var(--color-text-muted)]">{t("termsSection.readBelow")}</p>
+              <h2 className="heading-2">{t("termsSection.title")}</h2>
+              <p className="text-text-muted mt-2">{t("termsSection.readBelow")}</p>
             </div>
 
             {/* Terms Card */}
             <div className="card overflow-hidden">
-              <div className="border-b border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-6 py-4">
-                <h3 className="font-semibold text-[var(--color-text)]">{tTerms("pageTitle")}</h3>
-                <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-                  {tTerms("lastUpdated")}
-                </p>
+              <div className="border-border bg-bg-secondary border-b px-6 py-4">
+                <h3 className="text-text font-semibold">{tTerms("pageTitle")}</h3>
+                <p className="text-text-muted mt-1 text-sm">{tTerms("lastUpdated")}</p>
               </div>
 
               <div className="max-h-[500px] overflow-y-auto px-6 py-6">
-                <div className="prose prose-sm max-w-none text-[var(--color-text-secondary)]">
+                <div className="prose prose-sm text-text-secondary max-w-none">
                   {/* Overview */}
-                  <h4 className="text-base font-semibold text-[var(--color-text)]">
+                  <h4 className="text-text text-base font-semibold">
                     {tTerms("sections.overview.title")}
                   </h4>
                   <p>{tTerms("sections.overview.content")}</p>
 
                   {/* Platform Fee */}
-                  <h4 className="mt-6 text-base font-semibold text-[var(--color-text)]">
+                  <h4 className="text-text mt-6 text-base font-semibold">
                     {tTerms("sections.platformFee.title")}
                   </h4>
                   <p>{tTerms("sections.platformFee.content")}</p>
@@ -341,7 +328,7 @@ export default function BecomeSellerPage() {
                   <p className="text-sm">{tTerms("sections.platformFee.note")}</p>
 
                   {/* Payouts */}
-                  <h4 className="mt-6 text-base font-semibold text-[var(--color-text)]">
+                  <h4 className="text-text mt-6 text-base font-semibold">
                     {tTerms("sections.payouts.title")}
                   </h4>
                   <p>{tTerms("sections.payouts.content")}</p>
@@ -353,7 +340,7 @@ export default function BecomeSellerPage() {
                   </ul>
 
                   {/* Content Policies */}
-                  <h4 className="mt-6 text-base font-semibold text-[var(--color-text)]">
+                  <h4 className="text-text mt-6 text-base font-semibold">
                     {tTerms("sections.contentPolicies.title")}
                   </h4>
                   <p>{tTerms("sections.contentPolicies.content")}</p>
@@ -366,7 +353,7 @@ export default function BecomeSellerPage() {
                   </ul>
 
                   {/* Prohibited Content */}
-                  <h4 className="mt-6 text-base font-semibold text-[var(--color-text)]">
+                  <h4 className="text-text mt-6 text-base font-semibold">
                     {tTerms("sections.prohibited.title")}
                   </h4>
                   <p>{tTerms("sections.prohibited.content")}</p>
@@ -380,7 +367,7 @@ export default function BecomeSellerPage() {
                   </ul>
 
                   {/* Seller Responsibilities */}
-                  <h4 className="mt-6 text-base font-semibold text-[var(--color-text)]">
+                  <h4 className="text-text mt-6 text-base font-semibold">
                     {tTerms("sections.responsibilities.title")}
                   </h4>
                   <p>{tTerms("sections.responsibilities.content")}</p>
@@ -393,7 +380,7 @@ export default function BecomeSellerPage() {
                   </ul>
 
                   {/* Account Termination */}
-                  <h4 className="mt-6 text-base font-semibold text-[var(--color-text)]">
+                  <h4 className="text-text mt-6 text-base font-semibold">
                     {tTerms("sections.termination.title")}
                   </h4>
                   <p>{tTerms("sections.termination.content")}</p>
@@ -404,7 +391,7 @@ export default function BecomeSellerPage() {
                   </ul>
 
                   {/* Changes to Terms */}
-                  <h4 className="mt-6 text-base font-semibold text-[var(--color-text)]">
+                  <h4 className="text-text mt-6 text-base font-semibold">
                     {tTerms("sections.changes.title")}
                   </h4>
                   <p>{tTerms("sections.changes.content")}</p>
@@ -419,65 +406,60 @@ export default function BecomeSellerPage() {
                   type="checkbox"
                   checked={termsAccepted}
                   onChange={(e) => setTermsAccepted(e.target.checked)}
-                  className="mt-1 h-5 w-5 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)] focus:ring-offset-0"
+                  className="border-border text-primary focus:ring-primary mt-1 h-5 w-5 rounded focus:ring-offset-0"
                 />
-                <span className="text-[var(--color-text-secondary)]">
-                  {t("acceptance.checkboxLabel")}
-                </span>
+                <span className="text-text-secondary">{t("acceptance.checkboxLabel")}</span>
               </label>
             </div>
 
             {/* CTA Section */}
             <div className="mt-8 text-center">
               {isLoading ? (
-                <div className="h-12 w-48 mx-auto animate-pulse rounded-lg bg-[var(--color-bg-secondary)]" />
+                <div className="bg-bg-secondary mx-auto h-12 w-48 animate-pulse rounded-lg" />
               ) : !isLoggedIn ? (
                 <div className="space-y-3">
-                  <p className="text-[var(--color-text-muted)]">{t("cta.loginRequired")}</p>
-                  <Link
-                    href="/login"
-                    className="btn btn-primary inline-block px-8 py-3"
-                  >
+                  <p className="text-text-muted">{t("cta.loginRequired")}</p>
+                  <Link href="/login" className="btn btn-primary inline-block px-8 py-3">
                     {t("cta.login")}
                   </Link>
                 </div>
               ) : !isEmailVerified ? (
                 <div className="space-y-3">
-                  <p className="text-[var(--color-text-muted)]">{t("cta.emailRequired")}</p>
-                  <Link
-                    href="/account"
-                    className="btn btn-primary inline-block px-8 py-3"
-                  >
+                  <p className="text-text-muted">{t("cta.emailRequired")}</p>
+                  <Link href="/account" className="btn btn-primary inline-block px-8 py-3">
                     {t("cta.verifyEmail")}
                   </Link>
                 </div>
               ) : hasAcceptedTerms ? (
                 <div className="space-y-4">
-                  <div className="inline-flex items-center gap-2 rounded-lg bg-[var(--color-success-light)] px-4 py-2 text-[var(--color-success)]">
+                  <div className="bg-success-light text-success inline-flex items-center gap-2 rounded-lg px-4 py-2">
                     <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
                     </svg>
                     {t("cta.termsAccepted")}
                   </div>
-                  {stripeError && (
-                    <p className="text-sm text-[var(--color-error)]">{stripeError}</p>
-                  )}
+                  {stripeError && <p className="text-error text-sm">{stripeError}</p>}
                   <button
                     onClick={handleStartStripeOnboarding}
                     disabled={isStripeLoading}
                     className="btn btn-primary px-8 py-3 disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    {isStripeLoading ? t("cta.stripeOnboardingLoading") : t("cta.startStripeOnboarding")}
+                    {isStripeLoading
+                      ? t("cta.stripeOnboardingLoading")
+                      : t("cta.startStripeOnboarding")}
                   </button>
                 </div>
               ) : (
                 <div className="space-y-3">
                   {!termsAccepted && (
-                    <p className="text-[var(--color-text-muted)]">{t("acceptance.pleaseAccept")}</p>
+                    <p className="text-text-muted">{t("acceptance.pleaseAccept")}</p>
                   )}
-                  {submitError && (
-                    <p className="text-sm text-[var(--color-error)]">{submitError}</p>
-                  )}
+                  {submitError && <p className="text-error text-sm">{submitError}</p>}
                   <button
                     onClick={handleAcceptTerms}
                     disabled={!termsAccepted || isSubmitting}

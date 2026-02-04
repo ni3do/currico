@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
 import { formatPrice } from "@/lib/utils/price";
-import { checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
+import { checkRateLimit, getClientIP, rateLimitHeaders, safeParseInt } from "@/lib/rateLimit";
 import {
   requireAuth,
   checkCanUpload,
@@ -21,6 +21,7 @@ import {
   MAX_PREVIEW_FILE_SIZE,
 } from "@/lib/validations/resource";
 import { getStorage } from "@/lib/storage";
+import { sanitizeSearchQuery, isLP21Code } from "@/lib/search-utils";
 
 /**
  * GET /api/resources
@@ -61,8 +62,8 @@ export async function GET(request: NextRequest) {
 
   try {
     const searchParams = request.nextUrl.searchParams;
-    const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
-    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") || "20")));
+    const page = Math.max(1, safeParseInt(searchParams.get("page"), 1));
+    const limit = Math.min(100, Math.max(1, safeParseInt(searchParams.get("limit"), 20)));
     const subject = searchParams.get("subject");
     const cycle = searchParams.get("cycle");
     const search = searchParams.get("search");
@@ -88,31 +89,40 @@ export async function GET(request: NextRequest) {
       is_public: true, // Only show verified/public resources
     };
 
-    // For PostgreSQL with JSONB columns, we use raw SQL for array contains checks
-    // First, get IDs that match the JSON array filters
+    // For PostgreSQL with JSONB columns, we use Prisma's $queryRaw with tagged template literals
+    // for safe parameterized queries. First, get IDs that match the JSON array filters.
     let jsonFilteredIds: string[] | null = null;
 
     if (subject || cycle) {
-      const conditions: string[] = [];
-      const params: (string | number)[] = [];
-      let paramIndex = 1;
+      // Use Prisma.sql for safe tagged template literals with proper escaping
+      const { Prisma } = await import("@prisma/client");
 
-      if (subject) {
-        conditions.push(`subjects::jsonb @> $${paramIndex}::jsonb`);
-        params.push(JSON.stringify(subject));
-        paramIndex++;
+      let results: { id: string }[];
+
+      if (subject && cycle) {
+        // Both filters
+        results = await prisma.$queryRaw<{ id: string }[]>`
+          SELECT id FROM resources
+          WHERE is_published = true AND is_public = true
+          AND subjects::jsonb @> ${JSON.stringify(subject)}::jsonb
+          AND cycles::jsonb @> ${JSON.stringify(cycle)}::jsonb
+        `;
+      } else if (subject) {
+        // Only subject filter
+        results = await prisma.$queryRaw<{ id: string }[]>`
+          SELECT id FROM resources
+          WHERE is_published = true AND is_public = true
+          AND subjects::jsonb @> ${JSON.stringify(subject)}::jsonb
+        `;
+      } else {
+        // Only cycle filter
+        results = await prisma.$queryRaw<{ id: string }[]>`
+          SELECT id FROM resources
+          WHERE is_published = true AND is_public = true
+          AND cycles::jsonb @> ${JSON.stringify(cycle)}::jsonb
+        `;
       }
 
-      if (cycle) {
-        conditions.push(`cycles::jsonb @> $${paramIndex}::jsonb`);
-        params.push(JSON.stringify(cycle));
-        paramIndex++;
-      }
-
-      const sqlConditions = conditions.join(" AND ");
-      const query = `SELECT id FROM resources WHERE is_published = true AND is_public = true AND ${sqlConditions}`;
-
-      const results = await prisma.$queryRawUnsafe<{ id: string }[]>(query, ...params);
       jsonFilteredIds = results.map((r) => r.id);
 
       // If no results match the JSON filters, return empty
@@ -126,8 +136,52 @@ export async function GET(request: NextRequest) {
       where.id = { in: jsonFilteredIds };
     }
 
+    // Full-text search using PostgreSQL tsvector
+    // Track if we're doing a full-text search for sorting
+    let fullTextSearchIds: string[] | null = null;
+    let fullTextRankMap: Map<string, number> | null = null;
+
     if (search) {
-      where.OR = [{ title: { contains: search } }, { description: { contains: search } }];
+      const sanitizedSearch = sanitizeSearchQuery(search);
+
+      if (sanitizedSearch) {
+        // Check if search looks like an LP21 code (will be handled by competency filter)
+        if (!isLP21Code(sanitizedSearch)) {
+          // Execute full-text search with ranking
+          const searchResults = await prisma.$queryRaw<{ id: string; rank: number }[]>`
+            SELECT id, ts_rank(search_vector, plainto_tsquery('german', ${sanitizedSearch})) as rank
+            FROM resources
+            WHERE search_vector @@ plainto_tsquery('german', ${sanitizedSearch})
+              AND is_published = true
+              AND is_public = true
+            ORDER BY rank DESC
+          `;
+
+          if (searchResults.length > 0) {
+            fullTextSearchIds = searchResults.map((r) => r.id);
+            fullTextRankMap = new Map(searchResults.map((r) => [r.id, r.rank]));
+
+            // Combine with existing ID filter if present
+            if (where.id && typeof where.id === "object" && "in" in (where.id as object)) {
+              // Intersection of JSON-filtered IDs and full-text search IDs
+              const existingIds = new Set((where.id as { in: string[] }).in);
+              fullTextSearchIds = fullTextSearchIds.filter((id) => existingIds.has(id));
+            }
+
+            where.id = { in: fullTextSearchIds };
+          } else {
+            // No full-text results, return empty
+            return NextResponse.json({
+              resources: [],
+              pagination: { page, limit, total: 0, totalPages: 0 },
+            });
+          }
+        } else {
+          // For LP21 code searches, fall back to simple contains for title/description
+          // The competency filter will handle the actual LP21 code matching
+          where.OR = [{ title: { contains: search } }, { description: { contains: search } }];
+        }
+      }
     }
 
     // M&I integration filter
@@ -283,12 +337,18 @@ export async function GET(request: NextRequest) {
     // For now, the resources endpoint only returns individual resources
 
     // Build orderBy
+    // If doing full-text search and sort is "relevance" or not specified, we'll sort by rank
+    const useRelevanceSort = fullTextSearchIds && (sort === "relevance" || sort === "newest");
     let orderBy: Record<string, string> = { created_at: "desc" };
     if (sort === "price-low") {
       orderBy = { price: "asc" };
     } else if (sort === "price-high") {
       orderBy = { price: "desc" };
+    } else if (sort === "relevance" && !fullTextSearchIds) {
+      // Relevance sort without search falls back to newest
+      orderBy = { created_at: "desc" };
     }
+    // Note: When using relevance sort with full-text search, we'll sort in memory after fetching
 
     const [resources, total] = await Promise.all([
       prisma.resource.findMany({
@@ -361,8 +421,18 @@ export async function GET(request: NextRequest) {
       prisma.resource.count({ where }),
     ]);
 
+    // Sort by relevance if we have full-text search results and relevance sort
+    let sortedResources = resources;
+    if (useRelevanceSort && fullTextRankMap) {
+      sortedResources = [...resources].sort((a, b) => {
+        const rankA = fullTextRankMap!.get(a.id) ?? 0;
+        const rankB = fullTextRankMap!.get(b.id) ?? 0;
+        return rankB - rankA;
+      });
+    }
+
     // Transform resources for frontend
-    const transformedResources = resources.map((resource) => {
+    const transformedResources = sortedResources.map((resource) => {
       const subjects = toStringArray(resource.subjects);
       const cycles = toStringArray(resource.cycles);
       return {
@@ -574,8 +644,11 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Handle preview file
+    // Handle preview file(s)
     let previewUrl: string | null = null;
+    let previewUrls: string[] = [];
+    let previewCount = 0;
+
     if (previewFile) {
       // User uploaded a preview file
       if (previewFile.size > MAX_PREVIEW_FILE_SIZE) {
@@ -609,6 +682,8 @@ export async function POST(request: NextRequest) {
 
       // Use public URL for previews (they're in the public bucket)
       previewUrl = previewResult.publicUrl || previewResult.key;
+      previewUrls = [previewUrl];
+      previewCount = 1;
     } else {
       // No preview uploaded - try to auto-generate from main file
       // This is best-effort and should never block the upload
@@ -617,25 +692,57 @@ export async function POST(request: NextRequest) {
         const previewModule = await import("@/lib/utils/preview-generator").catch(() => null);
 
         if (previewModule && previewModule.canGeneratePreview(file.type)) {
-          const generatedPreview = await previewModule.generatePreview(fileBuffer, file.type);
+          // For PDFs, generate multi-page previews (up to 3 pages)
+          if (file.type === "application/pdf" && previewModule.generatePdfPreviewPages) {
+            const previewPages = await previewModule.generatePdfPreviewPages(fileBuffer, 3);
 
-          // Validate that we got actual buffer data before uploading
-          if (
-            generatedPreview &&
-            Buffer.isBuffer(generatedPreview) &&
-            generatedPreview.length > 0
-          ) {
-            const previewResult = await storage.upload(generatedPreview, {
-              category: "preview",
-              userId,
-              filename: `${resource.id}-preview.png`,
-              contentType: "image/png",
-              metadata: {
-                resourceId: resource.id,
-                generated: "true",
-              },
-            });
-            previewUrl = previewResult.publicUrl || previewResult.key;
+            for (const page of previewPages) {
+              if (Buffer.isBuffer(page.buffer) && page.buffer.length > 0) {
+                const pageResult = await storage.upload(page.buffer, {
+                  category: "preview",
+                  userId,
+                  filename: `${resource.id}-preview-${page.pageNumber}.png`,
+                  contentType: "image/png",
+                  metadata: {
+                    resourceId: resource.id,
+                    generated: "true",
+                    pageNumber: String(page.pageNumber),
+                  },
+                });
+                const pageUrl = pageResult.publicUrl || pageResult.key;
+                previewUrls.push(pageUrl);
+
+                // First page is also the main preview_url for backwards compatibility
+                if (page.pageNumber === 1) {
+                  previewUrl = pageUrl;
+                }
+              }
+            }
+            previewCount = previewUrls.length;
+          } else {
+            // For images, generate a single preview
+            const generatedPreview = await previewModule.generatePreview(fileBuffer, file.type);
+
+            // Validate that we got actual buffer data before uploading
+            if (
+              generatedPreview &&
+              Buffer.isBuffer(generatedPreview) &&
+              generatedPreview.length > 0
+            ) {
+              const previewResult = await storage.upload(generatedPreview, {
+                category: "preview",
+                userId,
+                filename: `${resource.id}-preview.png`,
+                contentType: "image/png",
+                metadata: {
+                  resourceId: resource.id,
+                  generated: "true",
+                },
+              });
+              previewUrl = previewResult.publicUrl || previewResult.key;
+              previewUrls = [previewUrl];
+              previewCount = 1;
+            }
           }
         }
       } catch (previewError) {
@@ -652,6 +759,8 @@ export async function POST(request: NextRequest) {
       data: {
         file_url: mainFileResult.key,
         preview_url: previewUrl,
+        preview_urls: previewUrls,
+        preview_count: previewCount || 1,
       },
       select: {
         id: true,
@@ -662,6 +771,8 @@ export async function POST(request: NextRequest) {
         cycles: true,
         file_url: true,
         preview_url: true,
+        preview_urls: true,
+        preview_count: true,
         is_published: true,
         is_approved: true,
         status: true,

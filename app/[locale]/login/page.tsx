@@ -64,18 +64,15 @@ export default function LoginPage() {
           <div className="glass-card p-8 sm:p-10">
             {/* Title */}
             <div className="mb-8 text-center">
-              <h1 className="text-3xl font-bold text-text">{t("title")}</h1>
-              <p className="mt-3 text-text-muted">{t("subtitle")}</p>
+              <h1 className="text-text text-3xl font-bold">{t("title")}</h1>
+              <p className="text-text-muted mt-3">{t("subtitle")}</p>
             </div>
 
             {/* Login Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Email Field */}
               <div>
-                <label
-                  htmlFor="email"
-                  className="mb-2 block text-sm font-medium text-text"
-                >
+                <label htmlFor="email" className="text-text mb-2 block text-sm font-medium">
                   {t("form.emailLabel")}
                 </label>
                 <input
@@ -84,7 +81,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className={`w-full rounded-lg border bg-surface px-4 py-3.5 text-text transition-all placeholder:text-text-muted focus:ring-[3px] focus:outline-none ${
+                  className={`bg-surface text-text placeholder:text-text-muted w-full rounded-lg border px-4 py-3.5 transition-all focus:ring-[3px] focus:outline-none ${
                     email && !isValidEmail(email)
                       ? "border-error focus:border-error focus:ring-error/20"
                       : "border-border focus:border-primary focus:ring-primary/20"
@@ -92,24 +89,19 @@ export default function LoginPage() {
                   placeholder={t("form.emailPlaceholder")}
                 />
                 {email && !isValidEmail(email) && (
-                  <p className="animate-fade-in mt-2 text-sm text-error">
-                    {t("form.emailError")}
-                  </p>
+                  <p className="animate-fade-in text-error mt-2 text-sm">{t("form.emailError")}</p>
                 )}
               </div>
 
               {/* Password Field */}
               <div>
                 <div className="mb-2 flex items-center justify-between">
-                  <label
-                    htmlFor="password"
-                    className="text-sm font-medium text-text"
-                  >
+                  <label htmlFor="password" className="text-text text-sm font-medium">
                     {t("form.passwordLabel")}
                   </label>
                   <Link
                     href="/coming-soon"
-                    className="text-sm font-medium text-primary transition-colors hover:text-primary-hover"
+                    className="text-primary hover:text-primary-hover text-sm font-medium transition-colors"
                   >
                     {t("form.forgotPassword")}
                   </Link>
@@ -121,23 +113,48 @@ export default function LoginPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="w-full rounded-lg border border-border bg-surface px-4 py-3.5 pr-12 text-text transition-all placeholder:text-text-muted focus:border-primary focus:ring-[3px] focus:ring-primary/20 focus:outline-none"
+                    className="border-border bg-surface text-text placeholder:text-text-muted focus:border-primary focus:ring-primary/20 w-full rounded-lg border px-4 py-3.5 pr-12 transition-all focus:ring-[3px] focus:outline-none"
                     placeholder={t("form.passwordPlaceholder")}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-text-muted transition-colors hover:text-text"
+                    className="text-text-muted hover:text-text absolute top-1/2 right-3 -translate-y-1/2 p-1 transition-colors"
                     aria-label={showPassword ? "Hide password" : "Show password"}
                   >
                     {showPassword ? (
-                      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                      <svg
+                        className="h-5 w-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                        />
                       </svg>
                     ) : (
-                      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      <svg
+                        className="h-5 w-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                        />
                       </svg>
                     )}
                   </button>
@@ -149,19 +166,16 @@ export default function LoginPage() {
                 <input
                   type="checkbox"
                   id="remember"
-                  className="h-4 w-4 cursor-pointer rounded border-border text-primary focus:ring-2 focus:ring-primary/20"
+                  className="border-border text-primary focus:ring-primary/20 h-4 w-4 cursor-pointer rounded focus:ring-2"
                 />
-                <label
-                  htmlFor="remember"
-                  className="ml-2.5 cursor-pointer text-sm text-text-muted"
-                >
+                <label htmlFor="remember" className="text-text-muted ml-2.5 cursor-pointer text-sm">
                   {t("form.rememberMe")}
                 </label>
               </div>
 
               {/* Error Message */}
               {error && (
-                <div className="animate-fade-in rounded-lg border border-error bg-error/10 px-4 py-3 text-sm text-error">
+                <div className="animate-fade-in border-error bg-error/10 text-error rounded-lg border px-4 py-3 text-sm">
                   {error}
                 </div>
               )}
@@ -170,7 +184,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full rounded-lg bg-primary px-6 py-3.5 text-center font-semibold text-text-on-accent transition-all hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:bg-primary disabled:hover:shadow-none"
+                className="bg-primary text-text-on-accent hover:bg-primary-hover disabled:hover:bg-primary w-full rounded-lg px-6 py-3.5 text-center font-semibold transition-all hover:-translate-y-0.5 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-none"
               >
                 {isLoading ? t("form.submitting") : t("form.submitButton")}
               </button>
@@ -180,12 +194,10 @@ export default function LoginPage() {
             <div className="my-8">
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-border"></div>
+                  <div className="border-border w-full border-t"></div>
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="bg-surface/90 px-4 text-text-muted">
-                    {t("divider")}
-                  </span>
+                  <span className="bg-surface/90 text-text-muted px-4">{t("divider")}</span>
                 </div>
               </div>
             </div>
@@ -195,7 +207,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => signIn("google")}
-                className="flex items-center justify-center gap-3 rounded-lg bg-surface px-4 py-3.5 font-medium text-text transition-all hover:bg-surface-elevated"
+                className="bg-surface text-text hover:bg-surface-elevated flex items-center justify-center gap-3 rounded-lg px-4 py-3.5 font-medium transition-all"
               >
                 <svg className="h-5 w-5" viewBox="0 0 24 24">
                   <path
@@ -221,7 +233,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => signIn("microsoft-entra-id")}
-                className="flex items-center justify-center gap-3 rounded-lg bg-[var(--color-surface)] px-4 py-3.5 font-medium text-[var(--color-text)] transition-all hover:bg-[var(--color-surface-elevated)]"
+                className="bg-surface text-text hover:bg-surface-elevated flex items-center justify-center gap-3 rounded-lg px-4 py-3.5 font-medium transition-all"
               >
                 <svg className="h-5 w-5" viewBox="0 0 23 23">
                   <path fill="#f35325" d="M1 1h10v10H1z" />
@@ -235,7 +247,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => signIn("eduid")}
-                className="flex items-center justify-center gap-3 rounded-lg bg-[var(--color-surface)] px-4 py-3.5 font-medium text-[var(--color-text)] transition-all hover:bg-[var(--color-surface-elevated)]"
+                className="bg-surface text-text hover:bg-surface-elevated flex items-center justify-center gap-3 rounded-lg px-4 py-3.5 font-medium transition-all"
               >
                 <Image
                   src="/eduid-logo.svg"
@@ -249,11 +261,11 @@ export default function LoginPage() {
             </div>
 
             {/* Register Link */}
-            <p className="mt-8 text-center text-text-muted">
+            <p className="text-text-muted mt-8 text-center">
               {t("register.prompt")}{" "}
               <Link
                 href="/register"
-                className="font-semibold text-primary transition-colors hover:text-primary-hover"
+                className="text-primary hover:text-primary-hover font-semibold transition-colors"
               >
                 {t("register.link")}
               </Link>
@@ -266,7 +278,7 @@ export default function LoginPage() {
       <footer className="relative z-10 px-6 py-6 sm:px-8">
         <Link
           href="/"
-          className="inline-flex items-center text-sm font-medium text-text-muted transition-colors hover:text-primary"
+          className="text-text-muted hover:text-primary inline-flex items-center text-sm font-medium transition-colors"
         >
           <svg className="mr-1.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path

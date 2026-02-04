@@ -3,10 +3,12 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
+import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { Users, FileText, Calendar } from "lucide-react";
 
 interface FollowedSeller {
@@ -22,6 +24,7 @@ interface FollowedSeller {
 export default function FollowingPage() {
   const { status } = useSession();
   const router = useRouter();
+  const tCommon = useTranslations("common");
   const [followedSellers, setFollowedSellers] = useState<FollowedSeller[]>([]);
   const [loading, setLoading] = useState(true);
   const [unfollowingId, setUnfollowingId] = useState<string | null>(null);
@@ -101,9 +104,10 @@ export default function FollowingPage() {
 
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
         {/* Page Header */}
-        <div className="mb-8">
-          <h1 className="text-text text-3xl font-bold">Folge ich</h1>
-          <p className="text-text-muted mt-2">Lehrpersonen und Verkäufer, denen Sie folgen</p>
+        <div className="mb-6">
+          <Breadcrumb items={[{ label: tCommon("breadcrumb.following") }]} />
+          <h1 className="text-text text-2xl font-bold">Folge ich</h1>
+          <p className="text-text-muted mt-1">Lehrpersonen und Verkäufer, denen Sie folgen</p>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-3">

@@ -22,6 +22,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     const admin = await requireAdmin();
     const isAdmin = !!admin;
 
+    // Get current user ID for access checks
+    const userId = await getCurrentUserId();
+
     // Fetch the resource with seller info and counts
     const resource = await prisma.resource.findUnique({
       where: { id },
@@ -32,6 +35,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         price: true,
         file_url: true,
         preview_url: true,
+        preview_urls: true,
+        preview_count: true,
         subjects: true,
         cycles: true,
         is_published: true,
@@ -53,6 +58,17 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         _count: {
           select: { transactions: { where: { status: "COMPLETED" } } },
         },
+        // Include transactions for the current user to check if they've purchased
+        transactions: userId
+          ? {
+              where: {
+                buyer_id: userId,
+                status: "COMPLETED",
+              },
+              select: { id: true },
+              take: 1,
+            }
+          : undefined,
       },
     });
 
@@ -63,12 +79,16 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     // Check visibility: admins and resource owners can see any resource
     // Regular users can only see published resources
-    const userId = await getCurrentUserId();
     const isOwner = userId === resource.seller_id;
 
     if (!isAdmin && !isOwner && !resource.is_published) {
       return NextResponse.json({ error: "Ressource nicht gefunden" }, { status: 404 });
     }
+
+    // Check if user has access to full previews (owner, purchased, free, or admin)
+    const hasPurchased = resource.transactions && resource.transactions.length > 0;
+    const isFree = resource.price === 0;
+    const hasAccess = isOwner || hasPurchased || isFree || isAdmin;
 
     // Fetch related resources from the same subject using raw SQL for JSON overlap
     const resourceSubjects = toStringArray(resource.subjects);
@@ -112,6 +132,12 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     // Transform the response
     const subjects = toStringArray(resource.subjects);
     const cycles = toStringArray(resource.cycles);
+
+    // Parse preview_urls from JSON
+    const previewUrls = Array.isArray(resource.preview_urls)
+      ? (resource.preview_urls as string[])
+      : [];
+
     const transformedResource = {
       id: resource.id,
       title: resource.title,
@@ -120,6 +146,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       priceFormatted: formatPrice(resource.price),
       fileUrl: resource.file_url,
       previewUrl: resource.preview_url,
+      previewUrls,
+      previewCount: resource.preview_count || 1,
+      hasAccess, // true if user can see all preview pages without blur
       subjects,
       cycles,
       subject: subjects[0] || "Allgemein",

@@ -88,9 +88,9 @@ export function CheckoutButton({
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-4">
       {/* Digital Content Consent Checkbox (Swiss/EU legal requirement) */}
-      <label className="flex cursor-pointer items-start gap-2 text-sm">
+      <label className="flex cursor-pointer items-start gap-3">
         <input
           type="checkbox"
           checked={digitalConsent}
@@ -100,15 +100,18 @@ export function CheckoutButton({
               setError(null);
             }
           }}
-          className="mt-0.5 h-4 w-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
+          className="border-border text-primary focus:ring-primary mt-1 h-5 w-5 rounded focus:ring-offset-0"
         />
-        <span className="text-text-secondary">{t("digitalConsent.label")}</span>
+        <span className="text-text-secondary text-sm leading-relaxed">
+          {t("digitalConsent.label")}
+        </span>
       </label>
 
+      {/* Primary CTA Button */}
       <button
         onClick={handleCheckout}
         disabled={disabled || loading}
-        className={`btn-primary flex items-center justify-center gap-2 px-8 py-4 disabled:opacity-50 ${className}`}
+        className={`btn-action flex items-center justify-center gap-2 py-4 text-lg font-semibold shadow-md transition-all hover:shadow-lg disabled:opacity-50 ${className}`}
       >
         {loading ? (
           <>
@@ -136,11 +139,23 @@ export function CheckoutButton({
           </>
         ) : (
           <>
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+              />
+            </svg>
             {t("buyNow")} - {priceFormatted}
           </>
         )}
       </button>
-      {error && <p className="text-center text-sm text-[var(--color-error)]">{error}</p>}
+
+      {/* Error Message */}
+      {error && (
+        <p className="text-error bg-error/10 rounded-lg px-3 py-2 text-center text-sm">{error}</p>
+      )}
     </div>
   );
 }

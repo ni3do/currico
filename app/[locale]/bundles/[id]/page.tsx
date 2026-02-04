@@ -4,8 +4,10 @@ import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
+import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { Package, FileText, Tag } from "lucide-react";
 
 interface BundleResource {
@@ -49,6 +51,7 @@ export default function BundleDetailPage() {
   const params = useParams();
   const id = params.id as string;
   const { status: sessionStatus } = useSession();
+  const tCommon = useTranslations("common");
 
   const [bundle, setBundle] = useState<Bundle | null>(null);
   const [loading, setLoading] = useState(true);
@@ -175,13 +178,14 @@ export default function BundleDetailPage() {
 
       <main className="mx-auto max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
         {/* Breadcrumb */}
-        <nav className="text-text-muted mb-8 flex items-center gap-2 text-sm">
-          <Link href="/resources" className="hover:text-primary">
-            Ressourcen
-          </Link>
-          <span>/</span>
-          <span className="text-text">{bundle.title}</span>
-        </nav>
+        <Breadcrumb
+          items={[
+            { label: tCommon("breadcrumb.resources"), href: "/resources" },
+            { label: tCommon("breadcrumb.bundles"), href: "/resources" },
+            { label: bundle.title },
+          ]}
+          className="mb-8"
+        />
 
         <div className="grid gap-8 lg:grid-cols-3">
           {/* Main Content */}
