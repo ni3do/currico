@@ -16,7 +16,7 @@ datasource db {
 // ============================================================
 
 model Account {
-  id                String  @id @db.VarChar(50)
+  id                String  @id @default(cuid()) @db.VarChar(50)
   userId            String  @db.VarChar(50)
   type              String  @db.VarChar(50)
   provider          String  @db.VarChar(50)
@@ -37,7 +37,7 @@ model Account {
 }
 
 model Session {
-  id           String   @id @db.VarChar(50)
+  id           String   @id @default(cuid()) @db.VarChar(50)
   sessionToken String   @unique @db.VarChar(255)
   userId       String   @db.VarChar(50)
   expires      DateTime
@@ -57,7 +57,7 @@ model VerificationToken {
 }
 
 model EmailVerificationToken {
-  id         String   @id @db.VarChar(50)
+  id         String   @id @default(cuid()) @db.VarChar(50)
   token      String   @unique @db.VarChar(255)
   expires    DateTime
   created_at DateTime @default(now())

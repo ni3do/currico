@@ -83,7 +83,7 @@ export default function AdminTransactionsPage() {
         </div>
 
         <div className="border-border bg-surface rounded-xl border p-5">
-          <h3 className="text-text-muted mb-2 text-sm font-medium">Plattformgebühren (15%)</h3>
+          <h3 className="text-text-muted mb-2 text-sm font-medium">Plattformgebühren (30%)</h3>
           <div className="text-primary text-2xl font-bold">CHF {totalPlatformFee.toFixed(2)}</div>
         </div>
 
@@ -238,7 +238,7 @@ export default function AdminTransactionsPage() {
                           </span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-text-muted">Plattformgebühr (15%)</span>
+                          <span className="text-text-muted">Plattformgebühr (30%)</span>
                           <span className="text-error font-semibold">
                             - CHF {transaction.platformFee.toFixed(2)}
                           </span>

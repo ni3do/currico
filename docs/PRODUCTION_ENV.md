@@ -37,11 +37,11 @@ For production, set `STORAGE_PROVIDER=s3` and configure all S3 variables.
 
 ### Email (Resend)
 
-| Variable         | Description                   | Example              |
-| ---------------- | ----------------------------- | -------------------- |
-| `RESEND_API_KEY` | API key from Resend dashboard | `re_abc123...`       |
-| `EMAIL_FROM`     | Sender email address          | `noreply@currico.ch` |
-| `ADMIN_EMAIL`    | Admin notification email      | `admin@currico.ch`   |
+| Variable         | Description                   | Example           |
+| ---------------- | ----------------------------- | ----------------- |
+| `RESEND_API_KEY` | API key from Resend dashboard | `re_abc123...`    |
+| `EMAIL_FROM`     | Sender email address          | `info@currico.ch` |
+| `ADMIN_EMAIL`    | Admin notification email      | `info@currico.ch` |
 
 ### Stripe Payments
 
@@ -169,8 +169,8 @@ NEXT_PUBLIC_STORAGE_PUBLIC_URL="https://currico-public.s3.pub1.infomaniak.cloud"
 
 # Email
 RESEND_API_KEY="re_..."
-EMAIL_FROM="noreply@currico.ch"
-ADMIN_EMAIL="admin@currico.ch"
+EMAIL_FROM="info@currico.ch"
+ADMIN_EMAIL="info@currico.ch"
 
 # Stripe
 STRIPE_SECRET_KEY="sk_live_..."
