@@ -8,7 +8,7 @@
  * never be used in production environments.
  */
 
-import type { UserRole } from '@prisma/client';
+import type { UserRole } from "@prisma/client";
 
 export interface TestUser {
   id: string;
@@ -22,11 +22,11 @@ export interface TestUser {
  * Test buyer user - basic authenticated user who can browse and purchase.
  */
 export const TEST_BUYER: TestUser = {
-  id: 'test-buyer-001',
-  email: 'test-buyer@currico.test',
-  password: 'TestBuyer123!',
-  displayName: 'Test Buyer',
-  role: 'BUYER',
+  id: "test-buyer-001",
+  email: "test-buyer@currico.test",
+  password: "TestBuyer123!",
+  displayName: "Test Buyer",
+  role: "BUYER",
 };
 
 /**
@@ -34,44 +34,39 @@ export const TEST_BUYER: TestUser = {
  * Has completed Stripe Connect onboarding (mocked).
  */
 export const TEST_SELLER: TestUser = {
-  id: 'test-seller-001',
-  email: 'test-seller@currico.test',
-  password: 'TestSeller123!',
-  displayName: 'Test Seller',
-  role: 'SELLER',
+  id: "test-seller-001",
+  email: "test-seller@currico.test",
+  password: "TestSeller123!",
+  displayName: "Test Seller",
+  role: "SELLER",
 };
 
 /**
  * Test admin user - has full platform administration access.
  */
 export const TEST_ADMIN: TestUser = {
-  id: 'test-admin-001',
-  email: 'test-admin@currico.test',
-  password: 'TestAdmin123!',
-  displayName: 'Test Admin',
-  role: 'ADMIN',
+  id: "test-admin-001",
+  email: "test-admin@currico.test",
+  password: "TestAdmin123!",
+  displayName: "Test Admin",
+  role: "ADMIN",
 };
 
 /**
  * Test school user - institutional account for schools.
  */
 export const TEST_SCHOOL: TestUser = {
-  id: 'test-school-001',
-  email: 'test-school@currico.test',
-  password: 'TestSchool123!',
-  displayName: 'Test School',
-  role: 'SCHOOL',
+  id: "test-school-001",
+  email: "test-school@currico.test",
+  password: "TestSchool123!",
+  displayName: "Test School",
+  role: "SCHOOL",
 };
 
 /**
  * All test users for iteration.
  */
-export const ALL_TEST_USERS: TestUser[] = [
-  TEST_BUYER,
-  TEST_SELLER,
-  TEST_ADMIN,
-  TEST_SCHOOL,
-];
+export const ALL_TEST_USERS: TestUser[] = [TEST_BUYER, TEST_SELLER, TEST_ADMIN, TEST_SCHOOL];
 
 /**
  * Get test user by role.
@@ -88,14 +83,36 @@ export function getTestUserByRole(role: UserRole): TestUser {
  * Test resource IDs for consistent test data references.
  */
 export const TEST_RESOURCE_IDS = {
-  FREE_RESOURCE: 'test-resource-free-001',
-  PAID_RESOURCE: 'test-resource-paid-001',
-  PENDING_RESOURCE: 'test-resource-pending-001',
+  FREE_RESOURCE: "test-resource-free-001",
+  PAID_RESOURCE: "test-resource-paid-001",
+  PENDING_RESOURCE: "test-resource-pending-001",
 } as const;
 
 /**
  * Test collection IDs for consistent test data references.
  */
 export const TEST_COLLECTION_IDS = {
-  BUYER_COLLECTION: 'test-collection-buyer-001',
+  BUYER_COLLECTION: "test-collection-buyer-001",
+} as const;
+
+/**
+ * Test comment IDs for consistent test data references.
+ */
+export const TEST_COMMENT_IDS = {
+  BUYER_COMMENT: "test-comment-001",
+  SECOND_COMMENT: "test-comment-002",
+} as const;
+
+/**
+ * Test comment reply IDs for consistent test data references.
+ */
+export const TEST_COMMENT_REPLY_IDS = {
+  SELLER_REPLY: "test-comment-reply-001",
+} as const;
+
+/**
+ * Test review IDs for consistent test data references.
+ */
+export const TEST_REVIEW_IDS = {
+  BUYER_REVIEW: "test-review-001",
 } as const;
