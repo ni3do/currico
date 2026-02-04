@@ -59,11 +59,11 @@ To test S3 integration locally, set `STORAGE_PROVIDER=s3` and configure the S3 v
 
 Emails are logged to console in development. To test actual email sending:
 
-| Variable         | Description                                    |
-| ---------------- | ---------------------------------------------- |
-| `RESEND_API_KEY` | Resend API key (get free tier at resend.com)   |
-| `EMAIL_FROM`     | Sender address (default: `info@currico.ch`) |
-| `ADMIN_EMAIL`    | Admin notification email                       |
+| Variable         | Description                                  |
+| ---------------- | -------------------------------------------- |
+| `RESEND_API_KEY` | Resend API key (get free tier at resend.com) |
+| `EMAIL_FROM`     | Sender address (default: `info@currico.ch`)  |
+| `ADMIN_EMAIL`    | Admin notification email                     |
 
 ### Stripe (Test Mode)
 

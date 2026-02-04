@@ -28,6 +28,11 @@ export const rateLimitConfigs: Record<string, RateLimitConfig> = {
   "resources:list": { limit: 60, windowMs: 60 * 1000 }, // 60 per minute
   "resources:create": { limit: 10, windowMs: 60 * 1000 }, // 10 per minute
   "user:profile": { limit: 10, windowMs: 60 * 1000 }, // 10 per minute
+  // Social interaction rate limits (prevent spam)
+  "resources:like": { limit: 30, windowMs: 60 * 1000 }, // 30 per minute
+  "resources:review": { limit: 5, windowMs: 60 * 1000 }, // 5 per minute
+  "resources:comment": { limit: 10, windowMs: 60 * 1000 }, // 10 per minute
+  "users:follow": { limit: 20, windowMs: 60 * 1000 }, // 20 per minute
 };
 
 export interface RateLimitResult {
@@ -44,10 +49,7 @@ export interface RateLimitResult {
  * @param routeKey - Key for the rate limit config (e.g., "auth:register")
  * @returns RateLimitResult with success status and metadata
  */
-export function checkRateLimit(
-  identifier: string,
-  routeKey: string
-): RateLimitResult {
+export function checkRateLimit(identifier: string, routeKey: string): RateLimitResult {
   const config = rateLimitConfigs[routeKey];
   if (!config) {
     // No rate limit configured for this route
@@ -165,4 +167,41 @@ export function resetRateLimit(identifier: string, routeKey: string): void {
  */
 export function clearAllRateLimits(): void {
   store.clear();
+}
+
+/**
+ * Validate ID format (for resource/user IDs)
+ * Accepts:
+ * - UUID format: 8-4-4-4-12 hex characters
+ * - CUID format used by Prisma: starts with 'c' and is 25 chars
+ * - CUID2 format (newer Prisma): 24-32 lowercase alphanumeric
+ * - Custom string IDs: alphanumeric with hyphens/underscores (1-50 chars)
+ */
+export function isValidId(id: string): boolean {
+  if (!id || typeof id !== "string") return false;
+  if (id.length > 50) return false;
+
+  // UUID v4 format
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+  // CUID format (Prisma default)
+  const cuidRegex = /^c[a-z0-9]{24}$/;
+
+  // CUID2 format (newer Prisma)
+  const cuid2Regex = /^[a-z0-9]{24,32}$/;
+
+  // Custom string IDs (alphanumeric with hyphens/underscores, 1-50 chars)
+  const customIdRegex = /^[a-zA-Z0-9][a-zA-Z0-9_-]{0,49}$/;
+
+  return uuidRegex.test(id) || cuidRegex.test(id) || cuid2Regex.test(id) || customIdRegex.test(id);
+}
+
+/**
+ * Safely parse integer with NaN handling
+ * Returns defaultValue if parsing fails or results in NaN
+ */
+export function safeParseInt(value: string | null, defaultValue: number): number {
+  if (!value) return defaultValue;
+  const parsed = parseInt(value, 10);
+  return isNaN(parsed) ? defaultValue : parsed;
 }

@@ -26,6 +26,7 @@ export async function GET() {
       buyerCount,
       adminCount,
       openReports,
+      newMessages,
     ] = await Promise.all([
       prisma.user.count(),
       prisma.user.count({
@@ -47,6 +48,7 @@ export async function GET() {
       prisma.user.count({ where: { role: "BUYER" } }),
       prisma.user.count({ where: { role: "ADMIN" } }),
       prisma.report.count({ where: { status: { in: ["OPEN", "IN_REVIEW"] } } }),
+      prisma.contactMessage.count({ where: { status: "NEW" } }),
     ]);
 
     // Get weekly revenue data
@@ -75,6 +77,7 @@ export async function GET() {
       totalRevenue: (totalTransactions._sum.amount || 0) / 100, // Convert cents to CHF
       revenueToday: (todayTransactions._sum.amount || 0) / 100,
       openReports,
+      newMessages,
       userBreakdown: {
         buyers: buyerCount,
         sellers: sellerCount,
@@ -86,9 +89,6 @@ export async function GET() {
     return NextResponse.json(stats);
   } catch (error) {
     console.error("Error fetching admin stats:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch stats" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch stats" }, { status: 500 });
   }
 }

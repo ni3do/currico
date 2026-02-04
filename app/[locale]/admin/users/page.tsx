@@ -29,9 +29,9 @@ const roleLabels: Record<string, string> = {
 };
 
 const roleBadgeColors: Record<string, string> = {
-  BUYER: "bg-[var(--badge-info-bg)] text-[var(--badge-info-text)]",
-  SELLER: "bg-[var(--badge-success-bg)] text-[var(--badge-success-text)]",
-  ADMIN: "bg-[var(--ctp-pink)]/20 text-[var(--ctp-pink)]",
+  BUYER: "pill-primary",
+  SELLER: "pill-success",
+  ADMIN: "pill-error",
 };
 
 export default function AdminUsersPage() {
@@ -123,33 +123,52 @@ export default function AdminUsersPage() {
 
   return (
     <div className="space-y-6">
-      {/* Filters */}
-      <div className="flex flex-col gap-4 sm:flex-row">
-        <div className="flex-1">
-          <input
-            type="text"
-            placeholder="Suche nach Name oder E-Mail..."
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setPage(1);
-            }}
-            className="border-border bg-surface text-text placeholder:text-text-muted focus:border-primary focus:ring-primary/20 w-full rounded-lg border px-4 py-2.5 focus:ring-2 focus:outline-none"
+      {/* Search */}
+      <div className="relative">
+        <svg
+          className="text-text-muted absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
           />
-        </div>
-        <select
-          value={roleFilter}
+        </svg>
+        <input
+          type="text"
+          placeholder="Suche nach Name oder E-Mail..."
+          value={search}
           onChange={(e) => {
-            setRoleFilter(e.target.value);
+            setSearch(e.target.value);
             setPage(1);
           }}
-          className="border-border bg-surface text-text focus:border-primary rounded-lg border px-4 py-2.5 focus:outline-none"
-        >
-          <option value="">Alle Rollen</option>
-          <option value="BUYER">Käufer</option>
-          <option value="SELLER">Verkäufer</option>
-          <option value="ADMIN">Administrator</option>
-        </select>
+          className="border-border bg-surface text-text placeholder:text-text-muted focus:border-primary focus:ring-primary/20 w-full rounded-lg border py-2.5 pr-4 pl-12 focus:ring-2 focus:outline-none"
+        />
+      </div>
+
+      {/* Role Tabs */}
+      <div className="tab-container">
+        {[
+          { value: "", label: "Alle" },
+          { value: "BUYER", label: "Käufer" },
+          { value: "SELLER", label: "Verkäufer" },
+          { value: "ADMIN", label: "Admins" },
+        ].map((tab) => (
+          <button
+            key={tab.value}
+            onClick={() => {
+              setRoleFilter(tab.value);
+              setPage(1);
+            }}
+            className={`tab-button ${roleFilter === tab.value ? "tab-button-active" : ""}`}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
       {/* Stats Bar */}
@@ -190,7 +209,7 @@ export default function AdminUsersPage() {
                         <div className="text-text font-medium">
                           {user.display_name || user.name || "Unbekannt"}
                           {user.is_protected && (
-                            <span className="ml-2 text-xs text-[var(--ctp-pink)]" title="Geschützt">
+                            <span className="text-error ml-2 text-xs" title="Geschützt">
                               <svg
                                 className="inline h-4 w-4"
                                 fill="currentColor"
@@ -209,19 +228,15 @@ export default function AdminUsersPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span
-                        className={`rounded-full px-3 py-1 text-xs font-medium ${roleBadgeColors[user.role]}`}
-                      >
+                      <span className={`pill ${roleBadgeColors[user.role]}`}>
                         {roleLabels[user.role]}
                       </span>
                     </td>
                     <td className="px-6 py-4">
                       {user.role === "SELLER" && (
                         <span
-                          className={`rounded-full px-3 py-1 text-xs font-medium ${
-                            user.stripe_charges_enabled
-                              ? "bg-[var(--badge-success-bg)] text-[var(--badge-success-text)]"
-                              : "bg-[var(--badge-warning-bg)] text-[var(--badge-warning-text)]"
+                          className={`pill ${
+                            user.stripe_charges_enabled ? "pill-success" : "pill-warning"
                           }`}
                         >
                           {user.stripe_charges_enabled ? "Stripe aktiv" : "Stripe ausstehend"}
@@ -289,8 +304,8 @@ export default function AdminUsersPage() {
 
       {/* Edit Modal */}
       {showModal && selectedUser && (
-        <div className="bg-bg/80 fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
-          <div className="border-border bg-surface mx-4 w-full max-w-md rounded-2xl border p-6">
+        <div className="modal-overlay">
+          <div className="modal-content modal-sm mx-4">
             <div className="mb-4 flex items-center justify-between">
               <h3 className="text-text text-xl font-semibold">Benutzer bearbeiten</h3>
               <button
@@ -330,7 +345,7 @@ export default function AdminUsersPage() {
                   <option value="ADMIN">Administrator</option>
                 </select>
                 {selectedUser.is_protected && (
-                  <p className="mt-2 text-xs text-[var(--ctp-pink)]">
+                  <p className="text-error mt-2 text-xs">
                     Die Rolle dieses geschützten Benutzers kann nicht geändert werden.
                   </p>
                 )}
@@ -365,8 +380,8 @@ export default function AdminUsersPage() {
 
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && selectedUser && (
-        <div className="bg-bg/80 fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
-          <div className="border-border bg-surface mx-4 w-full max-w-md rounded-2xl border p-6">
+        <div className="modal-overlay">
+          <div className="modal-content modal-sm mx-4">
             <div className="mb-4 flex items-center gap-3">
               <div className="rounded-full bg-[var(--badge-error-bg)] p-2">
                 <svg

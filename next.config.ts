@@ -28,6 +28,11 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "*.s3.swiss-backup04.infomaniak.com",
       },
+      {
+        // Placeholder images for resources without previews
+        protocol: "https",
+        hostname: "placehold.co",
+      },
     ],
   },
   webpack: (config, { dev }) => {

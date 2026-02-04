@@ -8,6 +8,7 @@
  */
 
 import { PrismaClient } from "@prisma/client";
+import { hash } from "bcryptjs";
 import { FACHBEREICHE } from "../lib/data/lehrplan21";
 
 const prisma = new PrismaClient();
@@ -92,12 +93,56 @@ async function seedCurriculum() {
   console.log(`  Created ${subjectCount} subjects and ${competencyCount} competencies`);
 }
 
+async function seedTestUsers() {
+  console.log("Seeding test users...");
+
+  // Admin user - admin@currico.ch / admin123
+  const adminPasswordHash = await hash("admin123", 12);
+  const admin = await prisma.user.upsert({
+    where: { email: "admin@currico.ch" },
+    update: {
+      password_hash: adminPasswordHash,
+      updated_at: new Date(),
+    },
+    create: {
+      email: "admin@currico.ch",
+      password_hash: adminPasswordHash,
+      name: "Administrator",
+      display_name: "Administrator",
+      role: "ADMIN",
+      is_protected: true,
+      emailVerified: new Date(),
+    },
+  });
+  console.log(`  Admin user: ${admin.email} (password: admin123)`);
+
+  // Test user - test@test.com / test
+  const testPasswordHash = await hash("test", 12);
+  const testUser = await prisma.user.upsert({
+    where: { email: "test@test.com" },
+    update: {
+      password_hash: testPasswordHash,
+      updated_at: new Date(),
+    },
+    create: {
+      email: "test@test.com",
+      password_hash: testPasswordHash,
+      name: "Test User",
+      display_name: "Test User",
+      role: "BUYER",
+      emailVerified: new Date(),
+    },
+  });
+  console.log(`  Test user: ${testUser.email} (password: test)`);
+}
+
 async function main() {
   console.log("========================================");
   console.log("Currico Database Seed");
   console.log("========================================\n");
 
   await seedCurriculum();
+  await seedTestUsers();
 
   console.log("\n========================================");
   console.log("Seed completed!");

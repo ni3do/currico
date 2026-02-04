@@ -31,7 +31,6 @@ const mockAuth = auth as ReturnType<typeof vi.fn>;
 // Import Stripe mocks after vi.mock
 import { getStripeClient } from "@/lib/stripe";
 
-
 const mockGetStripeClient = getStripeClient as any;
 
 // Type definitions for responses
@@ -392,7 +391,9 @@ describe("Checkout Flow", () => {
         body: "invalid json{",
       });
 
-      const response = await createCheckoutPOST(request as unknown as import("next/server").NextRequest);
+      const response = await createCheckoutPOST(
+        request as unknown as import("next/server").NextRequest
+      );
       const data = await parseResponse<CreateCheckoutResponse>(response);
 
       expect(response.status).toBe(400);
@@ -511,6 +512,13 @@ describe("Checkout Flow", () => {
           description: "A test resource for teachers",
           subjects: ["math"],
           cycles: ["cycle1"],
+          preview_url: "/preview.jpg",
+          seller: {
+            id: "seller-123",
+            name: "Test Seller",
+            display_name: "Test Seller",
+            image: null,
+          },
         },
       });
 
@@ -553,6 +561,13 @@ describe("Checkout Flow", () => {
           description: "A free test resource",
           subjects: [],
           cycles: [],
+          preview_url: null,
+          seller: {
+            id: "seller-123",
+            name: "Test Seller",
+            display_name: "Test Seller",
+            image: null,
+          },
         },
       });
 

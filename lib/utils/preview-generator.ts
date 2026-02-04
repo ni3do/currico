@@ -1,7 +1,7 @@
 import sharp from "sharp";
 import { exec } from "child_process";
 import { promisify } from "util";
-import { writeFile, unlink, readFile, mkdtemp } from "fs/promises";
+import { writeFile, unlink, readFile, mkdtemp, readdir } from "fs/promises";
 import { tmpdir } from "os";
 import { join } from "path";
 
@@ -12,10 +12,25 @@ const PREVIEW_HEIGHT = 1131; // A4 aspect ratio (roughly)
 const PREVIEW_QUALITY = 80;
 
 /**
- * Generates a preview image from a PDF file buffer using pdftoppm (poppler-utils).
- * Returns the first page rendered as a PNG buffer.
+ * Result of multi-page preview generation
  */
-export async function generatePdfPreview(pdfBuffer: Buffer): Promise<Buffer | null> {
+export interface PreviewPage {
+  pageNumber: number;
+  buffer: Buffer;
+}
+
+/**
+ * Generates preview images from multiple pages of a PDF file.
+ * Returns an array of buffers with page numbers (1-indexed).
+ *
+ * @param pdfBuffer The PDF file as a buffer
+ * @param maxPages Maximum number of pages to generate (default: 3)
+ * @returns Array of preview pages with page numbers and image buffers
+ */
+export async function generatePdfPreviewPages(
+  pdfBuffer: Buffer,
+  maxPages: number = 3
+): Promise<PreviewPage[]> {
   let tempDir: string | null = null;
 
   try {
@@ -27,38 +42,59 @@ export async function generatePdfPreview(pdfBuffer: Buffer): Promise<Buffer | nu
     // Write PDF buffer to temp file
     await writeFile(inputPath, pdfBuffer);
 
-    // Use pdftoppm to convert first page to PNG
+    // Use pdftoppm to convert first N pages to PNG
     // -png: output PNG format
-    // -f 1 -l 1: only first page
+    // -f 1 -l {maxPages}: first to maxPages
     // -r 150: 150 DPI resolution (good balance of quality/size)
-    await execAsync(`pdftoppm -png -f 1 -l 1 -r 150 "${inputPath}" "${outputPrefix}"`, {
-      timeout: 30000,
+    await execAsync(`pdftoppm -png -f 1 -l ${maxPages} -r 150 "${inputPath}" "${outputPrefix}"`, {
+      timeout: 60000, // Longer timeout for multiple pages
     });
 
-    // pdftoppm outputs files like output-1.png
-    const outputPath = `${outputPrefix}-1.png`;
+    // Read all generated PNG files
+    // pdftoppm outputs files like output-1.png, output-2.png, etc.
+    const files = await readdir(tempDir);
+    const pngFiles = files
+      .filter((f) => f.startsWith("output-") && f.endsWith(".png"))
+      .sort((a, b) => {
+        // Sort by page number
+        const numA = parseInt(a.match(/output-(\d+)\.png/)?.[1] || "0", 10);
+        const numB = parseInt(b.match(/output-(\d+)\.png/)?.[1] || "0", 10);
+        return numA - numB;
+      });
 
-    // Read the generated PNG
-    const pngBuffer = await readFile(outputPath);
+    const results: PreviewPage[] = [];
 
-    // Resize with sharp
-    const resized = await sharp(pngBuffer)
-      .resize(PREVIEW_WIDTH, PREVIEW_HEIGHT, {
-        fit: "inside",
-        withoutEnlargement: true,
-      })
-      .png({ quality: PREVIEW_QUALITY })
-      .toBuffer();
+    for (const pngFile of pngFiles) {
+      const pageNumber = parseInt(pngFile.match(/output-(\d+)\.png/)?.[1] || "0", 10);
+      if (pageNumber === 0) continue;
 
-    return resized;
+      const outputPath = join(tempDir, pngFile);
+      const pngBuffer = await readFile(outputPath);
+
+      // Resize with sharp
+      const resized = await sharp(pngBuffer)
+        .resize(PREVIEW_WIDTH, PREVIEW_HEIGHT, {
+          fit: "inside",
+          withoutEnlargement: true,
+        })
+        .png({ quality: PREVIEW_QUALITY })
+        .toBuffer();
+
+      results.push({
+        pageNumber,
+        buffer: resized,
+      });
+    }
+
+    return results;
   } catch (error) {
     // Check if pdftoppm is not available
     if (error instanceof Error && error.message.includes("not found")) {
       console.warn("pdftoppm not available - PDF preview generation disabled");
     } else {
-      console.error("Error generating PDF preview:", error);
+      console.error("Error generating PDF preview pages:", error);
     }
-    return null;
+    return [];
   } finally {
     // Clean up temp files
     if (tempDir) {
@@ -70,6 +106,16 @@ export async function generatePdfPreview(pdfBuffer: Buffer): Promise<Buffer | nu
       }
     }
   }
+}
+
+/**
+ * Generates a preview image from a PDF file buffer using pdftoppm (poppler-utils).
+ * Returns the first page rendered as a PNG buffer.
+ * @deprecated Use generatePdfPreviewPages for multi-page support
+ */
+export async function generatePdfPreview(pdfBuffer: Buffer): Promise<Buffer | null> {
+  const pages = await generatePdfPreviewPages(pdfBuffer, 1);
+  return pages.length > 0 ? pages[0].buffer : null;
 }
 
 /**

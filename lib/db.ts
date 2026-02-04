@@ -28,12 +28,18 @@ export const publicUserSelect = {
   subjects: true,
   cycles: true,
   cantons: true,
+  website: true,
+  school: true,
+  teaching_experience: true,
+  preferred_language: true,
   instagram: true,
   pinterest: true,
   role: true,
   stripe_charges_enabled: true, // Show if seller can receive payments
   created_at: true,
   is_private: true,
+  // Teacher verification - public badge
+  is_teacher_verified: true,
 } as const;
 
 // Private profile - visible only to the user themselves
@@ -46,6 +52,9 @@ export const privateUserSelect = {
   stripe_onboarding_complete: true,
   stripe_payouts_enabled: true,
   seller_terms_accepted_at: true,
+  // Teacher verification details (private)
+  teacher_verified_at: true,
+  teacher_verification_method: true,
   // Notification preferences
   notify_new_from_followed: true,
   notify_recommendations: true,

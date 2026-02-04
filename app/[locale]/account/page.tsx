@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import {
@@ -33,15 +34,25 @@ import {
   Megaphone,
   Package,
   MoreVertical,
+  Globe,
+  Building2,
+  Clock,
+  Languages,
+  Link2,
+  Eye,
+  EyeOff,
+  CircleCheck,
 } from "lucide-react";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
+import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { ThemeSettings } from "@/components/ui/ThemeToggle";
 import { AvatarUploader } from "@/components/profile/AvatarUploader";
 import { EmailVerificationBanner } from "@/components/account/EmailVerificationBanner";
 import { StripeConnectStatus } from "@/components/account/StripeConnectStatus";
 import { AccountSidebar } from "@/components/account/AccountSidebar";
 import { WelcomeGuide } from "@/components/account/WelcomeGuide";
+import { SellerCommentsSection } from "@/components/account/SellerCommentsSection";
 import { MultiSelect } from "@/components/ui/MultiSelect";
 import { DashboardResourceCard } from "@/components/ui/DashboardResourceCard";
 import { SWISS_CANTONS } from "@/lib/validations/user";
@@ -164,6 +175,15 @@ interface UserData {
   cycles: string[];
   cantons: string[];
   isSeller: boolean;
+  // New profile fields
+  bio?: string | null;
+  website?: string | null;
+  school?: string | null;
+  teaching_experience?: string | null;
+  preferred_language?: string;
+  instagram?: string | null;
+  pinterest?: string | null;
+  is_private?: boolean;
   // Notification preferences
   notify_new_from_followed?: boolean;
   notify_recommendations?: boolean;
@@ -201,6 +221,7 @@ type TabType =
   | "library"
   | "uploads"
   | "bundles"
+  | "comments"
   | "wishlist"
   | "settings-profile"
   | "settings-appearance"
@@ -212,6 +233,7 @@ const VALID_TABS: TabType[] = [
   "library",
   "uploads",
   "bundles",
+  "comments",
   "wishlist",
   "settings-profile",
   "settings-appearance",
@@ -226,6 +248,7 @@ function isValidTab(tab: string | null): tab is TabType {
 export default function AccountPage() {
   const searchParams = useSearchParams();
   const initialTab = searchParams.get("tab");
+  const tCommon = useTranslations("common");
 
   const [activeTab, setActiveTab] = useState<TabType>(
     isValidTab(initialTab) ? initialTab : "overview"
@@ -275,19 +298,35 @@ export default function AccountPage() {
   } | null>(null);
 
   // Profile editing state
-  const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const [profileFormData, setProfileFormData] = useState<{
     display_name: string;
+    bio: string;
     subjects: string[];
     cycles: string[];
     cantons: string[];
+    website: string;
+    school: string;
+    teaching_experience: string;
+    preferred_language: string;
+    instagram: string;
+    pinterest: string;
+    is_private: boolean;
   }>({
     display_name: "",
+    bio: "",
     subjects: [],
     cycles: [],
     cantons: [],
+    website: "",
+    school: "",
+    teaching_experience: "",
+    preferred_language: "de",
+    instagram: "",
+    pinterest: "",
+    is_private: false,
   });
+  const [initialProfileData, setInitialProfileData] = useState<typeof profileFormData | null>(null);
   const [profileErrors, setProfileErrors] = useState<Record<string, string>>({});
   const [profileMessage, setProfileMessage] = useState<{
     type: "success" | "error";
@@ -360,7 +399,7 @@ export default function AccountPage() {
         setUserData(data.user);
         setStats(data.stats);
         setAvatarUrl(data.user?.image || null);
-        // Populate notification preferences from user data
+        // Populate notification preferences and profile form from user data
         if (data.user) {
           setNotificationPrefs({
             notify_new_from_followed: data.user.notify_new_from_followed ?? true,
@@ -373,6 +412,23 @@ export default function AccountPage() {
             notify_newsletter: data.user.notify_newsletter ?? false,
             notify_platform_updates: data.user.notify_platform_updates ?? true,
           });
+          // Initialize profile form data
+          const formData = {
+            display_name: data.user.name || data.user.displayName || "",
+            bio: data.user.bio || "",
+            subjects: data.user.subjects || [],
+            cycles: data.user.cycles || [],
+            cantons: data.user.cantons || [],
+            website: data.user.website || "",
+            school: data.user.school || "",
+            teaching_experience: data.user.teaching_experience || "",
+            preferred_language: data.user.preferred_language || "de",
+            instagram: data.user.instagram || "",
+            pinterest: data.user.pinterest || "",
+            is_private: data.user.is_private || false,
+          };
+          setProfileFormData(formData);
+          setInitialProfileData(formData);
         }
       }
     } catch (error) {
@@ -697,28 +753,46 @@ export default function AccountPage() {
     }
   };
 
-  // Start editing profile
-  const handleStartEditingProfile = () => {
-    setProfileFormData({
-      display_name: userData?.name || userData?.displayName || "",
-      subjects: userData?.subjects || [],
-      cycles: userData?.cycles || [],
-      cantons: userData?.cantons || [],
-    });
-    setProfileErrors({});
-    setProfileMessage(null);
-    setIsEditingProfile(true);
-  };
+  // Teaching experience options
+  const TEACHING_EXPERIENCE_OPTIONS = [
+    { value: "0-2", label: "0-2 Jahre" },
+    { value: "3-5", label: "3-5 Jahre" },
+    { value: "6-10", label: "6-10 Jahre" },
+    { value: "11-20", label: "11-20 Jahre" },
+    { value: "20+", label: "Über 20 Jahre" },
+  ];
 
-  // Cancel editing profile
-  const handleCancelEditingProfile = () => {
-    setIsEditingProfile(false);
+  // Start editing a specific field/section
+  // Check if profile has unsaved changes
+  const hasProfileChanges = useCallback(() => {
+    if (!initialProfileData) return false;
+    return (
+      profileFormData.display_name !== initialProfileData.display_name ||
+      profileFormData.bio !== initialProfileData.bio ||
+      JSON.stringify(profileFormData.subjects) !== JSON.stringify(initialProfileData.subjects) ||
+      JSON.stringify(profileFormData.cycles) !== JSON.stringify(initialProfileData.cycles) ||
+      JSON.stringify(profileFormData.cantons) !== JSON.stringify(initialProfileData.cantons) ||
+      profileFormData.website !== initialProfileData.website ||
+      profileFormData.school !== initialProfileData.school ||
+      profileFormData.teaching_experience !== initialProfileData.teaching_experience ||
+      profileFormData.preferred_language !== initialProfileData.preferred_language ||
+      profileFormData.instagram !== initialProfileData.instagram ||
+      profileFormData.pinterest !== initialProfileData.pinterest ||
+      profileFormData.is_private !== initialProfileData.is_private
+    );
+  }, [profileFormData, initialProfileData]);
+
+  // Cancel editing - reset to initial values
+  const handleCancelEditing = () => {
+    if (initialProfileData) {
+      setProfileFormData(initialProfileData);
+    }
     setProfileErrors({});
     setProfileMessage(null);
   };
 
   // Handle profile form field change
-  const handleProfileFieldChange = (field: string, value: string | string[]) => {
+  const handleProfileFieldChange = (field: string, value: string | string[] | boolean) => {
     setProfileFormData((prev) => ({ ...prev, [field]: value }));
     if (profileErrors[field]) {
       setProfileErrors((prev) => {
@@ -729,18 +803,21 @@ export default function AccountPage() {
     }
   };
 
-  // Save profile
+  // Save all profile fields
   const handleSaveProfile = async () => {
     const errors: Record<string, string> = {};
 
+    // Validate display name
     if (!profileFormData.display_name || profileFormData.display_name.length < 2) {
       errors.display_name = "Name muss mindestens 2 Zeichen haben";
     }
-    if (profileFormData.subjects.length === 0) {
-      errors.subjects = "Mindestens ein Fach auswählen";
-    }
-    if (profileFormData.cycles.length === 0) {
-      errors.cycles = "Mindestens einen Zyklus auswählen";
+    // Validate website URL if provided
+    if (profileFormData.website) {
+      try {
+        new URL(profileFormData.website);
+      } catch {
+        errors.website = "Ungültige URL (z.B. https://example.com)";
+      }
     }
 
     if (Object.keys(errors).length > 0) {
@@ -752,15 +829,25 @@ export default function AccountPage() {
     setProfileMessage(null);
 
     try {
+      const updatePayload = {
+        display_name: profileFormData.display_name,
+        bio: profileFormData.bio || null,
+        subjects: profileFormData.subjects,
+        cycles: profileFormData.cycles,
+        cantons: profileFormData.cantons,
+        website: profileFormData.website || null,
+        school: profileFormData.school || null,
+        teaching_experience: profileFormData.teaching_experience || null,
+        preferred_language: profileFormData.preferred_language,
+        instagram: profileFormData.instagram || null,
+        pinterest: profileFormData.pinterest || null,
+        is_private: profileFormData.is_private,
+      };
+
       const response = await fetch("/api/users/me", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          display_name: profileFormData.display_name,
-          subjects: profileFormData.subjects,
-          cycles: profileFormData.cycles,
-          cantons: profileFormData.cantons,
-        }),
+        body: JSON.stringify(updatePayload),
       });
 
       if (!response.ok) {
@@ -770,20 +857,28 @@ export default function AccountPage() {
 
       const updatedUser = await response.json();
 
-      // Update local state with new data
       if (userData) {
         setUserData({
           ...userData,
           name: updatedUser.display_name || updatedUser.name,
           displayName: updatedUser.display_name,
+          bio: updatedUser.bio,
           subjects: updatedUser.subjects || [],
           cycles: updatedUser.cycles || [],
           cantons: updatedUser.cantons || [],
+          website: updatedUser.website,
+          school: updatedUser.school,
+          teaching_experience: updatedUser.teaching_experience,
+          preferred_language: updatedUser.preferred_language,
+          instagram: updatedUser.instagram,
+          pinterest: updatedUser.pinterest,
+          is_private: updatedUser.is_private,
         });
       }
 
-      setProfileMessage({ type: "success", text: "Profil erfolgreich gespeichert!" });
-      setIsEditingProfile(false);
+      // Update initial data to match saved data
+      setInitialProfileData(profileFormData);
+      setProfileMessage({ type: "success", text: "Änderungen gespeichert!" });
       setTimeout(() => setProfileMessage(null), 3000);
     } catch (error) {
       console.error("Error saving profile:", error);
@@ -794,6 +889,28 @@ export default function AccountPage() {
     } finally {
       setIsSavingProfile(false);
     }
+  };
+
+  // Calculate profile completion
+  const getProfileCompletion = () => {
+    const items = [
+      { done: !!userData?.emailVerified, label: "E-Mail verifizieren" },
+      { done: !!(userData?.displayName || userData?.name), label: "Anzeigename" },
+      { done: !!userData?.image, label: "Profilbild" },
+      { done: !!userData?.bio, label: "Über mich" },
+      { done: userData?.subjects && userData.subjects.length > 0, label: "Fächer" },
+      { done: userData?.cycles && userData.cycles.length > 0, label: "Zyklen" },
+      { done: !!userData?.school, label: "Schule" },
+      { done: userData?.cantons && userData.cantons.length > 0, label: "Kanton" },
+    ];
+    const completed = items.filter((i) => i.done).length;
+    const missing = items.filter((i) => !i.done).map((i) => i.label);
+    return {
+      percentage: Math.round((completed / items.length) * 100),
+      missing,
+      completed,
+      total: items.length,
+    };
   };
 
   // Handle notification preference toggle
@@ -856,6 +973,14 @@ export default function AccountPage() {
     cycles: [],
     cantons: [],
     isSeller: false,
+    bio: null,
+    website: null,
+    school: null,
+    teaching_experience: null,
+    preferred_language: "de",
+    instagram: null,
+    pinterest: null,
+    is_private: false,
   };
 
   const displayStats = stats || {
@@ -876,17 +1001,13 @@ export default function AccountPage() {
     <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-4 sm:px-6 lg:px-8">
+        {/* Breadcrumb */}
+        <Breadcrumb items={[{ label: tCommon("breadcrumb.account") }]} className="mb-4" />
+
         {/* Page Header */}
-        <div className="mb-6">
-          <div className="text-text-muted mb-2 flex items-center gap-2 text-sm">
-            <Link href="/" className="hover:text-primary transition-colors">
-              Home
-            </Link>
-            <span>/</span>
-            <span className="text-text-secondary">Mein Konto</span>
-          </div>
-          <h1 className="text-text text-2xl font-bold">Mein Konto</h1>
+        <div className="mb-4 flex items-center justify-between">
+          <h1 className="text-text text-lg font-semibold">Mein Konto</h1>
         </div>
 
         {/* Main Layout: Sidebar + Content */}
@@ -1273,79 +1394,141 @@ export default function AccountPage() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.2 }}
+                  className="space-y-6"
                 >
-                  <div className="border-border bg-surface rounded-xl border p-6">
-                    <div className="mb-6 flex items-center justify-between">
-                      <div>
-                        <h2 className="text-text text-xl font-semibold">Erworbene Ressourcen</h2>
-                        <p className="text-text-muted mt-1 text-sm">
-                          Ressourcen, die Sie erworben haben
-                        </p>
+                  {/* Stats Cards */}
+                  <div className="grid gap-4 sm:grid-cols-3">
+                    <div className="border-border bg-surface rounded-xl border p-4">
+                      <div className="flex items-center gap-3">
+                        <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+                          <BookOpen className="text-primary h-5 w-5" />
+                        </div>
+                        <div>
+                          <p className="text-text-muted text-xs font-medium">
+                            Gesamt in Bibliothek
+                          </p>
+                          <p className="text-text text-xl font-bold">
+                            {loading ? "-" : libraryItems.length}
+                          </p>
+                        </div>
                       </div>
                     </div>
+                    <div className="border-border bg-surface rounded-xl border p-4">
+                      <div className="flex items-center gap-3">
+                        <div className="bg-success/10 flex h-10 w-10 items-center justify-center rounded-lg">
+                          <Gift className="text-success h-5 w-5" />
+                        </div>
+                        <div>
+                          <p className="text-text-muted text-xs font-medium">Gratis erhalten</p>
+                          <p className="text-text text-xl font-bold">
+                            {loading ? "-" : libraryItems.filter((i) => i.type === "free").length}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="border-border bg-surface rounded-xl border p-4">
+                      <div className="flex items-center gap-3">
+                        <div className="bg-accent/10 flex h-10 w-10 items-center justify-center rounded-lg">
+                          <ShoppingBag className="text-accent h-5 w-5" />
+                        </div>
+                        <div>
+                          <p className="text-text-muted text-xs font-medium">Gekauft</p>
+                          <p className="text-text text-xl font-bold">
+                            {loading
+                              ? "-"
+                              : libraryItems.filter((i) => i.type === "purchased").length}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
-                    {loading ? (
-                      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        {[1, 2, 3].map((i) => (
-                          <div key={i} className="card animate-pulse overflow-hidden">
-                            <div className="bg-bg-secondary aspect-[16/9]"></div>
-                            <div className="p-4">
-                              <div className="bg-surface-hover mb-3 h-5 w-20 rounded-full"></div>
-                              <div className="bg-surface-hover mb-2 h-3 w-24 rounded"></div>
-                              <div className="bg-surface-hover mb-2 h-5 w-full rounded"></div>
-                              <div className="bg-surface-hover mb-4 h-4 w-32 rounded"></div>
-                              <div className="bg-surface-hover h-10 w-full rounded-lg"></div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    ) : libraryItems.length > 0 ? (
-                      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        {libraryItems.map((item) => (
-                          <DashboardResourceCard
-                            key={item.id}
-                            id={item.id}
-                            title={item.title}
-                            description={item.description}
-                            subject={item.subject}
-                            cycle={item.cycle}
-                            previewUrl={item.previewUrl}
-                            badge={{
-                              label: item.type === "purchased" ? "Gekauft" : "Gratis",
-                              variant: item.type === "purchased" ? "primary" : "success",
-                            }}
-                            secondaryBadge={
-                              item.verified
-                                ? { label: "Verifiziert", variant: "success" }
-                                : undefined
-                            }
-                            seller={{ displayName: item.seller.displayName }}
-                            primaryAction={{
-                              label: "Herunterladen",
-                              icon: "download",
-                              onClick: () => handleDownload(item.id),
-                              loading: downloading === item.id,
-                            }}
-                          />
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="py-12 text-center">
-                        <Download className="text-text-faint mx-auto mb-4 h-16 w-16" />
-                        <h3 className="text-text mb-2 text-lg font-medium">
-                          Noch keine erworbenen Ressourcen
-                        </h3>
-                        <p className="text-text-muted mb-4">
-                          Entdecken Sie unsere Ressourcen und beginnen Sie Ihre Sammlung.
+                  {/* Main Content Card */}
+                  <div className="border-border bg-surface rounded-xl border">
+                    <div className="border-border flex flex-col gap-4 border-b p-6 sm:flex-row sm:items-center sm:justify-between">
+                      <div>
+                        <h2 className="text-text text-xl font-semibold">Meine Bibliothek</h2>
+                        <p className="text-text-muted mt-1 text-sm">
+                          Alle erworbenen Ressourcen an einem Ort
                         </p>
-                        <Link
-                          href="/resources"
-                          className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
-                        >
-                          Ressourcen entdecken
-                        </Link>
                       </div>
-                    )}
+                      <Link
+                        href="/resources"
+                        className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors"
+                      >
+                        <Sparkles className="h-4 w-4" />
+                        Mehr entdecken
+                      </Link>
+                    </div>
+
+                    <div className="p-6">
+                      {loading ? (
+                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                          {[1, 2, 3].map((i) => (
+                            <div key={i} className="card animate-pulse overflow-hidden">
+                              <div className="bg-bg-secondary aspect-[16/9]"></div>
+                              <div className="p-4">
+                                <div className="bg-surface-hover mb-3 h-5 w-20 rounded-full"></div>
+                                <div className="bg-surface-hover mb-2 h-3 w-24 rounded"></div>
+                                <div className="bg-surface-hover mb-2 h-5 w-full rounded"></div>
+                                <div className="bg-surface-hover mb-4 h-4 w-32 rounded"></div>
+                                <div className="bg-surface-hover h-10 w-full rounded-lg"></div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : libraryItems.length > 0 ? (
+                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                          {libraryItems.map((item) => (
+                            <DashboardResourceCard
+                              key={item.id}
+                              id={item.id}
+                              title={item.title}
+                              description={item.description}
+                              subject={item.subject}
+                              cycle={item.cycle}
+                              previewUrl={item.previewUrl}
+                              badge={{
+                                label: item.type === "purchased" ? "Gekauft" : "Gratis",
+                                variant: item.type === "purchased" ? "primary" : "success",
+                              }}
+                              secondaryBadge={
+                                item.verified
+                                  ? { label: "Verifiziert", variant: "success" }
+                                  : undefined
+                              }
+                              seller={{ displayName: item.seller.displayName }}
+                              primaryAction={{
+                                label: "Herunterladen",
+                                icon: "download",
+                                onClick: () => handleDownload(item.id),
+                                loading: downloading === item.id,
+                              }}
+                            />
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="py-16 text-center">
+                          <div className="bg-primary/10 mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full">
+                            <BookOpen className="text-primary h-10 w-10" />
+                          </div>
+                          <h3 className="text-text mb-2 text-xl font-semibold">
+                            Ihre Bibliothek ist noch leer
+                          </h3>
+                          <p className="text-text-muted mx-auto mb-6 max-w-md">
+                            Entdecken Sie hochwertige Unterrichtsmaterialien von anderen
+                            Lehrpersonen und beginnen Sie Ihre Sammlung.
+                          </p>
+                          <Link
+                            href="/resources"
+                            className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-6 py-3 font-semibold transition-colors"
+                          >
+                            <Sparkles className="h-4 w-4" />
+                            Materialien entdecken
+                          </Link>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </motion.div>
               )}
@@ -1635,6 +1818,21 @@ export default function AccountPage() {
                 </motion.div>
               )}
 
+              {/* Comments Tab - Seller only */}
+              {activeTab === "comments" && userData?.isSeller && (
+                <motion.div
+                  key="comments"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <div className="border-border bg-surface rounded-xl border p-6">
+                    <SellerCommentsSection />
+                  </div>
+                </motion.div>
+              )}
+
               {/* Wishlist Tab */}
               {activeTab === "wishlist" && (
                 <motion.div
@@ -1737,7 +1935,7 @@ export default function AccountPage() {
                   transition={{ duration: 0.2 }}
                 >
                   <AnimatePresence mode="wait">
-                    {/* Profile Section */}
+                    {/* Profile Section - Unified Editable Form */}
                     {settingsSection === "profile" && (
                       <motion.div
                         key="profile-settings"
@@ -1745,67 +1943,85 @@ export default function AccountPage() {
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: -20 }}
                         transition={{ duration: 0.15 }}
-                        className="space-y-6"
+                        className="space-y-6 pb-20"
                       >
-                        {/* Section Header */}
-                        <div>
-                          <h2 className="text-text text-xl font-semibold">Profil bearbeiten</h2>
-                          <p className="text-text-muted mt-1 text-sm">
-                            Verwalten Sie Ihre persönlichen Informationen und Präferenzen
-                          </p>
-                        </div>
+                        {/* Profile Completion Progress */}
+                        {(() => {
+                          const completion = getProfileCompletion();
+                          return completion.percentage < 100 ? (
+                            <div className="border-border bg-surface rounded-xl border p-5">
+                              <div className="mb-3 flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                  <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-full">
+                                    <CircleCheck className="text-primary h-5 w-5" />
+                                  </div>
+                                  <div>
+                                    <h3 className="text-text font-semibold">
+                                      Profil vervollständigen
+                                    </h3>
+                                    <p className="text-text-muted text-sm">
+                                      {completion.completed} von {completion.total} Feldern
+                                      ausgefüllt
+                                    </p>
+                                  </div>
+                                </div>
+                                <span className="text-primary text-lg font-bold">
+                                  {completion.percentage}%
+                                </span>
+                              </div>
+                              <div className="bg-border h-2 overflow-hidden rounded-full">
+                                <div
+                                  className="bg-primary h-full rounded-full transition-all duration-500"
+                                  style={{ width: `${completion.percentage}%` }}
+                                />
+                              </div>
+                              {completion.missing.length > 0 && (
+                                <p className="text-text-muted mt-2 text-xs">
+                                  Fehlend: {completion.missing.slice(0, 3).join(", ")}
+                                  {completion.missing.length > 3 &&
+                                    ` und ${completion.missing.length - 3} weitere`}
+                                </p>
+                              )}
+                            </div>
+                          ) : null;
+                        })()}
 
-                        {/* Success/Error Message */}
-                        {(profileMessage || avatarMessage) && (
-                          <div
-                            className={`flex items-center gap-3 rounded-xl border p-4 ${
-                              (profileMessage?.type || avatarMessage?.type) === "success"
-                                ? "border-success/30 bg-success/5"
-                                : "border-error/30 bg-error/5"
-                            }`}
-                          >
-                            <div
-                              className={`flex h-8 w-8 items-center justify-center rounded-full ${
+                        {/* Success/Error Toast */}
+                        <AnimatePresence>
+                          {(profileMessage || avatarMessage) && (
+                            <motion.div
+                              initial={{ opacity: 0, y: -10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: -10 }}
+                              className={`flex items-center gap-3 rounded-xl border p-4 ${
                                 (profileMessage?.type || avatarMessage?.type) === "success"
-                                  ? "bg-success/10"
-                                  : "bg-error/10"
+                                  ? "border-success/30 bg-success/5"
+                                  : "border-error/30 bg-error/5"
                               }`}
                             >
                               {(profileMessage?.type || avatarMessage?.type) === "success" ? (
-                                <Check className="text-success h-4 w-4" />
+                                <Check className="text-success h-5 w-5" />
                               ) : (
-                                <X className="text-error h-4 w-4" />
+                                <X className="text-error h-5 w-5" />
                               )}
-                            </div>
-                            <span
-                              className={`text-sm font-medium ${
-                                (profileMessage?.type || avatarMessage?.type) === "success"
-                                  ? "text-success"
-                                  : "text-error"
-                              }`}
-                            >
-                              {profileMessage?.text || avatarMessage?.text}
-                            </span>
-                          </div>
-                        )}
+                              <span
+                                className={`text-sm font-medium ${
+                                  (profileMessage?.type || avatarMessage?.type) === "success"
+                                    ? "text-success"
+                                    : "text-error"
+                                }`}
+                              >
+                                {profileMessage?.text || avatarMessage?.text}
+                              </span>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
 
-                        {/* Profile Picture Card */}
-                        <div className="border-border bg-surface rounded-xl border">
-                          <div className="border-border border-b p-5">
-                            <div className="flex items-center gap-3">
-                              <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
-                                <Camera className="text-primary h-5 w-5" />
-                              </div>
-                              <div>
-                                <h3 className="text-text font-semibold">Profilbild</h3>
-                                <p className="text-text-muted text-sm">
-                                  JPG, PNG oder GIF. Max. 2MB
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="p-5">
-                            <div className="flex items-center gap-6">
+                        {/* Unified Profile Card */}
+                        <div className="border-border bg-surface overflow-hidden rounded-xl border">
+                          {/* Avatar Section */}
+                          <div className="border-border border-b p-6">
+                            <div className="flex items-center gap-5">
                               <div className="relative">
                                 <AvatarUploader
                                   currentAvatarUrl={avatarUrl}
@@ -1818,277 +2034,351 @@ export default function AccountPage() {
                                   </div>
                                 )}
                               </div>
-                              <div className="flex flex-col gap-2">
-                                <p className="text-text-secondary text-sm">
-                                  Klicken Sie auf das Bild, um ein neues Foto hochzuladen
+                              <div className="flex flex-col gap-1">
+                                <p className="text-text font-medium">Profilbild</p>
+                                <p className="text-text-muted text-sm">
+                                  Klicken Sie auf das Bild, um es zu ändern
                                 </p>
                                 {avatarUrl && (
                                   <button
                                     onClick={handleAvatarDelete}
                                     disabled={isDeletingAvatar}
-                                    className="text-error hover:bg-error/10 inline-flex w-fit items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors disabled:opacity-50"
+                                    className="text-error text-left text-sm font-medium hover:underline disabled:opacity-50"
                                   >
-                                    <Trash2 className="h-4 w-4" />
-                                    {isDeletingAvatar ? "Wird entfernt..." : "Entfernen"}
+                                    {isDeletingAvatar ? "Wird entfernt..." : "Bild entfernen"}
                                   </button>
                                 )}
                               </div>
                             </div>
                           </div>
-                        </div>
 
-                        {/* Personal Information Card */}
-                        <div className="border-border bg-surface rounded-xl border">
-                          <div className="border-border flex items-center justify-between border-b p-5">
-                            <div className="flex items-center gap-3">
-                              <div className="bg-accent/10 flex h-10 w-10 items-center justify-center rounded-lg">
-                                <User className="text-accent h-5 w-5" />
+                          {/* Basic Info Section */}
+                          <div className="space-y-5 p-6">
+                            <div className="mb-4 flex items-center gap-2">
+                              <User className="text-primary h-5 w-5" />
+                              <h3 className="text-text font-semibold">Grundinformationen</h3>
+                            </div>
+
+                            <div className="grid gap-4 sm:grid-cols-2">
+                              <div>
+                                <label className="text-text mb-1.5 block text-sm font-medium">
+                                  Anzeigename <span className="text-error">*</span>
+                                </label>
+                                <input
+                                  type="text"
+                                  value={profileFormData.display_name}
+                                  onChange={(e) =>
+                                    handleProfileFieldChange("display_name", e.target.value)
+                                  }
+                                  placeholder="z.B. Frau M. oder Maria S."
+                                  className={`input w-full ${profileErrors.display_name ? "border-error" : ""}`}
+                                />
+                                {profileErrors.display_name && (
+                                  <p className="text-error mt-1 text-xs">
+                                    {profileErrors.display_name}
+                                  </p>
+                                )}
                               </div>
                               <div>
-                                <h3 className="text-text font-semibold">Persönliche Daten</h3>
-                                <p className="text-text-muted text-sm">
-                                  Name und Kontaktinformationen
-                                </p>
-                              </div>
-                            </div>
-                            {!isEditingProfile && (
-                              <button
-                                onClick={handleStartEditingProfile}
-                                className="bg-primary text-text-on-accent hover:bg-primary-hover rounded-lg px-4 py-2 text-sm font-medium transition-colors"
-                              >
-                                Bearbeiten
-                              </button>
-                            )}
-                          </div>
-                          <div className="p-5">
-                            {isEditingProfile ? (
-                              <div className="space-y-5">
-                                <div className="grid gap-5 sm:grid-cols-2">
-                                  <div>
-                                    <label className="text-text mb-2 block text-sm font-medium">
-                                      Anzeigename <span className="text-error">*</span>
-                                    </label>
-                                    <input
-                                      type="text"
-                                      value={profileFormData.display_name}
-                                      onChange={(e) =>
-                                        handleProfileFieldChange("display_name", e.target.value)
-                                      }
-                                      placeholder="z.B. Frau M. oder Maria S."
-                                      className={`border-border bg-bg text-text placeholder:text-text-muted focus:ring-primary/20 w-full rounded-lg border px-4 py-2.5 text-sm focus:ring-2 focus:outline-none ${
-                                        profileErrors.display_name
-                                          ? "border-error focus:border-error"
-                                          : "focus:border-primary"
-                                      }`}
-                                    />
-                                    {profileErrors.display_name && (
-                                      <p className="text-error mt-1.5 text-xs">
-                                        {profileErrors.display_name}
-                                      </p>
-                                    )}
-                                  </div>
-                                  <div>
-                                    <label className="text-text mb-2 block text-sm font-medium">
-                                      E-Mail-Adresse
-                                    </label>
-                                    <div className="relative">
-                                      <Mail className="text-text-muted absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
-                                      <input
-                                        type="email"
-                                        value={displayData.email}
-                                        disabled
-                                        className="border-border bg-surface text-text-muted w-full cursor-not-allowed rounded-lg border py-2.5 pr-4 pl-10 text-sm"
-                                      />
-                                    </div>
-                                    <p className="text-text-muted mt-1.5 text-xs">
-                                      Kontaktieren Sie uns, um Ihre E-Mail zu ändern
-                                    </p>
-                                  </div>
-                                </div>
-
-                                <div className="border-border border-t pt-5">
-                                  <MultiSelect
-                                    label="Kantone"
-                                    options={SWISS_CANTONS}
-                                    selected={profileFormData.cantons}
-                                    onChange={(value) => handleProfileFieldChange("cantons", value)}
-                                    placeholder="Kantone auswählen (optional)..."
+                                <label className="text-text mb-1.5 block text-sm font-medium">
+                                  E-Mail
+                                </label>
+                                <div className="relative">
+                                  <Mail className="text-text-muted absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+                                  <input
+                                    type="email"
+                                    value={displayData.email}
+                                    disabled
+                                    className="input bg-bg-secondary text-text-muted w-full cursor-not-allowed pl-10"
                                   />
                                 </div>
-
-                                <div className="flex justify-end gap-3 pt-2">
-                                  <button
-                                    type="button"
-                                    onClick={handleCancelEditingProfile}
-                                    disabled={isSavingProfile}
-                                    className="border-border text-text-secondary hover:bg-bg rounded-lg border px-5 py-2.5 text-sm font-medium transition-colors disabled:opacity-50"
-                                  >
-                                    Abbrechen
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={handleSaveProfile}
-                                    disabled={isSavingProfile}
-                                    className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-medium transition-colors disabled:opacity-50"
-                                  >
-                                    {isSavingProfile ? (
-                                      <>
-                                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                                        Speichern...
-                                      </>
-                                    ) : (
-                                      <>
-                                        <Check className="h-4 w-4" />
-                                        Speichern
-                                      </>
-                                    )}
-                                  </button>
-                                </div>
-                              </div>
-                            ) : (
-                              <div className="grid gap-6 sm:grid-cols-2">
-                                <div className="flex items-start gap-3">
-                                  <div className="bg-bg flex h-10 w-10 items-center justify-center rounded-lg">
-                                    <User className="text-text-muted h-5 w-5" />
-                                  </div>
-                                  <div>
-                                    <p className="text-text-muted text-xs font-medium tracking-wide uppercase">
-                                      Name
-                                    </p>
-                                    <p className="text-text mt-0.5 font-medium">
-                                      {displayData.name || "-"}
-                                    </p>
-                                  </div>
-                                </div>
-                                <div className="flex items-start gap-3">
-                                  <div className="bg-bg flex h-10 w-10 items-center justify-center rounded-lg">
-                                    <Mail className="text-text-muted h-5 w-5" />
-                                  </div>
-                                  <div>
-                                    <p className="text-text-muted text-xs font-medium tracking-wide uppercase">
-                                      E-Mail
-                                    </p>
-                                    <p className="text-text mt-0.5 font-medium">
-                                      {displayData.email}
-                                    </p>
-                                  </div>
-                                </div>
-                                <div className="flex items-start gap-3">
-                                  <div className="bg-bg flex h-10 w-10 items-center justify-center rounded-lg">
-                                    <MapPin className="text-text-muted h-5 w-5" />
-                                  </div>
-                                  <div>
-                                    <p className="text-text-muted text-xs font-medium tracking-wide uppercase">
-                                      Kantone
-                                    </p>
-                                    <p className="text-text mt-0.5 font-medium">
-                                      {displayData.cantons && displayData.cantons.length > 0
-                                        ? displayData.cantons.join(", ")
-                                        : "-"}
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Teaching Preferences Card */}
-                        <div className="border-border bg-surface rounded-xl border">
-                          <div className="border-border flex items-center justify-between border-b p-5">
-                            <div className="flex items-center gap-3">
-                              <div className="bg-success/10 flex h-10 w-10 items-center justify-center rounded-lg">
-                                <BookOpen className="text-success h-5 w-5" />
-                              </div>
-                              <div>
-                                <h3 className="text-text font-semibold">Unterrichtspräferenzen</h3>
-                                <p className="text-text-muted text-sm">
-                                  Fächer und Schulstufen für personalisierte Empfehlungen
+                                <p className="text-text-muted mt-1 text-xs">
+                                  Kontaktieren Sie uns, um Ihre E-Mail zu ändern
                                 </p>
                               </div>
                             </div>
-                            {!isEditingProfile && (
-                              <button
-                                onClick={handleStartEditingProfile}
-                                className="text-primary text-sm font-medium hover:underline"
-                              >
-                                Bearbeiten
-                              </button>
-                            )}
+
+                            <div>
+                              <label className="text-text mb-1.5 block text-sm font-medium">
+                                Über mich
+                              </label>
+                              <textarea
+                                value={profileFormData.bio}
+                                onChange={(e) => handleProfileFieldChange("bio", e.target.value)}
+                                placeholder="Erzählen Sie etwas über sich und Ihren Unterricht..."
+                                rows={3}
+                                maxLength={500}
+                                className="input w-full resize-none"
+                              />
+                              <p className="text-text-muted mt-1 text-right text-xs">
+                                {profileFormData.bio.length}/500
+                              </p>
+                            </div>
                           </div>
-                          <div className="p-5">
-                            {isEditingProfile ? (
-                              <div className="space-y-5">
-                                <MultiSelect
-                                  label="Fächer"
-                                  options={subjectOptions}
-                                  selected={profileFormData.subjects}
-                                  onChange={(value) => handleProfileFieldChange("subjects", value)}
-                                  placeholder="Fächer auswählen..."
-                                  required
-                                  error={profileErrors.subjects}
-                                />
-                                <MultiSelect
-                                  label="Zyklen"
-                                  options={CYCLES}
-                                  selected={profileFormData.cycles}
-                                  onChange={(value) => handleProfileFieldChange("cycles", value)}
-                                  placeholder="Zyklen auswählen..."
-                                  required
-                                  error={profileErrors.cycles}
-                                />
-                              </div>
-                            ) : (
-                              <div className="grid gap-6 sm:grid-cols-2">
-                                <div>
-                                  <div className="flex items-center gap-2">
-                                    <BookOpen className="text-text-muted h-4 w-4" />
-                                    <p className="text-text-muted text-xs font-medium tracking-wide uppercase">
-                                      Fächer
-                                    </p>
-                                  </div>
-                                  <div className="mt-2 flex flex-wrap gap-1.5">
-                                    {displayData.subjects && displayData.subjects.length > 0 ? (
-                                      displayData.subjects.map((subject) => (
-                                        <span
-                                          key={subject}
-                                          className={`pill text-xs ${getSubjectPillClass(subject)}`}
-                                        >
-                                          {subject}
-                                        </span>
-                                      ))
-                                    ) : (
-                                      <span className="text-text-muted text-sm">
-                                        Keine Fächer ausgewählt
-                                      </span>
-                                    )}
-                                  </div>
-                                </div>
-                                <div>
-                                  <div className="flex items-center gap-2">
-                                    <GraduationCap className="text-text-muted h-4 w-4" />
-                                    <p className="text-text-muted text-xs font-medium tracking-wide uppercase">
-                                      Zyklen
-                                    </p>
-                                  </div>
-                                  <div className="mt-2 flex flex-wrap gap-1.5">
-                                    {displayData.cycles && displayData.cycles.length > 0 ? (
-                                      displayData.cycles.map((cycle) => (
-                                        <span key={cycle} className="pill pill-primary text-xs">
-                                          {cycle}
-                                        </span>
-                                      ))
-                                    ) : (
-                                      <span className="text-text-muted text-sm">
-                                        Keine Zyklen ausgewählt
-                                      </span>
-                                    )}
-                                  </div>
+
+                          {/* Divider */}
+                          <div className="border-border border-t" />
+
+                          {/* Teaching Profile Section */}
+                          <div className="space-y-5 p-6">
+                            <div className="mb-4 flex items-center gap-2">
+                              <GraduationCap className="text-success h-5 w-5" />
+                              <h3 className="text-text font-semibold">Unterrichtsprofil</h3>
+                            </div>
+
+                            <MultiSelect
+                              label="Fächer"
+                              options={subjectOptions}
+                              selected={profileFormData.subjects}
+                              onChange={(value) => handleProfileFieldChange("subjects", value)}
+                              placeholder="Fächer auswählen..."
+                            />
+                            <MultiSelect
+                              label="Zyklen"
+                              options={CYCLES}
+                              selected={profileFormData.cycles}
+                              onChange={(value) => handleProfileFieldChange("cycles", value)}
+                              placeholder="Zyklen auswählen..."
+                            />
+                            <div className="grid gap-4 sm:grid-cols-2">
+                              <div>
+                                <label className="text-text mb-1.5 block text-sm font-medium">
+                                  Schule / Institution
+                                </label>
+                                <div className="relative">
+                                  <Building2 className="text-text-muted absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+                                  <input
+                                    type="text"
+                                    value={profileFormData.school}
+                                    onChange={(e) =>
+                                      handleProfileFieldChange("school", e.target.value)
+                                    }
+                                    placeholder="z.B. Primarschule Muster"
+                                    className="input w-full pl-10"
+                                  />
                                 </div>
                               </div>
-                            )}
+                              <div>
+                                <label className="text-text mb-1.5 block text-sm font-medium">
+                                  Unterrichtserfahrung
+                                </label>
+                                <div className="relative">
+                                  <Clock className="text-text-muted absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+                                  <select
+                                    value={profileFormData.teaching_experience}
+                                    onChange={(e) =>
+                                      handleProfileFieldChange(
+                                        "teaching_experience",
+                                        e.target.value
+                                      )
+                                    }
+                                    className="input w-full appearance-none pl-10"
+                                  >
+                                    <option value="">Bitte auswählen</option>
+                                    {TEACHING_EXPERIENCE_OPTIONS.map((opt) => (
+                                      <option key={opt.value} value={opt.value}>
+                                        {opt.label}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Divider */}
+                          <div className="border-border border-t" />
+
+                          {/* Contact & Social Section */}
+                          <div className="space-y-5 p-6">
+                            <div className="mb-4 flex items-center gap-2">
+                              <Globe className="text-accent h-5 w-5" />
+                              <h3 className="text-text font-semibold">Kontakt & Social Media</h3>
+                            </div>
+
+                            <MultiSelect
+                              label="Kantone"
+                              options={SWISS_CANTONS}
+                              selected={profileFormData.cantons}
+                              onChange={(value) => handleProfileFieldChange("cantons", value)}
+                              placeholder="Kantone auswählen..."
+                            />
+                            <div>
+                              <label className="text-text mb-1.5 block text-sm font-medium">
+                                Website / Portfolio
+                              </label>
+                              <div className="relative">
+                                <Link2 className="text-text-muted absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+                                <input
+                                  type="url"
+                                  value={profileFormData.website}
+                                  onChange={(e) =>
+                                    handleProfileFieldChange("website", e.target.value)
+                                  }
+                                  placeholder="https://meine-website.ch"
+                                  className={`input w-full pl-10 ${profileErrors.website ? "border-error" : ""}`}
+                                />
+                              </div>
+                              {profileErrors.website && (
+                                <p className="text-error mt-1 text-xs">{profileErrors.website}</p>
+                              )}
+                            </div>
+                            <div className="grid gap-4 sm:grid-cols-2">
+                              <div>
+                                <label className="text-text mb-1.5 block text-sm font-medium">
+                                  Instagram
+                                </label>
+                                <div className="relative">
+                                  <span className="text-text-muted absolute top-1/2 left-3 -translate-y-1/2 text-sm">
+                                    @
+                                  </span>
+                                  <input
+                                    type="text"
+                                    value={profileFormData.instagram}
+                                    onChange={(e) =>
+                                      handleProfileFieldChange("instagram", e.target.value)
+                                    }
+                                    placeholder="benutzername"
+                                    className="input w-full pl-8"
+                                  />
+                                </div>
+                              </div>
+                              <div>
+                                <label className="text-text mb-1.5 block text-sm font-medium">
+                                  Pinterest
+                                </label>
+                                <div className="relative">
+                                  <span className="text-text-muted absolute top-1/2 left-3 -translate-y-1/2 text-sm">
+                                    @
+                                  </span>
+                                  <input
+                                    type="text"
+                                    value={profileFormData.pinterest}
+                                    onChange={(e) =>
+                                      handleProfileFieldChange("pinterest", e.target.value)
+                                    }
+                                    placeholder="benutzername"
+                                    className="input w-full pl-8"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Divider */}
+                          <div className="border-border border-t" />
+
+                          {/* Privacy & Language Section */}
+                          <div className="space-y-5 p-6">
+                            <div className="mb-4 flex items-center gap-2">
+                              <Shield className="text-warning h-5 w-5" />
+                              <h3 className="text-text font-semibold">Privatsphäre & Sprache</h3>
+                            </div>
+
+                            <div className="space-y-4">
+                              {/* Profile Visibility */}
+                              <div className="flex items-center justify-between py-2">
+                                <div className="flex items-center gap-3">
+                                  {profileFormData.is_private ? (
+                                    <EyeOff className="text-text-muted h-5 w-5" />
+                                  ) : (
+                                    <Eye className="text-text-muted h-5 w-5" />
+                                  )}
+                                  <div>
+                                    <p className="text-text font-medium">Privates Profil</p>
+                                    <p className="text-text-muted text-sm">
+                                      {profileFormData.is_private
+                                        ? "Nur Sie können Ihr Profil sehen"
+                                        : "Ihr Profil ist für andere sichtbar"}
+                                    </p>
+                                  </div>
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    handleProfileFieldChange(
+                                      "is_private",
+                                      !profileFormData.is_private
+                                    )
+                                  }
+                                  className="relative"
+                                >
+                                  <div
+                                    className={`h-6 w-11 rounded-full transition-colors ${profileFormData.is_private ? "bg-primary" : "bg-border"}`}
+                                  >
+                                    <div
+                                      className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform ${profileFormData.is_private ? "translate-x-5" : "translate-x-0.5"}`}
+                                    />
+                                  </div>
+                                </button>
+                              </div>
+
+                              {/* Language Preference */}
+                              <div className="flex items-center justify-between py-2">
+                                <div className="flex items-center gap-3">
+                                  <Languages className="text-text-muted h-5 w-5" />
+                                  <div>
+                                    <p className="text-text font-medium">Sprache</p>
+                                    <p className="text-text-muted text-sm">
+                                      Bevorzugte Anzeigesprache
+                                    </p>
+                                  </div>
+                                </div>
+                                <select
+                                  value={profileFormData.preferred_language}
+                                  onChange={(e) =>
+                                    handleProfileFieldChange("preferred_language", e.target.value)
+                                  }
+                                  className="input w-auto"
+                                >
+                                  <option value="de">Deutsch</option>
+                                  <option value="en">English</option>
+                                </select>
+                              </div>
+                            </div>
                           </div>
                         </div>
+
+                        {/* Floating Save Bar */}
+                        <AnimatePresence>
+                          {hasProfileChanges() && (
+                            <motion.div
+                              initial={{ opacity: 0, y: 20 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: 20 }}
+                              className="border-border bg-surface/95 fixed right-0 bottom-0 left-0 z-50 border-t shadow-lg backdrop-blur-sm"
+                            >
+                              <div className="mx-auto flex max-w-4xl items-center justify-between gap-4 px-4 py-4">
+                                <p className="text-text-muted text-sm">
+                                  Sie haben ungespeicherte Änderungen
+                                </p>
+                                <div className="flex gap-3">
+                                  <button
+                                    onClick={handleCancelEditing}
+                                    disabled={isSavingProfile}
+                                    className="btn-secondary"
+                                  >
+                                    Verwerfen
+                                  </button>
+                                  <button
+                                    onClick={handleSaveProfile}
+                                    disabled={isSavingProfile}
+                                    className="btn-primary"
+                                  >
+                                    {isSavingProfile ? (
+                                      <span className="flex items-center gap-2">
+                                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                                        Speichern...
+                                      </span>
+                                    ) : (
+                                      "Änderungen speichern"
+                                    )}
+                                  </button>
+                                </div>
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
                       </motion.div>
                     )}
 

@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
+import { Breadcrumb } from "@/components/ui/Breadcrumb";
 
 interface ProfileData {
   name: string | null;
@@ -38,6 +40,7 @@ interface WishlistData {
 }
 
 export default function ProfilePage() {
+  const tCommon = useTranslations("common");
   const [activeTab, setActiveTab] = useState<"profile" | "library" | "wishlist">("profile");
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -152,6 +155,9 @@ export default function ProfilePage() {
       <TopBar />
 
       <main className="mx-auto max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
+        {/* Breadcrumb */}
+        <Breadcrumb items={[{ label: tCommon("breadcrumb.profile") }]} className="mb-4" />
+
         {/* Page Header */}
         <div className="mb-8">
           <h1 className="text-text text-3xl font-bold">Mein Profil</h1>

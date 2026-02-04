@@ -37,11 +37,11 @@ For production, set `STORAGE_PROVIDER=s3` and configure all S3 variables.
 
 ### Email (Resend)
 
-| Variable         | Description                   | Example              |
-| ---------------- | ----------------------------- | -------------------- |
-| `RESEND_API_KEY` | API key from Resend dashboard | `re_abc123...`       |
+| Variable         | Description                   | Example           |
+| ---------------- | ----------------------------- | ----------------- |
+| `RESEND_API_KEY` | API key from Resend dashboard | `re_abc123...`    |
 | `EMAIL_FROM`     | Sender email address          | `info@currico.ch` |
-| `ADMIN_EMAIL`    | Admin notification email      | `info@currico.ch`   |
+| `ADMIN_EMAIL`    | Admin notification email      | `info@currico.ch` |
 
 ### Stripe Payments
 

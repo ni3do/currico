@@ -17,6 +17,7 @@ import {
   Shield,
   ChevronDown,
   Package,
+  MessageCircle,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ProfileCompletionProgress } from "./ProfileCompletionProgress";
@@ -27,6 +28,7 @@ const NAV_ITEMS = [
   { id: "library", label: "Bibliothek", icon: Library },
   { id: "uploads", label: "Meine Uploads", icon: Upload },
   { id: "bundles", label: "Bundles", icon: Package },
+  { id: "comments", label: "Kommentare", icon: MessageCircle, sellerOnly: true },
   { id: "wishlist", label: "Wunschliste", icon: Heart },
 ] as const;
 
@@ -43,6 +45,7 @@ type TabType =
   | "library"
   | "uploads"
   | "bundles"
+  | "comments"
   | "wishlist"
   | "settings-profile"
   | "settings-appearance"
@@ -104,7 +107,9 @@ export function AccountSidebar({
         {/* Navigation */}
         <nav className="mb-5 space-y-1">
           <h3 className="label-meta mb-3">Navigation</h3>
-          {NAV_ITEMS.map((item, index) => {
+          {NAV_ITEMS.filter(
+            (item) => !("sellerOnly" in item && item.sellerOnly) || userData.isSeller
+          ).map((item, index) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
             return (

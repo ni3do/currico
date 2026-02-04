@@ -14,20 +14,14 @@ export async function GET(
   // Get authenticated user
   const session = await auth();
   if (!session?.user?.id) {
-    return NextResponse.json(
-      { error: "Authentication required" },
-      { status: 401 }
-    );
+    return NextResponse.json({ error: "Authentication required" }, { status: 401 });
   }
 
   const userId = session.user.id;
   const { sessionId } = await params;
 
   if (!sessionId) {
-    return NextResponse.json(
-      { error: "Session ID is required" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Session ID is required" }, { status: 400 });
   }
 
   try {
@@ -49,23 +43,27 @@ export async function GET(
             description: true,
             subjects: true,
             cycles: true,
+            preview_url: true,
+            seller: {
+              select: {
+                id: true,
+                name: true,
+                display_name: true,
+                image: true,
+              },
+            },
           },
         },
       },
     });
 
     if (!transaction) {
-      return NextResponse.json(
-        { error: "Transaction not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Transaction not found" }, { status: 404 });
     }
 
     // Format amount for display
     const amountFormatted =
-      transaction.amount === 0
-        ? "Free"
-        : `CHF ${(transaction.amount / 100).toFixed(2)}`;
+      transaction.amount === 0 ? "Free" : `CHF ${(transaction.amount / 100).toFixed(2)}`;
 
     return NextResponse.json({
       id: transaction.id,
@@ -73,13 +71,23 @@ export async function GET(
       amountFormatted,
       status: transaction.status,
       createdAt: transaction.created_at.toISOString(),
-      resource: transaction.resource,
+      resource: {
+        id: transaction.resource.id,
+        title: transaction.resource.title,
+        description: transaction.resource.description,
+        subjects: transaction.resource.subjects,
+        cycles: transaction.resource.cycles,
+        previewUrl: transaction.resource.preview_url,
+        seller: {
+          id: transaction.resource.seller.id,
+          name: transaction.resource.seller.name,
+          displayName: transaction.resource.seller.display_name,
+          image: transaction.resource.seller.image,
+        },
+      },
     });
   } catch (error) {
     console.error("Error fetching checkout session:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch checkout session" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch checkout session" }, { status: 500 });
   }
 }

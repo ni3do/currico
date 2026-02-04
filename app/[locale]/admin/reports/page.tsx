@@ -45,10 +45,10 @@ const statusLabels: Record<string, string> = {
 };
 
 const statusColors: Record<string, string> = {
-  OPEN: "bg-[var(--badge-error-bg)] text-[var(--badge-error-text)]",
-  IN_REVIEW: "bg-[var(--badge-warning-bg)] text-[var(--badge-warning-text)]",
-  RESOLVED: "bg-[var(--badge-success-bg)] text-[var(--badge-success-text)]",
-  DISMISSED: "bg-bg text-text-muted",
+  OPEN: "pill-error",
+  IN_REVIEW: "pill-warning",
+  RESOLVED: "pill-success",
+  DISMISSED: "pill-neutral",
 };
 
 const reasonLabels: Record<string, string> = {
@@ -136,71 +136,63 @@ export default function AdminReportsPage() {
 
   return (
     <div className="space-y-6">
-      {/* Filters */}
-      <div className="flex flex-col gap-4 sm:flex-row">
-        <select
-          value={statusFilter}
-          onChange={(e) => {
-            setStatusFilter(e.target.value);
-            setPage(1);
-          }}
-          className="rounded-lg border border-border bg-surface px-4 py-2.5 text-text focus:border-primary focus:outline-none"
-        >
-          <option value="">Alle Status</option>
-          <option value="OPEN">Offen</option>
-          <option value="IN_REVIEW">In Prüfung</option>
-          <option value="RESOLVED">Gelöst</option>
-          <option value="DISMISSED">Abgewiesen</option>
-        </select>
+      {/* Status Tabs */}
+      <div className="tab-container">
+        {[
+          { value: "", label: "Alle" },
+          { value: "OPEN", label: "Offen" },
+          { value: "IN_REVIEW", label: "In Prüfung" },
+          { value: "RESOLVED", label: "Gelöst" },
+          { value: "DISMISSED", label: "Abgewiesen" },
+        ].map((tab) => (
+          <button
+            key={tab.value}
+            onClick={() => {
+              setStatusFilter(tab.value);
+              setPage(1);
+            }}
+            className={`tab-button ${statusFilter === tab.value ? "tab-button-active" : ""}`}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
       {/* Stats Bar */}
-      <div className="text-sm text-text-muted">{total} Meldungen gefunden</div>
+      <div className="text-text-muted text-sm">{total} Meldungen gefunden</div>
 
       {/* Reports Table */}
-      <div className="overflow-hidden rounded-2xl border border-border bg-surface">
+      <div className="border-border bg-surface overflow-hidden rounded-2xl border">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-bg">
               <tr>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-text">
-                  Grund
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-text">
-                  Gemeldet
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-text">
-                  Melder
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-text">
-                  Status
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-text">
-                  Datum
-                </th>
-                <th className="px-6 py-4 text-right text-sm font-semibold text-text">
-                  Aktionen
-                </th>
+                <th className="text-text px-6 py-4 text-left text-sm font-semibold">Grund</th>
+                <th className="text-text px-6 py-4 text-left text-sm font-semibold">Gemeldet</th>
+                <th className="text-text px-6 py-4 text-left text-sm font-semibold">Melder</th>
+                <th className="text-text px-6 py-4 text-left text-sm font-semibold">Status</th>
+                <th className="text-text px-6 py-4 text-left text-sm font-semibold">Datum</th>
+                <th className="text-text px-6 py-4 text-right text-sm font-semibold">Aktionen</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-border">
+            <tbody className="divide-border divide-y">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-text-muted">
+                  <td colSpan={6} className="text-text-muted px-6 py-12 text-center">
                     Laden...
                   </td>
                 </tr>
               ) : reports.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-text-muted">
+                  <td colSpan={6} className="text-text-muted px-6 py-12 text-center">
                     Keine Meldungen gefunden
                   </td>
                 </tr>
               ) : (
                 reports.map((report) => (
-                  <tr key={report.id} className="transition-colors hover:bg-bg">
+                  <tr key={report.id} className="hover:bg-bg transition-colors">
                     <td className="px-6 py-4">
-                      <span className="font-medium text-text">
+                      <span className="text-text font-medium">
                         {reasonLabels[report.reason] || report.reason}
                       </span>
                     </td>
@@ -208,36 +200,34 @@ export default function AdminReportsPage() {
                       {report.resource ? (
                         <div>
                           <div className="text-text">{report.resource.title}</div>
-                          <div className="text-xs text-text-muted">Ressource</div>
+                          <div className="text-text-muted text-xs">Ressource</div>
                         </div>
                       ) : report.reported_user ? (
                         <div>
                           <div className="text-text">
                             {report.reported_user.display_name || report.reported_user.email}
                           </div>
-                          <div className="text-xs text-text-muted">Benutzer</div>
+                          <div className="text-text-muted text-xs">Benutzer</div>
                         </div>
                       ) : (
                         <span className="text-text-muted">-</span>
                       )}
                     </td>
-                    <td className="px-6 py-4 text-text-muted">
+                    <td className="text-text-muted px-6 py-4">
                       {report.reporter.display_name || report.reporter.email}
                     </td>
                     <td className="px-6 py-4">
-                      <span
-                        className={`rounded-full px-3 py-1 text-xs font-medium ${statusColors[report.status]}`}
-                      >
+                      <span className={`pill ${statusColors[report.status]}`}>
                         {statusLabels[report.status]}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-text-muted">
+                    <td className="text-text-muted px-6 py-4">
                       {new Date(report.created_at).toLocaleDateString("de-CH")}
                     </td>
                     <td className="px-6 py-4 text-right">
                       <button
                         onClick={() => openReportModal(report)}
-                        className="rounded-lg bg-primary px-4 py-1.5 text-xs font-medium text-text-on-accent transition-colors hover:bg-primary-hover"
+                        className="btn-primary rounded-lg px-4 py-1.5 text-xs"
                       >
                         Bearbeiten
                       </button>
@@ -256,17 +246,17 @@ export default function AdminReportsPage() {
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="rounded-lg border border-border bg-surface px-4 py-2 text-sm font-medium text-text hover:bg-bg disabled:cursor-not-allowed disabled:opacity-50"
+            className="border-border bg-surface text-text hover:bg-bg rounded-lg border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50"
           >
             Zurück
           </button>
-          <span className="text-sm text-text-muted">
+          <span className="text-text-muted text-sm">
             Seite {page} von {totalPages}
           </span>
           <button
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
-            className="rounded-lg border border-border bg-surface px-4 py-2 text-sm font-medium text-text hover:bg-bg disabled:cursor-not-allowed disabled:opacity-50"
+            className="border-border bg-surface text-text hover:bg-bg rounded-lg border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50"
           >
             Weiter
           </button>
@@ -275,10 +265,10 @@ export default function AdminReportsPage() {
 
       {/* Report Detail Modal */}
       {showModal && selectedReport && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-bg/80 backdrop-blur-sm">
-          <div className="mx-4 max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-border bg-surface p-6">
+        <div className="modal-overlay">
+          <div className="modal-content modal-md mx-4">
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-xl font-semibold text-text">Meldung bearbeiten</h3>
+              <h3 className="text-text text-xl font-semibold">Meldung bearbeiten</h3>
               <button
                 onClick={() => {
                   setShowModal(false);
@@ -299,29 +289,27 @@ export default function AdminReportsPage() {
 
             {/* Report Details */}
             <div className="mb-6 space-y-4">
-              <div className="rounded-lg border border-border p-4">
-                <div className="mb-1 text-sm text-text-muted">Grund</div>
-                <div className="font-medium text-text">
+              <div className="border-border rounded-lg border p-4">
+                <div className="text-text-muted mb-1 text-sm">Grund</div>
+                <div className="text-text font-medium">
                   {reasonLabels[selectedReport.reason] || selectedReport.reason}
                 </div>
               </div>
 
               {selectedReport.description && (
-                <div className="rounded-lg border border-border p-4">
-                  <div className="mb-1 text-sm text-text-muted">Beschreibung</div>
+                <div className="border-border rounded-lg border p-4">
+                  <div className="text-text-muted mb-1 text-sm">Beschreibung</div>
                   <div className="text-text">{selectedReport.description}</div>
                 </div>
               )}
 
-              <div className="rounded-lg border border-border p-4">
-                <div className="mb-1 text-sm text-text-muted">Gemeldet</div>
+              <div className="border-border rounded-lg border p-4">
+                <div className="text-text-muted mb-1 text-sm">Gemeldet</div>
                 <div className="text-text">
                   {selectedReport.resource ? (
                     <>
                       <span className="font-medium">{selectedReport.resource.title}</span>
-                      <span className="ml-2 text-xs text-text-muted">
-                        (Ressource)
-                      </span>
+                      <span className="text-text-muted ml-2 text-xs">(Ressource)</span>
                     </>
                   ) : selectedReport.reported_user ? (
                     <>
@@ -329,9 +317,7 @@ export default function AdminReportsPage() {
                         {selectedReport.reported_user.display_name ||
                           selectedReport.reported_user.email}
                       </span>
-                      <span className="ml-2 text-xs text-text-muted">
-                        (Benutzer)
-                      </span>
+                      <span className="text-text-muted ml-2 text-xs">(Benutzer)</span>
                     </>
                   ) : (
                     "-"
@@ -340,19 +326,15 @@ export default function AdminReportsPage() {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="rounded-lg border border-border p-4">
-                  <div className="mb-1 text-sm text-text-muted">Melder</div>
+                <div className="border-border rounded-lg border p-4">
+                  <div className="text-text-muted mb-1 text-sm">Melder</div>
                   <div className="text-text">
                     {selectedReport.reporter.display_name || selectedReport.reporter.email}
                   </div>
                 </div>
-                <div className="rounded-lg border border-border p-4">
-                  <div className="mb-1 text-sm text-text-muted">
-                    Aktueller Status
-                  </div>
-                  <span
-                    className={`rounded-full px-3 py-1 text-xs font-medium ${statusColors[selectedReport.status]}`}
-                  >
+                <div className="border-border rounded-lg border p-4">
+                  <div className="text-text-muted mb-1 text-sm">Aktueller Status</div>
+                  <span className={`pill ${statusColors[selectedReport.status]}`}>
                     {statusLabels[selectedReport.status]}
                   </span>
                 </div>
@@ -361,29 +343,25 @@ export default function AdminReportsPage() {
 
             {/* Resolution Input */}
             <div className="mb-6">
-              <label className="mb-2 block text-sm font-medium text-text">
-                Lösung / Notizen
-              </label>
+              <label className="text-text mb-2 block text-sm font-medium">Lösung / Notizen</label>
               <textarea
                 value={resolution}
                 onChange={(e) => setResolution(e.target.value)}
                 rows={3}
-                className="min-h-[80px] w-full resize-y rounded-lg border border-border bg-surface px-4 py-2.5 text-text placeholder:text-text-muted focus:border-primary focus:outline-none"
+                className="border-border bg-surface text-text placeholder:text-text-muted focus:border-primary min-h-[80px] w-full resize-y rounded-lg border px-4 py-2.5 focus:outline-none"
                 placeholder="Beschreiben Sie die ergriffenen Massnahmen..."
               />
             </div>
 
             {/* Action Buttons */}
             <div className="space-y-3">
-              <div className="mb-2 text-sm font-medium text-text">
-                Status ändern:
-              </div>
+              <div className="text-text mb-2 text-sm font-medium">Status ändern:</div>
               <div className="grid grid-cols-2 gap-3">
                 {selectedReport.status !== "IN_REVIEW" && (
                   <button
                     onClick={() => handleStatusUpdate(selectedReport.id, "IN_REVIEW")}
                     disabled={actionLoading}
-                    className="rounded-lg bg-[var(--badge-warning-bg)] px-4 py-2.5 text-sm font-medium text-[var(--badge-warning-text)] hover:opacity-90 disabled:opacity-50"
+                    className="bg-warning/20 text-warning rounded-lg px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-50"
                   >
                     In Prüfung
                   </button>
@@ -392,7 +370,7 @@ export default function AdminReportsPage() {
                   <button
                     onClick={() => handleStatusUpdate(selectedReport.id, "RESOLVED")}
                     disabled={actionLoading}
-                    className="rounded-lg bg-[var(--badge-success-bg)] px-4 py-2.5 text-sm font-medium text-[var(--badge-success-text)] hover:opacity-90 disabled:opacity-50"
+                    className="bg-success/20 text-success rounded-lg px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-50"
                   >
                     Gelöst
                   </button>
@@ -401,7 +379,7 @@ export default function AdminReportsPage() {
                   <button
                     onClick={() => handleStatusUpdate(selectedReport.id, "DISMISSED")}
                     disabled={actionLoading}
-                    className="rounded-lg border border-border bg-bg px-4 py-2.5 text-sm font-medium text-text-muted hover:opacity-90 disabled:opacity-50"
+                    className="btn-tertiary rounded-lg px-4 py-2.5 text-sm disabled:opacity-50"
                   >
                     Abweisen
                   </button>
@@ -410,7 +388,7 @@ export default function AdminReportsPage() {
                   <button
                     onClick={() => handleStatusUpdate(selectedReport.id, "OPEN")}
                     disabled={actionLoading}
-                    className="rounded-lg bg-[var(--badge-error-bg)] px-4 py-2.5 text-sm font-medium text-[var(--badge-error-text)] hover:opacity-90 disabled:opacity-50"
+                    className="bg-error/20 text-error rounded-lg px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-50"
                   >
                     Wieder öffnen
                   </button>
@@ -418,13 +396,13 @@ export default function AdminReportsPage() {
               </div>
             </div>
 
-            <div className="mt-6 border-t border-border pt-4">
+            <div className="border-border mt-6 border-t pt-4">
               <button
                 onClick={() => {
                   setShowModal(false);
                   setSelectedReport(null);
                 }}
-                className="w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-sm font-medium text-text hover:bg-bg"
+                className="border-border bg-surface text-text hover:bg-bg w-full rounded-lg border px-4 py-2.5 text-sm font-medium"
               >
                 Schliessen
               </button>

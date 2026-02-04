@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAuth, unauthorized, badRequest, notFound } from "@/lib/api";
+import { checkRateLimit, rateLimitHeaders, isValidId } from "@/lib/rateLimit";
 
 /**
  * POST /api/users/[id]/follow
@@ -10,8 +11,25 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
   const currentUserId = await requireAuth();
   if (!currentUserId) return unauthorized();
 
+  // Rate limiting check
+  const rateLimitResult = checkRateLimit(currentUserId, "users:follow");
+  if (!rateLimitResult.success) {
+    return NextResponse.json(
+      {
+        error: "Zu viele Anfragen. Bitte versuchen Sie es später erneut.",
+        retryAfter: rateLimitResult.retryAfter,
+      },
+      { status: 429, headers: rateLimitHeaders(rateLimitResult) }
+    );
+  }
+
   try {
     const { id: targetUserId } = await params;
+
+    // Validate user ID format
+    if (!isValidId(targetUserId)) {
+      return badRequest("Ungültige Benutzer-ID");
+    }
 
     // Can't follow yourself
     if (targetUserId === currentUserId) {
@@ -71,8 +89,25 @@ export async function DELETE(
   const currentUserId = await requireAuth();
   if (!currentUserId) return unauthorized();
 
+  // Rate limiting check (same limit as follow)
+  const rateLimitResult = checkRateLimit(currentUserId, "users:follow");
+  if (!rateLimitResult.success) {
+    return NextResponse.json(
+      {
+        error: "Zu viele Anfragen. Bitte versuchen Sie es später erneut.",
+        retryAfter: rateLimitResult.retryAfter,
+      },
+      { status: 429, headers: rateLimitHeaders(rateLimitResult) }
+    );
+  }
+
   try {
     const { id: targetUserId } = await params;
+
+    // Validate user ID format
+    if (!isValidId(targetUserId)) {
+      return badRequest("Ungültige Benutzer-ID");
+    }
 
     await prisma.follow.deleteMany({
       where: {

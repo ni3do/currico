@@ -59,10 +59,8 @@ export default function SellerOnboardingCompletePage() {
     }
   }, [sessionStatus, t]);
 
-  const isFullySetup =
-    stripeStatus?.chargesEnabled && stripeStatus?.detailsSubmitted;
-  const isPending =
-    stripeStatus?.hasAccount && !stripeStatus?.chargesEnabled;
+  const isFullySetup = stripeStatus?.chargesEnabled && stripeStatus?.detailsSubmitted;
+  const isPending = stripeStatus?.hasAccount && !stripeStatus?.chargesEnabled;
   const hasRequirements =
     stripeStatus?.requirements &&
     (stripeStatus.requirements.currentlyDue.length > 0 ||
@@ -76,16 +74,14 @@ export default function SellerOnboardingCompletePage() {
         <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 lg:px-8">
           {sessionStatus === "loading" || isLoading ? (
             <div className="text-center">
-              <div className="mx-auto mb-4 h-16 w-16 animate-spin rounded-full border-4 border-[var(--color-primary)] border-t-transparent" />
-              <p className="text-[var(--color-text-muted)]">
-                {t("loading")}
-              </p>
+              <div className="border-primary mx-auto mb-4 h-16 w-16 animate-spin rounded-full border-4 border-t-transparent" />
+              <p className="text-text-muted">{t("loading")}</p>
             </div>
           ) : sessionStatus === "unauthenticated" ? (
             <div className="card p-8 text-center">
-              <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-error-light)]">
+              <div className="bg-error-light mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full">
                 <svg
-                  className="h-8 w-8 text-[var(--color-error)]"
+                  className="text-error h-8 w-8"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -98,21 +94,17 @@ export default function SellerOnboardingCompletePage() {
                   />
                 </svg>
               </div>
-              <h1 className="mb-2 text-xl font-bold text-[var(--color-text)]">
-                {t("notLoggedIn.title")}
-              </h1>
-              <p className="mb-6 text-[var(--color-text-muted)]">
-                {t("notLoggedIn.description")}
-              </p>
+              <h1 className="text-text mb-2 text-xl font-bold">{t("notLoggedIn.title")}</h1>
+              <p className="text-text-muted mb-6">{t("notLoggedIn.description")}</p>
               <Link href="/login" className="btn btn-primary px-6 py-2">
                 {t("notLoggedIn.loginButton")}
               </Link>
             </div>
           ) : error ? (
             <div className="card p-8 text-center">
-              <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-error-light)]">
+              <div className="bg-error-light mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full">
                 <svg
-                  className="h-8 w-8 text-[var(--color-error)]"
+                  className="text-error h-8 w-8"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -125,22 +117,17 @@ export default function SellerOnboardingCompletePage() {
                   />
                 </svg>
               </div>
-              <h1 className="mb-2 text-xl font-bold text-[var(--color-text)]">
-                {t("error.title")}
-              </h1>
-              <p className="mb-6 text-[var(--color-text-muted)]">{error}</p>
-              <Link
-                href="/become-seller"
-                className="btn btn-primary px-6 py-2"
-              >
+              <h1 className="text-text mb-2 text-xl font-bold">{t("error.title")}</h1>
+              <p className="text-text-muted mb-6">{error}</p>
+              <Link href="/become-seller" className="btn btn-primary px-6 py-2">
                 {t("error.tryAgain")}
               </Link>
             </div>
           ) : isFullySetup ? (
             <div className="card p-8 text-center">
-              <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-success-light)]">
+              <div className="bg-success-light mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full">
                 <svg
-                  className="h-8 w-8 text-[var(--color-success)]"
+                  className="text-success h-8 w-8"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -153,18 +140,14 @@ export default function SellerOnboardingCompletePage() {
                   />
                 </svg>
               </div>
-              <h1 className="mb-2 text-2xl font-bold text-[var(--color-text)]">
-                {t("success.title")}
-              </h1>
-              <p className="mb-6 text-[var(--color-text-muted)]">
-                {t("success.description")}
-              </p>
+              <h1 className="text-text mb-2 text-2xl font-bold">{t("success.title")}</h1>
+              <p className="text-text-muted mb-6">{t("success.description")}</p>
 
-              <div className="mb-8 rounded-lg bg-[var(--color-bg-secondary)] p-4">
+              <div className="bg-bg-secondary mb-8 rounded-lg p-4">
                 <div className="flex items-center justify-center gap-6">
                   <div className="flex items-center gap-2">
                     <svg
-                      className="h-5 w-5 text-[var(--color-success)]"
+                      className="text-success h-5 w-5"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -176,14 +159,14 @@ export default function SellerOnboardingCompletePage() {
                         d="M5 13l4 4L19 7"
                       />
                     </svg>
-                    <span className="text-sm text-[var(--color-text-secondary)]">
+                    <span className="text-text-secondary text-sm">
                       {t("success.chargesEnabled")}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
                     {stripeStatus?.payoutsEnabled ? (
                       <svg
-                        className="h-5 w-5 text-[var(--color-success)]"
+                        className="text-success h-5 w-5"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -197,7 +180,7 @@ export default function SellerOnboardingCompletePage() {
                       </svg>
                     ) : (
                       <svg
-                        className="h-5 w-5 text-[var(--color-warning)]"
+                        className="text-warning h-5 w-5"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -210,7 +193,7 @@ export default function SellerOnboardingCompletePage() {
                         />
                       </svg>
                     )}
-                    <span className="text-sm text-[var(--color-text-secondary)]">
+                    <span className="text-text-secondary text-sm">
                       {stripeStatus?.payoutsEnabled
                         ? t("success.payoutsEnabled")
                         : t("success.payoutsPending")}
@@ -220,10 +203,7 @@ export default function SellerOnboardingCompletePage() {
               </div>
 
               <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-                <Link
-                  href="/account/resources/new"
-                  className="btn btn-primary px-6 py-2"
-                >
+                <Link href="/account/resources/new" className="btn btn-primary px-6 py-2">
                   {t("success.uploadFirst")}
                 </Link>
                 {stripeStatus?.dashboardUrl && (
@@ -240,9 +220,9 @@ export default function SellerOnboardingCompletePage() {
             </div>
           ) : isPending ? (
             <div className="card p-8 text-center">
-              <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-warning-light)]">
+              <div className="bg-warning-light mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full">
                 <svg
-                  className="h-8 w-8 text-[var(--color-warning)]"
+                  className="text-warning h-8 w-8"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -255,31 +235,22 @@ export default function SellerOnboardingCompletePage() {
                   />
                 </svg>
               </div>
-              <h1 className="mb-2 text-xl font-bold text-[var(--color-text)]">
-                {t("pending.title")}
-              </h1>
-              <p className="mb-6 text-[var(--color-text-muted)]">
-                {hasRequirements
-                  ? t("pending.requirementsNeeded")
-                  : t("pending.description")}
+              <h1 className="text-text mb-2 text-xl font-bold">{t("pending.title")}</h1>
+              <p className="text-text-muted mb-6">
+                {hasRequirements ? t("pending.requirementsNeeded") : t("pending.description")}
               </p>
 
               {hasRequirements && stripeStatus?.requirements && (
-                <div className="mb-6 rounded-lg bg-[var(--color-bg-secondary)] p-4 text-left">
-                  <p className="mb-2 text-sm font-medium text-[var(--color-text)]">
-                    {t("pending.requiredInfo")}
-                  </p>
-                  <ul className="list-inside list-disc space-y-1 text-sm text-[var(--color-text-muted)]">
-                    {stripeStatus.requirements.currentlyDue
-                      .slice(0, 5)
-                      .map((req, index) => (
-                        <li key={index}>{req.replace(/_/g, " ")}</li>
-                      ))}
+                <div className="bg-bg-secondary mb-6 rounded-lg p-4 text-left">
+                  <p className="text-text mb-2 text-sm font-medium">{t("pending.requiredInfo")}</p>
+                  <ul className="text-text-muted list-inside list-disc space-y-1 text-sm">
+                    {stripeStatus.requirements.currentlyDue.slice(0, 5).map((req, index) => (
+                      <li key={index}>{req.replace(/_/g, " ")}</li>
+                    ))}
                     {stripeStatus.requirements.currentlyDue.length > 5 && (
                       <li>
                         {t("pending.andMore", {
-                          count:
-                            stripeStatus.requirements.currentlyDue.length - 5,
+                          count: stripeStatus.requirements.currentlyDue.length - 5,
                         })}
                       </li>
                     )}
@@ -287,18 +258,15 @@ export default function SellerOnboardingCompletePage() {
                 </div>
               )}
 
-              <Link
-                href="/become-seller"
-                className="btn btn-primary px-6 py-2"
-              >
+              <Link href="/become-seller" className="btn btn-primary px-6 py-2">
                 {t("pending.continueSetup")}
               </Link>
             </div>
           ) : (
             <div className="card p-8 text-center">
-              <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-primary-light)]">
+              <div className="bg-primary-light mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full">
                 <svg
-                  className="h-8 w-8 text-[var(--color-primary)]"
+                  className="text-primary h-8 w-8"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -311,16 +279,9 @@ export default function SellerOnboardingCompletePage() {
                   />
                 </svg>
               </div>
-              <h1 className="mb-2 text-xl font-bold text-[var(--color-text)]">
-                {t("noAccount.title")}
-              </h1>
-              <p className="mb-6 text-[var(--color-text-muted)]">
-                {t("noAccount.description")}
-              </p>
-              <Link
-                href="/become-seller"
-                className="btn btn-primary px-6 py-2"
-              >
+              <h1 className="text-text mb-2 text-xl font-bold">{t("noAccount.title")}</h1>
+              <p className="text-text-muted mb-6">{t("noAccount.description")}</p>
+              <Link href="/become-seller" className="btn btn-primary px-6 py-2">
                 {t("noAccount.startSetup")}
               </Link>
             </div>

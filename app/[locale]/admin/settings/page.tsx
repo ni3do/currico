@@ -16,7 +16,7 @@ export default function AdminSettingsPage() {
         <div className="space-y-6">
           {/* Admin Info */}
           <div className="border-border bg-bg flex items-center gap-4 rounded-xl border p-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[var(--ctp-mauve)] to-[var(--ctp-pink)]">
+            <div className="from-error to-error/80 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br">
               <span className="text-text-on-accent text-lg font-bold">
                 {(session?.user?.name || "A").charAt(0).toUpperCase()}
               </span>
@@ -24,7 +24,7 @@ export default function AdminSettingsPage() {
             <div>
               <p className="text-text font-semibold">{session?.user?.name || "Admin"}</p>
               <p className="text-text-muted text-sm">{session?.user?.email}</p>
-              <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-[var(--ctp-mauve)]/20 px-2 py-0.5 text-xs font-medium text-[var(--ctp-mauve)]">
+              <span className="bg-error/20 text-error mt-1 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium">
                 <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"

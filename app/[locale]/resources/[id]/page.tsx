@@ -3,13 +3,18 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
+import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { ResourceCard } from "@/components/ui/ResourceCard";
 import { CurriculumBox } from "@/components/curriculum";
 import { LP21Badge } from "@/components/curriculum/LP21Badge";
 import { CheckoutButton } from "@/components/checkout/CheckoutButton";
+import { PreviewGallery } from "@/components/ui/PreviewGallery";
+import { ReviewsSection } from "@/components/reviews";
+import { CommentsSection } from "@/components/comments";
 
 interface Competency {
   id: string;
@@ -45,6 +50,9 @@ interface Resource {
   priceFormatted: string;
   fileUrl: string;
   previewUrl: string | null;
+  previewUrls?: string[];
+  previewCount?: number;
+  hasAccess?: boolean;
   subjects: string[];
   cycles: string[];
   subject: string;
@@ -82,6 +90,7 @@ export default function ResourceDetailPage() {
   const params = useParams();
   const id = params.id as string;
   const { data: session, status: sessionStatus } = useSession();
+  const tCommon = useTranslations("common");
 
   const [resource, setResource] = useState<Resource | null>(null);
   const [relatedResources, setRelatedResources] = useState<RelatedResource[]>([]);
@@ -268,36 +277,43 @@ export default function ResourceDetailPage() {
     return (
       <div className="flex min-h-screen flex-col">
         <TopBar />
-        <main className="mx-auto max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
+        <main className="mx-auto max-w-6xl flex-1 px-4 py-6 sm:px-6 lg:px-8">
           <div className="animate-pulse">
-            <div className="bg-surface mb-8 h-4 w-48 rounded" />
-            <div className="grid gap-8 lg:grid-cols-3">
-              <div className="lg:col-span-2">
-                <div className="card rounded-2xl p-8">
-                  <div className="mb-4 flex gap-3">
-                    <div className="bg-surface h-6 w-16 rounded-full" />
-                    <div className="bg-surface h-6 w-24 rounded-full" />
-                  </div>
-                  <div className="bg-surface mb-6 h-10 w-3/4 rounded" />
-                  <div className="bg-surface mb-4 h-4 w-full rounded" />
-                  <div className="bg-surface mb-4 h-4 w-5/6 rounded" />
-                  <div className="bg-surface mb-8 h-4 w-2/3 rounded" />
-                  <div className="flex gap-4">
-                    <div className="bg-surface h-12 w-32 rounded" />
-                    <div className="bg-surface h-12 flex-1 rounded" />
-                  </div>
-                </div>
+            {/* Breadcrumb skeleton */}
+            <div className="bg-surface mb-6 h-4 w-64 rounded" />
+
+            {/* Hero section skeleton */}
+            <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-12">
+              {/* Preview skeleton */}
+              <div className="order-2 lg:order-1">
+                <div className="bg-surface aspect-[3/4] w-full rounded-xl" />
               </div>
-              <div className="lg:col-span-1">
-                <div className="card rounded-2xl p-6">
-                  <div className="bg-surface mb-4 h-5 w-24 rounded" />
-                  <div className="flex gap-3">
-                    <div className="bg-surface h-12 w-12 rounded-full" />
-                    <div>
-                      <div className="bg-surface mb-2 h-4 w-32 rounded" />
-                      <div className="bg-surface h-3 w-24 rounded" />
-                    </div>
+
+              {/* Info panel skeleton */}
+              <div className="order-1 lg:order-2">
+                {/* Badges */}
+                <div className="mb-3 flex gap-2">
+                  <div className="bg-surface h-6 w-12 rounded-full" />
+                  <div className="bg-surface h-6 w-20 rounded-full" />
+                </div>
+                {/* Title */}
+                <div className="bg-surface mb-4 h-9 w-3/4 rounded" />
+                {/* Seller card */}
+                <div className="border-border mb-4 flex items-center gap-3 rounded-lg border p-3">
+                  <div className="bg-surface h-10 w-10 rounded-full" />
+                  <div className="flex-1">
+                    <div className="bg-surface mb-1.5 h-4 w-32 rounded" />
+                    <div className="bg-surface h-3 w-24 rounded" />
                   </div>
+                  <div className="bg-surface h-8 w-20 rounded-lg" />
+                </div>
+                {/* Metadata */}
+                <div className="bg-surface mb-6 h-4 w-2/3 rounded" />
+                {/* Purchase box */}
+                <div className="border-primary/20 bg-primary/5 rounded-xl border-2 p-6">
+                  <div className="bg-surface mb-4 h-9 w-24 rounded" />
+                  <div className="bg-surface mb-4 h-14 w-full rounded-lg" />
+                  <div className="bg-surface h-12 w-full rounded-lg" />
                 </div>
               </div>
             </div>
@@ -312,10 +328,23 @@ export default function ResourceDetailPage() {
     return (
       <div className="flex min-h-screen flex-col">
         <TopBar />
-        <main className="mx-auto max-w-7xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-text mb-4 text-4xl font-bold">Ressource nicht gefunden</h1>
-            <p className="text-text-muted mb-8">
+        <main className="mx-auto max-w-6xl flex-1 px-4 py-6 sm:px-6 lg:px-8">
+          <div className="py-16 text-center">
+            <svg
+              className="text-text-muted mx-auto mb-6 h-16 w-16"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <h1 className="text-text mb-4 text-2xl font-bold">Ressource nicht gefunden</h1>
+            <p className="text-text-muted mx-auto mb-8 max-w-md">
               Die gesuchte Ressource existiert nicht oder ist nicht mehr verfügbar.
             </p>
             <Link
@@ -326,6 +355,7 @@ export default function ResourceDetailPage() {
             </Link>
           </div>
         </main>
+        <Footer />
       </div>
     );
   }
@@ -334,10 +364,23 @@ export default function ResourceDetailPage() {
     return (
       <div className="flex min-h-screen flex-col">
         <TopBar />
-        <main className="mx-auto max-w-7xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-text mb-4 text-4xl font-bold">Fehler beim Laden</h1>
-            <p className="text-text-muted mb-8">
+        <main className="mx-auto max-w-6xl flex-1 px-4 py-6 sm:px-6 lg:px-8">
+          <div className="py-16 text-center">
+            <svg
+              className="text-error mx-auto mb-6 h-16 w-16"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
+            </svg>
+            <h1 className="text-text mb-4 text-2xl font-bold">Fehler beim Laden</h1>
+            <p className="text-text-muted mx-auto mb-8 max-w-md">
               Die Ressource konnte nicht geladen werden. Bitte versuchen Sie es später erneut.
             </p>
             <button
@@ -348,6 +391,7 @@ export default function ResourceDetailPage() {
             </button>
           </div>
         </main>
+        <Footer />
       </div>
     );
   }
@@ -356,7 +400,7 @@ export default function ResourceDetailPage() {
     <div className="flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="mx-auto max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-6xl flex-1 px-4 py-6 pb-24 sm:px-6 lg:px-8 lg:pb-6">
         {/* Pending Review Banner */}
         {!resource.isApproved && (
           <div className="border-warning/50 bg-warning/10 mb-6 rounded-lg border p-4">
@@ -385,89 +429,206 @@ export default function ResourceDetailPage() {
         )}
 
         {/* Breadcrumb */}
-        <nav className="text-text-muted mb-8 flex items-center gap-2 text-sm">
-          <Link href="/resources" className="hover:text-primary">
-            Ressourcen
-          </Link>
-          <span>/</span>
-          <Link href={`/resources?subject=${resource.subject}`} className="hover:text-primary">
-            {resource.subject}
-          </Link>
-          <span>/</span>
-          <span className="text-text">{resource.title}</span>
-        </nav>
+        <Breadcrumb
+          items={[
+            { label: tCommon("breadcrumb.resources"), href: "/resources" },
+            { label: resource.subject, href: `/resources?subject=${resource.subject}` },
+            { label: resource.title },
+          ]}
+          className="mb-8"
+        />
 
-        <div className="grid gap-8 lg:grid-cols-3">
-          {/* Main Content */}
-          <div className="lg:col-span-2">
-            {/* Primary Information */}
-            <div className="card p-8">
-              {/* Title and Badges */}
-              <div className="mb-6">
-                <div className="mb-4 flex flex-wrap items-center gap-3">
-                  <span className="pill pill-neutral">PDF</span>
-                  {resource.isApproved ? (
-                    <span className="pill pill-success">Verifiziert</span>
-                  ) : (
-                    <span className="pill pill-warning">Wird überprüft</span>
-                  )}
-                  {/* LP21 badges for primary competencies */}
-                  {resource.competencies &&
-                    resource.competencies
-                      .slice(0, 2)
-                      .map((comp) => (
-                        <LP21Badge
-                          key={comp.id}
-                          code={comp.code}
-                          description={comp.description_de}
-                          anforderungsstufe={comp.anforderungsstufe as "grund" | "erweitert" | null}
-                          subjectColor={comp.subjectColor}
-                          size="sm"
-                        />
-                      ))}
-                  {resource.competencies && resource.competencies.length > 2 && (
-                    <span className="text-text-muted text-xs">
-                      +{resource.competencies.length - 2}
-                    </span>
-                  )}
-                </div>
-                <h1 className="text-text text-3xl font-bold">{resource.title}</h1>
-              </div>
-
-              {/* Description */}
-              <p className="text-text-muted mb-6 leading-relaxed">{resource.description}</p>
-
-              {/* LP21 Curriculum Box */}
-              {(resource.competencies?.length ||
-                resource.transversals?.length ||
-                resource.bneThemes?.length ||
-                resource.isMiIntegrated) && (
-                <div className="mb-8">
-                  <CurriculumBox
-                    competencies={resource.competencies}
-                    transversals={resource.transversals}
-                    bneThemes={resource.bneThemes}
-                    isMiIntegrated={resource.isMiIntegrated}
-                  />
+        {/* HERO SECTION: Preview + Purchase (2-column on desktop) */}
+        <section className="mb-12">
+          <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-12">
+            {/* Column 1: Preview Gallery - Primary Visual */}
+            <div className="order-2 lg:order-1">
+              {resource.previewUrls?.length || resource.previewUrl ? (
+                <PreviewGallery
+                  previewUrls={
+                    resource.previewUrls?.length
+                      ? resource.previewUrls
+                      : resource.previewUrl
+                        ? [resource.previewUrl]
+                        : []
+                  }
+                  previewCount={resource.previewCount || 1}
+                  hasAccess={resource.hasAccess ?? resource.price === 0}
+                  resourceTitle={resource.title}
+                  priceFormatted={resource.priceFormatted}
+                  onPurchaseClick={() => {
+                    const purchaseSection = document.querySelector("[data-purchase-section]");
+                    purchaseSection?.scrollIntoView({ behavior: "smooth", block: "center" });
+                  }}
+                />
+              ) : (
+                <div className="border-border bg-bg flex aspect-[3/4] items-center justify-center rounded-xl border">
+                  <div className="text-text-muted text-center">
+                    <svg
+                      className="mx-auto mb-2 h-16 w-16"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      />
+                    </svg>
+                    <p className="text-sm">Keine Vorschau verfügbar</p>
+                  </div>
                 </div>
               )}
+            </div>
 
-              {/* Price and Actions */}
-              <div className="mb-8 flex flex-wrap items-center gap-4">
+            {/* Column 2: Info + Purchase Panel */}
+            <div className="order-1 lg:sticky lg:top-24 lg:order-2">
+              {/* Badges Row */}
+              <div className="mb-3 flex flex-wrap items-center gap-2">
+                <span className="pill pill-neutral">PDF</span>
+                {resource.isApproved ? (
+                  <span className="pill pill-success">Verifiziert</span>
+                ) : (
+                  <span className="pill pill-warning">Wird überprüft</span>
+                )}
+                {/* LP21 badges for primary competencies */}
+                {resource.competencies &&
+                  resource.competencies
+                    .slice(0, 2)
+                    .map((comp) => (
+                      <LP21Badge
+                        key={comp.id}
+                        code={comp.code}
+                        description={comp.description_de}
+                        anforderungsstufe={comp.anforderungsstufe as "grund" | "erweitert" | null}
+                        subjectColor={comp.subjectColor}
+                        size="sm"
+                      />
+                    ))}
+                {resource.competencies && resource.competencies.length > 2 && (
+                  <span className="text-text-muted text-xs">
+                    +{resource.competencies.length - 2}
+                  </span>
+                )}
+              </div>
+
+              {/* Title */}
+              <h1 className="text-text mb-2 text-2xl font-bold sm:text-3xl">{resource.title}</h1>
+
+              {/* Brief Description */}
+              <p className="text-text-muted mb-4 line-clamp-2 text-sm">{resource.description}</p>
+
+              {/* Inline Seller Trust Card */}
+              <Link
+                href={`/resources?seller=${resource.seller.id}`}
+                className="border-border bg-surface/50 hover:border-primary/50 mb-4 flex items-center gap-3 rounded-lg border p-3 transition-colors"
+              >
+                {resource.seller.image ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={resource.seller.image}
+                    alt={resource.seller.displayName || "Verkäufer"}
+                    className="h-10 w-10 flex-shrink-0 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="bg-primary text-text-on-accent flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full font-bold">
+                    {(resource.seller.displayName || "A").charAt(0).toUpperCase()}
+                  </div>
+                )}
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-text truncate font-medium">
+                      {resource.seller.displayName || "Anonym"}
+                    </span>
+                    {resource.seller.verified && (
+                      <span className="text-primary flex items-center gap-1 text-xs">
+                        <svg
+                          className="h-3.5 w-3.5 flex-shrink-0"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        Verifiziert
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-text-muted text-sm">
+                      {resource.seller.resourceCount} Ressourcen
+                    </span>
+                    <svg
+                      className="text-text-muted h-3.5 w-3.5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setIsFollowing(!isFollowing);
+                  }}
+                  className={`flex-shrink-0 rounded-lg border px-3 py-1.5 text-sm font-medium transition-all ${
+                    isFollowing
+                      ? "border-primary bg-primary-light text-primary"
+                      : "border-border bg-surface text-text hover:border-primary hover:bg-primary-light"
+                  }`}
+                >
+                  {isFollowing ? "Folge ich" : "+ Folgen"}
+                </button>
+              </Link>
+
+              {/* Quick Metadata Row */}
+              <div className="text-text-muted mb-6 flex flex-wrap items-center gap-2 text-sm">
+                <span className={`pill pill-${resource.subject.toLowerCase()} text-xs`}>
+                  {resource.subject}
+                </span>
+                <span className="text-border">·</span>
+                <span>Zyklus {resource.cycle || "-"}</span>
+                <span className="text-border">·</span>
+                <span>{resource.downloadCount} Downloads</span>
+                <span className="text-border">·</span>
+                <span>{new Date(resource.createdAt).toLocaleDateString("de-CH")}</span>
+              </div>
+
+              {/* Purchase Box */}
+              <div
+                className="border-primary/20 bg-primary/5 rounded-xl border-2 p-6"
+                data-purchase-section
+              >
+                {/* Price */}
                 <div
-                  className={`text-3xl font-bold ${resource.price === 0 ? "text-success" : "text-primary"}`}
+                  className={`mb-4 text-3xl font-bold ${resource.price === 0 ? "text-success" : "text-primary"}`}
                 >
                   {resource.priceFormatted}
                 </div>
+
+                {/* Purchase Actions */}
                 {!resource.isApproved ? (
-                  <div className="border-warning/50 bg-warning/10 flex-1 rounded-lg border px-8 py-4 text-center">
+                  <div className="border-warning/50 bg-warning/10 rounded-lg border px-6 py-4 text-center">
                     <span className="text-warning font-medium">Verfügbar nach Überprüfung</span>
                   </div>
                 ) : resource.price === 0 ? (
                   <button
                     onClick={handleDownload}
                     disabled={downloading}
-                    className="btn-primary flex-1 px-8 py-4 disabled:opacity-50"
+                    className="btn-primary w-full py-4 text-lg font-semibold disabled:opacity-50"
                   >
                     {downloading ? "Wird heruntergeladen..." : "Kostenlos herunterladen"}
                   </button>
@@ -476,21 +637,22 @@ export default function ResourceDetailPage() {
                     resourceId={resource.id}
                     price={resource.price}
                     priceFormatted={resource.priceFormatted}
-                    className="flex-1"
+                    className="w-full"
                   />
                 )}
+
+                {/* Wishlist Button */}
                 <button
                   onClick={handleWishlistToggle}
                   disabled={wishlistLoading}
-                  className={`group rounded-lg border-2 p-4 transition-all disabled:opacity-50 ${
+                  className={`mt-4 flex w-full items-center justify-center gap-2 rounded-lg border-2 px-4 py-2.5 font-medium transition-all disabled:opacity-50 ${
                     isWishlisted
                       ? "border-error bg-error/10 text-error"
-                      : "border-border bg-bg text-text-muted hover:border-error hover:text-error"
+                      : "border-border bg-surface text-text-muted hover:border-error hover:text-error"
                   }`}
-                  title={isWishlisted ? "Von Wunschliste entfernen" : "Zur Wunschliste hinzufügen"}
                 >
                   <svg
-                    className={`h-6 w-6 transition-transform duration-200 ease-out group-active:scale-125 ${
+                    className={`h-5 w-5 transition-transform duration-200 ease-out ${
                       isWishlisted ? "animate-[heartBeat_0.3s_ease-in-out]" : ""
                     }`}
                     fill={isWishlisted ? "currentColor" : "none"}
@@ -500,163 +662,74 @@ export default function ResourceDetailPage() {
                   >
                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                   </svg>
+                  {isWishlisted ? "Gemerkt" : "Zur Wunschliste"}
                 </button>
               </div>
 
-              {/* Metadata Block */}
-              <div className="border-border bg-bg mb-8 rounded-xl border p-6">
-                <h3 className="text-text mb-4 font-semibold">Details</h3>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div>
-                    <div className="text-text-muted text-sm">Fach</div>
-                    <div className="text-text font-medium">{resource.subject}</div>
-                  </div>
-                  <div>
-                    <div className="text-text-muted text-sm">Zyklus</div>
-                    <div className="text-text font-medium">{resource.cycle || "-"}</div>
-                  </div>
-                  <div>
-                    <div className="text-text-muted text-sm">Downloads</div>
-                    <div className="text-text font-medium">{resource.downloadCount}</div>
-                  </div>
-                  <div>
-                    <div className="text-text-muted text-sm">Veröffentlicht</div>
-                    <div className="text-text font-medium">
-                      {new Date(resource.createdAt).toLocaleDateString("de-CH")}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Preview Section */}
-              {resource.previewUrl && (
-                <div className="mb-8">
-                  <h3 className="text-text mb-4 text-xl font-semibold">Vorschau</h3>
-                  <div className="border-border bg-bg relative aspect-[3/4] max-w-sm overflow-hidden rounded-xl border">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={resource.previewUrl}
-                      alt="Vorschau"
-                      className="h-full w-full object-cover"
-                    />
-                    {/* Watermark overlay */}
-                    <div className="bg-bg/30 absolute inset-0 flex items-center justify-center backdrop-blur-[1px]">
-                      <span className="text-text-muted rotate-[-45deg] text-4xl font-bold opacity-30">
-                        VORSCHAU
-                      </span>
-                    </div>
-                  </div>
-                  <p className="text-text-muted mt-4 text-sm">
-                    Vollständige Dateien sind nach dem Kauf verfügbar
-                  </p>
-                </div>
-              )}
-
-              {/* Report Button */}
+              {/* Report Link */}
               <button
                 onClick={() => setShowReportModal(true)}
-                className="text-text-muted hover:text-error text-sm transition-colors"
+                className="text-text-muted hover:text-error mt-4 text-sm transition-colors"
               >
                 Ressource melden
               </button>
             </div>
-
-            {/* Reviews Section - Coming Soon */}
-            <div className="border-border mt-12 border-t pt-8">
-              <h2 className="text-text mb-6 text-2xl font-bold">Bewertungen</h2>
-              <div className="border-border bg-bg rounded-xl border p-8 text-center">
-                <p className="text-text-muted mb-2">Bewertungen sind bald verfügbar</p>
-                <p className="text-text-faint text-sm">
-                  Diese Funktion wird in Kürze freigeschaltet
-                </p>
-              </div>
-            </div>
-
-            {/* Related Resources */}
-            {relatedResources.length > 0 && (
-              <div className="mt-12">
-                <h2 className="text-text mb-6 text-2xl font-bold">Ähnliche Ressourcen</h2>
-                <div className="grid gap-4 sm:grid-cols-3 sm:gap-5">
-                  {relatedResources.map((related) => (
-                    <ResourceCard
-                      key={related.id}
-                      id={related.id}
-                      title={related.title}
-                      subject={related.subject}
-                      cycle={related.cycle}
-                      priceFormatted={related.priceFormatted}
-                      previewUrl={related.previewUrl}
-                      variant="compact"
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
+        </section>
 
-          {/* Sidebar */}
-          <div className="lg:col-span-1">
-            {/* Seller Info */}
-            <div className="card sticky top-24 p-6">
-              <h3 className="text-text mb-4 font-semibold">Erstellt von</h3>
-              <div className="mb-4 flex items-center gap-3">
-                {resource.seller.image ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={resource.seller.image}
-                    alt={resource.seller.displayName || "Verkäufer"}
-                    className="h-12 w-12 rounded-full object-cover"
-                  />
-                ) : (
-                  <div className="bg-primary text-text-on-accent flex h-12 w-12 items-center justify-center rounded-full text-lg font-bold">
-                    {(resource.seller.displayName || "A").charAt(0).toUpperCase()}
-                  </div>
-                )}
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-text font-medium">
-                      {resource.seller.displayName || "Anonym"}
-                    </span>
-                    {resource.seller.verified && (
-                      <svg className="text-primary h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path
-                          fillRule="evenodd"
-                          d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    )}
-                  </div>
-                  <div className="text-text-muted text-sm">
-                    {resource.seller.resourceCount} Ressourcen
-                  </div>
-                </div>
-              </div>
+        {/* DESCRIPTION SECTION */}
+        <section className="mb-12 max-w-3xl">
+          <h2 className="text-text mb-4 text-xl font-semibold">Beschreibung</h2>
+          <p className="text-text-secondary leading-relaxed whitespace-pre-line">
+            {resource.description}
+          </p>
+        </section>
 
-              {/* Follow Button */}
-              <button
-                onClick={() => setIsFollowing(!isFollowing)}
-                className={`w-full rounded-lg border-2 px-4 py-3 font-medium transition-all ${
-                  isFollowing
-                    ? "border-primary bg-primary-light text-primary"
-                    : "border-border bg-bg text-text hover:border-primary hover:bg-primary-light"
-                }`}
-              >
-                {isFollowing ? "Folge ich" : "+ Folgen"}
-              </button>
+        {/* LP21 CURRICULUM SECTION */}
+        {(resource.competencies?.length ||
+          resource.transversals?.length ||
+          resource.bneThemes?.length ||
+          resource.isMiIntegrated) && (
+          <section className="mb-12">
+            <CurriculumBox
+              competencies={resource.competencies}
+              transversals={resource.transversals}
+              bneThemes={resource.bneThemes}
+              isMiIntegrated={resource.isMiIntegrated}
+            />
+          </section>
+        )}
 
-              {/* More from Seller */}
-              <div className="border-border mt-6 border-t pt-6">
-                <Link
-                  href={`/resources?seller=${resource.seller.id}`}
-                  className="text-primary hover:text-primary-hover text-sm font-medium transition-colors"
-                >
-                  Alle Ressourcen ansehen
-                </Link>
-              </div>
+        {/* REVIEWS SECTION */}
+        <section className="border-border mb-12 border-t pt-12">
+          <ReviewsSection resourceId={id} />
+        </section>
+
+        {/* COMMENTS SECTION */}
+        <section className="border-border mb-12 border-t pt-12">
+          <CommentsSection resourceId={id} />
+        </section>
+
+        {/* RELATED RESOURCES */}
+        {relatedResources.length > 0 && (
+          <section className="border-border border-t pt-12">
+            <h2 className="text-text mb-6 text-xl font-semibold">Ähnliche Ressourcen</h2>
+            <div className="grid gap-4 sm:grid-cols-3 sm:gap-5">
+              {relatedResources.map((related) => (
+                <ResourceCard
+                  key={related.id}
+                  id={related.id}
+                  title={related.title}
+                  subject={related.subject}
+                  cycle={related.cycle}
+                  priceFormatted={related.priceFormatted}
+                  previewUrl={related.previewUrl}
+                  variant="compact"
+                />
+              ))}
             </div>
-          </div>
-        </div>
+          </section>
+        )}
       </main>
 
       {/* Report Modal */}
@@ -780,6 +853,41 @@ export default function ResourceDetailPage() {
                   </button>
                 </div>
               </form>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Sticky Purchase Bar */}
+      {resource.isApproved && (
+        <div className="border-border bg-surface fixed inset-x-0 bottom-0 z-40 border-t p-4 lg:hidden">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <div
+                className={`text-xl font-bold ${resource.price === 0 ? "text-success" : "text-primary"}`}
+              >
+                {resource.priceFormatted}
+              </div>
+              <div className="text-text-muted text-xs">{resource.title}</div>
+            </div>
+            {resource.price === 0 ? (
+              <button
+                onClick={handleDownload}
+                disabled={downloading}
+                className="btn-action px-6 py-3 font-semibold disabled:opacity-50"
+              >
+                {downloading ? "..." : "Download"}
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  const purchaseSection = document.querySelector("[data-purchase-section]");
+                  purchaseSection?.scrollIntoView({ behavior: "smooth", block: "center" });
+                }}
+                className="btn-action px-6 py-3 font-semibold"
+              >
+                Kaufen
+              </button>
             )}
           </div>
         </div>

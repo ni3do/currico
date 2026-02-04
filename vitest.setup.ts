@@ -114,10 +114,13 @@ vi.mock("@/lib/db", () => {
     download: mockDownload,
     downloadToken: mockDownloadToken,
     report: mockReport,
-    $transaction: vi.fn().mockImplementation(async (callback: (tx: typeof mockPrisma) => Promise<unknown>) => {
-      return callback(mockPrisma);
-    }),
+    $transaction: vi
+      .fn()
+      .mockImplementation(async (callback: (tx: typeof mockPrisma) => Promise<unknown>) => {
+        return callback(mockPrisma);
+      }),
     $queryRawUnsafe: vi.fn(),
+    $queryRaw: vi.fn(),
   };
 
   return {

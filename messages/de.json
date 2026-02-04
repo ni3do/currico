@@ -7,6 +7,18 @@
     "unauthorized": "Nicht autorisiert",
     "serverError": "Serverfehler"
   },
+  "previewGallery": {
+    "title": "Vorschau",
+    "pageOf": "Seite {current} von {total}",
+    "noPreview": "Keine Vorschau verfügbar",
+    "fullAccessHint": "Vollständige Dateien nach dem Kauf verfügbar",
+    "purchaseHint": "Kaufen Sie, um alle Vorschauseiten freizuschalten",
+    "blurredOverlay": {
+      "title": "Vorschau verschwommen",
+      "description": "Kaufen Sie, um die vollständige Ansicht freizuschalten",
+      "cta": "Jetzt freischalten"
+    }
+  },
   "common": {
     "brand": {
       "logoText": "C",
@@ -44,6 +56,28 @@
       "apply": "Anwenden",
       "reset": "Zurücksetzen",
       "backToHome": "Zurück zur Startseite"
+    },
+    "breadcrumb": {
+      "home": "Startseite",
+      "resources": "Material",
+      "account": "Mein Konto",
+      "upload": "Hochladen",
+      "profile": "Profil",
+      "settings": "Einstellungen",
+      "about": "Über uns",
+      "contact": "Kontakt",
+      "collections": "Sammlungen",
+      "following": "Folge ich",
+      "checkout": "Kasse",
+      "checkoutSuccess": "Erfolgreich",
+      "checkoutCancel": "Abgebrochen",
+      "terms": "AGB",
+      "privacy": "Datenschutz",
+      "imprint": "Impressum",
+      "cookies": "Cookies",
+      "help": "Hilfe",
+      "becomeSeller": "Verkäufer werden",
+      "bundles": "Pakete"
     }
   },
   "homePage": {
@@ -814,6 +848,177 @@
       "competencyTip": "Je genauer Sie Ihre Ressource dem Lehrplan 21 zuordnen, desto besser finden Lehrpersonen Ihre Materialien. Wählen Sie alle relevanten Kompetenzen aus."
     }
   },
+  "uploadWizard": {
+    "pageTitle": "Ressource hochladen",
+    "pageSubtitle": "Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen",
+    "steps": {
+      "basics": "Grundinformationen",
+      "basicsShort": "Basics",
+      "basicsDescription": "Titel, Beschreibung, Sprache",
+      "curriculum": "Lehrplan-Zuordnung",
+      "curriculumShort": "Lehrplan",
+      "curriculumDescription": "Zyklus, Fach, Kompetenzen",
+      "price": "Eigenschaften & Preis",
+      "priceShort": "Preis",
+      "priceDescription": "Preistyp, Lizenz",
+      "files": "Dateien & Rechtliches",
+      "filesShort": "Dateien",
+      "filesDescription": "Upload, Bestätigungen",
+      "progress": "Schritt {current} von {total}",
+      "almostDone": "Fast geschafft!"
+    },
+    "draft": {
+      "saved": "Entwurf gespeichert",
+      "savedAt": "Entwurf gespeichert {time}",
+      "exists": "Entwurf vorhanden",
+      "saving": "Speichere...",
+      "discard": "Verwerfen",
+      "discardTitle": "Entwurf verwerfen?",
+      "discardMessage": "Sind Sie sicher, dass Sie den gespeicherten Entwurf löschen möchten? Alle eingegebenen Daten gehen verloren und können nicht wiederhergestellt werden.",
+      "discardConfirm": "Verwerfen",
+      "discardCancel": "Abbrechen",
+      "restored": "Entwurf wiederhergestellt",
+      "restoredMessage": "Ihr vorheriger Entwurf wurde geladen."
+    },
+    "validation": {
+      "titleRequired": "Titel ist erforderlich",
+      "titleMinLength": "Titel muss mindestens 5 Zeichen haben",
+      "titleMaxLength": "Titel darf maximal 100 Zeichen haben",
+      "descriptionRequired": "Beschreibung ist erforderlich",
+      "descriptionMinLength": "Beschreibung muss mindestens 20 Zeichen haben",
+      "descriptionMaxLength": "Beschreibung darf maximal 2000 Zeichen haben",
+      "cycleRequired": "Zyklus ist erforderlich",
+      "subjectRequired": "Fach ist erforderlich",
+      "priceRequired": "Preis ist erforderlich",
+      "pricePositive": "Preis muss eine positive Zahl sein",
+      "priceMax": "Preis darf maximal CHF 50 sein",
+      "priceMin": "Mindestpreis ist CHF 1",
+      "fileRequired": "Mindestens eine Datei ist erforderlich",
+      "legalOwnContent": "Bitte bestätigen Sie, dass Sie eigene Inhalte verwenden",
+      "legalNoScans": "Bitte bestätigen Sie, dass keine Lehrmittel-Scans enthalten sind",
+      "legalNoTrademarks": "Bitte bestätigen Sie, dass keine geschützten Marken enthalten sind",
+      "legalSwissGerman": "Bitte bestätigen Sie die Schweizer Rechtschreibung",
+      "legalTerms": "Bitte akzeptieren Sie die Verkäufervereinbarung",
+      "allComplete": "Alle Angaben vollständig",
+      "moreErrors": "+{count} weitere Fehler"
+    },
+    "tooltips": {
+      "title": "Wählen Sie einen klaren, aussagekräftigen Titel, der den Inhalt Ihrer Ressource beschreibt. Ein guter Titel hilft anderen Lehrpersonen, Ihre Materialien zu finden.",
+      "titleExample": "Bruchrechnen Übungsblätter Zyklus 2",
+      "description": "Beschreiben Sie kurz, was Ihre Ressource enthält und für welchen Einsatz sie gedacht ist. Erwähnen Sie besondere Merkmale oder didaktische Hinweise.",
+      "descriptionExample": "10 differenzierte Arbeitsblätter zum Thema Bruchrechnen mit Lösungen. Geeignet für Einzel- und Gruppenarbeit.",
+      "language": "Wählen Sie die Hauptsprache des Inhalts. Dies hilft bei der Suche und Filterung.",
+      "resourceType": "Wählen Sie das Hauptformat Ihrer Datei. PDF-Dateien werden am häufigsten verwendet und erhalten automatisch eine Vorschau.",
+      "cycle": "Der Zyklus definiert die Altersstufe gemäss Lehrplan 21. Zyklus 1: KG-2. Klasse, Zyklus 2: 3.-6. Klasse, Zyklus 3: 7.-9. Klasse.",
+      "subject": "Wählen Sie das Hauptfach, zu dem Ihre Ressource passt. Die verfügbaren Fächer hängen vom gewählten Zyklus ab.",
+      "canton": "Optional: Wählen Sie einen Kanton, wenn Ihre Ressource speziell für bestimmte kantonale Lehrmittel konzipiert ist.",
+      "competencies": "Wählen Sie die Lehrplan 21 Kompetenzen aus, die Ihre Ressource abdeckt. Je genauer Sie zuordnen, desto besser finden Lehrpersonen Ihre Materialien.",
+      "competenciesExample": "MA.1.A.1 - Zahlen verstehen",
+      "priceType": "Entscheiden Sie, ob Ihre Ressource kostenlos oder kostenpflichtig sein soll. Kostenlose Ressourcen erreichen mehr Nutzer, kostenpflichtige generieren Einkommen.",
+      "price": "Legen Sie den Verkaufspreis in CHF fest. Sie erhalten 70% des Verkaufspreises, 30% sind Plattformgebühr. Der Mindestpreis ist CHF 1, Maximum CHF 50.",
+      "priceExample": "CHF 5.00",
+      "editable": "Aktivieren Sie dies, wenn Käufer die Datei bearbeiten können sollen (z.B. Word-Dokumente). Bei PDF-Dateien ist dies meist nicht nötig.",
+      "files": "Laden Sie Ihre Hauptdatei(en) hoch. Unterstützte Formate: PDF, Word, PowerPoint, Excel. Maximale Dateigrösse: 50 MB pro Datei.",
+      "preview": "Optional: Laden Sie ein eigenes Vorschaubild hoch. Bei PDF-Dateien wird automatisch eine Vorschau aus der ersten Seite erstellt."
+    },
+    "fields": {
+      "title": "Titel",
+      "titlePlaceholder": "z.B. Bruchrechnen Übungsblätter Zyklus 2",
+      "titleHint": "Wählen Sie einen aussagekräftigen Titel (5-100 Zeichen)",
+      "description": "Kurzbeschreibung",
+      "descriptionPlaceholder": "Beschreiben Sie Ihre Ressource kurz...",
+      "descriptionHint": "{count}/2000 Zeichen (min. 20)",
+      "language": "Sprache",
+      "resourceType": "Ressourcentyp",
+      "cycle": "Zyklus",
+      "cycleRequired": "Zyklus ist erforderlich",
+      "subject": "Fach",
+      "subjectPlaceholder": "Fach wählen...",
+      "canton": "Kanton",
+      "cantonPlaceholder": "Optional: Kanton wählen...",
+      "cantonHint": "Optional: Für kantonsspezifische Lehrmittel",
+      "competencies": "Lehrplan 21 Kompetenzen",
+      "competenciesPlaceholder": "Kompetenzen auswählen...",
+      "competenciesSelected": "{count} Kompetenz(en) ausgewählt",
+      "competenciesHint": "Wählen Sie die Kompetenzen aus dem Lehrplan 21, die zu Ihrer Ressource passen",
+      "competencySearch": "Suchen (z.B. MA.1.A oder Addition)...",
+      "priceType": "Preistyp",
+      "priceFree": "Kostenlos",
+      "priceFreeDesc": "Frei zugänglich",
+      "pricePaid": "Kostenpflichtig",
+      "pricePaidDesc": "Preis festlegen",
+      "price": "Preis (CHF)",
+      "pricePlaceholder": "z.B. 5.00",
+      "priceHint": "Sie erhalten 70% des Verkaufspreises (30% Plattformgebühr)",
+      "editable": "Editierbar",
+      "editableDesc": "Käufer können die Datei bearbeiten (z.B. Word-Dokument)",
+      "mainFiles": "Hauptdatei(en)",
+      "mainFilesHint": "PDF, Word, PowerPoint, Excel bis 50 MB",
+      "mainFilesUpload": "Klicken Sie hier oder ziehen Sie Dateien hinein",
+      "addMoreFiles": "+ Weitere Datei hinzufügen",
+      "previewImage": "Eigenes Vorschaubild (optional)",
+      "previewImageHint": "Falls Sie ein eigenes Vorschaubild verwenden möchten",
+      "previewImageFormats": "PNG, JPG bis 5 MB",
+      "previewSelected": "{count} Vorschaubild(er) ausgewählt",
+      "autoPreview": "Automatische Vorschau:",
+      "autoPreviewDesc": "Für PDF-Dateien wird automatisch eine Vorschau aus der ersten Seite erstellt."
+    },
+    "legal": {
+      "title": "Rechtliche Bestätigungen",
+      "subtitle": "Bitte bestätigen Sie die folgenden Punkte:",
+      "ownContent": "Eigene Inhalte oder CC0-Lizenz",
+      "ownContentDesc": "Ich habe alle Bilder, Grafiken und Texte selbst erstellt oder verwende nur Materialien mit CC0-Lizenz.",
+      "noScans": "Keine Lehrmittel-Scans",
+      "noScansDesc": "Ich habe keine Seiten aus Lehrmitteln oder Schulbüchern eingescannt oder kopiert.",
+      "noTrademarks": "Keine geschützten Marken oder Charaktere",
+      "noTrademarksDesc": "Meine Ressource enthält keine geschützten Marken, Logos oder Figuren.",
+      "swissGerman": "Schweizer Rechtschreibung",
+      "swissGermanDesc": "Meine Ressource verwendet die Schweizer Rechtschreibung (kein Eszett).",
+      "acceptTerms": "Verkäufervereinbarung akzeptieren",
+      "acceptTermsDesc": "Ich akzeptiere die Verkäufervereinbarung und bestätige, dass ich die Rechte habe, diese Ressource zu verkaufen.",
+      "incomplete": "Bitte bestätigen Sie alle Punkte, um fortzufahren.",
+      "eszettWarning": "Ihr Titel oder Beschreibung enthält noch Eszett-Zeichen (ß). Bitte korrigieren Sie dies in Schritt 1."
+    },
+    "eszett": {
+      "title": "Eszett (ß) gefunden",
+      "message": "Ihr Text enthält {count} Eszett-Zeichen (ß). In der Schweiz wird stattdessen \"ss\" verwendet.",
+      "fix": "Automatisch zu \"ss\" ändern"
+    },
+    "cycles": {
+      "cycle1": "Zyklus 1",
+      "cycle1Desc": "Kindergarten – 2. Klasse",
+      "cycle1Grades": "KG–2",
+      "cycle2": "Zyklus 2",
+      "cycle2Desc": "3. – 6. Klasse",
+      "cycle2Grades": "3–6",
+      "cycle3": "Zyklus 3",
+      "cycle3Desc": "7. – 9. Klasse",
+      "cycle3Grades": "7–9"
+    },
+    "summary": {
+      "title": "Übersicht",
+      "noTitle": "Noch kein Titel eingegeben",
+      "noCycle": "Noch kein Zyklus gewählt",
+      "noFiles": "Noch keine Dateien hochgeladen",
+      "legalStatus": "{count}/5 bestätigt",
+      "edit": "Bearbeiten"
+    },
+    "navigation": {
+      "back": "Zurück",
+      "next": "Weiter",
+      "publish": "Veröffentlichen"
+    },
+    "upload": {
+      "uploading": "Wird hochgeladen...",
+      "pleaseWait": "Bitte warten Sie, dies kann einen Moment dauern.",
+      "success": "Ressource erstellt!",
+      "successMessage": "Ihre Ressource wurde hochgeladen und wartet auf Freigabe.",
+      "viewResource": "Zur Ressource",
+      "error": "Fehler beim Hochladen",
+      "close": "Schliessen",
+      "retry": "Erneut versuchen"
+    }
+  },
   "becomeSeller": {
     "hero": {
       "badge": "Verkaufen starten",
@@ -988,11 +1193,20 @@
       "amount": "Betrag",
       "status": "Status",
       "statusCompleted": "Abgeschlossen",
-      "statusPending": "In Bearbeitung"
+      "statusPending": "In Bearbeitung",
+      "by": "von"
     },
     "actions": {
       "viewResource": "Ressource ansehen",
-      "goToLibrary": "Zur Bibliothek"
+      "goToLibrary": "Zur Bibliothek",
+      "downloadNow": "Jetzt herunterladen",
+      "downloading": "Wird heruntergeladen...",
+      "continueBrowsing": "Weitere Materialien entdecken"
+    },
+    "tips": {
+      "title": "Was kommt als Nächstes?",
+      "accessAnytime": "Greifen Sie jederzeit auf Ihren Kauf in Ihrer Bibliothek zu",
+      "findInLibrary": "Finden Sie alle erworbenen Ressourcen an einem Ort"
     },
     "noTransaction": {
       "title": "Kein Kauf gefunden",
@@ -1367,6 +1581,7 @@
   },
   "impressumPage": {
     "title": "Impressum",
+    "subtitle": "Rechtliche Angaben gemäss Schweizer Recht",
     "company": {
       "title": "Unternehmen",
       "name": "Currico (Beta)",
@@ -1767,6 +1982,91 @@
           "description": "Neuigkeiten über neue Funktionen und Verbesserungen der Plattform"
         }
       }
+    }
+  },
+  "reviews": {
+    "title": "Bewertungen",
+    "writeReview": "Bewertung schreiben",
+    "editReview": "Bewertung bearbeiten",
+    "averageRating": "Durchschnittliche Bewertung",
+    "basedOn": "basierend auf {count} Bewertungen",
+    "verifiedPurchase": "Verifizierter Kauf",
+    "noReviews": "Noch keine Bewertungen",
+    "beFirst": "Seien Sie der Erste, der diese Ressource bewertet!",
+    "mustPurchase": "Kaufen oder laden Sie diese Ressource herunter, um eine Bewertung abzugeben.",
+    "loginToReview": "Melden Sie sich an, um eine Bewertung zu schreiben.",
+    "ratingRequired": "Bitte wählen Sie eine Bewertung",
+    "titleOptional": "Titel (optional)",
+    "contentOptional": "Detaillierte Bewertung (optional)",
+    "submitReview": "Bewertung abgeben",
+    "updateReview": "Bewertung aktualisieren",
+    "deleteReview": "Bewertung löschen",
+    "confirmDelete": "Möchten Sie diese Bewertung wirklich löschen?",
+    "yourReview": "Ihre Bewertung",
+    "stars": {
+      "1": "Schlecht",
+      "2": "Mangelhaft",
+      "3": "Okay",
+      "4": "Gut",
+      "5": "Ausgezeichnet"
+    },
+    "starsLabel": "{count} Sterne"
+  },
+  "likes": {
+    "like": "Gefällt mir",
+    "liked": "Gefällt mir",
+    "unlike": "Gefällt mir nicht mehr",
+    "count": "{count} Likes",
+    "loginRequired": "Melden Sie sich an, um diese Ressource zu liken."
+  },
+  "comments": {
+    "title": "Kommentare",
+    "writeComment": "Kommentar schreiben",
+    "placeholder": "Schreiben Sie einen Kommentar...",
+    "reply": "Antworten",
+    "replyPlaceholder": "Schreiben Sie eine Antwort...",
+    "noComments": "Noch keine Kommentare",
+    "beFirst": "Seien Sie der Erste, der einen Kommentar schreibt!",
+    "loginToComment": "Melden Sie sich an, um einen Kommentar zu schreiben.",
+    "showReplies": "{count} Antworten anzeigen",
+    "hideReplies": "Antworten ausblenden",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "confirmDelete": "Möchten Sie diesen Kommentar wirklich löschen?",
+    "confirmDeleteReply": "Möchten Sie diese Antwort wirklich löschen?",
+    "edited": "bearbeitet",
+    "seller": "Verkäufer",
+    "sellerComments": {
+      "title": "Kommentare zu Ihren Materialien",
+      "totalComments": "{count} Kommentare insgesamt",
+      "unrepliedComments": "{count} unbeantwortet",
+      "filterAll": "Alle Kommentare",
+      "filterUnreplied": "Unbeantwortet",
+      "noComments": "Noch keine Kommentare zu Ihren Materialien",
+      "noCommentsDescription": "Kommentare erscheinen hier, sobald Nutzer Ihre Materialien kommentieren.",
+      "noUnreplied": "Keine unbeantworteten Kommentare",
+      "viewResource": "Ressource ansehen"
+    }
+  },
+  "teacherVerification": {
+    "badge": "Verifizierte Lehrperson",
+    "badgeTooltip": "Diese Person wurde als Lehrperson an einer Schweizer Bildungsinstitution verifiziert",
+    "verified": "Verifizierte Lehrperson",
+    "verifiedDescription": "Sie wurden als Lehrperson an einer Schweizer Bildungsinstitution verifiziert.",
+    "notVerified": "Nicht verifiziert",
+    "notVerifiedDescription": "Verwenden Sie eine E-Mail-Adresse einer Schweizer Bildungsinstitution (z.B. @phzh.ch) oder kontaktieren Sie uns für manuelle Verifizierung.",
+    "verificationMethod": "Verifizierungsmethode",
+    "verifiedSince": "Verifiziert seit",
+    "methodEmailDomain": "E-Mail-Domain",
+    "methodManual": "Manuelle Prüfung",
+    "methodEduId": "edu-ID"
+  },
+  "search": {
+    "sortOptions": {
+      "relevance": "Relevanz",
+      "newest": "Neueste",
+      "priceLow": "Preis: Aufsteigend",
+      "priceHigh": "Preis: Absteigend"
     }
   }
 }

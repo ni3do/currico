@@ -8,6 +8,7 @@ import { Link } from "@/i18n/navigation";
 import { Menu, ChevronDown } from "lucide-react";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
+import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 
 interface AdminLayoutProps {
@@ -23,9 +24,17 @@ interface AdminStats {
   revenueToday: number;
   activeSchools: number;
   openReports: number;
+  newMessages: number;
 }
 
-type TabType = "overview" | "users" | "documents" | "reports" | "transactions" | "settings";
+type TabType =
+  | "overview"
+  | "users"
+  | "documents"
+  | "messages"
+  | "reports"
+  | "transactions"
+  | "settings";
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const pathname = usePathname();
@@ -77,6 +86,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     if (pathname === "/admin") return "overview";
     if (pathname.startsWith("/admin/users")) return "users";
     if (pathname.startsWith("/admin/documents")) return "documents";
+    if (pathname.startsWith("/admin/messages")) return "messages";
     if (pathname.startsWith("/admin/reports")) return "reports";
     if (pathname.startsWith("/admin/transactions")) return "transactions";
     if (pathname.startsWith("/admin/settings")) return "settings";
@@ -94,6 +104,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         return "Benutzer";
       case "documents":
         return "Dokumente";
+      case "messages":
+        return "Nachrichten";
       case "reports":
         return "Meldungen";
       case "transactions":
@@ -118,25 +130,16 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
-        {/* Page Header */}
-        <div className="mb-6">
-          <div className="text-text-muted mb-2 flex items-center gap-2 text-sm">
-            <Link href="/" className="hover:text-primary transition-colors">
-              Home
-            </Link>
-            <span>/</span>
-            <Link href="/admin" className="hover:text-primary transition-colors">
-              Admin
-            </Link>
-            {activeTab !== "overview" && (
-              <>
-                <span>/</span>
-                <span className="text-text-secondary">{getPageTitle()}</span>
-              </>
-            )}
-          </div>
-          <h1 className="text-text text-2xl font-bold">Admin Panel</h1>
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-4 sm:px-6 lg:px-8">
+        {/* Breadcrumb */}
+        <div className="mb-3">
+          <Breadcrumb
+            items={
+              activeTab === "overview"
+                ? [{ label: "Admin" }]
+                : [{ label: "Admin", href: "/admin" }, { label: getPageTitle() }]
+            }
+          />
         </div>
 
         {/* Main Layout: Sidebar + Content */}
@@ -145,7 +148,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           <div className="lg:hidden">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="border-border bg-bg-secondary text-text-secondary hover:border-primary hover:text-primary flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-3 text-sm font-medium transition-colors"
+              className="border-border bg-bg-secondary text-text-secondary hover:border-error hover:text-error flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-3 text-sm font-medium transition-colors"
             >
               <Menu className="h-5 w-5" />
               <span>Admin Menü</span>

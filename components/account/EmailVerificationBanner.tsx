@@ -56,11 +56,11 @@ export function EmailVerificationBanner({ email }: EmailVerificationBannerProps)
 
   if (sent) {
     return (
-      <div className="rounded-xl border border-[var(--color-success)]/50 bg-[var(--color-success)]/10 p-6">
+      <div className="border-success/50 bg-success/10 rounded-xl border p-6">
         <div className="flex items-start gap-4">
-          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[var(--color-success)]/20">
+          <div className="bg-success/20 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full">
             <svg
-              className="h-5 w-5 text-[var(--color-success)]"
+              className="text-success h-5 w-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -74,29 +74,23 @@ export function EmailVerificationBanner({ email }: EmailVerificationBannerProps)
             </svg>
           </div>
           <div className="flex-1">
-            <h3 className="font-semibold text-[var(--color-text)]">
-              {t("sent.title")}
-            </h3>
-            <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+            <h3 className="text-text font-semibold">{t("sent.title")}</h3>
+            <p className="text-text-muted mt-1 text-sm">
               {t.rich("sent.description", {
                 email: () => <strong>{email}</strong>,
               })}
             </p>
-            {error && (
-              <p className="mt-2 text-sm text-[var(--color-error)]">{error}</p>
-            )}
+            {error && <p className="text-error mt-2 text-sm">{error}</p>}
             <button
               onClick={handleResend}
               disabled={sending || cooldownRemaining > 0}
-              className="mt-3 text-sm font-medium text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] disabled:cursor-not-allowed disabled:opacity-50"
+              className="text-primary hover:text-primary-hover mt-3 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {sending ? (
-                t("banner.sending")
-              ) : cooldownRemaining > 0 ? (
-                t("sent.resendIn", { seconds: cooldownRemaining })
-              ) : (
-                t("sent.resendButton")
-              )}
+              {sending
+                ? t("banner.sending")
+                : cooldownRemaining > 0
+                  ? t("sent.resendIn", { seconds: cooldownRemaining })
+                  : t("sent.resendButton")}
             </button>
           </div>
         </div>
@@ -105,11 +99,11 @@ export function EmailVerificationBanner({ email }: EmailVerificationBannerProps)
   }
 
   return (
-    <div className="rounded-xl border border-[var(--color-warning)]/50 bg-[var(--color-warning)]/10 p-6">
+    <div className="border-warning/50 bg-warning/10 rounded-xl border p-6">
       <div className="flex items-start gap-4">
-        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[var(--color-warning)]/20">
+        <div className="bg-warning/20 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full">
           <svg
-            className="h-5 w-5 text-[var(--color-warning)]"
+            className="text-warning h-5 w-5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -123,21 +117,17 @@ export function EmailVerificationBanner({ email }: EmailVerificationBannerProps)
           </svg>
         </div>
         <div className="flex-1">
-          <h3 className="font-semibold text-[var(--color-text)]">
-            {t("banner.title")}
-          </h3>
-          <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+          <h3 className="text-text font-semibold">{t("banner.title")}</h3>
+          <p className="text-text-muted mt-1 text-sm">
             {t.rich("banner.description", {
               email: () => <strong>{email}</strong>,
             })}
           </p>
-          {error && (
-            <p className="mt-2 text-sm text-[var(--color-error)]">{error}</p>
-          )}
+          {error && <p className="text-error mt-2 text-sm">{error}</p>}
           <button
             onClick={handleResend}
             disabled={sending}
-            className="mt-4 rounded-lg bg-[var(--color-primary)] px-4 py-2 text-sm font-medium text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--color-primary-hover)] disabled:opacity-50"
+            className="bg-primary text-text-on-accent hover:bg-primary-hover mt-4 rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
           >
             {sending ? (
               <span className="flex items-center gap-2">

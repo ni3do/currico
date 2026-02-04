@@ -25,11 +25,7 @@ interface DownloadInfo {
   };
 }
 
-export default function GuestDownloadPage({
-  params,
-}: {
-  params: Promise<{ token: string }>;
-}) {
+export default function GuestDownloadPage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = use(params);
   const t = useTranslations("guestDownload");
 
@@ -89,8 +85,7 @@ export default function GuestDownloadPage({
                 ...prev,
                 downloadCount: prev.downloadCount + 1,
                 remainingDownloads: Math.max(0, prev.remainingDownloads - 1),
-                status:
-                  prev.remainingDownloads - 1 <= 0 ? "max_downloads" : prev.status,
+                status: prev.remainingDownloads - 1 <= 0 ? "max_downloads" : prev.status,
               }
             : null
         );
@@ -117,14 +112,14 @@ export default function GuestDownloadPage({
         <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 lg:px-8">
           {isLoading ? (
             <div className="text-center">
-              <div className="mx-auto mb-4 h-16 w-16 animate-spin rounded-full border-4 border-[var(--color-primary)] border-t-transparent" />
-              <p className="text-[var(--color-text-muted)]">{t("loading")}</p>
+              <div className="border-primary mx-auto mb-4 h-16 w-16 animate-spin rounded-full border-4 border-t-transparent" />
+              <p className="text-text-muted">{t("loading")}</p>
             </div>
           ) : error ? (
             <div className="card p-8 text-center">
-              <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-error-light)]">
+              <div className="bg-error-light mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full">
                 <svg
-                  className="h-8 w-8 text-[var(--color-error)]"
+                  className="text-error h-8 w-8"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -137,21 +132,17 @@ export default function GuestDownloadPage({
                   />
                 </svg>
               </div>
-              <h1 className="mb-2 text-xl font-bold text-[var(--color-text)]">
-                {t(`errors.${error}.title`)}
-              </h1>
-              <p className="mb-6 text-[var(--color-text-muted)]">
-                {t(`errors.${error}.description`)}
-              </p>
+              <h1 className="text-text mb-2 text-xl font-bold">{t(`errors.${error}.title`)}</h1>
+              <p className="text-text-muted mb-6">{t(`errors.${error}.description`)}</p>
               <Link href="/resources" className="btn btn-primary px-6 py-2">
                 {t("browseResources")}
               </Link>
             </div>
           ) : info?.status === "expired" ? (
             <div className="card p-8 text-center">
-              <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-warning-light)]">
+              <div className="bg-warning-light mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full">
                 <svg
-                  className="h-8 w-8 text-[var(--color-warning)]"
+                  className="text-warning h-8 w-8"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -164,13 +155,9 @@ export default function GuestDownloadPage({
                   />
                 </svg>
               </div>
-              <h1 className="mb-2 text-xl font-bold text-[var(--color-text)]">
-                {t("expired.title")}
-              </h1>
-              <p className="mb-4 text-[var(--color-text-muted)]">
-                {t("expired.description")}
-              </p>
-              <p className="mb-6 text-sm text-[var(--color-text-muted)]">
+              <h1 className="text-text mb-2 text-xl font-bold">{t("expired.title")}</h1>
+              <p className="text-text-muted mb-4">{t("expired.description")}</p>
+              <p className="text-text-muted mb-6 text-sm">
                 {t("expired.expiredOn", { date: formatDate(info.expiresAt) })}
               </p>
               <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
@@ -184,9 +171,9 @@ export default function GuestDownloadPage({
             </div>
           ) : info?.status === "max_downloads" ? (
             <div className="card p-8 text-center">
-              <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-warning-light)]">
+              <div className="bg-warning-light mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full">
                 <svg
-                  className="h-8 w-8 text-[var(--color-warning)]"
+                  className="text-warning h-8 w-8"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -199,15 +186,11 @@ export default function GuestDownloadPage({
                   />
                 </svg>
               </div>
-              <h1 className="mb-2 text-xl font-bold text-[var(--color-text)]">
-                {t("maxDownloads.title")}
-              </h1>
-              <p className="mb-4 text-[var(--color-text-muted)]">
+              <h1 className="text-text mb-2 text-xl font-bold">{t("maxDownloads.title")}</h1>
+              <p className="text-text-muted mb-4">
                 {t("maxDownloads.description", { max: info.maxDownloads })}
               </p>
-              <p className="mb-6 text-sm text-[var(--color-text-muted)]">
-                {t("maxDownloads.suggestion")}
-              </p>
+              <p className="text-text-muted mb-6 text-sm">{t("maxDownloads.suggestion")}</p>
               <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
                 <Link href="/register" className="btn btn-primary px-6 py-2">
                   {t("createAccount")}
@@ -223,14 +206,12 @@ export default function GuestDownloadPage({
               <div className="mb-6 text-center">
                 <div
                   className={`mx-auto flex h-16 w-16 items-center justify-center rounded-full ${
-                    downloadSuccess
-                      ? "bg-[var(--color-success-light)]"
-                      : "bg-[var(--color-primary-light)]"
+                    downloadSuccess ? "bg-success-light" : "bg-primary-light"
                   }`}
                 >
                   {downloadSuccess ? (
                     <svg
-                      className="h-8 w-8 text-[var(--color-success)]"
+                      className="text-success h-8 w-8"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -244,7 +225,7 @@ export default function GuestDownloadPage({
                     </svg>
                   ) : (
                     <svg
-                      className="h-8 w-8 text-[var(--color-primary)]"
+                      className="text-primary h-8 w-8"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -261,19 +242,17 @@ export default function GuestDownloadPage({
               </div>
 
               {/* Title */}
-              <h1 className="mb-2 text-center text-2xl font-bold text-[var(--color-text)]">
+              <h1 className="text-text mb-2 text-center text-2xl font-bold">
                 {downloadSuccess ? t("success.title") : t("ready.title")}
               </h1>
-              <p className="mb-6 text-center text-[var(--color-text-muted)]">
+              <p className="text-text-muted mb-6 text-center">
                 {downloadSuccess ? t("success.description") : t("ready.description")}
               </p>
 
               {/* Resource Details */}
-              <div className="mb-6 rounded-lg bg-[var(--color-bg-secondary)] p-6">
-                <h2 className="mb-4 font-semibold text-[var(--color-text)]">
-                  {info.resource.title}
-                </h2>
-                <p className="mb-4 text-sm text-[var(--color-text-muted)]">
+              <div className="bg-bg-secondary mb-6 rounded-lg p-6">
+                <h2 className="text-text mb-4 font-semibold">{info.resource.title}</h2>
+                <p className="text-text-muted mb-4 text-sm">
                   {info.resource.description.length > 200
                     ? `${info.resource.description.slice(0, 200)}...`
                     : info.resource.description}
@@ -282,7 +261,7 @@ export default function GuestDownloadPage({
                   {info.resource.subjects.map((subject) => (
                     <span
                       key={subject}
-                      className="rounded bg-[var(--color-primary-light)] px-2 py-1 text-xs text-[var(--color-primary)]"
+                      className="bg-primary-light text-primary rounded px-2 py-1 text-xs"
                     >
                       {subject}
                     </span>
@@ -290,7 +269,7 @@ export default function GuestDownloadPage({
                   {info.resource.cycles.map((cycle) => (
                     <span
                       key={cycle}
-                      className="rounded bg-[var(--color-bg-tertiary)] px-2 py-1 text-xs text-[var(--color-text-muted)]"
+                      className="bg-bg-tertiary text-text-muted rounded px-2 py-1 text-xs"
                     >
                       {cycle}
                     </span>
@@ -301,28 +280,18 @@ export default function GuestDownloadPage({
               {/* Download Info */}
               <div className="mb-6 space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-[var(--color-text-muted)]">
-                    {t("info.remainingDownloads")}
-                  </span>
-                  <span className="font-medium text-[var(--color-text)]">
+                  <span className="text-text-muted">{t("info.remainingDownloads")}</span>
+                  <span className="text-text font-medium">
                     {info.remainingDownloads} / {info.maxDownloads}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-[var(--color-text-muted)]">
-                    {t("info.expiresOn")}
-                  </span>
-                  <span className="font-medium text-[var(--color-text)]">
-                    {formatDate(info.expiresAt)}
-                  </span>
+                  <span className="text-text-muted">{t("info.expiresOn")}</span>
+                  <span className="text-text font-medium">{formatDate(info.expiresAt)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-[var(--color-text-muted)]">
-                    {t("info.purchaseDate")}
-                  </span>
-                  <span className="font-medium text-[var(--color-text)]">
-                    {formatDate(info.purchaseDate)}
-                  </span>
+                  <span className="text-text-muted">{t("info.purchaseDate")}</span>
+                  <span className="text-text font-medium">{formatDate(info.purchaseDate)}</span>
                 </div>
               </div>
 
@@ -335,11 +304,7 @@ export default function GuestDownloadPage({
                 >
                   {isDownloading ? (
                     <span className="flex items-center justify-center gap-2">
-                      <svg
-                        className="h-5 w-5 animate-spin"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
+                      <svg className="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
                         <circle
                           className="opacity-25"
                           cx="12"
@@ -363,9 +328,9 @@ export default function GuestDownloadPage({
               )}
 
               {/* Create Account CTA */}
-              <div className="rounded-lg border-2 border-[var(--color-primary)] bg-[var(--color-primary-light)] p-6">
+              <div className="border-primary bg-primary-light rounded-lg border-2 p-6">
                 <div className="mb-4 flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-primary)]">
+                  <div className="bg-primary flex h-10 w-10 items-center justify-center rounded-full">
                     <svg
                       className="h-5 w-5 text-white"
                       fill="none"
@@ -380,17 +345,13 @@ export default function GuestDownloadPage({
                       />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-semibold text-[var(--color-text)]">
-                    {t("createAccountCta.title")}
-                  </h3>
+                  <h3 className="text-text text-lg font-semibold">{t("createAccountCta.title")}</h3>
                 </div>
-                <p className="mb-4 text-sm text-[var(--color-text-muted)]">
-                  {t("createAccountCta.description")}
-                </p>
-                <ul className="mb-5 space-y-2 text-sm text-[var(--color-text)]">
+                <p className="text-text-muted mb-4 text-sm">{t("createAccountCta.description")}</p>
+                <ul className="text-text mb-5 space-y-2 text-sm">
                   <li className="flex items-center gap-2">
                     <svg
-                      className="h-4 w-4 flex-shrink-0 text-[var(--color-success)]"
+                      className="text-success h-4 w-4 flex-shrink-0"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -406,7 +367,7 @@ export default function GuestDownloadPage({
                   </li>
                   <li className="flex items-center gap-2">
                     <svg
-                      className="h-4 w-4 flex-shrink-0 text-[var(--color-success)]"
+                      className="text-success h-4 w-4 flex-shrink-0"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -422,7 +383,7 @@ export default function GuestDownloadPage({
                   </li>
                   <li className="flex items-center gap-2">
                     <svg
-                      className="h-4 w-4 flex-shrink-0 text-[var(--color-success)]"
+                      className="text-success h-4 w-4 flex-shrink-0"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -437,10 +398,7 @@ export default function GuestDownloadPage({
                     {t("createAccountCta.benefits.purchaseHistory")}
                   </li>
                 </ul>
-                <Link
-                  href="/register"
-                  className="btn btn-primary w-full py-2.5"
-                >
+                <Link href="/register" className="btn btn-primary w-full py-2.5">
                   {t("createAccountCta.button")}
                 </Link>
               </div>

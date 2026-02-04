@@ -1,5 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { POST as acceptTermsPOST, GET as acceptTermsGET } from "@/app/api/seller/accept-terms/route";
+import {
+  POST as acceptTermsPOST,
+  GET as acceptTermsGET,
+} from "@/app/api/seller/accept-terms/route";
 import { POST as connectPOST } from "@/app/api/seller/connect/route";
 import { GET as connectStatusGET } from "@/app/api/seller/connect/status/route";
 import { createMockRequest, parseResponse } from "../../helpers/api-test-utils";
@@ -528,12 +531,14 @@ describe("Seller Onboarding Flow", () => {
       expect(data.payoutsEnabled).toBe(true);
 
       // Verify database was updated with new status
+      // Role is also upgraded to SELLER when onboarding completes for BUYER users
       expect(mockUserUpdate).toHaveBeenCalledWith({
         where: { id: "user-123" },
         data: {
           stripe_charges_enabled: true,
           stripe_payouts_enabled: true,
           stripe_onboarding_complete: true,
+          role: "SELLER",
         },
       });
     });

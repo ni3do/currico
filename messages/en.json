@@ -7,6 +7,18 @@
     "unauthorized": "Unauthorized",
     "serverError": "Server error"
   },
+  "previewGallery": {
+    "title": "Preview",
+    "pageOf": "Page {current} of {total}",
+    "noPreview": "No preview available",
+    "fullAccessHint": "Full files available after purchase",
+    "purchaseHint": "Purchase to unlock all preview pages",
+    "blurredOverlay": {
+      "title": "Preview blurred",
+      "description": "Purchase to unlock the full view",
+      "cta": "Unlock now"
+    }
+  },
   "common": {
     "brand": {
       "logoText": "C",
@@ -42,6 +54,28 @@
       "apply": "Apply",
       "reset": "Reset",
       "backToHome": "Back to Home"
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "resources": "Resources",
+      "account": "My Account",
+      "upload": "Upload",
+      "profile": "Profile",
+      "settings": "Settings",
+      "about": "About Us",
+      "contact": "Contact",
+      "collections": "Collections",
+      "following": "Following",
+      "checkout": "Checkout",
+      "checkoutSuccess": "Success",
+      "checkoutCancel": "Cancelled",
+      "terms": "Terms",
+      "privacy": "Privacy",
+      "imprint": "Imprint",
+      "cookies": "Cookies",
+      "help": "Help",
+      "becomeSeller": "Become Seller",
+      "bundles": "Bundles"
     }
   },
   "homePage": {
@@ -822,6 +856,177 @@
       "competencyTip": "The more precisely you align your resource to Lehrplan 21, the easier teachers will find your materials. Select all relevant competencies."
     }
   },
+  "uploadWizard": {
+    "pageTitle": "Upload Resource",
+    "pageSubtitle": "Share your teaching materials with other teachers",
+    "steps": {
+      "basics": "Basic Information",
+      "basicsShort": "Basics",
+      "basicsDescription": "Title, description, language",
+      "curriculum": "Curriculum Mapping",
+      "curriculumShort": "Curriculum",
+      "curriculumDescription": "Cycle, subject, competencies",
+      "price": "Properties & Price",
+      "priceShort": "Price",
+      "priceDescription": "Price type, license",
+      "files": "Files & Legal",
+      "filesShort": "Files",
+      "filesDescription": "Upload, confirmations",
+      "progress": "Step {current} of {total}",
+      "almostDone": "Almost done!"
+    },
+    "draft": {
+      "saved": "Draft saved",
+      "savedAt": "Draft saved {time}",
+      "exists": "Draft available",
+      "saving": "Saving...",
+      "discard": "Discard",
+      "discardTitle": "Discard draft?",
+      "discardMessage": "Are you sure you want to delete the saved draft? All entered data will be lost and cannot be recovered.",
+      "discardConfirm": "Discard",
+      "discardCancel": "Cancel",
+      "restored": "Draft restored",
+      "restoredMessage": "Your previous draft has been loaded."
+    },
+    "validation": {
+      "titleRequired": "Title is required",
+      "titleMinLength": "Title must be at least 5 characters",
+      "titleMaxLength": "Title must not exceed 100 characters",
+      "descriptionRequired": "Description is required",
+      "descriptionMinLength": "Description must be at least 20 characters",
+      "descriptionMaxLength": "Description must not exceed 2000 characters",
+      "cycleRequired": "Cycle is required",
+      "subjectRequired": "Subject is required",
+      "priceRequired": "Price is required",
+      "pricePositive": "Price must be a positive number",
+      "priceMax": "Price must not exceed CHF 50",
+      "priceMin": "Minimum price is CHF 1",
+      "fileRequired": "At least one file is required",
+      "legalOwnContent": "Please confirm that you use your own content",
+      "legalNoScans": "Please confirm that no textbook scans are included",
+      "legalNoTrademarks": "Please confirm that no protected trademarks are included",
+      "legalSwissGerman": "Please confirm Swiss German spelling",
+      "legalTerms": "Please accept the seller agreement",
+      "allComplete": "All information complete",
+      "moreErrors": "+{count} more errors"
+    },
+    "tooltips": {
+      "title": "Choose a clear, descriptive title that describes the content of your resource. A good title helps other teachers find your materials.",
+      "titleExample": "Fraction Exercises Cycle 2",
+      "description": "Briefly describe what your resource contains and what it is intended for. Mention special features or didactic notes.",
+      "descriptionExample": "10 differentiated worksheets on fractions with solutions. Suitable for individual and group work.",
+      "language": "Select the main language of the content. This helps with search and filtering.",
+      "resourceType": "Select the main format of your file. PDF files are most commonly used and automatically receive a preview.",
+      "cycle": "The cycle defines the age level according to Lehrplan 21. Cycle 1: KG-2nd grade, Cycle 2: 3rd-6th grade, Cycle 3: 7th-9th grade.",
+      "subject": "Select the main subject your resource fits. Available subjects depend on the selected cycle.",
+      "canton": "Optional: Select a canton if your resource is specifically designed for certain cantonal textbooks.",
+      "competencies": "Select the Lehrplan 21 competencies that your resource covers. The more precisely you assign, the better teachers will find your materials.",
+      "competenciesExample": "MA.1.A.1 - Understanding numbers",
+      "priceType": "Decide whether your resource should be free or paid. Free resources reach more users, paid ones generate income.",
+      "price": "Set the selling price in CHF. You receive 70% of the selling price, 30% is platform fee. Minimum price is CHF 1, maximum CHF 50.",
+      "priceExample": "CHF 5.00",
+      "editable": "Enable this if buyers should be able to edit the file (e.g., Word documents). Usually not needed for PDF files.",
+      "files": "Upload your main file(s). Supported formats: PDF, Word, PowerPoint, Excel. Maximum file size: 50 MB per file.",
+      "preview": "Optional: Upload a custom preview image. For PDF files, a preview is automatically created from the first page."
+    },
+    "fields": {
+      "title": "Title",
+      "titlePlaceholder": "e.g., Fraction Exercises Cycle 2",
+      "titleHint": "Choose a descriptive title (5-100 characters)",
+      "description": "Short Description",
+      "descriptionPlaceholder": "Briefly describe your resource...",
+      "descriptionHint": "{count}/2000 characters (min. 20)",
+      "language": "Language",
+      "resourceType": "Resource Type",
+      "cycle": "Cycle",
+      "cycleRequired": "Cycle is required",
+      "subject": "Subject",
+      "subjectPlaceholder": "Select subject...",
+      "canton": "Canton",
+      "cantonPlaceholder": "Optional: Select canton...",
+      "cantonHint": "Optional: For canton-specific textbooks",
+      "competencies": "Lehrplan 21 Competencies",
+      "competenciesPlaceholder": "Select competencies...",
+      "competenciesSelected": "{count} competency(ies) selected",
+      "competenciesHint": "Select the Lehrplan 21 competencies that match your resource",
+      "competencySearch": "Search (e.g., MA.1.A or Addition)...",
+      "priceType": "Price Type",
+      "priceFree": "Free",
+      "priceFreeDesc": "Freely accessible",
+      "pricePaid": "Paid",
+      "pricePaidDesc": "Set a price",
+      "price": "Price (CHF)",
+      "pricePlaceholder": "e.g., 5.00",
+      "priceHint": "You receive 70% of the selling price (30% platform fee)",
+      "editable": "Editable",
+      "editableDesc": "Buyers can edit the file (e.g., Word document)",
+      "mainFiles": "Main File(s)",
+      "mainFilesHint": "PDF, Word, PowerPoint, Excel up to 50 MB",
+      "mainFilesUpload": "Click here or drag files",
+      "addMoreFiles": "+ Add more files",
+      "previewImage": "Custom Preview Image (optional)",
+      "previewImageHint": "If you want to use a custom preview image",
+      "previewImageFormats": "PNG, JPG up to 5 MB",
+      "previewSelected": "{count} preview image(s) selected",
+      "autoPreview": "Automatic Preview:",
+      "autoPreviewDesc": "For PDF files, a preview is automatically created from the first page."
+    },
+    "legal": {
+      "title": "Legal Confirmations",
+      "subtitle": "Please confirm the following points:",
+      "ownContent": "Own Content or CC0 License",
+      "ownContentDesc": "I have created all images, graphics, and texts myself or use only materials with CC0 license.",
+      "noScans": "No Textbook Scans",
+      "noScansDesc": "I have not scanned or copied pages from textbooks or school books.",
+      "noTrademarks": "No Protected Trademarks or Characters",
+      "noTrademarksDesc": "My resource does not contain protected trademarks, logos, or characters.",
+      "swissGerman": "Swiss German Spelling",
+      "swissGermanDesc": "My resource uses Swiss German spelling (no Eszett).",
+      "acceptTerms": "Accept Seller Agreement",
+      "acceptTermsDesc": "I accept the seller agreement and confirm that I have the rights to sell this resource.",
+      "incomplete": "Please confirm all points to proceed.",
+      "eszettWarning": "Your title or description still contains Eszett characters (ß). Please correct this in step 1."
+    },
+    "eszett": {
+      "title": "Eszett (ß) found",
+      "message": "Your text contains {count} Eszett character(s) (ß). In Switzerland, \"ss\" is used instead.",
+      "fix": "Automatically change to \"ss\""
+    },
+    "cycles": {
+      "cycle1": "Cycle 1",
+      "cycle1Desc": "Kindergarten – 2nd Grade",
+      "cycle1Grades": "KG–2",
+      "cycle2": "Cycle 2",
+      "cycle2Desc": "3rd – 6th Grade",
+      "cycle2Grades": "3–6",
+      "cycle3": "Cycle 3",
+      "cycle3Desc": "7th – 9th Grade",
+      "cycle3Grades": "7–9"
+    },
+    "summary": {
+      "title": "Overview",
+      "noTitle": "No title entered yet",
+      "noCycle": "No cycle selected yet",
+      "noFiles": "No files uploaded yet",
+      "legalStatus": "{count}/5 confirmed",
+      "edit": "Edit"
+    },
+    "navigation": {
+      "back": "Back",
+      "next": "Next",
+      "publish": "Publish"
+    },
+    "upload": {
+      "uploading": "Uploading...",
+      "pleaseWait": "Please wait, this may take a moment.",
+      "success": "Resource Created!",
+      "successMessage": "Your resource has been uploaded and is awaiting approval.",
+      "viewResource": "View Resource",
+      "error": "Upload Error",
+      "close": "Close",
+      "retry": "Try Again"
+    }
+  },
   "becomeSeller": {
     "hero": {
       "badge": "Start Selling",
@@ -996,11 +1201,20 @@
       "amount": "Amount",
       "status": "Status",
       "statusCompleted": "Completed",
-      "statusPending": "Processing"
+      "statusPending": "Processing",
+      "by": "by"
     },
     "actions": {
       "viewResource": "View Resource",
-      "goToLibrary": "Go to My Library"
+      "goToLibrary": "Go to My Library",
+      "downloadNow": "Download Now",
+      "downloading": "Downloading...",
+      "continueBrowsing": "Continue browsing resources"
+    },
+    "tips": {
+      "title": "What's next?",
+      "accessAnytime": "Access your purchase anytime from your library",
+      "findInLibrary": "Find all your acquired resources in one place"
     },
     "noTransaction": {
       "title": "No Purchase Found",
@@ -1375,6 +1589,7 @@
   },
   "impressumPage": {
     "title": "Legal Notice",
+    "subtitle": "Legal information according to Swiss law",
     "company": {
       "title": "Company",
       "name": "Currico (Beta)",
@@ -1747,6 +1962,91 @@
           "description": "News about new features and platform improvements"
         }
       }
+    }
+  },
+  "reviews": {
+    "title": "Reviews",
+    "writeReview": "Write a Review",
+    "editReview": "Edit Review",
+    "averageRating": "Average Rating",
+    "basedOn": "based on {count} reviews",
+    "verifiedPurchase": "Verified Purchase",
+    "noReviews": "No reviews yet",
+    "beFirst": "Be the first to review this resource!",
+    "mustPurchase": "Purchase or download this resource to leave a review.",
+    "loginToReview": "Sign in to write a review.",
+    "ratingRequired": "Please select a rating",
+    "titleOptional": "Title (optional)",
+    "contentOptional": "Detailed review (optional)",
+    "submitReview": "Submit Review",
+    "updateReview": "Update Review",
+    "deleteReview": "Delete Review",
+    "confirmDelete": "Are you sure you want to delete this review?",
+    "yourReview": "Your Review",
+    "stars": {
+      "1": "Poor",
+      "2": "Fair",
+      "3": "Okay",
+      "4": "Good",
+      "5": "Excellent"
+    },
+    "starsLabel": "{count} stars"
+  },
+  "likes": {
+    "like": "Like",
+    "liked": "Liked",
+    "unlike": "Unlike",
+    "count": "{count} Likes",
+    "loginRequired": "Sign in to like this resource."
+  },
+  "comments": {
+    "title": "Comments",
+    "writeComment": "Write a Comment",
+    "placeholder": "Write a comment...",
+    "reply": "Reply",
+    "replyPlaceholder": "Write a reply...",
+    "noComments": "No comments yet",
+    "beFirst": "Be the first to write a comment!",
+    "loginToComment": "Sign in to write a comment.",
+    "showReplies": "Show {count} replies",
+    "hideReplies": "Hide replies",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirmDelete": "Are you sure you want to delete this comment?",
+    "confirmDeleteReply": "Are you sure you want to delete this reply?",
+    "edited": "edited",
+    "seller": "Seller",
+    "sellerComments": {
+      "title": "Comments on Your Materials",
+      "totalComments": "{count} comments total",
+      "unrepliedComments": "{count} unanswered",
+      "filterAll": "All comments",
+      "filterUnreplied": "Unanswered",
+      "noComments": "No comments on your materials yet",
+      "noCommentsDescription": "Comments will appear here when users comment on your materials.",
+      "noUnreplied": "No unanswered comments",
+      "viewResource": "View resource"
+    }
+  },
+  "teacherVerification": {
+    "badge": "Verified Teacher",
+    "badgeTooltip": "This person has been verified as a teacher at a Swiss educational institution",
+    "verified": "Verified Teacher",
+    "verifiedDescription": "You have been verified as a teacher at a Swiss educational institution.",
+    "notVerified": "Not Verified",
+    "notVerifiedDescription": "Use an email address from a Swiss educational institution (e.g., @phzh.ch) or contact us for manual verification.",
+    "verificationMethod": "Verification Method",
+    "verifiedSince": "Verified Since",
+    "methodEmailDomain": "Email Domain",
+    "methodManual": "Manual Review",
+    "methodEduId": "edu-ID"
+  },
+  "search": {
+    "sortOptions": {
+      "relevance": "Relevance",
+      "newest": "Newest",
+      "priceLow": "Price: Low to High",
+      "priceHigh": "Price: High to Low"
     }
   }
 }

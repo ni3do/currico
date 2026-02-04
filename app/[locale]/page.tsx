@@ -169,6 +169,7 @@ export default function Home() {
             <StaggerChildren staggerDelay={0.15} className="grid gap-8 md:grid-cols-3">
               {/* Step 1 */}
               <StaggerItem className="relative">
+                <div className="border-border absolute top-8 left-[60%] hidden w-[80%] border-t-2 border-dashed md:block" />
                 <motion.div
                   className="flex flex-col items-center text-center"
                   whileHover={{ y: -5 }}
@@ -193,7 +194,6 @@ export default function Home() {
                       />
                     </svg>
                   </motion.div>
-                  <div className="border-border absolute top-8 left-[60%] hidden w-[80%] border-t-2 border-dashed md:block" />
                   <span className="bg-primary text-text-on-accent mb-3 inline-flex h-7 w-7 items-center justify-center rounded-full text-sm font-bold">
                     1
                   </span>
@@ -206,6 +206,7 @@ export default function Home() {
 
               {/* Step 2 */}
               <StaggerItem className="relative">
+                <div className="border-border absolute top-8 left-[60%] hidden w-[80%] border-t-2 border-dashed md:block" />
                 <motion.div
                   className="flex flex-col items-center text-center"
                   whileHover={{ y: -5 }}
@@ -236,7 +237,6 @@ export default function Home() {
                       />
                     </svg>
                   </motion.div>
-                  <div className="border-border absolute top-8 left-[60%] hidden w-[80%] border-t-2 border-dashed md:block" />
                   <span className="bg-primary text-text-on-accent mb-3 inline-flex h-7 w-7 items-center justify-center rounded-full text-sm font-bold">
                     2
                   </span>
