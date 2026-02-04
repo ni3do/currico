@@ -39,6 +39,7 @@ export default function TermsPage() {
             <li>{t("general.marketplaceModel.items.noParty")}</li>
             <li>{t("general.marketplaceModel.items.sellerResponsibility")}</li>
             <li>{t("general.marketplaceModel.items.disputes")}</li>
+            <li>{t("general.marketplaceModel.items.opinion")}</li>
           </ul>
 
           {/* Account Terms */}
@@ -99,6 +100,126 @@ export default function TermsPage() {
             {t("general.governingLaw.title")}
           </h2>
           <p>{t("general.governingLaw.content")}</p>
+
+          {/* Platform Availability */}
+          <h2 className="text-text mt-8 text-xl font-semibold">
+            {t("general.availability.title")}
+          </h2>
+          <p>{t("general.availability.content")}</p>
+          <ul className="ml-4 list-disc space-y-1">
+            <li>{t("general.availability.items.noGuarantee")}</li>
+            <li>{t("general.availability.items.maintenance")}</li>
+            <li>{t("general.availability.items.noLiability")}</li>
+          </ul>
+
+          {/* Data Storage */}
+          <h2 className="text-text mt-8 text-xl font-semibold">
+            {t("general.dataLocation.title")}
+          </h2>
+          <p>{t("general.dataLocation.content")}</p>
+
+          {/* Extended Liability Disclaimers */}
+          <h2 className="text-text mt-8 text-xl font-semibold">
+            {t("general.extendedLiability.title")}
+          </h2>
+          <p>{t("general.extendedLiability.content")}</p>
+          <ul className="ml-4 list-disc space-y-1">
+            <li>{t("general.extendedLiability.items.dataLoss")}</li>
+            <li>{t("general.extendedLiability.items.malware")}</li>
+            <li>{t("general.extendedLiability.items.thirdPartyMisuse")}</li>
+            <li>{t("general.extendedLiability.items.emailConfidentiality")}</li>
+            <li>{t("general.extendedLiability.items.noGuarantees")}</li>
+            <li>{t("general.extendedLiability.items.indirectDamages")}</li>
+          </ul>
+
+          {/* User Content Liability */}
+          <h2 className="text-text mt-8 text-xl font-semibold">
+            {t("general.userContentLiability.title")}
+          </h2>
+          <p>{t("general.userContentLiability.content")}</p>
+          <ul className="ml-4 list-disc space-y-1">
+            <li>{t("general.userContentLiability.items.authorResponsibility")}</li>
+            <li>{t("general.userContentLiability.items.ipStorage")}</li>
+            <li>{t("general.userContentLiability.items.legalAction")}</li>
+            <li>{t("general.userContentLiability.items.removal")}</li>
+            <li>{t("general.userContentLiability.items.noNotice")}</li>
+          </ul>
+
+          {/* Prohibited Content */}
+          <h2 className="text-text mt-8 text-xl font-semibold">
+            {t("general.prohibitedContent.title")}
+          </h2>
+          <p>{t("general.prohibitedContent.content")}</p>
+          <ul className="ml-4 list-disc space-y-1">
+            <li>{t("general.prohibitedContent.items.copyright")}</li>
+            <li>{t("general.prohibitedContent.items.illegal")}</li>
+            <li>{t("general.prohibitedContent.items.harmful")}</li>
+            <li>{t("general.prohibitedContent.items.misleading")}</li>
+            <li>{t("general.prohibitedContent.items.malicious")}</li>
+            <li>{t("general.prohibitedContent.items.personal")}</li>
+            <li>{t("general.prohibitedContent.items.spam")}</li>
+            <li>{t("general.prohibitedContent.items.violent")}</li>
+            <li>{t("general.prohibitedContent.items.political")}</li>
+          </ul>
+
+          {/* AI Prohibition */}
+          <h2 className="text-text mt-8 text-xl font-semibold">
+            {t("general.aiProhibition.title")}
+          </h2>
+          <p>{t("general.aiProhibition.content")}</p>
+          <ul className="ml-4 list-disc space-y-1">
+            <li>{t("general.aiProhibition.items.training")}</li>
+            <li>{t("general.aiProhibition.items.analysis")}</li>
+            <li>{t("general.aiProhibition.items.reproduction")}</li>
+          </ul>
+
+          {/* External Links */}
+          <h2 className="text-text mt-8 text-xl font-semibold">
+            {t("general.externalLinks.title")}
+          </h2>
+          <p>{t("general.externalLinks.content")}</p>
+
+          {/* Severability */}
+          <h2 className="text-text mt-8 text-xl font-semibold">
+            {t("general.severability.title")}
+          </h2>
+          <p>{t("general.severability.content")}</p>
+
+          {/* Changes to Terms */}
+          <h2 className="text-text mt-8 text-xl font-semibold">{t("general.changes.title")}</h2>
+          <p>{t("general.changes.content")}</p>
+
+          {/* Content Guidelines */}
+          <h2 className="text-text mt-8 text-xl font-semibold">
+            {t("general.contentGuidelines.title")}
+          </h2>
+          <p>{t("general.contentGuidelines.intro")}</p>
+          <p className="mt-2">{t("general.contentGuidelines.minors")}</p>
+
+          <h3 className="text-text mt-4 text-lg font-medium">
+            {t("general.contentGuidelines.guarantees.title")}
+          </h3>
+          <p>{t("general.contentGuidelines.guarantees.content")}</p>
+
+          <p className="mt-4">{t("general.contentGuidelines.responsibility")}</p>
+
+          <h3 className="text-text mt-4 text-lg font-medium">
+            {t("general.contentGuidelines.prohibited.title")}
+          </h3>
+          <ul className="ml-4 list-disc space-y-1">
+            <li>{t("general.contentGuidelines.prohibited.items.illegal")}</li>
+            <li>{t("general.contentGuidelines.prohibited.items.thirdPartyRights")}</li>
+            <li>{t("general.contentGuidelines.prohibited.items.malware")}</li>
+            <li>{t("general.contentGuidelines.prohibited.items.unauthorized")}</li>
+          </ul>
+
+          <h3 className="text-text mt-4 text-lg font-medium">
+            {t("general.contentGuidelines.violations.title")}
+          </h3>
+          <p>{t("general.contentGuidelines.violations.content")}</p>
+
+          {/* Version */}
+          <p className="text-text-muted mt-8 text-sm">{t("general.version")}</p>
         </div>
 
         {/* Divider */}
@@ -244,6 +365,12 @@ export default function TermsPage() {
         <div className="bg-bg-secondary mt-12 rounded-xl p-6 text-center">
           <h2 className="text-text text-xl font-semibold">{t("contact.title")}</h2>
           <p className="text-text-muted mt-2">{t("contact.content")}</p>
+          <a
+            href={`mailto:${t("contact.email")}`}
+            className="text-primary mt-2 inline-block font-medium hover:underline"
+          >
+            {t("contact.email")}
+          </a>
         </div>
       </main>
 

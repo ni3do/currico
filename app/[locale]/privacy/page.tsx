@@ -67,21 +67,46 @@ export default function PrivacyPage() {
             <li>{t("sections.collection.payment.items.transaction")}</li>
             <li>{t("sections.collection.payment.items.billing")}</li>
           </ul>
-          <p className="mt-2 text-sm">{t("sections.collection.payment.stripe")}</p>
+          <p className="mt-2 text-sm">{t("sections.collection.payment.note")}</p>
+
+          <h3 className="text-text mt-4 text-lg font-medium">
+            {t("sections.collection.serverLogs.title")}
+          </h3>
+          <p>{t("sections.collection.serverLogs.intro")}</p>
+          <ul className="ml-4 list-disc space-y-1">
+            <li>{t("sections.collection.serverLogs.items.browser")}</li>
+            <li>{t("sections.collection.serverLogs.items.os")}</li>
+            <li>{t("sections.collection.serverLogs.items.ip")}</li>
+            <li>{t("sections.collection.serverLogs.items.time")}</li>
+          </ul>
+          <p className="mt-2 text-sm">{t("sections.collection.serverLogs.note")}</p>
+
+          <h3 className="text-text mt-4 text-lg font-medium">
+            {t("sections.collection.thirdPartyData.title")}
+          </h3>
+          <p>{t("sections.collection.thirdPartyData.content")}</p>
 
           {/* Section 3: Purpose */}
           <h2 className="text-text mt-8 text-xl font-semibold">{t("sections.purpose.title")}</h2>
+          <p>{t("sections.purpose.intro")}</p>
           <ul className="ml-4 list-disc space-y-1">
             <li>{t("sections.purpose.items.account")}</li>
             <li>{t("sections.purpose.items.transactions")}</li>
             <li>{t("sections.purpose.items.communication")}</li>
             <li>{t("sections.purpose.items.improvement")}</li>
+            <li>{t("sections.purpose.items.marketing")}</li>
             <li>{t("sections.purpose.items.legal")}</li>
+            <li>{t("sections.purpose.items.security")}</li>
+            <li>{t("sections.purpose.items.compliance")}</li>
           </ul>
+          <p className="mt-4">{t("sections.purpose.consent")}</p>
+          <p className="mt-4">{t("sections.purpose.serviceProviders")}</p>
+          <p className="mt-2">{t("sections.purpose.securityMeasures")}</p>
 
           {/* Section 4: Cookies */}
           <h2 className="text-text mt-8 text-xl font-semibold">{t("sections.cookies.title")}</h2>
           <p>{t("sections.cookies.intro")}</p>
+          <p className="mt-2">{t("sections.cookies.noPersonalData")}</p>
           <h3 className="text-text mt-4 text-lg font-medium">
             {t("sections.cookies.essential.title")}
           </h3>
@@ -90,6 +115,7 @@ export default function PrivacyPage() {
             {t("sections.cookies.analytics.title")}
           </h3>
           <p>{t("sections.cookies.analytics.content")}</p>
+          <p className="mt-4 text-sm">{t("sections.cookies.browserSettings")}</p>
 
           {/* Section 5: Payment Processors */}
           <h2 className="text-text mt-8 text-xl font-semibold">
@@ -136,6 +162,7 @@ export default function PrivacyPage() {
           {/* Section 7: Data Storage */}
           <h2 className="text-text mt-8 text-xl font-semibold">{t("sections.storage.title")}</h2>
           <p>{t("sections.storage.location")}</p>
+          <p className="mt-2">{t("sections.storage.transfer")}</p>
           <p className="mt-2">{t("sections.storage.retention")}</p>
 
           {/* Section 8: Your Rights */}
@@ -148,9 +175,13 @@ export default function PrivacyPage() {
             <li>{t("sections.rights.items.restriction")}</li>
             <li>{t("sections.rights.items.portability")}</li>
             <li>{t("sections.rights.items.objection")}</li>
+            <li>{t("sections.rights.items.withdrawal")}</li>
           </ul>
-          <p className="mt-4">{t("sections.rights.contact")}</p>
+          <p className="mt-4 text-sm">{t("sections.rights.limitations")}</p>
+          <p className="mt-2">{t("sections.rights.contact")}</p>
           <p className="mt-2 text-sm">{t("sections.rights.complaint")}</p>
+          <p className="mt-2 text-sm">{t("sections.rights.euComplaint")}</p>
+          <p className="mt-2">{t("sections.rights.profileDeletion")}</p>
 
           {/* Section 9: Security */}
           <h2 className="text-text mt-8 text-xl font-semibold">{t("sections.security.title")}</h2>
@@ -165,6 +196,33 @@ export default function PrivacyPage() {
             {t("sections.jurisdiction.title")}
           </h2>
           <p>{t("sections.jurisdiction.content")}</p>
+
+          {/* Section 12: GDPR */}
+          <h2 className="text-text mt-8 text-xl font-semibold">{t("sections.gdpr.title")}</h2>
+          <p>{t("sections.gdpr.intro")}</p>
+          <ul className="ml-4 list-disc space-y-1">
+            <li>{t("sections.gdpr.items.consent")}</li>
+            <li>{t("sections.gdpr.items.contract")}</li>
+            <li>{t("sections.gdpr.items.legal")}</li>
+            <li>{t("sections.gdpr.items.vital")}</li>
+            <li>{t("sections.gdpr.items.publicInterest")}</li>
+            <li>{t("sections.gdpr.items.legitimate")}</li>
+          </ul>
+          <p className="mt-4">{t("sections.gdpr.legitimateInterests")}</p>
+          <p className="mt-4">{t("sections.gdpr.contactIfNotSatisfied")}</p>
+
+          {/* Section 13: Automated Decisions */}
+          <h2 className="text-text mt-8 text-xl font-semibold">
+            {t("sections.automatedDecisions.title")}
+          </h2>
+          <p>{t("sections.automatedDecisions.content")}</p>
+
+          {/* Section 14: Minors */}
+          <h2 className="text-text mt-8 text-xl font-semibold">{t("sections.minors.title")}</h2>
+          <p>{t("sections.minors.content")}</p>
+
+          {/* Version */}
+          <p className="text-text-muted mt-8 text-sm">{t("version")}</p>
         </div>
 
         {/* Contact CTA */}

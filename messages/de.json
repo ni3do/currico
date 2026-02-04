@@ -37,7 +37,7 @@
       "account": "Mein Konto"
     },
     "footer": {
-      "copyright": "\u00a9 2025 Currico",
+      "copyright": "\u00a9 2026 Currico",
       "madeIn": "Made in Switzerland",
       "payment": "Zahlung mit TWINT & Karte",
       "links": {
@@ -635,7 +635,7 @@
   "sellerTerms": {
     "pageTitle": "Verkäufer-AGB",
     "pageSubtitle": "Bitte lesen Sie diese Bedingungen sorgfältig durch, bevor Sie Verkäufer auf Currico werden",
-    "lastUpdated": "Letzte Aktualisierung: Januar 2026",
+    "lastUpdated": "Letzte Aktualisierung: Februar 2026",
     "sections": {
       "overview": {
         "title": "1. Übersicht",
@@ -1327,7 +1327,7 @@
   },
   "termsPage": {
     "title": "Allgemeine Geschäftsbedingungen (AGB)",
-    "lastUpdated": "Zuletzt aktualisiert: Januar 2026",
+    "lastUpdated": "Zuletzt aktualisiert: Februar 2026",
     "general": {
       "introduction": {
         "title": "1. Einführung",
@@ -1341,7 +1341,8 @@
           "contract": "Der Kaufvertrag für Unterrichtsmaterialien kommt direkt zwischen dem Käufer und dem Verkäufer zustande, nicht mit Currico",
           "noParty": "Currico ist nicht Vertragspartei eines Kaufvertrags und wird zu keinem Zeitpunkt Eigentümer von Unterrichtsmaterialien",
           "sellerResponsibility": "Der Verkäufer ist allein verantwortlich für den Inhalt, die Qualität, die Richtigkeit und die Rechtskonformität seiner Unterrichtsmaterialien",
-          "disputes": "Streitigkeiten über gekaufte Materialien sind direkt zwischen Käufer und Verkäufer zu klären, wobei Currico bei der Vermittlung behilflich sein kann"
+          "disputes": "Streitigkeiten über gekaufte Materialien sind direkt zwischen Käufer und Verkäufer zu klären, wobei Currico bei der Vermittlung behilflich sein kann",
+          "opinion": "Alle hochgeladenen Unterrichtsmaterialien stellen ausschliesslich die persönliche Meinung der Autorin beziehungsweise des Autors dar. Currico führt lediglich eine formale Prüfung durch und übernimmt keine Haftung für die inhaltliche Richtigkeit"
         }
       },
       "account": {
@@ -1366,7 +1367,7 @@
       },
       "intellectualProperty": {
         "title": "5. Geistiges Eigentum",
-        "content": "Alle Inhalte auf Currico, einschliesslich des Plattformdesigns, der Logos und der Originalmaterialien, sind durch Urheberrechte und andere Gesetze zum Schutz des geistigen Eigentums geschützt. Von Verkäufern hochgeladene Unterrichtsmaterialien bleiben Eigentum ihrer jeweiligen Ersteller, die den Käufern eine eingeschränkte Lizenz zur Nutzung für Bildungszwecke gewähren."
+        "content": "Aufbau und Funktionen der Plattform Currico sind urheberrechtlich geschützt. Alle Rechte vorbehalten. Von Verkäufern hochgeladene Unterrichtsmaterialien bleiben Eigentum ihrer jeweiligen Ersteller, die den Käufern eine eingeschränkte Lizenz zur Nutzung für Bildungszwecke gewähren. Mit dem Hochladen von Dateien autorisiert der Autor bzw. die Autorin deren Veröffentlichung auf der Plattform. Der/die Autor/in haftet für eine allfällige Inanspruchnahme durch Dritte aufgrund von Urheberrechtsverletzungen oder anderen Rechtsverletzungen."
       },
       "purchases": {
         "title": "6. Käufe und Downloads",
@@ -1389,16 +1390,113 @@
       },
       "liability": {
         "title": "8. Haftungsbeschränkung",
-        "content": "Currico stellt die Plattform \"wie besehen\" zur Verfügung und übernimmt keine Garantien hinsichtlich der Qualität, Genauigkeit oder Eignung der von Drittanbietern verkauften Unterrichtsmaterialien. Als Vermittler haftet Currico nicht für indirekte, zufällige oder Folgeschäden, die sich aus dem Inhalt von Unterrichtsmaterialien ergeben. Die Haftung von Currico ist auf Fälle grober Fahrlässigkeit oder vorsätzlichen Fehlverhaltens beschränkt."
+        "content": "Jegliche Haftung von Currico ist, soweit rechtlich zulässig, ausgeschlossen. Currico stellt die Plattform \"wie besehen\" zur Verfügung und übernimmt keine Garantien hinsichtlich der Qualität, Genauigkeit oder Eignung der von Drittanbietern verkauften Unterrichtsmaterialien. Als Vermittler haftet Currico nicht für indirekte, zufällige oder Folgeschäden, die sich aus dem Inhalt von Unterrichtsmaterialien ergeben. Die Haftung von Currico ist auf Fälle grober Fahrlässigkeit oder vorsätzlichen Fehlverhaltens beschränkt. Currico bietet alle Dienste unentgeltlich oder gegen freiwillige Beiträge an; freiwillige Zahlungen oder Premium-Angebote begründen keinerlei Leistungsgarantien."
       },
       "governingLaw": {
         "title": "9. Anwendbares Recht und Gerichtsstand",
-        "content": "Diese Allgemeinen Geschäftsbedingungen unterliegen schweizerischem Recht. Ausschliesslicher Gerichtsstand für alle Streitigkeiten aus oder im Zusammenhang mit diesen Bedingungen ist Zürich, Schweiz."
-      }
+        "content": "Diese Allgemeinen Geschäftsbedingungen unterliegen schweizerischem Recht. Die Anwendung des Übereinkommens der Vereinten Nationen über Verträge über den internationalen Warenkauf (CISG / Wiener Kaufrecht) ist ausgeschlossen. Ausschliesslicher Gerichtsstand für alle Streitigkeiten aus oder im Zusammenhang mit diesen Bedingungen ist Zürich, Schweiz."
+      },
+      "availability": {
+        "title": "10. Verfügbarkeit der Plattform",
+        "content": "Currico ist bestrebt, die Plattform nach Massgabe der Möglichkeiten rund um die Uhr zur Verfügung zu stellen (Best-Effort-Prinzip). Es besteht jedoch kein Anspruch auf eine permanente Verfügbarkeit. Currico behält sich vor, den Zugang zur Plattform jederzeit und ohne Vorankündigung einzuschränken, zu unterbrechen oder einzustellen.",
+        "items": {
+          "noGuarantee": "Es wird keine Garantie für die ununterbrochene Verfügbarkeit der Plattform übernommen",
+          "maintenance": "Wartungsarbeiten können zu vorübergehenden Einschränkungen führen",
+          "noLiability": "Currico haftet nicht für Schäden, die aus der Nichtverfügbarkeit der Plattform entstehen"
+        }
+      },
+      "dataLocation": {
+        "title": "11. Datenspeicherung",
+        "content": "Alle Daten werden auf Servern in der Schweiz (Standort Zürich) gespeichert und verarbeitet. Currico verpflichtet sich, die geltenden Schweizer Datenschutzbestimmungen einzuhalten."
+      },
+      "extendedLiability": {
+        "title": "12. Erweiterte Haftungsausschlüsse",
+        "content": "Zusätzlich zu den in Abschnitt 8 genannten Haftungsbeschränkungen gilt:",
+        "items": {
+          "dataLoss": "Currico haftet nicht für Datenverluste jeglicher Art, insbesondere nicht für den Verlust von hochgeladenen Materialien",
+          "malware": "Currico übernimmt keine Gewähr dafür, dass die Plattform frei von Viren, Malware oder anderen schädlichen Komponenten ist",
+          "thirdPartyMisuse": "Currico haftet nicht für den Missbrauch der Plattform durch Dritte",
+          "emailConfidentiality": "E-Mail-Kommunikation ist nicht verschlüsselt und daher nicht vertraulich. Currico übernimmt keine Haftung für Schäden, die aus der Nutzung von E-Mail entstehen",
+          "noGuarantees": "Die Nutzung der Plattform erfolgt auf eigenes Risiko. Es werden keinerlei Garantien bezüglich Funktionalität, Fehlerfreiheit oder Eignung für einen bestimmten Zweck übernommen",
+          "indirectDamages": "Currico haftet nicht für indirekte Schäden, entgangenen Gewinn, Datenverlust oder sonstige Folgeschäden"
+        }
+      },
+      "userContentLiability": {
+        "title": "13. Haftung für Nutzerinhalte",
+        "content": "Nutzer sind für alle von ihnen hochgeladenen Inhalte selbst verantwortlich. Currico ist berechtigt, die IP-Adressen der Nutzer zu speichern und im Falle von Rechtsverletzungen an die zuständigen Behörden weiterzugeben.",
+        "items": {
+          "authorResponsibility": "Der Autor bzw. die Autorin ist allein für den Inhalt der hochgeladenen Materialien verantwortlich",
+          "ipStorage": "Currico speichert IP-Adressen zur Identifizierung von Nutzern bei Rechtsverletzungen",
+          "legalAction": "Currico behält sich vor, bei Rechtsverletzungen rechtliche Schritte einzuleiten und entsprechende Daten an Behörden weiterzugeben",
+          "removal": "Currico ist berechtigt, Inhalte jederzeit und ohne Angabe von Gründen zu entfernen",
+          "noNotice": "Die Entfernung von Inhalten erfolgt ohne vorherige Ankündigung und begründet keinen Anspruch auf Schadenersatz"
+        }
+      },
+      "prohibitedContent": {
+        "title": "14. Verbotene Inhalte",
+        "content": "Folgende Inhalte dürfen nicht auf der Plattform veröffentlicht werden:",
+        "items": {
+          "copyright": "Urheberrechtlich geschützte Materialien ohne entsprechende Genehmigung",
+          "illegal": "Illegale Inhalte jeglicher Art",
+          "harmful": "Inhalte, die Personen schädigen, beleidigen oder diskriminieren",
+          "misleading": "Irreführende oder falsche Informationen",
+          "malicious": "Schadsoftware, Viren oder andere schädliche Dateien",
+          "personal": "Personenbezogene Daten Dritter ohne deren Einwilligung",
+          "spam": "Werbung, Spam oder unerwünschte kommerzielle Inhalte",
+          "violent": "Gewaltverherrlichende oder pornografische Inhalte",
+          "political": "Politische Propaganda oder extremistische Inhalte"
+        }
+      },
+      "aiProhibition": {
+        "title": "15. Nutzung von KI-Systemen",
+        "content": "Die Nutzung von gekauften Unterrichtsmaterialien als Trainingsdaten für künstliche Intelligenz (KI), maschinelles Lernen oder ähnliche Systeme ist ausdrücklich untersagt. Dies umfasst, ist aber nicht beschränkt auf:",
+        "items": {
+          "training": "Das Verwenden von Materialien zum Training von KI-Modellen",
+          "analysis": "Die automatisierte Analyse oder Extraktion von Inhalten durch KI-Systeme",
+          "reproduction": "Die Reproduktion oder Generierung ähnlicher Inhalte durch KI basierend auf gekauften Materialien"
+        }
+      },
+      "externalLinks": {
+        "title": "16. Externe Links",
+        "content": "Die Plattform kann Links zu externen Websites enthalten. Currico hat keinen Einfluss auf deren Inhalte und übernimmt keine Verantwortung oder Haftung für externe Websites. Für die Inhalte verlinkter Seiten ist ausschliesslich deren Betreiber verantwortlich."
+      },
+      "severability": {
+        "title": "17. Salvatorische Klausel",
+        "content": "Sollte eine Bestimmung dieser Allgemeinen Geschäftsbedingungen unwirksam sein oder werden, bleibt die Wirksamkeit der übrigen Bestimmungen hiervon unberührt. Die unwirksame Bestimmung ist durch eine wirksame zu ersetzen, die dem wirtschaftlichen Zweck der unwirksamen Bestimmung am nächsten kommt."
+      },
+      "changes": {
+        "title": "18. Änderungen der AGB",
+        "content": "Currico behält sich ausdrücklich das Recht vor, die Angebote sowie die vorliegenden Allgemeinen Geschäftsbedingungen jederzeit zu ändern, zu unterbrechen und vorübergehend oder dauerhaft einzustellen, ohne Sie zu benachrichtigen. Daraus entstehen Ihnen weder Schadenersatz- noch sonstige Gewährleistungsansprüche. Wesentliche Änderungen können per E-Mail oder durch einen Hinweis auf der Plattform mitgeteilt werden."
+      },
+      "contentGuidelines": {
+        "title": "19. Inhaltsrichtlinien",
+        "intro": "Diese Richtlinie gilt für alle Inhalte, die Sie auf der Currico-Plattform übermitteln. Durch die Nutzung der Angebote von Currico stimmen Sie diesen Richtlinien zu.",
+        "minors": "Minderjährige können die Angebote nur mit der Zustimmung ihrer Erziehungsberechtigten nutzen, wobei die Erziehungsberechtigten für Verstösse gegen die Richtlinien haften.",
+        "guarantees": {
+          "title": "Ihre Garantien",
+          "content": "Sie garantieren gegenüber Currico, dass Sie alle erforderlichen Rechte in Bezug auf die Inhalte, die von Ihnen gespeichert, veröffentlicht oder übermittelt werden, besitzen oder alle erforderlichen Rechtsübertragungen, Lizenzen, Einwilligungen und dergleichen wirksam eingeholt haben. Sie garantieren weiter, dass Sie keine Inhalte übermitteln, welche gegen die geltende Schweizer Rechtsordnung verstossen und/oder Rechte Dritter (einschliesslich deren Persönlichkeitsrechte) oder diese Richtlinien verletzen."
+        },
+        "responsibility": "Sie sind für alle von Ihnen veröffentlichten Inhalte selbst verantwortlich. Currico kontrolliert die übermittelten Inhalte nicht systematisch.",
+        "prohibited": {
+          "title": "Ausdrücklich nicht erlaubt sind:",
+          "items": {
+            "illegal": "Inhalte oder sonstige Materialien, die nach den einschlägigen gesetzlichen Bestimmungen oder nach der Einschätzung von Currico rechtswidrig, schädigend, missbräuchlich, bedrohend, belästigend, vulgär, obszön, rassistisch, hasserregend, gewaltverherrlichend, pornografisch oder in sonstiger Weise zu beanstanden sind oder kinder- oder jugendgefährdend sind",
+            "thirdPartyRights": "Inhalte oder sonstige Materialien, die Rechte Dritter verletzen, insbesondere geistiges Eigentum (z.B. Patente, Marken, Urheber- oder Leistungsschutzrechte), Geschäftsgeheimnisse, Persönlichkeitsrechte oder Eigentumsrechte",
+            "malware": "Material, das Software-Viren oder andere Informationen, Dateien oder Programme enthält, die geeignet sind, die Soft- oder Hardware von Computern oder Fernmeldeeinrichtungen zu unterbrechen, zu zerstören oder einzuschränken",
+            "unauthorized": "Inhalte oder andere Materialien, zu deren Weitergabe Sie nicht befugt sind"
+          }
+        },
+        "violations": {
+          "title": "Verstösse",
+          "content": "Für den Fall, dass Sie gegen diese Richtlinien verstossen, ist Currico berechtigt, ohne Angabe von Gründen und ohne Einhaltung von Fristen Inhalte zu löschen. Sie stellen Currico von jeglicher Haftung Dritten gegenüber frei und halten Currico in vollem Umfang schadlos."
+        }
+      },
+      "version": "Version 1.2 - Februar 2026"
     },
     "contact": {
       "title": "Fragen?",
-      "content": "Wenn Sie Fragen zu diesen Allgemeinen Geschäftsbedingungen haben, kontaktieren Sie uns bitte über unsere Kontaktseite."
+      "content": "Wenn Sie Fragen zu diesen Allgemeinen Geschäftsbedingungen haben, kontaktieren Sie uns bitte:",
+      "email": "info@currico.ch"
     }
   },
   "cookieConsent": {
@@ -1411,7 +1509,7 @@
   },
   "cookiesPage": {
     "title": "Cookie-Richtlinie",
-    "lastUpdated": "Stand: Januar 2026",
+    "lastUpdated": "Stand: Februar 2026",
     "intro": "Diese Cookie-Richtlinie erklärt, wie Currico Cookies und ähnliche Technologien verwendet, wenn Sie unsere Website besuchen. Wir setzen auf Transparenz bezüglich der Daten, die wir erheben und wie wir sie nutzen.",
     "sections": {
       "what": {
@@ -1616,7 +1714,7 @@
       "title": "Haftungsausschluss",
       "liability": {
         "title": "Haftung für Inhalte",
-        "content": "Die Inhalte unserer Seiten wurden mit grösster Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen."
+        "content": "Jegliche Haftung des Anbieters ist, soweit rechtlich zulässig, ausgeschlossen. Die Inhalte unserer Seiten wurden mit grösster Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen. Hochgeladene Unterrichtsmaterialien stellen ausschliesslich die persönliche Meinung der jeweiligen Autorin bzw. des Autors dar."
       },
       "links": {
         "title": "Haftung für Links",
@@ -1624,18 +1722,23 @@
       },
       "copyright": {
         "title": "Urheberrecht",
-        "content": "Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem Schweizer Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung ausserhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung."
+        "content": "Aufbau und Funktionen der Plattform sind urheberrechtlich geschützt. Alle Rechte vorbehalten. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung ausserhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung."
+      },
+      "userContent": {
+        "title": "Nutzerinhalte",
+        "content": "Der/die Autor/in haftet für eine allfällige Inanspruchnahme durch Dritte aufgrund von Urheberrechtsverletzungen oder anderen Rechtsverletzungen bezüglich hochgeladener Inhalte."
       }
     },
     "links": {
       "privacy": "Datenschutzerklärung",
       "terms": "Allgemeine Geschäftsbedingungen"
-    }
+    },
+    "version": "Version 1.1 - Februar 2026"
   },
   "privacyPage": {
     "title": "Datenschutzerklärung",
-    "lastUpdated": "Stand: Januar 2026",
-    "intro": "Der Schutz Ihrer persönlichen Daten ist uns wichtig. Diese Datenschutzerklärung informiert Sie über die Erhebung, Verarbeitung und Nutzung Ihrer personenbezogenen Daten bei der Nutzung von Currico. Wir halten uns an das Schweizer Datenschutzgesetz (nDSG, in Kraft seit 1. September 2023) sowie die EU-Datenschutz-Grundverordnung (DSGVO).",
+    "lastUpdated": "Stand: Februar 2026",
+    "intro": "Die nachfolgende Erklärung gibt Ihnen einen Überblick darüber, wie Currico den Schutz Ihrer Daten gewährleistet, welche Art von Daten zu welchem Zweck erhoben werden und welche Rechte Sie haben. Currico untersteht dem schweizerischen Datenschutzrecht (nDSG, in Kraft seit 1. September 2023) und - sofern anwendbar - weiteren Datenschutzbestimmungen wie der Datenschutz-Grundverordnung der Europäischen Union (DSGVO). Die vorliegende Datenschutzerklärung kann jederzeit ohne Vorankündigung angepasst werden. Wir können Sie zusätzlich auch über die Bearbeitung Ihrer Daten separat informieren (insb. in Vertragsbedingungen, zusätzlichen Datenschutzbestimmungen, Einwilligungserklärungen, etc.).",
     "sections": {
       "responsible": {
         "title": "1. Verantwortliche Stelle",
@@ -1646,8 +1749,8 @@
         "email": "info@currico.ch"
       },
       "collection": {
-        "title": "2. Welche Daten wir erheben",
-        "intro": "Wir erheben verschiedene Arten von Daten, um unsere Dienste bereitzustellen und zu verbessern:",
+        "title": "2. Erhebung und Bearbeitung von personenbezogenen Daten",
+        "intro": "Wir erheben und bearbeiten vornehmlich Personendaten, die Sie uns im Rahmen der Geschäftsbeziehung oder der Nutzung unserer Dienstleistungen zur Verfügung stellen (z.B. Kauf und Verkauf von Unterrichtsmaterialien durch Lehrpersonen). Weitere personenbezogene Daten können aus öffentlich zugänglichen Quellen (wie z.B. Internet) oder von Behörden stammen.",
         "account": {
           "title": "Kontodaten",
           "items": {
@@ -1664,21 +1767,44 @@
             "billing": "Rechnungsadresse (für Verkäufer)"
           },
           "note": "Wir speichern keine Kreditkartennummern, TWINT-Kontodaten oder andere sensible Zahlungsinformationen auf unseren Servern."
+        },
+        "serverLogs": {
+          "title": "Server-Logdaten",
+          "intro": "Currico erhebt und speichert automatisch in Server Log Files Informationen, die Ihr Browser an uns übermittelt:",
+          "items": {
+            "browser": "Browsertyp und -version",
+            "os": "Verwendetes Betriebssystem",
+            "ip": "IP-Adresse des zugreifenden Rechners",
+            "time": "Uhrzeit der Serveranfrage"
+          },
+          "note": "Diese Daten sind für uns nicht bestimmten Personen zuordbar. Eine Zusammenführung dieser Daten mit anderen Datenquellen wird nicht vorgenommen. Die Daten werden nach einer statistischen Auswertung gelöscht."
+        },
+        "thirdPartyData": {
+          "title": "Daten von Dritten",
+          "content": "Wenn Sie uns Daten über andere Personen übermitteln, gehen wir davon aus, dass Sie dazu befugt sind und dass diese Daten richtig sind. Mit der Übermittlung bestätigen Sie dies und stellen sicher, dass diese Dritten über die vorliegende Datenschutzerklärung informiert wurden."
         }
       },
       "purpose": {
         "title": "3. Zweck der Datenverarbeitung",
+        "intro": "Ihre personenbezogenen Daten werden von uns zum Abschluss und zur Abwicklung von Geschäftsbeziehungen verwendet. Weiter bearbeiten wir Personendaten zur Wahrung unserer berechtigten Interessen:",
         "items": {
           "account": "Bereitstellung und Verwaltung Ihres Benutzerkontos",
           "transactions": "Abwicklung von Käufen und Verkäufen",
-          "communication": "Kommunikation bezüglich Ihrer Bestellungen und unserer Dienste",
-          "improvement": "Verbesserung unserer Website und Dienste",
-          "legal": "Erfüllung rechtlicher Verpflichtungen"
-        }
+          "communication": "Kommunikation mit Nutzern und Bearbeitung von Anfragen",
+          "improvement": "Angebot und Weiterentwicklung unserer Dienstleistungen und Plattform",
+          "marketing": "Werbung und Marketing, soweit Sie der Nutzung Ihrer Daten nicht widersprochen haben",
+          "legal": "Geltendmachung rechtlicher Ansprüche und Verteidigung bei rechtlichen Streitigkeiten",
+          "security": "Gewährleistung der IT-Sicherheit und Verhinderung von Missbrauch",
+          "compliance": "Einhaltung gesetzlicher und regulatorischer Verpflichtungen"
+        },
+        "consent": "Wir bearbeiten Ihre personenbezogenen Daten gestützt auf Ihre Einwilligung, sofern keine andere Rechtsgrundlage besteht. Ihre Einwilligung zur Datenbearbeitung können Sie jederzeit widerrufen. Ein Widerruf hat keine Auswirkungen auf bereits erfolgte Datenbearbeitungen.",
+        "serviceProviders": "Wir setzen für Betrieb und Wartung unserer Webseiten Dienstleister ein, die als unsere Auftragsbearbeiter tätig werden. Sämtliche Dienstleister sind vertraglich dazu verpflichtet, Ihre Daten vertraulich zu behandeln.",
+        "securityMeasures": "Currico verwendet diverse technische und organisatorische Massnahmen zum Schutz Ihrer Personendaten vor unberechtigtem Zugriff, Missbrauch, Bekanntgabe, Veränderung oder Vernichtung."
       },
       "cookies": {
-        "title": "4. Cookies",
-        "intro": "Wir verwenden Cookies, um die Funktionalität unserer Website sicherzustellen und Ihre Erfahrung zu verbessern. Detaillierte Informationen finden Sie in unserer Cookie-Richtlinie.",
+        "title": "4. Datenverarbeitung auf unseren Webseiten, Cookies und Tracking",
+        "intro": "Die Webseiten von Currico verwenden an mehreren Stellen so genannte Cookies. Die meisten der von uns verwendeten Cookies sind so genannte 'Session-Cookies'. Sie werden nach Ende Ihres Besuchs automatisch gelöscht. Cookies sind kleine Textinformationen, welche in Ihrem Browser gespeichert werden und welche auch bei weiteren Besuchen noch zur Verfügung stehen. Hiermit können wir z.B. Ihre Einstellungen (z.B. Ihre Sprache) beim nächsten Besuch gleich wieder korrekt übernehmen.",
+        "noPersonalData": "Im Cookie selbst befinden sich keine personenbezogenen Daten.",
         "essential": {
           "title": "Essenzielle Cookies",
           "content": "Diese Cookies sind für den Betrieb der Website erforderlich. Sie ermöglichen grundlegende Funktionen wie Anmeldung und Spracheinstellungen."
@@ -1686,7 +1812,8 @@
         "analytics": {
           "title": "Analyse-Cookies (optional)",
           "content": "Mit Ihrer Zustimmung verwenden wir Analyse-Cookies, um zu verstehen, wie Besucher unsere Website nutzen. Diese Daten helfen uns, die Website zu verbessern."
-        }
+        },
+        "browserSettings": "In den meisten Browsern finden Sie Einstellungen um Cookies anzusehen und gegebenenfalls wieder zu löschen. Wenn Sie Cookies sperren, kann es sein, dass gewisse Funktionalitäten (wie z.B. Sprachwahl, Bestellprozesse) nicht mehr funktionieren."
       },
       "paymentProcessors": {
         "title": "5. Zahlungsdienstleister",
@@ -1718,22 +1845,27 @@
       },
       "storage": {
         "title": "7. Datenspeicherung und internationale Übermittlung",
-        "location": "Ihre Daten werden primär auf Servern in der Schweiz gespeichert. Bei Diensten mit internationaler Datenübermittlung (wie Stripe) stellen wir sicher, dass angemessene Schutzmassnahmen vorhanden sind, einschliesslich Standardvertragsklauseln (SCCs) oder Angemessenheitsbeschlüsse.",
-        "retention": "Wir speichern Ihre Daten nur so lange, wie es für die angegebenen Zwecke erforderlich ist oder gesetzlich vorgeschrieben. Kontodaten werden bei Kontoauflösung gelöscht, vorbehaltlich gesetzlicher Aufbewahrungsfristen (typischerweise 10 Jahre für Finanzunterlagen nach Schweizer Recht)."
+        "location": "Wir bearbeiten und speichern Personendaten hauptsächlich in der Schweiz und in der Europäischen Union (EU). Über Auftragsbearbeiter oder Unterauftragsbearbeiter unserer Dienstleister können Daten möglicherweise auch in anderen Ländern verarbeitet werden.",
+        "transfer": "Befindet sich ein Empfänger in einem Land ohne angemessenen gesetzlichen Datenschutz, verpflichten wir den Empfänger vertraglich zur Einhaltung des anwendbaren Datenschutzes. Dazu verwenden wir die Standardvertragsklauseln der Europäischen Kommission, soweit der Empfänger nicht bereits einem gesetzlich anerkannten Regelwerk zur Sicherstellung des Datenschutzes unterliegt.",
+        "retention": "Wir verarbeiten und speichern Ihre personenbezogenen Daten nur so lange, wie es für die Erfüllung unserer vertraglichen und gesetzlichen Pflichten erforderlich ist. Daten, die wir für die Abwicklung unserer Geschäftsbeziehungen benötigen, bewahren wir in der Regel während 10 Jahren ab dem letzten Austausch mit Ihnen auf, mindestens aber ab Vertragsende. Diese Frist kann länger sein, soweit dies aus Beweisgründen oder zur Einhaltung gesetzlicher Vorgaben erforderlich ist."
       },
       "rights": {
-        "title": "8. Ihre Rechte",
-        "intro": "Nach dem Schweizer nDSG und der DSGVO haben Sie folgende Rechte bezüglich Ihrer personenbezogenen Daten:",
+        "title": "8. Ihre Rechte in Bezug auf die Bearbeitung von Personendaten",
+        "intro": "Sie können Auskunft darüber, ob wir Ihre Personendaten bearbeiten, jederzeit unentgeltlich bei uns anfordern. Sie können sich auch an uns wenden, wenn Sie:",
         "items": {
-          "access": "Recht auf Auskunft über Ihre gespeicherten Daten",
-          "rectification": "Recht auf Berichtigung unrichtiger Daten",
-          "deletion": "Recht auf Löschung Ihrer Daten ('Recht auf Vergessenwerden')",
-          "restriction": "Recht auf Einschränkung der Verarbeitung",
-          "portability": "Recht auf Datenübertragbarkeit",
-          "objection": "Recht auf Widerspruch gegen die Verarbeitung"
+          "access": "Auskunft über Ihre gespeicherten Daten erhalten möchten",
+          "rectification": "Ihre Personendaten berichtigen möchten",
+          "deletion": "Ihre Daten löschen lassen möchten ('Recht auf Vergessenwerden')",
+          "restriction": "Die Verarbeitung einschränken möchten",
+          "portability": "Ihre Daten übertragen lassen möchten",
+          "objection": "Widerspruch gegen unsere Bearbeitung Ihrer Personendaten einlegen möchten",
+          "withdrawal": "Erteilte Einwilligungen widerrufen möchten"
         },
+        "limitations": "Gesetzlich vorgesehene Einschränkungen wie z.B. gesetzliche Aufbewahrungs- und Dokumentationspflichten können von uns geltend gemacht werden.",
         "contact": "Um diese Rechte auszuüben, kontaktieren Sie uns bitte unter info@currico.ch. Wir antworten innerhalb von 30 Tagen.",
-        "complaint": "Sie haben auch das Recht, eine Beschwerde beim Eidgenössischen Datenschutz- und Öffentlichkeitsbeauftragten (EDÖB) oder, falls anwendbar, bei einer Aufsichtsbehörde in der EU einzureichen."
+        "complaint": "Beschwerden gegen unsere Bearbeitung Ihrer Personendaten können beim Eidgenössischen Datenschutz- und Öffentlichkeitsbeauftragten (EDÖB), Feldeggweg 1, 3003 Bern eingereicht werden.",
+        "euComplaint": "Wenn Sie sich im Europäischen Wirtschaftsraum (EWR) befinden, haben Sie zudem das Recht, sich bei der Datenschutz-Aufsichtsbehörde Ihres Landes zu beschweren.",
+        "profileDeletion": "Registrierte Nutzer können ihr Profil permanent löschen. Nach der Löschung sind sie über die Plattform nicht mehr erreichbar oder identifizierbar."
       },
       "security": {
         "title": "9. Datensicherheit",
@@ -1746,8 +1878,31 @@
       "jurisdiction": {
         "title": "11. Anwendbares Recht und Gerichtsstand",
         "content": "Diese Datenschutzerklärung unterliegt schweizerischem Recht. Ausschliesslicher Gerichtsstand für alle Streitigkeiten ist Zürich, Schweiz."
+      },
+      "gdpr": {
+        "title": "12. Ausnahmsweise Anwendung der EU-Datenschutzgrundverordnung (DSGVO)",
+        "intro": "Die EU-Datenschutzgrundverordnung (DSGVO) ist grundsätzlich nicht anwendbar. Sollte dies jedoch ausnahmsweise für bestimmte Datenbearbeitungen der Fall sein, so gelten ausschliesslich für die Zwecke der DSGVO und der ihr unterliegenden Datenbearbeitungen zusätzlich:",
+        "items": {
+          "consent": "Bearbeitung von Personendaten mit Einwilligung der betroffenen Person (Art. 6 Abs. 1 Bst. a DSGVO)",
+          "contract": "Erforderliche Bearbeitung von Personendaten zur Erfüllung eines Vertrages mit der betroffenen Person sowie zur Durchführung vorvertraglicher Massnahmen (Art. 6 Abs. 1 Bst. b DSGVO)",
+          "legal": "Erforderliche Bearbeitung von Personendaten zur Erfüllung einer rechtlichen Verpflichtung (Art. 6 Abs. 1 Bst. c DSGVO)",
+          "vital": "Erforderliche Bearbeitung von Personendaten, um lebenswichtige Interessen der betroffenen Person oder einer anderen natürlichen Person zu schützen (Art. 6 Abs. 1 Bst. d DSGVO)",
+          "publicInterest": "Erforderliche Bearbeitung von Personendaten zur Wahrnehmung einer Aufgabe, die im öffentlichen Interesse liegt oder in Ausübung öffentlicher Gewalt erfolgt (Art. 6 Abs. 1 Bst. e DSGVO)",
+          "legitimate": "Erforderliche Bearbeitung von Personendaten, um die berechtigten Interessen von uns oder von Dritten zu wahren, sofern nicht die Interessen oder Grundrechte und Grundfreiheiten der betroffenen Person überwiegen, insbesondere dann, wenn es sich bei der betroffenen Person um ein Kind handelt (Art. 6 Abs. 1 Bst. f DSGVO)"
+        },
+        "legitimateInterests": "Berechtigte Interessen sind insbesondere, unsere Tätigkeiten und Aktivitäten dauerhaft, sicher und zuverlässig sowie nutzerfreundlich ausüben zu können, die Gewährleistung der Informationssicherheit, der Schutz vor Missbrauch, die Durchsetzung von eigenen rechtlichen Ansprüchen und die Einhaltung von Schweizer Recht.",
+        "contactIfNotSatisfied": "Kontaktieren Sie uns, sofern Sie mit unserem Umgang mit Ihren Rechten oder dem Datenschutz nicht einverstanden sind."
+      },
+      "automatedDecisions": {
+        "title": "13. Automatisierte Einzelentscheidungen und Profiling",
+        "content": "Currico verwendet keine automatisierten Entscheidungsfindungsprozesse, einschliesslich Profiling, die rechtliche Auswirkungen auf Sie haben oder Sie in ähnlicher Weise erheblich beeinträchtigen. Sollten wir in Zukunft solche Prozesse einführen, werden wir Sie entsprechend informieren und Ihre Einwilligung einholen, sofern erforderlich."
+      },
+      "minors": {
+        "title": "14. Minderjährige",
+        "content": "Unsere Plattform richtet sich an Lehrpersonen. Minderjährige können die Angebote nur mit der Zustimmung ihrer Erziehungsberechtigten nutzen. Wir erheben nicht wissentlich personenbezogene Daten von Kindern unter 16 Jahren ohne Einwilligung der Erziehungsberechtigten."
       }
     },
+    "version": "Version 1.1 - Februar 2026",
     "contact": {
       "title": "Fragen zum Datenschutz?",
       "description": "Für Fragen oder Anliegen bezüglich Ihrer Daten kontaktieren Sie uns:",

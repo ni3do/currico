@@ -97,8 +97,15 @@ export default function ImpressumPage() {
               <h3 className="text-text mb-1 font-medium">{t("disclaimer.copyright.title")}</h3>
               <p>{t("disclaimer.copyright.content")}</p>
             </div>
+            <div>
+              <h3 className="text-text mb-1 font-medium">{t("disclaimer.userContent.title")}</h3>
+              <p>{t("disclaimer.userContent.content")}</p>
+            </div>
           </div>
         </div>
+
+        {/* Version */}
+        <p className="text-text-muted mt-8 text-sm">{t("version")}</p>
       </main>
 
       <Footer />
