@@ -2547,3 +2547,15 @@ form button.bg-primary {
 .hover-card:not(:hover) {
   will-change: auto;
 }
+
+/* =================================================================
+   SCROLLBAR UTILITIES
+   ================================================================= */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

@@ -210,6 +210,65 @@
       "button": "Jetzt verkaufen",
       "note": "Kostenlose Registrierung. Keine monatlichen Gebühren."
     },
+    "trustBar": {
+      "lp21": "LP21 konform",
+      "swissMade": "Swiss Made",
+      "quality": "Qualitätsgeprüft",
+      "hosting": "Sicheres Hosting",
+      "privacy": "Datenschutz"
+    },
+    "categoryQuickAccess": {
+      "title": "Beliebte Fächer",
+      "description": "Finden Sie Material nach Fachbereich",
+      "subjects": {
+        "deutsch": "Deutsch",
+        "mathematik": "Mathematik",
+        "nmg": "NMG",
+        "englisch": "Englisch",
+        "franzoesisch": "Französisch",
+        "musik": "Musik",
+        "gestalten": "Gestalten",
+        "medien": "Medien & Informatik"
+      }
+    },
+    "valueProposition": {
+      "title": "Warum Currico?",
+      "description": "Die Plattform, die Schweizer Lehrpersonen Zeit spart und Qualität garantiert.",
+      "timeSaving": {
+        "title": "Zeit sparen",
+        "description": "Finden Sie in Minuten, was sonst Stunden dauert. Sofort einsetzbare Materialien ohne Nachbearbeitung."
+      },
+      "quality": {
+        "title": "Qualität garantiert",
+        "description": "Jedes Material wird geprüft und ist exakt auf den Lehrplan 21 abgestimmt."
+      },
+      "community": {
+        "title": "Von Lehrern für Lehrer",
+        "description": "Profitieren Sie vom Wissen und der Erfahrung Ihrer Kollegen aus der ganzen Schweiz."
+      }
+    },
+    "testimonials": {
+      "title": "Das sagen Lehrpersonen",
+      "description": "Vertrauen von Pädagogen in der ganzen Schweiz",
+      "testimonial1": {
+        "quote": "Currico hat meine Unterrichtsvorbereitung revolutioniert. Ich finde Qualitätsmaterialien in Minuten statt Stunden. Die Lehrplan 21 Filter sind unglaublich hilfreich.",
+        "name": "Sarah M.",
+        "role": "Primarlehrerin",
+        "location": "Zürich"
+      },
+      "testimonial2": {
+        "quote": "Als Verkäufer habe ich bereits über CHF 2'000 verdient, indem ich Materialien geteilt habe, die ich ohnehin erstellt hatte. Es ist ein tolles Gefühl, anderen Lehrpersonen zu helfen.",
+        "name": "Thomas K.",
+        "role": "Sekundarlehrer",
+        "location": "Bern"
+      },
+      "testimonial3": {
+        "quote": "Die Qualitätskontrolle zeigt sich wirklich. Jedes Material, das ich gekauft habe, war professionell erstellt und konnte direkt am nächsten Tag im Unterricht eingesetzt werden.",
+        "name": "Lisa W.",
+        "role": "Heilpädagogin",
+        "location": "Basel"
+      }
+    },
     "pilotTeacher": {
       "title": "Werden Sie Pilot-Lehrperson",
       "description": "Helfen Sie uns, Currico noch besser zu machen",

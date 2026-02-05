@@ -651,14 +651,14 @@ function UploadPageContent() {
 
                     {/* Legal Confirmations */}
                     <div className="border-border bg-surface-elevated rounded-xl border p-6">
-                      <h3 className="text-text mb-4 flex items-center gap-2 text-lg font-semibold">
+                      <h3 className="text-text mb-2 text-lg font-semibold">
                         Rechtliche Bestätigungen
                       </h3>
-                      <p className="text-text-muted mb-4 text-sm">
-                        Bitte bestätigen Sie die folgenden Punkte:
+                      <p className="text-text-muted mb-5 text-sm">
+                        Bitte bestätigen Sie alle Punkte, um fortfahren zu können.
                       </p>
 
-                      <div className="space-y-2">
+                      <div className="space-y-3">
                         <FormCheckbox
                           checked={formData.legalOwnContent}
                           onChange={(checked) => updateFormData("legalOwnContent", checked)}
@@ -697,31 +697,28 @@ function UploadPageContent() {
                           tooltipKey="legalSwissGerman"
                         />
 
-                        <div className="border-border border-t pt-2">
-                          <FormCheckbox
-                            checked={formData.legalTermsAccepted}
-                            onChange={(checked) => updateFormData("legalTermsAccepted", checked)}
-                            label="Verkäufervereinbarung akzeptieren"
-                            description={
-                              <>
-                                Ich akzeptiere die{" "}
-                                <Link
-                                  href="/terms"
-                                  target="_blank"
-                                  className="text-primary hover:underline"
-                                >
-                                  Verkäufervereinbarung
-                                </Link>{" "}
-                                und bestätige, dass ich die Rechte habe, diese Ressource zu
-                                verkaufen.
-                              </>
-                            }
-                            hasError={
-                              touchedFields.legalTermsAccepted && !formData.legalTermsAccepted
-                            }
-                            tooltipKey="legalTermsAccepted"
-                          />
-                        </div>
+                        <FormCheckbox
+                          checked={formData.legalTermsAccepted}
+                          onChange={(checked) => updateFormData("legalTermsAccepted", checked)}
+                          label="Verkäufervereinbarung akzeptieren"
+                          description={
+                            <>
+                              Ich akzeptiere die{" "}
+                              <Link
+                                href="/terms"
+                                target="_blank"
+                                className="text-primary hover:underline"
+                              >
+                                Verkäufervereinbarung
+                              </Link>{" "}
+                              und bestätige, dass ich die Rechte habe, diese Ressource zu verkaufen.
+                            </>
+                          }
+                          hasError={
+                            touchedFields.legalTermsAccepted && !formData.legalTermsAccepted
+                          }
+                          tooltipKey="legalTermsAccepted"
+                        />
                       </div>
 
                       {!allLegalChecked && (

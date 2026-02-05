@@ -209,6 +209,43 @@
       "button": "Start Selling",
       "note": "Free to join. No monthly fees."
     },
+    "trustBar": {
+      "lp21": "LP21 Compliant",
+      "swissMade": "Swiss Made",
+      "quality": "Quality Checked",
+      "hosting": "Secure Hosting",
+      "privacy": "Data Protection"
+    },
+    "categoryQuickAccess": {
+      "title": "Popular Subjects",
+      "description": "Find materials by subject area",
+      "subjects": {
+        "deutsch": "German",
+        "mathematik": "Mathematics",
+        "nmg": "NMG",
+        "englisch": "English",
+        "franzoesisch": "French",
+        "musik": "Music",
+        "gestalten": "Arts & Crafts",
+        "medien": "Media & IT"
+      }
+    },
+    "valueProposition": {
+      "title": "Why Currico?",
+      "description": "The platform that saves Swiss teachers time and guarantees quality.",
+      "timeSaving": {
+        "title": "Save Time",
+        "description": "Find in minutes what usually takes hours. Ready-to-use materials without additional work."
+      },
+      "quality": {
+        "title": "Quality Guaranteed",
+        "description": "Every material is reviewed and precisely aligned with Lehrplan 21."
+      },
+      "community": {
+        "title": "By Teachers, For Teachers",
+        "description": "Benefit from the knowledge and experience of your colleagues from all over Switzerland."
+      }
+    },
     "testimonials": {
       "title": "What Teachers Say",
       "description": "Trusted by educators across Switzerland",
