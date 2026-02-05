@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { FACHBEREICHE, getFachbereicheByZyklus, getFachbereichByCode } from "@/lib/data/lehrplan21";
-import type { Fachbereich, Kompetenzbereich, Kompetenz } from "@/lib/curriculum-types";
-import { FormField } from "./FormField";
+import type { Fachbereich, Kompetenzbereich } from "@/lib/curriculum-types";
 import { InfoTooltip, FIELD_TOOLTIPS } from "./InfoTooltip";
 import {
   BookOpen,
@@ -20,12 +19,16 @@ import {
   Users,
   Compass,
   FolderKanban,
-  ChevronDown,
-  ChevronRight,
   Check,
   Search,
   X,
   AlertCircle,
+  Scissors,
+  Activity,
+  FlaskConical,
+  ClipboardList,
+  ChevronDown,
+  Filter,
 } from "lucide-react";
 
 // Map icon names to Lucide components
@@ -44,6 +47,10 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   users: Users,
   compass: Compass,
   "folder-kanban": FolderKanban,
+  scissors: Scissors,
+  activity: Activity,
+  flask: FlaskConical,
+  "clipboard-list": ClipboardList,
 };
 
 interface EnhancedCurriculumSelectorProps {
@@ -72,7 +79,7 @@ const CYCLES = [
 ];
 
 const CANTONS = [
-  { value: "", label: "Kein Kanton (alle)" },
+  { value: "", label: "Alle Kantone" },
   { value: "ZH", label: "Zürich" },
   { value: "BE", label: "Bern" },
   { value: "LU", label: "Luzern" },
@@ -104,13 +111,7 @@ export function EnhancedCurriculumSelector({
   onCycleBlur,
   onSubjectBlur,
 }: EnhancedCurriculumSelectorProps) {
-  const [showSubjectDropdown, setShowSubjectDropdown] = useState(false);
-  const [showCompetencyPanel, setShowCompetencyPanel] = useState(false);
   const [competencySearch, setCompetencySearch] = useState("");
-  const [expandedBereiche, setExpandedBereiche] = useState<string[]>([]);
-
-  const subjectRef = useRef<HTMLDivElement>(null);
-  const competencyRef = useRef<HTMLDivElement>(null);
 
   // Get available subjects for selected cycle
   const availableSubjects = useMemo(() => {
@@ -144,21 +145,6 @@ export function EnhancedCurriculumSelector({
       .filter((kb) => kb.kompetenzen.length > 0);
   }, [selectedFachbereich, competencySearch]);
 
-  // Close dropdowns on outside click
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (subjectRef.current && !subjectRef.current.contains(event.target as Node)) {
-        setShowSubjectDropdown(false);
-      }
-      if (competencyRef.current && !competencyRef.current.contains(event.target as Node)) {
-        setShowCompetencyPanel(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
   // Toggle competency selection
   const toggleCompetency = (code: string) => {
     if (competencies.includes(code)) {
@@ -186,29 +172,165 @@ export function EnhancedCurriculumSelector({
     }
   };
 
-  // Toggle expanded state
-  const toggleExpanded = (code: string) => {
-    setExpandedBereiche((prev) =>
-      prev.includes(code) ? prev.filter((c) => c !== code) : [...prev, code]
-    );
-  };
-
   // Get icon component for a subject
   const getSubjectIcon = (iconName: string) => {
     return ICON_MAP[iconName] || BookOpen;
   };
 
-  // Handle subject selection
+  // State to control competencies panel visibility with animation
+  const [showCompetencies, setShowCompetencies] = useState(false);
+
+  // Handle subject selection - opens competencies panel
   const handleSelectSubject = (fachbereich: Fachbereich) => {
-    onSubjectChange(fachbereich.name, fachbereich.code);
-    onCompetenciesChange([]); // Reset competencies when subject changes
-    setShowSubjectDropdown(false);
-    setExpandedBereiche([]); // Reset expanded states
+    const isSameSubject = subjectCode === fachbereich.code;
+
+    if (isSameSubject) {
+      // Toggle competencies panel if clicking same subject
+      setShowCompetencies(!showCompetencies);
+    } else {
+      // New subject selected - open competencies
+      onSubjectChange(fachbereich.name, fachbereich.code);
+      onCompetenciesChange([]); // Reset competencies when subject changes
+      setShowCompetencies(true);
+    }
   };
 
+  // Helper to clear subject and close competencies panel
+  const clearSubject = () => {
+    onSubjectChange("", "");
+    onCompetenciesChange([]);
+    setShowCompetencies(false);
+  };
+
+  // Get canton label
+  const getCantonLabel = (value: string) => {
+    return CANTONS.find((c) => c.value === value)?.label || value;
+  };
+
+  // Get cycle label
+  const getCycleLabel = (value: string) => {
+    return CYCLES.find((c) => c.value === value)?.label || value;
+  };
+
+  // Check if any filters are selected
+  const hasFilters = cycle || subject || competencies.length > 0 || canton;
+
+  // State for collapsible competency sections - stores user overrides only
+  const [sectionOverrides, setSectionOverrides] = useState<Record<string, boolean>>({});
+
+  // Compute expanded state: all sections expanded by default, with user overrides applied
+  const expandedSections = useMemo(() => {
+    if (!selectedFachbereich) return {};
+    const expanded: Record<string, boolean> = {};
+    selectedFachbereich.kompetenzbereiche.forEach((kb) => {
+      // Default to expanded, but use override if user has toggled
+      expanded[kb.code] = sectionOverrides[kb.code] ?? true;
+    });
+    return expanded;
+  }, [selectedFachbereich, sectionOverrides]);
+
+  const toggleSection = (code: string) => {
+    setSectionOverrides((prev) => ({
+      ...prev,
+      [code]: !(prev[code] ?? true), // Toggle from current state (default true)
+    }));
+  };
+
+  // Ref for scroll container to maintain position
+  const containerRef = useRef<HTMLDivElement>(null);
+
   return (
-    <div className="space-y-6">
-      {/* Cycle Selection */}
+    <div ref={containerRef} className="space-y-6">
+      {/* Filter Overview - Sticky summary bar */}
+      {hasFilters && (
+        <div className="border-border bg-surface-elevated sticky top-0 z-10 -mx-2 rounded-xl border p-3 shadow-sm backdrop-blur-sm">
+          <div className="flex items-center gap-2">
+            <Filter className="text-text-muted h-4 w-4 flex-shrink-0" />
+            <span className="text-text-muted text-xs font-medium">Filter:</span>
+            <div className="flex flex-1 flex-wrap items-center gap-1.5">
+              {/* Cycle chip */}
+              {cycle && (
+                <span className="bg-primary/10 text-primary inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium">
+                  {getCycleLabel(cycle)}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onCycleChange("");
+                      clearSubject();
+                    }}
+                    className="hover:text-error ml-0.5 transition-colors"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </span>
+              )}
+              {/* Subject chip */}
+              {subject && (
+                <span
+                  className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium"
+                  style={{
+                    backgroundColor: selectedFachbereich
+                      ? `${selectedFachbereich.color}15`
+                      : undefined,
+                    color: selectedFachbereich?.color,
+                  }}
+                >
+                  {subject}
+                  <button
+                    type="button"
+                    onClick={clearSubject}
+                    className="hover:text-error ml-0.5 transition-colors"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </span>
+              )}
+              {/* Canton chip */}
+              {canton && (
+                <span className="bg-info/10 text-info inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium">
+                  {getCantonLabel(canton)}
+                  <button
+                    type="button"
+                    onClick={() => onCantonChange("")}
+                    className="hover:text-error ml-0.5 transition-colors"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </span>
+              )}
+              {/* Competencies count chip */}
+              {competencies.length > 0 && (
+                <span className="bg-success/10 text-success inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium">
+                  {competencies.length} Kompetenz{competencies.length !== 1 ? "en" : ""}
+                  <button
+                    type="button"
+                    onClick={() => onCompetenciesChange([])}
+                    className="hover:text-error ml-0.5 transition-colors"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </span>
+              )}
+            </div>
+            {/* Clear all */}
+            {(cycle || subject || competencies.length > 0 || canton) && (
+              <button
+                type="button"
+                onClick={() => {
+                  onCycleChange("");
+                  clearSubject();
+                  onCantonChange("");
+                }}
+                className="text-text-muted hover:text-error text-xs transition-colors"
+              >
+                Alle löschen
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Cycle Selection - Cards */}
       <div>
         <div className="mb-3 flex items-center gap-1.5">
           <label className="text-text text-sm font-medium">
@@ -220,13 +342,13 @@ export function EnhancedCurriculumSelector({
           {CYCLES.map((c) => (
             <label
               key={c.value}
-              className={`relative flex cursor-pointer flex-col rounded-xl border-2 p-4 transition-all ${
+              className={`group relative flex cursor-pointer flex-col rounded-xl border-2 p-4 transition-colors duration-150 ${
                 cycle === c.value
-                  ? "border-primary bg-primary/10 ring-primary/20 ring-2"
+                  ? "border-primary bg-primary/10"
                   : touchedCycle && cycleError
                     ? "border-error/50 bg-error/5 hover:border-error"
                     : "border-border bg-bg hover:border-primary/50"
-              } `}
+              }`}
             >
               <div className="flex items-center gap-2">
                 <input
@@ -236,15 +358,14 @@ export function EnhancedCurriculumSelector({
                   checked={cycle === c.value}
                   onChange={(e) => {
                     onCycleChange(e.target.value);
-                    // Reset subject when cycle changes
+                    // Reset subject when cycle changes if not available
                     if (subjectCode) {
                       const newSubjects = getFachbereicheByZyklus(parseInt(e.target.value));
                       const currentSubjectAvailable = newSubjects.some(
                         (s) => s.code === subjectCode
                       );
                       if (!currentSubjectAvailable) {
-                        onSubjectChange("", "");
-                        onCompetenciesChange([]);
+                        clearSubject();
                       }
                     }
                   }}
@@ -252,11 +373,16 @@ export function EnhancedCurriculumSelector({
                   className="text-primary focus:ring-primary/20 h-4 w-4"
                 />
                 <span className="text-text font-medium">{c.label}</span>
-                <span className="bg-surface-elevated text-text-muted ml-auto rounded-full px-2 py-0.5 text-xs">
+                <span className="bg-surface-elevated text-text-muted ml-auto rounded-full px-2 py-0.5 text-xs font-medium">
                   {c.grades}
                 </span>
               </div>
               <span className="text-text-muted mt-1.5 text-xs">{c.description}</span>
+              {cycle === c.value && (
+                <div className="bg-primary absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full">
+                  <Check className="text-text-on-accent h-3 w-3" />
+                </div>
+              )}
             </label>
           ))}
         </div>
@@ -268,348 +394,365 @@ export function EnhancedCurriculumSelector({
         )}
       </div>
 
-      {/* Subject Selection */}
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div ref={subjectRef} className="relative">
-          <div className="mb-2 flex items-center gap-1.5">
+      {/* Subject Selection - Always visible grid */}
+      <div>
+        <div className="mb-3 flex items-center justify-between">
+          <div className="flex items-center gap-1.5">
             <label className="text-text text-sm font-medium">
               Fach <span className="text-error">*</span>
             </label>
             <InfoTooltip content={FIELD_TOOLTIPS.subject.content} />
           </div>
+          {!cycle && <span className="text-text-muted text-xs">Bitte zuerst Zyklus wählen</span>}
+        </div>
 
-          <button
-            type="button"
-            onClick={() => setShowSubjectDropdown(!showSubjectDropdown)}
-            onBlur={onSubjectBlur}
-            className={`flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-left transition-all ${
-              showSubjectDropdown
-                ? "border-primary ring-primary/20 ring-2"
-                : touchedSubject && subjectError
-                  ? "border-error bg-error/5"
-                  : "border-border bg-bg hover:border-primary/50"
-            } `}
-          >
-            {selectedFachbereich ? (
-              <>
-                <div
-                  className="flex h-8 w-8 items-center justify-center rounded-lg"
-                  style={{ backgroundColor: `${selectedFachbereich.color}20` }}
+        {cycle ? (
+          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            {availableSubjects.map((fachbereich) => {
+              const Icon = getSubjectIcon(fachbereich.icon);
+              const isSelected = subjectCode === fachbereich.code;
+              const isExpanded = isSelected && showCompetencies;
+
+              return (
+                <button
+                  key={fachbereich.code}
+                  type="button"
+                  onClick={() => handleSelectSubject(fachbereich)}
+                  onBlur={onSubjectBlur}
+                  className={`group relative flex items-center gap-3 rounded-xl border-2 px-4 py-3 text-left transition-colors duration-150 ${
+                    isSelected
+                      ? "border-primary bg-primary/10"
+                      : touchedSubject && subjectError
+                        ? "border-error/50 bg-error/5 hover:border-error"
+                        : "border-border bg-bg hover:border-primary/50"
+                  }`}
                 >
-                  {(() => {
-                    const Icon = getSubjectIcon(selectedFachbereich.icon);
-                    return (
-                      <span style={{ color: selectedFachbereich.color }}>
-                        <Icon className="h-4 w-4" />
-                      </span>
-                    );
-                  })()}
-                </div>
-                <span className="text-text font-medium">{selectedFachbereich.name}</span>
-                <span className="text-text-muted ml-auto text-xs">
-                  {selectedFachbereich.shortName}
-                </span>
-              </>
-            ) : (
-              <span className="text-text-muted">Fach wählen...</span>
-            )}
-            <ChevronDown
-              className={`text-text-muted ml-auto h-5 w-5 transition-transform ${showSubjectDropdown ? "rotate-180" : ""}`}
-            />
-          </button>
-
-          {/* Subject Dropdown */}
-          {showSubjectDropdown && (
-            <div className="border-border bg-surface absolute z-50 mt-2 max-h-80 w-full overflow-y-auto rounded-xl border shadow-xl">
-              {!cycle && (
-                <div className="text-text-muted px-4 py-3 text-sm">
-                  Bitte wählen Sie zuerst einen Zyklus
-                </div>
-              )}
-              {cycle && availableSubjects.length === 0 && (
-                <div className="text-text-muted px-4 py-3 text-sm">
-                  Keine Fächer für diesen Zyklus verfügbar
-                </div>
-              )}
-              {availableSubjects.map((fachbereich) => {
-                const Icon = getSubjectIcon(fachbereich.icon);
-                const isSelected = subjectCode === fachbereich.code;
-
-                return (
-                  <button
-                    key={fachbereich.code}
-                    type="button"
-                    onClick={() => handleSelectSubject(fachbereich)}
-                    className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors ${isSelected ? "bg-primary/10" : "hover:bg-surface-elevated"} `}
+                  <div
+                    className="flex h-10 w-10 items-center justify-center rounded-lg"
+                    style={{ backgroundColor: `${fachbereich.color}20` }}
                   >
-                    <div
-                      className="flex h-8 w-8 items-center justify-center rounded-lg"
-                      style={{ backgroundColor: `${fachbereich.color}20` }}
-                    >
-                      <span style={{ color: fachbereich.color }}>
-                        <Icon className="h-4 w-4" />
-                      </span>
+                    <span style={{ color: fachbereich.color }}>
+                      <Icon className="h-5 w-5" />
+                    </span>
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-text truncate text-sm font-medium">{fachbereich.name}</div>
+                    <div className="text-text-muted flex items-center gap-1 text-xs">
+                      <span>{fachbereich.kompetenzbereiche.length} Bereiche</span>
+                      {isSelected && competencies.length > 0 && (
+                        <span className="text-primary font-medium">
+                          • {competencies.length} gewählt
+                        </span>
+                      )}
                     </div>
-                    <div className="flex-1">
-                      <div className="text-text font-medium">{fachbereich.name}</div>
-                      <div className="text-text-muted text-xs">
-                        {fachbereich.kompetenzbereiche.length} Kompetenzbereiche
-                      </div>
+                  </div>
+                  {/* Expand indicator */}
+                  <ChevronDown
+                    className={`h-4 w-4 transition-transform duration-150 ${
+                      isExpanded ? "rotate-180" : ""
+                    } ${isSelected ? "text-primary" : "text-text-muted group-hover:text-text"}`}
+                  />
+                  {isSelected && (
+                    <div className="bg-primary absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full">
+                      <Check className="text-text-on-accent h-3 w-3" />
                     </div>
-                    <span className="text-text-muted text-xs">{fachbereich.shortName}</span>
-                    {isSelected && <Check className="text-primary h-4 w-4" />}
-                  </button>
-                );
-              })}
-            </div>
-          )}
-
-          {touchedSubject && subjectError && (
-            <div className="text-error mt-2 flex items-center gap-1.5 text-sm">
-              <AlertCircle className="h-4 w-4" />
-              {subjectError}
-            </div>
-          )}
-        </div>
-
-        {/* Canton Selection */}
-        <div>
-          <div className="mb-2 flex items-center gap-1.5">
-            <label className="text-text text-sm font-medium">Kanton</label>
-            <InfoTooltip content={FIELD_TOOLTIPS.canton.content} />
+                  )}
+                </button>
+              );
+            })}
           </div>
-          <select
-            value={canton}
-            onChange={(e) => onCantonChange(e.target.value)}
-            className="border-border bg-bg text-text focus:border-primary focus:ring-primary/20 w-full rounded-xl border px-4 py-3 focus:ring-2 focus:outline-none"
-          >
-            {CANTONS.map((c) => (
-              <option key={c.value} value={c.value}>
-                {c.label}
-              </option>
-            ))}
-          </select>
-          <p className="text-text-muted mt-1 text-xs">
-            Optional: Für kantonsspezifische Lehrmittel
-          </p>
-        </div>
+        ) : (
+          <div className="border-border bg-surface-elevated rounded-xl border-2 border-dashed p-8 text-center">
+            <div className="text-text-muted text-sm">
+              Wählen Sie oben einen Zyklus, um die verfügbaren Fächer zu sehen
+            </div>
+          </div>
+        )}
+
+        {touchedSubject && subjectError && (
+          <div className="text-error mt-2 flex items-center gap-1.5 text-sm">
+            <AlertCircle className="h-4 w-4" />
+            {subjectError}
+          </div>
+        )}
       </div>
 
-      {/* Competency Selection */}
-      {selectedFachbereich && (
-        <div ref={competencyRef}>
-          <div className="mb-3 flex items-center justify-between">
-            <div className="flex items-center gap-1.5">
-              <label className="text-text text-sm font-medium">Lehrplan 21 Kompetenzen</label>
-              <InfoTooltip
-                content={FIELD_TOOLTIPS.competencies.content}
-                example={FIELD_TOOLTIPS.competencies.example}
-              />
+      {/* Competencies - Opens when Fach is clicked */}
+      {selectedFachbereich && showCompetencies && (
+        <div
+          className="animate-in fade-in slide-in-from-top-2 overflow-hidden rounded-xl border-2 duration-200"
+          style={{ borderColor: `${selectedFachbereich.color}40` }}
+        >
+          {/* Header bar with subject color */}
+          <div
+            className="flex items-center justify-between px-4 py-3"
+            style={{ backgroundColor: `${selectedFachbereich.color}15` }}
+          >
+            <div className="flex items-center gap-3">
+              <div
+                className="flex h-8 w-8 items-center justify-center rounded-lg"
+                style={{
+                  backgroundColor: `${selectedFachbereich.color}30`,
+                  color: selectedFachbereich.color,
+                }}
+              >
+                {(() => {
+                  const Icon = getSubjectIcon(selectedFachbereich.icon);
+                  return <Icon className="h-4 w-4" />;
+                })()}
+              </div>
+              <div>
+                <div className="text-text text-sm font-semibold">
+                  Kompetenzen: {selectedFachbereich.name}
+                </div>
+                <div className="text-text-muted text-xs">
+                  {selectedFachbereich.kompetenzbereiche.length} Bereiche verfügbar
+                </div>
+              </div>
             </div>
-            {competencies.length > 0 && (
-              <span className="bg-primary/10 text-primary rounded-full px-2.5 py-1 text-xs font-medium">
-                {competencies.length} ausgewählt
-              </span>
-            )}
+            <div className="flex items-center gap-3">
+              {competencies.length > 0 && (
+                <span className="bg-primary/20 text-primary rounded-full px-3 py-1 text-xs font-semibold">
+                  {competencies.length} ausgewählt
+                </span>
+              )}
+              <button
+                type="button"
+                onClick={() => setShowCompetencies(false)}
+                className="text-text-muted hover:text-text rounded-lg p-1 transition-colors"
+                title="Schliessen"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
           </div>
 
-          {/* Selected Competencies Display */}
-          {competencies.length > 0 && (
-            <div className="mb-3 flex flex-wrap gap-2">
-              {competencies.map((code) => (
-                <span
-                  key={code}
-                  className="bg-primary/10 text-primary inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium"
-                >
-                  {code}
+          <div className="p-4">
+            {/* Search and selected pills row */}
+            <div className="mb-4 flex flex-wrap items-center gap-3">
+              {/* Search */}
+              <div className="relative min-w-[200px] flex-1">
+                <Search className="text-text-muted absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2" />
+                <input
+                  type="text"
+                  value={competencySearch}
+                  onChange={(e) => setCompetencySearch(e.target.value)}
+                  placeholder="Suchen (z.B. MA.1.A)..."
+                  className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 w-full rounded-lg border py-2 pr-8 pl-8 text-sm transition-colors duration-100 focus:ring-1 focus:outline-none"
+                />
+                {competencySearch && (
                   <button
                     type="button"
-                    onClick={() => toggleCompetency(code)}
-                    className="hover:text-error transition-colors"
+                    onClick={() => setCompetencySearch("")}
+                    className="text-text-muted hover:text-text absolute top-1/2 right-2.5 -translate-y-1/2 transition-colors"
                   >
                     <X className="h-3.5 w-3.5" />
                   </button>
-                </span>
-              ))}
-              <button
-                type="button"
-                onClick={() => onCompetenciesChange([])}
-                className="text-text-muted hover:text-error text-xs transition-colors"
-              >
-                Alle entfernen
-              </button>
+                )}
+              </div>
+              {competencies.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => onCompetenciesChange([])}
+                  className="text-text-muted hover:text-error text-xs transition-colors"
+                >
+                  Alle entfernen
+                </button>
+              )}
             </div>
-          )}
 
-          {/* Competency Panel Toggle */}
-          <button
-            type="button"
-            onClick={() => setShowCompetencyPanel(!showCompetencyPanel)}
-            className="border-border bg-bg hover:border-primary/50 flex w-full items-center justify-between rounded-xl border px-4 py-3 text-left transition-colors"
-          >
-            <span className="text-text-muted">
-              {competencies.length === 0
-                ? "Kompetenzen auswählen..."
-                : `${competencies.length} Kompetenz${competencies.length !== 1 ? "en" : ""} ausgewählt`}
-            </span>
-            <ChevronDown
-              className={`text-text-muted h-5 w-5 transition-transform ${showCompetencyPanel ? "rotate-180" : ""}`}
-            />
-          </button>
-
-          {/* Competency Panel */}
-          {showCompetencyPanel && (
-            <div className="border-border bg-surface mt-2 rounded-xl border shadow-lg">
-              {/* Search */}
-              <div className="border-border border-b p-3">
-                <div className="relative">
-                  <Search className="text-text-muted absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
-                  <input
-                    type="text"
-                    value={competencySearch}
-                    onChange={(e) => setCompetencySearch(e.target.value)}
-                    placeholder="Suchen (z.B. MA.1.A oder Addition)..."
-                    className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary w-full rounded-lg border py-2 pr-4 pl-10 text-sm focus:outline-none"
-                  />
-                  {competencySearch && (
+            {/* Selected Competencies Pills */}
+            {competencies.length > 0 && (
+              <div className="mb-4 flex flex-wrap gap-1">
+                {competencies.map((code) => (
+                  <span
+                    key={code}
+                    className="bg-primary/10 text-primary inline-flex items-center gap-0.5 rounded px-1.5 py-0.5 font-mono text-[11px] font-medium"
+                  >
+                    {code}
                     <button
                       type="button"
-                      onClick={() => setCompetencySearch("")}
-                      className="text-text-muted hover:text-text absolute top-1/2 right-3 -translate-y-1/2"
+                      onClick={() => toggleCompetency(code)}
+                      className="hover:text-error ml-0.5 transition-colors"
                     >
-                      <X className="h-4 w-4" />
+                      <X className="h-2.5 w-2.5" />
                     </button>
-                  )}
-                </div>
+                  </span>
+                ))}
               </div>
+            )}
 
-              {/* Hierarchy */}
-              <div className="max-h-96 overflow-y-auto p-2">
-                {filteredKompetenzbereiche.length === 0 ? (
-                  <div className="text-text-muted py-8 text-center text-sm">
-                    Keine Kompetenzen gefunden
-                  </div>
-                ) : (
-                  filteredKompetenzbereiche.map((kb) => {
-                    const isExpanded = expandedBereiche.includes(kb.code);
+            {/* Competency Tree - Collapsible sections */}
+            <div className="bg-surface overflow-hidden rounded-lg">
+              {filteredKompetenzbereiche.length === 0 ? (
+                <div className="text-text-muted py-8 text-center text-sm">
+                  {competencySearch ? "Keine Kompetenzen gefunden" : "Keine Kompetenzen verfügbar"}
+                </div>
+              ) : (
+                <div className="divide-border divide-y">
+                  {filteredKompetenzbereiche.map((kb) => {
                     const kbCodes = kb.kompetenzen.map((k) => k.code);
                     const selectedCount = kbCodes.filter((code) =>
                       competencies.includes(code)
                     ).length;
                     const allSelected = selectedCount === kbCodes.length;
                     const someSelected = selectedCount > 0 && !allSelected;
+                    const isExpanded = expandedSections[kb.code] ?? true;
 
                     return (
-                      <div key={kb.code} className="mb-1">
-                        {/* Kompetenzbereich Header */}
-                        <div className="hover:bg-surface-elevated flex items-center gap-2 rounded-lg">
-                          <button
-                            type="button"
-                            onClick={() => toggleExpanded(kb.code)}
-                            className="flex flex-1 items-center gap-2 px-3 py-2"
-                          >
-                            {isExpanded ? (
-                              <ChevronDown className="text-text-muted h-4 w-4" />
-                            ) : (
-                              <ChevronRight className="text-text-muted h-4 w-4" />
-                            )}
-                            <span
-                              className="rounded px-1.5 py-0.5 text-xs font-bold"
+                      <div key={kb.code}>
+                        {/* Kompetenzbereich Header - Prominent theme header */}
+                        <button
+                          type="button"
+                          onClick={() => toggleSection(kb.code)}
+                          className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors duration-100"
+                          style={{
+                            backgroundColor: `${selectedFachbereich.color}08`,
+                            borderBottom: isExpanded
+                              ? `1px solid ${selectedFachbereich.color}20`
+                              : undefined,
+                          }}
+                        >
+                          <div className="flex items-center gap-3">
+                            <ChevronDown
+                              className={`h-4 w-4 transition-transform duration-150 ${isExpanded ? "" : "-rotate-90"}`}
+                              style={{ color: selectedFachbereich.color }}
+                            />
+                            <div
+                              className="flex h-9 w-9 items-center justify-center rounded-lg text-xs font-bold"
                               style={{
                                 backgroundColor: `${selectedFachbereich.color}20`,
                                 color: selectedFachbereich.color,
                               }}
                             >
-                              {kb.code}
-                            </span>
-                            <span className="text-text text-sm font-medium">{kb.name}</span>
-                            {selectedCount > 0 && (
-                              <span className="bg-primary/10 text-primary ml-auto rounded-full px-2 py-0.5 text-xs">
-                                {selectedCount}/{kbCodes.length}
-                              </span>
-                            )}
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => toggleKompetenzbereich(kb)}
-                            className={`mr-2 flex h-5 w-5 items-center justify-center rounded border transition-colors ${
-                              allSelected
-                                ? "border-primary bg-primary"
-                                : someSelected
-                                  ? "border-primary bg-primary/50"
-                                  : "border-border hover:border-primary"
-                            } `}
-                          >
-                            {(allSelected || someSelected) && (
-                              <Check className="text-text-on-accent h-3 w-3" />
-                            )}
-                          </button>
-                        </div>
-
-                        {/* Kompetenzen */}
-                        {isExpanded && (
-                          <div className="ml-6 space-y-1 pb-2">
-                            {kb.kompetenzen.map((kompetenz) => {
-                              const isSelected = competencies.includes(kompetenz.code);
-
-                              return (
-                                <button
-                                  key={kompetenz.code}
-                                  type="button"
-                                  onClick={() => toggleCompetency(kompetenz.code)}
-                                  className={`flex w-full items-start gap-3 rounded-lg px-3 py-2 text-left transition-colors ${isSelected ? "bg-primary/10" : "hover:bg-surface-elevated"} `}
-                                >
-                                  <div
-                                    className={`mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded border ${isSelected ? "border-primary bg-primary" : "border-border"} `}
-                                  >
-                                    {isSelected && (
-                                      <Check className="text-text-on-accent h-3 w-3" />
-                                    )}
-                                  </div>
-                                  <div className="min-w-0 flex-1">
-                                    <div className="flex items-center gap-2">
-                                      <span className="text-primary font-mono text-xs font-semibold">
-                                        {kompetenz.code}
-                                      </span>
-                                      <span className="text-text text-sm">{kompetenz.name}</span>
-                                    </div>
-                                    {kompetenz.handlungsaspekte &&
-                                      kompetenz.handlungsaspekte.length > 0 && (
-                                        <div className="text-text-muted mt-1 text-xs">
-                                          {kompetenz.handlungsaspekte.join(" • ")}
-                                        </div>
-                                      )}
-                                  </div>
-                                </button>
-                              );
-                            })}
+                              {kb.code.split(".").pop()}
+                            </div>
+                            <div>
+                              <div className="text-text text-sm font-semibold">{kb.name}</div>
+                              <div className="text-text-muted text-xs">{kb.code}</div>
+                            </div>
                           </div>
-                        )}
+                          <div className="flex items-center gap-3">
+                            <span className="text-text-muted text-sm">
+                              {selectedCount > 0 ? (
+                                <span className="text-success font-semibold">{selectedCount}</span>
+                              ) : (
+                                "0"
+                              )}
+                              <span className="mx-0.5">/</span>
+                              {kbCodes.length}
+                            </span>
+                            <div
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleKompetenzbereich(kb);
+                              }}
+                              className={`flex h-6 w-6 cursor-pointer items-center justify-center rounded-lg transition-colors duration-100 ${
+                                allSelected
+                                  ? "bg-primary"
+                                  : someSelected
+                                    ? "bg-primary/50"
+                                    : "border-border hover:border-primary/50 border-2"
+                              }`}
+                              title={allSelected ? "Alle abwählen" : "Alle auswählen"}
+                            >
+                              {(allSelected || someSelected) && (
+                                <Check className="text-text-on-accent h-3.5 w-3.5" />
+                              )}
+                            </div>
+                          </div>
+                        </button>
+
+                        {/* Kompetenzen - Card layout matching Fach exactly */}
+                        <div
+                          className={`grid transition-all duration-200 ease-in-out ${
+                            isExpanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                          }`}
+                        >
+                          <div className="overflow-hidden">
+                            <div className="grid grid-cols-1 gap-2 px-4 pb-4 sm:grid-cols-2 md:grid-cols-3">
+                              {kb.kompetenzen.map((kompetenz) => {
+                                const isSelected = competencies.includes(kompetenz.code);
+
+                                return (
+                                  <button
+                                    key={kompetenz.code}
+                                    type="button"
+                                    onClick={() => toggleCompetency(kompetenz.code)}
+                                    className={`group relative flex items-center gap-3 rounded-xl border-2 px-4 py-3 text-left transition-colors duration-150 ${
+                                      isSelected
+                                        ? "border-primary bg-primary/10"
+                                        : "border-border bg-bg hover:border-primary/50"
+                                    }`}
+                                  >
+                                    {/* Icon area - matches Fach style */}
+                                    <div
+                                      className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg text-sm font-bold"
+                                      style={{
+                                        backgroundColor: `${selectedFachbereich.color}20`,
+                                        color: selectedFachbereich.color,
+                                      }}
+                                    >
+                                      {kompetenz.code.split(".").pop()}
+                                    </div>
+                                    {/* Content - matches Fach style */}
+                                    <div className="min-w-0 flex-1">
+                                      <div
+                                        className="text-text truncate text-sm font-medium"
+                                        title={kompetenz.name}
+                                      >
+                                        {kompetenz.name}
+                                      </div>
+                                      <div className="text-text-muted text-xs">
+                                        {kompetenz.code}
+                                      </div>
+                                    </div>
+                                    {/* Checkmark badge - matches Fach style */}
+                                    {isSelected && (
+                                      <div className="bg-primary absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full">
+                                        <Check className="text-text-on-accent h-3 w-3" />
+                                      </div>
+                                    )}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     );
-                  })
-                )}
-              </div>
+                  })}
+                </div>
+              )}
             </div>
-          )}
 
-          <p className="text-text-muted mt-2 text-xs">
-            Wählen Sie die Kompetenzen aus dem Lehrplan 21, die zu Ihrer Ressource passen
-          </p>
+            {/* Tip */}
+            <p className="text-text-muted mt-3 text-xs">
+              <strong className="text-text">Tipp:</strong> Wählen Sie alle passenden Kompetenzen aus
+              für bessere Auffindbarkeit.
+            </p>
+          </div>
         </div>
       )}
 
-      {/* Info Box */}
-      <div className="border-info/30 bg-info/10 rounded-xl border p-4">
-        <div className="flex gap-3">
-          <div className="bg-info/20 flex h-8 w-8 items-center justify-center rounded-full">
-            <BookOpen className="text-info h-4 w-4" />
-          </div>
-          <div className="text-text text-sm">
-            <strong>Tipp:</strong> Je genauer Sie Ihre Ressource dem Lehrplan 21 zuordnen, desto
-            besser finden Lehrpersonen Ihre Materialien. Wählen Sie alle relevanten Kompetenzen aus.
-          </div>
+      {/* Canton Selection - Moved after Competencies */}
+      <div>
+        <div className="mb-2 flex items-center gap-1.5">
+          <label className="text-text text-sm font-medium">Kanton (optional)</label>
+          <InfoTooltip content={FIELD_TOOLTIPS.canton.content} />
         </div>
+        <select
+          value={canton}
+          onChange={(e) => onCantonChange(e.target.value)}
+          className="border-border bg-bg text-text focus:border-primary focus:ring-primary/20 w-full rounded-xl border px-4 py-3 transition-colors duration-150 focus:ring-2 focus:outline-none sm:w-auto sm:min-w-[200px]"
+        >
+          {CANTONS.map((c) => (
+            <option key={c.value} value={c.value}>
+              {c.label}
+            </option>
+          ))}
+        </select>
+        <p className="text-text-muted mt-1 text-xs">Für kantonsspezifische Lehrmittel</p>
       </div>
     </div>
   );
