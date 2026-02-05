@@ -7,6 +7,7 @@ import { useLocale } from "next-intl";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
+import { Server, Lock, Star, Award } from "lucide-react";
 
 export default function AboutPage() {
   const t = useTranslations("aboutPage");
@@ -210,7 +211,7 @@ export default function AboutPage() {
           <div className="border-primary/20 bg-primary/5 mt-6 rounded-xl border p-6 text-center">
             <p className="text-primary mb-3 font-medium">{t("founders.highlight")}</p>
             <a
-              href="mailto:contact@currico.ch"
+              href="mailto:info@currico.ch"
               className="text-primary inline-flex items-center gap-2 text-sm font-medium hover:underline"
             >
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -221,8 +222,55 @@ export default function AboutPage() {
                   d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                 />
               </svg>
-              contact@currico.ch
+              info@currico.ch
             </a>
+          </div>
+        </div>
+
+        {/* Quality & Trust Section */}
+        <div className="mb-12">
+          <div className="mb-8 text-center">
+            <div className="bg-primary mb-4 inline-flex items-center gap-2 rounded-full px-4 py-2">
+              <Star className="h-5 w-5 text-white" />
+              <span className="font-semibold text-white">{t("swissBrand.badge")}</span>
+            </div>
+            <h2 className="text-text mb-2 text-xl font-semibold">{t("swissBrand.title")}</h2>
+            <p className="text-text-muted mx-auto max-w-2xl">{t("swissBrand.subtitle")}</p>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {/* Quality First */}
+            <div className="card p-6 text-center">
+              <div className="bg-primary-light mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full">
+                <Award className="text-primary h-6 w-6" />
+              </div>
+              <h3 className="text-text font-bold">{t("swissBrand.swissMade.title")}</h3>
+              <p className="text-text-muted mt-2 text-sm">
+                {t("swissBrand.swissMade.description")}
+              </p>
+            </div>
+
+            {/* Swiss Hosted */}
+            <div className="card p-6 text-center">
+              <div className="bg-success-light mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full">
+                <Server className="text-success h-6 w-6" />
+              </div>
+              <h3 className="text-text font-bold">{t("swissBrand.swissHosted.title")}</h3>
+              <p className="text-text-muted mt-2 text-sm">
+                {t("swissBrand.swissHosted.description")}
+              </p>
+            </div>
+
+            {/* Data Protection */}
+            <div className="card p-6 text-center">
+              <div className="bg-primary-light mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full">
+                <Lock className="text-primary h-6 w-6" />
+              </div>
+              <h3 className="text-text font-bold">{t("swissBrand.dataProtection.title")}</h3>
+              <p className="text-text-muted mt-2 text-sm">
+                {t("swissBrand.dataProtection.description")}
+              </p>
+            </div>
           </div>
         </div>
 

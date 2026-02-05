@@ -38,6 +38,12 @@
     },
     "footer": {
       "copyright": "\u00a9 2026 Currico",
+      "madeIn": "Made in Switzerland",
+      "swissMade": "Swiss Made",
+      "swissHosted": "Hosted in Switzerland by Infomaniak",
+      "dataProtection": "Swiss Data Protection",
+      "hostedBy": "Hosted by",
+      "swissCloud": "Swiss Cloud",
       "links": {
         "help": "Help",
         "imprint": "Imprint",
@@ -97,7 +103,10 @@
       "trustIndicators": {
         "lehrplan21": "Lehrplan 21 aligned",
         "swissTeachers": "Swiss teachers",
-        "verified": "Quality verified"
+        "verified": "Quality verified",
+        "swissMade": "Swiss Made",
+        "swissQuality": "Swiss Quality",
+        "swissHosted": "Swiss Hosted"
       },
       "imageAlt": "Teacher helping students with group work in the classroom",
       "statsCard": {
@@ -221,6 +230,43 @@
         "role": "Special Education Teacher",
         "location": "Basel"
       }
+    },
+    "pilotTeacher": {
+      "title": "Become a Pilot Teacher",
+      "description": "Help us make Currico even better",
+      "text": "We're looking for dedicated teachers who want to test our platform and help shape its future. As a pilot teacher, you'll get exclusive access to new features and can directly influence our development.",
+      "benefits": {
+        "early": "Early access to new features",
+        "feedback": "Direct line to the development team",
+        "free": "Free premium materials for testing"
+      },
+      "button": "Apply Now",
+      "note": "Limited spots available"
+    },
+    "swissBrand": {
+      "badge": "Quality & Trust",
+      "title": "Built by Educators for Educators",
+      "description": "Currico is developed with a focus on quality, security, and the needs of educators. Your data is protected by strict privacy laws.",
+      "swissMade": {
+        "title": "Quality First",
+        "description": "Developed by educators for educators"
+      },
+      "swissHosted": {
+        "title": "Secure Hosting",
+        "description": "Hosted by Infomaniak in Swiss data centers"
+      },
+      "dataProtection": {
+        "title": "Data Protection",
+        "description": "Your data protected by strict privacy laws"
+      },
+      "localSupport": {
+        "title": "Local Support",
+        "description": "Our team speaks your language"
+      },
+      "hostedBy": "Hosted by",
+      "swissCloud": "Swiss Cloud",
+      "co2Neutral": "CO₂ Neutral",
+      "secureHosting": "Secure Hosting"
     }
   },
   "loginPage": {
@@ -586,6 +632,31 @@
       "subtitle": "Join hundreds of Swiss teachers who are already saving time and using high-quality materials.",
       "button": "Explore Materials",
       "secondaryButton": "Register for Free"
+    },
+    "swissBrand": {
+      "badge": "Quality & Trust",
+      "title": "Built by Educators for Educators",
+      "subtitle": "Developed with a focus on quality, security, and the needs of educators",
+      "swissMade": {
+        "title": "Quality First",
+        "description": "Developed by educators for educators"
+      },
+      "swissHosted": {
+        "title": "Secure Hosting",
+        "description": "Hosted by Infomaniak in Swiss data centers"
+      },
+      "dataProtection": {
+        "title": "Data Protection",
+        "description": "Your data protected by strict privacy laws"
+      },
+      "localSupport": {
+        "title": "Local Support",
+        "description": "Swiss-based team speaks your language"
+      },
+      "hostedBy": "Hosted by",
+      "swissCloud": "Swiss Cloud",
+      "co2Neutral": "CO₂ Neutral",
+      "secureHosting": "Secure Hosting"
     }
   },
   "contactPage": {

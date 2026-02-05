@@ -18,6 +18,10 @@ import {
   Sparkles,
   MessageCircle,
   Gift,
+  Server,
+  Lock,
+  Star,
+  Award,
 } from "lucide-react";
 
 export default function Home() {
@@ -115,7 +119,17 @@ export default function Home() {
                       transition={{ duration: 0.2 }}
                     >
                       <BadgeCheck className="text-success h-5 w-5" />
-                      <span>Lehrplan 21</span>
+                      <span>{t("hero.trustIndicators.lehrplan21")}</span>
+                    </motion.div>
+                    <motion.div
+                      className="flex items-center gap-2"
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <div className="flex h-5 w-5 items-center justify-center rounded bg-red-600">
+                        <span className="text-[10px] font-bold text-white">+</span>
+                      </div>
+                      <span>{t("hero.trustIndicators.swissMade")}</span>
                     </motion.div>
                     <motion.div
                       className="flex items-center gap-2"
@@ -123,15 +137,15 @@ export default function Home() {
                       transition={{ duration: 0.2 }}
                     >
                       <Shield className="text-success h-5 w-5" />
-                      <span>Schweizer Qualität</span>
+                      <span>{t("hero.trustIndicators.swissQuality")}</span>
                     </motion.div>
                     <motion.div
                       className="flex items-center gap-2"
                       whileHover={{ scale: 1.05 }}
                       transition={{ duration: 0.2 }}
                     >
-                      <Clock className="text-success h-5 w-5" />
-                      <span>Zeitersparnis</span>
+                      <Server className="text-primary h-5 w-5" />
+                      <span>{t("hero.trustIndicators.swissHosted")}</span>
                     </motion.div>
                   </div>
                 </FadeIn>
@@ -477,15 +491,16 @@ export default function Home() {
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <ScaleIn>
               <div className="border-border-subtle bg-bg relative overflow-hidden rounded-2xl border p-8 md:p-12">
-                {/* Decorative gradient */}
+                {/* Decorative gradient - optimized for Safari */}
                 <motion.div
-                  className="absolute top-0 right-0 h-64 w-64 rounded-full bg-gradient-to-br from-[var(--ctp-mauve)]/10 to-[var(--ctp-blue)]/10 blur-3xl"
+                  className="absolute top-0 right-0 h-64 w-64 rounded-full bg-gradient-to-br from-[var(--ctp-mauve)]/10 to-[var(--ctp-blue)]/10 blur-2xl"
+                  style={{ willChange: "transform, opacity", transform: "translateZ(0)" }}
                   animate={{
-                    scale: [1, 1.2, 1],
-                    opacity: [0.5, 0.8, 0.5],
+                    scale: [1, 1.15, 1],
+                    opacity: [0.5, 0.7, 0.5],
                   }}
                   transition={{
-                    duration: 4,
+                    duration: 6,
                     repeat: Infinity,
                     ease: "easeInOut",
                   }}
@@ -606,6 +621,87 @@ export default function Home() {
                 </div>
               </div>
             </ScaleIn>
+          </div>
+        </section>
+
+        {/* Quality & Trust Section */}
+        <section className="py-20">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <FadeIn direction="up" className="mb-12 text-center">
+              <div className="bg-primary mb-4 inline-flex items-center gap-2 rounded-full px-4 py-2">
+                <Star className="h-5 w-5 text-white" />
+                <span className="font-semibold text-white">{t("swissBrand.badge")}</span>
+              </div>
+              <h2 className="text-text text-3xl font-bold">{t("swissBrand.title")}</h2>
+              <p className="text-text-muted mx-auto mt-4 max-w-2xl text-lg">
+                {t("swissBrand.description")}
+              </p>
+            </FadeIn>
+
+            <StaggerChildren
+              staggerDelay={0.1}
+              className="mx-auto grid max-w-4xl gap-6 sm:grid-cols-2 lg:grid-cols-3"
+            >
+              {/* Quality First */}
+              <StaggerItem>
+                <motion.div
+                  className="card p-6 text-center"
+                  whileHover={{ y: -5, scale: 1.02 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <motion.div
+                    className="bg-primary-light mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full"
+                    whileHover={{ rotate: 10 }}
+                  >
+                    <Award className="text-primary h-7 w-7" />
+                  </motion.div>
+                  <h3 className="text-text font-bold">{t("swissBrand.swissMade.title")}</h3>
+                  <p className="text-text-muted mt-2 text-sm">
+                    {t("swissBrand.swissMade.description")}
+                  </p>
+                </motion.div>
+              </StaggerItem>
+
+              {/* Secure Hosting */}
+              <StaggerItem>
+                <motion.div
+                  className="card p-6 text-center"
+                  whileHover={{ y: -5, scale: 1.02 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <motion.div
+                    className="bg-success-light mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full"
+                    whileHover={{ rotate: 10 }}
+                  >
+                    <Server className="text-success h-7 w-7" />
+                  </motion.div>
+                  <h3 className="text-text font-bold">{t("swissBrand.swissHosted.title")}</h3>
+                  <p className="text-text-muted mt-2 text-sm">
+                    {t("swissBrand.swissHosted.description")}
+                  </p>
+                </motion.div>
+              </StaggerItem>
+
+              {/* Data Protection */}
+              <StaggerItem>
+                <motion.div
+                  className="card p-6 text-center"
+                  whileHover={{ y: -5, scale: 1.02 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <motion.div
+                    className="bg-primary-light mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full"
+                    whileHover={{ rotate: 10 }}
+                  >
+                    <Lock className="text-primary h-7 w-7" />
+                  </motion.div>
+                  <h3 className="text-text font-bold">{t("swissBrand.dataProtection.title")}</h3>
+                  <p className="text-text-muted mt-2 text-sm">
+                    {t("swissBrand.dataProtection.description")}
+                  </p>
+                </motion.div>
+              </StaggerItem>
+            </StaggerChildren>
           </div>
         </section>
       </main>

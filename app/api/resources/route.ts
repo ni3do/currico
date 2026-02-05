@@ -701,8 +701,8 @@ export async function POST(request: NextRequest) {
                 const pageResult = await storage.upload(page.buffer, {
                   category: "preview",
                   userId,
-                  filename: `${resource.id}-preview-${page.pageNumber}.png`,
-                  contentType: "image/png",
+                  filename: `${resource.id}-preview-${page.pageNumber}.webp`,
+                  contentType: "image/webp",
                   metadata: {
                     resourceId: resource.id,
                     generated: "true",
@@ -732,8 +732,8 @@ export async function POST(request: NextRequest) {
               const previewResult = await storage.upload(generatedPreview, {
                 category: "preview",
                 userId,
-                filename: `${resource.id}-preview.png`,
-                contentType: "image/png",
+                filename: `${resource.id}-preview.webp`,
+                contentType: "image/webp",
                 metadata: {
                   resourceId: resource.id,
                   generated: "true",

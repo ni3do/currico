@@ -1022,7 +1022,7 @@ function FachbereichAccordion({
             whileTap={{ scale: 0.98 }}
           >
             <motion.span
-              className="flex h-7 min-w-7 items-center justify-center rounded-md px-1.5 text-xs font-bold"
+              className="flex h-7 w-10 shrink-0 items-center justify-center rounded-md text-xs font-bold"
               initial={false}
               animate={{
                 backgroundColor: isSelected ? fachbereich.color : `${fachbereich.color}20`,
@@ -1034,9 +1034,8 @@ function FachbereichAccordion({
             </motion.span>
             <div className="min-w-0 flex-1">
               <div
-                className={`truncate text-sm leading-tight font-medium ${isSelected ? "" : "text-text"}`}
+                className={`text-sm leading-tight font-medium ${isSelected ? "" : "text-text"}`}
                 style={isSelected ? { color: fachbereich.color } : undefined}
-                title={fachbereich.name}
               >
                 {fachbereich.name}
               </div>

@@ -420,7 +420,7 @@ export default function AdminDocumentsPage() {
                 <div className="border-border rounded-lg border p-4">
                   <div className="text-text-muted mb-2 text-sm">Dokument</div>
                   <a
-                    href={selectedResource.file_url}
+                    href={`/api/resources/${selectedResource.id}/download`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-primary inline-flex items-center gap-2 hover:underline"

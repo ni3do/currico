@@ -39,6 +39,11 @@
     "footer": {
       "copyright": "\u00a9 2026 Currico",
       "madeIn": "Made in Switzerland",
+      "swissMade": "Swiss Made",
+      "swissHosted": "Gehostet in der Schweiz bei Infomaniak",
+      "dataProtection": "Schweizer Datenschutz",
+      "hostedBy": "Gehostet bei",
+      "swissCloud": "Swiss Cloud",
       "payment": "Zahlung mit TWINT & Karte",
       "links": {
         "help": "Hilfe",
@@ -99,7 +104,10 @@
       "trustIndicators": {
         "lehrplan21": "Lehrplan 21 abgestimmt",
         "swissTeachers": "Schweizer Lehrpersonen",
-        "verified": "Qualitätsgeprüft"
+        "verified": "Qualitätsgeprüft",
+        "swissMade": "Swiss Made",
+        "swissQuality": "Schweizer Qualität",
+        "swissHosted": "Schweizer Hosting"
       },
       "imageAlt": "Lehrerin hilft Schülern bei der Gruppenarbeit im Klassenzimmer",
       "statsCard": {
@@ -213,6 +221,31 @@
       },
       "button": "Jetzt bewerben",
       "note": "Begrenzte Plätze verfügbar"
+    },
+    "swissBrand": {
+      "badge": "Qualität & Vertrauen",
+      "title": "Von Lehrpersonen für Lehrpersonen",
+      "description": "Currico wird mit Fokus auf Qualität, Sicherheit und die Bedürfnisse von Lehrpersonen entwickelt. Ihre Daten sind durch strenge Datenschutzgesetze geschützt.",
+      "swissMade": {
+        "title": "Qualität zuerst",
+        "description": "Von Lehrpersonen für Lehrpersonen entwickelt"
+      },
+      "swissHosted": {
+        "title": "Sicheres Hosting",
+        "description": "Gehostet bei Infomaniak in Schweizer Rechenzentren"
+      },
+      "dataProtection": {
+        "title": "Datenschutz",
+        "description": "Ihre Daten durch strenge Datenschutzgesetze geschützt"
+      },
+      "localSupport": {
+        "title": "Lokaler Support",
+        "description": "Unser Team spricht Ihre Sprache"
+      },
+      "hostedBy": "Gehostet bei",
+      "swissCloud": "Swiss Cloud",
+      "co2Neutral": "CO₂-Neutral",
+      "secureHosting": "Sicheres Hosting"
     }
   },
   "loginPage": {
@@ -578,6 +611,31 @@
       "subtitle": "Schliessen Sie sich Hunderten von Schweizer Lehrpersonen an, die bereits Zeit sparen und qualitativ hochwertige Materialien nutzen.",
       "button": "Materialien entdecken",
       "secondaryButton": "Kostenlos registrieren"
+    },
+    "swissBrand": {
+      "badge": "Qualität & Vertrauen",
+      "title": "Von Lehrpersonen für Lehrpersonen",
+      "subtitle": "Entwickelt mit Fokus auf Qualität, Sicherheit und die Bedürfnisse von Lehrpersonen",
+      "swissMade": {
+        "title": "Qualität zuerst",
+        "description": "Von Lehrpersonen für Lehrpersonen entwickelt"
+      },
+      "swissHosted": {
+        "title": "Sicheres Hosting",
+        "description": "Gehostet bei Infomaniak in Schweizer Rechenzentren"
+      },
+      "dataProtection": {
+        "title": "Datenschutz",
+        "description": "Ihre Daten durch strenge Datenschutzgesetze geschützt"
+      },
+      "localSupport": {
+        "title": "Lokaler Support",
+        "description": "Schweizer Team spricht Ihre Sprache"
+      },
+      "hostedBy": "Gehostet bei",
+      "swissCloud": "Swiss Cloud",
+      "co2Neutral": "CO₂-Neutral",
+      "secureHosting": "Sicheres Hosting"
     }
   },
   "contactPage": {

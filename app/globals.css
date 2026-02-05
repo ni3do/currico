@@ -1221,6 +1221,17 @@ select.input {
   border: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
   border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-glass);
+  /* Safari performance: force GPU compositing */
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Safari: reduce blur for better performance */
+@supports (-webkit-touch-callout: none) {
+  .glass-card {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
 }
 
 /* =================================================================
@@ -1839,18 +1850,16 @@ select.input {
   animation: spin-smooth 1s linear infinite;
 }
 
-/* Theme transition for smooth switching */
-* {
-  transition-property: background-color, border-color, color;
-  transition-duration: 0s;
-}
-
+/* Theme transition for smooth switching
+   Note: Only apply transitions during active theme switch to avoid Safari performance issues */
 html.theme-transition,
 html.theme-transition *,
 html.theme-transition *::before,
 html.theme-transition *::after {
-  transition-duration: 0.25s !important;
-  transition-timing-function: var(--ease-smooth) !important;
+  transition:
+    background-color 0.25s var(--ease-smooth),
+    border-color 0.25s var(--ease-smooth),
+    color 0.25s var(--ease-smooth) !important;
 }
 
 /* =================================================================
@@ -2001,6 +2010,8 @@ html.theme-transition *::after {
   );
   background-size: 32px 32px;
   pointer-events: none;
+  /* Safari performance: force GPU layer */
+  transform: translateZ(0);
 }
 
 /* Hero image container with floating effect */
@@ -2024,6 +2035,16 @@ html.theme-transition *::after {
   border-radius: 50%;
   z-index: -1;
   filter: blur(40px);
+  /* Safari performance: force GPU layer */
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Safari: reduce blur for better performance */
+@supports (-webkit-touch-callout: none) {
+  .hero-image-container::before {
+    filter: blur(25px);
+  }
 }
 
 /* Secondary decorative element - small accent circle */
@@ -2126,6 +2147,10 @@ html.theme-transition *::after {
   position: absolute;
   border-radius: 50%;
   pointer-events: none;
+  /* Safari performance: force GPU compositing */
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 .hero-decoration-1 {
@@ -2161,6 +2186,16 @@ html.theme-transition *::after {
   height: 60px;
   background: var(--ctp-green);
   opacity: 0.1;
+}
+
+/* Safari: reduce blur intensity for better performance */
+@supports (-webkit-touch-callout: none) {
+  .hero-decoration-1 {
+    filter: blur(20px);
+  }
+  .hero-decoration-2 {
+    filter: blur(25px);
+  }
 }
 
 /* =================================================================
@@ -2430,4 +2465,85 @@ form button.bg-primary {
   background-color: var(--color-primary);
   color: var(--btn-primary-text);
   box-shadow: var(--shadow-sm);
+}
+
+/* =================================================================
+   ACCESSIBILITY: Reduced Motion Support
+   Respects user preference and improves Safari performance
+   ================================================================= */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .animate-fade-in,
+  .animate-fade-in-up,
+  .animate-fade-in-down,
+  .animate-fade-in-left,
+  .animate-fade-in-right,
+  .animate-scale-in,
+  .animate-slide-in-bottom,
+  .animate-slide-out-bottom,
+  .animate-bounce-subtle,
+  .animate-pulse-subtle,
+  .animate-shimmer,
+  .animate-float,
+  .animate-spin-slow,
+  .animate-wiggle,
+  .animate-heart-beat,
+  .animate-bounce-in,
+  .animate-scale-pop,
+  .animate-slide-up-fade,
+  .animate-breathe,
+  .animate-spin-smooth {
+    animation: none !important;
+  }
+
+  .hover-lift:hover,
+  .hover-scale:hover,
+  .hover-glow:hover,
+  .hover-card:hover {
+    transform: none !important;
+  }
+}
+
+/* =================================================================
+   SAFARI PERFORMANCE OPTIMIZATIONS
+   Force GPU compositing for animated elements
+   ================================================================= */
+
+/* Cards with hover animations */
+.card,
+.hover-lift,
+.hover-scale,
+.hover-card {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Buttons with animations */
+.btn-primary,
+.btn-secondary,
+.btn-tertiary,
+.btn-ghost,
+.btn-danger,
+.btn-action,
+.hero-cta,
+.hero-cta-secondary {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Remove will-change after animation completes (cleanup) */
+.card:not(:hover),
+.hover-lift:not(:hover),
+.hover-scale:not(:hover),
+.hover-card:not(:hover) {
+  will-change: auto;
 }
