@@ -15,7 +15,7 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import {
   ALL_TEST_USERS,
-  TEST_MATERIAL_IDS,
+  TEST_RESOURCE_IDS,
   TEST_COLLECTION_IDS,
   TEST_SELLER,
   TEST_BUYER,
@@ -75,17 +75,17 @@ async function seedTestUsers() {
 }
 
 /**
- * Seeds sample materials owned by the test seller.
+ * Seeds sample resources owned by the test seller.
  */
-async function seedTestMaterials() {
-  console.log("Seeding test materials...");
+async function seedTestResources() {
+  console.log("Seeding test resources...");
 
-  // Free material (price = 0)
+  // Free resource (price = 0)
   await prisma.resource.upsert({
-    where: { id: TEST_MATERIAL_IDS.FREE_MATERIAL },
+    where: { id: TEST_RESOURCE_IDS.FREE_RESOURCE },
     update: {},
     create: {
-      id: TEST_MATERIAL_IDS.FREE_MATERIAL,
+      id: TEST_RESOURCE_IDS.FREE_RESOURCE,
       title: "Gratis Mathematik Arbeitsblatt",
       description:
         "Ein kostenloses Arbeitsblatt zum Thema Addition und Subtraktion für Zyklus 1. Ideal zum Testen der Download-Funktionalität.",
@@ -106,14 +106,14 @@ async function seedTestMaterials() {
       seller_id: TEST_SELLER.id,
     },
   });
-  console.log("  Created/updated free material");
+  console.log("  Created/updated free resource");
 
-  // Paid material
+  // Paid resource
   await prisma.resource.upsert({
-    where: { id: TEST_MATERIAL_IDS.PAID_MATERIAL },
+    where: { id: TEST_RESOURCE_IDS.PAID_RESOURCE },
     update: {},
     create: {
-      id: TEST_MATERIAL_IDS.PAID_MATERIAL,
+      id: TEST_RESOURCE_IDS.PAID_RESOURCE,
       title: "Premium Deutsch Lernpaket",
       description:
         "Ein umfassendes Lernpaket für den Deutschunterricht in Zyklus 2. Enthält Arbeitsblätter, Übungen und Lösungen.",
@@ -138,14 +138,14 @@ async function seedTestMaterials() {
       seller_id: TEST_SELLER.id,
     },
   });
-  console.log("  Created/updated paid material");
+  console.log("  Created/updated paid resource");
 
-  // Pending material (not yet verified)
+  // Pending resource (not yet verified)
   await prisma.resource.upsert({
-    where: { id: TEST_MATERIAL_IDS.PENDING_MATERIAL },
+    where: { id: TEST_RESOURCE_IDS.PENDING_RESOURCE },
     update: {},
     create: {
-      id: TEST_MATERIAL_IDS.PENDING_MATERIAL,
+      id: TEST_RESOURCE_IDS.PENDING_RESOURCE,
       title: "Neues Material zur Prüfung",
       description: "Dieses Material wartet noch auf die Überprüfung durch das Admin-Team.",
       price: 490, // CHF 4.90 in Rappen
@@ -164,7 +164,7 @@ async function seedTestMaterials() {
       seller_id: TEST_SELLER.id,
     },
   });
-  console.log("  Created/updated pending material");
+  console.log("  Created/updated pending resource");
 }
 
 /**
@@ -193,18 +193,18 @@ async function seedTestCollections() {
 async function seedTestWishlists() {
   console.log("Seeding test wishlists...");
 
-  // Add paid material to buyer's wishlist
+  // Add paid resource to buyer's wishlist
   await prisma.wishlist.upsert({
     where: {
       user_id_resource_id: {
         user_id: TEST_BUYER.id,
-        resource_id: TEST_MATERIAL_IDS.PAID_MATERIAL,
+        resource_id: TEST_RESOURCE_IDS.PAID_RESOURCE,
       },
     },
     update: {},
     create: {
       user_id: TEST_BUYER.id,
-      resource_id: TEST_MATERIAL_IDS.PAID_MATERIAL,
+      resource_id: TEST_RESOURCE_IDS.PAID_RESOURCE,
     },
   });
   console.log("  Created/updated wishlist entry");
@@ -220,7 +220,7 @@ async function main() {
 
   try {
     await seedTestUsers();
-    await seedTestMaterials();
+    await seedTestResources();
     await seedTestCollections();
     await seedTestWishlists();
     await seedTestComments();
@@ -242,14 +242,14 @@ async function main() {
 async function seedTestComments() {
   console.log("Seeding test comments...");
 
-  // Create a comment from the buyer on the free material
+  // Create a comment from the buyer on the free resource
   await prisma.comment.upsert({
     where: { id: "test-comment-001" },
     update: {},
     create: {
       id: "test-comment-001",
       content: "Tolles Material! Sehr hilfreich für meinen Unterricht.",
-      resource_id: TEST_MATERIAL_IDS.FREE_MATERIAL,
+      resource_id: TEST_RESOURCE_IDS.FREE_RESOURCE,
       user_id: TEST_BUYER.id,
     },
   });
@@ -275,7 +275,7 @@ async function seedTestComments() {
     create: {
       id: "test-comment-002",
       content: "Die Aufgaben sind gut strukturiert.",
-      resource_id: TEST_MATERIAL_IDS.FREE_MATERIAL,
+      resource_id: TEST_RESOURCE_IDS.FREE_RESOURCE,
       user_id: TEST_BUYER.id,
     },
   });
@@ -293,13 +293,13 @@ async function seedTestReviews() {
     where: {
       user_id_resource_id: {
         user_id: TEST_BUYER.id,
-        resource_id: TEST_MATERIAL_IDS.FREE_MATERIAL,
+        resource_id: TEST_RESOURCE_IDS.FREE_RESOURCE,
       },
     },
     update: {},
     create: {
       user_id: TEST_BUYER.id,
-      resource_id: TEST_MATERIAL_IDS.FREE_MATERIAL,
+      resource_id: TEST_RESOURCE_IDS.FREE_RESOURCE,
     },
   });
   console.log("  Created/updated download record for review eligibility");
@@ -314,7 +314,7 @@ async function seedTestReviews() {
       rating: 5,
       title: "Ausgezeichnetes Material",
       content: "Perfekt für Zyklus 1. Die Schüler haben viel Spass damit.",
-      resource_id: TEST_MATERIAL_IDS.FREE_MATERIAL,
+      resource_id: TEST_RESOURCE_IDS.FREE_RESOURCE,
       user_id: TEST_BUYER.id,
     },
   });
@@ -327,21 +327,21 @@ async function seedTestReviews() {
 async function seedTestLikes() {
   console.log("Seeding test likes...");
 
-  // Like on the free material from buyer
+  // Like on the free resource from buyer
   await prisma.resourceLike.upsert({
     where: {
       user_id_resource_id: {
         user_id: TEST_BUYER.id,
-        resource_id: TEST_MATERIAL_IDS.FREE_MATERIAL,
+        resource_id: TEST_RESOURCE_IDS.FREE_RESOURCE,
       },
     },
     update: {},
     create: {
       user_id: TEST_BUYER.id,
-      resource_id: TEST_MATERIAL_IDS.FREE_MATERIAL,
+      resource_id: TEST_RESOURCE_IDS.FREE_RESOURCE,
     },
   });
-  console.log("  Created/updated material like");
+  console.log("  Created/updated resource like");
 
   // Like on comment from seller (liking buyer's comment)
   await prisma.commentLike.upsert({
@@ -363,7 +363,7 @@ async function seedTestLikes() {
 // Export for programmatic use
 export {
   seedTestUsers,
-  seedTestMaterials,
+  seedTestResources,
   seedTestCollections,
   seedTestWishlists,
   seedTestComments,
