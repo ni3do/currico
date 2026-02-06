@@ -12,20 +12,20 @@ import {
   serverError,
 } from "@/lib/api";
 import {
-  createResourceSchema,
+  createMaterialSchema,
   validateMagicBytes,
-  isAllowedResourceType,
+  isAllowedMaterialType,
   isAllowedPreviewType,
   getExtensionFromMimeType,
-  MAX_RESOURCE_FILE_SIZE,
+  MAX_MATERIAL_FILE_SIZE,
   MAX_PREVIEW_FILE_SIZE,
-} from "@/lib/validations/resource";
+} from "@/lib/validations/material";
 import { getStorage } from "@/lib/storage";
 import { sanitizeSearchQuery, isLP21Code } from "@/lib/search-utils";
 
 /**
- * GET /api/resources
- * Public endpoint to fetch published and approved resources
+ * GET /api/materials
+ * Public endpoint to fetch published and approved materials
  *
  * Query params:
  *   - page: page number (default: 1)
@@ -37,7 +37,7 @@ import { sanitizeSearchQuery, isLP21Code } from "@/lib/search-utils";
  *   - competency: filter by LP21 competency code (fuzzy match)
  *   - transversal: filter by transversal competency code
  *   - bne: filter by BNE theme code
- *   - mi_integrated: "true" to show only M&I integrated resources
+ *   - mi_integrated: "true" to show only M&I integrated materials
  *   - lehrmittel: filter by lehrmittel ID
  *   - maxPrice: maximum price in CHF (e.g., "10" for CHF 10)
  *   - formats: comma-separated format IDs (pdf,word,ppt,excel,image,canva)
@@ -45,7 +45,7 @@ import { sanitizeSearchQuery, isLP21Code } from "@/lib/search-utils";
 export async function GET(request: NextRequest) {
   // Rate limiting check
   const clientIP = getClientIP(request);
-  const rateLimitResult = checkRateLimit(clientIP, "resources:list");
+  const rateLimitResult = checkRateLimit(clientIP, "materials:list");
 
   if (!rateLimitResult.success) {
     return NextResponse.json(
@@ -83,7 +83,7 @@ export async function GET(request: NextRequest) {
 
     const skip = (page - 1) * limit;
 
-    // Build where clause - only show published and public (verified) resources
+    // Build where clause - only show published and public (verified) materials
     const where: Record<string, unknown> = {
       is_published: true,
       is_public: true, // Only show verified/public resources
@@ -128,7 +128,7 @@ export async function GET(request: NextRequest) {
       // If no results match the JSON filters, return empty
       if (jsonFilteredIds.length === 0) {
         return NextResponse.json({
-          resources: [],
+          materials: [],
           pagination: { page, limit, total: 0, totalPages: 0 },
         });
       }
@@ -172,7 +172,7 @@ export async function GET(request: NextRequest) {
           } else {
             // No full-text results, return empty
             return NextResponse.json({
-              resources: [],
+              materials: [],
               pagination: { page, limit, total: 0, totalPages: 0 },
             });
           }
@@ -224,7 +224,7 @@ export async function GET(request: NextRequest) {
       } else {
         // No matching competencies, return empty results
         return NextResponse.json({
-          resources: [],
+          materials: [],
           pagination: { page, limit, total: 0, totalPages: 0 },
         });
       }
@@ -249,7 +249,7 @@ export async function GET(request: NextRequest) {
         };
       } else {
         return NextResponse.json({
-          resources: [],
+          materials: [],
           pagination: { page, limit, total: 0, totalPages: 0 },
         });
       }
@@ -274,7 +274,7 @@ export async function GET(request: NextRequest) {
         };
       } else {
         return NextResponse.json({
-          resources: [],
+          materials: [],
           pagination: { page, limit, total: 0, totalPages: 0 },
         });
       }
@@ -332,9 +332,9 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Material scope filter - single resources only (bundles have their own endpoint)
+    // Material scope filter - single materials only (bundles have their own endpoint)
     // Note: "bundle" scope would need to query the Bundle model separately
-    // For now, the resources endpoint only returns individual resources
+    // For now, the materials endpoint only returns individual materials
 
     // Build orderBy
     // If doing full-text search and sort is "relevance" or not specified, we'll sort by rank
@@ -350,7 +350,7 @@ export async function GET(request: NextRequest) {
     }
     // Note: When using relevance sort with full-text search, we'll sort in memory after fetching
 
-    const [resources, total] = await Promise.all([
+    const [materials, total] = await Promise.all([
       prisma.resource.findMany({
         where,
         select: {
@@ -422,34 +422,34 @@ export async function GET(request: NextRequest) {
     ]);
 
     // Sort by relevance if we have full-text search results and relevance sort
-    let sortedResources = resources;
+    let sortedMaterials = materials;
     if (useRelevanceSort && fullTextRankMap) {
-      sortedResources = [...resources].sort((a, b) => {
+      sortedMaterials = [...materials].sort((a, b) => {
         const rankA = fullTextRankMap!.get(a.id) ?? 0;
         const rankB = fullTextRankMap!.get(b.id) ?? 0;
         return rankB - rankA;
       });
     }
 
-    // Transform resources for frontend
-    const transformedResources = sortedResources.map((resource) => {
-      const subjects = toStringArray(resource.subjects);
-      const cycles = toStringArray(resource.cycles);
+    // Transform materials for frontend
+    const transformedMaterials = sortedMaterials.map((material) => {
+      const subjects = toStringArray(material.subjects);
+      const cycles = toStringArray(material.cycles);
       return {
-        id: resource.id,
-        title: resource.title,
-        description: resource.description,
-        price: resource.price,
-        priceFormatted: formatPrice(resource.price),
+        id: material.id,
+        title: material.title,
+        description: material.description,
+        price: material.price,
+        priceFormatted: formatPrice(material.price),
         subject: subjects[0] || "Allgemein",
         cycle: cycles[0] || "",
         subjects,
         cycles,
-        previewUrl: resource.preview_url,
-        createdAt: resource.created_at,
-        seller: resource.seller,
-        isMiIntegrated: resource.is_mi_integrated,
-        competencies: (resource.competencies ?? []).map((rc) => ({
+        previewUrl: material.preview_url,
+        createdAt: material.created_at,
+        seller: material.seller,
+        isMiIntegrated: material.is_mi_integrated,
+        competencies: (material.competencies ?? []).map((rc) => ({
           id: rc.competency.id,
           code: rc.competency.code,
           description_de: rc.competency.description_de,
@@ -457,14 +457,14 @@ export async function GET(request: NextRequest) {
           subjectCode: rc.competency.subject.code,
           subjectColor: rc.competency.subject.color,
         })),
-        transversals: (resource.transversals ?? []).map((rt) => ({
+        transversals: (material.transversals ?? []).map((rt) => ({
           id: rt.transversal.id,
           code: rt.transversal.code,
           name_de: rt.transversal.name_de,
           icon: rt.transversal.icon,
           color: rt.transversal.color,
         })),
-        bneThemes: (resource.bne_themes ?? []).map((rb) => ({
+        bneThemes: (material.bne_themes ?? []).map((rb) => ({
           id: rb.bne.id,
           code: rb.bne.code,
           name_de: rb.bne.name_de,
@@ -475,7 +475,7 @@ export async function GET(request: NextRequest) {
     });
 
     return NextResponse.json({
-      resources: transformedResources,
+      materials: transformedMaterials,
       pagination: {
         page,
         limit,
@@ -484,21 +484,21 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("Error fetching resources:", error);
-    return NextResponse.json({ error: "Failed to fetch resources" }, { status: 500 });
+    console.error("Error fetching materials:", error);
+    return NextResponse.json({ error: "Failed to fetch materials" }, { status: 500 });
   }
 }
 
 /**
- * POST /api/resources
- * Create a new resource (seller only)
+ * POST /api/materials
+ * Create a new material (seller only)
  */
 export async function POST(request: NextRequest) {
   const userId = await requireAuth();
   if (!userId) return unauthorized();
 
   // Rate limiting check
-  const rateLimitResult = checkRateLimit(userId, "resources:create");
+  const rateLimitResult = checkRateLimit(userId, "materials:create");
   if (!rateLimitResult.success) {
     return NextResponse.json(
       {
@@ -541,7 +541,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate metadata with schema
-    const parsed = createResourceSchema.safeParse({
+    const parsed = createMaterialSchema.safeParse({
       title,
       description,
       price: parseInt(priceStr || "0", 10),
@@ -567,7 +567,7 @@ export async function POST(request: NextRequest) {
         // For paid resources without Stripe, give a helpful message
         if (data.price > 0 && uploadCheck.missing.includes("Stripe-Verifizierung")) {
           return badRequest(
-            "Um kostenpflichtige Ressourcen zu verkaufen, müssen Sie zuerst Ihr Stripe-Konto einrichten",
+            "Um kostenpflichtige Materialien zu verkaufen, müssen Sie zuerst Ihr Stripe-Konto einrichten",
             { missing: uploadCheck.missing }
           );
         }
@@ -585,9 +585,9 @@ export async function POST(request: NextRequest) {
     if (!file) return badRequest("Keine Datei hochgeladen");
 
     // Validate main file
-    if (file.size > MAX_RESOURCE_FILE_SIZE) return badRequest("Datei zu gross (maximal 50MB)");
+    if (file.size > MAX_MATERIAL_FILE_SIZE) return badRequest("Datei zu gross (maximal 50MB)");
 
-    if (!isAllowedResourceType(file.type, data.resourceType || "other")) {
+    if (!isAllowedMaterialType(file.type, data.resourceType || "other")) {
       return badRequest(`Ungültiger Dateityp für ${data.resourceType}`);
     }
 
@@ -602,8 +602,8 @@ export async function POST(request: NextRequest) {
     // Get storage provider
     const storage = getStorage();
 
-    // Create resource in database first to get ID
-    const resource = await prisma.resource.create({
+    // Create material in database first to get ID
+    const material = await prisma.resource.create({
       data: {
         title: data.title,
         description: data.description,
@@ -622,9 +622,9 @@ export async function POST(request: NextRequest) {
 
     // Helper to clean up on error
     const cleanupOnError = async (fileKey?: string, previewKey?: string) => {
-      await prisma.resource.delete({ where: { id: resource.id } });
+      await prisma.resource.delete({ where: { id: material.id } });
       if (fileKey) {
-        await storage.delete(fileKey, "resource").catch(() => {});
+        await storage.delete(fileKey, "material").catch(() => {});
       }
       if (previewKey) {
         await storage.delete(previewKey, "preview").catch(() => {});
@@ -634,12 +634,12 @@ export async function POST(request: NextRequest) {
     // Upload main file to private bucket
     const fileExt = getExtensionFromMimeType(file.type);
     const mainFileResult = await storage.upload(fileBuffer, {
-      category: "resource",
+      category: "material",
       userId,
-      filename: `${resource.id}.${fileExt}`,
+      filename: `${material.id}.${fileExt}`,
       contentType: file.type,
       metadata: {
-        resourceId: resource.id,
+        resourceId: material.id,
         originalName: file.name,
       },
     });
@@ -673,10 +673,10 @@ export async function POST(request: NextRequest) {
       const previewResult = await storage.upload(previewBuffer, {
         category: "preview",
         userId,
-        filename: `${resource.id}-preview.${previewExt}`,
+        filename: `${material.id}-preview.${previewExt}`,
         contentType: previewFile.type,
         metadata: {
-          resourceId: resource.id,
+          resourceId: material.id,
         },
       });
 
@@ -701,10 +701,10 @@ export async function POST(request: NextRequest) {
                 const pageResult = await storage.upload(page.buffer, {
                   category: "preview",
                   userId,
-                  filename: `${resource.id}-preview-${page.pageNumber}.png`,
-                  contentType: "image/png",
+                  filename: `${material.id}-preview-${page.pageNumber}.webp`,
+                  contentType: "image/webp",
                   metadata: {
-                    resourceId: resource.id,
+                    resourceId: material.id,
                     generated: "true",
                     pageNumber: String(page.pageNumber),
                   },
@@ -732,10 +732,10 @@ export async function POST(request: NextRequest) {
               const previewResult = await storage.upload(generatedPreview, {
                 category: "preview",
                 userId,
-                filename: `${resource.id}-preview.png`,
-                contentType: "image/png",
+                filename: `${material.id}-preview.webp`,
+                contentType: "image/webp",
                 metadata: {
-                  resourceId: resource.id,
+                  resourceId: material.id,
                   generated: "true",
                 },
               });
@@ -752,10 +752,10 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Update resource with file URLs
+    // Update material with file URLs
     // For the file_url, store the storage key (not the full URL)
-    const updatedResource = await prisma.resource.update({
-      where: { id: resource.id },
+    const updatedMaterial = await prisma.resource.update({
+      where: { id: material.id },
       data: {
         file_url: mainFileResult.key,
         preview_url: previewUrl,
@@ -783,13 +783,13 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       {
-        message: "Ressource erfolgreich erstellt",
-        resource: updatedResource,
+        message: "Material erfolgreich erstellt",
+        material: updatedMaterial,
       },
       { status: 201 }
     );
   } catch (error) {
-    console.error("Error creating resource:", error);
+    console.error("Error creating material:", error);
     return serverError();
   }
 }

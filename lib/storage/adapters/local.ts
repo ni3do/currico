@@ -29,7 +29,7 @@ export class LocalStorageAdapter implements StorageProvider {
    */
   private getCategoryDir(category: FileCategory): string {
     switch (category) {
-      case "resource":
+      case "material":
         return "resources";
       case "preview":
         return "previews";
@@ -80,7 +80,7 @@ export class LocalStorageAdapter implements StorageProvider {
 
     return {
       key,
-      publicUrl: category !== "resource" ? publicUrl : undefined,
+      publicUrl: category !== "material" ? publicUrl : undefined,
       size: buffer.length,
       contentType,
     };

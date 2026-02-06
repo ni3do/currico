@@ -26,7 +26,7 @@
       "tagline": "Bildungsplattform Schweiz"
     },
     "navigation": {
-      "resources": "Material",
+      "materials": "Materialien",
       "aboutUs": "Über uns",
       "contact": "Kontakt",
       "login": "Anmelden",
@@ -39,6 +39,11 @@
     "footer": {
       "copyright": "\u00a9 2026 Currico",
       "madeIn": "Made in Switzerland",
+      "swissMade": "Swiss Made",
+      "swissHosted": "Gehostet in der Schweiz bei Infomaniak",
+      "dataProtection": "Schweizer Datenschutz",
+      "hostedBy": "Gehostet bei",
+      "swissCloud": "Swiss Cloud",
       "payment": "Zahlung mit TWINT & Karte",
       "links": {
         "help": "Hilfe",
@@ -59,7 +64,7 @@
     },
     "breadcrumb": {
       "home": "Startseite",
-      "resources": "Material",
+      "materials": "Materialien",
       "account": "Mein Konto",
       "upload": "Hochladen",
       "profile": "Profil",
@@ -99,7 +104,10 @@
       "trustIndicators": {
         "lehrplan21": "Lehrplan 21 abgestimmt",
         "swissTeachers": "Schweizer Lehrpersonen",
-        "verified": "Qualitätsgeprüft"
+        "verified": "Qualitätsgeprüft",
+        "swissMade": "Swiss Made",
+        "swissQuality": "Schweizer Qualität",
+        "swissHosted": "Schweizer Hosting"
       },
       "imageAlt": "Lehrerin hilft Schülern bei der Gruppenarbeit im Klassenzimmer",
       "statsCard": {
@@ -143,7 +151,7 @@
         "description": "Sofortiger Download nach dem Kauf. Materialien direkt im Unterricht einsetzen."
       }
     },
-    "featuredResources": {
+    "featuredMaterials": {
       "title": "Empfohlene Materialien",
       "description": "Von Experten ausgewählt und qualitätsgeprüft",
       "viewAllMobile": "Alle Materialien anzeigen",
@@ -202,6 +210,65 @@
       "button": "Jetzt verkaufen",
       "note": "Kostenlose Registrierung. Keine monatlichen Gebühren."
     },
+    "trustBar": {
+      "lp21": "LP21 konform",
+      "swissMade": "Swiss Made",
+      "quality": "Qualitätsgeprüft",
+      "hosting": "Sicheres Hosting",
+      "privacy": "Datenschutz"
+    },
+    "categoryQuickAccess": {
+      "title": "Beliebte Fächer",
+      "description": "Finden Sie Material nach Fachbereich",
+      "subjects": {
+        "deutsch": "Deutsch",
+        "mathematik": "Mathematik",
+        "nmg": "NMG",
+        "englisch": "Englisch",
+        "franzoesisch": "Französisch",
+        "musik": "Musik",
+        "gestalten": "Gestalten",
+        "medien": "Medien & Informatik"
+      }
+    },
+    "valueProposition": {
+      "title": "Warum Currico?",
+      "description": "Die Plattform, die Schweizer Lehrpersonen Zeit spart und Qualität garantiert.",
+      "timeSaving": {
+        "title": "Zeit sparen",
+        "description": "Finden Sie in Minuten, was sonst Stunden dauert. Sofort einsetzbare Materialien ohne Nachbearbeitung."
+      },
+      "quality": {
+        "title": "Qualität garantiert",
+        "description": "Jedes Material wird geprüft und ist exakt auf den Lehrplan 21 abgestimmt."
+      },
+      "community": {
+        "title": "Von Lehrern für Lehrer",
+        "description": "Profitieren Sie vom Wissen und der Erfahrung Ihrer Kollegen aus der ganzen Schweiz."
+      }
+    },
+    "testimonials": {
+      "title": "Das sagen Lehrpersonen",
+      "description": "Vertrauen von Pädagogen in der ganzen Schweiz",
+      "testimonial1": {
+        "quote": "Currico hat meine Unterrichtsvorbereitung revolutioniert. Ich finde Qualitätsmaterialien in Minuten statt Stunden. Die Lehrplan 21 Filter sind unglaublich hilfreich.",
+        "name": "Sarah M.",
+        "role": "Primarlehrerin",
+        "location": "Zürich"
+      },
+      "testimonial2": {
+        "quote": "Als Verkäufer habe ich bereits über CHF 2'000 verdient, indem ich Materialien geteilt habe, die ich ohnehin erstellt hatte. Es ist ein tolles Gefühl, anderen Lehrpersonen zu helfen.",
+        "name": "Thomas K.",
+        "role": "Sekundarlehrer",
+        "location": "Bern"
+      },
+      "testimonial3": {
+        "quote": "Die Qualitätskontrolle zeigt sich wirklich. Jedes Material, das ich gekauft habe, war professionell erstellt und konnte direkt am nächsten Tag im Unterricht eingesetzt werden.",
+        "name": "Lisa W.",
+        "role": "Heilpädagogin",
+        "location": "Basel"
+      }
+    },
     "pilotTeacher": {
       "title": "Werden Sie Pilot-Lehrperson",
       "description": "Helfen Sie uns, Currico noch besser zu machen",
@@ -213,6 +280,31 @@
       },
       "button": "Jetzt bewerben",
       "note": "Begrenzte Plätze verfügbar"
+    },
+    "swissBrand": {
+      "badge": "Qualität & Vertrauen",
+      "title": "Von Lehrpersonen für Lehrpersonen",
+      "description": "Currico wird mit Fokus auf Qualität, Sicherheit und die Bedürfnisse von Lehrpersonen entwickelt. Ihre Daten sind durch strenge Datenschutzgesetze geschützt.",
+      "swissMade": {
+        "title": "Qualität zuerst",
+        "description": "Von Lehrpersonen für Lehrpersonen entwickelt"
+      },
+      "swissHosted": {
+        "title": "Sicheres Hosting",
+        "description": "Gehostet bei Infomaniak in Schweizer Rechenzentren"
+      },
+      "dataProtection": {
+        "title": "Datenschutz",
+        "description": "Ihre Daten durch strenge Datenschutzgesetze geschützt"
+      },
+      "localSupport": {
+        "title": "Lokaler Support",
+        "description": "Unser Team spricht Ihre Sprache"
+      },
+      "hostedBy": "Gehostet bei",
+      "swissCloud": "Swiss Cloud",
+      "co2Neutral": "CO₂-Neutral",
+      "secureHosting": "Sicheres Hosting"
     }
   },
   "loginPage": {
@@ -320,7 +412,7 @@
     "subjects": ["Mathematik", "Deutsch", "Englisch", "Französisch", "NMG", "BG", "Musik", "Sport"],
     "cycles": ["Zyklus 1", "Zyklus 2", "Zyklus 3"]
   },
-  "resourcesPage": {
+  "materialsPage": {
     "breadcrumb": {
       "home": "Startseite"
     },
@@ -335,7 +427,10 @@
       "cycleLabel": "Stufe",
       "materialTypeLabel": "Materialart",
       "formatLabel": "Format & Eigenschaften",
-      "priceLabel": "Preis"
+      "priceLabel": "Preis",
+      "showMaterials": "Materialien",
+      "showCreators": "Ersteller",
+      "displayLabel": "Anzeigen"
     },
     "search": {
       "placeholder": "Suche nach Titel, Thema, Stichwort...",
@@ -484,14 +579,14 @@
       }
     },
     "actions": {
-      "uploadResource": "+ Neue Ressource hochladen",
+      "uploadMaterial": "+ Neues Material hochladen",
       "createBundle": "+ Bundle erstellen"
     },
     "tabs": {
-      "resources": "Meine Materialien",
+      "materials": "Meine Materialien",
       "transactions": "Transaktionen"
     },
-    "resourcesTable": {
+    "materialsTable": {
       "columns": {
         "title": "Titel",
         "type": "Typ",
@@ -510,7 +605,7 @@
     },
     "transactionsTable": {
       "columns": {
-        "resource": "Ressource",
+        "material": "Material",
         "date": "Datum",
         "gross": "Bruttopreis",
         "platformFee": "Plattformgebühr",
@@ -525,59 +620,84 @@
   },
   "aboutPage": {
     "hero": {
-      "badge": "Für Schweizer Lehrpersonen",
-      "title": "Intelligent vorbereiten. Entspannter leben.",
-      "subtitle": "Wir bringen Schweizer Qualität und wertvolle Freizeit zurück in Ihren Schulalltag.",
-      "imageAlt": "Entspannte Lehrperson mit Tablet"
+      "badge": "Hoi, wir sind Currico",
+      "title": "Wir sind auch Lehrpersonen. Wir kennen das.",
+      "subtitle": "Currico entstand aus unserer eigenen Frustration mit der Unterrichtsvorbereitung. Wir haben das Tool gebaut, das wir uns immer gewünscht haben.",
+      "imageAlt": "Das Currico-Team"
     },
     "mission": {
-      "title": "Unsere Mission",
-      "paragraph1": "Sonntagnachmittage am Schreibtisch? Nächte, die für das Formatieren von Arbeitsblättern draufgehen? Wir glauben: Guter Unterricht bedeutet nicht, dass man sich aufopfern muss.",
-      "paragraph2": "Die Anforderungen an Schweizer Lehrkräfte steigen stetig. Individualisierung, Digitalisierung und administrative Hürden fordern Zeit – Zeit, die im Alltag oft fehlt. Genau hier setzt Currico an.",
-      "paragraph3": "Wir verstehen uns als Ihre digitale Assistenz. Wir schliessen die Lücke zwischen hohem didaktischen Anspruch und begrenzter Vorbereitungszeit. Unser Ziel ist es, Ihnen den Rücken frei zu halten, damit Sie Ihre Energie dort investieren können, wo sie am dringendsten gebraucht wird: bei Ihren Schülerinnen und Schülern."
+      "title": "Warum wir Currico gestartet haben",
+      "paragraph1": "Ganz ehrlich? Weil wir es leid waren. Leid, unsere Sonntage mit Arbeitsblättersuche zu verbringen. Leid, deutsches Material für die Schweiz anzupassen. Leid, dass die Vorbereitungszeit unser Leben auffrisst.",
+      "paragraph2": "Also haben wir uns gefragt: Was wäre, wenn es einen Ort gäbe, von Schweizer Lehrpersonen für Schweizer Lehrpersonen? Einen Ort, wo du in Minuten statt Stunden Qualitätsmaterial findest. Wo alles schon zum Lehrplan 21 passt. Wo du nicht jede Woche das Rad neu erfinden musst.",
+      "paragraph3": "Das ist Currico. Keine gesichtslose Plattform. Ein kleines Team mit grossem Herz, das daran arbeitet, dir die Zeit zurückzugeben, die du verdienst — für deine Schülerinnen und Schüler, deine Familie und dich selbst."
     },
     "values": {
-      "title": "Warum Currico?",
+      "title": "Was uns wichtig ist",
       "value1": {
-        "title": "Zeitgewinn statt Stress",
-        "description": "Unsere Materialien sind sofort einsatzbereit. Finden, drucken, unterrichten. Ihr Feierabend gehört wieder Ihnen."
+        "title": "Deine Zeit ist wertvoll",
+        "description": "Finden, drucken, unterrichten. Wir wollen, dass deine Abende und Wochenenden wieder dir gehören."
       },
       "value2": {
-        "title": "100% Lehrplan 21",
-        "description": "Kein Umrechnen von Euro in Franken oder Anpassen von \"ß\" zu \"ss\". Unsere Inhalte sind massgeschneidert für die Schweiz."
+        "title": "Gemacht für die Schweiz",
+        "description": "Kein Anpassen von ausländischem Material mehr. Alles hier ist für Schweizer Klassenzimmer und den Lehrplan 21 gemacht."
       },
       "value3": {
-        "title": "Von Lehrpersonen geprüft",
-        "description": "Wir bieten Klasse statt Masse. Jedes Material durchläuft einen Qualitätscheck durch erfahrene Pädagogen."
+        "title": "Qualität, der du vertrauen kannst",
+        "description": "Jedes Material wird von echten Lehrpersonen geprüft. Lieber weniger grossartige Materialien als eine Flut mittelmässiger."
       }
     },
     "origin": {
-      "title": "Aus der Praxis für die Praxis",
-      "paragraph1": "Currico ist kein anonymer Tech-Konzern. Die Plattform entstand aus einem echten Bedürfnis heraus: Kolleginnen und Kollegen suchten nach einer zentralen Anlaufstelle für modernes, Schweizer Unterrichtsmaterial, ohne sich durch unübersichtliche Datenbanken wühlen zu müssen.",
-      "paragraph2": "Was als kleiner Austausch begann, ist heute eine wachsende Community. Wir vernetzen Kreativität mit Didaktik und sorgen dafür, dass gute Arbeit fair entlohnt wird.",
-      "imageAlt": "Team bei der Zusammenarbeit"
+      "title": "Unsere Geschichte",
+      "paragraph1": "Alles begann mit einer einfachen Idee zwischen zwei Freunden: Was, wenn wir uns gegenseitig die Schulvorbereitung erleichtern könnten? Simon, mit seinem pädagogischen Hintergrund, und Laurent, mit seinen Tech-Skills, fingen an, Materialien zu teilen und Tools zu bauen.",
+      "paragraph2": "Aus diesem kleinen Experiment wurde Currico. Heute sind wir immer noch dieselben zwei Leute — leidenschaftlich für Bildung, besessen davon, Dinge einfach zu machen, und immer froh, von dir zu hören. Wir lesen jede Nachricht, hören auf jeden Vorschlag und bauen, was du wirklich brauchst.",
+      "imageAlt": "Simon und Laurent bei der Arbeit"
     },
     "founders": {
-      "title": "Das Team kennenlernen",
-      "subtitle": "Zwei Hintergründe, eine Mission: Den Unterrichtsalltag für Schweizer Lehrpersonen erleichtern.",
+      "title": "Die Menschen hinter Currico",
+      "subtitle": "Kein Konzern-Team. Einfach zwei Typen, denen es am Herzen liegt, deinen Schulalltag einfacher zu machen.",
       "founder1": {
-        "name": "[Gründer Name]",
-        "role": "Co-Founder & Technik",
-        "bio": "Mit einem Hintergrund in der Informatik bringe ich das technische Know-how mit, um eine Plattform zu bauen, die schnell, zuverlässig und einfach zu bedienen ist. Mein Ziel: Tools, die Zeit sparen, statt Komplexität hinzuzufügen."
+        "name": "Simon Wachter",
+        "role": "Co-Founder & Pädagogik",
+        "bio": "Ich weiss, wie es ist, vor einer Klasse zu stehen und sich besseres Material zu wünschen. Deshalb sorge ich dafür, dass alles auf Currico praxistauglich, im Unterricht erprobt und auf die Bedürfnisse von Schweizer Lehrpersonen abgestimmt ist."
       },
       "founder2": {
-        "name": "[Gründer Name]",
-        "role": "Co-Founder & Pädagogik",
-        "bio": "Als erfahrene Lehrperson kenne ich die täglichen Herausforderungen im Klassenzimmer aus erster Hand. Ich stelle sicher, dass alles, was wir bauen, praxistauglich, pädagogisch sinnvoll und auf Schweizer Bedürfnisse zugeschnitten ist."
+        "name": "Laurent Zoccoletti",
+        "role": "Co-Founder & Technik",
+        "bio": "Ich baue die Plattform, damit sie einfach funktioniert — schnell, simpel, ohne Kopfschmerzen. Mein Job ist es, dafür zu sorgen, dass die Technik dir aus dem Weg geht und du dich auf das konzentrieren kannst, was du am besten kannst: unterrichten."
       },
-      "story": "Wir haben Currico gegründet, weil wir gesehen haben, wie viel Zeit Lehrpersonen in die Vorbereitung investieren — oft auf Kosten des eigenen Wohlbefindens. Durch die Kombination von Tech und Unterrichtserfahrung bauen wir eine Plattform, die wirklich für Schweizer Lehrpersonen funktioniert.",
-      "highlight": "Haben Sie Fragen oder Ideen? Wir freuen uns von Ihnen zu hören."
+      "story": "Wir haben Currico an einem Küchentisch gestartet, angetrieben von Kaffee und der gemeinsamen Überzeugung: Lehrpersonen verdienen bessere Werkzeuge. Wir sind kein Startup, das Investoren jagt. Wir sind zwei Leute, die etwas bauen, an das sie wirklich glauben — und wir würden uns freuen, wenn du dabei bist.",
+      "highlight": "Hast du eine Frage, eine Idee oder willst einfach Hallo sagen? Wir freuen uns ehrlich, von dir zu hören."
     },
     "cta": {
-      "title": "Bereit für weniger Vorbereitungsstress?",
-      "subtitle": "Schliessen Sie sich Hunderten von Schweizer Lehrpersonen an, die bereits Zeit sparen und qualitativ hochwertige Materialien nutzen.",
+      "title": "Komm dazu",
+      "subtitle": "Hunderte Schweizer Lehrpersonen sparen bereits Stunden pro Woche. Probier's aus — der Start ist kostenlos.",
       "button": "Materialien entdecken",
       "secondaryButton": "Kostenlos registrieren"
+    },
+    "swissBrand": {
+      "badge": "Qualität & Vertrauen",
+      "title": "Von Lehrpersonen für Lehrpersonen",
+      "subtitle": "Entwickelt mit Fokus auf Qualität, Sicherheit und die Bedürfnisse von Lehrpersonen",
+      "swissMade": {
+        "title": "Qualität zuerst",
+        "description": "Von Lehrpersonen für Lehrpersonen entwickelt"
+      },
+      "swissHosted": {
+        "title": "Sicheres Hosting",
+        "description": "Gehostet bei Infomaniak in Schweizer Rechenzentren"
+      },
+      "dataProtection": {
+        "title": "Datenschutz",
+        "description": "Ihre Daten durch strenge Datenschutzgesetze geschützt"
+      },
+      "localSupport": {
+        "title": "Lokaler Support",
+        "description": "Schweizer Team spricht Ihre Sprache"
+      },
+      "hostedBy": "Gehostet bei",
+      "swissCloud": "Swiss Cloud",
+      "co2Neutral": "CO₂-Neutral",
+      "secureHosting": "Sicheres Hosting"
     }
   },
   "contactPage": {
@@ -647,7 +767,7 @@
         "breakdown": {
           "seller": "Sie erhalten 70% von jedem Verkauf",
           "platform": "Currico behält 30% als Plattformgebühr",
-          "example": "Beispiel: Bei einer Ressource für CHF 10.00 erhalten Sie CHF 7.00"
+          "example": "Beispiel: Bei einem Material für CHF 10.00 erhalten Sie CHF 7.00"
         },
         "note": "Die Zahlungsabwicklungsgebühren (Stripe-Gebühren) sind in der Plattformgebühr enthalten und werden Ihnen nicht separat berechnet."
       },
@@ -842,14 +962,14 @@
     "lehrmittel": {
       "title": "Passend zu Lehrmittel",
       "placeholder": "Optional: Lehrmittel auswählen...",
-      "hint": "Wählen Sie Lehrmittel, zu denen Ihre Ressource passt"
+      "hint": "Wählen Sie Lehrmittel, zu denen Ihr Material passt"
     },
     "upload": {
-      "competencyTip": "Je genauer Sie Ihre Ressource dem Lehrplan 21 zuordnen, desto besser finden Lehrpersonen Ihre Materialien. Wählen Sie alle relevanten Kompetenzen aus."
+      "competencyTip": "Je genauer Sie Ihr Material dem Lehrplan 21 zuordnen, desto besser finden Lehrpersonen Ihre Materialien. Wählen Sie alle relevanten Kompetenzen aus."
     }
   },
   "uploadWizard": {
-    "pageTitle": "Ressource hochladen",
+    "pageTitle": "Material hochladen",
     "pageSubtitle": "Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen",
     "steps": {
       "basics": "Grundinformationen",
@@ -903,18 +1023,18 @@
       "moreErrors": "+{count} weitere Fehler"
     },
     "tooltips": {
-      "title": "Wählen Sie einen klaren, aussagekräftigen Titel, der den Inhalt Ihrer Ressource beschreibt. Ein guter Titel hilft anderen Lehrpersonen, Ihre Materialien zu finden.",
+      "title": "Wählen Sie einen klaren, aussagekräftigen Titel, der den Inhalt Ihres Materials beschreibt. Ein guter Titel hilft anderen Lehrpersonen, Ihre Materialien zu finden.",
       "titleExample": "Bruchrechnen Übungsblätter Zyklus 2",
-      "description": "Beschreiben Sie kurz, was Ihre Ressource enthält und für welchen Einsatz sie gedacht ist. Erwähnen Sie besondere Merkmale oder didaktische Hinweise.",
+      "description": "Beschreiben Sie kurz, was Ihr Material enthält und für welchen Einsatz es gedacht ist. Erwähnen Sie besondere Merkmale oder didaktische Hinweise.",
       "descriptionExample": "10 differenzierte Arbeitsblätter zum Thema Bruchrechnen mit Lösungen. Geeignet für Einzel- und Gruppenarbeit.",
       "language": "Wählen Sie die Hauptsprache des Inhalts. Dies hilft bei der Suche und Filterung.",
-      "resourceType": "Wählen Sie das Hauptformat Ihrer Datei. PDF-Dateien werden am häufigsten verwendet und erhalten automatisch eine Vorschau.",
+      "materialType": "Wählen Sie das Hauptformat Ihrer Datei. PDF-Dateien werden am häufigsten verwendet und erhalten automatisch eine Vorschau.",
       "cycle": "Der Zyklus definiert die Altersstufe gemäss Lehrplan 21. Zyklus 1: KG-2. Klasse, Zyklus 2: 3.-6. Klasse, Zyklus 3: 7.-9. Klasse.",
-      "subject": "Wählen Sie das Hauptfach, zu dem Ihre Ressource passt. Die verfügbaren Fächer hängen vom gewählten Zyklus ab.",
-      "canton": "Optional: Wählen Sie einen Kanton, wenn Ihre Ressource speziell für bestimmte kantonale Lehrmittel konzipiert ist.",
-      "competencies": "Wählen Sie die Lehrplan 21 Kompetenzen aus, die Ihre Ressource abdeckt. Je genauer Sie zuordnen, desto besser finden Lehrpersonen Ihre Materialien.",
+      "subject": "Wählen Sie das Hauptfach, zu dem Ihr Material passt. Die verfügbaren Fächer hängen vom gewählten Zyklus ab.",
+      "canton": "Optional: Wählen Sie einen Kanton, wenn Ihr Material speziell für bestimmte kantonale Lehrmittel konzipiert ist.",
+      "competencies": "Wählen Sie die Lehrplan 21 Kompetenzen aus, die Ihr Material abdeckt. Je genauer Sie zuordnen, desto besser finden Lehrpersonen Ihre Materialien.",
       "competenciesExample": "MA.1.A.1 - Zahlen verstehen",
-      "priceType": "Entscheiden Sie, ob Ihre Ressource kostenlos oder kostenpflichtig sein soll. Kostenlose Ressourcen erreichen mehr Nutzer, kostenpflichtige generieren Einkommen.",
+      "priceType": "Entscheiden Sie, ob Ihr Material kostenlos oder kostenpflichtig sein soll. Kostenlose Materialien erreichen mehr Nutzer, kostenpflichtige generieren Einkommen.",
       "price": "Legen Sie den Verkaufspreis in CHF fest. Sie erhalten 70% des Verkaufspreises, 30% sind Plattformgebühr. Der Mindestpreis ist CHF 1, Maximum CHF 50.",
       "priceExample": "CHF 5.00",
       "editable": "Aktivieren Sie dies, wenn Käufer die Datei bearbeiten können sollen (z.B. Word-Dokumente). Bei PDF-Dateien ist dies meist nicht nötig.",
@@ -926,10 +1046,10 @@
       "titlePlaceholder": "z.B. Bruchrechnen Übungsblätter Zyklus 2",
       "titleHint": "Wählen Sie einen aussagekräftigen Titel (5-100 Zeichen)",
       "description": "Kurzbeschreibung",
-      "descriptionPlaceholder": "Beschreiben Sie Ihre Ressource kurz...",
+      "descriptionPlaceholder": "Beschreiben Sie Ihr Material kurz...",
       "descriptionHint": "{count}/2000 Zeichen (min. 20)",
       "language": "Sprache",
-      "resourceType": "Ressourcentyp",
+      "materialType": "Materialtyp",
       "cycle": "Zyklus",
       "cycleRequired": "Zyklus ist erforderlich",
       "subject": "Fach",
@@ -940,7 +1060,7 @@
       "competencies": "Lehrplan 21 Kompetenzen",
       "competenciesPlaceholder": "Kompetenzen auswählen...",
       "competenciesSelected": "{count} Kompetenz(en) ausgewählt",
-      "competenciesHint": "Wählen Sie die Kompetenzen aus dem Lehrplan 21, die zu Ihrer Ressource passen",
+      "competenciesHint": "Wählen Sie die Kompetenzen aus dem Lehrplan 21, die zu Ihrem Material passen",
       "competencySearch": "Suchen (z.B. MA.1.A oder Addition)...",
       "priceType": "Preistyp",
       "priceFree": "Kostenlos",
@@ -971,11 +1091,11 @@
       "noScans": "Keine Lehrmittel-Scans",
       "noScansDesc": "Ich habe keine Seiten aus Lehrmitteln oder Schulbüchern eingescannt oder kopiert.",
       "noTrademarks": "Keine geschützten Marken oder Charaktere",
-      "noTrademarksDesc": "Meine Ressource enthält keine geschützten Marken, Logos oder Figuren.",
+      "noTrademarksDesc": "Mein Material enthält keine geschützten Marken, Logos oder Figuren.",
       "swissGerman": "Schweizer Rechtschreibung",
-      "swissGermanDesc": "Meine Ressource verwendet die Schweizer Rechtschreibung (kein Eszett).",
+      "swissGermanDesc": "Mein Material verwendet die Schweizer Rechtschreibung (kein Eszett).",
       "acceptTerms": "Verkäufervereinbarung akzeptieren",
-      "acceptTermsDesc": "Ich akzeptiere die Verkäufervereinbarung und bestätige, dass ich die Rechte habe, diese Ressource zu verkaufen.",
+      "acceptTermsDesc": "Ich akzeptiere die Verkäufervereinbarung und bestätige, dass ich die Rechte habe, dieses Material zu verkaufen.",
       "incomplete": "Bitte bestätigen Sie alle Punkte, um fortzufahren.",
       "eszettWarning": "Ihr Titel oder Beschreibung enthält noch Eszett-Zeichen (ß). Bitte korrigieren Sie dies in Schritt 1."
     },
@@ -1011,9 +1131,9 @@
     "upload": {
       "uploading": "Wird hochgeladen...",
       "pleaseWait": "Bitte warten Sie, dies kann einen Moment dauern.",
-      "success": "Ressource erstellt!",
-      "successMessage": "Ihre Ressource wurde hochgeladen und wartet auf Freigabe.",
-      "viewResource": "Zur Ressource",
+      "success": "Material erstellt!",
+      "successMessage": "Ihr Material wurde hochgeladen und wartet auf Freigabe.",
+      "viewMaterial": "Zum Material",
       "error": "Fehler beim Hochladen",
       "close": "Schliessen",
       "retry": "Erneut versuchen"
@@ -1033,7 +1153,7 @@
       },
       "reach": {
         "title": "Erreichen Sie Lehrpersonen in der ganzen Schweiz",
-        "description": "Ihre Materialien werden für Tausende von Lehrpersonen auffindbar, die nach Qualitätsressourcen suchen."
+        "description": "Ihre Materialien werden für Tausende von Lehrpersonen auffindbar, die nach Qualitätsmaterialien suchen."
       },
       "simple": {
         "title": "Einmal hochladen, wiederholt verdienen",
@@ -1132,7 +1252,7 @@
       "chargesEnabled": "Zahlungen aktiviert",
       "payoutsEnabled": "Auszahlungen aktiviert",
       "payoutsPending": "Auszahlungen ausstehend",
-      "uploadFirst": "Erste Ressource hochladen",
+      "uploadFirst": "Erstes Material hochladen",
       "viewDashboard": "Stripe-Dashboard öffnen"
     },
     "pending": {
@@ -1157,10 +1277,10 @@
       "required": "Bitte akzeptieren Sie die Bedingungen für digitale Inhalte, um fortzufahren."
     },
     "errors": {
-      "alreadyOwned": "Sie besitzen diese Ressource bereits",
-      "ownResource": "Sie können Ihre eigene Ressource nicht kaufen",
+      "alreadyOwned": "Sie besitzen dieses Material bereits",
+      "ownMaterial": "Sie können Ihr eigenes Material nicht kaufen",
       "sellerNotReady": "Dieser Verkäufer kann derzeit keine Zahlungen empfangen",
-      "notAvailable": "Diese Ressource ist nicht zum Kauf verfügbar",
+      "notAvailable": "Dieses Material ist nicht zum Kauf verfügbar",
       "generic": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
     }
   },
@@ -1173,7 +1293,7 @@
     },
     "error": {
       "title": "Etwas ist schiefgelaufen",
-      "browseResources": "Materialien durchsuchen"
+      "browseMaterials": "Materialien durchsuchen"
     },
     "errors": {
       "noSession": "Keine Checkout-Sitzung gefunden.",
@@ -1181,7 +1301,7 @@
     },
     "success": {
       "title": "Kauf abgeschlossen!",
-      "description": "Vielen Dank für Ihren Kauf. Sie können jetzt auf Ihre neue Ressource zugreifen."
+      "description": "Vielen Dank für Ihren Kauf. Sie können jetzt auf Ihr neues Material zugreifen."
     },
     "pending": {
       "title": "Zahlung wird verarbeitet",
@@ -1189,7 +1309,7 @@
     },
     "purchaseDetails": {
       "title": "Kaufdetails",
-      "resource": "Ressource",
+      "material": "Material",
       "amount": "Betrag",
       "status": "Status",
       "statusCompleted": "Abgeschlossen",
@@ -1197,7 +1317,7 @@
       "by": "von"
     },
     "actions": {
-      "viewResource": "Ressource ansehen",
+      "viewMaterial": "Material ansehen",
       "goToLibrary": "Zur Bibliothek",
       "downloadNow": "Jetzt herunterladen",
       "downloading": "Wird heruntergeladen...",
@@ -1206,12 +1326,12 @@
     "tips": {
       "title": "Was kommt als Nächstes?",
       "accessAnytime": "Greifen Sie jederzeit auf Ihren Kauf in Ihrer Bibliothek zu",
-      "findInLibrary": "Finden Sie alle erworbenen Ressourcen an einem Ort"
+      "findInLibrary": "Finden Sie alle erworbenen Materialien an einem Ort"
     },
     "noTransaction": {
       "title": "Kein Kauf gefunden",
       "description": "Wir konnten keinen Kauf für diese Sitzung finden.",
-      "browseResources": "Materialien durchsuchen"
+      "browseMaterials": "Materialien durchsuchen"
     }
   },
   "checkoutCancel": {
@@ -1220,12 +1340,12 @@
     "reassurance": "Keine Sorge - Sie können es jederzeit erneut versuchen. Ihr Warenkorb und gespeicherte Artikel sind weiterhin verfügbar.",
     "actions": {
       "tryAgain": "Erneut versuchen",
-      "browseResources": "Materialien durchsuchen"
+      "browseMaterials": "Materialien durchsuchen"
     }
   },
   "guestDownload": {
     "loading": "Ihr Download wird geladen...",
-    "browseResources": "Materialien durchsuchen",
+    "browseMaterials": "Materialien durchsuchen",
     "createAccount": "Konto erstellen",
     "downloadButton": "Jetzt herunterladen",
     "downloading": "Wird heruntergeladen...",
@@ -1236,7 +1356,7 @@
       },
       "payment_incomplete": {
         "title": "Zahlung unvollständig",
-        "description": "Die Zahlung für diese Ressource wurde nicht abgeschlossen."
+        "description": "Die Zahlung für dieses Material wurde nicht abgeschlossen."
       },
       "generic": {
         "title": "Etwas ist schiefgelaufen",
@@ -1255,7 +1375,7 @@
     },
     "ready": {
       "title": "Ihr Download ist bereit",
-      "description": "Klicken Sie auf den Button unten, um Ihre gekaufte Ressource herunterzuladen."
+      "description": "Klicken Sie auf den Button unten, um Ihr gekauftes Material herunterzuladen."
     },
     "success": {
       "title": "Download gestartet!",
@@ -1924,7 +2044,7 @@
     "unfollow": "Entfolgen",
     "editProfile": "Profil bearbeiten",
     "stats": {
-      "resources": "Material",
+      "materials": "Materialien",
       "followers": "Follower",
       "following": "Folgt"
     },
@@ -1934,7 +2054,7 @@
     },
     "bestUploads": "Beste Uploads",
     "noUploads": "Noch keine Uploads vorhanden",
-    "noUploadsOwn": "Laden Sie Ihre erste Ressource hoch!",
+    "noUploadsOwn": "Laden Sie Ihr erstes Material hoch!",
     "noUploadsOther": "Dieser Benutzer hat noch keine Materialien hochgeladen.",
     "noCollections": "Noch keine Sammlungen vorhanden",
     "noCollectionsOwn": "Erstellen Sie Ihre erste Sammlung!",
@@ -1955,7 +2075,7 @@
     "createFirst": "Erste Sammlung erstellen",
     "selectCollection": "Wählen Sie eine Sammlung aus",
     "orCreateNew": "oder erstellen Sie eine neue Sammlung",
-    "noResources": "Noch keine Materialien in dieser Sammlung",
+    "noMaterials": "Noch keine Materialien in dieser Sammlung",
     "dragDropHint": "Ziehen Sie Materialien per Drag & Drop hierher oder fügen Sie sie über die Material-Seite hinzu.",
     "toUploads": "Zu meinen Uploads",
     "reorderHint": "Ziehen Sie Materialien, um die Reihenfolge zu ändern",
@@ -1988,7 +2108,7 @@
     "stats": {
       "title": "Statistiken",
       "followedProfiles": "Gefolgte Profile",
-      "availableResources": "Verfügbare Materialien"
+      "availableMaterials": "Verfügbare Materialien"
     },
     "discoverMore": {
       "title": "Mehr entdecken",
@@ -2054,7 +2174,7 @@
   },
   "search": {
     "tabs": {
-      "resources": "Material",
+      "materials": "Materialien",
       "profiles": "Profile"
     },
     "profiles": {
@@ -2147,8 +2267,8 @@
     "basedOn": "basierend auf {count} Bewertungen",
     "verifiedPurchase": "Verifizierter Kauf",
     "noReviews": "Noch keine Bewertungen",
-    "beFirst": "Seien Sie der Erste, der diese Ressource bewertet!",
-    "mustPurchase": "Kaufen oder laden Sie diese Ressource herunter, um eine Bewertung abzugeben.",
+    "beFirst": "Seien Sie der Erste, der dieses Material bewertet!",
+    "mustPurchase": "Kaufen oder laden Sie dieses Material herunter, um eine Bewertung abzugeben.",
     "loginToReview": "Melden Sie sich an, um eine Bewertung zu schreiben.",
     "ratingRequired": "Bitte wählen Sie eine Bewertung",
     "titleOptional": "Titel (optional)",
@@ -2172,7 +2292,7 @@
     "liked": "Gefällt mir",
     "unlike": "Gefällt mir nicht mehr",
     "count": "{count} Likes",
-    "loginRequired": "Melden Sie sich an, um diese Ressource zu liken."
+    "loginRequired": "Melden Sie sich an, um dieses Material zu liken."
   },
   "comments": {
     "title": "Kommentare",
@@ -2200,7 +2320,7 @@
       "noComments": "Noch keine Kommentare zu Ihren Materialien",
       "noCommentsDescription": "Kommentare erscheinen hier, sobald Nutzer Ihre Materialien kommentieren.",
       "noUnreplied": "Keine unbeantworteten Kommentare",
-      "viewResource": "Ressource ansehen"
+      "viewMaterial": "Material ansehen"
     }
   },
   "teacherVerification": {

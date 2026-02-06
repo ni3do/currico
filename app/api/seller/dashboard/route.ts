@@ -18,8 +18,8 @@ export async function GET() {
     if (!seller) return forbidden("Nur für Verkäufer zugänglich");
 
     // Fetch data in parallel
-    const [resources, transactions, totalEarnings, followerCount] = await Promise.all([
-      // Get seller's resources with transaction counts
+    const [materials, transactions, totalEarnings, followerCount] = await Promise.all([
+      // Get seller's materials with transaction counts
       prisma.resource.findMany({
         where: { seller_id: userId },
         select: {
@@ -39,7 +39,7 @@ export async function GET() {
         },
         orderBy: { created_at: "desc" },
       }),
-      // Get recent transactions for this seller's resources
+      // Get recent transactions for this seller's materials
       prisma.transaction.findMany({
         where: {
           resource: { seller_id: userId },
@@ -74,19 +74,19 @@ export async function GET() {
     const platformFeeRate = PLATFORM_FEE_PERCENT / 100;
     const totalGross = totalEarnings._sum.amount || 0;
     const totalNet = totalGross * (1 - platformFeeRate);
-    const totalDownloads = resources.reduce((sum, r) => sum + r._count.transactions, 0);
+    const totalDownloads = materials.reduce((sum, r) => sum + r._count.transactions, 0);
 
-    // Transform resources
-    const transformedResources = resources.map((resource) => {
-      const grossEarnings = resource.transactions.reduce((sum, t) => sum + t.amount, 0);
+    // Transform materials
+    const transformedMaterials = materials.map((material) => {
+      const grossEarnings = material.transactions.reduce((sum, t) => sum + t.amount, 0);
       const netEarnings = grossEarnings * (1 - platformFeeRate);
 
       return {
-        id: resource.id,
-        title: resource.title,
-        type: "Resource",
-        status: getResourceStatus(resource.is_published, resource.is_approved),
-        downloads: resource._count.transactions,
+        id: material.id,
+        title: material.title,
+        type: "Material",
+        status: getResourceStatus(material.is_published, material.is_approved),
+        downloads: material._count.transactions,
         netEarnings: formatPrice(netEarnings, { showFreeLabel: false }),
       };
     });
@@ -113,7 +113,7 @@ export async function GET() {
         totalDownloads,
         followers: followerCount,
       },
-      resources: transformedResources,
+      materials: transformedMaterials,
       transactions: transformedTransactions,
     });
   } catch (error) {

@@ -197,12 +197,12 @@ export default function AdminDashboardPage() {
 
         {/* Resources Overview */}
         <div className="border-border bg-surface rounded-xl border p-6">
-          <h3 className="text-text mb-4 font-semibold">Ressourcen</h3>
+          <h3 className="text-text mb-4 font-semibold">Materialien</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <FileText className="text-text-muted h-4 w-4" />
-                <span className="text-text-muted">Total Ressourcen</span>
+                <span className="text-text-muted">Total Materialien</span>
               </div>
               <span className="text-text font-medium">{stats?.totalResources || 0}</span>
             </div>

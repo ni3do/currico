@@ -54,7 +54,7 @@ import { AccountSidebar } from "@/components/account/AccountSidebar";
 import { WelcomeGuide } from "@/components/account/WelcomeGuide";
 import { SellerCommentsSection } from "@/components/account/SellerCommentsSection";
 import { MultiSelect } from "@/components/ui/MultiSelect";
-import { DashboardResourceCard } from "@/components/ui/DashboardResourceCard";
+import { DashboardMaterialCard } from "@/components/ui/DashboardMaterialCard";
 import { SWISS_CANTONS } from "@/lib/validations/user";
 
 // Cycles are stable, can be hardcoded
@@ -146,7 +146,7 @@ interface SellerStats {
   followers: number;
 }
 
-interface SellerResource {
+interface SellerMaterial {
   id: string;
   title: string;
   type: string;
@@ -279,7 +279,7 @@ export default function AccountPage() {
     totalDownloads: 0,
     followers: 0,
   });
-  const [sellerResources, setSellerResources] = useState<SellerResource[]>([]);
+  const [sellerMaterials, setSellerMaterials] = useState<SellerMaterial[]>([]);
   const [sellerBundles, setSellerBundles] = useState<SellerBundle[]>([]);
   const [bundlesLoading, setBundlesLoading] = useState(false);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -489,7 +489,7 @@ export default function AccountPage() {
       if (response.ok) {
         const data = await response.json();
         setSellerStats(data.stats);
-        setSellerResources(data.resources);
+        setSellerMaterials(data.materials);
         setTransactions(data.transactions);
       }
     } catch (error) {
@@ -590,10 +590,10 @@ export default function AccountPage() {
   }, [searchQuery, status, fetchLibrary, fetchUploaded]);
 
   // Handle download
-  const handleDownload = async (resourceId: string) => {
-    setDownloading(resourceId);
+  const handleDownload = async (materialId: string) => {
+    setDownloading(materialId);
     try {
-      window.open(`/api/resources/${resourceId}/download`, "_blank");
+      window.open(`/api/materials/${materialId}/download`, "_blank");
     } catch (error) {
       console.error("Download error:", error);
     } finally {
@@ -602,13 +602,13 @@ export default function AccountPage() {
   };
 
   // Handle wishlist removal
-  const handleRemoveFromWishlist = async (resourceId: string) => {
+  const handleRemoveFromWishlist = async (materialId: string) => {
     try {
-      const response = await fetch(`/api/user/wishlist?resourceId=${resourceId}`, {
+      const response = await fetch(`/api/user/wishlist?resourceId=${materialId}`, {
         method: "DELETE",
       });
       if (response.ok) {
-        setWishlistItems((prev) => prev.filter((item) => item.id !== resourceId));
+        setWishlistItems((prev) => prev.filter((item) => item.id !== materialId));
         if (stats) {
           setStats({ ...stats, wishlistItems: stats.wishlistItems - 1 });
         }
@@ -993,7 +993,7 @@ export default function AccountPage() {
   };
 
   // Count pending resources
-  const pendingResourcesCount = sellerResources.filter(
+  const pendingMaterialsCount = sellerMaterials.filter(
     (r) => r.status !== "Verified" && r.status !== "AI-Checked"
   ).length;
 
@@ -1130,7 +1130,7 @@ export default function AccountPage() {
                           <div>
                             <p className="text-text-muted text-sm font-medium">Beiträge</p>
                             <p className="text-text mt-2 text-3xl font-bold">
-                              {loading ? "-" : sellerResources.length}
+                              {loading ? "-" : sellerMaterials.length}
                             </p>
                           </div>
                           <div className="bg-accent/10 flex h-12 w-12 items-center justify-center rounded-xl">
@@ -1143,13 +1143,13 @@ export default function AccountPage() {
                     {/* Resources Table */}
                     <div className="border-border bg-surface overflow-hidden rounded-2xl border">
                       <div className="border-border bg-bg-secondary flex items-center justify-between border-b p-4">
-                        <h2 className="text-text text-lg font-semibold">Meine Ressourcen</h2>
+                        <h2 className="text-text text-lg font-semibold">Meine Materialien</h2>
                         <Link
                           href="/upload"
                           className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors"
                         >
                           <span>+</span>
-                          Neue Ressource
+                          Neues Material
                         </Link>
                       </div>
 
@@ -1159,11 +1159,11 @@ export default function AccountPage() {
                             <div className="border-primary mx-auto mb-3 h-8 w-8 animate-spin rounded-full border-4 border-t-transparent"></div>
                             Laden...
                           </div>
-                        ) : sellerResources.length === 0 ? (
+                        ) : sellerMaterials.length === 0 ? (
                           <div className="py-12 text-center">
                             <FileText className="text-text-faint mx-auto mb-4 h-16 w-16" />
                             <h3 className="text-text mb-2 text-lg font-medium">
-                              Noch keine Ressourcen hochgeladen
+                              Noch keine Materialien hochgeladen
                             </h3>
                             <p className="text-text-muted mb-4 text-sm">
                               Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen.
@@ -1172,7 +1172,7 @@ export default function AccountPage() {
                               href="/upload"
                               className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition-colors"
                             >
-                              Erste Ressource hochladen
+                              Erstes Material hochladen
                             </Link>
                           </div>
                         ) : (
@@ -1188,13 +1188,13 @@ export default function AccountPage() {
                                 </tr>
                               </thead>
                               <tbody className="divide-border divide-y">
-                                {sellerResources.map((resource) => (
+                                {sellerMaterials.map((resource) => (
                                   <tr
                                     key={resource.id}
                                     className="group hover:bg-bg transition-colors"
                                   >
                                     <td className="py-4 pr-4">
-                                      <Link href={`/resources/${resource.id}`} className="block">
+                                      <Link href={`/materialien/${resource.id}`} className="block">
                                         <div className="text-text group-hover:text-primary text-sm font-medium">
                                           {resource.title}
                                         </div>
@@ -1257,7 +1257,7 @@ export default function AccountPage() {
                                         {openActionMenu === resource.id && (
                                           <div className="border-border bg-surface absolute right-0 z-10 mt-1 w-40 rounded-xl border py-1.5 shadow-lg">
                                             <Link
-                                              href={`/resources/${resource.id}`}
+                                              href={`/materialien/${resource.id}`}
                                               className="text-text hover:bg-bg flex items-center gap-2.5 px-4 py-2 text-sm transition-colors"
                                               onClick={() => setOpenActionMenu(null)}
                                             >
@@ -1265,7 +1265,7 @@ export default function AccountPage() {
                                               Ansehen
                                             </Link>
                                             <Link
-                                              href={`/resources/${resource.id}/edit`}
+                                              href={`/materialien/${resource.id}/edit`}
                                               className="text-text hover:bg-bg flex items-center gap-2.5 px-4 py-2 text-sm transition-colors"
                                               onClick={() => setOpenActionMenu(null)}
                                             >
@@ -1371,9 +1371,9 @@ export default function AccountPage() {
                         ) : (
                           <div className="py-8 text-center">
                             <Download className="text-text-faint mx-auto mb-3 h-10 w-10" />
-                            <p className="text-text-muted mb-2 text-sm">Noch keine Ressourcen</p>
+                            <p className="text-text-muted mb-2 text-sm">Noch keine Materialien</p>
                             <Link
-                              href="/resources"
+                              href="/materialien"
                               className="text-primary text-sm font-medium hover:underline"
                             >
                               Entdecken
@@ -1449,11 +1449,11 @@ export default function AccountPage() {
                       <div>
                         <h2 className="text-text text-xl font-semibold">Meine Bibliothek</h2>
                         <p className="text-text-muted mt-1 text-sm">
-                          Alle erworbenen Ressourcen an einem Ort
+                          Alle erworbenen Materialien an einem Ort
                         </p>
                       </div>
                       <Link
-                        href="/resources"
+                        href="/materialien"
                         className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors"
                       >
                         <Sparkles className="h-4 w-4" />
@@ -1480,7 +1480,7 @@ export default function AccountPage() {
                       ) : libraryItems.length > 0 ? (
                         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                           {libraryItems.map((item) => (
-                            <DashboardResourceCard
+                            <DashboardMaterialCard
                               key={item.id}
                               id={item.id}
                               title={item.title}
@@ -1520,7 +1520,7 @@ export default function AccountPage() {
                             Lehrpersonen und beginnen Sie Ihre Sammlung.
                           </p>
                           <Link
-                            href="/resources"
+                            href="/materialien"
                             className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-6 py-3 font-semibold transition-colors"
                           >
                             <Sparkles className="h-4 w-4" />
@@ -1547,7 +1547,7 @@ export default function AccountPage() {
                       <div>
                         <h2 className="text-text text-xl font-semibold">Meine Uploads</h2>
                         <p className="text-text-muted mt-1 text-sm">
-                          Ressourcen, die Sie hochgeladen haben
+                          Materialien, die Sie hochgeladen haben
                         </p>
                       </div>
                       <Link
@@ -1555,7 +1555,7 @@ export default function AccountPage() {
                         className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors"
                       >
                         <span>+</span>
-                        Neue Ressource
+                        Neues Material
                       </Link>
                     </div>
 
@@ -1577,7 +1577,7 @@ export default function AccountPage() {
                     ) : uploadedItems.length > 0 ? (
                       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         {uploadedItems.map((item) => (
-                          <DashboardResourceCard
+                          <DashboardMaterialCard
                             key={item.id}
                             id={item.id}
                             title={item.title}
@@ -1610,7 +1610,7 @@ export default function AccountPage() {
                             primaryAction={{
                               label: "Ansehen",
                               icon: "view",
-                              href: `/resources/${item.id}`,
+                              href: `/materialien/${item.id}`,
                             }}
                           />
                         ))}
@@ -1619,7 +1619,7 @@ export default function AccountPage() {
                       <div className="py-12 text-center">
                         <FileText className="text-text-faint mx-auto mb-4 h-16 w-16" />
                         <h3 className="text-text mb-2 text-lg font-medium">
-                          Noch keine hochgeladenen Ressourcen
+                          Noch keine hochgeladenen Materialien
                         </h3>
                         <p className="text-text-muted mb-4">
                           Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen.
@@ -1650,7 +1650,7 @@ export default function AccountPage() {
                       <div>
                         <h2 className="text-text text-xl font-semibold">Meine Bundles</h2>
                         <p className="text-text-muted mt-1 text-sm">
-                          Ressourcen-Pakete zu reduzierten Preisen
+                          Materialien-Pakete zu reduzierten Preisen
                         </p>
                       </div>
                       <Link
@@ -1674,7 +1674,7 @@ export default function AccountPage() {
                             <tr className="text-text-muted text-left text-xs font-medium tracking-wider uppercase">
                               <th className="pb-4">Titel</th>
                               <th className="pb-4">Status</th>
-                              <th className="pb-4 text-center">Ressourcen</th>
+                              <th className="pb-4 text-center">Materialien</th>
                               <th className="pb-4 text-right">Preis</th>
                               <th className="pb-4 text-right">Ersparnis</th>
                               <th className="pb-4 text-right">Aktionen</th>
@@ -1804,7 +1804,7 @@ export default function AccountPage() {
                           Noch keine Bundles erstellt
                         </h3>
                         <p className="text-text-muted mb-4">
-                          Bündeln Sie mehrere Ressourcen zu einem reduzierten Preis.
+                          Bündeln Sie mehrere Materialien zu einem reduzierten Preis.
                         </p>
                         <Link
                           href="/upload/bundle"
@@ -1847,7 +1847,7 @@ export default function AccountPage() {
                       <div>
                         <h2 className="text-text text-xl font-semibold">Wunschliste</h2>
                         <p className="text-text-muted mt-1 text-sm">
-                          Gespeicherte Ressourcen für später
+                          Gespeicherte Materialien für später
                         </p>
                       </div>
                     </div>
@@ -1870,7 +1870,7 @@ export default function AccountPage() {
                     ) : wishlistItems.length > 0 ? (
                       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         {wishlistItems.map((item) => (
-                          <DashboardResourceCard
+                          <DashboardMaterialCard
                             key={item.id}
                             id={item.id}
                             title={item.title}
@@ -1887,7 +1887,7 @@ export default function AccountPage() {
                             primaryAction={{
                               label: "Ansehen",
                               icon: "view",
-                              href: `/resources/${item.id}`,
+                              href: `/materialien/${item.id}`,
                             }}
                           />
                         ))}
@@ -1911,13 +1911,13 @@ export default function AccountPage() {
                           Ihre Wunschliste ist leer
                         </h3>
                         <p className="text-text-muted mb-4">
-                          Speichern Sie interessante Ressourcen für später.
+                          Speichern Sie interessante Materialien für später.
                         </p>
                         <Link
-                          href="/resources"
+                          href="/materialien"
                           className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
                         >
-                          Ressourcen entdecken
+                          Materialien entdecken
                         </Link>
                       </div>
                     )}
@@ -2560,7 +2560,7 @@ export default function AccountPage() {
                               <div>
                                 <h3 className="text-text font-semibold">Erworbene Materialien</h3>
                                 <p className="text-text-muted text-sm">
-                                  Updates zu Ihren gekauften Ressourcen
+                                  Updates zu Ihren gekauften Materialien
                                 </p>
                               </div>
                             </div>
@@ -2750,7 +2750,7 @@ export default function AccountPage() {
                                   </span>
                                   <p className="text-text-muted mt-0.5 text-sm">
                                     Wöchentliche Updates mit Tipps, neuen Funktionen und
-                                    ausgewählten Ressourcen
+                                    ausgewählten Materialien
                                   </p>
                                 </div>
                               </div>
@@ -2923,7 +2923,7 @@ export default function AccountPage() {
                             <p className="text-text-secondary mb-4 text-sm">
                               Sie können jederzeit eine Kopie Ihrer persönlichen Daten anfordern.
                               Der Download enthält Ihre Profilinformationen, Käufe und hochgeladenen
-                              Ressourcen.
+                              Materialien.
                             </p>
                             <button className="border-border text-text hover:border-primary hover:text-primary inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors">
                               <Download className="h-4 w-4" />
@@ -2948,7 +2948,7 @@ export default function AccountPage() {
                           <div className="p-5">
                             <p className="text-text-secondary mb-4 text-sm">
                               Das Löschen Ihres Kontos ist unwiderruflich. Alle Ihre Daten,
-                              hochgeladenen Ressourcen und Käufe werden permanent gelöscht.
+                              hochgeladenen Materialien und Käufe werden permanent gelöscht.
                             </p>
                             <button className="border-error text-error hover:bg-error hover:text-text-on-accent inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors">
                               <Trash2 className="h-4 w-4" />

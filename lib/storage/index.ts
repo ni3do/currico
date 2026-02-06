@@ -63,7 +63,7 @@ export function getStorage(): StorageProvider {
 
 /**
  * Generate a storage key for a file
- * @param category File category (resource, preview, avatar)
+ * @param category File category (material, preview, avatar)
  * @param userId User ID
  * @param originalFilename Original filename (for extension)
  * @returns Generated storage key
@@ -86,8 +86,8 @@ export function generateStorageKey(
  */
 function getCategoryDir(category: FileCategory): string {
   switch (category) {
-    case "resource":
-      return "resources";
+    case "material":
+      return "materials";
     case "preview":
       return "previews";
     case "avatar":
@@ -108,7 +108,7 @@ export function isLegacyLocalPath(url: string): boolean {
 
 /**
  * Convert a legacy local path to a storage key
- * @param localPath Legacy local path (e.g., /uploads/resources/user123/file.pdf)
+ * @param localPath Legacy local path (e.g., /uploads/materials/user123/file.pdf)
  * @returns Storage key without the /uploads/ prefix
  */
 export function legacyPathToKey(localPath: string): string {
@@ -118,7 +118,7 @@ export function legacyPathToKey(localPath: string): string {
 /**
  * Get the local file path for a legacy URL
  * This is used for backward compatibility with existing files
- * @param url Legacy URL (e.g., /uploads/resources/user123/file.pdf)
+ * @param url Legacy URL (e.g., /uploads/materials/user123/file.pdf)
  * @returns Full filesystem path
  */
 export function getLegacyFilePath(url: string): string {

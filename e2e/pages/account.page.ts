@@ -2,8 +2,8 @@
  * Account Page Object.
  *
  * Handles interactions with the user's account dashboard including:
- * - Library (purchased/free resources)
- * - Uploads (seller's own resources)
+ * - Library (purchased/free materials)
+ * - Uploads (seller's own materials)
  * - Wishlist
  * - Settings navigation
  */
@@ -22,8 +22,8 @@ export class AccountPage extends BasePage {
   readonly wishlistTab: Locator;
   readonly overviewTab: Locator;
 
-  // Resource cards
-  readonly resourceCards: Locator;
+  // Material cards
+  readonly materialCards: Locator;
 
   // Upload action
   readonly uploadButton: Locator;
@@ -45,9 +45,9 @@ export class AccountPage extends BasePage {
     this.wishlistTab = page.getByRole("button", { name: /wunschliste/i });
     this.overviewTab = page.getByRole("button", { name: /übersicht/i });
 
-    // Resource cards - DashboardResourceCard elements contain links to resources
+    // Material cards - DashboardMaterialCard elements contain links to materials
     // They are inside a grid container and have a specific structure
-    this.resourceCards = page.locator('.grid a[href*="/resources/"]').locator("..");
+    this.materialCards = page.locator('.grid a[href*="/materialien/"]').locator("..");
 
     // Upload button - link to /upload page (use href to be specific)
     this.uploadButton = page.locator('a[href="/upload"], a[href*="/upload"]').first();
@@ -97,24 +97,24 @@ export class AccountPage extends BasePage {
   }
 
   /**
-   * Get the count of visible resource cards.
+   * Get the count of visible material cards.
    */
-  async getResourceCount(): Promise<number> {
+  async getMaterialCount(): Promise<number> {
     await this.page.waitForLoadState("networkidle");
-    return this.resourceCards.count();
+    return this.materialCards.count();
   }
 
   /**
-   * Check if a resource with the given title is visible.
+   * Check if a material with the given title is visible.
    */
-  async expectResourceWithTitle(title: string): Promise<void> {
+  async expectMaterialWithTitle(title: string): Promise<void> {
     await expect(this.page.locator(`text="${title}"`).first()).toBeVisible();
   }
 
   /**
-   * Click on a resource card by title.
+   * Click on a material card by title.
    */
-  async clickResourceByTitle(title: string): Promise<void> {
+  async clickMaterialByTitle(title: string): Promise<void> {
     await this.page.locator(`text="${title}"`).first().click();
   }
 
@@ -127,9 +127,9 @@ export class AccountPage extends BasePage {
   }
 
   /**
-   * Get status badge text for a resource by title.
+   * Get status badge text for a material by title.
    */
-  async getResourceStatus(title: string): Promise<string | null> {
+  async getMaterialStatus(title: string): Promise<string | null> {
     const card = this.page
       .locator("article, div")
       .filter({
@@ -149,7 +149,7 @@ export class AccountPage extends BasePage {
    * Check if the library is empty.
    */
   async isLibraryEmpty(): Promise<boolean> {
-    const count = await this.getResourceCount();
+    const count = await this.getMaterialCount();
     return count === 0;
   }
 
@@ -181,7 +181,7 @@ export class AccountPage extends BasePage {
     await super.waitForPageLoad();
     // Wait for either content or empty state
     await Promise.race([
-      this.resourceCards
+      this.materialCards
         .first()
         .waitFor({ state: "visible", timeout: 10000 })
         .catch(() => {}),

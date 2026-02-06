@@ -5,8 +5,8 @@ import { auth } from "@/lib/auth";
 import { formatPrice } from "@/lib/utils/price";
 
 /**
- * GET /api/seller/resources
- * Fetch seller's own resources for bundle selection
+ * GET /api/seller/materials
+ * Fetch seller's own materials for bundle selection
  * Access: Authenticated seller only
  */
 export async function GET() {
@@ -28,8 +28,8 @@ export async function GET() {
       return NextResponse.json({ error: "Nur für Verkäufer zugänglich" }, { status: 403 });
     }
 
-    // Fetch seller's published resources
-    const resources = await prisma.resource.findMany({
+    // Fetch seller's published materials
+    const materials = await prisma.resource.findMany({
       where: {
         seller_id: userId,
         is_published: true,
@@ -45,27 +45,27 @@ export async function GET() {
       orderBy: { created_at: "desc" },
     });
 
-    // Transform resources for bundle selection
-    const transformedResources = resources.map((resource) => {
-      const subjects = toStringArray(resource.subjects);
-      const cycles = toStringArray(resource.cycles);
+    // Transform materials for bundle selection
+    const transformedMaterials = materials.map((material) => {
+      const subjects = toStringArray(material.subjects);
+      const cycles = toStringArray(material.cycles);
       return {
-        id: resource.id,
-        title: resource.title,
-        price: resource.price,
-        priceFormatted: formatPrice(resource.price, { showFreeLabel: true }),
+        id: material.id,
+        title: material.title,
+        price: material.price,
+        priceFormatted: formatPrice(material.price, { showFreeLabel: true }),
         subject: subjects[0] || "",
         subjects,
         cycles,
-        previewUrl: resource.preview_url,
+        previewUrl: material.preview_url,
       };
     });
 
     return NextResponse.json({
-      resources: transformedResources,
+      materials: transformedMaterials,
     });
   } catch (error) {
-    console.error("Error fetching seller resources:", error);
-    return NextResponse.json({ error: "Fehler beim Laden der Ressourcen" }, { status: 500 });
+    console.error("Error fetching seller materials:", error);
+    return NextResponse.json({ error: "Fehler beim Laden der Materialien" }, { status: 500 });
   }
 }

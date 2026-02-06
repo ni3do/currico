@@ -123,10 +123,10 @@ export type UpdateNotificationPreferences = z.infer<typeof updateNotificationPre
 // VALIDATION HELPERS
 // ============================================================
 
-// Check if user can upload resources (seller requirements met)
+// Check if user can upload materials (seller requirements met)
 // Note: Payout verification is now handled via Stripe KYC
 // Note: Email verification is required before seller onboarding
-export function canUploadResources(user: {
+export function canUploadMaterials(user: {
   display_name: string | null;
   subjects: string[];
   cycles: string[];

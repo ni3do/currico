@@ -6,7 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { Heart } from "lucide-react";
 import { getSubjectTextColor } from "@/lib/constants/subject-colors";
 
-export interface ResourceCardProps {
+export interface MaterialCardProps {
   id: string;
   title: string;
   description?: string;
@@ -22,13 +22,13 @@ export interface ResourceCardProps {
   footer?: React.ReactNode;
   /** Card size variant */
   variant?: "default" | "compact";
-  /** Link href - defaults to /resources/[id] */
+  /** Link href - defaults to /materialien/[id] */
   href?: string;
   /** Custom pill class for subject badge */
   subjectPillClass?: string;
   /** Show/hide the price badge overlay on image */
   showPriceBadge?: boolean;
-  /** Whether this resource is in the user's wishlist */
+  /** Whether this material is in the user's wishlist */
   isWishlisted?: boolean;
   /** Callback when wishlist button is clicked */
   onWishlistToggle?: (id: string, currentState: boolean) => Promise<boolean>;
@@ -36,7 +36,7 @@ export interface ResourceCardProps {
   showWishlist?: boolean;
 }
 
-export function ResourceCard({
+export function MaterialCard({
   id,
   title,
   description,
@@ -53,7 +53,7 @@ export function ResourceCard({
   isWishlisted: initialWishlisted = false,
   onWishlistToggle,
   showWishlist = false,
-}: ResourceCardProps) {
+}: MaterialCardProps) {
   const [isWishlisted, setIsWishlisted] = useState(initialWishlisted);
   const [wishlistLoading, setWishlistLoading] = useState(false);
 
@@ -63,7 +63,7 @@ export function ResourceCard({
   }, [initialWishlisted]);
 
   const isCompact = variant === "compact";
-  const linkHref = href ?? `/resources/${id}`;
+  const linkHref = href ?? `/materialien/${id}`;
   const isFree = priceFormatted === "Gratis" || priceFormatted === "Free";
   const shouldShowPriceBadge = showPriceBadge && priceFormatted;
 
@@ -213,4 +213,4 @@ export function ResourceCard({
   );
 }
 
-export default ResourceCard;
+export default MaterialCard;

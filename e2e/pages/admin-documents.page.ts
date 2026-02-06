@@ -2,9 +2,9 @@
  * Admin Documents Page Object.
  *
  * Handles interactions with the admin moderation interface including:
- * - Filtering resources by status
- * - Opening resource review modal
- * - Verifying, rejecting, or resetting resources
+ * - Filtering materials by status
+ * - Opening material review modal
+ * - Verifying, rejecting, or resetting materials
  */
 
 import { Page, Locator, expect } from "@playwright/test";
@@ -19,8 +19,8 @@ export class AdminDocumentsPage extends BasePage {
   readonly statusFilter: Locator;
 
   // Table
-  readonly resourcesTable: Locator;
-  readonly resourceRows: Locator;
+  readonly materialsTable: Locator;
+  readonly materialRows: Locator;
   readonly loadingIndicator: Locator;
   readonly emptyMessage: Locator;
   readonly totalCount: Locator;
@@ -49,8 +49,8 @@ export class AdminDocumentsPage extends BasePage {
     });
 
     // Table elements
-    this.resourcesTable = page.locator("table");
-    this.resourceRows = page.locator("tbody tr");
+    this.materialsTable = page.locator("table");
+    this.materialRows = page.locator("tbody tr");
     this.loadingIndicator = page.locator("text=Laden...");
     this.emptyMessage = page.locator("text=Keine Dokumente gefunden");
     this.totalCount = page.locator("text=/\\d+ Dokumente gefunden/");
@@ -79,7 +79,7 @@ export class AdminDocumentsPage extends BasePage {
   }
 
   /**
-   * Wait for the page to load and resources to appear.
+   * Wait for the page to load and materials to appear.
    */
   async waitForPageLoad(): Promise<void> {
     await super.waitForPageLoad();
@@ -87,7 +87,7 @@ export class AdminDocumentsPage extends BasePage {
     await this.loadingIndicator.waitFor({ state: "hidden", timeout: 10000 }).catch(() => {});
     // Wait for table or empty message
     await Promise.race([
-      this.resourceRows
+      this.materialRows
         .first()
         .waitFor({ state: "visible", timeout: 10000 })
         .catch(() => {}),
@@ -104,12 +104,12 @@ export class AdminDocumentsPage extends BasePage {
   }
 
   /**
-   * Get the count of resources in the table.
+   * Get the count of materials in the table.
    */
-  async getResourceCount(): Promise<number> {
+  async getMaterialCount(): Promise<number> {
     await this.page.waitForLoadState("networkidle");
     // Exclude the loading and empty message rows
-    const rows = this.resourceRows.filter({
+    const rows = this.materialRows.filter({
       hasNot: this.page.locator("text=Laden..., text=Keine Dokumente gefunden"),
     });
     return rows.count();
@@ -125,11 +125,11 @@ export class AdminDocumentsPage extends BasePage {
   }
 
   /**
-   * Open the review modal for a resource by title.
+   * Open the review modal for a material by title.
    */
-  async openReviewModal(resourceTitle: string): Promise<void> {
-    const row = this.resourceRows.filter({
-      hasText: resourceTitle,
+  async openReviewModal(materialTitle: string): Promise<void> {
+    const row = this.materialRows.filter({
+      hasText: materialTitle,
     });
     const reviewButton = row.getByRole("button", { name: /prüfen/i });
     await reviewButton.click();
@@ -145,9 +145,9 @@ export class AdminDocumentsPage extends BasePage {
   }
 
   /**
-   * Verify the currently selected resource.
+   * Verify the currently selected material.
    */
-  async verifyResource(): Promise<void> {
+  async verifyMaterial(): Promise<void> {
     // Dismiss cookie consent if blocking
     await this.dismissCookieConsent();
     await this.verifyButton.click();
@@ -156,9 +156,9 @@ export class AdminDocumentsPage extends BasePage {
   }
 
   /**
-   * Reject the currently selected resource.
+   * Reject the currently selected material.
    */
-  async rejectResource(): Promise<void> {
+  async rejectMaterial(): Promise<void> {
     // Dismiss cookie consent if blocking
     await this.dismissCookieConsent();
     await this.rejectButton.click();
@@ -167,9 +167,9 @@ export class AdminDocumentsPage extends BasePage {
   }
 
   /**
-   * Reset the currently selected resource to pending.
+   * Reset the currently selected material to pending.
    */
-  async resetResource(): Promise<void> {
+  async resetMaterial(): Promise<void> {
     // Dismiss cookie consent if blocking
     await this.dismissCookieConsent();
     await this.resetButton.click();
@@ -178,24 +178,24 @@ export class AdminDocumentsPage extends BasePage {
   }
 
   /**
-   * Check if a resource is visible in the table.
+   * Check if a material is visible in the table.
    */
-  async expectResourceVisible(title: string): Promise<void> {
-    await expect(this.resourceRows.filter({ hasText: title })).toBeVisible();
+  async expectMaterialVisible(title: string): Promise<void> {
+    await expect(this.materialRows.filter({ hasText: title })).toBeVisible();
   }
 
   /**
-   * Check if no resources are shown.
+   * Check if no materials are shown.
    */
-  async expectNoResources(): Promise<void> {
+  async expectNoMaterials(): Promise<void> {
     await expect(this.emptyMessage).toBeVisible();
   }
 
   /**
-   * Get the status badge text for a resource.
+   * Get the status badge text for a material.
    */
-  async getResourceStatus(title: string): Promise<string | null> {
-    const row = this.resourceRows.filter({ hasText: title });
+  async getMaterialStatus(title: string): Promise<string | null> {
+    const row = this.materialRows.filter({ hasText: title });
     const statusBadge = row.locator(".rounded-full").filter({
       hasText: /ausstehend|verifiziert|abgelehnt/i,
     });
@@ -203,9 +203,9 @@ export class AdminDocumentsPage extends BasePage {
   }
 
   /**
-   * Expect resource to have a specific status.
+   * Expect material to have a specific status.
    */
-  async expectResourceStatus(
+  async expectMaterialStatus(
     title: string,
     status: "PENDING" | "VERIFIED" | "REJECTED"
   ): Promise<void> {
@@ -214,7 +214,7 @@ export class AdminDocumentsPage extends BasePage {
       VERIFIED: "Verifiziert",
       REJECTED: "Abgelehnt",
     };
-    const row = this.resourceRows.filter({ hasText: title });
+    const row = this.materialRows.filter({ hasText: title });
     await expect(row.locator(`text=${statusLabels[status]}`)).toBeVisible();
   }
 

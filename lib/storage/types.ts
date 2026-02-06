@@ -2,7 +2,7 @@
  * Storage abstraction types
  */
 
-export type FileCategory = "resource" | "preview" | "avatar";
+export type FileCategory = "material" | "preview" | "avatar";
 
 export type StorageProviderType = "local" | "s3";
 

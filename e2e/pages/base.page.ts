@@ -11,7 +11,7 @@ export abstract class BasePage {
   readonly page: Page;
 
   /**
-   * The path segment for this page (e.g., '/login', '/resources').
+   * The path segment for this page (e.g., '/login', '/materialien').
    * Override in subclasses to define the page's URL path.
    */
   abstract readonly path: string;

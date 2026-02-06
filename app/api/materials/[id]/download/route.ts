@@ -32,7 +32,7 @@ function getContentType(filePath: string): string {
 }
 
 /**
- * Create a safe filename from resource title
+ * Create a safe filename from material title
  */
 function getSafeFilename(title: string, filePath: string): string {
   const ext = path.extname(filePath).toLowerCase();
@@ -41,19 +41,19 @@ function getSafeFilename(title: string, filePath: string): string {
 }
 
 /**
- * GET /api/resources/[id]/download
- * Download a resource file
- * - Admins can download any resource
- * - Free resources: any authenticated user can download
- * - Paid resources: only users who have purchased can download
- * - Owners can always download their own resources
+ * GET /api/materials/[id]/download
+ * Download a material file
+ * - Admins can download any material
+ * - Free materials: any authenticated user can download
+ * - Paid materials: only users who have purchased can download
+ * - Owners can always download their own materials
  */
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   // Authentication check
   const userId = await getCurrentUserId();
   if (!userId) {
     return NextResponse.json(
-      { error: "Bitte melden Sie sich an, um Ressourcen herunterzuladen" },
+      { error: "Bitte melden Sie sich an, um Materialien herunterzuladen" },
       { status: 401 }
     );
   }
@@ -65,8 +65,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   try {
     const { id } = await params;
 
-    // Fetch the resource with related data
-    const resource = await prisma.resource.findUnique({
+    // Fetch the material with related data
+    const material = await prisma.resource.findUnique({
       where: { id },
       select: {
         id: true,
@@ -93,60 +93,60 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       },
     });
 
-    if (!resource) {
-      return NextResponse.json({ error: "Ressource nicht gefunden" }, { status: 404 });
+    if (!material) {
+      return NextResponse.json({ error: "Material nicht gefunden" }, { status: 404 });
     }
 
-    // Check if resource is accessible
-    // Admins can access any resource
-    const isOwner = resource.seller_id === userId;
+    // Check if material is accessible
+    // Admins can access any material
+    const isOwner = material.seller_id === userId;
     const isPubliclyAccessible =
-      resource.is_published && resource.is_approved && resource.is_public;
+      material.is_published && material.is_approved && material.is_public;
 
     if (!isAdmin && !isOwner && !isPubliclyAccessible) {
-      return NextResponse.json({ error: "Diese Ressource ist nicht verfügbar" }, { status: 403 });
+      return NextResponse.json({ error: "Dieses Material ist nicht verfügbar" }, { status: 403 });
     }
 
     // Check access rights for downloads
     // Admins always have access
-    const isFree = resource.price === 0;
-    const hasPurchased = resource.transactions.length > 0;
-    const hasDownloaded = resource.downloads.length > 0;
-    const isVerified = resource.is_approved;
+    const isFree = material.price === 0;
+    const hasPurchased = material.transactions.length > 0;
+    const hasDownloaded = material.downloads.length > 0;
+    const isVerified = material.is_approved;
 
     console.log("[DOWNLOAD] ========== ACCESS CHECK ==========");
-    console.log("[DOWNLOAD] Resource ID:", id);
+    console.log("[DOWNLOAD] Material ID:", id);
     console.log("[DOWNLOAD] User ID:", userId);
     console.log("[DOWNLOAD] Is Admin:", isAdmin);
     console.log("[DOWNLOAD] Is Owner:", isOwner);
     console.log("[DOWNLOAD] Is Free:", isFree);
     console.log("[DOWNLOAD] Is Verified:", isVerified);
     console.log("[DOWNLOAD] Has Purchased (COMPLETED transactions):", hasPurchased);
-    console.log("[DOWNLOAD] Transactions found:", resource.transactions.length);
+    console.log("[DOWNLOAD] Transactions found:", material.transactions.length);
     console.log("[DOWNLOAD] Has Download record:", hasDownloaded);
 
-    // Regular users cannot download unverified resources (except owners/admins)
+    // Regular users cannot download unverified materials (except owners/admins)
     if (!isAdmin && !isOwner && !isVerified) {
-      console.log("[DOWNLOAD] ACCESS DENIED - resource not yet verified");
+      console.log("[DOWNLOAD] ACCESS DENIED - material not yet verified");
       return NextResponse.json(
-        { error: "Diese Ressource wird noch überprüft und kann noch nicht heruntergeladen werden" },
+        { error: "Dieses Material wird noch überprüft und kann noch nicht heruntergeladen werden" },
         { status: 403 }
       );
     }
 
-    // Grant access if: admin, owner, free resource, or has purchased
+    // Grant access if: admin, owner, free material, or has purchased
     const hasAccess = isAdmin || isOwner || isFree || hasPurchased;
     console.log("[DOWNLOAD] Final hasAccess:", hasAccess);
 
     if (!hasAccess) {
       console.log("[DOWNLOAD] ACCESS DENIED - user needs to purchase");
       return NextResponse.json(
-        { error: "Bitte kaufen Sie diese Ressource, um sie herunterzuladen" },
+        { error: "Bitte kaufen Sie dieses Material, um es herunterzuladen" },
         { status: 403 }
       );
     }
 
-    // Record download for free resources (if not already recorded)
+    // Record download for free materials (if not already recorded)
     if (isFree && !isOwner && !hasDownloaded) {
       await prisma.download.create({
         data: {
@@ -157,13 +157,13 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     const storage = getStorage();
-    const filename = getSafeFilename(resource.title, resource.file_url);
-    const contentType = getContentType(resource.file_url);
+    const filename = getSafeFilename(material.title, material.file_url);
+    const contentType = getContentType(material.file_url);
 
     // Check if this is a legacy local path (starts with /uploads/)
-    if (isLegacyLocalPath(resource.file_url)) {
+    if (isLegacyLocalPath(material.file_url)) {
       // Handle legacy local file
-      const filePath = getLegacyFilePath(resource.file_url);
+      const filePath = getLegacyFilePath(material.file_url);
       try {
         const fileBuffer = await readFile(filePath);
         return new NextResponse(new Uint8Array(fileBuffer), {
@@ -182,7 +182,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     // For S3 storage, redirect to signed URL
     if (!storage.isLocal()) {
       try {
-        const signedUrl = await storage.getSignedUrl(resource.file_url, {
+        const signedUrl = await storage.getSignedUrl(material.file_url, {
           expiresIn: 3600, // 1 hour
           downloadFilename: filename,
         });
@@ -198,7 +198,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     // For local storage, read and stream the file
     try {
-      const fileBuffer = await storage.getFile(resource.file_url, "resource");
+      const fileBuffer = await storage.getFile(material.file_url, "material");
       return new NextResponse(new Uint8Array(fileBuffer), {
         headers: {
           "Content-Type": contentType,
@@ -207,17 +207,17 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         },
       });
     } catch {
-      console.error("File not found:", resource.file_url);
+      console.error("File not found:", material.file_url);
       return NextResponse.json({ error: "Datei nicht gefunden" }, { status: 404 });
     }
   } catch (error) {
-    console.error("Error downloading resource:", error);
-    return NextResponse.json({ error: "Fehler beim Herunterladen der Ressource" }, { status: 500 });
+    console.error("Error downloading material:", error);
+    return NextResponse.json({ error: "Fehler beim Herunterladen des Materials" }, { status: 500 });
   }
 }
 
 /**
- * POST /api/resources/[id]/download
+ * POST /api/materials/[id]/download
  * Record a download without actually downloading the file
  * Returns the download URL for the client to use
  */
@@ -235,8 +235,8 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
   try {
     const { id } = await params;
 
-    // Fetch the resource
-    const resource = await prisma.resource.findUnique({
+    // Fetch the material
+    const material = await prisma.resource.findUnique({
       where: { id },
       select: {
         id: true,
@@ -256,37 +256,37 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       },
     });
 
-    if (!resource) {
-      return NextResponse.json({ error: "Ressource nicht gefunden" }, { status: 404 });
+    if (!material) {
+      return NextResponse.json({ error: "Material nicht gefunden" }, { status: 404 });
     }
 
-    // Check access - admins can access any resource
-    const isOwner = resource.seller_id === userId;
+    // Check access - admins can access any material
+    const isOwner = material.seller_id === userId;
 
-    // Regular users cannot download unverified resources
-    if (!isAdmin && !isOwner && !resource.is_approved) {
-      return NextResponse.json({ error: "Diese Ressource wird noch überprüft" }, { status: 403 });
+    // Regular users cannot download unverified materials
+    if (!isAdmin && !isOwner && !material.is_approved) {
+      return NextResponse.json({ error: "Dieses Material wird noch überprüft" }, { status: 403 });
     }
 
     const isPubliclyAccessible =
-      resource.is_published && resource.is_approved && resource.is_public;
+      material.is_published && material.is_approved && material.is_public;
 
     if (!isAdmin && !isOwner && !isPubliclyAccessible) {
-      return NextResponse.json({ error: "Diese Ressource ist nicht verfügbar" }, { status: 403 });
+      return NextResponse.json({ error: "Dieses Material ist nicht verfügbar" }, { status: 403 });
     }
 
-    const isFree = resource.price === 0;
-    const hasPurchased = resource.transactions.length > 0;
+    const isFree = material.price === 0;
+    const hasPurchased = material.transactions.length > 0;
     const hasAccess = isAdmin || isOwner || isFree || hasPurchased;
 
     if (!hasAccess) {
       return NextResponse.json(
-        { error: "Bitte kaufen Sie diese Ressource zuerst" },
+        { error: "Bitte kaufen Sie dieses Material zuerst" },
         { status: 403 }
       );
     }
 
-    // Record download for free resources
+    // Record download for free materials
     if (isFree && !isOwner) {
       await prisma.download.upsert({
         where: {
@@ -305,7 +305,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
     return NextResponse.json({
       success: true,
-      downloadUrl: `/api/resources/${id}/download`,
+      downloadUrl: `/api/materials/${id}/download`,
     });
   } catch (error) {
     console.error("Error recording download:", error);

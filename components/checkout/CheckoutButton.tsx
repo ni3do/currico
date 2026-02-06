@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 
 interface CheckoutButtonProps {
-  resourceId: string;
+  materialId: string;
   price: number;
   priceFormatted: string;
   className?: string;
@@ -13,7 +13,7 @@ interface CheckoutButtonProps {
 }
 
 export function CheckoutButton({
-  resourceId,
+  materialId,
   price,
   priceFormatted,
   className = "",
@@ -47,7 +47,7 @@ export function CheckoutButton({
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ resourceId }),
+        body: JSON.stringify({ materialId }),
       });
 
       const data = await response.json();

@@ -160,7 +160,7 @@ export async function GET(
 
     // For local storage, read and stream the file
     try {
-      const fileBuffer = await storage.getFile(resource.file_url, "resource");
+      const fileBuffer = await storage.getFile(resource.file_url, "material");
       return new NextResponse(new Uint8Array(fileBuffer), {
         headers: {
           "Content-Type": contentType,

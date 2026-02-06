@@ -111,9 +111,9 @@ export function LikeButton({
   );
 }
 
-// Resource like button - uses heart variant
-interface ResourceLikeButtonProps {
-  resourceId: string;
+// Material like button - uses heart variant
+interface MaterialLikeButtonProps {
+  materialId: string;
   initialLiked?: boolean;
   initialCount?: number;
   size?: "sm" | "md" | "lg";
@@ -122,21 +122,21 @@ interface ResourceLikeButtonProps {
   className?: string;
 }
 
-export function ResourceLikeButton({
-  resourceId,
+export function MaterialLikeButton({
+  materialId,
   initialLiked = false,
   initialCount = 0,
   size = "md",
   showCount = true,
   onLoginRequired,
   className = "",
-}: ResourceLikeButtonProps) {
+}: MaterialLikeButtonProps) {
   const [liked, setLiked] = useState(initialLiked);
   const [likeCount, setLikeCount] = useState(initialCount);
 
   const handleToggle = async () => {
     try {
-      const response = await fetch(`/api/resources/${resourceId}/like`, {
+      const response = await fetch(`/api/materials/${materialId}/like`, {
         method: "POST",
       });
 
@@ -153,7 +153,7 @@ export function ResourceLikeButton({
       setLiked(data.liked);
       setLikeCount(data.likeCount);
     } catch (error) {
-      console.error("Error toggling resource like:", error);
+      console.error("Error toggling material like:", error);
       throw error;
     }
   };

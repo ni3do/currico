@@ -200,7 +200,7 @@ export default function AdminReportsPage() {
                       {report.resource ? (
                         <div>
                           <div className="text-text">{report.resource.title}</div>
-                          <div className="text-text-muted text-xs">Ressource</div>
+                          <div className="text-text-muted text-xs">Material</div>
                         </div>
                       ) : report.reported_user ? (
                         <div>
@@ -309,7 +309,7 @@ export default function AdminReportsPage() {
                   {selectedReport.resource ? (
                     <>
                       <span className="font-medium">{selectedReport.resource.title}</span>
-                      <span className="text-text-muted ml-2 text-xs">(Ressource)</span>
+                      <span className="text-text-muted ml-2 text-xs">(Material)</span>
                     </>
                   ) : selectedReport.reported_user ? (
                     <>

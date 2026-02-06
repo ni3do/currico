@@ -122,10 +122,10 @@ export default function ProfilePage() {
     fetchFollowing();
   }, []);
 
-  async function handleRemoveFromWishlist(resourceId: string) {
-    setRemovingId(resourceId);
+  async function handleRemoveFromWishlist(materialId: string) {
+    setRemovingId(materialId);
     try {
-      const response = await fetch(`/api/user/wishlist?resourceId=${resourceId}`, {
+      const response = await fetch(`/api/user/wishlist?resourceId=${materialId}`, {
         method: "DELETE",
       });
       if (response.ok) {
@@ -133,7 +133,7 @@ export default function ProfilePage() {
           if (!prev) return prev;
           return {
             ...prev,
-            items: prev.items.filter((item) => item.id !== resourceId),
+            items: prev.items.filter((item) => item.id !== materialId),
             stats: {
               totalItems: prev.stats.totalItems - 1,
             },
@@ -275,7 +275,7 @@ export default function ProfilePage() {
                 <div className="space-y-4">
                   <div>
                     <div className="text-primary text-2xl font-bold">12</div>
-                    <div className="text-text-muted text-sm">Gekaufte Ressourcen</div>
+                    <div className="text-text-muted text-sm">Gekaufte Materialien</div>
                   </div>
                   <div>
                     <div className="text-success text-2xl font-bold">
@@ -295,10 +295,10 @@ export default function ProfilePage() {
                 <h3 className="text-text mb-4 font-semibold">Schnellaktionen</h3>
                 <div className="space-y-3">
                   <Link
-                    href="/resources"
+                    href="/materialien"
                     className="border-border bg-bg text-text hover:bg-surface-elevated block rounded-lg border px-4 py-3 text-sm transition-colors"
                   >
-                    Ressourcen durchsuchen
+                    Materialien durchsuchen
                   </Link>
                   <Link
                     href="/following"
@@ -378,13 +378,13 @@ export default function ProfilePage() {
                 </svg>
                 <h3 className="text-text mt-4 text-lg font-medium">Ihre Wunschliste ist leer</h3>
                 <p className="text-text-muted mt-2">
-                  Speichern Sie interessante Ressourcen für später.
+                  Speichern Sie interessante Materialien für später.
                 </p>
                 <Link
-                  href="/resources"
+                  href="/materialien"
                   className="bg-primary text-text-on-accent hover:bg-primary-hover mt-4 inline-block rounded-lg px-6 py-2 text-sm font-medium transition-colors"
                 >
-                  Ressourcen entdecken
+                  Materialien entdecken
                 </Link>
               </div>
             ) : (
@@ -417,7 +417,7 @@ export default function ProfilePage() {
                     <div className="flex items-center justify-between">
                       <span className="text-primary text-lg font-bold">{item.priceFormatted}</span>
                       <Link
-                        href={`/resources/${item.id}`}
+                        href={`/materialien/${item.id}`}
                         className="bg-primary text-text-on-accent hover:bg-primary-hover rounded-lg px-4 py-2 text-sm font-medium transition-colors"
                       >
                         Ansehen

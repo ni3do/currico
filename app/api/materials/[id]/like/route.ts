@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { checkRateLimit, rateLimitHeaders, isValidId } from "@/lib/rateLimit";
 
-// POST /api/resources/[id]/like - Toggle like on a resource
+// POST /api/materials/[id]/like - Toggle like on a material
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await auth();
@@ -12,7 +12,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     }
 
     // Rate limiting check
-    const rateLimitResult = checkRateLimit(session.user.id, "resources:like");
+    const rateLimitResult = checkRateLimit(session.user.id, "materials:like");
     if (!rateLimitResult.success) {
       return NextResponse.json(
         {
@@ -23,29 +23,29 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       );
     }
 
-    const { id: resourceId } = await params;
+    const { id: materialId } = await params;
 
-    // Validate resource ID format
-    if (!isValidId(resourceId)) {
-      return NextResponse.json({ error: "Ungültige Ressourcen-ID" }, { status: 400 });
+    // Validate material ID format
+    if (!isValidId(materialId)) {
+      return NextResponse.json({ error: "Ungültige Material-ID" }, { status: 400 });
     }
 
-    // Check if resource exists
-    const resource = await prisma.resource.findUnique({
-      where: { id: resourceId },
+    // Check if material exists
+    const material = await prisma.resource.findUnique({
+      where: { id: materialId },
       select: { id: true, seller_id: true },
     });
 
-    if (!resource) {
-      return NextResponse.json({ error: "Ressource nicht gefunden" }, { status: 404 });
+    if (!material) {
+      return NextResponse.json({ error: "Material nicht gefunden" }, { status: 404 });
     }
 
-    // Check if user already liked this resource
+    // Check if user already liked this material
     const existingLike = await prisma.resourceLike.findUnique({
       where: {
         user_id_resource_id: {
           user_id: session.user.id,
-          resource_id: resourceId,
+          resource_id: materialId,
         },
       },
     });
@@ -57,7 +57,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       });
 
       const likeCount = await prisma.resourceLike.count({
-        where: { resource_id: resourceId },
+        where: { resource_id: materialId },
       });
 
       return NextResponse.json({
@@ -70,45 +70,45 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       await prisma.resourceLike.create({
         data: {
           user_id: session.user.id,
-          resource_id: resourceId,
+          resource_id: materialId,
         },
       });
 
       const likeCount = await prisma.resourceLike.count({
-        where: { resource_id: resourceId },
+        where: { resource_id: materialId },
       });
 
       return NextResponse.json({
         liked: true,
         likeCount,
-        message: "Ressource gefällt Ihnen",
+        message: "Material gefällt Ihnen",
       });
     }
   } catch (error) {
-    console.error("Error toggling resource like:", error);
+    console.error("Error toggling material like:", error);
     return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
   }
 }
 
-// GET /api/resources/[id]/like - Get like status for a resource
+// GET /api/materials/[id]/like - Get like status for a material
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await auth();
-    const { id: resourceId } = await params;
+    const { id: materialId } = await params;
 
-    // Check if resource exists
-    const resource = await prisma.resource.findUnique({
-      where: { id: resourceId },
+    // Check if material exists
+    const material = await prisma.resource.findUnique({
+      where: { id: materialId },
       select: { id: true },
     });
 
-    if (!resource) {
-      return NextResponse.json({ error: "Ressource nicht gefunden" }, { status: 404 });
+    if (!material) {
+      return NextResponse.json({ error: "Material nicht gefunden" }, { status: 404 });
     }
 
     // Get like count
     const likeCount = await prisma.resourceLike.count({
-      where: { resource_id: resourceId },
+      where: { resource_id: materialId },
     });
 
     // Check if current user has liked
@@ -118,7 +118,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
         where: {
           user_id_resource_id: {
             user_id: session.user.id,
-            resource_id: resourceId,
+            resource_id: materialId,
           },
         },
       });
@@ -127,7 +127,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
     return NextResponse.json({ liked, likeCount });
   } catch (error) {
-    console.error("Error getting resource like status:", error);
+    console.error("Error getting material like status:", error);
     return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
   }
 }

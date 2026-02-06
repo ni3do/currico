@@ -2,27 +2,27 @@
  * Seller Dashboard E2E Tests.
  *
  * Tests seller-specific functionality including:
- * - Viewing uploaded resources
+ * - Viewing uploaded materials
  * - Navigating to upload wizard
- * - Resource status badges display
+ * - Material status badges display
  */
 
 import { test, expect } from "../../fixtures/auth.fixture";
 import { AccountPage } from "../../pages/account.page";
 
 test.describe("Seller Dashboard", () => {
-  test("seller can view uploaded resources", async ({ sellerPage }) => {
+  test("seller can view uploaded materials", async ({ sellerPage }) => {
     const accountPage = new AccountPage(sellerPage);
 
     // Navigate to account page with uploads tab
     await accountPage.gotoTab("uploads");
 
-    // Wait for resources to load
+    // Wait for materials to load
     await sellerPage.waitForLoadState("networkidle");
 
-    // Check for either resources or the empty state message text
-    const hasResources = await sellerPage
-      .locator('a[href*="/resources/"]')
+    // Check for either materials or the empty state message text
+    const hasMaterials = await sellerPage
+      .locator('a[href*="/materialien/"]')
       .first()
       .isVisible()
       .catch(() => false);
@@ -31,8 +31,8 @@ test.describe("Seller Dashboard", () => {
       .isVisible()
       .catch(() => false);
 
-    // Either has resources or shows empty message
-    expect(hasResources || hasEmptyText).toBe(true);
+    // Either has materials or shows empty message
+    expect(hasMaterials || hasEmptyText).toBe(true);
   });
 
   test("upload button navigates to wizard", async ({ sellerPage }) => {
@@ -44,7 +44,7 @@ test.describe("Seller Dashboard", () => {
     // Wait for the page to stabilize
     await sellerPage.waitForLoadState("networkidle");
 
-    // Find and click the upload link specifically (not resource links)
+    // Find and click the upload link specifically (not material links)
     const uploadLink = sellerPage.locator('a[href="/upload"]').first();
     await expect(uploadLink).toBeVisible({ timeout: 10000 });
     await uploadLink.click();
@@ -54,7 +54,7 @@ test.describe("Seller Dashboard", () => {
     expect(sellerPage.url()).toContain("/upload");
   });
 
-  test("seller sees resource status badges", async ({ sellerPage }) => {
+  test("seller sees material status badges", async ({ sellerPage }) => {
     const accountPage = new AccountPage(sellerPage);
 
     // Navigate to uploads tab
@@ -63,10 +63,10 @@ test.describe("Seller Dashboard", () => {
     // Wait for content to load
     await sellerPage.waitForLoadState("networkidle");
 
-    // Check if we have any resources
-    const resourceCount = await accountPage.getResourceCount();
+    // Check if we have any materials
+    const materialCount = await accountPage.getMaterialCount();
 
-    if (resourceCount > 0) {
+    if (materialCount > 0) {
       // Look for status badges in the page
       const statusBadges = sellerPage.locator('.badge, [class*="badge"], span').filter({
         hasText: /ausstehend|verifiziert|pending|verified|abgelehnt|rejected/i,
@@ -74,7 +74,7 @@ test.describe("Seller Dashboard", () => {
 
       // Should have at least one status badge visible
       const badgeCount = await statusBadges.count();
-      expect(badgeCount).toBeGreaterThanOrEqual(0); // May have resources without visible badges
+      expect(badgeCount).toBeGreaterThanOrEqual(0); // May have materials without visible badges
     }
   });
 
@@ -97,8 +97,8 @@ test.describe("Seller Dashboard", () => {
   });
 });
 
-test.describe("Seller Resources", () => {
-  test("seller can click on uploaded resource to view details", async ({ sellerPage }) => {
+test.describe("Seller Materials", () => {
+  test("seller can click on uploaded material to view details", async ({ sellerPage }) => {
     const accountPage = new AccountPage(sellerPage);
 
     // Navigate to uploads tab
@@ -107,16 +107,16 @@ test.describe("Seller Resources", () => {
     // Wait for content to load
     await sellerPage.waitForLoadState("networkidle");
 
-    // Get resource count
-    const resourceCount = await accountPage.getResourceCount();
+    // Get material count
+    const materialCount = await accountPage.getMaterialCount();
 
-    if (resourceCount > 0) {
-      // Click on the first resource card link
-      const firstResourceLink = sellerPage.locator('a[href*="/resources/"]').first();
-      await firstResourceLink.click();
+    if (materialCount > 0) {
+      // Click on the first material card link
+      const firstMaterialLink = sellerPage.locator('a[href*="/materialien/"]').first();
+      await firstMaterialLink.click();
 
-      // Should navigate to resource detail page
-      await expect(sellerPage).toHaveURL(/\/resources\//, { timeout: 10000 });
+      // Should navigate to material detail page
+      await expect(sellerPage).toHaveURL(/\/materialien\//, { timeout: 10000 });
     }
   });
 });

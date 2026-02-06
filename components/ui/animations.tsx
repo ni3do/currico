@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, HTMLMotionProps, Variants, useInView } from "framer-motion";
+import { motion, HTMLMotionProps, Variants, useInView, useReducedMotion } from "framer-motion";
 import { ReactNode, useRef } from "react";
 
 // ================================================================
@@ -151,15 +151,28 @@ export function FadeIn({
 }: FadeInProps) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once, amount });
+  const prefersReducedMotion = useReducedMotion();
 
   // Smaller, more subtle movements
   const distance = 16;
 
   const variants: Variants = {
     hidden: {
-      opacity: 0,
-      y: direction === "up" ? distance : direction === "down" ? -distance : 0,
-      x: direction === "left" ? -distance : direction === "right" ? distance : 0,
+      opacity: prefersReducedMotion ? 1 : 0,
+      y: prefersReducedMotion
+        ? 0
+        : direction === "up"
+          ? distance
+          : direction === "down"
+            ? -distance
+            : 0,
+      x: prefersReducedMotion
+        ? 0
+        : direction === "left"
+          ? -distance
+          : direction === "right"
+            ? distance
+            : 0,
     },
     visible: {
       opacity: 1,
@@ -174,7 +187,11 @@ export function FadeIn({
       initial="hidden"
       animate={isInView ? "visible" : "hidden"}
       variants={variants}
-      transition={{ duration, delay, ease: smoothEase }}
+      transition={{
+        duration: prefersReducedMotion ? 0 : duration,
+        delay: prefersReducedMotion ? 0 : delay,
+        ease: smoothEase,
+      }}
       className={className}
       {...props}
     >
@@ -572,11 +589,17 @@ export function FloatingElement({
   duration?: number;
   y?: number;
 }) {
+  const prefersReducedMotion = useReducedMotion();
+
   return (
     <motion.div
-      animate={{
-        y: [0, -y, 0],
-      }}
+      animate={
+        prefersReducedMotion
+          ? {}
+          : {
+              y: [0, -y, 0],
+            }
+      }
       transition={{
         duration,
         repeat: Infinity,
@@ -599,6 +622,7 @@ export function PulseElement({
   className?: string;
   intensity?: "subtle" | "medium" | "strong";
 }) {
+  const prefersReducedMotion = useReducedMotion();
   const scaleMap = {
     subtle: [1, 1.02, 1],
     medium: [1, 1.04, 1],
@@ -607,9 +631,13 @@ export function PulseElement({
 
   return (
     <motion.div
-      animate={{
-        scale: scaleMap[intensity],
-      }}
+      animate={
+        prefersReducedMotion
+          ? {}
+          : {
+              scale: scaleMap[intensity],
+            }
+      }
       transition={{
         duration: 2.5,
         repeat: Infinity,
@@ -624,6 +652,16 @@ export function PulseElement({
 
 // Shimmer loading effect (smoother)
 export function ShimmerEffect({ className = "" }: { className?: string }) {
+  const prefersReducedMotion = useReducedMotion();
+
+  if (prefersReducedMotion) {
+    return (
+      <div
+        className={`bg-gradient-to-r from-transparent via-white/15 to-transparent ${className}`}
+      />
+    );
+  }
+
   return (
     <motion.div
       className={`bg-gradient-to-r from-transparent via-white/15 to-transparent ${className}`}

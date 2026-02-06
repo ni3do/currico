@@ -10,16 +10,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
-import { ResourceCard } from "@/components/ui/ResourceCard";
+import { MaterialCard } from "@/components/ui/MaterialCard";
 import { ProfileCard } from "@/components/ui/ProfileCard";
-import {
-  LP21FilterSidebar,
-  type LP21FilterState,
-  type SearchType,
-} from "@/components/search/LP21FilterSidebar";
+import { LP21FilterSidebar, type LP21FilterState } from "@/components/search/LP21FilterSidebar";
 import { useCurriculum } from "@/lib/hooks/useCurriculum";
 
-interface Resource {
+interface Material {
   id: string;
   title: string;
   description: string;
@@ -56,12 +52,12 @@ interface Profile {
   followerCount: number;
 }
 
-export default function ResourcesPage() {
-  const t = useTranslations("resourcesPage");
+export default function MaterialienPage() {
+  const t = useTranslations("materialsPage");
   const tCommon = useTranslations("common");
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [resources, setResources] = useState<Resource[]>([]);
+  const [materials, setMaterials] = useState<Material[]>([]);
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [pagination, setPagination] = useState<Pagination>({
     page: 1,
@@ -111,7 +107,7 @@ export default function ResourcesPage() {
 
   // Handle wishlist toggle
   const handleWishlistToggle = useCallback(
-    async (resourceId: string, currentState: boolean): Promise<boolean> => {
+    async (materialId: string, currentState: boolean): Promise<boolean> => {
       if (!isAuthenticated) {
         router.push("/login");
         return false;
@@ -120,13 +116,13 @@ export default function ResourcesPage() {
       try {
         if (currentState) {
           // Remove from wishlist
-          const response = await fetch(`/api/user/wishlist?resourceId=${resourceId}`, {
+          const response = await fetch(`/api/user/wishlist?resourceId=${materialId}`, {
             method: "DELETE",
           });
           if (response.ok) {
             setWishlistedIds((prev) => {
               const next = new Set(prev);
-              next.delete(resourceId);
+              next.delete(materialId);
               return next;
             });
             return true;
@@ -136,10 +132,10 @@ export default function ResourcesPage() {
           const response = await fetch("/api/user/wishlist", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ resourceId }),
+            body: JSON.stringify({ resourceId: materialId }),
           });
           if (response.ok) {
-            setWishlistedIds((prev) => new Set(prev).add(resourceId));
+            setWishlistedIds((prev) => new Set(prev).add(materialId));
             return true;
           }
         }
@@ -218,10 +214,24 @@ export default function ResourcesPage() {
     const fachbereich = searchParams.get("fachbereich");
     const kompetenzbereich = searchParams.get("kompetenzbereich");
     const kompetenz = searchParams.get("kompetenz");
-    const searchType = searchParams.get("searchType") as SearchType | null;
+
+    // Backward compat: old ?searchType=profiles → showMaterials: false, showCreators: true
+    const legacySearchType = searchParams.get("searchType");
+    let showMaterials = searchParams.get("showMaterials") !== "false";
+    let showCreators = searchParams.get("showCreators") !== "false";
+    if (legacySearchType === "profiles") {
+      showMaterials = false;
+      showCreators = true;
+    }
+    // Ensure at least one is true
+    if (!showMaterials && !showCreators) {
+      showMaterials = true;
+      showCreators = true;
+    }
 
     return {
-      searchType: searchType === "profiles" ? "profiles" : "resources",
+      showMaterials,
+      showCreators,
       zyklus: zyklus ? parseInt(zyklus) : null,
       fachbereich: fachbereich || null,
       kompetenzbereich: kompetenzbereich || null,
@@ -246,7 +256,9 @@ export default function ResourcesPage() {
   const buildUrlParams = useCallback(
     (currentFilters: LP21FilterState, currentSort: string, page: number = 1) => {
       const params = new URLSearchParams();
-      if (currentFilters.searchType === "profiles") params.set("searchType", "profiles");
+      // Only add params when not default (both true)
+      if (!currentFilters.showMaterials) params.set("showMaterials", "false");
+      if (!currentFilters.showCreators) params.set("showCreators", "false");
       if (currentFilters.zyklus) params.set("zyklus", currentFilters.zyklus.toString());
       if (currentFilters.fachbereich) params.set("fachbereich", currentFilters.fachbereich);
       if (currentFilters.kompetenzbereich)
@@ -272,7 +284,7 @@ export default function ResourcesPage() {
       setFilters(newFilters);
       setCurrentPage(1);
       const params = buildUrlParams(newFilters, sortBy, 1);
-      const newUrl = params.toString() ? `/resources?${params.toString()}` : "/resources";
+      const newUrl = params.toString() ? `/materialien?${params.toString()}` : "/materialien";
       router.replace(newUrl, { scroll: false });
     },
     [router, sortBy, buildUrlParams]
@@ -284,7 +296,7 @@ export default function ResourcesPage() {
       setSortBy(newSort);
       setCurrentPage(1);
       const params = buildUrlParams(filters, newSort, 1);
-      const newUrl = params.toString() ? `/resources?${params.toString()}` : "/resources";
+      const newUrl = params.toString() ? `/materialien?${params.toString()}` : "/materialien";
       router.replace(newUrl, { scroll: false });
     },
     [router, filters, buildUrlParams]
@@ -295,7 +307,7 @@ export default function ResourcesPage() {
     (newPage: number) => {
       setCurrentPage(newPage);
       const params = buildUrlParams(filters, sortBy, newPage);
-      const newUrl = params.toString() ? `/resources?${params.toString()}` : "/resources";
+      const newUrl = params.toString() ? `/materialien?${params.toString()}` : "/materialien";
       router.replace(newUrl, { scroll: false });
       // Scroll to top of results
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -313,7 +325,7 @@ export default function ResourcesPage() {
     [getFachbereichByCode]
   );
 
-  const fetchResources = useCallback(
+  const fetchMaterials = useCallback(
     async (currentFilters: LP21FilterState, currentSort: string, page: number = 1) => {
       setLoading(true);
       try {
@@ -359,14 +371,14 @@ export default function ResourcesPage() {
           params.set("sort", currentSort);
         }
 
-        const response = await fetch(`/api/resources?${params.toString()}`);
+        const response = await fetch(`/api/materials?${params.toString()}`);
         if (response.ok) {
           const data = await response.json();
-          setResources(data.resources);
+          setMaterials(data.materials);
           setPagination(data.pagination);
         }
       } catch (error) {
-        console.error("Error fetching resources:", error);
+        console.error("Error fetching materials:", error);
       } finally {
         setLoading(false);
       }
@@ -374,9 +386,16 @@ export default function ResourcesPage() {
     [mapFachbereichToSubject]
   );
 
+  // Fetch materials when showMaterials is true
   useEffect(() => {
-    fetchResources(filters, sortBy, currentPage);
-  }, [filters, sortBy, currentPage, fetchResources]);
+    if (filters.showMaterials) {
+      fetchMaterials(filters, sortBy, currentPage);
+    } else {
+      setMaterials([]);
+      setPagination({ page: 1, limit: 20, total: 0, totalPages: 0 });
+      setLoading(false);
+    }
+  }, [filters, sortBy, currentPage, fetchMaterials]);
 
   // Fetch profiles with optional filters
   const fetchProfiles = useCallback(async (currentFilters: LP21FilterState) => {
@@ -401,13 +420,17 @@ export default function ResourcesPage() {
     }
   }, []);
 
-  // Fetch profiles when search type changes or filters change
+  // Fetch profiles when showCreators is true
   useEffect(() => {
-    if (filters.searchType === "profiles") {
+    if (filters.showCreators) {
       const debounce = setTimeout(() => {
         fetchProfiles(filters);
       }, 300);
       return () => clearTimeout(debounce);
+    } else {
+      setProfiles([]);
+      setProfilePagination({ page: 1, limit: 12, total: 0, totalPages: 0 });
+      setProfilesLoading(false);
     }
   }, [filters, fetchProfiles]);
 
@@ -458,6 +481,50 @@ export default function ResourcesPage() {
     return subjectMap[subject] || "pill-primary";
   };
 
+  // Merged grid items for unified view
+  type GridItem = { type: "material"; data: Material } | { type: "profile"; data: Profile };
+
+  const mergedItems = useMemo<GridItem[]>(() => {
+    const materialItems: GridItem[] = filters.showMaterials
+      ? materials.map((r) => ({ type: "material" as const, data: r }))
+      : [];
+    const profileItems: GridItem[] = filters.showCreators
+      ? profiles.map((p) => ({ type: "profile" as const, data: p }))
+      : [];
+
+    // When both are shown, intersperse profiles every 6th position
+    if (filters.showMaterials && filters.showCreators) {
+      const merged: GridItem[] = [];
+      let rIdx = 0;
+      let pIdx = 0;
+      let position = 0;
+
+      while (rIdx < materialItems.length || pIdx < profileItems.length) {
+        // Insert a profile every 6th position (positions 5, 11, 17, ...)
+        if (position > 0 && position % 6 === 5 && pIdx < profileItems.length) {
+          merged.push(profileItems[pIdx++]);
+        } else if (rIdx < materialItems.length) {
+          merged.push(materialItems[rIdx++]);
+        } else if (pIdx < profileItems.length) {
+          merged.push(profileItems[pIdx++]);
+        }
+        position++;
+      }
+      return merged;
+    }
+
+    // When only one type is shown
+    return [...materialItems, ...profileItems];
+  }, [materials, profiles, filters.showMaterials, filters.showCreators]);
+
+  // Combined loading state
+  const isLoading = (filters.showMaterials && loading) || (filters.showCreators && profilesLoading);
+
+  // Combined count
+  const totalCount =
+    (filters.showMaterials ? pagination.total : 0) +
+    (filters.showCreators ? profilePagination.total : 0);
+
   return (
     <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
@@ -465,7 +532,7 @@ export default function ResourcesPage() {
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="mb-6">
-          <Breadcrumb items={[{ label: tCommon("navigation.resources") }]} />
+          <Breadcrumb items={[{ label: tCommon("navigation.materials") }]} />
           <h1 className="text-text text-2xl font-bold">{t("header.title")}</h1>
           <p className="text-text-muted mt-1">{t("header.description")}</p>
         </div>
@@ -524,251 +591,177 @@ export default function ResourcesPage() {
 
             {/* Main Content Area */}
             <div className="min-w-0 flex-1">
-              {/* Resources View */}
-              {filters.searchType === "resources" && (
-                <>
-                  {/* Top Control Bar: Results + Sort */}
-                  <div className="bg-bg-secondary mb-6 flex flex-col gap-4 rounded-lg p-4 sm:flex-row sm:items-center sm:justify-between">
-                    {/* Results Count + Active Filters Summary */}
-                    <div>
-                      <p className="text-text-muted text-sm">
-                        <span className="text-text font-semibold">{pagination.total}</span>{" "}
-                        {t("results.countLabel")}
-                      </p>
-                      {(filters.zyklus ||
-                        filters.fachbereich ||
-                        filters.kompetenzbereich ||
-                        filters.kompetenz ||
-                        filters.searchQuery) && (
-                        <p className="text-text-muted mt-1 text-xs">
-                          {[
-                            filters.zyklus && `Zyklus ${filters.zyklus}`,
-                            filters.fachbereich &&
-                              getFachbereichByCode(filters.fachbereich)?.shortName,
-                            filters.kompetenzbereich,
-                            filters.kompetenz,
-                            filters.searchQuery && `"${filters.searchQuery}"`,
-                          ]
-                            .filter(Boolean)
-                            .join(" · ")}
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Sort Dropdown */}
-                    <div className="flex items-center gap-2">
-                      <label className="text-text-muted text-sm whitespace-nowrap">
-                        {t("results.sortLabel")}
-                      </label>
-                      <select
-                        value={sortBy}
-                        onChange={(e) => handleSortChange(e.target.value)}
-                        className="border-border bg-bg text-text-secondary focus:border-primary focus:ring-focus-ring rounded-lg border px-3 py-2.5 text-sm focus:ring-2 focus:outline-none"
-                      >
-                        <option value="newest">{t("results.sortOptions.newest")}</option>
-                        <option value="price-low">{t("results.sortOptions.priceLow")}</option>
-                        <option value="price-high">{t("results.sortOptions.priceHigh")}</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  {/* Resource Grid */}
-                  {loading ? (
-                    <div className="flex items-center justify-center py-16">
-                      <div className="text-text-muted flex items-center gap-3">
-                        <svg className="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          />
-                          <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                          />
-                        </svg>
-                        <span>{t("loading")}</span>
-                      </div>
-                    </div>
-                  ) : resources.length === 0 ? (
-                    <div className="border-border-subtle bg-bg-secondary flex flex-col items-center justify-center rounded-lg border py-16">
-                      <svg
-                        className="text-text-faint mb-4 h-12 w-12"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={1.5}
-                          d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                      <p className="text-text mb-2 text-lg font-medium">{t("empty.title")}</p>
-                      <p className="text-text-muted text-sm">{t("empty.description")}</p>
-                    </div>
-                  ) : (
-                    <motion.div
-                      className="grid gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3"
-                      initial="hidden"
-                      animate="visible"
-                      variants={{
-                        hidden: { opacity: 0 },
-                        visible: {
-                          opacity: 1,
-                          transition: {
-                            staggerChildren: 0.05,
-                            delayChildren: 0.02,
-                          },
-                        },
-                      }}
-                    >
-                      {resources.map((resource) => (
-                        <motion.div
-                          key={resource.id}
-                          variants={{
-                            hidden: { opacity: 0, y: 16, scale: 0.98 },
-                            visible: {
-                              opacity: 1,
-                              y: 0,
-                              scale: 1,
-                              transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
-                            },
-                          }}
-                        >
-                          <ResourceCard
-                            id={resource.id}
-                            title={resource.title}
-                            description={resource.description}
-                            subject={resource.subject}
-                            cycle={resource.cycle}
-                            priceFormatted={resource.priceFormatted}
-                            previewUrl={resource.previewUrl}
-                            seller={{ displayName: resource.seller.display_name }}
-                            subjectPillClass={getSubjectPillClass(resource.subject)}
-                            showWishlist={true}
-                            isWishlisted={wishlistedIds.has(resource.id)}
-                            onWishlistToggle={handleWishlistToggle}
-                          />
-                        </motion.div>
-                      ))}
-                    </motion.div>
-                  )}
-                </>
-              )}
-
-              {/* Profiles View */}
-              {filters.searchType === "profiles" && (
-                <>
-                  {/* Top Control Bar: Results Count */}
-                  <div className="bg-bg-secondary mb-6 rounded-lg p-4">
-                    <p className="text-text-muted text-sm">
-                      <span className="text-text font-semibold">{profilePagination.total}</span>{" "}
-                      Profile gefunden
+              {/* Top Control Bar: Results + Sort */}
+              <div className="bg-bg-secondary mb-6 flex flex-col gap-4 rounded-lg p-4 sm:flex-row sm:items-center sm:justify-between">
+                {/* Results Count + Active Filters Summary */}
+                <div>
+                  <p className="text-text-muted text-sm">
+                    <span className="text-text font-semibold">{totalCount}</span>{" "}
+                    {t("results.countLabel")}
+                  </p>
+                  {(filters.zyklus ||
+                    filters.fachbereich ||
+                    filters.kompetenzbereich ||
+                    filters.kompetenz ||
+                    filters.searchQuery) && (
+                    <p className="text-text-muted mt-1 text-xs">
+                      {[
+                        filters.zyklus && `Zyklus ${filters.zyklus}`,
+                        filters.fachbereich && getFachbereichByCode(filters.fachbereich)?.shortName,
+                        filters.kompetenzbereich,
+                        filters.kompetenz,
+                        filters.searchQuery && `"${filters.searchQuery}"`,
+                      ]
+                        .filter(Boolean)
+                        .join(" · ")}
                     </p>
-                    {(filters.zyklus || filters.fachbereich || filters.searchQuery) && (
-                      <p className="text-text-muted mt-1 text-xs">
-                        {[
-                          filters.zyklus && `Zyklus ${filters.zyklus}`,
-                          filters.fachbereich &&
-                            getFachbereichByCode(filters.fachbereich)?.shortName,
-                          filters.searchQuery && `"${filters.searchQuery}"`,
-                        ]
-                          .filter(Boolean)
-                          .join(" · ")}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Profile Grid */}
-                  {profilesLoading ? (
-                    <div className="flex items-center justify-center py-16">
-                      <div className="text-text-muted flex items-center gap-3">
-                        <svg className="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          />
-                          <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                          />
-                        </svg>
-                        <span>Profile werden geladen...</span>
-                      </div>
-                    </div>
-                  ) : profiles.length === 0 ? (
-                    <div className="border-border-subtle bg-bg-secondary flex flex-col items-center justify-center rounded-lg border py-16">
-                      <Users className="text-text-faint mb-4 h-12 w-12" />
-                      <p className="text-text mb-2 text-lg font-medium">Keine Profile gefunden</p>
-                      <p className="text-text-muted text-sm">
-                        {filters.searchQuery
-                          ? "Versuchen Sie es mit anderen Suchbegriffen"
-                          : "Geben Sie einen Suchbegriff ein, um Profile zu finden"}
-                      </p>
-                    </div>
-                  ) : (
-                    <motion.div
-                      className="grid gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3"
-                      initial="hidden"
-                      animate="visible"
-                      variants={{
-                        hidden: { opacity: 0 },
-                        visible: {
-                          opacity: 1,
-                          transition: {
-                            staggerChildren: 0.06,
-                            delayChildren: 0.02,
-                          },
-                        },
-                      }}
-                    >
-                      {profiles.map((profile) => (
-                        <motion.div
-                          key={profile.id}
-                          variants={{
-                            hidden: { opacity: 0, y: 16, scale: 0.98 },
-                            visible: {
-                              opacity: 1,
-                              y: 0,
-                              scale: 1,
-                              transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
-                            },
-                          }}
-                        >
-                          <ProfileCard
-                            id={profile.id}
-                            name={profile.name}
-                            image={profile.image}
-                            bio={profile.bio}
-                            subjects={profile.subjects}
-                            resourceCount={profile.resourceCount}
-                            followerCount={profile.followerCount}
-                            isVerified={profile.role === "SELLER"}
-                            getSubjectPillClass={getSubjectPillClass}
-                            showFollowButton={true}
-                            isFollowing={followingIds.has(profile.id)}
-                            onFollowToggle={handleFollowToggle}
-                          />
-                        </motion.div>
-                      ))}
-                    </motion.div>
                   )}
-                </>
+                </div>
+
+                {/* Sort Dropdown - only when materials are shown */}
+                {filters.showMaterials && (
+                  <div className="flex items-center gap-2">
+                    <label className="text-text-muted text-sm whitespace-nowrap">
+                      {t("results.sortLabel")}
+                    </label>
+                    <select
+                      value={sortBy}
+                      onChange={(e) => handleSortChange(e.target.value)}
+                      className="border-border bg-bg text-text-secondary focus:border-primary focus:ring-focus-ring rounded-lg border px-3 py-2.5 text-sm focus:ring-2 focus:outline-none"
+                    >
+                      <option value="newest">{t("results.sortOptions.newest")}</option>
+                      <option value="price-low">{t("results.sortOptions.priceLow")}</option>
+                      <option value="price-high">{t("results.sortOptions.priceHigh")}</option>
+                    </select>
+                  </div>
+                )}
+              </div>
+
+              {/* Unified Grid */}
+              {isLoading ? (
+                <div className="flex items-center justify-center py-16">
+                  <div className="text-text-muted flex items-center gap-3">
+                    <svg className="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
+                    </svg>
+                    <span>{t("loading")}</span>
+                  </div>
+                </div>
+              ) : mergedItems.length === 0 ? (
+                <div className="border-border-subtle bg-bg-secondary flex flex-col items-center justify-center rounded-lg border py-16">
+                  {!filters.showMaterials && filters.showCreators ? (
+                    <Users className="text-text-faint mb-4 h-12 w-12" />
+                  ) : (
+                    <svg
+                      className="text-text-faint mb-4 h-12 w-12"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  )}
+                  <p className="text-text mb-2 text-lg font-medium">{t("empty.title")}</p>
+                  <p className="text-text-muted text-sm">{t("empty.description")}</p>
+                </div>
+              ) : (
+                <motion.div
+                  className="grid gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3"
+                  initial="hidden"
+                  animate="visible"
+                  variants={{
+                    hidden: { opacity: 0 },
+                    visible: {
+                      opacity: 1,
+                      transition: {
+                        staggerChildren: 0.05,
+                        delayChildren: 0.02,
+                      },
+                    },
+                  }}
+                >
+                  {mergedItems.map((item) =>
+                    item.type === "material" ? (
+                      <motion.div
+                        key={`material-${item.data.id}`}
+                        variants={{
+                          hidden: { opacity: 0, y: 16, scale: 0.98 },
+                          visible: {
+                            opacity: 1,
+                            y: 0,
+                            scale: 1,
+                            transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
+                          },
+                        }}
+                      >
+                        <MaterialCard
+                          id={item.data.id}
+                          title={item.data.title}
+                          description={item.data.description}
+                          subject={item.data.subject}
+                          cycle={item.data.cycle}
+                          priceFormatted={item.data.priceFormatted}
+                          previewUrl={item.data.previewUrl}
+                          seller={{ displayName: item.data.seller.display_name }}
+                          subjectPillClass={getSubjectPillClass(item.data.subject)}
+                          showWishlist={true}
+                          isWishlisted={wishlistedIds.has(item.data.id)}
+                          onWishlistToggle={handleWishlistToggle}
+                        />
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key={`profile-${item.data.id}`}
+                        variants={{
+                          hidden: { opacity: 0, y: 16, scale: 0.98 },
+                          visible: {
+                            opacity: 1,
+                            y: 0,
+                            scale: 1,
+                            transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
+                          },
+                        }}
+                        className="h-full"
+                      >
+                        <ProfileCard
+                          id={item.data.id}
+                          name={item.data.name}
+                          image={item.data.image}
+                          bio={item.data.bio}
+                          subjects={item.data.subjects}
+                          resourceCount={item.data.resourceCount}
+                          followerCount={item.data.followerCount}
+                          isVerified={item.data.role === "SELLER"}
+                          getSubjectPillClass={getSubjectPillClass}
+                          showFollowButton={true}
+                          isFollowing={followingIds.has(item.data.id)}
+                          onFollowToggle={handleFollowToggle}
+                        />
+                      </motion.div>
+                    )
+                  )}
+                </motion.div>
               )}
 
               {/* Pagination - only for resources */}
-              {filters.searchType === "resources" && pagination.totalPages > 1 && (
+              {filters.showMaterials && pagination.totalPages > 1 && (
                 <div className="mt-12 flex justify-center">
                   <nav className="flex items-center gap-1">
                     {/* Previous button */}

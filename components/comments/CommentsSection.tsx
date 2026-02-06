@@ -36,11 +36,11 @@ interface Comment {
 }
 
 interface CommentsSectionProps {
-  resourceId: string;
+  materialId: string;
   className?: string;
 }
 
-export function CommentsSection({ resourceId, className = "" }: CommentsSectionProps) {
+export function CommentsSection({ materialId, className = "" }: CommentsSectionProps) {
   const { data: session, status: sessionStatus } = useSession();
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -54,7 +54,7 @@ export function CommentsSection({ resourceId, className = "" }: CommentsSectionP
       try {
         setLoading(true);
         const response = await fetch(
-          `/api/resources/${resourceId}/comments?page=${pageNum}&limit=20`
+          `/api/materials/${materialId}/comments?page=${pageNum}&limit=20`
         );
 
         if (!response.ok) {
@@ -72,7 +72,7 @@ export function CommentsSection({ resourceId, className = "" }: CommentsSectionP
         setLoading(false);
       }
     },
-    [resourceId]
+    [materialId]
   );
 
   useEffect(() => {
@@ -133,7 +133,7 @@ export function CommentsSection({ resourceId, className = "" }: CommentsSectionP
       {/* Comment Form */}
       {sessionStatus === "authenticated" ? (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-          <CommentForm resourceId={resourceId} onSubmit={handleCommentSubmitted} />
+          <CommentForm materialId={materialId} onSubmit={handleCommentSubmitted} />
         </motion.div>
       ) : (
         <div className="border-border bg-bg-secondary mb-6 rounded-xl border p-4">
@@ -161,7 +161,7 @@ export function CommentsSection({ resourceId, className = "" }: CommentsSectionP
             <CommentCard
               key={comment.id}
               comment={comment}
-              resourceId={resourceId}
+              materialId={materialId}
               onReplyAdded={() => fetchComments(page)}
               onCommentDeleted={handleCommentDeleted}
               onCommentUpdated={handleCommentUpdated}

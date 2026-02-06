@@ -1,23 +1,23 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { GET } from "@/app/api/resources/route";
+import { GET } from "@/app/api/materials/route";
 import { createMockRequest, parseResponse } from "../helpers/api-test-utils";
 import { prisma } from "@/lib/db";
 import { clearAllRateLimits } from "@/lib/rateLimit";
 
 // Get mocked prisma functions
-const mockResourceFindMany = prisma.resource.findMany as ReturnType<typeof vi.fn>;
-const mockResourceCount = prisma.resource.count as ReturnType<typeof vi.fn>;
+const mockMaterialFindMany = prisma.resource.findMany as ReturnType<typeof vi.fn>;
+const mockMaterialCount = prisma.resource.count as ReturnType<typeof vi.fn>;
 
-describe("GET /api/resources", () => {
+describe("GET /api/materials", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     clearAllRateLimits();
   });
 
-  it("returns paginated resources", async () => {
-    const mockResources = [
+  it("returns paginated materials", async () => {
+    const mockMaterials = [
       {
-        id: "res-1",
+        id: "mat-1",
         title: "Math Worksheet",
         description: "A worksheet for math",
         price: 500,
@@ -28,7 +28,7 @@ describe("GET /api/resources", () => {
         seller: { id: "seller-1", display_name: "Teacher A" },
       },
       {
-        id: "res-2",
+        id: "mat-2",
         title: "German Exercise",
         description: "German language exercise",
         price: 0,
@@ -40,27 +40,27 @@ describe("GET /api/resources", () => {
       },
     ];
 
-    mockResourceFindMany.mockResolvedValue(mockResources);
-    mockResourceCount.mockResolvedValue(2);
+    mockMaterialFindMany.mockResolvedValue(mockMaterials);
+    mockMaterialCount.mockResolvedValue(2);
 
-    const request = createMockRequest("/api/resources");
+    const request = createMockRequest("/api/materials");
     const response = await GET(request);
     const data = await parseResponse<{
-      resources: unknown[];
+      materials: unknown[];
       pagination: { page: number; total: number };
     }>(response);
 
     expect(response.status).toBe(200);
-    expect(data.resources).toHaveLength(2);
+    expect(data.materials).toHaveLength(2);
     expect(data.pagination.page).toBe(1);
     expect(data.pagination.total).toBe(2);
   });
 
   it("formats prices correctly", async () => {
-    mockResourceFindMany.mockResolvedValue([
+    mockMaterialFindMany.mockResolvedValue([
       {
-        id: "res-1",
-        title: "Paid Resource",
+        id: "mat-1",
+        title: "Paid Material",
         description: "Description",
         price: 1299,
         subjects: ["Mathematik"],
@@ -70,8 +70,8 @@ describe("GET /api/resources", () => {
         seller: { id: "seller-1", display_name: "Teacher" },
       },
       {
-        id: "res-2",
-        title: "Free Resource",
+        id: "mat-2",
+        title: "Free Material",
         description: "Description",
         price: 0,
         subjects: ["Deutsch"],
@@ -81,26 +81,26 @@ describe("GET /api/resources", () => {
         seller: { id: "seller-2", display_name: "Teacher" },
       },
     ]);
-    mockResourceCount.mockResolvedValue(2);
+    mockMaterialCount.mockResolvedValue(2);
 
-    const request = createMockRequest("/api/resources");
+    const request = createMockRequest("/api/materials");
     const response = await GET(request);
     const data = await parseResponse<{
-      resources: { priceFormatted: string }[];
+      materials: { priceFormatted: string }[];
     }>(response);
 
-    expect(data.resources[0].priceFormatted).toBe("CHF 12.99");
-    expect(data.resources[1].priceFormatted).toBe("Gratis");
+    expect(data.materials[0].priceFormatted).toBe("CHF 12.99");
+    expect(data.materials[1].priceFormatted).toBe("Gratis");
   });
 
   it("filters by subject", async () => {
     // Mock the raw query for JSON filtering (PostgreSQL uses $queryRaw with tagged templates)
     const mockQueryRaw = prisma.$queryRaw as ReturnType<typeof vi.fn>;
-    mockQueryRaw.mockResolvedValue([{ id: "res-1" }]);
-    mockResourceFindMany.mockResolvedValue([]);
-    mockResourceCount.mockResolvedValue(0);
+    mockQueryRaw.mockResolvedValue([{ id: "mat-1" }]);
+    mockMaterialFindMany.mockResolvedValue([]);
+    mockMaterialCount.mockResolvedValue(0);
 
-    const request = createMockRequest("/api/resources", {
+    const request = createMockRequest("/api/materials", {
       searchParams: { subject: "Mathematik" },
     });
 
@@ -108,10 +108,10 @@ describe("GET /api/resources", () => {
 
     // Should use raw SQL for JSON filtering
     expect(mockQueryRaw).toHaveBeenCalled();
-    expect(mockResourceFindMany).toHaveBeenCalledWith(
+    expect(mockMaterialFindMany).toHaveBeenCalledWith(
       expect.objectContaining({
         where: expect.objectContaining({
-          id: { in: ["res-1"] },
+          id: { in: ["mat-1"] },
         }),
       })
     );
@@ -120,11 +120,11 @@ describe("GET /api/resources", () => {
   it("filters by cycle", async () => {
     // Mock the raw query for JSON filtering (PostgreSQL uses $queryRaw with tagged templates)
     const mockQueryRaw = prisma.$queryRaw as ReturnType<typeof vi.fn>;
-    mockQueryRaw.mockResolvedValue([{ id: "res-2" }]);
-    mockResourceFindMany.mockResolvedValue([]);
-    mockResourceCount.mockResolvedValue(0);
+    mockQueryRaw.mockResolvedValue([{ id: "mat-2" }]);
+    mockMaterialFindMany.mockResolvedValue([]);
+    mockMaterialCount.mockResolvedValue(0);
 
-    const request = createMockRequest("/api/resources", {
+    const request = createMockRequest("/api/materials", {
       searchParams: { cycle: "Zyklus 2" },
     });
 
@@ -132,10 +132,10 @@ describe("GET /api/resources", () => {
 
     // Should use raw SQL for JSON filtering
     expect(mockQueryRaw).toHaveBeenCalled();
-    expect(mockResourceFindMany).toHaveBeenCalledWith(
+    expect(mockMaterialFindMany).toHaveBeenCalledWith(
       expect.objectContaining({
         where: expect.objectContaining({
-          id: { in: ["res-2"] },
+          id: { in: ["mat-2"] },
         }),
       })
     );
@@ -144,11 +144,11 @@ describe("GET /api/resources", () => {
   it("supports search query", async () => {
     // PostgreSQL uses full-text search via $queryRaw
     const mockQueryRaw = prisma.$queryRaw as ReturnType<typeof vi.fn>;
-    mockQueryRaw.mockResolvedValue([{ id: "res-1", rank: 0.5 }]);
-    mockResourceFindMany.mockResolvedValue([]);
-    mockResourceCount.mockResolvedValue(0);
+    mockQueryRaw.mockResolvedValue([{ id: "mat-1", rank: 0.5 }]);
+    mockMaterialFindMany.mockResolvedValue([]);
+    mockMaterialCount.mockResolvedValue(0);
 
-    const request = createMockRequest("/api/resources", {
+    const request = createMockRequest("/api/materials", {
       searchParams: { search: "math" },
     });
 
@@ -156,20 +156,20 @@ describe("GET /api/resources", () => {
 
     // PostgreSQL full-text search uses $queryRaw with plainto_tsquery
     expect(mockQueryRaw).toHaveBeenCalled();
-    expect(mockResourceFindMany).toHaveBeenCalledWith(
+    expect(mockMaterialFindMany).toHaveBeenCalledWith(
       expect.objectContaining({
         where: expect.objectContaining({
-          id: { in: ["res-1"] },
+          id: { in: ["mat-1"] },
         }),
       })
     );
   });
 
   it("supports pagination parameters", async () => {
-    mockResourceFindMany.mockResolvedValue([]);
-    mockResourceCount.mockResolvedValue(50);
+    mockMaterialFindMany.mockResolvedValue([]);
+    mockMaterialCount.mockResolvedValue(50);
 
-    const request = createMockRequest("/api/resources", {
+    const request = createMockRequest("/api/materials", {
       searchParams: { page: "2", limit: "10" },
     });
 
@@ -178,7 +178,7 @@ describe("GET /api/resources", () => {
       pagination: { page: number; limit: number; totalPages: number };
     }>(response);
 
-    expect(mockResourceFindMany).toHaveBeenCalledWith(
+    expect(mockMaterialFindMany).toHaveBeenCalledWith(
       expect.objectContaining({
         skip: 10, // (page 2 - 1) * limit 10
         take: 10,
@@ -190,16 +190,16 @@ describe("GET /api/resources", () => {
   });
 
   it("sorts by price ascending", async () => {
-    mockResourceFindMany.mockResolvedValue([]);
-    mockResourceCount.mockResolvedValue(0);
+    mockMaterialFindMany.mockResolvedValue([]);
+    mockMaterialCount.mockResolvedValue(0);
 
-    const request = createMockRequest("/api/resources", {
+    const request = createMockRequest("/api/materials", {
       searchParams: { sort: "price-low" },
     });
 
     await GET(request);
 
-    expect(mockResourceFindMany).toHaveBeenCalledWith(
+    expect(mockMaterialFindMany).toHaveBeenCalledWith(
       expect.objectContaining({
         orderBy: { price: "asc" },
       })
@@ -207,16 +207,16 @@ describe("GET /api/resources", () => {
   });
 
   it("sorts by price descending", async () => {
-    mockResourceFindMany.mockResolvedValue([]);
-    mockResourceCount.mockResolvedValue(0);
+    mockMaterialFindMany.mockResolvedValue([]);
+    mockMaterialCount.mockResolvedValue(0);
 
-    const request = createMockRequest("/api/resources", {
+    const request = createMockRequest("/api/materials", {
       searchParams: { sort: "price-high" },
     });
 
     await GET(request);
 
-    expect(mockResourceFindMany).toHaveBeenCalledWith(
+    expect(mockMaterialFindMany).toHaveBeenCalledWith(
       expect.objectContaining({
         orderBy: { price: "desc" },
       })
@@ -224,29 +224,29 @@ describe("GET /api/resources", () => {
   });
 
   it("defaults to newest sort order", async () => {
-    mockResourceFindMany.mockResolvedValue([]);
-    mockResourceCount.mockResolvedValue(0);
+    mockMaterialFindMany.mockResolvedValue([]);
+    mockMaterialCount.mockResolvedValue(0);
 
-    const request = createMockRequest("/api/resources");
+    const request = createMockRequest("/api/materials");
 
     await GET(request);
 
-    expect(mockResourceFindMany).toHaveBeenCalledWith(
+    expect(mockMaterialFindMany).toHaveBeenCalledWith(
       expect.objectContaining({
         orderBy: { created_at: "desc" },
       })
     );
   });
 
-  it("only returns published and public resources", async () => {
-    mockResourceFindMany.mockResolvedValue([]);
-    mockResourceCount.mockResolvedValue(0);
+  it("only returns published and public materials", async () => {
+    mockMaterialFindMany.mockResolvedValue([]);
+    mockMaterialCount.mockResolvedValue(0);
 
-    const request = createMockRequest("/api/resources");
+    const request = createMockRequest("/api/materials");
 
     await GET(request);
 
-    expect(mockResourceFindMany).toHaveBeenCalledWith(
+    expect(mockMaterialFindMany).toHaveBeenCalledWith(
       expect.objectContaining({
         where: expect.objectContaining({
           is_published: true,
@@ -257,19 +257,19 @@ describe("GET /api/resources", () => {
   });
 
   it("rate limits excessive requests", async () => {
-    mockResourceFindMany.mockResolvedValue([]);
-    mockResourceCount.mockResolvedValue(0);
+    mockMaterialFindMany.mockResolvedValue([]);
+    mockMaterialCount.mockResolvedValue(0);
 
     // Make 60 requests (the limit per minute)
     for (let i = 0; i < 60; i++) {
-      const request = createMockRequest("/api/resources", {
+      const request = createMockRequest("/api/materials", {
         headers: { "x-forwarded-for": "10.0.0.1" },
       });
       await GET(request);
     }
 
     // 61st request should be rate limited
-    const request = createMockRequest("/api/resources", {
+    const request = createMockRequest("/api/materials", {
       headers: { "x-forwarded-for": "10.0.0.1" },
     });
 
@@ -281,13 +281,13 @@ describe("GET /api/resources", () => {
   });
 
   it("returns 500 on database error", async () => {
-    mockResourceFindMany.mockRejectedValue(new Error("Database error"));
+    mockMaterialFindMany.mockRejectedValue(new Error("Database error"));
 
-    const request = createMockRequest("/api/resources");
+    const request = createMockRequest("/api/materials");
     const response = await GET(request);
     const data = await parseResponse<{ error: string }>(response);
 
     expect(response.status).toBe(500);
-    expect(data.error).toBe("Failed to fetch resources");
+    expect(data.error).toBe("Failed to fetch materials");
   });
 });

@@ -119,7 +119,7 @@ export default function AdminTransactionsPage() {
                 <th className="text-text px-6 py-4 text-left text-sm font-semibold">
                   Transaktions-ID
                 </th>
-                <th className="text-text px-6 py-4 text-left text-sm font-semibold">Ressource</th>
+                <th className="text-text px-6 py-4 text-left text-sm font-semibold">Material</th>
                 <th className="text-text px-6 py-4 text-left text-sm font-semibold">Käufer</th>
                 <th className="text-text px-6 py-4 text-left text-sm font-semibold">Verkäufer</th>
                 <th className="text-text px-6 py-4 text-left text-sm font-semibold">Datum</th>
@@ -209,7 +209,7 @@ export default function AdminTransactionsPage() {
                         </span>
                       </div>
                       <div>
-                        <div className="text-text-muted text-sm">Ressource</div>
+                        <div className="text-text-muted text-sm">Material</div>
                         <div className="text-text font-medium">{transaction.resource}</div>
                       </div>
                       <div>

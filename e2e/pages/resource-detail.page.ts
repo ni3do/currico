@@ -1,8 +1,8 @@
 /**
- * Resource Detail Page Object.
+ * Material Detail Page Object.
  *
- * Handles interactions with the resource detail page including:
- * - Resource information display (title, description, price)
+ * Handles interactions with the material detail page including:
+ * - Material information display (title, description, price)
  * - Buy/Download actions
  * - Wishlist functionality
  * - Seller info
@@ -13,11 +13,11 @@
 import { Page, Locator, expect } from "@playwright/test";
 import { BasePage } from "./base.page";
 
-export class ResourceDetailPage extends BasePage {
+export class MaterialDetailPage extends BasePage {
   // Path is dynamic - set via constructor or navigation
-  readonly path = "/resources";
+  readonly path = "/materialien";
 
-  // Resource info
+  // Material info
   readonly title: Locator;
   readonly description: Locator;
   readonly price: Locator;
@@ -45,9 +45,9 @@ export class ResourceDetailPage extends BasePage {
   readonly reportSubmitButton: Locator;
   readonly reportCancelButton: Locator;
 
-  // Related resources
-  readonly relatedResourcesSection: Locator;
-  readonly relatedResourceCards: Locator;
+  // Related materials
+  readonly relatedMaterialsSection: Locator;
+  readonly relatedMaterialCards: Locator;
 
   // Breadcrumb
   readonly breadcrumb: Locator;
@@ -105,7 +105,7 @@ export class ResourceDetailPage extends BasePage {
   constructor(page: Page) {
     super(page);
 
-    // Resource info
+    // Material info
     this.title = page.locator("h1");
     this.description = page.locator("main .card p").first();
     this.price = page
@@ -156,13 +156,13 @@ export class ResourceDetailPage extends BasePage {
       .filter({ hasText: /melden|report/i });
     this.reportCancelButton = page.getByRole("button", { name: /abbrechen|cancel/i });
 
-    // Related resources
-    this.relatedResourcesSection = page.locator("text=Ähnliche Ressourcen").locator("..");
-    this.relatedResourceCards = page
+    // Related materials
+    this.relatedMaterialsSection = page.locator("text=Ähnliche Materialien").locator("..");
+    this.relatedMaterialCards = page
       .locator("h2")
       .filter({ hasText: /ähnliche/i })
       .locator("..")
-      .locator('a[href*="/resources/"]');
+      .locator('a[href*="/materialien/"]');
 
     // Breadcrumb
     this.breadcrumb = page
@@ -253,15 +253,15 @@ export class ResourceDetailPage extends BasePage {
   }
 
   /**
-   * Navigate to a specific resource by ID.
+   * Navigate to a specific material by ID.
    */
-  async gotoResource(resourceId: string): Promise<void> {
-    await this.page.goto(`/resources/${resourceId}`);
+  async gotoMaterial(materialId: string): Promise<void> {
+    await this.page.goto(`/materialien/${materialId}`);
     await this.waitForPageLoad();
   }
 
   /**
-   * Wait for the resource detail page to finish loading.
+   * Wait for the material detail page to finish loading.
    */
   async waitForPageLoad(): Promise<void> {
     await super.waitForPageLoad();
@@ -274,23 +274,23 @@ export class ResourceDetailPage extends BasePage {
   }
 
   /**
-   * Get the resource title text.
+   * Get the material title text.
    */
-  async getResourceTitle(): Promise<string | null> {
+  async getMaterialTitle(): Promise<string | null> {
     return this.title.textContent();
   }
 
   /**
-   * Get the resource price text.
+   * Get the material price text.
    */
   async getPrice(): Promise<string | null> {
     return this.price.textContent();
   }
 
   /**
-   * Check if this is a free resource.
+   * Check if this is a free material.
    */
-  async isFreeResource(): Promise<boolean> {
+  async isFreeMaterial(): Promise<boolean> {
     const priceText = await this.getPrice();
     return (
       priceText?.toLowerCase().includes("gratis") ||
@@ -300,22 +300,22 @@ export class ResourceDetailPage extends BasePage {
   }
 
   /**
-   * Check if this is a paid resource.
+   * Check if this is a paid material.
    */
-  async isPaidResource(): Promise<boolean> {
+  async isPaidMaterial(): Promise<boolean> {
     const priceText = await this.getPrice();
     return priceText?.includes("CHF") || false;
   }
 
   /**
-   * Click the buy button (for paid resources).
+   * Click the buy button (for paid materials).
    */
   async clickBuy(): Promise<void> {
     await this.buyButton.click();
   }
 
   /**
-   * Click the download button (for free resources).
+   * Click the download button (for free materials).
    */
   async clickDownload(): Promise<void> {
     await this.downloadButton.click();
@@ -329,7 +329,7 @@ export class ResourceDetailPage extends BasePage {
   }
 
   /**
-   * Check if resource is wishlisted (heart is filled).
+   * Check if material is wishlisted (heart is filled).
    */
   async isWishlisted(): Promise<boolean> {
     const svg = this.wishlistButton.locator("svg");
@@ -392,13 +392,13 @@ export class ResourceDetailPage extends BasePage {
    */
   async goToCatalog(): Promise<void> {
     await this.breadcrumb.getByRole("link", { name: /ressourcen/i }).click();
-    await this.page.waitForURL(/\/resources$/);
+    await this.page.waitForURL(/\/materialien$/);
   }
 
   /**
-   * Assert resource details are visible.
+   * Assert material details are visible.
    */
-  async expectResourceVisible(): Promise<void> {
+  async expectMaterialVisible(): Promise<void> {
     await expect(this.title).toBeVisible();
     await expect(this.price).toBeVisible();
   }

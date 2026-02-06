@@ -6,7 +6,7 @@ import { DecorationBg } from "@/components/ui/DecorationBg";
 
 export const metadata: Metadata = {
   title: "Currico - Unterrichtsmaterial für Lehrpersonen",
-  description: "Entdecken Sie hochwertige Unterrichtsmaterialien für Schweizer Lehrpersonen",
+  description: "Entdecken Sie hochwertige Unterrichtsmaterialien für Lehrpersonen",
 };
 
 // Anti-FOUC script to set theme before React hydrates

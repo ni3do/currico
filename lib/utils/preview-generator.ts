@@ -9,7 +9,11 @@ const execAsync = promisify(exec);
 
 const PREVIEW_WIDTH = 800;
 const PREVIEW_HEIGHT = 1131; // A4 aspect ratio (roughly)
-const PREVIEW_QUALITY = 80;
+const PREVIEW_QUALITY = 60; // WebP quality
+
+// Pixelation settings - downscale to this size before upscaling for pixelated effect
+const PIXELATE_WIDTH = 40; // Very low resolution for pixelation
+const PIXELATE_HEIGHT = 56; // Maintains A4 aspect ratio
 
 /**
  * Result of multi-page preview generation
@@ -71,18 +75,27 @@ export async function generatePdfPreviewPages(
       const outputPath = join(tempDir, pngFile);
       const pngBuffer = await readFile(outputPath);
 
-      // Resize with sharp
-      const resized = await sharp(pngBuffer)
-        .resize(PREVIEW_WIDTH, PREVIEW_HEIGHT, {
+      // Create pixelated preview:
+      // 1. Downscale to tiny size
+      // 2. Upscale back to preview size with nearest-neighbor (creates pixelation)
+      // 3. Output as WebP for better compression
+      const pixelated = await sharp(pngBuffer)
+        // First downscale to tiny size
+        .resize(PIXELATE_WIDTH, PIXELATE_HEIGHT, {
           fit: "inside",
           withoutEnlargement: true,
         })
-        .png({ quality: PREVIEW_QUALITY })
+        // Then upscale back to preview size with nearest-neighbor for pixelation
+        .resize(PREVIEW_WIDTH, PREVIEW_HEIGHT, {
+          fit: "inside",
+          kernel: sharp.kernel.nearest, // Creates blocky pixelated effect
+        })
+        .webp({ quality: PREVIEW_QUALITY })
         .toBuffer();
 
       results.push({
         pageNumber,
-        buffer: resized,
+        buffer: pixelated,
       });
     }
 
@@ -119,20 +132,30 @@ export async function generatePdfPreview(pdfBuffer: Buffer): Promise<Buffer | nu
 }
 
 /**
- * Generates a preview image from an image file buffer.
- * Resizes the image to preview dimensions.
+ * Generates a pixelated preview image from an image file buffer.
+ * Creates a heavily pixelated version that's unusable as the actual content.
  */
 export async function generateImagePreview(imageBuffer: Buffer): Promise<Buffer | null> {
   try {
-    const resized = await sharp(imageBuffer)
-      .resize(PREVIEW_WIDTH, PREVIEW_HEIGHT, {
+    // Create pixelated preview:
+    // 1. Downscale to tiny size
+    // 2. Upscale back to preview size with nearest-neighbor (creates pixelation)
+    // 3. Output as WebP for better compression
+    const pixelated = await sharp(imageBuffer)
+      // First downscale to tiny size
+      .resize(PIXELATE_WIDTH, PIXELATE_HEIGHT, {
         fit: "inside",
         withoutEnlargement: true,
       })
-      .png({ quality: PREVIEW_QUALITY })
+      // Then upscale back to preview size with nearest-neighbor for pixelation
+      .resize(PREVIEW_WIDTH, PREVIEW_HEIGHT, {
+        fit: "inside",
+        kernel: sharp.kernel.nearest, // Creates blocky pixelated effect
+      })
+      .webp({ quality: PREVIEW_QUALITY })
       .toBuffer();
 
-    return resized;
+    return pixelated;
   } catch (error) {
     console.error("Error generating image preview:", error);
     return null;

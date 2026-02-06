@@ -34,7 +34,7 @@ interface Comment {
 type CommentFormData = Comment | Reply;
 
 interface CommentFormProps {
-  resourceId?: string;
+  materialId?: string;
   commentId?: string;
   isReply?: boolean;
   onSubmit: (data: CommentFormData) => void;
@@ -43,7 +43,7 @@ interface CommentFormProps {
 }
 
 export function CommentForm({
-  resourceId,
+  materialId,
   commentId,
   isReply = false,
   onSubmit,
@@ -73,7 +73,7 @@ export function CommentForm({
     try {
       const url = isReply
         ? `/api/comments/${commentId}/replies`
-        : `/api/resources/${resourceId}/comments`;
+        : `/api/materials/${materialId}/comments`;
 
       const response = await fetch(url, {
         method: "POST",
