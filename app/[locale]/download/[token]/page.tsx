@@ -134,7 +134,7 @@ export default function GuestDownloadPage({ params }: { params: Promise<{ token:
               </div>
               <h1 className="text-text mb-2 text-xl font-bold">{t(`errors.${error}.title`)}</h1>
               <p className="text-text-muted mb-6">{t(`errors.${error}.description`)}</p>
-              <Link href="/resources" className="btn btn-primary px-6 py-2">
+              <Link href="/materialien" className="btn btn-primary px-6 py-2">
                 {t("browseResources")}
               </Link>
             </div>
@@ -164,7 +164,7 @@ export default function GuestDownloadPage({ params }: { params: Promise<{ token:
                 <Link href="/register" className="btn btn-primary px-6 py-2">
                   {t("createAccount")}
                 </Link>
-                <Link href="/resources" className="btn btn-secondary px-6 py-2">
+                <Link href="/materialien" className="btn btn-secondary px-6 py-2">
                   {t("browseResources")}
                 </Link>
               </div>
@@ -195,7 +195,7 @@ export default function GuestDownloadPage({ params }: { params: Promise<{ token:
                 <Link href="/register" className="btn btn-primary px-6 py-2">
                   {t("createAccount")}
                 </Link>
-                <Link href="/resources" className="btn btn-secondary px-6 py-2">
+                <Link href="/materialien" className="btn btn-secondary px-6 py-2">
                   {t("browseResources")}
                 </Link>
               </div>

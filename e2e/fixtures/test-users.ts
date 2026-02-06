@@ -80,12 +80,12 @@ export function getTestUserByRole(role: UserRole): TestUser {
 }
 
 /**
- * Test resource IDs for consistent test data references.
+ * Test material IDs for consistent test data references.
  */
-export const TEST_RESOURCE_IDS = {
-  FREE_RESOURCE: "test-resource-free-001",
-  PAID_RESOURCE: "test-resource-paid-001",
-  PENDING_RESOURCE: "test-resource-pending-001",
+export const TEST_MATERIAL_IDS = {
+  FREE_MATERIAL: "test-material-free-001",
+  PAID_MATERIAL: "test-material-paid-001",
+  PENDING_MATERIAL: "test-material-pending-001",
 } as const;
 
 /**

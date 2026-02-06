@@ -59,11 +59,11 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     });
 
     if (!resource) {
-      return notFound("Ressource nicht gefunden");
+      return notFound("Material nicht gefunden");
     }
 
     if (resource.seller_id !== userId) {
-      return forbidden("Sie können nur Ihre eigenen Ressourcen zu Sammlungen hinzufügen");
+      return forbidden("Sie können nur Ihre eigenen Materialien zu Sammlungen hinzufügen");
     }
 
     // Check if already in collection
@@ -77,7 +77,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     });
 
     if (existing) {
-      return badRequest("Diese Ressource ist bereits in der Sammlung");
+      return badRequest("Dieses Material ist bereits in der Sammlung");
     }
 
     // Get max position if not provided
@@ -220,7 +220,7 @@ export async function DELETE(
 
     return NextResponse.json({
       success: true,
-      message: "Ressource aus Sammlung entfernt",
+      message: "Material aus Sammlung entfernt",
     });
   } catch (error) {
     console.error("Error removing item from collection:", error);

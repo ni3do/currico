@@ -8,7 +8,7 @@ import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
-import { ResourceCard } from "@/components/ui/ResourceCard";
+import { MaterialCard } from "@/components/ui/MaterialCard";
 import { CurriculumBox } from "@/components/curriculum";
 import { LP21Badge } from "@/components/curriculum/LP21Badge";
 import { CheckoutButton } from "@/components/checkout/CheckoutButton";
@@ -42,7 +42,7 @@ interface BneTheme {
   color?: string | null;
 }
 
-interface Resource {
+interface Material {
   id: string;
   title: string;
   description: string;
@@ -75,7 +75,7 @@ interface Resource {
   bneThemes?: BneTheme[];
 }
 
-interface RelatedResource {
+interface RelatedMaterial {
   id: string;
   title: string;
   price: number;
@@ -86,14 +86,14 @@ interface RelatedResource {
   previewUrl: string | null;
 }
 
-export default function ResourceDetailPage() {
+export default function MaterialDetailPage() {
   const params = useParams();
   const id = params.id as string;
   const { data: session, status: sessionStatus } = useSession();
   const tCommon = useTranslations("common");
 
-  const [resource, setResource] = useState<Resource | null>(null);
-  const [relatedResources, setRelatedResources] = useState<RelatedResource[]>([]);
+  const [material, setMaterial] = useState<Material | null>(null);
+  const [relatedMaterials, setRelatedMaterials] = useState<RelatedMaterial[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showReportModal, setShowReportModal] = useState(false);
@@ -109,11 +109,11 @@ export default function ResourceDetailPage() {
   const [reportStatus, setReportStatus] = useState<"idle" | "success" | "error">("idle");
   const [reportErrorMessage, setReportErrorMessage] = useState("");
 
-  const fetchResource = useCallback(async () => {
+  const fetchMaterial = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`/api/resources/${id}`);
+      const response = await fetch(`/api/materials/${id}`);
       if (response.status === 404) {
         setError("not_found");
         return;
@@ -123,8 +123,8 @@ export default function ResourceDetailPage() {
         return;
       }
       const data = await response.json();
-      setResource(data.resource);
-      setRelatedResources(data.relatedResources);
+      setMaterial(data.material);
+      setRelatedMaterials(data.relatedMaterials);
     } catch {
       setError("fetch_error");
     } finally {
@@ -134,9 +134,9 @@ export default function ResourceDetailPage() {
 
   useEffect(() => {
     if (id) {
-      fetchResource();
+      fetchMaterial();
     }
-  }, [id, fetchResource]);
+  }, [id, fetchMaterial]);
 
   // Check if resource is wishlisted
   useEffect(() => {
@@ -167,7 +167,7 @@ export default function ResourceDetailPage() {
     setDownloading(true);
     try {
       // Open the download in a new tab
-      window.open(`/api/resources/${id}/download`, "_blank");
+      window.open(`/api/materials/${id}/download`, "_blank");
     } catch (error) {
       console.error("Download error:", error);
     } finally {
@@ -343,15 +343,15 @@ export default function ResourceDetailPage() {
                 d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <h1 className="text-text mb-4 text-2xl font-bold">Ressource nicht gefunden</h1>
+            <h1 className="text-text mb-4 text-2xl font-bold">Material nicht gefunden</h1>
             <p className="text-text-muted mx-auto mb-8 max-w-md">
-              Die gesuchte Ressource existiert nicht oder ist nicht mehr verfügbar.
+              Das gesuchte Material existiert nicht oder ist nicht mehr verfügbar.
             </p>
             <Link
-              href="/resources"
+              href="/materialien"
               className="btn-primary inline-flex items-center px-6 py-3 font-semibold"
             >
-              Zurück zu den Ressourcen
+              Zurück zu den Materialien
             </Link>
           </div>
         </main>
@@ -360,7 +360,7 @@ export default function ResourceDetailPage() {
     );
   }
 
-  if (error || !resource) {
+  if (error || !material) {
     return (
       <div className="flex min-h-screen flex-col">
         <TopBar />
@@ -381,10 +381,10 @@ export default function ResourceDetailPage() {
             </svg>
             <h1 className="text-text mb-4 text-2xl font-bold">Fehler beim Laden</h1>
             <p className="text-text-muted mx-auto mb-8 max-w-md">
-              Die Ressource konnte nicht geladen werden. Bitte versuchen Sie es später erneut.
+              Das Material konnte nicht geladen werden. Bitte versuchen Sie es später erneut.
             </p>
             <button
-              onClick={fetchResource}
+              onClick={fetchMaterial}
               className="btn-primary inline-flex items-center px-6 py-3 font-semibold"
             >
               Erneut versuchen
@@ -402,7 +402,7 @@ export default function ResourceDetailPage() {
 
       <main className="mx-auto max-w-6xl flex-1 px-4 py-6 pb-24 sm:px-6 lg:px-8 lg:pb-6">
         {/* Pending Review Banner */}
-        {!resource.isApproved && (
+        {!material.isApproved && (
           <div className="border-warning/50 bg-warning/10 mb-6 rounded-lg border p-4">
             <div className="flex items-center gap-3">
               <svg
@@ -419,9 +419,9 @@ export default function ResourceDetailPage() {
                 />
               </svg>
               <div>
-                <p className="text-warning font-medium">Diese Ressource wird noch überprüft</p>
+                <p className="text-warning font-medium">Dieses Material wird noch überprüft</p>
                 <p className="text-text-muted text-sm">
-                  Die Ressource ist sichtbar, aber noch nicht von unserem Team verifiziert worden.
+                  Das Material ist sichtbar, aber noch nicht von unserem Team verifiziert worden.
                 </p>
               </div>
             </div>
@@ -431,9 +431,9 @@ export default function ResourceDetailPage() {
         {/* Breadcrumb */}
         <Breadcrumb
           items={[
-            { label: tCommon("breadcrumb.resources"), href: "/resources" },
-            { label: resource.subject, href: `/resources?subject=${resource.subject}` },
-            { label: resource.title },
+            { label: tCommon("breadcrumb.resources"), href: "/materialien" },
+            { label: material.subject, href: `/materialien?subject=${material.subject}` },
+            { label: material.title },
           ]}
           className="mb-8"
         />
@@ -443,19 +443,19 @@ export default function ResourceDetailPage() {
           <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-12">
             {/* Column 1: Preview Gallery - Primary Visual */}
             <div className="order-2 lg:order-1">
-              {resource.previewUrls?.length || resource.previewUrl ? (
+              {material.previewUrls?.length || material.previewUrl ? (
                 <PreviewGallery
                   previewUrls={
-                    resource.previewUrls?.length
-                      ? resource.previewUrls
-                      : resource.previewUrl
-                        ? [resource.previewUrl]
+                    material.previewUrls?.length
+                      ? material.previewUrls
+                      : material.previewUrl
+                        ? [material.previewUrl]
                         : []
                   }
-                  previewCount={resource.previewCount || 1}
-                  hasAccess={resource.hasAccess ?? resource.price === 0}
-                  resourceTitle={resource.title}
-                  priceFormatted={resource.priceFormatted}
+                  previewCount={material.previewCount || 1}
+                  hasAccess={material.hasAccess ?? material.price === 0}
+                  resourceTitle={material.title}
+                  priceFormatted={material.priceFormatted}
                   onPurchaseClick={() => {
                     const purchaseSection = document.querySelector("[data-purchase-section]");
                     purchaseSection?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -488,14 +488,14 @@ export default function ResourceDetailPage() {
               {/* Badges Row */}
               <div className="mb-3 flex flex-wrap items-center gap-2">
                 <span className="pill pill-neutral">PDF</span>
-                {resource.isApproved ? (
+                {material.isApproved ? (
                   <span className="pill pill-success">Verifiziert</span>
                 ) : (
                   <span className="pill pill-warning">Wird überprüft</span>
                 )}
                 {/* LP21 badges for primary competencies */}
-                {resource.competencies &&
-                  resource.competencies
+                {material.competencies &&
+                  material.competencies
                     .slice(0, 2)
                     .map((comp) => (
                       <LP21Badge
@@ -507,42 +507,42 @@ export default function ResourceDetailPage() {
                         size="sm"
                       />
                     ))}
-                {resource.competencies && resource.competencies.length > 2 && (
+                {material.competencies && material.competencies.length > 2 && (
                   <span className="text-text-muted text-xs">
-                    +{resource.competencies.length - 2}
+                    +{material.competencies.length - 2}
                   </span>
                 )}
               </div>
 
               {/* Title */}
-              <h1 className="text-text mb-2 text-2xl font-bold sm:text-3xl">{resource.title}</h1>
+              <h1 className="text-text mb-2 text-2xl font-bold sm:text-3xl">{material.title}</h1>
 
               {/* Brief Description */}
-              <p className="text-text-muted mb-4 line-clamp-2 text-sm">{resource.description}</p>
+              <p className="text-text-muted mb-4 line-clamp-2 text-sm">{material.description}</p>
 
               {/* Inline Seller Trust Card */}
               <Link
-                href={`/resources?seller=${resource.seller.id}`}
+                href={`/materialien?seller=${material.seller.id}`}
                 className="border-border bg-surface/50 hover:border-primary/50 mb-4 flex items-center gap-3 rounded-lg border p-3 transition-colors"
               >
-                {resource.seller.image ? (
+                {material.seller.image ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={resource.seller.image}
-                    alt={resource.seller.displayName || "Verkäufer"}
+                    src={material.seller.image}
+                    alt={material.seller.displayName || "Verkäufer"}
                     className="h-10 w-10 flex-shrink-0 rounded-full object-cover"
                   />
                 ) : (
                   <div className="bg-primary text-text-on-accent flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full font-bold">
-                    {(resource.seller.displayName || "A").charAt(0).toUpperCase()}
+                    {(material.seller.displayName || "A").charAt(0).toUpperCase()}
                   </div>
                 )}
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5">
                     <span className="text-text truncate font-medium">
-                      {resource.seller.displayName || "Anonym"}
+                      {material.seller.displayName || "Anonym"}
                     </span>
-                    {resource.seller.verified && (
+                    {material.seller.verified && (
                       <span className="text-primary flex items-center gap-1 text-xs">
                         <svg
                           className="h-3.5 w-3.5 flex-shrink-0"
@@ -561,7 +561,7 @@ export default function ResourceDetailPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-text-muted text-sm">
-                      {resource.seller.resourceCount} Ressourcen
+                      {material.seller.resourceCount} Materialien
                     </span>
                     <svg
                       className="text-text-muted h-3.5 w-3.5"
@@ -596,15 +596,15 @@ export default function ResourceDetailPage() {
 
               {/* Quick Metadata Row */}
               <div className="text-text-muted mb-6 flex flex-wrap items-center gap-2 text-sm">
-                <span className={`pill pill-${resource.subject.toLowerCase()} text-xs`}>
-                  {resource.subject}
+                <span className={`pill pill-${material.subject.toLowerCase()} text-xs`}>
+                  {material.subject}
                 </span>
                 <span className="text-border">·</span>
-                <span>Zyklus {resource.cycle || "-"}</span>
+                <span>Zyklus {material.cycle || "-"}</span>
                 <span className="text-border">·</span>
-                <span>{resource.downloadCount} Downloads</span>
+                <span>{material.downloadCount} Downloads</span>
                 <span className="text-border">·</span>
-                <span>{new Date(resource.createdAt).toLocaleDateString("de-CH")}</span>
+                <span>{new Date(material.createdAt).toLocaleDateString("de-CH")}</span>
               </div>
 
               {/* Purchase Box */}
@@ -614,17 +614,17 @@ export default function ResourceDetailPage() {
               >
                 {/* Price */}
                 <div
-                  className={`mb-4 text-3xl font-bold ${resource.price === 0 ? "text-success" : "text-primary"}`}
+                  className={`mb-4 text-3xl font-bold ${material.price === 0 ? "text-success" : "text-primary"}`}
                 >
-                  {resource.priceFormatted}
+                  {material.priceFormatted}
                 </div>
 
                 {/* Purchase Actions */}
-                {!resource.isApproved ? (
+                {!material.isApproved ? (
                   <div className="border-warning/50 bg-warning/10 rounded-lg border px-6 py-4 text-center">
                     <span className="text-warning font-medium">Verfügbar nach Überprüfung</span>
                   </div>
-                ) : resource.price === 0 ? (
+                ) : material.price === 0 ? (
                   <button
                     onClick={handleDownload}
                     disabled={downloading}
@@ -634,9 +634,9 @@ export default function ResourceDetailPage() {
                   </button>
                 ) : (
                   <CheckoutButton
-                    resourceId={resource.id}
-                    price={resource.price}
-                    priceFormatted={resource.priceFormatted}
+                    materialId={material.id}
+                    price={material.price}
+                    priceFormatted={material.priceFormatted}
                     className="w-full"
                   />
                 )}
@@ -671,7 +671,7 @@ export default function ResourceDetailPage() {
                 onClick={() => setShowReportModal(true)}
                 className="text-text-muted hover:text-error mt-4 text-sm transition-colors"
               >
-                Ressource melden
+                Material melden
               </button>
             </div>
           </div>
@@ -681,42 +681,42 @@ export default function ResourceDetailPage() {
         <section className="mb-12 max-w-3xl">
           <h2 className="text-text mb-4 text-xl font-semibold">Beschreibung</h2>
           <p className="text-text-secondary leading-relaxed whitespace-pre-line">
-            {resource.description}
+            {material.description}
           </p>
         </section>
 
         {/* LP21 CURRICULUM SECTION */}
-        {(resource.competencies?.length ||
-          resource.transversals?.length ||
-          resource.bneThemes?.length ||
-          resource.isMiIntegrated) && (
+        {(material.competencies?.length ||
+          material.transversals?.length ||
+          material.bneThemes?.length ||
+          material.isMiIntegrated) && (
           <section className="mb-12">
             <CurriculumBox
-              competencies={resource.competencies}
-              transversals={resource.transversals}
-              bneThemes={resource.bneThemes}
-              isMiIntegrated={resource.isMiIntegrated}
+              competencies={material.competencies}
+              transversals={material.transversals}
+              bneThemes={material.bneThemes}
+              isMiIntegrated={material.isMiIntegrated}
             />
           </section>
         )}
 
         {/* REVIEWS SECTION */}
         <section className="border-border mb-12 border-t pt-12">
-          <ReviewsSection resourceId={id} />
+          <ReviewsSection materialId={id} />
         </section>
 
         {/* COMMENTS SECTION */}
         <section className="border-border mb-12 border-t pt-12">
-          <CommentsSection resourceId={id} />
+          <CommentsSection materialId={id} />
         </section>
 
         {/* RELATED RESOURCES */}
-        {relatedResources.length > 0 && (
+        {relatedMaterials.length > 0 && (
           <section className="border-border border-t pt-12">
-            <h2 className="text-text mb-6 text-xl font-semibold">Ähnliche Ressourcen</h2>
+            <h2 className="text-text mb-6 text-xl font-semibold">Ähnliche Materialien</h2>
             <div className="grid gap-4 sm:grid-cols-3 sm:gap-5">
-              {relatedResources.map((related) => (
-                <ResourceCard
+              {relatedMaterials.map((related) => (
+                <MaterialCard
                   key={related.id}
                   id={related.id}
                   title={related.title}
@@ -737,7 +737,7 @@ export default function ResourceDetailPage() {
         <div className="bg-ctp-crust/50 fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
           <div className="card mx-4 w-full max-w-md p-6">
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-text text-xl font-semibold">Ressource melden</h3>
+              <h3 className="text-text text-xl font-semibold">Material melden</h3>
               <button onClick={handleCloseReportModal} className="text-text-muted hover:text-text">
                 <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -768,7 +768,7 @@ export default function ResourceDetailPage() {
                   </svg>
                 </div>
                 <h4 className="text-text mb-2 font-semibold">Vielen Dank für Ihre Meldung</h4>
-                <p className="text-text-muted text-sm">Wir werden die Ressource überprüfen.</p>
+                <p className="text-text-muted text-sm">Wir werden das Material überprüfen.</p>
               </div>
             ) : (
               <form onSubmit={handleReportSubmit} className="space-y-4">
@@ -859,18 +859,18 @@ export default function ResourceDetailPage() {
       )}
 
       {/* Mobile Sticky Purchase Bar */}
-      {resource.isApproved && (
+      {material.isApproved && (
         <div className="border-border bg-surface fixed inset-x-0 bottom-0 z-40 border-t p-4 lg:hidden">
           <div className="flex items-center justify-between gap-4">
             <div>
               <div
-                className={`text-xl font-bold ${resource.price === 0 ? "text-success" : "text-primary"}`}
+                className={`text-xl font-bold ${material.price === 0 ? "text-success" : "text-primary"}`}
               >
-                {resource.priceFormatted}
+                {material.priceFormatted}
               </div>
-              <div className="text-text-muted text-xs">{resource.title}</div>
+              <div className="text-text-muted text-xs">{material.title}</div>
             </div>
-            {resource.price === 0 ? (
+            {material.price === 0 ? (
               <button
                 onClick={handleDownload}
                 disabled={downloading}

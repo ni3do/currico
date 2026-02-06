@@ -6,7 +6,7 @@ import { Link, useRouter } from "@/i18n/navigation";
 import Image from "next/image";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
-import { ResourceCard } from "@/components/ui/ResourceCard";
+import { MaterialCard } from "@/components/ui/MaterialCard";
 import { SellerHeroSection } from "@/components/ui/SellerHeroSection";
 import { TrustBar } from "@/components/ui/TrustBar";
 import { SwissBrandSection } from "@/components/ui/SwissBrandSection";
@@ -23,9 +23,9 @@ export default function Home() {
     e.preventDefault();
     const trimmedQuery = searchQuery.trim();
     if (trimmedQuery) {
-      router.push(`/resources?search=${encodeURIComponent(trimmedQuery)}`);
+      router.push(`/materialien?search=${encodeURIComponent(trimmedQuery)}`);
     } else {
-      router.push("/resources");
+      router.push("/materialien");
     }
   };
 
@@ -137,7 +137,7 @@ export default function Home() {
               </div>
               <motion.div whileHover={{ x: 5 }} transition={{ duration: 0.2 }}>
                 <Link
-                  href="/resources"
+                  href="/materialien"
                   className="text-primary hidden items-center text-sm font-medium hover:underline sm:flex"
                 >
                   {tCommon("buttons.viewAll")}
@@ -180,7 +180,7 @@ export default function Home() {
                 },
               ].map((card) => (
                 <StaggerItem key={card.key}>
-                  <ResourceCard
+                  <MaterialCard
                     id={card.key}
                     title={t(`featuredResources.${card.key}.title`)}
                     description={t(`featuredResources.${card.key}.description`)}
@@ -190,7 +190,7 @@ export default function Home() {
                     subjectPillClass={card.pillClass}
                     showPriceBadge={false}
                     verified={false}
-                    href="/resources"
+                    href="/materialien"
                     footer={
                       <div className="border-border-subtle flex items-center justify-between border-t pt-4">
                         <span className="text-text-muted text-sm">
@@ -215,7 +215,7 @@ export default function Home() {
 
             <FadeIn direction="up" delay={0.3} className="mt-8 text-center sm:hidden">
               <Link
-                href="/resources"
+                href="/materialien"
                 className="text-primary inline-flex items-center text-sm font-medium hover:underline"
               >
                 {t("featuredResources.viewAllMobile")}

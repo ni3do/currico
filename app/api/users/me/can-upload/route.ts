@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
-import { canUploadResources } from "@/lib/validations/user";
+import { canUploadMaterials } from "@/lib/validations/user";
 import { getCurrentUserId } from "@/lib/auth";
 
 /**
@@ -34,7 +34,7 @@ export async function GET() {
       return NextResponse.json({ error: "Benutzer nicht gefunden" }, { status: 404 });
     }
 
-    const result = canUploadResources({
+    const result = canUploadMaterials({
       display_name: user.display_name,
       subjects: toStringArray(user.subjects),
       cycles: toStringArray(user.cycles),

@@ -3,16 +3,16 @@ import { prisma } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
 import { getCurrentUserId } from "@/lib/auth";
 import { requireAdmin } from "@/lib/admin-auth";
-import { updateResourceSchema } from "@/lib/validations/resource";
+import { updateMaterialSchema } from "@/lib/validations/material";
 import { formatPrice } from "@/lib/utils/price";
 import { unlink } from "fs/promises";
 import path from "path";
 
 /**
- * GET /api/resources/[id]
- * Fetch a single resource by ID
- * - Admins can view any resource
- * - Regular users can only view published resources
+ * GET /api/materials/[id]
+ * Fetch a single material by ID
+ * - Admins can view any material
+ * - Regular users can only view published materials
  */
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -25,8 +25,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     // Get current user ID for access checks
     const userId = await getCurrentUserId();
 
-    // Fetch the resource with seller info and counts
-    const resource = await prisma.resource.findUnique({
+    // Fetch the material with seller info and counts
+    const material = await prisma.resource.findUnique({
       where: { id },
       select: {
         id: true,
@@ -73,26 +73,26 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     });
 
     // Return 404 if not found
-    if (!resource) {
-      return NextResponse.json({ error: "Ressource nicht gefunden" }, { status: 404 });
+    if (!material) {
+      return NextResponse.json({ error: "Material nicht gefunden" }, { status: 404 });
     }
 
-    // Check visibility: admins and resource owners can see any resource
-    // Regular users can only see published resources
-    const isOwner = userId === resource.seller_id;
+    // Check visibility: admins and material owners can see any material
+    // Regular users can only see published materials
+    const isOwner = userId === material.seller_id;
 
-    if (!isAdmin && !isOwner && !resource.is_published) {
-      return NextResponse.json({ error: "Ressource nicht gefunden" }, { status: 404 });
+    if (!isAdmin && !isOwner && !material.is_published) {
+      return NextResponse.json({ error: "Material nicht gefunden" }, { status: 404 });
     }
 
     // Check if user has access to full previews (owner, purchased, free, or admin)
-    const hasPurchased = resource.transactions && resource.transactions.length > 0;
-    const isFree = resource.price === 0;
+    const hasPurchased = material.transactions && material.transactions.length > 0;
+    const isFree = material.price === 0;
     const hasAccess = isOwner || hasPurchased || isFree || isAdmin;
 
-    // Fetch related resources from the same subject using raw SQL for JSON overlap
-    const resourceSubjects = toStringArray(resource.subjects);
-    let relatedResources: {
+    // Fetch related materials from the same subject using raw SQL for JSON overlap
+    const materialSubjects = toStringArray(material.subjects);
+    let relatedMaterials: {
       id: string;
       title: string;
       price: number;
@@ -102,16 +102,16 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       preview_url: string | null;
     }[] = [];
 
-    if (resourceSubjects.length > 0) {
-      // Get IDs of related resources using PostgreSQL JSONB ?| operator
+    if (materialSubjects.length > 0) {
+      // Get IDs of related materials using PostgreSQL JSONB ?| operator
       const relatedIds = await prisma.$queryRawUnsafe<{ id: string }[]>(
         `SELECT id FROM resources WHERE id != $1 AND is_published = true AND is_approved = true AND subjects::jsonb ?| $2::text[] LIMIT 3`,
         id,
-        resourceSubjects
+        materialSubjects
       );
 
       if (relatedIds.length > 0) {
-        relatedResources = await prisma.resource.findMany({
+        relatedMaterials = await prisma.resource.findMany({
           where: {
             id: { in: relatedIds.map((r) => r.id) },
           },
@@ -130,43 +130,43 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // Transform the response
-    const subjects = toStringArray(resource.subjects);
-    const cycles = toStringArray(resource.cycles);
+    const subjects = toStringArray(material.subjects);
+    const cycles = toStringArray(material.cycles);
 
     // Parse preview_urls from JSON
-    const previewUrls = Array.isArray(resource.preview_urls)
-      ? (resource.preview_urls as string[])
+    const previewUrls = Array.isArray(material.preview_urls)
+      ? (material.preview_urls as string[])
       : [];
 
-    const transformedResource = {
-      id: resource.id,
-      title: resource.title,
-      description: resource.description,
-      price: resource.price,
-      priceFormatted: formatPrice(resource.price),
-      fileUrl: resource.file_url,
-      previewUrl: resource.preview_url,
+    const transformedMaterial = {
+      id: material.id,
+      title: material.title,
+      description: material.description,
+      price: material.price,
+      priceFormatted: formatPrice(material.price),
+      fileUrl: material.file_url,
+      previewUrl: material.preview_url,
       previewUrls,
-      previewCount: resource.preview_count || 1,
+      previewCount: material.preview_count || 1,
       hasAccess, // true if user can see all preview pages without blur
       subjects,
       cycles,
       subject: subjects[0] || "Allgemein",
       cycle: cycles[0] || "",
-      createdAt: resource.created_at,
-      downloadCount: resource._count.transactions,
-      isApproved: resource.is_approved,
-      status: resource.status,
+      createdAt: material.created_at,
+      downloadCount: material._count.transactions,
+      isApproved: material.is_approved,
+      status: material.status,
       seller: {
-        id: resource.seller.id,
-        displayName: resource.seller.display_name,
-        image: resource.seller.image,
-        verified: resource.seller.stripe_charges_enabled,
-        resourceCount: resource.seller._count.resources,
+        id: material.seller.id,
+        displayName: material.seller.display_name,
+        image: material.seller.image,
+        verified: material.seller.stripe_charges_enabled,
+        materialCount: material.seller._count.resources,
       },
     };
 
-    const transformedRelated = relatedResources.map((r) => {
+    const transformedRelated = relatedMaterials.map((r) => {
       const rSubjects = toStringArray(r.subjects);
       const rCycles = toStringArray(r.cycles);
       return {
@@ -182,18 +182,18 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     });
 
     return NextResponse.json({
-      resource: transformedResource,
-      relatedResources: transformedRelated,
+      material: transformedMaterial,
+      relatedMaterials: transformedRelated,
     });
   } catch (error) {
-    console.error("Error fetching resource:", error);
-    return NextResponse.json({ error: "Fehler beim Laden der Ressource" }, { status: 500 });
+    console.error("Error fetching material:", error);
+    return NextResponse.json({ error: "Fehler beim Laden des Materials" }, { status: 500 });
   }
 }
 
 /**
- * PATCH /api/resources/[id]
- * Update a resource (owner only)
+ * PATCH /api/materials/[id]
+ * Update a material (owner only)
  */
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   // Authentication check
@@ -205,8 +205,8 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   try {
     const { id } = await params;
 
-    // Fetch the resource to verify ownership
-    const resource = await prisma.resource.findUnique({
+    // Fetch the material to verify ownership
+    const material = await prisma.resource.findUnique({
       where: { id },
       select: {
         id: true,
@@ -215,21 +215,21 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       },
     });
 
-    if (!resource) {
-      return NextResponse.json({ error: "Ressource nicht gefunden" }, { status: 404 });
+    if (!material) {
+      return NextResponse.json({ error: "Material nicht gefunden" }, { status: 404 });
     }
 
     // Check ownership
-    if (resource.seller_id !== userId) {
+    if (material.seller_id !== userId) {
       return NextResponse.json(
-        { error: "Keine Berechtigung zum Bearbeiten dieser Ressource" },
+        { error: "Keine Berechtigung zum Bearbeiten dieses Materials" },
         { status: 403 }
       );
     }
 
     // Parse and validate request body
     const body = await request.json();
-    const parsed = updateResourceSchema.safeParse(body);
+    const parsed = updateMaterialSchema.safeParse(body);
 
     if (!parsed.success) {
       return NextResponse.json(
@@ -243,17 +243,17 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 
     const data = parsed.data;
 
-    // If resource is already approved, some fields cannot be changed
-    // Price changes on approved resources would affect buyers
-    if (resource.is_approved && data.price !== undefined) {
+    // If material is already approved, some fields cannot be changed
+    // Price changes on approved materials would affect buyers
+    if (material.is_approved && data.price !== undefined) {
       return NextResponse.json(
         { error: "Preis kann nach Genehmigung nicht mehr geändert werden" },
         { status: 400 }
       );
     }
 
-    // Update the resource
-    const updatedResource = await prisma.resource.update({
+    // Update the material
+    const updatedMaterial = await prisma.resource.update({
       where: { id },
       data: {
         ...(data.title && { title: data.title }),
@@ -280,18 +280,18 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     });
 
     return NextResponse.json({
-      message: "Ressource erfolgreich aktualisiert",
-      resource: updatedResource,
+      message: "Material erfolgreich aktualisiert",
+      material: updatedMaterial,
     });
   } catch (error) {
-    console.error("Error updating resource:", error);
+    console.error("Error updating material:", error);
     return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
   }
 }
 
 /**
- * DELETE /api/resources/[id]
- * Delete a resource (owner only, no completed transactions)
+ * DELETE /api/materials/[id]
+ * Delete a material (owner only, no completed transactions)
  */
 export async function DELETE(
   request: NextRequest,
@@ -306,8 +306,8 @@ export async function DELETE(
   try {
     const { id } = await params;
 
-    // Fetch the resource with transaction count
-    const resource = await prisma.resource.findUnique({
+    // Fetch the material with transaction count
+    const material = await prisma.resource.findUnique({
       where: { id },
       select: {
         id: true,
@@ -320,24 +320,24 @@ export async function DELETE(
       },
     });
 
-    if (!resource) {
-      return NextResponse.json({ error: "Ressource nicht gefunden" }, { status: 404 });
+    if (!material) {
+      return NextResponse.json({ error: "Material nicht gefunden" }, { status: 404 });
     }
 
     // Check ownership
-    if (resource.seller_id !== userId) {
+    if (material.seller_id !== userId) {
       return NextResponse.json(
-        { error: "Keine Berechtigung zum Löschen dieser Ressource" },
+        { error: "Keine Berechtigung zum Löschen dieses Materials" },
         { status: 403 }
       );
     }
 
     // Check for completed transactions
-    if (resource._count.transactions > 0) {
+    if (material._count.transactions > 0) {
       return NextResponse.json(
         {
-          error: "Ressource kann nicht gelöscht werden, da bereits Käufe existieren",
-          transactionCount: resource._count.transactions,
+          error: "Material kann nicht gelöscht werden, da bereits Käufe existieren",
+          transactionCount: material._count.transactions,
         },
         { status: 400 }
       );
@@ -346,32 +346,32 @@ export async function DELETE(
     // Delete associated files
     const uploadsDir = path.join(process.cwd(), "public");
 
-    if (resource.file_url) {
+    if (material.file_url) {
       try {
-        const filePath = path.join(uploadsDir, resource.file_url);
+        const filePath = path.join(uploadsDir, material.file_url);
         await unlink(filePath);
       } catch {
         // File might not exist, continue with deletion
       }
     }
 
-    if (resource.preview_url) {
+    if (material.preview_url) {
       try {
-        const previewPath = path.join(uploadsDir, resource.preview_url);
+        const previewPath = path.join(uploadsDir, material.preview_url);
         await unlink(previewPath);
       } catch {
         // File might not exist, continue with deletion
       }
     }
 
-    // Delete the resource from database
+    // Delete the material from database
     await prisma.resource.delete({ where: { id } });
 
     return NextResponse.json({
-      message: "Ressource erfolgreich gelöscht",
+      message: "Material erfolgreich gelöscht",
     });
   } catch (error) {
-    console.error("Error deleting resource:", error);
+    console.error("Error deleting material:", error);
     return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
   }
 }

@@ -6,13 +6,13 @@ import { getStripeClient, calculateApplicationFee } from "@/lib/stripe";
 
 // Input validation schema
 const createCheckoutSessionSchema = z.object({
-  resourceId: z.string().min(1, "Resource ID is required"),
+  materialId: z.string().min(1, "Material ID is required"),
   guestEmail: z.string().email("Valid email required for guest checkout").optional(),
 });
 
 /**
  * POST /api/payments/create-checkout-session
- * Creates a Stripe Checkout session for purchasing a resource
+ * Creates a Stripe Checkout session for purchasing a material
  * Access: Authenticated users OR guests with email
  */
 export async function POST(request: NextRequest) {
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { resourceId, guestEmail } = parsed.data;
+  const { materialId, guestEmail } = parsed.data;
 
   // Require either authentication or guest email
   if (!userId && !guestEmail) {
@@ -62,9 +62,9 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    // Fetch resource with seller info
-    const resource = await prisma.resource.findUnique({
-      where: { id: resourceId },
+    // Fetch material with seller info
+    const material = await prisma.resource.findUnique({
+      where: { id: materialId },
       select: {
         id: true,
         title: true,
@@ -83,48 +83,48 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Validate resource exists and is available for purchase
-    if (!resource) {
-      return NextResponse.json({ error: "Resource not found" }, { status: 404 });
+    // Validate material exists and is available for purchase
+    if (!material) {
+      return NextResponse.json({ error: "Material not found" }, { status: 404 });
     }
 
-    if (!resource.is_published || !resource.is_approved) {
+    if (!material.is_published || !material.is_approved) {
       return NextResponse.json(
-        { error: "Resource is not available for purchase" },
+        { error: "Material is not available for purchase" },
         { status: 400 }
       );
     }
 
-    // Prevent purchasing own resources (only applies to authenticated users)
-    if (userId && resource.seller_id === userId) {
-      return NextResponse.json({ error: "Cannot purchase your own resource" }, { status: 400 });
+    // Prevent purchasing own materials (only applies to authenticated users)
+    if (userId && material.seller_id === userId) {
+      return NextResponse.json({ error: "Cannot purchase your own material" }, { status: 400 });
     }
 
-    // Check if user/guest already owns this resource
+    // Check if user/guest already owns this material
     const existingPurchaseWhere = userId
-      ? { buyer_id: userId, resource_id: resourceId, status: "COMPLETED" as const }
-      : { guest_email: guestEmail, resource_id: resourceId, status: "COMPLETED" as const };
+      ? { buyer_id: userId, resource_id: materialId, status: "COMPLETED" as const }
+      : { guest_email: guestEmail, resource_id: materialId, status: "COMPLETED" as const };
 
     const existingPurchase = await prisma.transaction.findFirst({
       where: existingPurchaseWhere,
     });
 
     if (existingPurchase) {
-      return NextResponse.json({ error: "You already own this resource" }, { status: 400 });
+      return NextResponse.json({ error: "You already own this material" }, { status: 400 });
     }
 
     // Validate seller can receive payments
-    if (!resource.seller.stripe_account_id || !resource.seller.stripe_charges_enabled) {
+    if (!material.seller.stripe_account_id || !material.seller.stripe_charges_enabled) {
       return NextResponse.json(
         { error: "Seller cannot receive payments at this time" },
         { status: 400 }
       );
     }
 
-    // Free resources don't need checkout
-    if (resource.price === 0) {
+    // Free materials don't need checkout
+    if (material.price === 0) {
       return NextResponse.json(
-        { error: "Free resources do not require checkout" },
+        { error: "Free materials do not require checkout" },
         { status: 400 }
       );
     }
@@ -180,17 +180,17 @@ export async function POST(request: NextRequest) {
     }
 
     // Calculate application fee (platform fee)
-    const applicationFeeAmount = calculateApplicationFee(resource.price);
+    const applicationFeeAmount = calculateApplicationFee(material.price);
 
     // Build success and cancel URLs
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || request.nextUrl.origin;
     const successUrl = `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`;
-    const cancelUrl = `${baseUrl}/checkout/cancel?resource_id=${resourceId}`;
+    const cancelUrl = `${baseUrl}/checkout/cancel?resource_id=${materialId}`;
 
     // Build metadata for Stripe (include guest_email for guest checkouts)
     const stripeMetadata: Record<string, string> = {
-      resourceId: resource.id,
-      sellerId: resource.seller_id,
+      materialId: material.id,
+      sellerId: material.seller_id,
     };
 
     if (isGuestCheckout) {
@@ -208,10 +208,10 @@ export async function POST(request: NextRequest) {
           price_data: {
             currency: "chf",
             product_data: {
-              name: resource.title,
-              description: resource.description.substring(0, 500),
+              name: material.title,
+              description: material.description.substring(0, 500),
             },
-            unit_amount: resource.price,
+            unit_amount: material.price,
           },
           quantity: 1,
         },
@@ -219,7 +219,7 @@ export async function POST(request: NextRequest) {
       payment_intent_data: {
         application_fee_amount: applicationFeeAmount,
         transfer_data: {
-          destination: resource.seller.stripe_account_id,
+          destination: material.seller.stripe_account_id,
         },
         metadata: stripeMetadata,
       },
@@ -233,22 +233,22 @@ export async function POST(request: NextRequest) {
       data: {
         buyer_id: isGuestCheckout ? null : userId,
         guest_email: isGuestCheckout ? guestEmail : null,
-        resource_id: resourceId,
-        amount: resource.price,
+        resource_id: materialId,
+        amount: material.price,
         status: "PENDING",
         stripe_checkout_session_id: checkoutSession.id,
         platform_fee_amount: applicationFeeAmount,
-        seller_payout_amount: resource.price - applicationFeeAmount,
+        seller_payout_amount: material.price - applicationFeeAmount,
       },
     });
 
     console.log("[PAYMENT] ========== CHECKOUT SESSION CREATED ==========");
     console.log("[PAYMENT] Transaction ID:", transaction.id);
     console.log("[PAYMENT] Stripe Session ID:", checkoutSession.id);
-    console.log("[PAYMENT] Resource ID:", resourceId);
+    console.log("[PAYMENT] Material ID:", materialId);
     console.log("[PAYMENT] Buyer ID:", userId);
     console.log("[PAYMENT] Is Guest:", isGuestCheckout);
-    console.log("[PAYMENT] Amount:", resource.price);
+    console.log("[PAYMENT] Amount:", material.price);
 
     return NextResponse.json({
       checkoutUrl: checkoutSession.url,

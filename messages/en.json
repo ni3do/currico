@@ -26,7 +26,7 @@
       "tagline": "Swiss Education Platform"
     },
     "navigation": {
-      "resources": "Resources",
+      "materials": "Materials",
       "aboutUs": "About Us",
       "contact": "Contact",
       "login": "Sign In",
@@ -63,7 +63,7 @@
     },
     "breadcrumb": {
       "home": "Home",
-      "resources": "Resources",
+      "materials": "Materials",
       "account": "My Account",
       "upload": "Upload",
       "profile": "Profile",
@@ -89,7 +89,7 @@
       "swissBadge": "100% Lehrplan 21 aligned",
       "headline": "Teaching materials for the",
       "headlineHighlight": "Swiss Lehrplan 21",
-      "subheadline": "Find ready-to-use teaching resources from Swiss educators. Quality-checked, curriculum-aligned, time-saving.",
+      "subheadline": "Find ready-to-use teaching materials from Swiss educators. Quality-checked, curriculum-aligned, time-saving.",
       "searchPlaceholder": "What are you teaching today? (e.g. Math Grade 5)",
       "searchButton": "Search",
       "quickFilters": "Popular categories:",
@@ -117,7 +117,7 @@
         "rating": "4.9"
       },
       "title": "By Teachers, For Teachers: Teaching Materials in Record Time.",
-      "description": "Discover professional teaching resources, developed by colleagues and precisely aligned with <bold>Lehrplan 21</bold>. Trustworthy, verified, ready to use.",
+      "description": "Discover professional teaching materials, developed by colleagues and precisely aligned with <bold>Lehrplan 21</bold>. Trustworthy, verified, ready to use.",
       "primaryButton": "Find Materials Now",
       "secondaryButton": "Learn More",
       "search": {
@@ -150,7 +150,7 @@
         "description": "Instant download after purchase. Use the materials directly in your classroom."
       }
     },
-    "featuredResources": {
+    "featuredMaterials": {
       "title": "Featured Materials",
       "description": "Selected by experts and quality checked",
       "viewAllMobile": "View All Materials",
@@ -188,7 +188,7 @@
       },
       "feature2": {
         "title": "Lehrplan 21 Compliant",
-        "description": "All resources are categorized by competence areas and cycles of Lehrplan 21."
+        "description": "All materials are categorized by competence areas and cycles of Lehrplan 21."
       },
       "feature3": {
         "title": "Ready to Use",
@@ -262,7 +262,7 @@
         "location": "Bern"
       },
       "testimonial3": {
-        "quote": "The quality control really shows. Every resource I've purchased has been professionally made and ready to use in my classroom the next day.",
+        "quote": "The quality control really shows. Every material I've purchased has been professionally made and ready to use in my classroom the next day.",
         "name": "Lisa W.",
         "role": "Special Education Teacher",
         "location": "Basel"
@@ -411,7 +411,7 @@
     "subjects": ["Mathematics", "German", "English", "French", "NMG", "Arts", "Music", "Sports"],
     "cycles": ["Cycle 1", "Cycle 2", "Cycle 3"]
   },
-  "resourcesPage": {
+  "materialsPage": {
     "breadcrumb": {
       "home": "Home"
     },
@@ -426,7 +426,10 @@
       "cycleLabel": "Level",
       "materialTypeLabel": "Material Type",
       "formatLabel": "Format & Properties",
-      "priceLabel": "Price"
+      "priceLabel": "Price",
+      "showMaterials": "Materials",
+      "showCreators": "Creators",
+      "displayLabel": "Show"
     },
     "search": {
       "placeholder": "Search by title, topic, keyword...",
@@ -510,7 +513,7 @@
         "paid": "Paid"
       },
       "typeFilter": {
-        "label": "Resource Type",
+        "label": "Material Type",
         "all": "All",
         "pdf": "PDF",
         "word": "Word",
@@ -527,7 +530,7 @@
       "resetButton": "Reset"
     },
     "results": {
-      "countLabel": "Resources found",
+      "countLabel": "Materials found",
       "sortLabel": "Sort by:",
       "sortOptions": {
         "newest": "Newest",
@@ -551,14 +554,14 @@
     },
     "loading": "Loading...",
     "empty": {
-      "title": "No resources found",
+      "title": "No materials found",
       "description": "Try different search terms or filters"
     }
   },
   "sellerDashboard": {
     "header": {
       "title": "Seller Dashboard",
-      "subtitle": "Manage your resources and monitor your sales"
+      "subtitle": "Manage your materials and monitor your sales"
     },
     "stats": {
       "earnings": {
@@ -567,7 +570,7 @@
       },
       "downloads": {
         "title": "Downloads",
-        "subtitle": "All resources"
+        "subtitle": "All materials"
       },
       "followers": {
         "title": "Followers",
@@ -575,14 +578,14 @@
       }
     },
     "actions": {
-      "uploadResource": "+ Upload New Resource",
+      "uploadMaterial": "+ Upload New Material",
       "createBundle": "+ Create Bundle"
     },
     "tabs": {
-      "resources": "My Resources",
+      "materials": "My Materials",
       "transactions": "Transactions"
     },
-    "resourcesTable": {
+    "materialsTable": {
       "columns": {
         "title": "Title",
         "type": "Type",
@@ -601,7 +604,7 @@
     },
     "transactionsTable": {
       "columns": {
-        "resource": "Resource",
+        "material": "Material",
         "date": "Date",
         "gross": "Gross Price",
         "platformFee": "Platform Fee",
@@ -616,59 +619,59 @@
   },
   "aboutPage": {
     "hero": {
-      "badge": "For Swiss Educators",
-      "title": "Prepare Smarter. Live Better.",
-      "subtitle": "We bring Swiss quality and valuable free time back to your school day.",
-      "imageAlt": "Relaxed teacher with tablet"
+      "badge": "Hi, we're Currico",
+      "title": "We're teachers too. We get it.",
+      "subtitle": "Currico was born out of our own frustration with lesson prep. We built the tool we always wished existed.",
+      "imageAlt": "The Currico team"
     },
     "mission": {
-      "title": "Our Mission",
-      "paragraph1": "Sunday afternoons at your desk? Nights spent formatting worksheets? We believe: Great teaching doesn't mean sacrificing yourself.",
-      "paragraph2": "The demands on Swiss educators are constantly increasing. Individualization, digitalization, and administrative hurdles require time – time that's often missing in everyday life. This is exactly where Currico comes in.",
-      "paragraph3": "We see ourselves as your digital assistant. We bridge the gap between high didactic standards and limited preparation time. Our goal is to have your back, so you can invest your energy where it's needed most: with your students."
+      "title": "Why we started Currico",
+      "paragraph1": "Honestly? Because we were tired. Tired of spending our Sundays searching for worksheets. Tired of adapting German materials to Swiss standards. Tired of feeling like prep time was eating into our lives.",
+      "paragraph2": "So we asked ourselves: what if there was a place built by Swiss teachers, for Swiss teachers? A place where you can find quality materials in minutes, not hours. Where everything already fits the Lehrplan 21. Where you don't have to reinvent the wheel every week.",
+      "paragraph3": "That's Currico. It's not a faceless platform. It's a small team with a big heart, working to give you back the time you deserve — for your students, your family, and yourself."
     },
     "values": {
-      "title": "Why Currico?",
+      "title": "What matters to us",
       "value1": {
-        "title": "Time Savings, Not Stress",
-        "description": "Our materials are ready to use immediately. Find, print, teach. Your evening belongs to you again."
+        "title": "Your time is precious",
+        "description": "Find what you need, print it, teach it. We want your evenings and weekends to be yours again."
       },
       "value2": {
-        "title": "100% Lehrplan 21",
-        "description": "No converting Euros to Francs or adapting content. Our materials are tailored specifically for Switzerland."
+        "title": "Made for Switzerland",
+        "description": "No more adapting foreign content. Everything here is designed for Swiss classrooms and the Lehrplan 21."
       },
       "value3": {
-        "title": "Teacher-Verified",
-        "description": "We offer quality over quantity. Every material undergoes a quality check by experienced educators."
+        "title": "Quality you can trust",
+        "description": "Every material is reviewed by real teachers. We'd rather have fewer great materials than a flood of mediocre ones."
       }
     },
     "origin": {
-      "title": "From Practice, For Practice",
-      "paragraph1": "Currico is not an anonymous tech corporation. The platform emerged from a genuine need: colleagues were looking for a central hub for modern Swiss teaching materials, without having to wade through confusing databases.",
-      "paragraph2": "What started as a small exchange has become a growing community. We connect creativity with didactics and ensure that good work is fairly rewarded.",
-      "imageAlt": "Team collaborating together"
+      "title": "Our story",
+      "paragraph1": "It started with a simple idea between two friends: what if we could make each other's school prep easier? Simon, with his background in education, and Laurent, with his tech skills, started sharing materials and building tools.",
+      "paragraph2": "That small experiment turned into Currico. Today, we're still the same two people — passionate about education, obsessed with making things simple, and always happy to hear from you. We read every message, we listen to every suggestion, and we build what you actually need.",
+      "imageAlt": "Simon and Laurent working together"
     },
     "founders": {
-      "title": "Meet the Team",
-      "subtitle": "Two backgrounds, one mission: making teaching easier for Swiss educators.",
+      "title": "The people behind Currico",
+      "subtitle": "No corporate team. Just two guys who care about making your school day easier.",
       "founder1": {
-        "name": "[Founder Name]",
-        "role": "Co-Founder & Tech",
-        "bio": "With a background in computer science, I bring the technical expertise to build a platform that's fast, reliable, and easy to use. My goal is to create tools that save teachers time, not add complexity."
+        "name": "Simon Wachter",
+        "role": "Co-Founder & Education",
+        "bio": "I know what it's like to stand in front of a class and wish you had better materials. That's why I make sure everything on Currico is practical, classroom-tested, and aligned with what Swiss teachers actually need."
       },
       "founder2": {
-        "name": "[Founder Name]",
-        "role": "Co-Founder & Education",
-        "bio": "As an experienced educator, I understand firsthand the daily challenges teachers face. I ensure that everything we build is practical, pedagogically sound, and truly aligned with Swiss classroom needs."
+        "name": "Laurent Zoccoletti",
+        "role": "Co-Founder & Tech",
+        "bio": "I build the platform so it just works — fast, simple, no headaches. My job is to make sure technology gets out of your way and lets you focus on what you do best: teaching."
       },
-      "story": "We started Currico because we saw how much time teachers spend on preparation — often at the expense of their own wellbeing. By combining tech and teaching expertise, we're building a platform that truly works for Swiss educators.",
-      "highlight": "Have questions or ideas? We'd love to hear from you."
+      "story": "We started Currico at a kitchen table, fueled by coffee and a shared belief: teachers deserve better tools. We're not a startup chasing investors. We're two people building something we genuinely believe in — and we'd love for you to be part of it.",
+      "highlight": "Got a question, an idea, or just want to say hi? We'd genuinely love to hear from you."
     },
     "cta": {
-      "title": "Ready for Less Preparation Stress?",
-      "subtitle": "Join hundreds of Swiss teachers who are already saving time and using high-quality materials.",
+      "title": "Come join us",
+      "subtitle": "Hundreds of Swiss teachers are already saving hours every week. Give it a try — it's free to start.",
       "button": "Explore Materials",
-      "secondaryButton": "Register for Free"
+      "secondaryButton": "Sign Up Free"
     },
     "swissBrand": {
       "badge": "Quality & Trust",
@@ -741,7 +744,7 @@
     },
     "faq": {
       "title": "Looking for Quick Answers?",
-      "description": "Check our Help Center for answers to common questions about accounts, resources, and selling on Currico."
+      "description": "Check our Help Center for answers to common questions about accounts, materials, and selling on Currico."
     }
   },
   "metadata": {
@@ -763,7 +766,7 @@
         "breakdown": {
           "seller": "You receive 70% of each sale",
           "platform": "Currico retains 30% as a platform fee",
-          "example": "Example: For a CHF 10.00 resource, you receive CHF 7.00"
+          "example": "Example: For a CHF 10.00 material, you receive CHF 7.00"
         },
         "note": "Payment processing fees (Stripe fees) are included in the platform fee and are not charged separately to you."
       },
@@ -841,7 +844,7 @@
         "title": "8. Seller Responsibilities",
         "content": "As a seller, you are responsible for:",
         "items": {
-          "accuracy": "Ensuring the accuracy of your resource descriptions",
+          "accuracy": "Ensuring the accuracy of your material descriptions",
           "support": "Responding to buyer questions about your materials",
           "updates": "Updating materials if errors are discovered",
           "taxes": "Handling your own tax obligations for income earned",
@@ -958,14 +961,14 @@
     "lehrmittel": {
       "title": "Compatible Textbooks",
       "placeholder": "Optional: Select textbook...",
-      "hint": "Select textbooks that your resource is compatible with"
+      "hint": "Select textbooks that your material is compatible with"
     },
     "upload": {
-      "competencyTip": "The more precisely you align your resource to Lehrplan 21, the easier teachers will find your materials. Select all relevant competencies."
+      "competencyTip": "The more precisely you align your material to Lehrplan 21, the easier teachers will find your materials. Select all relevant competencies."
     }
   },
   "uploadWizard": {
-    "pageTitle": "Upload Resource",
+    "pageTitle": "Upload Material",
     "pageSubtitle": "Share your teaching materials with other teachers",
     "steps": {
       "basics": "Basic Information",
@@ -1019,18 +1022,18 @@
       "moreErrors": "+{count} more errors"
     },
     "tooltips": {
-      "title": "Choose a clear, descriptive title that describes the content of your resource. A good title helps other teachers find your materials.",
+      "title": "Choose a clear, descriptive title that describes the content of your material. A good title helps other teachers find your materials.",
       "titleExample": "Fraction Exercises Cycle 2",
-      "description": "Briefly describe what your resource contains and what it is intended for. Mention special features or didactic notes.",
+      "description": "Briefly describe what your material contains and what it is intended for. Mention special features or didactic notes.",
       "descriptionExample": "10 differentiated worksheets on fractions with solutions. Suitable for individual and group work.",
       "language": "Select the main language of the content. This helps with search and filtering.",
-      "resourceType": "Select the main format of your file. PDF files are most commonly used and automatically receive a preview.",
+      "materialType": "Select the main format of your file. PDF files are most commonly used and automatically receive a preview.",
       "cycle": "The cycle defines the age level according to Lehrplan 21. Cycle 1: KG-2nd grade, Cycle 2: 3rd-6th grade, Cycle 3: 7th-9th grade.",
-      "subject": "Select the main subject your resource fits. Available subjects depend on the selected cycle.",
-      "canton": "Optional: Select a canton if your resource is specifically designed for certain cantonal textbooks.",
-      "competencies": "Select the Lehrplan 21 competencies that your resource covers. The more precisely you assign, the better teachers will find your materials.",
+      "subject": "Select the main subject your material fits. Available subjects depend on the selected cycle.",
+      "canton": "Optional: Select a canton if your material is specifically designed for certain cantonal textbooks.",
+      "competencies": "Select the Lehrplan 21 competencies that your material covers. The more precisely you assign, the better teachers will find your materials.",
       "competenciesExample": "MA.1.A.1 - Understanding numbers",
-      "priceType": "Decide whether your resource should be free or paid. Free resources reach more users, paid ones generate income.",
+      "priceType": "Decide whether your material should be free or paid. Free materials reach more users, paid ones generate income.",
       "price": "Set the selling price in CHF. You receive 70% of the selling price, 30% is platform fee. Minimum price is CHF 1, maximum CHF 50.",
       "priceExample": "CHF 5.00",
       "editable": "Enable this if buyers should be able to edit the file (e.g., Word documents). Usually not needed for PDF files.",
@@ -1042,10 +1045,10 @@
       "titlePlaceholder": "e.g., Fraction Exercises Cycle 2",
       "titleHint": "Choose a descriptive title (5-100 characters)",
       "description": "Short Description",
-      "descriptionPlaceholder": "Briefly describe your resource...",
+      "descriptionPlaceholder": "Briefly describe your material...",
       "descriptionHint": "{count}/2000 characters (min. 20)",
       "language": "Language",
-      "resourceType": "Resource Type",
+      "materialType": "Material Type",
       "cycle": "Cycle",
       "cycleRequired": "Cycle is required",
       "subject": "Subject",
@@ -1056,7 +1059,7 @@
       "competencies": "Lehrplan 21 Competencies",
       "competenciesPlaceholder": "Select competencies...",
       "competenciesSelected": "{count} competency(ies) selected",
-      "competenciesHint": "Select the Lehrplan 21 competencies that match your resource",
+      "competenciesHint": "Select the Lehrplan 21 competencies that match your material",
       "competencySearch": "Search (e.g., MA.1.A or Addition)...",
       "priceType": "Price Type",
       "priceFree": "Free",
@@ -1087,11 +1090,11 @@
       "noScans": "No Textbook Scans",
       "noScansDesc": "I have not scanned or copied pages from textbooks or school books.",
       "noTrademarks": "No Protected Trademarks or Characters",
-      "noTrademarksDesc": "My resource does not contain protected trademarks, logos, or characters.",
+      "noTrademarksDesc": "My material does not contain protected trademarks, logos, or characters.",
       "swissGerman": "Swiss German Spelling",
-      "swissGermanDesc": "My resource uses Swiss German spelling (no Eszett).",
+      "swissGermanDesc": "My material uses Swiss German spelling (no Eszett).",
       "acceptTerms": "Accept Seller Agreement",
-      "acceptTermsDesc": "I accept the seller agreement and confirm that I have the rights to sell this resource.",
+      "acceptTermsDesc": "I accept the seller agreement and confirm that I have the rights to sell this material.",
       "incomplete": "Please confirm all points to proceed.",
       "eszettWarning": "Your title or description still contains Eszett characters (ß). Please correct this in step 1."
     },
@@ -1127,9 +1130,9 @@
     "upload": {
       "uploading": "Uploading...",
       "pleaseWait": "Please wait, this may take a moment.",
-      "success": "Resource Created!",
-      "successMessage": "Your resource has been uploaded and is awaiting approval.",
-      "viewResource": "View Resource",
+      "success": "Material Created!",
+      "successMessage": "Your material has been uploaded and is awaiting approval.",
+      "viewMaterial": "View Material",
       "error": "Upload Error",
       "close": "Close",
       "retry": "Try Again"
@@ -1149,7 +1152,7 @@
       },
       "reach": {
         "title": "Reach Teachers Across Switzerland",
-        "description": "Your materials become discoverable to thousands of teachers searching for quality resources."
+        "description": "Your materials become discoverable to thousands of teachers searching for quality materials."
       },
       "simple": {
         "title": "Upload Once, Earn Repeatedly",
@@ -1248,7 +1251,7 @@
       "chargesEnabled": "Payments enabled",
       "payoutsEnabled": "Payouts enabled",
       "payoutsPending": "Payouts pending",
-      "uploadFirst": "Upload Your First Resource",
+      "uploadFirst": "Upload Your First Material",
       "viewDashboard": "View Stripe Dashboard"
     },
     "pending": {
@@ -1273,10 +1276,10 @@
       "required": "Please accept the terms for digital content to continue."
     },
     "errors": {
-      "alreadyOwned": "You already own this resource",
-      "ownResource": "You cannot purchase your own resource",
+      "alreadyOwned": "You already own this material",
+      "ownMaterial": "You cannot purchase your own material",
       "sellerNotReady": "This seller cannot receive payments at this time",
-      "notAvailable": "This resource is not available for purchase",
+      "notAvailable": "This material is not available for purchase",
       "generic": "An error occurred. Please try again."
     }
   },
@@ -1289,7 +1292,7 @@
     },
     "error": {
       "title": "Something Went Wrong",
-      "browseResources": "Browse Resources"
+      "browseMaterials": "Browse Materials"
     },
     "errors": {
       "noSession": "No checkout session found.",
@@ -1297,7 +1300,7 @@
     },
     "success": {
       "title": "Purchase Complete!",
-      "description": "Thank you for your purchase. You can now access your new resource."
+      "description": "Thank you for your purchase. You can now access your new material."
     },
     "pending": {
       "title": "Payment Processing",
@@ -1305,7 +1308,7 @@
     },
     "purchaseDetails": {
       "title": "Purchase Details",
-      "resource": "Resource",
+      "material": "Material",
       "amount": "Amount",
       "status": "Status",
       "statusCompleted": "Completed",
@@ -1313,21 +1316,21 @@
       "by": "by"
     },
     "actions": {
-      "viewResource": "View Resource",
+      "viewMaterial": "View Material",
       "goToLibrary": "Go to My Library",
       "downloadNow": "Download Now",
       "downloading": "Downloading...",
-      "continueBrowsing": "Continue browsing resources"
+      "continueBrowsing": "Continue browsing materials"
     },
     "tips": {
       "title": "What's next?",
       "accessAnytime": "Access your purchase anytime from your library",
-      "findInLibrary": "Find all your acquired resources in one place"
+      "findInLibrary": "Find all your acquired materials in one place"
     },
     "noTransaction": {
       "title": "No Purchase Found",
       "description": "We couldn't find a purchase associated with this session.",
-      "browseResources": "Browse Resources"
+      "browseMaterials": "Browse Materials"
     }
   },
   "checkoutCancel": {
@@ -1336,12 +1339,12 @@
     "reassurance": "Don't worry - you can try again whenever you're ready. Your cart and any saved items are still available.",
     "actions": {
       "tryAgain": "Try Again",
-      "browseResources": "Browse Resources"
+      "browseMaterials": "Browse Materials"
     }
   },
   "guestDownload": {
     "loading": "Loading your download...",
-    "browseResources": "Browse Resources",
+    "browseMaterials": "Browse Materials",
     "createAccount": "Create Account",
     "downloadButton": "Download Now",
     "downloading": "Downloading...",
@@ -1352,7 +1355,7 @@
       },
       "payment_incomplete": {
         "title": "Payment Incomplete",
-        "description": "The payment for this resource has not been completed."
+        "description": "The payment for this material has not been completed."
       },
       "generic": {
         "title": "Something Went Wrong",
@@ -1371,7 +1374,7 @@
     },
     "ready": {
       "title": "Your Download is Ready",
-      "description": "Click the button below to download your purchased resource."
+      "description": "Click the button below to download your purchased material."
     },
     "success": {
       "title": "Download Started!",
@@ -2040,7 +2043,7 @@
     "unfollow": "Unfollow",
     "editProfile": "Edit Profile",
     "stats": {
-      "resources": "Resources",
+      "materials": "Materials",
       "followers": "Followers",
       "following": "Following"
     },
@@ -2050,8 +2053,8 @@
     },
     "bestUploads": "Best Uploads",
     "noUploads": "No uploads yet",
-    "noUploadsOwn": "Upload your first resource!",
-    "noUploadsOther": "This user hasn't uploaded any resources yet.",
+    "noUploadsOwn": "Upload your first material!",
+    "noUploadsOther": "This user hasn't uploaded any materials yet.",
     "noCollections": "No collections yet",
     "noCollectionsOwn": "Create your first collection!",
     "noCollectionsOther": "This user doesn't have any public collections.",
@@ -2059,22 +2062,22 @@
     "privacy": {
       "label": "Keep my profile private",
       "tooltip": "When enabled, only your name and avatar will be shown on your public profile. Your bio, subjects, cycles, cantons, statistics, and social media links will be hidden.",
-      "notice": "This profile is private. Only public resources are displayed.",
+      "notice": "This profile is private. Only public materials are displayed.",
       "sectionTitle": "Privacy Settings"
     }
   },
   "collections": {
     "title": "My Collections",
-    "description": "Organize your resources into collections",
+    "description": "Organize your materials into collections",
     "newCollection": "New Collection",
     "noCollections": "No collections yet",
     "createFirst": "Create first collection",
     "selectCollection": "Select a collection",
     "orCreateNew": "or create a new collection",
-    "noResources": "No resources in this collection yet",
-    "dragDropHint": "Drag and drop resources here or add them from the resources page.",
+    "noMaterials": "No materials in this collection yet",
+    "dragDropHint": "Drag and drop materials here or add them from the materials page.",
     "toUploads": "Go to my uploads",
-    "reorderHint": "Drag resources to reorder them",
+    "reorderHint": "Drag materials to reorder them",
     "viewPublic": "View public",
     "form": {
       "name": "Name",
@@ -2104,12 +2107,12 @@
     "stats": {
       "title": "Statistics",
       "followedProfiles": "Followed Profiles",
-      "availableResources": "Available Resources"
+      "availableMaterials": "Available Materials"
     },
     "discoverMore": {
       "title": "Discover More",
       "description": "Find more interesting teachers and their materials.",
-      "link": "Browse resources"
+      "link": "Browse materials"
     }
   },
   "verifyEmailPage": {
@@ -2142,7 +2145,7 @@
   },
   "search": {
     "tabs": {
-      "resources": "Resources",
+      "materials": "Materials",
       "profiles": "Profiles"
     },
     "profiles": {
@@ -2218,7 +2221,7 @@
         },
         "newsletter": {
           "label": "Subscribe to newsletter",
-          "description": "Weekly updates with tips, new features, and selected resources"
+          "description": "Weekly updates with tips, new features, and selected materials"
         },
         "platformUpdates": {
           "label": "Platform updates",
@@ -2235,8 +2238,8 @@
     "basedOn": "based on {count} reviews",
     "verifiedPurchase": "Verified Purchase",
     "noReviews": "No reviews yet",
-    "beFirst": "Be the first to review this resource!",
-    "mustPurchase": "Purchase or download this resource to leave a review.",
+    "beFirst": "Be the first to review this material!",
+    "mustPurchase": "Purchase or download this material to leave a review.",
     "loginToReview": "Sign in to write a review.",
     "ratingRequired": "Please select a rating",
     "titleOptional": "Title (optional)",
@@ -2260,7 +2263,7 @@
     "liked": "Liked",
     "unlike": "Unlike",
     "count": "{count} Likes",
-    "loginRequired": "Sign in to like this resource."
+    "loginRequired": "Sign in to like this material."
   },
   "comments": {
     "title": "Comments",
@@ -2288,7 +2291,7 @@
       "noComments": "No comments on your materials yet",
       "noCommentsDescription": "Comments will appear here when users comment on your materials.",
       "noUnreplied": "No unanswered comments",
-      "viewResource": "View resource"
+      "viewMaterial": "View material"
     }
   },
   "teacherVerification": {

@@ -297,7 +297,7 @@ export function AccountSidebar({
               <Users className="text-text-faint mx-auto mb-2 h-6 w-6" />
               <p className="text-text-muted text-xs">Noch keine Verkäufer gefolgt</p>
               <Link
-                href="/resources"
+                href="/materialien"
                 className="text-primary mt-2 inline-block text-xs font-medium hover:underline"
               >
                 Entdecken
@@ -316,16 +316,16 @@ export function AccountSidebar({
               className="bg-primary text-text-on-accent hover:bg-primary-hover flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors"
             >
               <Upload className="h-4 w-4" />
-              Neue Ressource
+              Neues Material
             </Link>
           </motion.div>
           <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
             <Link
-              href="/resources"
+              href="/materialien"
               className="border-border bg-bg text-text-secondary hover:border-primary hover:text-primary flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
             >
               <Search className="h-4 w-4" />
-              Ressourcen entdecken
+              Materialien entdecken
             </Link>
           </motion.div>
         </div>

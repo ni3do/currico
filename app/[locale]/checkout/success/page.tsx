@@ -89,7 +89,7 @@ export default function CheckoutSuccessPage() {
     if (!transaction) return;
     setIsDownloading(true);
     try {
-      window.open(`/api/resources/${transaction.resource.id}/download`, "_blank");
+      window.open(`/api/materials/${transaction.resource.id}/download`, "_blank");
     } catch (error) {
       console.error("Download error:", error);
     } finally {
@@ -109,7 +109,7 @@ export default function CheckoutSuccessPage() {
           {/* Breadcrumb */}
           <Breadcrumb
             items={[
-              { label: tCommon("breadcrumb.checkout"), href: "/resources" },
+              { label: tCommon("breadcrumb.checkout"), href: "/materialien" },
               { label: tCommon("breadcrumb.checkoutSuccess") },
             ]}
             className="mb-4"
@@ -161,7 +161,7 @@ export default function CheckoutSuccessPage() {
               </div>
               <h1 className="text-text mb-2 text-xl font-bold">{t("error.title")}</h1>
               <p className="text-text-muted mb-6">{error}</p>
-              <Link href="/resources" className="btn btn-primary px-6 py-2">
+              <Link href="/materialien" className="btn btn-primary px-6 py-2">
                 {t("error.browseResources")}
               </Link>
             </div>
@@ -350,7 +350,7 @@ export default function CheckoutSuccessPage() {
               {/* Continue Shopping Link */}
               <div className="text-center">
                 <Link
-                  href="/resources"
+                  href="/materialien"
                   className="text-text-muted hover:text-primary inline-flex items-center gap-2 text-sm transition-colors"
                 >
                   {t("actions.continueBrowsing")}
@@ -377,7 +377,7 @@ export default function CheckoutSuccessPage() {
               </div>
               <h1 className="text-text mb-2 text-xl font-bold">{t("noTransaction.title")}</h1>
               <p className="text-text-muted mb-6">{t("noTransaction.description")}</p>
-              <Link href="/resources" className="btn btn-primary px-6 py-2">
+              <Link href="/materialien" className="btn btn-primary px-6 py-2">
                 {t("noTransaction.browseResources")}
               </Link>
             </div>

@@ -89,7 +89,7 @@ export function CategoryQuickAccess() {
             {categories.map((category) => (
               <Link
                 key={category.key}
-                href={`/resources?subject=${encodeURIComponent(category.queryParam)}`}
+                href={`/materialien?subject=${encodeURIComponent(category.queryParam)}`}
                 className="flex-shrink-0"
               >
                 <motion.div
@@ -121,7 +121,7 @@ export function CategoryQuickAccess() {
           {categories.map((category) => (
             <StaggerItem key={category.key} variant="card">
               <Link
-                href={`/resources?subject=${encodeURIComponent(category.queryParam)}`}
+                href={`/materialien?subject=${encodeURIComponent(category.queryParam)}`}
                 className="block"
               >
                 <motion.div

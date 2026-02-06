@@ -12,13 +12,13 @@ async function main() {
 
   console.log("Found user:", user.email);
 
-  // Check if multi-page resource exists
-  let multiPageResource = await prisma.resource.findUnique({
+  // Check if multi-page material exists
+  let multiPageMaterial = await prisma.resource.findUnique({
     where: { id: "test-multi-page-resource" },
   });
 
-  if (!multiPageResource) {
-    multiPageResource = await prisma.resource.create({
+  if (!multiPageMaterial) {
+    multiPageMaterial = await prisma.resource.create({
       data: {
         id: "test-multi-page-resource",
         title: "Test Mathe Arbeitsblatt - Brüche",
@@ -42,18 +42,18 @@ async function main() {
         seller_id: user.id,
       },
     });
-    console.log("Created multi-page resource");
+    console.log("Created multi-page material");
   } else {
-    console.log("Multi-page resource already exists");
+    console.log("Multi-page material already exists");
   }
 
-  // Check if single-page resource exists
-  let singlePageResource = await prisma.resource.findUnique({
+  // Check if single-page material exists
+  let singlePageMaterial = await prisma.resource.findUnique({
     where: { id: "test-single-page-resource" },
   });
 
-  if (!singlePageResource) {
-    singlePageResource = await prisma.resource.create({
+  if (!singlePageMaterial) {
+    singlePageMaterial = await prisma.resource.create({
       data: {
         id: "test-single-page-resource",
         title: "Einseiter - Deutsch Grammatik Merkblatt",
@@ -73,17 +73,17 @@ async function main() {
         seller_id: user.id,
       },
     });
-    console.log("Created single-page resource");
+    console.log("Created single-page material");
   } else {
-    console.log("Single-page resource already exists");
+    console.log("Single-page material already exists");
   }
 
-  // Create bundle resources
-  let bundleResource1 = await prisma.resource.findUnique({
+  // Create bundle materials
+  let bundleMaterial1 = await prisma.resource.findUnique({
     where: { id: "test-bundle-resource-1" },
   });
-  if (!bundleResource1) {
-    bundleResource1 = await prisma.resource.create({
+  if (!bundleMaterial1) {
+    bundleMaterial1 = await prisma.resource.create({
       data: {
         id: "test-bundle-resource-1",
         title: "Naturkunde Arbeitsblatt 1 - Pflanzen",
@@ -105,14 +105,14 @@ async function main() {
         seller_id: user.id,
       },
     });
-    console.log("Created bundle resource 1");
+    console.log("Created bundle material 1");
   }
 
-  let bundleResource2 = await prisma.resource.findUnique({
+  let bundleMaterial2 = await prisma.resource.findUnique({
     where: { id: "test-bundle-resource-2" },
   });
-  if (!bundleResource2) {
-    bundleResource2 = await prisma.resource.create({
+  if (!bundleMaterial2) {
+    bundleMaterial2 = await prisma.resource.create({
       data: {
         id: "test-bundle-resource-2",
         title: "Naturkunde Arbeitsblatt 2 - Tiere",
@@ -134,14 +134,14 @@ async function main() {
         seller_id: user.id,
       },
     });
-    console.log("Created bundle resource 2");
+    console.log("Created bundle material 2");
   }
 
-  let bundleResource3 = await prisma.resource.findUnique({
+  let bundleMaterial3 = await prisma.resource.findUnique({
     where: { id: "test-bundle-resource-3" },
   });
-  if (!bundleResource3) {
-    bundleResource3 = await prisma.resource.create({
+  if (!bundleMaterial3) {
+    bundleMaterial3 = await prisma.resource.create({
       data: {
         id: "test-bundle-resource-3",
         title: "Naturkunde Arbeitsblatt 3 - Wasser",
@@ -160,7 +160,7 @@ async function main() {
         seller_id: user.id,
       },
     });
-    console.log("Created bundle resource 3");
+    console.log("Created bundle material 3");
   }
 
   // Create bundle
@@ -184,11 +184,11 @@ async function main() {
     console.log("Created bundle");
   }
 
-  // Link resources to bundle
+  // Link materials to bundle
   const links = [
-    { bundle_id: bundle.id, resource_id: bundleResource1.id },
-    { bundle_id: bundle.id, resource_id: bundleResource2.id },
-    { bundle_id: bundle.id, resource_id: bundleResource3.id },
+    { bundle_id: bundle.id, resource_id: bundleMaterial1.id },
+    { bundle_id: bundle.id, resource_id: bundleMaterial2.id },
+    { bundle_id: bundle.id, resource_id: bundleMaterial3.id },
   ];
 
   for (const link of links) {
@@ -203,11 +203,11 @@ async function main() {
   }
 
   console.log("\n========================================");
-  console.log("Test resources created successfully!");
+  console.log("Test materials created successfully!");
   console.log("========================================");
-  console.log("\nResources to test:");
-  console.log(`  Multi-page (3 pages): /resources/${multiPageResource.id}`);
-  console.log(`  Single-page (1 page): /resources/${singlePageResource.id}`);
+  console.log("\nMaterials to test:");
+  console.log(`  Multi-page (3 pages): /materialien/${multiPageMaterial.id}`);
+  console.log(`  Single-page (1 page): /materialien/${singlePageMaterial.id}`);
   console.log(`  Bundle: /bundles/${bundle.id}`);
 }
 

@@ -6,7 +6,7 @@ import { Link, useRouter } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 
-interface SellerResource {
+interface SellerMaterial {
   id: string;
   title: string;
   price: number;
@@ -18,7 +18,7 @@ interface SellerResource {
 
 export default function CreateBundlePage() {
   const router = useRouter();
-  const [resources, setResources] = useState<SellerResource[]>([]);
+  const [materials, setMaterials] = useState<SellerMaterial[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -28,16 +28,16 @@ export default function CreateBundlePage() {
     title: "",
     description: "",
     price: "",
-    selectedResources: [] as string[],
+    selectedMaterials: [] as string[],
     subject: "",
     cycle: "",
     coverImage: null as File | null,
   });
 
   useEffect(() => {
-    async function fetchResources() {
+    async function fetchMaterials() {
       try {
-        const response = await fetch("/api/seller/resources");
+        const response = await fetch("/api/seller/materials");
         if (!response.ok) {
           if (response.status === 401) {
             router.push("/login");
@@ -48,34 +48,34 @@ export default function CreateBundlePage() {
             setLoading(false);
             return;
           }
-          throw new Error("Fehler beim Laden der Ressourcen");
+          throw new Error("Fehler beim Laden der Materialien");
         }
         const data = await response.json();
-        setResources(data.resources);
+        setMaterials(data.materials);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Ein Fehler ist aufgetreten");
       } finally {
         setLoading(false);
       }
     }
-    fetchResources();
+    fetchMaterials();
   }, [router]);
 
   const updateFormData = (field: string, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const toggleResource = (resourceId: string) => {
-    const isSelected = formData.selectedResources.includes(resourceId);
+  const toggleMaterial = (materialId: string) => {
+    const isSelected = formData.selectedMaterials.includes(materialId);
     const newSelection = isSelected
-      ? formData.selectedResources.filter((id) => id !== resourceId)
-      : [...formData.selectedResources, resourceId];
-    updateFormData("selectedResources", newSelection);
+      ? formData.selectedMaterials.filter((id) => id !== materialId)
+      : [...formData.selectedMaterials, materialId];
+    updateFormData("selectedMaterials", newSelection);
   };
 
   const calculateTotal = () => {
-    return resources
-      .filter((r) => formData.selectedResources.includes(r.id))
+    return materials
+      .filter((r) => formData.selectedMaterials.includes(r.id))
       .reduce((sum, r) => sum + r.price, 0);
   };
 
@@ -156,7 +156,7 @@ export default function CreateBundlePage() {
           price: Math.round(parseFloat(formData.price) * 100), // Convert to cents
           subject: [formData.subject],
           cycle: [formData.cycle],
-          resourceIds: formData.selectedResources,
+          resourceIds: formData.selectedMaterials,
           coverImageUrl,
         }),
       });
@@ -183,7 +183,7 @@ export default function CreateBundlePage() {
         <div className="mb-8 text-center">
           <h1 className="text-text text-3xl font-bold">Bundle erstellen</h1>
           <p className="text-text-muted mt-2">
-            Kombinieren Sie mehrere Ressourcen zu einem vergünstigten Paket
+            Kombinieren Sie mehrere Materialien zu einem vergünstigten Paket
           </p>
         </div>
 
@@ -191,24 +191,24 @@ export default function CreateBundlePage() {
           <div className="flex items-center justify-center py-12">
             <div className="border-primary h-8 w-8 animate-spin rounded-full border-4 border-t-transparent"></div>
           </div>
-        ) : error && resources.length === 0 ? (
+        ) : error && materials.length === 0 ? (
           <div className="border-error/30 bg-error/10 rounded-xl border p-6 text-center">
             <p className="text-error">{error}</p>
             <Link href="/account" className="text-primary mt-4 inline-block hover:underline">
               Zurück zum Konto
             </Link>
           </div>
-        ) : resources.length === 0 ? (
+        ) : materials.length === 0 ? (
           <div className="border-border bg-surface rounded-xl border p-8 text-center">
             <p className="text-text-muted">
-              Sie haben noch keine veröffentlichten Ressourcen. Laden Sie zuerst Ressourcen hoch, um
-              ein Bundle zu erstellen.
+              Sie haben noch keine veröffentlichten Materialien. Laden Sie zuerst Materialien hoch,
+              um ein Bundle zu erstellen.
             </p>
             <Link
               href="/upload"
               className="bg-primary text-text-on-accent mt-4 inline-block rounded-xl px-6 py-3 font-semibold"
             >
-              Ressource hochladen
+              Material hochladen
             </Link>
           </div>
         ) : (
@@ -379,42 +379,42 @@ export default function CreateBundlePage() {
 
             {/* Select Resources */}
             <div className="border-border bg-surface rounded-2xl border p-8">
-              <h2 className="text-text mb-6 text-xl font-semibold">Ressourcen auswählen</h2>
+              <h2 className="text-text mb-6 text-xl font-semibold">Materialien auswählen</h2>
 
               <p className="text-text-muted mb-4 text-sm">
-                Wählen Sie mindestens 2 Ihrer veröffentlichten Ressourcen für dieses Bundle
+                Wählen Sie mindestens 2 Ihrer veröffentlichten Materialien für dieses Bundle
               </p>
 
               <div className="space-y-3">
-                {resources.map((resource) => (
+                {materials.map((material) => (
                   <label
-                    key={resource.id}
+                    key={material.id}
                     className={`flex cursor-pointer items-center gap-4 rounded-xl border-2 p-4 transition-all ${
-                      formData.selectedResources.includes(resource.id)
+                      formData.selectedMaterials.includes(material.id)
                         ? "border-primary bg-primary/10"
                         : "border-border bg-bg hover:border-primary/50"
                     }`}
                   >
                     <input
                       type="checkbox"
-                      checked={formData.selectedResources.includes(resource.id)}
-                      onChange={() => toggleResource(resource.id)}
+                      checked={formData.selectedMaterials.includes(material.id)}
+                      onChange={() => toggleMaterial(material.id)}
                       className="border-border text-primary focus:ring-primary/20 h-5 w-5 rounded focus:ring-2"
                     />
                     <div className="flex-1">
-                      <div className="text-text font-medium">{resource.title}</div>
-                      <div className="text-text-muted text-sm">{resource.subject}</div>
+                      <div className="text-text font-medium">{material.title}</div>
+                      <div className="text-text-muted text-sm">{material.subject}</div>
                     </div>
-                    <div className="text-primary font-semibold">{resource.priceFormatted}</div>
+                    <div className="text-primary font-semibold">{material.priceFormatted}</div>
                   </label>
                 ))}
               </div>
 
-              {formData.selectedResources.length > 0 && (
+              {formData.selectedMaterials.length > 0 && (
                 <div className="border-border bg-bg mt-6 rounded-xl border p-4">
                   <div className="flex items-center justify-between">
                     <span className="text-text-muted text-sm">
-                      {formData.selectedResources.length} Ressourcen ausgewählt
+                      {formData.selectedMaterials.length} Materialien ausgewählt
                     </span>
                     <div className="text-right">
                       <div className="text-text-muted text-sm">Gesamt-Einzelpreis</div>
@@ -453,7 +453,7 @@ export default function CreateBundlePage() {
                 </div>
 
                 {formData.price &&
-                  formData.selectedResources.length > 0 &&
+                  formData.selectedMaterials.length > 0 &&
                   calculateDiscount() > 0 && (
                     <div className="border-success/30 bg-success/10 mt-4 rounded-xl border p-4">
                       <div className="flex items-center gap-2">
@@ -498,7 +498,7 @@ export default function CreateBundlePage() {
               </Link>
               <button
                 type="submit"
-                disabled={formData.selectedResources.length < 2 || submitting}
+                disabled={formData.selectedMaterials.length < 2 || submitting}
                 className="bg-primary text-text-on-accent shadow-primary/20 hover:bg-primary-hover flex-1 rounded-xl px-6 py-4 font-semibold shadow-lg transition-colors disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {submitting ? "Wird erstellt..." : "Bundle erstellen"}

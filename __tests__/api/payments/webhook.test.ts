@@ -39,10 +39,7 @@ interface WebhookResponse {
 /**
  * Create a mock NextRequest for webhook testing
  */
-function createWebhookRequest(
-  payload: string,
-  signature: string | null
-): Request {
+function createWebhookRequest(payload: string, signature: string | null): Request {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
   };
@@ -60,10 +57,7 @@ function createWebhookRequest(
 /**
  * Create a mock Stripe event
  */
-function createMockStripeEvent(
-  type: string,
-  data: Record<string, unknown>
-): Stripe.Event {
+function createMockStripeEvent(type: string, data: Record<string, unknown>): Stripe.Event {
   return {
     id: `evt_${Date.now()}`,
     object: "event",
@@ -83,19 +77,21 @@ describe("Webhook Handler", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // Reset prisma.$transaction to execute callback immediately
-    mockPrismaTransaction.mockImplementation(async (callback: (tx: unknown) => Promise<unknown>) => {
-      return callback({
-        transaction: {
-          update: mockTransactionUpdate,
-        },
-        download: {
-          upsert: mockDownloadUpsert,
-        },
-        downloadToken: {
-          create: mockDownloadTokenCreate,
-        },
-      });
-    });
+    mockPrismaTransaction.mockImplementation(
+      async (callback: (tx: unknown) => Promise<unknown>) => {
+        return callback({
+          transaction: {
+            update: mockTransactionUpdate,
+          },
+          download: {
+            upsert: mockDownloadUpsert,
+          },
+          downloadToken: {
+            create: mockDownloadTokenCreate,
+          },
+        });
+      }
+    );
   });
 
   describe("Signature Verification", () => {
@@ -297,10 +293,10 @@ describe("Webhook Handler", () => {
       id: "txn-123",
       buyer_id: "buyer-123",
       guest_email: null,
-      resource_id: "resource-123",
+      resource_id: "material-123",
       amount: 1000,
       resource: {
-        title: "Test Resource",
+        title: "Test Material",
       },
       buyer: {
         email: "buyer@example.com",
@@ -345,13 +341,13 @@ describe("Webhook Handler", () => {
         where: {
           user_id_resource_id: {
             user_id: "buyer-123",
-            resource_id: "resource-123",
+            resource_id: "material-123",
           },
         },
         update: {},
         create: {
           user_id: "buyer-123",
-          resource_id: "resource-123",
+          resource_id: "material-123",
         },
       });
     });
@@ -369,7 +365,7 @@ describe("Webhook Handler", () => {
 
       expect(mockSendPurchaseConfirmationEmail).toHaveBeenCalledWith({
         email: "buyer@example.com",
-        resourceTitle: "Test Resource",
+        resourceTitle: "Test Material",
         amount: 1000,
         downloadToken: undefined,
         isGuest: false,
@@ -425,7 +421,7 @@ describe("Webhook Handler", () => {
 
       expect(mockSendPurchaseConfirmationEmail).toHaveBeenCalledWith({
         email: "guest@example.com",
-        resourceTitle: "Test Resource",
+        resourceTitle: "Test Material",
         amount: 1000,
         downloadToken: expect.any(String),
         isGuest: true,
@@ -467,7 +463,10 @@ describe("Webhook Handler", () => {
         ...mockSession,
         payment_intent: { id: "pi_object123" },
       };
-      const event = createMockStripeEvent("checkout.session.completed", sessionWithObjectPaymentIntent);
+      const event = createMockStripeEvent(
+        "checkout.session.completed",
+        sessionWithObjectPaymentIntent
+      );
       mockConstructWebhookEvent.mockReturnValue(event);
       mockTransactionFindFirst.mockResolvedValue(mockTransaction);
       mockTransactionUpdate.mockResolvedValue({});
@@ -490,7 +489,7 @@ describe("Webhook Handler", () => {
     const mockPaymentIntent: Partial<Stripe.PaymentIntent> = {
       id: "pi_failed123",
       metadata: {
-        resourceId: "resource-123",
+        materialId: "material-123",
         buyerId: "buyer-123",
       },
       last_payment_error: {
@@ -515,7 +514,7 @@ describe("Webhook Handler", () => {
       expect(mockTransactionFindFirst).toHaveBeenCalledWith({
         where: {
           buyer_id: "buyer-123",
-          resource_id: "resource-123",
+          resource_id: "material-123",
           status: "PENDING",
         },
         select: { id: true },
@@ -535,7 +534,7 @@ describe("Webhook Handler", () => {
       const guestPaymentIntent = {
         ...mockPaymentIntent,
         metadata: {
-          resourceId: "resource-123",
+          materialId: "material-123",
           guestEmail: "guest@example.com",
         },
       };
@@ -553,14 +552,14 @@ describe("Webhook Handler", () => {
       expect(mockTransactionFindFirst).toHaveBeenCalledWith({
         where: {
           guest_email: "guest@example.com",
-          resource_id: "resource-123",
+          resource_id: "material-123",
           status: "PENDING",
         },
         select: { id: true },
       });
     });
 
-    it("handles missing resourceId in metadata", async () => {
+    it("handles missing materialId in metadata", async () => {
       const incompletePaymentIntent = {
         id: "pi_failed123",
         metadata: {},
@@ -581,7 +580,7 @@ describe("Webhook Handler", () => {
       const incompletePaymentIntent = {
         id: "pi_failed123",
         metadata: {
-          resourceId: "resource-123",
+          materialId: "material-123",
         },
       };
       const event = createMockStripeEvent("payment_intent.payment_failed", incompletePaymentIntent);

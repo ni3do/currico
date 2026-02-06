@@ -10,7 +10,7 @@ import { XCircle, ArrowLeft, ShoppingBag, HelpCircle } from "lucide-react";
 
 export default function CheckoutCancelPage() {
   const searchParams = useSearchParams();
-  const resourceId = searchParams.get("resource_id");
+  const materialId = searchParams.get("resource_id");
   const t = useTranslations("checkoutCancel");
   const tCommon = useTranslations("common");
 
@@ -23,7 +23,7 @@ export default function CheckoutCancelPage() {
           {/* Breadcrumb */}
           <Breadcrumb
             items={[
-              { label: tCommon("breadcrumb.checkout"), href: "/resources" },
+              { label: tCommon("breadcrumb.checkout"), href: "/materialien" },
               { label: tCommon("breadcrumb.checkoutCancel") },
             ]}
             className="mb-4"
@@ -51,9 +51,9 @@ export default function CheckoutCancelPage() {
 
               {/* Action Buttons */}
               <div className="grid gap-3 sm:grid-cols-2">
-                {resourceId && (
+                {materialId && (
                   <Link
-                    href={`/resources/${resourceId}`}
+                    href={`/materialien/${materialId}`}
                     className="group bg-primary hover:bg-primary-hover flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 font-semibold text-white shadow-md transition-all hover:shadow-lg"
                   >
                     <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
@@ -61,9 +61,9 @@ export default function CheckoutCancelPage() {
                   </Link>
                 )}
                 <Link
-                  href="/resources"
+                  href="/materialien"
                   className={`group border-border bg-surface text-text hover:border-primary hover:bg-primary/5 flex items-center justify-center gap-2 rounded-xl border-2 px-6 py-3.5 font-semibold transition-all ${
-                    !resourceId ? "sm:col-span-2" : ""
+                    !materialId ? "sm:col-span-2" : ""
                   }`}
                 >
                   <ShoppingBag className="h-4 w-4" />

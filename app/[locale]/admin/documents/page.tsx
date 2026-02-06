@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 
-interface AdminResource {
+interface AdminMaterial {
   id: string;
   title: string;
   description: string;
@@ -27,7 +27,7 @@ interface AdminResource {
 }
 
 interface PaginatedResponse {
-  resources: AdminResource[];
+  materials: AdminMaterial[];
   pagination: {
     page: number;
     limit: number;
@@ -49,17 +49,17 @@ const statusColors: Record<string, string> = {
 };
 
 export default function AdminDocumentsPage() {
-  const [resources, setResources] = useState<AdminResource[]>([]);
+  const [materials, setMaterials] = useState<AdminMaterial[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("pending");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
-  const [selectedResource, setSelectedResource] = useState<AdminResource | null>(null);
+  const [selectedMaterial, setSelectedMaterial] = useState<AdminMaterial | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
 
-  const fetchResources = useCallback(async () => {
+  const fetchMaterials = useCallback(async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams({
@@ -68,37 +68,37 @@ export default function AdminDocumentsPage() {
         status: statusFilter,
       });
 
-      const response = await fetch(`/api/admin/resources?${params}`);
+      const response = await fetch(`/api/admin/materials?${params}`);
       if (response.ok) {
         const data: PaginatedResponse = await response.json();
-        setResources(data.resources);
+        setMaterials(data.materials);
         setTotalPages(data.pagination.totalPages);
         setTotal(data.pagination.total);
       }
     } catch (error) {
-      console.error("Error fetching resources:", error);
+      console.error("Error fetching materials:", error);
     } finally {
       setLoading(false);
     }
   }, [page, statusFilter]);
 
   useEffect(() => {
-    fetchResources();
-  }, [fetchResources]);
+    fetchMaterials();
+  }, [fetchMaterials]);
 
-  const handleVerify = async (resourceId: string) => {
+  const handleVerify = async (materialId: string) => {
     setActionLoading(true);
     try {
-      const response = await fetch("/api/admin/resources", {
+      const response = await fetch("/api/admin/materials", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: resourceId, status: "VERIFIED" }),
+        body: JSON.stringify({ id: materialId, status: "VERIFIED" }),
       });
 
       if (response.ok) {
-        fetchResources();
+        fetchMaterials();
         setShowModal(false);
-        setSelectedResource(null);
+        setSelectedMaterial(null);
       } else {
         const error = await response.json();
         alert(error.error || "Fehler beim Verifizieren");
@@ -110,19 +110,19 @@ export default function AdminDocumentsPage() {
     }
   };
 
-  const handleReject = async (resourceId: string) => {
+  const handleReject = async (materialId: string) => {
     setActionLoading(true);
     try {
-      const response = await fetch("/api/admin/resources", {
+      const response = await fetch("/api/admin/materials", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: resourceId, status: "REJECTED" }),
+        body: JSON.stringify({ id: materialId, status: "REJECTED" }),
       });
 
       if (response.ok) {
-        fetchResources();
+        fetchMaterials();
         setShowModal(false);
-        setSelectedResource(null);
+        setSelectedMaterial(null);
       } else {
         const error = await response.json();
         alert(error.error || "Fehler beim Ablehnen");
@@ -134,19 +134,19 @@ export default function AdminDocumentsPage() {
     }
   };
 
-  const handleResetToPending = async (resourceId: string) => {
+  const handleResetToPending = async (materialId: string) => {
     setActionLoading(true);
     try {
-      const response = await fetch("/api/admin/resources", {
+      const response = await fetch("/api/admin/materials", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: resourceId, status: "PENDING" }),
+        body: JSON.stringify({ id: materialId, status: "PENDING" }),
       });
 
       if (response.ok) {
-        fetchResources();
+        fetchMaterials();
         setShowModal(false);
-        setSelectedResource(null);
+        setSelectedMaterial(null);
       } else {
         const error = await response.json();
         alert(error.error || "Fehler beim Zurücksetzen");
@@ -158,8 +158,8 @@ export default function AdminDocumentsPage() {
     }
   };
 
-  const openResourceModal = (resource: AdminResource) => {
-    setSelectedResource(resource);
+  const openMaterialModal = (material: AdminMaterial) => {
+    setSelectedMaterial(material);
     setShowModal(true);
   };
 
@@ -235,32 +235,32 @@ export default function AdminDocumentsPage() {
                     Laden...
                   </td>
                 </tr>
-              ) : resources.length === 0 ? (
+              ) : materials.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="text-text-muted px-6 py-12 text-center">
                     Keine Dokumente gefunden
                   </td>
                 </tr>
               ) : (
-                resources.map((resource) => (
-                  <tr key={resource.id} className="hover:bg-bg transition-colors">
+                materials.map((material) => (
+                  <tr key={material.id} className="hover:bg-bg transition-colors">
                     <td className="px-6 py-4">
-                      <div className="text-text font-medium">{resource.title}</div>
-                      <div className="text-text-muted text-sm">{resource.priceFormatted}</div>
+                      <div className="text-text font-medium">{material.title}</div>
+                      <div className="text-text-muted text-sm">{material.priceFormatted}</div>
                     </td>
                     <td className="text-text-muted px-6 py-4">
-                      {resource.seller.display_name || resource.seller.email}
+                      {material.seller.display_name || material.seller.email}
                     </td>
-                    <td className="text-text-muted px-6 py-4">{resource.subjects[0] || "-"}</td>
+                    <td className="text-text-muted px-6 py-4">{material.subjects[0] || "-"}</td>
                     <td className="px-6 py-4">
                       <span
-                        className={`rounded-full px-3 py-1 text-xs font-medium ${statusColors[resource.status] || statusColors.PENDING}`}
+                        className={`rounded-full px-3 py-1 text-xs font-medium ${statusColors[material.status] || statusColors.PENDING}`}
                       >
-                        {statusLabels[resource.status] || resource.status}
+                        {statusLabels[material.status] || material.status}
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      {resource.is_public ? (
+                      {material.is_public ? (
                         <span className="flex items-center gap-1 text-[var(--badge-success-text)]">
                           <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
@@ -287,11 +287,11 @@ export default function AdminDocumentsPage() {
                       )}
                     </td>
                     <td className="text-text-muted px-6 py-4">
-                      {new Date(resource.created_at).toLocaleDateString("de-CH")}
+                      {new Date(material.created_at).toLocaleDateString("de-CH")}
                     </td>
                     <td className="px-6 py-4 text-right">
                       <button
-                        onClick={() => openResourceModal(resource)}
+                        onClick={() => openMaterialModal(material)}
                         className="btn-primary rounded-lg px-4 py-1.5 text-xs"
                       >
                         Prüfen
@@ -329,7 +329,7 @@ export default function AdminDocumentsPage() {
       )}
 
       {/* Resource Detail Modal */}
-      {showModal && selectedResource && (
+      {showModal && selectedMaterial && (
         <div className="modal-overlay">
           <div className="modal-content modal-lg mx-4">
             <div className="mb-4 flex items-center justify-between">
@@ -337,7 +337,7 @@ export default function AdminDocumentsPage() {
               <button
                 onClick={() => {
                   setShowModal(false);
-                  setSelectedResource(null);
+                  setSelectedMaterial(null);
                 }}
                 className="text-text-muted hover:text-text"
               >
@@ -355,20 +355,20 @@ export default function AdminDocumentsPage() {
             {/* Resource Details */}
             <div className="mb-6 space-y-4">
               <div>
-                <h4 className="text-text text-lg font-semibold">{selectedResource.title}</h4>
-                <p className="text-text-muted mt-1 text-sm">{selectedResource.description}</p>
+                <h4 className="text-text text-lg font-semibold">{selectedMaterial.title}</h4>
+                <p className="text-text-muted mt-1 text-sm">{selectedMaterial.description}</p>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="border-border rounded-lg border p-4">
                   <div className="text-text-muted mb-1 text-sm">Verkäufer</div>
                   <div className="text-text">
-                    {selectedResource.seller.display_name || selectedResource.seller.email}
+                    {selectedMaterial.seller.display_name || selectedMaterial.seller.email}
                   </div>
                 </div>
                 <div className="border-border rounded-lg border p-4">
                   <div className="text-text-muted mb-1 text-sm">Preis</div>
-                  <div className="text-text font-medium">{selectedResource.priceFormatted}</div>
+                  <div className="text-text font-medium">{selectedMaterial.priceFormatted}</div>
                 </div>
               </div>
 
@@ -376,7 +376,7 @@ export default function AdminDocumentsPage() {
                 <div className="border-border rounded-lg border p-4">
                   <div className="text-text-muted mb-1 text-sm">Fächer</div>
                   <div className="flex flex-wrap gap-1">
-                    {selectedResource.subjects.map((subject) => (
+                    {selectedMaterial.subjects.map((subject) => (
                       <span
                         key={subject}
                         className="bg-bg text-text rounded-full px-2 py-1 text-xs"
@@ -389,7 +389,7 @@ export default function AdminDocumentsPage() {
                 <div className="border-border rounded-lg border p-4">
                   <div className="text-text-muted mb-1 text-sm">Zyklen</div>
                   <div className="flex flex-wrap gap-1">
-                    {selectedResource.cycles.map((cycle) => (
+                    {selectedMaterial.cycles.map((cycle) => (
                       <span key={cycle} className="bg-bg text-text rounded-full px-2 py-1 text-xs">
                         {cycle}
                       </span>
@@ -402,25 +402,25 @@ export default function AdminDocumentsPage() {
                 <div className="border-border rounded-lg border p-4">
                   <div className="text-text-muted mb-1 text-sm">Aktueller Status</div>
                   <span
-                    className={`rounded-full px-3 py-1 text-xs font-medium ${statusColors[selectedResource.status] || statusColors.PENDING}`}
+                    className={`rounded-full px-3 py-1 text-xs font-medium ${statusColors[selectedMaterial.status] || statusColors.PENDING}`}
                   >
-                    {statusLabels[selectedResource.status] || selectedResource.status}
+                    {statusLabels[selectedMaterial.status] || selectedMaterial.status}
                   </span>
                 </div>
                 <div className="border-border rounded-lg border p-4">
                   <div className="text-text-muted mb-1 text-sm">Sichtbarkeit</div>
                   <div className="text-text">
-                    {selectedResource.is_public ? "Öffentlich" : "Nur für Besitzer"}
+                    {selectedMaterial.is_public ? "Öffentlich" : "Nur für Besitzer"}
                   </div>
                 </div>
               </div>
 
               {/* File Preview Link */}
-              {selectedResource.file_url && (
+              {selectedMaterial.file_url && (
                 <div className="border-border rounded-lg border p-4">
                   <div className="text-text-muted mb-2 text-sm">Dokument</div>
                   <a
-                    href={`/api/resources/${selectedResource.id}/download`}
+                    href={`/api/materials/${selectedMaterial.id}/download`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-primary inline-flex items-center gap-2 hover:underline"
@@ -443,9 +443,9 @@ export default function AdminDocumentsPage() {
             <div className="border-border border-t pt-4">
               <div className="text-text mb-3 text-sm font-medium">Aktion wählen:</div>
               <div className="grid grid-cols-3 gap-3">
-                {selectedResource.status !== "VERIFIED" && (
+                {selectedMaterial.status !== "VERIFIED" && (
                   <button
-                    onClick={() => handleVerify(selectedResource.id)}
+                    onClick={() => handleVerify(selectedMaterial.id)}
                     disabled={actionLoading}
                     className="flex items-center justify-center gap-2 rounded-lg bg-[var(--badge-success-bg)] px-4 py-3 text-sm font-medium text-[var(--badge-success-text)] hover:opacity-90 disabled:opacity-50"
                   >
@@ -460,9 +460,9 @@ export default function AdminDocumentsPage() {
                     Verifizieren
                   </button>
                 )}
-                {selectedResource.status !== "REJECTED" && (
+                {selectedMaterial.status !== "REJECTED" && (
                   <button
-                    onClick={() => handleReject(selectedResource.id)}
+                    onClick={() => handleReject(selectedMaterial.id)}
                     disabled={actionLoading}
                     className="flex items-center justify-center gap-2 rounded-lg bg-[var(--badge-error-bg)] px-4 py-3 text-sm font-medium text-[var(--badge-error-text)] hover:opacity-90 disabled:opacity-50"
                   >
@@ -477,9 +477,9 @@ export default function AdminDocumentsPage() {
                     Ablehnen
                   </button>
                 )}
-                {selectedResource.status !== "PENDING" && (
+                {selectedMaterial.status !== "PENDING" && (
                   <button
-                    onClick={() => handleResetToPending(selectedResource.id)}
+                    onClick={() => handleResetToPending(selectedMaterial.id)}
                     disabled={actionLoading}
                     className="flex items-center justify-center gap-2 rounded-lg bg-[var(--badge-warning-bg)] px-4 py-3 text-sm font-medium text-[var(--badge-warning-text)] hover:opacity-90 disabled:opacity-50"
                   >
@@ -501,7 +501,7 @@ export default function AdminDocumentsPage() {
               <button
                 onClick={() => {
                   setShowModal(false);
-                  setSelectedResource(null);
+                  setSelectedMaterial(null);
                 }}
                 className="border-border bg-surface text-text hover:bg-bg w-full rounded-lg border px-4 py-2.5 text-sm font-medium"
               >

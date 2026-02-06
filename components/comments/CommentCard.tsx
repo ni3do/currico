@@ -37,7 +37,7 @@ interface Comment {
 
 interface CommentCardProps {
   comment: Comment;
-  resourceId: string;
+  materialId: string;
   onReplyAdded?: () => void;
   onCommentDeleted?: () => void;
   onCommentUpdated?: () => void;
@@ -47,7 +47,7 @@ interface CommentCardProps {
 
 export function CommentCard({
   comment,
-  resourceId,
+  materialId,
   onReplyAdded,
   onCommentDeleted,
   onCommentUpdated,
@@ -314,7 +314,7 @@ export function CommentCard({
             className="border-border mt-4 space-y-3 overflow-hidden border-l-2 pl-4"
           >
             {localReplies.map((reply) => (
-              <ReplyCard key={reply.id} reply={reply} resourceId={resourceId} />
+              <ReplyCard key={reply.id} reply={reply} materialId={materialId} />
             ))}
           </motion.div>
         )}
@@ -326,7 +326,7 @@ export function CommentCard({
 // Reply Card (simplified version of CommentCard)
 interface ReplyCardProps {
   reply: Reply;
-  resourceId: string;
+  materialId: string;
   onDeleted?: () => void;
 }
 

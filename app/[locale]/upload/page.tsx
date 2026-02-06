@@ -13,7 +13,6 @@ import {
   StepNavigationBar,
   DraftIndicator,
   DraftRestoredToast,
-  StepSummary,
   EnhancedCurriculumSelector,
   FormField,
   FormInput,
@@ -63,7 +62,7 @@ function UploadPageContent() {
   const [fileLoadingProgress, setFileLoadingProgress] = useState(0);
   const [isLoadingFiles, setIsLoadingFiles] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [createdResourceId, setCreatedResourceId] = useState<string | null>(null);
+  const [createdMaterialId, setCreatedMaterialId] = useState<string | null>(null);
   const [showDraftToast, setShowDraftToast] = useState(false);
 
   const mainFileInputRef = useRef<HTMLInputElement>(null);
@@ -225,7 +224,7 @@ function UploadPageContent() {
           const result = JSON.parse(xhr.responseText);
           setUploadProgress(100);
           setUploadStatus("success");
-          setCreatedResourceId(result.resource?.id);
+          setCreatedMaterialId(result.material?.id);
 
           // Clear draft on success
           localStorage.removeItem("currico_upload_draft");
@@ -253,7 +252,7 @@ function UploadPageContent() {
       setUploadStatus("error");
     });
 
-    xhr.open("POST", "/api/resources");
+    xhr.open("POST", "/api/materials");
     xhr.send(apiFormData);
   };
 
@@ -290,185 +289,204 @@ function UploadPageContent() {
     <div className="flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="flex-1 px-4 py-4 sm:px-6 lg:px-8">
+      <main className="flex-1 px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
         <div className="mx-auto max-w-6xl">
           {/* Breadcrumb */}
-          <Breadcrumb items={[{ label: tCommon("breadcrumb.upload") }]} className="mb-4" />
+          <Breadcrumb items={[{ label: tCommon("breadcrumb.upload") }]} className="mb-6" />
 
           {/* Page Header */}
-          <div className="mb-4 flex items-center justify-between">
-            <h1 className="text-text text-xl font-semibold">Ressource hochladen</h1>
+          <div className="mb-6 flex items-center justify-between">
+            <div>
+              <h1 className="text-text text-2xl font-bold tracking-tight sm:text-3xl">
+                Material hochladen
+              </h1>
+              <p className="text-text-muted mt-1 text-sm">
+                Teilen Sie Ihre Unterrichtsmaterialien mit der Currico-Community
+              </p>
+            </div>
           </div>
 
           {/* Step Navigation */}
           <StepNavigationBar />
 
-          {/* Main Content Grid */}
-          <div className="grid gap-8 lg:grid-cols-3">
-            {/* Form Column */}
-            <div className="lg:col-span-2">
-              {/* Draft Indicator */}
-              <div className="mb-6">
-                <DraftIndicator />
-              </div>
+          {/* Main Content */}
+          <div className="mx-auto max-w-3xl">
+            {/* Draft Indicator */}
+            <div className="mb-6">
+              <DraftIndicator />
+            </div>
 
-              {/* Form Card */}
-              <div className="border-border bg-surface rounded-2xl border p-6 sm:p-8">
-                {/* Step 1: Basics */}
-                {currentStep === 1 && (
-                  <div className="space-y-6">
-                    <h2 className="text-text text-xl font-semibold">Grundinformationen</h2>
+            {/* Form Card */}
+            <div className="border-border bg-surface rounded-2xl border p-6 shadow-lg shadow-black/5 transition-shadow duration-300 hover:shadow-xl sm:p-8">
+              {/* Step 1: Basics */}
+              {currentStep === 1 && (
+                <div className="space-y-6">
+                  <div className="border-primary/20 border-b pb-4">
+                    <h2 className="text-text text-xl font-bold">Grundinformationen</h2>
+                    <p className="text-text-muted mt-1 text-sm">Beschreiben Sie Ihr Material</p>
+                  </div>
 
-                    <FormField
-                      label="Titel"
-                      tooltipKey="title"
-                      required
-                      error={getFieldError("title")}
-                      touched={touchedFields.title}
-                      hint="Wählen Sie einen aussagekräftigen Titel (5-100 Zeichen)"
-                    >
-                      <FormInput
-                        type="text"
-                        value={formData.title}
-                        onChange={(e) => updateFormData("title", e.target.value)}
-                        onBlur={() => markFieldTouched("title")}
-                        hasError={touchedFields.title && !!getFieldError("title")}
-                        placeholder="z.B. Bruchrechnen Übungsblätter Zyklus 2"
-                        maxLength={100}
-                      />
+                  <FormField
+                    label="Titel"
+                    tooltipKey="title"
+                    required
+                    error={getFieldError("title")}
+                    touched={touchedFields.title}
+                    hint="Wählen Sie einen aussagekräftigen Titel (5-100 Zeichen)"
+                  >
+                    <FormInput
+                      type="text"
+                      value={formData.title}
+                      onChange={(e) => updateFormData("title", e.target.value)}
+                      onBlur={() => markFieldTouched("title")}
+                      hasError={touchedFields.title && !!getFieldError("title")}
+                      placeholder="z.B. Bruchrechnen Übungsblätter Zyklus 2"
+                      maxLength={100}
+                    />
+                  </FormField>
+
+                  <FormField
+                    label="Kurzbeschreibung"
+                    tooltipKey="description"
+                    required
+                    error={getFieldError("description")}
+                    touched={touchedFields.description}
+                    hint={`${formData.description.length}/2000 Zeichen (min. 20)`}
+                  >
+                    <FormTextarea
+                      value={formData.description}
+                      onChange={(e) => updateFormData("description", e.target.value)}
+                      onBlur={() => markFieldTouched("description")}
+                      hasError={touchedFields.description && !!getFieldError("description")}
+                      placeholder="Beschreiben Sie Ihr Material kurz..."
+                      rows={4}
+                      maxLength={2000}
+                    />
+                  </FormField>
+
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <FormField label="Sprache" tooltipKey="language" required>
+                      <FormSelect
+                        value={formData.language}
+                        onChange={(e) => updateFormData("language", e.target.value)}
+                      >
+                        <option value="de">Deutsch</option>
+                        <option value="en">Englisch</option>
+                        <option value="fr">Französisch</option>
+                        <option value="it">Italienisch</option>
+                      </FormSelect>
                     </FormField>
 
-                    <FormField
-                      label="Kurzbeschreibung"
-                      tooltipKey="description"
-                      required
-                      error={getFieldError("description")}
-                      touched={touchedFields.description}
-                      hint={`${formData.description.length}/2000 Zeichen (min. 20)`}
-                    >
-                      <FormTextarea
-                        value={formData.description}
-                        onChange={(e) => updateFormData("description", e.target.value)}
-                        onBlur={() => markFieldTouched("description")}
-                        hasError={touchedFields.description && !!getFieldError("description")}
-                        placeholder="Beschreiben Sie Ihre Ressource kurz..."
-                        rows={4}
-                        maxLength={2000}
-                      />
+                    <FormField label="Materialtyp" tooltipKey="resourceType" required>
+                      <FormSelect
+                        value={formData.resourceType}
+                        onChange={(e) => updateFormData("resourceType", e.target.value)}
+                      >
+                        <option value="pdf">PDF</option>
+                        <option value="word">Word</option>
+                        <option value="powerpoint">PowerPoint</option>
+                        <option value="excel">Excel</option>
+                        <option value="other">Andere</option>
+                      </FormSelect>
                     </FormField>
+                  </div>
 
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <FormField label="Sprache" tooltipKey="language" required>
-                        <FormSelect
-                          value={formData.language}
-                          onChange={(e) => updateFormData("language", e.target.value)}
-                        >
-                          <option value="de">Deutsch</option>
-                          <option value="en">Englisch</option>
-                          <option value="fr">Französisch</option>
-                          <option value="it">Italienisch</option>
-                        </FormSelect>
-                      </FormField>
-
-                      <FormField label="Ressourcentyp" tooltipKey="resourceType" required>
-                        <FormSelect
-                          value={formData.resourceType}
-                          onChange={(e) => updateFormData("resourceType", e.target.value)}
-                        >
-                          <option value="pdf">PDF</option>
-                          <option value="word">Word</option>
-                          <option value="powerpoint">PowerPoint</option>
-                          <option value="excel">Excel</option>
-                          <option value="other">Andere</option>
-                        </FormSelect>
-                      </FormField>
-                    </div>
-
-                    {/* Eszett Warning */}
-                    {eszettCheck.hasAny && (
-                      <div className="border-warning/50 bg-warning/10 rounded-xl border p-4">
-                        <div className="flex items-start gap-3">
-                          <AlertTriangle className="text-warning h-5 w-5 flex-shrink-0" />
-                          <div className="flex-1">
-                            <h4 className="text-warning font-medium">Eszett (ß) gefunden</h4>
-                            <p className="text-text mt-1 text-sm">
-                              Ihr Text enthält {eszettCheck.totalCount} Eszett-Zeichen (ß). In der
-                              Schweiz wird stattdessen &quot;ss&quot; verwendet.
-                            </p>
-                            <button
-                              type="button"
-                              onClick={handleFixEszett}
-                              className="bg-warning text-text-on-accent hover:bg-warning/90 mt-3 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
-                            >
-                              Automatisch zu &quot;ss&quot; ändern
-                            </button>
-                          </div>
+                  {/* Eszett Warning */}
+                  {eszettCheck.hasAny && (
+                    <div className="border-warning/50 bg-warning/10 rounded-xl border p-4">
+                      <div className="flex items-start gap-3">
+                        <AlertTriangle className="text-warning h-5 w-5 flex-shrink-0" />
+                        <div className="flex-1">
+                          <h4 className="text-warning font-medium">Eszett (ß) gefunden</h4>
+                          <p className="text-text mt-1 text-sm">
+                            Ihr Text enthält {eszettCheck.totalCount} Eszett-Zeichen (ß). In der
+                            Schweiz wird stattdessen &quot;ss&quot; verwendet.
+                          </p>
+                          <button
+                            type="button"
+                            onClick={handleFixEszett}
+                            className="bg-warning text-text-on-accent hover:bg-warning/90 mt-3 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+                          >
+                            Automatisch zu &quot;ss&quot; ändern
+                          </button>
                         </div>
                       </div>
-                    )}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Step 2: Curriculum */}
+              {currentStep === 2 && (
+                <div className="space-y-6">
+                  <div className="border-primary/20 border-b pb-4">
+                    <h2 className="text-text text-xl font-bold">Lehrplan-Zuordnung</h2>
+                    <p className="text-text-muted mt-1 text-sm">
+                      Wählen Sie Zyklus, Fach und Kompetenzen
+                    </p>
                   </div>
-                )}
 
-                {/* Step 2: Curriculum */}
-                {currentStep === 2 && (
-                  <div className="space-y-6">
-                    <h2 className="text-text text-xl font-semibold">Lehrplan-Zuordnung</h2>
+                  <EnhancedCurriculumSelector
+                    cycle={formData.cycle}
+                    subject={formData.subject}
+                    subjectCode={formData.subjectCode}
+                    canton={formData.canton}
+                    competencies={formData.competencies}
+                    onCycleChange={(cycle) => updateFormData("cycle", cycle)}
+                    onSubjectChange={(subject, code) => {
+                      updateFormData("subject", subject);
+                      updateFormData("subjectCode", code || "");
+                    }}
+                    onCantonChange={(canton) => updateFormData("canton", canton)}
+                    onCompetenciesChange={(comps) => updateFormData("competencies", comps)}
+                    touchedCycle={touchedFields.cycle}
+                    touchedSubject={touchedFields.subject}
+                    cycleError={getFieldError("cycle")}
+                    subjectError={getFieldError("subject")}
+                    onCycleBlur={() => markFieldTouched("cycle")}
+                    onSubjectBlur={() => markFieldTouched("subject")}
+                  />
+                </div>
+              )}
 
-                    <EnhancedCurriculumSelector
-                      cycle={formData.cycle}
-                      subject={formData.subject}
-                      subjectCode={formData.subjectCode}
-                      canton={formData.canton}
-                      competencies={formData.competencies}
-                      onCycleChange={(cycle) => updateFormData("cycle", cycle)}
-                      onSubjectChange={(subject, code) => {
-                        updateFormData("subject", subject);
-                        updateFormData("subjectCode", code || "");
-                      }}
-                      onCantonChange={(canton) => updateFormData("canton", canton)}
-                      onCompetenciesChange={(comps) => updateFormData("competencies", comps)}
-                      touchedCycle={touchedFields.cycle}
-                      touchedSubject={touchedFields.subject}
-                      cycleError={getFieldError("cycle")}
-                      subjectError={getFieldError("subject")}
-                      onCycleBlur={() => markFieldTouched("cycle")}
-                      onSubjectBlur={() => markFieldTouched("subject")}
-                    />
+              {/* Step 3: Properties & Price */}
+              {currentStep === 3 && (
+                <div className="space-y-6">
+                  <div className="border-primary/20 border-b pb-4">
+                    <h2 className="text-text text-xl font-bold">Preis festlegen</h2>
+                    <p className="text-text-muted mt-1 text-sm">
+                      Wählen Sie, ob Ihr Material kostenlos oder kostenpflichtig ist
+                    </p>
                   </div>
-                )}
 
-                {/* Step 3: Properties & Price */}
-                {currentStep === 3 && (
-                  <div className="space-y-6">
-                    <h2 className="text-text text-xl font-semibold">Eigenschaften & Preis</h2>
+                  <FormField label="Preismodell" tooltipKey="priceType" required>
+                    <div className="grid grid-cols-2 gap-4">
+                      <RadioOption
+                        value="free"
+                        checked={formData.priceType === "free"}
+                        onChange={(val) => updateFormData("priceType", val as "free" | "paid")}
+                        label="Kostenlos"
+                        description="Frei für alle zugänglich"
+                      />
+                      <RadioOption
+                        value="paid"
+                        checked={formData.priceType === "paid"}
+                        onChange={(val) => updateFormData("priceType", val as "free" | "paid")}
+                        label="Kostenpflichtig"
+                        description="CHF 1 – 50"
+                      />
+                    </div>
+                  </FormField>
 
-                    <FormField label="Preistyp" tooltipKey="priceType" required>
-                      <div className="grid grid-cols-2 gap-4">
-                        <RadioOption
-                          value="free"
-                          checked={formData.priceType === "free"}
-                          onChange={(val) => updateFormData("priceType", val as "free" | "paid")}
-                          label="Kostenlos"
-                          description="Frei zugänglich"
-                        />
-                        <RadioOption
-                          value="paid"
-                          checked={formData.priceType === "paid"}
-                          onChange={(val) => updateFormData("priceType", val as "free" | "paid")}
-                          label="Kostenpflichtig"
-                          description="Preis festlegen"
-                        />
-                      </div>
-                    </FormField>
-
-                    {formData.priceType === "paid" && (
+                  {formData.priceType === "paid" && (
+                    <div>
                       <FormField
                         label="Preis (CHF)"
                         tooltipKey="price"
                         required
                         error={getFieldError("price")}
                         touched={touchedFields.price}
-                        hint="Sie erhalten 70% des Verkaufspreises (30% Plattformgebühr)"
+                        hint="Sie erhalten 70% des Verkaufspreises (30% Plattformgebühr). Maximum: CHF 50.00"
                       >
                         <div className="relative">
                           <FormInput
@@ -481,305 +499,310 @@ function UploadPageContent() {
                             max="50"
                             step="0.50"
                             placeholder="z.B. 5.00"
-                            className="pl-12"
+                            className="pl-14"
                           />
-                          <span className="text-text-muted absolute top-1/2 left-4 -translate-y-1/2">
+                          <span className="text-text-muted absolute top-1/2 left-4 -translate-y-1/2 font-medium">
                             CHF
                           </span>
                         </div>
                       </FormField>
-                    )}
 
-                    <FormCheckbox
-                      checked={formData.editable}
-                      onChange={(checked) => updateFormData("editable", checked)}
-                      label="Editierbar"
-                      description="Käufer können die Datei bearbeiten (z.B. Word-Dokument)"
-                      tooltipKey="editable"
-                    />
-                  </div>
-                )}
-
-                {/* Step 4: Files & Legal */}
-                {currentStep === 4 && (
-                  <div className="space-y-6">
-                    <h2 className="text-text text-xl font-semibold">Dateien & Vorschau</h2>
-
-                    {/* Main File Upload */}
-                    <FormField
-                      label="Hauptdatei(en)"
-                      tooltipKey="files"
-                      required
-                      error={getFieldError("files")}
-                      touched={touchedFields.files}
-                    >
-                      {isLoadingFiles ? (
-                        <div className="border-primary bg-primary/5 rounded-xl border-2 p-8">
-                          <div className="text-center">
-                            <Loader2 className="text-primary mx-auto h-12 w-12 animate-spin" />
-                            <p className="text-text mt-4 text-sm font-medium">
-                              Datei wird geladen...
-                            </p>
-                            <div className="mx-auto mt-4 max-w-xs">
-                              <div className="bg-border h-3 overflow-hidden rounded-full">
-                                <div
-                                  className="from-primary to-success h-full bg-gradient-to-r transition-all"
-                                  style={{ width: `${fileLoadingProgress}%` }}
-                                />
-                              </div>
-                              <p className="text-primary mt-2 text-sm font-medium">
-                                {fileLoadingProgress}%
-                              </p>
-                            </div>
+                      {/* Price preview */}
+                      {formData.price && parseFloat(formData.price) > 0 && (
+                        <div className="border-success/30 bg-success/5 mt-4 rounded-xl border p-4">
+                          <div className="flex items-center justify-between">
+                            <span className="text-text-muted text-sm">
+                              Ihr Verdienst pro Verkauf:
+                            </span>
+                            <span className="text-success text-lg font-bold">
+                              CHF {(parseFloat(formData.price) * 0.7).toFixed(2)}
+                            </span>
                           </div>
-                        </div>
-                      ) : files.length === 0 ? (
-                        <div
-                          onClick={() => mainFileInputRef.current?.click()}
-                          className={`cursor-pointer rounded-xl border-2 border-dashed p-8 text-center transition-colors ${
-                            touchedFields.files && getFieldError("files")
-                              ? "border-error bg-error/5 hover:border-error"
-                              : "border-border bg-bg hover:border-primary"
-                          } `}
-                        >
-                          <Upload className="text-text-muted mx-auto h-12 w-12" />
-                          <p className="text-text mt-2 text-sm">
-                            Klicken Sie hier oder ziehen Sie Dateien hinein
-                          </p>
-                          <p className="text-text-muted mt-1 text-xs">
-                            PDF, Word, PowerPoint, Excel bis 50 MB
-                          </p>
-                          <input
-                            ref={mainFileInputRef}
-                            type="file"
-                            multiple
-                            className="hidden"
-                            accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
-                            onChange={handleMainFilesChange}
-                          />
-                        </div>
-                      ) : (
-                        <div className="border-primary bg-primary/5 rounded-xl border-2 p-4">
-                          <div className="space-y-3">
-                            {files.map((file, index) => (
-                              <div
-                                key={index}
-                                className="border-border bg-surface hover:bg-surface-elevated flex items-center gap-4 rounded-lg border p-3 transition-colors"
-                              >
-                                <div
-                                  className="flex flex-1 cursor-pointer items-center gap-4"
-                                  onClick={() => handleFilePreview(file)}
-                                >
-                                  {getFileIcon(file)}
-                                  <div className="min-w-0 flex-1">
-                                    <p className="text-text truncate text-sm font-medium">
-                                      {file.name}
-                                    </p>
-                                    <p className="text-text-muted text-xs">
-                                      {(file.size / 1024 / 1024).toFixed(2)} MB
-                                    </p>
-                                  </div>
-                                  <ExternalLink className="text-text-muted h-4 w-4" />
-                                </div>
-                                <button
-                                  type="button"
-                                  onClick={() => removeFile(index)}
-                                  className="text-text-muted hover:bg-error/10 hover:text-error rounded-lg p-2 transition-colors"
-                                >
-                                  <X className="h-5 w-5" />
-                                </button>
-                              </div>
-                            ))}
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => mainFileInputRef.current?.click()}
-                            className="border-border bg-bg text-text-muted hover:border-primary hover:text-primary mt-3 w-full rounded-lg border border-dashed p-3 text-sm transition-colors"
-                          >
-                            + Weitere Datei hinzufügen
-                          </button>
-                          <input
-                            ref={mainFileInputRef}
-                            type="file"
-                            multiple
-                            className="hidden"
-                            accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
-                            onChange={handleMainFilesChange}
-                          />
                         </div>
                       )}
-                    </FormField>
+                    </div>
+                  )}
+                </div>
+              )}
 
-                    {/* Auto Preview Info */}
-                    <div className="border-success/30 bg-success/5 rounded-xl border p-4">
-                      <div className="flex gap-3">
-                        <Check className="text-success h-5 w-5 flex-shrink-0" />
-                        <div className="text-text text-sm">
-                          <strong>Automatische Vorschau:</strong> Für PDF-Dateien wird automatisch
-                          eine Vorschau aus der ersten Seite erstellt.
+              {/* Step 4: Files & Legal */}
+              {currentStep === 4 && (
+                <div className="space-y-6">
+                  <div className="border-primary/20 border-b pb-4">
+                    <h2 className="text-text text-xl font-bold">Dateien & Rechtliches</h2>
+                    <p className="text-text-muted mt-1 text-sm">
+                      Laden Sie Ihre Dateien hoch und bestätigen Sie die rechtlichen Anforderungen
+                    </p>
+                  </div>
+
+                  {/* Main File Upload */}
+                  <FormField
+                    label="Hauptdatei(en)"
+                    tooltipKey="files"
+                    required
+                    error={getFieldError("files")}
+                    touched={touchedFields.files}
+                  >
+                    {isLoadingFiles ? (
+                      <div className="border-primary bg-primary/5 rounded-xl border-2 p-8">
+                        <div className="text-center">
+                          <Loader2 className="text-primary mx-auto h-12 w-12 animate-spin" />
+                          <p className="text-text mt-4 text-sm font-medium">
+                            Datei wird geladen...
+                          </p>
+                          <div className="mx-auto mt-4 max-w-xs">
+                            <div className="bg-border h-3 overflow-hidden rounded-full">
+                              <div
+                                className="from-primary to-success h-full bg-gradient-to-r transition-all"
+                                style={{ width: `${fileLoadingProgress}%` }}
+                              />
+                            </div>
+                            <p className="text-primary mt-2 text-sm font-medium">
+                              {fileLoadingProgress}%
+                            </p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-
-                    {/* Preview Upload */}
-                    <FormField
-                      label="Eigenes Vorschaubild (optional)"
-                      tooltipKey="previewFiles"
-                      hint="Falls Sie ein eigenes Vorschaubild verwenden möchten"
-                    >
+                    ) : files.length === 0 ? (
                       <div
-                        onClick={() => previewFileInputRef.current?.click()}
-                        className="border-border bg-bg hover:border-primary cursor-pointer rounded-xl border-2 border-dashed p-6 text-center transition-colors"
+                        onClick={() => mainFileInputRef.current?.click()}
+                        className={`cursor-pointer rounded-xl border-2 border-dashed p-8 text-center transition-colors ${
+                          touchedFields.files && getFieldError("files")
+                            ? "border-error bg-error/5 hover:border-error"
+                            : "border-border bg-bg hover:border-primary"
+                        } `}
                       >
-                        <ImageIcon className="text-text-muted mx-auto h-10 w-10" />
-                        <p className="text-text-muted mt-2 text-sm">PNG, JPG bis 5 MB</p>
-                        {previewFiles.length > 0 && (
-                          <p className="text-primary mt-2 text-sm font-medium">
-                            {previewFiles.length} Vorschaubild(er) ausgewählt
-                          </p>
-                        )}
+                        <Upload className="text-text-muted mx-auto h-12 w-12" />
+                        <p className="text-text mt-2 text-sm">
+                          Klicken Sie hier oder ziehen Sie Dateien hinein
+                        </p>
+                        <p className="text-text-muted mt-1 text-xs">
+                          PDF, Word, PowerPoint, Excel bis 50 MB
+                        </p>
                         <input
-                          ref={previewFileInputRef}
+                          ref={mainFileInputRef}
                           type="file"
                           multiple
                           className="hidden"
-                          accept="image/png,image/jpeg"
-                          onChange={handlePreviewFilesChange}
+                          accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
+                          onChange={handleMainFilesChange}
                         />
                       </div>
-                    </FormField>
-
-                    {/* Legal Confirmations */}
-                    <div className="border-border bg-surface-elevated rounded-xl border p-6">
-                      <h3 className="text-text mb-2 text-lg font-semibold">
-                        Rechtliche Bestätigungen
-                      </h3>
-                      <p className="text-text-muted mb-5 text-sm">
-                        Bitte bestätigen Sie alle Punkte, um fortfahren zu können.
-                      </p>
-
-                      <div className="space-y-3">
-                        <FormCheckbox
-                          checked={formData.legalOwnContent}
-                          onChange={(checked) => updateFormData("legalOwnContent", checked)}
-                          label="Eigene Inhalte oder CC0-Lizenz"
-                          description="Ich habe alle Bilder, Grafiken und Texte selbst erstellt oder verwende nur Materialien mit CC0-Lizenz."
-                          hasError={touchedFields.legalOwnContent && !formData.legalOwnContent}
-                          tooltipKey="legalOwnContent"
-                        />
-
-                        <FormCheckbox
-                          checked={formData.legalNoTextbookScans}
-                          onChange={(checked) => updateFormData("legalNoTextbookScans", checked)}
-                          label="Keine Lehrmittel-Scans"
-                          description="Ich habe keine Seiten aus Lehrmitteln oder Schulbüchern eingescannt oder kopiert."
-                          hasError={
-                            touchedFields.legalNoTextbookScans && !formData.legalNoTextbookScans
-                          }
-                          tooltipKey="legalNoTextbookScans"
-                        />
-
-                        <FormCheckbox
-                          checked={formData.legalNoTrademarks}
-                          onChange={(checked) => updateFormData("legalNoTrademarks", checked)}
-                          label="Keine geschützten Marken oder Charaktere"
-                          description="Meine Ressource enthält keine geschützten Marken, Logos oder Figuren."
-                          hasError={touchedFields.legalNoTrademarks && !formData.legalNoTrademarks}
-                          tooltipKey="legalNoTrademarks"
-                        />
-
-                        <FormCheckbox
-                          checked={formData.legalSwissGerman}
-                          onChange={(checked) => updateFormData("legalSwissGerman", checked)}
-                          label="Schweizer Rechtschreibung"
-                          description="Meine Ressource verwendet die Schweizer Rechtschreibung (kein Eszett)."
-                          hasError={touchedFields.legalSwissGerman && !formData.legalSwissGerman}
-                          tooltipKey="legalSwissGerman"
-                        />
-
-                        <FormCheckbox
-                          checked={formData.legalTermsAccepted}
-                          onChange={(checked) => updateFormData("legalTermsAccepted", checked)}
-                          label="Verkäufervereinbarung akzeptieren"
-                          description={
-                            <>
-                              Ich akzeptiere die{" "}
-                              <Link
-                                href="/terms"
-                                target="_blank"
-                                className="text-primary hover:underline"
+                    ) : (
+                      <div className="border-primary bg-primary/5 rounded-xl border-2 p-4">
+                        <div className="space-y-3">
+                          {files.map((file, index) => (
+                            <div
+                              key={index}
+                              className="border-border bg-surface hover:bg-surface-elevated flex items-center gap-4 rounded-lg border p-3 transition-colors"
+                            >
+                              <div
+                                className="flex flex-1 cursor-pointer items-center gap-4"
+                                onClick={() => handleFilePreview(file)}
                               >
-                                Verkäufervereinbarung
-                              </Link>{" "}
-                              und bestätige, dass ich die Rechte habe, diese Ressource zu verkaufen.
-                            </>
-                          }
-                          hasError={
-                            touchedFields.legalTermsAccepted && !formData.legalTermsAccepted
-                          }
-                          tooltipKey="legalTermsAccepted"
+                                {getFileIcon(file)}
+                                <div className="min-w-0 flex-1">
+                                  <p className="text-text truncate text-sm font-medium">
+                                    {file.name}
+                                  </p>
+                                  <p className="text-text-muted text-xs">
+                                    {(file.size / 1024 / 1024).toFixed(2)} MB
+                                  </p>
+                                </div>
+                                <ExternalLink className="text-text-muted h-4 w-4" />
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => removeFile(index)}
+                                className="text-text-muted hover:bg-error/10 hover:text-error rounded-lg p-2 transition-colors"
+                              >
+                                <X className="h-5 w-5" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => mainFileInputRef.current?.click()}
+                          className="border-border bg-bg text-text-muted hover:border-primary hover:text-primary mt-3 w-full rounded-lg border border-dashed p-3 text-sm transition-colors"
+                        >
+                          + Weitere Datei hinzufügen
+                        </button>
+                        <input
+                          ref={mainFileInputRef}
+                          type="file"
+                          multiple
+                          className="hidden"
+                          accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
+                          onChange={handleMainFilesChange}
                         />
                       </div>
+                    )}
+                  </FormField>
 
-                      {!allLegalChecked && (
-                        <div className="bg-warning/10 text-warning mt-4 rounded-lg p-3 text-sm">
-                          <div className="flex items-center gap-2">
-                            <AlertTriangle className="h-4 w-4" />
-                            Bitte bestätigen Sie alle Punkte, um fortzufahren.
-                          </div>
-                        </div>
-                      )}
-
-                      {eszettCheck.hasAny && (
-                        <div className="bg-error/10 text-error mt-4 rounded-lg p-3 text-sm">
-                          <div className="flex items-center gap-2">
-                            <AlertTriangle className="h-4 w-4" />
-                            Ihr Titel oder Beschreibung enthält noch Eszett-Zeichen (ß). Bitte
-                            korrigieren Sie dies in Schritt 1.
-                          </div>
-                        </div>
-                      )}
+                  {/* Auto Preview Info */}
+                  <div className="border-success/30 bg-success/5 rounded-xl border p-4">
+                    <div className="flex gap-3">
+                      <Check className="text-success h-5 w-5 flex-shrink-0" />
+                      <div className="text-text text-sm">
+                        <strong>Automatische Vorschau:</strong> Für PDF-Dateien wird automatisch
+                        eine Vorschau aus der ersten Seite erstellt.
+                      </div>
                     </div>
                   </div>
-                )}
 
-                {/* Navigation Buttons */}
-                <div className="border-border mt-8 flex justify-between border-t pt-6">
+                  {/* Preview Upload */}
+                  <FormField
+                    label="Eigenes Vorschaubild (optional)"
+                    tooltipKey="previewFiles"
+                    hint="Falls Sie ein eigenes Vorschaubild verwenden möchten"
+                  >
+                    <div
+                      onClick={() => previewFileInputRef.current?.click()}
+                      className="border-border bg-bg hover:border-primary cursor-pointer rounded-xl border-2 border-dashed p-6 text-center transition-colors"
+                    >
+                      <ImageIcon className="text-text-muted mx-auto h-10 w-10" />
+                      <p className="text-text-muted mt-2 text-sm">PNG, JPG bis 5 MB</p>
+                      {previewFiles.length > 0 && (
+                        <p className="text-primary mt-2 text-sm font-medium">
+                          {previewFiles.length} Vorschaubild(er) ausgewählt
+                        </p>
+                      )}
+                      <input
+                        ref={previewFileInputRef}
+                        type="file"
+                        multiple
+                        className="hidden"
+                        accept="image/png,image/jpeg"
+                        onChange={handlePreviewFilesChange}
+                      />
+                    </div>
+                  </FormField>
+
+                  {/* Legal Confirmations */}
+                  <div className="border-border bg-surface-elevated rounded-xl border p-6">
+                    <h3 className="text-text mb-2 text-lg font-semibold">
+                      Rechtliche Bestätigungen
+                    </h3>
+                    <p className="text-text-muted mb-5 text-sm">
+                      Bitte bestätigen Sie alle Punkte, um fortfahren zu können.
+                    </p>
+
+                    <div className="space-y-3">
+                      <FormCheckbox
+                        checked={formData.legalOwnContent}
+                        onChange={(checked) => updateFormData("legalOwnContent", checked)}
+                        label="Eigene Inhalte oder CC0-Lizenz"
+                        description="Ich habe alle Bilder, Grafiken und Texte selbst erstellt oder verwende nur Materialien mit CC0-Lizenz."
+                        hasError={touchedFields.legalOwnContent && !formData.legalOwnContent}
+                        tooltipKey="legalOwnContent"
+                      />
+
+                      <FormCheckbox
+                        checked={formData.legalNoTextbookScans}
+                        onChange={(checked) => updateFormData("legalNoTextbookScans", checked)}
+                        label="Keine Lehrmittel-Scans"
+                        description="Ich habe keine Seiten aus Lehrmitteln oder Schulbüchern eingescannt oder kopiert."
+                        hasError={
+                          touchedFields.legalNoTextbookScans && !formData.legalNoTextbookScans
+                        }
+                        tooltipKey="legalNoTextbookScans"
+                      />
+
+                      <FormCheckbox
+                        checked={formData.legalNoTrademarks}
+                        onChange={(checked) => updateFormData("legalNoTrademarks", checked)}
+                        label="Keine geschützten Marken oder Charaktere"
+                        description="Mein Material enthält keine geschützten Marken, Logos oder Figuren."
+                        hasError={touchedFields.legalNoTrademarks && !formData.legalNoTrademarks}
+                        tooltipKey="legalNoTrademarks"
+                      />
+
+                      <FormCheckbox
+                        checked={formData.legalSwissGerman}
+                        onChange={(checked) => updateFormData("legalSwissGerman", checked)}
+                        label="Schweizer Rechtschreibung"
+                        description="Mein Material verwendet die Schweizer Rechtschreibung (kein Eszett)."
+                        hasError={touchedFields.legalSwissGerman && !formData.legalSwissGerman}
+                        tooltipKey="legalSwissGerman"
+                      />
+
+                      <FormCheckbox
+                        checked={formData.legalTermsAccepted}
+                        onChange={(checked) => updateFormData("legalTermsAccepted", checked)}
+                        label="Verkäufervereinbarung akzeptieren"
+                        description={
+                          <>
+                            Ich akzeptiere die{" "}
+                            <Link
+                              href="/terms"
+                              target="_blank"
+                              className="text-primary hover:underline"
+                            >
+                              Verkäufervereinbarung
+                            </Link>{" "}
+                            und bestätige, dass ich die Rechte habe, dieses Material zu verkaufen.
+                          </>
+                        }
+                        hasError={touchedFields.legalTermsAccepted && !formData.legalTermsAccepted}
+                        tooltipKey="legalTermsAccepted"
+                      />
+                    </div>
+
+                    {!allLegalChecked && (
+                      <div className="bg-warning/10 text-warning mt-4 rounded-lg p-3 text-sm">
+                        <div className="flex items-center gap-2">
+                          <AlertTriangle className="h-4 w-4" />
+                          Bitte bestätigen Sie alle Punkte, um fortzufahren.
+                        </div>
+                      </div>
+                    )}
+
+                    {eszettCheck.hasAny && (
+                      <div className="bg-error/10 text-error mt-4 rounded-lg p-3 text-sm">
+                        <div className="flex items-center gap-2">
+                          <AlertTriangle className="h-4 w-4" />
+                          Ihr Titel oder Beschreibung enthält noch Eszett-Zeichen (ß). Bitte
+                          korrigieren Sie dies in Schritt 1.
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Navigation Buttons */}
+              <div className="border-border mt-10 flex justify-between border-t pt-6">
+                <button
+                  type="button"
+                  onClick={goBack}
+                  disabled={currentStep === 1}
+                  className="border-border text-text hover:bg-surface-elevated rounded-xl border-2 px-6 py-3 font-medium transition-all duration-200 hover:shadow-md active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  ← Zurück
+                </button>
+
+                {currentStep < 4 ? (
                   <button
                     type="button"
-                    onClick={goBack}
-                    disabled={currentStep === 1}
-                    className="border-border text-text hover:bg-surface-elevated rounded-lg border px-6 py-3 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                    onClick={handleNext}
+                    className="bg-primary text-text-on-accent shadow-primary/25 hover:bg-primary-hover hover:shadow-primary/30 rounded-xl px-8 py-3 font-semibold shadow-lg transition-all duration-200 hover:shadow-xl active:scale-[0.98]"
                   >
-                    Zurück
+                    Weiter →
                   </button>
-
-                  {currentStep < 4 ? (
-                    <button
-                      type="button"
-                      onClick={handleNext}
-                      className="bg-primary text-text-on-accent shadow-primary/20 hover:bg-primary-hover rounded-lg px-8 py-3 font-semibold shadow-lg transition-colors"
-                    >
-                      Weiter
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={handlePublish}
-                      disabled={!canPublish || uploadStatus !== "idle"}
-                      className="bg-primary text-text-on-accent shadow-primary/20 hover:bg-primary-hover rounded-lg px-8 py-3 font-semibold shadow-lg transition-colors disabled:cursor-not-allowed disabled:opacity-50"
-                    >
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handlePublish}
+                    disabled={!canPublish || uploadStatus !== "idle"}
+                    className="from-primary to-primary-hover text-text-on-accent shadow-primary/25 hover:shadow-primary/30 rounded-xl bg-gradient-to-r px-8 py-3 font-semibold shadow-lg transition-all duration-200 hover:shadow-xl active:scale-[0.98] disabled:cursor-not-allowed disabled:from-gray-400 disabled:to-gray-500 disabled:opacity-50"
+                  >
+                    <span className="flex items-center gap-2">
+                      <Check className="h-5 w-5" />
                       Veröffentlichen
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Sidebar - Summary */}
-            <div className="hidden lg:block">
-              <div className="sticky top-24">
-                <StepSummary />
+                    </span>
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -793,40 +816,43 @@ function UploadPageContent() {
 
       {/* Upload Modal */}
       {uploadStatus !== "idle" && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-surface mx-4 w-full max-w-md rounded-2xl p-8 shadow-2xl">
+        <div className="animate-in fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md duration-200">
+          <div className="animate-in zoom-in-95 fade-in bg-surface mx-4 w-full max-w-md rounded-3xl p-8 shadow-2xl duration-300">
             {uploadStatus === "uploading" && (
               <div className="text-center">
-                <Loader2 className="text-primary mx-auto h-16 w-16 animate-spin" />
-                <h3 className="text-text mt-4 text-xl font-semibold">Wird hochgeladen...</h3>
+                <div className="relative mx-auto h-20 w-20">
+                  <div className="from-primary to-success absolute inset-0 animate-pulse rounded-full bg-gradient-to-r opacity-20"></div>
+                  <Loader2 className="text-primary absolute inset-0 h-20 w-20 animate-spin" />
+                </div>
+                <h3 className="text-text mt-6 text-2xl font-bold">Wird hochgeladen...</h3>
                 <p className="text-text-muted mt-2 text-sm">
                   Bitte warten Sie, dies kann einen Moment dauern.
                 </p>
-                <div className="bg-border mt-4 h-3 overflow-hidden rounded-full">
+                <div className="bg-border mt-6 h-4 overflow-hidden rounded-full">
                   <div
-                    className="from-primary to-success h-full bg-gradient-to-r transition-all"
+                    className="from-primary via-primary-hover to-success h-full bg-gradient-to-r transition-all duration-300 ease-out"
                     style={{ width: `${uploadProgress}%` }}
                   />
                 </div>
-                <p className="text-text mt-2 text-sm font-medium">{uploadProgress}%</p>
+                <p className="text-primary mt-3 text-lg font-bold">{uploadProgress}%</p>
               </div>
             )}
 
             {uploadStatus === "success" && (
               <div className="text-center">
-                <div className="bg-success/20 mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full">
-                  <Check className="text-success h-8 w-8" />
+                <div className="animate-in zoom-in bg-success/20 mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full duration-500">
+                  <Check className="text-success h-10 w-10" />
                 </div>
-                <h3 className="text-text text-xl font-semibold">Ressource erstellt!</h3>
+                <h3 className="text-text text-2xl font-bold">Material erstellt!</h3>
                 <p className="text-text-muted mt-2 text-sm">
-                  Ihre Ressource wurde hochgeladen und wartet auf Freigabe.
+                  Ihr Material wurde hochgeladen und wartet auf Freigabe.
                 </p>
-                {createdResourceId && (
+                {createdMaterialId && (
                   <button
-                    onClick={() => router.push(`/resources/${createdResourceId}`)}
-                    className="bg-primary text-text-on-accent hover:bg-primary/90 mt-4 rounded-lg px-6 py-2 font-medium transition-colors"
+                    onClick={() => router.push(`/materialien/${createdMaterialId}`)}
+                    className="bg-primary text-text-on-accent hover:bg-primary-hover mt-6 rounded-xl px-8 py-3 font-semibold transition-all duration-200 active:scale-[0.98]"
                   >
-                    Zur Ressource
+                    Zum Material →
                   </button>
                 )}
               </div>
@@ -834,24 +860,24 @@ function UploadPageContent() {
 
             {uploadStatus === "error" && (
               <div className="text-center">
-                <div className="bg-error/20 mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full">
-                  <X className="text-error h-8 w-8" />
+                <div className="animate-in zoom-in bg-error/20 mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full duration-500">
+                  <X className="text-error h-10 w-10" />
                 </div>
-                <h3 className="text-text text-xl font-semibold">Fehler beim Hochladen</h3>
-                <p className="text-error mt-2 text-sm">{error}</p>
+                <h3 className="text-text text-2xl font-bold">Fehler beim Hochladen</h3>
+                <p className="text-error bg-error/10 mt-3 rounded-lg p-3 text-sm">{error}</p>
                 <div className="mt-6 flex justify-center gap-3">
                   <button
                     onClick={() => {
                       setUploadStatus("idle");
                       setError(null);
                     }}
-                    className="border-border text-text hover:bg-surface-elevated rounded-lg border px-6 py-2 font-medium transition-colors"
+                    className="border-border text-text hover:bg-surface-elevated rounded-xl border-2 px-6 py-3 font-medium transition-all duration-200 active:scale-[0.98]"
                   >
                     Schliessen
                   </button>
                   <button
                     onClick={handlePublish}
-                    className="bg-primary text-text-on-accent hover:bg-primary/90 rounded-lg px-6 py-2 font-medium transition-colors"
+                    className="bg-primary text-text-on-accent hover:bg-primary-hover rounded-xl px-6 py-3 font-medium transition-all duration-200 active:scale-[0.98]"
                   >
                     Erneut versuchen
                   </button>
