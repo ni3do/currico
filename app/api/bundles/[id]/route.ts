@@ -76,7 +76,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         displayName: bundle.seller.display_name || bundle.seller.name,
         image: bundle.seller.image,
         verified: bundle.seller.stripe_charges_enabled,
-        resourceCount: bundle.seller._count.resources,
+        materialCount: bundle.seller._count.resources,
       },
       resources: bundle.resources.map((br) => ({
         id: br.resource.id,
@@ -155,7 +155,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
     // If resourceIds provided, verify they belong to the seller
     if (resourceIds) {
-      const resources = await prisma.resource.findMany({
+      const materials = await prisma.resource.findMany({
         where: {
           id: { in: resourceIds },
           seller_id: userId,
@@ -164,8 +164,8 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         select: { id: true },
       });
 
-      if (resources.length !== resourceIds.length) {
-        return badRequest("Einige Ressourcen wurden nicht gefunden oder gehören Ihnen nicht");
+      if (materials.length !== resourceIds.length) {
+        return badRequest("Einige Materialien wurden nicht gefunden oder gehören Ihnen nicht");
       }
     }
 

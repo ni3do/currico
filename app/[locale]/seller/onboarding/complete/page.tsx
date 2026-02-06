@@ -203,7 +203,7 @@ export default function SellerOnboardingCompletePage() {
               </div>
 
               <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-                <Link href="/account/resources/new" className="btn btn-primary px-6 py-2">
+                <Link href="/account/materials/new" className="btn btn-primary px-6 py-2">
                   {t("success.uploadFirst")}
                 </Link>
                 {stripeStatus?.dashboardUrl && (

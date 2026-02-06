@@ -1,29 +1,29 @@
 /**
  * Purchase and Download E2E Tests.
  *
- * Tests resource download and purchase flows including:
- * - Free resource download for authenticated users
+ * Tests material download and purchase flows including:
+ * - Free material download for authenticated users
  * - Unauthenticated redirect to login on download
- * - Buy button initiating checkout for paid resources
+ * - Buy button initiating checkout for paid materials
  * - Success page displaying transaction details
  */
 
 import { test, expect } from "../../fixtures/auth.fixture";
 import { test as baseTest } from "@playwright/test";
-import { ResourceDetailPage } from "../../pages/resource-detail.page";
+import { MaterialDetailPage } from "../../pages/resource-detail.page";
 import { CheckoutSuccessPage } from "../../pages/checkout-success.page";
-import { TEST_RESOURCE_IDS } from "../../fixtures/test-users";
+import { TEST_MATERIAL_IDS } from "../../fixtures/test-users";
 
-test.describe("Download - Free Resources", () => {
-  test("authenticated user can download free resource", async ({ buyerPage }) => {
-    const resourcePage = new ResourceDetailPage(buyerPage);
+test.describe("Download - Free Materials", () => {
+  test("authenticated user can download free material", async ({ buyerPage }) => {
+    const materialPage = new MaterialDetailPage(buyerPage);
 
-    // Navigate to free resource
-    await resourcePage.gotoResource(TEST_RESOURCE_IDS.FREE_RESOURCE);
-    await resourcePage.expectResourceVisible();
+    // Navigate to free material
+    await materialPage.gotoMaterial(TEST_MATERIAL_IDS.FREE_MATERIAL);
+    await materialPage.expectMaterialVisible();
 
-    // Verify it's a free resource
-    const isFree = await resourcePage.isFreeResource();
+    // Verify it's a free material
+    const isFree = await materialPage.isFreeMaterial();
     expect(isFree).toBe(true);
 
     // Set up download listener
@@ -32,7 +32,7 @@ test.describe("Download - Free Resources", () => {
       .catch(() => null);
 
     // Click download button
-    await resourcePage.clickDownload();
+    await materialPage.clickDownload();
 
     // Either a download should start OR we should see some success state
     // (depending on implementation - file might open in new tab or download directly)
@@ -48,23 +48,23 @@ test.describe("Download - Free Resources", () => {
 
 baseTest.describe("Download - Unauthenticated", () => {
   baseTest("unauthenticated user is redirected to login when downloading", async ({ page }) => {
-    const resourcePage = new ResourceDetailPage(page);
+    const materialPage = new MaterialDetailPage(page);
 
-    // Navigate to free resource without authentication
-    await resourcePage.gotoResource(TEST_RESOURCE_IDS.FREE_RESOURCE);
-    await resourcePage.expectResourceVisible();
+    // Navigate to free material without authentication
+    await materialPage.gotoMaterial(TEST_MATERIAL_IDS.FREE_MATERIAL);
+    await materialPage.expectMaterialVisible();
 
     // Click download button
-    await resourcePage.clickDownload();
+    await materialPage.clickDownload();
 
     // Should be redirected to login page
     await expect(page).toHaveURL(/\/login/, { timeout: 10000 });
   });
 });
 
-test.describe("Purchase - Paid Resources", () => {
-  test("buy button initiates checkout for paid resource", async ({ buyerPage }) => {
-    const resourcePage = new ResourceDetailPage(buyerPage);
+test.describe("Purchase - Paid Materials", () => {
+  test("buy button initiates checkout for paid material", async ({ buyerPage }) => {
+    const materialPage = new MaterialDetailPage(buyerPage);
 
     // Mock the checkout session API to avoid hitting real Stripe
     await buyerPage.route("**/api/payments/create-checkout-session", async (route) => {
@@ -78,12 +78,12 @@ test.describe("Purchase - Paid Resources", () => {
       });
     });
 
-    // Navigate to paid resource
-    await resourcePage.gotoResource(TEST_RESOURCE_IDS.PAID_RESOURCE);
-    await resourcePage.expectResourceVisible();
+    // Navigate to paid material
+    await materialPage.gotoMaterial(TEST_MATERIAL_IDS.PAID_MATERIAL);
+    await materialPage.expectMaterialVisible();
 
-    // Verify it's a paid resource
-    const isPaid = await resourcePage.isPaidResource();
+    // Verify it's a paid material
+    const isPaid = await materialPage.isPaidMaterial();
     expect(isPaid).toBe(true);
 
     // Track navigation to Stripe checkout
@@ -92,7 +92,7 @@ test.describe("Purchase - Paid Resources", () => {
       .catch(() => null);
 
     // Click buy button
-    await resourcePage.clickBuy();
+    await materialPage.clickBuy();
 
     // Should navigate to Stripe checkout (mocked URL)
     const navigated = await navigationPromise;
@@ -101,15 +101,15 @@ test.describe("Purchase - Paid Resources", () => {
     expect(navigated !== null || true).toBe(true); // At minimum the button should be clickable
   });
 
-  test("API is called with correct resource ID on purchase", async ({ buyerPage }) => {
-    const resourcePage = new ResourceDetailPage(buyerPage);
+  test("API is called with correct material ID on purchase", async ({ buyerPage }) => {
+    const materialPage = new MaterialDetailPage(buyerPage);
 
-    let capturedResourceId: string | undefined;
+    let capturedMaterialId: string | undefined;
 
-    // Mock the checkout session API and capture the resource ID
+    // Mock the checkout session API and capture the material ID
     await buyerPage.route("**/api/payments/create-checkout-session", async (route) => {
       const postData = route.request().postDataJSON();
-      capturedResourceId = postData?.resourceId;
+      capturedMaterialId = postData?.materialId;
 
       // Return a mock response but don't redirect (to keep page open for assertions)
       await route.fulfill({
@@ -122,18 +122,18 @@ test.describe("Purchase - Paid Resources", () => {
       });
     });
 
-    // Navigate to paid resource
-    await resourcePage.gotoResource(TEST_RESOURCE_IDS.PAID_RESOURCE);
-    await resourcePage.expectResourceVisible();
+    // Navigate to paid material
+    await materialPage.gotoMaterial(TEST_MATERIAL_IDS.PAID_MATERIAL);
+    await materialPage.expectMaterialVisible();
 
     // Click buy button and wait for the API call
     await Promise.all([
       buyerPage.waitForResponse("**/api/payments/create-checkout-session"),
-      resourcePage.clickBuy(),
+      materialPage.clickBuy(),
     ]);
 
-    // Verify the API was called with the correct resource ID
-    expect(capturedResourceId).toBe(TEST_RESOURCE_IDS.PAID_RESOURCE);
+    // Verify the API was called with the correct material ID
+    expect(capturedMaterialId).toBe(TEST_MATERIAL_IDS.PAID_MATERIAL);
   });
 });
 
@@ -152,10 +152,10 @@ test.describe("Checkout Success Page", () => {
           amountFormatted: "CHF 9.90",
           status: "COMPLETED",
           createdAt: new Date().toISOString(),
-          resource: {
-            id: TEST_RESOURCE_IDS.PAID_RESOURCE,
-            title: "Test Paid Resource",
-            description: "A test resource for E2E tests",
+          material: {
+            id: TEST_MATERIAL_IDS.PAID_MATERIAL,
+            title: "Test Paid Material",
+            description: "A test material for E2E tests",
             subjects: ["Mathematik"],
             cycles: ["Zyklus 2"],
           },
@@ -170,8 +170,8 @@ test.describe("Checkout Success Page", () => {
     await successPage.expectSuccessState();
 
     // Verify transaction details
-    const resourceTitle = await successPage.getResourceTitle();
-    expect(resourceTitle).toContain("Test Paid Resource");
+    const materialTitle = await successPage.getMaterialTitle();
+    expect(materialTitle).toContain("Test Paid Material");
 
     const amount = await successPage.getAmount();
     expect(amount).toContain("CHF");
@@ -194,9 +194,9 @@ test.describe("Checkout Success Page", () => {
           amountFormatted: "CHF 15.00",
           status: "PENDING",
           createdAt: new Date().toISOString(),
-          resource: {
-            id: "test-resource",
-            title: "Pending Resource",
+          material: {
+            id: "test-material",
+            title: "Pending Material",
             description: "A pending transaction",
             subjects: ["Deutsch"],
             cycles: ["Zyklus 1"],

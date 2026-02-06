@@ -39,11 +39,11 @@ interface UserReview {
 }
 
 interface ReviewsSectionProps {
-  resourceId: string;
+  materialId: string;
   className?: string;
 }
 
-export function ReviewsSection({ resourceId, className = "" }: ReviewsSectionProps) {
+export function ReviewsSection({ materialId, className = "" }: ReviewsSectionProps) {
   const { data: session, status: sessionStatus } = useSession();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [stats, setStats] = useState<ReviewStats>({ averageRating: 0, totalReviews: 0 });
@@ -61,7 +61,7 @@ export function ReviewsSection({ resourceId, className = "" }: ReviewsSectionPro
       try {
         setLoading(true);
         const response = await fetch(
-          `/api/resources/${resourceId}/reviews?page=${pageNum}&limit=10`
+          `/api/materials/${materialId}/reviews?page=${pageNum}&limit=10`
         );
 
         if (!response.ok) {
@@ -81,7 +81,7 @@ export function ReviewsSection({ resourceId, className = "" }: ReviewsSectionPro
         setLoading(false);
       }
     },
-    [resourceId]
+    [materialId]
   );
 
   useEffect(() => {
@@ -177,7 +177,7 @@ export function ReviewsSection({ resourceId, className = "" }: ReviewsSectionPro
             {showForm ? (
               <ReviewForm
                 key="form"
-                resourceId={resourceId}
+                materialId={materialId}
                 existingReview={editingReview || undefined}
                 onSubmit={handleReviewSubmitted}
                 onCancel={() => {
@@ -228,7 +228,7 @@ export function ReviewsSection({ resourceId, className = "" }: ReviewsSectionPro
                 className="border-border bg-bg-secondary rounded-xl border p-4"
               >
                 <p className="text-text-muted text-sm">
-                  Kaufen oder laden Sie diese Ressource herunter, um eine Bewertung abzugeben.
+                  Kaufen oder laden Sie dieses Material herunter, um eine Bewertung abzugeben.
                 </p>
               </motion.div>
             )}
@@ -253,7 +253,7 @@ export function ReviewsSection({ resourceId, className = "" }: ReviewsSectionPro
           <Star className="text-text-faint mx-auto mb-3 h-12 w-12" />
           <p className="text-text-muted mb-2">Noch keine Bewertungen</p>
           <p className="text-text-faint text-sm">
-            Seien Sie der Erste, der diese Ressource bewertet!
+            Seien Sie der Erste, der dieses Material bewertet!
           </p>
         </div>
       ) : (

@@ -3,7 +3,7 @@
  *
  * Handles interactions with the post-purchase success page including:
  * - Transaction details display
- * - Navigation to library or resource
+ * - Navigation to library or material
  */
 
 import { Page, Locator, expect } from "@playwright/test";
@@ -31,14 +31,14 @@ export class CheckoutSuccessPage extends BasePage {
 
   // Purchase details
   readonly purchaseDetailsSection: Locator;
-  readonly resourceTitle: Locator;
+  readonly materialTitle: Locator;
   readonly amountPaid: Locator;
   readonly transactionStatus: Locator;
 
   // Navigation buttons
-  readonly viewResourceButton: Locator;
+  readonly viewMaterialButton: Locator;
   readonly goToLibraryButton: Locator;
-  readonly browseResourcesButton: Locator;
+  readonly browseMaterialsButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -49,7 +49,7 @@ export class CheckoutSuccessPage extends BasePage {
       hasText: /kauf abgeschlossen|purchase complete|zahlung wird verarbeitet|payment processing/i,
     });
     this.successDescription = page.locator("p").filter({
-      hasText: /ressource|resource|zugreifen|access/i,
+      hasText: /material|materialien|zugreifen|access/i,
     });
 
     // Loading state
@@ -75,7 +75,7 @@ export class CheckoutSuccessPage extends BasePage {
         has: page.locator("h2"),
       })
       .first();
-    this.resourceTitle = page
+    this.materialTitle = page
       .locator("span.font-medium")
       .filter({
         hasNot: page.locator("text=/CHF|abgeschlossen|completed|ausstehend|pending/i"),
@@ -95,12 +95,12 @@ export class CheckoutSuccessPage extends BasePage {
       .first();
 
     // Navigation buttons
-    this.viewResourceButton = page.getByRole("link", {
-      name: /ressource anzeigen|view resource|öffnen/i,
+    this.viewMaterialButton = page.getByRole("link", {
+      name: /material anzeigen|view material|öffnen/i,
     });
     this.goToLibraryButton = page.getByRole("link", { name: /bibliothek|library/i });
-    this.browseResourcesButton = page.getByRole("link", {
-      name: /ressourcen durchsuchen|browse resources/i,
+    this.browseMaterialsButton = page.getByRole("link", {
+      name: /materialien durchsuchen|browse materials/i,
     });
   }
 
@@ -151,10 +151,10 @@ export class CheckoutSuccessPage extends BasePage {
   }
 
   /**
-   * Get the displayed resource title.
+   * Get the displayed material title.
    */
-  async getResourceTitle(): Promise<string | null> {
-    return this.resourceTitle.textContent();
+  async getMaterialTitle(): Promise<string | null> {
+    return this.materialTitle.textContent();
   }
 
   /**
@@ -189,11 +189,11 @@ export class CheckoutSuccessPage extends BasePage {
   }
 
   /**
-   * Navigate to view the purchased resource.
+   * Navigate to view the purchased material.
    */
-  async goToResource(): Promise<void> {
-    await this.viewResourceButton.click();
-    await this.page.waitForURL(/\/resources\//);
+  async goToMaterial(): Promise<void> {
+    await this.viewMaterialButton.click();
+    await this.page.waitForURL(/\/materialien\//);
   }
 
   /**

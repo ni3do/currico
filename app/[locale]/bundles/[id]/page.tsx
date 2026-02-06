@@ -139,10 +139,10 @@ export default function BundleDetailPage() {
               Das gesuchte Bundle existiert nicht oder ist nicht mehr verfügbar.
             </p>
             <Link
-              href="/resources"
+              href="/materialien"
               className="btn-primary inline-flex items-center px-6 py-3 font-semibold"
             >
-              Zurück zu den Ressourcen
+              Zurück zu den Materialien
             </Link>
           </div>
         </main>
@@ -180,8 +180,8 @@ export default function BundleDetailPage() {
         {/* Breadcrumb */}
         <Breadcrumb
           items={[
-            { label: tCommon("breadcrumb.resources"), href: "/resources" },
-            { label: tCommon("breadcrumb.bundles"), href: "/resources" },
+            { label: tCommon("breadcrumb.resources"), href: "/materialien" },
+            { label: tCommon("breadcrumb.bundles"), href: "/materialien" },
             { label: bundle.title },
           ]}
           className="mb-8"
@@ -244,13 +244,13 @@ export default function BundleDetailPage() {
               {/* Included Resources */}
               <div className="mb-8">
                 <h2 className="text-text mb-4 text-xl font-semibold">
-                  Enthaltene Ressourcen ({bundle.resourceCount})
+                  Enthaltene Materialien ({bundle.resourceCount})
                 </h2>
                 <div className="space-y-3">
                   {bundle.resources.map((resource) => (
                     <Link
                       key={resource.id}
-                      href={`/resources/${resource.id}`}
+                      href={`/materialien/${resource.id}`}
                       className="border-border bg-bg hover:border-primary group flex items-center gap-4 rounded-xl border p-4 transition-all hover:shadow-sm"
                     >
                       {/* Preview thumbnail */}
@@ -297,7 +297,7 @@ export default function BundleDetailPage() {
                     <div className="text-text font-medium">{bundle.cycle || "-"}</div>
                   </div>
                   <div>
-                    <div className="text-text-muted text-sm">Ressourcen</div>
+                    <div className="text-text-muted text-sm">Materialien</div>
                     <div className="text-text font-medium">{bundle.resourceCount}</div>
                   </div>
                   <div>
@@ -345,7 +345,7 @@ export default function BundleDetailPage() {
                     )}
                   </div>
                   <div className="text-text-muted text-sm">
-                    {bundle.seller.resourceCount} Ressourcen
+                    {bundle.seller.resourceCount} Materialien
                   </div>
                 </div>
               </div>
@@ -365,10 +365,10 @@ export default function BundleDetailPage() {
               {/* More from Seller */}
               <div className="border-border mt-6 border-t pt-6">
                 <Link
-                  href={`/resources?seller=${bundle.seller.id}`}
+                  href={`/materialien?seller=${bundle.seller.id}`}
                   className="text-primary hover:text-primary-hover text-sm font-medium transition-colors"
                 >
-                  Alle Ressourcen ansehen
+                  Alle Materialien ansehen
                 </Link>
               </div>
             </div>

@@ -4,16 +4,16 @@ import { z } from "zod";
 // CONSTANTS
 // ============================================================
 
-export const RESOURCE_LANGUAGES = ["de", "fr", "it", "en"] as const;
+export const MATERIAL_LANGUAGES = ["de", "fr", "it", "en"] as const;
 
-export const RESOURCE_TYPES = ["pdf", "word", "powerpoint", "excel", "other"] as const;
+export const MATERIAL_TYPES = ["pdf", "word", "powerpoint", "excel", "other"] as const;
 
 // File size limits (in bytes)
-export const MAX_RESOURCE_FILE_SIZE = 50 * 1024 * 1024; // 50MB
+export const MAX_MATERIAL_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 export const MAX_PREVIEW_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
-// Allowed MIME types for resource files
-export const ALLOWED_RESOURCE_TYPES: Record<string, string[]> = {
+// Allowed MIME types for material files
+export const ALLOWED_MATERIAL_TYPES: Record<string, string[]> = {
   pdf: ["application/pdf"],
   word: [
     "application/msword",
@@ -78,9 +78,9 @@ export const MAGIC_BYTES: Record<string, number[][]> = {
 // ZOD SCHEMAS
 // ============================================================
 
-// Schema for creating a new resource
+// Schema for creating a new material
 // Note: subjects and cycles accept any strings - validation against database happens at API level
-export const createResourceSchema = z.object({
+export const createMaterialSchema = z.object({
   title: z
     .string()
     .min(3, "Titel muss mindestens 3 Zeichen haben")
@@ -96,13 +96,13 @@ export const createResourceSchema = z.object({
     .max(100000, "Preis darf maximal 1000 CHF sein"), // Max 1000 CHF in cents
   subjects: z.array(z.string().min(1)).min(1, "Mindestens ein Fach auswählen"),
   cycles: z.array(z.string().min(1)).min(1, "Mindestens einen Zyklus auswählen"),
-  language: z.enum(RESOURCE_LANGUAGES).optional().default("de"),
-  resourceType: z.enum(RESOURCE_TYPES).optional().default("pdf"),
+  language: z.enum(MATERIAL_LANGUAGES).optional().default("de"),
+  resourceType: z.enum(MATERIAL_TYPES).optional().default("pdf"),
   is_published: z.boolean().optional().default(false),
 });
 
-// Schema for updating an existing resource
-export const updateResourceSchema = z.object({
+// Schema for updating an existing material
+export const updateMaterialSchema = z.object({
   title: z
     .string()
     .min(3, "Titel muss mindestens 3 Zeichen haben")
@@ -128,8 +128,8 @@ export const updateResourceSchema = z.object({
 // TYPE EXPORTS
 // ============================================================
 
-export type CreateResourceInput = z.infer<typeof createResourceSchema>;
-export type UpdateResourceInput = z.infer<typeof updateResourceSchema>;
+export type CreateMaterialInput = z.infer<typeof createMaterialSchema>;
+export type UpdateMaterialInput = z.infer<typeof updateMaterialSchema>;
 
 // ============================================================
 // VALIDATION HELPERS
@@ -149,10 +149,10 @@ export function validateMagicBytes(buffer: Buffer, mimeType: string): boolean {
 }
 
 /**
- * Check if a MIME type is allowed for resource files
+ * Check if a MIME type is allowed for material files
  */
-export function isAllowedResourceType(mimeType: string, resourceType: string): boolean {
-  const allowedTypes = ALLOWED_RESOURCE_TYPES[resourceType];
+export function isAllowedMaterialType(mimeType: string, resourceType: string): boolean {
+  const allowedTypes = ALLOWED_MATERIAL_TYPES[resourceType];
   return allowedTypes ? allowedTypes.includes(mimeType) : false;
 }
 

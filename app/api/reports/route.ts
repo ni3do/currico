@@ -3,15 +3,16 @@ import { prisma } from "@/lib/db";
 import { requireAuth, unauthorized, badRequest, notFound } from "@/lib/api";
 import { z } from "zod";
 
-const createReportSchema = z.object({
-  reason: z.enum(["copyright", "inappropriate", "spam", "fraud", "quality", "other"]),
-  description: z.string().max(1000).optional(),
-  resource_id: z.string().optional(),
-  reported_user_id: z.string().optional(),
-}).refine(
-  data => data.resource_id || data.reported_user_id,
-  { message: "Entweder resource_id oder reported_user_id muss angegeben werden" }
-);
+const createReportSchema = z
+  .object({
+    reason: z.enum(["copyright", "inappropriate", "spam", "fraud", "quality", "other"]),
+    description: z.string().max(1000).optional(),
+    resource_id: z.string().optional(),
+    reported_user_id: z.string().optional(),
+  })
+  .refine((data) => data.resource_id || data.reported_user_id, {
+    message: "Entweder resource_id oder reported_user_id muss angegeben werden",
+  });
 
 /**
  * POST /api/reports
@@ -40,7 +41,7 @@ export async function POST(request: NextRequest) {
         select: { id: true },
       });
       if (!resource) {
-        return notFound("Ressource nicht gefunden");
+        return notFound("Material nicht gefunden");
       }
     }
 
@@ -66,13 +67,16 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    return NextResponse.json({
-      success: true,
-      report: {
-        id: report.id,
-        created_at: report.created_at,
+    return NextResponse.json(
+      {
+        success: true,
+        report: {
+          id: report.id,
+          created_at: report.created_at,
+        },
       },
-    }, { status: 201 });
+      { status: 201 }
+    );
   } catch (error) {
     console.error("Error creating report:", error);
     return NextResponse.json({ error: "Fehler beim Erstellen der Meldung" }, { status: 500 });

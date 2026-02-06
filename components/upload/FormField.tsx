@@ -68,10 +68,10 @@ export function FormInput({ hasError, className = "", ...props }: FormInputProps
   return (
     <input
       {...props}
-      className={`text-text w-full rounded-lg border px-4 py-3 transition-colors focus:ring-2 focus:outline-none ${
+      className={`text-text w-full rounded-xl border-2 px-4 py-3 transition-all duration-200 focus:shadow-lg focus:ring-2 focus:outline-none ${
         hasError
-          ? "border-error bg-error/5 focus:border-error focus:ring-error/20"
-          : "border-border bg-bg focus:border-primary focus:ring-primary/20"
+          ? "border-error bg-error/5 focus:border-error focus:ring-error/20 focus:shadow-error/10"
+          : "border-border bg-bg focus:border-primary focus:ring-primary/20 focus:shadow-primary/10"
       } placeholder:text-text-faint ${className} `}
     />
   );
@@ -86,10 +86,10 @@ export function FormTextarea({ hasError, className = "", ...props }: FormTextare
   return (
     <textarea
       {...props}
-      className={`text-text w-full rounded-lg border px-4 py-3 transition-colors focus:ring-2 focus:outline-none ${
+      className={`text-text w-full rounded-xl border-2 px-4 py-3 transition-all duration-200 focus:shadow-lg focus:ring-2 focus:outline-none ${
         hasError
-          ? "border-error bg-error/5 focus:border-error focus:ring-error/20"
-          : "border-border bg-bg focus:border-primary focus:ring-primary/20"
+          ? "border-error bg-error/5 focus:border-error focus:ring-error/20 focus:shadow-error/10"
+          : "border-border bg-bg focus:border-primary focus:ring-primary/20 focus:shadow-primary/10"
       } placeholder:text-text-faint ${className} `}
     />
   );
@@ -104,10 +104,10 @@ export function FormSelect({ hasError, className = "", children, ...props }: For
   return (
     <select
       {...props}
-      className={`text-text w-full rounded-lg border px-4 py-3 transition-colors focus:ring-2 focus:outline-none ${
+      className={`text-text w-full rounded-xl border-2 px-4 py-3 transition-all duration-200 focus:shadow-lg focus:ring-2 focus:outline-none ${
         hasError
-          ? "border-error bg-error/5 focus:border-error focus:ring-error/20"
-          : "border-border bg-bg focus:border-primary focus:ring-primary/20"
+          ? "border-error bg-error/5 focus:border-error focus:ring-error/20 focus:shadow-error/10"
+          : "border-border bg-bg focus:border-primary focus:ring-primary/20 focus:shadow-primary/10"
       } ${className} `}
     >
       {children}
@@ -137,17 +137,38 @@ export function FormCheckbox({
 
   return (
     <label
-      className={`hover:bg-bg flex cursor-pointer items-start gap-3 rounded-lg p-3 transition-colors ${hasError ? "bg-error/5 border-error/30 rounded-lg border" : ""} `}
+      className={`group flex cursor-pointer items-start gap-3 rounded-xl p-4 transition-all duration-200 ${
+        hasError
+          ? "bg-error/5 border-error/30 border-2"
+          : checked
+            ? "bg-primary/5 border-primary/20 border-2"
+            : "hover:bg-surface-elevated border-2 border-transparent"
+      } `}
     >
+      <div
+        className={`mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded border-2 transition-all duration-200 ${
+          hasError
+            ? "border-error"
+            : checked
+              ? "border-primary bg-primary"
+              : "border-border group-hover:border-primary/50"
+        } `}
+      >
+        {checked && (
+          <svg className="text-text-on-accent h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              fillRule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clipRule="evenodd"
+            />
+          </svg>
+        )}
+      </div>
       <input
         type="checkbox"
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
-        className={`mt-0.5 h-5 w-5 rounded focus:ring-2 ${
-          hasError
-            ? "border-error text-error focus:ring-error/20"
-            : "border-border bg-bg text-primary focus:ring-primary/20"
-        } `}
+        className="sr-only"
       />
       <div className="flex-1">
         <div className="text-text flex items-center gap-1.5 font-medium">
@@ -177,19 +198,34 @@ interface RadioOptionProps {
 export function RadioOption({ value, checked, onChange, label, description }: RadioOptionProps) {
   return (
     <label
-      className={`flex cursor-pointer items-center gap-3 rounded-lg border-2 p-4 transition-all ${checked ? "border-primary bg-primary/10" : "border-border bg-bg hover:border-primary/50"} `}
+      className={`group relative flex cursor-pointer items-center gap-3 rounded-xl border-2 p-4 transition-all duration-200 ${
+        checked
+          ? "border-primary bg-primary/10 shadow-primary/10 shadow-lg"
+          : "border-border bg-bg hover:border-primary/50 hover:shadow-md"
+      } `}
     >
       <input
         type="radio"
         value={value}
         checked={checked}
         onChange={() => onChange(value)}
-        className="text-primary focus:ring-primary/20 h-4 w-4"
+        className="text-primary focus:ring-primary/20 h-5 w-5"
       />
       <div>
-        <div className="text-text font-medium">{label}</div>
-        {description && <div className="text-text-muted text-xs">{description}</div>}
+        <div className="text-text font-semibold">{label}</div>
+        {description && <div className="text-text-muted text-sm">{description}</div>}
       </div>
+      {checked && (
+        <div className="bg-primary absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full">
+          <svg className="text-text-on-accent h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              fillRule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </div>
+      )}
     </label>
   );
 }

@@ -76,12 +76,12 @@ export function InfoTooltip({ content, example, className = "" }: InfoTooltipPro
 export const FIELD_TOOLTIPS = {
   title: {
     content:
-      "Wählen Sie einen klaren, aussagekräftigen Titel, der den Inhalt Ihrer Ressource beschreibt. Ein guter Titel hilft anderen Lehrpersonen, Ihre Materialien zu finden.",
+      "Wählen Sie einen klaren, aussagekräftigen Titel, der den Inhalt Ihres Materials beschreibt. Ein guter Titel hilft anderen Lehrpersonen, Ihre Materialien zu finden.",
     example: "Bruchrechnen Übungsblätter Zyklus 2",
   },
   description: {
     content:
-      "Beschreiben Sie kurz, was Ihre Ressource enthält und für welchen Einsatz sie gedacht ist. Erwähnen Sie besondere Merkmale oder didaktische Hinweise.",
+      "Beschreiben Sie kurz, was Ihr Material enthält und für welchen Einsatz es gedacht ist. Erwähnen Sie besondere Merkmale oder didaktische Hinweise.",
     example:
       "10 differenzierte Arbeitsblätter zum Thema Bruchrechnen mit Lösungen. Geeignet für Einzel- und Gruppenarbeit.",
   },
@@ -98,25 +98,25 @@ export const FIELD_TOOLTIPS = {
   },
   subject: {
     content:
-      "Wählen Sie das Hauptfach, zu dem Ihre Ressource passt. Die verfügbaren Fächer hängen vom gewählten Zyklus ab.",
+      "Wählen Sie das Hauptfach, zu dem Ihr Material passt. Die verfügbaren Fächer hängen vom gewählten Zyklus ab.",
   },
   canton: {
     content:
-      "Optional: Wählen Sie einen Kanton, wenn Ihre Ressource speziell für bestimmte kantonale Lehrmittel konzipiert ist.",
+      "Optional: Wählen Sie einen Kanton, wenn Ihr Material speziell für bestimmte kantonale Lehrmittel konzipiert ist.",
   },
   competencies: {
     content:
-      "Wählen Sie die Lehrplan 21 Kompetenzen aus, die Ihre Ressource abdeckt. Je genauer Sie zuordnen, desto besser finden Lehrpersonen Ihre Materialien.",
+      "Wählen Sie die Lehrplan 21 Kompetenzen aus, die Ihr Material abdeckt. Je genauer Sie zuordnen, desto besser finden Lehrpersonen Ihre Materialien.",
     example: "MA.1.A.1 - Zahlen verstehen",
   },
   lehrmittel: {
     content:
-      "Optional: Wählen Sie Lehrmittel aus, zu denen Ihre Ressource passt. Dies hilft Lehrpersonen, passende Ergänzungsmaterialien zu finden.",
+      "Optional: Wählen Sie Lehrmittel aus, zu denen Ihr Material passt. Dies hilft Lehrpersonen, passende Ergänzungsmaterialien zu finden.",
     example: "Zahlenbuch, mathwelt",
   },
   priceType: {
     content:
-      "Entscheiden Sie, ob Ihre Ressource kostenlos oder kostenpflichtig sein soll. Kostenlose Ressourcen erreichen mehr Nutzer, kostenpflichtige generieren Einkommen.",
+      "Entscheiden Sie, ob Ihr Material kostenlos oder kostenpflichtig sein soll. Kostenlose Materialien erreichen mehr Nutzer, kostenpflichtige generieren Einkommen.",
   },
   price: {
     content:
@@ -145,14 +145,14 @@ export const FIELD_TOOLTIPS = {
   },
   legalNoTrademarks: {
     content:
-      "Bestätigen Sie, dass Ihre Ressource keine geschützten Marken, Logos oder Figuren enthält (z.B. Disney, Marvel, Pokémon).",
+      "Bestätigen Sie, dass Ihr Material keine geschützten Marken, Logos oder Figuren enthält (z.B. Disney, Marvel, Pokémon).",
   },
   legalSwissGerman: {
     content:
-      "Bestätigen Sie, dass Ihre Ressource die Schweizer Rechtschreibung verwendet (kein Eszett 'ß', stattdessen 'ss').",
+      "Bestätigen Sie, dass Ihr Material die Schweizer Rechtschreibung verwendet (kein Eszett 'ß', stattdessen 'ss').",
   },
   legalTermsAccepted: {
     content:
-      "Mit der Annahme der Verkäufervereinbarung bestätigen Sie, dass Sie die Rechte haben, diese Ressource zu verkaufen, und die Plattformregeln akzeptieren.",
+      "Mit der Annahme der Verkäufervereinbarung bestätigen Sie, dass Sie die Rechte haben, dieses Material zu verkaufen, und die Plattformregeln akzeptieren.",
   },
 };

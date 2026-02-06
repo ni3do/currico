@@ -13,12 +13,10 @@ import {
   FileText,
   FileType,
   Presentation,
-  Image,
   Table,
   Package,
   File,
   Loader2,
-  Palette,
   Users,
 } from "lucide-react";
 import { useCurriculum } from "@/lib/hooks/useCurriculum";
@@ -50,8 +48,6 @@ const FORMAT_OPTIONS = [
   { id: "word", label: "Word", icon: FileType },
   { id: "ppt", label: "PowerPoint", icon: Presentation },
   { id: "excel", label: "Excel", icon: Table },
-  { id: "image", label: "Bilder", icon: Image },
-  { id: "canva", label: "Canva", icon: Palette },
 ] as const;
 
 // Material scope options
@@ -60,17 +56,10 @@ const MATERIAL_SCOPE_OPTIONS = [
   { id: "bundle", label: "Bundle", icon: Package },
 ] as const;
 
-// Search type options
-const SEARCH_TYPE_OPTIONS = [
-  { id: "resources", label: "Ressourcen", icon: FileText },
-  { id: "profiles", label: "Profile", icon: Users },
-] as const;
-
-export type SearchType = "resources" | "profiles";
-
 // Types for filter state
 export interface LP21FilterState {
-  searchType: SearchType;
+  showMaterials: boolean;
+  showCreators: boolean;
   zyklus: number | null;
   fachbereich: string | null;
   kompetenzbereich: string | null;
@@ -95,7 +84,7 @@ export function LP21FilterSidebar({
   onFiltersChange,
   className = "",
 }: LP21FilterSidebarProps) {
-  const t = useTranslations("resourcesPage");
+  const t = useTranslations("materialsPage");
 
   // Fetch curriculum data from API
   const {
@@ -131,7 +120,7 @@ export function LP21FilterSidebar({
     return searchByCode(filters.searchQuery).slice(0, 10);
   }, [filters.searchQuery, searchByCode]);
 
-  // Check if any filters are active (searchType is always set, so don't count it)
+  // Check if any filters are active
   const hasActiveFilters =
     filters.zyklus !== null ||
     filters.fachbereich !== null ||
@@ -143,23 +132,32 @@ export function LP21FilterSidebar({
     filters.formats.length > 0 ||
     filters.materialScope !== null;
 
-  // Handler for search type change
-  const handleSearchTypeChange = useCallback(
-    (searchType: SearchType) => {
-      onFiltersChange({
-        ...filters,
-        searchType,
-        // Reset only price/format/scope filters when switching to profiles (keep curriculum filters)
-        ...(searchType === "profiles" && {
-          priceType: null,
-          maxPrice: null,
-          formats: [],
-          materialScope: null,
-        }),
-      });
-    },
-    [filters, onFiltersChange]
-  );
+  // Handlers for toggling materials/creators checkboxes
+  const handleToggleMaterials = useCallback(() => {
+    // Prevent unchecking the last active checkbox
+    if (filters.showMaterials && !filters.showCreators) return;
+    const newShowMaterials = !filters.showMaterials;
+    onFiltersChange({
+      ...filters,
+      showMaterials: newShowMaterials,
+      // Clear price/format/scope filters when turning off materials
+      ...(!newShowMaterials && {
+        priceType: null,
+        maxPrice: null,
+        formats: [],
+        materialScope: null,
+      }),
+    });
+  }, [filters, onFiltersChange]);
+
+  const handleToggleCreators = useCallback(() => {
+    // Prevent unchecking the last active checkbox
+    if (filters.showCreators && !filters.showMaterials) return;
+    onFiltersChange({
+      ...filters,
+      showCreators: !filters.showCreators,
+    });
+  }, [filters, onFiltersChange]);
 
   // Handlers
   const handleZyklusChange = useCallback(
@@ -328,7 +326,8 @@ export function LP21FilterSidebar({
 
   const handleClearAll = useCallback(() => {
     onFiltersChange({
-      searchType: filters.searchType, // Preserve search type
+      showMaterials: filters.showMaterials,
+      showCreators: filters.showCreators,
       zyklus: null,
       fachbereich: null,
       kompetenzbereich: null,
@@ -341,7 +340,7 @@ export function LP21FilterSidebar({
     });
     setExpandedFachbereiche(new Set());
     setExpandedKompetenzbereiche(new Set());
-  }, [onFiltersChange, filters.searchType]);
+  }, [onFiltersChange, filters.showMaterials, filters.showCreators]);
 
   const handleRemoveFilter = useCallback(
     (type: FilterType, value?: string) => {
@@ -493,8 +492,14 @@ export function LP21FilterSidebar({
           )}
         </div>
 
-        {/* Search Type Toggle */}
-        <SearchTypeToggle selectedType={filters.searchType} onTypeChange={handleSearchTypeChange} />
+        {/* Search Type Checkboxes */}
+        <SearchTypeCheckboxes
+          showMaterials={filters.showMaterials}
+          showCreators={filters.showCreators}
+          onToggleMaterials={handleToggleMaterials}
+          onToggleCreators={handleToggleCreators}
+          t={t}
+        />
 
         <div className="divider my-5" />
 
@@ -521,9 +526,11 @@ export function LP21FilterSidebar({
               onFocus={() => setSearchFocused(true)}
               onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
               placeholder={
-                filters.searchType === "profiles"
+                !filters.showMaterials && filters.showCreators
                   ? "Nach Lehrpersonen suchen..."
-                  : "Suche: Stichwort oder Code (z.B. MA.1.A)"
+                  : filters.showMaterials && filters.showCreators
+                    ? "Materialien & Ersteller suchen..."
+                    : "Suche: Stichwort oder Code (z.B. MA.1.A)"
               }
               className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 w-full rounded-lg border py-2.5 pr-4 pl-10 text-sm focus:ring-2 focus:outline-none"
             />
@@ -613,8 +620,8 @@ export function LP21FilterSidebar({
           )}
         </div>
 
-        {/* Show price/format/scope filters only for resources */}
-        {filters.searchType === "resources" && (
+        {/* Show price/format/scope filters only when materials are shown */}
+        {filters.showMaterials && (
           <>
             <div className="divider my-5" />
 
@@ -645,50 +652,59 @@ export function LP21FilterSidebar({
   );
 }
 
-// ============ SEARCH TYPE TOGGLE ============
-interface SearchTypeToggleProps {
-  selectedType: SearchType;
-  onTypeChange: (type: SearchType) => void;
+// ============ SEARCH TYPE CHECKBOXES ============
+interface SearchTypeCheckboxesProps {
+  showMaterials: boolean;
+  showCreators: boolean;
+  onToggleMaterials: () => void;
+  onToggleCreators: () => void;
+  t: ReturnType<typeof useTranslations>;
 }
 
-function SearchTypeToggle({ selectedType, onTypeChange }: SearchTypeToggleProps) {
+function SearchTypeCheckboxes({
+  showMaterials,
+  showCreators,
+  onToggleMaterials,
+  onToggleCreators,
+  t,
+}: SearchTypeCheckboxesProps) {
   return (
     <div>
-      <h3 className="label-meta mb-3">Suche nach</h3>
+      <h3 className="label-meta mb-3">{t("sidebar.displayLabel")}</h3>
       <div className="flex gap-2">
-        {SEARCH_TYPE_OPTIONS.map((option, index) => {
-          const Icon = option.icon;
-          const isActive = selectedType === option.id;
-          return (
-            <motion.button
-              key={option.id}
-              onClick={() => onTypeChange(option.id as SearchType)}
-              className={`group relative flex flex-1 items-center justify-center gap-2 rounded-lg border-2 px-3 py-2.5 text-center transition-colors ${
-                isActive
-                  ? "border-primary bg-primary/10 text-primary"
-                  : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:bg-surface-hover"
-              }`}
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.04, duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-              whileHover={{ scale: 1.015, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
-              whileTap={{ scale: 0.97, transition: { duration: 0.1 } }}
-            >
-              {isActive && (
-                <motion.div
-                  layoutId="activeSearchType"
-                  className="bg-primary/10 absolute inset-0 rounded-lg"
-                  initial={false}
-                  transition={{ type: "spring", stiffness: 350, damping: 28 }}
-                />
-              )}
-              <span className="relative z-10 flex items-center gap-2">
-                <Icon className="h-4 w-4" />
-                <span className="text-sm font-semibold">{option.label}</span>
-              </span>
-            </motion.button>
-          );
-        })}
+        <label
+          className={`group relative flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-lg border-2 px-3 py-2.5 text-center transition-colors select-none ${
+            showMaterials
+              ? "border-primary bg-primary/10 text-primary"
+              : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:bg-surface-hover"
+          } ${showMaterials && !showCreators ? "cursor-not-allowed opacity-75" : ""}`}
+        >
+          <input
+            type="checkbox"
+            checked={showMaterials}
+            onChange={onToggleMaterials}
+            className="sr-only"
+          />
+          <FileText className="h-4 w-4" />
+          <span className="text-sm font-semibold">{t("sidebar.showMaterials")}</span>
+        </label>
+
+        <label
+          className={`group relative flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-lg border-2 px-3 py-2.5 text-center transition-colors select-none ${
+            showCreators
+              ? "border-primary bg-primary/10 text-primary"
+              : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:bg-surface-hover"
+          } ${showCreators && !showMaterials ? "cursor-not-allowed opacity-75" : ""}`}
+        >
+          <input
+            type="checkbox"
+            checked={showCreators}
+            onChange={onToggleCreators}
+            className="sr-only"
+          />
+          <Users className="h-4 w-4" />
+          <span className="text-sm font-semibold">{t("sidebar.showCreators")}</span>
+        </label>
       </div>
     </div>
   );

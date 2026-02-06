@@ -1,29 +1,29 @@
 /**
  * Admin Moderation E2E Tests.
  *
- * Tests admin resource moderation including:
- * - Viewing pending resources
- * - Verifying resources
- * - Rejecting resources
+ * Tests admin material moderation including:
+ * - Viewing pending materials
+ * - Verifying materials
+ * - Rejecting materials
  * - Status filter functionality
  */
 
 import { test, expect } from "../../fixtures/auth.fixture";
 import { AdminDocumentsPage } from "../../pages/admin-documents.page";
-import { TEST_RESOURCE_IDS } from "../../fixtures/test-users";
+import { TEST_MATERIAL_IDS } from "../../fixtures/test-users";
 
 test.describe("Admin Moderation", () => {
   test.beforeEach(async ({ adminPage }) => {
-    // Mock the admin resources API to provide consistent test data
-    await adminPage.route("**/api/admin/resources**", async (route) => {
+    // Mock the admin materials API to provide consistent test data
+    await adminPage.route("**/api/admin/materials**", async (route) => {
       const url = new URL(route.request().url());
       const status = url.searchParams.get("status") || "all";
 
-      const mockResources = [
+      const mockMaterials = [
         {
-          id: TEST_RESOURCE_IDS.PENDING_RESOURCE,
-          title: "Pending Test Resource",
-          description: "A resource waiting for moderation",
+          id: TEST_MATERIAL_IDS.PENDING_MATERIAL,
+          title: "Pending Test Material",
+          description: "A material waiting for moderation",
           price: 0,
           priceFormatted: "Gratis",
           subjects: ["Mathematik"],
@@ -44,9 +44,9 @@ test.describe("Admin Moderation", () => {
           salesCount: 0,
         },
         {
-          id: "verified-resource-001",
-          title: "Verified Test Resource",
-          description: "An approved resource",
+          id: "verified-material-001",
+          title: "Verified Test Material",
+          description: "An approved material",
           price: 990,
           priceFormatted: "CHF 9.90",
           subjects: ["Deutsch"],
@@ -69,11 +69,11 @@ test.describe("Admin Moderation", () => {
       ];
 
       // Filter based on status
-      let filteredResources = mockResources;
+      let filteredMaterials = mockMaterials;
       if (status === "pending") {
-        filteredResources = mockResources.filter((r) => r.status === "PENDING");
+        filteredMaterials = mockMaterials.filter((r) => r.status === "PENDING");
       } else if (status === "approved") {
-        filteredResources = mockResources.filter((r) => r.status === "VERIFIED");
+        filteredMaterials = mockMaterials.filter((r) => r.status === "VERIFIED");
       }
 
       if (route.request().method() === "GET") {
@@ -81,11 +81,11 @@ test.describe("Admin Moderation", () => {
           status: 200,
           contentType: "application/json",
           body: JSON.stringify({
-            resources: filteredResources,
+            materials: filteredMaterials,
             pagination: {
               page: 1,
               limit: 10,
-              total: filteredResources.length,
+              total: filteredMaterials.length,
               totalPages: 1,
             },
           }),
@@ -101,7 +101,7 @@ test.describe("Admin Moderation", () => {
     });
   });
 
-  test("admin can view pending resources", async ({ adminPage }) => {
+  test("admin can view pending materials", async ({ adminPage }) => {
     const documentsPage = new AdminDocumentsPage(adminPage);
 
     // Navigate to admin documents page
@@ -110,33 +110,33 @@ test.describe("Admin Moderation", () => {
     // Select pending filter
     await documentsPage.selectStatusFilter("pending");
 
-    // Should show pending resources
-    await documentsPage.expectResourceVisible("Pending Test Resource");
+    // Should show pending materials
+    await documentsPage.expectMaterialVisible("Pending Test Material");
   });
 
-  test("admin can verify a resource", async ({ adminPage }) => {
+  test("admin can verify a material", async ({ adminPage }) => {
     const documentsPage = new AdminDocumentsPage(adminPage);
 
     // Navigate to admin documents page
     await documentsPage.goto();
 
-    // Select pending filter to find pending resources
+    // Select pending filter to find pending materials
     await documentsPage.selectStatusFilter("pending");
 
-    // Open review modal for the pending resource
-    await documentsPage.openReviewModal("Pending Test Resource");
+    // Open review modal for the pending material
+    await documentsPage.openReviewModal("Pending Test Material");
 
     // Verify the modal is open
     await expect(documentsPage.reviewModal).toBeVisible();
 
     // Click verify button
-    await documentsPage.verifyResource();
+    await documentsPage.verifyMaterial();
 
     // Modal should close
     await expect(documentsPage.reviewModal).toBeHidden();
   });
 
-  test("admin can reject a resource", async ({ adminPage }) => {
+  test("admin can reject a material", async ({ adminPage }) => {
     const documentsPage = new AdminDocumentsPage(adminPage);
 
     // Navigate to admin documents page
@@ -146,19 +146,19 @@ test.describe("Admin Moderation", () => {
     await documentsPage.selectStatusFilter("pending");
 
     // Open review modal
-    await documentsPage.openReviewModal("Pending Test Resource");
+    await documentsPage.openReviewModal("Pending Test Material");
 
     // Verify the modal is open
     await expect(documentsPage.reviewModal).toBeVisible();
 
     // Click reject button
-    await documentsPage.rejectResource();
+    await documentsPage.rejectMaterial();
 
     // Modal should close
     await expect(documentsPage.reviewModal).toBeHidden();
   });
 
-  test("status filter shows correct resources", async ({ adminPage }) => {
+  test("status filter shows correct materials", async ({ adminPage }) => {
     const documentsPage = new AdminDocumentsPage(adminPage);
 
     // Navigate to admin documents page
@@ -166,22 +166,22 @@ test.describe("Admin Moderation", () => {
 
     // Test pending filter
     await documentsPage.selectStatusFilter("pending");
-    await documentsPage.expectResourceVisible("Pending Test Resource");
+    await documentsPage.expectMaterialVisible("Pending Test Material");
 
-    // Verified resource should NOT be visible with pending filter
+    // Verified material should NOT be visible with pending filter
     const verifiedVisible = await adminPage
-      .locator("text=Verified Test Resource")
+      .locator("text=Verified Test Material")
       .isVisible()
       .catch(() => false);
     expect(verifiedVisible).toBe(false);
 
     // Test approved filter
     await documentsPage.selectStatusFilter("approved");
-    await documentsPage.expectResourceVisible("Verified Test Resource");
+    await documentsPage.expectMaterialVisible("Verified Test Material");
 
-    // Pending resource should NOT be visible with approved filter
+    // Pending material should NOT be visible with approved filter
     const pendingVisible = await adminPage
-      .locator("text=Pending Test Resource")
+      .locator("text=Pending Test Material")
       .isVisible()
       .catch(() => false);
     expect(pendingVisible).toBe(false);
@@ -189,25 +189,25 @@ test.describe("Admin Moderation", () => {
     // Test all filter
     await documentsPage.selectStatusFilter("all");
     // Both should be visible with 'all' filter
-    await documentsPage.expectResourceVisible("Pending Test Resource");
-    await documentsPage.expectResourceVisible("Verified Test Resource");
+    await documentsPage.expectMaterialVisible("Pending Test Material");
+    await documentsPage.expectMaterialVisible("Verified Test Material");
   });
 });
 
 test.describe("Admin Review Modal", () => {
   test.beforeEach(async ({ adminPage }) => {
-    // Set up mock for admin resources API
-    await adminPage.route("**/api/admin/resources**", async (route) => {
+    // Set up mock for admin materials API
+    await adminPage.route("**/api/admin/materials**", async (route) => {
       if (route.request().method() === "GET") {
         await route.fulfill({
           status: 200,
           contentType: "application/json",
           body: JSON.stringify({
-            resources: [
+            materials: [
               {
-                id: "test-resource-review",
-                title: "Resource for Review",
-                description: "Detailed description of the resource for review",
+                id: "test-material-review",
+                title: "Material for Review",
+                description: "Detailed description of the material for review",
                 price: 1500,
                 priceFormatted: "CHF 15.00",
                 subjects: ["Mathematik", "NMG"],
@@ -222,7 +222,7 @@ test.describe("Admin Review Modal", () => {
                 updated_at: new Date().toISOString(),
                 seller: {
                   id: "seller-001",
-                  display_name: "Resource Seller",
+                  display_name: "Material Seller",
                   email: "seller@currico.test",
                 },
                 salesCount: 0,
@@ -246,24 +246,24 @@ test.describe("Admin Review Modal", () => {
     });
   });
 
-  test("review modal displays resource details", async ({ adminPage }) => {
+  test("review modal displays material details", async ({ adminPage }) => {
     const documentsPage = new AdminDocumentsPage(adminPage);
 
     // Navigate to admin documents page
     await documentsPage.goto();
 
     // Open review modal
-    await documentsPage.openReviewModal("Resource for Review");
+    await documentsPage.openReviewModal("Material for Review");
 
     // Verify modal content
     await expect(documentsPage.modalTitle).toBeVisible();
     await expect(documentsPage.modalTitle).toHaveText("Dokument prüfen");
 
-    // Verify resource details are shown in modal (use heading for title to be specific)
-    await expect(adminPage.getByRole("heading", { name: "Resource for Review" })).toBeVisible();
+    // Verify material details are shown in modal (use heading for title to be specific)
+    await expect(adminPage.getByRole("heading", { name: "Material for Review" })).toBeVisible();
     // Use first() for elements that may appear multiple times
     await expect(adminPage.locator("text=CHF 15.00").first()).toBeVisible();
-    await expect(adminPage.locator("text=Resource Seller").first()).toBeVisible();
+    await expect(adminPage.locator("text=Material Seller").first()).toBeVisible();
 
     // Verify action buttons are visible
     await expect(documentsPage.verifyButton).toBeVisible();
@@ -275,7 +275,7 @@ test.describe("Admin Review Modal", () => {
 
     // Navigate and open modal
     await documentsPage.goto();
-    await documentsPage.openReviewModal("Resource for Review");
+    await documentsPage.openReviewModal("Material for Review");
 
     // Verify modal is open
     await expect(documentsPage.reviewModal).toBeVisible();

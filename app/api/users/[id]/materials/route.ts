@@ -3,12 +3,12 @@ import { prisma } from "@/lib/db";
 import { parsePagination, paginationResponse } from "@/lib/api";
 
 /**
- * GET /api/users/[id]/resources
- * Get a user's public resources
+ * GET /api/users/[id]/materials
+ * Get a user's public materials
  * Query params:
  *   - page, limit: pagination
  *   - sort: "newest" | "popular" | "price-low" | "price-high"
- *   - best: "true" to get only top resources (most downloaded)
+ *   - best: "true" to get only top materials (most downloaded)
  */
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -48,8 +48,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     // Get total count
     const total = await prisma.resource.count({ where });
 
-    // If requesting "best" resources, get top 6 by download count
-    const resources = await prisma.resource.findMany({
+    // If requesting "best" materials, get top 6 by download count
+    const materials = await prisma.resource.findMany({
       where,
       select: {
         id: true,
@@ -73,7 +73,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     });
 
     // Transform response
-    const transformedResources = resources.map((r) => ({
+    const transformedMaterials = materials.map((r) => ({
       id: r.id,
       title: r.title,
       description: r.description,
@@ -87,7 +87,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     }));
 
     return NextResponse.json({
-      resources: transformedResources,
+      materials: transformedMaterials,
       seller: {
         id: user.id,
         name: user.display_name || user.name,
@@ -95,7 +95,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       pagination: best ? null : paginationResponse(page, limit, total),
     });
   } catch (error) {
-    console.error("Error fetching user resources:", error);
+    console.error("Error fetching user materials:", error);
     return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
   }
 }

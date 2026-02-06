@@ -52,7 +52,7 @@ export class S3StorageAdapter implements StorageProvider {
    */
   private getBucket(category: FileCategory): string {
     // Resources go to private bucket, everything else to public
-    return category === "resource" ? this.config.privateBucket : this.config.publicBucket;
+    return category === "material" ? this.config.privateBucket : this.config.publicBucket;
   }
 
   /**
@@ -60,7 +60,7 @@ export class S3StorageAdapter implements StorageProvider {
    */
   private getCategoryPrefix(category: FileCategory): string {
     switch (category) {
-      case "resource":
+      case "material":
         return "resources";
       case "preview":
         return "previews";
@@ -92,14 +92,14 @@ export class S3StorageAdapter implements StorageProvider {
         ContentType: contentType,
         Metadata: metadata,
         // Set public-read ACL for public bucket items
-        ...(category !== "resource" && { ACL: "public-read" }),
+        ...(category !== "material" && { ACL: "public-read" }),
       });
 
       await this.client.send(command);
 
       // Build public URL for public bucket items
       let publicUrl: string | undefined;
-      if (category !== "resource") {
+      if (category !== "material") {
         // Remove trailing slash from base URL to avoid double slashes
         const baseUrl = this.config.publicBucketUrl.replace(/\/+$/, "");
         publicUrl = `${baseUrl}/${key}`;

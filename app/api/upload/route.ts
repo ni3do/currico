@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
     const storage = getStorage();
 
     // Determine category based on file type
-    const category: FileCategory = isPreview ? "preview" : "resource";
+    const category: FileCategory = isPreview ? "preview" : "material";
 
     // Read file buffer
     const bytes = await file.arrayBuffer();

@@ -111,7 +111,7 @@ export async function POST(request: NextRequest) {
     const { resourceId } = body;
 
     if (!resourceId) {
-      return NextResponse.json({ error: "Ressourcen-ID erforderlich" }, { status: 400 });
+      return NextResponse.json({ error: "Material-ID erforderlich" }, { status: 400 });
     }
 
     // Check if resource exists and is public
@@ -127,19 +127,19 @@ export async function POST(request: NextRequest) {
     });
 
     if (!resource) {
-      return NextResponse.json({ error: "Ressource nicht gefunden" }, { status: 404 });
+      return NextResponse.json({ error: "Material nicht gefunden" }, { status: 404 });
     }
 
     // Don't allow wishlisting own resources
     if (resource.seller_id === userId) {
       return NextResponse.json(
-        { error: "Sie können Ihre eigenen Ressourcen nicht auf die Wunschliste setzen" },
+        { error: "Sie können Ihre eigenen Materialien nicht auf die Wunschliste setzen" },
         { status: 400 }
       );
     }
 
     if (!resource.is_published || !resource.is_approved || !resource.is_public) {
-      return NextResponse.json({ error: "Diese Ressource ist nicht verfügbar" }, { status: 400 });
+      return NextResponse.json({ error: "Dieses Material ist nicht verfügbar" }, { status: 400 });
     }
 
     // Add to wishlist (upsert to avoid duplicates)
@@ -180,7 +180,7 @@ export async function DELETE(request: NextRequest) {
     const resourceId = searchParams.get("resourceId");
 
     if (!resourceId) {
-      return NextResponse.json({ error: "Ressourcen-ID erforderlich" }, { status: 400 });
+      return NextResponse.json({ error: "Material-ID erforderlich" }, { status: 400 });
     }
 
     // Delete from wishlist

@@ -6,7 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
-import { ResourceCard } from "@/components/ui/ResourceCard";
+import { MaterialCard } from "@/components/ui/MaterialCard";
 import { Users, FileText, FolderOpen, Calendar, MapPin, Instagram, Lock } from "lucide-react";
 
 interface ProfileData {
@@ -33,7 +33,7 @@ interface ProfileData {
   isOwnProfile: boolean;
 }
 
-interface Resource {
+interface Material {
   id: string;
   title: string;
   description: string;
@@ -66,14 +66,14 @@ export default function PublicProfilePage({
   const { id } = use(params);
   const t = useTranslations("profile");
   const [profile, setProfile] = useState<ProfileData | null>(null);
-  const [bestResources, setBestResources] = useState<Resource[]>([]);
-  const [allResources, setAllResources] = useState<Resource[]>([]);
+  const [bestMaterials, setBestMaterials] = useState<Material[]>([]);
+  const [allMaterials, setAllMaterials] = useState<Material[]>([]);
   const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(true);
   const [followLoading, setFollowLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<"uploads" | "collections">("uploads");
-  const [resourcePage, setResourcePage] = useState(1);
-  const [hasMoreResources, setHasMoreResources] = useState(false);
+  const [materialPage, setMaterialPage] = useState(1);
+  const [hasMoreMaterials, setHasMoreMaterials] = useState(false);
 
   // Fetch profile data
   useEffect(() => {
@@ -83,8 +83,8 @@ export default function PublicProfilePage({
         // Fetch profile, best resources, all resources, and collections in parallel
         const [profileRes, bestRes, allRes, collectionsRes] = await Promise.all([
           fetch(`/api/users/${id}/public`),
-          fetch(`/api/users/${id}/resources?best=true`),
-          fetch(`/api/users/${id}/resources?page=1&limit=12`),
+          fetch(`/api/users/${id}/materials?best=true`),
+          fetch(`/api/users/${id}/materials?page=1&limit=12`),
           fetch(`/api/users/${id}/collections`),
         ]);
 
@@ -95,13 +95,13 @@ export default function PublicProfilePage({
 
         if (bestRes.ok) {
           const bestData = await bestRes.json();
-          setBestResources(bestData.resources);
+          setBestMaterials(bestData.resources);
         }
 
         if (allRes.ok) {
           const allData = await allRes.json();
-          setAllResources(allData.resources);
-          setHasMoreResources(allData.pagination?.totalPages > 1);
+          setAllMaterials(allData.resources);
+          setHasMoreMaterials(allData.pagination?.totalPages > 1);
         }
 
         if (collectionsRes.ok) {
@@ -150,15 +150,15 @@ export default function PublicProfilePage({
   };
 
   // Load more resources
-  const loadMoreResources = async () => {
-    const nextPage = resourcePage + 1;
+  const loadMoreMaterials = async () => {
+    const nextPage = materialPage + 1;
     try {
-      const response = await fetch(`/api/users/${id}/resources?page=${nextPage}&limit=12`);
+      const response = await fetch(`/api/users/${id}/materials?page=${nextPage}&limit=12`);
       if (response.ok) {
         const data = await response.json();
-        setAllResources((prev) => [...prev, ...data.resources]);
-        setResourcePage(nextPage);
-        setHasMoreResources(data.pagination?.page < data.pagination?.totalPages);
+        setAllMaterials((prev) => [...prev, ...data.materials]);
+        setMaterialPage(nextPage);
+        setHasMoreMaterials(data.pagination?.page < data.pagination?.totalPages);
       }
     } catch (error) {
       console.error("Error loading more resources:", error);
@@ -222,8 +222,8 @@ export default function PublicProfilePage({
             <p className="text-text-muted mb-4">
               Das gesuchte Profil existiert nicht oder wurde entfernt.
             </p>
-            <Link href="/resources" className="btn-primary px-6 py-3">
-              Ressourcen durchsuchen
+            <Link href="/materialien" className="btn-primary px-6 py-3">
+              Materialien durchsuchen
             </Link>
           </div>
         </main>
@@ -332,7 +332,7 @@ export default function PublicProfilePage({
                 <div className="bg-surface-elevated border-border text-text-muted mt-4 flex items-center gap-2 rounded-lg border p-3 text-sm">
                   <Lock className="h-4 w-4" />
                   <span>
-                    Dieses Profil ist privat. Nur öffentliche Ressourcen werden angezeigt.
+                    Dieses Profil ist privat. Nur öffentliche Materialien werden angezeigt.
                   </span>
                 </div>
               )}
@@ -405,7 +405,7 @@ export default function PublicProfilePage({
             <div className="border-border flex gap-6 border-t pt-4 md:border-t-0 md:border-l md:pt-0 md:pl-6">
               <div className="text-center">
                 <div className="text-primary text-2xl font-bold">{profile.stats.resourceCount}</div>
-                <div className="text-text-muted text-xs">Ressourcen</div>
+                <div className="text-text-muted text-xs">Materialien</div>
               </div>
               {!profile.is_private && (
                 <>
@@ -428,24 +428,24 @@ export default function PublicProfilePage({
         </div>
 
         {/* Best Uploads Section */}
-        {bestResources.length > 0 && (
+        {bestMaterials.length > 0 && (
           <section className="mb-8">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-text text-xl font-bold">Beste Uploads</h2>
             </div>
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {bestResources.slice(0, 3).map((resource) => (
-                <ResourceCard
-                  key={resource.id}
-                  id={resource.id}
-                  title={resource.title}
-                  description={resource.description}
-                  subject={resource.subjects[0] || ""}
-                  cycle={resource.cycles[0] || ""}
-                  priceFormatted={formatPrice(resource.price)}
-                  previewUrl={resource.preview_url}
+              {bestMaterials.slice(0, 3).map((material) => (
+                <MaterialCard
+                  key={material.id}
+                  id={material.id}
+                  title={material.title}
+                  description={material.description}
+                  subject={material.subjects[0] || ""}
+                  cycle={material.cycles[0] || ""}
+                  priceFormatted={formatPrice(material.price)}
+                  previewUrl={material.preview_url}
                   seller={{ displayName }}
-                  subjectPillClass={getSubjectPillClass(resource.subjects[0] || "")}
+                  subjectPillClass={getSubjectPillClass(material.subjects[0] || "")}
                 />
               ))}
             </div>
@@ -483,38 +483,38 @@ export default function PublicProfilePage({
         {/* All Uploads Tab */}
         {activeTab === "uploads" && (
           <section>
-            {allResources.length === 0 ? (
+            {allMaterials.length === 0 ? (
               <div className="card flex flex-col items-center justify-center py-16">
                 <FileText className="text-text-faint mb-4 h-12 w-12" />
                 <p className="text-text">Noch keine Uploads vorhanden</p>
                 <p className="text-text-muted text-sm">
                   {profile.isOwnProfile
-                    ? "Laden Sie Ihre erste Ressource hoch!"
-                    : "Dieser Benutzer hat noch keine Ressourcen hochgeladen."}
+                    ? "Laden Sie Ihr erstes Material hoch!"
+                    : "Dieser Benutzer hat noch keine Materialien hochgeladen."}
                 </p>
               </div>
             ) : (
               <>
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                  {allResources.map((resource) => (
-                    <ResourceCard
-                      key={resource.id}
-                      id={resource.id}
-                      title={resource.title}
-                      description={resource.description}
-                      subject={resource.subjects[0] || ""}
-                      cycle={resource.cycles[0] || ""}
-                      priceFormatted={formatPrice(resource.price)}
-                      previewUrl={resource.preview_url}
+                  {allMaterials.map((material) => (
+                    <MaterialCard
+                      key={material.id}
+                      id={material.id}
+                      title={material.title}
+                      description={material.description}
+                      subject={material.subjects[0] || ""}
+                      cycle={material.cycles[0] || ""}
+                      priceFormatted={formatPrice(material.price)}
+                      previewUrl={material.preview_url}
                       seller={{ displayName }}
-                      subjectPillClass={getSubjectPillClass(resource.subjects[0] || "")}
+                      subjectPillClass={getSubjectPillClass(material.subjects[0] || "")}
                     />
                   ))}
                 </div>
 
-                {hasMoreResources && (
+                {hasMoreMaterials && (
                   <div className="mt-8 text-center">
-                    <button onClick={loadMoreResources} className="btn-secondary px-8 py-3">
+                    <button onClick={loadMoreMaterials} className="btn-secondary px-8 py-3">
                       Mehr laden
                     </button>
                   </div>
@@ -589,7 +589,7 @@ export default function PublicProfilePage({
                       )}
                       <div className="text-text-muted flex items-center gap-1 text-sm">
                         <FileText className="h-4 w-4" />
-                        {collection.itemCount} Ressourcen
+                        {collection.itemCount} Materialien
                       </div>
                     </div>
                   </Link>

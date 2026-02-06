@@ -10,7 +10,7 @@ const createBundleSchema = z.object({
   price: z.number().min(0, "Preis muss positiv sein"),
   subject: z.array(z.string()).min(1, "Mindestens ein Fach ist erforderlich"),
   cycle: z.array(z.string()).min(1, "Mindestens ein Zyklus ist erforderlich"),
-  resourceIds: z.array(z.string()).min(2, "Mindestens 2 Ressourcen sind erforderlich"),
+  resourceIds: z.array(z.string()).min(2, "Mindestens 2 Materialien sind erforderlich"),
   coverImageUrl: z.string().url().optional().nullable(),
 });
 
@@ -131,7 +131,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (resources.length !== resourceIds.length) {
-      return badRequest("Einige Ressourcen wurden nicht gefunden oder gehören Ihnen nicht");
+      return badRequest("Einige Materialien wurden nicht gefunden oder gehören Ihnen nicht");
     }
 
     // Create bundle with resources

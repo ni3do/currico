@@ -5,7 +5,7 @@ import { StarRating } from "@/components/ui/StarRating";
 import { motion } from "framer-motion";
 
 interface ReviewFormProps {
-  resourceId: string;
+  materialId: string;
   existingReview?: {
     id: string;
     rating: number;
@@ -26,7 +26,7 @@ const RATING_LABELS: { [key: number]: string } = {
 };
 
 export function ReviewForm({
-  resourceId,
+  materialId,
   existingReview,
   onSubmit,
   onCancel,
@@ -54,7 +54,7 @@ export function ReviewForm({
     try {
       const url = isEditing
         ? `/api/reviews/${existingReview.id}`
-        : `/api/resources/${resourceId}/reviews`;
+        : `/api/materials/${materialId}/reviews`;
 
       const response = await fetch(url, {
         method: isEditing ? "PUT" : "POST",
@@ -94,7 +94,7 @@ export function ReviewForm({
       {/* Rating Selection */}
       <div className="mb-6">
         <label className="text-text mb-2 block text-sm font-medium">
-          Wie bewerten Sie diese Ressource? *
+          Wie bewerten Sie dieses Material? *
         </label>
         <div className="flex items-center gap-4">
           <StarRating rating={rating} size="lg" interactive onRatingChange={setRating} />
@@ -130,7 +130,7 @@ export function ReviewForm({
           onChange={(e) => setContent(e.target.value)}
           maxLength={2000}
           rows={4}
-          placeholder="Beschreiben Sie Ihre Erfahrung mit dieser Ressource..."
+          placeholder="Beschreiben Sie Ihre Erfahrung mit diesem Material..."
           className="input min-h-[100px] resize-y"
         />
         <p className="text-text-faint mt-1 text-xs">{content.length}/2000 Zeichen</p>

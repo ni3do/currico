@@ -252,7 +252,7 @@ export default function CollectionsPage() {
           <div>
             <Breadcrumb items={[{ label: tCommon("breadcrumb.collections") }]} />
             <h1 className="text-text text-2xl font-bold">Meine Sammlungen</h1>
-            <p className="text-text-muted mt-1">Organisieren Sie Ihre Ressourcen in Sammlungen</p>
+            <p className="text-text-muted mt-1">Organisieren Sie Ihre Materialien in Sammlungen</p>
           </div>
           <button
             onClick={() => setShowCreateModal(true)}
@@ -307,7 +307,7 @@ export default function CollectionsPage() {
                             )}
                           </div>
                           <p className="text-text-muted mt-1 text-sm">
-                            {collection.itemCount} Ressourcen
+                            {collection.itemCount} Materialien
                           </p>
                         </div>
                         <div className="flex gap-1">
@@ -364,10 +364,10 @@ export default function CollectionsPage() {
                 {selectedCollection.items.length === 0 ? (
                   <div className="p-12 text-center">
                     <FileText className="text-text-faint mx-auto mb-4 h-12 w-12" />
-                    <p className="text-text">Noch keine Ressourcen in dieser Sammlung</p>
+                    <p className="text-text">Noch keine Materialien in dieser Sammlung</p>
                     <p className="text-text-muted mt-2 text-sm">
-                      Ziehen Sie Ressourcen per Drag & Drop hierher oder fügen Sie sie über die
-                      Ressourcen-Seite hinzu.
+                      Ziehen Sie Materialien per Drag & Drop hierher oder fügen Sie sie über die
+                      Materialien-Seite hinzu.
                     </p>
                     <Link
                       href="/account"
@@ -379,7 +379,7 @@ export default function CollectionsPage() {
                 ) : (
                   <div className="p-4">
                     <p className="text-text-muted mb-4 text-sm">
-                      Ziehen Sie Ressourcen, um die Reihenfolge zu ändern
+                      Ziehen Sie Materialien, um die Reihenfolge zu ändern
                     </p>
                     <div className="space-y-2">
                       {selectedCollection.items
@@ -417,7 +417,7 @@ export default function CollectionsPage() {
 
                             <div className="min-w-0 flex-1">
                               <Link
-                                href={`/resources/${item.resource.id}`}
+                                href={`/materialien/${item.resource.id}`}
                                 className="text-text hover:text-primary font-medium"
                               >
                                 {item.resource.title}

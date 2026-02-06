@@ -115,7 +115,7 @@ export function LP21Badge({
   if (clickable) {
     return (
       <div className="relative inline-block">
-        <Link href={`/resources?competency=${encodeURIComponent(code)}`}>{badgeContent}</Link>
+        <Link href={`/materialien?competency=${encodeURIComponent(code)}`}>{badgeContent}</Link>
         {tooltipContent}
       </div>
     );
@@ -167,7 +167,9 @@ export function TransversalBadge({
   );
 
   if (clickable) {
-    return <Link href={`/resources?transversal=${encodeURIComponent(code)}`}>{badgeContent}</Link>;
+    return (
+      <Link href={`/materialien?transversal=${encodeURIComponent(code)}`}>{badgeContent}</Link>
+    );
   }
 
   return badgeContent;
@@ -216,7 +218,7 @@ export function BneBadge({
   );
 
   if (clickable) {
-    return <Link href={`/resources?bne=${encodeURIComponent(code)}`}>{badgeContent}</Link>;
+    return <Link href={`/materialien?bne=${encodeURIComponent(code)}`}>{badgeContent}</Link>;
   }
 
   return badgeContent;

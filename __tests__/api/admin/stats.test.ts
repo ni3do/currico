@@ -5,7 +5,7 @@ import { prisma } from "@/lib/db";
 
 // Get mocked prisma functions
 const mockUserCount = prisma.user.count as ReturnType<typeof vi.fn>;
-const mockResourceCount = prisma.resource.count as ReturnType<typeof vi.fn>;
+const mockMaterialCount = prisma.resource.count as ReturnType<typeof vi.fn>;
 const mockTransactionAggregate = prisma.transaction.aggregate as ReturnType<typeof vi.fn>;
 const mockReportCount = prisma.report.count as ReturnType<typeof vi.fn>;
 
@@ -36,8 +36,8 @@ describe("GET /api/admin/stats", () => {
       .mockResolvedValueOnce(70) // buyerCount
       .mockResolvedValueOnce(10); // adminCount
 
-    mockResourceCount
-      .mockResolvedValueOnce(50) // totalResources
+    mockMaterialCount
+      .mockResolvedValueOnce(50) // totalMaterials
       .mockResolvedValueOnce(3); // pendingApproval
 
     mockTransactionAggregate
@@ -81,7 +81,7 @@ describe("GET /api/admin/stats", () => {
     mockRequireAdmin.mockResolvedValue({ id: "admin-1", role: "ADMIN" });
 
     mockUserCount.mockResolvedValue(0);
-    mockResourceCount.mockResolvedValue(0);
+    mockMaterialCount.mockResolvedValue(0);
     mockTransactionAggregate.mockResolvedValue({ _sum: { amount: null } });
     mockReportCount.mockResolvedValue(0);
 
@@ -106,7 +106,7 @@ describe("GET /api/admin/stats", () => {
       .mockResolvedValueOnce(70) // buyerCount
       .mockResolvedValueOnce(10); // adminCount
 
-    mockResourceCount.mockResolvedValue(0);
+    mockMaterialCount.mockResolvedValue(0);
     mockTransactionAggregate.mockResolvedValue({ _sum: { amount: 0 } });
     mockReportCount.mockResolvedValue(0);
 

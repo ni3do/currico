@@ -18,45 +18,108 @@ export default function AboutPage() {
     <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
-        {/* Page Header */}
-        <div className="mb-6">
+      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
+        {/* Breadcrumb */}
+        <div className="mb-8">
           <Breadcrumb items={[{ label: tCommon("breadcrumb.about") }]} />
-          <h1 className="text-text text-2xl font-bold">{t("hero.title")}</h1>
-          <p className="text-text-muted mt-1">{t("hero.subtitle")}</p>
         </div>
 
-        {/* Hero Image */}
-        <div className="mb-12">
-          <Image
-            src="/images/about-hero.png"
-            alt={t("hero.imageAlt")}
-            width={1200}
-            height={400}
-            className="h-[200px] w-full rounded-xl object-cover object-center shadow-lg sm:h-[280px] md:h-[340px]"
-            priority
-          />
+        {/* Hero Section - Personal & Warm */}
+        <div className="mb-16 text-center">
+          <span className="bg-primary/10 text-primary mb-4 inline-block rounded-full px-4 py-1.5 text-sm font-medium">
+            {t("hero.badge")}
+          </span>
+          <h1 className="text-text mb-4 text-3xl font-bold sm:text-4xl">{t("hero.title")}</h1>
+          <p className="text-text-muted mx-auto max-w-2xl text-lg leading-relaxed">
+            {t("hero.subtitle")}
+          </p>
+        </div>
+
+        {/* Meet the Team - Right at the top, personal first */}
+        <div className="mb-16">
+          <div className="mb-8 text-center">
+            <h2 className="text-text mb-2 text-2xl font-bold">{t("founders.title")}</h2>
+            <p className="text-text-muted mx-auto max-w-xl">{t("founders.subtitle")}</p>
+          </div>
+
+          <div className="grid gap-8 sm:grid-cols-2">
+            {/* Simon Wachter */}
+            <div className="card overflow-hidden">
+              <div className="relative mx-auto h-72 w-full overflow-hidden">
+                <Image
+                  src="/images/simon-wachter.jpg"
+                  alt={t("founders.founder1.name")}
+                  fill
+                  className="object-cover object-top"
+                />
+              </div>
+              <div className="p-6 text-center">
+                <h3 className="text-text mb-1 text-xl font-bold">{t("founders.founder1.name")}</h3>
+                <p className="text-primary mb-4 text-sm font-medium">
+                  {t("founders.founder1.role")}
+                </p>
+                <p className="text-text-muted text-sm leading-relaxed">
+                  {t("founders.founder1.bio")}
+                </p>
+              </div>
+            </div>
+
+            {/* Laurent Zoccoletti */}
+            <div className="card overflow-hidden">
+              <div className="relative mx-auto h-72 w-full overflow-hidden">
+                <Image
+                  src="/images/laurent-zoccoletti.png"
+                  alt={t("founders.founder2.name")}
+                  fill
+                  className="object-cover object-top"
+                />
+              </div>
+              <div className="p-6 text-center">
+                <h3 className="text-text mb-1 text-xl font-bold">{t("founders.founder2.name")}</h3>
+                <p className="text-primary mb-4 text-sm font-medium">
+                  {t("founders.founder2.role")}
+                </p>
+                <p className="text-text-muted text-sm leading-relaxed">
+                  {t("founders.founder2.bio")}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Personal story */}
+          <div className="text-text-secondary mx-auto mt-8 max-w-3xl text-center leading-relaxed">
+            <p className="italic">&ldquo;{t("founders.story")}&rdquo;</p>
+          </div>
+        </div>
+
+        {/* Our Story Section */}
+        <div className="bg-bg-secondary mb-16 rounded-2xl p-6 sm:p-10">
+          <h2 className="text-text mb-6 text-2xl font-bold">{t("origin.title")}</h2>
+          <div className="text-text-secondary space-y-4 text-base leading-relaxed">
+            <p>{t("origin.paragraph1")}</p>
+            <p>{t("origin.paragraph2")}</p>
+          </div>
         </div>
 
         {/* Mission Section */}
-        <div className="bg-bg-secondary mb-12 rounded-xl p-6 sm:p-8">
-          <h2 className="text-text mb-6 text-xl font-semibold">{t("mission.title")}</h2>
-          <div className="text-text-secondary space-y-4 leading-relaxed">
+        <div className="mb-16">
+          <h2 className="text-text mb-6 text-2xl font-bold">{t("mission.title")}</h2>
+          <div className="text-text-secondary space-y-4 text-base leading-relaxed">
             <p>{t("mission.paragraph1")}</p>
             <p>{t("mission.paragraph2")}</p>
             <p>{t("mission.paragraph3")}</p>
           </div>
         </div>
 
-        {/* Core Values Section */}
-        <div className="mb-12">
-          <h2 className="text-text mb-8 text-xl font-semibold">{t("values.title")}</h2>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {/* Value 1 - Time Savings */}
-            <div className="card p-6 text-center md:p-8">
-              <div className="bg-primary-light mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full">
+        {/* Values Section */}
+        <div className="mb-16">
+          <h2 className="text-text mb-8 text-2xl font-bold">{t("values.title")}</h2>
+          <div className="grid gap-6 sm:grid-cols-3">
+            {/* Value 1 */}
+            <div className="border-border rounded-2xl border p-6">
+              <div className="bg-primary/10 mb-4 flex h-12 w-12 items-center justify-center rounded-xl">
                 <svg
-                  className="text-primary h-8 w-8"
+                  className="text-primary h-6 w-6"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -69,15 +132,17 @@ export default function AboutPage() {
                   />
                 </svg>
               </div>
-              <h3 className="text-text mb-3 text-lg font-bold">{t("values.value1.title")}</h3>
-              <p className="text-text-muted leading-relaxed">{t("values.value1.description")}</p>
+              <h3 className="text-text mb-2 font-bold">{t("values.value1.title")}</h3>
+              <p className="text-text-muted text-sm leading-relaxed">
+                {t("values.value1.description")}
+              </p>
             </div>
 
-            {/* Value 2 - Swiss Quality */}
-            <div className="card p-6 text-center md:p-8">
-              <div className="bg-accent-light mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full">
+            {/* Value 2 */}
+            <div className="border-border rounded-2xl border p-6">
+              <div className="bg-accent/10 mb-4 flex h-12 w-12 items-center justify-center rounded-xl">
                 <svg
-                  className="text-accent h-8 w-8"
+                  className="text-accent h-6 w-6"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -90,15 +155,17 @@ export default function AboutPage() {
                   />
                 </svg>
               </div>
-              <h3 className="text-text mb-3 text-lg font-bold">{t("values.value2.title")}</h3>
-              <p className="text-text-muted leading-relaxed">{t("values.value2.description")}</p>
+              <h3 className="text-text mb-2 font-bold">{t("values.value2.title")}</h3>
+              <p className="text-text-muted text-sm leading-relaxed">
+                {t("values.value2.description")}
+              </p>
             </div>
 
-            {/* Value 3 - Teacher Verified */}
-            <div className="card p-6 text-center">
-              <div className="bg-success-light mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full">
+            {/* Value 3 */}
+            <div className="border-border rounded-2xl border p-6">
+              <div className="bg-success/10 mb-4 flex h-12 w-12 items-center justify-center rounded-xl">
                 <svg
-                  className="text-success h-8 w-8"
+                  className="text-success h-6 w-6"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -111,120 +178,31 @@ export default function AboutPage() {
                   />
                 </svg>
               </div>
-              <h3 className="text-text mb-3 text-lg font-bold">{t("values.value3.title")}</h3>
-              <p className="text-text-muted leading-relaxed">{t("values.value3.description")}</p>
+              <h3 className="text-text mb-2 font-bold">{t("values.value3.title")}</h3>
+              <p className="text-text-muted text-sm leading-relaxed">
+                {t("values.value3.description")}
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Origin Story Section */}
-        <div className="bg-bg-secondary mb-12 rounded-xl p-6 sm:p-8">
-          <div className="grid items-center gap-8 lg:grid-cols-2">
-            {/* Left Side - Text Content */}
-            <div>
-              <h2 className="text-text mb-6 text-xl font-semibold">{t("origin.title")}</h2>
-              <div className="text-text-secondary space-y-4 leading-relaxed">
-                <p>{t("origin.paragraph1")}</p>
-                <p>{t("origin.paragraph2")}</p>
-              </div>
-            </div>
-
-            {/* Right Side - Team Image */}
-            <div>
-              <Image
-                src="/images/about-team.png"
-                alt={t("origin.imageAlt")}
-                width={800}
-                height={533}
-                className="h-[200px] w-full rounded-xl object-cover object-center shadow-lg sm:h-[260px]"
+        {/* Contact / Get in Touch */}
+        <div className="border-primary/20 bg-primary/5 mb-16 rounded-2xl border p-6 text-center sm:p-8">
+          <p className="text-text mb-2 text-lg font-medium">{t("founders.highlight")}</p>
+          <a
+            href="mailto:info@currico.ch"
+            className="text-primary inline-flex items-center gap-2 font-medium hover:underline"
+          >
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
               />
-            </div>
-          </div>
-        </div>
-
-        {/* Founders Section */}
-        <div className="mb-12">
-          <div className="mb-8 text-center">
-            <h2 className="text-text mb-2 text-xl font-semibold">{t("founders.title")}</h2>
-            <p className="text-text-muted">{t("founders.subtitle")}</p>
-          </div>
-
-          {/* Founder Cards */}
-          <div className="mb-8 grid gap-6 md:grid-cols-2">
-            {/* Founder 1 - Tech */}
-            <div className="card p-6 text-center">
-              <div className="bg-bg-secondary border-primary/20 mx-auto mb-4 h-24 w-24 overflow-hidden rounded-full border-4">
-                <div className="flex h-full w-full items-center justify-center">
-                  <svg
-                    className="text-text-muted h-12 w-12"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                    />
-                  </svg>
-                </div>
-              </div>
-              <h3 className="text-text mb-1 text-lg font-bold">{t("founders.founder1.name")}</h3>
-              <p className="text-primary mb-3 text-sm font-medium">{t("founders.founder1.role")}</p>
-              <p className="text-text-muted text-sm leading-relaxed">
-                {t("founders.founder1.bio")}
-              </p>
-            </div>
-
-            {/* Founder 2 - Education */}
-            <div className="card p-6 text-center">
-              <div className="bg-bg-secondary border-primary/20 mx-auto mb-4 h-24 w-24 overflow-hidden rounded-full border-4">
-                <div className="flex h-full w-full items-center justify-center">
-                  <svg
-                    className="text-text-muted h-12 w-12"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                    />
-                  </svg>
-                </div>
-              </div>
-              <h3 className="text-text mb-1 text-lg font-bold">{t("founders.founder2.name")}</h3>
-              <p className="text-primary mb-3 text-sm font-medium">{t("founders.founder2.role")}</p>
-              <p className="text-text-muted text-sm leading-relaxed">
-                {t("founders.founder2.bio")}
-              </p>
-            </div>
-          </div>
-
-          {/* Story & Contact */}
-          <div className="text-text-secondary mx-auto max-w-3xl text-center leading-relaxed">
-            <p>{t("founders.story")}</p>
-          </div>
-          <div className="border-primary/20 bg-primary/5 mt-6 rounded-xl border p-6 text-center">
-            <p className="text-primary mb-3 font-medium">{t("founders.highlight")}</p>
-            <a
-              href="mailto:info@currico.ch"
-              className="text-primary inline-flex items-center gap-2 text-sm font-medium hover:underline"
-            >
-              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                />
-              </svg>
-              info@currico.ch
-            </a>
-          </div>
+            </svg>
+            info@currico.ch
+          </a>
         </div>
 
         {/* Quality & Trust Section */}
@@ -275,23 +253,18 @@ export default function AboutPage() {
         </div>
 
         {/* CTA Section */}
-        <div className="bg-bg-secondary rounded-xl p-6 text-center sm:p-8">
-          <h2 className="text-text mb-4 text-xl font-bold">{t("cta.title")}</h2>
+        <div className="bg-bg-secondary rounded-2xl p-6 text-center sm:p-10">
+          <h2 className="text-text mb-4 text-2xl font-bold">{t("cta.title")}</h2>
           <p className="text-text-muted mx-auto mb-6 max-w-2xl leading-relaxed">
             {t("cta.subtitle")}
           </p>
           <div className="flex flex-col justify-center gap-4 sm:flex-row">
             <Link
-              href={`/${locale}/resources`}
+              href={`/${locale}/materialien`}
               className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 font-medium transition-colors"
             >
               {t("cta.button")}
-              <svg
-                className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"

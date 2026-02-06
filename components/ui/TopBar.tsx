@@ -59,10 +59,10 @@ export default function TopBar() {
           <nav className="hidden items-center lg:flex">
             <div className="border-border mr-6 flex items-center border-r pr-6">
               <Link
-                href="/resources"
+                href="/materialien"
                 className="text-text-secondary hover:text-primary px-4 py-2 text-sm font-medium transition-colors"
               >
-                {t("navigation.resources")}
+                {t("navigation.materials")}
               </Link>
               <Link
                 href="/about"
@@ -263,10 +263,10 @@ export default function TopBar() {
                   transition={{ delay: 0.05 }}
                 >
                   <Link
-                    href="/resources"
+                    href="/materialien"
                     className="text-text-secondary hover:text-primary block px-4 py-2 text-sm font-medium transition-colors"
                   >
-                    {t("navigation.resources")}
+                    {t("navigation.materials")}
                   </Link>
                 </motion.div>
                 <motion.div

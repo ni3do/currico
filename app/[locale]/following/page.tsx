@@ -131,7 +131,7 @@ export default function FollowingPage() {
                     Materialien zu sehen.
                   </p>
                   <Link
-                    href="/resources"
+                    href="/materialien"
                     className="bg-primary hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-6 py-2.5 font-medium text-white transition-colors"
                   >
                     Profile entdecken
@@ -221,7 +221,7 @@ export default function FollowingPage() {
                           <div className="text-text-muted mt-3 flex items-center gap-4 text-sm">
                             <div className="flex items-center gap-1">
                               <FileText className="h-4 w-4" />
-                              {seller.resourceCount} Ressourcen
+                              {seller.resourceCount} Materialien
                             </div>
                             <div className="flex items-center gap-1">
                               <Calendar className="h-4 w-4" />
@@ -255,7 +255,7 @@ export default function FollowingPage() {
                   <div className="text-success text-2xl font-bold">
                     {followedSellers.reduce((acc, s) => acc + s.resourceCount, 0)}
                   </div>
-                  <div className="text-text-muted text-sm">Verfügbare Ressourcen</div>
+                  <div className="text-text-muted text-sm">Verfügbare Materialien</div>
                 </div>
               </div>
             </div>
@@ -267,10 +267,10 @@ export default function FollowingPage() {
                 Finden Sie weitere interessante Lehrpersonen und deren Materialien.
               </p>
               <Link
-                href="/resources"
+                href="/materialien"
                 className="text-primary hover:text-primary-hover block text-center text-sm font-medium transition-colors"
               >
-                Ressourcen durchsuchen →
+                Materialien durchsuchen →
               </Link>
             </div>
           </div>

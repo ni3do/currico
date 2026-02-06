@@ -111,7 +111,7 @@ export function StepNavigationBar() {
                   {/* Tooltip with errors */}
                   {isVisited && (
                     <div
-                      className={`pointer-events-none absolute -bottom-2 left-1/2 z-50 w-64 -translate-x-1/2 translate-y-full rounded-xl border p-3 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 ${hasWarning ? "border-warning/50 bg-warning/10" : "border-border bg-surface-elevated"} `}
+                      className={`pointer-events-none absolute -bottom-2 left-1/2 z-50 w-64 -translate-x-1/2 translate-y-full rounded-xl border p-3 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 ${hasWarning ? "border-warning/50 bg-surface" : "border-border bg-surface-elevated"} `}
                     >
                       <div className="text-sm">
                         <div className="text-text mb-1 font-medium">{description}</div>

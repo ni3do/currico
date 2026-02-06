@@ -183,7 +183,7 @@ export default function AdminUsersPage() {
                 <th className="text-text px-6 py-4 text-left text-sm font-semibold">Benutzer</th>
                 <th className="text-text px-6 py-4 text-left text-sm font-semibold">Rolle</th>
                 <th className="text-text px-6 py-4 text-left text-sm font-semibold">Status</th>
-                <th className="text-text px-6 py-4 text-left text-sm font-semibold">Ressourcen</th>
+                <th className="text-text px-6 py-4 text-left text-sm font-semibold">Materialien</th>
                 <th className="text-text px-6 py-4 text-left text-sm font-semibold">Registriert</th>
                 <th className="text-text px-6 py-4 text-right text-sm font-semibold">Aktionen</th>
               </tr>

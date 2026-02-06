@@ -23,7 +23,7 @@ vi.mock("@/lib/stripe", () => ({
 // Get mocked functions
 const mockUserFindUnique = prisma.user.findUnique as ReturnType<typeof vi.fn>;
 const mockUserUpdate = prisma.user.update as ReturnType<typeof vi.fn>;
-const mockResourceFindUnique = prisma.resource.findUnique as ReturnType<typeof vi.fn>;
+const mockMaterialFindUnique = prisma.resource.findUnique as ReturnType<typeof vi.fn>;
 const mockTransactionFindFirst = prisma.transaction.findFirst as ReturnType<typeof vi.fn>;
 const mockTransactionCreate = prisma.transaction.create as ReturnType<typeof vi.fn>;
 const mockAuth = auth as ReturnType<typeof vi.fn>;
@@ -77,10 +77,10 @@ describe("Checkout Flow", () => {
   });
 
   describe("POST /api/payments/create-checkout-session", () => {
-    const mockResource = {
-      id: "resource-123",
-      title: "Test Resource",
-      description: "A test resource for teachers",
+    const mockMaterial = {
+      id: "material-123",
+      title: "Test Material",
+      description: "A test material for teachers",
       price: 1000,
       is_published: true,
       is_approved: true,
@@ -103,14 +103,14 @@ describe("Checkout Flow", () => {
           email: "buyer@example.com",
           stripe_customer_id: null,
         });
-      mockResourceFindUnique.mockResolvedValue(mockResource);
+      mockMaterialFindUnique.mockResolvedValue(mockMaterial);
       mockTransactionFindFirst.mockResolvedValue(null);
       mockTransactionCreate.mockResolvedValue({ id: "txn-123" });
       mockUserUpdate.mockResolvedValue({});
 
       const request = createMockRequest("/api/payments/create-checkout-session", {
         method: "POST",
-        body: { resourceId: "resource-123" },
+        body: { materialId: "material-123" },
       });
 
       const response = await createCheckoutPOST(request);
@@ -125,7 +125,7 @@ describe("Checkout Flow", () => {
         data: expect.objectContaining({
           buyer_id: "buyer-123",
           guest_email: null,
-          resource_id: "resource-123",
+          resource_id: "material-123",
           amount: 1000,
           status: "PENDING",
           stripe_checkout_session_id: "cs_test123",
@@ -135,13 +135,13 @@ describe("Checkout Flow", () => {
 
     it("creates checkout session for guest user with email", async () => {
       mockAuth.mockResolvedValue(null);
-      mockResourceFindUnique.mockResolvedValue(mockResource);
+      mockMaterialFindUnique.mockResolvedValue(mockMaterial);
       mockTransactionFindFirst.mockResolvedValue(null);
       mockTransactionCreate.mockResolvedValue({ id: "txn-123" });
 
       const request = createMockRequest("/api/payments/create-checkout-session", {
         method: "POST",
-        body: { resourceId: "resource-123", guestEmail: "guest@example.com" },
+        body: { materialId: "material-123", guestEmail: "guest@example.com" },
       });
 
       const response = await createCheckoutPOST(request);
@@ -155,7 +155,7 @@ describe("Checkout Flow", () => {
         data: expect.objectContaining({
           buyer_id: null,
           guest_email: "guest@example.com",
-          resource_id: "resource-123",
+          resource_id: "material-123",
           status: "PENDING",
         }),
       });
@@ -172,13 +172,13 @@ describe("Checkout Flow", () => {
           email: "buyer@example.com",
           stripe_customer_id: "cus_existing123",
         });
-      mockResourceFindUnique.mockResolvedValue(mockResource);
+      mockMaterialFindUnique.mockResolvedValue(mockMaterial);
       mockTransactionFindFirst.mockResolvedValue(null);
       mockTransactionCreate.mockResolvedValue({ id: "txn-123" });
 
       const request = createMockRequest("/api/payments/create-checkout-session", {
         method: "POST",
-        body: { resourceId: "resource-123" },
+        body: { materialId: "material-123" },
       });
 
       const response = await createCheckoutPOST(request);
@@ -197,7 +197,7 @@ describe("Checkout Flow", () => {
 
       const request = createMockRequest("/api/payments/create-checkout-session", {
         method: "POST",
-        body: { resourceId: "resource-123" },
+        body: { materialId: "material-123" },
       });
 
       const response = await createCheckoutPOST(request);
@@ -207,7 +207,7 @@ describe("Checkout Flow", () => {
       expect(data.error).toBe("Authentication or guest email required");
     });
 
-    it("returns 400 when resourceId is missing", async () => {
+    it("returns 400 when materialId is missing", async () => {
       mockAuth.mockResolvedValue({
         user: { id: "buyer-123", email: "buyer@example.com" },
       });
@@ -224,16 +224,16 @@ describe("Checkout Flow", () => {
       expect(data.error).toBe("Invalid input");
     });
 
-    it("returns 404 when resource not found", async () => {
+    it("returns 404 when material not found", async () => {
       mockAuth.mockResolvedValue({
         user: { id: "buyer-123", email: "buyer@example.com" },
       });
       mockUserFindUnique.mockResolvedValue({ email: "buyer@example.com" });
-      mockResourceFindUnique.mockResolvedValue(null);
+      mockMaterialFindUnique.mockResolvedValue(null);
 
       const request = createMockRequest("/api/payments/create-checkout-session", {
         method: "POST",
-        body: { resourceId: "nonexistent-resource" },
+        body: { materialId: "nonexistent-material" },
       });
 
       const response = await createCheckoutPOST(request);
@@ -243,19 +243,19 @@ describe("Checkout Flow", () => {
       expect(data.error).toBe("Resource not found");
     });
 
-    it("returns 400 when resource is not published", async () => {
+    it("returns 400 when material is not published", async () => {
       mockAuth.mockResolvedValue({
         user: { id: "buyer-123", email: "buyer@example.com" },
       });
       mockUserFindUnique.mockResolvedValue({ email: "buyer@example.com" });
-      mockResourceFindUnique.mockResolvedValue({
-        ...mockResource,
+      mockMaterialFindUnique.mockResolvedValue({
+        ...mockMaterial,
         is_published: false,
       });
 
       const request = createMockRequest("/api/payments/create-checkout-session", {
         method: "POST",
-        body: { resourceId: "resource-123" },
+        body: { materialId: "material-123" },
       });
 
       const response = await createCheckoutPOST(request);
@@ -265,19 +265,19 @@ describe("Checkout Flow", () => {
       expect(data.error).toBe("Resource is not available for purchase");
     });
 
-    it("returns 400 when resource is not approved", async () => {
+    it("returns 400 when material is not approved", async () => {
       mockAuth.mockResolvedValue({
         user: { id: "buyer-123", email: "buyer@example.com" },
       });
       mockUserFindUnique.mockResolvedValue({ email: "buyer@example.com" });
-      mockResourceFindUnique.mockResolvedValue({
-        ...mockResource,
+      mockMaterialFindUnique.mockResolvedValue({
+        ...mockMaterial,
         is_approved: false,
       });
 
       const request = createMockRequest("/api/payments/create-checkout-session", {
         method: "POST",
-        body: { resourceId: "resource-123" },
+        body: { materialId: "material-123" },
       });
 
       const response = await createCheckoutPOST(request);
@@ -287,31 +287,31 @@ describe("Checkout Flow", () => {
       expect(data.error).toBe("Resource is not available for purchase");
     });
 
-    it("returns 400 when trying to purchase own resource", async () => {
+    it("returns 400 when trying to purchase own material", async () => {
       mockAuth.mockResolvedValue({
         user: { id: "seller-123", email: "seller@example.com" },
       });
       mockUserFindUnique.mockResolvedValue({ email: "seller@example.com" });
-      mockResourceFindUnique.mockResolvedValue(mockResource);
+      mockMaterialFindUnique.mockResolvedValue(mockMaterial);
 
       const request = createMockRequest("/api/payments/create-checkout-session", {
         method: "POST",
-        body: { resourceId: "resource-123" },
+        body: { materialId: "material-123" },
       });
 
       const response = await createCheckoutPOST(request);
       const data = await parseResponse<CreateCheckoutResponse>(response);
 
       expect(response.status).toBe(400);
-      expect(data.error).toBe("Cannot purchase your own resource");
+      expect(data.error).toBe("Cannot purchase your own material");
     });
 
-    it("returns 400 when user already owns the resource", async () => {
+    it("returns 400 when user already owns the material", async () => {
       mockAuth.mockResolvedValue({
         user: { id: "buyer-123", email: "buyer@example.com" },
       });
       mockUserFindUnique.mockResolvedValue({ email: "buyer@example.com" });
-      mockResourceFindUnique.mockResolvedValue(mockResource);
+      mockMaterialFindUnique.mockResolvedValue(mockMaterial);
       mockTransactionFindFirst.mockResolvedValue({
         id: "existing-txn",
         status: "COMPLETED",
@@ -319,14 +319,14 @@ describe("Checkout Flow", () => {
 
       const request = createMockRequest("/api/payments/create-checkout-session", {
         method: "POST",
-        body: { resourceId: "resource-123" },
+        body: { materialId: "material-123" },
       });
 
       const response = await createCheckoutPOST(request);
       const data = await parseResponse<CreateCheckoutResponse>(response);
 
       expect(response.status).toBe(400);
-      expect(data.error).toBe("You already own this resource");
+      expect(data.error).toBe("You already own this material");
     });
 
     it("returns 400 when seller cannot receive payments", async () => {
@@ -334,8 +334,8 @@ describe("Checkout Flow", () => {
         user: { id: "buyer-123", email: "buyer@example.com" },
       });
       mockUserFindUnique.mockResolvedValue({ email: "buyer@example.com" });
-      mockResourceFindUnique.mockResolvedValue({
-        ...mockResource,
+      mockMaterialFindUnique.mockResolvedValue({
+        ...mockMaterial,
         seller: {
           id: "seller-123",
           stripe_account_id: null,
@@ -346,7 +346,7 @@ describe("Checkout Flow", () => {
 
       const request = createMockRequest("/api/payments/create-checkout-session", {
         method: "POST",
-        body: { resourceId: "resource-123" },
+        body: { materialId: "material-123" },
       });
 
       const response = await createCheckoutPOST(request);
@@ -356,20 +356,20 @@ describe("Checkout Flow", () => {
       expect(data.error).toBe("Seller cannot receive payments at this time");
     });
 
-    it("returns 400 for free resources", async () => {
+    it("returns 400 for free materials", async () => {
       mockAuth.mockResolvedValue({
         user: { id: "buyer-123", email: "buyer@example.com" },
       });
       mockUserFindUnique.mockResolvedValue({ email: "buyer@example.com" });
-      mockResourceFindUnique.mockResolvedValue({
-        ...mockResource,
+      mockMaterialFindUnique.mockResolvedValue({
+        ...mockMaterial,
         price: 0,
       });
       mockTransactionFindFirst.mockResolvedValue(null);
 
       const request = createMockRequest("/api/payments/create-checkout-session", {
         method: "POST",
-        body: { resourceId: "resource-123" },
+        body: { materialId: "material-123" },
       });
 
       const response = await createCheckoutPOST(request);
@@ -408,7 +408,7 @@ describe("Checkout Flow", () => {
 
       const request = createMockRequest("/api/payments/create-checkout-session", {
         method: "POST",
-        body: { resourceId: "resource-123" },
+        body: { materialId: "material-123" },
       });
 
       const response = await createCheckoutPOST(request);
@@ -429,7 +429,7 @@ describe("Checkout Flow", () => {
           email: "buyer@example.com",
           stripe_customer_id: null,
         });
-      mockResourceFindUnique.mockResolvedValue(mockResource);
+      mockMaterialFindUnique.mockResolvedValue(mockMaterial);
       mockTransactionFindFirst.mockResolvedValue(null);
 
       // Mock Stripe to throw an error
@@ -446,7 +446,7 @@ describe("Checkout Flow", () => {
 
       const request = createMockRequest("/api/payments/create-checkout-session", {
         method: "POST",
-        body: { resourceId: "resource-123" },
+        body: { materialId: "material-123" },
       });
 
       const response = await createCheckoutPOST(request);
@@ -468,8 +468,8 @@ describe("Checkout Flow", () => {
           email: "buyer@example.com",
           stripe_customer_id: "cus_existing123",
         });
-      mockResourceFindUnique.mockResolvedValue({
-        ...mockResource,
+      mockMaterialFindUnique.mockResolvedValue({
+        ...mockMaterial,
         price: 1000, // CHF 10.00
       });
       mockTransactionFindFirst.mockResolvedValue(null);
@@ -477,7 +477,7 @@ describe("Checkout Flow", () => {
 
       const request = createMockRequest("/api/payments/create-checkout-session", {
         method: "POST",
-        body: { resourceId: "resource-123" },
+        body: { materialId: "material-123" },
       });
 
       const response = await createCheckoutPOST(request);
@@ -546,7 +546,7 @@ describe("Checkout Flow", () => {
       });
     });
 
-    it("formats free resources correctly", async () => {
+    it("formats free materials correctly", async () => {
       mockAuth.mockResolvedValue({
         user: { id: "buyer-123", email: "buyer@example.com" },
       });

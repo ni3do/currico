@@ -5,7 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { Download, Eye, Trash2, ShoppingCart, FileText } from "lucide-react";
 import { getSubjectTextColorByName } from "@/lib/constants/subject-colors";
 
-export interface DashboardResourceCardProps {
+export interface DashboardMaterialCardProps {
   id: string;
   title: string;
   description?: string;
@@ -55,7 +55,7 @@ export interface DashboardResourceCardProps {
   onRemove?: () => void;
 }
 
-export function DashboardResourceCard({
+export function DashboardMaterialCard({
   id,
   title,
   description,
@@ -69,7 +69,7 @@ export function DashboardResourceCard({
   seller,
   primaryAction,
   onRemove,
-}: DashboardResourceCardProps) {
+}: DashboardMaterialCardProps) {
   const getBadgeClasses = (variant: string) => {
     switch (variant) {
       case "success":
@@ -110,7 +110,7 @@ export function DashboardResourceCard({
   return (
     <div className="card group flex h-full flex-col overflow-hidden">
       {/* Preview Image */}
-      <Link href={`/resources/${id}`} className="block">
+      <Link href={`/materialien/${id}`} className="block">
         <div className="bg-bg-secondary relative aspect-[16/9] w-full overflow-hidden">
           {previewUrl ? (
             <Image src={previewUrl} alt={title} fill className="image-zoom object-cover" />
@@ -178,7 +178,7 @@ export function DashboardResourceCard({
         </div>
 
         {/* Title */}
-        <Link href={`/resources/${id}`} className="block">
+        <Link href={`/materialien/${id}`} className="block">
           <h3 className="text-text group-hover:text-primary mb-2 line-clamp-2 leading-snug font-semibold transition-colors">
             {title}
           </h3>
@@ -243,4 +243,4 @@ export function DashboardResourceCard({
   );
 }
 
-export default DashboardResourceCard;
+export default DashboardMaterialCard;

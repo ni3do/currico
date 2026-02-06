@@ -1,8 +1,8 @@
 /**
  * Shared subject color utilities
  * Consolidates duplicate color/pill class mappings from:
- * - ResourceCard.tsx
- * - DashboardResourceCard.tsx
+ * - MaterialCard.tsx
+ * - DashboardMaterialCard.tsx
  * - ProfileCard.tsx
  */
 

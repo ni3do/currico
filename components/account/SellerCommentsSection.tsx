@@ -61,7 +61,7 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
       try {
         setLoading(true);
         const response = await fetch(
-          `/api/user/resource-comments?page=${pageNum}&limit=10&filter=${filterType}`
+          `/api/user/material-comments?page=${pageNum}&limit=10&filter=${filterType}`
         );
 
         if (!response.ok) {
@@ -218,7 +218,7 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
             >
               {/* Resource Link */}
               <Link
-                href={`/resources/${comment.resource.id}`}
+                href={`/materialien/${comment.resource.id}`}
                 className="bg-surface hover:bg-surface-hover mb-4 flex items-center gap-3 rounded-lg p-3 transition-colors"
               >
                 {comment.resource.previewUrl ? (
@@ -236,7 +236,7 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
                 )}
                 <div className="min-w-0 flex-1">
                   <p className="text-text truncate text-sm font-medium">{comment.resource.title}</p>
-                  <p className="text-text-faint text-xs">Ressource ansehen</p>
+                  <p className="text-text-faint text-xs">Material ansehen</p>
                 </div>
                 <ExternalLink className="text-text-muted h-4 w-4 flex-shrink-0" />
               </Link>
