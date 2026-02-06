@@ -643,7 +643,7 @@
   "sellerTerms": {
     "pageTitle": "Seller Terms & Conditions",
     "pageSubtitle": "Please read these terms carefully before becoming a seller on Currico",
-    "lastUpdated": "Last updated: January 2026",
+    "lastUpdated": "Last updated: February 2026",
     "sections": {
       "overview": {
         "title": "1. Overview",
@@ -1335,7 +1335,7 @@
   },
   "termsPage": {
     "title": "Terms of Service",
-    "lastUpdated": "Last updated: January 2026",
+    "lastUpdated": "Last updated: February 2026",
     "general": {
       "introduction": {
         "title": "1. Introduction",
@@ -1349,7 +1349,8 @@
           "contract": "The purchase contract for teaching materials is concluded directly between the Buyer and the Seller, not with Currico",
           "noParty": "Currico is not a party to any sales contract and does not become the owner of any teaching materials at any time",
           "sellerResponsibility": "The Seller is solely responsible for the content, quality, accuracy, and legal compliance of their teaching materials",
-          "disputes": "Any disputes regarding purchased materials must be resolved between Buyer and Seller directly, though Currico may assist in mediation"
+          "disputes": "Any disputes regarding purchased materials must be resolved between Buyer and Seller directly, though Currico may assist in mediation",
+          "opinion": "All uploaded teaching materials represent solely the personal opinion of the respective author. Currico only performs formal review and accepts no liability for the accuracy of the content"
         }
       },
       "account": {
@@ -1374,7 +1375,7 @@
       },
       "intellectualProperty": {
         "title": "5. Intellectual Property",
-        "content": "All content on Currico, including the platform design, logos, and original materials, is protected by copyright and other intellectual property laws. Teaching materials uploaded by sellers remain the property of their respective creators, who grant buyers a limited license to use them for educational purposes."
+        "content": "The structure and functions of the Currico platform are protected by copyright. All rights reserved. Teaching materials uploaded by sellers remain the property of their respective creators, who grant buyers a limited license to use them for educational purposes. By uploading files, the author authorizes their publication on the platform. The author is liable for any claims by third parties arising from copyright infringement or other legal violations."
       },
       "purchases": {
         "title": "6. Purchases and Downloads",
@@ -1397,16 +1398,113 @@
       },
       "liability": {
         "title": "8. Limitation of Liability",
-        "content": "Currico provides the platform 'as is' and makes no warranties regarding the quality, accuracy, or fitness of teaching materials sold by third-party sellers. As an intermediary, Currico is not liable for any indirect, incidental, or consequential damages arising from the content of teaching materials. Currico's liability is limited to cases of gross negligence or intentional misconduct."
+        "content": "All liability of Currico is excluded to the extent legally permissible. Currico provides the platform 'as is' and makes no warranties regarding the quality, accuracy, or fitness of teaching materials sold by third-party sellers. As an intermediary, Currico is not liable for any indirect, incidental, or consequential damages arising from the content of teaching materials. Currico's liability is limited to cases of gross negligence or intentional misconduct. Currico offers all services free of charge or in exchange for voluntary contributions; voluntary payments or premium offerings do not create any service guarantees."
       },
       "governingLaw": {
         "title": "9. Governing Law and Jurisdiction",
-        "content": "These Terms of Service are governed by the laws of Switzerland. The exclusive place of jurisdiction for all disputes arising from or in connection with these terms is Zurich, Switzerland."
-      }
+        "content": "These Terms of Service are governed by the laws of Switzerland. The application of the United Nations Convention on Contracts for the International Sale of Goods (CISG / Vienna Convention) is excluded. The exclusive place of jurisdiction for all disputes arising from or in connection with these terms is Zurich, Switzerland."
+      },
+      "availability": {
+        "title": "10. Platform Availability",
+        "content": "Currico strives to make the platform available around the clock on a best-effort basis. However, there is no entitlement to permanent availability. Currico reserves the right to restrict, interrupt, or discontinue access to the platform at any time without prior notice.",
+        "items": {
+          "noGuarantee": "No guarantee is provided for uninterrupted availability of the platform",
+          "maintenance": "Maintenance work may lead to temporary restrictions",
+          "noLiability": "Currico is not liable for damages resulting from platform unavailability"
+        }
+      },
+      "dataLocation": {
+        "title": "11. Data Storage",
+        "content": "All data is stored and processed on servers in Switzerland (Zurich location). Currico is committed to complying with applicable Swiss data protection regulations."
+      },
+      "extendedLiability": {
+        "title": "12. Extended Liability Disclaimers",
+        "content": "In addition to the limitations of liability mentioned in Section 8, the following applies:",
+        "items": {
+          "dataLoss": "Currico is not liable for data loss of any kind, particularly not for the loss of uploaded materials",
+          "malware": "Currico does not warrant that the platform is free from viruses, malware, or other harmful components",
+          "thirdPartyMisuse": "Currico is not liable for misuse of the platform by third parties",
+          "emailConfidentiality": "Email communication is not encrypted and therefore not confidential. Currico assumes no liability for damages arising from the use of email",
+          "noGuarantees": "Use of the platform is at your own risk. No guarantees are made regarding functionality, freedom from errors, or fitness for a particular purpose",
+          "indirectDamages": "Currico is not liable for indirect damages, lost profits, data loss, or other consequential damages"
+        }
+      },
+      "userContentLiability": {
+        "title": "13. Liability for User Content",
+        "content": "Users are solely responsible for all content they upload. Currico is entitled to store users' IP addresses and to forward them to the competent authorities in case of legal violations.",
+        "items": {
+          "authorResponsibility": "The author is solely responsible for the content of uploaded materials",
+          "ipStorage": "Currico stores IP addresses to identify users in case of legal violations",
+          "legalAction": "Currico reserves the right to take legal action in case of legal violations and to forward relevant data to authorities",
+          "removal": "Currico is entitled to remove content at any time without giving reasons",
+          "noNotice": "Removal of content occurs without prior notice and does not give rise to any claim for damages"
+        }
+      },
+      "prohibitedContent": {
+        "title": "14. Prohibited Content",
+        "content": "The following content may not be published on the platform:",
+        "items": {
+          "copyright": "Copyrighted materials without appropriate permission",
+          "illegal": "Illegal content of any kind",
+          "harmful": "Content that harms, insults, or discriminates against persons",
+          "misleading": "Misleading or false information",
+          "malicious": "Malware, viruses, or other harmful files",
+          "personal": "Personal data of third parties without their consent",
+          "spam": "Advertising, spam, or unwanted commercial content",
+          "violent": "Content glorifying violence or pornographic content",
+          "political": "Political propaganda or extremist content"
+        }
+      },
+      "aiProhibition": {
+        "title": "15. Use of AI Systems",
+        "content": "The use of purchased teaching materials as training data for artificial intelligence (AI), machine learning, or similar systems is expressly prohibited. This includes, but is not limited to:",
+        "items": {
+          "training": "Using materials for training AI models",
+          "analysis": "Automated analysis or extraction of content by AI systems",
+          "reproduction": "Reproduction or generation of similar content by AI based on purchased materials"
+        }
+      },
+      "externalLinks": {
+        "title": "16. External Links",
+        "content": "The platform may contain links to external websites. Currico has no influence over their content and assumes no responsibility or liability for external websites. The respective operator is solely responsible for the content of linked pages."
+      },
+      "severability": {
+        "title": "17. Severability Clause",
+        "content": "Should any provision of these Terms of Service be or become invalid, this shall not affect the validity of the remaining provisions. The invalid provision shall be replaced by a valid provision that comes closest to the economic purpose of the invalid provision."
+      },
+      "changes": {
+        "title": "18. Changes to Terms",
+        "content": "Currico expressly reserves the right to change, interrupt, and temporarily or permanently discontinue its services and these Terms of Service at any time without notifying you. This does not give rise to any claims for damages or other warranty claims on your part. Significant changes may be communicated by email or through a notice on the platform."
+      },
+      "contentGuidelines": {
+        "title": "19. Content Guidelines",
+        "intro": "This policy applies to all content you submit to the Currico platform. By using Currico's services, you agree to these guidelines.",
+        "minors": "Minors may only use the services with the consent of their legal guardians, whereby the legal guardians are liable for violations of the guidelines.",
+        "guarantees": {
+          "title": "Your Guarantees",
+          "content": "You guarantee to Currico that you possess all necessary rights to the content you store, publish, or transmit, or that you have effectively obtained all necessary rights transfers, licenses, consents, and the like. You further guarantee that you will not transmit any content that violates applicable Swiss law and/or infringes the rights of third parties (including their personal rights) or these guidelines."
+        },
+        "responsibility": "You are solely responsible for all content you publish. Currico does not systematically monitor submitted content.",
+        "prohibited": {
+          "title": "Expressly not permitted are:",
+          "items": {
+            "illegal": "Content or other materials that are, according to applicable legal provisions or in Currico's assessment, unlawful, harmful, abusive, threatening, harassing, vulgar, obscene, racist, hateful, violence-glorifying, pornographic, or otherwise objectionable, or harmful to children or young people",
+            "thirdPartyRights": "Content or other materials that violate third-party rights, particularly intellectual property (e.g., patents, trademarks, copyrights or related rights), trade secrets, personal rights, or property rights",
+            "malware": "Material containing software viruses or other information, files, or programs capable of interrupting, destroying, or limiting the software or hardware of computers or telecommunications equipment",
+            "unauthorized": "Content or other materials that you are not authorized to distribute"
+          }
+        },
+        "violations": {
+          "title": "Violations",
+          "content": "In the event that you violate these guidelines, Currico is entitled to delete content without giving reasons and without observing any deadlines. You release Currico from any liability to third parties and fully indemnify Currico."
+        }
+      },
+      "version": "Version 1.2 - February 2026"
     },
     "contact": {
       "title": "Questions?",
-      "content": "If you have any questions about these Terms of Service, please contact us through our contact page."
+      "content": "If you have any questions about these Terms of Service, please contact us:",
+      "email": "info@currico.ch"
     }
   },
   "cookieConsent": {
@@ -1419,7 +1517,7 @@
   },
   "cookiesPage": {
     "title": "Cookie Policy",
-    "lastUpdated": "Last updated: January 2026",
+    "lastUpdated": "Last updated: February 2026",
     "intro": "This Cookie Policy explains how Currico uses cookies and similar technologies when you visit our website. We are committed to transparency about the data we collect and how we use it.",
     "sections": {
       "what": {
@@ -1624,7 +1722,7 @@
       "title": "Disclaimer",
       "liability": {
         "title": "Liability for Content",
-        "content": "The contents of our pages were created with the greatest care. However, we cannot guarantee the accuracy, completeness, or timeliness of the content."
+        "content": "All liability of the provider is excluded to the extent legally permissible. The contents of our pages were created with the greatest care. However, we cannot guarantee the accuracy, completeness, or timeliness of the content. Uploaded teaching materials represent solely the personal opinion of the respective author."
       },
       "links": {
         "title": "Liability for Links",
@@ -1632,18 +1730,23 @@
       },
       "copyright": {
         "title": "Copyright",
-        "content": "The content and works created by the site operators on these pages are subject to Swiss copyright law. Reproduction, editing, distribution, and any kind of use beyond the limits of copyright law require written consent."
+        "content": "The structure and functions of the platform are protected by copyright. All rights reserved. Reproduction, editing, distribution, and any kind of use beyond the limits of copyright law require written consent."
+      },
+      "userContent": {
+        "title": "User Content",
+        "content": "The author is liable for any claims by third parties arising from copyright infringement or other legal violations regarding uploaded content."
       }
     },
     "links": {
       "privacy": "Privacy Policy",
       "terms": "Terms and Conditions"
-    }
+    },
+    "version": "Version 1.1 - February 2026"
   },
   "privacyPage": {
     "title": "Privacy Policy",
-    "lastUpdated": "Last updated: January 2026",
-    "intro": "Protecting your personal data is important to us. This privacy policy informs you about the collection, processing, and use of your personal data when using Currico. We comply with the Swiss Data Protection Act (nDSG, effective September 1, 2023) and the EU General Data Protection Regulation (GDPR).",
+    "lastUpdated": "Last updated: February 2026",
+    "intro": "The following statement provides an overview of how Currico protects your data, what type of data is collected for what purpose, and what rights you have. Currico is subject to Swiss data protection law (nDSG, effective September 1, 2023) and - where applicable - other data protection regulations such as the General Data Protection Regulation of the European Union (GDPR). This privacy policy may be amended at any time without prior notice. We may also inform you separately about the processing of your data (e.g., in terms and conditions, additional privacy statements, consent forms, etc.).",
     "sections": {
       "responsible": {
         "title": "1. Responsible Party",
@@ -1654,8 +1757,8 @@
         "email": "info@currico.ch"
       },
       "collection": {
-        "title": "2. Data We Collect",
-        "intro": "We collect various types of data to provide and improve our services:",
+        "title": "2. Collection and Processing of Personal Data",
+        "intro": "We primarily collect and process personal data that you provide to us in the context of your business relationship or use of our services (e.g., buying and selling teaching materials by teachers). Additional personal data may come from publicly available sources (such as the internet) or from authorities.",
         "account": {
           "title": "Account Data",
           "items": {
@@ -1672,21 +1775,44 @@
             "billing": "Billing address (for sellers)"
           },
           "note": "We do not store credit card numbers, TWINT account details, or other sensitive payment credentials on our servers."
+        },
+        "serverLogs": {
+          "title": "Server Log Data",
+          "intro": "Currico automatically collects and stores information in server log files that your browser transmits to us:",
+          "items": {
+            "browser": "Browser type and version",
+            "os": "Operating system used",
+            "ip": "IP address of the accessing computer",
+            "time": "Time of server request"
+          },
+          "note": "This data cannot be assigned to specific persons by us. This data is not merged with other data sources. The data is deleted after statistical evaluation."
+        },
+        "thirdPartyData": {
+          "title": "Data from Third Parties",
+          "content": "If you transmit data about other persons to us, we assume that you are authorized to do so and that this data is correct. By transmitting data about third parties, you confirm this and ensure that these third parties have been informed about this privacy policy."
         }
       },
       "purpose": {
         "title": "3. Purpose of Data Processing",
+        "intro": "Your personal data is used by us to conclude and process business relationships. We also process personal data to protect our legitimate interests:",
         "items": {
           "account": "Providing and managing your user account",
           "transactions": "Processing purchases and sales",
-          "communication": "Communication regarding your orders and our services",
-          "improvement": "Improving our website and services",
-          "legal": "Fulfilling legal obligations"
-        }
+          "communication": "Communication with users and processing inquiries",
+          "improvement": "Offering and developing our services and platform",
+          "marketing": "Advertising and marketing, unless you have objected to the use of your data",
+          "legal": "Asserting legal claims and defense in legal disputes",
+          "security": "Ensuring IT security and preventing misuse",
+          "compliance": "Compliance with legal and regulatory obligations"
+        },
+        "consent": "We process your personal data based on your consent, unless another legal basis exists. You can revoke your consent to data processing at any time. A revocation has no effect on data processing that has already taken place.",
+        "serviceProviders": "We use service providers for the operation and maintenance of our websites who act as our data processors. All service providers are contractually obligated to treat your data confidentially.",
+        "securityMeasures": "Currico uses various technical and organizational measures to protect your personal data from unauthorized access, misuse, disclosure, alteration, or destruction."
       },
       "cookies": {
-        "title": "4. Cookies",
-        "intro": "We use cookies to ensure the functionality of our website and improve your experience. For detailed information, please see our Cookie Policy.",
+        "title": "4. Data Processing on Our Websites, Cookies and Tracking",
+        "intro": "The Currico websites use so-called cookies in several places. Most of the cookies we use are so-called 'session cookies'. They are automatically deleted at the end of your visit. Cookies are small pieces of text information that are stored in your browser and are also available on subsequent visits. This allows us to correctly restore your settings (e.g., your language) on your next visit.",
+        "noPersonalData": "The cookie itself does not contain any personal data.",
         "essential": {
           "title": "Essential Cookies",
           "content": "These cookies are necessary for the website to function. They enable basic features like login and language preferences."
@@ -1694,7 +1820,8 @@
         "analytics": {
           "title": "Analytics Cookies (optional)",
           "content": "With your consent, we use analytics cookies to understand how visitors use our website. This data helps us improve the site."
-        }
+        },
+        "browserSettings": "In most browsers, you can find settings to view and delete cookies. If you block cookies, certain functionalities (such as language selection, order processes) may no longer work."
       },
       "paymentProcessors": {
         "title": "5. Payment Processors",
@@ -1726,22 +1853,27 @@
       },
       "storage": {
         "title": "7. Data Storage and International Transfers",
-        "location": "Your data is primarily stored on servers located in Switzerland. For services involving international data transfers (such as Stripe), we ensure that appropriate safeguards are in place, including Standard Contractual Clauses (SCCs) or adequacy decisions.",
-        "retention": "We retain your data only as long as necessary for the stated purposes or as required by law. Account data is deleted upon account closure, subject to statutory retention periods (typically 10 years for financial records under Swiss law)."
+        "location": "We process and store personal data primarily in Switzerland and in the European Union (EU). Through data processors or subcontractors of our service providers, data may also be processed in other countries.",
+        "transfer": "If a recipient is located in a country without adequate legal data protection, we contractually oblige the recipient to comply with applicable data protection. We use the Standard Contractual Clauses of the European Commission for this purpose, unless the recipient is already subject to a legally recognized framework for ensuring data protection.",
+        "retention": "We process and store your personal data only as long as necessary for the fulfillment of our contractual and legal obligations. Data that we need for the processing of our business relationships is generally retained for 10 years from the last exchange with you, but at least from the end of the contract. This period may be longer if required for evidentiary purposes or to comply with legal requirements."
       },
       "rights": {
-        "title": "8. Your Rights",
-        "intro": "Under the Swiss nDSG and GDPR, you have the following rights regarding your personal data:",
+        "title": "8. Your Rights Regarding the Processing of Personal Data",
+        "intro": "You can request information about whether we process your personal data at any time free of charge. You can also contact us if you wish to:",
         "items": {
-          "access": "Right to access your stored data",
-          "rectification": "Right to rectification of incorrect data",
-          "deletion": "Right to deletion of your data ('right to be forgotten')",
-          "restriction": "Right to restriction of processing",
-          "portability": "Right to data portability",
-          "objection": "Right to object to processing"
+          "access": "Obtain information about your stored data",
+          "rectification": "Have your personal data corrected",
+          "deletion": "Have your data deleted ('right to be forgotten')",
+          "restriction": "Restrict processing",
+          "portability": "Have your data transferred",
+          "objection": "Object to our processing of your personal data",
+          "withdrawal": "Revoke granted consents"
         },
+        "limitations": "Statutory restrictions such as legal retention and documentation obligations may be asserted by us.",
         "contact": "To exercise these rights, please contact us at info@currico.ch. We will respond within 30 days.",
-        "complaint": "You also have the right to lodge a complaint with the Swiss Federal Data Protection and Information Commissioner (FDPIC) or, if applicable, with a supervisory authority in the EU."
+        "complaint": "Complaints about our processing of your personal data can be submitted to the Swiss Federal Data Protection and Information Commissioner (FDPIC), Feldeggweg 1, 3003 Bern.",
+        "euComplaint": "If you are located in the European Economic Area (EEA), you also have the right to lodge a complaint with the data protection supervisory authority in your country.",
+        "profileDeletion": "Registered users can permanently delete their profile. After deletion, they are no longer reachable or identifiable through the platform."
       },
       "security": {
         "title": "9. Data Security",
@@ -1754,8 +1886,31 @@
       "jurisdiction": {
         "title": "11. Governing Law and Jurisdiction",
         "content": "This Privacy Policy is governed by Swiss law. The exclusive place of jurisdiction for all disputes is Zurich, Switzerland."
+      },
+      "gdpr": {
+        "title": "12. Exceptional Application of the EU General Data Protection Regulation (GDPR)",
+        "intro": "The EU General Data Protection Regulation (GDPR) is generally not applicable. However, if it exceptionally applies to certain data processing, the following legal bases apply exclusively for the purposes of the GDPR and data processing subject to it:",
+        "items": {
+          "consent": "Processing of personal data with the consent of the data subject (Art. 6(1)(a) GDPR)",
+          "contract": "Processing of personal data necessary for the performance of a contract with the data subject and for the implementation of pre-contractual measures (Art. 6(1)(b) GDPR)",
+          "legal": "Processing of personal data necessary for compliance with a legal obligation (Art. 6(1)(c) GDPR)",
+          "vital": "Processing of personal data necessary to protect vital interests of the data subject or another natural person (Art. 6(1)(d) GDPR)",
+          "publicInterest": "Processing of personal data necessary for the performance of a task carried out in the public interest or in the exercise of official authority (Art. 6(1)(e) GDPR)",
+          "legitimate": "Processing of personal data necessary to protect the legitimate interests of us or third parties, unless overridden by the interests or fundamental rights and freedoms of the data subject, particularly if the data subject is a child (Art. 6(1)(f) GDPR)"
+        },
+        "legitimateInterests": "Legitimate interests include, in particular, being able to conduct our activities and operations permanently, securely, reliably, and in a user-friendly manner, ensuring information security, protection against misuse, enforcement of our own legal claims, and compliance with Swiss law.",
+        "contactIfNotSatisfied": "Contact us if you are not satisfied with how we handle your rights or data protection."
+      },
+      "automatedDecisions": {
+        "title": "13. Automated Individual Decisions and Profiling",
+        "content": "Currico does not use automated decision-making processes, including profiling, that have legal effects on you or similarly significantly affect you. Should we introduce such processes in the future, we will inform you accordingly and obtain your consent where required."
+      },
+      "minors": {
+        "title": "14. Minors",
+        "content": "Our platform is aimed at teachers. Minors may only use the services with the consent of their legal guardians. We do not knowingly collect personal data from children under 16 years of age without parental consent."
       }
     },
+    "version": "Version 1.1 - February 2026",
     "contact": {
       "title": "Questions About Privacy?",
       "description": "For questions or concerns about your data, contact us:",
