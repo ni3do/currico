@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { signOut, useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
@@ -16,7 +16,13 @@ export default function TopBar() {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
+  const pathname = usePathname();
   const isAdmin = session?.user?.role === "ADMIN";
+
+  const isActive = (href: string) => {
+    if (href === "/") return pathname === "/";
+    return pathname.startsWith(href);
+  };
 
   // Close user menu when clicking outside or pressing Escape
   useEffect(() => {
@@ -62,19 +68,19 @@ export default function TopBar() {
             <div className="border-border mr-6 flex items-center border-r pr-6">
               <Link
                 href="/materialien"
-                className="text-text-secondary hover:text-primary px-4 py-2 text-sm font-medium transition-colors"
+                className={`px-4 py-2 text-sm font-medium transition-colors ${isActive("/materialien") ? "text-primary" : "text-text-secondary hover:text-primary"}`}
               >
                 {t("navigation.materials")}
               </Link>
               <Link
                 href="/about"
-                className="text-text-secondary hover:text-primary px-4 py-2 text-sm font-medium transition-colors"
+                className={`px-4 py-2 text-sm font-medium transition-colors ${isActive("/about") ? "text-primary" : "text-text-secondary hover:text-primary"}`}
               >
                 {t("navigation.aboutUs")}
               </Link>
               <Link
                 href="/contact"
-                className="text-text-secondary hover:text-primary px-4 py-2 text-sm font-medium transition-colors"
+                className={`px-4 py-2 text-sm font-medium transition-colors ${isActive("/contact") ? "text-primary" : "text-text-secondary hover:text-primary"}`}
               >
                 {t("navigation.contact")}
               </Link>
@@ -272,7 +278,7 @@ export default function TopBar() {
                 >
                   <Link
                     href="/materialien"
-                    className="text-text-secondary hover:text-primary block px-4 py-2 text-sm font-medium transition-colors"
+                    className={`block px-4 py-2 text-sm font-medium transition-colors ${isActive("/materialien") ? "text-primary" : "text-text-secondary hover:text-primary"}`}
                   >
                     {t("navigation.materials")}
                   </Link>
@@ -284,7 +290,7 @@ export default function TopBar() {
                 >
                   <Link
                     href="/about"
-                    className="text-text-secondary hover:text-primary block px-4 py-2 text-sm font-medium transition-colors"
+                    className={`block px-4 py-2 text-sm font-medium transition-colors ${isActive("/about") ? "text-primary" : "text-text-secondary hover:text-primary"}`}
                   >
                     {t("navigation.aboutUs")}
                   </Link>
@@ -296,7 +302,7 @@ export default function TopBar() {
                 >
                   <Link
                     href="/contact"
-                    className="text-text-secondary hover:text-primary block px-4 py-2 text-sm font-medium transition-colors"
+                    className={`block px-4 py-2 text-sm font-medium transition-colors ${isActive("/contact") ? "text-primary" : "text-text-secondary hover:text-primary"}`}
                   >
                     {t("navigation.contact")}
                   </Link>

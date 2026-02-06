@@ -1,6 +1,14 @@
 "use client";
 
-import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+  type ReactNode,
+} from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle, XCircle, AlertTriangle, Info, X } from "lucide-react";
 
@@ -40,8 +48,42 @@ const STYLES: Record<ToastType, string> = {
   info: "border-primary/30 bg-primary/10 text-primary",
 };
 
+const AUTO_DISMISS_MS: Record<ToastType, number> = {
+  success: 4000,
+  info: 4000,
+  warning: 6000,
+  error: 7000,
+};
+
 function ToastItem({ toast, onDismiss }: { toast: Toast; onDismiss: (id: string) => void }) {
   const Icon = ICONS[toast.type];
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const remainingRef = useRef(AUTO_DISMISS_MS[toast.type]);
+  const startTimeRef = useRef(0);
+
+  useEffect(() => {
+    startTimeRef.current = Date.now();
+    timerRef.current = setTimeout(() => onDismiss(toast.id), remainingRef.current);
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, [toast.id, onDismiss]);
+
+  const handleMouseEnter = () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+    remainingRef.current = Math.max(
+      remainingRef.current - (Date.now() - startTimeRef.current),
+      1000
+    );
+  };
+
+  const handleMouseLeave = () => {
+    startTimeRef.current = Date.now();
+    timerRef.current = setTimeout(() => onDismiss(toast.id), remainingRef.current);
+  };
 
   return (
     <motion.div
@@ -53,6 +95,8 @@ function ToastItem({ toast, onDismiss }: { toast: Toast; onDismiss: (id: string)
       role="status"
       aria-live="polite"
       className={`pointer-events-auto flex items-center gap-3 rounded-lg border px-4 py-3 shadow-lg backdrop-blur-sm ${STYLES[toast.type]}`}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       <Icon className="h-5 w-5 flex-shrink-0" />
       <span className="text-text text-sm font-medium">{toast.message}</span>
@@ -74,23 +118,24 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
-  const toast = useCallback(
-    (message: string, type: ToastType = "info") => {
-      const id = crypto.randomUUID();
-      setToasts((prev) => [...prev, { id, message, type }]);
-
-      // Auto-dismiss after 4 seconds
-      setTimeout(() => dismiss(id), 4000);
-    },
-    [dismiss]
-  );
+  const toast = useCallback((message: string, type: ToastType = "info") => {
+    const id = crypto.randomUUID();
+    setToasts((prev) => [...prev, { id, message, type }]);
+  }, []);
 
   return (
     <ToastContext.Provider value={{ toast }}>
       {children}
 
-      {/* Toast Container */}
-      <div className="pointer-events-none fixed top-4 right-4 z-[200] flex flex-col gap-2">
+      {/* Toast Container - top-right on desktop, bottom-center on mobile */}
+      <div className="pointer-events-none fixed top-4 right-4 z-[200] hidden flex-col gap-2 sm:flex">
+        <AnimatePresence mode="popLayout">
+          {toasts.map((t) => (
+            <ToastItem key={t.id} toast={t} onDismiss={dismiss} />
+          ))}
+        </AnimatePresence>
+      </div>
+      <div className="pointer-events-none fixed right-4 bottom-4 left-4 z-[200] flex flex-col items-center gap-2 sm:hidden">
         <AnimatePresence mode="popLayout">
           {toasts.map((t) => (
             <ToastItem key={t.id} toast={t} onDismiss={dismiss} />

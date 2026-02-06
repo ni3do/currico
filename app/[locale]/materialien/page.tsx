@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
-import { SlidersHorizontal, ChevronDown, Users, LayoutGrid, List } from "lucide-react";
+import { SlidersHorizontal, Users, LayoutGrid, List, Search, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
@@ -527,6 +527,19 @@ export default function MaterialienPage() {
     return [...materialItems, ...profileItems];
   }, [materials, profiles, filters.showMaterials, filters.showCreators]);
 
+  // Count active filters for the badge
+  const activeFilterCount = [
+    filters.zyklus,
+    filters.fachbereich,
+    filters.kompetenzbereich,
+    filters.kompetenz,
+    filters.searchQuery || null,
+    filters.priceType,
+    filters.maxPrice !== null ? filters.maxPrice : null,
+    ...filters.formats,
+    filters.materialScope,
+  ].filter(Boolean).length;
+
   // Combined loading state
   const isLoading = (filters.showMaterials && loading) || (filters.showCreators && profilesLoading);
 
@@ -553,43 +566,69 @@ export default function MaterialienPage() {
             {/* Mobile Filter Toggle */}
             <div className="lg:hidden">
               <button
-                onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)}
+                onClick={() => setMobileFiltersOpen(true)}
                 className="border-border bg-bg-secondary text-text-secondary hover:border-primary hover:text-primary flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-3 text-sm font-medium transition-colors"
               >
                 <SlidersHorizontal className="h-5 w-5" />
                 <span>{t("sidebar.title")}</span>
-                {(filters.zyklus ||
-                  filters.fachbereich ||
-                  filters.kompetenzbereich ||
-                  filters.kompetenz) && (
+                {activeFilterCount > 0 && (
                   <span className="bg-primary flex h-5 w-5 items-center justify-center rounded-full text-xs text-white">
-                    {
-                      [
-                        filters.zyklus,
-                        filters.fachbereich,
-                        filters.kompetenzbereich,
-                        filters.kompetenz,
-                      ].filter(Boolean).length
-                    }
+                    {activeFilterCount}
                   </span>
                 )}
-                <ChevronDown
-                  className={`h-4 w-4 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${mobileFiltersOpen ? "rotate-180" : ""}`}
-                />
               </button>
 
-              {/* Mobile Filters Panel */}
+              {/* Mobile Filter Drawer (Bottom Sheet) */}
               <AnimatePresence>
                 {mobileFiltersOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                    className="mt-4 overflow-hidden"
-                  >
-                    <LP21FilterSidebar filters={filters} onFiltersChange={handleFiltersChange} />
-                  </motion.div>
+                  <>
+                    {/* Backdrop */}
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="fixed inset-0 z-[100] bg-black/40 backdrop-blur-sm"
+                      onClick={() => setMobileFiltersOpen(false)}
+                    />
+                    {/* Drawer */}
+                    <motion.div
+                      initial={{ y: "100%" }}
+                      animate={{ y: 0 }}
+                      exit={{ y: "100%" }}
+                      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                      className="bg-bg fixed inset-x-0 bottom-0 z-[101] max-h-[85vh] overflow-y-auto rounded-t-2xl shadow-2xl"
+                    >
+                      {/* Drawer handle */}
+                      <div className="bg-bg border-border sticky top-0 z-10 flex items-center justify-between border-b px-5 pt-3 pb-4">
+                        <div className="bg-border mx-auto mb-3 h-1 w-10 rounded-full" />
+                      </div>
+                      <div className="bg-bg sticky top-0 z-10 flex items-center justify-between px-5 pb-3">
+                        <h2 className="text-text text-lg font-semibold">{t("sidebar.title")}</h2>
+                        <button
+                          onClick={() => setMobileFiltersOpen(false)}
+                          className="text-text-muted hover:text-text hover:bg-surface flex h-8 w-8 items-center justify-center rounded-full transition-colors"
+                        >
+                          <X className="h-5 w-5" />
+                        </button>
+                      </div>
+                      <div className="px-1 pb-8">
+                        <LP21FilterSidebar
+                          filters={filters}
+                          onFiltersChange={handleFiltersChange}
+                        />
+                      </div>
+                      {/* Apply button */}
+                      <div className="bg-bg border-border sticky bottom-0 border-t px-5 py-4">
+                        <button
+                          onClick={() => setMobileFiltersOpen(false)}
+                          className="bg-primary text-text-on-accent hover:bg-primary-hover w-full rounded-lg px-4 py-3 text-sm font-semibold transition-colors"
+                        >
+                          {totalCount} {t("results.countLabel")} anzeigen
+                        </button>
+                      </div>
+                    </motion.div>
+                  </>
                 )}
               </AnimatePresence>
             </div>
@@ -602,30 +641,13 @@ export default function MaterialienPage() {
             {/* Main Content Area */}
             <div className="min-w-0 flex-1">
               {/* Top Control Bar: Results + Sort */}
-              <div className="bg-bg-secondary mb-6 flex flex-col gap-4 rounded-lg p-4 sm:flex-row sm:items-center sm:justify-between">
-                {/* Results Count + Active Filters Summary */}
+              <div className="bg-bg-secondary mb-4 flex flex-col gap-4 rounded-lg p-4 sm:flex-row sm:items-center sm:justify-between">
+                {/* Results Count */}
                 <div>
                   <p className="text-text-muted text-sm">
                     <span className="text-text font-semibold">{totalCount}</span>{" "}
                     {t("results.countLabel")}
                   </p>
-                  {(filters.zyklus ||
-                    filters.fachbereich ||
-                    filters.kompetenzbereich ||
-                    filters.kompetenz ||
-                    filters.searchQuery) && (
-                    <p className="text-text-muted mt-1 text-xs">
-                      {[
-                        filters.zyklus && `Zyklus ${filters.zyklus}`,
-                        filters.fachbereich && getFachbereichByCode(filters.fachbereich)?.shortName,
-                        filters.kompetenzbereich,
-                        filters.kompetenz,
-                        filters.searchQuery && `"${filters.searchQuery}"`,
-                      ]
-                        .filter(Boolean)
-                        .join(" · ")}
-                    </p>
-                  )}
                 </div>
 
                 {/* View Toggle + Sort Dropdown */}
@@ -678,30 +700,204 @@ export default function MaterialienPage() {
                 )}
               </div>
 
+              {/* Active Filter Chips - dismissable */}
+              {activeFilterCount > 0 && (
+                <div className="mb-4 flex flex-wrap items-center gap-2">
+                  {filters.searchQuery && (
+                    <span className="bg-primary/10 text-primary border-primary/20 inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
+                      &quot;{filters.searchQuery}&quot;
+                      <button
+                        onClick={() => handleFiltersChange({ ...filters, searchQuery: "" })}
+                        className="hover:bg-primary/20 flex h-5 w-5 items-center justify-center rounded-full transition-colors"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </span>
+                  )}
+                  {filters.zyklus && (
+                    <span className="bg-primary/10 text-primary border-primary/20 inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
+                      Zyklus {filters.zyklus}
+                      <button
+                        onClick={() =>
+                          handleFiltersChange({
+                            ...filters,
+                            zyklus: null,
+                            fachbereich: null,
+                            kompetenzbereich: null,
+                            kompetenz: null,
+                          })
+                        }
+                        className="hover:bg-primary/20 flex h-5 w-5 items-center justify-center rounded-full transition-colors"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </span>
+                  )}
+                  {filters.fachbereich && (
+                    <span className="bg-accent/10 text-accent border-accent/20 inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
+                      {getFachbereichByCode(filters.fachbereich)?.shortName || filters.fachbereich}
+                      <button
+                        onClick={() =>
+                          handleFiltersChange({
+                            ...filters,
+                            fachbereich: null,
+                            kompetenzbereich: null,
+                            kompetenz: null,
+                          })
+                        }
+                        className="hover:bg-accent/20 flex h-5 w-5 items-center justify-center rounded-full transition-colors"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </span>
+                  )}
+                  {filters.kompetenzbereich && (
+                    <span className="bg-accent/10 text-accent border-accent/20 inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
+                      {filters.kompetenzbereich}
+                      <button
+                        onClick={() =>
+                          handleFiltersChange({
+                            ...filters,
+                            kompetenzbereich: null,
+                            kompetenz: null,
+                          })
+                        }
+                        className="hover:bg-accent/20 flex h-5 w-5 items-center justify-center rounded-full transition-colors"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </span>
+                  )}
+                  {filters.kompetenz && (
+                    <span className="bg-accent/10 text-accent border-accent/20 inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
+                      {filters.kompetenz}
+                      <button
+                        onClick={() => handleFiltersChange({ ...filters, kompetenz: null })}
+                        className="hover:bg-accent/20 flex h-5 w-5 items-center justify-center rounded-full transition-colors"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </span>
+                  )}
+                  {(filters.priceType || filters.maxPrice !== null) && (
+                    <span className="bg-surface text-text-secondary border-border inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
+                      {filters.priceType === "free"
+                        ? "Kostenlos"
+                        : filters.maxPrice !== null
+                          ? `< CHF ${filters.maxPrice}`
+                          : ""}
+                      <button
+                        onClick={() =>
+                          handleFiltersChange({ ...filters, priceType: null, maxPrice: null })
+                        }
+                        className="hover:bg-surface-hover flex h-5 w-5 items-center justify-center rounded-full transition-colors"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </span>
+                  )}
+                  {filters.formats.map((fmt) => (
+                    <span
+                      key={fmt}
+                      className="bg-surface text-text-secondary border-border inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
+                    >
+                      {fmt.toUpperCase()}
+                      <button
+                        onClick={() =>
+                          handleFiltersChange({
+                            ...filters,
+                            formats: filters.formats.filter((f) => f !== fmt),
+                          })
+                        }
+                        className="hover:bg-surface-hover flex h-5 w-5 items-center justify-center rounded-full transition-colors"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </span>
+                  ))}
+                  {filters.materialScope && (
+                    <span className="bg-surface text-text-secondary border-border inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
+                      {filters.materialScope === "single" ? "Einzelmaterial" : "Bundle"}
+                      <button
+                        onClick={() => handleFiltersChange({ ...filters, materialScope: null })}
+                        className="hover:bg-surface-hover flex h-5 w-5 items-center justify-center rounded-full transition-colors"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </span>
+                  )}
+                  {activeFilterCount > 1 && (
+                    <button
+                      onClick={() =>
+                        handleFiltersChange({
+                          showMaterials: filters.showMaterials,
+                          showCreators: filters.showCreators,
+                          zyklus: null,
+                          fachbereich: null,
+                          kompetenzbereich: null,
+                          kompetenz: null,
+                          searchQuery: "",
+                          priceType: null,
+                          maxPrice: null,
+                          formats: [],
+                          materialScope: null,
+                        })
+                      }
+                      className="text-text-muted hover:text-error text-xs font-medium transition-colors"
+                    >
+                      Alle entfernen
+                    </button>
+                  )}
+                </div>
+              )}
+
               {/* Unified Grid */}
               {isLoading ? (
                 <MaterialGridSkeleton count={6} />
               ) : mergedItems.length === 0 ? (
-                <div className="border-border-subtle bg-bg-secondary flex flex-col items-center justify-center rounded-lg border py-16">
-                  {!filters.showMaterials && filters.showCreators ? (
-                    <Users className="text-text-faint mb-4 h-12 w-12" />
-                  ) : (
-                    <svg
-                      className="text-text-faint mb-4 h-12 w-12"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={1.5}
-                        d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                  )}
+                <div className="border-border-subtle bg-bg-secondary flex flex-col items-center justify-center rounded-lg border px-8 py-16">
+                  <div className="bg-surface-hover mb-4 flex h-16 w-16 items-center justify-center rounded-full">
+                    {!filters.showMaterials && filters.showCreators ? (
+                      <Users className="text-text-muted h-8 w-8" />
+                    ) : (
+                      <Search className="text-text-muted h-8 w-8" />
+                    )}
+                  </div>
                   <p className="text-text mb-2 text-lg font-medium">{t("empty.title")}</p>
-                  <p className="text-text-muted text-sm">{t("empty.description")}</p>
+                  <p className="text-text-muted mb-6 max-w-sm text-center text-sm">
+                    {t("empty.description")}
+                  </p>
+                  {(filters.zyklus ||
+                    filters.fachbereich ||
+                    filters.kompetenzbereich ||
+                    filters.kompetenz ||
+                    filters.searchQuery ||
+                    filters.priceType ||
+                    filters.maxPrice !== null ||
+                    filters.formats.length > 0 ||
+                    filters.materialScope) && (
+                    <button
+                      onClick={() =>
+                        handleFiltersChange({
+                          showMaterials: filters.showMaterials,
+                          showCreators: filters.showCreators,
+                          zyklus: null,
+                          fachbereich: null,
+                          kompetenzbereich: null,
+                          kompetenz: null,
+                          searchQuery: "",
+                          priceType: null,
+                          maxPrice: null,
+                          formats: [],
+                          materialScope: null,
+                        })
+                      }
+                      className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-medium transition-colors"
+                    >
+                      <X className="h-4 w-4" />
+                      Alle Filter zurücksetzen
+                    </button>
+                  )}
                 </div>
               ) : (
                 <motion.div

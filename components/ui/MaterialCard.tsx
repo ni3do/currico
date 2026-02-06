@@ -73,12 +73,19 @@ export function MaterialCard({
 
     if (!onWishlistToggle || wishlistLoading) return;
 
+    // Optimistic update - flip immediately
+    const previousState = isWishlisted;
+    setIsWishlisted(!isWishlisted);
     setWishlistLoading(true);
     try {
-      const success = await onWishlistToggle(id, isWishlisted);
-      if (success) {
-        setIsWishlisted(!isWishlisted);
+      const success = await onWishlistToggle(id, previousState);
+      if (!success) {
+        // Roll back on failure
+        setIsWishlisted(previousState);
       }
+    } catch {
+      // Roll back on error
+      setIsWishlisted(previousState);
     } finally {
       setWishlistLoading(false);
     }
