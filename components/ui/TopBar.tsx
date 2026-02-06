@@ -6,6 +6,8 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronRight } from "lucide-react";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import LocaleSwitcher from "@/components/ui/LocaleSwitcher";
 
 export default function TopBar() {
   const t = useTranslations("common");
@@ -78,6 +80,8 @@ export default function TopBar() {
               </Link>
             </div>
             <div className="flex items-center gap-3">
+              <ThemeToggle />
+              <LocaleSwitcher />
               {session ? (
                 <div className="relative" ref={userMenuRef}>
                   {/* User Avatar/Name Dropdown Trigger */}
@@ -171,7 +175,7 @@ export default function TopBar() {
                                 d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
                               />
                             </svg>
-                            Admin Panel
+                            {t("navigation.admin")}
                           </Link>
                         )}
                         <div className="border-border my-1 border-t"></div>
@@ -299,6 +303,10 @@ export default function TopBar() {
                   transition={{ delay: 0.2 }}
                   className="border-border mt-2 flex flex-col space-y-2 border-t pt-4"
                 >
+                  <div className="flex items-center gap-3 px-4 py-2">
+                    <ThemeToggle />
+                    <LocaleSwitcher />
+                  </div>
                   {session ? (
                     <>
                       <Link

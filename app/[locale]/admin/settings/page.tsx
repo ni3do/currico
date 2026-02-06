@@ -1,17 +1,19 @@
 "use client";
 
 import { useSession, signOut } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import LocaleSwitcher from "@/components/ui/LocaleSwitcher";
 
 export default function AdminSettingsPage() {
   const { data: session } = useSession();
+  const t = useTranslations("admin.settings");
 
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       {/* Admin Account Settings */}
       <div className="border-border bg-surface rounded-2xl border p-8">
-        <h2 className="text-text mb-6 text-xl font-semibold">Konto-Einstellungen</h2>
+        <h2 className="text-text mb-6 text-xl font-semibold">{t("accountSettings")}</h2>
 
         <div className="space-y-6">
           {/* Admin Info */}
@@ -40,14 +42,14 @@ export default function AdminSettingsPage() {
 
           {/* Appearance Settings */}
           <div>
-            <h3 className="text-text mb-3 font-semibold">Darstellung</h3>
+            <h3 className="text-text mb-3 font-semibold">{t("appearance")}</h3>
             <div className="flex flex-wrap items-center gap-4">
               <div className="flex items-center gap-3">
-                <span className="text-text-muted text-sm">Theme:</span>
+                <span className="text-text-muted text-sm">{t("theme")}</span>
                 <ThemeToggle />
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-text-muted text-sm">Sprache:</span>
+                <span className="text-text-muted text-sm">{t("language")}</span>
                 <LocaleSwitcher />
               </div>
             </div>
@@ -67,7 +69,7 @@ export default function AdminSettingsPage() {
                   d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                 />
               </svg>
-              Abmelden
+              {t("logout")}
             </button>
           </div>
         </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useTranslations } from "next-intl";
 
 interface AdminUser {
   id: string;
@@ -22,12 +23,6 @@ interface PaginatedResponse {
   totalPages: number;
 }
 
-const roleLabels: Record<string, string> = {
-  BUYER: "Käufer",
-  SELLER: "Verkäufer",
-  ADMIN: "Administrator",
-};
-
 const roleBadgeColors: Record<string, string> = {
   BUYER: "pill-primary",
   SELLER: "pill-success",
@@ -35,6 +30,17 @@ const roleBadgeColors: Record<string, string> = {
 };
 
 export default function AdminUsersPage() {
+  const t = useTranslations("admin.users");
+
+  const getRoleLabel = (role: string) => {
+    const labels: Record<string, string> = {
+      BUYER: t("buyer"),
+      SELLER: t("seller"),
+      ADMIN: t("administrator"),
+    };
+    return labels[role] || role;
+  };
+
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -90,7 +96,7 @@ export default function AdminUsersPage() {
         setSelectedUser(null);
       } else {
         const error = await response.json();
-        alert(error.error || "Fehler beim Aktualisieren");
+        alert(error.error || t("errorUpdating"));
       }
     } catch (error) {
       console.error("Error updating user:", error);
@@ -112,7 +118,7 @@ export default function AdminUsersPage() {
         setSelectedUser(null);
       } else {
         const error = await response.json();
-        alert(error.error || "Fehler beim Löschen");
+        alert(error.error || t("errorDeleting"));
       }
     } catch (error) {
       console.error("Error deleting user:", error);
@@ -140,7 +146,7 @@ export default function AdminUsersPage() {
         </svg>
         <input
           type="text"
-          placeholder="Suche nach Name oder E-Mail..."
+          placeholder={t("searchPlaceholder")}
           value={search}
           onChange={(e) => {
             setSearch(e.target.value);
@@ -153,10 +159,10 @@ export default function AdminUsersPage() {
       {/* Role Tabs */}
       <div className="tab-container">
         {[
-          { value: "", label: "Alle" },
-          { value: "BUYER", label: "Käufer" },
-          { value: "SELLER", label: "Verkäufer" },
-          { value: "ADMIN", label: "Admins" },
+          { value: "", label: t("all") },
+          { value: "BUYER", label: t("buyers") },
+          { value: "SELLER", label: t("sellers") },
+          { value: "ADMIN", label: t("admins") },
         ].map((tab) => (
           <button
             key={tab.value}
@@ -172,7 +178,7 @@ export default function AdminUsersPage() {
       </div>
 
       {/* Stats Bar */}
-      <div className="text-text-muted text-sm">{total} Benutzer gefunden</div>
+      <div className="text-text-muted text-sm">{t("usersFound", { count: total })}</div>
 
       {/* Users Table */}
       <div className="border-border bg-surface overflow-hidden rounded-2xl border">
@@ -180,25 +186,33 @@ export default function AdminUsersPage() {
           <table className="w-full">
             <thead className="bg-bg">
               <tr>
-                <th className="text-text px-6 py-4 text-left text-sm font-semibold">Benutzer</th>
-                <th className="text-text px-6 py-4 text-left text-sm font-semibold">Rolle</th>
-                <th className="text-text px-6 py-4 text-left text-sm font-semibold">Status</th>
-                <th className="text-text px-6 py-4 text-left text-sm font-semibold">Materialien</th>
-                <th className="text-text px-6 py-4 text-left text-sm font-semibold">Registriert</th>
-                <th className="text-text px-6 py-4 text-right text-sm font-semibold">Aktionen</th>
+                <th className="text-text px-6 py-4 text-left text-sm font-semibold">{t("user")}</th>
+                <th className="text-text px-6 py-4 text-left text-sm font-semibold">{t("role")}</th>
+                <th className="text-text px-6 py-4 text-left text-sm font-semibold">
+                  {t("status")}
+                </th>
+                <th className="text-text px-6 py-4 text-left text-sm font-semibold">
+                  {t("materials")}
+                </th>
+                <th className="text-text px-6 py-4 text-left text-sm font-semibold">
+                  {t("registered")}
+                </th>
+                <th className="text-text px-6 py-4 text-right text-sm font-semibold">
+                  {t("actions")}
+                </th>
               </tr>
             </thead>
             <tbody className="divide-border divide-y">
               {loading ? (
                 <tr>
                   <td colSpan={6} className="text-text-muted px-6 py-12 text-center">
-                    Laden...
+                    {t("loading")}
                   </td>
                 </tr>
               ) : users.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="text-text-muted px-6 py-12 text-center">
-                    Keine Benutzer gefunden
+                    {t("noUsersFound")}
                   </td>
                 </tr>
               ) : (
@@ -207,7 +221,7 @@ export default function AdminUsersPage() {
                     <td className="px-6 py-4">
                       <div>
                         <div className="text-text font-medium">
-                          {user.display_name || user.name || "Unbekannt"}
+                          {user.display_name || user.name || t("unknown")}
                           {user.is_protected && (
                             <span className="text-error ml-2 text-xs" title="Geschützt">
                               <svg
@@ -229,7 +243,7 @@ export default function AdminUsersPage() {
                     </td>
                     <td className="px-6 py-4">
                       <span className={`pill ${roleBadgeColors[user.role]}`}>
-                        {roleLabels[user.role]}
+                        {getRoleLabel(user.role)}
                       </span>
                     </td>
                     <td className="px-6 py-4">
@@ -239,7 +253,9 @@ export default function AdminUsersPage() {
                             user.stripe_charges_enabled ? "pill-success" : "pill-warning"
                           }`}
                         >
-                          {user.stripe_charges_enabled ? "Stripe aktiv" : "Stripe ausstehend"}
+                          {user.stripe_charges_enabled
+                            ? t("stripeActiveLabel")
+                            : t("stripePendingLabel")}
                         </span>
                       )}
                     </td>
@@ -256,7 +272,7 @@ export default function AdminUsersPage() {
                           }}
                           className="bg-bg text-text hover:bg-border rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
                         >
-                          Bearbeiten
+                          {t("edit")}
                         </button>
                         {!user.is_protected && (
                           <button
@@ -266,7 +282,7 @@ export default function AdminUsersPage() {
                             }}
                             className="rounded-lg bg-[var(--badge-error-bg)] px-3 py-1.5 text-xs font-medium text-[var(--badge-error-text)] transition-opacity hover:opacity-80"
                           >
-                            Löschen
+                            {t("delete")}
                           </button>
                         )}
                       </div>
@@ -287,17 +303,15 @@ export default function AdminUsersPage() {
             disabled={page === 1}
             className="border-border bg-surface text-text hover:bg-bg rounded-lg border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Zurück
+            {t("previous")}
           </button>
-          <span className="text-text-muted text-sm">
-            Seite {page} von {totalPages}
-          </span>
+          <span className="text-text-muted text-sm">{t("pageOf", { page, totalPages })}</span>
           <button
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
             className="border-border bg-surface text-text hover:bg-bg rounded-lg border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Weiter
+            {t("next")}
           </button>
         </div>
       )}
@@ -307,7 +321,7 @@ export default function AdminUsersPage() {
         <div className="modal-overlay">
           <div className="modal-content modal-sm mx-4">
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-text text-xl font-semibold">Benutzer bearbeiten</h3>
+              <h3 className="text-text text-xl font-semibold">{t("editUser")}</h3>
               <button
                 onClick={() => {
                   setShowModal(false);
@@ -333,31 +347,29 @@ export default function AdminUsersPage() {
 
             <div className="space-y-4">
               <div>
-                <label className="text-text mb-2 block text-sm font-medium">Rolle ändern</label>
+                <label className="text-text mb-2 block text-sm font-medium">
+                  {t("changeRole")}
+                </label>
                 <select
                   defaultValue={selectedUser.role}
                   onChange={(e) => handleRoleChange(selectedUser.id, e.target.value)}
                   disabled={selectedUser.is_protected || actionLoading}
                   className="border-border bg-surface text-text focus:border-primary w-full rounded-lg border px-4 py-2.5 focus:outline-none disabled:opacity-50"
                 >
-                  <option value="BUYER">Käufer</option>
-                  <option value="SELLER">Verkäufer</option>
-                  <option value="ADMIN">Administrator</option>
+                  <option value="BUYER">{t("buyer")}</option>
+                  <option value="SELLER">{t("seller")}</option>
+                  <option value="ADMIN">{t("administrator")}</option>
                 </select>
                 {selectedUser.is_protected && (
-                  <p className="text-error mt-2 text-xs">
-                    Die Rolle dieses geschützten Benutzers kann nicht geändert werden.
-                  </p>
+                  <p className="text-error mt-2 text-xs">{t("protectedUser")}</p>
                 )}
               </div>
 
               {selectedUser.role === "SELLER" && (
                 <div className="border-border rounded-lg border p-4">
-                  <p className="text-text font-medium">Stripe-Status</p>
+                  <p className="text-text font-medium">{t("stripeStatus")}</p>
                   <p className="text-text-muted text-sm">
-                    {selectedUser.stripe_charges_enabled
-                      ? "Zahlungen aktiviert (via Stripe KYC)"
-                      : "Stripe-Onboarding ausstehend"}
+                    {selectedUser.stripe_charges_enabled ? t("stripeActive") : t("stripePending")}
                   </p>
                 </div>
               )}
@@ -371,7 +383,7 @@ export default function AdminUsersPage() {
                 }}
                 className="border-border bg-surface text-text hover:bg-bg w-full rounded-lg border px-4 py-2.5 text-sm font-medium"
               >
-                Schliessen
+                {t("close")}
               </button>
             </div>
           </div>
@@ -398,15 +410,15 @@ export default function AdminUsersPage() {
                   />
                 </svg>
               </div>
-              <h3 className="text-text text-xl font-semibold">Benutzer löschen?</h3>
+              <h3 className="text-text text-xl font-semibold">{t("deleteUser")}</h3>
             </div>
 
             <p className="text-text-muted mb-6">
-              Möchten Sie den Benutzer{" "}
+              {t("deleteConfirm")}{" "}
               <strong className="text-text">
                 {selectedUser.display_name || selectedUser.email}
               </strong>{" "}
-              wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
+              {t("deleteWarning")}
             </p>
 
             <div className="flex gap-3">
@@ -415,7 +427,7 @@ export default function AdminUsersPage() {
                 disabled={actionLoading}
                 className="bg-error text-text-on-accent flex-1 rounded-lg px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-50"
               >
-                {actionLoading ? "Löschen..." : "Ja, löschen"}
+                {actionLoading ? t("deleting") : t("yesDelete")}
               </button>
               <button
                 onClick={() => {
@@ -424,7 +436,7 @@ export default function AdminUsersPage() {
                 }}
                 className="border-border bg-surface text-text hover:bg-bg flex-1 rounded-lg border px-4 py-2.5 text-sm font-medium"
               >
-                Abbrechen
+                {t("cancel")}
               </button>
             </div>
           </div>

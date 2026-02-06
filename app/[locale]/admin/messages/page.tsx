@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { Mail, Phone, ExternalLink } from "lucide-react";
 
 interface ContactMessage {
@@ -21,13 +22,6 @@ interface PaginatedResponse {
   totalPages: number;
 }
 
-const statusLabels: Record<string, string> = {
-  NEW: "Neu",
-  READ: "Gelesen",
-  REPLIED: "Beantwortet",
-  ARCHIVED: "Archiviert",
-};
-
 const statusColors: Record<string, string> = {
   NEW: "bg-accent/10 text-accent",
   READ: "bg-primary/10 text-primary",
@@ -35,15 +29,29 @@ const statusColors: Record<string, string> = {
   ARCHIVED: "bg-bg text-text-muted",
 };
 
-const subjectLabels: Record<string, string> = {
-  general: "Allgemeine Anfrage",
-  feedback: "Feedback",
-  partnership: "Partnerschaft",
-  support: "Support",
-  sales: "Vertrieb",
-};
-
 export default function AdminMessagesPage() {
+  const t = useTranslations("admin.messages");
+
+  const getStatusLabel = (status: string) => {
+    const labels: Record<string, string> = {
+      NEW: t("statusNew"),
+      READ: t("statusRead"),
+      REPLIED: t("statusReplied"),
+      ARCHIVED: t("statusArchived"),
+    };
+    return labels[status] || status;
+  };
+
+  const getSubjectLabel = (subject: string) => {
+    const labels: Record<string, string> = {
+      general: t("subjectGeneral"),
+      feedback: t("subjectFeedback"),
+      partnership: t("subjectPartnership"),
+      support: t("subjectSupport"),
+      sales: t("subjectSales"),
+    };
+    return labels[subject] || subject;
+  };
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("");
@@ -97,7 +105,7 @@ export default function AdminMessagesPage() {
         }
       } else {
         const error = await response.json();
-        alert(error.error || "Fehler beim Aktualisieren");
+        alert(error.error || t("errorUpdating"));
       }
     } catch (error) {
       console.error("Error updating message:", error);
@@ -107,7 +115,7 @@ export default function AdminMessagesPage() {
   };
 
   const handleDelete = async (messageId: string) => {
-    if (!confirm("Möchten Sie diese Nachricht wirklich löschen?")) return;
+    if (!confirm(t("confirmDelete"))) return;
 
     setActionLoading(true);
     try {
@@ -123,7 +131,7 @@ export default function AdminMessagesPage() {
         setSelectedMessage(null);
       } else {
         const error = await response.json();
-        alert(error.error || "Fehler beim Löschen");
+        alert(error.error || t("errorDeleting"));
       }
     } catch (error) {
       console.error("Error deleting message:", error);
@@ -146,11 +154,11 @@ export default function AdminMessagesPage() {
       {/* Status Tabs */}
       <div className="border-border bg-bg-secondary flex flex-wrap gap-2 rounded-xl border p-1.5">
         {[
-          { value: "", label: "Alle" },
-          { value: "NEW", label: "Neu" },
-          { value: "READ", label: "Gelesen" },
-          { value: "REPLIED", label: "Beantwortet" },
-          { value: "ARCHIVED", label: "Archiviert" },
+          { value: "", label: t("all") },
+          { value: "NEW", label: t("new") },
+          { value: "READ", label: t("read") },
+          { value: "REPLIED", label: t("replied") },
+          { value: "ARCHIVED", label: t("archived") },
         ].map((tab) => (
           <button
             key={tab.value}
@@ -170,7 +178,7 @@ export default function AdminMessagesPage() {
       </div>
 
       {/* Stats Bar */}
-      <div className="text-text-muted text-sm">{total} Nachrichten gefunden</div>
+      <div className="text-text-muted text-sm">{t("messagesFound", { count: total })}</div>
 
       {/* Messages Table */}
       <div className="border-border bg-surface overflow-hidden rounded-2xl border">
@@ -178,25 +186,35 @@ export default function AdminMessagesPage() {
           <table className="w-full">
             <thead className="bg-bg">
               <tr>
-                <th className="text-text px-6 py-4 text-left text-sm font-semibold">Absender</th>
-                <th className="text-text px-6 py-4 text-left text-sm font-semibold">Betreff</th>
-                <th className="text-text px-6 py-4 text-left text-sm font-semibold">Nachricht</th>
-                <th className="text-text px-6 py-4 text-left text-sm font-semibold">Status</th>
-                <th className="text-text px-6 py-4 text-left text-sm font-semibold">Datum</th>
-                <th className="text-text px-6 py-4 text-right text-sm font-semibold">Aktionen</th>
+                <th className="text-text px-6 py-4 text-left text-sm font-semibold">
+                  {t("sender")}
+                </th>
+                <th className="text-text px-6 py-4 text-left text-sm font-semibold">
+                  {t("subject")}
+                </th>
+                <th className="text-text px-6 py-4 text-left text-sm font-semibold">
+                  {t("message")}
+                </th>
+                <th className="text-text px-6 py-4 text-left text-sm font-semibold">
+                  {t("status")}
+                </th>
+                <th className="text-text px-6 py-4 text-left text-sm font-semibold">{t("date")}</th>
+                <th className="text-text px-6 py-4 text-right text-sm font-semibold">
+                  {t("actions")}
+                </th>
               </tr>
             </thead>
             <tbody className="divide-border divide-y">
               {loading ? (
                 <tr>
                   <td colSpan={6} className="text-text-muted px-6 py-12 text-center">
-                    Laden...
+                    {t("loading")}
                   </td>
                 </tr>
               ) : messages.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="text-text-muted px-6 py-12 text-center">
-                    Keine Nachrichten gefunden
+                    {t("noMessages")}
                   </td>
                 </tr>
               ) : (
@@ -212,9 +230,7 @@ export default function AdminMessagesPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-text">
-                        {subjectLabels[message.subject] || message.subject}
-                      </span>
+                      <span className="text-text">{getSubjectLabel(message.subject)}</span>
                     </td>
                     <td className="px-6 py-4">
                       <span className="text-text-muted line-clamp-2 max-w-xs">
@@ -225,7 +241,7 @@ export default function AdminMessagesPage() {
                       <span
                         className={`rounded-full px-3 py-1 text-xs font-medium ${statusColors[message.status]}`}
                       >
-                        {statusLabels[message.status]}
+                        {getStatusLabel(message.status)}
                       </span>
                     </td>
                     <td className="text-text-muted px-6 py-4">
@@ -236,7 +252,7 @@ export default function AdminMessagesPage() {
                         onClick={() => openMessageModal(message)}
                         className="bg-accent rounded-lg px-4 py-1.5 text-xs font-medium text-white transition-colors hover:opacity-90"
                       >
-                        Ansehen
+                        {t("view")}
                       </button>
                     </td>
                   </tr>
@@ -255,17 +271,15 @@ export default function AdminMessagesPage() {
             disabled={page === 1}
             className="border-border bg-surface text-text hover:bg-bg rounded-lg border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Zurück
+            {t("previous")}
           </button>
-          <span className="text-text-muted text-sm">
-            Seite {page} von {totalPages}
-          </span>
+          <span className="text-text-muted text-sm">{t("pageOf", { page, totalPages })}</span>
           <button
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
             className="border-border bg-surface text-text hover:bg-bg rounded-lg border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Weiter
+            {t("next")}
           </button>
         </div>
       )}
@@ -275,7 +289,7 @@ export default function AdminMessagesPage() {
         <div className="bg-bg/80 fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
           <div className="border-border bg-surface mx-4 max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border p-6">
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-text text-xl font-semibold">Nachricht</h3>
+              <h3 className="text-text text-xl font-semibold">{t("messageDetail")}</h3>
               <button
                 onClick={() => {
                   setShowModal(false);
@@ -308,7 +322,7 @@ export default function AdminMessagesPage() {
                   <span
                     className={`rounded-full px-3 py-1 text-xs font-medium ${statusColors[selectedMessage.status]}`}
                   >
-                    {statusLabels[selectedMessage.status]}
+                    {getStatusLabel(selectedMessage.status)}
                   </span>
                 </div>
                 <div className="flex flex-wrap gap-3">
@@ -334,22 +348,22 @@ export default function AdminMessagesPage() {
 
               {/* Subject */}
               <div className="border-border rounded-lg border p-4">
-                <div className="text-text-muted mb-1 text-sm">Betreff</div>
+                <div className="text-text-muted mb-1 text-sm">{t("subjectLabel")}</div>
                 <div className="text-text font-medium">
-                  {subjectLabels[selectedMessage.subject] || selectedMessage.subject}
+                  {getSubjectLabel(selectedMessage.subject)}
                 </div>
               </div>
 
               {/* Message Content */}
               <div className="border-border rounded-lg border p-4">
-                <div className="text-text-muted mb-1 text-sm">Nachricht</div>
+                <div className="text-text-muted mb-1 text-sm">{t("messageLabel")}</div>
                 <div className="text-text whitespace-pre-wrap">{selectedMessage.message}</div>
               </div>
             </div>
 
             {/* Action Buttons */}
             <div className="space-y-3">
-              <div className="text-text mb-2 text-sm font-medium">Status ändern:</div>
+              <div className="text-text mb-2 text-sm font-medium">{t("changeStatus")}</div>
               <div className="grid grid-cols-2 gap-3">
                 {selectedMessage.status !== "READ" && (
                   <button
@@ -357,7 +371,7 @@ export default function AdminMessagesPage() {
                     disabled={actionLoading}
                     className="bg-primary/10 text-primary rounded-lg px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-50"
                   >
-                    Gelesen
+                    {t("markRead")}
                   </button>
                 )}
                 {selectedMessage.status !== "REPLIED" && (
@@ -366,7 +380,7 @@ export default function AdminMessagesPage() {
                     disabled={actionLoading}
                     className="rounded-lg bg-[var(--badge-success-bg)] px-4 py-2.5 text-sm font-medium text-[var(--badge-success-text)] hover:opacity-90 disabled:opacity-50"
                   >
-                    Beantwortet
+                    {t("markReplied")}
                   </button>
                 )}
                 {selectedMessage.status !== "ARCHIVED" && (
@@ -375,7 +389,7 @@ export default function AdminMessagesPage() {
                     disabled={actionLoading}
                     className="border-border bg-bg text-text-muted rounded-lg border px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-50"
                   >
-                    Archivieren
+                    {t("archive")}
                   </button>
                 )}
                 {selectedMessage.status !== "NEW" && (
@@ -384,7 +398,7 @@ export default function AdminMessagesPage() {
                     disabled={actionLoading}
                     className="bg-accent/10 text-accent rounded-lg px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-50"
                   >
-                    Als neu markieren
+                    {t("markNew")}
                   </button>
                 )}
               </div>
@@ -393,17 +407,17 @@ export default function AdminMessagesPage() {
             {/* Reply & Delete Buttons */}
             <div className="border-border mt-6 flex gap-3 border-t pt-4">
               <a
-                href={`mailto:${selectedMessage.email}?subject=Re: ${subjectLabels[selectedMessage.subject] || selectedMessage.subject}`}
+                href={`mailto:${selectedMessage.email}?subject=Re: ${getSubjectLabel(selectedMessage.subject)}`}
                 className="bg-accent flex-1 rounded-lg px-4 py-2.5 text-center text-sm font-medium text-white hover:opacity-90"
               >
-                Antworten
+                {t("reply")}
               </a>
               <button
                 onClick={() => handleDelete(selectedMessage.id)}
                 disabled={actionLoading}
                 className="border-error bg-error/10 text-error hover:bg-error/20 rounded-lg border px-4 py-2.5 text-sm font-medium disabled:opacity-50"
               >
-                Löschen
+                {t("deleteMessage")}
               </button>
             </div>
           </div>

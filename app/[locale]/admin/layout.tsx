@@ -5,6 +5,7 @@ import { usePathname } from "@/i18n/navigation";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { Menu, ChevronDown } from "lucide-react";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
@@ -40,6 +41,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const pathname = usePathname();
   const { data: session, status } = useSession();
   const router = useRouter();
+  const t = useTranslations("admin");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [stats, setStats] = useState<AdminStats | null>(null);
 
@@ -99,21 +101,21 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const getPageTitle = (): string => {
     switch (activeTab) {
       case "overview":
-        return "Übersicht";
+        return t("layout.overview");
       case "users":
-        return "Benutzer";
+        return t("layout.users");
       case "documents":
-        return "Dokumente";
+        return t("layout.documents");
       case "messages":
-        return "Nachrichten";
+        return t("layout.messages");
       case "reports":
-        return "Meldungen";
+        return t("layout.reports");
       case "transactions":
-        return "Transaktionen";
+        return t("layout.transactions");
       case "settings":
-        return "Einstellungen";
+        return t("layout.settings");
       default:
-        return "Admin Panel";
+        return t("title");
     }
   };
 
@@ -151,7 +153,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               className="border-border bg-bg-secondary text-text-secondary hover:border-error hover:text-error flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-3 text-sm font-medium transition-colors"
             >
               <Menu className="h-5 w-5" />
-              <span>Admin Menü</span>
+              <span>{t("menu")}</span>
               <ChevronDown
                 className={`h-4 w-4 transition-transform ${mobileMenuOpen ? "rotate-180" : ""}`}
               />
