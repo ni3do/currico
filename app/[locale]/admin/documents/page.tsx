@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
+import { TableSkeleton } from "@/components/ui/Skeleton";
 
 interface AdminMaterial {
   id: string;
@@ -243,11 +244,7 @@ export default function AdminDocumentsPage() {
             </thead>
             <tbody className="divide-border divide-y">
               {loading ? (
-                <tr>
-                  <td colSpan={7} className="text-text-muted px-6 py-12 text-center">
-                    {t("loading")}
-                  </td>
-                </tr>
+                <TableSkeleton rows={5} columns={7} />
               ) : materials.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="text-text-muted px-6 py-12 text-center">

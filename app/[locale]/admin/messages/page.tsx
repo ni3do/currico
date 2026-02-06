@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { Mail, Phone, ExternalLink } from "lucide-react";
+import { TableSkeleton } from "@/components/ui/Skeleton";
 
 interface ContactMessage {
   id: string;
@@ -206,11 +207,7 @@ export default function AdminMessagesPage() {
             </thead>
             <tbody className="divide-border divide-y">
               {loading ? (
-                <tr>
-                  <td colSpan={6} className="text-text-muted px-6 py-12 text-center">
-                    {t("loading")}
-                  </td>
-                </tr>
+                <TableSkeleton rows={5} columns={6} />
               ) : messages.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="text-text-muted px-6 py-12 text-center">

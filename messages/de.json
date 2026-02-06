@@ -20,6 +20,7 @@
     }
   },
   "common": {
+    "skipToContent": "Zum Inhalt springen",
     "brand": {
       "logoText": "C",
       "name": "Currico",
@@ -534,6 +535,8 @@
     "results": {
       "countLabel": "Materialien gefunden",
       "sortLabel": "Sortieren:",
+      "gridView": "Rasteransicht",
+      "listView": "Listenansicht",
       "sortOptions": {
         "newest": "Neueste",
         "popular": "Beliebteste",

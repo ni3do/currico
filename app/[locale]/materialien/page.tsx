@@ -5,12 +5,13 @@ import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
-import { SlidersHorizontal, ChevronDown, Users } from "lucide-react";
+import { SlidersHorizontal, ChevronDown, Users, LayoutGrid, List } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { MaterialCard } from "@/components/ui/MaterialCard";
+import { MaterialGridSkeleton } from "@/components/ui/Skeleton";
 import { ProfileCard } from "@/components/ui/ProfileCard";
 import { LP21FilterSidebar, type LP21FilterState } from "@/components/search/LP21FilterSidebar";
 import { useCurriculum } from "@/lib/hooks/useCurriculum";
@@ -74,6 +75,7 @@ export default function MaterialienPage() {
   const [loading, setLoading] = useState(true);
   const [profilesLoading, setProfilesLoading] = useState(false);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [sortBy, setSortBy] = useState<string>(searchParams.get("sort") || "newest");
   const [currentPage, setCurrentPage] = useState<number>(
     parseInt(searchParams.get("page") || "1", 10)
@@ -618,47 +620,59 @@ export default function MaterialienPage() {
                   )}
                 </div>
 
-                {/* Sort Dropdown - only when materials are shown */}
+                {/* View Toggle + Sort Dropdown */}
                 {filters.showMaterials && (
-                  <div className="flex items-center gap-2">
-                    <label className="text-text-muted text-sm whitespace-nowrap">
-                      {t("results.sortLabel")}
-                    </label>
-                    <select
-                      value={sortBy}
-                      onChange={(e) => handleSortChange(e.target.value)}
-                      className="border-border bg-bg text-text-secondary focus:border-primary focus:ring-focus-ring rounded-lg border px-3 py-2.5 text-sm focus:ring-2 focus:outline-none"
-                    >
-                      <option value="newest">{t("results.sortOptions.newest")}</option>
-                      <option value="price-low">{t("results.sortOptions.priceLow")}</option>
-                      <option value="price-high">{t("results.sortOptions.priceHigh")}</option>
-                    </select>
+                  <div className="flex items-center gap-3">
+                    {/* Grid/List Toggle */}
+                    <div className="border-border flex rounded-lg border">
+                      <button
+                        onClick={() => setViewMode("grid")}
+                        className={`rounded-l-lg p-2 transition-colors ${
+                          viewMode === "grid"
+                            ? "bg-primary text-text-on-accent"
+                            : "text-text-muted hover:text-text hover:bg-surface"
+                        }`}
+                        aria-label={t("results.gridView")}
+                        title={t("results.gridView")}
+                      >
+                        <LayoutGrid className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={() => setViewMode("list")}
+                        className={`rounded-r-lg p-2 transition-colors ${
+                          viewMode === "list"
+                            ? "bg-primary text-text-on-accent"
+                            : "text-text-muted hover:text-text hover:bg-surface"
+                        }`}
+                        aria-label={t("results.listView")}
+                        title={t("results.listView")}
+                      >
+                        <List className="h-4 w-4" />
+                      </button>
+                    </div>
+
+                    {/* Sort Dropdown */}
+                    <div className="flex items-center gap-2">
+                      <label className="text-text-muted hidden text-sm whitespace-nowrap sm:inline">
+                        {t("results.sortLabel")}
+                      </label>
+                      <select
+                        value={sortBy}
+                        onChange={(e) => handleSortChange(e.target.value)}
+                        className="border-border bg-bg text-text-secondary focus:border-primary focus:ring-focus-ring rounded-lg border px-3 py-2.5 text-sm focus:ring-2 focus:outline-none"
+                      >
+                        <option value="newest">{t("results.sortOptions.newest")}</option>
+                        <option value="price-low">{t("results.sortOptions.priceLow")}</option>
+                        <option value="price-high">{t("results.sortOptions.priceHigh")}</option>
+                      </select>
+                    </div>
                   </div>
                 )}
               </div>
 
               {/* Unified Grid */}
               {isLoading ? (
-                <div className="flex items-center justify-center py-16">
-                  <div className="text-text-muted flex items-center gap-3">
-                    <svg className="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      />
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      />
-                    </svg>
-                    <span>{t("loading")}</span>
-                  </div>
-                </div>
+                <MaterialGridSkeleton count={6} />
               ) : mergedItems.length === 0 ? (
                 <div className="border-border-subtle bg-bg-secondary flex flex-col items-center justify-center rounded-lg border py-16">
                   {!filters.showMaterials && filters.showCreators ? (
@@ -683,7 +697,11 @@ export default function MaterialienPage() {
                 </div>
               ) : (
                 <motion.div
-                  className="grid gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3"
+                  className={
+                    viewMode === "grid"
+                      ? "grid gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3"
+                      : "flex flex-col gap-4"
+                  }
                   initial="hidden"
                   animate="visible"
                   variants={{
@@ -724,6 +742,7 @@ export default function MaterialienPage() {
                           showWishlist={true}
                           isWishlisted={wishlistedIds.has(item.data.id)}
                           onWishlistToggle={handleWishlistToggle}
+                          variant={viewMode === "list" ? "compact" : "default"}
                         />
                       </motion.div>
                     ) : (

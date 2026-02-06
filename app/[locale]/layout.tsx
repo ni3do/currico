@@ -4,6 +4,7 @@ import { getMessages, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import type { Locale } from "@/i18n/config";
 import CookieConsent from "@/components/ui/CookieConsent";
+import { SkipToContent } from "@/components/ui/SkipToContent";
 
 // Force dynamic rendering to avoid prerender errors with client-side hooks
 export const dynamic = "force-dynamic";
@@ -33,6 +34,7 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   return (
     <NextIntlClientProvider messages={messages}>
+      <SkipToContent />
       {children}
       <CookieConsent />
     </NextIntlClientProvider>

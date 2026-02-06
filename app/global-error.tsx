@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import * as Sentry from '@sentry/nextjs';
-import { useEffect } from 'react';
+import * as Sentry from "@sentry/nextjs";
+import { useEffect } from "react";
 
 export default function GlobalError({
   error,
@@ -17,19 +17,38 @@ export default function GlobalError({
   return (
     <html>
       <body>
-        <div className="min-h-screen flex items-center justify-center bg-base">
-          <div className="text-center p-8">
-            <h2 className="text-2xl font-bold text-text mb-4">
-              Ein Fehler ist aufgetreten
+        <div className="bg-bg flex min-h-screen items-center justify-center">
+          <div className="p-8 text-center">
+            <div
+              className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full"
+              style={{ background: "rgba(210, 15, 57, 0.1)" }}
+            >
+              <svg
+                className="h-8 w-8"
+                style={{ color: "#d20f39" }}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                />
+              </svg>
+            </div>
+            <h2 className="text-text mb-4 text-2xl font-bold">
+              An error occurred / Ein Fehler ist aufgetreten
             </h2>
-            <p className="text-subtext0 mb-6">
-              Bitte versuchen Sie es erneut oder kontaktieren Sie den Support.
+            <p className="text-text-muted mb-6">
+              Please try again or contact support. / Bitte versuchen Sie es erneut.
             </p>
             <button
               onClick={reset}
-              className="px-4 py-2 bg-blue text-white rounded-lg hover:bg-opacity-90"
+              className="bg-primary text-text-on-accent hover:bg-primary-hover rounded-lg px-6 py-2.5 font-medium transition-colors"
             >
-              Erneut versuchen
+              Try again / Erneut versuchen
             </button>
           </div>
         </div>
