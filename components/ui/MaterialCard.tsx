@@ -73,12 +73,19 @@ export function MaterialCard({
 
     if (!onWishlistToggle || wishlistLoading) return;
 
+    // Optimistic update - flip immediately
+    const previousState = isWishlisted;
+    setIsWishlisted(!isWishlisted);
     setWishlistLoading(true);
     try {
-      const success = await onWishlistToggle(id, isWishlisted);
-      if (success) {
-        setIsWishlisted(!isWishlisted);
+      const success = await onWishlistToggle(id, previousState);
+      if (!success) {
+        // Roll back on failure
+        setIsWishlisted(previousState);
       }
+    } catch {
+      // Roll back on error
+      setIsWishlisted(previousState);
     } finally {
       setWishlistLoading(false);
     }
@@ -87,7 +94,9 @@ export function MaterialCard({
   const cardContent = (
     <>
       {/* Preview Image with Price Badge */}
-      <div className="bg-bg-secondary relative aspect-[16/9] w-full overflow-hidden">
+      <div
+        className={`bg-bg-secondary relative overflow-hidden ${isCompact ? "aspect-square w-32 flex-shrink-0 sm:w-40" : "aspect-[16/9] w-full"}`}
+      >
         {previewUrl ? (
           <Image
             src={previewUrl}
@@ -144,9 +153,9 @@ export function MaterialCard({
       </div>
 
       {/* Content */}
-      <div className={`flex flex-1 flex-col ${isCompact ? "p-4" : "p-5"}`}>
+      <div className={`flex flex-1 flex-col ${isCompact ? "justify-center p-3 sm:p-4" : "p-5"}`}>
         {/* Eyebrow Tag - Subject & Level */}
-        <div className={`${isCompact ? "mb-2" : "mb-3"}`}>
+        <div className={`${isCompact ? "mb-1" : "mb-3"}`}>
           <span
             className={`text-xs font-semibold tracking-wide uppercase ${getSubjectTextColor(subjectPillClass)}`}
           >
@@ -163,15 +172,30 @@ export function MaterialCard({
         {/* Title - Primary Heading Style */}
         <h3
           className={`text-text group-hover:text-primary line-clamp-2 font-bold transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-            isCompact ? "text-base" : "mb-2 text-lg leading-snug"
+            isCompact ? "text-sm sm:text-base" : "mb-2 text-lg leading-snug"
           }`}
         >
           {title}
         </h3>
 
-        {/* Description - Muted Body Text (default variant only) */}
+        {/* Description */}
         {!isCompact && description && (
           <p className="text-text-muted mb-4 line-clamp-2 text-sm leading-relaxed">{description}</p>
+        )}
+        {isCompact && description && (
+          <p className="text-text-muted mt-1 line-clamp-1 hidden text-xs sm:block">{description}</p>
+        )}
+
+        {/* Compact footer: seller + price inline */}
+        {isCompact && (
+          <div className="text-text-muted mt-2 flex items-center gap-3 text-xs">
+            <span>{seller?.displayName || "Anonymous"}</span>
+            {priceFormatted && (
+              <span className={`font-semibold ${isFree ? "text-success" : "text-price"}`}>
+                {priceFormatted}
+              </span>
+            )}
+          </div>
         )}
 
         {/* Spacer */}
@@ -204,7 +228,9 @@ export function MaterialCard({
   );
 
   // Consistent hover effect for both variants - smooth premium feel
-  const cardClasses = "card group flex h-full flex-col overflow-hidden cursor-pointer";
+  const cardClasses = isCompact
+    ? "card group flex h-full flex-row overflow-hidden cursor-pointer"
+    : "card group flex h-full flex-col overflow-hidden cursor-pointer";
 
   return (
     <Link href={linkHref} className={cardClasses}>

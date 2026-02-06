@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import {
   Users,
   FileText,
@@ -12,6 +13,7 @@ import {
   Download,
   DollarSign,
 } from "lucide-react";
+import { DashboardCardSkeleton, Skeleton } from "@/components/ui/Skeleton";
 
 interface AdminStats {
   totalUsers: number;
@@ -31,6 +33,7 @@ interface AdminStats {
 }
 
 export default function AdminDashboardPage() {
+  const t = useTranslations("admin.dashboard");
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -54,8 +57,22 @@ export default function AdminDashboardPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <div className="border-primary h-8 w-8 animate-spin rounded-full border-b-2"></div>
+      <div className="space-y-6">
+        <DashboardCardSkeleton />
+        <div className="grid gap-6 lg:grid-cols-2">
+          <div className="border-border bg-surface rounded-xl border p-6">
+            <Skeleton className="mb-4 h-5 w-32" />
+            <Skeleton className="h-48 w-full rounded-lg" />
+          </div>
+          <div className="border-border bg-surface rounded-xl border p-6">
+            <Skeleton className="mb-4 h-5 w-40" />
+            <div className="space-y-3">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton key={i} className="h-10 w-full" />
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -70,10 +87,12 @@ export default function AdminDashboardPage() {
             <div className="from-primary to-primary-hover rounded-lg bg-gradient-to-br p-2.5">
               <Users className="text-text-on-accent h-5 w-5" />
             </div>
-            <h3 className="text-text-muted text-sm font-medium">Benutzer</h3>
+            <h3 className="text-text-muted text-sm font-medium">{t("users")}</h3>
           </div>
           <div className="text-text text-3xl font-bold">{stats?.totalUsers || 0}</div>
-          <p className="text-text-muted mt-1 text-sm">+{stats?.newUsersToday || 0} heute</p>
+          <p className="text-text-muted mt-1 text-sm">
+            {t("newToday", { count: stats?.newUsersToday || 0 })}
+          </p>
         </div>
 
         {/* Pending Documents */}
@@ -82,10 +101,10 @@ export default function AdminDashboardPage() {
             <div className="from-warning to-price rounded-lg bg-gradient-to-br p-2.5">
               <Clock className="text-text-on-accent h-5 w-5" />
             </div>
-            <h3 className="text-text-muted text-sm font-medium">Ausstehend</h3>
+            <h3 className="text-text-muted text-sm font-medium">{t("pending")}</h3>
           </div>
           <div className="text-text text-3xl font-bold">{stats?.pendingApproval || 0}</div>
-          <p className="text-text-muted mt-1 text-sm">Dokumente zur Prüfung</p>
+          <p className="text-text-muted mt-1 text-sm">{t("documentsToReview")}</p>
         </div>
 
         {/* Open Reports */}
@@ -94,10 +113,10 @@ export default function AdminDashboardPage() {
             <div className="from-error to-error rounded-lg bg-gradient-to-br p-2.5">
               <AlertTriangle className="text-text-on-accent h-5 w-5" />
             </div>
-            <h3 className="text-text-muted text-sm font-medium">Meldungen</h3>
+            <h3 className="text-text-muted text-sm font-medium">{t("reports")}</h3>
           </div>
           <div className="text-text text-3xl font-bold">{stats?.openReports || 0}</div>
-          <p className="text-text-muted mt-1 text-sm">Offene Meldungen</p>
+          <p className="text-text-muted mt-1 text-sm">{t("openReports")}</p>
         </div>
 
         {/* Total Revenue */}
@@ -106,13 +125,13 @@ export default function AdminDashboardPage() {
             <div className="from-success to-accent rounded-lg bg-gradient-to-br p-2.5">
               <DollarSign className="text-text-on-accent h-5 w-5" />
             </div>
-            <h3 className="text-text-muted text-sm font-medium">Umsatz</h3>
+            <h3 className="text-text-muted text-sm font-medium">{t("revenue")}</h3>
           </div>
           <div className="text-text text-3xl font-bold">
             CHF {stats?.totalRevenue?.toFixed(2) || "0.00"}
           </div>
           <p className="text-text-muted mt-1 text-sm">
-            +CHF {stats?.revenueToday?.toFixed(2) || "0.00"} heute
+            {t("revenueToday", { amount: stats?.revenueToday?.toFixed(2) || "0.00" })}
           </p>
         </div>
       </div>
@@ -125,9 +144,11 @@ export default function AdminDashboardPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-text group-hover:text-primary font-semibold">Dokumente prüfen</h3>
+              <h3 className="text-text group-hover:text-primary font-semibold">
+                {t("reviewDocuments")}
+              </h3>
               <p className="text-text-muted mt-1 text-sm">
-                {stats?.pendingApproval || 0} ausstehend
+                {t("pendingCount", { count: stats?.pendingApproval || 0 })}
               </p>
             </div>
             <ArrowRight className="text-text-muted group-hover:text-primary h-5 w-5 transition-transform group-hover:translate-x-1" />
@@ -141,9 +162,11 @@ export default function AdminDashboardPage() {
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-text group-hover:text-primary font-semibold">
-                Meldungen bearbeiten
+                {t("handleReports")}
               </h3>
-              <p className="text-text-muted mt-1 text-sm">{stats?.openReports || 0} offen</p>
+              <p className="text-text-muted mt-1 text-sm">
+                {t("openCount", { count: stats?.openReports || 0 })}
+              </p>
             </div>
             <ArrowRight className="text-text-muted group-hover:text-primary h-5 w-5 transition-transform group-hover:translate-x-1" />
           </div>
@@ -156,9 +179,11 @@ export default function AdminDashboardPage() {
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-text group-hover:text-primary font-semibold">
-                Benutzer verwalten
+                {t("manageUsers")}
               </h3>
-              <p className="text-text-muted mt-1 text-sm">{stats?.totalUsers || 0} registriert</p>
+              <p className="text-text-muted mt-1 text-sm">
+                {t("registeredCount", { count: stats?.totalUsers || 0 })}
+              </p>
             </div>
             <ArrowRight className="text-text-muted group-hover:text-primary h-5 w-5 transition-transform group-hover:translate-x-1" />
           </div>
@@ -169,26 +194,26 @@ export default function AdminDashboardPage() {
       <div className="grid gap-6 lg:grid-cols-2">
         {/* User Breakdown */}
         <div className="border-border bg-surface rounded-xl border p-6">
-          <h3 className="text-text mb-4 font-semibold">Benutzer nach Rolle</h3>
+          <h3 className="text-text mb-4 font-semibold">{t("usersByRole")}</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="bg-primary h-3 w-3 rounded-full"></div>
-                <span className="text-text-muted">Käufer</span>
+                <span className="text-text-muted">{t("buyers")}</span>
               </div>
               <span className="text-text font-medium">{stats?.userBreakdown?.buyers || 0}</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="bg-success h-3 w-3 rounded-full"></div>
-                <span className="text-text-muted">Verkäufer</span>
+                <span className="text-text-muted">{t("sellers")}</span>
               </div>
               <span className="text-text font-medium">{stats?.userBreakdown?.sellers || 0}</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="bg-focus h-3 w-3 rounded-full"></div>
-                <span className="text-text-muted">Schulen</span>
+                <span className="text-text-muted">{t("schools")}</span>
               </div>
               <span className="text-text font-medium">{stats?.userBreakdown?.schools || 0}</span>
             </div>
@@ -197,26 +222,26 @@ export default function AdminDashboardPage() {
 
         {/* Resources Overview */}
         <div className="border-border bg-surface rounded-xl border p-6">
-          <h3 className="text-text mb-4 font-semibold">Materialien</h3>
+          <h3 className="text-text mb-4 font-semibold">{t("materials")}</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <FileText className="text-text-muted h-4 w-4" />
-                <span className="text-text-muted">Total Materialien</span>
+                <span className="text-text-muted">{t("totalMaterials")}</span>
               </div>
               <span className="text-text font-medium">{stats?.totalResources || 0}</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Clock className="text-warning h-4 w-4" />
-                <span className="text-text-muted">Ausstehende Prüfungen</span>
+                <span className="text-text-muted">{t("pendingReviews")}</span>
               </div>
               <span className="text-warning font-medium">{stats?.pendingApproval || 0}</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Users className="text-text-muted h-4 w-4" />
-                <span className="text-text-muted">Aktive Schulen</span>
+                <span className="text-text-muted">{t("activeSchools")}</span>
               </div>
               <span className="text-text font-medium">{stats?.activeSchools || 0}</span>
             </div>
@@ -227,7 +252,7 @@ export default function AdminDashboardPage() {
       {/* Revenue Chart Placeholder */}
       <div className="border-border bg-surface rounded-xl border p-6">
         <div className="mb-4 flex items-center justify-between">
-          <h3 className="text-text font-semibold">Umsatz (letzte 7 Tage)</h3>
+          <h3 className="text-text font-semibold">{t("revenueLastWeek")}</h3>
           <div className="text-success flex items-center gap-2 text-sm">
             <TrendingUp className="h-4 w-4" />
             <span>+12.5%</span>
@@ -244,7 +269,7 @@ export default function AdminDashboardPage() {
                   style={{ height: `${Math.max(height, 4)}%` }}
                 />
                 <span className="text-text-muted text-xs">
-                  {["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"][index]}
+                  {(t.raw("weekDays") as string[])[index]}
                 </span>
               </div>
             );

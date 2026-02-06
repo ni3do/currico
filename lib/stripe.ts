@@ -118,7 +118,6 @@ export function constructWebhookEvent(payload: string | Buffer, signature: strin
     throw new Error("STRIPE_WEBHOOK_SECRET environment variable is not set");
   }
 
-  console.log("[STRIPE] Webhook secret configured (length:", webhookSecret.length, ")");
   const stripe = getStripeClient();
   return stripe.webhooks.constructEvent(payload, signature, webhookSecret);
 }

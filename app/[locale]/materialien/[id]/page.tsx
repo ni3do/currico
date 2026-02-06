@@ -15,6 +15,8 @@ import { CheckoutButton } from "@/components/checkout/CheckoutButton";
 import { PreviewGallery } from "@/components/ui/PreviewGallery";
 import { ReviewsSection } from "@/components/reviews";
 import { CommentsSection } from "@/components/comments";
+import { useToast } from "@/components/ui/Toast";
+import { FocusTrap } from "@/components/ui/FocusTrap";
 
 interface Competency {
   id: string;
@@ -91,6 +93,7 @@ export default function MaterialDetailPage() {
   const id = params.id as string;
   const { data: session, status: sessionStatus } = useSession();
   const tCommon = useTranslations("common");
+  const { toast } = useToast();
 
   const [material, setMaterial] = useState<Material | null>(null);
   const [relatedMaterials, setRelatedMaterials] = useState<RelatedMaterial[]>([]);
@@ -191,6 +194,7 @@ export default function MaterialDetailPage() {
         });
         if (response.ok) {
           setIsWishlisted(false);
+          toast(tCommon("toast.removedFromWishlist"), "success");
         }
       } else {
         // Add to wishlist
@@ -201,10 +205,12 @@ export default function MaterialDetailPage() {
         });
         if (response.ok) {
           setIsWishlisted(true);
+          toast(tCommon("toast.addedToWishlist"), "success");
         }
       }
     } catch (error) {
       console.error("Wishlist error:", error);
+      toast(tCommon("toast.error"), "error");
     } finally {
       setWishlistLoading(false);
     }
@@ -242,6 +248,7 @@ export default function MaterialDetailPage() {
       }
 
       setReportStatus("success");
+      toast(tCommon("toast.reportSubmitted"), "success");
       // Close modal after showing success message
       setTimeout(() => {
         setShowReportModal(false);
@@ -735,91 +742,30 @@ export default function MaterialDetailPage() {
       {/* Report Modal */}
       {showReportModal && (
         <div className="bg-ctp-crust/50 fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
-          <div className="card mx-4 w-full max-w-md p-6">
-            <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-text text-xl font-semibold">Material melden</h3>
-              <button onClick={handleCloseReportModal} className="text-text-muted hover:text-text">
-                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            {reportStatus === "success" ? (
-              <div className="flex flex-col items-center justify-center py-8 text-center">
-                <div className="bg-success-light mb-4 flex h-12 w-12 items-center justify-center rounded-full">
-                  <svg
-                    className="text-success h-6 w-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+          <FocusTrap onEscape={handleCloseReportModal}>
+            <div className="card mx-4 w-full max-w-md p-6">
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="text-text text-xl font-semibold">Material melden</h3>
+                <button
+                  onClick={handleCloseReportModal}
+                  className="text-text-muted hover:text-text"
+                >
+                  <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M5 13l4 4L19 7"
+                      d="M6 18L18 6M6 6l12 12"
                     />
                   </svg>
-                </div>
-                <h4 className="text-text mb-2 font-semibold">Vielen Dank für Ihre Meldung</h4>
-                <p className="text-text-muted text-sm">Wir werden das Material überprüfen.</p>
+                </button>
               </div>
-            ) : (
-              <form onSubmit={handleReportSubmit} className="space-y-4">
-                <div>
-                  <label
-                    htmlFor="report-reason"
-                    className="text-text mb-2 block text-sm font-medium"
-                  >
-                    Grund
-                  </label>
-                  <select
-                    id="report-reason"
-                    name="reason"
-                    value={reportReason}
-                    onChange={(e) => setReportReason(e.target.value)}
-                    className="input"
-                    required
-                  >
-                    <option value="inappropriate">Unangemessener Inhalt</option>
-                    <option value="copyright">Urheberrechtsverletzung</option>
-                    <option value="quality">Qualitätsprobleme</option>
-                    <option value="spam">Spam</option>
-                    <option value="fraud">Betrug</option>
-                    <option value="other">Anderes</option>
-                  </select>
-                </div>
 
-                <div>
-                  <label
-                    htmlFor="report-description"
-                    className="text-text mb-2 block text-sm font-medium"
-                  >
-                    Kommentar (optional)
-                  </label>
-                  <textarea
-                    id="report-description"
-                    name="description"
-                    value={reportDescription}
-                    onChange={(e) => setReportDescription(e.target.value)}
-                    rows={4}
-                    maxLength={1000}
-                    className="input min-h-[100px] resize-y"
-                    placeholder="Bitte beschreiben Sie das Problem..."
-                  />
-                </div>
-
-                {/* Error Message */}
-                {reportStatus === "error" && reportErrorMessage && (
-                  <div className="border-error/50 bg-error/10 flex items-center gap-3 rounded-lg border p-3">
+              {reportStatus === "success" ? (
+                <div className="flex flex-col items-center justify-center py-8 text-center">
+                  <div className="bg-success-light mb-4 flex h-12 w-12 items-center justify-center rounded-full">
                     <svg
-                      className="text-error h-5 w-5 flex-shrink-0"
+                      className="text-success h-6 w-6"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -828,33 +774,99 @@ export default function MaterialDetailPage() {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        d="M5 13l4 4L19 7"
                       />
                     </svg>
-                    <p className="text-error text-sm">{reportErrorMessage}</p>
                   </div>
-                )}
-
-                <div className="flex gap-3">
-                  <button
-                    type="submit"
-                    disabled={reportSubmitting}
-                    className="btn-danger flex-1 px-4 py-3 disabled:opacity-50"
-                  >
-                    {reportSubmitting ? "Wird gesendet..." : "Melden"}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleCloseReportModal}
-                    disabled={reportSubmitting}
-                    className="btn-secondary px-6 py-3 disabled:opacity-50"
-                  >
-                    Abbrechen
-                  </button>
+                  <h4 className="text-text mb-2 font-semibold">Vielen Dank für Ihre Meldung</h4>
+                  <p className="text-text-muted text-sm">Wir werden das Material überprüfen.</p>
                 </div>
-              </form>
-            )}
-          </div>
+              ) : (
+                <form onSubmit={handleReportSubmit} className="space-y-4">
+                  <div>
+                    <label
+                      htmlFor="report-reason"
+                      className="text-text mb-2 block text-sm font-medium"
+                    >
+                      Grund
+                    </label>
+                    <select
+                      id="report-reason"
+                      name="reason"
+                      value={reportReason}
+                      onChange={(e) => setReportReason(e.target.value)}
+                      className="input"
+                      required
+                    >
+                      <option value="inappropriate">Unangemessener Inhalt</option>
+                      <option value="copyright">Urheberrechtsverletzung</option>
+                      <option value="quality">Qualitätsprobleme</option>
+                      <option value="spam">Spam</option>
+                      <option value="fraud">Betrug</option>
+                      <option value="other">Anderes</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="report-description"
+                      className="text-text mb-2 block text-sm font-medium"
+                    >
+                      Kommentar (optional)
+                    </label>
+                    <textarea
+                      id="report-description"
+                      name="description"
+                      value={reportDescription}
+                      onChange={(e) => setReportDescription(e.target.value)}
+                      rows={4}
+                      maxLength={1000}
+                      className="input min-h-[100px] resize-y"
+                      placeholder="Bitte beschreiben Sie das Problem..."
+                    />
+                  </div>
+
+                  {/* Error Message */}
+                  {reportStatus === "error" && reportErrorMessage && (
+                    <div className="border-error/50 bg-error/10 flex items-center gap-3 rounded-lg border p-3">
+                      <svg
+                        className="text-error h-5 w-5 flex-shrink-0"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                      <p className="text-error text-sm">{reportErrorMessage}</p>
+                    </div>
+                  )}
+
+                  <div className="flex gap-3">
+                    <button
+                      type="submit"
+                      disabled={reportSubmitting}
+                      className="btn-danger flex-1 px-4 py-3 disabled:opacity-50"
+                    >
+                      {reportSubmitting ? "Wird gesendet..." : "Melden"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleCloseReportModal}
+                      disabled={reportSubmitting}
+                      className="btn-secondary px-6 py-3 disabled:opacity-50"
+                    >
+                      Abbrechen
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          </FocusTrap>
         </div>
       )}
 

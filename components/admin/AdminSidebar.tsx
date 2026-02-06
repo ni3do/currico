@@ -1,6 +1,7 @@
 "use client";
 
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import {
   Home,
   Users,
@@ -62,26 +63,31 @@ const NAV_SECTIONS = [
     id: "main",
     label: null,
     icon: null,
-    items: [{ id: "overview", href: "/admin", label: "Übersicht", icon: Home }],
+    items: [{ id: "overview", href: "/admin", label: "layout.overview", icon: Home }],
   },
   {
     id: "moderation",
-    label: "Moderation",
+    label: "sidebar.moderation",
     icon: ShieldCheck,
     items: [
-      { id: "documents", href: "/admin/documents", label: "Dokumente", icon: FileText },
-      { id: "messages", href: "/admin/messages", label: "Nachrichten", icon: MessageSquare },
-      { id: "reports", href: "/admin/reports", label: "Meldungen", icon: AlertTriangle },
+      { id: "documents", href: "/admin/documents", label: "layout.documents", icon: FileText },
+      { id: "messages", href: "/admin/messages", label: "layout.messages", icon: MessageSquare },
+      { id: "reports", href: "/admin/reports", label: "layout.reports", icon: AlertTriangle },
     ],
   },
   {
     id: "management",
-    label: "Verwaltung",
+    label: "sidebar.management",
     icon: Briefcase,
     items: [
-      { id: "users", href: "/admin/users", label: "Benutzer", icon: Users },
-      { id: "transactions", href: "/admin/transactions", label: "Transaktionen", icon: CreditCard },
-      { id: "settings", href: "/admin/settings", label: "Einstellungen", icon: Settings },
+      { id: "users", href: "/admin/users", label: "layout.users", icon: Users },
+      {
+        id: "transactions",
+        href: "/admin/transactions",
+        label: "layout.transactions",
+        icon: CreditCard,
+      },
+      { id: "settings", href: "/admin/settings", label: "layout.settings", icon: Settings },
     ],
   },
 ] as const;
@@ -120,6 +126,8 @@ export function AdminSidebar({
   adminEmail,
   className = "",
 }: AdminSidebarProps) {
+  const t = useTranslations("admin");
+
   return (
     <aside
       className={`border-border bg-bg-secondary relative overflow-hidden rounded-xl border shadow-sm ${className}`}
@@ -151,7 +159,7 @@ export function AdminSidebar({
             <div className="mb-5">
               <h3 className="label-meta mb-3 flex items-center gap-2">
                 <TrendingUp className="text-text-muted h-4 w-4" />
-                Schnellübersicht
+                {t("sidebar.quickOverview")}
               </h3>
               <div className="border-border bg-bg space-y-3 rounded-lg border p-4">
                 {/* Pending Documents */}
@@ -159,7 +167,7 @@ export function AdminSidebar({
                   <div className="flex items-center justify-between">
                     <span className="text-text-secondary flex items-center gap-2 text-sm">
                       <Clock className="text-warning h-4 w-4" />
-                      Ausstehend
+                      {t("sidebar.pending")}
                     </span>
                     <span className="bg-warning/10 text-warning rounded-full px-2 py-0.5 text-xs font-medium">
                       {stats.pendingApproval}
@@ -172,7 +180,7 @@ export function AdminSidebar({
                   <div className="flex items-center justify-between">
                     <span className="text-text-secondary flex items-center gap-2 text-sm">
                       <MessageSquare className="text-accent h-4 w-4" />
-                      Nachrichten
+                      {t("sidebar.messages")}
                     </span>
                     <span className="bg-accent/10 text-accent rounded-full px-2 py-0.5 text-xs font-medium">
                       {stats.newMessages}
@@ -185,7 +193,7 @@ export function AdminSidebar({
                   <div className="flex items-center justify-between">
                     <span className="text-text-secondary flex items-center gap-2 text-sm">
                       <AlertCircle className="text-error h-4 w-4" />
-                      Meldungen
+                      {t("sidebar.reports")}
                     </span>
                     <span className="bg-error/10 text-error rounded-full px-2 py-0.5 text-xs font-medium">
                       {stats.openReports}
@@ -197,10 +205,10 @@ export function AdminSidebar({
                 <div className="border-border flex items-center justify-between border-t pt-3">
                   <span className="text-text-secondary flex items-center gap-2 text-sm">
                     <Users className="text-primary h-4 w-4" />
-                    Neue Benutzer
+                    {t("sidebar.newUsers")}
                   </span>
                   <span className="text-text text-sm font-semibold">
-                    +{stats.newUsersToday} heute
+                    +{stats.newUsersToday} {t("sidebar.today")}
                   </span>
                 </div>
 
@@ -208,7 +216,7 @@ export function AdminSidebar({
                 <div className="flex items-center justify-between">
                   <span className="text-text-secondary flex items-center gap-2 text-sm">
                     <TrendingUp className="text-success h-4 w-4" />
-                    Umsatz heute
+                    {t("sidebar.revenueToday")}
                   </span>
                   <span className="text-success text-sm font-semibold">
                     CHF {stats.revenueToday?.toFixed(2) || "0.00"}
@@ -230,7 +238,7 @@ export function AdminSidebar({
                 {section.label && (
                   <h3 className="label-meta mb-2 flex items-center gap-2">
                     {SectionIcon && <SectionIcon className="text-error h-3.5 w-3.5" />}
-                    {section.label}
+                    {t(section.label)}
                   </h3>
                 )}
                 <div className="space-y-1">
@@ -249,7 +257,7 @@ export function AdminSidebar({
                         }`}
                       >
                         <Icon className={`h-5 w-5 ${isActive ? styles.text : ""}`} />
-                        {item.label}
+                        {t(item.label)}
                         {/* Show badge for pending items */}
                         {item.id === "documents" && stats?.pendingApproval ? (
                           <span className="bg-warning/10 text-warning ml-auto rounded-full px-2 py-0.5 text-xs font-medium">

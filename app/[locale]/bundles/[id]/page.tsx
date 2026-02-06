@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Link } from "@/i18n/navigation";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
@@ -52,6 +52,8 @@ export default function BundleDetailPage() {
   const id = params.id as string;
   const { status: sessionStatus } = useSession();
   const tCommon = useTranslations("common");
+  const t = useTranslations("bundleDetail");
+  const locale = useLocale();
 
   const [bundle, setBundle] = useState<Bundle | null>(null);
   const [loading, setLoading] = useState(true);
@@ -134,15 +136,13 @@ export default function BundleDetailPage() {
         <main className="mx-auto max-w-7xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
           <div className="text-center">
             <Package className="text-text-muted mx-auto mb-4 h-16 w-16" />
-            <h1 className="text-text mb-4 text-4xl font-bold">Bundle nicht gefunden</h1>
-            <p className="text-text-muted mb-8">
-              Das gesuchte Bundle existiert nicht oder ist nicht mehr verfügbar.
-            </p>
+            <h1 className="text-text mb-4 text-4xl font-bold">{t("notFound")}</h1>
+            <p className="text-text-muted mb-8">{t("notFoundDescription")}</p>
             <Link
               href="/materialien"
               className="btn-primary inline-flex items-center px-6 py-3 font-semibold"
             >
-              Zurück zu den Materialien
+              {t("backToMaterials")}
             </Link>
           </div>
         </main>
@@ -156,15 +156,13 @@ export default function BundleDetailPage() {
         <TopBar />
         <main className="mx-auto max-w-7xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-text mb-4 text-4xl font-bold">Fehler beim Laden</h1>
-            <p className="text-text-muted mb-8">
-              Das Bundle konnte nicht geladen werden. Bitte versuchen Sie es später erneut.
-            </p>
+            <h1 className="text-text mb-4 text-4xl font-bold">{t("loadError")}</h1>
+            <p className="text-text-muted mb-8">{t("loadErrorDescription")}</p>
             <button
               onClick={fetchBundle}
               className="btn-primary inline-flex items-center px-6 py-3 font-semibold"
             >
-              Erneut versuchen
+              {t("retry")}
             </button>
           </div>
         </main>
@@ -197,13 +195,13 @@ export default function BundleDetailPage() {
                 <div className="mb-4 flex flex-wrap items-center gap-3">
                   <span className="pill bg-accent/10 text-accent flex items-center gap-1.5">
                     <Package className="h-3.5 w-3.5" />
-                    Bundle
+                    {t("bundle")}
                   </span>
-                  <span className="pill pill-success">Verifiziert</span>
+                  <span className="pill pill-success">{t("verified")}</span>
                   {bundle.savingsPercent > 0 && (
                     <span className="pill bg-success/10 text-success flex items-center gap-1.5">
                       <Tag className="h-3.5 w-3.5" />
-                      {bundle.savingsPercent}% Rabatt
+                      {t("discount", { percent: bundle.savingsPercent })}
                     </span>
                   )}
                 </div>
@@ -227,24 +225,25 @@ export default function BundleDetailPage() {
                 </div>
                 {bundle.savings > 0 && (
                   <p className="text-success text-sm font-medium">
-                    Sie sparen {bundle.savingsFormatted} ({bundle.savingsPercent}%)
+                    {t("savings", {
+                      amount: bundle.savingsFormatted,
+                      percent: bundle.savingsPercent,
+                    })}
                   </p>
                 )}
                 <div className="mt-4">
                   {/* TODO: Bundle checkout integration */}
                   <button className="btn-primary w-full px-8 py-4" disabled>
-                    Bundle kaufen - {bundle.priceFormatted}
+                    {t("buyBundle", { price: bundle.priceFormatted })}
                   </button>
-                  <p className="text-text-muted mt-2 text-center text-xs">
-                    Bundle-Kauf ist bald verfügbar
-                  </p>
+                  <p className="text-text-muted mt-2 text-center text-xs">{t("comingSoon")}</p>
                 </div>
               </div>
 
               {/* Included Resources */}
               <div className="mb-8">
                 <h2 className="text-text mb-4 text-xl font-semibold">
-                  Enthaltene Materialien ({bundle.resourceCount})
+                  {t("includedMaterials", { count: bundle.resourceCount })}
                 </h2>
                 <div className="space-y-3">
                   {bundle.resources.map((resource) => (
@@ -286,24 +285,26 @@ export default function BundleDetailPage() {
 
               {/* Metadata Block */}
               <div className="border-border bg-bg rounded-xl border p-6">
-                <h3 className="text-text mb-4 font-semibold">Details</h3>
+                <h3 className="text-text mb-4 font-semibold">{t("details")}</h3>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
-                    <div className="text-text-muted text-sm">Fach</div>
+                    <div className="text-text-muted text-sm">{t("subject")}</div>
                     <div className="text-text font-medium">{bundle.subject}</div>
                   </div>
                   <div>
-                    <div className="text-text-muted text-sm">Zyklus</div>
+                    <div className="text-text-muted text-sm">{t("cycle")}</div>
                     <div className="text-text font-medium">{bundle.cycle || "-"}</div>
                   </div>
                   <div>
-                    <div className="text-text-muted text-sm">Materialien</div>
+                    <div className="text-text-muted text-sm">{t("materials")}</div>
                     <div className="text-text font-medium">{bundle.resourceCount}</div>
                   </div>
                   <div>
-                    <div className="text-text-muted text-sm">Veröffentlicht</div>
+                    <div className="text-text-muted text-sm">{t("published")}</div>
                     <div className="text-text font-medium">
-                      {new Date(bundle.createdAt).toLocaleDateString("de-CH")}
+                      {new Date(bundle.createdAt).toLocaleDateString(
+                        locale === "de" ? "de-CH" : "en-CH"
+                      )}
                     </div>
                   </div>
                 </div>
@@ -315,13 +316,13 @@ export default function BundleDetailPage() {
           <div className="lg:col-span-1">
             {/* Seller Info */}
             <div className="card sticky top-24 p-6">
-              <h3 className="text-text mb-4 font-semibold">Erstellt von</h3>
+              <h3 className="text-text mb-4 font-semibold">{t("createdBy")}</h3>
               <div className="mb-4 flex items-center gap-3">
                 {bundle.seller.image ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={bundle.seller.image}
-                    alt={bundle.seller.displayName || "Verkäufer"}
+                    alt={bundle.seller.displayName || t("seller")}
                     className="h-12 w-12 rounded-full object-cover"
                   />
                 ) : (
@@ -332,7 +333,7 @@ export default function BundleDetailPage() {
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="text-text font-medium">
-                      {bundle.seller.displayName || "Anonym"}
+                      {bundle.seller.displayName || t("anonymous")}
                     </span>
                     {bundle.seller.verified && (
                       <svg className="text-primary h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
@@ -345,7 +346,7 @@ export default function BundleDetailPage() {
                     )}
                   </div>
                   <div className="text-text-muted text-sm">
-                    {bundle.seller.resourceCount} Materialien
+                    {bundle.seller.resourceCount} {t("materials")}
                   </div>
                 </div>
               </div>
@@ -359,7 +360,7 @@ export default function BundleDetailPage() {
                     : "border-border bg-bg text-text hover:border-primary hover:bg-primary-light"
                 }`}
               >
-                {isFollowing ? "Folge ich" : "+ Folgen"}
+                {isFollowing ? t("following") : t("follow")}
               </button>
 
               {/* More from Seller */}
@@ -368,7 +369,7 @@ export default function BundleDetailPage() {
                   href={`/materialien?seller=${bundle.seller.id}`}
                   className="text-primary hover:text-primary-hover text-sm font-medium transition-colors"
                 >
-                  Alle Materialien ansehen
+                  {t("viewAllMaterials")}
                 </Link>
               </div>
             </div>

@@ -9,6 +9,7 @@ import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
+import { FocusTrap } from "@/components/ui/FocusTrap";
 import {
   Plus,
   FolderOpen,
@@ -48,6 +49,7 @@ export default function CollectionsPage() {
   const { status } = useSession();
   const router = useRouter();
   const tCommon = useTranslations("common");
+  const t = useTranslations("collections");
   const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -137,7 +139,7 @@ export default function CollectionsPage() {
 
   // Delete collection
   const handleDeleteCollection = async (collectionId: string) => {
-    if (!confirm("Sind Sie sicher, dass Sie diese Sammlung löschen möchten?")) return;
+    if (!confirm(t("confirmDelete"))) return;
 
     try {
       const response = await fetch(`/api/collections/${collectionId}`, {
@@ -251,15 +253,15 @@ export default function CollectionsPage() {
         <div className="mb-6 flex items-start justify-between gap-4">
           <div>
             <Breadcrumb items={[{ label: tCommon("breadcrumb.collections") }]} />
-            <h1 className="text-text text-2xl font-bold">Meine Sammlungen</h1>
-            <p className="text-text-muted mt-1">Organisieren Sie Ihre Materialien in Sammlungen</p>
+            <h1 className="text-text text-2xl font-bold">{t("title")}</h1>
+            <p className="text-text-muted mt-1">{t("description")}</p>
           </div>
           <button
             onClick={() => setShowCreateModal(true)}
             className="bg-primary hover:bg-primary-hover flex shrink-0 items-center gap-2 rounded-lg px-4 py-2.5 font-medium text-white transition-colors"
           >
             <Plus className="h-4 w-4" />
-            Neue Sammlung
+            {t("newCollection")}
           </button>
         </div>
 
@@ -268,7 +270,9 @@ export default function CollectionsPage() {
           <div className="lg:col-span-1">
             <div className="card">
               <div className="border-border border-b p-4">
-                <h2 className="text-text font-semibold">Sammlungen ({collections.length})</h2>
+                <h2 className="text-text font-semibold">
+                  {t("title")} ({collections.length})
+                </h2>
               </div>
 
               {loading ? (
@@ -278,12 +282,12 @@ export default function CollectionsPage() {
               ) : collections.length === 0 ? (
                 <div className="p-8 text-center">
                   <FolderOpen className="text-text-faint mx-auto mb-4 h-12 w-12" />
-                  <p className="text-text-muted">Noch keine Sammlungen</p>
+                  <p className="text-text-muted">{t("noCollections")}</p>
                   <button
                     onClick={() => setShowCreateModal(true)}
                     className="text-primary mt-4 text-sm font-medium hover:underline"
                   >
-                    Erste Sammlung erstellen
+                    {t("createFirst")}
                   </button>
                 </div>
               ) : (
@@ -307,7 +311,7 @@ export default function CollectionsPage() {
                             )}
                           </div>
                           <p className="text-text-muted mt-1 text-sm">
-                            {collection.itemCount} Materialien
+                            {collection.itemCount} {tCommon("navigation.materials")}
                           </p>
                         </div>
                         <div className="flex gap-1">
@@ -356,7 +360,7 @@ export default function CollectionsPage() {
                       href={`/profile/${selectedCollection.id}`}
                       className="text-primary text-sm font-medium hover:underline"
                     >
-                      Öffentlich ansehen
+                      {t("viewPublic")}
                     </Link>
                   </div>
                 </div>
@@ -364,23 +368,18 @@ export default function CollectionsPage() {
                 {selectedCollection.items.length === 0 ? (
                   <div className="p-12 text-center">
                     <FileText className="text-text-faint mx-auto mb-4 h-12 w-12" />
-                    <p className="text-text">Noch keine Materialien in dieser Sammlung</p>
-                    <p className="text-text-muted mt-2 text-sm">
-                      Ziehen Sie Materialien per Drag & Drop hierher oder fügen Sie sie über die
-                      Materialien-Seite hinzu.
-                    </p>
+                    <p className="text-text">{t("noMaterials")}</p>
+                    <p className="text-text-muted mt-2 text-sm">{t("dragDropHint")}</p>
                     <Link
                       href="/account"
                       className="text-primary mt-4 inline-block text-sm font-medium hover:underline"
                     >
-                      Zu meinen Uploads →
+                      {t("toUploads")} →
                     </Link>
                   </div>
                 ) : (
                   <div className="p-4">
-                    <p className="text-text-muted mb-4 text-sm">
-                      Ziehen Sie Materialien, um die Reihenfolge zu ändern
-                    </p>
+                    <p className="text-text-muted mb-4 text-sm">{t("reorderHint")}</p>
                     <div className="space-y-2">
                       {selectedCollection.items
                         .sort((a, b) => a.position - b.position)
@@ -452,10 +451,8 @@ export default function CollectionsPage() {
               <div className="card flex items-center justify-center p-12">
                 <div className="text-center">
                   <FolderOpen className="text-text-faint mx-auto mb-4 h-16 w-16" />
-                  <p className="text-text">Wählen Sie eine Sammlung aus</p>
-                  <p className="text-text-muted mt-2 text-sm">
-                    oder erstellen Sie eine neue Sammlung
-                  </p>
+                  <p className="text-text">{t("selectCollection")}</p>
+                  <p className="text-text-muted mt-2 text-sm">{t("orCreateNew")}</p>
                 </div>
               </div>
             )}
@@ -466,71 +463,84 @@ export default function CollectionsPage() {
       {/* Create Modal */}
       {(showCreateModal || editingCollection) && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="bg-surface w-full max-w-md rounded-xl p-6">
-            <h2 className="text-text mb-4 text-lg font-semibold">
-              {editingCollection ? "Sammlung bearbeiten" : "Neue Sammlung"}
-            </h2>
+          <FocusTrap
+            onEscape={() => {
+              setShowCreateModal(false);
+              setEditingCollection(null);
+            }}
+          >
+            <div className="bg-surface w-full max-w-md rounded-xl p-6">
+              <h2 className="text-text mb-4 text-lg font-semibold">
+                {editingCollection ? t("form.editCollection") : t("form.newCollection")}
+              </h2>
 
-            <form onSubmit={editingCollection ? handleUpdateCollection : handleCreateCollection}>
-              <div className="space-y-4">
-                <div>
-                  <label className="text-text mb-1 block text-sm font-medium">
-                    Name <span className="text-error">*</span>
+              <form onSubmit={editingCollection ? handleUpdateCollection : handleCreateCollection}>
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-text mb-1 block text-sm font-medium">
+                      {t("form.name")} <span className="text-error">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      placeholder={t("form.namePlaceholder")}
+                      className="border-border bg-bg text-text focus:border-primary focus:ring-primary/20 w-full rounded-lg border px-4 py-2.5 focus:ring-2 focus:outline-none"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-text mb-1 block text-sm font-medium">
+                      {t("form.description")}
+                    </label>
+                    <textarea
+                      value={formData.description}
+                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                      placeholder={t("form.descriptionPlaceholder")}
+                      rows={3}
+                      className="border-border bg-bg text-text focus:border-primary focus:ring-primary/20 w-full rounded-lg border px-4 py-2.5 focus:ring-2 focus:outline-none"
+                    />
+                  </div>
+
+                  <label className="flex items-center gap-3">
+                    <input
+                      type="checkbox"
+                      checked={formData.is_public}
+                      onChange={(e) => setFormData({ ...formData, is_public: e.target.checked })}
+                      className="text-primary h-4 w-4 rounded"
+                    />
+                    <span className="text-text text-sm">{t("form.isPublic")}</span>
                   </label>
-                  <input
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="z.B. Mathematik Zyklus 2"
-                    className="border-border bg-bg text-text focus:border-primary focus:ring-primary/20 w-full rounded-lg border px-4 py-2.5 focus:ring-2 focus:outline-none"
-                    required
-                  />
                 </div>
 
-                <div>
-                  <label className="text-text mb-1 block text-sm font-medium">Beschreibung</label>
-                  <textarea
-                    value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    placeholder="Optionale Beschreibung..."
-                    rows={3}
-                    className="border-border bg-bg text-text focus:border-primary focus:ring-primary/20 w-full rounded-lg border px-4 py-2.5 focus:ring-2 focus:outline-none"
-                  />
+                <div className="mt-6 flex justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowCreateModal(false);
+                      setEditingCollection(null);
+                      setFormData({ name: "", description: "", is_public: true });
+                    }}
+                    className="border-border text-text hover:bg-surface-elevated rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
+                  >
+                    {t("form.cancel")}
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={formLoading || !formData.name.trim()}
+                    className="bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors disabled:opacity-50"
+                  >
+                    {formLoading
+                      ? t("form.saving")
+                      : editingCollection
+                        ? t("form.save")
+                        : t("form.create")}
+                  </button>
                 </div>
-
-                <label className="flex items-center gap-3">
-                  <input
-                    type="checkbox"
-                    checked={formData.is_public}
-                    onChange={(e) => setFormData({ ...formData, is_public: e.target.checked })}
-                    className="text-primary h-4 w-4 rounded"
-                  />
-                  <span className="text-text text-sm">Öffentlich sichtbar auf meinem Profil</span>
-                </label>
-              </div>
-
-              <div className="mt-6 flex justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowCreateModal(false);
-                    setEditingCollection(null);
-                    setFormData({ name: "", description: "", is_public: true });
-                  }}
-                  className="border-border text-text hover:bg-surface-elevated rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
-                >
-                  Abbrechen
-                </button>
-                <button
-                  type="submit"
-                  disabled={formLoading || !formData.name.trim()}
-                  className="bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors disabled:opacity-50"
-                >
-                  {formLoading ? "Speichern..." : editingCollection ? "Speichern" : "Erstellen"}
-                </button>
-              </div>
-            </form>
-          </div>
+              </form>
+            </div>
+          </FocusTrap>
         </div>
       )}
 

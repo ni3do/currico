@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
@@ -25,6 +25,8 @@ export default function FollowingPage() {
   const { status } = useSession();
   const router = useRouter();
   const tCommon = useTranslations("common");
+  const t = useTranslations("following");
+  const locale = useLocale();
   const [followedSellers, setFollowedSellers] = useState<FollowedSeller[]>([]);
   const [loading, setLoading] = useState(true);
   const [unfollowingId, setUnfollowingId] = useState<string | null>(null);
@@ -106,8 +108,8 @@ export default function FollowingPage() {
         {/* Page Header */}
         <div className="mb-6">
           <Breadcrumb items={[{ label: tCommon("breadcrumb.following") }]} />
-          <h1 className="text-text text-2xl font-bold">Folge ich</h1>
-          <p className="text-text-muted mt-1">Lehrpersonen und Verkäufer, denen Sie folgen</p>
+          <h1 className="text-text text-2xl font-bold">{t("title")}</h1>
+          <p className="text-text-muted mt-1">{t("description")}</p>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-3">
@@ -115,7 +117,7 @@ export default function FollowingPage() {
           <div className="lg:col-span-2">
             <div className="card p-8">
               <h2 className="text-text mb-6 text-xl font-semibold">
-                Gefolgte Profile ({followedSellers.length})
+                {t("followedProfiles")} ({followedSellers.length})
               </h2>
 
               {loading ? (
@@ -125,16 +127,13 @@ export default function FollowingPage() {
               ) : followedSellers.length === 0 ? (
                 <div className="py-12 text-center">
                   <Users className="text-text-faint mx-auto mb-4 h-16 w-16" />
-                  <p className="text-text mb-2">Sie folgen noch niemandem</p>
-                  <p className="text-text-muted mb-4 text-sm">
-                    Entdecken Sie interessante Lehrpersonen und folgen Sie ihnen, um ihre neuesten
-                    Materialien zu sehen.
-                  </p>
+                  <p className="text-text mb-2">{t("noFollowing")}</p>
+                  <p className="text-text-muted mb-4 text-sm">{t("noFollowingDescription")}</p>
                   <Link
                     href="/materialien"
                     className="bg-primary hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-6 py-2.5 font-medium text-white transition-colors"
                   >
-                    Profile entdecken
+                    {t("discoverProfiles")}
                   </Link>
                 </div>
               ) : (
@@ -187,12 +186,12 @@ export default function FollowingPage() {
                               {unfollowingId === seller.id ? (
                                 <>
                                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
-                                  Entfolgen...
+                                  {t("unfollowing")}
                                 </>
                               ) : (
                                 <>
                                   <Users className="h-4 w-4" />
-                                  Entfolgen
+                                  {t("unfollow")}
                                 </>
                               )}
                             </button>
@@ -211,7 +210,7 @@ export default function FollowingPage() {
                               ))}
                               {seller.subjects.length > 4 && (
                                 <span className="text-text-muted text-xs">
-                                  +{seller.subjects.length - 4} mehr
+                                  +{seller.subjects.length - 4}
                                 </span>
                               )}
                             </div>
@@ -221,15 +220,18 @@ export default function FollowingPage() {
                           <div className="text-text-muted mt-3 flex items-center gap-4 text-sm">
                             <div className="flex items-center gap-1">
                               <FileText className="h-4 w-4" />
-                              {seller.resourceCount} Materialien
+                              {seller.resourceCount} {tCommon("navigation.materials")}
                             </div>
                             <div className="flex items-center gap-1">
                               <Calendar className="h-4 w-4" />
-                              Gefolgt seit{" "}
-                              {new Date(seller.followedAt).toLocaleDateString("de-CH", {
-                                month: "short",
-                                year: "numeric",
-                              })}
+                              {t("followedSince")}{" "}
+                              {new Date(seller.followedAt).toLocaleDateString(
+                                locale === "de" ? "de-CH" : "en-CH",
+                                {
+                                  month: "short",
+                                  year: "numeric",
+                                }
+                              )}
                             </div>
                           </div>
                         </div>
@@ -245,32 +247,30 @@ export default function FollowingPage() {
           <div className="lg:col-span-1">
             {/* Quick Stats */}
             <div className="card p-6">
-              <h3 className="text-text mb-4 font-semibold">Statistiken</h3>
+              <h3 className="text-text mb-4 font-semibold">{t("stats.title")}</h3>
               <div className="space-y-3">
                 <div>
                   <div className="text-primary text-2xl font-bold">{followedSellers.length}</div>
-                  <div className="text-text-muted text-sm">Gefolgte Profile</div>
+                  <div className="text-text-muted text-sm">{t("stats.followedProfiles")}</div>
                 </div>
                 <div>
                   <div className="text-success text-2xl font-bold">
                     {followedSellers.reduce((acc, s) => acc + s.resourceCount, 0)}
                   </div>
-                  <div className="text-text-muted text-sm">Verfügbare Materialien</div>
+                  <div className="text-text-muted text-sm">{t("stats.availableMaterials")}</div>
                 </div>
               </div>
             </div>
 
             {/* Discover More */}
             <div className="card mt-6 p-6">
-              <h3 className="text-text mb-4 font-semibold">Mehr entdecken</h3>
-              <p className="text-text-muted mb-4 text-sm">
-                Finden Sie weitere interessante Lehrpersonen und deren Materialien.
-              </p>
+              <h3 className="text-text mb-4 font-semibold">{t("discoverMore.title")}</h3>
+              <p className="text-text-muted mb-4 text-sm">{t("discoverMore.description")}</p>
               <Link
                 href="/materialien"
                 className="text-primary hover:text-primary-hover block text-center text-sm font-medium transition-colors"
               >
-                Materialien durchsuchen →
+                {t("discoverMore.link")} →
               </Link>
             </div>
           </div>

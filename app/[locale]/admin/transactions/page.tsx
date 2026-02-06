@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 // Mock transaction data
 const mockTransactions = [
@@ -62,6 +63,7 @@ const mockTransactions = [
 ];
 
 export default function AdminTransactionsPage() {
+  const t = useTranslations("admin.transactions");
   const [selectedTransaction, setSelectedTransaction] = useState<string | null>(null);
   const [filterStatus, setFilterStatus] = useState("all");
 
@@ -78,17 +80,17 @@ export default function AdminTransactionsPage() {
       {/* Summary Cards */}
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="border-border bg-surface rounded-xl border p-5">
-          <h3 className="text-text-muted mb-2 text-sm font-medium">Gesamt-Bruttoeinnahmen</h3>
+          <h3 className="text-text-muted mb-2 text-sm font-medium">{t("grossRevenue")}</h3>
           <div className="text-text text-2xl font-bold">CHF {totalGross.toFixed(2)}</div>
         </div>
 
         <div className="border-border bg-surface rounded-xl border p-5">
-          <h3 className="text-text-muted mb-2 text-sm font-medium">Plattformgebühren (30%)</h3>
+          <h3 className="text-text-muted mb-2 text-sm font-medium">{t("platformFees")}</h3>
           <div className="text-primary text-2xl font-bold">CHF {totalPlatformFee.toFixed(2)}</div>
         </div>
 
         <div className="border-border bg-surface rounded-xl border p-5">
-          <h3 className="text-text-muted mb-2 text-sm font-medium">Verkäufer-Auszahlungen</h3>
+          <h3 className="text-text-muted mb-2 text-sm font-medium">{t("sellerPayouts")}</h3>
           <div className="text-success text-2xl font-bold">CHF {totalSellerPayout.toFixed(2)}</div>
         </div>
       </div>
@@ -96,9 +98,9 @@ export default function AdminTransactionsPage() {
       {/* Status Tabs */}
       <div className="tab-container">
         {[
-          { value: "all", label: "Alle" },
-          { value: "completed", label: "Abgeschlossen" },
-          { value: "pending", label: "Ausstehend" },
+          { value: "all", label: t("all") },
+          { value: "completed", label: t("completed") },
+          { value: "pending", label: t("pending") },
         ].map((tab) => (
           <button
             key={tab.value}
@@ -117,15 +119,27 @@ export default function AdminTransactionsPage() {
             <thead className="bg-bg">
               <tr>
                 <th className="text-text px-6 py-4 text-left text-sm font-semibold">
-                  Transaktions-ID
+                  {t("transactionId")}
                 </th>
-                <th className="text-text px-6 py-4 text-left text-sm font-semibold">Material</th>
-                <th className="text-text px-6 py-4 text-left text-sm font-semibold">Käufer</th>
-                <th className="text-text px-6 py-4 text-left text-sm font-semibold">Verkäufer</th>
-                <th className="text-text px-6 py-4 text-left text-sm font-semibold">Datum</th>
-                <th className="text-text px-6 py-4 text-right text-sm font-semibold">Brutto</th>
-                <th className="text-text px-6 py-4 text-left text-sm font-semibold">Status</th>
-                <th className="text-text px-6 py-4 text-right text-sm font-semibold">Aktionen</th>
+                <th className="text-text px-6 py-4 text-left text-sm font-semibold">
+                  {t("material")}
+                </th>
+                <th className="text-text px-6 py-4 text-left text-sm font-semibold">
+                  {t("buyer")}
+                </th>
+                <th className="text-text px-6 py-4 text-left text-sm font-semibold">
+                  {t("seller")}
+                </th>
+                <th className="text-text px-6 py-4 text-left text-sm font-semibold">{t("date")}</th>
+                <th className="text-text px-6 py-4 text-right text-sm font-semibold">
+                  {t("gross")}
+                </th>
+                <th className="text-text px-6 py-4 text-left text-sm font-semibold">
+                  {t("status")}
+                </th>
+                <th className="text-text px-6 py-4 text-right text-sm font-semibold">
+                  {t("actions")}
+                </th>
               </tr>
             </thead>
             <tbody className="divide-border divide-y">
@@ -147,7 +161,9 @@ export default function AdminTransactionsPage() {
                         transaction.status === "Completed" ? "pill-success" : "pill-warning"
                       }`}
                     >
-                      {transaction.status === "Completed" ? "Abgeschlossen" : "Ausstehend"}
+                      {transaction.status === "Completed"
+                        ? t("statusCompleted")
+                        : t("statusPending")}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right">
@@ -155,7 +171,7 @@ export default function AdminTransactionsPage() {
                       onClick={() => setSelectedTransaction(transaction.id)}
                       className="btn-primary rounded-lg px-3 py-1.5 text-xs"
                     >
-                      Details
+                      {t("details")}
                     </button>
                   </td>
                 </tr>
@@ -170,7 +186,7 @@ export default function AdminTransactionsPage() {
         <div className="modal-overlay">
           <div className="modal-content modal-lg mx-4">
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-text text-xl font-semibold">Transaktionsdetails</h3>
+              <h3 className="text-text text-xl font-semibold">{t("transactionDetails")}</h3>
               <button
                 onClick={() => setSelectedTransaction(null)}
                 className="text-text-muted hover:text-text"
@@ -195,56 +211,58 @@ export default function AdminTransactionsPage() {
                   <div className="border-border bg-bg rounded-xl border p-6">
                     <div className="mb-4 grid gap-4 sm:grid-cols-2">
                       <div>
-                        <div className="text-text-muted text-sm">Transaktions-ID</div>
+                        <div className="text-text-muted text-sm">{t("transactionId")}</div>
                         <div className="text-text font-mono font-medium">{transaction.id}</div>
                       </div>
                       <div>
-                        <div className="text-text-muted text-sm">Status</div>
+                        <div className="text-text-muted text-sm">{t("status")}</div>
                         <span
                           className={`pill ${
                             transaction.status === "Completed" ? "pill-success" : "pill-warning"
                           }`}
                         >
-                          {transaction.status === "Completed" ? "Abgeschlossen" : "Ausstehend"}
+                          {transaction.status === "Completed"
+                            ? t("statusCompleted")
+                            : t("statusPending")}
                         </span>
                       </div>
                       <div>
-                        <div className="text-text-muted text-sm">Material</div>
+                        <div className="text-text-muted text-sm">{t("material")}</div>
                         <div className="text-text font-medium">{transaction.resource}</div>
                       </div>
                       <div>
-                        <div className="text-text-muted text-sm">Datum</div>
+                        <div className="text-text-muted text-sm">{t("date")}</div>
                         <div className="text-text font-medium">
                           {new Date(transaction.date).toLocaleDateString("de-CH")}
                         </div>
                       </div>
                       <div>
-                        <div className="text-text-muted text-sm">Käufer</div>
+                        <div className="text-text-muted text-sm">{t("buyer")}</div>
                         <div className="text-text font-medium">{transaction.buyer}</div>
                       </div>
                       <div>
-                        <div className="text-text-muted text-sm">Verkäufer</div>
+                        <div className="text-text-muted text-sm">{t("seller")}</div>
                         <div className="text-text font-medium">{transaction.seller}</div>
                       </div>
                     </div>
 
                     <div className="border-border mt-6 border-t pt-6">
-                      <h4 className="text-text mb-4 font-semibold">Finanzübersicht</h4>
+                      <h4 className="text-text mb-4 font-semibold">{t("financialOverview")}</h4>
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                          <span className="text-text-muted">Bruttopreis</span>
+                          <span className="text-text-muted">{t("grossPrice")}</span>
                           <span className="text-text font-semibold">
                             CHF {transaction.gross.toFixed(2)}
                           </span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-text-muted">Plattformgebühr (30%)</span>
+                          <span className="text-text-muted">{t("platformFee")}</span>
                           <span className="text-error font-semibold">
                             - CHF {transaction.platformFee.toFixed(2)}
                           </span>
                         </div>
                         <div className="border-border flex items-center justify-between border-t pt-3">
-                          <span className="text-text font-semibold">Verkäufer-Auszahlung</span>
+                          <span className="text-text font-semibold">{t("sellerPayout")}</span>
                           <span className="text-success text-lg font-bold">
                             CHF {transaction.sellerPayout.toFixed(2)}
                           </span>
@@ -257,7 +275,7 @@ export default function AdminTransactionsPage() {
                     onClick={() => setSelectedTransaction(null)}
                     className="border-border text-text hover:bg-bg w-full rounded-lg border px-4 py-3 font-medium transition-colors"
                   >
-                    Schliessen
+                    {t("close")}
                   </button>
                 </div>
               );
