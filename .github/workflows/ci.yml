@@ -46,6 +46,8 @@ jobs:
 
       - name: Check Prisma migrations are in sync
         run: |
+          # Create shadow database for migration diff
+          PGPASSWORD=ci psql -h localhost -U ci -d ci -c "CREATE DATABASE ci_shadow;"
           # Compare schema against migrations - exits with code 2 if drift detected
           npx prisma migrate diff \
             --from-migrations ./prisma/migrations \
