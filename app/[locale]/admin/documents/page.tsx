@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { TableSkeleton } from "@/components/ui/Skeleton";
+import { FocusTrap } from "@/components/ui/FocusTrap";
 
 interface AdminMaterial {
   id: string;
@@ -339,184 +340,214 @@ export default function AdminDocumentsPage() {
       {/* Resource Detail Modal */}
       {showModal && selectedMaterial && (
         <div className="modal-overlay">
-          <div className="modal-content modal-lg mx-4">
-            <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-text text-xl font-semibold">{t("reviewDocument")}</h3>
-              <button
-                onClick={() => {
-                  setShowModal(false);
-                  setSelectedMaterial(null);
-                }}
-                className="text-text-muted hover:text-text"
-              >
-                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            {/* Resource Details */}
-            <div className="mb-6 space-y-4">
-              <div>
-                <h4 className="text-text text-lg font-semibold">{selectedMaterial.title}</h4>
-                <p className="text-text-muted mt-1 text-sm">{selectedMaterial.description}</p>
+          <FocusTrap
+            onEscape={() => {
+              setShowModal(false);
+              setSelectedMaterial(null);
+            }}
+          >
+            <div className="modal-content modal-lg mx-4">
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="text-text text-xl font-semibold">{t("reviewDocument")}</h3>
+                <button
+                  onClick={() => {
+                    setShowModal(false);
+                    setSelectedMaterial(null);
+                  }}
+                  className="text-text-muted hover:text-text"
+                >
+                  <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="border-border rounded-lg border p-4">
-                  <div className="text-text-muted mb-1 text-sm">{t("seller")}</div>
-                  <div className="text-text">
-                    {selectedMaterial.seller.display_name || selectedMaterial.seller.email}
+              {/* Resource Details */}
+              <div className="mb-6 space-y-4">
+                <div>
+                  <h4 className="text-text text-lg font-semibold">{selectedMaterial.title}</h4>
+                  <p className="text-text-muted mt-1 text-sm">{selectedMaterial.description}</p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="border-border rounded-lg border p-4">
+                    <div className="text-text-muted mb-1 text-sm">{t("seller")}</div>
+                    <div className="text-text">
+                      {selectedMaterial.seller.display_name || selectedMaterial.seller.email}
+                    </div>
+                  </div>
+                  <div className="border-border rounded-lg border p-4">
+                    <div className="text-text-muted mb-1 text-sm">{t("price")}</div>
+                    <div className="text-text font-medium">{selectedMaterial.priceFormatted}</div>
                   </div>
                 </div>
-                <div className="border-border rounded-lg border p-4">
-                  <div className="text-text-muted mb-1 text-sm">{t("price")}</div>
-                  <div className="text-text font-medium">{selectedMaterial.priceFormatted}</div>
-                </div>
-              </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="border-border rounded-lg border p-4">
-                  <div className="text-text-muted mb-1 text-sm">{t("subjects")}</div>
-                  <div className="flex flex-wrap gap-1">
-                    {selectedMaterial.subjects.map((subject) => (
-                      <span
-                        key={subject}
-                        className="bg-bg text-text rounded-full px-2 py-1 text-xs"
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="border-border rounded-lg border p-4">
+                    <div className="text-text-muted mb-1 text-sm">{t("subjects")}</div>
+                    <div className="flex flex-wrap gap-1">
+                      {selectedMaterial.subjects.map((subject) => (
+                        <span
+                          key={subject}
+                          className="bg-bg text-text rounded-full px-2 py-1 text-xs"
+                        >
+                          {subject}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="border-border rounded-lg border p-4">
+                    <div className="text-text-muted mb-1 text-sm">{t("cycles")}</div>
+                    <div className="flex flex-wrap gap-1">
+                      {selectedMaterial.cycles.map((cycle) => (
+                        <span
+                          key={cycle}
+                          className="bg-bg text-text rounded-full px-2 py-1 text-xs"
+                        >
+                          {cycle}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="border-border rounded-lg border p-4">
+                    <div className="text-text-muted mb-1 text-sm">{t("currentStatus")}</div>
+                    <span
+                      className={`rounded-full px-3 py-1 text-xs font-medium ${statusColors[selectedMaterial.status] || statusColors.PENDING}`}
+                    >
+                      {getStatusLabel(selectedMaterial.status)}
+                    </span>
+                  </div>
+                  <div className="border-border rounded-lg border p-4">
+                    <div className="text-text-muted mb-1 text-sm">{t("visibilityLabel")}</div>
+                    <div className="text-text">
+                      {selectedMaterial.is_public ? t("public") : t("ownerOnly")}
+                    </div>
+                  </div>
+                </div>
+
+                {/* File Preview Link */}
+                {selectedMaterial.file_url && (
+                  <div className="border-border rounded-lg border p-4">
+                    <div className="text-text-muted mb-2 text-sm">{t("document")}</div>
+                    <a
+                      href={`/api/materials/${selectedMaterial.id}/download`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary inline-flex items-center gap-2 hover:underline"
+                    >
+                      <svg
+                        className="h-5 w-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
                       >
-                        {subject}
-                      </span>
-                    ))}
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                        />
+                      </svg>
+                      {t("openDocument")}
+                    </a>
                   </div>
-                </div>
-                <div className="border-border rounded-lg border p-4">
-                  <div className="text-text-muted mb-1 text-sm">{t("cycles")}</div>
-                  <div className="flex flex-wrap gap-1">
-                    {selectedMaterial.cycles.map((cycle) => (
-                      <span key={cycle} className="bg-bg text-text rounded-full px-2 py-1 text-xs">
-                        {cycle}
-                      </span>
-                    ))}
-                  </div>
+                )}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="border-border border-t pt-4">
+                <div className="text-text mb-3 text-sm font-medium">{t("chooseAction")}</div>
+                <div className="grid grid-cols-3 gap-3">
+                  {selectedMaterial.status !== "VERIFIED" && (
+                    <button
+                      onClick={() => handleVerify(selectedMaterial.id)}
+                      disabled={actionLoading}
+                      className="flex items-center justify-center gap-2 rounded-lg bg-[var(--badge-success-bg)] px-4 py-3 text-sm font-medium text-[var(--badge-success-text)] hover:opacity-90 disabled:opacity-50"
+                    >
+                      <svg
+                        className="h-5 w-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                      {t("verify")}
+                    </button>
+                  )}
+                  {selectedMaterial.status !== "REJECTED" && (
+                    <button
+                      onClick={() => handleReject(selectedMaterial.id)}
+                      disabled={actionLoading}
+                      className="flex items-center justify-center gap-2 rounded-lg bg-[var(--badge-error-bg)] px-4 py-3 text-sm font-medium text-[var(--badge-error-text)] hover:opacity-90 disabled:opacity-50"
+                    >
+                      <svg
+                        className="h-5 w-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                      {t("reject")}
+                    </button>
+                  )}
+                  {selectedMaterial.status !== "PENDING" && (
+                    <button
+                      onClick={() => handleResetToPending(selectedMaterial.id)}
+                      disabled={actionLoading}
+                      className="flex items-center justify-center gap-2 rounded-lg bg-[var(--badge-warning-bg)] px-4 py-3 text-sm font-medium text-[var(--badge-warning-text)] hover:opacity-90 disabled:opacity-50"
+                    >
+                      <svg
+                        className="h-5 w-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                        />
+                      </svg>
+                      {t("resetToPending")}
+                    </button>
+                  )}
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="border-border rounded-lg border p-4">
-                  <div className="text-text-muted mb-1 text-sm">{t("currentStatus")}</div>
-                  <span
-                    className={`rounded-full px-3 py-1 text-xs font-medium ${statusColors[selectedMaterial.status] || statusColors.PENDING}`}
-                  >
-                    {getStatusLabel(selectedMaterial.status)}
-                  </span>
-                </div>
-                <div className="border-border rounded-lg border p-4">
-                  <div className="text-text-muted mb-1 text-sm">{t("visibilityLabel")}</div>
-                  <div className="text-text">
-                    {selectedMaterial.is_public ? t("public") : t("ownerOnly")}
-                  </div>
-                </div>
-              </div>
-
-              {/* File Preview Link */}
-              {selectedMaterial.file_url && (
-                <div className="border-border rounded-lg border p-4">
-                  <div className="text-text-muted mb-2 text-sm">{t("document")}</div>
-                  <a
-                    href={`/api/materials/${selectedMaterial.id}/download`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary inline-flex items-center gap-2 hover:underline"
-                  >
-                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                      />
-                    </svg>
-                    {t("openDocument")}
-                  </a>
-                </div>
-              )}
-            </div>
-
-            {/* Action Buttons */}
-            <div className="border-border border-t pt-4">
-              <div className="text-text mb-3 text-sm font-medium">{t("chooseAction")}</div>
-              <div className="grid grid-cols-3 gap-3">
-                {selectedMaterial.status !== "VERIFIED" && (
-                  <button
-                    onClick={() => handleVerify(selectedMaterial.id)}
-                    disabled={actionLoading}
-                    className="flex items-center justify-center gap-2 rounded-lg bg-[var(--badge-success-bg)] px-4 py-3 text-sm font-medium text-[var(--badge-success-text)] hover:opacity-90 disabled:opacity-50"
-                  >
-                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                    {t("verify")}
-                  </button>
-                )}
-                {selectedMaterial.status !== "REJECTED" && (
-                  <button
-                    onClick={() => handleReject(selectedMaterial.id)}
-                    disabled={actionLoading}
-                    className="flex items-center justify-center gap-2 rounded-lg bg-[var(--badge-error-bg)] px-4 py-3 text-sm font-medium text-[var(--badge-error-text)] hover:opacity-90 disabled:opacity-50"
-                  >
-                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                    {t("reject")}
-                  </button>
-                )}
-                {selectedMaterial.status !== "PENDING" && (
-                  <button
-                    onClick={() => handleResetToPending(selectedMaterial.id)}
-                    disabled={actionLoading}
-                    className="flex items-center justify-center gap-2 rounded-lg bg-[var(--badge-warning-bg)] px-4 py-3 text-sm font-medium text-[var(--badge-warning-text)] hover:opacity-90 disabled:opacity-50"
-                  >
-                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                      />
-                    </svg>
-                    {t("resetToPending")}
-                  </button>
-                )}
+              <div className="mt-4">
+                <button
+                  onClick={() => {
+                    setShowModal(false);
+                    setSelectedMaterial(null);
+                  }}
+                  className="border-border bg-surface text-text hover:bg-bg w-full rounded-lg border px-4 py-2.5 text-sm font-medium"
+                >
+                  {t("close")}
+                </button>
               </div>
             </div>
-
-            <div className="mt-4">
-              <button
-                onClick={() => {
-                  setShowModal(false);
-                  setSelectedMaterial(null);
-                }}
-                className="border-border bg-surface text-text hover:bg-bg w-full rounded-lg border px-4 py-2.5 text-sm font-medium"
-              >
-                {t("close")}
-              </button>
-            </div>
-          </div>
+          </FocusTrap>
         </div>
       )}
     </div>

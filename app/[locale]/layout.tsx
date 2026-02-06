@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
@@ -16,6 +17,44 @@ type Props = {
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
+}
+
+const localeMetadata: Record<string, { title: string; description: string }> = {
+  de: {
+    title: "Currico - Unterrichtsmaterial für Lehrpersonen",
+    description:
+      "Hochwertige Unterrichtsmaterialien von Schweizer Lehrpersonen. Qualitätsgeprüft, Lehrplan 21 konform, zeitsparend.",
+  },
+  en: {
+    title: "Currico - Teaching Materials for Educators",
+    description:
+      "Quality teaching materials from Swiss educators. Quality-checked, LP21 curriculum-aligned, time-saving.",
+  },
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const meta = localeMetadata[locale] || localeMetadata.de;
+
+  return {
+    title: {
+      default: meta.title,
+      template: "%s | Currico",
+    },
+    description: meta.description,
+    openGraph: {
+      locale: locale === "de" ? "de_CH" : "en_US",
+      title: meta.title,
+      description: meta.description,
+    },
+    alternates: {
+      canonical: `/${locale}`,
+      languages: {
+        de: "/de",
+        en: "/en",
+      },
+    },
+  };
 }
 
 export default async function LocaleLayout({ children, params }: Props) {

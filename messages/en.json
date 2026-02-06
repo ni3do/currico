@@ -84,6 +84,14 @@
       "help": "Help",
       "becomeSeller": "Become Seller",
       "bundles": "Bundles"
+    },
+    "toast": {
+      "addedToWishlist": "Added to wishlist",
+      "removedFromWishlist": "Removed from wishlist",
+      "followed": "Now following this profile",
+      "unfollowed": "Unfollowed this profile",
+      "reportSubmitted": "Report submitted successfully",
+      "error": "Something went wrong. Please try again."
     }
   },
   "homePage": {
@@ -560,6 +568,13 @@
     "empty": {
       "title": "No materials found",
       "description": "Try different search terms or filters"
+    },
+    "toast": {
+      "addedToWishlist": "Added to wishlist",
+      "removedFromWishlist": "Removed from wishlist",
+      "followed": "Now following this profile",
+      "unfollowed": "Unfollowed this profile",
+      "error": "Something went wrong. Please try again."
     }
   },
   "sellerDashboard": {

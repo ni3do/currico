@@ -9,6 +9,7 @@ import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
+import { FocusTrap } from "@/components/ui/FocusTrap";
 import {
   Plus,
   FolderOpen,
@@ -462,77 +463,84 @@ export default function CollectionsPage() {
       {/* Create Modal */}
       {(showCreateModal || editingCollection) && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="bg-surface w-full max-w-md rounded-xl p-6">
-            <h2 className="text-text mb-4 text-lg font-semibold">
-              {editingCollection ? t("form.editCollection") : t("form.newCollection")}
-            </h2>
+          <FocusTrap
+            onEscape={() => {
+              setShowCreateModal(false);
+              setEditingCollection(null);
+            }}
+          >
+            <div className="bg-surface w-full max-w-md rounded-xl p-6">
+              <h2 className="text-text mb-4 text-lg font-semibold">
+                {editingCollection ? t("form.editCollection") : t("form.newCollection")}
+              </h2>
 
-            <form onSubmit={editingCollection ? handleUpdateCollection : handleCreateCollection}>
-              <div className="space-y-4">
-                <div>
-                  <label className="text-text mb-1 block text-sm font-medium">
-                    {t("form.name")} <span className="text-error">*</span>
+              <form onSubmit={editingCollection ? handleUpdateCollection : handleCreateCollection}>
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-text mb-1 block text-sm font-medium">
+                      {t("form.name")} <span className="text-error">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      placeholder={t("form.namePlaceholder")}
+                      className="border-border bg-bg text-text focus:border-primary focus:ring-primary/20 w-full rounded-lg border px-4 py-2.5 focus:ring-2 focus:outline-none"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-text mb-1 block text-sm font-medium">
+                      {t("form.description")}
+                    </label>
+                    <textarea
+                      value={formData.description}
+                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                      placeholder={t("form.descriptionPlaceholder")}
+                      rows={3}
+                      className="border-border bg-bg text-text focus:border-primary focus:ring-primary/20 w-full rounded-lg border px-4 py-2.5 focus:ring-2 focus:outline-none"
+                    />
+                  </div>
+
+                  <label className="flex items-center gap-3">
+                    <input
+                      type="checkbox"
+                      checked={formData.is_public}
+                      onChange={(e) => setFormData({ ...formData, is_public: e.target.checked })}
+                      className="text-primary h-4 w-4 rounded"
+                    />
+                    <span className="text-text text-sm">{t("form.isPublic")}</span>
                   </label>
-                  <input
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder={t("form.namePlaceholder")}
-                    className="border-border bg-bg text-text focus:border-primary focus:ring-primary/20 w-full rounded-lg border px-4 py-2.5 focus:ring-2 focus:outline-none"
-                    required
-                  />
                 </div>
 
-                <div>
-                  <label className="text-text mb-1 block text-sm font-medium">
-                    {t("form.description")}
-                  </label>
-                  <textarea
-                    value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    placeholder={t("form.descriptionPlaceholder")}
-                    rows={3}
-                    className="border-border bg-bg text-text focus:border-primary focus:ring-primary/20 w-full rounded-lg border px-4 py-2.5 focus:ring-2 focus:outline-none"
-                  />
+                <div className="mt-6 flex justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowCreateModal(false);
+                      setEditingCollection(null);
+                      setFormData({ name: "", description: "", is_public: true });
+                    }}
+                    className="border-border text-text hover:bg-surface-elevated rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
+                  >
+                    {t("form.cancel")}
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={formLoading || !formData.name.trim()}
+                    className="bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors disabled:opacity-50"
+                  >
+                    {formLoading
+                      ? t("form.saving")
+                      : editingCollection
+                        ? t("form.save")
+                        : t("form.create")}
+                  </button>
                 </div>
-
-                <label className="flex items-center gap-3">
-                  <input
-                    type="checkbox"
-                    checked={formData.is_public}
-                    onChange={(e) => setFormData({ ...formData, is_public: e.target.checked })}
-                    className="text-primary h-4 w-4 rounded"
-                  />
-                  <span className="text-text text-sm">{t("form.isPublic")}</span>
-                </label>
-              </div>
-
-              <div className="mt-6 flex justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowCreateModal(false);
-                    setEditingCollection(null);
-                    setFormData({ name: "", description: "", is_public: true });
-                  }}
-                  className="border-border text-text hover:bg-surface-elevated rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
-                >
-                  {t("form.cancel")}
-                </button>
-                <button
-                  type="submit"
-                  disabled={formLoading || !formData.name.trim()}
-                  className="bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors disabled:opacity-50"
-                >
-                  {formLoading
-                    ? t("form.saving")
-                    : editingCollection
-                      ? t("form.save")
-                      : t("form.create")}
-                </button>
-              </div>
-            </form>
-          </div>
+              </form>
+            </div>
+          </FocusTrap>
         </div>
       )}
 

@@ -15,6 +15,7 @@ import { MaterialGridSkeleton } from "@/components/ui/Skeleton";
 import { ProfileCard } from "@/components/ui/ProfileCard";
 import { LP21FilterSidebar, type LP21FilterState } from "@/components/search/LP21FilterSidebar";
 import { useCurriculum } from "@/lib/hooks/useCurriculum";
+import { useToast } from "@/components/ui/Toast";
 
 interface Material {
   id: string;
@@ -56,6 +57,7 @@ interface Profile {
 export default function MaterialienPage() {
   const t = useTranslations("materialsPage");
   const tCommon = useTranslations("common");
+  const { toast } = useToast();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [materials, setMaterials] = useState<Material[]>([]);
@@ -127,6 +129,7 @@ export default function MaterialienPage() {
               next.delete(materialId);
               return next;
             });
+            toast(t("toast.removedFromWishlist"), "success");
             return true;
           }
         } else {
@@ -138,11 +141,13 @@ export default function MaterialienPage() {
           });
           if (response.ok) {
             setWishlistedIds((prev) => new Set(prev).add(materialId));
+            toast(t("toast.addedToWishlist"), "success");
             return true;
           }
         }
       } catch (error) {
         console.error("Error toggling wishlist:", error);
+        toast(t("toast.error"), "error");
       }
       return false;
     },
@@ -190,6 +195,7 @@ export default function MaterialienPage() {
               next.delete(profileId);
               return next;
             });
+            toast(t("toast.unfollowed"), "success");
             return true;
           }
         } else {
@@ -199,11 +205,13 @@ export default function MaterialienPage() {
           });
           if (response.ok) {
             setFollowingIds((prev) => new Set(prev).add(profileId));
+            toast(t("toast.followed"), "success");
             return true;
           }
         }
       } catch (error) {
         console.error("Error toggling follow:", error);
+        toast(t("toast.error"), "error");
       }
       return false;
     },

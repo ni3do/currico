@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { TableSkeleton } from "@/components/ui/Skeleton";
+import { FocusTrap } from "@/components/ui/FocusTrap";
 
 interface AdminReport {
   id: string;
@@ -277,146 +278,157 @@ export default function AdminReportsPage() {
       {/* Report Detail Modal */}
       {showModal && selectedReport && (
         <div className="modal-overlay">
-          <div className="modal-content modal-md mx-4">
-            <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-text text-xl font-semibold">{t("handleReport")}</h3>
-              <button
-                onClick={() => {
-                  setShowModal(false);
-                  setSelectedReport(null);
-                }}
-                className="text-text-muted hover:text-text"
-              >
-                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            {/* Report Details */}
-            <div className="mb-6 space-y-4">
-              <div className="border-border rounded-lg border p-4">
-                <div className="text-text-muted mb-1 text-sm">{t("reason")}</div>
-                <div className="text-text font-medium">{getReasonLabel(selectedReport.reason)}</div>
+          <FocusTrap
+            onEscape={() => {
+              setShowModal(false);
+              setSelectedReport(null);
+            }}
+          >
+            <div className="modal-content modal-md mx-4">
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="text-text text-xl font-semibold">{t("handleReport")}</h3>
+                <button
+                  onClick={() => {
+                    setShowModal(false);
+                    setSelectedReport(null);
+                  }}
+                  className="text-text-muted hover:text-text"
+                >
+                  <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
               </div>
 
-              {selectedReport.description && (
+              {/* Report Details */}
+              <div className="mb-6 space-y-4">
                 <div className="border-border rounded-lg border p-4">
-                  <div className="text-text-muted mb-1 text-sm">{t("description")}</div>
-                  <div className="text-text">{selectedReport.description}</div>
+                  <div className="text-text-muted mb-1 text-sm">{t("reason")}</div>
+                  <div className="text-text font-medium">
+                    {getReasonLabel(selectedReport.reason)}
+                  </div>
                 </div>
-              )}
 
-              <div className="border-border rounded-lg border p-4">
-                <div className="text-text-muted mb-1 text-sm">{t("reportedItem")}</div>
-                <div className="text-text">
-                  {selectedReport.resource ? (
-                    <>
-                      <span className="font-medium">{selectedReport.resource.title}</span>
-                      <span className="text-text-muted ml-2 text-xs">({t("materialLabel")})</span>
-                    </>
-                  ) : selectedReport.reported_user ? (
-                    <>
-                      <span className="font-medium">
-                        {selectedReport.reported_user.display_name ||
-                          selectedReport.reported_user.email}
-                      </span>
-                      <span className="text-text-muted ml-2 text-xs">({t("userLabel")})</span>
-                    </>
-                  ) : (
-                    "-"
+                {selectedReport.description && (
+                  <div className="border-border rounded-lg border p-4">
+                    <div className="text-text-muted mb-1 text-sm">{t("description")}</div>
+                    <div className="text-text">{selectedReport.description}</div>
+                  </div>
+                )}
+
+                <div className="border-border rounded-lg border p-4">
+                  <div className="text-text-muted mb-1 text-sm">{t("reportedItem")}</div>
+                  <div className="text-text">
+                    {selectedReport.resource ? (
+                      <>
+                        <span className="font-medium">{selectedReport.resource.title}</span>
+                        <span className="text-text-muted ml-2 text-xs">({t("materialLabel")})</span>
+                      </>
+                    ) : selectedReport.reported_user ? (
+                      <>
+                        <span className="font-medium">
+                          {selectedReport.reported_user.display_name ||
+                            selectedReport.reported_user.email}
+                        </span>
+                        <span className="text-text-muted ml-2 text-xs">({t("userLabel")})</span>
+                      </>
+                    ) : (
+                      "-"
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="border-border rounded-lg border p-4">
+                    <div className="text-text-muted mb-1 text-sm">{t("reporter")}</div>
+                    <div className="text-text">
+                      {selectedReport.reporter.display_name || selectedReport.reporter.email}
+                    </div>
+                  </div>
+                  <div className="border-border rounded-lg border p-4">
+                    <div className="text-text-muted mb-1 text-sm">{t("currentStatus")}</div>
+                    <span className={`pill ${statusColors[selectedReport.status]}`}>
+                      {getStatusLabel(selectedReport.status)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Resolution Input */}
+              <div className="mb-6">
+                <label className="text-text mb-2 block text-sm font-medium">
+                  {t("resolution")}
+                </label>
+                <textarea
+                  value={resolution}
+                  onChange={(e) => setResolution(e.target.value)}
+                  rows={3}
+                  className="border-border bg-surface text-text placeholder:text-text-muted focus:border-primary min-h-[80px] w-full resize-y rounded-lg border px-4 py-2.5 focus:outline-none"
+                  placeholder={t("resolutionPlaceholder")}
+                />
+              </div>
+
+              {/* Action Buttons */}
+              <div className="space-y-3">
+                <div className="text-text mb-2 text-sm font-medium">{t("changeStatus")}</div>
+                <div className="grid grid-cols-2 gap-3">
+                  {selectedReport.status !== "IN_REVIEW" && (
+                    <button
+                      onClick={() => handleStatusUpdate(selectedReport.id, "IN_REVIEW")}
+                      disabled={actionLoading}
+                      className="bg-warning/20 text-warning rounded-lg px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-50"
+                    >
+                      {t("setInReview")}
+                    </button>
+                  )}
+                  {selectedReport.status !== "RESOLVED" && (
+                    <button
+                      onClick={() => handleStatusUpdate(selectedReport.id, "RESOLVED")}
+                      disabled={actionLoading}
+                      className="bg-success/20 text-success rounded-lg px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-50"
+                    >
+                      {t("setResolved")}
+                    </button>
+                  )}
+                  {selectedReport.status !== "DISMISSED" && (
+                    <button
+                      onClick={() => handleStatusUpdate(selectedReport.id, "DISMISSED")}
+                      disabled={actionLoading}
+                      className="btn-tertiary rounded-lg px-4 py-2.5 text-sm disabled:opacity-50"
+                    >
+                      {t("dismiss")}
+                    </button>
+                  )}
+                  {selectedReport.status !== "OPEN" && (
+                    <button
+                      onClick={() => handleStatusUpdate(selectedReport.id, "OPEN")}
+                      disabled={actionLoading}
+                      className="bg-error/20 text-error rounded-lg px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-50"
+                    >
+                      {t("reopen")}
+                    </button>
                   )}
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="border-border rounded-lg border p-4">
-                  <div className="text-text-muted mb-1 text-sm">{t("reporter")}</div>
-                  <div className="text-text">
-                    {selectedReport.reporter.display_name || selectedReport.reporter.email}
-                  </div>
-                </div>
-                <div className="border-border rounded-lg border p-4">
-                  <div className="text-text-muted mb-1 text-sm">{t("currentStatus")}</div>
-                  <span className={`pill ${statusColors[selectedReport.status]}`}>
-                    {getStatusLabel(selectedReport.status)}
-                  </span>
-                </div>
+              <div className="border-border mt-6 border-t pt-4">
+                <button
+                  onClick={() => {
+                    setShowModal(false);
+                    setSelectedReport(null);
+                  }}
+                  className="border-border bg-surface text-text hover:bg-bg w-full rounded-lg border px-4 py-2.5 text-sm font-medium"
+                >
+                  {t("close")}
+                </button>
               </div>
             </div>
-
-            {/* Resolution Input */}
-            <div className="mb-6">
-              <label className="text-text mb-2 block text-sm font-medium">{t("resolution")}</label>
-              <textarea
-                value={resolution}
-                onChange={(e) => setResolution(e.target.value)}
-                rows={3}
-                className="border-border bg-surface text-text placeholder:text-text-muted focus:border-primary min-h-[80px] w-full resize-y rounded-lg border px-4 py-2.5 focus:outline-none"
-                placeholder={t("resolutionPlaceholder")}
-              />
-            </div>
-
-            {/* Action Buttons */}
-            <div className="space-y-3">
-              <div className="text-text mb-2 text-sm font-medium">{t("changeStatus")}</div>
-              <div className="grid grid-cols-2 gap-3">
-                {selectedReport.status !== "IN_REVIEW" && (
-                  <button
-                    onClick={() => handleStatusUpdate(selectedReport.id, "IN_REVIEW")}
-                    disabled={actionLoading}
-                    className="bg-warning/20 text-warning rounded-lg px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-50"
-                  >
-                    {t("setInReview")}
-                  </button>
-                )}
-                {selectedReport.status !== "RESOLVED" && (
-                  <button
-                    onClick={() => handleStatusUpdate(selectedReport.id, "RESOLVED")}
-                    disabled={actionLoading}
-                    className="bg-success/20 text-success rounded-lg px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-50"
-                  >
-                    {t("setResolved")}
-                  </button>
-                )}
-                {selectedReport.status !== "DISMISSED" && (
-                  <button
-                    onClick={() => handleStatusUpdate(selectedReport.id, "DISMISSED")}
-                    disabled={actionLoading}
-                    className="btn-tertiary rounded-lg px-4 py-2.5 text-sm disabled:opacity-50"
-                  >
-                    {t("dismiss")}
-                  </button>
-                )}
-                {selectedReport.status !== "OPEN" && (
-                  <button
-                    onClick={() => handleStatusUpdate(selectedReport.id, "OPEN")}
-                    disabled={actionLoading}
-                    className="bg-error/20 text-error rounded-lg px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-50"
-                  >
-                    {t("reopen")}
-                  </button>
-                )}
-              </div>
-            </div>
-
-            <div className="border-border mt-6 border-t pt-4">
-              <button
-                onClick={() => {
-                  setShowModal(false);
-                  setSelectedReport(null);
-                }}
-                className="border-border bg-surface text-text hover:bg-bg w-full rounded-lg border px-4 py-2.5 text-sm font-medium"
-              >
-                {t("close")}
-              </button>
-            </div>
-          </div>
+          </FocusTrap>
         </div>
       )}
     </div>

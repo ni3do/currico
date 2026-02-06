@@ -85,6 +85,14 @@
       "help": "Hilfe",
       "becomeSeller": "Verkäufer werden",
       "bundles": "Pakete"
+    },
+    "toast": {
+      "addedToWishlist": "Zur Wunschliste hinzugefügt",
+      "removedFromWishlist": "Aus Wunschliste entfernt",
+      "followed": "Profil wird jetzt verfolgt",
+      "unfollowed": "Profil entfolgt",
+      "reportSubmitted": "Meldung erfolgreich eingereicht",
+      "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut."
     }
   },
   "homePage": {
@@ -561,6 +569,13 @@
     "empty": {
       "title": "Keine Materialien gefunden",
       "description": "Versuchen Sie andere Suchbegriffe oder Filter"
+    },
+    "toast": {
+      "addedToWishlist": "Zur Wunschliste hinzugefügt",
+      "removedFromWishlist": "Aus Wunschliste entfernt",
+      "followed": "Profil wird jetzt verfolgt",
+      "unfollowed": "Profil entfolgt",
+      "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut."
     }
   },
   "sellerDashboard": {

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { Mail, Phone, ExternalLink } from "lucide-react";
 import { TableSkeleton } from "@/components/ui/Skeleton";
+import { FocusTrap } from "@/components/ui/FocusTrap";
 
 interface ContactMessage {
   id: string;
@@ -284,140 +285,147 @@ export default function AdminMessagesPage() {
       {/* Message Detail Modal */}
       {showModal && selectedMessage && (
         <div className="bg-bg/80 fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
-          <div className="border-border bg-surface mx-4 max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border p-6">
-            <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-text text-xl font-semibold">{t("messageDetail")}</h3>
-              <button
-                onClick={() => {
-                  setShowModal(false);
-                  setSelectedMessage(null);
-                }}
-                className="text-text-muted hover:text-text"
-              >
-                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
+          <FocusTrap
+            onEscape={() => {
+              setShowModal(false);
+              setSelectedMessage(null);
+            }}
+          >
+            <div className="border-border bg-surface mx-4 max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border p-6">
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="text-text text-xl font-semibold">{t("messageDetail")}</h3>
+                <button
+                  onClick={() => {
+                    setShowModal(false);
+                    setSelectedMessage(null);
+                  }}
+                  className="text-text-muted hover:text-text"
+                >
+                  <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
 
-            {/* Message Details */}
-            <div className="mb-6 space-y-4">
-              {/* Sender Info */}
-              <div className="border-border rounded-lg border p-4">
-                <div className="mb-3 flex items-center justify-between">
-                  <div>
-                    <div className="text-text font-semibold">{selectedMessage.name}</div>
-                    <div className="text-text-muted text-sm">
-                      {new Date(selectedMessage.created_at).toLocaleString("de-CH")}
+              {/* Message Details */}
+              <div className="mb-6 space-y-4">
+                {/* Sender Info */}
+                <div className="border-border rounded-lg border p-4">
+                  <div className="mb-3 flex items-center justify-between">
+                    <div>
+                      <div className="text-text font-semibold">{selectedMessage.name}</div>
+                      <div className="text-text-muted text-sm">
+                        {new Date(selectedMessage.created_at).toLocaleString("de-CH")}
+                      </div>
                     </div>
+                    <span
+                      className={`rounded-full px-3 py-1 text-xs font-medium ${statusColors[selectedMessage.status]}`}
+                    >
+                      {getStatusLabel(selectedMessage.status)}
+                    </span>
                   </div>
-                  <span
-                    className={`rounded-full px-3 py-1 text-xs font-medium ${statusColors[selectedMessage.status]}`}
-                  >
-                    {getStatusLabel(selectedMessage.status)}
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-3">
-                  <a
-                    href={`mailto:${selectedMessage.email}`}
-                    className="text-accent flex items-center gap-2 text-sm hover:underline"
-                  >
-                    <Mail className="h-4 w-4" />
-                    {selectedMessage.email}
-                    <ExternalLink className="h-3 w-3" />
-                  </a>
-                  {selectedMessage.phone && (
+                  <div className="flex flex-wrap gap-3">
                     <a
-                      href={`tel:${selectedMessage.phone}`}
+                      href={`mailto:${selectedMessage.email}`}
                       className="text-accent flex items-center gap-2 text-sm hover:underline"
                     >
-                      <Phone className="h-4 w-4" />
-                      {selectedMessage.phone}
+                      <Mail className="h-4 w-4" />
+                      {selectedMessage.email}
+                      <ExternalLink className="h-3 w-3" />
                     </a>
+                    {selectedMessage.phone && (
+                      <a
+                        href={`tel:${selectedMessage.phone}`}
+                        className="text-accent flex items-center gap-2 text-sm hover:underline"
+                      >
+                        <Phone className="h-4 w-4" />
+                        {selectedMessage.phone}
+                      </a>
+                    )}
+                  </div>
+                </div>
+
+                {/* Subject */}
+                <div className="border-border rounded-lg border p-4">
+                  <div className="text-text-muted mb-1 text-sm">{t("subjectLabel")}</div>
+                  <div className="text-text font-medium">
+                    {getSubjectLabel(selectedMessage.subject)}
+                  </div>
+                </div>
+
+                {/* Message Content */}
+                <div className="border-border rounded-lg border p-4">
+                  <div className="text-text-muted mb-1 text-sm">{t("messageLabel")}</div>
+                  <div className="text-text whitespace-pre-wrap">{selectedMessage.message}</div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="space-y-3">
+                <div className="text-text mb-2 text-sm font-medium">{t("changeStatus")}</div>
+                <div className="grid grid-cols-2 gap-3">
+                  {selectedMessage.status !== "READ" && (
+                    <button
+                      onClick={() => handleStatusUpdate(selectedMessage.id, "READ")}
+                      disabled={actionLoading}
+                      className="bg-primary/10 text-primary rounded-lg px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-50"
+                    >
+                      {t("markRead")}
+                    </button>
+                  )}
+                  {selectedMessage.status !== "REPLIED" && (
+                    <button
+                      onClick={() => handleStatusUpdate(selectedMessage.id, "REPLIED")}
+                      disabled={actionLoading}
+                      className="rounded-lg bg-[var(--badge-success-bg)] px-4 py-2.5 text-sm font-medium text-[var(--badge-success-text)] hover:opacity-90 disabled:opacity-50"
+                    >
+                      {t("markReplied")}
+                    </button>
+                  )}
+                  {selectedMessage.status !== "ARCHIVED" && (
+                    <button
+                      onClick={() => handleStatusUpdate(selectedMessage.id, "ARCHIVED")}
+                      disabled={actionLoading}
+                      className="border-border bg-bg text-text-muted rounded-lg border px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-50"
+                    >
+                      {t("archive")}
+                    </button>
+                  )}
+                  {selectedMessage.status !== "NEW" && (
+                    <button
+                      onClick={() => handleStatusUpdate(selectedMessage.id, "NEW")}
+                      disabled={actionLoading}
+                      className="bg-accent/10 text-accent rounded-lg px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-50"
+                    >
+                      {t("markNew")}
+                    </button>
                   )}
                 </div>
               </div>
 
-              {/* Subject */}
-              <div className="border-border rounded-lg border p-4">
-                <div className="text-text-muted mb-1 text-sm">{t("subjectLabel")}</div>
-                <div className="text-text font-medium">
-                  {getSubjectLabel(selectedMessage.subject)}
-                </div>
-              </div>
-
-              {/* Message Content */}
-              <div className="border-border rounded-lg border p-4">
-                <div className="text-text-muted mb-1 text-sm">{t("messageLabel")}</div>
-                <div className="text-text whitespace-pre-wrap">{selectedMessage.message}</div>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="space-y-3">
-              <div className="text-text mb-2 text-sm font-medium">{t("changeStatus")}</div>
-              <div className="grid grid-cols-2 gap-3">
-                {selectedMessage.status !== "READ" && (
-                  <button
-                    onClick={() => handleStatusUpdate(selectedMessage.id, "READ")}
-                    disabled={actionLoading}
-                    className="bg-primary/10 text-primary rounded-lg px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-50"
-                  >
-                    {t("markRead")}
-                  </button>
-                )}
-                {selectedMessage.status !== "REPLIED" && (
-                  <button
-                    onClick={() => handleStatusUpdate(selectedMessage.id, "REPLIED")}
-                    disabled={actionLoading}
-                    className="rounded-lg bg-[var(--badge-success-bg)] px-4 py-2.5 text-sm font-medium text-[var(--badge-success-text)] hover:opacity-90 disabled:opacity-50"
-                  >
-                    {t("markReplied")}
-                  </button>
-                )}
-                {selectedMessage.status !== "ARCHIVED" && (
-                  <button
-                    onClick={() => handleStatusUpdate(selectedMessage.id, "ARCHIVED")}
-                    disabled={actionLoading}
-                    className="border-border bg-bg text-text-muted rounded-lg border px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-50"
-                  >
-                    {t("archive")}
-                  </button>
-                )}
-                {selectedMessage.status !== "NEW" && (
-                  <button
-                    onClick={() => handleStatusUpdate(selectedMessage.id, "NEW")}
-                    disabled={actionLoading}
-                    className="bg-accent/10 text-accent rounded-lg px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-50"
-                  >
-                    {t("markNew")}
-                  </button>
-                )}
+              {/* Reply & Delete Buttons */}
+              <div className="border-border mt-6 flex gap-3 border-t pt-4">
+                <a
+                  href={`mailto:${selectedMessage.email}?subject=Re: ${getSubjectLabel(selectedMessage.subject)}`}
+                  className="bg-accent flex-1 rounded-lg px-4 py-2.5 text-center text-sm font-medium text-white hover:opacity-90"
+                >
+                  {t("reply")}
+                </a>
+                <button
+                  onClick={() => handleDelete(selectedMessage.id)}
+                  disabled={actionLoading}
+                  className="border-error bg-error/10 text-error hover:bg-error/20 rounded-lg border px-4 py-2.5 text-sm font-medium disabled:opacity-50"
+                >
+                  {t("deleteMessage")}
+                </button>
               </div>
             </div>
-
-            {/* Reply & Delete Buttons */}
-            <div className="border-border mt-6 flex gap-3 border-t pt-4">
-              <a
-                href={`mailto:${selectedMessage.email}?subject=Re: ${getSubjectLabel(selectedMessage.subject)}`}
-                className="bg-accent flex-1 rounded-lg px-4 py-2.5 text-center text-sm font-medium text-white hover:opacity-90"
-              >
-                {t("reply")}
-              </a>
-              <button
-                onClick={() => handleDelete(selectedMessage.id)}
-                disabled={actionLoading}
-                className="border-error bg-error/10 text-error hover:bg-error/20 rounded-lg border px-4 py-2.5 text-sm font-medium disabled:opacity-50"
-              >
-                {t("deleteMessage")}
-              </button>
-            </div>
-          </div>
+          </FocusTrap>
         </div>
       )}
     </div>

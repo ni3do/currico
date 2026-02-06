@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { TableSkeleton } from "@/components/ui/Skeleton";
+import { FocusTrap } from "@/components/ui/FocusTrap";
 
 interface AdminUser {
   id: string;
@@ -316,127 +317,141 @@ export default function AdminUsersPage() {
       {/* Edit Modal */}
       {showModal && selectedUser && (
         <div className="modal-overlay">
-          <div className="modal-content modal-sm mx-4">
-            <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-text text-xl font-semibold">{t("editUser")}</h3>
-              <button
-                onClick={() => {
-                  setShowModal(false);
-                  setSelectedUser(null);
-                }}
-                className="text-text-muted hover:text-text"
-              >
-                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            <div className="mb-6">
-              <p className="text-text">{selectedUser.display_name || selectedUser.name}</p>
-              <p className="text-text-muted text-sm">{selectedUser.email}</p>
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <label className="text-text mb-2 block text-sm font-medium">
-                  {t("changeRole")}
-                </label>
-                <select
-                  defaultValue={selectedUser.role}
-                  onChange={(e) => handleRoleChange(selectedUser.id, e.target.value)}
-                  disabled={selectedUser.is_protected || actionLoading}
-                  className="border-border bg-surface text-text focus:border-primary w-full rounded-lg border px-4 py-2.5 focus:outline-none disabled:opacity-50"
+          <FocusTrap
+            onEscape={() => {
+              setShowModal(false);
+              setSelectedUser(null);
+            }}
+          >
+            <div className="modal-content modal-sm mx-4">
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="text-text text-xl font-semibold">{t("editUser")}</h3>
+                <button
+                  onClick={() => {
+                    setShowModal(false);
+                    setSelectedUser(null);
+                  }}
+                  className="text-text-muted hover:text-text"
                 >
-                  <option value="BUYER">{t("buyer")}</option>
-                  <option value="SELLER">{t("seller")}</option>
-                  <option value="ADMIN">{t("administrator")}</option>
-                </select>
-                {selectedUser.is_protected && (
-                  <p className="text-error mt-2 text-xs">{t("protectedUser")}</p>
+                  <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+
+              <div className="mb-6">
+                <p className="text-text">{selectedUser.display_name || selectedUser.name}</p>
+                <p className="text-text-muted text-sm">{selectedUser.email}</p>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="text-text mb-2 block text-sm font-medium">
+                    {t("changeRole")}
+                  </label>
+                  <select
+                    defaultValue={selectedUser.role}
+                    onChange={(e) => handleRoleChange(selectedUser.id, e.target.value)}
+                    disabled={selectedUser.is_protected || actionLoading}
+                    className="border-border bg-surface text-text focus:border-primary w-full rounded-lg border px-4 py-2.5 focus:outline-none disabled:opacity-50"
+                  >
+                    <option value="BUYER">{t("buyer")}</option>
+                    <option value="SELLER">{t("seller")}</option>
+                    <option value="ADMIN">{t("administrator")}</option>
+                  </select>
+                  {selectedUser.is_protected && (
+                    <p className="text-error mt-2 text-xs">{t("protectedUser")}</p>
+                  )}
+                </div>
+
+                {selectedUser.role === "SELLER" && (
+                  <div className="border-border rounded-lg border p-4">
+                    <p className="text-text font-medium">{t("stripeStatus")}</p>
+                    <p className="text-text-muted text-sm">
+                      {selectedUser.stripe_charges_enabled ? t("stripeActive") : t("stripePending")}
+                    </p>
+                  </div>
                 )}
               </div>
 
-              {selectedUser.role === "SELLER" && (
-                <div className="border-border rounded-lg border p-4">
-                  <p className="text-text font-medium">{t("stripeStatus")}</p>
-                  <p className="text-text-muted text-sm">
-                    {selectedUser.stripe_charges_enabled ? t("stripeActive") : t("stripePending")}
-                  </p>
-                </div>
-              )}
+              <div className="mt-6">
+                <button
+                  onClick={() => {
+                    setShowModal(false);
+                    setSelectedUser(null);
+                  }}
+                  className="border-border bg-surface text-text hover:bg-bg w-full rounded-lg border px-4 py-2.5 text-sm font-medium"
+                >
+                  {t("close")}
+                </button>
+              </div>
             </div>
-
-            <div className="mt-6">
-              <button
-                onClick={() => {
-                  setShowModal(false);
-                  setSelectedUser(null);
-                }}
-                className="border-border bg-surface text-text hover:bg-bg w-full rounded-lg border px-4 py-2.5 text-sm font-medium"
-              >
-                {t("close")}
-              </button>
-            </div>
-          </div>
+          </FocusTrap>
         </div>
       )}
 
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && selectedUser && (
         <div className="modal-overlay">
-          <div className="modal-content modal-sm mx-4">
-            <div className="mb-4 flex items-center gap-3">
-              <div className="rounded-full bg-[var(--badge-error-bg)] p-2">
-                <svg
-                  className="h-6 w-6 text-[var(--badge-error-text)]"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                  />
-                </svg>
+          <FocusTrap
+            onEscape={() => {
+              setShowDeleteConfirm(false);
+              setSelectedUser(null);
+            }}
+          >
+            <div className="modal-content modal-sm mx-4">
+              <div className="mb-4 flex items-center gap-3">
+                <div className="rounded-full bg-[var(--badge-error-bg)] p-2">
+                  <svg
+                    className="h-6 w-6 text-[var(--badge-error-text)]"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-text text-xl font-semibold">{t("deleteUser")}</h3>
               </div>
-              <h3 className="text-text text-xl font-semibold">{t("deleteUser")}</h3>
-            </div>
 
-            <p className="text-text-muted mb-6">
-              {t("deleteConfirm")}{" "}
-              <strong className="text-text">
-                {selectedUser.display_name || selectedUser.email}
-              </strong>{" "}
-              {t("deleteWarning")}
-            </p>
+              <p className="text-text-muted mb-6">
+                {t("deleteConfirm")}{" "}
+                <strong className="text-text">
+                  {selectedUser.display_name || selectedUser.email}
+                </strong>{" "}
+                {t("deleteWarning")}
+              </p>
 
-            <div className="flex gap-3">
-              <button
-                onClick={() => handleDeleteUser(selectedUser.id)}
-                disabled={actionLoading}
-                className="bg-error text-text-on-accent flex-1 rounded-lg px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-50"
-              >
-                {actionLoading ? t("deleting") : t("yesDelete")}
-              </button>
-              <button
-                onClick={() => {
-                  setShowDeleteConfirm(false);
-                  setSelectedUser(null);
-                }}
-                className="border-border bg-surface text-text hover:bg-bg flex-1 rounded-lg border px-4 py-2.5 text-sm font-medium"
-              >
-                {t("cancel")}
-              </button>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => handleDeleteUser(selectedUser.id)}
+                  disabled={actionLoading}
+                  className="bg-error text-text-on-accent flex-1 rounded-lg px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-50"
+                >
+                  {actionLoading ? t("deleting") : t("yesDelete")}
+                </button>
+                <button
+                  onClick={() => {
+                    setShowDeleteConfirm(false);
+                    setSelectedUser(null);
+                  }}
+                  className="border-border bg-surface text-text hover:bg-bg flex-1 rounded-lg border px-4 py-2.5 text-sm font-medium"
+                >
+                  {t("cancel")}
+                </button>
+              </div>
             </div>
-          </div>
+          </FocusTrap>
         </div>
       )}
     </div>
