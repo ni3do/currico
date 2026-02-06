@@ -10,6 +10,24 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: ci
+          POSTGRES_PASSWORD: ci
+          POSTGRES_DB: ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: "postgresql://ci:ci@localhost:5432/ci"
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -28,13 +46,14 @@ jobs:
 
       - name: Check Prisma migrations are in sync
         run: |
+          # Create shadow database for migration diff
+          PGPASSWORD=ci psql -h localhost -U ci -d ci -c "CREATE DATABASE ci_shadow;"
           # Compare schema against migrations - exits with code 2 if drift detected
           npx prisma migrate diff \
             --from-migrations ./prisma/migrations \
             --to-schema-datamodel ./prisma/schema.prisma \
+            --shadow-database-url "postgresql://ci:ci@localhost:5432/ci_shadow" \
             --exit-code
-        env:
-          DATABASE_URL: "postgresql://user:pass@localhost:5432/db"
 
       - name: Run linter
         run: npm run lint
@@ -42,6 +61,4 @@ jobs:
       - name: Build application
         run: npm run build
         env:
-          # Dummy values for build - not used at runtime
-          DATABASE_URL: "postgresql://user:pass@localhost:5432/db"
           AUTH_SECRET: "ci-build-secret-not-for-production"
