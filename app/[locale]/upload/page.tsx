@@ -2,6 +2,7 @@
 
 import { useState, useRef, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import TopBar from "@/components/ui/TopBar";
@@ -32,12 +33,15 @@ import {
   AlertTriangle,
   Check,
   Loader2,
+  ClipboardCheck,
+  Scale,
 } from "lucide-react";
 
 type UploadStatus = "idle" | "uploading" | "success" | "error";
 
 function UploadPageContent() {
   const router = useRouter();
+  const { data: session, status: sessionStatus } = useSession();
   const tCommon = useTranslations("common");
   const tUpload = useTranslations("uploadWizard.upload");
   const tLegal = useTranslations("uploadWizard.legal");
@@ -196,6 +200,7 @@ function UploadPageContent() {
     apiFormData.append("title", formData.title);
     apiFormData.append("description", formData.description);
     apiFormData.append("language", formData.language);
+    apiFormData.append("dialect", formData.dialect);
     apiFormData.append("resourceType", formData.resourceType);
 
     const cycleFullName = `Zyklus ${formData.cycle}`;
@@ -308,6 +313,53 @@ function UploadPageContent() {
     return <FileText className="text-text-muted h-8 w-8" />;
   };
 
+  // Auth gate: show login prompt if not authenticated
+  if (sessionStatus === "loading") {
+    return (
+      <div className="flex min-h-screen flex-col">
+        <TopBar />
+        <main className="flex flex-1 items-center justify-center px-4">
+          <div className="text-text-muted animate-pulse text-sm">{tUpload("loading")}</div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (sessionStatus === "unauthenticated" || !session) {
+    return (
+      <div className="flex min-h-screen flex-col">
+        <TopBar />
+        <main className="flex flex-1 items-center justify-center px-4 py-16">
+          <div className="mx-auto max-w-md text-center">
+            <div className="bg-primary/10 mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl">
+              <Upload className="text-primary h-8 w-8" />
+            </div>
+            <h1 className="text-text text-2xl font-bold">{tUpload("authRequired.title")}</h1>
+            <p className="text-text-muted mt-3 text-base leading-relaxed">
+              {tUpload("authRequired.description")}
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
+              <Link
+                href="/register"
+                className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold transition-colors"
+              >
+                {tUpload("authRequired.register")}
+              </Link>
+              <Link
+                href="/login"
+                className="border-border text-text hover:bg-surface-elevated inline-flex items-center justify-center gap-2 rounded-xl border-2 px-6 py-3 text-sm font-medium transition-colors"
+              >
+                {tUpload("authRequired.login")}
+              </Link>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen flex-col">
       <TopBar />
@@ -391,7 +443,13 @@ function UploadPageContent() {
                     <FormField label="Sprache" tooltipKey="language" required>
                       <FormSelect
                         value={formData.language}
-                        onChange={(e) => updateFormData("language", e.target.value)}
+                        onChange={(e) => {
+                          updateFormData("language", e.target.value);
+                          // Reset dialect when switching away from German
+                          if (e.target.value !== "de") {
+                            updateFormData("dialect", "BOTH");
+                          }
+                        }}
                       >
                         <option value="de">Deutsch</option>
                         <option value="en">Englisch</option>
@@ -413,6 +471,43 @@ function UploadPageContent() {
                       </FormSelect>
                     </FormField>
                   </div>
+
+                  {/* Dialect toggle - only shown for German */}
+                  {formData.language === "de" && (
+                    <FormField
+                      label="Sprachvariante"
+                      hint="Ist Ihr Material in Schweizerdeutsch, Hochdeutsch oder beidem verfasst?"
+                    >
+                      <div className="flex gap-2">
+                        {[
+                          { value: "BOTH" as const, label: "Beide", desc: "CH + DE" },
+                          { value: "SWISS" as const, label: "Schweizerdeutsch", desc: "CH" },
+                          { value: "STANDARD" as const, label: "Hochdeutsch", desc: "DE" },
+                        ].map((opt) => {
+                          const isActive = formData.dialect === opt.value;
+                          return (
+                            <button
+                              key={opt.value}
+                              type="button"
+                              onClick={() => updateFormData("dialect", opt.value)}
+                              className={`flex-1 rounded-lg border-2 px-3 py-2.5 text-center transition-colors ${
+                                isActive
+                                  ? "border-primary bg-primary/10 text-primary"
+                                  : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:bg-surface-hover"
+                              }`}
+                            >
+                              <div className="text-sm font-semibold">{opt.label}</div>
+                              <div
+                                className={`text-xs ${isActive ? "text-primary/80" : "text-text-muted"}`}
+                              >
+                                {opt.desc}
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </FormField>
+                  )}
 
                   {/* Eszett Warning */}
                   {eszettCheck.hasAny && (
@@ -749,6 +844,50 @@ function UploadPageContent() {
                       />
                     </div>
                   </FormField>
+
+                  {/* Pre-Upload Checklist Callout */}
+                  <div className="border-primary/30 bg-primary/5 rounded-xl border p-5">
+                    <div className="mb-3 flex items-center gap-3">
+                      <div className="bg-primary/10 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg">
+                        <ClipboardCheck className="text-primary h-5 w-5" />
+                      </div>
+                      <div>
+                        <h3 className="text-text text-base font-semibold">
+                          {tLegal("checklistTitle")}
+                        </h3>
+                        <p className="text-text-muted text-sm">{tLegal("checklistSubtitle")}</p>
+                      </div>
+                    </div>
+                    <ul className="mb-4 space-y-2 pl-1">
+                      {(
+                        [
+                          "ownWork",
+                          "noScans",
+                          "noTrademarks",
+                          "swissSpelling",
+                          "correctLicense",
+                        ] as const
+                      ).map((key) => (
+                        <li key={key} className="flex items-start gap-2.5">
+                          <Check className="text-primary mt-0.5 h-4 w-4 flex-shrink-0" />
+                          <span className="text-text-secondary text-sm">
+                            {tLegal(`checklistItems.${key}`)}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="flex items-center gap-4">
+                      <Link
+                        href="/urheberrecht"
+                        target="_blank"
+                        className="text-primary hover:bg-primary/10 inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
+                      >
+                        <Scale className="h-4 w-4" />
+                        {tLegal("copyrightGuideFull")}
+                        <ExternalLink className="h-3.5 w-3.5" />
+                      </Link>
+                    </div>
+                  </div>
 
                   {/* Legal Confirmations */}
                   <div className="border-border bg-surface-elevated rounded-xl border p-6">

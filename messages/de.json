@@ -135,6 +135,7 @@
       "secondaryButton": "Mehr erfahren",
       "search": {
         "placeholder": "Was unterrichtest du heute? (z.B. Mathe 5. Klasse)",
+        "allCycles": "Alle Zyklen",
         "allSubjects": "Alle Fächer",
         "math": "Mathematik",
         "german": "Deutsch",
@@ -442,7 +443,10 @@
       "priceLabel": "Preis",
       "showMaterials": "Materialien",
       "showCreators": "Ersteller",
-      "displayLabel": "Anzeigen"
+      "displayLabel": "Anzeigen",
+      "dialectLabel": "Sprachvariante",
+      "dialectSwiss": "Schweizerdeutsch",
+      "dialectStandard": "Hochdeutsch"
     },
     "search": {
       "placeholder": "Suche nach Titel, Thema, Stichwort...",
@@ -1375,7 +1379,17 @@
       "incomplete": "Bitte bestätigen Sie alle Punkte, um fortzufahren.",
       "eszettWarning": "Ihr Titel oder Beschreibung enthält noch Eszett-Zeichen (ß). Bitte korrigieren Sie dies in Schritt 1.",
       "copyrightGuideLink": "Unsicher? Lesen Sie unseren",
-      "copyrightGuideLinkText": "Urheberrechts-Leitfaden"
+      "copyrightGuideLinkText": "Urheberrechts-Leitfaden",
+      "copyrightGuideFull": "Urheberrechts-Leitfaden lesen",
+      "checklistTitle": "Checkliste vor dem Upload",
+      "checklistSubtitle": "Stellen Sie sicher, dass Ihr Material diese Anforderungen erfüllt:",
+      "checklistItems": {
+        "ownWork": "Alle Inhalte sind von Ihnen selbst erstellt oder unter CC0 lizenziert",
+        "noScans": "Keine eingescannten Seiten aus Lehrmitteln oder Schulbüchern",
+        "noTrademarks": "Keine geschützten Marken, Logos oder Figuren (z.B. Disney, Pokémon)",
+        "swissSpelling": "Schweizer Rechtschreibung verwendet (ss statt ß)",
+        "correctLicense": "Alle verwendeten Bilder und Schriften sind korrekt lizenziert"
+      }
     },
     "eszett": {
       "title": "Eszett (ß) gefunden",
@@ -1407,6 +1421,13 @@
       "publish": "Veröffentlichen"
     },
     "upload": {
+      "loading": "Wird geladen...",
+      "authRequired": {
+        "title": "Konto erforderlich",
+        "description": "Um Unterrichtsmaterialien hochzuladen, benötigen Sie ein Currico-Konto. Registrieren Sie sich kostenlos oder melden Sie sich an, um loszulegen.",
+        "register": "Kostenlos registrieren",
+        "login": "Anmelden"
+      },
       "uploading": "Wird hochgeladen...",
       "pleaseWait": "Bitte warten Sie, dies kann einen Moment dauern.",
       "success": "Material erstellt!",
@@ -1991,7 +2012,8 @@
     "general": {
       "q1": {
         "question": "Was ist Currico?",
-        "answer": "Currico ist eine Schweizer Plattform, auf der Lehrpersonen hochwertige Unterrichtsmaterialien kaufen und verkaufen können. Alle Materialien sind speziell für den Schweizer Lehrplan 21 konzipiert und von erfahrenen Lehrpersonen erstellt."
+        "answer": "Currico ist eine Schweizer Plattform, auf der Lehrpersonen hochwertige Unterrichtsmaterialien kaufen und verkaufen können. Alle Materialien sind speziell für den Schweizer Lehrplan 21 konzipiert und von erfahrenen Lehrpersonen erstellt.",
+        "linkLabel": "Materialien entdecken"
       },
       "q2": {
         "question": "Für wen ist Currico geeignet?",
@@ -2003,77 +2025,131 @@
       },
       "q4": {
         "question": "Muss ich ein Konto erstellen?",
-        "answer": "Zum Stöbern und Ansehen der Materialvorschauen benötigen Sie kein Konto. Für den Kauf oder Verkauf von Materialien ist jedoch eine kostenlose Registrierung erforderlich."
+        "answer": "Zum Stöbern und Ansehen der Materialvorschauen benötigen Sie kein Konto. Für den Kauf oder Verkauf von Materialien ist jedoch eine kostenlose Registrierung erforderlich.",
+        "linkLabel": "Jetzt registrieren"
       },
       "q5": {
+        "question": "Ist Currico kostenlos?",
+        "answer": "Die Registrierung und das Stöbern sind kostenlos. Kostenlose Materialien können ohne Gebühren heruntergeladen werden. Bei kostenpflichtigen Materialien fallen die angegebenen Preise an. Für Verkäufer beträgt die Plattformgebühr 30%."
+      },
+      "q6": {
+        "question": "Was bedeutet Lehrplan 21?",
+        "answer": "Der Lehrplan 21 (LP21) ist der gemeinsame Lehrplan der deutschsprachigen Kantone der Schweiz. Er beschreibt die Kompetenzen, die Schüler während der obligatorischen Schulzeit erwerben sollen, aufgeteilt in drei Zyklen."
+      },
+      "q7": {
         "question": "Wie kann ich den Support kontaktieren?",
-        "answer": "Sie erreichen uns über das Kontaktformular auf unserer Website oder per E-Mail. Wir bemühen uns, alle Anfragen innerhalb von 24 Stunden zu beantworten."
+        "answer": "Sie erreichen uns über das Kontaktformular auf unserer Website oder per E-Mail an info@currico.ch. Wir bemühen uns, alle Anfragen innerhalb von 24 Stunden zu beantworten.",
+        "linkLabel": "Kontaktformular öffnen"
       }
     },
     "buying": {
       "q1": {
-        "question": "Welche Dateiformate gibt es?",
-        "answer": "Die meisten Materialien sind als PDF und/oder Word-Dokument (DOCX) verfügbar. Das genaue Format ist bei jedem Material angegeben. Word-Dokumente können Sie nach dem Download bearbeiten."
+        "question": "Wie finde ich passende Materialien?",
+        "answer": "Nutzen Sie die Suchfunktion und Filter auf der Materialseite. Sie können nach Zyklus, Fachbereich, Sprachvariante (Schweizerdeutsch/Hochdeutsch) und Stichwörtern filtern, um genau die Materialien zu finden, die Sie brauchen.",
+        "linkLabel": "Materialien durchstöbern"
       },
       "q2": {
-        "question": "Sind die Materialien editierbar?",
-        "answer": "Das hängt vom Dateiformat ab. Word-Dokumente (DOCX) sind vollständig editierbar. PDF-Dateien können nicht direkt bearbeitet werden, eignen sich aber ideal zum Ausdrucken."
+        "question": "Welche Dateiformate gibt es?",
+        "answer": "Die meisten Materialien sind als PDF und/oder Word-Dokument (DOCX) verfügbar. Weitere Formate sind PowerPoint (PPTX) und Excel (XLSX). Das genaue Format ist bei jedem Material angegeben."
       },
       "q3": {
-        "question": "Darf ich das Material an Kollegen weitergeben?",
-        "answer": "Die Lizenz gilt für eine einzelne Lehrperson. Das Weitergeben an Kollegen oder das Hochladen in schulinterne Netzwerke ist nicht gestattet. Für Schullizenzen kontaktieren Sie uns bitte direkt."
+        "question": "Sind die Materialien editierbar?",
+        "answer": "Das hängt vom Dateiformat ab. Word-Dokumente (DOCX) und PowerPoint-Dateien (PPTX) sind vollständig editierbar. PDF-Dateien können nicht direkt bearbeitet werden, eignen sich aber ideal zum Ausdrucken."
       },
       "q4": {
         "question": "Wie funktioniert die Bezahlung?",
         "answer": "Wir akzeptieren Kreditkarten (Visa, Mastercard), TWINT und für Schulen auch Rechnung mit QR-Code. Alle Preise sind in Schweizer Franken inkl. MWST."
       },
       "q5": {
+        "question": "Wo finde ich meine gekauften Materialien?",
+        "answer": "Alle erworbenen Materialien finden Sie in Ihrer Bibliothek unter «Mein Konto». Dort können Sie die Dateien jederzeit erneut herunterladen.",
+        "linkLabel": "Meine Bibliothek öffnen"
+      },
+      "q6": {
+        "question": "Darf ich das Material an Kollegen weitergeben?",
+        "answer": "Die Lizenz gilt für eine einzelne Lehrperson. Das Weitergeben an Kollegen oder das Hochladen in schulinterne Netzwerke ist nicht gestattet. Für Schullizenzen kontaktieren Sie uns bitte direkt."
+      },
+      "q7": {
         "question": "Kann ich Materialien zurückgeben?",
-        "answer": "Da es sich um digitale Produkte handelt, ist eine Rückgabe nach dem Download grundsätzlich nicht möglich. Bei technischen Problemen oder falls das Material nicht der Beschreibung entspricht, kontaktieren Sie bitte unseren Support."
+        "answer": "Da es sich um digitale Produkte handelt, ist eine Rückgabe nach dem Download grundsätzlich nicht möglich. Bei technischen Problemen oder falls das Material nicht der Beschreibung entspricht, kontaktieren Sie bitte unseren Support.",
+        "linkLabel": "Support kontaktieren"
+      },
+      "q8": {
+        "question": "Kann ich Materialien auf meiner Wunschliste speichern?",
+        "answer": "Ja, klicken Sie auf das Herz-Symbol bei einem Material, um es auf Ihre Wunschliste zu setzen. So können Sie interessante Materialien für später merken und einfach wiederfinden.",
+        "linkLabel": "Meine Wunschliste"
       }
     },
     "selling": {
       "q1": {
         "question": "Wie kann ich Materialien verkaufen?",
-        "answer": "Registrieren Sie sich als Verkäufer, verbinden Sie Ihr Konto mit Stripe für die Auszahlungen und laden Sie Ihre Materialien hoch. Nach einer kurzen Prüfung werden Ihre Materialien veröffentlicht."
+        "answer": "Registrieren Sie sich, gehen Sie auf «Material hochladen», füllen Sie die Informationen aus, laden Sie Ihre Datei hoch und bestätigen Sie die rechtlichen Punkte. Nach der Veröffentlichung ist Ihr Material sofort im Shop verfügbar.",
+        "linkLabel": "Material hochladen"
       },
       "q2": {
         "question": "Wie hoch ist die Provision?",
-        "answer": "Currico behält 30% des Verkaufspreises als Plattformgebühr. Sie erhalten 70% jedes Verkaufs direkt auf Ihr Bankkonto ausgezahlt."
+        "answer": "Currico behält 30% des Verkaufspreises als Plattformgebühr. Sie erhalten 70% jedes Verkaufs. Bei einem Preis von CHF 10.00 erhalten Sie also CHF 7.00 pro Verkauf."
       },
       "q3": {
         "question": "Wann erhalte ich meine Auszahlung?",
         "answer": "Auszahlungen erfolgen automatisch über Stripe, sobald Ihr Guthaben CHF 50 erreicht. Die Überweisung auf Ihr Bankkonto dauert in der Regel 2-3 Werktage."
       },
       "q4": {
-        "question": "Welche Anforderungen gibt es an die Materialien?",
-        "answer": "Ihre Materialien müssen original sein, den Lehrplan 21 berücksichtigen und Schweizer Rechtschreibung verwenden (ss statt ß). Urheberrechtlich geschützte Inhalte Dritter sind nicht erlaubt. Mehr dazu in unserem Urheberrechts-Leitfaden unter /urheberrecht."
+        "question": "Was darf ich hochladen und was nicht?",
+        "answer": "Sie dürfen nur selbst erstellte Materialien oder Inhalte mit CC0-Lizenz hochladen. Keine Scans aus Lehrmitteln, keine geschützten Marken oder Figuren, und keine urheberrechtlich geschützten Inhalte Dritter. Unser Urheberrechts-Leitfaden erklärt alle Details.",
+        "linkLabel": "Urheberrechts-Leitfaden lesen"
       },
       "q5": {
         "question": "Was bedeutet LP21-konform?",
-        "answer": "LP21-konform bedeutet, dass Ihr Material auf die Kompetenzen des Lehrplans 21 abgestimmt ist. Beim Hochladen können Sie die entsprechenden Kompetenzcodes (z.B. MA.1.A.1) auswählen."
+        "answer": "LP21-konform bedeutet, dass Ihr Material auf die Kompetenzen des Lehrplans 21 abgestimmt ist. Beim Hochladen können Sie Zyklus, Fachbereich und die entsprechenden Kompetenzcodes (z.B. MA.1.A.1) auswählen."
+      },
+      "q6": {
+        "question": "Muss ich Schweizer Rechtschreibung verwenden?",
+        "answer": "Ja, für deutschsprachige Materialien ist Schweizer Rechtschreibung Pflicht - das heisst «ss» statt «ß». Unser Upload-Assistent prüft automatisch auf Eszett-Zeichen und bietet eine automatische Korrektur an."
+      },
+      "q7": {
+        "question": "Kann ich kostenlose Materialien anbieten?",
+        "answer": "Ja, Sie können Materialien auch kostenlos anbieten. Kostenlose Materialien erreichen oft mehr Nutzer und helfen, Ihre Bekanntheit als Autor aufzubauen. Sie können den Preis jederzeit ändern.",
+        "linkLabel": "Kostenloses Material hochladen"
+      },
+      "q8": {
+        "question": "Kann ich meine Materialien nachträglich bearbeiten?",
+        "answer": "Ja, Sie können Titel, Beschreibung und Preis Ihrer veröffentlichten Materialien jederzeit in Ihrem Konto unter «Meine Uploads» bearbeiten.",
+        "linkLabel": "Meine Uploads verwalten"
       }
     },
     "technical": {
       "q1": {
         "question": "Wie lade ich gekaufte Materialien herunter?",
-        "answer": "Nach dem Kauf finden Sie alle erworbenen Materialien in Ihrer Bibliothek unter 'Mein Konto'. Dort können Sie die Dateien jederzeit erneut herunterladen."
+        "answer": "Nach dem Kauf finden Sie alle erworbenen Materialien in Ihrer Bibliothek unter «Mein Konto». Klicken Sie auf den Download-Button neben dem Material, um die Datei herunterzuladen.",
+        "linkLabel": "Zur Bibliothek"
       },
       "q2": {
         "question": "Ich habe Probleme beim Download. Was tun?",
-        "answer": "Versuchen Sie zunächst, die Seite neu zu laden oder einen anderen Browser zu verwenden. Falls das Problem bestehen bleibt, kontaktieren Sie bitte unseren Support mit Angabe der Bestellnummer."
+        "answer": "Versuchen Sie zunächst, die Seite neu zu laden oder einen anderen Browser zu verwenden. Prüfen Sie auch, ob Ihr Browser Downloads blockiert (Pop-up-Blocker). Falls das Problem bestehen bleibt, kontaktieren Sie bitte unseren Support.",
+        "linkLabel": "Support kontaktieren"
       },
       "q3": {
-        "question": "Sind meine Daten sicher?",
-        "answer": "Ja, wir nehmen Datenschutz sehr ernst. Unsere Server befinden sich in der Schweiz, und wir halten uns strikt an das Schweizer Datenschutzgesetz (nDSG) sowie die DSGVO. Mehr dazu in unserer Datenschutzerklärung."
+        "question": "Welche Dateigrösse ist beim Upload erlaubt?",
+        "answer": "Die maximale Dateigrösse beträgt 50 MB pro Datei. Unterstützte Formate sind PDF, Word (DOCX), PowerPoint (PPTX) und Excel (XLSX). Vorschaubilder (PNG, JPG) dürfen maximal 5 MB gross sein."
       },
       "q4": {
+        "question": "Sind meine Daten sicher?",
+        "answer": "Ja, wir nehmen Datenschutz sehr ernst. Unsere Server befinden sich in der Schweiz bei Infomaniak, und wir halten uns strikt an das Schweizer Datenschutzgesetz (nDSG) sowie die DSGVO.",
+        "linkLabel": "Datenschutzerklärung lesen"
+      },
+      "q5": {
         "question": "Welche Browser werden unterstützt?",
         "answer": "Currico funktioniert mit allen modernen Browsern: Chrome, Firefox, Safari und Edge. Wir empfehlen, stets die aktuelle Version Ihres Browsers zu verwenden."
       },
-      "q5": {
+      "q6": {
         "question": "Funktioniert Currico auch auf dem Handy?",
         "answer": "Ja, Currico ist vollständig responsiv und funktioniert auf Smartphones und Tablets. Sie können Materialien auf jedem Gerät durchstöbern und kaufen. Zum Bearbeiten von Word-Dokumenten empfehlen wir jedoch einen Computer."
+      },
+      "q7": {
+        "question": "Mein Upload ist fehlgeschlagen. Was kann ich tun?",
+        "answer": "Prüfen Sie, ob Ihre Datei das richtige Format hat (PDF, DOCX, PPTX, XLSX) und die maximale Grösse von 50 MB nicht überschreitet. Falls Sie abgemeldet wurden, loggen Sie sich erneut ein und versuchen es nochmals.",
+        "linkLabel": "Erneut hochladen"
       }
     },
     "contact": {
@@ -2478,6 +2554,9 @@
     }
   },
   "hilfePage": {
+    "hero": {
+      "badge": "Hilfe-Center"
+    },
     "title": "Hilfe-Center",
     "subtitle": "Finden Sie Antworten auf Ihre Fragen zu Currico",
     "searchPlaceholder": "Nach Antworten suchen...",
@@ -2485,6 +2564,36 @@
     "resultsCount": "{count} Ergebnisse gefunden",
     "categories": {
       "all": "Alle"
+    },
+    "quickStart": {
+      "title": "Schnelleinstieg",
+      "upload": {
+        "question": "Wie lade ich Material hoch?",
+        "answer": "Um Material hochzuladen, benötigen Sie zunächst ein kostenloses Currico-Konto. Nach der Registrierung klicken Sie auf «Material hochladen», füllen die Grundinformationen aus (Titel, Beschreibung, Zyklus, Fach), laden Ihre Datei hoch und bestätigen die rechtlichen Punkte. Nach der Veröffentlichung ist Ihr Material sofort verfügbar.",
+        "linkLabel": "Registrieren & hochladen →"
+      },
+      "copyright": {
+        "question": "Was darf ich hochladen? (Urheberrecht)",
+        "answer": "Sie dürfen nur selbst erstellte Materialien oder Inhalte mit CC0-Lizenz hochladen. Keine Scans aus Lehrmitteln, keine geschützten Marken oder Figuren. Unser Urheberrechts-Leitfaden erklärt alle Details zu Lizenzen, Bildern und Schriften.",
+        "linkLabel": "Urheberrechts-Leitfaden lesen →"
+      },
+      "browse": {
+        "question": "Wo finde ich Unterrichtsmaterialien?",
+        "answer": "Auf unserer Materialseite können Sie alle verfügbaren Unterrichtsmaterialien durchstöbern. Filtern Sie nach Zyklus, Fachbereich, Sprachvariante und mehr, um genau das zu finden, was Sie brauchen.",
+        "linkLabel": "Materialien entdecken →"
+      }
+    },
+    "usefulLinks": {
+      "title": "Nützliche Links",
+      "subtitle": "Wichtige Seiten und Dokumente",
+      "copyrightGuide": "Urheberrechts-Leitfaden",
+      "copyrightGuideDesc": "Was darf ich hochladen? Lizenzen, Bilder, Schriften und mehr.",
+      "terms": "Verkäufervereinbarung",
+      "termsDesc": "Bedingungen für Verkäufer auf Currico.",
+      "privacy": "Datenschutz",
+      "privacyDesc": "Wie wir mit Ihren Daten umgehen.",
+      "impressum": "Impressum",
+      "impressumDesc": "Rechtliche Angaben und Kontaktdaten."
     },
     "noResults": {
       "title": "Keine Ergebnisse gefunden",

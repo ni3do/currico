@@ -134,6 +134,7 @@
       "secondaryButton": "Learn More",
       "search": {
         "placeholder": "Search subject, topic or keyword...",
+        "allCycles": "All Cycles",
         "allSubjects": "All Subjects",
         "math": "Mathematics",
         "german": "German",
@@ -441,7 +442,10 @@
       "priceLabel": "Price",
       "showMaterials": "Materials",
       "showCreators": "Creators",
-      "displayLabel": "Show"
+      "displayLabel": "Show",
+      "dialectLabel": "Dialect",
+      "dialectSwiss": "Swiss German",
+      "dialectStandard": "Standard German"
     },
     "search": {
       "placeholder": "Search by title, topic, keyword...",
@@ -1374,7 +1378,17 @@
       "incomplete": "Please confirm all points to proceed.",
       "eszettWarning": "Your title or description still contains Eszett characters (ß). Please correct this in step 1.",
       "copyrightGuideLink": "Not sure? Read our",
-      "copyrightGuideLinkText": "Copyright Guide"
+      "copyrightGuideLinkText": "Copyright Guide",
+      "copyrightGuideFull": "Read Copyright Guide",
+      "checklistTitle": "Pre-Upload Checklist",
+      "checklistSubtitle": "Make sure your material meets these requirements:",
+      "checklistItems": {
+        "ownWork": "All content is created by you or licensed under CC0",
+        "noScans": "No scanned pages from textbooks or school books",
+        "noTrademarks": "No protected trademarks, logos, or characters (e.g. Disney, Pokémon)",
+        "swissSpelling": "Swiss German spelling used (ss instead of ß)",
+        "correctLicense": "All images and fonts are properly licensed"
+      }
     },
     "eszett": {
       "title": "Eszett (ß) found",
@@ -1406,6 +1420,13 @@
       "publish": "Publish"
     },
     "upload": {
+      "loading": "Loading...",
+      "authRequired": {
+        "title": "Account Required",
+        "description": "To upload teaching materials, you need a Currico account. Register for free or sign in to get started.",
+        "register": "Register for Free",
+        "login": "Sign In"
+      },
       "uploading": "Uploading...",
       "pleaseWait": "Please wait, this may take a moment.",
       "success": "Material Created!",
@@ -1990,7 +2011,8 @@
     "general": {
       "q1": {
         "question": "What is Currico?",
-        "answer": "Currico is a Swiss platform where teachers can buy and sell high-quality teaching materials. All materials are specifically designed for the Swiss Lehrplan 21 curriculum and created by experienced teachers."
+        "answer": "Currico is a Swiss platform where teachers can buy and sell high-quality teaching materials. All materials are specifically designed for the Swiss Lehrplan 21 curriculum and created by experienced teachers.",
+        "linkLabel": "Discover Materials"
       },
       "q2": {
         "question": "Who is Currico for?",
@@ -2002,77 +2024,131 @@
       },
       "q4": {
         "question": "Do I need to create an account?",
-        "answer": "You don't need an account to browse and view material previews. However, a free registration is required to buy or sell materials."
+        "answer": "You don't need an account to browse and view material previews. However, a free registration is required to buy or sell materials.",
+        "linkLabel": "Register now"
       },
       "q5": {
+        "question": "Is Currico free?",
+        "answer": "Registration and browsing are free. Free materials can be downloaded at no cost. For paid materials, the listed prices apply. For sellers, the platform fee is 30%."
+      },
+      "q6": {
+        "question": "What does Lehrplan 21 mean?",
+        "answer": "Lehrplan 21 (LP21) is the common curriculum of the German-speaking cantons of Switzerland. It describes the competencies students should acquire during compulsory education, divided into three cycles."
+      },
+      "q7": {
         "question": "How can I contact support?",
-        "answer": "You can reach us via the contact form on our website or by email. We strive to respond to all inquiries within 24 hours."
+        "answer": "You can reach us via the contact form on our website or by email at info@currico.ch. We strive to respond to all inquiries within 24 hours.",
+        "linkLabel": "Open contact form"
       }
     },
     "buying": {
       "q1": {
-        "question": "What file formats are available?",
-        "answer": "Most materials are available as PDF and/or Word documents (DOCX). The exact format is indicated for each material. Word documents can be edited after download."
+        "question": "How do I find suitable materials?",
+        "answer": "Use the search function and filters on the materials page. You can filter by cycle, subject area, dialect (Swiss German/Standard German) and keywords to find exactly the materials you need.",
+        "linkLabel": "Browse Materials"
       },
       "q2": {
-        "question": "Are the materials editable?",
-        "answer": "That depends on the file format. Word documents (DOCX) are fully editable. PDF files cannot be edited directly but are ideal for printing."
+        "question": "What file formats are available?",
+        "answer": "Most materials are available as PDF and/or Word documents (DOCX). Other formats include PowerPoint (PPTX) and Excel (XLSX). The exact format is indicated for each material."
       },
       "q3": {
-        "question": "Can I share materials with colleagues?",
-        "answer": "The license is valid for a single teacher. Sharing with colleagues or uploading to school networks is not permitted. For school licenses, please contact us directly."
+        "question": "Are the materials editable?",
+        "answer": "That depends on the file format. Word documents (DOCX) and PowerPoint files (PPTX) are fully editable. PDF files cannot be edited directly but are ideal for printing."
       },
       "q4": {
         "question": "How does payment work?",
         "answer": "We accept credit cards (Visa, Mastercard), TWINT, and for schools also invoice with QR code. All prices are in Swiss Francs including VAT."
       },
       "q5": {
+        "question": "Where can I find my purchased materials?",
+        "answer": "All acquired materials can be found in your Library under 'My Account'. You can re-download the files there at any time.",
+        "linkLabel": "Open My Library"
+      },
+      "q6": {
+        "question": "Can I share materials with colleagues?",
+        "answer": "The license is valid for a single teacher. Sharing with colleagues or uploading to school networks is not permitted. For school licenses, please contact us directly."
+      },
+      "q7": {
         "question": "Can I return materials?",
-        "answer": "Since these are digital products, returns are generally not possible after download. For technical problems or if the material doesn't match the description, please contact our support."
+        "answer": "Since these are digital products, returns are generally not possible after download. For technical problems or if the material doesn't match the description, please contact our support.",
+        "linkLabel": "Contact Support"
+      },
+      "q8": {
+        "question": "Can I save materials to a wishlist?",
+        "answer": "Yes, click the heart icon on a material to add it to your wishlist. This way you can bookmark interesting materials for later and easily find them again.",
+        "linkLabel": "My Wishlist"
       }
     },
     "selling": {
       "q1": {
         "question": "How can I sell materials?",
-        "answer": "Register as a seller, connect your account with Stripe for payouts, and upload your materials. After a brief review, your materials will be published."
+        "answer": "Register, go to 'Upload Material', fill in the information, upload your file, and confirm the legal requirements. After publishing, your material is immediately available in the shop.",
+        "linkLabel": "Upload Material"
       },
       "q2": {
         "question": "What is the commission rate?",
-        "answer": "Currico keeps 30% of the sale price as a platform fee. You receive 70% of each sale directly to your bank account."
+        "answer": "Currico keeps 30% of the sale price as a platform fee. You receive 70% of each sale. For a price of CHF 10.00, you would receive CHF 7.00 per sale."
       },
       "q3": {
         "question": "When will I receive my payout?",
         "answer": "Payouts are processed automatically via Stripe once your balance reaches CHF 50. The transfer to your bank account usually takes 2-3 business days."
       },
       "q4": {
-        "question": "What are the requirements for materials?",
-        "answer": "Your materials must be original, consider the Lehrplan 21, and use Swiss spelling (ss instead of ß). Copyrighted content from third parties is not allowed. Learn more in our Copyright Guide at /urheberrecht."
+        "question": "What can I upload and what not?",
+        "answer": "You may only upload self-created materials or content with CC0 license. No scans from textbooks, no protected trademarks or characters, and no copyrighted third-party content. Our Copyright Guide explains all the details.",
+        "linkLabel": "Read Copyright Guide"
       },
       "q5": {
         "question": "What does LP21-compliant mean?",
-        "answer": "LP21-compliant means your material is aligned with the competencies of the Lehrplan 21. When uploading, you can select the corresponding competency codes (e.g., MA.1.A.1)."
+        "answer": "LP21-compliant means your material is aligned with the competencies of the Lehrplan 21. When uploading, you can select the cycle, subject area, and the corresponding competency codes (e.g., MA.1.A.1)."
+      },
+      "q6": {
+        "question": "Do I have to use Swiss spelling?",
+        "answer": "Yes, Swiss spelling is required for German-language materials - that means 'ss' instead of 'ß'. Our upload assistant automatically checks for Eszett characters and offers automatic correction."
+      },
+      "q7": {
+        "question": "Can I offer free materials?",
+        "answer": "Yes, you can also offer materials for free. Free materials often reach more users and help build your reputation as an author. You can change the price at any time.",
+        "linkLabel": "Upload free material"
+      },
+      "q8": {
+        "question": "Can I edit my materials after publishing?",
+        "answer": "Yes, you can edit the title, description, and price of your published materials at any time in your account under 'My Uploads'.",
+        "linkLabel": "Manage My Uploads"
       }
     },
     "technical": {
       "q1": {
         "question": "How do I download purchased materials?",
-        "answer": "After purchase, you'll find all acquired materials in your Library under 'My Account'. You can re-download the files there at any time."
+        "answer": "After purchase, you'll find all acquired materials in your Library under 'My Account'. Click the download button next to the material to download the file.",
+        "linkLabel": "Go to Library"
       },
       "q2": {
         "question": "I'm having download problems. What should I do?",
-        "answer": "First try reloading the page or using a different browser. If the problem persists, please contact our support with your order number."
+        "answer": "First try reloading the page or using a different browser. Also check if your browser is blocking downloads (pop-up blocker). If the problem persists, please contact our support.",
+        "linkLabel": "Contact Support"
       },
       "q3": {
-        "question": "Is my data secure?",
-        "answer": "Yes, we take data protection very seriously. Our servers are located in Switzerland, and we strictly comply with Swiss data protection law (nDSG) as well as GDPR. More details in our Privacy Policy."
+        "question": "What file size is allowed for uploads?",
+        "answer": "The maximum file size is 50 MB per file. Supported formats are PDF, Word (DOCX), PowerPoint (PPTX), and Excel (XLSX). Preview images (PNG, JPG) may be up to 5 MB."
       },
       "q4": {
+        "question": "Is my data secure?",
+        "answer": "Yes, we take data protection very seriously. Our servers are located in Switzerland at Infomaniak, and we strictly comply with Swiss data protection law (nDSG) as well as GDPR.",
+        "linkLabel": "Read Privacy Policy"
+      },
+      "q5": {
         "question": "Which browsers are supported?",
         "answer": "Currico works with all modern browsers: Chrome, Firefox, Safari, and Edge. We recommend always using the latest version of your browser."
       },
-      "q5": {
+      "q6": {
         "question": "Does Currico work on mobile devices?",
         "answer": "Yes, Currico is fully responsive and works on smartphones and tablets. You can browse and purchase materials on any device. However, for editing Word documents, we recommend using a computer."
+      },
+      "q7": {
+        "question": "My upload failed. What can I do?",
+        "answer": "Check if your file has the correct format (PDF, DOCX, PPTX, XLSX) and doesn't exceed the maximum size of 50 MB. If you were logged out, log in again and try once more.",
+        "linkLabel": "Try uploading again"
       }
     },
     "contact": {
@@ -2449,6 +2525,9 @@
     }
   },
   "hilfePage": {
+    "hero": {
+      "badge": "Help Center"
+    },
     "title": "Help Center",
     "subtitle": "Find answers to your questions about Currico",
     "searchPlaceholder": "Search for answers...",
@@ -2456,6 +2535,36 @@
     "resultsCount": "{count} results found",
     "categories": {
       "all": "All"
+    },
+    "quickStart": {
+      "title": "Quick Start",
+      "upload": {
+        "question": "How do I upload material?",
+        "answer": "To upload material, you first need a free Currico account. After registering, click 'Upload Material', fill in the basic information (title, description, cycle, subject), upload your file, and confirm the legal requirements. After publishing, your material is immediately available.",
+        "linkLabel": "Register & Upload →"
+      },
+      "copyright": {
+        "question": "What am I allowed to upload? (Copyright)",
+        "answer": "You may only upload self-created materials or content with CC0 license. No scans from textbooks, no protected trademarks or characters. Our Copyright Guide explains all the details about licenses, images, and fonts.",
+        "linkLabel": "Read Copyright Guide →"
+      },
+      "browse": {
+        "question": "Where can I find teaching materials?",
+        "answer": "On our materials page you can browse all available teaching materials. Filter by cycle, subject area, dialect (Swiss German/Standard German) and more to find exactly what you need.",
+        "linkLabel": "Discover Materials →"
+      }
+    },
+    "usefulLinks": {
+      "title": "Useful Links",
+      "subtitle": "Important pages and documents",
+      "copyrightGuide": "Copyright Guide",
+      "copyrightGuideDesc": "What can I upload? Licenses, images, fonts and more.",
+      "terms": "Seller Agreement",
+      "termsDesc": "Terms and conditions for sellers on Currico.",
+      "privacy": "Privacy Policy",
+      "privacyDesc": "How we handle your data.",
+      "impressum": "Legal Notice",
+      "impressumDesc": "Legal information and contact details."
     },
     "noResults": {
       "title": "No results found",
