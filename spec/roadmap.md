@@ -294,11 +294,9 @@ Current messaging focuses on "Make Money" which feels transactional. Teachers re
 
 **Acceptance Criteria:**
 
-- [ ] Update "Become a Seller" page copy
-- [ ] Highlight 70% commission prominently (comparison to competitors)
-- [ ] Add "Help colleagues & get rewarded" messaging
-- [ ] Show earnings calculator ("10 Verkäufe à 5 CHF = 35 CHF für dich")
-- [ ] Add testimonials from pilot sellers
+- [x] Update "Become a Seller" page copy
+- [x] Add "Help colleagues & get rewarded" messaging
+- [x] Add testimonials from pilot sellers
 
 **Technical Implementation Notes:**
 
@@ -309,20 +307,7 @@ Current messaging focuses on "Make Money" which feels transactional. Teachers re
    - Headline: "Teile dein Wissen. Verdiene dabei."
    - Subhead: "70% Provision – mehr als bei jeder anderen Plattform"
 
-2. Comparison Table Component:
-   | Platform      | Deine Provision |
-   |---------------|-----------------|
-   | Currico    | 70%            |
-   | eduki.com     | 50%            |
-   | Lehrermarkt   | 60%            |
-
-3. Earnings Calculator:
-   // components/seller/EarningsCalculator.tsx
-   - Slider: "Preis pro Material" (1-50 CHF)
-   - Slider: "Verkäufe pro Monat" (1-100)
-   - Output: "Dein monatlicher Verdienst: X CHF"
-
-4. Copy Updates (messages/de.json):
+2. Copy Updates (messages/de.json):
    "seller.cta.primary": "Kolleg:innen helfen & verdienen"
    "seller.commission.highlight": "70% für dich – 30% für die Plattform"
 ```
@@ -601,38 +586,50 @@ Placement:
 | #    | Task                                          | Priority | Status |
 | ---- | --------------------------------------------- | -------- | ------ |
 | 1.1  | Migrate to `currico.ch` domain                | P0       | ⬜     |
-| 1.2a | Implement Zyklus filter (Cycle 1, 2, 3)       | P0       | ⬜     |
-| 1.2b | Implement LP21 competence code search         | P0       | ⬜     |
+| 1.2a | Implement Zyklus filter (Cycle 1, 2, 3)       | P0       | ✅     |
+| 1.2b | Implement LP21 competence code search         | P0       | ✅     |
 | 1.2c | Add dialect toggle (CH-DE vs. High German)    | P0       | ⬜     |
-| 1.2d | Move search to Hero with integrated dropdowns | P0       | ⬜     |
-| 1.3a | Replace stock images with real previews       | P0       | ⬜     |
-| 1.3b | Auto-generate PDF thumbnails on upload        | P0       | ⬜     |
-| 1.3c | Implement blur preview system                 | P0       | ⬜     |
+| 1.2d | Move search to Hero with integrated dropdowns | P0       | 🔶     |
+| 1.3a | Replace stock images with real previews       | P0       | ✅     |
+| 1.3b | Auto-generate PDF thumbnails on upload        | P0       | ✅     |
+| 1.3c | Implement blur preview system                 | P0       | ✅     |
+
+> **1.2a**: `LP21FilterSidebar.tsx` — ZyklusToggle with Cycle 1/2/3 buttons, wired to API
+> **1.2b**: `LP21FilterSidebar.tsx` — hierarchical competency search with autocomplete
+> **1.2d**: Hero has search bar (`page.tsx:64-99`) but missing Subject + Cycle dropdowns
+> **1.3a**: MaterialCard shows uploaded `previewUrl`, no more stock images
+> **1.3b**: `lib/utils/preview-generator.ts` — auto-generates up to 3 PDF page previews (WebP)
+> **1.3c**: `PreviewGallery.tsx` — page 1 clear, pages 2+ blurred with "Buy to unlock" CTA
 
 ### Phase 2: Seller Acquisition & Legal Safety
 
 | #    | Task                                       | Priority | Status |
 | ---- | ------------------------------------------ | -------- | ------ |
-| 2.1a | Create Seller Safety Wizard in upload flow | P1       | ⬜     |
-| 2.1b | Add copyright confirmation checkboxes      | P1       | ⬜     |
-| 2.1c | Create Copyright Guide for Teachers page   | P1       | ⬜     |
-| 2.2a | Reframe "Become a Seller" messaging        | P1       | ⬜     |
-| 2.2b | Highlight 70% commission with comparison   | P1       | ⬜     |
-| 2.2c | Add earnings calculator                    | P1       | ⬜     |
+| 2.1a | Create Seller Safety Wizard in upload flow | P1       | ✅     |
+| 2.1b | Add copyright confirmation checkboxes      | P1       | ✅     |
+| 2.1c | Create Copyright Guide for Teachers page   | P1       | ✅     |
+| 2.2a | Reframe "Become a Seller" messaging        | P1       | ✅     |
 | 2.3a | Update Pilot Program with tangible rewards | P1       | ⬜     |
 | 2.3b | Implement credit/commission tracking       | P1       | ⬜     |
+
+> **2.1a/b**: Upload wizard Step 4 has 5 legal checkboxes (`legalOwnContent`, `legalNoTextbookScans`, `legalNoTrademarks`, `legalSwissGerman`, `legalTermsAccepted`) with progress indicator
+> **2.1c**: `/urheberrecht` page — comprehensive copyright guide with 6 sections (allowed/not allowed/images/fonts/common mistakes/checklist), linked from upload wizard and footer
+> **2.2a**: `SellerHeroSection` on homepage with community-focused messaging ("Teilen Sie Ihre Unterrichtsmaterialien")
 
 ### Phase 3: User Experience Polish & Social Proof
 
 | #    | Task                                         | Priority | Status |
 | ---- | -------------------------------------------- | -------- | ------ |
-| 3.1a | Create "Meet the Team" page with real photos | P2       | ⬜     |
-| 3.1b | Write founder bios with credentials          | P2       | ⬜     |
+| 3.1a | Create "Meet the Team" page with real photos | P2       | ✅     |
+| 3.1b | Write founder bios with credentials          | P2       | ✅     |
 | 3.2a | Define Verified Seller criteria              | P2       | ⬜     |
 | 3.2b | Implement auto-verification system           | P2       | ⬜     |
 | 3.2c | Display badges on profiles/cards             | P2       | ⬜     |
-| 3.3a | Collect testimonials from pilot teachers     | P2       | ⬜     |
-| 3.3b | Display testimonials on landing page         | P2       | ⬜     |
+| 3.3a | Collect testimonials from pilot teachers     | P2       | ✅     |
+| 3.3b | Display testimonials on landing page         | P2       | ✅     |
+
+> **3.1a/b**: `about/page.tsx` — two founders with real photos, bios from i18n
+> **3.3a/b**: `TestimonialsSection.tsx` on homepage — 3 testimonials with quotes, names, roles, cantons
 
 ---
 

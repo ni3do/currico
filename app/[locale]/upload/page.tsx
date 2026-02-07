@@ -40,6 +40,7 @@ function UploadPageContent() {
   const router = useRouter();
   const tCommon = useTranslations("common");
   const tUpload = useTranslations("uploadWizard.upload");
+  const tLegal = useTranslations("uploadWizard.legal");
   const {
     formData,
     updateFormData,
@@ -844,6 +845,18 @@ function UploadPageContent() {
                         hasError={touchedFields.legalTermsAccepted && !formData.legalTermsAccepted}
                         tooltipKey="legalTermsAccepted"
                       />
+                    </div>
+
+                    {/* Copyright guide link */}
+                    <div className="bg-primary/5 border-primary/20 mt-4 rounded-lg border p-3 text-sm">
+                      <span className="text-text-secondary">{tLegal("copyrightGuideLink")} </span>
+                      <Link
+                        href="/urheberrecht"
+                        target="_blank"
+                        className="text-primary font-medium hover:underline"
+                      >
+                        {tLegal("copyrightGuideLinkText")} →
+                      </Link>
                     </div>
 
                     {!allLegalChecked && (

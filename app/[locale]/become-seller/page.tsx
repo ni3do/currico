@@ -290,6 +290,24 @@ export default function BecomeSellerPage() {
           </div>
         </section>
 
+        {/* Copyright Guide Callout */}
+        <section className="section-padding">
+          <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+            <div className="border-primary/20 bg-primary/5 rounded-xl border p-6 text-center">
+              <h3 className="text-text text-lg font-semibold">{t("copyrightCallout.title")}</h3>
+              <p className="text-text-muted mx-auto mt-2 max-w-md text-sm">
+                {t("copyrightCallout.description")}
+              </p>
+              <Link
+                href="/urheberrecht"
+                className="text-primary mt-3 inline-flex items-center gap-1 text-sm font-medium hover:underline"
+              >
+                {t("copyrightCallout.link")} →
+              </Link>
+            </div>
+          </div>
+        </section>
+
         {/* Seller Terms Section */}
         <section className="section-padding">
           <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">

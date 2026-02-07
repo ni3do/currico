@@ -54,6 +54,12 @@ export default function Footer() {
             >
               {tCommon("footer.links.cookies")}
             </Link>
+            <Link
+              href="/urheberrecht"
+              className="text-text-muted hover:text-primary text-sm transition-colors"
+            >
+              {tCommon("footer.links.copyrightGuide")}
+            </Link>
           </nav>
         </div>
       </div>

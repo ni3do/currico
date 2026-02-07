@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
@@ -279,6 +280,14 @@ export default function TermsPage() {
           <h3 className="text-text mt-6 text-lg font-semibold">
             {tSellerTerms("sections.copyrightWarranty.title")}
           </h3>
+          <div className="not-prose bg-primary/5 border-primary/20 my-4 rounded-lg border p-3">
+            <p className="text-text-secondary text-sm">
+              {tSellerTerms("sections.copyrightWarranty.guideCallout")}{" "}
+              <Link href="/urheberrecht" className="text-primary font-medium hover:underline">
+                {tSellerTerms("sections.copyrightWarranty.guideCalloutLink")} →
+              </Link>
+            </p>
+          </div>
           <p>{tSellerTerms("sections.copyrightWarranty.content")}</p>
           <ul className="ml-4 list-disc space-y-1">
             <li>{tSellerTerms("sections.copyrightWarranty.warranties.ownership")}</li>

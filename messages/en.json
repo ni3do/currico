@@ -51,7 +51,8 @@
         "imprint": "Imprint",
         "privacy": "Privacy",
         "terms": "Terms",
-        "cookies": "Cookies"
+        "cookies": "Cookies",
+        "copyrightGuide": "Copyright Guide"
       }
     },
     "buttons": {
@@ -83,7 +84,8 @@
       "cookies": "Cookies",
       "help": "Help",
       "becomeSeller": "Become Seller",
-      "bundles": "Bundles"
+      "bundles": "Bundles",
+      "copyrightGuide": "Copyright Guide"
     },
     "toast": {
       "addedToWishlist": "Added to wishlist",
@@ -1065,6 +1067,8 @@
       },
       "copyrightWarranty": {
         "title": "5. Copyright Warranty & Indemnification",
+        "guideCallout": "For practical examples and tips, see our Copyright Guide.",
+        "guideCalloutLink": "Read the Guide",
         "content": "As a seller, you warrant and agree that:",
         "warranties": {
           "ownership": "You are the sole author and owner of all materials you upload, or you have obtained all necessary rights and licenses to sell them",
@@ -1368,7 +1372,9 @@
       "acceptTerms": "Accept Seller Agreement",
       "acceptTermsDesc": "I accept the seller agreement and confirm that I have the rights to sell this material.",
       "incomplete": "Please confirm all points to proceed.",
-      "eszettWarning": "Your title or description still contains Eszett characters (ß). Please correct this in step 1."
+      "eszettWarning": "Your title or description still contains Eszett characters (ß). Please correct this in step 1.",
+      "copyrightGuideLink": "Not sure? Read our",
+      "copyrightGuideLinkText": "Copyright Guide"
     },
     "eszett": {
       "title": "Eszett (ß) found",
@@ -1443,6 +1449,11 @@
       "emailVerified": "Verified email address",
       "acceptTerms": "Accept the Seller Terms & Conditions",
       "stripeAccount": "Complete Stripe identity verification for payouts"
+    },
+    "copyrightCallout": {
+      "title": "Worried about copyright?",
+      "description": "Our guide explains clearly what you can sell and what to look out for.",
+      "link": "Read Copyright Guide"
     },
     "termsSection": {
       "title": "Seller Terms & Conditions",
@@ -2035,7 +2046,7 @@
       },
       "q4": {
         "question": "What are the requirements for materials?",
-        "answer": "Your materials must be original, consider the Lehrplan 21, and use Swiss spelling (ss instead of ß). Copyrighted content from third parties is not allowed."
+        "answer": "Your materials must be original, consider the Lehrplan 21, and use Swiss spelling (ss instead of ß). Copyrighted content from third parties is not allowed. Learn more in our Copyright Guide at /urheberrecht."
       },
       "q5": {
         "question": "What does LP21-compliant mean?",
@@ -2689,6 +2700,214 @@
       "fieldsCompleted": "{completed} of {total} fields completed",
       "editProfile": "Edit Profile",
       "close": "Close"
+    }
+  },
+  "copyrightGuide": {
+    "title": "Copyright Guide for Teachers",
+    "subtitle": "Everything you need to know before uploading materials on Currico.",
+    "intro": "This guide helps you understand which materials you can sell on Currico and what to look out for. We want you to feel confident — so we explain the key rules clearly and practically.",
+    "toc": {
+      "title": "Contents",
+      "legalBasis": "Legal Basis",
+      "allowed": "What can I sell?",
+      "notAllowed": "What can I not sell?",
+      "ccLicenses": "Creative Commons Licenses",
+      "aiContent": "AI-Generated Content",
+      "images": "Images",
+      "imageSources": "Where to find allowed images",
+      "fonts": "Fonts",
+      "greyAreas": "Grey Areas",
+      "commonMistakes": "Common Mistakes",
+      "checklist": "Checklist",
+      "contact": "Contact"
+    },
+    "backToTop": "Back to top",
+    "readyToUpload": "Ready? Back to Upload",
+    "sections": {
+      "legalBasis": {
+        "title": "Legal Basis",
+        "description": "The Swiss Copyright Act (URG) protects works from the moment of their creation. This means: every worksheet, every photo, and every text is automatically protected — even without a © symbol.",
+        "schulprivileg": {
+          "title": "Educational Exception (Art. 19 URG)",
+          "content": "Swiss law allows teachers to copy and use copyrighted works in the classroom for direct teaching purposes. This «educational exception» (Schulprivileg) applies only to direct classroom use — not to selling on a platform like Currico."
+        },
+        "important": "Important: Once you sell materials, the personal use exceptions (Art. 19 URG) no longer apply. You need full usage rights for everything you upload.",
+        "reference": "Source: Swiss Federal Act on Copyright and Related Rights (URG, SR 231.1)"
+      },
+      "allowed": {
+        "title": "What can I sell?",
+        "description": "You can safely offer these materials on Currico:",
+        "items": {
+          "ownWorksheets": "Your own worksheets and teaching materials that you created yourself",
+          "ownPhotos": "Your own photos and self-created illustrations",
+          "cc0Materials": "Materials with CC0 license (Public Domain) — free to use",
+          "ownPresentations": "Your own presentations and learning games",
+          "ownTemplates": "Self-designed templates and planning aids"
+        }
+      },
+      "notAllowed": {
+        "title": "What can I NOT sell?",
+        "description": "These materials must not be uploaded to Currico:",
+        "items": {
+          "textbookScans": "Scanned or copied pages from textbooks and school books",
+          "copyrightedCharacters": "Materials with protected characters (Disney, Pixar, Marvel, etc.)",
+          "copyrightedImages": "Images from Google Image Search or social media without a license",
+          "eszettContent": "Materials with Eszett (ß) — in Switzerland we use «ss»",
+          "thirdPartyContent": "Texts or exercises from other textbooks, even if rephrased"
+        }
+      },
+      "ccLicenses": {
+        "title": "Understanding Creative Commons Licenses",
+        "description": "Not all «free» licenses allow commercial sale. Here's an overview:",
+        "allowed": {
+          "title": "Allowed on Currico",
+          "cc0": "CC0 (Public Domain) — No restrictions, free to use",
+          "ccBy": "CC-BY (Attribution) — Allowed if you credit the creator",
+          "ccBySa": "CC-BY-SA (Attribution, Share Alike) — Allowed with attribution, your material must use the same license"
+        },
+        "notAllowed": {
+          "title": "NOT allowed on Currico",
+          "ccByNc": "CC-BY-NC (Non-Commercial) — Selling is explicitly prohibited",
+          "ccByNd": "CC-BY-ND (No Derivatives) — May not be modified or incorporated into your own materials",
+          "ccByNcSa": "CC-BY-NC-SA — Combination: No selling and same license required"
+        },
+        "tip": "Tip: Check the exact license for every CC material. Look for «NC» (Non-Commercial) — if it's included, you cannot sell the material."
+      },
+      "aiContent": {
+        "title": "AI-Generated Content",
+        "description": "Many teachers use AI tools like ChatGPT, DALL-E, or Midjourney for teaching materials. Here are the rules:",
+        "allowedTitle": "Allowed",
+        "allowedItems": {
+          "aiText": "AI-generated texts that you have substantially revised and adapted",
+          "aiInspiration": "AI as inspiration for your own designs (e.g. exercise ideas that you develop yourself)",
+          "aiLayout": "AI-assisted layouts that you designed yourself"
+        },
+        "cautionTitle": "Use with caution",
+        "cautionItems": {
+          "aiImages": "AI-generated images (Midjourney, DALL-E) — check the terms of use of the respective provider",
+          "aiFullContent": "Fully AI-generated content without your own revision — legal situation still unclear"
+        },
+        "notAllowedTitle": "Not allowed",
+        "notAllowedItems": {
+          "aiCopy": "AI outputs that are recognizably based on copyrighted sources",
+          "aiStyle": "AI images in the style of a specific artist (e.g. «in the style of Miyazaki»)"
+        },
+        "notice": "Note: The legal situation regarding AI-generated content is continuously evolving. We recommend using AI as a tool and always substantially editing the results."
+      },
+      "images": {
+        "title": "Images: What's allowed?",
+        "description": "Images are a common stumbling block. Here's a clear overview:",
+        "allowedTitle": "Allowed",
+        "allowedItems": {
+          "ownPhotos": "Your own photos and drawings",
+          "cc0Images": "CC0 images from sites like Unsplash, Pixabay or Pexels",
+          "purchasedStock": "Purchased stock photos with commercial license",
+          "createdGraphics": "Self-created graphics and diagrams"
+        },
+        "notAllowedTitle": "Not allowed",
+        "notAllowedItems": {
+          "googleImages": "Images from Google Image Search",
+          "socialMedia": "Screenshots from social media or websites",
+          "editorialStock": "Stock photos with «editorial use only» license",
+          "otherTeachers": "Images from other teachers' materials"
+        }
+      },
+      "imageSources": {
+        "title": "Where to find allowed images",
+        "description": "These sources offer images you can use commercially:",
+        "sources": {
+          "unsplash": "Unsplash — High-quality photos, free, commercial use allowed",
+          "pixabay": "Pixabay — Photos, illustrations and vectors, free",
+          "pexels": "Pexels — Free photos with generous license",
+          "openclipart": "Openclipart — Public domain clipart for worksheets",
+          "wikimediaCommons": "Wikimedia Commons — Check the specific license (often CC-BY or CC-BY-SA)"
+        },
+        "tip": "Tip: Save the source and license for every image you use. This way you can prove you have the rights if questions arise."
+      },
+      "fonts": {
+        "title": "Fonts",
+        "description": "Font choice can also be relevant from a copyright perspective:",
+        "items": {
+          "googleFonts": "Google Fonts — free and usable, even commercially",
+          "purchasedFonts": "Purchased fonts with commercial license (check the license!)",
+          "systemFonts": "System fonts (Arial, Times New Roman, etc.) — generally allowed",
+          "freeWithLicense": "Free fonts with SIL Open Font License (e.g. from Font Squirrel)"
+        },
+        "warning": "Note: Some free fonts do not allow commercial use. Always check the license."
+      },
+      "greyAreas": {
+        "title": "Grey Areas — Frequent Questions",
+        "description": "Not everything is black or white. Here are the most common edge cases:",
+        "items": {
+          "maps": {
+            "question": "Can I use maps from Wikipedia?",
+            "answer": "It depends on the license. Many Wikipedia maps are CC-BY-SA — you can use them, but you must credit the creator and offer your material under the same license."
+          },
+          "exerciseReference": {
+            "question": "Can I reference a textbook exercise without copying it?",
+            "answer": "Yes. You may write «Solve exercise 3 on page 42 in the Zahlenbuch». What you cannot do: type out or scan the exercise itself."
+          },
+          "historicalImages": {
+            "question": "Are historical images automatically free?",
+            "answer": "Not necessarily. In Switzerland, copyright protection expires 70 years after the creator's death. Photos from before 1900 are usually free, but check when in doubt."
+          },
+          "studentWork": {
+            "question": "Can I use student work as examples?",
+            "answer": "Only with written consent from the parents/guardians. Fully anonymize the work."
+          },
+          "schoolLogo": {
+            "question": "Can I use my school's logo?",
+            "answer": "No. School logos are protected trademarks. Remove all school logos and names from your materials."
+          }
+        }
+      },
+      "commonMistakes": {
+        "title": "Common Mistakes",
+        "description": "We unfortunately see these mistakes often — avoid them:",
+        "items": {
+          "textbookPages": {
+            "mistake": "Scanning pages from the Zahlenbuch or Sprachstarken textbooks",
+            "why": "«I only took one page» — Even a single page is copyright-protected. The educational exception does not apply to selling."
+          },
+          "clipArt": {
+            "mistake": "Inserting clip art from Google Image Search",
+            "why": "«The image was free on the internet» — Google Image Search shows all images regardless of license. Most are protected."
+          },
+          "brandedCharacters": {
+            "mistake": "Using Disney, Pixar, or other protected characters",
+            "why": "«It's just decoration» — Even decorative use is a copyright violation. Disney is known for consistently pursuing violations."
+          },
+          "pinterestImages": {
+            "mistake": "Using images from Pinterest or Instagram",
+            "why": "«There are so many nice images on Pinterest» — Pinterest shows images from other creators. Without a license, you cannot use them commercially."
+          },
+          "modifiedContent": {
+            "mistake": "Slightly modifying textbook exercises and claiming them as your own",
+            "why": "«I changed the numbers» — A modification does not change the copyright of the original. The basic structure remains protected."
+          },
+          "fontAssumption": {
+            "mistake": "Assuming all free fonts can be used commercially",
+            "why": "«The font was free» — Many free fonts are licensed for personal use only. Always check the license terms."
+          }
+        }
+      },
+      "checklist": {
+        "title": "Pre-Upload Checklist",
+        "description": "Check these points before uploading your material:",
+        "items": {
+          "ownContent": "I created all content myself or use CC0 material",
+          "noScans": "My material does not contain scanned or copied textbook pages",
+          "noTrademarks": "My material does not contain protected brands, logos, or characters",
+          "swissSpelling": "My material uses Swiss spelling (no ß)",
+          "termsAccepted": "I accept the seller agreement and act in good faith"
+        },
+        "termsLinkText": "Read seller agreement"
+      },
+      "contact": {
+        "title": "Questions?",
+        "description": "If you're unsure whether your material meets the guidelines, feel free to contact us. We're happy to help.",
+        "email": "info@currico.ch"
+      }
     }
   }
 }
