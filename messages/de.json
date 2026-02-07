@@ -1407,6 +1407,13 @@
       "successMessage": "Ihr Material wurde hochgeladen und wartet auf Freigabe.",
       "viewMaterial": "Zum Material",
       "error": "Fehler beim Hochladen",
+      "errorFileTooLarge": "Datei zu gross. Maximum: 50 MB. Ihre Datei: {size} MB.",
+      "errorAuthExpired": "Sitzung abgelaufen. Bitte melden Sie sich erneut an.",
+      "errorValidation": "Validierungsfehler: {details}",
+      "errorServer": "Serverfehler. Bitte versuchen Sie es später erneut.",
+      "errorNetwork": "Keine Internetverbindung. Bitte prüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
+      "errorParseResponse": "Fehler beim Verarbeiten der Antwort.",
+      "loginAgain": "Erneut anmelden",
       "close": "Schliessen",
       "retry": "Erneut versuchen"
     }
@@ -2641,5 +2648,76 @@
     "viewAllMaterials": "Alle Materialien ansehen",
     "bundle": "Bundle",
     "anonymous": "Anonym"
+  },
+  "accountPage": {
+    "title": "Mein Konto",
+    "welcomeBack": "Willkommen zurück, {name}",
+    "welcomeGeneric": "Willkommen zurück",
+    "memberSince": "Mitglied seit {date}",
+    "roleBuyer": "Käufer",
+    "roleSeller": "Verkäufer",
+    "menu": "Menü",
+    "nav": {
+      "navigation": "Navigation",
+      "overview": "Übersicht",
+      "library": "Bibliothek",
+      "uploads": "Meine Uploads",
+      "bundles": "Bundles",
+      "comments": "Kommentare",
+      "wishlist": "Wunschliste",
+      "settings": "Einstellungen",
+      "settingsProfile": "Profil",
+      "settingsAppearance": "Darstellung",
+      "settingsNotifications": "Benachrichtigungen",
+      "settingsAccount": "Konto"
+    },
+    "stats": {
+      "library": "Bibliothek",
+      "uploads": "Uploads",
+      "wishlist": "Wunschliste",
+      "followers": "Gefolgt"
+    },
+    "sidebar": {
+      "followed": "Gefolgte ({count})",
+      "allFollowed": "Alle",
+      "noFollowed": "Noch keine Verkäufer gefolgt",
+      "discover": "Entdecken",
+      "newMaterial": "Neues Material",
+      "discoverMaterials": "Materialien entdecken",
+      "unknownSeller": "Unbekannt"
+    },
+    "overview": {
+      "earnings": "Einnahmen",
+      "downloads": "Downloads",
+      "contributions": "Beiträge",
+      "thisMonth": "Diesen Monat",
+      "totalDownloads": "Gesamte Downloads",
+      "materialsPublished": "Materialien veröffentlicht",
+      "myMaterials": "Meine Materialien",
+      "newMaterial": "+ Neues Material",
+      "noMaterials": "Noch keine Materialien hochgeladen",
+      "noMaterialsDescription": "Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen.",
+      "uploadFirst": "Erstes Material hochladen",
+      "title": "Titel",
+      "status": "Status",
+      "actions": "Aktionen",
+      "view": "Ansehen",
+      "edit": "Bearbeiten",
+      "delete": "Löschen",
+      "verified": "Verifiziert",
+      "aiChecked": "KI-Geprüft",
+      "pending": "Ausstehend",
+      "recentDownloads": "Letzte Downloads",
+      "viewAll": "Alle anzeigen",
+      "noDownloads": "Noch keine Materialien",
+      "discoverLink": "Entdecken",
+      "loading": "Laden..."
+    },
+    "profile": {
+      "completeProfile": "Vervollständigen Sie Ihr Profil",
+      "fieldsCompleted": "{completed} von {total} Feldern ausgefüllt",
+      "editProfile": "Profil bearbeiten",
+      "close": "Schliessen"
+    }
   }
 }

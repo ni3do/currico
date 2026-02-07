@@ -39,6 +39,7 @@ type UploadStatus = "idle" | "uploading" | "success" | "error";
 function UploadPageContent() {
   const router = useRouter();
   const tCommon = useTranslations("common");
+  const tUpload = useTranslations("uploadWizard.upload");
   const {
     formData,
     updateFormData,
@@ -68,6 +69,10 @@ function UploadPageContent() {
   const mainFileInputRef = useRef<HTMLInputElement>(null);
   const previewFileInputRef = useRef<HTMLInputElement>(null);
   const hasShownDraftToast = useRef(false);
+
+  // Detect touch device for mobile-friendly upload area
+  const isTouchDevice =
+    typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0);
 
   // Show draft restored toast on mount if draft exists
   useEffect(() => {
@@ -233,22 +238,39 @@ function UploadPageContent() {
             router.push("/account");
           }, 2000);
         } catch {
-          setError("Fehler beim Verarbeiten der Antwort");
+          setError(tUpload("errorParseResponse"));
           setUploadStatus("error");
         }
       } else {
-        try {
-          const result = JSON.parse(xhr.responseText);
-          setError(result.error || "Fehler beim Hochladen");
-        } catch {
-          setError(`Fehler beim Hochladen (Status: ${xhr.status})`);
+        // Specific error messages based on HTTP status
+        if (xhr.status === 413) {
+          const fileSizeMB = files[0] ? (files[0].size / (1024 * 1024)).toFixed(1) : "?";
+          setError(tUpload("errorFileTooLarge", { size: fileSizeMB }));
+        } else if (xhr.status === 401) {
+          setError(tUpload("errorAuthExpired"));
+        } else if (xhr.status === 422) {
+          try {
+            const result = JSON.parse(xhr.responseText);
+            setError(tUpload("errorValidation", { details: result.error || result.message || "" }));
+          } catch {
+            setError(tUpload("errorValidation", { details: "" }));
+          }
+        } else if (xhr.status >= 500) {
+          setError(tUpload("errorServer"));
+        } else {
+          try {
+            const result = JSON.parse(xhr.responseText);
+            setError(result.error || tUpload("error"));
+          } catch {
+            setError(`${tUpload("error")} (Status: ${xhr.status})`);
+          }
         }
         setUploadStatus("error");
       }
     });
 
     xhr.addEventListener("error", () => {
-      setError("Netzwerkfehler: Bitte überprüfen Sie Ihre Internetverbindung");
+      setError(tUpload("errorNetwork"));
       setUploadStatus("error");
     });
 
@@ -460,8 +482,13 @@ function UploadPageContent() {
                   </div>
 
                   <FormField label="Preismodell" tooltipKey="priceType" required>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div
+                      className="grid grid-cols-2 gap-4"
+                      role="radiogroup"
+                      aria-label="Preismodell"
+                    >
                       <RadioOption
+                        name="priceType"
                         value="free"
                         checked={formData.priceType === "free"}
                         onChange={(val) => updateFormData("priceType", val as "free" | "paid")}
@@ -469,6 +496,7 @@ function UploadPageContent() {
                         description="Frei für alle zugänglich"
                       />
                       <RadioOption
+                        name="priceType"
                         value="paid"
                         checked={formData.priceType === "paid"}
                         onChange={(val) => updateFormData("priceType", val as "free" | "paid")}
@@ -572,11 +600,28 @@ function UploadPageContent() {
                             : "border-border bg-bg hover:border-primary"
                         } `}
                       >
-                        <Upload className="text-text-muted mx-auto h-12 w-12" />
-                        <p className="text-text mt-2 text-sm">
-                          Klicken Sie hier oder ziehen Sie Dateien hinein
-                        </p>
-                        <p className="text-text-muted mt-1 text-xs">
+                        {isTouchDevice ? (
+                          <>
+                            <div className="bg-primary/10 mx-auto flex h-14 w-14 items-center justify-center rounded-full">
+                              <Upload className="text-primary h-7 w-7" />
+                            </div>
+                            <p className="text-text mt-3 text-sm font-medium">
+                              Tippen Sie hier, um Dateien auszuwählen
+                            </p>
+                            <div className="bg-primary text-text-on-accent mx-auto mt-3 inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold">
+                              <Upload className="h-4 w-4" />
+                              Durchsuchen
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <Upload className="text-text-muted mx-auto h-12 w-12" />
+                            <p className="text-text mt-2 text-sm">
+                              Klicken Sie hier oder ziehen Sie Dateien hinein
+                            </p>
+                          </>
+                        )}
+                        <p className="text-text-muted mt-2 text-xs">
                           PDF, Word, PowerPoint, Excel bis 50 MB
                         </p>
                         <input
@@ -600,7 +645,23 @@ function UploadPageContent() {
                                 className="flex flex-1 cursor-pointer items-center gap-4"
                                 onClick={() => handleFilePreview(file)}
                               >
-                                {getFileIcon(file)}
+                                <div className="relative flex-shrink-0">
+                                  {file.type.startsWith("image/") ? (
+                                    // eslint-disable-next-line @next/next/no-img-element
+                                    <img
+                                      src={URL.createObjectURL(file)}
+                                      alt={file.name}
+                                      className="h-10 w-10 rounded-lg object-cover"
+                                    />
+                                  ) : (
+                                    getFileIcon(file)
+                                  )}
+                                  {file.type === "application/pdf" && (
+                                    <span className="bg-primary/90 absolute -right-1 -bottom-1 rounded px-1 py-0.5 text-[8px] font-bold text-white">
+                                      PDF
+                                    </span>
+                                  )}
+                                </div>
                                 <div className="min-w-0 flex-1">
                                   <p className="text-text truncate text-sm font-medium">
                                     {file.name}
@@ -661,11 +722,20 @@ function UploadPageContent() {
                       onClick={() => previewFileInputRef.current?.click()}
                       className="border-border bg-bg hover:border-primary cursor-pointer rounded-xl border-2 border-dashed p-6 text-center transition-colors"
                     >
-                      <ImageIcon className="text-text-muted mx-auto h-10 w-10" />
+                      {previewFiles.length > 0 ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={URL.createObjectURL(previewFiles[0])}
+                          alt="Vorschau"
+                          className="mx-auto h-24 w-auto rounded-lg object-contain"
+                        />
+                      ) : (
+                        <ImageIcon className="text-text-muted mx-auto h-10 w-10" />
+                      )}
                       <p className="text-text-muted mt-2 text-sm">PNG, JPG bis 5 MB</p>
                       {previewFiles.length > 0 && (
                         <p className="text-primary mt-2 text-sm font-medium">
-                          {previewFiles.length} Vorschaubild(er) ausgewählt
+                          {previewFiles.length} Vorschaubild(er) ausgewählt — Tippen zum Ändern
                         </p>
                       )}
                       <input
@@ -681,12 +751,39 @@ function UploadPageContent() {
 
                   {/* Legal Confirmations */}
                   <div className="border-border bg-surface-elevated rounded-xl border p-6">
-                    <h3 className="text-text mb-2 text-lg font-semibold">
-                      Rechtliche Bestätigungen
-                    </h3>
-                    <p className="text-text-muted mb-5 text-sm">
-                      Bitte bestätigen Sie alle Punkte, um fortfahren zu können.
-                    </p>
+                    <div className="mb-5 flex items-center justify-between">
+                      <div>
+                        <h3 className="text-text text-lg font-semibold">
+                          Rechtliche Bestätigungen
+                        </h3>
+                        <p className="text-text-muted mt-1 text-sm">
+                          Bitte bestätigen Sie alle Punkte, um fortfahren zu können.
+                        </p>
+                      </div>
+                      <span
+                        className={`text-sm font-bold ${allLegalChecked ? "text-[var(--ctp-green)]" : "text-text-muted"}`}
+                      >
+                        {
+                          [
+                            formData.legalOwnContent,
+                            formData.legalNoTextbookScans,
+                            formData.legalNoTrademarks,
+                            formData.legalSwissGerman,
+                            formData.legalTermsAccepted,
+                          ].filter(Boolean).length
+                        }{" "}
+                        / 5
+                      </span>
+                    </div>
+                    {/* Progress bar */}
+                    <div className="bg-border mb-5 h-1.5 overflow-hidden rounded-full">
+                      <div
+                        className={`h-full transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${allLegalChecked ? "bg-[var(--ctp-green)]" : "bg-primary"}`}
+                        style={{
+                          width: `${([formData.legalOwnContent, formData.legalNoTextbookScans, formData.legalNoTrademarks, formData.legalSwissGerman, formData.legalTermsAccepted].filter(Boolean).length / 5) * 100}%`,
+                        }}
+                      />
+                    </div>
 
                     <div className="space-y-3">
                       <FormCheckbox
@@ -814,73 +911,107 @@ function UploadPageContent() {
       {/* Draft Restored Toast */}
       {showDraftToast && <DraftRestoredToast onDismiss={() => setShowDraftToast(false)} />}
 
-      {/* Upload Modal */}
+      {/* Upload Progress Toast — fixed bottom-right */}
       {uploadStatus !== "idle" && (
-        <div className="animate-in fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md duration-200">
-          <div className="animate-in zoom-in-95 fade-in bg-surface mx-4 w-full max-w-md rounded-3xl p-8 shadow-2xl duration-300">
+        <div className="animate-in slide-in-from-bottom-4 fade-in fixed right-4 bottom-4 z-50 w-full max-w-sm duration-300 sm:right-6 sm:bottom-6">
+          <div className="border-border bg-surface rounded-2xl border p-5 shadow-2xl">
             {uploadStatus === "uploading" && (
-              <div className="text-center">
-                <div className="relative mx-auto h-20 w-20">
-                  <div className="from-primary to-success absolute inset-0 animate-pulse rounded-full bg-gradient-to-r opacity-20"></div>
-                  <Loader2 className="text-primary absolute inset-0 h-20 w-20 animate-spin" />
+              <div>
+                <div className="flex items-center gap-3">
+                  <Loader2 className="text-primary h-6 w-6 flex-shrink-0 animate-spin" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-text text-sm font-semibold">{tUpload("uploading")}</p>
+                    <p className="text-text-muted text-xs">{tUpload("pleaseWait")}</p>
+                  </div>
+                  <span className="text-primary text-sm font-bold">{uploadProgress}%</span>
                 </div>
-                <h3 className="text-text mt-6 text-2xl font-bold">Wird hochgeladen...</h3>
-                <p className="text-text-muted mt-2 text-sm">
-                  Bitte warten Sie, dies kann einen Moment dauern.
-                </p>
-                <div className="bg-border mt-6 h-4 overflow-hidden rounded-full">
+                <div className="bg-border mt-3 h-2 overflow-hidden rounded-full">
                   <div
-                    className="from-primary via-primary-hover to-success h-full bg-gradient-to-r transition-all duration-300 ease-out"
+                    className="from-primary to-success h-full bg-gradient-to-r transition-all duration-300 ease-out"
                     style={{ width: `${uploadProgress}%` }}
                   />
                 </div>
-                <p className="text-primary mt-3 text-lg font-bold">{uploadProgress}%</p>
               </div>
             )}
 
             {uploadStatus === "success" && (
-              <div className="text-center">
-                <div className="animate-in zoom-in bg-success/20 mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full duration-500">
-                  <Check className="text-success h-10 w-10" />
+              <div>
+                <div className="flex items-start gap-3">
+                  <div className="bg-success/20 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full">
+                    <Check className="text-success h-4 w-4" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-text text-sm font-semibold">{tUpload("success")}</p>
+                    <p className="text-text-muted text-xs">{tUpload("successMessage")}</p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setUploadStatus("idle");
+                      setError(null);
+                    }}
+                    className="text-text-muted hover:text-text flex-shrink-0 p-1 transition-colors"
+                    aria-label={tUpload("close")}
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
                 </div>
-                <h3 className="text-text text-2xl font-bold">Material erstellt!</h3>
-                <p className="text-text-muted mt-2 text-sm">
-                  Ihr Material wurde hochgeladen und wartet auf Freigabe.
-                </p>
                 {createdMaterialId && (
                   <button
                     onClick={() => router.push(`/materialien/${createdMaterialId}`)}
-                    className="bg-primary text-text-on-accent hover:bg-primary-hover mt-6 rounded-xl px-8 py-3 font-semibold transition-all duration-200 active:scale-[0.98]"
+                    className="bg-primary text-text-on-accent hover:bg-primary-hover mt-3 w-full rounded-lg px-4 py-2 text-sm font-medium transition-colors"
                   >
-                    Zum Material →
+                    {tUpload("viewMaterial")} →
                   </button>
                 )}
               </div>
             )}
 
             {uploadStatus === "error" && (
-              <div className="text-center">
-                <div className="animate-in zoom-in bg-error/20 mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full duration-500">
-                  <X className="text-error h-10 w-10" />
-                </div>
-                <h3 className="text-text text-2xl font-bold">Fehler beim Hochladen</h3>
-                <p className="text-error bg-error/10 mt-3 rounded-lg p-3 text-sm">{error}</p>
-                <div className="mt-6 flex justify-center gap-3">
+              <div>
+                <div className="flex items-start gap-3">
+                  <div className="bg-error/20 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full">
+                    <AlertTriangle className="text-error h-4 w-4" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-text text-sm font-semibold">{tUpload("error")}</p>
+                    <p className="text-error mt-1 text-xs">{error}</p>
+                  </div>
                   <button
                     onClick={() => {
                       setUploadStatus("idle");
                       setError(null);
                     }}
-                    className="border-border text-text hover:bg-surface-elevated rounded-xl border-2 px-6 py-3 font-medium transition-all duration-200 active:scale-[0.98]"
+                    className="text-text-muted hover:text-text flex-shrink-0 p-1 transition-colors"
+                    aria-label={tUpload("close")}
                   >
-                    Schliessen
+                    <X className="h-4 w-4" />
                   </button>
+                </div>
+                <div className="mt-3 flex gap-2">
                   <button
-                    onClick={handlePublish}
-                    className="bg-primary text-text-on-accent hover:bg-primary-hover rounded-xl px-6 py-3 font-medium transition-all duration-200 active:scale-[0.98]"
+                    onClick={() => {
+                      setUploadStatus("idle");
+                      setError(null);
+                    }}
+                    className="border-border text-text hover:bg-surface-elevated flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-colors"
                   >
-                    Erneut versuchen
+                    {tUpload("close")}
                   </button>
+                  {error === tUpload("errorAuthExpired") ? (
+                    <Link
+                      href="/login"
+                      className="bg-primary text-text-on-accent hover:bg-primary-hover flex flex-1 items-center justify-center rounded-lg px-3 py-2 text-sm font-medium transition-colors"
+                    >
+                      {tUpload("loginAgain")}
+                    </Link>
+                  ) : (
+                    <button
+                      onClick={handlePublish}
+                      className="bg-primary text-text-on-accent hover:bg-primary-hover flex-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
+                    >
+                      {tUpload("retry")}
+                    </button>
+                  )}
                 </div>
               </div>
             )}

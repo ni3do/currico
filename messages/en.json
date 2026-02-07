@@ -1406,6 +1406,13 @@
       "successMessage": "Your material has been uploaded and is awaiting approval.",
       "viewMaterial": "View Material",
       "error": "Upload Error",
+      "errorFileTooLarge": "File too large. Maximum: 50 MB. Your file: {size} MB.",
+      "errorAuthExpired": "Session expired. Please log in again.",
+      "errorValidation": "Validation error: {details}",
+      "errorServer": "Server error. Please try again later.",
+      "errorNetwork": "No internet connection. Please check your connection and try again.",
+      "errorParseResponse": "Error processing the response.",
+      "loginAgain": "Log in again",
       "close": "Close",
       "retry": "Try Again"
     }
@@ -2612,5 +2619,76 @@
     "viewAllMaterials": "View all materials",
     "bundle": "Bundle",
     "anonymous": "Anonymous"
+  },
+  "accountPage": {
+    "title": "My Account",
+    "welcomeBack": "Welcome back, {name}",
+    "welcomeGeneric": "Welcome back",
+    "memberSince": "Member since {date}",
+    "roleBuyer": "Buyer",
+    "roleSeller": "Seller",
+    "menu": "Menu",
+    "nav": {
+      "navigation": "Navigation",
+      "overview": "Overview",
+      "library": "Library",
+      "uploads": "My Uploads",
+      "bundles": "Bundles",
+      "comments": "Comments",
+      "wishlist": "Wishlist",
+      "settings": "Settings",
+      "settingsProfile": "Profile",
+      "settingsAppearance": "Appearance",
+      "settingsNotifications": "Notifications",
+      "settingsAccount": "Account"
+    },
+    "stats": {
+      "library": "Library",
+      "uploads": "Uploads",
+      "wishlist": "Wishlist",
+      "followers": "Following"
+    },
+    "sidebar": {
+      "followed": "Following ({count})",
+      "allFollowed": "All",
+      "noFollowed": "No sellers followed yet",
+      "discover": "Discover",
+      "newMaterial": "New Material",
+      "discoverMaterials": "Discover Materials",
+      "unknownSeller": "Unknown"
+    },
+    "overview": {
+      "earnings": "Earnings",
+      "downloads": "Downloads",
+      "contributions": "Contributions",
+      "thisMonth": "This month",
+      "totalDownloads": "Total downloads",
+      "materialsPublished": "Materials published",
+      "myMaterials": "My Materials",
+      "newMaterial": "+ New Material",
+      "noMaterials": "No materials uploaded yet",
+      "noMaterialsDescription": "Share your teaching materials with other teachers.",
+      "uploadFirst": "Upload your first material",
+      "title": "Title",
+      "status": "Status",
+      "actions": "Actions",
+      "view": "View",
+      "edit": "Edit",
+      "delete": "Delete",
+      "verified": "Verified",
+      "aiChecked": "AI-Checked",
+      "pending": "Pending",
+      "recentDownloads": "Recent Downloads",
+      "viewAll": "View all",
+      "noDownloads": "No materials yet",
+      "discoverLink": "Discover",
+      "loading": "Loading..."
+    },
+    "profile": {
+      "completeProfile": "Complete your profile",
+      "fieldsCompleted": "{completed} of {total} fields completed",
+      "editProfile": "Edit Profile",
+      "close": "Close"
+    }
   }
 }
