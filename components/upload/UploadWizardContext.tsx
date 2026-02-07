@@ -9,6 +9,7 @@ import {
   useRef,
   ReactNode,
 } from "react";
+import { useSession } from "next-auth/react";
 
 // Storage key for localStorage
 const STORAGE_KEY = "currico_upload_draft";
@@ -21,6 +22,7 @@ export interface FormData {
   title: string;
   description: string;
   language: string;
+  dialect: "STANDARD" | "SWISS" | "BOTH";
   resourceType: string;
 
   // Step 2: Curriculum
@@ -53,6 +55,7 @@ export interface TouchedFields {
   title: boolean;
   description: boolean;
   language: boolean;
+  dialect: boolean;
   resourceType: boolean;
   cycle: boolean;
   subject: boolean;
@@ -125,6 +128,7 @@ const defaultFormData: FormData = {
   title: "",
   description: "",
   language: "de",
+  dialect: "BOTH",
   resourceType: "pdf",
   cycle: "",
   subject: "",
@@ -149,6 +153,7 @@ const defaultTouchedFields: TouchedFields = {
   title: false,
   description: false,
   language: false,
+  dialect: false,
   resourceType: false,
   cycle: false,
   subject: false,
@@ -184,25 +189,20 @@ function loadDraftFromStorage(): DraftData | null {
 }
 
 export function UploadWizardProvider({ children }: { children: ReactNode }) {
-  // Use lazy initialization to load from localStorage
-  const [formData, setFormData] = useState<FormData>(() => {
-    const draft = loadDraftFromStorage();
-    return draft?.formData ?? defaultFormData;
-  });
-  const [currentStep, setCurrentStep] = useState<Step>(() => {
-    const draft = loadDraftFromStorage();
-    return draft?.currentStep ?? 1;
-  });
-  const [visitedSteps, setVisitedSteps] = useState<Step[]>(() => {
-    const draft = loadDraftFromStorage();
-    return draft?.visitedSteps ?? [1];
-  });
+  const { status: sessionStatus } = useSession();
+  const isAuthenticated = sessionStatus === "authenticated";
+
+  // Load draft once and reuse across all useState initializers
+  const [initialDraft] = useState(() => loadDraftFromStorage());
+
+  const [formData, setFormData] = useState<FormData>(initialDraft?.formData ?? defaultFormData);
+  const [currentStep, setCurrentStep] = useState<Step>(initialDraft?.currentStep ?? 1);
+  const [visitedSteps, setVisitedSteps] = useState<Step[]>(initialDraft?.visitedSteps ?? [1]);
   const [touchedFields, setTouchedFields] = useState<TouchedFields>(defaultTouchedFields);
-  const [lastSavedAt, setLastSavedAt] = useState<Date | null>(() => {
-    const draft = loadDraftFromStorage();
-    return draft ? new Date(draft.lastSavedAt) : null;
-  });
-  const [hasDraft, setHasDraft] = useState(() => loadDraftFromStorage() !== null);
+  const [lastSavedAt, setLastSavedAt] = useState<Date | null>(
+    initialDraft ? new Date(initialDraft.lastSavedAt) : null
+  );
+  const [hasDraft, setHasDraft] = useState(initialDraft !== null);
   const [isSaving, setIsSaving] = useState(false);
   const [isInitialized, setIsInitialized] = useState(true);
   const [serverSynced, setServerSynced] = useState(false);
@@ -215,6 +215,8 @@ export function UploadWizardProvider({ children }: { children: ReactNode }) {
 
   // Load server draft on mount (prefer server over localStorage if newer)
   useEffect(() => {
+    if (!isAuthenticated) return;
+
     async function loadServerDraft() {
       try {
         const response = await fetch("/api/drafts?type=material");
@@ -224,9 +226,8 @@ export function UploadWizardProvider({ children }: { children: ReactNode }) {
 
         setServerDraftId(serverDraft.id);
 
-        const localDraft = loadDraftFromStorage();
         const serverUpdated = new Date(serverDraft.updated_at);
-        const localUpdated = localDraft ? new Date(localDraft.lastSavedAt) : null;
+        const localUpdated = initialDraft ? new Date(initialDraft.lastSavedAt) : null;
 
         // Use server draft if it's newer than local
         if (!localUpdated || serverUpdated > localUpdated) {
@@ -248,7 +249,7 @@ export function UploadWizardProvider({ children }: { children: ReactNode }) {
       }
     }
     loadServerDraft();
-  }, []);
+  }, [isAuthenticated, initialDraft]);
 
   // Save to localStorage whenever form data changes (debounced 500ms)
   useEffect(() => {
@@ -277,7 +278,7 @@ export function UploadWizardProvider({ children }: { children: ReactNode }) {
 
   // Dual-write to server (debounced 2s, separate from localStorage)
   useEffect(() => {
-    if (!isInitialized) return;
+    if (!isInitialized || !isAuthenticated) return;
 
     if (serverSaveTimeoutRef.current) {
       clearTimeout(serverSaveTimeoutRef.current);
@@ -313,7 +314,7 @@ export function UploadWizardProvider({ children }: { children: ReactNode }) {
         clearTimeout(serverSaveTimeoutRef.current);
       }
     };
-  }, [formData, currentStep, visitedSteps, isInitialized]);
+  }, [formData, currentStep, visitedSteps, isInitialized, isAuthenticated]);
 
   // Update form data
   const updateFormData = useCallback(<K extends keyof FormData>(field: K, value: FormData[K]) => {
@@ -332,7 +333,7 @@ export function UploadWizardProvider({ children }: { children: ReactNode }) {
   // Mark all fields in a step as touched
   const markStepTouched = useCallback((step: Step) => {
     const stepFields: Record<Step, (keyof TouchedFields)[]> = {
-      1: ["title", "description", "language", "resourceType"],
+      1: ["title", "description", "language", "dialect", "resourceType"],
       2: ["cycle", "subject", "canton", "competencies", "lehrmittelIds"],
       3: ["priceType", "price", "editable"],
       4: [
