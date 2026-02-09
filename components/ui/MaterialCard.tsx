@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { Heart } from "lucide-react";
 import { getSubjectTextColor } from "@/lib/constants/subject-colors";
+import { VerifiedSellerBadge } from "@/components/ui/VerifiedSellerBadge";
 
 export interface MaterialCardProps {
   id: string;
@@ -17,6 +18,7 @@ export interface MaterialCardProps {
   verified?: boolean;
   seller?: {
     displayName: string | null;
+    isVerifiedSeller?: boolean;
   };
   /** Render custom footer content instead of default */
   footer?: React.ReactNode;
@@ -189,7 +191,10 @@ export function MaterialCard({
         {/* Compact footer: seller + price inline */}
         {isCompact && (
           <div className="text-text-muted mt-2 flex items-center gap-3 text-xs">
-            <span>{seller?.displayName || "Anonymous"}</span>
+            <span className="flex items-center gap-1">
+              {seller?.displayName || "Anonymous"}
+              {seller?.isVerifiedSeller && <VerifiedSellerBadge variant="compact" />}
+            </span>
             {priceFormatted && (
               <span className={`font-semibold ${isFree ? "text-success" : "text-price"}`}>
                 {priceFormatted}
@@ -205,8 +210,9 @@ export function MaterialCard({
         {!isCompact &&
           (footer ?? (
             <div className="border-border-subtle flex items-center justify-between border-t pt-4">
-              <span className="text-text-muted text-sm transition-colors duration-300">
+              <span className="text-text-muted flex items-center gap-1.5 text-sm transition-colors duration-300">
                 {seller?.displayName || "Anonymous"}
+                {seller?.isVerifiedSeller && <VerifiedSellerBadge variant="compact" />}
               </span>
               <svg
                 className="text-text-muted group-hover:text-primary h-5 w-5 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-1.5"

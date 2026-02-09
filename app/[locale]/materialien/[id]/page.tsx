@@ -282,9 +282,9 @@ export default function MaterialDetailPage() {
   // Loading state
   if (loading) {
     return (
-      <div className="flex min-h-screen flex-col">
+      <div className="bg-bg flex min-h-screen flex-col">
         <TopBar />
-        <main className="mx-auto max-w-6xl flex-1 px-4 py-6 sm:px-6 lg:px-8">
+        <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
           <div className="animate-pulse">
             {/* Breadcrumb skeleton */}
             <div className="bg-surface mb-6 h-4 w-64 rounded" />
@@ -333,9 +333,9 @@ export default function MaterialDetailPage() {
   // Error states
   if (error === "not_found") {
     return (
-      <div className="flex min-h-screen flex-col">
+      <div className="bg-bg flex min-h-screen flex-col">
         <TopBar />
-        <main className="mx-auto max-w-6xl flex-1 px-4 py-6 sm:px-6 lg:px-8">
+        <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
           <div className="py-16 text-center">
             <svg
               className="text-text-muted mx-auto mb-6 h-16 w-16"
@@ -350,7 +350,9 @@ export default function MaterialDetailPage() {
                 d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <h1 className="text-text mb-4 text-2xl font-bold">Material nicht gefunden</h1>
+            <h1 className="text-text mb-4 text-2xl font-bold sm:text-3xl">
+              Material nicht gefunden
+            </h1>
             <p className="text-text-muted mx-auto mb-8 max-w-md">
               Das gesuchte Material existiert nicht oder ist nicht mehr verfügbar.
             </p>
@@ -369,9 +371,9 @@ export default function MaterialDetailPage() {
 
   if (error || !material) {
     return (
-      <div className="flex min-h-screen flex-col">
+      <div className="bg-bg flex min-h-screen flex-col">
         <TopBar />
-        <main className="mx-auto max-w-6xl flex-1 px-4 py-6 sm:px-6 lg:px-8">
+        <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
           <div className="py-16 text-center">
             <svg
               className="text-error mx-auto mb-6 h-16 w-16"
@@ -386,7 +388,7 @@ export default function MaterialDetailPage() {
                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
               />
             </svg>
-            <h1 className="text-text mb-4 text-2xl font-bold">Fehler beim Laden</h1>
+            <h1 className="text-text mb-4 text-2xl font-bold sm:text-3xl">Fehler beim Laden</h1>
             <p className="text-text-muted mx-auto mb-8 max-w-md">
               Das Material konnte nicht geladen werden. Bitte versuchen Sie es später erneut.
             </p>
@@ -404,10 +406,10 @@ export default function MaterialDetailPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="mx-auto max-w-6xl flex-1 px-4 py-6 pb-24 sm:px-6 lg:px-8 lg:pb-6">
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 pb-24 sm:px-6 sm:py-12 lg:px-8 lg:pb-8">
         {/* Pending Review Banner */}
         {!material.isApproved && (
           <div className="border-warning/50 bg-warning/10 mb-6 rounded-lg border p-4">

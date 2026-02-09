@@ -51,7 +51,10 @@
         "imprint": "Imprint",
         "privacy": "Privacy",
         "terms": "Terms",
-        "cookies": "Cookies"
+        "cookies": "Cookies",
+        "copyrightGuide": "Copyright Guide",
+        "sellerLevels": "Seller Levels",
+        "verifiedSeller": "Verified Sellers"
       }
     },
     "buttons": {
@@ -83,7 +86,8 @@
       "cookies": "Cookies",
       "help": "Help",
       "becomeSeller": "Become Seller",
-      "bundles": "Bundles"
+      "bundles": "Bundles",
+      "copyrightGuide": "Copyright Guide"
     },
     "toast": {
       "addedToWishlist": "Added to wishlist",
@@ -132,6 +136,7 @@
       "secondaryButton": "Learn More",
       "search": {
         "placeholder": "Search subject, topic or keyword...",
+        "allCycles": "All Cycles",
         "allSubjects": "All Subjects",
         "math": "Mathematics",
         "german": "German",
@@ -141,7 +146,11 @@
         "arts": "Visual Arts",
         "music": "Music",
         "sports": "Sports",
-        "button": "Search"
+        "button": "Search",
+        "dialectLabel": "Dialect",
+        "dialectSwiss": "Swiss German",
+        "dialectStandard": "Standard German",
+        "allDialects": "All Dialects"
       }
     },
     "howItWorks": {
@@ -437,7 +446,34 @@
       "priceLabel": "Price",
       "showMaterials": "Materials",
       "showCreators": "Creators",
-      "displayLabel": "Show"
+      "displayLabel": "Show",
+      "dialectLabel": "Dialect",
+      "dialectSwiss": "Swiss German",
+      "dialectStandard": "Standard German",
+      "zyklusLabel": "Cycle",
+      "priceFree": "Free",
+      "priceUnder": "< CHF {amount}",
+      "maxPrice": "Max. Price",
+      "formatSectionLabel": "Format",
+      "scopeLabel": "Material Scope",
+      "scopeSingle": "Single",
+      "scopeBundle": "Bundle",
+      "dialectCH": "CH",
+      "dialectDE": "DE",
+      "activeFilters": "Active Filters",
+      "loadingError": "Error loading subjects",
+      "searchPlaceholderCreators": "Search for teachers...",
+      "searchPlaceholderBoth": "Search materials & creators...",
+      "searchPlaceholderDefault": "Search: keyword or code (e.g. MA.1.A)",
+      "smartSearchDetected": "Detected",
+      "smartSearchApply": "Apply filters",
+      "smartSearchRemaining": "Search for: \"{query}\"",
+      "smartSearchLevel": "Level:",
+      "smartSearchSubject": "Subject:",
+      "smartSearchArea": "Area:",
+      "searchResultSubject": "Subject",
+      "searchResultArea": "Area",
+      "searchResultCompetence": "Competence"
     },
     "search": {
       "placeholder": "Search by title, topic, keyword...",
@@ -723,7 +759,12 @@
       "stripeActiveLabel": "Stripe active",
       "stripePendingLabel": "Stripe pending",
       "errorUpdating": "Error updating",
-      "errorDeleting": "Error deleting"
+      "errorDeleting": "Error deleting",
+      "verifiedSeller": "Verified Seller",
+      "verifiedSellerActive": "Manually or automatically verified",
+      "verifiedSellerInactive": "Not yet verified",
+      "grantVerification": "Verify",
+      "revokeVerification": "Revoke"
     },
     "documents": {
       "infoTitle": "Verification workflow",
@@ -1063,6 +1104,8 @@
       },
       "copyrightWarranty": {
         "title": "5. Copyright Warranty & Indemnification",
+        "guideCallout": "For practical examples and tips, see our Copyright Guide.",
+        "guideCalloutLink": "Read the Guide",
         "content": "As a seller, you warrant and agree that:",
         "warranties": {
           "ownership": "You are the sole author and owner of all materials you upload, or you have obtained all necessary rights and licenses to sell them",
@@ -1366,7 +1409,19 @@
       "acceptTerms": "Accept Seller Agreement",
       "acceptTermsDesc": "I accept the seller agreement and confirm that I have the rights to sell this material.",
       "incomplete": "Please confirm all points to proceed.",
-      "eszettWarning": "Your title or description still contains Eszett characters (ß). Please correct this in step 1."
+      "eszettWarning": "Your title or description still contains Eszett characters (ß). Please correct this in step 1.",
+      "copyrightGuideLink": "Not sure? Read our",
+      "copyrightGuideLinkText": "Copyright Guide",
+      "copyrightGuideFull": "Read Copyright Guide",
+      "checklistTitle": "Pre-Upload Checklist",
+      "checklistSubtitle": "Make sure your material meets these requirements:",
+      "checklistItems": {
+        "ownWork": "All content is created by you or licensed under CC0",
+        "noScans": "No scanned pages from textbooks or school books",
+        "noTrademarks": "No protected trademarks, logos, or characters (e.g. Disney, Pokémon)",
+        "swissSpelling": "Swiss German spelling used (ss instead of ß)",
+        "correctLicense": "All images and fonts are properly licensed"
+      }
     },
     "eszett": {
       "title": "Eszett (ß) found",
@@ -1398,12 +1453,26 @@
       "publish": "Publish"
     },
     "upload": {
+      "loading": "Loading...",
+      "authRequired": {
+        "title": "Account Required",
+        "description": "To upload teaching materials, you need a Currico account. Register for free or sign in to get started.",
+        "register": "Register for Free",
+        "login": "Sign In"
+      },
       "uploading": "Uploading...",
       "pleaseWait": "Please wait, this may take a moment.",
       "success": "Material Created!",
       "successMessage": "Your material has been uploaded and is awaiting approval.",
       "viewMaterial": "View Material",
       "error": "Upload Error",
+      "errorFileTooLarge": "File too large. Maximum: 50 MB. Your file: {size} MB.",
+      "errorAuthExpired": "Session expired. Please log in again.",
+      "errorValidation": "Validation error: {details}",
+      "errorServer": "Server error. Please try again later.",
+      "errorNetwork": "No internet connection. Please check your connection and try again.",
+      "errorParseResponse": "Error processing the response.",
+      "loginAgain": "Log in again",
       "close": "Close",
       "retry": "Try Again"
     }
@@ -1434,6 +1503,11 @@
       "emailVerified": "Verified email address",
       "acceptTerms": "Accept the Seller Terms & Conditions",
       "stripeAccount": "Complete Stripe identity verification for payouts"
+    },
+    "copyrightCallout": {
+      "title": "Worried about copyright?",
+      "description": "Our guide explains clearly what you can sell and what to look out for.",
+      "link": "Read Copyright Guide"
     },
     "termsSection": {
       "title": "Seller Terms & Conditions",
@@ -1970,7 +2044,8 @@
     "general": {
       "q1": {
         "question": "What is Currico?",
-        "answer": "Currico is a Swiss platform where teachers can buy and sell high-quality teaching materials. All materials are specifically designed for the Swiss Lehrplan 21 curriculum and created by experienced teachers."
+        "answer": "Currico is a Swiss platform where teachers can buy and sell high-quality teaching materials. All materials are specifically designed for the Swiss Lehrplan 21 curriculum and created by experienced teachers.",
+        "linkLabel": "Discover Materials"
       },
       "q2": {
         "question": "Who is Currico for?",
@@ -1982,77 +2057,131 @@
       },
       "q4": {
         "question": "Do I need to create an account?",
-        "answer": "You don't need an account to browse and view material previews. However, a free registration is required to buy or sell materials."
+        "answer": "You don't need an account to browse and view material previews. However, a free registration is required to buy or sell materials.",
+        "linkLabel": "Register now"
       },
       "q5": {
+        "question": "Is Currico free?",
+        "answer": "Registration and browsing are free. Free materials can be downloaded at no cost. For paid materials, the listed prices apply. For sellers, the platform fee is 30%."
+      },
+      "q6": {
+        "question": "What does Lehrplan 21 mean?",
+        "answer": "Lehrplan 21 (LP21) is the common curriculum of the German-speaking cantons of Switzerland. It describes the competencies students should acquire during compulsory education, divided into three cycles."
+      },
+      "q7": {
         "question": "How can I contact support?",
-        "answer": "You can reach us via the contact form on our website or by email. We strive to respond to all inquiries within 24 hours."
+        "answer": "You can reach us via the contact form on our website or by email at info@currico.ch. We strive to respond to all inquiries within 24 hours.",
+        "linkLabel": "Open contact form"
       }
     },
     "buying": {
       "q1": {
-        "question": "What file formats are available?",
-        "answer": "Most materials are available as PDF and/or Word documents (DOCX). The exact format is indicated for each material. Word documents can be edited after download."
+        "question": "How do I find suitable materials?",
+        "answer": "Use the search function and filters on the materials page. You can filter by cycle, subject area, dialect (Swiss German/Standard German) and keywords to find exactly the materials you need.",
+        "linkLabel": "Browse Materials"
       },
       "q2": {
-        "question": "Are the materials editable?",
-        "answer": "That depends on the file format. Word documents (DOCX) are fully editable. PDF files cannot be edited directly but are ideal for printing."
+        "question": "What file formats are available?",
+        "answer": "Most materials are available as PDF and/or Word documents (DOCX). Other formats include PowerPoint (PPTX) and Excel (XLSX). The exact format is indicated for each material."
       },
       "q3": {
-        "question": "Can I share materials with colleagues?",
-        "answer": "The license is valid for a single teacher. Sharing with colleagues or uploading to school networks is not permitted. For school licenses, please contact us directly."
+        "question": "Are the materials editable?",
+        "answer": "That depends on the file format. Word documents (DOCX) and PowerPoint files (PPTX) are fully editable. PDF files cannot be edited directly but are ideal for printing."
       },
       "q4": {
         "question": "How does payment work?",
         "answer": "We accept credit cards (Visa, Mastercard), TWINT, and for schools also invoice with QR code. All prices are in Swiss Francs including VAT."
       },
       "q5": {
+        "question": "Where can I find my purchased materials?",
+        "answer": "All acquired materials can be found in your Library under 'My Account'. You can re-download the files there at any time.",
+        "linkLabel": "Open My Library"
+      },
+      "q6": {
+        "question": "Can I share materials with colleagues?",
+        "answer": "The license is valid for a single teacher. Sharing with colleagues or uploading to school networks is not permitted. For school licenses, please contact us directly."
+      },
+      "q7": {
         "question": "Can I return materials?",
-        "answer": "Since these are digital products, returns are generally not possible after download. For technical problems or if the material doesn't match the description, please contact our support."
+        "answer": "Since these are digital products, returns are generally not possible after download. For technical problems or if the material doesn't match the description, please contact our support.",
+        "linkLabel": "Contact Support"
+      },
+      "q8": {
+        "question": "Can I save materials to a wishlist?",
+        "answer": "Yes, click the heart icon on a material to add it to your wishlist. This way you can bookmark interesting materials for later and easily find them again.",
+        "linkLabel": "My Wishlist"
       }
     },
     "selling": {
       "q1": {
         "question": "How can I sell materials?",
-        "answer": "Register as a seller, connect your account with Stripe for payouts, and upload your materials. After a brief review, your materials will be published."
+        "answer": "Register, go to 'Upload Material', fill in the information, upload your file, and confirm the legal requirements. After publishing, your material is immediately available in the shop.",
+        "linkLabel": "Upload Material"
       },
       "q2": {
         "question": "What is the commission rate?",
-        "answer": "Currico keeps 30% of the sale price as a platform fee. You receive 70% of each sale directly to your bank account."
+        "answer": "Currico keeps 30% of the sale price as a platform fee. You receive 70% of each sale. For a price of CHF 10.00, you would receive CHF 7.00 per sale."
       },
       "q3": {
         "question": "When will I receive my payout?",
         "answer": "Payouts are processed automatically via Stripe once your balance reaches CHF 50. The transfer to your bank account usually takes 2-3 business days."
       },
       "q4": {
-        "question": "What are the requirements for materials?",
-        "answer": "Your materials must be original, consider the Lehrplan 21, and use Swiss spelling (ss instead of ß). Copyrighted content from third parties is not allowed."
+        "question": "What can I upload and what not?",
+        "answer": "You may only upload self-created materials or content with CC0 license. No scans from textbooks, no protected trademarks or characters, and no copyrighted third-party content. Our Copyright Guide explains all the details.",
+        "linkLabel": "Read Copyright Guide"
       },
       "q5": {
         "question": "What does LP21-compliant mean?",
-        "answer": "LP21-compliant means your material is aligned with the competencies of the Lehrplan 21. When uploading, you can select the corresponding competency codes (e.g., MA.1.A.1)."
+        "answer": "LP21-compliant means your material is aligned with the competencies of the Lehrplan 21. When uploading, you can select the cycle, subject area, and the corresponding competency codes (e.g., MA.1.A.1)."
+      },
+      "q6": {
+        "question": "Do I have to use Swiss spelling?",
+        "answer": "Yes, Swiss spelling is required for German-language materials - that means 'ss' instead of 'ß'. Our upload assistant automatically checks for Eszett characters and offers automatic correction."
+      },
+      "q7": {
+        "question": "Can I offer free materials?",
+        "answer": "Yes, you can also offer materials for free. Free materials often reach more users and help build your reputation as an author. You can change the price at any time.",
+        "linkLabel": "Upload free material"
+      },
+      "q8": {
+        "question": "Can I edit my materials after publishing?",
+        "answer": "Yes, you can edit the title, description, and price of your published materials at any time in your account under 'My Uploads'.",
+        "linkLabel": "Manage My Uploads"
       }
     },
     "technical": {
       "q1": {
         "question": "How do I download purchased materials?",
-        "answer": "After purchase, you'll find all acquired materials in your Library under 'My Account'. You can re-download the files there at any time."
+        "answer": "After purchase, you'll find all acquired materials in your Library under 'My Account'. Click the download button next to the material to download the file.",
+        "linkLabel": "Go to Library"
       },
       "q2": {
         "question": "I'm having download problems. What should I do?",
-        "answer": "First try reloading the page or using a different browser. If the problem persists, please contact our support with your order number."
+        "answer": "First try reloading the page or using a different browser. Also check if your browser is blocking downloads (pop-up blocker). If the problem persists, please contact our support.",
+        "linkLabel": "Contact Support"
       },
       "q3": {
-        "question": "Is my data secure?",
-        "answer": "Yes, we take data protection very seriously. Our servers are located in Switzerland, and we strictly comply with Swiss data protection law (nDSG) as well as GDPR. More details in our Privacy Policy."
+        "question": "What file size is allowed for uploads?",
+        "answer": "The maximum file size is 50 MB per file. Supported formats are PDF, Word (DOCX), PowerPoint (PPTX), and Excel (XLSX). Preview images (PNG, JPG) may be up to 5 MB."
       },
       "q4": {
+        "question": "Is my data secure?",
+        "answer": "Yes, we take data protection very seriously. Our servers are located in Switzerland at Infomaniak, and we strictly comply with Swiss data protection law (nDSG) as well as GDPR.",
+        "linkLabel": "Read Privacy Policy"
+      },
+      "q5": {
         "question": "Which browsers are supported?",
         "answer": "Currico works with all modern browsers: Chrome, Firefox, Safari, and Edge. We recommend always using the latest version of your browser."
       },
-      "q5": {
+      "q6": {
         "question": "Does Currico work on mobile devices?",
         "answer": "Yes, Currico is fully responsive and works on smartphones and tablets. You can browse and purchase materials on any device. However, for editing Word documents, we recommend using a computer."
+      },
+      "q7": {
+        "question": "My upload failed. What can I do?",
+        "answer": "Check if your file has the correct format (PDF, DOCX, PPTX, XLSX) and doesn't exceed the maximum size of 50 MB. If you were logged out, log in again and try once more.",
+        "linkLabel": "Try uploading again"
       }
     },
     "contact": {
@@ -2429,6 +2558,9 @@
     }
   },
   "hilfePage": {
+    "hero": {
+      "badge": "Help Center"
+    },
     "title": "Help Center",
     "subtitle": "Find answers to your questions about Currico",
     "searchPlaceholder": "Search for answers...",
@@ -2436,6 +2568,36 @@
     "resultsCount": "{count} results found",
     "categories": {
       "all": "All"
+    },
+    "quickStart": {
+      "title": "Quick Start",
+      "upload": {
+        "question": "How do I upload material?",
+        "answer": "To upload material, you first need a free Currico account. After registering, click 'Upload Material', fill in the basic information (title, description, cycle, subject), upload your file, and confirm the legal requirements. After publishing, your material is immediately available.",
+        "linkLabel": "Register & Upload →"
+      },
+      "copyright": {
+        "question": "What am I allowed to upload? (Copyright)",
+        "answer": "You may only upload self-created materials or content with CC0 license. No scans from textbooks, no protected trademarks or characters. Our Copyright Guide explains all the details about licenses, images, and fonts.",
+        "linkLabel": "Read Copyright Guide →"
+      },
+      "browse": {
+        "question": "Where can I find teaching materials?",
+        "answer": "On our materials page you can browse all available teaching materials. Filter by cycle, subject area, dialect (Swiss German/Standard German) and more to find exactly what you need.",
+        "linkLabel": "Discover Materials →"
+      }
+    },
+    "usefulLinks": {
+      "title": "Useful Links",
+      "subtitle": "Important pages and documents",
+      "copyrightGuide": "Copyright Guide",
+      "copyrightGuideDesc": "What can I upload? Licenses, images, fonts and more.",
+      "terms": "Seller Agreement",
+      "termsDesc": "Terms and conditions for sellers on Currico.",
+      "privacy": "Privacy Policy",
+      "privacyDesc": "How we handle your data.",
+      "impressum": "Legal Notice",
+      "impressumDesc": "Legal information and contact details."
     },
     "noResults": {
       "title": "No results found",
@@ -2610,5 +2772,433 @@
     "viewAllMaterials": "View all materials",
     "bundle": "Bundle",
     "anonymous": "Anonymous"
+  },
+  "accountPage": {
+    "title": "My Account",
+    "welcomeBack": "Welcome back, {name}",
+    "welcomeGeneric": "Welcome back",
+    "memberSince": "Member since {date}",
+    "roleBuyer": "Buyer",
+    "roleSeller": "Seller",
+    "menu": "Menu",
+    "nav": {
+      "navigation": "Navigation",
+      "overview": "Overview",
+      "library": "Library",
+      "uploads": "My Uploads",
+      "bundles": "Bundles",
+      "comments": "Comments",
+      "wishlist": "Wishlist",
+      "settings": "Settings",
+      "settingsProfile": "Profile",
+      "settingsAppearance": "Appearance",
+      "settingsNotifications": "Notifications",
+      "settingsAccount": "Account"
+    },
+    "stats": {
+      "library": "Library",
+      "uploads": "Uploads",
+      "wishlist": "Wishlist",
+      "followers": "Following"
+    },
+    "sidebar": {
+      "followed": "Following ({count})",
+      "allFollowed": "All",
+      "noFollowed": "No sellers followed yet",
+      "discover": "Discover",
+      "newMaterial": "New Material",
+      "discoverMaterials": "Discover Materials",
+      "unknownSeller": "Unknown"
+    },
+    "overview": {
+      "earnings": "Earnings",
+      "downloads": "Downloads",
+      "contributions": "Contributions",
+      "thisMonth": "This month",
+      "totalDownloads": "Total downloads",
+      "materialsPublished": "Materials published",
+      "myMaterials": "My Materials",
+      "newMaterial": "+ New Material",
+      "noMaterials": "No materials uploaded yet",
+      "noMaterialsDescription": "Share your teaching materials with other teachers.",
+      "uploadFirst": "Upload your first material",
+      "title": "Title",
+      "status": "Status",
+      "actions": "Actions",
+      "view": "View",
+      "edit": "Edit",
+      "delete": "Delete",
+      "verified": "Verified",
+      "aiChecked": "AI-Checked",
+      "pending": "Pending",
+      "recentDownloads": "Recent Downloads",
+      "viewAll": "View all",
+      "noDownloads": "No materials yet",
+      "discoverLink": "Discover",
+      "loading": "Loading..."
+    },
+    "profile": {
+      "completeProfile": "Complete your profile",
+      "fieldsCompleted": "{completed} of {total} fields completed",
+      "editProfile": "Edit Profile",
+      "close": "Close"
+    }
+  },
+  "copyrightGuide": {
+    "title": "Copyright Guide for Teachers",
+    "subtitle": "Everything you need to know before uploading materials on Currico.",
+    "intro": "This guide helps you understand which materials you can sell on Currico and what to look out for. We want you to feel confident — so we explain the key rules clearly and practically.",
+    "toc": {
+      "title": "Contents",
+      "legalBasis": "Legal Basis",
+      "allowed": "What can I sell?",
+      "notAllowed": "What can I not sell?",
+      "ccLicenses": "Creative Commons Licenses",
+      "aiContent": "AI-Generated Content",
+      "images": "Images",
+      "imageSources": "Where to find allowed images",
+      "fonts": "Fonts",
+      "greyAreas": "Grey Areas",
+      "commonMistakes": "Common Mistakes",
+      "checklist": "Checklist",
+      "contact": "Contact"
+    },
+    "backToTop": "Back to top",
+    "readyToUpload": "Ready? Back to Upload",
+    "sections": {
+      "legalBasis": {
+        "title": "Legal Basis",
+        "description": "The Swiss Copyright Act (URG) protects works from the moment of their creation. This means: every worksheet, every photo, and every text is automatically protected — even without a © symbol.",
+        "schulprivileg": {
+          "title": "Educational Exception (Art. 19 URG)",
+          "content": "Swiss law allows teachers to copy and use copyrighted works in the classroom for direct teaching purposes. This «educational exception» (Schulprivileg) applies only to direct classroom use — not to selling on a platform like Currico."
+        },
+        "important": "Important: Once you sell materials, the personal use exceptions (Art. 19 URG) no longer apply. You need full usage rights for everything you upload.",
+        "reference": "Source: Swiss Federal Act on Copyright and Related Rights (URG, SR 231.1)"
+      },
+      "allowed": {
+        "title": "What can I sell?",
+        "description": "You can safely offer these materials on Currico:",
+        "items": {
+          "ownWorksheets": "Your own worksheets and teaching materials that you created yourself",
+          "ownPhotos": "Your own photos and self-created illustrations",
+          "cc0Materials": "Materials with CC0 license (Public Domain) — free to use",
+          "ownPresentations": "Your own presentations and learning games",
+          "ownTemplates": "Self-designed templates and planning aids"
+        }
+      },
+      "notAllowed": {
+        "title": "What can I NOT sell?",
+        "description": "These materials must not be uploaded to Currico:",
+        "items": {
+          "textbookScans": "Scanned or copied pages from textbooks and school books",
+          "copyrightedCharacters": "Materials with protected characters (Disney, Pixar, Marvel, etc.)",
+          "copyrightedImages": "Images from Google Image Search or social media without a license",
+          "eszettContent": "Materials with Eszett (ß) — in Switzerland we use «ss»",
+          "thirdPartyContent": "Texts or exercises from other textbooks, even if rephrased"
+        }
+      },
+      "ccLicenses": {
+        "title": "Understanding Creative Commons Licenses",
+        "description": "Not all «free» licenses allow commercial sale. Here's an overview:",
+        "allowed": {
+          "title": "Allowed on Currico",
+          "cc0": "CC0 (Public Domain) — No restrictions, free to use",
+          "ccBy": "CC-BY (Attribution) — Allowed if you credit the creator",
+          "ccBySa": "CC-BY-SA (Attribution, Share Alike) — Allowed with attribution, your material must use the same license"
+        },
+        "notAllowed": {
+          "title": "NOT allowed on Currico",
+          "ccByNc": "CC-BY-NC (Non-Commercial) — Selling is explicitly prohibited",
+          "ccByNd": "CC-BY-ND (No Derivatives) — May not be modified or incorporated into your own materials",
+          "ccByNcSa": "CC-BY-NC-SA — Combination: No selling and same license required"
+        },
+        "tip": "Tip: Check the exact license for every CC material. Look for «NC» (Non-Commercial) — if it's included, you cannot sell the material."
+      },
+      "aiContent": {
+        "title": "AI-Generated Content",
+        "description": "Many teachers use AI tools like ChatGPT, DALL-E, or Midjourney for teaching materials. Here are the rules:",
+        "allowedTitle": "Allowed",
+        "allowedItems": {
+          "aiText": "AI-generated texts that you have substantially revised and adapted",
+          "aiInspiration": "AI as inspiration for your own designs (e.g. exercise ideas that you develop yourself)",
+          "aiLayout": "AI-assisted layouts that you designed yourself"
+        },
+        "cautionTitle": "Use with caution",
+        "cautionItems": {
+          "aiImages": "AI-generated images (Midjourney, DALL-E) — check the terms of use of the respective provider",
+          "aiFullContent": "Fully AI-generated content without your own revision — legal situation still unclear"
+        },
+        "notAllowedTitle": "Not allowed",
+        "notAllowedItems": {
+          "aiCopy": "AI outputs that are recognizably based on copyrighted sources",
+          "aiStyle": "AI images in the style of a specific artist (e.g. «in the style of Miyazaki»)"
+        },
+        "notice": "Note: The legal situation regarding AI-generated content is continuously evolving. We recommend using AI as a tool and always substantially editing the results."
+      },
+      "images": {
+        "title": "Images: What's allowed?",
+        "description": "Images are a common stumbling block. Here's a clear overview:",
+        "allowedTitle": "Allowed",
+        "allowedItems": {
+          "ownPhotos": "Your own photos and drawings",
+          "cc0Images": "CC0 images from sites like Unsplash, Pixabay or Pexels",
+          "purchasedStock": "Purchased stock photos with commercial license",
+          "createdGraphics": "Self-created graphics and diagrams"
+        },
+        "notAllowedTitle": "Not allowed",
+        "notAllowedItems": {
+          "googleImages": "Images from Google Image Search",
+          "socialMedia": "Screenshots from social media or websites",
+          "editorialStock": "Stock photos with «editorial use only» license",
+          "otherTeachers": "Images from other teachers' materials"
+        }
+      },
+      "imageSources": {
+        "title": "Where to find allowed images",
+        "description": "These sources offer images you can use commercially:",
+        "sources": {
+          "unsplash": "Unsplash — High-quality photos, free, commercial use allowed",
+          "pixabay": "Pixabay — Photos, illustrations and vectors, free",
+          "pexels": "Pexels — Free photos with generous license",
+          "openclipart": "Openclipart — Public domain clipart for worksheets",
+          "wikimediaCommons": "Wikimedia Commons — Check the specific license (often CC-BY or CC-BY-SA)"
+        },
+        "tip": "Tip: Save the source and license for every image you use. This way you can prove you have the rights if questions arise."
+      },
+      "fonts": {
+        "title": "Fonts",
+        "description": "Font choice can also be relevant from a copyright perspective:",
+        "items": {
+          "googleFonts": "Google Fonts — free and usable, even commercially",
+          "purchasedFonts": "Purchased fonts with commercial license (check the license!)",
+          "systemFonts": "System fonts (Arial, Times New Roman, etc.) — generally allowed",
+          "freeWithLicense": "Free fonts with SIL Open Font License (e.g. from Font Squirrel)"
+        },
+        "warning": "Note: Some free fonts do not allow commercial use. Always check the license."
+      },
+      "greyAreas": {
+        "title": "Grey Areas — Frequent Questions",
+        "description": "Not everything is black or white. Here are the most common edge cases:",
+        "items": {
+          "maps": {
+            "question": "Can I use maps from Wikipedia?",
+            "answer": "It depends on the license. Many Wikipedia maps are CC-BY-SA — you can use them, but you must credit the creator and offer your material under the same license."
+          },
+          "exerciseReference": {
+            "question": "Can I reference a textbook exercise without copying it?",
+            "answer": "Yes. You may write «Solve exercise 3 on page 42 in the Zahlenbuch». What you cannot do: type out or scan the exercise itself."
+          },
+          "historicalImages": {
+            "question": "Are historical images automatically free?",
+            "answer": "Not necessarily. In Switzerland, copyright protection expires 70 years after the creator's death. Photos from before 1900 are usually free, but check when in doubt."
+          },
+          "studentWork": {
+            "question": "Can I use student work as examples?",
+            "answer": "Only with written consent from the parents/guardians. Fully anonymize the work."
+          },
+          "schoolLogo": {
+            "question": "Can I use my school's logo?",
+            "answer": "No. School logos are protected trademarks. Remove all school logos and names from your materials."
+          }
+        }
+      },
+      "commonMistakes": {
+        "title": "Common Mistakes",
+        "description": "We unfortunately see these mistakes often — avoid them:",
+        "items": {
+          "textbookPages": {
+            "mistake": "Scanning pages from the Zahlenbuch or Sprachstarken textbooks",
+            "why": "«I only took one page» — Even a single page is copyright-protected. The educational exception does not apply to selling."
+          },
+          "clipArt": {
+            "mistake": "Inserting clip art from Google Image Search",
+            "why": "«The image was free on the internet» — Google Image Search shows all images regardless of license. Most are protected."
+          },
+          "brandedCharacters": {
+            "mistake": "Using Disney, Pixar, or other protected characters",
+            "why": "«It's just decoration» — Even decorative use is a copyright violation. Disney is known for consistently pursuing violations."
+          },
+          "pinterestImages": {
+            "mistake": "Using images from Pinterest or Instagram",
+            "why": "«There are so many nice images on Pinterest» — Pinterest shows images from other creators. Without a license, you cannot use them commercially."
+          },
+          "modifiedContent": {
+            "mistake": "Slightly modifying textbook exercises and claiming them as your own",
+            "why": "«I changed the numbers» — A modification does not change the copyright of the original. The basic structure remains protected."
+          },
+          "fontAssumption": {
+            "mistake": "Assuming all free fonts can be used commercially",
+            "why": "«The font was free» — Many free fonts are licensed for personal use only. Always check the license terms."
+          }
+        }
+      },
+      "checklist": {
+        "title": "Pre-Upload Checklist",
+        "description": "Check these points before uploading your material:",
+        "items": {
+          "ownContent": "I created all content myself or use CC0 material",
+          "noScans": "My material does not contain scanned or copied textbook pages",
+          "noTrademarks": "My material does not contain protected brands, logos, or characters",
+          "swissSpelling": "My material uses Swiss spelling (no ß)",
+          "termsAccepted": "I accept the seller agreement and act in good faith"
+        },
+        "termsLinkText": "Read seller agreement"
+      },
+      "contact": {
+        "title": "Questions?",
+        "description": "If you're unsure whether your material meets the guidelines, feel free to contact us. We're happy to help.",
+        "email": "info@currico.ch"
+      }
+    }
+  },
+  "rewards": {
+    "title": "Seller Levels",
+    "yourLevel": "Your Level",
+    "pointsLabel": "{points} Points",
+    "pointsUnit": "Points",
+    "pointsToNext": "{points} points to next level",
+    "maxLevel": "Max level reached!",
+    "uploads": "Uploads",
+    "downloads": "Downloads",
+    "reviewsCount": "{count, plural, =0 {No reviews} =1 {1 review} other {# reviews}}",
+    "ratingBonus": "Rating bonus: ×{multiplier} points per download",
+    "progress": "Progress",
+    "nextLevel": "Next Level",
+    "levelReached": "Level {level} reached",
+    "keepGoing": "Upload more materials to level up!",
+    "howItWorks": "How do points work?",
+    "verifiedBadge": "Verified Seller",
+    "verificationProgress": "{met}/{total} criteria met",
+    "notVerified": "Not verified",
+    "verifiedInfo": "Learn more",
+    "levels": {
+      "newcomer": "Newcomer",
+      "contributor": "Contributor",
+      "expert": "Expert",
+      "star": "Star",
+      "legend": "Legend"
+    },
+    "descriptions": {
+      "newcomer": "Welcome! Upload your first material.",
+      "contributor": "You're actively sharing knowledge — keep it up!",
+      "expert": "Your materials are in demand. Great work!",
+      "star": "You're a community star!",
+      "legend": "Legend! You're shaping Currico."
+    },
+    "page": {
+      "heroTitle": "Seller Levels",
+      "heroDescription": "The more you contribute to the Currico community, the higher you rise. Earn points through uploads, downloads, and good reviews.",
+      "howTitle": "How You Earn Points",
+      "howDescription": "Your points are calculated from three factors:",
+      "uploadPoints": "{points} points per upload",
+      "uploadPointsDescription": "For every material you upload to Currico, you earn {points} points — whether free or paid.",
+      "downloadPoints": "{points}–{pointsMax} points per download",
+      "downloadPointsDescription": "Every time someone downloads or purchases your material, you earn points. The base is {points} points — with good reviews this goes up!",
+      "reviewPoints": "{points} points per review",
+      "reviewPointsDescription": "For every review you receive on your materials, you earn {points} points.",
+      "ratingBonusTitle": "Rating Bonus",
+      "ratingBonusDescription": "The better your average rating, the more points you earn per download:",
+      "ratingBonusBase": "Below avg 4.0",
+      "ratingBonusGood": "From avg 4.0",
+      "ratingBonusGreat": "From avg 4.5",
+      "ratingBonusPerDownload": "{points} points/download",
+      "verifiedBonusTitle": "Verified Seller Bonus",
+      "verifiedBonusDescription": "Verified sellers receive a one-time bonus added to their total points:",
+      "verifiedBonusExplain": "One-time bonus as long as you are confirmed as a verified seller. Removed if verification is revoked.",
+      "verifiedBonusLink": "How do I get verified?",
+      "howToVerifyTitle": "How to become a Verified Seller",
+      "howToVerifyDescription": "Meet all 5 criteria simultaneously to earn the 'Verified Seller' badge and unlock the points bonus:",
+      "verifyCriteria": {
+        "sales": {
+          "label": "At least 10 sales",
+          "description": "Successful sales or downloads of your materials.",
+          "value": "≥ 10"
+        },
+        "rating": {
+          "label": "Average ≥ 4.5 stars",
+          "description": "Average rating across your materials.",
+          "value": "≥ 4.5 ★"
+        },
+        "resources": {
+          "label": "At least 3 materials",
+          "description": "Published and verified materials on the platform.",
+          "value": "≥ 3"
+        },
+        "age": {
+          "label": "Account at least 30 days old",
+          "description": "Your account must be at least one month old.",
+          "value": "≥ 30 days"
+        },
+        "reports": {
+          "label": "No open reports",
+          "description": "No open or pending reports against your account.",
+          "value": "0 open"
+        }
+      },
+      "howToVerifyLink": "Learn all about verification",
+      "exampleTitle": "Example Calculation",
+      "exampleDescription": "If you upload {uploads} materials and receive a total of {downloads} downloads:",
+      "exampleFormula": "{uploads} uploads × {pointsPerUpload} + {downloads} downloads × {pointsPerDownload} = {total} points",
+      "levelsTitle": "The 5 Levels",
+      "levelsDescription": "Each level unlocks a new badge for your profile.",
+      "levelMinPoints": "From {points} points",
+      "tipsTitle": "Tips to Level Up Faster",
+      "tips": {
+        "quality": "Upload high-quality materials — great content gets downloaded more often.",
+        "variety": "Offer different subjects and cycles to reach more teachers.",
+        "keywords": "Use descriptive titles and descriptions so your materials can be found.",
+        "regular": "Upload new materials regularly — active sellers level up faster."
+      }
+    }
+  },
+  "verifiedSeller": {
+    "badge": "Verified Seller",
+    "page": {
+      "title": "Verified Seller",
+      "description": "The 'Verified Seller' badge is awarded to sellers who meet our quality criteria. It shows buyers that they can trust an experienced and reliable provider.",
+      "whatTitle": "What does 'Verified Seller' mean?",
+      "whatDescription": "Verified sellers have proven that they offer high-quality materials. The badge appears on their profile and next to every material, so buyers can immediately see they're purchasing from a trusted provider.",
+      "criteriaTitle": "The 5 Criteria",
+      "criteriaDescription": "All 5 criteria must be met simultaneously to receive the badge:",
+      "criteria": {
+        "minSales": {
+          "title": "Minimum Sales",
+          "description": "At least 10 successful sales or downloads of your materials.",
+          "value": "≥ 10"
+        },
+        "minRating": {
+          "title": "Minimum Rating",
+          "description": "Average rating of your materials of at least 4.5 stars.",
+          "value": "≥ 4.5 ★"
+        },
+        "minResources": {
+          "title": "Published Materials",
+          "description": "At least 3 published and verified materials on the platform.",
+          "value": "≥ 3"
+        },
+        "accountAge": {
+          "title": "Account Age",
+          "description": "Your account must be at least 30 days old.",
+          "value": "≥ 30 days"
+        },
+        "noReports": {
+          "title": "No Open Reports",
+          "description": "No open or pending reports against your account.",
+          "value": "0 open"
+        }
+      },
+      "howTitle": "How does verification work?",
+      "howAutomatic": "Verification happens automatically: Every time you visit your seller level page, your statistics are checked. As soon as you meet all 5 criteria, you automatically receive the badge.",
+      "howRevocation": "Note: If you no longer meet the criteria (e.g., due to an open report or declining rating), the automatic verification will be revoked.",
+      "howManual": "In exceptional cases, the Currico team can also grant or revoke verification manually.",
+      "benefitsTitle": "Benefits",
+      "benefits": {
+        "badge": "Visible badge on your profile and on all your materials.",
+        "trust": "Increased trust with buyers — verified sellers are preferred.",
+        "visibility": "Better visibility on the platform."
+      },
+      "cta": "Upload Materials"
+    }
   }
 }

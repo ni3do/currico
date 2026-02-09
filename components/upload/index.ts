@@ -17,6 +17,3 @@ export {
   RadioOption,
 } from "./FormField";
 export { InfoTooltip, FIELD_TOOLTIPS } from "./InfoTooltip";
-
-// Legacy export for backwards compatibility
-export { CurriculumSelector } from "./CurriculumSelector";

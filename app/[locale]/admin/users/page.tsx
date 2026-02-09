@@ -13,6 +13,7 @@ interface AdminUser {
   role: string;
   stripe_charges_enabled: boolean;
   is_protected: boolean;
+  is_verified_seller: boolean;
   created_at: string;
   resourceCount: number;
   transactionCount: number;
@@ -102,6 +103,28 @@ export default function AdminUsersPage() {
       }
     } catch (error) {
       console.error("Error updating user:", error);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleToggleVerifySeller = async (userId: string, currentlyVerified: boolean) => {
+    setActionLoading(true);
+    try {
+      const response = await fetch(`/api/admin/users/${userId}/verify-seller`, {
+        method: currentlyVerified ? "DELETE" : "POST",
+      });
+
+      if (response.ok) {
+        fetchUsers();
+        setShowModal(false);
+        setSelectedUser(null);
+      } else {
+        const error = await response.json();
+        alert(error.error || t("errorUpdating"));
+      }
+    } catch (error) {
+      console.error("Error toggling seller verification:", error);
     } finally {
       setActionLoading(false);
     }
@@ -370,11 +393,47 @@ export default function AdminUsersPage() {
                 </div>
 
                 {selectedUser.role === "SELLER" && (
-                  <div className="border-border rounded-lg border p-4">
-                    <p className="text-text font-medium">{t("stripeStatus")}</p>
-                    <p className="text-text-muted text-sm">
-                      {selectedUser.stripe_charges_enabled ? t("stripeActive") : t("stripePending")}
-                    </p>
+                  <div className="space-y-3">
+                    <div className="border-border rounded-lg border p-4">
+                      <p className="text-text font-medium">{t("stripeStatus")}</p>
+                      <p className="text-text-muted text-sm">
+                        {selectedUser.stripe_charges_enabled
+                          ? t("stripeActive")
+                          : t("stripePending")}
+                      </p>
+                    </div>
+                    {!selectedUser.is_protected && (
+                      <div className="border-border rounded-lg border p-4">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-text font-medium">{t("verifiedSeller")}</p>
+                            <p className="text-text-muted text-sm">
+                              {selectedUser.is_verified_seller
+                                ? t("verifiedSellerActive")
+                                : t("verifiedSellerInactive")}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() =>
+                              handleToggleVerifySeller(
+                                selectedUser.id,
+                                selectedUser.is_verified_seller
+                              )
+                            }
+                            disabled={actionLoading}
+                            className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors disabled:opacity-50 ${
+                              selectedUser.is_verified_seller
+                                ? "bg-[var(--badge-error-bg)] text-[var(--badge-error-text)] hover:opacity-80"
+                                : "bg-success/20 text-success hover:bg-success/30"
+                            }`}
+                          >
+                            {selectedUser.is_verified_seller
+                              ? t("revokeVerification")
+                              : t("grantVerification")}
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

@@ -54,6 +54,24 @@ export default function Footer() {
             >
               {tCommon("footer.links.cookies")}
             </Link>
+            <Link
+              href="/urheberrecht"
+              className="text-text-muted hover:text-primary text-sm transition-colors"
+            >
+              {tCommon("footer.links.copyrightGuide")}
+            </Link>
+            <Link
+              href="/seller-levels"
+              className="text-text-muted hover:text-primary text-sm transition-colors"
+            >
+              {tCommon("footer.links.sellerLevels")}
+            </Link>
+            <Link
+              href="/verified-seller"
+              className="text-text-muted hover:text-primary text-sm transition-colors"
+            >
+              {tCommon("footer.links.verifiedSeller")}
+            </Link>
           </nav>
         </div>
       </div>

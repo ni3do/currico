@@ -1,12 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { useUploadWizard } from "./UploadWizardContext";
 import { Save, Trash2, Check, Loader2 } from "lucide-react";
+
+const emptySubscribe = () => () => {};
 
 export function DraftIndicator() {
   const { lastSavedAt, hasDraft, clearDraft, isSaving } = useUploadWizard();
   const [showConfirm, setShowConfirm] = useState(false);
+  const isClient = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false
+  );
 
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString("de-CH", {
@@ -40,7 +47,7 @@ export function DraftIndicator() {
     setShowConfirm(false);
   };
 
-  if (!hasDraft && !isSaving) {
+  if (!isClient || (!hasDraft && !isSaving)) {
     return null;
   }
 

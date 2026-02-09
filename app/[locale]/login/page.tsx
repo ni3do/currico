@@ -53,7 +53,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
       {/* Main Content - Centered Glass Card */}
@@ -63,7 +63,7 @@ export default function LoginPage() {
           <div className="glass-card p-8 sm:p-10">
             {/* Title */}
             <div className="mb-8 text-center">
-              <h1 className="text-text text-3xl font-bold">{t("title")}</h1>
+              <h1 className="text-text text-2xl font-bold sm:text-3xl">{t("title")}</h1>
               <p className="text-text-muted mt-3">{t("subtitle")}</p>
             </div>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, useId } from "react";
 import { InfoTooltip, FIELD_TOOLTIPS } from "./InfoTooltip";
 import { AlertCircle } from "lucide-react";
 
@@ -25,11 +25,21 @@ export function FormField({
   children,
   className = "",
 }: FormFieldProps) {
+  const id = useId();
   const showError = touched && error;
+  const errorId = `${id}-error`;
+  const hintId = `${id}-hint`;
   const tooltip = tooltipKey ? FIELD_TOOLTIPS[tooltipKey] : null;
 
+  // Build aria-describedby value for children
+  const describedBy = showError ? errorId : hint ? hintId : undefined;
+
   return (
-    <div className={className}>
+    <div
+      className={className}
+      data-field-error-id={showError ? errorId : undefined}
+      data-field-described-by={describedBy}
+    >
       <label className="text-text mb-2 flex items-center gap-1.5 text-sm font-medium">
         <span>
           {label}
@@ -47,19 +57,27 @@ export function FormField({
 
       {/* Error Message */}
       {showError && (
-        <div className="text-error mt-1.5 flex items-center gap-1.5 text-sm">
+        <div
+          id={errorId}
+          role="alert"
+          className="text-error mt-1.5 flex items-center gap-1.5 text-sm"
+        >
           <AlertCircle className="h-4 w-4 flex-shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
       {/* Hint (only show if no error) */}
-      {hint && !showError && <p className="text-text-muted mt-1 text-xs">{hint}</p>}
+      {hint && !showError && (
+        <p id={hintId} className="text-text-muted mt-1 text-xs">
+          {hint}
+        </p>
+      )}
     </div>
   );
 }
 
-// Input component with error styling
+// Input component with error styling and aria attributes
 interface FormInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   hasError?: boolean;
 }
@@ -68,6 +86,7 @@ export function FormInput({ hasError, className = "", ...props }: FormInputProps
   return (
     <input
       {...props}
+      aria-invalid={hasError || undefined}
       className={`text-text w-full rounded-xl border-2 px-4 py-3 transition-all duration-200 focus:shadow-lg focus:ring-2 focus:outline-none ${
         hasError
           ? "border-error bg-error/5 focus:border-error focus:ring-error/20 focus:shadow-error/10"
@@ -77,7 +96,7 @@ export function FormInput({ hasError, className = "", ...props }: FormInputProps
   );
 }
 
-// Textarea component with error styling
+// Textarea component with error styling and aria attributes
 interface FormTextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   hasError?: boolean;
 }
@@ -86,6 +105,7 @@ export function FormTextarea({ hasError, className = "", ...props }: FormTextare
   return (
     <textarea
       {...props}
+      aria-invalid={hasError || undefined}
       className={`text-text w-full rounded-xl border-2 px-4 py-3 transition-all duration-200 focus:shadow-lg focus:ring-2 focus:outline-none ${
         hasError
           ? "border-error bg-error/5 focus:border-error focus:ring-error/20 focus:shadow-error/10"
@@ -95,7 +115,7 @@ export function FormTextarea({ hasError, className = "", ...props }: FormTextare
   );
 }
 
-// Select component with error styling
+// Select component with error styling and aria attributes
 interface FormSelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   hasError?: boolean;
 }
@@ -104,6 +124,7 @@ export function FormSelect({ hasError, className = "", children, ...props }: For
   return (
     <select
       {...props}
+      aria-invalid={hasError || undefined}
       className={`text-text w-full rounded-xl border-2 px-4 py-3 transition-all duration-200 focus:shadow-lg focus:ring-2 focus:outline-none ${
         hasError
           ? "border-error bg-error/5 focus:border-error focus:ring-error/20 focus:shadow-error/10"
@@ -168,6 +189,7 @@ export function FormCheckbox({
         type="checkbox"
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
+        aria-invalid={hasError || undefined}
         className="sr-only"
       />
       <div className="flex-1">
@@ -186,16 +208,24 @@ export function FormCheckbox({
   );
 }
 
-// Radio group option
+// Radio group option with ARIA support
 interface RadioOptionProps {
   value: string;
   checked: boolean;
   onChange: (value: string) => void;
   label: string;
   description?: string;
+  name?: string;
 }
 
-export function RadioOption({ value, checked, onChange, label, description }: RadioOptionProps) {
+export function RadioOption({
+  value,
+  checked,
+  onChange,
+  label,
+  description,
+  name,
+}: RadioOptionProps) {
   return (
     <label
       className={`group relative flex cursor-pointer items-center gap-3 rounded-xl border-2 p-4 transition-all duration-200 ${
@@ -206,6 +236,7 @@ export function RadioOption({ value, checked, onChange, label, description }: Ra
     >
       <input
         type="radio"
+        name={name}
         value={value}
         checked={checked}
         onChange={() => onChange(value)}

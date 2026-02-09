@@ -60,6 +60,7 @@ export async function GET() {
             pinterest: true,
             is_private: true,
             role: true,
+            seller_xp: true,
             stripe_charges_enabled: true,
             // Notification preferences
             notify_new_from_followed: true,
@@ -97,6 +98,7 @@ export async function GET() {
         pinterest: user.pinterest,
         is_private: user.is_private,
         isSeller: user.role === "SELLER",
+        sellerPoints: user.seller_xp,
         stripeChargesEnabled: user.stripe_charges_enabled,
         // Notification preferences
         notify_new_from_followed: user.notify_new_from_followed,

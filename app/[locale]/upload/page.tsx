@@ -2,6 +2,7 @@
 
 import { useState, useRef, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import TopBar from "@/components/ui/TopBar";
@@ -32,13 +33,18 @@ import {
   AlertTriangle,
   Check,
   Loader2,
+  ClipboardCheck,
+  Scale,
 } from "lucide-react";
 
 type UploadStatus = "idle" | "uploading" | "success" | "error";
 
 function UploadPageContent() {
   const router = useRouter();
+  const { data: session, status: sessionStatus } = useSession();
   const tCommon = useTranslations("common");
+  const tUpload = useTranslations("uploadWizard.upload");
+  const tLegal = useTranslations("uploadWizard.legal");
   const {
     formData,
     updateFormData,
@@ -68,6 +74,10 @@ function UploadPageContent() {
   const mainFileInputRef = useRef<HTMLInputElement>(null);
   const previewFileInputRef = useRef<HTMLInputElement>(null);
   const hasShownDraftToast = useRef(false);
+
+  // Detect touch device for mobile-friendly upload area
+  const isTouchDevice =
+    typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0);
 
   // Show draft restored toast on mount if draft exists
   useEffect(() => {
@@ -190,6 +200,7 @@ function UploadPageContent() {
     apiFormData.append("title", formData.title);
     apiFormData.append("description", formData.description);
     apiFormData.append("language", formData.language);
+    apiFormData.append("dialect", formData.dialect);
     apiFormData.append("resourceType", formData.resourceType);
 
     const cycleFullName = `Zyklus ${formData.cycle}`;
@@ -233,22 +244,39 @@ function UploadPageContent() {
             router.push("/account");
           }, 2000);
         } catch {
-          setError("Fehler beim Verarbeiten der Antwort");
+          setError(tUpload("errorParseResponse"));
           setUploadStatus("error");
         }
       } else {
-        try {
-          const result = JSON.parse(xhr.responseText);
-          setError(result.error || "Fehler beim Hochladen");
-        } catch {
-          setError(`Fehler beim Hochladen (Status: ${xhr.status})`);
+        // Specific error messages based on HTTP status
+        if (xhr.status === 413) {
+          const fileSizeMB = files[0] ? (files[0].size / (1024 * 1024)).toFixed(1) : "?";
+          setError(tUpload("errorFileTooLarge", { size: fileSizeMB }));
+        } else if (xhr.status === 401) {
+          setError(tUpload("errorAuthExpired"));
+        } else if (xhr.status === 422) {
+          try {
+            const result = JSON.parse(xhr.responseText);
+            setError(tUpload("errorValidation", { details: result.error || result.message || "" }));
+          } catch {
+            setError(tUpload("errorValidation", { details: "" }));
+          }
+        } else if (xhr.status >= 500) {
+          setError(tUpload("errorServer"));
+        } else {
+          try {
+            const result = JSON.parse(xhr.responseText);
+            setError(result.error || tUpload("error"));
+          } catch {
+            setError(`${tUpload("error")} (Status: ${xhr.status})`);
+          }
         }
         setUploadStatus("error");
       }
     });
 
     xhr.addEventListener("error", () => {
-      setError("Netzwerkfehler: Bitte überprüfen Sie Ihre Internetverbindung");
+      setError(tUpload("errorNetwork"));
       setUploadStatus("error");
     });
 
@@ -285,25 +313,66 @@ function UploadPageContent() {
     return <FileText className="text-text-muted h-8 w-8" />;
   };
 
+  // Auth gate: show login prompt if not authenticated
+  if (sessionStatus === "loading") {
+    return (
+      <div className="bg-bg flex min-h-screen flex-col">
+        <TopBar />
+        <main className="flex flex-1 items-center justify-center px-4">
+          <div className="text-text-muted animate-pulse text-sm">{tUpload("loading")}</div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (sessionStatus === "unauthenticated" || !session) {
+    return (
+      <div className="bg-bg flex min-h-screen flex-col">
+        <TopBar />
+        <main className="flex flex-1 items-center justify-center px-4 py-16">
+          <div className="mx-auto max-w-md text-center">
+            <div className="bg-primary/10 mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl">
+              <Upload className="text-primary h-8 w-8" />
+            </div>
+            <h1 className="text-text text-2xl font-bold">{tUpload("authRequired.title")}</h1>
+            <p className="text-text-muted mt-3 text-base leading-relaxed">
+              {tUpload("authRequired.description")}
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
+              <Link
+                href="/register"
+                className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold transition-colors"
+              >
+                {tUpload("authRequired.register")}
+              </Link>
+              <Link
+                href="/login"
+                className="border-border text-text hover:bg-surface-elevated inline-flex items-center justify-center gap-2 rounded-xl border-2 px-6 py-3 text-sm font-medium transition-colors"
+              >
+                {tUpload("authRequired.login")}
+              </Link>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="flex-1 px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          {/* Breadcrumb */}
-          <Breadcrumb items={[{ label: tCommon("breadcrumb.upload") }]} className="mb-6" />
-
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+        <div>
           {/* Page Header */}
-          <div className="mb-6 flex items-center justify-between">
-            <div>
-              <h1 className="text-text text-2xl font-bold tracking-tight sm:text-3xl">
-                Material hochladen
-              </h1>
-              <p className="text-text-muted mt-1 text-sm">
-                Teilen Sie Ihre Unterrichtsmaterialien mit der Currico-Community
-              </p>
-            </div>
+          <div className="mb-8">
+            <Breadcrumb items={[{ label: tCommon("breadcrumb.upload") }]} />
+            <h1 className="text-text text-2xl font-bold sm:text-3xl">Material hochladen</h1>
+            <p className="text-text-muted mt-1">
+              Teilen Sie Ihre Unterrichtsmaterialien mit der Currico-Community
+            </p>
           </div>
 
           {/* Step Navigation */}
@@ -322,7 +391,7 @@ function UploadPageContent() {
               {currentStep === 1 && (
                 <div className="space-y-6">
                   <div className="border-primary/20 border-b pb-4">
-                    <h2 className="text-text text-xl font-bold">Grundinformationen</h2>
+                    <h2 className="text-text text-xl font-semibold">Grundinformationen</h2>
                     <p className="text-text-muted mt-1 text-sm">Beschreiben Sie Ihr Material</p>
                   </div>
 
@@ -368,7 +437,13 @@ function UploadPageContent() {
                     <FormField label="Sprache" tooltipKey="language" required>
                       <FormSelect
                         value={formData.language}
-                        onChange={(e) => updateFormData("language", e.target.value)}
+                        onChange={(e) => {
+                          updateFormData("language", e.target.value);
+                          // Reset dialect when switching away from German
+                          if (e.target.value !== "de") {
+                            updateFormData("dialect", "BOTH");
+                          }
+                        }}
                       >
                         <option value="de">Deutsch</option>
                         <option value="en">Englisch</option>
@@ -390,6 +465,43 @@ function UploadPageContent() {
                       </FormSelect>
                     </FormField>
                   </div>
+
+                  {/* Dialect toggle - only shown for German */}
+                  {formData.language === "de" && (
+                    <FormField
+                      label="Sprachvariante"
+                      hint="Ist Ihr Material in Schweizerdeutsch, Hochdeutsch oder beidem verfasst?"
+                    >
+                      <div className="flex gap-2">
+                        {[
+                          { value: "BOTH" as const, label: "Beide", desc: "CH + DE" },
+                          { value: "SWISS" as const, label: "Schweizerdeutsch", desc: "CH" },
+                          { value: "STANDARD" as const, label: "Hochdeutsch", desc: "DE" },
+                        ].map((opt) => {
+                          const isActive = formData.dialect === opt.value;
+                          return (
+                            <button
+                              key={opt.value}
+                              type="button"
+                              onClick={() => updateFormData("dialect", opt.value)}
+                              className={`flex-1 rounded-lg border-2 px-3 py-2.5 text-center transition-colors ${
+                                isActive
+                                  ? "border-primary bg-primary/10 text-primary"
+                                  : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:bg-surface-hover"
+                              }`}
+                            >
+                              <div className="text-sm font-semibold">{opt.label}</div>
+                              <div
+                                className={`text-xs ${isActive ? "text-primary/80" : "text-text-muted"}`}
+                              >
+                                {opt.desc}
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </FormField>
+                  )}
 
                   {/* Eszett Warning */}
                   {eszettCheck.hasAny && (
@@ -420,7 +532,7 @@ function UploadPageContent() {
               {currentStep === 2 && (
                 <div className="space-y-6">
                   <div className="border-primary/20 border-b pb-4">
-                    <h2 className="text-text text-xl font-bold">Lehrplan-Zuordnung</h2>
+                    <h2 className="text-text text-xl font-semibold">Lehrplan-Zuordnung</h2>
                     <p className="text-text-muted mt-1 text-sm">
                       Wählen Sie Zyklus, Fach und Kompetenzen
                     </p>
@@ -453,15 +565,20 @@ function UploadPageContent() {
               {currentStep === 3 && (
                 <div className="space-y-6">
                   <div className="border-primary/20 border-b pb-4">
-                    <h2 className="text-text text-xl font-bold">Preis festlegen</h2>
+                    <h2 className="text-text text-xl font-semibold">Preis festlegen</h2>
                     <p className="text-text-muted mt-1 text-sm">
                       Wählen Sie, ob Ihr Material kostenlos oder kostenpflichtig ist
                     </p>
                   </div>
 
                   <FormField label="Preismodell" tooltipKey="priceType" required>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div
+                      className="grid grid-cols-2 gap-4"
+                      role="radiogroup"
+                      aria-label="Preismodell"
+                    >
                       <RadioOption
+                        name="priceType"
                         value="free"
                         checked={formData.priceType === "free"}
                         onChange={(val) => updateFormData("priceType", val as "free" | "paid")}
@@ -469,6 +586,7 @@ function UploadPageContent() {
                         description="Frei für alle zugänglich"
                       />
                       <RadioOption
+                        name="priceType"
                         value="paid"
                         checked={formData.priceType === "paid"}
                         onChange={(val) => updateFormData("priceType", val as "free" | "paid")}
@@ -529,7 +647,7 @@ function UploadPageContent() {
               {currentStep === 4 && (
                 <div className="space-y-6">
                   <div className="border-primary/20 border-b pb-4">
-                    <h2 className="text-text text-xl font-bold">Dateien & Rechtliches</h2>
+                    <h2 className="text-text text-xl font-semibold">Dateien & Rechtliches</h2>
                     <p className="text-text-muted mt-1 text-sm">
                       Laden Sie Ihre Dateien hoch und bestätigen Sie die rechtlichen Anforderungen
                     </p>
@@ -572,11 +690,28 @@ function UploadPageContent() {
                             : "border-border bg-bg hover:border-primary"
                         } `}
                       >
-                        <Upload className="text-text-muted mx-auto h-12 w-12" />
-                        <p className="text-text mt-2 text-sm">
-                          Klicken Sie hier oder ziehen Sie Dateien hinein
-                        </p>
-                        <p className="text-text-muted mt-1 text-xs">
+                        {isTouchDevice ? (
+                          <>
+                            <div className="bg-primary/10 mx-auto flex h-14 w-14 items-center justify-center rounded-full">
+                              <Upload className="text-primary h-7 w-7" />
+                            </div>
+                            <p className="text-text mt-3 text-sm font-medium">
+                              Tippen Sie hier, um Dateien auszuwählen
+                            </p>
+                            <div className="bg-primary text-text-on-accent mx-auto mt-3 inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold">
+                              <Upload className="h-4 w-4" />
+                              Durchsuchen
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <Upload className="text-text-muted mx-auto h-12 w-12" />
+                            <p className="text-text mt-2 text-sm">
+                              Klicken Sie hier oder ziehen Sie Dateien hinein
+                            </p>
+                          </>
+                        )}
+                        <p className="text-text-muted mt-2 text-xs">
                           PDF, Word, PowerPoint, Excel bis 50 MB
                         </p>
                         <input
@@ -600,7 +735,23 @@ function UploadPageContent() {
                                 className="flex flex-1 cursor-pointer items-center gap-4"
                                 onClick={() => handleFilePreview(file)}
                               >
-                                {getFileIcon(file)}
+                                <div className="relative flex-shrink-0">
+                                  {file.type.startsWith("image/") ? (
+                                    // eslint-disable-next-line @next/next/no-img-element
+                                    <img
+                                      src={URL.createObjectURL(file)}
+                                      alt={file.name}
+                                      className="h-10 w-10 rounded-lg object-cover"
+                                    />
+                                  ) : (
+                                    getFileIcon(file)
+                                  )}
+                                  {file.type === "application/pdf" && (
+                                    <span className="bg-primary/90 absolute -right-1 -bottom-1 rounded px-1 py-0.5 text-[8px] font-bold text-white">
+                                      PDF
+                                    </span>
+                                  )}
+                                </div>
                                 <div className="min-w-0 flex-1">
                                   <p className="text-text truncate text-sm font-medium">
                                     {file.name}
@@ -661,11 +812,20 @@ function UploadPageContent() {
                       onClick={() => previewFileInputRef.current?.click()}
                       className="border-border bg-bg hover:border-primary cursor-pointer rounded-xl border-2 border-dashed p-6 text-center transition-colors"
                     >
-                      <ImageIcon className="text-text-muted mx-auto h-10 w-10" />
+                      {previewFiles.length > 0 ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={URL.createObjectURL(previewFiles[0])}
+                          alt="Vorschau"
+                          className="mx-auto h-24 w-auto rounded-lg object-contain"
+                        />
+                      ) : (
+                        <ImageIcon className="text-text-muted mx-auto h-10 w-10" />
+                      )}
                       <p className="text-text-muted mt-2 text-sm">PNG, JPG bis 5 MB</p>
                       {previewFiles.length > 0 && (
                         <p className="text-primary mt-2 text-sm font-medium">
-                          {previewFiles.length} Vorschaubild(er) ausgewählt
+                          {previewFiles.length} Vorschaubild(er) ausgewählt — Tippen zum Ändern
                         </p>
                       )}
                       <input
@@ -679,14 +839,85 @@ function UploadPageContent() {
                     </div>
                   </FormField>
 
+                  {/* Pre-Upload Checklist Callout */}
+                  <div className="border-primary/30 bg-primary/5 rounded-xl border p-5">
+                    <div className="mb-3 flex items-center gap-3">
+                      <div className="bg-primary/10 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg">
+                        <ClipboardCheck className="text-primary h-5 w-5" />
+                      </div>
+                      <div>
+                        <h3 className="text-text text-base font-semibold">
+                          {tLegal("checklistTitle")}
+                        </h3>
+                        <p className="text-text-muted text-sm">{tLegal("checklistSubtitle")}</p>
+                      </div>
+                    </div>
+                    <ul className="mb-4 space-y-2 pl-1">
+                      {(
+                        [
+                          "ownWork",
+                          "noScans",
+                          "noTrademarks",
+                          "swissSpelling",
+                          "correctLicense",
+                        ] as const
+                      ).map((key) => (
+                        <li key={key} className="flex items-start gap-2.5">
+                          <Check className="text-primary mt-0.5 h-4 w-4 flex-shrink-0" />
+                          <span className="text-text-secondary text-sm">
+                            {tLegal(`checklistItems.${key}`)}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="flex items-center gap-4">
+                      <Link
+                        href="/urheberrecht"
+                        target="_blank"
+                        className="text-primary hover:bg-primary/10 inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
+                      >
+                        <Scale className="h-4 w-4" />
+                        {tLegal("copyrightGuideFull")}
+                        <ExternalLink className="h-3.5 w-3.5" />
+                      </Link>
+                    </div>
+                  </div>
+
                   {/* Legal Confirmations */}
                   <div className="border-border bg-surface-elevated rounded-xl border p-6">
-                    <h3 className="text-text mb-2 text-lg font-semibold">
-                      Rechtliche Bestätigungen
-                    </h3>
-                    <p className="text-text-muted mb-5 text-sm">
-                      Bitte bestätigen Sie alle Punkte, um fortfahren zu können.
-                    </p>
+                    <div className="mb-5 flex items-center justify-between">
+                      <div>
+                        <h3 className="text-text text-lg font-semibold">
+                          Rechtliche Bestätigungen
+                        </h3>
+                        <p className="text-text-muted mt-1 text-sm">
+                          Bitte bestätigen Sie alle Punkte, um fortfahren zu können.
+                        </p>
+                      </div>
+                      <span
+                        className={`text-sm font-bold ${allLegalChecked ? "text-[var(--ctp-green)]" : "text-text-muted"}`}
+                      >
+                        {
+                          [
+                            formData.legalOwnContent,
+                            formData.legalNoTextbookScans,
+                            formData.legalNoTrademarks,
+                            formData.legalSwissGerman,
+                            formData.legalTermsAccepted,
+                          ].filter(Boolean).length
+                        }{" "}
+                        / 5
+                      </span>
+                    </div>
+                    {/* Progress bar */}
+                    <div className="bg-border mb-5 h-1.5 overflow-hidden rounded-full">
+                      <div
+                        className={`h-full transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${allLegalChecked ? "bg-[var(--ctp-green)]" : "bg-primary"}`}
+                        style={{
+                          width: `${([formData.legalOwnContent, formData.legalNoTextbookScans, formData.legalNoTrademarks, formData.legalSwissGerman, formData.legalTermsAccepted].filter(Boolean).length / 5) * 100}%`,
+                        }}
+                      />
+                    </div>
 
                     <div className="space-y-3">
                       <FormCheckbox
@@ -747,6 +978,18 @@ function UploadPageContent() {
                         hasError={touchedFields.legalTermsAccepted && !formData.legalTermsAccepted}
                         tooltipKey="legalTermsAccepted"
                       />
+                    </div>
+
+                    {/* Copyright guide link */}
+                    <div className="bg-primary/5 border-primary/20 mt-4 rounded-lg border p-3 text-sm">
+                      <span className="text-text-secondary">{tLegal("copyrightGuideLink")} </span>
+                      <Link
+                        href="/urheberrecht"
+                        target="_blank"
+                        className="text-primary font-medium hover:underline"
+                      >
+                        {tLegal("copyrightGuideLinkText")} →
+                      </Link>
                     </div>
 
                     {!allLegalChecked && (
@@ -814,73 +1057,107 @@ function UploadPageContent() {
       {/* Draft Restored Toast */}
       {showDraftToast && <DraftRestoredToast onDismiss={() => setShowDraftToast(false)} />}
 
-      {/* Upload Modal */}
+      {/* Upload Progress Toast — fixed bottom-right */}
       {uploadStatus !== "idle" && (
-        <div className="animate-in fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md duration-200">
-          <div className="animate-in zoom-in-95 fade-in bg-surface mx-4 w-full max-w-md rounded-3xl p-8 shadow-2xl duration-300">
+        <div className="animate-in slide-in-from-bottom-4 fade-in fixed right-4 bottom-4 z-50 w-full max-w-sm duration-300 sm:right-6 sm:bottom-6">
+          <div className="border-border bg-surface rounded-2xl border p-5 shadow-2xl">
             {uploadStatus === "uploading" && (
-              <div className="text-center">
-                <div className="relative mx-auto h-20 w-20">
-                  <div className="from-primary to-success absolute inset-0 animate-pulse rounded-full bg-gradient-to-r opacity-20"></div>
-                  <Loader2 className="text-primary absolute inset-0 h-20 w-20 animate-spin" />
+              <div>
+                <div className="flex items-center gap-3">
+                  <Loader2 className="text-primary h-6 w-6 flex-shrink-0 animate-spin" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-text text-sm font-semibold">{tUpload("uploading")}</p>
+                    <p className="text-text-muted text-xs">{tUpload("pleaseWait")}</p>
+                  </div>
+                  <span className="text-primary text-sm font-bold">{uploadProgress}%</span>
                 </div>
-                <h3 className="text-text mt-6 text-2xl font-bold">Wird hochgeladen...</h3>
-                <p className="text-text-muted mt-2 text-sm">
-                  Bitte warten Sie, dies kann einen Moment dauern.
-                </p>
-                <div className="bg-border mt-6 h-4 overflow-hidden rounded-full">
+                <div className="bg-border mt-3 h-2 overflow-hidden rounded-full">
                   <div
-                    className="from-primary via-primary-hover to-success h-full bg-gradient-to-r transition-all duration-300 ease-out"
+                    className="from-primary to-success h-full bg-gradient-to-r transition-all duration-300 ease-out"
                     style={{ width: `${uploadProgress}%` }}
                   />
                 </div>
-                <p className="text-primary mt-3 text-lg font-bold">{uploadProgress}%</p>
               </div>
             )}
 
             {uploadStatus === "success" && (
-              <div className="text-center">
-                <div className="animate-in zoom-in bg-success/20 mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full duration-500">
-                  <Check className="text-success h-10 w-10" />
+              <div>
+                <div className="flex items-start gap-3">
+                  <div className="bg-success/20 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full">
+                    <Check className="text-success h-4 w-4" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-text text-sm font-semibold">{tUpload("success")}</p>
+                    <p className="text-text-muted text-xs">{tUpload("successMessage")}</p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setUploadStatus("idle");
+                      setError(null);
+                    }}
+                    className="text-text-muted hover:text-text flex-shrink-0 p-1 transition-colors"
+                    aria-label={tUpload("close")}
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
                 </div>
-                <h3 className="text-text text-2xl font-bold">Material erstellt!</h3>
-                <p className="text-text-muted mt-2 text-sm">
-                  Ihr Material wurde hochgeladen und wartet auf Freigabe.
-                </p>
                 {createdMaterialId && (
                   <button
                     onClick={() => router.push(`/materialien/${createdMaterialId}`)}
-                    className="bg-primary text-text-on-accent hover:bg-primary-hover mt-6 rounded-xl px-8 py-3 font-semibold transition-all duration-200 active:scale-[0.98]"
+                    className="bg-primary text-text-on-accent hover:bg-primary-hover mt-3 w-full rounded-lg px-4 py-2 text-sm font-medium transition-colors"
                   >
-                    Zum Material →
+                    {tUpload("viewMaterial")} →
                   </button>
                 )}
               </div>
             )}
 
             {uploadStatus === "error" && (
-              <div className="text-center">
-                <div className="animate-in zoom-in bg-error/20 mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full duration-500">
-                  <X className="text-error h-10 w-10" />
-                </div>
-                <h3 className="text-text text-2xl font-bold">Fehler beim Hochladen</h3>
-                <p className="text-error bg-error/10 mt-3 rounded-lg p-3 text-sm">{error}</p>
-                <div className="mt-6 flex justify-center gap-3">
+              <div>
+                <div className="flex items-start gap-3">
+                  <div className="bg-error/20 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full">
+                    <AlertTriangle className="text-error h-4 w-4" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-text text-sm font-semibold">{tUpload("error")}</p>
+                    <p className="text-error mt-1 text-xs">{error}</p>
+                  </div>
                   <button
                     onClick={() => {
                       setUploadStatus("idle");
                       setError(null);
                     }}
-                    className="border-border text-text hover:bg-surface-elevated rounded-xl border-2 px-6 py-3 font-medium transition-all duration-200 active:scale-[0.98]"
+                    className="text-text-muted hover:text-text flex-shrink-0 p-1 transition-colors"
+                    aria-label={tUpload("close")}
                   >
-                    Schliessen
+                    <X className="h-4 w-4" />
                   </button>
+                </div>
+                <div className="mt-3 flex gap-2">
                   <button
-                    onClick={handlePublish}
-                    className="bg-primary text-text-on-accent hover:bg-primary-hover rounded-xl px-6 py-3 font-medium transition-all duration-200 active:scale-[0.98]"
+                    onClick={() => {
+                      setUploadStatus("idle");
+                      setError(null);
+                    }}
+                    className="border-border text-text hover:bg-surface-elevated flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-colors"
                   >
-                    Erneut versuchen
+                    {tUpload("close")}
                   </button>
+                  {error === tUpload("errorAuthExpired") ? (
+                    <Link
+                      href="/login"
+                      className="bg-primary text-text-on-accent hover:bg-primary-hover flex flex-1 items-center justify-center rounded-lg px-3 py-2 text-sm font-medium transition-colors"
+                    >
+                      {tUpload("loginAgain")}
+                    </Link>
+                  ) : (
+                    <button
+                      onClick={handlePublish}
+                      className="bg-primary text-text-on-accent hover:bg-primary-hover flex-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
+                    >
+                      {tUpload("retry")}
+                    </button>
+                  )}
                 </div>
               </div>
             )}

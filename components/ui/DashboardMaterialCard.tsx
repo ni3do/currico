@@ -2,7 +2,16 @@
 
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
-import { Download, Eye, Trash2, ShoppingCart, FileText } from "lucide-react";
+import {
+  Download,
+  Eye,
+  Trash2,
+  ShoppingCart,
+  FileText,
+  CircleCheck,
+  Clock,
+  XCircle,
+} from "lucide-react";
 import { getSubjectTextColorByName } from "@/lib/constants/subject-colors";
 
 export interface DashboardMaterialCardProps {
@@ -140,8 +149,16 @@ export function DashboardMaterialCard({
           <div className="flex flex-wrap items-center gap-2">
             {badge && (
               <span
-                className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${getBadgeClasses(badge.variant)}`}
+                className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold ${getBadgeClasses(badge.variant)}`}
+                aria-label={`Status: ${badge.label}`}
               >
+                {badge.variant === "success" ? (
+                  <CircleCheck className="h-3 w-3" />
+                ) : badge.variant === "warning" ? (
+                  <Clock className="h-3 w-3" />
+                ) : (
+                  <XCircle className="h-3 w-3" />
+                )}
                 {badge.label}
               </span>
             )}

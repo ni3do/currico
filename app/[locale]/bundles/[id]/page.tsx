@@ -91,9 +91,9 @@ export default function BundleDetailPage() {
   // Loading state
   if (loading) {
     return (
-      <div className="flex min-h-screen flex-col">
+      <div className="bg-bg flex min-h-screen flex-col">
         <TopBar />
-        <main className="mx-auto max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
+        <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
           <div className="animate-pulse">
             <div className="bg-surface mb-8 h-4 w-48 rounded" />
             <div className="grid gap-8 lg:grid-cols-3">
@@ -131,12 +131,12 @@ export default function BundleDetailPage() {
   // Error states
   if (error === "not_found") {
     return (
-      <div className="flex min-h-screen flex-col">
+      <div className="bg-bg flex min-h-screen flex-col">
         <TopBar />
-        <main className="mx-auto max-w-7xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
+        <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
           <div className="text-center">
             <Package className="text-text-muted mx-auto mb-4 h-16 w-16" />
-            <h1 className="text-text mb-4 text-4xl font-bold">{t("notFound")}</h1>
+            <h1 className="text-text mb-4 text-2xl font-bold sm:text-3xl">{t("notFound")}</h1>
             <p className="text-text-muted mb-8">{t("notFoundDescription")}</p>
             <Link
               href="/materialien"
@@ -152,11 +152,11 @@ export default function BundleDetailPage() {
 
   if (error || !bundle) {
     return (
-      <div className="flex min-h-screen flex-col">
+      <div className="bg-bg flex min-h-screen flex-col">
         <TopBar />
-        <main className="mx-auto max-w-7xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
+        <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
           <div className="text-center">
-            <h1 className="text-text mb-4 text-4xl font-bold">{t("loadError")}</h1>
+            <h1 className="text-text mb-4 text-2xl font-bold sm:text-3xl">{t("loadError")}</h1>
             <p className="text-text-muted mb-8">{t("loadErrorDescription")}</p>
             <button
               onClick={fetchBundle}
@@ -171,10 +171,10 @@ export default function BundleDetailPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="mx-auto max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
         {/* Breadcrumb */}
         <Breadcrumb
           items={[
@@ -205,7 +205,7 @@ export default function BundleDetailPage() {
                     </span>
                   )}
                 </div>
-                <h1 className="text-text text-3xl font-bold">{bundle.title}</h1>
+                <h1 className="text-text text-2xl font-bold sm:text-3xl">{bundle.title}</h1>
               </div>
 
               {/* Description */}

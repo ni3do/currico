@@ -135,108 +135,93 @@ export default function BecomeSellerPage() {
   const hasAcceptedTerms = !!termsAcceptedAt;
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="flex-1">
-        {/* Breadcrumb */}
-        <div className="mx-auto max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+        {/* Page Header */}
+        <div className="mb-8">
           <Breadcrumb items={[{ label: tCommon("breadcrumb.becomeSeller") }]} />
+          <h1 className="text-text text-2xl font-bold sm:text-3xl">{t("hero.title")}</h1>
+          <p className="text-text-muted mt-1">{t("hero.subtitle")}</p>
         </div>
 
-        {/* Hero Section */}
-        <section className="from-primary/10 to-primary-hover/10 relative overflow-hidden bg-gradient-to-br">
-          <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
-            <div className="text-center">
-              <span className="bg-primary/10 text-primary mb-4 inline-block rounded-full px-4 py-1.5 text-sm font-medium">
-                {t("hero.badge")}
-              </span>
-              <h1 className="text-text text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
-                {t("hero.title")}
-              </h1>
-              <p className="text-text-muted mx-auto mt-6 max-w-2xl text-lg">{t("hero.subtitle")}</p>
-            </div>
-          </div>
-        </section>
-
         {/* Benefits Section */}
-        <section className="section-padding">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h2 className="heading-2 mb-12 text-center">{t("benefits.title")}</h2>
+        <section className="mb-12">
+          <h2 className="text-text mb-8 text-center text-xl font-semibold">
+            {t("benefits.title")}
+          </h2>
 
-            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {/* Benefit 1 - Earn */}
-              <div className="card p-6 text-center">
-                <div className="bg-success/15 mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full">
-                  <svg
-                    className="text-success h-8 w-8"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </div>
-                <h3 className="heading-4 mb-3">{t("benefits.earn.title")}</h3>
-                <p className="text-text-muted leading-relaxed">{t("benefits.earn.description")}</p>
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {/* Benefit 1 - Earn */}
+            <div className="card p-6 text-center">
+              <div className="bg-success/15 mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full">
+                <svg
+                  className="text-success h-8 w-8"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
               </div>
+              <h3 className="heading-4 mb-3">{t("benefits.earn.title")}</h3>
+              <p className="text-text-muted leading-relaxed">{t("benefits.earn.description")}</p>
+            </div>
 
-              {/* Benefit 2 - Reach */}
-              <div className="card p-6 text-center">
-                <div className="bg-primary/15 mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full">
-                  <svg
-                    className="text-primary h-8 w-8"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                    />
-                  </svg>
-                </div>
-                <h3 className="heading-4 mb-3">{t("benefits.reach.title")}</h3>
-                <p className="text-text-muted leading-relaxed">{t("benefits.reach.description")}</p>
+            {/* Benefit 2 - Reach */}
+            <div className="card p-6 text-center">
+              <div className="bg-primary/15 mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full">
+                <svg
+                  className="text-primary h-8 w-8"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                  />
+                </svg>
               </div>
+              <h3 className="heading-4 mb-3">{t("benefits.reach.title")}</h3>
+              <p className="text-text-muted leading-relaxed">{t("benefits.reach.description")}</p>
+            </div>
 
-              {/* Benefit 3 - Simple */}
-              <div className="card p-6 text-center sm:col-span-2 lg:col-span-1">
-                <div className="bg-accent/15 mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full">
-                  <svg
-                    className="text-accent h-8 w-8"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                    />
-                  </svg>
-                </div>
-                <h3 className="heading-4 mb-3">{t("benefits.simple.title")}</h3>
-                <p className="text-text-muted leading-relaxed">
-                  {t("benefits.simple.description")}
-                </p>
+            {/* Benefit 3 - Simple */}
+            <div className="card p-6 text-center sm:col-span-2 lg:col-span-1">
+              <div className="bg-accent/15 mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full">
+                <svg
+                  className="text-accent h-8 w-8"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                  />
+                </svg>
               </div>
+              <h3 className="heading-4 mb-3">{t("benefits.simple.title")}</h3>
+              <p className="text-text-muted leading-relaxed">{t("benefits.simple.description")}</p>
             </div>
           </div>
         </section>
 
         {/* Requirements Section */}
-        <section className="section-padding bg-bg-secondary">
-          <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-            <h2 className="heading-3 mb-6">{t("requirements.title")}</h2>
+        <section className="mb-12">
+          <div className="card mx-auto max-w-3xl p-6">
+            <h2 className="text-text mb-6 text-xl font-semibold">{t("requirements.title")}</h2>
             <ul className="space-y-3">
               <li className="text-text-secondary flex items-center gap-3">
                 <svg
@@ -290,9 +275,27 @@ export default function BecomeSellerPage() {
           </div>
         </section>
 
+        {/* Copyright Guide Callout */}
+        <section className="mb-12">
+          <div className="mx-auto max-w-4xl">
+            <div className="border-primary/20 bg-primary/5 rounded-xl border p-6 text-center">
+              <h3 className="text-text text-lg font-semibold">{t("copyrightCallout.title")}</h3>
+              <p className="text-text-muted mx-auto mt-2 max-w-md text-sm">
+                {t("copyrightCallout.description")}
+              </p>
+              <Link
+                href="/urheberrecht"
+                className="text-primary mt-3 inline-flex items-center gap-1 text-sm font-medium hover:underline"
+              >
+                {t("copyrightCallout.link")} →
+              </Link>
+            </div>
+          </div>
+        </section>
+
         {/* Seller Terms Section */}
-        <section className="section-padding">
-          <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <section className="mb-12">
+          <div className="mx-auto max-w-4xl">
             <div className="mb-8 text-center">
               <h2 className="heading-2">{t("termsSection.title")}</h2>
               <p className="text-text-muted mt-2">{t("termsSection.readBelow")}</p>

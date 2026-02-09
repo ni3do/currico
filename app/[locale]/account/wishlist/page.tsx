@@ -1,0 +1,136 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { Link } from "@/i18n/navigation";
+import { motion } from "framer-motion";
+import { DashboardMaterialCard } from "@/components/ui/DashboardMaterialCard";
+import { useAccountData } from "@/lib/hooks/useAccountData";
+import type { WishlistItem } from "@/lib/types/account";
+
+export default function AccountWishlistPage() {
+  const { status } = useSession();
+  const { userData, stats, setStats, loading: sharedLoading } = useAccountData();
+
+  const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch wishlist items on mount
+  useEffect(() => {
+    if (status !== "authenticated") return;
+
+    fetch("/api/user/wishlist")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data) setWishlistItems(data.items);
+      })
+      .catch((err) => console.error("Error fetching wishlist:", err))
+      .finally(() => setLoading(false));
+  }, [status]);
+
+  // Handle wishlist removal
+  const handleRemoveFromWishlist = async (materialId: string) => {
+    try {
+      const response = await fetch(`/api/user/wishlist?resourceId=${materialId}`, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        setWishlistItems((prev) => prev.filter((item) => item.id !== materialId));
+        if (stats) {
+          setStats({ ...stats, wishlistItems: stats.wishlistItems - 1 });
+        }
+      }
+    } catch (error) {
+      console.error("Error removing from wishlist:", error);
+    }
+  };
+
+  const isLoading = loading || sharedLoading;
+
+  return (
+    <motion.div
+      key="wishlist"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.2 }}
+    >
+      <div className="border-border bg-surface rounded-xl border p-6">
+        <div className="mb-6 flex items-center justify-between">
+          <div>
+            <h2 className="text-text text-xl font-semibold">Wunschliste</h2>
+            <p className="text-text-muted mt-1 text-sm">Gespeicherte Materialien für später</p>
+          </div>
+        </div>
+
+        {isLoading ? (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {[1, 2].map((i) => (
+              <div key={i} className="card animate-pulse overflow-hidden">
+                <div className="bg-bg-secondary aspect-[16/9]"></div>
+                <div className="p-4">
+                  <div className="bg-surface-hover mb-3 h-5 w-20 rounded-full"></div>
+                  <div className="bg-surface-hover mb-2 h-3 w-24 rounded"></div>
+                  <div className="bg-surface-hover mb-2 h-5 w-full rounded"></div>
+                  <div className="bg-surface-hover mb-4 h-4 w-32 rounded"></div>
+                  <div className="bg-surface-hover h-10 w-full rounded-lg"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : wishlistItems.length > 0 ? (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {wishlistItems.map((item) => (
+              <DashboardMaterialCard
+                key={item.id}
+                id={item.id}
+                title={item.title}
+                description={item.description}
+                subject={item.subject}
+                cycle={item.cycle}
+                previewUrl={item.previewUrl}
+                price={{
+                  formatted: item.priceFormatted,
+                  isFree: item.price === 0,
+                }}
+                seller={{ displayName: item.seller.displayName }}
+                onRemove={() => handleRemoveFromWishlist(item.id)}
+                primaryAction={{
+                  label: "Ansehen",
+                  icon: "view",
+                  href: `/materialien/${item.id}`,
+                }}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="py-12 text-center">
+            <svg
+              className="text-text-faint mx-auto mb-4 h-16 w-16"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+              />
+            </svg>
+            <h3 className="text-text mb-2 text-lg font-medium">Ihre Wunschliste ist leer</h3>
+            <p className="text-text-muted mb-4">
+              Speichern Sie interessante Materialien für später.
+            </p>
+            <Link
+              href="/materialien"
+              className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
+            >
+              Materialien entdecken
+            </Link>
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+}

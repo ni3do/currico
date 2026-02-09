@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { Link } from "@/i18n/navigation";
+import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import {
   Home,
@@ -21,38 +23,11 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ProfileCompletionProgress } from "./ProfileCompletionProgress";
+import { SellerBadge } from "@/components/ui/SellerBadge";
+import { type TabType, TAB_TO_PATH, pathToTab } from "@/lib/types/account";
+import type { FollowedSeller } from "@/lib/types/account";
 
-// Navigation items
-const NAV_ITEMS = [
-  { id: "overview", label: "Übersicht", icon: Home },
-  { id: "library", label: "Bibliothek", icon: Library },
-  { id: "uploads", label: "Meine Uploads", icon: Upload },
-  { id: "bundles", label: "Bundles", icon: Package },
-  { id: "comments", label: "Kommentare", icon: MessageCircle, sellerOnly: true },
-  { id: "wishlist", label: "Wunschliste", icon: Heart },
-] as const;
-
-// Settings sub-items
-const SETTINGS_SUB_ITEMS = [
-  { id: "settings-profile", label: "Profil", icon: User },
-  { id: "settings-appearance", label: "Darstellung", icon: Palette },
-  { id: "settings-notifications", label: "Benachrichtigungen", icon: Bell },
-  { id: "settings-account", label: "Konto", icon: Shield },
-] as const;
-
-type TabType =
-  | "overview"
-  | "library"
-  | "uploads"
-  | "bundles"
-  | "comments"
-  | "wishlist"
-  | "settings-profile"
-  | "settings-appearance"
-  | "settings-notifications"
-  | "settings-account";
-
-interface UserData {
+interface SidebarUserData {
   name: string | null;
   email: string;
   image: string | null;
@@ -63,28 +38,22 @@ interface UserData {
   displayName?: string | null;
   bio?: string | null;
   emailVerified?: string | null;
+  sellerPoints?: number;
 }
 
-interface UserStats {
+interface SidebarUserStats {
   totalInLibrary: number;
   uploadedResources: number;
   wishlistItems: number;
   followedSellers: number;
 }
 
-interface FollowedSeller {
-  id: string;
-  displayName: string | null;
-  image: string | null;
-  newResources?: number;
-}
-
 interface AccountSidebarProps {
-  userData: UserData;
-  stats: UserStats;
+  userData: SidebarUserData;
+  stats: SidebarUserStats;
   followedSellers?: FollowedSeller[];
-  activeTab: TabType;
-  onTabChange: (tab: TabType) => void;
+  activeTab?: TabType;
+  onTabChange?: (tab: TabType) => void;
   className?: string;
 }
 
@@ -92,41 +61,111 @@ export function AccountSidebar({
   userData,
   stats,
   followedSellers = [],
-  activeTab,
+  activeTab: activeTabProp,
   onTabChange,
   className = "",
 }: AccountSidebarProps) {
+  const pathname = usePathname();
+  const t = useTranslations("accountPage");
+  const activeTab = activeTabProp ?? pathToTab(pathname);
   const isSettingsActive = activeTab.startsWith("settings-");
   const [userExpandedSettings, setUserExpandedSettings] = useState(false);
-  // Settings section is expanded when a settings tab is active OR user manually expanded it
   const settingsExpanded = isSettingsActive || userExpandedSettings;
+  const useLinks = !onTabChange;
+
+  const NAV_ITEMS = [
+    { id: "overview" as TabType, label: t("nav.overview"), icon: Home, count: null },
+    {
+      id: "library" as TabType,
+      label: t("nav.library"),
+      icon: Library,
+      count: stats.totalInLibrary,
+    },
+    {
+      id: "uploads" as TabType,
+      label: t("nav.uploads"),
+      icon: Upload,
+      count: stats.uploadedResources,
+    },
+    { id: "bundles" as TabType, label: t("nav.bundles"), icon: Package, count: null },
+    {
+      id: "comments" as TabType,
+      label: t("nav.comments"),
+      icon: MessageCircle,
+      sellerOnly: true,
+      count: null,
+    },
+    {
+      id: "wishlist" as TabType,
+      label: t("nav.wishlist"),
+      icon: Heart,
+      count: stats.wishlistItems,
+    },
+  ] as const;
+
+  const SETTINGS_SUB_ITEMS = [
+    { id: "settings-profile" as TabType, label: t("nav.settingsProfile"), icon: User },
+    { id: "settings-appearance" as TabType, label: t("nav.settingsAppearance"), icon: Palette },
+    { id: "settings-notifications" as TabType, label: t("nav.settingsNotifications"), icon: Bell },
+    { id: "settings-account" as TabType, label: t("nav.settingsAccount"), icon: Shield },
+  ] as const;
+
+  const handleNavClick = (tabId: TabType) => {
+    if (onTabChange) {
+      onTabChange(tabId);
+    }
+  };
+
+  const displayName = userData.displayName || userData.name || userData.email;
 
   return (
     <aside className={`border-border bg-bg-secondary rounded-xl border shadow-sm ${className}`}>
-      <div className="p-5">
+      {/* User Identity Card */}
+      <div className="border-border border-b p-4">
+        <div className="flex items-center gap-3">
+          {userData.image ? (
+            <Image
+              src={userData.image}
+              alt={displayName}
+              width={40}
+              height={40}
+              className="h-10 w-10 rounded-full object-cover"
+            />
+          ) : (
+            <div className="bg-primary/10 text-primary flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold">
+              {displayName.charAt(0).toUpperCase()}
+            </div>
+          )}
+          <div className="min-w-0 flex-1">
+            <div className="text-text truncate text-sm font-semibold">{displayName}</div>
+            <div className="text-text-muted truncate text-xs">{userData.email}</div>
+          </div>
+          {userData.isSeller &&
+            (userData.sellerPoints !== undefined ? (
+              <SellerBadge
+                points={userData.sellerPoints}
+                variant="compact"
+                className="flex-shrink-0"
+              />
+            ) : (
+              <span className="bg-accent/10 text-accent flex-shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase">
+                {t("roleSeller")}
+              </span>
+            ))}
+        </div>
+      </div>
+
+      <div className="p-4">
         {/* Navigation */}
-        <nav className="mb-5 space-y-1">
-          <h3 className="label-meta mb-3">Navigation</h3>
+        <nav className="mb-4 space-y-0.5">
+          <h3 className="label-meta mb-2">{t("nav.navigation")}</h3>
           {NAV_ITEMS.filter(
             (item) => !("sellerOnly" in item && item.sellerOnly) || userData.isSeller
           ).map((item, index) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
-            return (
-              <motion.button
-                key={item.id}
-                onClick={() => onTabChange(item.id as TabType)}
-                className={`relative flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                  isActive
-                    ? "text-primary"
-                    : "text-text-secondary hover:bg-surface-hover hover:text-text"
-                }`}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.05 }}
-                whileHover={{ x: 4 }}
-                whileTap={{ scale: 0.98 }}
-              >
+            const content = (
+              <>
                 {isActive && (
                   <motion.div
                     layoutId="activeTab"
@@ -135,21 +174,61 @@ export function AccountSidebar({
                     transition={{ type: "spring", stiffness: 400, damping: 30 }}
                   />
                 )}
+                {isActive && (
+                  <motion.div
+                    layoutId="activeIndicator"
+                    className="bg-primary absolute top-1.5 bottom-1.5 left-0 w-0.5 rounded-full"
+                    initial={false}
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  />
+                )}
                 <span className="relative z-10 flex items-center gap-3">
-                  <Icon className={`h-5 w-5 ${isActive ? "text-primary" : ""}`} />
+                  <Icon className={`h-[18px] w-[18px] ${isActive ? "text-primary" : ""}`} />
                   {item.label}
                 </span>
-                <AnimatePresence>
-                  {isActive && (
-                    <motion.span
-                      className="bg-primary relative z-10 ml-auto h-2 w-2 rounded-full"
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      exit={{ scale: 0 }}
-                      transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                    />
-                  )}
-                </AnimatePresence>
+                {item.count !== null && item.count > 0 && (
+                  <span
+                    className={`relative z-10 ml-auto rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${
+                      isActive ? "bg-primary/20 text-primary" : "bg-surface text-text-muted"
+                    }`}
+                  >
+                    {item.count}
+                  </span>
+                )}
+              </>
+            );
+
+            const className_str = `relative flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+              isActive
+                ? "text-primary"
+                : "text-text-secondary hover:bg-surface-hover hover:text-text"
+            }`;
+
+            if (useLinks) {
+              return (
+                <motion.div
+                  key={item.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.03 }}
+                >
+                  <Link href={TAB_TO_PATH[item.id]} className={className_str}>
+                    {content}
+                  </Link>
+                </motion.div>
+              );
+            }
+
+            return (
+              <motion.button
+                key={item.id}
+                onClick={() => handleNavClick(item.id)}
+                className={className_str}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.03 }}
+              >
+                {content}
               </motion.button>
             );
           })}
@@ -158,16 +237,14 @@ export function AccountSidebar({
           <div>
             <motion.button
               onClick={() => setUserExpandedSettings(!settingsExpanded)}
-              className={`relative flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+              className={`relative flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                 isSettingsActive
                   ? "text-primary"
                   : "text-text-secondary hover:bg-surface-hover hover:text-text"
               }`}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: NAV_ITEMS.length * 0.05 }}
-              whileHover={{ x: 4 }}
-              whileTap={{ scale: 0.98 }}
+              transition={{ delay: NAV_ITEMS.length * 0.03 }}
             >
               {isSettingsActive && (
                 <motion.div
@@ -177,9 +254,19 @@ export function AccountSidebar({
                   transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 />
               )}
+              {isSettingsActive && (
+                <motion.div
+                  layoutId="activeIndicator"
+                  className="bg-primary absolute top-1.5 bottom-1.5 left-0 w-0.5 rounded-full"
+                  initial={false}
+                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                />
+              )}
               <span className="relative z-10 flex items-center gap-3">
-                <Settings className={`h-5 w-5 ${isSettingsActive ? "text-primary" : ""}`} />
-                Einstellungen
+                <Settings
+                  className={`h-[18px] w-[18px] ${isSettingsActive ? "text-primary" : ""}`}
+                />
+                {t("nav.settings")}
               </span>
               <motion.span
                 className="relative z-10 ml-auto"
@@ -199,27 +286,49 @@ export function AccountSidebar({
                   transition={{ duration: 0.2 }}
                   className="overflow-hidden"
                 >
-                  <div className="border-border mt-1 ml-4 space-y-1 border-l pl-3">
+                  <div className="border-border mt-1 ml-4 space-y-0.5 border-l pl-3">
                     {SETTINGS_SUB_ITEMS.map((item, index) => {
                       const Icon = item.icon;
                       const isActive = activeTab === item.id;
+
+                      const subClassName = `relative flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-medium transition-colors ${
+                        isActive
+                          ? "bg-primary/10 text-primary"
+                          : "text-text-secondary hover:bg-surface-hover hover:text-text"
+                      }`;
+
+                      const subContent = (
+                        <>
+                          <Icon className={`h-4 w-4 ${isActive ? "text-primary" : ""}`} />
+                          {item.label}
+                        </>
+                      );
+
+                      if (useLinks) {
+                        return (
+                          <motion.div
+                            key={item.id}
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: index * 0.03 }}
+                          >
+                            <Link href={TAB_TO_PATH[item.id]} className={subClassName}>
+                              {subContent}
+                            </Link>
+                          </motion.div>
+                        );
+                      }
+
                       return (
                         <motion.button
                           key={item.id}
-                          onClick={() => onTabChange(item.id as TabType)}
-                          className={`relative flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-medium transition-colors ${
-                            isActive
-                              ? "bg-primary/10 text-primary"
-                              : "text-text-secondary hover:bg-surface-hover hover:text-text"
-                          }`}
+                          onClick={() => handleNavClick(item.id)}
+                          className={subClassName}
                           initial={{ opacity: 0, x: -10 }}
                           animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: index * 0.05 }}
-                          whileHover={{ x: 4 }}
-                          whileTap={{ scale: 0.98 }}
+                          transition={{ delay: index * 0.03 }}
                         >
-                          <Icon className={`h-4 w-4 ${isActive ? "text-primary" : ""}`} />
-                          {item.label}
+                          {subContent}
                         </motion.button>
                       );
                     })}
@@ -241,51 +350,55 @@ export function AccountSidebar({
             cantons: userData.cantons,
             emailVerified: userData.emailVerified,
           }}
-          onNavigateToSettings={() => onTabChange("settings-profile")}
-          className="mb-5"
+          onNavigateToSettings={() => {
+            if (onTabChange) {
+              onTabChange("settings-profile");
+            }
+          }}
+          className="mb-4"
         />
 
-        <div className="divider my-5" />
+        <div className="divider my-4" />
 
-        {/* Gefolgte Verkäufer */}
-        <div className="mb-5">
-          <div className="mb-3 flex items-center justify-between">
+        {/* Followed Sellers */}
+        <div className="mb-4">
+          <div className="mb-2 flex items-center justify-between">
             <h3 className="label-meta flex items-center gap-2">
-              <Users className="text-text-muted h-4 w-4" />
-              Gefolgte ({stats.followedSellers})
+              <Users className="text-text-muted h-3.5 w-3.5" />
+              {t("sidebar.followed", { count: stats.followedSellers })}
             </h3>
             <Link href="/following" className="text-primary text-xs font-medium hover:underline">
-              Alle
+              {t("sidebar.allFollowed")}
             </Link>
           </div>
           {followedSellers.length > 0 ? (
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               {followedSellers.slice(0, 3).map((seller) => (
                 <Link
                   key={seller.id}
                   href={`/seller/${seller.id}`}
-                  className="group border-border bg-bg hover:border-primary flex items-center gap-3 rounded-lg border p-2 transition-all hover:shadow-sm"
+                  className="group border-border bg-bg hover:border-primary flex items-center gap-2.5 rounded-lg border p-2 transition-all hover:shadow-sm"
                 >
                   {seller.image ? (
                     <Image
                       src={seller.image}
-                      alt={seller.displayName || "Verkäufer"}
-                      width={32}
-                      height={32}
-                      className="h-8 w-8 rounded-full object-cover"
+                      alt={seller.displayName || t("sidebar.unknownSeller")}
+                      width={28}
+                      height={28}
+                      className="h-7 w-7 rounded-full object-cover"
                     />
                   ) : (
-                    <div className="bg-surface flex h-8 w-8 items-center justify-center rounded-full">
-                      <span className="text-text-muted text-xs font-medium">
+                    <div className="bg-surface flex h-7 w-7 items-center justify-center rounded-full">
+                      <span className="text-text-muted text-[10px] font-medium">
                         {(seller.displayName || "V").charAt(0).toUpperCase()}
                       </span>
                     </div>
                   )}
-                  <span className="text-text group-hover:text-primary flex-1 truncate text-sm font-medium">
-                    {seller.displayName || "Unbekannt"}
+                  <span className="text-text group-hover:text-primary flex-1 truncate text-xs font-medium">
+                    {seller.displayName || t("sidebar.unknownSeller")}
                   </span>
                   {seller.newResources && seller.newResources > 0 && (
-                    <span className="bg-primary text-text-on-accent flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-xs font-bold">
+                    <span className="bg-primary text-text-on-accent flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-bold">
                       {seller.newResources}
                     </span>
                   )}
@@ -293,41 +406,37 @@ export function AccountSidebar({
               ))}
             </div>
           ) : (
-            <div className="border-border bg-bg rounded-lg border border-dashed p-4 text-center">
-              <Users className="text-text-faint mx-auto mb-2 h-6 w-6" />
-              <p className="text-text-muted text-xs">Noch keine Verkäufer gefolgt</p>
+            <div className="border-border bg-bg rounded-lg border border-dashed p-3 text-center">
+              <Users className="text-text-faint mx-auto mb-1.5 h-5 w-5" />
+              <p className="text-text-muted text-xs">{t("sidebar.noFollowed")}</p>
               <Link
                 href="/materialien"
-                className="text-primary mt-2 inline-block text-xs font-medium hover:underline"
+                className="text-primary mt-1.5 inline-block text-xs font-medium hover:underline"
               >
-                Entdecken
+                {t("sidebar.discover")}
               </Link>
             </div>
           )}
         </div>
 
-        <div className="divider my-5" />
+        <div className="divider my-4" />
 
-        {/* Quick Actions */}
-        <div className="space-y-2">
-          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-            <Link
-              href="/upload"
-              className="bg-primary text-text-on-accent hover:bg-primary-hover flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors"
-            >
-              <Upload className="h-4 w-4" />
-              Neues Material
-            </Link>
-          </motion.div>
-          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-            <Link
-              href="/materialien"
-              className="border-border bg-bg text-text-secondary hover:border-primary hover:text-primary flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
-            >
-              <Search className="h-4 w-4" />
-              Materialien entdecken
-            </Link>
-          </motion.div>
+        {/* Quick Actions (compact) */}
+        <div className="space-y-1.5">
+          <Link
+            href="/upload"
+            className="bg-primary text-text-on-accent hover:bg-primary-hover flex w-full items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition-colors"
+          >
+            <Upload className="h-4 w-4" />
+            {t("sidebar.newMaterial")}
+          </Link>
+          <Link
+            href="/materialien"
+            className="border-border bg-bg text-text-secondary hover:border-primary hover:text-primary flex w-full items-center justify-center gap-2 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors"
+          >
+            <Search className="h-3.5 w-3.5" />
+            {t("sidebar.discoverMaterials")}
+          </Link>
         </div>
       </div>
     </aside>

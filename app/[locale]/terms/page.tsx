@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
@@ -14,11 +15,11 @@ export default function TermsPage() {
     <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
+      <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
         {/* Page Header */}
-        <div className="mb-6">
+        <div className="mb-8">
           <Breadcrumb items={[{ label: tCommon("breadcrumb.terms") }]} />
-          <h1 className="text-text text-2xl font-bold">{t("title")}</h1>
+          <h1 className="text-text text-2xl font-bold sm:text-3xl">{t("title")}</h1>
           <p className="text-text-muted mt-1">{t("lastUpdated")}</p>
         </div>
 
@@ -227,7 +228,7 @@ export default function TermsPage() {
 
         {/* Seller Terms Section */}
         <div className="mb-8">
-          <h2 className="text-text text-2xl font-bold">{tSellerTerms("pageTitle")}</h2>
+          <h2 className="text-text text-xl font-semibold">{tSellerTerms("pageTitle")}</h2>
           <p className="text-text-muted mt-2">{tSellerTerms("pageSubtitle")}</p>
         </div>
 
@@ -279,6 +280,14 @@ export default function TermsPage() {
           <h3 className="text-text mt-6 text-lg font-semibold">
             {tSellerTerms("sections.copyrightWarranty.title")}
           </h3>
+          <div className="not-prose bg-primary/5 border-primary/20 my-4 rounded-lg border p-3">
+            <p className="text-text-secondary text-sm">
+              {tSellerTerms("sections.copyrightWarranty.guideCallout")}{" "}
+              <Link href="/urheberrecht" className="text-primary font-medium hover:underline">
+                {tSellerTerms("sections.copyrightWarranty.guideCalloutLink")} →
+              </Link>
+            </p>
+          </div>
           <p>{tSellerTerms("sections.copyrightWarranty.content")}</p>
           <ul className="ml-4 list-disc space-y-1">
             <li>{tSellerTerms("sections.copyrightWarranty.warranties.ownership")}</li>

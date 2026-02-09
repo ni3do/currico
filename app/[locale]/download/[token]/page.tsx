@@ -105,7 +105,7 @@ export default function GuestDownloadPage({ params }: { params: Promise<{ token:
   }
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
       <main className="flex-1">

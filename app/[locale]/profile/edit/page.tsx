@@ -6,6 +6,7 @@ import { MultiSelect } from "@/components/ui/MultiSelect";
 import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
+import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { SWISS_CANTONS } from "@/lib/validations/user";
 
 // Cycles are stable, can be hardcoded
@@ -187,14 +188,15 @@ export default function EditProfilePage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="mx-auto max-w-4xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
+      <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
         {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-text text-3xl font-bold">Profil bearbeiten</h1>
-          <p className="text-text-muted mt-2">
+          <Breadcrumb items={[{ label: "Profil bearbeiten" }]} />
+          <h1 className="text-text text-2xl font-bold sm:text-3xl">Profil bearbeiten</h1>
+          <p className="text-text-muted mt-1">
             Verwalten Sie Ihre öffentlichen Profilinformationen und Auszahlungsdaten
           </p>
         </div>

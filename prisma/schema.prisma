@@ -115,6 +115,15 @@ model User {
   teacher_verified_at          DateTime?
   teacher_verification_method  String?   @db.VarChar(50) // "email_domain" | "manual" | "eduid"
 
+  // ============ SELLER REWARD LEVEL ============
+  seller_level Int @default(0) @db.SmallInt
+  seller_xp    Int @default(0)
+
+  // ============ VERIFIED SELLER ============
+  is_verified_seller           Boolean   @default(false)
+  verified_seller_at           DateTime?
+  verified_seller_method       String?   @db.VarChar(50) // "auto" | "manual"
+
   // ============ STRIPE CONNECT ============
   stripe_account_id          String?   @db.VarChar(255)
   stripe_onboarding_complete Boolean   @default(false)
@@ -182,6 +191,12 @@ enum ResourceStatus {
   REJECTED
 }
 
+enum Dialect {
+  STANDARD
+  SWISS
+  BOTH
+}
+
 // ============================================================
 // RESOURCE MODEL - Teaching Materials
 // ============================================================
@@ -215,6 +230,7 @@ model Resource {
   eszett_checked Boolean @default(false)
   swiss_verified Boolean @default(false)
   language       String  @default("de") @db.VarChar(5)
+  dialect        Dialect @default(BOTH)
 
   // Full-text search vector (managed by database trigger)
   search_vector  Unsupported("tsvector")?
@@ -769,3 +785,4 @@ model CommentLike {
   @@index([comment_id])
   @@map("comment_likes")
 }
+

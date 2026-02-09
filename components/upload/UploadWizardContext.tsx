@@ -13,6 +13,7 @@ export interface FormData {
   title: string;
   description: string;
   language: string;
+  dialect: "STANDARD" | "SWISS" | "BOTH";
   resourceType: string;
 
   // Step 2: Curriculum
@@ -45,6 +46,7 @@ export interface TouchedFields {
   title: boolean;
   description: boolean;
   language: boolean;
+  dialect: boolean;
   resourceType: boolean;
   cycle: boolean;
   subject: boolean;
@@ -115,6 +117,7 @@ const defaultFormData: FormData = {
   title: "",
   description: "",
   language: "de",
+  dialect: "BOTH",
   resourceType: "pdf",
   cycle: "",
   subject: "",
@@ -139,6 +142,7 @@ const defaultTouchedFields: TouchedFields = {
   title: false,
   description: false,
   language: false,
+  dialect: false,
   resourceType: false,
   cycle: false,
   subject: false,
@@ -174,25 +178,17 @@ function loadDraftFromStorage(): DraftData | null {
 }
 
 export function UploadWizardProvider({ children }: { children: ReactNode }) {
-  // Use lazy initialization to load from localStorage
-  const [formData, setFormData] = useState<FormData>(() => {
-    const draft = loadDraftFromStorage();
-    return draft?.formData ?? defaultFormData;
-  });
-  const [currentStep, setCurrentStep] = useState<Step>(() => {
-    const draft = loadDraftFromStorage();
-    return draft?.currentStep ?? 1;
-  });
-  const [visitedSteps, setVisitedSteps] = useState<Step[]>(() => {
-    const draft = loadDraftFromStorage();
-    return draft?.visitedSteps ?? [1];
-  });
+  // Load draft once and reuse across all useState initializers
+  const [initialDraft] = useState(() => loadDraftFromStorage());
+
+  const [formData, setFormData] = useState<FormData>(initialDraft?.formData ?? defaultFormData);
+  const [currentStep, setCurrentStep] = useState<Step>(initialDraft?.currentStep ?? 1);
+  const [visitedSteps, setVisitedSteps] = useState<Step[]>(initialDraft?.visitedSteps ?? [1]);
   const [touchedFields, setTouchedFields] = useState<TouchedFields>(defaultTouchedFields);
-  const [lastSavedAt, setLastSavedAt] = useState<Date | null>(() => {
-    const draft = loadDraftFromStorage();
-    return draft ? new Date(draft.lastSavedAt) : null;
-  });
-  const [hasDraft, setHasDraft] = useState(() => loadDraftFromStorage() !== null);
+  const [lastSavedAt, setLastSavedAt] = useState<Date | null>(
+    initialDraft ? new Date(initialDraft.lastSavedAt) : null
+  );
+  const [hasDraft, setHasDraft] = useState(initialDraft !== null);
   const [isSaving, setIsSaving] = useState(false);
   const [isInitialized, setIsInitialized] = useState(true);
 
@@ -200,7 +196,7 @@ export function UploadWizardProvider({ children }: { children: ReactNode }) {
   const [files, setFiles] = useState<File[]>([]);
   const [previewFiles, setPreviewFiles] = useState<File[]>([]);
 
-  // Save to localStorage whenever form data changes (debounced)
+  // Save to localStorage whenever form data changes (debounced 500ms)
   useEffect(() => {
     if (!isInitialized) return;
 
@@ -242,7 +238,7 @@ export function UploadWizardProvider({ children }: { children: ReactNode }) {
   // Mark all fields in a step as touched
   const markStepTouched = useCallback((step: Step) => {
     const stepFields: Record<Step, (keyof TouchedFields)[]> = {
-      1: ["title", "description", "language", "resourceType"],
+      1: ["title", "description", "language", "dialect", "resourceType"],
       2: ["cycle", "subject", "canton", "competencies", "lehrmittelIds"],
       3: ["priceType", "price", "editable"],
       4: [
@@ -439,7 +435,7 @@ export function UploadWizardProvider({ children }: { children: ReactNode }) {
     try {
       localStorage.removeItem(STORAGE_KEY);
     } catch (error) {
-      console.error("Failed to clear draft:", error);
+      console.error("Failed to clear local draft:", error);
     }
     setFormData(defaultFormData);
     setCurrentStep(1);

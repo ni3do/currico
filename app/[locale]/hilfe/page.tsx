@@ -1,29 +1,26 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useMessages } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
-import {
-  FadeIn,
-  StaggerChildren,
-  StaggerItem,
-  MotionCard,
-  AnimatedCollapse,
-} from "@/components/ui/animations";
+import { FadeIn } from "@/components/ui/animations";
 import {
   Search,
   ChevronDown,
   Mail,
   MessageCircle,
   ArrowRight,
-  Sparkles,
   ShoppingCart,
   Upload,
   Settings,
   HelpCircle,
+  Scale,
+  BookOpen,
+  FileText,
+  ExternalLink,
 } from "lucide-react";
 
 type FAQCategory = "general" | "buying" | "selling" | "technical";
@@ -32,20 +29,116 @@ interface FAQItem {
   question: string;
   answer: string;
   category: FAQCategory;
+  link?: { href: string; label: string };
 }
 
+const MAX_QUESTIONS_PER_CATEGORY = 10;
+
 const categoryIcons: Record<FAQCategory, typeof HelpCircle> = {
-  general: Sparkles,
+  general: HelpCircle,
   buying: ShoppingCart,
   selling: Upload,
   technical: Settings,
 };
 
-const categoryColors: Record<FAQCategory, { bg: string; text: string }> = {
-  general: { bg: "bg-primary/10", text: "text-primary" },
-  buying: { bg: "bg-accent/10", text: "text-accent" },
-  selling: { bg: "bg-success/10", text: "text-success" },
-  technical: { bg: "bg-info/10", text: "text-info" },
+const categoryColors: Record<FAQCategory, { bg: string; text: string; ring: string }> = {
+  general: { bg: "bg-primary/10", text: "text-primary", ring: "ring-primary/30" },
+  buying: { bg: "bg-accent/10", text: "text-accent", ring: "ring-accent/30" },
+  selling: { bg: "bg-success/10", text: "text-success", ring: "ring-success/30" },
+  technical: { bg: "bg-info/10", text: "text-info", ring: "ring-info/30" },
+};
+
+// Top questions with direct links
+const TOP_QUESTIONS: {
+  key: string;
+  icon: typeof Upload;
+  href: string;
+  bgColor: string;
+  textColor: string;
+}[] = [
+  {
+    key: "upload",
+    icon: Upload,
+    href: "/upload",
+    bgColor: "bg-primary/10",
+    textColor: "text-primary",
+  },
+  {
+    key: "copyright",
+    icon: Scale,
+    href: "/urheberrecht",
+    bgColor: "bg-accent/10",
+    textColor: "text-accent",
+  },
+  {
+    key: "browse",
+    icon: BookOpen,
+    href: "/materialien",
+    bgColor: "bg-success/10",
+    textColor: "text-success",
+  },
+];
+
+// Useful links config
+const USEFUL_LINKS: {
+  key: string;
+  icon: typeof Scale;
+  href: string;
+  bgColor: string;
+  textColor: string;
+  hoverColor: string;
+}[] = [
+  {
+    key: "copyrightGuide",
+    icon: Scale,
+    href: "/urheberrecht",
+    bgColor: "bg-accent/10",
+    textColor: "text-accent",
+    hoverColor: "group-hover:text-accent",
+  },
+  {
+    key: "terms",
+    icon: FileText,
+    href: "/terms",
+    bgColor: "bg-primary/10",
+    textColor: "text-primary",
+    hoverColor: "group-hover:text-primary",
+  },
+  {
+    key: "privacy",
+    icon: Settings,
+    href: "/datenschutz",
+    bgColor: "bg-info/10",
+    textColor: "text-info",
+    hoverColor: "group-hover:text-info",
+  },
+  {
+    key: "impressum",
+    icon: HelpCircle,
+    href: "/impressum",
+    bgColor: "bg-text-muted/10",
+    textColor: "text-text-muted",
+    hoverColor: "group-hover:text-text",
+  },
+];
+
+// FAQ items that have an associated link
+const FAQ_ITEM_LINKS: Record<string, string> = {
+  "general-1": "/materialien",
+  "general-4": "/register",
+  "general-7": "/contact",
+  "buying-1": "/materialien",
+  "buying-5": "/account/library",
+  "buying-7": "/contact",
+  "buying-8": "/account/wishlist",
+  "selling-1": "/upload",
+  "selling-4": "/urheberrecht",
+  "selling-7": "/upload",
+  "selling-8": "/account/uploads",
+  "technical-1": "/account/library",
+  "technical-2": "/contact",
+  "technical-4": "/datenschutz",
+  "technical-7": "/upload",
 };
 
 export default function HilfePage() {
@@ -54,51 +147,62 @@ export default function HilfePage() {
   const tCommon = useTranslations("common");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<FAQCategory>("general");
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [openId, setOpenId] = useState<string | null>(null);
 
-  // Get all FAQ items from all categories
+  // Access raw messages to check key existence without triggering MISSING_MESSAGE errors
+  const messages = useMessages();
+  const faqMessages = (messages as Record<string, unknown>)?.faqPage as
+    | Record<string, Record<string, Record<string, string>>>
+    | undefined;
+
+  // Build all FAQ items from translations
   const allFAQItems = useMemo(() => {
+    if (!faqMessages) return [];
     const cats: FAQCategory[] = ["general", "buying", "selling", "technical"];
     const items: FAQItem[] = [];
 
     cats.forEach((category) => {
-      for (let i = 1; i <= 5; i++) {
-        const questionKey = `${category}.q${i}.question` as Parameters<typeof t>[0];
-        const answerKey = `${category}.q${i}.answer` as Parameters<typeof t>[0];
-        try {
-          const question = t(questionKey);
-          const answer = t(answerKey);
-          // Skip if the translation returns the key (meaning it doesn't exist)
-          if (question && !question.includes(`.q${i}.`)) {
-            items.push({
-              question,
-              answer,
-              category,
-            });
-          }
-        } catch {
-          // Key doesn't exist, skip this item
+      const categoryData = faqMessages[category];
+      if (!categoryData) return;
+
+      for (let i = 1; i <= MAX_QUESTIONS_PER_CATEGORY; i++) {
+        const qData = categoryData[`q${i}`];
+        if (!qData?.question || !qData?.answer) break;
+
+        const question = t(`${category}.q${i}.question` as Parameters<typeof t>[0]);
+        const answer = t(`${category}.q${i}.answer` as Parameters<typeof t>[0]);
+
+        let link: FAQItem["link"] | undefined;
+        const linkHref = FAQ_ITEM_LINKS[`${category}-${i}`];
+        if (linkHref && qData.linkLabel) {
+          const linkLabel = t(`${category}.q${i}.linkLabel` as Parameters<typeof t>[0]);
+          link = { href: linkHref, label: linkLabel };
         }
+
+        items.push({ question, answer, category, link });
       }
     });
 
     return items;
-  }, [t]);
+  }, [t, faqMessages]);
 
-  // Filter items based on search and category
+  // Count per category
+  const categoryCounts = useMemo(() => {
+    const counts: Record<FAQCategory, number> = { general: 0, buying: 0, selling: 0, technical: 0 };
+    allFAQItems.forEach((item) => counts[item.category]++);
+    return counts;
+  }, [allFAQItems]);
+
+  // Filter: when searching, show across ALL categories; otherwise filter by active tab
   const filteredItems = useMemo(() => {
-    let items = allFAQItems.filter((item) => item.category === activeCategory);
-
-    // Filter by search query
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      items = items.filter(
+    const query = searchQuery.trim().toLowerCase();
+    if (query) {
+      return allFAQItems.filter(
         (item) =>
           item.question.toLowerCase().includes(query) || item.answer.toLowerCase().includes(query)
       );
     }
-
-    return items;
+    return allFAQItems.filter((item) => item.category === activeCategory);
   }, [allFAQItems, activeCategory, searchQuery]);
 
   const categories: { key: FAQCategory; label: string }[] = [
@@ -115,16 +219,16 @@ export default function HilfePage() {
     <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
+      <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
         {/* Page Header */}
-        <div className="mb-6">
+        <div className="mb-8">
           <Breadcrumb items={[{ label: tCommon("breadcrumb.help") }]} />
-          <h1 className="text-text text-2xl font-bold">{tHilfe("title")}</h1>
+          <h1 className="text-text text-2xl font-bold sm:text-3xl">{tHilfe("title")}</h1>
           <p className="text-text-muted mt-1">{tHilfe("subtitle")}</p>
         </div>
 
-        {/* Search Field */}
-        <FadeIn className="mb-8">
+        {/* Search Bar */}
+        <FadeIn className="mx-auto mb-10 max-w-xl">
           <div className="relative">
             <Search className="text-text-muted pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2" />
             <input
@@ -132,7 +236,7 @@ export default function HilfePage() {
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
-                setOpenIndex(null);
+                setOpenId(null);
               }}
               placeholder={tHilfe("searchPlaceholder")}
               className="border-border bg-surface text-text placeholder:text-text-muted focus:border-primary focus:ring-primary/20 w-full rounded-xl border py-4 pr-4 pl-12 text-base shadow-sm transition-all duration-200 focus:ring-2 focus:outline-none"
@@ -148,99 +252,171 @@ export default function HilfePage() {
           </div>
         </FadeIn>
 
-        {/* Category Filter */}
-        <div className="border-border mb-8 border-b">
-          <div className="flex gap-2 overflow-x-auto pb-4 sm:justify-center">
-            {categories.map((category) => {
-              const isActive = activeCategory === category.key;
-              const Icon = categoryIcons[category.key];
-              const colors = categoryColors[category.key];
-
-              return (
-                <button
-                  key={category.key}
-                  onClick={() => {
-                    setActiveCategory(category.key);
-                    setOpenIndex(null);
-                  }}
-                  className={`flex shrink-0 items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-200 ${
-                    isActive
-                      ? `${colors.bg} ${colors.text} ring-2 ring-current/20`
-                      : "text-text-secondary hover:bg-bg-secondary hover:text-text"
-                  }`}
+        {/* Top Questions */}
+        <FadeIn className="mb-12">
+          <h2 className="text-text mb-4 text-xl font-semibold">{tHilfe("quickStart.title")}</h2>
+          <div className="grid gap-4 sm:grid-cols-3">
+            {TOP_QUESTIONS.map(({ key, icon: Icon, href, bgColor, textColor }) => (
+              <div key={key} className="bg-surface border-border rounded-xl border p-5">
+                <div
+                  className={`${bgColor} mb-3 flex h-10 w-10 items-center justify-center rounded-lg`}
                 >
-                  <Icon className="h-4 w-4" />
-                  {category.label}
-                </button>
-              );
-            })}
+                  <Icon className={`${textColor} h-5 w-5`} />
+                </div>
+                <h3 className="text-text mb-1.5 text-sm font-semibold">
+                  {tHilfe(`quickStart.${key}.question`)}
+                </h3>
+                <p className="text-text-muted mb-3 line-clamp-2 text-sm leading-relaxed">
+                  {tHilfe(`quickStart.${key}.answer`)}
+                </p>
+                <Link
+                  href={href}
+                  className={`${textColor} inline-flex items-center gap-1.5 text-sm font-medium transition-opacity hover:opacity-80`}
+                >
+                  {tHilfe(`quickStart.${key}.linkLabel`)}
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </div>
+            ))}
           </div>
-        </div>
+        </FadeIn>
 
-        {/* FAQ Results */}
-        <div>
-          {hasResults ? (
-            <>
-              {isSearching && (
-                <FadeIn className="mb-6">
-                  <p className="text-text-muted text-sm">
-                    {tHilfe("resultsCount", { count: filteredItems.length })}
-                  </p>
-                </FadeIn>
-              )}
+        {/* FAQ Section */}
+        <div className="mb-12">
+          <h2 className="text-text mb-4 text-xl font-semibold">{t("title")}</h2>
 
-              <StaggerChildren className="space-y-3">
-                {filteredItems.map((item, index) => {
-                  const isOpen = openIndex === index;
-                  const colors = categoryColors[activeCategory];
+          {/* Category Tabs */}
+          {!isSearching && (
+            <div className="mb-6">
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                {categories.map((category) => {
+                  const isActive = activeCategory === category.key;
+                  const Icon = categoryIcons[category.key];
+                  const colors = categoryColors[category.key];
+                  const count = categoryCounts[category.key];
 
                   return (
-                    <StaggerItem key={`${item.category}-${item.question.slice(0, 20)}`}>
-                      <MotionCard
-                        hoverEffect="none"
-                        className={`card overflow-hidden transition-all duration-200 ${
-                          isOpen ? "ring-primary/30 ring-2" : ""
+                    <button
+                      key={category.key}
+                      onClick={() => {
+                        setActiveCategory(category.key);
+                        setOpenId(null);
+                      }}
+                      className={`rounded-xl border p-4 text-center transition-all duration-200 ${
+                        isActive
+                          ? `${colors.bg} border-transparent ring-2 ${colors.ring}`
+                          : "bg-surface border-border hover:border-border-hover"
+                      }`}
+                    >
+                      <div
+                        className={`mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-lg ${
+                          isActive ? "bg-white/60 dark:bg-white/10" : colors.bg
                         }`}
                       >
-                        <button
-                          onClick={() => setOpenIndex(isOpen ? null : index)}
-                          className="flex w-full items-center justify-between gap-4 p-4 text-left sm:p-5"
-                          aria-expanded={isOpen}
-                        >
-                          <div className="flex items-center gap-3">
-                            <div
-                              className={`${colors.bg} flex h-8 w-8 shrink-0 items-center justify-center rounded-lg`}
-                            >
-                              <span className={`${colors.text} text-sm font-bold`}>
-                                {index + 1}
-                              </span>
-                            </div>
-                            <span className="text-text text-sm font-medium sm:text-base">
-                              {item.question}
-                            </span>
-                          </div>
-                          <ChevronDown
-                            className={`text-text-muted h-5 w-5 shrink-0 transition-transform duration-200 ${
-                              isOpen ? "rotate-180" : ""
-                            }`}
-                          />
-                        </button>
-                        <AnimatedCollapse isOpen={isOpen}>
-                          <div className="border-border border-t px-4 pt-3 pb-4 sm:px-5 sm:pb-5">
-                            <p className="text-text-secondary text-sm leading-relaxed sm:text-base">
-                              {item.answer}
-                            </p>
-                          </div>
-                        </AnimatedCollapse>
-                      </MotionCard>
-                    </StaggerItem>
+                        <Icon className={`${colors.text} h-5 w-5`} />
+                      </div>
+                      <span
+                        className={`block text-sm font-medium ${isActive ? colors.text : "text-text"}`}
+                      >
+                        {category.label}
+                      </span>
+                      <span
+                        className={`mt-1 inline-block rounded-full px-2 py-0.5 text-xs font-bold ${
+                          isActive
+                            ? "bg-white/60 dark:bg-white/10 " + colors.text
+                            : "bg-bg-secondary text-text-muted"
+                        }`}
+                      >
+                        {count}
+                      </span>
+                    </button>
                   );
                 })}
-              </StaggerChildren>
-            </>
+              </div>
+            </div>
+          )}
+
+          {/* Search results header */}
+          {isSearching && (
+            <div className="mb-4">
+              <p className="text-text-muted text-sm">
+                {tHilfe("resultsCount", { count: filteredItems.length })}
+              </p>
+            </div>
+          )}
+
+          {/* FAQ Items */}
+          {hasResults ? (
+            <div className="space-y-3">
+              {filteredItems.map((item, index) => {
+                const id = `${item.category}-${index}`;
+                const isOpen = openId === id;
+                const colors = categoryColors[item.category];
+                const Icon = categoryIcons[item.category];
+
+                return (
+                  <div
+                    key={id}
+                    className={`bg-surface border-border overflow-hidden rounded-xl border transition-all duration-200 ${
+                      isOpen ? `ring-2 ${colors.ring}` : ""
+                    }`}
+                  >
+                    <button
+                      onClick={() => setOpenId(isOpen ? null : id)}
+                      className="flex w-full items-center justify-between gap-4 p-4 text-left sm:p-5"
+                      aria-expanded={isOpen}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={`${colors.bg} flex h-7 w-7 shrink-0 items-center justify-center rounded-lg`}
+                        >
+                          <Icon className={`${colors.text} h-3.5 w-3.5`} />
+                        </div>
+                        <span className="text-text text-sm font-medium sm:text-base">
+                          {item.question}
+                        </span>
+                      </div>
+                      <ChevronDown
+                        className={`text-text-muted h-5 w-5 shrink-0 transition-transform duration-200 ${
+                          isOpen ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+                    <div
+                      className={`grid transition-all duration-300 ease-in-out ${
+                        isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                      }`}
+                    >
+                      <div className="overflow-hidden">
+                        <div className="border-border border-t px-4 pt-3 pb-4 sm:px-5 sm:pb-5">
+                          <p className="text-text-secondary text-sm leading-relaxed sm:text-base">
+                            {item.answer}
+                          </p>
+                          {item.link && (
+                            <Link
+                              href={item.link.href}
+                              className={`${colors.text} hover:bg-primary/5 mt-3 inline-flex items-center gap-1.5 rounded-lg text-sm font-medium transition-colors`}
+                            >
+                              {item.link.label}
+                              <ExternalLink className="h-3.5 w-3.5" />
+                            </Link>
+                          )}
+                          {isSearching && (
+                            <span
+                              className={`${colors.bg} ${colors.text} mt-3 inline-block rounded-full px-2.5 py-0.5 text-xs font-medium`}
+                            >
+                              {t(`categories.${item.category}`)}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           ) : (
-            /* No Results - Contact CTA */
-            <FadeIn className="py-8 text-center">
+            <div className="py-8 text-center">
               <div className="bg-bg-secondary mx-auto max-w-md rounded-2xl p-8">
                 <div className="bg-accent/10 mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full">
                   <Search className="text-accent h-7 w-7" />
@@ -255,26 +431,55 @@ export default function HilfePage() {
                   {tHilfe("noResults.contactButton")}
                 </Link>
               </div>
-            </FadeIn>
+            </div>
           )}
         </div>
 
+        {/* Useful Links */}
+        <FadeIn className="mb-10">
+          <h2 className="text-text mb-2 text-center text-xl font-semibold">
+            {tHilfe("usefulLinks.title")}
+          </h2>
+          <p className="text-text-muted mb-6 text-center text-sm">
+            {tHilfe("usefulLinks.subtitle")}
+          </p>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {USEFUL_LINKS.map(({ key, icon: Icon, href, bgColor, textColor, hoverColor }) => (
+              <Link
+                key={key}
+                href={href}
+                className="card group flex flex-col items-center p-5 text-center transition-all hover:shadow-md"
+              >
+                <div
+                  className={`${bgColor} mb-3 flex h-10 w-10 items-center justify-center rounded-lg`}
+                >
+                  <Icon className={`${textColor} h-5 w-5`} />
+                </div>
+                <p className={`text-text text-sm font-semibold ${hoverColor}`}>
+                  {tHilfe(`usefulLinks.${key}`)}
+                </p>
+                <p className="text-text-muted mt-1 text-xs">{tHilfe(`usefulLinks.${key}Desc`)}</p>
+              </Link>
+            ))}
+          </div>
+        </FadeIn>
+
         {/* Contact CTA */}
-        <FadeIn className="mt-12">
-          <div className="card relative overflow-hidden p-6 text-center sm:p-8">
+        <FadeIn className="mb-8">
+          <div className="bg-primary/5 border-primary/20 rounded-2xl border p-6 text-center sm:p-8">
             <div className="bg-primary/10 mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl">
               <Mail className="text-primary h-6 w-6" />
             </div>
-            <h2 className="text-text text-xl font-bold">{t("contact.title")}</h2>
+            <h2 className="text-text text-xl font-semibold">{t("contact.title")}</h2>
             <p className="text-text-muted mx-auto mt-2 max-w-sm text-sm">
               {t("contact.description")}
             </p>
             <Link
               href="/contact"
-              className="text-primary mt-4 inline-flex items-center gap-1 text-sm font-medium hover:underline"
+              className="bg-primary text-text-on-accent hover:bg-primary-hover mt-4 inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-medium transition-colors"
             >
+              <MessageCircle className="h-4 w-4" />
               {t("contact.button")}
-              <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
         </FadeIn>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback, useId } from "react";
 import { Info } from "lucide-react";
 
 interface InfoTooltipProps {
@@ -13,6 +13,7 @@ export function InfoTooltip({ content, example, className = "" }: InfoTooltipPro
   const [isOpen, setIsOpen] = useState(false);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const tooltipId = useId();
 
   // Close on click outside
   useEffect(() => {
@@ -33,6 +34,21 @@ export function InfoTooltip({ content, example, className = "" }: InfoTooltipPro
     }
   }, [isOpen]);
 
+  // Close on Escape key
+  const handleKeyDown = useCallback((event: KeyboardEvent) => {
+    if (event.key === "Escape") {
+      setIsOpen(false);
+      buttonRef.current?.focus();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.addEventListener("keydown", handleKeyDown);
+      return () => document.removeEventListener("keydown", handleKeyDown);
+    }
+  }, [isOpen, handleKeyDown]);
+
   return (
     <div className={`relative inline-flex ${className}`}>
       <button
@@ -41,8 +57,12 @@ export function InfoTooltip({ content, example, className = "" }: InfoTooltipPro
         onClick={() => setIsOpen(!isOpen)}
         onMouseEnter={() => setIsOpen(true)}
         onMouseLeave={() => setIsOpen(false)}
-        className="text-text-muted hover:text-info hover:bg-info/10 rounded-full p-0.5 transition-colors"
+        onFocus={() => setIsOpen(true)}
+        onBlur={() => setIsOpen(false)}
+        className="text-text-muted hover:text-info hover:bg-info/10 focus-visible:ring-primary/30 rounded-full p-0.5 transition-colors focus-visible:ring-2 focus-visible:outline-none"
         aria-label="Mehr Informationen"
+        aria-expanded={isOpen}
+        aria-describedby={tooltipId}
       >
         <Info className="h-4 w-4" />
       </button>
@@ -50,6 +70,7 @@ export function InfoTooltip({ content, example, className = "" }: InfoTooltipPro
       {isOpen && (
         <div
           ref={tooltipRef}
+          id={tooltipId}
           className="absolute bottom-full left-1/2 z-50 mb-2 w-64 -translate-x-1/2 sm:w-72"
           role="tooltip"
         >

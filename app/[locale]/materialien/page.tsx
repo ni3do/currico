@@ -32,6 +32,7 @@ interface Material {
   seller: {
     id: string;
     display_name: string | null;
+    is_verified_seller?: boolean;
   };
 }
 
@@ -50,6 +51,7 @@ interface Profile {
   subjects: string[];
   cycles: string[];
   role: string;
+  is_verified_seller?: boolean;
   resourceCount: number;
   followerCount: number;
 }
@@ -247,6 +249,7 @@ export default function MaterialienPage() {
       kompetenzbereich: kompetenzbereich || null,
       kompetenz: kompetenz || null,
       searchQuery: searchParams.get("search") || "",
+      dialect: searchParams.get("dialect") || null,
       priceType: searchParams.get("priceType") || null,
       maxPrice: searchParams.get("maxPrice") ? parseInt(searchParams.get("maxPrice")!) : null,
       formats: searchParams.get("formats")?.split(",").filter(Boolean) || [],
@@ -275,6 +278,7 @@ export default function MaterialienPage() {
         params.set("kompetenzbereich", currentFilters.kompetenzbereich);
       if (currentFilters.kompetenz) params.set("kompetenz", currentFilters.kompetenz);
       if (currentFilters.searchQuery) params.set("search", currentFilters.searchQuery);
+      if (currentFilters.dialect) params.set("dialect", currentFilters.dialect);
       if (currentFilters.priceType) params.set("priceType", currentFilters.priceType);
       if (currentFilters.maxPrice !== null)
         params.set("maxPrice", currentFilters.maxPrice.toString());
@@ -359,6 +363,11 @@ export default function MaterialienPage() {
           params.set("competency", currentFilters.kompetenz);
         } else if (currentFilters.kompetenzbereich) {
           params.set("competency", currentFilters.kompetenzbereich);
+        }
+
+        // Dialect filter
+        if (currentFilters.dialect) {
+          params.set("dialect", currentFilters.dialect);
         }
 
         // Price filter
@@ -534,6 +543,7 @@ export default function MaterialienPage() {
     filters.kompetenzbereich,
     filters.kompetenz,
     filters.searchQuery || null,
+    filters.dialect,
     filters.priceType,
     filters.maxPrice !== null ? filters.maxPrice : null,
     ...filters.formats,
@@ -552,11 +562,11 @@ export default function MaterialienPage() {
     <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
         {/* Page Header */}
-        <div className="mb-6">
+        <div className="mb-8">
           <Breadcrumb items={[{ label: tCommon("navigation.materials") }]} />
-          <h1 className="text-text text-2xl font-bold">{t("header.title")}</h1>
+          <h1 className="text-text text-2xl font-bold sm:text-3xl">{t("header.title")}</h1>
           <p className="text-text-muted mt-1">{t("header.description")}</p>
         </div>
 
@@ -779,6 +789,17 @@ export default function MaterialienPage() {
                       </button>
                     </span>
                   )}
+                  {filters.dialect && (
+                    <span className="bg-surface text-text-secondary border-border inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
+                      {filters.dialect === "SWISS" ? "CH" : "DE"}
+                      <button
+                        onClick={() => handleFiltersChange({ ...filters, dialect: null })}
+                        className="hover:bg-surface-hover flex h-5 w-5 items-center justify-center rounded-full transition-colors"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </span>
+                  )}
                   {(filters.priceType || filters.maxPrice !== null) && (
                     <span className="bg-surface text-text-secondary border-border inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
                       {filters.priceType === "free"
@@ -837,6 +858,7 @@ export default function MaterialienPage() {
                           kompetenzbereich: null,
                           kompetenz: null,
                           searchQuery: "",
+                          dialect: null,
                           priceType: null,
                           maxPrice: null,
                           formats: [],
@@ -872,6 +894,7 @@ export default function MaterialienPage() {
                     filters.kompetenzbereich ||
                     filters.kompetenz ||
                     filters.searchQuery ||
+                    filters.dialect ||
                     filters.priceType ||
                     filters.maxPrice !== null ||
                     filters.formats.length > 0 ||
@@ -886,6 +909,7 @@ export default function MaterialienPage() {
                           kompetenzbereich: null,
                           kompetenz: null,
                           searchQuery: "",
+                          dialect: null,
                           priceType: null,
                           maxPrice: null,
                           formats: [],
@@ -941,7 +965,10 @@ export default function MaterialienPage() {
                           cycle={item.data.cycle}
                           priceFormatted={item.data.priceFormatted}
                           previewUrl={item.data.previewUrl}
-                          seller={{ displayName: item.data.seller.display_name }}
+                          seller={{
+                            displayName: item.data.seller.display_name,
+                            isVerifiedSeller: item.data.seller.is_verified_seller,
+                          }}
                           subjectPillClass={getSubjectPillClass(item.data.subject)}
                           showWishlist={true}
                           isWishlisted={wishlistedIds.has(item.data.id)}
@@ -971,7 +998,7 @@ export default function MaterialienPage() {
                           subjects={item.data.subjects}
                           resourceCount={item.data.resourceCount}
                           followerCount={item.data.followerCount}
-                          isVerified={item.data.role === "SELLER"}
+                          isVerified={item.data.is_verified_seller === true}
                           getSubjectPillClass={getSubjectPillClass}
                           showFollowButton={true}
                           isFollowing={followingIds.has(item.data.id)}

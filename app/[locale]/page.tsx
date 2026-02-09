@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
+import { ChevronDown } from "lucide-react";
+import { useCurriculum } from "@/lib/hooks/useCurriculum";
 import Image from "next/image";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
@@ -18,19 +20,37 @@ export default function Home() {
   const tCommon = useTranslations("common");
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCycle, setSelectedCycle] = useState("");
+  const [selectedSubject, setSelectedSubject] = useState("");
+  const [selectedDialect, setSelectedDialect] = useState("");
+
+  const { zyklen, getFachbereicheByZyklus, fachbereiche } = useCurriculum();
+
+  const availableSubjects = useMemo(() => {
+    if (!selectedCycle) return fachbereiche;
+    return getFachbereicheByZyklus(parseInt(selectedCycle, 10));
+  }, [selectedCycle, fachbereiche, getFachbereicheByZyklus]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    const params = new URLSearchParams();
     const trimmedQuery = searchQuery.trim();
-    if (trimmedQuery) {
-      router.push(`/materialien?search=${encodeURIComponent(trimmedQuery)}`);
-    } else {
-      router.push("/materialien");
-    }
+    if (trimmedQuery) params.set("search", trimmedQuery);
+    if (selectedCycle) params.set("zyklus", selectedCycle);
+    if (selectedSubject) params.set("fachbereich", selectedSubject);
+    if (selectedDialect) params.set("dialect", selectedDialect);
+    const qs = params.toString();
+    router.push(qs ? `/materialien?${qs}` : "/materialien");
+  };
+
+  const handleCycleChange = (value: string) => {
+    setSelectedCycle(value);
+    // Reset subject when cycle changes since subjects differ by cycle
+    setSelectedSubject("");
   };
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
       <main className="flex-1">
@@ -62,6 +82,7 @@ export default function Home() {
                 {/* Hero Search Bar */}
                 <FadeIn direction="up" delay={0.2}>
                   <form onSubmit={handleSearch} className="mt-10 w-full max-w-[600px]">
+                    {/* Search bar */}
                     <motion.div
                       className="relative flex items-center rounded-full bg-white shadow-lg"
                       whileHover={{ scale: 1.01 }}
@@ -96,6 +117,57 @@ export default function Home() {
                         <span className="hidden sm:inline">{t("hero.search.button")}</span>
                       </motion.button>
                     </motion.div>
+
+                    {/* Cycle + Subject dropdowns */}
+                    <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+                      {/* Cycle dropdown */}
+                      <div className="relative flex-1">
+                        <select
+                          value={selectedCycle}
+                          onChange={(e) => handleCycleChange(e.target.value)}
+                          className="w-full appearance-none rounded-xl border-0 bg-white/80 py-3 pr-10 pl-4 text-sm font-medium text-gray-700 shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:bg-white focus:ring-2 focus:ring-[var(--ctp-blue)] focus:outline-none"
+                        >
+                          <option value="">{t("hero.search.allCycles")}</option>
+                          {zyklen.map((z) => (
+                            <option key={z.id} value={z.id.toString()}>
+                              {z.shortName}
+                            </option>
+                          ))}
+                        </select>
+                        <ChevronDown className="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                      </div>
+
+                      {/* Subject dropdown */}
+                      <div className="relative flex-1">
+                        <select
+                          value={selectedSubject}
+                          onChange={(e) => setSelectedSubject(e.target.value)}
+                          className="w-full appearance-none rounded-xl border-0 bg-white/80 py-3 pr-10 pl-4 text-sm font-medium text-gray-700 shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:bg-white focus:ring-2 focus:ring-[var(--ctp-blue)] focus:outline-none"
+                        >
+                          <option value="">{t("hero.search.allSubjects")}</option>
+                          {availableSubjects.map((fb) => (
+                            <option key={fb.code} value={fb.code}>
+                              {fb.name}
+                            </option>
+                          ))}
+                        </select>
+                        <ChevronDown className="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                      </div>
+
+                      {/* Dialect dropdown */}
+                      <div className="relative flex-1">
+                        <select
+                          value={selectedDialect}
+                          onChange={(e) => setSelectedDialect(e.target.value)}
+                          className="w-full appearance-none rounded-xl border-0 bg-white/80 py-3 pr-10 pl-4 text-sm font-medium text-gray-700 shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:bg-white focus:ring-2 focus:ring-[var(--ctp-blue)] focus:outline-none"
+                        >
+                          <option value="">{t("hero.search.allDialects")}</option>
+                          <option value="SWISS">{t("hero.search.dialectSwiss")}</option>
+                          <option value="STANDARD">{t("hero.search.dialectStandard")}</option>
+                        </select>
+                        <ChevronDown className="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                      </div>
+                    </div>
                   </form>
                 </FadeIn>
               </div>
@@ -132,7 +204,7 @@ export default function Home() {
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <FadeIn direction="up" className="mb-8 flex items-end justify-between">
               <div>
-                <h2 className="text-text text-2xl font-semibold">{t("featuredResources.title")}</h2>
+                <h2 className="text-text text-xl font-semibold">{t("featuredResources.title")}</h2>
                 <p className="text-text-muted mt-2">{t("featuredResources.description")}</p>
               </div>
               <motion.div whileHover={{ x: 5 }} transition={{ duration: 0.2 }}>
