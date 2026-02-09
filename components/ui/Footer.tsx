@@ -60,6 +60,12 @@ export default function Footer() {
             >
               {tCommon("footer.links.copyrightGuide")}
             </Link>
+            <Link
+              href="/seller-levels"
+              className="text-text-muted hover:text-primary text-sm transition-colors"
+            >
+              {tCommon("footer.links.sellerLevels")}
+            </Link>
           </nav>
         </div>
       </div>

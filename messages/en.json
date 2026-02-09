@@ -52,7 +52,8 @@
         "privacy": "Privacy",
         "terms": "Terms",
         "cookies": "Cookies",
-        "copyrightGuide": "Copyright Guide"
+        "copyrightGuide": "Copyright Guide",
+        "sellerLevels": "Seller Levels"
       }
     },
     "buttons": {
@@ -144,7 +145,11 @@
         "arts": "Visual Arts",
         "music": "Music",
         "sports": "Sports",
-        "button": "Search"
+        "button": "Search",
+        "dialectLabel": "Dialect",
+        "dialectSwiss": "Swiss German",
+        "dialectStandard": "Standard German",
+        "allDialects": "All Dialects"
       }
     },
     "howItWorks": {
@@ -445,7 +450,31 @@
       "displayLabel": "Show",
       "dialectLabel": "Dialect",
       "dialectSwiss": "Swiss German",
-      "dialectStandard": "Standard German"
+      "dialectStandard": "Standard German",
+      "zyklusLabel": "Cycle",
+      "priceFree": "Free",
+      "priceUnder": "< CHF {amount}",
+      "maxPrice": "Max. Price",
+      "formatSectionLabel": "Format",
+      "scopeLabel": "Material Scope",
+      "scopeSingle": "Single",
+      "scopeBundle": "Bundle",
+      "dialectCH": "CH",
+      "dialectDE": "DE",
+      "activeFilters": "Active Filters",
+      "loadingError": "Error loading subjects",
+      "searchPlaceholderCreators": "Search for teachers...",
+      "searchPlaceholderBoth": "Search materials & creators...",
+      "searchPlaceholderDefault": "Search: keyword or code (e.g. MA.1.A)",
+      "smartSearchDetected": "Detected",
+      "smartSearchApply": "Apply filters",
+      "smartSearchRemaining": "Search for: \"{query}\"",
+      "smartSearchLevel": "Level:",
+      "smartSearchSubject": "Subject:",
+      "smartSearchArea": "Area:",
+      "searchResultSubject": "Subject",
+      "searchResultArea": "Area",
+      "searchResultCompetence": "Competence"
     },
     "search": {
       "placeholder": "Search by title, topic, keyword...",
@@ -3016,6 +3045,68 @@
         "title": "Questions?",
         "description": "If you're unsure whether your material meets the guidelines, feel free to contact us. We're happy to help.",
         "email": "info@currico.ch"
+      }
+    }
+  },
+  "rewards": {
+    "title": "Seller Levels",
+    "yourLevel": "Your Level",
+    "pointsLabel": "{points} Points",
+    "pointsUnit": "Points",
+    "pointsToNext": "{points} points to next level",
+    "maxLevel": "Max level reached!",
+    "uploads": "Uploads",
+    "downloads": "Downloads",
+    "reviewsCount": "{count, plural, =0 {No reviews} =1 {1 review} other {# reviews}}",
+    "ratingBonus": "Rating bonus: ×{multiplier} points per download",
+    "progress": "Progress",
+    "nextLevel": "Next Level",
+    "levelReached": "Level {level} reached",
+    "keepGoing": "Upload more materials to level up!",
+    "howItWorks": "How do points work?",
+    "levels": {
+      "newcomer": "Newcomer",
+      "contributor": "Contributor",
+      "expert": "Expert",
+      "star": "Star",
+      "legend": "Legend"
+    },
+    "descriptions": {
+      "newcomer": "Welcome! Upload your first material.",
+      "contributor": "You're actively sharing knowledge — keep it up!",
+      "expert": "Your materials are in demand. Great work!",
+      "star": "You're a community star!",
+      "legend": "Legend! You're shaping Currico."
+    },
+    "page": {
+      "heroTitle": "Seller Levels",
+      "heroDescription": "The more you contribute to the Currico community, the higher you rise. Earn points through uploads, downloads, and good reviews.",
+      "howTitle": "How You Earn Points",
+      "howDescription": "Your points are calculated from three factors:",
+      "uploadPoints": "{points} points per upload",
+      "uploadPointsDescription": "For every material you upload to Currico, you earn {points} points — whether free or paid.",
+      "downloadPoints": "{points}–{pointsMax} points per download",
+      "downloadPointsDescription": "Every time someone downloads or purchases your material, you earn points. The base is {points} points — with good reviews this goes up!",
+      "reviewPoints": "{points} points per review",
+      "reviewPointsDescription": "For every review you receive on your materials, you earn {points} points.",
+      "ratingBonusTitle": "Rating Bonus",
+      "ratingBonusDescription": "The better your average rating, the more points you earn per download:",
+      "ratingBonusBase": "Below avg 4.0",
+      "ratingBonusGood": "From avg 4.0",
+      "ratingBonusGreat": "From avg 4.5",
+      "ratingBonusPerDownload": "{points} points/download",
+      "exampleTitle": "Example Calculation",
+      "exampleDescription": "If you upload {uploads} materials and receive a total of {downloads} downloads:",
+      "exampleFormula": "{uploads} uploads × {pointsPerUpload} + {downloads} downloads × {pointsPerDownload} = {total} points",
+      "levelsTitle": "The 5 Levels",
+      "levelsDescription": "Each level unlocks a new badge for your profile.",
+      "levelMinPoints": "From {points} points",
+      "tipsTitle": "Tips to Level Up Faster",
+      "tips": {
+        "quality": "Upload high-quality materials — great content gets downloaded more often.",
+        "variety": "Offer different subjects and cycles to reach more teachers.",
+        "keywords": "Use descriptive titles and descriptions so your materials can be found.",
+        "regular": "Upload new materials regularly — active sellers level up faster."
       }
     }
   }

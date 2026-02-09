@@ -53,7 +53,8 @@
         "privacy": "Datenschutz",
         "terms": "AGB",
         "cookies": "Cookies",
-        "copyrightGuide": "Urheberrecht"
+        "copyrightGuide": "Urheberrecht",
+        "sellerLevels": "Verkäufer-Levels"
       }
     },
     "buttons": {
@@ -145,7 +146,11 @@
         "arts": "Bildnerisches Gestalten",
         "music": "Musik",
         "sports": "Sport",
-        "button": "Suchen"
+        "button": "Suchen",
+        "dialectLabel": "Sprachvariante",
+        "dialectSwiss": "Schweizerdeutsch",
+        "dialectStandard": "Hochdeutsch",
+        "allDialects": "Alle Sprachvarianten"
       }
     },
     "howItWorks": {
@@ -446,7 +451,31 @@
       "displayLabel": "Anzeigen",
       "dialectLabel": "Sprachvariante",
       "dialectSwiss": "Schweizerdeutsch",
-      "dialectStandard": "Hochdeutsch"
+      "dialectStandard": "Hochdeutsch",
+      "zyklusLabel": "Zyklus",
+      "priceFree": "Kostenlos",
+      "priceUnder": "< CHF {amount}",
+      "maxPrice": "Max. Preis",
+      "formatSectionLabel": "Format",
+      "scopeLabel": "Materialumfang",
+      "scopeSingle": "Einzelmaterial",
+      "scopeBundle": "Bundle",
+      "dialectCH": "CH",
+      "dialectDE": "DE",
+      "activeFilters": "Aktive Filter",
+      "loadingError": "Fehler beim Laden der Fachbereiche",
+      "searchPlaceholderCreators": "Nach Lehrpersonen suchen...",
+      "searchPlaceholderBoth": "Materialien & Ersteller suchen...",
+      "searchPlaceholderDefault": "Suche: Stichwort oder Code (z.B. MA.1.A)",
+      "smartSearchDetected": "Erkannt",
+      "smartSearchApply": "Filter anwenden",
+      "smartSearchRemaining": "Suche nach: \"{query}\"",
+      "smartSearchLevel": "Stufe:",
+      "smartSearchSubject": "Fach:",
+      "smartSearchArea": "Bereich:",
+      "searchResultSubject": "Fach",
+      "searchResultArea": "Bereich",
+      "searchResultCompetence": "Kompetenz"
     },
     "search": {
       "placeholder": "Suche nach Titel, Thema, Stichwort...",
@@ -3045,6 +3074,68 @@
         "title": "Noch Fragen?",
         "description": "Wenn Sie unsicher sind, ob Ihr Material den Richtlinien entspricht, kontaktieren Sie uns gerne. Wir helfen Ihnen weiter.",
         "email": "info@currico.ch"
+      }
+    }
+  },
+  "rewards": {
+    "title": "Verkäufer-Levels",
+    "yourLevel": "Dein Level",
+    "pointsLabel": "{points} Punkte",
+    "pointsUnit": "Punkte",
+    "pointsToNext": "Noch {points} Punkte bis zum nächsten Level",
+    "maxLevel": "Höchstes Level erreicht!",
+    "uploads": "Uploads",
+    "downloads": "Downloads",
+    "reviewsCount": "{count, plural, =0 {Keine Bewertungen} =1 {1 Bewertung} other {# Bewertungen}}",
+    "ratingBonus": "Bewertungsbonus: ×{multiplier} Punkte pro Download",
+    "progress": "Fortschritt",
+    "nextLevel": "Nächstes Level",
+    "levelReached": "Level {level} erreicht",
+    "keepGoing": "Lade mehr Materialien hoch, um aufzusteigen!",
+    "howItWorks": "Wie funktionieren Punkte?",
+    "levels": {
+      "newcomer": "Newcomer",
+      "contributor": "Mitwirkende:r",
+      "expert": "Expert:in",
+      "star": "Star",
+      "legend": "Legende"
+    },
+    "descriptions": {
+      "newcomer": "Willkommen! Lade dein erstes Material hoch.",
+      "contributor": "Du teilst aktiv dein Wissen — weiter so!",
+      "expert": "Deine Materialien sind gefragt. Tolle Arbeit!",
+      "star": "Du bist ein Star der Community!",
+      "legend": "Legende! Du prägst Currico."
+    },
+    "page": {
+      "heroTitle": "Verkäufer-Levels",
+      "heroDescription": "Je mehr du zur Currico-Community beiträgst, desto höher steigst du auf. Sammle Punkte durch Uploads, Downloads und gute Bewertungen.",
+      "howTitle": "So sammelst du Punkte",
+      "howDescription": "Deine Punkte berechnen sich aus drei Faktoren:",
+      "uploadPoints": "{points} Punkte pro Upload",
+      "uploadPointsDescription": "Für jedes Material, das du auf Currico hochlädst, erhältst du {points} Punkte — egal ob kostenlos oder kostenpflichtig.",
+      "downloadPoints": "{points}–{pointsMax} Punkte pro Download",
+      "downloadPointsDescription": "Jedes Mal, wenn jemand dein Material herunterlädt oder kauft, erhältst du Punkte. Die Basis sind {points} Punkte — mit guten Bewertungen steigt der Wert!",
+      "reviewPoints": "{points} Punkte pro Bewertung",
+      "reviewPointsDescription": "Für jede Bewertung, die du auf deine Materialien erhältst, bekommst du {points} Punkte.",
+      "ratingBonusTitle": "Bewertungsbonus",
+      "ratingBonusDescription": "Je besser deine durchschnittliche Bewertung, desto mehr Punkte erhältst du pro Download:",
+      "ratingBonusBase": "Unter ⌀ 4.0",
+      "ratingBonusGood": "Ab ⌀ 4.0",
+      "ratingBonusGreat": "Ab ⌀ 4.5",
+      "ratingBonusPerDownload": "{points} Punkte/Download",
+      "exampleTitle": "Rechenbeispiel",
+      "exampleDescription": "Wenn du {uploads} Materialien hochlädst und insgesamt {downloads} Downloads bekommst:",
+      "exampleFormula": "{uploads} Uploads × {pointsPerUpload} + {downloads} Downloads × {pointsPerDownload} = {total} Punkte",
+      "levelsTitle": "Die 5 Levels",
+      "levelsDescription": "Jedes Level schaltet eine neue Auszeichnung für dein Profil frei.",
+      "levelMinPoints": "Ab {points} Punkten",
+      "tipsTitle": "Tipps zum schnelleren Aufstieg",
+      "tips": {
+        "quality": "Lade qualitativ hochwertige Materialien hoch — gute Materialien werden häufiger heruntergeladen.",
+        "variety": "Biete verschiedene Fächer und Zyklen an, um mehr Lehrpersonen zu erreichen.",
+        "keywords": "Verwende aussagekräftige Titel und Beschreibungen, damit deine Materialien gefunden werden.",
+        "regular": "Lade regelmässig neue Materialien hoch — aktive Verkäufer:innen steigen schneller auf."
       }
     }
   }

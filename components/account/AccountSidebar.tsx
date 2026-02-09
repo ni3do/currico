@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ProfileCompletionProgress } from "./ProfileCompletionProgress";
+import { SellerBadge } from "@/components/ui/SellerBadge";
 import { type TabType, TAB_TO_PATH, pathToTab } from "@/lib/types/account";
 import type { FollowedSeller } from "@/lib/types/account";
 
@@ -37,6 +38,7 @@ interface SidebarUserData {
   displayName?: string | null;
   bio?: string | null;
   emailVerified?: string | null;
+  sellerPoints?: number;
 }
 
 interface SidebarUserStats {
@@ -138,11 +140,18 @@ export function AccountSidebar({
             <div className="text-text truncate text-sm font-semibold">{displayName}</div>
             <div className="text-text-muted truncate text-xs">{userData.email}</div>
           </div>
-          {userData.isSeller && (
-            <span className="bg-accent/10 text-accent flex-shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase">
-              {t("roleSeller")}
-            </span>
-          )}
+          {userData.isSeller &&
+            (userData.sellerPoints !== undefined ? (
+              <SellerBadge
+                points={userData.sellerPoints}
+                variant="compact"
+                className="flex-shrink-0"
+              />
+            ) : (
+              <span className="bg-accent/10 text-accent flex-shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase">
+                {t("roleSeller")}
+              </span>
+            ))}
         </div>
       </div>
 

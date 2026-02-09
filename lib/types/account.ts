@@ -114,6 +114,7 @@ export interface UserData {
   cycles: string[];
   cantons: string[];
   isSeller: boolean;
+  sellerPoints?: number;
   bio?: string | null;
   website?: string | null;
   school?: string | null;

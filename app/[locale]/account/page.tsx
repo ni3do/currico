@@ -25,6 +25,7 @@ import { WelcomeGuide } from "@/components/account/WelcomeGuide";
 import { EmailVerificationBanner } from "@/components/account/EmailVerificationBanner";
 import { StripeConnectStatus } from "@/components/account/StripeConnectStatus";
 import { DeleteConfirmDialog } from "@/components/account/DeleteConfirmDialog";
+import { SellerLevelCard } from "@/components/account/SellerLevelCard";
 import { useAccountData } from "@/lib/hooks/useAccountData";
 import type { SellerStats, SellerMaterial, LibraryItem } from "@/lib/types/account";
 import { SUBJECT_PILL_CLASSES } from "@/lib/types/account";
@@ -49,29 +50,53 @@ export default function AccountOverviewPage() {
     title: string;
   } | null>(null);
   const [profileBannerDismissed, setProfileBannerDismissed] = useState(true);
+  const [levelData, setLevelData] = useState<{
+    uploads: number;
+    downloads: number;
+    reviews: number;
+    avgRating: number | null;
+    downloadMultiplier: number;
+  } | null>(null);
+
+  const isSeller = userData?.isSeller ?? false;
 
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const [sellerRes, libraryRes] = await Promise.all([
-        fetch("/api/seller/dashboard"),
-        fetch("/api/user/library?type=acquired"),
-      ]);
-      if (sellerRes.ok) {
-        const data = await sellerRes.json();
-        setSellerStats(data.stats);
-        setSellerMaterials(data.materials);
+      const fetches: Promise<Response>[] = [fetch("/api/user/library?type=acquired")];
+      if (isSeller) {
+        fetches.push(fetch("/api/seller/dashboard"));
+        fetches.push(fetch("/api/seller/level"));
       }
+
+      const responses = await Promise.all(fetches);
+      const libraryRes = responses[0];
+
       if (libraryRes.ok) {
         const data = await libraryRes.json();
         setLibraryItems(data.items);
+      }
+      if (isSeller && responses[1]?.ok) {
+        const data = await responses[1].json();
+        setSellerStats(data.stats);
+        setSellerMaterials(data.materials);
+      }
+      if (isSeller && responses[2]?.ok) {
+        const data = await responses[2].json();
+        setLevelData({
+          uploads: data.uploads,
+          downloads: data.downloads,
+          reviews: data.reviews,
+          avgRating: data.avgRating,
+          downloadMultiplier: data.downloadMultiplier,
+        });
       }
     } catch (error) {
       console.error("Error fetching overview data:", error);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [isSeller]);
 
   useEffect(() => {
     if (!sharedLoading) {
@@ -304,6 +329,17 @@ export default function AccountOverviewPage() {
             );
           })}
         </div>
+
+        {/* Seller Level Card */}
+        {levelData && (
+          <SellerLevelCard
+            uploads={levelData.uploads}
+            downloads={levelData.downloads}
+            reviews={levelData.reviews}
+            avgRating={levelData.avgRating}
+            downloadMultiplier={levelData.downloadMultiplier}
+          />
+        )}
 
         {/* Resources Table */}
         <div className="border-border bg-surface overflow-hidden rounded-2xl border">
