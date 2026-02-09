@@ -14,6 +14,7 @@ import {
   Search,
   CalendarPlus,
   TrendingUp,
+  BadgeCheck,
 } from "lucide-react";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
@@ -25,6 +26,7 @@ import {
   POINTS_PER_DOWNLOAD_GOOD,
   POINTS_PER_DOWNLOAD_GREAT,
   POINTS_PER_REVIEW,
+  VERIFIED_SELLER_BONUS,
 } from "@/lib/utils/seller-levels";
 
 export default function SellerLevelsPage() {
@@ -45,23 +47,13 @@ export default function SellerLevelsPage() {
     <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-6 sm:px-6 lg:px-8">
-        <Breadcrumb
-          items={[{ label: tCommon("breadcrumb.home"), href: "/" }, { label: t("page.heroTitle") }]}
-          className="mb-6"
-        />
-
-        {/* Hero */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-10 text-center"
-        >
-          <h1 className="text-text text-3xl font-bold sm:text-4xl">{t("page.heroTitle")}</h1>
-          <p className="text-text-muted mx-auto mt-3 max-w-2xl text-lg">
-            {t("page.heroDescription")}
-          </p>
-        </motion.div>
+      <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+        {/* Page Header */}
+        <div className="mb-8">
+          <Breadcrumb items={[{ label: t("page.heroTitle") }]} />
+          <h1 className="text-text text-2xl font-bold sm:text-3xl">{t("page.heroTitle")}</h1>
+          <p className="text-text-muted mt-1">{t("page.heroDescription")}</p>
+        </div>
 
         {/* How Points Work */}
         <motion.section
@@ -70,12 +62,12 @@ export default function SellerLevelsPage() {
           transition={{ delay: 0.1 }}
           className="mb-10"
         >
-          <h2 className="text-text mb-2 text-xl font-bold">{t("page.howTitle")}</h2>
+          <h2 className="text-text mb-2 text-xl font-semibold">{t("page.howTitle")}</h2>
           <p className="text-text-muted mb-6 text-sm">{t("page.howDescription")}</p>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {/* Upload points */}
-            <div className="border-border bg-surface rounded-2xl border p-6">
+            <div className="card p-6">
               <div className="mb-4 flex items-center gap-3">
                 <div className="bg-primary/10 flex h-12 w-12 items-center justify-center rounded-xl">
                   <Upload className="text-primary h-6 w-6" />
@@ -114,7 +106,7 @@ export default function SellerLevelsPage() {
             </div>
 
             {/* Download points */}
-            <div className="border-border bg-surface rounded-2xl border p-6">
+            <div className="card p-6">
               <div className="mb-4 flex items-center gap-3">
                 <div className="bg-accent/10 flex h-12 w-12 items-center justify-center rounded-xl">
                   <Download className="text-accent h-6 w-6" />
@@ -158,7 +150,7 @@ export default function SellerLevelsPage() {
             </div>
 
             {/* Review points */}
-            <div className="border-border bg-surface rounded-2xl border p-6">
+            <div className="card p-6">
               <div className="mb-4 flex items-center gap-3">
                 <div className="bg-warning/10 flex h-12 w-12 items-center justify-center rounded-xl">
                   <Star className="text-warning h-6 w-6" />
@@ -205,7 +197,7 @@ export default function SellerLevelsPage() {
           transition={{ delay: 0.15 }}
           className="mb-10"
         >
-          <h2 className="text-text mb-2 text-xl font-bold">
+          <h2 className="text-text mb-2 text-xl font-semibold">
             <TrendingUp className="text-success mr-2 inline-block h-5 w-5" />
             {t("page.ratingBonusTitle")}
           </h2>
@@ -250,6 +242,43 @@ export default function SellerLevelsPage() {
           </div>
         </motion.section>
 
+        {/* Verified Seller Bonus */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.18 }}
+          className="mb-10"
+        >
+          <h2 className="text-text mb-2 text-xl font-semibold">
+            <BadgeCheck className="text-success mr-2 inline-block h-5 w-5" />
+            {t("page.verifiedBonusTitle")}
+          </h2>
+          <p className="text-text-muted mb-4 text-sm">{t("page.verifiedBonusDescription")}</p>
+
+          <div className="border-border bg-surface overflow-hidden rounded-2xl border">
+            <div className="flex items-center gap-4 p-6">
+              <div className="bg-success/10 flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl">
+                <BadgeCheck className="text-success h-7 w-7" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <h3 className="text-text text-lg font-bold">
+                  +{VERIFIED_SELLER_BONUS} {t("pointsUnit")}
+                </h3>
+                <p className="text-text-muted text-sm">{t("page.verifiedBonusExplain")}</p>
+              </div>
+            </div>
+            <div className="border-border border-t px-6 py-4">
+              <Link
+                href="/verified-seller"
+                className="text-success hover:text-success/80 flex items-center gap-1.5 text-sm font-medium transition-colors"
+              >
+                <ArrowRight className="h-4 w-4" />
+                {t("page.verifiedBonusLink")}
+              </Link>
+            </div>
+          </div>
+        </motion.section>
+
         {/* Example Calculation */}
         <motion.section
           initial={{ opacity: 0, y: 20 }}
@@ -257,7 +286,7 @@ export default function SellerLevelsPage() {
           transition={{ delay: 0.2 }}
           className="mb-10"
         >
-          <h2 className="text-text mb-2 text-xl font-bold">{t("page.exampleTitle")}</h2>
+          <h2 className="text-text mb-2 text-xl font-semibold">{t("page.exampleTitle")}</h2>
           <p className="text-text-muted mb-4 text-sm">
             {t("page.exampleDescription", {
               uploads: exampleUploads,
@@ -308,7 +337,7 @@ export default function SellerLevelsPage() {
           transition={{ delay: 0.3 }}
           className="mb-10"
         >
-          <h2 className="text-text mb-2 text-xl font-bold">{t("page.levelsTitle")}</h2>
+          <h2 className="text-text mb-2 text-xl font-semibold">{t("page.levelsTitle")}</h2>
           <p className="text-text-muted mb-6 text-sm">{t("page.levelsDescription")}</p>
 
           <div className="space-y-3">
@@ -380,7 +409,7 @@ export default function SellerLevelsPage() {
           transition={{ delay: 0.5 }}
           className="mb-10"
         >
-          <h2 className="text-text mb-2 text-xl font-bold">
+          <h2 className="text-text mb-2 text-xl font-semibold">
             <Lightbulb className="text-warning mr-2 inline-block h-5 w-5" />
             {t("page.tipsTitle")}
           </h2>

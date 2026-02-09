@@ -40,6 +40,8 @@ export const publicUserSelect = {
   is_private: true,
   // Teacher verification - public badge
   is_teacher_verified: true,
+  // Verified seller - public badge
+  is_verified_seller: true,
 } as const;
 
 // Private profile - visible only to the user themselves
@@ -55,6 +57,9 @@ export const privateUserSelect = {
   // Teacher verification details (private)
   teacher_verified_at: true,
   teacher_verification_method: true,
+  // Verified seller details (private)
+  verified_seller_at: true,
+  verified_seller_method: true,
   // Notification preferences
   notify_new_from_followed: true,
   notify_recommendations: true,

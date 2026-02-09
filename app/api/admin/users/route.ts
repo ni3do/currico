@@ -21,10 +21,7 @@ export async function GET(request: NextRequest) {
     const where: Record<string, unknown> = {};
 
     if (search) {
-      where.OR = [
-        { display_name: { contains: search } },
-        { email: { contains: search } },
-      ];
+      where.OR = [{ display_name: { contains: search } }, { email: { contains: search } }];
     }
 
     if (role && role !== "all") {
@@ -43,6 +40,7 @@ export async function GET(request: NextRequest) {
           stripe_onboarding_complete: true,
           stripe_charges_enabled: true,
           is_protected: true,
+          is_verified_seller: true,
           emailVerified: true,
           created_at: true,
           image: true,
@@ -82,9 +80,6 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error fetching users:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch users" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch users" }, { status: 500 });
   }
 }

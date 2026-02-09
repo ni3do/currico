@@ -8,6 +8,7 @@ import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { MaterialCard } from "@/components/ui/MaterialCard";
 import { Users, FileText, FolderOpen, Calendar, MapPin, Instagram, Lock } from "lucide-react";
+import { VerifiedSellerBadge } from "@/components/ui/VerifiedSellerBadge";
 
 interface ProfileData {
   id: string;
@@ -21,6 +22,7 @@ interface ProfileData {
   instagram: string | null;
   pinterest: string | null;
   role: string;
+  is_verified_seller: boolean;
   created_at: string;
   is_private: boolean;
   stats: {
@@ -218,7 +220,7 @@ export default function PublicProfilePage({
         <TopBar />
         <main className="flex flex-1 items-center justify-center">
           <div className="text-center">
-            <h1 className="text-text mb-2 text-2xl font-bold">Profil nicht gefunden</h1>
+            <h1 className="text-text mb-2 text-2xl font-bold sm:text-3xl">Profil nicht gefunden</h1>
             <p className="text-text-muted mb-4">
               Das gesuchte Profil existiert nicht oder wurde entfernt.
             </p>
@@ -236,7 +238,7 @@ export default function PublicProfilePage({
     <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
         {/* Profile Header */}
         <div className="card mb-8 p-8">
           <div className="flex flex-col gap-6 md:flex-row md:items-start">
@@ -261,19 +263,8 @@ export default function PublicProfilePage({
             <div className="flex-1">
               <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <h1 className="text-text text-2xl font-bold">{displayName}</h1>
-                  {profile.role === "SELLER" && (
-                    <span className="bg-success/20 text-success mt-1 inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium">
-                      <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
-                        <path
-                          fillRule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      Verifizierter Verkäufer
-                    </span>
-                  )}
+                  <h1 className="text-text text-2xl font-bold sm:text-3xl">{displayName}</h1>
+                  {profile.is_verified_seller && <VerifiedSellerBadge variant="full" />}
                 </div>
 
                 {/* Follow Button */}
@@ -431,7 +422,7 @@ export default function PublicProfilePage({
         {bestMaterials.length > 0 && (
           <section className="mb-8">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-text text-xl font-bold">Beste Uploads</h2>
+              <h2 className="text-text text-xl font-semibold">Beste Uploads</h2>
             </div>
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {bestMaterials.slice(0, 3).map((material) => (

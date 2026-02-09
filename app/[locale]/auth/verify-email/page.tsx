@@ -58,7 +58,7 @@ export default function VerifyEmailPage() {
   }, [token, t]);
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
       <main className="relative z-10 flex flex-1 items-center justify-center px-4 py-8 sm:px-6">

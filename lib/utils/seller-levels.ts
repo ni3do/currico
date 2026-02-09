@@ -78,6 +78,7 @@ export const POINTS_PER_DOWNLOAD_BASE = 2;
 export const POINTS_PER_DOWNLOAD_GOOD = 3; // avg rating >= 4.0
 export const POINTS_PER_DOWNLOAD_GREAT = 4; // avg rating >= 4.5
 export const POINTS_PER_REVIEW = 5;
+export const VERIFIED_SELLER_BONUS = 50;
 
 export function getDownloadMultiplier(avgRating: number | null): number {
   if (avgRating !== null && avgRating >= 4.5) return POINTS_PER_DOWNLOAD_GREAT;
@@ -90,6 +91,7 @@ export interface PointsInput {
   downloads: number;
   reviews: number;
   avgRating: number | null;
+  isVerifiedSeller?: boolean;
 }
 
 export function calculatePoints(input: PointsInput): number {
@@ -97,7 +99,8 @@ export function calculatePoints(input: PointsInput): number {
   return (
     input.uploads * POINTS_PER_UPLOAD +
     input.downloads * downloadPts +
-    input.reviews * POINTS_PER_REVIEW
+    input.reviews * POINTS_PER_REVIEW +
+    (input.isVerifiedSeller ? VERIFIED_SELLER_BONUS : 0)
   );
 }
 

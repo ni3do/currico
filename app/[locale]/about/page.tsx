@@ -7,7 +7,6 @@ import { useLocale } from "next-intl";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
-import { Server, Lock, Star, Award } from "lucide-react";
 
 export default function AboutPage() {
   const t = useTranslations("aboutPage");
@@ -18,27 +17,18 @@ export default function AboutPage() {
     <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
-        {/* Breadcrumb */}
-        <div className="mb-8">
+      <main className="mx-auto w-full max-w-7xl flex-1 space-y-8 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+        {/* Page Header */}
+        <div>
           <Breadcrumb items={[{ label: tCommon("breadcrumb.about") }]} />
-        </div>
-
-        {/* Hero Section - Personal & Warm */}
-        <div className="mb-16 text-center">
-          <span className="bg-primary/10 text-primary mb-4 inline-block rounded-full px-4 py-1.5 text-sm font-medium">
-            {t("hero.badge")}
-          </span>
-          <h1 className="text-text mb-4 text-3xl font-bold sm:text-4xl">{t("hero.title")}</h1>
-          <p className="text-text-muted mx-auto max-w-2xl text-lg leading-relaxed">
-            {t("hero.subtitle")}
-          </p>
+          <h1 className="text-text text-2xl font-bold sm:text-3xl">{t("hero.title")}</h1>
+          <p className="text-text-muted mt-1">{t("hero.subtitle")}</p>
         </div>
 
         {/* Meet the Team - Right at the top, personal first */}
-        <div className="mb-16">
+        <div>
           <div className="mb-8 text-center">
-            <h2 className="text-text mb-2 text-2xl font-bold">{t("founders.title")}</h2>
+            <h2 className="text-text mb-2 text-xl font-semibold">{t("founders.title")}</h2>
             <p className="text-text-muted mx-auto max-w-xl">{t("founders.subtitle")}</p>
           </div>
 
@@ -93,8 +83,8 @@ export default function AboutPage() {
         </div>
 
         {/* Our Story Section */}
-        <div className="bg-bg-secondary mb-16 rounded-2xl p-6 sm:p-10">
-          <h2 className="text-text mb-6 text-2xl font-bold">{t("origin.title")}</h2>
+        <div className="bg-bg-secondary rounded-2xl p-6 sm:p-10">
+          <h2 className="text-text mb-6 text-xl font-semibold">{t("origin.title")}</h2>
           <div className="text-text-secondary space-y-4 text-base leading-relaxed">
             <p>{t("origin.paragraph1")}</p>
             <p>{t("origin.paragraph2")}</p>
@@ -102,8 +92,8 @@ export default function AboutPage() {
         </div>
 
         {/* Mission Section */}
-        <div className="mb-16">
-          <h2 className="text-text mb-6 text-2xl font-bold">{t("mission.title")}</h2>
+        <div>
+          <h2 className="text-text mb-6 text-xl font-semibold">{t("mission.title")}</h2>
           <div className="text-text-secondary space-y-4 text-base leading-relaxed">
             <p>{t("mission.paragraph1")}</p>
             <p>{t("mission.paragraph2")}</p>
@@ -112,11 +102,11 @@ export default function AboutPage() {
         </div>
 
         {/* Values Section */}
-        <div className="mb-16">
-          <h2 className="text-text mb-8 text-2xl font-bold">{t("values.title")}</h2>
+        <div>
+          <h2 className="text-text mb-8 text-xl font-semibold">{t("values.title")}</h2>
           <div className="grid gap-6 sm:grid-cols-3">
             {/* Value 1 */}
-            <div className="border-border rounded-2xl border p-6">
+            <div className="card p-6">
               <div className="bg-primary/10 mb-4 flex h-12 w-12 items-center justify-center rounded-xl">
                 <svg
                   className="text-primary h-6 w-6"
@@ -139,7 +129,7 @@ export default function AboutPage() {
             </div>
 
             {/* Value 2 */}
-            <div className="border-border rounded-2xl border p-6">
+            <div className="card p-6">
               <div className="bg-accent/10 mb-4 flex h-12 w-12 items-center justify-center rounded-xl">
                 <svg
                   className="text-accent h-6 w-6"
@@ -162,7 +152,7 @@ export default function AboutPage() {
             </div>
 
             {/* Value 3 */}
-            <div className="border-border rounded-2xl border p-6">
+            <div className="card p-6">
               <div className="bg-success/10 mb-4 flex h-12 w-12 items-center justify-center rounded-xl">
                 <svg
                   className="text-success h-6 w-6"
@@ -186,75 +176,9 @@ export default function AboutPage() {
           </div>
         </div>
 
-        {/* Contact / Get in Touch */}
-        <div className="border-primary/20 bg-primary/5 mb-16 rounded-2xl border p-6 text-center sm:p-8">
-          <p className="text-text mb-2 text-lg font-medium">{t("founders.highlight")}</p>
-          <a
-            href="mailto:info@currico.ch"
-            className="text-primary inline-flex items-center gap-2 font-medium hover:underline"
-          >
-            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-              />
-            </svg>
-            info@currico.ch
-          </a>
-        </div>
-
-        {/* Quality & Trust Section */}
-        <div className="mb-12">
-          <div className="mb-8 text-center">
-            <div className="bg-primary mb-4 inline-flex items-center gap-2 rounded-full px-4 py-2">
-              <Star className="h-5 w-5 text-white" />
-              <span className="font-semibold text-white">{t("swissBrand.badge")}</span>
-            </div>
-            <h2 className="text-text mb-2 text-xl font-semibold">{t("swissBrand.title")}</h2>
-            <p className="text-text-muted mx-auto max-w-2xl">{t("swissBrand.subtitle")}</p>
-          </div>
-
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {/* Quality First */}
-            <div className="card p-6 text-center">
-              <div className="bg-primary-light mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full">
-                <Award className="text-primary h-6 w-6" />
-              </div>
-              <h3 className="text-text font-bold">{t("swissBrand.swissMade.title")}</h3>
-              <p className="text-text-muted mt-2 text-sm">
-                {t("swissBrand.swissMade.description")}
-              </p>
-            </div>
-
-            {/* Swiss Hosted */}
-            <div className="card p-6 text-center">
-              <div className="bg-success-light mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full">
-                <Server className="text-success h-6 w-6" />
-              </div>
-              <h3 className="text-text font-bold">{t("swissBrand.swissHosted.title")}</h3>
-              <p className="text-text-muted mt-2 text-sm">
-                {t("swissBrand.swissHosted.description")}
-              </p>
-            </div>
-
-            {/* Data Protection */}
-            <div className="card p-6 text-center">
-              <div className="bg-primary-light mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full">
-                <Lock className="text-primary h-6 w-6" />
-              </div>
-              <h3 className="text-text font-bold">{t("swissBrand.dataProtection.title")}</h3>
-              <p className="text-text-muted mt-2 text-sm">
-                {t("swissBrand.dataProtection.description")}
-              </p>
-            </div>
-          </div>
-        </div>
-
         {/* CTA Section */}
         <div className="bg-bg-secondary rounded-2xl p-6 text-center sm:p-10">
-          <h2 className="text-text mb-4 text-2xl font-bold">{t("cta.title")}</h2>
+          <h2 className="text-text mb-4 text-xl font-semibold">{t("cta.title")}</h2>
           <p className="text-text-muted mx-auto mb-6 max-w-2xl leading-relaxed">
             {t("cta.subtitle")}
           </p>

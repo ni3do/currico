@@ -316,7 +316,7 @@ function UploadPageContent() {
   // Auth gate: show login prompt if not authenticated
   if (sessionStatus === "loading") {
     return (
-      <div className="flex min-h-screen flex-col">
+      <div className="bg-bg flex min-h-screen flex-col">
         <TopBar />
         <main className="flex flex-1 items-center justify-center px-4">
           <div className="text-text-muted animate-pulse text-sm">{tUpload("loading")}</div>
@@ -328,7 +328,7 @@ function UploadPageContent() {
 
   if (sessionStatus === "unauthenticated" || !session) {
     return (
-      <div className="flex min-h-screen flex-col">
+      <div className="bg-bg flex min-h-screen flex-col">
         <TopBar />
         <main className="flex flex-1 items-center justify-center px-4 py-16">
           <div className="mx-auto max-w-md text-center">
@@ -361,24 +361,18 @@ function UploadPageContent() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="flex-1 px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          {/* Breadcrumb */}
-          <Breadcrumb items={[{ label: tCommon("breadcrumb.upload") }]} className="mb-6" />
-
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+        <div>
           {/* Page Header */}
-          <div className="mb-6 flex items-center justify-between">
-            <div>
-              <h1 className="text-text text-2xl font-bold tracking-tight sm:text-3xl">
-                Material hochladen
-              </h1>
-              <p className="text-text-muted mt-1 text-sm">
-                Teilen Sie Ihre Unterrichtsmaterialien mit der Currico-Community
-              </p>
-            </div>
+          <div className="mb-8">
+            <Breadcrumb items={[{ label: tCommon("breadcrumb.upload") }]} />
+            <h1 className="text-text text-2xl font-bold sm:text-3xl">Material hochladen</h1>
+            <p className="text-text-muted mt-1">
+              Teilen Sie Ihre Unterrichtsmaterialien mit der Currico-Community
+            </p>
           </div>
 
           {/* Step Navigation */}
@@ -397,7 +391,7 @@ function UploadPageContent() {
               {currentStep === 1 && (
                 <div className="space-y-6">
                   <div className="border-primary/20 border-b pb-4">
-                    <h2 className="text-text text-xl font-bold">Grundinformationen</h2>
+                    <h2 className="text-text text-xl font-semibold">Grundinformationen</h2>
                     <p className="text-text-muted mt-1 text-sm">Beschreiben Sie Ihr Material</p>
                   </div>
 
@@ -538,7 +532,7 @@ function UploadPageContent() {
               {currentStep === 2 && (
                 <div className="space-y-6">
                   <div className="border-primary/20 border-b pb-4">
-                    <h2 className="text-text text-xl font-bold">Lehrplan-Zuordnung</h2>
+                    <h2 className="text-text text-xl font-semibold">Lehrplan-Zuordnung</h2>
                     <p className="text-text-muted mt-1 text-sm">
                       Wählen Sie Zyklus, Fach und Kompetenzen
                     </p>
@@ -571,7 +565,7 @@ function UploadPageContent() {
               {currentStep === 3 && (
                 <div className="space-y-6">
                   <div className="border-primary/20 border-b pb-4">
-                    <h2 className="text-text text-xl font-bold">Preis festlegen</h2>
+                    <h2 className="text-text text-xl font-semibold">Preis festlegen</h2>
                     <p className="text-text-muted mt-1 text-sm">
                       Wählen Sie, ob Ihr Material kostenlos oder kostenpflichtig ist
                     </p>
@@ -653,7 +647,7 @@ function UploadPageContent() {
               {currentStep === 4 && (
                 <div className="space-y-6">
                   <div className="border-primary/20 border-b pb-4">
-                    <h2 className="text-text text-xl font-bold">Dateien & Rechtliches</h2>
+                    <h2 className="text-text text-xl font-semibold">Dateien & Rechtliches</h2>
                     <p className="text-text-muted mt-1 text-sm">
                       Laden Sie Ihre Dateien hoch und bestätigen Sie die rechtlichen Anforderungen
                     </p>

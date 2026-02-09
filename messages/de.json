@@ -54,7 +54,8 @@
         "terms": "AGB",
         "cookies": "Cookies",
         "copyrightGuide": "Urheberrecht",
-        "sellerLevels": "Verkäufer-Levels"
+        "sellerLevels": "Verkäufer-Levels",
+        "verifiedSeller": "Verifizierte Verkäufer"
       }
     },
     "buttons": {
@@ -761,7 +762,12 @@
       "stripeActiveLabel": "Stripe aktiv",
       "stripePendingLabel": "Stripe ausstehend",
       "errorUpdating": "Fehler beim Aktualisieren",
-      "errorDeleting": "Fehler beim Löschen"
+      "errorDeleting": "Fehler beim Löschen",
+      "verifiedSeller": "Verifizierter Verkäufer",
+      "verifiedSellerActive": "Manuell oder automatisch verifiziert",
+      "verifiedSellerInactive": "Noch nicht verifiziert",
+      "grantVerification": "Verifizieren",
+      "revokeVerification": "Widerrufen"
     },
     "documents": {
       "infoTitle": "Verifizierungsworkflow",
@@ -3093,6 +3099,10 @@
     "levelReached": "Level {level} erreicht",
     "keepGoing": "Lade mehr Materialien hoch, um aufzusteigen!",
     "howItWorks": "Wie funktionieren Punkte?",
+    "verifiedBadge": "Verifizierter Verkäufer",
+    "verificationProgress": "{met}/{total} Kriterien erfüllt",
+    "notVerified": "Nicht verifiziert",
+    "verifiedInfo": "Mehr erfahren",
     "levels": {
       "newcomer": "Newcomer",
       "contributor": "Mitwirkende:r",
@@ -3124,6 +3134,40 @@
       "ratingBonusGood": "Ab ⌀ 4.0",
       "ratingBonusGreat": "Ab ⌀ 4.5",
       "ratingBonusPerDownload": "{points} Punkte/Download",
+      "verifiedBonusTitle": "Verifizierter-Verkäufer-Bonus",
+      "verifiedBonusDescription": "Verifizierte Verkäufer:innen erhalten einen einmaligen Bonus auf ihre Gesamtpunktzahl:",
+      "verifiedBonusExplain": "Einmaliger Bonus, solange du als verifizierte:r Verkäufer:in bestätigt bist. Wird bei Widerruf wieder abgezogen.",
+      "verifiedBonusLink": "Wie werde ich verifiziert?",
+      "howToVerifyTitle": "So wirst du verifizierte:r Verkäufer:in",
+      "howToVerifyDescription": "Erfülle alle 5 Kriterien gleichzeitig, um das Abzeichen «Verifizierter Verkäufer» zu erhalten und den Punktebonus freizuschalten:",
+      "verifyCriteria": {
+        "sales": {
+          "label": "Mindestens 10 Verkäufe",
+          "description": "Erfolgreiche Verkäufe oder Downloads deiner Materialien.",
+          "value": "≥ 10"
+        },
+        "rating": {
+          "label": "Durchschnitt ≥ 4.5 Sterne",
+          "description": "Durchschnittliche Bewertung deiner Materialien.",
+          "value": "≥ 4.5 ★"
+        },
+        "resources": {
+          "label": "Mindestens 3 Materialien",
+          "description": "Veröffentlichte und geprüfte Materialien auf der Plattform.",
+          "value": "≥ 3"
+        },
+        "age": {
+          "label": "Konto mindestens 30 Tage alt",
+          "description": "Dein Konto muss mindestens einen Monat bestehen.",
+          "value": "≥ 30 Tage"
+        },
+        "reports": {
+          "label": "Keine offenen Meldungen",
+          "description": "Keine offenen oder in Bearbeitung befindlichen Meldungen.",
+          "value": "0 offen"
+        }
+      },
+      "howToVerifyLink": "Alles über die Verifizierung erfahren",
       "exampleTitle": "Rechenbeispiel",
       "exampleDescription": "Wenn du {uploads} Materialien hochlädst und insgesamt {downloads} Downloads bekommst:",
       "exampleFormula": "{uploads} Uploads × {pointsPerUpload} + {downloads} Downloads × {pointsPerDownload} = {total} Punkte",
@@ -3137,6 +3181,55 @@
         "keywords": "Verwende aussagekräftige Titel und Beschreibungen, damit deine Materialien gefunden werden.",
         "regular": "Lade regelmässig neue Materialien hoch — aktive Verkäufer:innen steigen schneller auf."
       }
+    }
+  },
+  "verifiedSeller": {
+    "badge": "Verifizierter Verkäufer",
+    "page": {
+      "title": "Verifizierter Verkäufer",
+      "description": "Das Abzeichen «Verifizierter Verkäufer» wird an Verkäufer:innen vergeben, die unsere Qualitätskriterien erfüllen. Es zeigt Käufer:innen, dass sie einem erfahrenen und zuverlässigen Anbieter vertrauen können.",
+      "whatTitle": "Was bedeutet «Verifizierter Verkäufer»?",
+      "whatDescription": "Verifizierte Verkäufer:innen haben bewiesen, dass sie qualitativ hochwertige Materialien anbieten. Das Abzeichen erscheint auf dem Profil und bei jedem Material, sodass Käufer:innen sofort sehen, dass sie einem vertrauenswürdigen Anbieter kaufen.",
+      "criteriaTitle": "Die 5 Kriterien",
+      "criteriaDescription": "Alle 5 Kriterien müssen gleichzeitig erfüllt sein, um das Abzeichen zu erhalten:",
+      "criteria": {
+        "minSales": {
+          "title": "Mindestverkäufe",
+          "description": "Mindestens 10 erfolgreiche Verkäufe oder Downloads deiner Materialien.",
+          "value": "≥ 10"
+        },
+        "minRating": {
+          "title": "Mindestbewertung",
+          "description": "Durchschnittliche Bewertung deiner Materialien von mindestens 4.5 Sternen.",
+          "value": "≥ 4.5 ★"
+        },
+        "minResources": {
+          "title": "Veröffentlichte Materialien",
+          "description": "Mindestens 3 veröffentlichte und geprüfte Materialien auf der Plattform.",
+          "value": "≥ 3"
+        },
+        "accountAge": {
+          "title": "Kontoalter",
+          "description": "Dein Konto muss mindestens 30 Tage alt sein.",
+          "value": "≥ 30 Tage"
+        },
+        "noReports": {
+          "title": "Keine offenen Meldungen",
+          "description": "Keine offenen oder in Bearbeitung befindlichen Meldungen gegen dein Konto.",
+          "value": "0 offen"
+        }
+      },
+      "howTitle": "Wie funktioniert die Verifizierung?",
+      "howAutomatic": "Die Verifizierung erfolgt automatisch: Jedes Mal, wenn du deine Verkäufer-Level-Seite besuchst, werden deine Statistiken überprüft. Sobald du alle 5 Kriterien erfüllst, erhältst du automatisch das Abzeichen.",
+      "howRevocation": "Achtung: Wenn du die Kriterien nicht mehr erfüllst (z.B. durch eine offene Meldung oder sinkende Bewertung), wird die automatische Verifizierung widerrufen.",
+      "howManual": "In Ausnahmefällen kann das Currico-Team die Verifizierung auch manuell vergeben oder widerrufen.",
+      "benefitsTitle": "Vorteile",
+      "benefits": {
+        "badge": "Sichtbares Abzeichen auf deinem Profil und bei allen deinen Materialien.",
+        "trust": "Erhöhtes Vertrauen bei Käufer:innen — verifizierte Verkäufer:innen werden bevorzugt.",
+        "visibility": "Bessere Sichtbarkeit auf der Plattform."
+      },
+      "cta": "Materialien hochladen"
     }
   }
 }

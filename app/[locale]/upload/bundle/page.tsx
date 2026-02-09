@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Link, useRouter } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
+import { Breadcrumb } from "@/components/ui/Breadcrumb";
 
 interface SellerMaterial {
   id: string;
@@ -175,14 +176,15 @@ export default function CreateBundlePage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="mx-auto max-w-4xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
+      <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
         {/* Page Header */}
-        <div className="mb-8 text-center">
-          <h1 className="text-text text-3xl font-bold">Bundle erstellen</h1>
-          <p className="text-text-muted mt-2">
+        <div className="mb-8">
+          <Breadcrumb items={[{ label: "Bundle erstellen" }]} />
+          <h1 className="text-text text-2xl font-bold sm:text-3xl">Bundle erstellen</h1>
+          <p className="text-text-muted mt-1">
             Kombinieren Sie mehrere Materialien zu einem vergünstigten Paket
           </p>
         </div>

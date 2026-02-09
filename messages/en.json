@@ -53,7 +53,8 @@
         "terms": "Terms",
         "cookies": "Cookies",
         "copyrightGuide": "Copyright Guide",
-        "sellerLevels": "Seller Levels"
+        "sellerLevels": "Seller Levels",
+        "verifiedSeller": "Verified Sellers"
       }
     },
     "buttons": {
@@ -760,7 +761,12 @@
       "stripeActiveLabel": "Stripe active",
       "stripePendingLabel": "Stripe pending",
       "errorUpdating": "Error updating",
-      "errorDeleting": "Error deleting"
+      "errorDeleting": "Error deleting",
+      "verifiedSeller": "Verified Seller",
+      "verifiedSellerActive": "Manually or automatically verified",
+      "verifiedSellerInactive": "Not yet verified",
+      "grantVerification": "Verify",
+      "revokeVerification": "Revoke"
     },
     "documents": {
       "infoTitle": "Verification workflow",
@@ -3064,6 +3070,10 @@
     "levelReached": "Level {level} reached",
     "keepGoing": "Upload more materials to level up!",
     "howItWorks": "How do points work?",
+    "verifiedBadge": "Verified Seller",
+    "verificationProgress": "{met}/{total} criteria met",
+    "notVerified": "Not verified",
+    "verifiedInfo": "Learn more",
     "levels": {
       "newcomer": "Newcomer",
       "contributor": "Contributor",
@@ -3095,6 +3105,40 @@
       "ratingBonusGood": "From avg 4.0",
       "ratingBonusGreat": "From avg 4.5",
       "ratingBonusPerDownload": "{points} points/download",
+      "verifiedBonusTitle": "Verified Seller Bonus",
+      "verifiedBonusDescription": "Verified sellers receive a one-time bonus added to their total points:",
+      "verifiedBonusExplain": "One-time bonus as long as you are confirmed as a verified seller. Removed if verification is revoked.",
+      "verifiedBonusLink": "How do I get verified?",
+      "howToVerifyTitle": "How to become a Verified Seller",
+      "howToVerifyDescription": "Meet all 5 criteria simultaneously to earn the 'Verified Seller' badge and unlock the points bonus:",
+      "verifyCriteria": {
+        "sales": {
+          "label": "At least 10 sales",
+          "description": "Successful sales or downloads of your materials.",
+          "value": "≥ 10"
+        },
+        "rating": {
+          "label": "Average ≥ 4.5 stars",
+          "description": "Average rating across your materials.",
+          "value": "≥ 4.5 ★"
+        },
+        "resources": {
+          "label": "At least 3 materials",
+          "description": "Published and verified materials on the platform.",
+          "value": "≥ 3"
+        },
+        "age": {
+          "label": "Account at least 30 days old",
+          "description": "Your account must be at least one month old.",
+          "value": "≥ 30 days"
+        },
+        "reports": {
+          "label": "No open reports",
+          "description": "No open or pending reports against your account.",
+          "value": "0 open"
+        }
+      },
+      "howToVerifyLink": "Learn all about verification",
       "exampleTitle": "Example Calculation",
       "exampleDescription": "If you upload {uploads} materials and receive a total of {downloads} downloads:",
       "exampleFormula": "{uploads} uploads × {pointsPerUpload} + {downloads} downloads × {pointsPerDownload} = {total} points",
@@ -3108,6 +3152,55 @@
         "keywords": "Use descriptive titles and descriptions so your materials can be found.",
         "regular": "Upload new materials regularly — active sellers level up faster."
       }
+    }
+  },
+  "verifiedSeller": {
+    "badge": "Verified Seller",
+    "page": {
+      "title": "Verified Seller",
+      "description": "The 'Verified Seller' badge is awarded to sellers who meet our quality criteria. It shows buyers that they can trust an experienced and reliable provider.",
+      "whatTitle": "What does 'Verified Seller' mean?",
+      "whatDescription": "Verified sellers have proven that they offer high-quality materials. The badge appears on their profile and next to every material, so buyers can immediately see they're purchasing from a trusted provider.",
+      "criteriaTitle": "The 5 Criteria",
+      "criteriaDescription": "All 5 criteria must be met simultaneously to receive the badge:",
+      "criteria": {
+        "minSales": {
+          "title": "Minimum Sales",
+          "description": "At least 10 successful sales or downloads of your materials.",
+          "value": "≥ 10"
+        },
+        "minRating": {
+          "title": "Minimum Rating",
+          "description": "Average rating of your materials of at least 4.5 stars.",
+          "value": "≥ 4.5 ★"
+        },
+        "minResources": {
+          "title": "Published Materials",
+          "description": "At least 3 published and verified materials on the platform.",
+          "value": "≥ 3"
+        },
+        "accountAge": {
+          "title": "Account Age",
+          "description": "Your account must be at least 30 days old.",
+          "value": "≥ 30 days"
+        },
+        "noReports": {
+          "title": "No Open Reports",
+          "description": "No open or pending reports against your account.",
+          "value": "0 open"
+        }
+      },
+      "howTitle": "How does verification work?",
+      "howAutomatic": "Verification happens automatically: Every time you visit your seller level page, your statistics are checked. As soon as you meet all 5 criteria, you automatically receive the badge.",
+      "howRevocation": "Note: If you no longer meet the criteria (e.g., due to an open report or declining rating), the automatic verification will be revoked.",
+      "howManual": "In exceptional cases, the Currico team can also grant or revoke verification manually.",
+      "benefitsTitle": "Benefits",
+      "benefits": {
+        "badge": "Visible badge on your profile and on all your materials.",
+        "trust": "Increased trust with buyers — verified sellers are preferred.",
+        "visibility": "Better visibility on the platform."
+      },
+      "cta": "Upload Materials"
     }
   }
 }

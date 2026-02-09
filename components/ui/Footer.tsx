@@ -66,6 +66,12 @@ export default function Footer() {
             >
               {tCommon("footer.links.sellerLevels")}
             </Link>
+            <Link
+              href="/verified-seller"
+              className="text-text-muted hover:text-primary text-sm transition-colors"
+            >
+              {tCommon("footer.links.verifiedSeller")}
+            </Link>
           </nav>
         </div>
       </div>

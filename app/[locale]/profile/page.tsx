@@ -151,17 +151,15 @@ export default function ProfilePage() {
   const displayCanton = profileData?.cantons?.[0] || "Nicht angegeben";
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="mx-auto max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
-        {/* Breadcrumb */}
-        <Breadcrumb items={[{ label: tCommon("breadcrumb.profile") }]} className="mb-4" />
-
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
         {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-text text-3xl font-bold">Mein Profil</h1>
-          <p className="text-text-muted mt-2">
+          <Breadcrumb items={[{ label: tCommon("breadcrumb.profile") }]} />
+          <h1 className="text-text text-2xl font-bold sm:text-3xl">Mein Profil</h1>
+          <p className="text-text-muted mt-1">
             Verwalten Sie Ihre Kontoinformationen und Einstellungen
           </p>
         </div>

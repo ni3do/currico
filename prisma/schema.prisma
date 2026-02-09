@@ -119,6 +119,11 @@ model User {
   seller_level Int @default(0) @db.SmallInt
   seller_xp    Int @default(0)
 
+  // ============ VERIFIED SELLER ============
+  is_verified_seller           Boolean   @default(false)
+  verified_seller_at           DateTime?
+  verified_seller_method       String?   @db.VarChar(50) // "auto" | "manual"
+
   // ============ STRIPE CONNECT ============
   stripe_account_id          String?   @db.VarChar(255)
   stripe_onboarding_complete Boolean   @default(false)

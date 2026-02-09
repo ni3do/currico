@@ -67,7 +67,7 @@ export default function SellerOnboardingCompletePage() {
       stripeStatus.requirements.pastDue.length > 0);
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
       <main className="flex-1">

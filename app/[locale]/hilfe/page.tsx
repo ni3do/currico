@@ -219,20 +219,13 @@ export default function HilfePage() {
     <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
-        {/* Breadcrumb */}
+      <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+        {/* Page Header */}
         <div className="mb-8">
           <Breadcrumb items={[{ label: tCommon("breadcrumb.help") }]} />
+          <h1 className="text-text text-2xl font-bold sm:text-3xl">{tHilfe("title")}</h1>
+          <p className="text-text-muted mt-1">{tHilfe("subtitle")}</p>
         </div>
-
-        {/* Hero Header */}
-        <FadeIn className="mb-8 text-center">
-          <span className="bg-primary/10 text-primary mb-4 inline-block rounded-full px-4 py-1.5 text-sm font-medium">
-            {tHilfe("hero.badge")}
-          </span>
-          <h1 className="text-text text-3xl font-bold sm:text-4xl">{tHilfe("title")}</h1>
-          <p className="text-text-muted mx-auto mt-3 max-w-lg text-lg">{tHilfe("subtitle")}</p>
-        </FadeIn>
 
         {/* Search Bar */}
         <FadeIn className="mx-auto mb-10 max-w-xl">
@@ -261,7 +254,7 @@ export default function HilfePage() {
 
         {/* Top Questions */}
         <FadeIn className="mb-12">
-          <h2 className="text-text mb-4 text-lg font-bold">{tHilfe("quickStart.title")}</h2>
+          <h2 className="text-text mb-4 text-xl font-semibold">{tHilfe("quickStart.title")}</h2>
           <div className="grid gap-4 sm:grid-cols-3">
             {TOP_QUESTIONS.map(({ key, icon: Icon, href, bgColor, textColor }) => (
               <div key={key} className="bg-surface border-border rounded-xl border p-5">
@@ -290,7 +283,7 @@ export default function HilfePage() {
 
         {/* FAQ Section */}
         <div className="mb-12">
-          <h2 className="text-text mb-4 text-lg font-bold">{t("title")}</h2>
+          <h2 className="text-text mb-4 text-xl font-semibold">{t("title")}</h2>
 
           {/* Category Tabs */}
           {!isSearching && (
@@ -444,7 +437,7 @@ export default function HilfePage() {
 
         {/* Useful Links */}
         <FadeIn className="mb-10">
-          <h2 className="text-text mb-2 text-center text-lg font-bold">
+          <h2 className="text-text mb-2 text-center text-xl font-semibold">
             {tHilfe("usefulLinks.title")}
           </h2>
           <p className="text-text-muted mb-6 text-center text-sm">
@@ -477,7 +470,7 @@ export default function HilfePage() {
             <div className="bg-primary/10 mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl">
               <Mail className="text-primary h-6 w-6" />
             </div>
-            <h2 className="text-text text-xl font-bold">{t("contact.title")}</h2>
+            <h2 className="text-text text-xl font-semibold">{t("contact.title")}</h2>
             <p className="text-text-muted mx-auto mt-2 max-w-sm text-sm">
               {t("contact.description")}
             </p>

@@ -6,6 +6,8 @@ import { z } from "zod";
 
 export const MATERIAL_LANGUAGES = ["de", "fr", "it", "en"] as const;
 
+export const MATERIAL_DIALECTS = ["STANDARD", "SWISS", "BOTH"] as const;
+
 export const MATERIAL_TYPES = ["pdf", "word", "powerpoint", "excel", "other"] as const;
 
 // File size limits (in bytes)
@@ -97,6 +99,7 @@ export const createMaterialSchema = z.object({
   subjects: z.array(z.string().min(1)).min(1, "Mindestens ein Fach auswählen"),
   cycles: z.array(z.string().min(1)).min(1, "Mindestens einen Zyklus auswählen"),
   language: z.enum(MATERIAL_LANGUAGES).optional().default("de"),
+  dialect: z.enum(MATERIAL_DIALECTS).optional().default("BOTH"),
   resourceType: z.enum(MATERIAL_TYPES).optional().default("pdf"),
   is_published: z.boolean().optional().default(false),
 });

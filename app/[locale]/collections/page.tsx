@@ -248,12 +248,12 @@ export default function CollectionsPage() {
     <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
         {/* Page Header */}
-        <div className="mb-6 flex items-start justify-between gap-4">
+        <div className="mb-8 flex items-start justify-between gap-4">
           <div>
             <Breadcrumb items={[{ label: tCommon("breadcrumb.collections") }]} />
-            <h1 className="text-text text-2xl font-bold">{t("title")}</h1>
+            <h1 className="text-text text-2xl font-bold sm:text-3xl">{t("title")}</h1>
             <p className="text-text-muted mt-1">{t("description")}</p>
           </div>
           <button

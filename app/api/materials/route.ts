@@ -76,6 +76,9 @@ export async function GET(request: NextRequest) {
     const miIntegrated = searchParams.get("mi_integrated") === "true";
     const lehrmittelId = searchParams.get("lehrmittel");
 
+    // Dialect filter
+    const dialect = searchParams.get("dialect");
+
     // Additional filters
     const maxPrice = searchParams.get("maxPrice");
     const formats = searchParams.get("formats");
@@ -94,34 +97,19 @@ export async function GET(request: NextRequest) {
     let jsonFilteredIds: string[] | null = null;
 
     if (subject || cycle) {
-      // Use Prisma.sql for safe tagged template literals with proper escaping
       const { Prisma } = await import("@prisma/client");
 
-      let results: { id: string }[];
-
-      if (subject && cycle) {
-        // Both filters
-        results = await prisma.$queryRaw<{ id: string }[]>`
-          SELECT id FROM resources
-          WHERE is_published = true AND is_public = true
-          AND subjects::jsonb @> ${JSON.stringify(subject)}::jsonb
-          AND cycles::jsonb @> ${JSON.stringify(cycle)}::jsonb
-        `;
-      } else if (subject) {
-        // Only subject filter
-        results = await prisma.$queryRaw<{ id: string }[]>`
-          SELECT id FROM resources
-          WHERE is_published = true AND is_public = true
-          AND subjects::jsonb @> ${JSON.stringify(subject)}::jsonb
-        `;
-      } else {
-        // Only cycle filter
-        results = await prisma.$queryRaw<{ id: string }[]>`
-          SELECT id FROM resources
-          WHERE is_published = true AND is_public = true
-          AND cycles::jsonb @> ${JSON.stringify(cycle)}::jsonb
-        `;
+      const conditions = [Prisma.sql`is_published = true AND is_public = true`];
+      if (subject) {
+        conditions.push(Prisma.sql`subjects::jsonb @> ${JSON.stringify(subject)}::jsonb`);
       }
+      if (cycle) {
+        conditions.push(Prisma.sql`cycles::jsonb @> ${JSON.stringify(cycle)}::jsonb`);
+      }
+
+      const results = await prisma.$queryRaw<{ id: string }[]>`
+        SELECT id FROM resources WHERE ${Prisma.join(conditions, " AND ")}
+      `;
 
       jsonFilteredIds = results.map((r) => r.id);
 
@@ -189,28 +177,30 @@ export async function GET(request: NextRequest) {
       where.is_mi_integrated = true;
     }
 
+    // Dialect filter: SWISS shows SWISS + BOTH, STANDARD shows STANDARD + BOTH
+    if (dialect === "SWISS" || dialect === "STANDARD") {
+      where.dialect = { in: [dialect, "BOTH"] };
+    }
+
     // Competency filter - fuzzy match on code
     if (competencyCode) {
       const normalizedCode = competencyCode.replace(/[\s.]/g, "").toUpperCase();
-      // Find competencies that match the code pattern
-      const matchingCompetencies = await prisma.curriculumCompetency.findMany({
+      // Find competencies that match the code pattern (exact contains first)
+      let matchingCompetencies = await prisma.curriculumCompetency.findMany({
         where: {
           code: {
             contains: competencyCode.toUpperCase(),
           },
         },
-        select: { id: true, code: true },
+        select: { id: true },
       });
 
-      // Also try normalized search if no results
+      // Fallback: use SQL REPLACE for normalized fuzzy search in-database
       if (matchingCompetencies.length === 0 && normalizedCode.length >= 2) {
-        const allCompetencies = await prisma.curriculumCompetency.findMany({
-          select: { id: true, code: true },
-        });
-        const fuzzyMatches = allCompetencies.filter((c) =>
-          c.code.replace(/[\s.]/g, "").toUpperCase().includes(normalizedCode)
-        );
-        matchingCompetencies.push(...fuzzyMatches);
+        matchingCompetencies = await prisma.$queryRaw<{ id: string }[]>`
+          SELECT id FROM curriculum_competencies
+          WHERE UPPER(REPLACE(REPLACE(code, ' ', ''), '.', '')) LIKE ${"%" + normalizedCode + "%"}
+        `;
       }
 
       if (matchingCompetencies.length > 0) {
@@ -362,11 +352,13 @@ export async function GET(request: NextRequest) {
           cycles: true,
           preview_url: true,
           created_at: true,
+          dialect: true,
           is_mi_integrated: true,
           seller: {
             select: {
               id: true,
               display_name: true,
+              is_verified_seller: true,
             },
           },
           competencies: {
@@ -447,6 +439,7 @@ export async function GET(request: NextRequest) {
         cycles,
         previewUrl: material.preview_url,
         createdAt: material.created_at,
+        dialect: material.dialect,
         seller: material.seller,
         isMiIntegrated: material.is_mi_integrated,
         competencies: (material.competencies ?? []).map((rc) => ({
@@ -523,6 +516,7 @@ export async function POST(request: NextRequest) {
     const subjectsStr = formData.get("subjects") as string;
     const cyclesStr = formData.get("cycles") as string;
     const language = (formData.get("language") as string) || "de";
+    const dialect = (formData.get("dialect") as string) || "BOTH";
     const resourceType = (formData.get("resourceType") as string) || "pdf";
     const isPublishedStr = formData.get("is_published") as string;
 
@@ -548,6 +542,7 @@ export async function POST(request: NextRequest) {
       subjects,
       cycles,
       language,
+      dialect,
       resourceType,
       is_published: isPublishedStr === "true",
     });
@@ -610,6 +605,7 @@ export async function POST(request: NextRequest) {
         price: data.price,
         subjects: data.subjects,
         cycles: data.cycles,
+        dialect: data.dialect as "STANDARD" | "SWISS" | "BOTH",
         is_published: data.is_published,
         is_approved: false, // Requires admin approval
         status: "PENDING", // New uploads are pending verification

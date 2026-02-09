@@ -68,10 +68,10 @@
 
 ### Upload
 
-**Implemented:** 4-step wizard UI, form validation
-**Missing:** File upload backend, watermarking, resource creation API
+**Implemented:** 4-step wizard UI, form validation, file upload backend (S3 storage), resource creation API (`POST /api/materials`), auto-generated PDF previews, legal confirmation checkboxes, server-side draft saving, dual-write drafts (localStorage + server)
+**Missing:** Watermarking
 
-- Steps: Basics (title, description, language, type) → Curriculum (cycle, subject, canton, competences) → Properties (price, editability, license) → Files
+- Steps: Basics (title, description, language, type) → Curriculum (cycle, subject, canton, competences) → Properties (price, editability, license) → Files + Legal confirmations
 
 ### Wishlist
 

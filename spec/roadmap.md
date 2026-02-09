@@ -588,15 +588,16 @@ Placement:
 | 1.1  | Migrate to `currico.ch` domain                | P0       | ⬜     |
 | 1.2a | Implement Zyklus filter (Cycle 1, 2, 3)       | P0       | ✅     |
 | 1.2b | Implement LP21 competence code search         | P0       | ✅     |
-| 1.2c | Add dialect toggle (CH-DE vs. High German)    | P0       | ⬜     |
-| 1.2d | Move search to Hero with integrated dropdowns | P0       | 🔶     |
+| 1.2c | Add dialect toggle (CH-DE vs. High German)    | P0       | ✅     |
+| 1.2d | Move search to Hero with integrated dropdowns | P0       | ✅     |
 | 1.3a | Replace stock images with real previews       | P0       | ✅     |
 | 1.3b | Auto-generate PDF thumbnails on upload        | P0       | ✅     |
 | 1.3c | Implement blur preview system                 | P0       | ✅     |
 
 > **1.2a**: `LP21FilterSidebar.tsx` — ZyklusToggle with Cycle 1/2/3 buttons, wired to API
 > **1.2b**: `LP21FilterSidebar.tsx` — hierarchical competency search with autocomplete
-> **1.2d**: Hero has search bar (`page.tsx:64-99`) but missing Subject + Cycle dropdowns
+> **1.2c**: `LP21FilterSidebar.tsx` — DialectToggle with CH/DE buttons; fully i18n'd
+> **1.2d**: Hero search bar with Cycle, Subject, and Dialect dropdowns (`page.tsx`); params passed to `/materialien`
 > **1.3a**: MaterialCard shows uploaded `previewUrl`, no more stock images
 > **1.3b**: `lib/utils/preview-generator.ts` — auto-generates up to 3 PDF page previews (WebP)
 > **1.3c**: `PreviewGallery.tsx` — page 1 clear, pages 2+ blurred with "Buy to unlock" CTA

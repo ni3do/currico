@@ -34,12 +34,12 @@ import type {
   CurriculumSearchResult,
 } from "@/lib/curriculum-types";
 
-// Price options
+// Price options (labels are i18n keys resolved at render time)
 const PRICE_OPTIONS = [
-  { id: "free", label: "Kostenlos", value: 0 },
-  { id: "under5", label: "< CHF 5", value: 5 },
-  { id: "under10", label: "< CHF 10", value: 10 },
-  { id: "under25", label: "< CHF 25", value: 25 },
+  { id: "free", value: 0 },
+  { id: "under5", value: 5 },
+  { id: "under10", value: 10 },
+  { id: "under25", value: 25 },
 ] as const;
 
 // Format options
@@ -50,11 +50,75 @@ const FORMAT_OPTIONS = [
   { id: "excel", label: "Excel", icon: Table },
 ] as const;
 
-// Material scope options
+// Material scope options (labels resolved via i18n at render time)
 const MATERIAL_SCOPE_OPTIONS = [
-  { id: "single", label: "Einzelmaterial", icon: File },
-  { id: "bundle", label: "Bundle", icon: Package },
+  { id: "single", icon: File },
+  { id: "bundle", icon: Package },
 ] as const;
+
+// Translation function type
+type TranslationFn = ReturnType<typeof useTranslations>;
+
+// Helper to get price label from translation function
+function getPriceLabel(t: TranslationFn, option: { id: string; value: number }): string {
+  if (option.id === "free") return t("sidebar.priceFree");
+  return t("sidebar.priceUnder", { amount: option.value });
+}
+
+// Helper to get scope label from translation function
+function getScopeLabel(t: TranslationFn, id: string): string {
+  if (id === "single") return t("sidebar.scopeSingle");
+  return t("sidebar.scopeBundle");
+}
+
+// ============ COLLAPSIBLE SECTION ============
+interface CollapsibleSectionProps {
+  title: string;
+  icon?: React.ReactNode;
+  defaultOpen?: boolean;
+  children: React.ReactNode;
+}
+
+function CollapsibleSection({
+  title,
+  icon,
+  defaultOpen = true,
+  children,
+}: CollapsibleSectionProps) {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+
+  return (
+    <div>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="group mb-3 flex w-full items-center gap-2"
+      >
+        {icon}
+        <h3 className="label-meta flex-1 text-left">{title}</h3>
+        <motion.span
+          animate={{ rotate: isOpen ? 0 : -90 }}
+          transition={{ duration: 0.2 }}
+          className="text-text-muted group-hover:text-text transition-colors"
+        >
+          <ChevronDown className="h-3.5 w-3.5" />
+        </motion.span>
+      </button>
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="overflow-hidden"
+          >
+            {children}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 // Types for filter state
 export interface LP21FilterState {
@@ -66,6 +130,7 @@ export interface LP21FilterState {
   kompetenz: string | null;
   searchQuery: string;
   // New filters
+  dialect: string | null;
   priceType: string | null;
   maxPrice: number | null;
   formats: string[];
@@ -127,6 +192,7 @@ export function LP21FilterSidebar({
     filters.kompetenzbereich !== null ||
     filters.kompetenz !== null ||
     filters.searchQuery.length > 0 ||
+    filters.dialect !== null ||
     filters.priceType !== null ||
     filters.maxPrice !== null ||
     filters.formats.length > 0 ||
@@ -140,8 +206,9 @@ export function LP21FilterSidebar({
     onFiltersChange({
       ...filters,
       showMaterials: newShowMaterials,
-      // Clear price/format/scope filters when turning off materials
+      // Clear price/format/scope/dialect filters when turning off materials
       ...(!newShowMaterials && {
+        dialect: null,
         priceType: null,
         maxPrice: null,
         formats: [],
@@ -333,6 +400,7 @@ export function LP21FilterSidebar({
       kompetenzbereich: null,
       kompetenz: null,
       searchQuery: "",
+      dialect: null,
       priceType: null,
       maxPrice: null,
       formats: [],
@@ -373,6 +441,12 @@ export function LP21FilterSidebar({
           onFiltersChange({
             ...filters,
             kompetenz: null,
+          });
+          break;
+        case "dialect":
+          onFiltersChange({
+            ...filters,
+            dialect: null,
           });
           break;
         case "price":
@@ -511,6 +585,7 @@ export function LP21FilterSidebar({
               fachbereiche={fachbereiche}
               zyklen={zyklen}
               onRemoveFilter={handleRemoveFilter}
+              t={t}
             />
           )}
         </AnimatePresence>
@@ -527,10 +602,10 @@ export function LP21FilterSidebar({
               onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
               placeholder={
                 !filters.showMaterials && filters.showCreators
-                  ? "Nach Lehrpersonen suchen..."
+                  ? t("sidebar.searchPlaceholderCreators")
                   : filters.showMaterials && filters.showCreators
-                    ? "Materialien & Ersteller suchen..."
-                    : "Suche: Stichwort oder Code (z.B. MA.1.A)"
+                    ? t("sidebar.searchPlaceholderBoth")
+                    : t("sidebar.searchPlaceholderDefault")
               }
               className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 w-full rounded-lg border py-2.5 pr-4 pl-10 text-sm focus:ring-2 focus:outline-none"
             />
@@ -558,10 +633,10 @@ export function LP21FilterSidebar({
                     <span className="text-text-secondary flex-1 truncate">{result.name}</span>
                     <span className="text-text-muted text-xs">
                       {result.type === "fachbereich"
-                        ? "Fach"
+                        ? t("sidebar.searchResultSubject")
                         : result.type === "kompetenzbereich"
-                          ? "Bereich"
-                          : "Kompetenz"}
+                          ? t("sidebar.searchResultArea")
+                          : t("sidebar.searchResultCompetence")}
                     </span>
                   </button>
                 ))}
@@ -577,74 +652,95 @@ export function LP21FilterSidebar({
           zyklen={zyklen}
           onApply={handleApplySmartSearch}
           onDismiss={() => setParsedQuery(null)}
+          t={t}
         />
 
         {/* Zyklus Toggle */}
-        <ZyklusToggle
-          zyklen={zyklen}
-          selectedZyklus={filters.zyklus}
-          onZyklusChange={handleZyklusChange}
-        />
+        <CollapsibleSection title={t("sidebar.zyklusLabel")}>
+          <ZyklusToggle
+            zyklen={zyklen}
+            selectedZyklus={filters.zyklus}
+            onZyklusChange={handleZyklusChange}
+          />
+        </CollapsibleSection>
 
         <div className="divider my-5" />
 
         {/* Fachbereiche Tree */}
-        <div className="space-y-2">
-          <h3 className="label-meta mb-3">Fachbereich</h3>
-          {curriculumLoading ? (
-            <div className="flex items-center justify-center py-8">
-              <Loader2 className="text-primary h-6 w-6 animate-spin" />
-            </div>
-          ) : curriculumError ? (
-            <div className="text-error py-4 text-center text-sm">
-              Fehler beim Laden der Fachbereiche
-            </div>
-          ) : (
-            availableFachbereiche.map((fb, index) => (
-              <FachbereichAccordion
-                key={fb.code}
-                fachbereich={fb}
-                isSelected={filters.fachbereich === fb.code}
-                isExpanded={expandedFachbereiche.has(fb.code)}
-                selectedKompetenzbereich={filters.kompetenzbereich}
-                selectedKompetenz={filters.kompetenz}
-                expandedKompetenzbereiche={expandedKompetenzbereiche}
-                onSelect={() => handleFachbereichChange(fb.code)}
-                onToggleExpand={() => toggleFachbereichExpansion(fb.code)}
-                onKompetenzbereichSelect={handleKompetenzbereichChange}
-                onKompetenzbereichToggle={toggleKompetenzbereichExpansion}
-                onKompetenzSelect={handleKompetenzChange}
-                index={index}
-              />
-            ))
-          )}
-        </div>
+        <CollapsibleSection title={t("sidebar.subjectLabel")}>
+          <div className="space-y-2">
+            {curriculumLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="text-primary h-6 w-6 animate-spin" />
+              </div>
+            ) : curriculumError ? (
+              <div className="text-error py-4 text-center text-sm">{t("sidebar.loadingError")}</div>
+            ) : (
+              availableFachbereiche.map((fb, index) => (
+                <FachbereichAccordion
+                  key={fb.code}
+                  fachbereich={fb}
+                  isSelected={filters.fachbereich === fb.code}
+                  isExpanded={expandedFachbereiche.has(fb.code)}
+                  selectedKompetenzbereich={filters.kompetenzbereich}
+                  selectedKompetenz={filters.kompetenz}
+                  expandedKompetenzbereiche={expandedKompetenzbereiche}
+                  onSelect={() => handleFachbereichChange(fb.code)}
+                  onToggleExpand={() => toggleFachbereichExpansion(fb.code)}
+                  onKompetenzbereichSelect={handleKompetenzbereichChange}
+                  onKompetenzbereichToggle={toggleKompetenzbereichExpansion}
+                  onKompetenzSelect={handleKompetenzChange}
+                  index={index}
+                />
+              ))
+            )}
+          </div>
+        </CollapsibleSection>
 
-        {/* Show price/format/scope filters only when materials are shown */}
+        {/* Show price/dialect/format/scope filters only when materials are shown */}
         {filters.showMaterials && (
           <>
             <div className="divider my-5" />
 
             {/* Price Filter */}
-            <PriceFilter
-              selectedPriceType={filters.priceType}
-              maxPrice={filters.maxPrice}
-              onPriceTypeChange={handlePriceTypeChange}
-              onMaxPriceChange={handleMaxPriceChange}
-            />
+            <CollapsibleSection title={t("sidebar.priceLabel")}>
+              <PriceFilter
+                selectedPriceType={filters.priceType}
+                maxPrice={filters.maxPrice}
+                onPriceTypeChange={handlePriceTypeChange}
+                onMaxPriceChange={handleMaxPriceChange}
+                t={t}
+              />
+            </CollapsibleSection>
+
+            <div className="divider my-5" />
+
+            {/* Dialect Toggle */}
+            <CollapsibleSection title={t("sidebar.dialectLabel")}>
+              <DialectToggle
+                selectedDialect={filters.dialect}
+                onDialectChange={(dialect) => onFiltersChange({ ...filters, dialect })}
+                t={t}
+              />
+            </CollapsibleSection>
 
             <div className="divider my-5" />
 
             {/* Format Filter */}
-            <FormatFilter selectedFormats={filters.formats} onFormatToggle={handleFormatToggle} />
+            <CollapsibleSection title={t("sidebar.formatSectionLabel")}>
+              <FormatFilter selectedFormats={filters.formats} onFormatToggle={handleFormatToggle} />
+            </CollapsibleSection>
 
             <div className="divider my-5" />
 
             {/* Material Scope Filter */}
-            <MaterialScopeFilter
-              selectedScope={filters.materialScope}
-              onScopeChange={handleMaterialScopeChange}
-            />
+            <CollapsibleSection title={t("sidebar.scopeLabel")}>
+              <MaterialScopeFilter
+                selectedScope={filters.materialScope}
+                onScopeChange={handleMaterialScopeChange}
+                t={t}
+              />
+            </CollapsibleSection>
           </>
         )}
       </div>
@@ -719,48 +815,101 @@ interface ZyklusToggleProps {
 
 function ZyklusToggle({ zyklen, selectedZyklus, onZyklusChange }: ZyklusToggleProps) {
   return (
-    <div>
-      <h3 className="label-meta mb-3">Zyklus</h3>
-      <div className="flex gap-2">
-        {zyklen.map((zyklus, index) => {
-          const isActive = selectedZyklus === zyklus.id;
-          return (
-            <motion.button
-              key={zyklus.id}
-              onClick={() => onZyklusChange(zyklus.id)}
-              className={`group relative flex-1 rounded-lg border-2 px-3 py-2.5 text-center transition-colors ${
-                isActive
-                  ? "border-primary bg-primary/10 text-primary"
-                  : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:bg-surface-hover"
-              }`}
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.04, duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-              whileHover={{ scale: 1.015, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
-              whileTap={{ scale: 0.97, transition: { duration: 0.1 } }}
+    <div className="flex gap-2">
+      {zyklen.map((zyklus, index) => {
+        const isActive = selectedZyklus === zyklus.id;
+        return (
+          <motion.button
+            key={zyklus.id}
+            onClick={() => onZyklusChange(zyklus.id)}
+            className={`group relative flex-1 rounded-lg border-2 px-3 py-2.5 text-center transition-colors ${
+              isActive
+                ? "border-primary bg-primary/10 text-primary"
+                : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:bg-surface-hover"
+            }`}
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.04, duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            whileHover={{ scale: 1.015, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
+            whileTap={{ scale: 0.97, transition: { duration: 0.1 } }}
+          >
+            {isActive && (
+              <motion.div
+                layoutId="activeZyklus"
+                className="bg-primary/10 absolute inset-0 rounded-lg"
+                initial={false}
+                transition={{ type: "spring", stiffness: 350, damping: 28 }}
+              />
+            )}
+            <div className="relative z-10 text-sm font-semibold">{zyklus.shortName}</div>
+            <div
+              className={`relative z-10 text-xs ${isActive ? "text-primary/80" : "text-text-muted"}`}
             >
-              {isActive && (
-                <motion.div
-                  layoutId="activeZyklus"
-                  className="bg-primary/10 absolute inset-0 rounded-lg"
-                  initial={false}
-                  transition={{ type: "spring", stiffness: 350, damping: 28 }}
-                />
-              )}
-              <div className="relative z-10 text-sm font-semibold">{zyklus.shortName}</div>
-              <div
-                className={`relative z-10 text-xs ${isActive ? "text-primary/80" : "text-text-muted"}`}
-              >
-                {zyklus.id === 1 ? "KG-2" : zyklus.id === 2 ? "3-6" : "7-9"}
-              </div>
-              {/* Tooltip on hover */}
-              <div className="bg-text text-bg pointer-events-none absolute -top-10 left-1/2 z-50 -translate-x-1/2 rounded px-2 py-1 text-xs whitespace-nowrap opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                {zyklus.description}
-              </div>
-            </motion.button>
-          );
-        })}
-      </div>
+              {zyklus.id === 1 ? "KG-2" : zyklus.id === 2 ? "3-6" : "7-9"}
+            </div>
+            {/* Tooltip on hover */}
+            <div className="bg-text text-bg pointer-events-none absolute -top-10 left-1/2 z-50 -translate-x-1/2 rounded px-2 py-1 text-xs whitespace-nowrap opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+              {zyklus.description}
+            </div>
+          </motion.button>
+        );
+      })}
+    </div>
+  );
+}
+
+// ============ DIALECT TOGGLE ============
+interface DialectToggleProps {
+  selectedDialect: string | null;
+  onDialectChange: (dialect: string | null) => void;
+  t: TranslationFn;
+}
+
+function DialectToggle({ selectedDialect, onDialectChange, t }: DialectToggleProps) {
+  const options = [
+    {
+      value: "SWISS",
+      labelKey: "sidebar.dialectCH" as const,
+      titleKey: "sidebar.dialectSwiss" as const,
+    },
+    {
+      value: "STANDARD",
+      labelKey: "sidebar.dialectDE" as const,
+      titleKey: "sidebar.dialectStandard" as const,
+    },
+  ];
+
+  return (
+    <div className="flex gap-2">
+      {options.map((option) => {
+        const isActive = selectedDialect === option.value;
+        const label = t(option.labelKey);
+        const title = t(option.titleKey);
+        return (
+          <motion.button
+            key={option.value}
+            onClick={() => onDialectChange(isActive ? null : option.value)}
+            className={`group relative flex-1 rounded-lg border-2 px-3 py-2.5 text-center transition-colors ${
+              isActive
+                ? "border-primary bg-primary/10 text-primary"
+                : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:bg-surface-hover"
+            }`}
+            whileHover={{ scale: 1.015, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
+            whileTap={{ scale: 0.97, transition: { duration: 0.1 } }}
+          >
+            <div className="relative z-10 text-sm font-semibold">{label}</div>
+            <div
+              className={`relative z-10 text-xs ${isActive ? "text-primary/80" : "text-text-muted"}`}
+            >
+              {title}
+            </div>
+            {/* Tooltip on hover */}
+            <div className="bg-text text-bg pointer-events-none absolute -top-10 left-1/2 z-50 -translate-x-1/2 rounded px-2 py-1 text-xs whitespace-nowrap opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+              {title}
+            </div>
+          </motion.button>
+        );
+      })}
     </div>
   );
 }
@@ -771,6 +920,7 @@ type FilterType =
   | "fachbereich"
   | "kompetenzbereich"
   | "kompetenz"
+  | "dialect"
   | "price"
   | "format"
   | "materialScope";
@@ -780,6 +930,7 @@ interface ActiveFilterChipsProps {
   fachbereiche: Fachbereich[];
   zyklen: Zyklus[];
   onRemoveFilter: (type: FilterType, value?: string) => void;
+  t: TranslationFn;
 }
 
 function ActiveFilterChips({
@@ -787,6 +938,7 @@ function ActiveFilterChips({
   fachbereiche,
   zyklen,
   onRemoveFilter,
+  t,
 }: ActiveFilterChipsProps) {
   const chips: {
     type: FilterType;
@@ -852,11 +1004,20 @@ function ActiveFilterChips({
     });
   }
 
+  // Dialect filter chip
+  if (filters.dialect !== null) {
+    chips.push({
+      type: "dialect",
+      label: filters.dialect === "SWISS" ? t("sidebar.dialectCH") : t("sidebar.dialectDE"),
+      color: NEUTRAL_GREY,
+    });
+  }
+
   // Price filter chip
   if (filters.priceType !== null || filters.maxPrice !== null) {
     const priceOption = PRICE_OPTIONS.find((o) => o.id === filters.priceType);
     const priceLabel = priceOption
-      ? priceOption.label
+      ? getPriceLabel(t, priceOption)
       : filters.maxPrice !== null
         ? `< CHF ${filters.maxPrice}`
         : "";
@@ -890,7 +1051,7 @@ function ActiveFilterChips({
     if (scope) {
       chips.push({
         type: "materialScope",
-        label: scope.label,
+        label: getScopeLabel(t, scope.id),
         color: NEUTRAL_GREY,
       });
     }
@@ -909,7 +1070,7 @@ function ActiveFilterChips({
       <div className="bg-surface/50 border-border/50 rounded-lg border p-3">
         <div className="mb-2 flex items-center gap-2">
           <Tag className="text-text-muted h-3.5 w-3.5" />
-          <span className="text-text-muted text-xs font-medium">Aktive Filter</span>
+          <span className="text-text-muted text-xs font-medium">{t("sidebar.activeFilters")}</span>
         </div>
         <div className="flex flex-wrap gap-2">
           <AnimatePresence mode="popLayout">
@@ -1257,6 +1418,7 @@ interface PriceFilterProps {
   maxPrice: number | null;
   onPriceTypeChange: (priceType: string | null) => void;
   onMaxPriceChange: (maxPrice: number) => void;
+  t: TranslationFn;
 }
 
 function PriceFilter({
@@ -1264,6 +1426,7 @@ function PriceFilter({
   maxPrice,
   onPriceTypeChange,
   onMaxPriceChange,
+  t,
 }: PriceFilterProps) {
   const MAX_PRICE = 50;
   // Calculate the effective value for display and slider position
@@ -1272,11 +1435,6 @@ function PriceFilter({
 
   return (
     <div>
-      <div className="mb-3 flex items-center gap-2">
-        <Tag className="text-text-muted h-4 w-4" />
-        <h3 className="label-meta">Preis</h3>
-      </div>
-
       {/* Price preset buttons */}
       <div className="mb-4 flex flex-wrap gap-1.5">
         {PRICE_OPTIONS.map((option, index) => {
@@ -1299,7 +1457,7 @@ function PriceFilter({
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              {option.label}
+              {getPriceLabel(t, option)}
             </motion.button>
           );
         })}
@@ -1308,7 +1466,7 @@ function PriceFilter({
       {/* Price slider */}
       <div className="space-y-2">
         <div className="text-text-muted flex items-center justify-between text-xs">
-          <span>Max. Preis</span>
+          <span>{t("sidebar.maxPrice")}</span>
           <motion.span
             className="text-text font-medium"
             key={effectiveValue}
@@ -1358,48 +1516,41 @@ interface FormatFilterProps {
 
 function FormatFilter({ selectedFormats, onFormatToggle }: FormatFilterProps) {
   return (
-    <div>
-      <div className="mb-3 flex items-center gap-2">
-        <FileText className="text-text-muted h-4 w-4" />
-        <h3 className="label-meta">Format</h3>
-      </div>
-
-      <div className="grid grid-cols-2 gap-2">
-        {FORMAT_OPTIONS.map((format, index) => {
-          const Icon = format.icon;
-          const isSelected = selectedFormats.includes(format.id);
-          return (
-            <motion.button
-              key={format.id}
-              onClick={() => onFormatToggle(format.id)}
-              className={`relative flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors ${
-                isSelected
-                  ? "border-primary bg-primary/10 text-primary"
-                  : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:text-text"
-              }`}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: index * 0.03 }}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <Icon className="h-4 w-4" />
-              <span className="font-medium">{format.label}</span>
-              <AnimatePresence>
-                {isSelected && (
-                  <motion.span
-                    className="bg-primary absolute -top-1 -right-1 h-2 w-2 rounded-full"
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    exit={{ scale: 0 }}
-                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                  />
-                )}
-              </AnimatePresence>
-            </motion.button>
-          );
-        })}
-      </div>
+    <div className="grid grid-cols-2 gap-2">
+      {FORMAT_OPTIONS.map((format, index) => {
+        const Icon = format.icon;
+        const isSelected = selectedFormats.includes(format.id);
+        return (
+          <motion.button
+            key={format.id}
+            onClick={() => onFormatToggle(format.id)}
+            className={`relative flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors ${
+              isSelected
+                ? "border-primary bg-primary/10 text-primary"
+                : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:text-text"
+            }`}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: index * 0.03 }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <Icon className="h-4 w-4" />
+            <span className="font-medium">{format.label}</span>
+            <AnimatePresence>
+              {isSelected && (
+                <motion.span
+                  className="bg-primary absolute -top-1 -right-1 h-2 w-2 rounded-full"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  exit={{ scale: 0 }}
+                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                />
+              )}
+            </AnimatePresence>
+          </motion.button>
+        );
+      })}
     </div>
   );
 }
@@ -1408,51 +1559,45 @@ function FormatFilter({ selectedFormats, onFormatToggle }: FormatFilterProps) {
 interface MaterialScopeFilterProps {
   selectedScope: string | null;
   onScopeChange: (scope: string | null) => void;
+  t: TranslationFn;
 }
 
-function MaterialScopeFilter({ selectedScope, onScopeChange }: MaterialScopeFilterProps) {
+function MaterialScopeFilter({ selectedScope, onScopeChange, t }: MaterialScopeFilterProps) {
   return (
-    <div>
-      <div className="mb-3 flex items-center gap-2">
-        <Package className="text-text-muted h-4 w-4" />
-        <h3 className="label-meta">Materialumfang</h3>
-      </div>
-
-      <div className="flex gap-2">
-        {MATERIAL_SCOPE_OPTIONS.map((option, index) => {
-          const Icon = option.icon;
-          const isSelected = selectedScope === option.id;
-          return (
-            <motion.button
-              key={option.id}
-              onClick={() => onScopeChange(option.id)}
-              className={`relative flex flex-1 items-center justify-center gap-2 rounded-lg border-2 px-3 py-2.5 text-sm transition-colors ${
-                isSelected
-                  ? "border-primary bg-primary/10 text-primary"
-                  : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:text-text"
-              }`}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              {isSelected && (
-                <motion.div
-                  layoutId="activeMaterialScope"
-                  className="bg-primary/10 absolute inset-0 rounded-lg"
-                  initial={false}
-                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                />
-              )}
-              <span className="relative z-10 flex items-center gap-2">
-                <Icon className="h-4 w-4" />
-                <span className="font-medium">{option.label}</span>
-              </span>
-            </motion.button>
-          );
-        })}
-      </div>
+    <div className="flex gap-2">
+      {MATERIAL_SCOPE_OPTIONS.map((option, index) => {
+        const Icon = option.icon;
+        const isSelected = selectedScope === option.id;
+        return (
+          <motion.button
+            key={option.id}
+            onClick={() => onScopeChange(option.id)}
+            className={`relative flex flex-1 items-center justify-center gap-2 rounded-lg border-2 px-3 py-2.5 text-sm transition-colors ${
+              isSelected
+                ? "border-primary bg-primary/10 text-primary"
+                : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:text-text"
+            }`}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.05 }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            {isSelected && (
+              <motion.div
+                layoutId="activeMaterialScope"
+                className="bg-primary/10 absolute inset-0 rounded-lg"
+                initial={false}
+                transition={{ type: "spring", stiffness: 400, damping: 30 }}
+              />
+            )}
+            <span className="relative z-10 flex items-center gap-2">
+              <Icon className="h-4 w-4" />
+              <span className="font-medium">{getScopeLabel(t, option.id)}</span>
+            </span>
+          </motion.button>
+        );
+      })}
     </div>
   );
 }
@@ -1464,6 +1609,7 @@ interface SmartSearchSuggestionsProps {
   zyklen: Zyklus[];
   onApply: () => void;
   onDismiss: () => void;
+  t: TranslationFn;
 }
 
 function SmartSearchSuggestions({
@@ -1472,6 +1618,7 @@ function SmartSearchSuggestions({
   zyklen,
   onApply,
   onDismiss,
+  t,
 }: SmartSearchSuggestionsProps) {
   if (!parsedQuery || parsedQuery.detectedTerms.length === 0) {
     return null;
@@ -1498,7 +1645,9 @@ function SmartSearchSuggestions({
           <div className="mb-2 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Search className="text-primary h-4 w-4" />
-              <span className="text-primary text-xs font-semibold">Erkannt</span>
+              <span className="text-primary text-xs font-semibold">
+                {t("sidebar.smartSearchDetected")}
+              </span>
             </div>
             <button
               onClick={onDismiss}
@@ -1512,7 +1661,7 @@ function SmartSearchSuggestions({
           <div className="mb-3 flex flex-wrap gap-2">
             {suggestedZyklus && (
               <span className="bg-primary/10 text-primary group relative inline-flex cursor-help items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium">
-                <span className="text-primary/70">Stufe:</span>
+                <span className="text-primary/70">{t("sidebar.smartSearchLevel")}</span>
                 {suggestedZyklus.shortName}
                 {/* Tooltip */}
                 <span className="bg-text text-bg pointer-events-none absolute bottom-full left-0 z-50 mb-1 rounded px-2 py-1 text-xs whitespace-nowrap opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
@@ -1528,7 +1677,7 @@ function SmartSearchSuggestions({
                   color: suggestedFachbereich.color,
                 }}
               >
-                <span style={{ opacity: 0.7 }}>Fach:</span>
+                <span style={{ opacity: 0.7 }}>{t("sidebar.smartSearchSubject")}</span>
                 {suggestedFachbereich.shortName}
                 {/* Tooltip */}
                 <span className="bg-text text-bg pointer-events-none absolute bottom-full left-0 z-50 mb-1 rounded px-2 py-1 text-xs whitespace-nowrap opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
@@ -1546,7 +1695,7 @@ function SmartSearchSuggestions({
                   color: suggestedFachbereich?.color || "#1e66f5",
                 }}
               >
-                <span style={{ opacity: 0.7 }}>Bereich:</span>
+                <span style={{ opacity: 0.7 }}>{t("sidebar.smartSearchArea")}</span>
                 {suggestions.kompetenzbereich}
                 {/* Tooltip */}
                 <span className="bg-text text-bg pointer-events-none absolute bottom-full left-0 z-50 mb-1 rounded px-2 py-1 text-xs whitespace-nowrap opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
@@ -1573,13 +1722,13 @@ function SmartSearchSuggestions({
             whileTap={{ scale: 0.99 }}
           >
             <ChevronRight className="h-4 w-4" />
-            Filter anwenden
+            {t("sidebar.smartSearchApply")}
           </motion.button>
 
           {/* Remaining terms info */}
           {parsedQuery.remainingTerms.length > 0 && (
             <p className="text-text-muted mt-2 text-xs">
-              Suche nach: &quot;{parsedQuery.remainingTerms.join(" ")}&quot;
+              {t("sidebar.smartSearchRemaining", { query: parsedQuery.remainingTerms.join(" ") })}
             </p>
           )}
         </div>

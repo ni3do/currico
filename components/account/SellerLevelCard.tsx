@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { motion } from "framer-motion";
-import { Upload, Download, ArrowRight, HelpCircle, Star } from "lucide-react";
+import { Upload, Download, ArrowRight, HelpCircle, Star, BadgeCheck, Circle } from "lucide-react";
 import { calculatePoints, getProgressToNextLevel, SELLER_LEVELS } from "@/lib/utils/seller-levels";
 
 interface SellerLevelCardProps {
@@ -12,6 +12,11 @@ interface SellerLevelCardProps {
   reviews: number;
   avgRating: number | null;
   downloadMultiplier: number;
+  isVerifiedSeller?: boolean;
+  verificationProgress?: {
+    metCount: number;
+    totalCriteria: number;
+  };
   className?: string;
 }
 
@@ -21,10 +26,12 @@ export function SellerLevelCard({
   reviews,
   avgRating,
   downloadMultiplier,
+  isVerifiedSeller,
+  verificationProgress,
   className = "",
 }: SellerLevelCardProps) {
   const t = useTranslations("rewards");
-  const points = calculatePoints({ uploads, downloads, reviews, avgRating });
+  const points = calculatePoints({ uploads, downloads, reviews, avgRating, isVerifiedSeller });
   const { current, next, progressPercent, pointsNeeded } = getProgressToNextLevel(points);
   const CurrentIcon = current.icon;
   const NextIcon = next?.icon;
@@ -188,6 +195,49 @@ export function SellerLevelCard({
             );
           })}
         </div>
+      </div>
+
+      {/* Verified seller status */}
+      <div className="border-border border-t px-6 py-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <BadgeCheck
+              className={`h-4 w-4 ${isVerifiedSeller ? "text-success" : "text-text-faint"}`}
+            />
+            <span
+              className={`text-sm font-medium ${isVerifiedSeller ? "text-success" : "text-text-muted"}`}
+            >
+              {isVerifiedSeller
+                ? t("verifiedBadge")
+                : verificationProgress
+                  ? t("verificationProgress", {
+                      met: verificationProgress.metCount,
+                      total: verificationProgress.totalCriteria,
+                    })
+                  : t("notVerified")}
+            </span>
+          </div>
+          <Link
+            href="/verified-seller"
+            className="text-text-muted hover:text-primary text-xs font-medium transition-colors"
+          >
+            {t("verifiedInfo")}
+          </Link>
+        </div>
+        {!isVerifiedSeller && verificationProgress && (
+          <div className="mt-2 flex gap-1">
+            {Array.from({ length: verificationProgress.totalCriteria }).map((_, i) => (
+              <Circle
+                key={i}
+                className={`h-2 w-2 ${
+                  i < verificationProgress.metCount
+                    ? "fill-success text-success"
+                    : "text-text-faint"
+                }`}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Link to info page */}
