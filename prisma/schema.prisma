@@ -167,9 +167,6 @@ model User {
   // Collection relations
   collections Collection[]
 
-  // Draft relations
-  drafts Draft[]
-
   // Review and rating relations
   resourceLikes ResourceLike[]
   reviews       Review[]
@@ -789,22 +786,3 @@ model CommentLike {
   @@map("comment_likes")
 }
 
-// ============================================================
-// DRAFT MODEL - Server-side draft saving for uploads
-// ============================================================
-
-model Draft {
-  id         String   @id @default(cuid()) @db.VarChar(50)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
-  type String @db.VarChar(20) // "material" | "bundle"
-  data Json // serialized form state
-
-  user_id String @db.VarChar(50)
-  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
-
-  @@unique([user_id, type])
-  @@index([user_id])
-  @@map("drafts")
-}

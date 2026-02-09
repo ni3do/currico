@@ -1,15 +1,6 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useCallback,
-  useRef,
-  ReactNode,
-} from "react";
-import { useSession } from "next-auth/react";
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
 
 // Storage key for localStorage
 const STORAGE_KEY = "currico_upload_draft";
@@ -114,8 +105,6 @@ interface UploadWizardContextType {
   hasDraft: boolean;
   clearDraft: () => void;
   isSaving: boolean;
-  serverSynced: boolean;
-  serverDraftId: string | null;
 
   // File management (actual File objects, not persisted)
   files: File[];
@@ -189,9 +178,6 @@ function loadDraftFromStorage(): DraftData | null {
 }
 
 export function UploadWizardProvider({ children }: { children: ReactNode }) {
-  const { status: sessionStatus } = useSession();
-  const isAuthenticated = sessionStatus === "authenticated";
-
   // Load draft once and reuse across all useState initializers
   const [initialDraft] = useState(() => loadDraftFromStorage());
 
@@ -205,51 +191,10 @@ export function UploadWizardProvider({ children }: { children: ReactNode }) {
   const [hasDraft, setHasDraft] = useState(initialDraft !== null);
   const [isSaving, setIsSaving] = useState(false);
   const [isInitialized, setIsInitialized] = useState(true);
-  const [serverSynced, setServerSynced] = useState(false);
-  const [serverDraftId, setServerDraftId] = useState<string | null>(null);
-  const serverSaveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // File objects (can't be persisted to localStorage)
   const [files, setFiles] = useState<File[]>([]);
   const [previewFiles, setPreviewFiles] = useState<File[]>([]);
-
-  // Load server draft on mount (prefer server over localStorage if newer)
-  useEffect(() => {
-    if (!isAuthenticated) return;
-
-    async function loadServerDraft() {
-      try {
-        const response = await fetch("/api/drafts?type=material");
-        if (!response.ok) return;
-        const { draft: serverDraft } = await response.json();
-        if (!serverDraft) return;
-
-        setServerDraftId(serverDraft.id);
-
-        const serverUpdated = new Date(serverDraft.updated_at);
-        const localUpdated = initialDraft ? new Date(initialDraft.lastSavedAt) : null;
-
-        // Use server draft if it's newer than local
-        if (!localUpdated || serverUpdated > localUpdated) {
-          const serverData = serverDraft.data as DraftData;
-          if (serverData?.formData) {
-            setFormData(serverData.formData);
-            setCurrentStep(serverData.currentStep ?? 1);
-            setVisitedSteps(serverData.visitedSteps ?? [1]);
-            setLastSavedAt(serverUpdated);
-            setHasDraft(true);
-            setServerSynced(true);
-          }
-        } else {
-          // Local is newer, mark as needing server sync
-          setServerSynced(false);
-        }
-      } catch {
-        // Server unavailable, localStorage fallback is already loaded
-      }
-    }
-    loadServerDraft();
-  }, [isAuthenticated, initialDraft]);
 
   // Save to localStorage whenever form data changes (debounced 500ms)
   useEffect(() => {
@@ -275,46 +220,6 @@ export function UploadWizardProvider({ children }: { children: ReactNode }) {
 
     return () => clearTimeout(timeoutId);
   }, [formData, currentStep, visitedSteps, isInitialized]);
-
-  // Dual-write to server (debounced 2s, separate from localStorage)
-  useEffect(() => {
-    if (!isInitialized || !isAuthenticated) return;
-
-    if (serverSaveTimeoutRef.current) {
-      clearTimeout(serverSaveTimeoutRef.current);
-    }
-
-    serverSaveTimeoutRef.current = setTimeout(async () => {
-      try {
-        const draftData: DraftData = {
-          formData,
-          currentStep,
-          visitedSteps,
-          lastSavedAt: new Date().toISOString(),
-        };
-        const response = await fetch("/api/drafts", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ type: "material", data: draftData }),
-        });
-        if (response.ok) {
-          const { draft } = await response.json();
-          setServerDraftId(draft.id);
-          setServerSynced(true);
-        } else {
-          setServerSynced(false);
-        }
-      } catch {
-        setServerSynced(false);
-      }
-    }, 2000); // 2s debounce for server
-
-    return () => {
-      if (serverSaveTimeoutRef.current) {
-        clearTimeout(serverSaveTimeoutRef.current);
-      }
-    };
-  }, [formData, currentStep, visitedSteps, isInitialized, isAuthenticated]);
 
   // Update form data
   const updateFormData = useCallback(<K extends keyof FormData>(field: K, value: FormData[K]) => {
@@ -525,20 +430,12 @@ export function UploadWizardProvider({ children }: { children: ReactNode }) {
     }
   }, [currentStep]);
 
-  // Clear draft (local + server)
-  const clearDraft = useCallback(async () => {
+  // Clear draft
+  const clearDraft = useCallback(() => {
     try {
       localStorage.removeItem(STORAGE_KEY);
     } catch (error) {
       console.error("Failed to clear local draft:", error);
-    }
-    // Delete server draft
-    if (serverDraftId) {
-      try {
-        await fetch(`/api/drafts/${serverDraftId}`, { method: "DELETE" });
-      } catch {
-        // Server delete failed, not critical
-      }
     }
     setFormData(defaultFormData);
     setCurrentStep(1);
@@ -546,11 +443,9 @@ export function UploadWizardProvider({ children }: { children: ReactNode }) {
     setTouchedFields(defaultTouchedFields);
     setLastSavedAt(null);
     setHasDraft(false);
-    setServerSynced(false);
-    setServerDraftId(null);
     setFiles([]);
     setPreviewFiles([]);
-  }, [serverDraftId]);
+  }, []);
 
   // Sync file names to formData for display purposes
   // This effect updates derived state when files change - valid pattern for persistence
@@ -586,8 +481,6 @@ export function UploadWizardProvider({ children }: { children: ReactNode }) {
     hasDraft,
     clearDraft,
     isSaving,
-    serverSynced,
-    serverDraftId,
     files,
     setFiles,
     previewFiles,

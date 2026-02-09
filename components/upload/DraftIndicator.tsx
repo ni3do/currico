@@ -2,12 +2,12 @@
 
 import { useState, useSyncExternalStore } from "react";
 import { useUploadWizard } from "./UploadWizardContext";
-import { Save, Trash2, Check, Loader2, Cloud, CloudOff } from "lucide-react";
+import { Save, Trash2, Check, Loader2 } from "lucide-react";
 
 const emptySubscribe = () => () => {};
 
 export function DraftIndicator() {
-  const { lastSavedAt, hasDraft, clearDraft, isSaving, serverSynced } = useUploadWizard();
+  const { lastSavedAt, hasDraft, clearDraft, isSaving } = useUploadWizard();
   const [showConfirm, setShowConfirm] = useState(false);
   const isClient = useSyncExternalStore(
     emptySubscribe,
@@ -63,20 +63,11 @@ export function DraftIndicator() {
           ) : lastSavedAt ? (
             <>
               <div className="bg-success/20 flex h-6 w-6 items-center justify-center rounded-full">
-                {serverSynced ? (
-                  <Cloud className="text-success h-3.5 w-3.5" />
-                ) : (
-                  <Check className="text-success h-3.5 w-3.5" />
-                )}
+                <Check className="text-success h-3.5 w-3.5" />
               </div>
               <div className="text-sm">
                 <span className="text-text-muted">Entwurf gespeichert </span>
                 <span className="text-text font-medium">{formatDate(lastSavedAt)}</span>
-                {serverSynced ? (
-                  <span className="text-success ml-1.5 text-xs">(Cloud)</span>
-                ) : (
-                  <span className="text-warning ml-1.5 text-xs">(Lokal)</span>
-                )}
               </div>
             </>
           ) : (
