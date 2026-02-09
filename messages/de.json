@@ -335,8 +335,7 @@
     "oauth": {
       "google": "Mit Google anmelden",
       "github": "Mit GitHub anmelden",
-      "microsoft": "Mit Microsoft anmelden",
-      "eduid": "Mit edu-ID fortfahren"
+      "microsoft": "Mit Microsoft anmelden"
     },
     "register": {
       "prompt": "Noch kein Konto?",
@@ -379,8 +378,7 @@
     "divider": "Oder registrieren mit",
     "oauth": {
       "google": "Mit Google registrieren",
-      "microsoft": "Mit Microsoft Office registrieren",
-      "eduid": "Mit edu-ID registrieren"
+      "microsoft": "Mit Microsoft Office registrieren"
     },
     "login": {
       "prompt": "Bereits registriert?",
