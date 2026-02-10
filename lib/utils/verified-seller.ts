@@ -8,7 +8,6 @@ export const VERIFIED_SELLER_CRITERIA = {
   minRating: 4.5,
   minResources: 3,
   accountAgeDays: 30,
-  noOpenReports: true,
 } as const;
 
 export interface VerificationInput {
@@ -16,13 +15,12 @@ export interface VerificationInput {
   avgRating: number | null;
   publishedResourceCount: number;
   accountCreatedAt: Date;
-  openReportCount: number;
 }
 
 export interface VerificationResult {
   eligible: boolean;
   failedCriteria: string[];
-  /** How many of the 5 criteria are met */
+  /** How many of the 4 criteria are met */
   metCount: number;
 }
 
@@ -47,11 +45,7 @@ export function checkVerificationEligibility(input: VerificationInput): Verifica
     failedCriteria.push("accountAgeDays");
   }
 
-  if (input.openReportCount > 0) {
-    failedCriteria.push("noOpenReports");
-  }
-
-  const totalCriteria = 5;
+  const totalCriteria = 4;
   return {
     eligible: failedCriteria.length === 0,
     failedCriteria,

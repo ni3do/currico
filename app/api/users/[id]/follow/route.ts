@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAuth, unauthorized, badRequest, notFound } from "@/lib/api";
 import { checkRateLimit, rateLimitHeaders, isValidId } from "@/lib/rateLimit";
+import { notifyFollow } from "@/lib/notifications";
 
 /**
  * POST /api/users/[id]/follow
@@ -61,10 +62,17 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       },
     });
 
-    // Get updated follower count
-    const followerCount = await prisma.follow.count({
-      where: { followed_id: targetUserId },
-    });
+    // Get updated follower count + follower name for notification
+    const [followerCount, follower] = await Promise.all([
+      prisma.follow.count({ where: { followed_id: targetUserId } }),
+      prisma.user.findUnique({
+        where: { id: currentUserId },
+        select: { display_name: true },
+      }),
+    ]);
+
+    // Fire-and-forget notification
+    notifyFollow(targetUserId, follower?.display_name || "Jemand");
 
     return NextResponse.json({
       success: true,

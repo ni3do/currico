@@ -25,7 +25,7 @@ export async function GET(request: Request) {
 
     if (!query || query.length < 2) {
       return NextResponse.json(
-        { error: "Search query must be at least 2 characters" },
+        { error: "Suchanfrage muss mindestens 2 Zeichen lang sein" },
         { status: 400 }
       );
     }
@@ -205,6 +205,6 @@ export async function GET(request: Request) {
     });
   } catch (error) {
     console.error("Error searching curriculum:", error);
-    return NextResponse.json({ error: "Failed to search curriculum" }, { status: 500 });
+    return NextResponse.json({ error: "Fehler bei der Lehrplan-Suche" }, { status: 500 });
   }
 }

@@ -6,8 +6,8 @@ import { getStripeClient, calculateApplicationFee } from "@/lib/stripe";
 
 // Input validation schema
 const createCheckoutSessionSchema = z.object({
-  materialId: z.string().min(1, "Material ID is required"),
-  guestEmail: z.string().email("Valid email required for guest checkout").optional(),
+  materialId: z.string().min(1, "Material-ID ist erforderlich"),
+  guestEmail: z.string().email("Gültige E-Mail für Gastkauf erforderlich").optional(),
 });
 
 /**
@@ -25,13 +25,13 @@ export async function POST(request: NextRequest) {
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    return NextResponse.json({ error: "Ungültiger JSON-Body" }, { status: 400 });
   }
 
   const parsed = createCheckoutSessionSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
-      { error: "Invalid input", details: parsed.error.flatten().fieldErrors },
+      { error: "Ungültige Eingabe", details: parsed.error.flatten().fieldErrors },
       { status: 400 }
     );
   }
@@ -40,7 +40,10 @@ export async function POST(request: NextRequest) {
 
   // Require either authentication or guest email
   if (!userId && !guestEmail) {
-    return NextResponse.json({ error: "Authentication or guest email required" }, { status: 401 });
+    return NextResponse.json(
+      { error: "Authentifizierung oder Gast-E-Mail erforderlich" },
+      { status: 401 }
+    );
   }
 
   // Determine buyer email for Stripe customer
@@ -56,7 +59,7 @@ export async function POST(request: NextRequest) {
       select: { email: true },
     });
     if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      return NextResponse.json({ error: "Benutzer nicht gefunden" }, { status: 404 });
     }
     buyerEmail = user.email;
   }
@@ -85,19 +88,19 @@ export async function POST(request: NextRequest) {
 
     // Validate material exists and is available for purchase
     if (!material) {
-      return NextResponse.json({ error: "Material not found" }, { status: 404 });
+      return NextResponse.json({ error: "Material nicht gefunden" }, { status: 404 });
     }
 
     if (!material.is_published || !material.is_approved) {
-      return NextResponse.json(
-        { error: "Material is not available for purchase" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Material ist nicht zum Kauf verfügbar" }, { status: 400 });
     }
 
     // Prevent purchasing own materials (only applies to authenticated users)
     if (userId && material.seller_id === userId) {
-      return NextResponse.json({ error: "Cannot purchase your own material" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Eigenes Material kann nicht gekauft werden" },
+        { status: 400 }
+      );
     }
 
     // Check if user/guest already owns this material
@@ -110,13 +113,13 @@ export async function POST(request: NextRequest) {
     });
 
     if (existingPurchase) {
-      return NextResponse.json({ error: "You already own this material" }, { status: 400 });
+      return NextResponse.json({ error: "Sie besitzen dieses Material bereits" }, { status: 400 });
     }
 
     // Validate seller can receive payments
     if (!material.seller.stripe_account_id || !material.seller.stripe_charges_enabled) {
       return NextResponse.json(
-        { error: "Seller cannot receive payments at this time" },
+        { error: "Der Verkäufer kann derzeit keine Zahlungen empfangen" },
         { status: 400 }
       );
     }
@@ -124,7 +127,7 @@ export async function POST(request: NextRequest) {
     // Free materials don't need checkout
     if (material.price === 0) {
       return NextResponse.json(
-        { error: "Free materials do not require checkout" },
+        { error: "Kostenlose Materialien benötigen keinen Checkout" },
         { status: 400 }
       );
     }
@@ -146,7 +149,7 @@ export async function POST(request: NextRequest) {
       });
 
       if (!buyer) {
-        return NextResponse.json({ error: "User not found" }, { status: 404 });
+        return NextResponse.json({ error: "Benutzer nicht gefunden" }, { status: 404 });
       }
 
       stripeCustomerId = buyer.stripe_customer_id || "";
@@ -260,11 +263,14 @@ export async function POST(request: NextRequest) {
     // Handle specific Stripe errors
     if (error instanceof Error && error.message.includes("Stripe")) {
       return NextResponse.json(
-        { error: "Payment service error. Please try again later." },
+        { error: "Zahlungsdienst-Fehler. Bitte versuchen Sie es später erneut." },
         { status: 503 }
       );
     }
 
-    return NextResponse.json({ error: "Failed to create checkout session" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Fehler beim Erstellen der Checkout-Session" },
+      { status: 500 }
+    );
   }
 }

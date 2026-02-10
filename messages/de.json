@@ -36,6 +36,7 @@
       "dashboard": "Dashboard",
       "profile": "Profil",
       "account": "Mein Konto",
+      "notifications": "Benachrichtigungen",
       "admin": "Admin Panel"
     },
     "footer": {
@@ -157,7 +158,7 @@
         "music": "Musik",
         "sports": "Sport",
         "button": "Suchen",
-        "dialectLabel": "Sprachvariante",
+        "dialectLabel": "Kompetenzen",
         "dialectSwiss": "Schweizerdeutsch",
         "dialectStandard": "Hochdeutsch",
         "allDialects": "Alle Sprachvarianten",
@@ -459,7 +460,7 @@
       "showMaterials": "Materialien",
       "showCreators": "Ersteller",
       "displayLabel": "Anzeigen",
-      "dialectLabel": "Sprachvariante",
+      "dialectLabel": "Kompetenzen",
       "dialectSwiss": "Schweizerdeutsch",
       "dialectStandard": "Hochdeutsch",
       "zyklusLabel": "Zyklus",
@@ -2865,6 +2866,7 @@
       "bundles": "Bundles",
       "comments": "Kommentare",
       "wishlist": "Wunschliste",
+      "notifications": "Benachrichtigungen",
       "settings": "Einstellungen",
       "settingsProfile": "Profil",
       "settingsAppearance": "Darstellung",
@@ -2890,7 +2892,7 @@
       "earnings": "Einnahmen",
       "downloads": "Downloads",
       "contributions": "Beiträge",
-      "thisMonth": "Diesen Monat",
+      "thisMonth": "Gesamt",
       "totalDownloads": "Gesamte Downloads",
       "materialsPublished": "Materialien veröffentlicht",
       "myMaterials": "Meine Materialien",
@@ -2918,6 +2920,16 @@
       "fieldsCompleted": "{completed} von {total} Feldern ausgefüllt",
       "editProfile": "Profil bearbeiten",
       "close": "Schliessen"
+    },
+    "notifications": {
+      "title": "Benachrichtigungen",
+      "markAllRead": "Alle als gelesen markieren",
+      "empty": "Noch keine Benachrichtigungen",
+      "emptyDescription": "Sie werden über Verkäufe, neue Follower und mehr benachrichtigt.",
+      "justNow": "Gerade eben",
+      "minutesAgo": "vor {count} Min.",
+      "hoursAgo": "vor {count} Std.",
+      "daysAgo": "vor {count} T."
     }
   },
   "copyrightGuide": {

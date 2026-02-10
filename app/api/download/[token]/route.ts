@@ -78,7 +78,7 @@ export async function GET(
 
     if (!downloadToken) {
       return NextResponse.json(
-        { error: "invalid_token", message: "Download link not found" },
+        { error: "invalid_token", message: "Download-Link nicht gefunden" },
         { status: 404 }
       );
     }
@@ -86,7 +86,7 @@ export async function GET(
     // Check if transaction is completed
     if (downloadToken.transaction.status !== "COMPLETED") {
       return NextResponse.json(
-        { error: "payment_incomplete", message: "Payment has not been completed" },
+        { error: "payment_incomplete", message: "Zahlung wurde noch nicht abgeschlossen" },
         { status: 400 }
       );
     }
@@ -95,7 +95,7 @@ export async function GET(
     const now = new Date();
     if (now > downloadToken.expires_at) {
       return NextResponse.json(
-        { error: "expired", message: "Download link has expired" },
+        { error: "expired", message: "Download-Link ist abgelaufen" },
         { status: 410 }
       );
     }
@@ -103,7 +103,7 @@ export async function GET(
     // Check if max downloads exceeded
     if (downloadToken.download_count >= downloadToken.max_downloads) {
       return NextResponse.json(
-        { error: "max_downloads", message: "Maximum downloads reached" },
+        { error: "max_downloads", message: "Maximale Anzahl Downloads erreicht" },
         { status: 410 }
       );
     }
@@ -135,7 +135,7 @@ export async function GET(
       } catch {
         console.error("Legacy file not found:", filePath);
         return NextResponse.json(
-          { error: "file_not_found", message: "File not found" },
+          { error: "file_not_found", message: "Datei nicht gefunden" },
           { status: 404 }
         );
       }
@@ -152,7 +152,7 @@ export async function GET(
       } catch (error) {
         console.error("Failed to generate signed URL:", error);
         return NextResponse.json(
-          { error: "server_error", message: "Failed to generate download link" },
+          { error: "server_error", message: "Fehler beim Erstellen des Download-Links" },
           { status: 500 }
         );
       }
@@ -171,14 +171,14 @@ export async function GET(
     } catch {
       console.error("File not found:", resource.file_url);
       return NextResponse.json(
-        { error: "file_not_found", message: "File not found" },
+        { error: "file_not_found", message: "Datei nicht gefunden" },
         { status: 404 }
       );
     }
   } catch (error) {
     console.error("Error processing download token:", error);
     return NextResponse.json(
-      { error: "server_error", message: "An error occurred" },
+      { error: "server_error", message: "Ein Fehler ist aufgetreten" },
       { status: 500 }
     );
   }

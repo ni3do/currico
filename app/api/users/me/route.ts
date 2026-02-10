@@ -112,3 +112,46 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
   }
 }
+
+/**
+ * DELETE /api/users/me
+ * Delete the current user's account and all associated data
+ * Access: Authenticated user only
+ */
+export async function DELETE() {
+  try {
+    const userId = await getCurrentUserId();
+
+    if (!userId) {
+      return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
+    }
+
+    // Check for completed transactions where user is seller (cannot delete)
+    const sellerTransactions = await prisma.transaction.count({
+      where: {
+        resource: { seller_id: userId },
+        status: "COMPLETED",
+      },
+    });
+
+    if (sellerTransactions > 0) {
+      return NextResponse.json(
+        {
+          error:
+            "Konto kann nicht gelöscht werden, da Sie verkaufte Materialien haben. Bitte kontaktieren Sie den Support.",
+        },
+        { status: 400 }
+      );
+    }
+
+    // Delete user and cascade (Prisma onDelete: Cascade handles most relations)
+    await prisma.user.delete({
+      where: { id: userId },
+    });
+
+    return NextResponse.json({ message: "Konto erfolgreich gelöscht" });
+  } catch (error) {
+    console.error("Error deleting user account:", error);
+    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+  }
+}

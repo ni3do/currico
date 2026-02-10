@@ -461,6 +461,7 @@ function UploadPageContent() {
                         <option value="word">Word</option>
                         <option value="powerpoint">PowerPoint</option>
                         <option value="excel">Excel</option>
+                        <option value="onenote">OneNote</option>
                         <option value="other">Andere</option>
                       </FormSelect>
                     </FormField>

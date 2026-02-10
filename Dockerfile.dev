@@ -27,10 +27,14 @@ COPY prisma.config.ts ./
 RUN --mount=type=cache,target=/root/.cache/prisma \
     npx prisma generate
 
+# Copy dev entrypoint script
+COPY scripts/dev-entrypoint.sh /usr/local/bin/dev-entrypoint.sh
+RUN chmod +x /usr/local/bin/dev-entrypoint.sh
+
 # Note: Source code is mounted as volume in docker-compose.yml
 # No need to COPY . . since it would be overwritten anyway
 
 EXPOSE 3000
 
-# Sync database schema, seed data, and start dev server
-CMD ["sh", "-c", "npx prisma db push --accept-data-loss && npx prisma db seed && npm run dev"]
+# Sync database schema (with trigger workaround), seed data, and start dev server
+CMD ["dev-entrypoint.sh"]

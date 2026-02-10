@@ -76,6 +76,7 @@ export default function PublicProfilePage({
   const [activeTab, setActiveTab] = useState<"uploads" | "collections">("uploads");
   const [materialPage, setMaterialPage] = useState(1);
   const [hasMoreMaterials, setHasMoreMaterials] = useState(false);
+  const [error, setError] = useState(false);
 
   // Fetch profile data
   useEffect(() => {
@@ -97,12 +98,12 @@ export default function PublicProfilePage({
 
         if (bestRes.ok) {
           const bestData = await bestRes.json();
-          setBestMaterials(bestData.resources);
+          setBestMaterials(bestData.materials || []);
         }
 
         if (allRes.ok) {
           const allData = await allRes.json();
-          setAllMaterials(allData.resources);
+          setAllMaterials(allData.materials || []);
           setHasMoreMaterials(allData.pagination?.totalPages > 1);
         }
 
@@ -110,8 +111,9 @@ export default function PublicProfilePage({
           const collectionsData = await collectionsRes.json();
           setCollections(collectionsData.collections);
         }
-      } catch (error) {
-        console.error("Error fetching profile:", error);
+      } catch (err) {
+        console.error("Error fetching profile:", err);
+        setError(true);
       } finally {
         setLoading(false);
       }
@@ -158,7 +160,7 @@ export default function PublicProfilePage({
       const response = await fetch(`/api/users/${id}/materials?page=${nextPage}&limit=12`);
       if (response.ok) {
         const data = await response.json();
-        setAllMaterials((prev) => [...prev, ...data.materials]);
+        setAllMaterials((prev) => [...prev, ...(data.materials || [])]);
         setMaterialPage(nextPage);
         setHasMoreMaterials(data.pagination?.page < data.pagination?.totalPages);
       }

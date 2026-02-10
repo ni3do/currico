@@ -360,6 +360,130 @@ Diese E-Mail wurde automatisch generiert.`,
 }
 
 /**
+ * Send a password reset email
+ */
+export async function sendPasswordResetEmail(params: {
+  email: string;
+  token: string;
+  locale?: "de" | "en";
+}): Promise<SendEmailResult> {
+  const { email, token, locale = "de" } = params;
+
+  try {
+    const transport = getTransporter();
+    const baseUrl =
+      process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "https://currico.ch";
+    const resetUrl = `${baseUrl}/${locale}/reset-password?token=${token}`;
+
+    const isDe = locale === "de";
+
+    const subject = isDe
+      ? `${APP_NAME} – Passwort zurücksetzen`
+      : `${APP_NAME} – Reset your password`;
+
+    const heading = isDe ? "Passwort zurücksetzen" : "Reset your password";
+    const intro = isDe
+      ? "Wir haben eine Anfrage zum Zurücksetzen Ihres Passworts erhalten."
+      : "We received a request to reset your password.";
+    const buttonText = isDe ? "Neues Passwort setzen" : "Set new password";
+    const expiry = isDe ? "Dieser Link ist 1 Stunde gültig." : "This link is valid for 1 hour.";
+    const ignore = isDe
+      ? "Falls Sie diese Anfrage nicht gestellt haben, können Sie diese E-Mail ignorieren."
+      : "If you didn't request this, you can safely ignore this email.";
+
+    const html = `
+      <div style="font-family: -apple-system, system-ui, sans-serif; max-width: 520px; margin: 0 auto; padding: 32px 20px;">
+        <h2 style="color: #1e1e2e; margin-bottom: 16px;">${heading}</h2>
+        <p style="color: #4c4f69; line-height: 1.6;">${intro}</p>
+        <div style="margin: 24px 0; text-align: center;">
+          <a href="${resetUrl}" style="display: inline-block; background: #1e66f5; color: #fff; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-weight: 600;">${buttonText}</a>
+        </div>
+        <p style="color: #6c6f85; font-size: 14px;">${expiry}</p>
+        <p style="color: #6c6f85; font-size: 14px;">${ignore}</p>
+        <hr style="border: none; border-top: 1px solid #ccd0da; margin: 24px 0;" />
+        <p style="color: #9ca0b0; font-size: 12px;">${APP_NAME}</p>
+      </div>
+    `;
+
+    const text = `${heading}\n\n${intro}\n\n${buttonText}: ${resetUrl}\n\n${expiry}\n\n${ignore}`;
+
+    await transport.sendMail({
+      from: `"${APP_NAME}" <${getFromEmail()}>`,
+      to: email,
+      subject,
+      text,
+      html,
+    });
+
+    return { success: true };
+  } catch (err) {
+    console.error("Failed to send password reset email:", err);
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : "Unknown error",
+    };
+  }
+}
+
+/**
+ * Send a notification email (sale, follow, review, system).
+ * Called from createNotification() when the user has opted in.
+ */
+export async function sendNotificationEmail(params: {
+  email: string;
+  title: string;
+  body: string;
+  link?: string;
+  locale?: "de" | "en";
+}): Promise<SendEmailResult> {
+  const { email, title, body, link, locale = "de" } = params;
+
+  try {
+    const transport = getTransporter();
+    const baseUrl =
+      process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "https://currico.ch";
+
+    const isDe = locale === "de";
+    const ctaText = isDe ? "Auf Currico ansehen" : "View on Currico";
+    const fullLink = link ? `${baseUrl}${link.startsWith("/") ? `/${locale}${link}` : link}` : null;
+
+    const ctaHtml = fullLink
+      ? `<p style="margin: 24px 0; text-align: center;">
+           <a href="${fullLink}" style="display: inline-block; background: #1e66f5; color: #fff; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-weight: 600;">${ctaText}</a>
+         </p>`
+      : "";
+
+    const text = `${title}\n\n${body}${fullLink ? `\n\n${ctaText}: ${fullLink}` : ""}`;
+
+    const html = `
+      <div style="font-family: -apple-system, system-ui, sans-serif; max-width: 520px; margin: 0 auto; padding: 32px 20px;">
+        <h2 style="color: #1e1e2e; margin-bottom: 16px;">${title}</h2>
+        <p style="color: #4c4f69; line-height: 1.6;">${body}</p>
+        ${ctaHtml}
+        <hr style="border: none; border-top: 1px solid #ccd0da; margin: 24px 0;" />
+        <p style="color: #9ca0b0; font-size: 12px;">${APP_NAME}</p>
+      </div>
+    `;
+
+    await transport.sendMail({
+      from: `"${APP_NAME}" <${getFromEmail()}>`,
+      to: email,
+      subject: `${APP_NAME}: ${title}`,
+      text,
+      html,
+    });
+
+    return { success: true };
+  } catch (err) {
+    console.error("Failed to send notification email:", err);
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : "Unknown error",
+    };
+  }
+}
+
+/**
  * Verify SMTP connection is working
  * Useful for health checks and debugging
  */

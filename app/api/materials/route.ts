@@ -158,11 +158,39 @@ export async function GET(request: NextRequest) {
 
             where.id = { in: fullTextSearchIds };
           } else {
-            // No full-text results, return empty
-            return NextResponse.json({
-              materials: [],
-              pagination: { page, limit, total: 0, totalPages: 0 },
-            });
+            // Full-text returned nothing — try fuzzy match with pg_trgm
+            try {
+              const fuzzyResults = await prisma.$queryRaw<{ id: string; sim: number }[]>`
+                SELECT id, GREATEST(
+                  similarity(title, ${sanitizedSearch}),
+                  similarity(description, ${sanitizedSearch})
+                ) as sim
+                FROM resources
+                WHERE is_published = true AND is_public = true
+                  AND (
+                    similarity(title, ${sanitizedSearch}) > 0.15
+                    OR similarity(description, ${sanitizedSearch}) > 0.15
+                  )
+                ORDER BY sim DESC
+                LIMIT 50
+              `;
+              if (fuzzyResults.length > 0) {
+                fullTextSearchIds = fuzzyResults.map((r) => r.id);
+                fullTextRankMap = new Map(fuzzyResults.map((r) => [r.id, r.sim]));
+                where.id = { in: fullTextSearchIds };
+              } else {
+                return NextResponse.json({
+                  materials: [],
+                  pagination: { page, limit, total: 0, totalPages: 0 },
+                });
+              }
+            } catch {
+              // pg_trgm extension might not be available — return empty
+              return NextResponse.json({
+                materials: [],
+                pagination: { page, limit, total: 0, totalPages: 0 },
+              });
+            }
           }
         } else {
           // For LP21 code searches, fall back to simple contains for title/description
@@ -478,7 +506,7 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error fetching materials:", error);
-    return NextResponse.json({ error: "Failed to fetch materials" }, { status: 500 });
+    return NextResponse.json({ error: "Fehler beim Laden der Materialien" }, { status: 500 });
   }
 }
 

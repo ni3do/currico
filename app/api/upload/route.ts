@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
     const userId = await getCurrentUserId();
     if (!userId) {
       return NextResponse.json(
-        { error: "Authentication required", code: "UNAUTHORIZED" },
+        { error: "Authentifizierung erforderlich", code: "UNAUTHORIZED" },
         { status: 401 }
       );
     }
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     const file = formData.get("file") as File;
 
     if (!file) {
-      return NextResponse.json({ error: "No file provided" }, { status: 400 });
+      return NextResponse.json({ error: "Keine Datei angegeben" }, { status: 400 });
     }
 
     // Validate file type
@@ -100,6 +100,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error uploading file:", error);
-    return NextResponse.json({ error: "Failed to upload file" }, { status: 500 });
+    return NextResponse.json({ error: "Fehler beim Hochladen der Datei" }, { status: 500 });
   }
 }

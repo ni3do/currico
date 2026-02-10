@@ -5,8 +5,46 @@ import { updateNotificationPreferencesSchema } from "@/lib/validations/user";
 import { getCurrentUserId } from "@/lib/auth";
 
 /**
+ * GET /api/users/me/notifications
+ * List the current user's notifications (newest first, max 50).
+ * Access: Authenticated user only
+ */
+export async function GET(request: NextRequest) {
+  try {
+    const userId = await getCurrentUserId();
+    if (!userId) {
+      return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
+    }
+
+    const url = new URL(request.url);
+    const unreadOnly = url.searchParams.get("unread") === "true";
+
+    const notifications = await prisma.notification.findMany({
+      where: {
+        user_id: userId,
+        ...(unreadOnly ? { read_at: null } : {}),
+      },
+      orderBy: { created_at: "desc" },
+      take: 50,
+    });
+
+    const unreadCount = await prisma.notification.count({
+      where: { user_id: userId, read_at: null },
+    });
+
+    return NextResponse.json({ notifications, unreadCount });
+  } catch (error) {
+    console.error("Error fetching notifications:", error);
+    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+  }
+}
+
+/**
  * PATCH /api/users/me/notifications
- * Update the current user's notification preferences
+ * Update notification preferences OR mark notifications as read.
+ * Body: { markAllRead: true } — marks all as read
+ * Body: { notificationId: "..." } — marks one as read
+ * Body: { notify_*: boolean } — updates preferences
  * Access: Authenticated user only
  */
 export async function PATCH(request: NextRequest) {
@@ -19,7 +57,25 @@ export async function PATCH(request: NextRequest) {
 
     const body = await request.json();
 
-    // Validate input
+    // Mark all notifications as read
+    if (body.markAllRead === true) {
+      await prisma.notification.updateMany({
+        where: { user_id: userId, read_at: null },
+        data: { read_at: new Date() },
+      });
+      return NextResponse.json({ success: true });
+    }
+
+    // Mark a single notification as read
+    if (body.notificationId) {
+      await prisma.notification.updateMany({
+        where: { id: body.notificationId, user_id: userId, read_at: null },
+        data: { read_at: new Date() },
+      });
+      return NextResponse.json({ success: true });
+    }
+
+    // Validate input for notification preferences
     const validationResult = updateNotificationPreferencesSchema.safeParse(body);
     if (!validationResult.success) {
       return NextResponse.json(
