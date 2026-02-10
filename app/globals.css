@@ -1649,6 +1649,24 @@ select.input {
     color 0.2s var(--ease-smooth);
 }
 
+/* Snappy chip hover - for filter chips, tags, and small interactive elements */
+.hover-chip {
+  transition:
+    transform 0.2s var(--ease-snappy),
+    box-shadow 0.2s var(--ease-smooth),
+    background-color 0.2s var(--ease-smooth);
+}
+
+.hover-chip:hover {
+  transform: translateY(-1px) scale(1.03);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.hover-chip:active {
+  transform: scale(0.97);
+  transition-duration: 0.1s;
+}
+
 /* Tab indicator animation */
 .tab-indicator {
   transition: all 0.35s var(--ease-smooth);

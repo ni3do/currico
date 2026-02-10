@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -169,6 +169,25 @@ export function LP21FilterSidebar({
   const [searchFocused, setSearchFocused] = useState(false);
   const [parsedQuery, setParsedQuery] = useState<ParsedSearchQuery | null>(null);
 
+  // Local search input value for immediate UI feedback (debounced before propagating)
+  const [localSearchQuery, setLocalSearchQuery] = useState(filters.searchQuery);
+  const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Sync local value when parent resets search (e.g. "clear search" button, suggestion click)
+  // Uses the React-recommended "store previous prop in state" pattern to avoid useEffect
+  const [prevSearchQuery, setPrevSearchQuery] = useState(filters.searchQuery);
+  if (prevSearchQuery !== filters.searchQuery) {
+    setPrevSearchQuery(filters.searchQuery);
+    setLocalSearchQuery(filters.searchQuery);
+  }
+
+  // Clean up debounce timer on unmount
+  useEffect(() => {
+    return () => {
+      if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current);
+    };
+  }, []);
+
   // Get available Fachbereiche based on selected Zyklus
   const availableFachbereiche = useMemo(() => {
     if (filters.zyklus === null) {
@@ -177,13 +196,13 @@ export function LP21FilterSidebar({
     return getFachbereicheByZyklus(filters.zyklus);
   }, [filters.zyklus, fachbereiche, getFachbereicheByZyklus]);
 
-  // Search results
+  // Search results use local value for instant dropdown feedback
   const searchResults = useMemo(() => {
-    if (!filters.searchQuery || filters.searchQuery.length < 2) {
+    if (!localSearchQuery || localSearchQuery.length < 2) {
       return [];
     }
-    return searchByCode(filters.searchQuery).slice(0, 10);
-  }, [filters.searchQuery, searchByCode]);
+    return searchByCode(localSearchQuery).slice(0, 10);
+  }, [localSearchQuery, searchByCode]);
 
   // Check if any filters are active
   const hasActiveFilters =
@@ -285,12 +304,10 @@ export function LP21FilterSidebar({
 
   const handleSearchChange = useCallback(
     (query: string) => {
-      onFiltersChange({
-        ...filters,
-        searchQuery: query,
-      });
+      // Update local value immediately (no lag while typing)
+      setLocalSearchQuery(query);
 
-      // Parse the query for smart suggestions
+      // Parse the query for smart suggestions (instant, local only)
       if (query.length >= 2) {
         const parsed = parseSearchQuery(query);
         if (parsed.detectedTerms.length > 0) {
@@ -301,6 +318,17 @@ export function LP21FilterSidebar({
       } else {
         setParsedQuery(null);
       }
+
+      // Debounce the API call (300ms)
+      if (searchDebounceRef.current) {
+        clearTimeout(searchDebounceRef.current);
+      }
+      searchDebounceRef.current = setTimeout(() => {
+        onFiltersChange({
+          ...filters,
+          searchQuery: query,
+        });
+      }, 300);
     },
     [filters, onFiltersChange]
   );
@@ -596,7 +624,7 @@ export function LP21FilterSidebar({
             <Search className="text-text-muted absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
             <input
               type="text"
-              value={filters.searchQuery}
+              value={localSearchQuery}
               onChange={(e) => handleSearchChange(e.target.value)}
               onFocus={() => setSearchFocused(true)}
               onBlur={() => setTimeout(() => setSearchFocused(false), 200)}

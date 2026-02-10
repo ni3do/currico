@@ -78,6 +78,7 @@ export default function TermsPage() {
             <li>{t("general.purchases.items.personal")}</li>
             <li>{t("general.purchases.items.noRedistribution")}</li>
             <li>{t("general.purchases.items.refunds")}</li>
+            <li>{t("general.purchases.items.pricing")}</li>
           </ul>
 
           {/* Digital Withdrawal Rights */}

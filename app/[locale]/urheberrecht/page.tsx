@@ -9,7 +9,7 @@ import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import {
   CheckCircle,
   XCircle,
-  Image,
+  Image as ImageIcon,
   Type,
   AlertTriangle,
   ClipboardCheck,
@@ -373,7 +373,7 @@ export default function CopyrightGuidePage() {
           >
             <div className="mb-4 flex items-center gap-3">
               <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
-                <Image className="text-primary h-5 w-5" />
+                <ImageIcon className="text-primary h-5 w-5" />
               </div>
               <h2 className="text-text text-xl font-semibold">{t("sections.images.title")}</h2>
             </div>

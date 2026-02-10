@@ -157,7 +157,7 @@ export function MaterialCard({
       {/* Content */}
       <div className={`flex flex-1 flex-col ${isCompact ? "justify-center p-3 sm:p-4" : "p-5"}`}>
         {/* Eyebrow Tag - Subject & Level */}
-        <div className={`${isCompact ? "mb-1" : "mb-3"}`}>
+        <div className={`${isCompact ? "mb-1" : "mb-2"}`}>
           <span
             className={`text-xs font-semibold tracking-wide uppercase ${getSubjectTextColor(subjectPillClass)}`}
           >
@@ -174,7 +174,7 @@ export function MaterialCard({
         {/* Title - Primary Heading Style */}
         <h3
           className={`text-text group-hover:text-primary line-clamp-2 font-bold transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-            isCompact ? "text-sm sm:text-base" : "mb-2 text-lg leading-snug"
+            isCompact ? "text-sm sm:text-base" : "mb-1.5 text-lg leading-snug"
           }`}
         >
           {title}
@@ -182,7 +182,7 @@ export function MaterialCard({
 
         {/* Description */}
         {!isCompact && description && (
-          <p className="text-text-muted mb-4 line-clamp-2 text-sm leading-relaxed">{description}</p>
+          <p className="text-text-muted mb-3 line-clamp-2 text-sm leading-relaxed">{description}</p>
         )}
         {isCompact && description && (
           <p className="text-text-muted mt-1 line-clamp-1 hidden text-xs sm:block">{description}</p>
@@ -209,7 +209,7 @@ export function MaterialCard({
         {/* Footer */}
         {!isCompact &&
           (footer ?? (
-            <div className="border-border-subtle flex items-center justify-between border-t pt-4">
+            <div className="border-border-subtle flex items-center justify-between border-t pt-3">
               <span className="text-text-muted flex items-center gap-1.5 text-sm transition-colors duration-300">
                 {seller?.displayName || "Anonymous"}
                 {seller?.isVerifiedSeller && <VerifiedSellerBadge variant="compact" />}

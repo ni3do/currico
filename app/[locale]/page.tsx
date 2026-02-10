@@ -84,7 +84,7 @@ export default function Home() {
                   <form onSubmit={handleSearch} className="mt-10 w-full max-w-[600px]">
                     {/* Search bar */}
                     <motion.div
-                      className="relative flex items-center rounded-full bg-white shadow-lg"
+                      className="bg-surface border-border-subtle relative flex items-center rounded-full border shadow-lg"
                       whileHover={{ scale: 1.01 }}
                       transition={{ duration: 0.2 }}
                     >
@@ -93,11 +93,11 @@ export default function Home() {
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder={t("hero.search.placeholder")}
-                        className="focus:ring-primary w-full rounded-full py-4 pr-32 pl-6 text-base text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                        className="text-text placeholder-text-muted focus:ring-primary w-full rounded-full bg-transparent py-4 pr-32 pl-6 text-base focus:ring-2 focus:ring-offset-2 focus:outline-none"
                       />
                       <motion.button
                         type="submit"
-                        className="bg-primary hover:bg-primary-dark focus:ring-primary absolute right-2 flex items-center gap-2 rounded-full px-6 py-2.5 font-semibold text-white transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                        className="bg-primary hover:bg-primary-hover focus:ring-primary absolute right-2 flex items-center gap-2 rounded-full px-6 py-2.5 font-semibold text-white transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                       >
@@ -125,7 +125,7 @@ export default function Home() {
                         <select
                           value={selectedCycle}
                           onChange={(e) => handleCycleChange(e.target.value)}
-                          className="w-full appearance-none rounded-xl border-0 bg-white/80 py-3 pr-10 pl-4 text-sm font-medium text-gray-700 shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:bg-white focus:ring-2 focus:ring-[var(--ctp-blue)] focus:outline-none"
+                          className="bg-surface/80 text-text-secondary focus:bg-surface w-full appearance-none rounded-xl border-0 py-3 pr-10 pl-4 text-sm font-medium shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:ring-2 focus:ring-[var(--ctp-blue)] focus:outline-none"
                         >
                           <option value="">{t("hero.search.allCycles")}</option>
                           {zyklen.map((z) => (
@@ -134,7 +134,7 @@ export default function Home() {
                             </option>
                           ))}
                         </select>
-                        <ChevronDown className="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                        <ChevronDown className="text-text-muted pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2" />
                       </div>
 
                       {/* Subject dropdown */}
@@ -142,7 +142,7 @@ export default function Home() {
                         <select
                           value={selectedSubject}
                           onChange={(e) => setSelectedSubject(e.target.value)}
-                          className="w-full appearance-none rounded-xl border-0 bg-white/80 py-3 pr-10 pl-4 text-sm font-medium text-gray-700 shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:bg-white focus:ring-2 focus:ring-[var(--ctp-blue)] focus:outline-none"
+                          className="bg-surface/80 text-text-secondary focus:bg-surface w-full appearance-none rounded-xl border-0 py-3 pr-10 pl-4 text-sm font-medium shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:ring-2 focus:ring-[var(--ctp-blue)] focus:outline-none"
                         >
                           <option value="">{t("hero.search.allSubjects")}</option>
                           {availableSubjects.map((fb) => (
@@ -151,7 +151,7 @@ export default function Home() {
                             </option>
                           ))}
                         </select>
-                        <ChevronDown className="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                        <ChevronDown className="text-text-muted pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2" />
                       </div>
 
                       {/* Dialect dropdown */}
@@ -159,13 +159,13 @@ export default function Home() {
                         <select
                           value={selectedDialect}
                           onChange={(e) => setSelectedDialect(e.target.value)}
-                          className="w-full appearance-none rounded-xl border-0 bg-white/80 py-3 pr-10 pl-4 text-sm font-medium text-gray-700 shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:bg-white focus:ring-2 focus:ring-[var(--ctp-blue)] focus:outline-none"
+                          className="bg-surface/80 text-text-secondary focus:bg-surface w-full appearance-none rounded-xl border-0 py-3 pr-10 pl-4 text-sm font-medium shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:ring-2 focus:ring-[var(--ctp-blue)] focus:outline-none"
                         >
                           <option value="">{t("hero.search.allDialects")}</option>
                           <option value="SWISS">{t("hero.search.dialectSwiss")}</option>
                           <option value="STANDARD">{t("hero.search.dialectStandard")}</option>
                         </select>
-                        <ChevronDown className="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                        <ChevronDown className="text-text-muted pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2" />
                       </div>
                     </div>
                   </form>
