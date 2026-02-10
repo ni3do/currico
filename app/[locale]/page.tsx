@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { ChevronDown } from "lucide-react";
@@ -15,6 +15,32 @@ import { SwissBrandSection } from "@/components/ui/SwissBrandSection";
 import { ValueProposition } from "@/components/ui/ValueProposition";
 import { FadeIn, StaggerChildren, StaggerItem, motion } from "@/components/ui/animations";
 
+interface FeaturedMaterial {
+  id: string;
+  title: string;
+  description: string;
+  subject: string;
+  cycle: string;
+  priceFormatted: string;
+  previewUrl: string | null;
+  seller: { display_name: string | null; is_verified_seller: boolean };
+}
+
+const SUBJECT_PILL_MAP: Record<string, string> = {
+  Deutsch: "pill-deutsch",
+  Mathematik: "pill-mathe",
+  NMG: "pill-nmg",
+  BG: "pill-gestalten",
+  Musik: "pill-musik",
+  Sport: "pill-sport",
+  Englisch: "pill-fremdsprachen",
+  Franzosisch: "pill-fremdsprachen",
+};
+
+function getSubjectPillClass(subject: string): string {
+  return SUBJECT_PILL_MAP[subject] || "pill-primary";
+}
+
 export default function Home() {
   const t = useTranslations("homePage");
   const tCommon = useTranslations("common");
@@ -22,7 +48,7 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCycle, setSelectedCycle] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
-  const [selectedDialect, setSelectedDialect] = useState("");
+  const [selectedKompetenzbereich, setSelectedKompetenzbereich] = useState("");
 
   const { zyklen, getFachbereicheByZyklus, fachbereiche } = useCurriculum();
 
@@ -31,6 +57,15 @@ export default function Home() {
     return getFachbereicheByZyklus(parseInt(selectedCycle, 10));
   }, [selectedCycle, fachbereiche, getFachbereicheByZyklus]);
 
+  const availableKompetenzbereiche = useMemo(() => {
+    const subjects = selectedSubject
+      ? availableSubjects.filter((fb) => fb.code === selectedSubject)
+      : availableSubjects;
+    return subjects.flatMap((fb) =>
+      fb.kompetenzbereiche.map((kb) => ({ ...kb, fachbereichName: fb.shortName }))
+    );
+  }, [selectedSubject, availableSubjects]);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const params = new URLSearchParams();
@@ -38,16 +73,42 @@ export default function Home() {
     if (trimmedQuery) params.set("search", trimmedQuery);
     if (selectedCycle) params.set("zyklus", selectedCycle);
     if (selectedSubject) params.set("fachbereich", selectedSubject);
-    if (selectedDialect) params.set("dialect", selectedDialect);
+    if (selectedKompetenzbereich) params.set("kompetenzbereich", selectedKompetenzbereich);
     const qs = params.toString();
     router.push(qs ? `/materialien?${qs}` : "/materialien");
   };
 
   const handleCycleChange = (value: string) => {
     setSelectedCycle(value);
-    // Reset subject when cycle changes since subjects differ by cycle
+    // Reset subject and kompetenzbereich when cycle changes since they differ by cycle
     setSelectedSubject("");
+    setSelectedKompetenzbereich("");
   };
+
+  const handleSubjectChange = (value: string) => {
+    setSelectedSubject(value);
+    // Reset kompetenzbereich when subject changes
+    setSelectedKompetenzbereich("");
+  };
+
+  const [featuredMaterials, setFeaturedMaterials] = useState<FeaturedMaterial[]>([]);
+  const [featuredLoading, setFeaturedLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchFeatured() {
+      try {
+        const res = await fetch("/api/materials?limit=3&sort=newest");
+        if (!res.ok) return;
+        const data = await res.json();
+        setFeaturedMaterials(data.materials ?? []);
+      } catch {
+        // Silently fail — featured section will just not render
+      } finally {
+        setFeaturedLoading(false);
+      }
+    }
+    fetchFeatured();
+  }, []);
 
   return (
     <div className="bg-bg flex min-h-screen flex-col">
@@ -84,7 +145,7 @@ export default function Home() {
                   <form onSubmit={handleSearch} className="mt-10 w-full max-w-[600px]">
                     {/* Search bar */}
                     <motion.div
-                      className="relative flex items-center rounded-full bg-white shadow-lg"
+                      className="bg-surface border-border-subtle relative flex items-center rounded-full border shadow-lg"
                       whileHover={{ scale: 1.01 }}
                       transition={{ duration: 0.2 }}
                     >
@@ -93,11 +154,11 @@ export default function Home() {
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder={t("hero.search.placeholder")}
-                        className="focus:ring-primary w-full rounded-full py-4 pr-32 pl-6 text-base text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                        className="text-text placeholder-text-muted focus:ring-primary w-full rounded-full bg-transparent py-4 pr-32 pl-6 text-base focus:ring-2 focus:ring-offset-2 focus:outline-none"
                       />
                       <motion.button
                         type="submit"
-                        className="bg-primary hover:bg-primary-dark focus:ring-primary absolute right-2 flex items-center gap-2 rounded-full px-6 py-2.5 font-semibold text-white transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                        className="bg-primary hover:bg-primary-hover focus:ring-primary absolute right-2 flex items-center gap-2 rounded-full px-6 py-2.5 font-semibold text-white transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                       >
@@ -125,7 +186,7 @@ export default function Home() {
                         <select
                           value={selectedCycle}
                           onChange={(e) => handleCycleChange(e.target.value)}
-                          className="w-full appearance-none rounded-xl border-0 bg-white/80 py-3 pr-10 pl-4 text-sm font-medium text-gray-700 shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:bg-white focus:ring-2 focus:ring-[var(--ctp-blue)] focus:outline-none"
+                          className="bg-surface/80 text-text-secondary focus:bg-surface w-full appearance-none rounded-xl border-0 py-3 pr-10 pl-4 text-sm font-medium shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:ring-2 focus:ring-[var(--ctp-blue)] focus:outline-none"
                         >
                           <option value="">{t("hero.search.allCycles")}</option>
                           {zyklen.map((z) => (
@@ -134,15 +195,15 @@ export default function Home() {
                             </option>
                           ))}
                         </select>
-                        <ChevronDown className="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                        <ChevronDown className="text-text-muted pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2" />
                       </div>
 
                       {/* Subject dropdown */}
                       <div className="relative flex-1">
                         <select
                           value={selectedSubject}
-                          onChange={(e) => setSelectedSubject(e.target.value)}
-                          className="w-full appearance-none rounded-xl border-0 bg-white/80 py-3 pr-10 pl-4 text-sm font-medium text-gray-700 shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:bg-white focus:ring-2 focus:ring-[var(--ctp-blue)] focus:outline-none"
+                          onChange={(e) => handleSubjectChange(e.target.value)}
+                          className="bg-surface/80 text-text-secondary focus:bg-surface w-full appearance-none rounded-xl border-0 py-3 pr-10 pl-4 text-sm font-medium shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:ring-2 focus:ring-[var(--ctp-blue)] focus:outline-none"
                         >
                           <option value="">{t("hero.search.allSubjects")}</option>
                           {availableSubjects.map((fb) => (
@@ -151,21 +212,24 @@ export default function Home() {
                             </option>
                           ))}
                         </select>
-                        <ChevronDown className="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                        <ChevronDown className="text-text-muted pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2" />
                       </div>
 
-                      {/* Dialect dropdown */}
+                      {/* Kompetenzbereich dropdown */}
                       <div className="relative flex-1">
                         <select
-                          value={selectedDialect}
-                          onChange={(e) => setSelectedDialect(e.target.value)}
-                          className="w-full appearance-none rounded-xl border-0 bg-white/80 py-3 pr-10 pl-4 text-sm font-medium text-gray-700 shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:bg-white focus:ring-2 focus:ring-[var(--ctp-blue)] focus:outline-none"
+                          value={selectedKompetenzbereich}
+                          onChange={(e) => setSelectedKompetenzbereich(e.target.value)}
+                          className="bg-surface/80 text-text-secondary focus:bg-surface w-full appearance-none rounded-xl border-0 py-3 pr-10 pl-4 text-sm font-medium shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:ring-2 focus:ring-[var(--ctp-blue)] focus:outline-none"
                         >
-                          <option value="">{t("hero.search.allDialects")}</option>
-                          <option value="SWISS">{t("hero.search.dialectSwiss")}</option>
-                          <option value="STANDARD">{t("hero.search.dialectStandard")}</option>
+                          <option value="">{t("hero.search.allKompetenzbereiche")}</option>
+                          {availableKompetenzbereiche.map((kb) => (
+                            <option key={kb.code} value={kb.code}>
+                              {kb.code} – {kb.name}
+                            </option>
+                          ))}
                         </select>
-                        <ChevronDown className="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                        <ChevronDown className="text-text-muted pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2" />
                       </div>
                     </div>
                   </form>
@@ -230,60 +294,38 @@ export default function Home() {
               </motion.div>
             </FadeIn>
 
-            <StaggerChildren
-              staggerDelay={0.1}
-              className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
-            >
-              {[
-                {
-                  key: "card1",
-                  pillClass: "pill-accent",
-                  image: "photo-1532094349884-543bc11b234d",
-                },
-                {
-                  key: "card2",
-                  pillClass: "pill-success",
-                  image: "photo-1456513080510-7bf3a84b82f8",
-                },
-                {
-                  key: "card3",
-                  pillClass: "pill-primary",
-                  image: "photo-1635070041078-e363dbe005cb",
-                },
-              ].map((card) => (
-                <StaggerItem key={card.key}>
-                  <MaterialCard
-                    id={card.key}
-                    title={t(`featuredResources.${card.key}.title`)}
-                    description={t(`featuredResources.${card.key}.description`)}
-                    subject={t(`featuredResources.${card.key}.category`)}
-                    cycle={t(`featuredResources.${card.key}.cycle`)}
-                    previewUrl={`https://images.unsplash.com/${card.image}?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80`}
-                    subjectPillClass={card.pillClass}
-                    showPriceBadge={false}
-                    verified={false}
-                    href="/materialien"
-                    footer={
-                      <div className="border-border-subtle flex items-center justify-between border-t pt-4">
-                        <span className="text-text-muted text-sm">
-                          {t(`featuredResources.${card.key}.documents`)}
-                        </span>
-                        <div className="text-text-secondary flex items-center gap-1 text-sm font-medium">
-                          <svg
-                            className="text-warning h-4 w-4"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                          </svg>
-                          {t(`featuredResources.${card.key}.rating`)}
-                        </div>
-                      </div>
-                    }
-                  />
-                </StaggerItem>
-              ))}
-            </StaggerChildren>
+            {featuredLoading ? (
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="bg-surface-hover h-64 animate-pulse rounded-2xl" />
+                ))}
+              </div>
+            ) : featuredMaterials.length > 0 ? (
+              <StaggerChildren
+                staggerDelay={0.1}
+                className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+              >
+                {featuredMaterials.map((mat) => (
+                  <StaggerItem key={mat.id}>
+                    <MaterialCard
+                      id={mat.id}
+                      title={mat.title}
+                      description={mat.description}
+                      subject={mat.subject}
+                      cycle={mat.cycle}
+                      priceFormatted={mat.priceFormatted}
+                      previewUrl={mat.previewUrl}
+                      subjectPillClass={getSubjectPillClass(mat.subject)}
+                      seller={{
+                        displayName: mat.seller.display_name,
+                        isVerifiedSeller: mat.seller.is_verified_seller,
+                      }}
+                      href={`/materialien/${mat.id}`}
+                    />
+                  </StaggerItem>
+                ))}
+              </StaggerChildren>
+            ) : null}
 
             <FadeIn direction="up" delay={0.3} className="mt-8 text-center sm:hidden">
               <Link

@@ -138,7 +138,7 @@ export default function CheckoutSuccessPage() {
               </div>
               <h1 className="text-text mb-2 text-xl font-bold">{t("notLoggedIn.title")}</h1>
               <p className="text-text-muted mb-6">{t("notLoggedIn.description")}</p>
-              <Link href="/login" className="btn btn-primary px-6 py-2">
+              <Link href="/anmelden" className="btn btn-primary px-6 py-2">
                 {t("notLoggedIn.loginButton")}
               </Link>
             </div>
@@ -323,7 +323,7 @@ export default function CheckoutSuccessPage() {
 
                 {/* Go to Library Button - Secondary */}
                 <Link
-                  href="/account?tab=library"
+                  href="/konto?tab=library"
                   className="group border-border bg-surface text-text hover:border-primary hover:bg-primary/5 flex items-center justify-center gap-3 rounded-xl border-2 px-6 py-4 font-semibold transition-all"
                 >
                   <Library className="h-5 w-5" />

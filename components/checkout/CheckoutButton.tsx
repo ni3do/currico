@@ -28,7 +28,7 @@ export function CheckoutButton({
   const handleCheckout = async () => {
     // Redirect to login if not authenticated
     if (sessionStatus !== "authenticated") {
-      window.location.href = "/login";
+      window.location.href = "/anmelden";
       return;
     }
 

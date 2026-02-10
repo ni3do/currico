@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useTransition, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
@@ -12,6 +12,7 @@ import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { MaterialCard } from "@/components/ui/MaterialCard";
 import { MaterialGridSkeleton } from "@/components/ui/Skeleton";
+import { EmptySearchState } from "@/components/ui/EmptySearchState";
 import { ProfileCard } from "@/components/ui/ProfileCard";
 import { LP21FilterSidebar, type LP21FilterState } from "@/components/search/LP21FilterSidebar";
 import { useCurriculum } from "@/lib/hooks/useCurriculum";
@@ -78,7 +79,13 @@ export default function MaterialienPage() {
   });
   const [loading, setLoading] = useState(true);
   const [profilesLoading, setProfilesLoading] = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  // useTransition for non-blocking filter/tab changes (prevents flicker)
+  const [isPending, startTransition] = useTransition();
+  // Ref to abort in-flight requests when filters change
+  const materialsAbortRef = useRef<AbortController | null>(null);
+  const profilesAbortRef = useRef<AbortController | null>(null);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [sortBy, setSortBy] = useState<string>(searchParams.get("sort") || "newest");
   const [currentPage, setCurrentPage] = useState<number>(
@@ -115,7 +122,7 @@ export default function MaterialienPage() {
   const handleWishlistToggle = useCallback(
     async (materialId: string, currentState: boolean): Promise<boolean> => {
       if (!isAuthenticated) {
-        router.push("/login");
+        router.push("/anmelden");
         return false;
       }
 
@@ -153,7 +160,7 @@ export default function MaterialienPage() {
       }
       return false;
     },
-    [isAuthenticated, router]
+    [isAuthenticated, router, t, toast]
   );
 
   // State for followed profile IDs
@@ -181,7 +188,7 @@ export default function MaterialienPage() {
   const handleFollowToggle = useCallback(
     async (profileId: string, currentState: boolean): Promise<boolean> => {
       if (!isAuthenticated) {
-        router.push("/login");
+        router.push("/anmelden");
         return false;
       }
 
@@ -217,7 +224,7 @@ export default function MaterialienPage() {
       }
       return false;
     },
-    [isAuthenticated, router]
+    [isAuthenticated, router, t, toast]
   );
 
   // Initialize filters from URL params
@@ -341,7 +348,13 @@ export default function MaterialienPage() {
 
   const fetchMaterials = useCallback(
     async (currentFilters: LP21FilterState, currentSort: string, page: number = 1) => {
+      // Abort any previous in-flight request
+      materialsAbortRef.current?.abort();
+      const controller = new AbortController();
+      materialsAbortRef.current = controller;
+
       setLoading(true);
+      setFetchError(null);
       try {
         const params = new URLSearchParams();
 
@@ -390,25 +403,46 @@ export default function MaterialienPage() {
           params.set("sort", currentSort);
         }
 
-        const response = await fetch(`/api/materials?${params.toString()}`);
-        if (response.ok) {
-          const data = await response.json();
+        const response = await fetch(`/api/materials?${params.toString()}`, {
+          signal: controller.signal,
+        });
+
+        if (!response.ok) {
+          if (response.status === 429) {
+            setFetchError("rateLimit");
+            toast(t("toast.error"), "error");
+          } else {
+            setFetchError("server");
+            toast(t("empty.fetchError"), "error");
+          }
+          return;
+        }
+
+        const data = await response.json();
+        startTransition(() => {
           setMaterials(data.materials);
           setPagination(data.pagination);
-        }
-      } catch (error) {
+        });
+      } catch (error: unknown) {
+        // Ignore aborted requests (user changed filters quickly)
+        if (error instanceof Error && error.name === "AbortError") return;
         console.error("Error fetching materials:", error);
+        setFetchError("network");
+        toast(t("empty.fetchError"), "error");
       } finally {
         setLoading(false);
       }
     },
-    [mapFachbereichToSubject]
+    [mapFachbereichToSubject, toast, t]
   );
 
-  // Fetch materials when showMaterials is true
+  // Fetch materials when showMaterials is true (debounced to prevent flicker on rapid filter changes)
   useEffect(() => {
     if (filters.showMaterials) {
-      fetchMaterials(filters, sortBy, currentPage);
+      const debounce = setTimeout(() => {
+        fetchMaterials(filters, sortBy, currentPage);
+      }, 150);
+      return () => clearTimeout(debounce);
     } else {
       setMaterials([]);
       setPagination({ page: 1, limit: 20, total: 0, totalPages: 0 });
@@ -418,6 +452,11 @@ export default function MaterialienPage() {
 
   // Fetch profiles with optional filters
   const fetchProfiles = useCallback(async (currentFilters: LP21FilterState) => {
+    // Abort any previous in-flight profile request
+    profilesAbortRef.current?.abort();
+    const controller = new AbortController();
+    profilesAbortRef.current = controller;
+
     setProfilesLoading(true);
     try {
       const params = new URLSearchParams();
@@ -426,13 +465,18 @@ export default function MaterialienPage() {
       if (currentFilters.zyklus) params.set("cycle", currentFilters.zyklus.toString());
       params.set("limit", "12");
 
-      const response = await fetch(`/api/users/search?${params.toString()}`);
+      const response = await fetch(`/api/users/search?${params.toString()}`, {
+        signal: controller.signal,
+      });
       if (response.ok) {
         const data = await response.json();
-        setProfiles(data.profiles);
-        setProfilePagination(data.pagination);
+        startTransition(() => {
+          setProfiles(data.profiles);
+          setProfilePagination(data.pagination);
+        });
       }
-    } catch (error) {
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name === "AbortError") return;
       console.error("Error fetching profiles:", error);
     } finally {
       setProfilesLoading(false);
@@ -562,12 +606,12 @@ export default function MaterialienPage() {
     <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 sm:py-10 lg:px-8 lg:py-12">
         {/* Page Header */}
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <Breadcrumb items={[{ label: tCommon("navigation.materials") }]} />
           <h1 className="text-text text-2xl font-bold sm:text-3xl">{t("header.title")}</h1>
-          <p className="text-text-muted mt-1">{t("header.description")}</p>
+          <p className="text-text-muted mt-1.5 text-sm sm:text-base">{t("header.description")}</p>
         </div>
 
         {/* Main Layout: Sidebar + Content */}
@@ -577,7 +621,7 @@ export default function MaterialienPage() {
             <div className="lg:hidden">
               <button
                 onClick={() => setMobileFiltersOpen(true)}
-                className="border-border bg-bg-secondary text-text-secondary hover:border-primary hover:text-primary flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-3 text-sm font-medium transition-colors"
+                className="border-border bg-bg-secondary text-text-secondary hover:border-primary hover:text-primary flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-3.5 text-sm font-medium shadow-sm transition-all duration-200 hover:shadow-md active:scale-[0.98]"
               >
                 <SlidersHorizontal className="h-5 w-5" />
                 <span>{t("sidebar.title")}</span>
@@ -667,10 +711,10 @@ export default function MaterialienPage() {
                     <div className="border-border flex rounded-lg border">
                       <button
                         onClick={() => setViewMode("grid")}
-                        className={`rounded-l-lg p-2 transition-colors ${
+                        className={`rounded-l-lg p-2 transition-all duration-200 ${
                           viewMode === "grid"
                             ? "bg-primary text-text-on-accent"
-                            : "text-text-muted hover:text-text hover:bg-surface"
+                            : "text-text-muted hover:text-text hover:bg-surface active:scale-90"
                         }`}
                         aria-label={t("results.gridView")}
                         title={t("results.gridView")}
@@ -679,10 +723,10 @@ export default function MaterialienPage() {
                       </button>
                       <button
                         onClick={() => setViewMode("list")}
-                        className={`rounded-r-lg p-2 transition-colors ${
+                        className={`rounded-r-lg p-2 transition-all duration-200 ${
                           viewMode === "list"
                             ? "bg-primary text-text-on-accent"
-                            : "text-text-muted hover:text-text hover:bg-surface"
+                            : "text-text-muted hover:text-text hover:bg-surface active:scale-90"
                         }`}
                         aria-label={t("results.listView")}
                         title={t("results.listView")}
@@ -699,7 +743,7 @@ export default function MaterialienPage() {
                       <select
                         value={sortBy}
                         onChange={(e) => handleSortChange(e.target.value)}
-                        className="border-border bg-bg text-text-secondary focus:border-primary focus:ring-focus-ring rounded-lg border px-3 py-2.5 text-sm focus:ring-2 focus:outline-none"
+                        className="border-border bg-bg text-text-secondary focus:border-primary focus:ring-focus-ring rounded-full border px-3 py-2.5 text-sm focus:ring-2 focus:outline-none"
                       >
                         <option value="newest">{t("results.sortOptions.newest")}</option>
                         <option value="price-low">{t("results.sortOptions.priceLow")}</option>
@@ -714,7 +758,7 @@ export default function MaterialienPage() {
               {activeFilterCount > 0 && (
                 <div className="mb-4 flex flex-wrap items-center gap-2">
                   {filters.searchQuery && (
-                    <span className="bg-primary/10 text-primary border-primary/20 inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
+                    <span className="bg-primary/10 text-primary border-primary/20 hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
                       &quot;{filters.searchQuery}&quot;
                       <button
                         onClick={() => handleFiltersChange({ ...filters, searchQuery: "" })}
@@ -725,7 +769,7 @@ export default function MaterialienPage() {
                     </span>
                   )}
                   {filters.zyklus && (
-                    <span className="bg-primary/10 text-primary border-primary/20 inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
+                    <span className="bg-primary/10 text-primary border-primary/20 hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
                       Zyklus {filters.zyklus}
                       <button
                         onClick={() =>
@@ -744,7 +788,7 @@ export default function MaterialienPage() {
                     </span>
                   )}
                   {filters.fachbereich && (
-                    <span className="bg-accent/10 text-accent border-accent/20 inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
+                    <span className="bg-accent/10 text-accent border-accent/20 hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
                       {getFachbereichByCode(filters.fachbereich)?.shortName || filters.fachbereich}
                       <button
                         onClick={() =>
@@ -762,7 +806,7 @@ export default function MaterialienPage() {
                     </span>
                   )}
                   {filters.kompetenzbereich && (
-                    <span className="bg-accent/10 text-accent border-accent/20 inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
+                    <span className="bg-accent/10 text-accent border-accent/20 hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
                       {filters.kompetenzbereich}
                       <button
                         onClick={() =>
@@ -779,7 +823,7 @@ export default function MaterialienPage() {
                     </span>
                   )}
                   {filters.kompetenz && (
-                    <span className="bg-accent/10 text-accent border-accent/20 inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
+                    <span className="bg-accent/10 text-accent border-accent/20 hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
                       {filters.kompetenz}
                       <button
                         onClick={() => handleFiltersChange({ ...filters, kompetenz: null })}
@@ -790,7 +834,7 @@ export default function MaterialienPage() {
                     </span>
                   )}
                   {filters.dialect && (
-                    <span className="bg-surface text-text-secondary border-border inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
+                    <span className="bg-surface text-text-secondary border-border hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
                       {filters.dialect === "SWISS" ? "CH" : "DE"}
                       <button
                         onClick={() => handleFiltersChange({ ...filters, dialect: null })}
@@ -801,7 +845,7 @@ export default function MaterialienPage() {
                     </span>
                   )}
                   {(filters.priceType || filters.maxPrice !== null) && (
-                    <span className="bg-surface text-text-secondary border-border inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
+                    <span className="bg-surface text-text-secondary border-border hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
                       {filters.priceType === "free"
                         ? "Kostenlos"
                         : filters.maxPrice !== null
@@ -820,7 +864,7 @@ export default function MaterialienPage() {
                   {filters.formats.map((fmt) => (
                     <span
                       key={fmt}
-                      className="bg-surface text-text-secondary border-border inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
+                      className="bg-surface text-text-secondary border-border hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
                     >
                       {fmt.toUpperCase()}
                       <button
@@ -837,7 +881,7 @@ export default function MaterialienPage() {
                     </span>
                   ))}
                   {filters.materialScope && (
-                    <span className="bg-surface text-text-secondary border-border inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
+                    <span className="bg-surface text-text-secondary border-border hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
                       {filters.materialScope === "single" ? "Einzelmaterial" : "Bundle"}
                       <button
                         onClick={() => handleFiltersChange({ ...filters, materialScope: null })}
@@ -873,63 +917,68 @@ export default function MaterialienPage() {
                 </div>
               )}
 
-              {/* Unified Grid */}
-              {isLoading ? (
+              {/* Error State */}
+              {fetchError ? (
+                <div className="border-error/20 bg-error/5 flex flex-col items-center justify-center rounded-xl border px-8 py-16">
+                  <div className="bg-error/10 mb-5 flex h-16 w-16 items-center justify-center rounded-full">
+                    <Search className="text-error h-8 w-8" />
+                  </div>
+                  <p className="text-text mb-2 text-lg font-semibold">{t("empty.fetchError")}</p>
+                  <button
+                    onClick={() => fetchMaterials(filters, sortBy, currentPage)}
+                    className="bg-primary text-text-on-accent hover:bg-primary-hover mt-4 inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition-colors"
+                  >
+                    {t("empty.fetchErrorRetry")}
+                  </button>
+                </div>
+              ) : /* Unified Grid */
+              isLoading ? (
                 <MaterialGridSkeleton count={6} />
               ) : mergedItems.length === 0 ? (
-                <div className="border-border-subtle bg-bg-secondary flex flex-col items-center justify-center rounded-lg border px-8 py-16">
-                  <div className="bg-surface-hover mb-4 flex h-16 w-16 items-center justify-center rounded-full">
-                    {!filters.showMaterials && filters.showCreators ? (
-                      <Users className="text-text-muted h-8 w-8" />
-                    ) : (
-                      <Search className="text-text-muted h-8 w-8" />
-                    )}
-                  </div>
-                  <p className="text-text mb-2 text-lg font-medium">{t("empty.title")}</p>
-                  <p className="text-text-muted mb-6 max-w-sm text-center text-sm">
-                    {t("empty.description")}
-                  </p>
-                  {(filters.zyklus ||
-                    filters.fachbereich ||
-                    filters.kompetenzbereich ||
-                    filters.kompetenz ||
-                    filters.searchQuery ||
-                    filters.dialect ||
-                    filters.priceType ||
-                    filters.maxPrice !== null ||
-                    filters.formats.length > 0 ||
-                    filters.materialScope) && (
-                    <button
-                      onClick={() =>
-                        handleFiltersChange({
-                          showMaterials: filters.showMaterials,
-                          showCreators: filters.showCreators,
-                          zyklus: null,
-                          fachbereich: null,
-                          kompetenzbereich: null,
-                          kompetenz: null,
-                          searchQuery: "",
-                          dialect: null,
-                          priceType: null,
-                          maxPrice: null,
-                          formats: [],
-                          materialScope: null,
-                        })
-                      }
-                      className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-medium transition-colors"
-                    >
-                      <X className="h-4 w-4" />
-                      Alle Filter zurücksetzen
-                    </button>
-                  )}
-                </div>
+                <EmptySearchState
+                  filters={filters}
+                  onResetFilters={() =>
+                    handleFiltersChange({
+                      showMaterials: filters.showMaterials,
+                      showCreators: filters.showCreators,
+                      zyklus: null,
+                      fachbereich: null,
+                      kompetenzbereich: null,
+                      kompetenz: null,
+                      searchQuery: filters.searchQuery,
+                      dialect: null,
+                      priceType: null,
+                      maxPrice: null,
+                      formats: [],
+                      materialScope: null,
+                    })
+                  }
+                  onResetSearch={() => handleFiltersChange({ ...filters, searchQuery: "" })}
+                  onSuggestionClick={(query) =>
+                    handleFiltersChange({
+                      showMaterials: filters.showMaterials,
+                      showCreators: filters.showCreators,
+                      zyklus: null,
+                      fachbereich: null,
+                      kompetenzbereich: null,
+                      kompetenz: null,
+                      searchQuery: query,
+                      dialect: null,
+                      priceType: null,
+                      maxPrice: null,
+                      formats: [],
+                      materialScope: null,
+                    })
+                  }
+                />
               ) : (
                 <motion.div
                   className={
                     viewMode === "grid"
-                      ? "grid gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3"
-                      : "flex flex-col gap-4"
+                      ? "grid gap-5 sm:grid-cols-2 sm:gap-6 xl:grid-cols-3"
+                      : "flex flex-col gap-5"
                   }
+                  style={{ opacity: isPending ? 0.7 : 1, transition: "opacity 150ms ease" }}
                   initial="hidden"
                   animate="visible"
                   variants={{

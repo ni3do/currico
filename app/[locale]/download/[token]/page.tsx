@@ -161,7 +161,7 @@ export default function GuestDownloadPage({ params }: { params: Promise<{ token:
                 {t("expired.expiredOn", { date: formatDate(info.expiresAt) })}
               </p>
               <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-                <Link href="/register" className="btn btn-primary px-6 py-2">
+                <Link href="/registrieren" className="btn btn-primary px-6 py-2">
                   {t("createAccount")}
                 </Link>
                 <Link href="/materialien" className="btn btn-secondary px-6 py-2">
@@ -192,7 +192,7 @@ export default function GuestDownloadPage({ params }: { params: Promise<{ token:
               </p>
               <p className="text-text-muted mb-6 text-sm">{t("maxDownloads.suggestion")}</p>
               <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-                <Link href="/register" className="btn btn-primary px-6 py-2">
+                <Link href="/registrieren" className="btn btn-primary px-6 py-2">
                   {t("createAccount")}
                 </Link>
                 <Link href="/materialien" className="btn btn-secondary px-6 py-2">
@@ -398,7 +398,7 @@ export default function GuestDownloadPage({ params }: { params: Promise<{ token:
                     {t("createAccountCta.benefits.purchaseHistory")}
                   </li>
                 </ul>
-                <Link href="/register" className="btn btn-primary w-full py-2.5">
+                <Link href="/registrieren" className="btn btn-primary w-full py-2.5">
                   {t("createAccountCta.button")}
                 </Link>
               </div>

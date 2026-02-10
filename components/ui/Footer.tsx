@@ -37,19 +37,19 @@ export default function Footer() {
               {tCommon("footer.links.imprint")}
             </Link>
             <Link
-              href="/privacy"
+              href="/datenschutz"
               className="text-text-muted hover:text-primary text-sm transition-colors"
             >
               {tCommon("footer.links.privacy")}
             </Link>
             <Link
-              href="/terms"
+              href="/agb"
               className="text-text-muted hover:text-primary text-sm transition-colors"
             >
               {tCommon("footer.links.terms")}
             </Link>
             <Link
-              href="/cookies"
+              href="/cookie-richtlinien"
               className="text-text-muted hover:text-primary text-sm transition-colors"
             >
               {tCommon("footer.links.cookies")}
@@ -61,13 +61,13 @@ export default function Footer() {
               {tCommon("footer.links.copyrightGuide")}
             </Link>
             <Link
-              href="/seller-levels"
+              href="/verkaeufer-stufen"
               className="text-text-muted hover:text-primary text-sm transition-colors"
             >
               {tCommon("footer.links.sellerLevels")}
             </Link>
             <Link
-              href="/verified-seller"
+              href="/verifizierter-verkaeufer"
               className="text-text-muted hover:text-primary text-sm transition-colors"
             >
               {tCommon("footer.links.verifiedSeller")}

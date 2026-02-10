@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { Star, AlertCircle } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { ReviewCard } from "./ReviewCard";
@@ -45,6 +46,7 @@ interface ReviewsSectionProps {
 
 export function ReviewsSection({ materialId, className = "" }: ReviewsSectionProps) {
   const { data: session, status: sessionStatus } = useSession();
+  const tCommon = useTranslations("common");
   const [reviews, setReviews] = useState<Review[]>([]);
   const [stats, setStats] = useState<ReviewStats>({ averageRating: 0, totalReviews: 0 });
   const [userReview, setUserReview] = useState<UserReview | null>(null);
@@ -65,7 +67,7 @@ export function ReviewsSection({ materialId, className = "" }: ReviewsSectionPro
         );
 
         if (!response.ok) {
-          throw new Error("Failed to fetch reviews");
+          throw new Error(tCommon("errors.loadFailed"));
         }
 
         const data = await response.json();
@@ -76,7 +78,7 @@ export function ReviewsSection({ materialId, className = "" }: ReviewsSectionPro
         setPage(data.pagination.page);
         setTotalPages(data.pagination.totalPages);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Fehler beim Laden der Bewertungen");
+        setError(err instanceof Error ? err.message : tCommon("errors.generic"));
       } finally {
         setLoading(false);
       }
@@ -239,7 +241,7 @@ export function ReviewsSection({ materialId, className = "" }: ReviewsSectionPro
       {sessionStatus === "unauthenticated" && (
         <div className="border-border bg-bg-secondary mb-6 rounded-xl border p-4">
           <p className="text-text-muted text-sm">
-            <Link href="/login" className="text-primary hover:underline">
+            <Link href="/anmelden" className="text-primary hover:underline">
               Melden Sie sich an
             </Link>
             , um eine Bewertung zu schreiben.

@@ -159,7 +159,7 @@ export function ProfileCard({
         <div className="mt-auto" />
 
         {/* Footer: Stats */}
-        <div className="border-border-subtle flex items-center justify-between border-t pt-4">
+        <div className="border-border-subtle flex items-center justify-between border-t pt-3">
           <div className="text-text-muted flex items-center gap-4 text-sm">
             <span className="flex items-center gap-1.5 transition-colors duration-300">
               <FileText className="h-4 w-4" />
