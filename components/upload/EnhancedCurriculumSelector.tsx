@@ -145,11 +145,13 @@ export function EnhancedCurriculumSelector({
       .filter((kb) => kb.kompetenzen.length > 0);
   }, [selectedFachbereich, competencySearch]);
 
+  const MAX_COMPETENCIES = 5;
+
   // Toggle competency selection
   const toggleCompetency = (code: string) => {
     if (competencies.includes(code)) {
       onCompetenciesChange(competencies.filter((c) => c !== code));
-    } else {
+    } else if (competencies.length < MAX_COMPETENCIES) {
       onCompetenciesChange([...competencies, code]);
     }
   };
@@ -164,7 +166,7 @@ export function EnhancedCurriculumSelector({
     } else {
       const newCompetencies = [...competencies];
       kbCodes.forEach((code) => {
-        if (!newCompetencies.includes(code)) {
+        if (!newCompetencies.includes(code) && newCompetencies.length < MAX_COMPETENCIES) {
           newCompetencies.push(code);
         }
       });

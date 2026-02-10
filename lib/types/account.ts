@@ -148,6 +148,7 @@ export type TabType =
   | "bundles"
   | "comments"
   | "wishlist"
+  | "notifications"
   | "settings-profile"
   | "settings-appearance"
   | "settings-notifications"
@@ -177,6 +178,7 @@ export const TAB_TO_PATH: Record<TabType, string> = {
   bundles: "/account/bundles",
   comments: "/account/comments",
   wishlist: "/account/wishlist",
+  notifications: "/account/notifications",
   "settings-profile": "/account/settings",
   "settings-appearance": "/account/settings/appearance",
   "settings-notifications": "/account/settings/notifications",
@@ -194,6 +196,7 @@ export function pathToTab(pathname: string): TabType {
   if (path.startsWith("/account/bundles")) return "bundles";
   if (path.startsWith("/account/comments")) return "comments";
   if (path.startsWith("/account/wishlist")) return "wishlist";
+  if (path.startsWith("/account/notifications")) return "notifications";
   if (path.startsWith("/account/settings/appearance")) return "settings-appearance";
   if (path.startsWith("/account/settings/notifications")) return "settings-notifications";
   if (path.startsWith("/account/settings/account")) return "settings-account";

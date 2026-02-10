@@ -52,7 +52,7 @@ export const updateProfileSchema = z.object({
   display_name: z
     .string()
     .min(2, "Name muss mindestens 2 Zeichen haben")
-    .max(50, "Name darf maximal 50 Zeichen haben"),
+    .max(32, "Name darf maximal 32 Zeichen haben"),
   bio: z.string().max(500, "Bio darf maximal 500 Zeichen haben").optional().nullable(),
   subjects: z.array(z.string()).optional(),
   cycles: z.array(z.string()).optional(),
@@ -94,7 +94,7 @@ export const registerSchema = z.object({
   display_name: z
     .string()
     .min(2, "Name muss mindestens 2 Zeichen haben")
-    .max(50, "Name darf maximal 50 Zeichen haben"),
+    .max(32, "Name darf maximal 32 Zeichen haben"),
   role: z.enum(["BUYER", "SELLER"]),
 });
 

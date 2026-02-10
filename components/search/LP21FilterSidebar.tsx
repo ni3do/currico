@@ -730,19 +730,6 @@ export function LP21FilterSidebar({
           <>
             <div className="divider my-5" />
 
-            {/* Price Filter */}
-            <CollapsibleSection title={t("sidebar.priceLabel")}>
-              <PriceFilter
-                selectedPriceType={filters.priceType}
-                maxPrice={filters.maxPrice}
-                onPriceTypeChange={handlePriceTypeChange}
-                onMaxPriceChange={handleMaxPriceChange}
-                t={t}
-              />
-            </CollapsibleSection>
-
-            <div className="divider my-5" />
-
             {/* Dialect Toggle */}
             <CollapsibleSection title={t("sidebar.dialectLabel")}>
               <DialectToggle

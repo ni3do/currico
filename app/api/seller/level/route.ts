@@ -23,7 +23,7 @@ export async function GET() {
     const seller = await requireSeller(userId);
     if (!seller) return forbidden("Nur für Verkäufer zugänglich");
 
-    const [uploadCount, downloadCount, reviewData, publishedResourceCount, openReportCount, user] =
+    const [uploadCount, downloadCount, reviewData, publishedResourceCount, user] =
       await Promise.all([
         prisma.resource.count({
           where: { seller_id: userId },
@@ -43,12 +43,6 @@ export async function GET() {
         }),
         prisma.resource.count({
           where: { seller_id: userId, is_published: true, is_public: true },
-        }),
-        prisma.report.count({
-          where: {
-            reported_user_id: userId,
-            status: { in: ["OPEN", "IN_REVIEW"] },
-          },
         }),
         prisma.user.findUniqueOrThrow({
           where: { id: userId },
@@ -70,7 +64,6 @@ export async function GET() {
       avgRating,
       publishedResourceCount,
       accountCreatedAt: user.created_at,
-      openReportCount,
     });
 
     // Determine verified status after potential auto-verify/revoke
@@ -105,8 +98,9 @@ export async function GET() {
       avgRating,
       isVerifiedSeller,
     });
-    const level = getCurrentLevel(points);
-    const progress = getProgressToNextLevel(points);
+    const sellerStats = { uploads: uploadCount, downloads: downloadCount };
+    const level = getCurrentLevel(points, sellerStats);
+    const progress = getProgressToNextLevel(points, sellerStats);
 
     // Add level cache to update
     updateData.seller_level = level.level;
@@ -135,7 +129,7 @@ export async function GET() {
       isVerifiedSeller,
       verificationProgress: {
         metCount: verification.metCount,
-        totalCriteria: 5,
+        totalCriteria: 4,
         failedCriteria: verification.failedCriteria,
       },
     });

@@ -36,6 +36,7 @@
       "dashboard": "Dashboard",
       "profile": "Profile",
       "account": "My Account",
+      "notifications": "Notifications",
       "admin": "Admin Panel"
     },
     "footer": {
@@ -2800,6 +2801,7 @@
       "bundles": "Bundles",
       "comments": "Comments",
       "wishlist": "Wishlist",
+      "notifications": "Notifications",
       "settings": "Settings",
       "settingsProfile": "Profile",
       "settingsAppearance": "Appearance",
@@ -2825,7 +2827,7 @@
       "earnings": "Earnings",
       "downloads": "Downloads",
       "contributions": "Contributions",
-      "thisMonth": "This month",
+      "thisMonth": "Total",
       "totalDownloads": "Total downloads",
       "materialsPublished": "Materials published",
       "myMaterials": "My Materials",
@@ -2853,6 +2855,16 @@
       "fieldsCompleted": "{completed} of {total} fields completed",
       "editProfile": "Edit Profile",
       "close": "Close"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "markAllRead": "Mark all as read",
+      "empty": "No notifications yet",
+      "emptyDescription": "You'll be notified about sales, new followers, and more.",
+      "justNow": "Just now",
+      "minutesAgo": "{count}m ago",
+      "hoursAgo": "{count}h ago",
+      "daysAgo": "{count}d ago"
     }
   },
   "copyrightGuide": {

@@ -10,10 +10,31 @@ const execAsync = promisify(exec);
 const PREVIEW_WIDTH = 800;
 const PREVIEW_HEIGHT = 1131; // A4 aspect ratio (roughly)
 const PREVIEW_QUALITY = 60; // WebP quality
+const WATERMARK_TEXT = "Vorschau - currico.ch";
+const WATERMARK_OPACITY = 0.25;
 
-// Pixelation settings - downscale to this size before upscaling for pixelated effect
-const PIXELATE_WIDTH = 40; // Very low resolution for pixelation
-const PIXELATE_HEIGHT = 56; // Maintains A4 aspect ratio
+/**
+ * Creates an SVG watermark overlay with repeated diagonal text.
+ */
+function createWatermarkSvg(width: number, height: number): Buffer {
+  const fontSize = Math.round(width / 16);
+  const lineSpacing = fontSize * 4;
+  const lines: string[] = [];
+
+  for (let y = -height; y < height * 2; y += lineSpacing) {
+    lines.push(
+      `<text x="50%" y="${y}" font-size="${fontSize}" font-family="Arial, sans-serif" ` +
+        `fill="rgba(0,0,0,${WATERMARK_OPACITY})" text-anchor="middle" ` +
+        `transform="rotate(-30, ${width / 2}, ${height / 2})">${WATERMARK_TEXT}</text>`
+    );
+  }
+
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
+    ${lines.join("\n    ")}
+  </svg>`;
+
+  return Buffer.from(svg);
+}
 
 /**
  * Result of multi-page preview generation
@@ -75,27 +96,27 @@ export async function generatePdfPreviewPages(
       const outputPath = join(tempDir, pngFile);
       const pngBuffer = await readFile(outputPath);
 
-      // Create pixelated preview:
-      // 1. Downscale to tiny size
-      // 2. Upscale back to preview size with nearest-neighbor (creates pixelation)
-      // 3. Output as WebP for better compression
-      const pixelated = await sharp(pngBuffer)
-        // First downscale to tiny size
-        .resize(PIXELATE_WIDTH, PIXELATE_HEIGHT, {
-          fit: "inside",
-          withoutEnlargement: true,
-        })
-        // Then upscale back to preview size with nearest-neighbor for pixelation
-        .resize(PREVIEW_WIDTH, PREVIEW_HEIGHT, {
-          fit: "inside",
-          kernel: sharp.kernel.nearest, // Creates blocky pixelated effect
-        })
+      // Create watermarked preview:
+      // 1. Resize to preview dimensions
+      // 2. Composite a repeating diagonal watermark overlay
+      // 3. Output as WebP for compression
+      const resized = sharp(pngBuffer).resize(PREVIEW_WIDTH, PREVIEW_HEIGHT, {
+        fit: "inside",
+        withoutEnlargement: true,
+      });
+      const { width: actualW, height: actualH } = await resized.metadata();
+      const w = actualW || PREVIEW_WIDTH;
+      const h = actualH || PREVIEW_HEIGHT;
+      const watermarkSvg = createWatermarkSvg(w, h);
+
+      const watermarked = await resized
+        .composite([{ input: watermarkSvg, blend: "over" }])
         .webp({ quality: PREVIEW_QUALITY })
         .toBuffer();
 
       results.push({
         pageNumber,
-        buffer: pixelated,
+        buffer: watermarked,
       });
     }
 
@@ -137,25 +158,25 @@ export async function generatePdfPreview(pdfBuffer: Buffer): Promise<Buffer | nu
  */
 export async function generateImagePreview(imageBuffer: Buffer): Promise<Buffer | null> {
   try {
-    // Create pixelated preview:
-    // 1. Downscale to tiny size
-    // 2. Upscale back to preview size with nearest-neighbor (creates pixelation)
-    // 3. Output as WebP for better compression
-    const pixelated = await sharp(imageBuffer)
-      // First downscale to tiny size
-      .resize(PIXELATE_WIDTH, PIXELATE_HEIGHT, {
-        fit: "inside",
-        withoutEnlargement: true,
-      })
-      // Then upscale back to preview size with nearest-neighbor for pixelation
-      .resize(PREVIEW_WIDTH, PREVIEW_HEIGHT, {
-        fit: "inside",
-        kernel: sharp.kernel.nearest, // Creates blocky pixelated effect
-      })
+    // Create watermarked preview:
+    // 1. Resize to preview dimensions
+    // 2. Composite a repeating diagonal watermark overlay
+    // 3. Output as WebP for compression
+    const resized = sharp(imageBuffer).resize(PREVIEW_WIDTH, PREVIEW_HEIGHT, {
+      fit: "inside",
+      withoutEnlargement: true,
+    });
+    const { width: actualW, height: actualH } = await resized.metadata();
+    const w = actualW || PREVIEW_WIDTH;
+    const h = actualH || PREVIEW_HEIGHT;
+    const watermarkSvg = createWatermarkSvg(w, h);
+
+    const watermarked = await resized
+      .composite([{ input: watermarkSvg, blend: "over" }])
       .webp({ quality: PREVIEW_QUALITY })
       .toBuffer();
 
-    return pixelated;
+    return watermarked;
   } catch (error) {
     console.error("Error generating image preview:", error);
     return null;

@@ -32,7 +32,11 @@ export function SellerLevelCard({
 }: SellerLevelCardProps) {
   const t = useTranslations("rewards");
   const points = calculatePoints({ uploads, downloads, reviews, avgRating, isVerifiedSeller });
-  const { current, next, progressPercent, pointsNeeded } = getProgressToNextLevel(points);
+  const sellerStats = { uploads, downloads };
+  const { current, next, progressPercent, pointsNeeded } = getProgressToNextLevel(
+    points,
+    sellerStats
+  );
   const CurrentIcon = current.icon;
   const NextIcon = next?.icon;
 

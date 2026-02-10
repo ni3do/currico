@@ -14,7 +14,6 @@ import {
   Upload,
   Users,
   User,
-  Palette,
   Bell,
   Shield,
   ChevronDown,
@@ -101,11 +100,16 @@ export function AccountSidebar({
       icon: Heart,
       count: stats.wishlistItems,
     },
+    {
+      id: "notifications" as TabType,
+      label: t("nav.notifications"),
+      icon: Bell,
+      count: null,
+    },
   ] as const;
 
   const SETTINGS_SUB_ITEMS = [
     { id: "settings-profile" as TabType, label: t("nav.settingsProfile"), icon: User },
-    { id: "settings-appearance" as TabType, label: t("nav.settingsAppearance"), icon: Palette },
     { id: "settings-notifications" as TabType, label: t("nav.settingsNotifications"), icon: Bell },
     { id: "settings-account" as TabType, label: t("nav.settingsAccount"), icon: Shield },
   ] as const;

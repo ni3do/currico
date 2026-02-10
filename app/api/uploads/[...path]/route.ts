@@ -32,14 +32,14 @@ export async function GET(
     // Validate path segments to prevent directory traversal
     for (const segment of pathSegments) {
       if (segment.includes("..") || segment.includes("~")) {
-        return NextResponse.json({ error: "Invalid path" }, { status: 400 });
+        return NextResponse.json({ error: "Ungültiger Pfad" }, { status: 400 });
       }
     }
 
     // Only allow serving from previews and avatars directories (public content)
     const category = pathSegments[0];
     if (!["previews", "avatars"].includes(category)) {
-      return NextResponse.json({ error: "Not found" }, { status: 404 });
+      return NextResponse.json({ error: "Nicht gefunden" }, { status: 404 });
     }
 
     const relativePath = pathSegments.join("/");
@@ -61,10 +61,10 @@ export async function GET(
   } catch (error) {
     // File not found or read error
     if ((error as NodeJS.ErrnoException).code === "ENOENT") {
-      return NextResponse.json({ error: "File not found" }, { status: 404 });
+      return NextResponse.json({ error: "Datei nicht gefunden" }, { status: 404 });
     }
 
     console.error("Error serving uploaded file:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
   }
 }

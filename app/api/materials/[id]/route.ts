@@ -102,8 +102,11 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       preview_url: string | null;
     }[] = [];
 
+    // Strategy: same subject → same cycle → most popular
+    const materialCycles = toStringArray(material.cycles);
+
     if (materialSubjects.length > 0) {
-      // Get IDs of related materials using PostgreSQL JSONB ?| operator
+      // First: try matching by subject
       const relatedIds = await prisma.$queryRawUnsafe<{ id: string }[]>(
         `SELECT id FROM resources WHERE id != $1 AND is_published = true AND is_approved = true AND subjects::jsonb ?| $2::text[] LIMIT 3`,
         id,
@@ -112,9 +115,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
       if (relatedIds.length > 0) {
         relatedMaterials = await prisma.resource.findMany({
-          where: {
-            id: { in: relatedIds.map((r) => r.id) },
-          },
+          where: { id: { in: relatedIds.map((r) => r.id) } },
           select: {
             id: true,
             title: true,
@@ -127,6 +128,54 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           orderBy: { created_at: "desc" },
         });
       }
+    }
+
+    // Fallback: if not enough results, fill with same cycle materials
+    if (relatedMaterials.length < 3 && materialCycles.length > 0) {
+      const existingIds = [id, ...relatedMaterials.map((r) => r.id)];
+      const cycleIds = await prisma.$queryRawUnsafe<{ id: string }[]>(
+        `SELECT id FROM resources WHERE id != ALL($1::text[]) AND is_published = true AND is_approved = true AND cycles::jsonb ?| $2::text[] LIMIT $3`,
+        existingIds,
+        materialCycles,
+        3 - relatedMaterials.length
+      );
+
+      if (cycleIds.length > 0) {
+        const cycleMaterials = await prisma.resource.findMany({
+          where: { id: { in: cycleIds.map((r) => r.id) } },
+          select: {
+            id: true,
+            title: true,
+            price: true,
+            subjects: true,
+            cycles: true,
+            is_approved: true,
+            preview_url: true,
+          },
+          orderBy: { created_at: "desc" },
+        });
+        relatedMaterials.push(...cycleMaterials);
+      }
+    }
+
+    // Last fallback: most popular materials
+    if (relatedMaterials.length < 3) {
+      const existingIds = [id, ...relatedMaterials.map((r) => r.id)];
+      const popularMaterials = await prisma.resource.findMany({
+        where: { id: { notIn: existingIds }, is_published: true, is_approved: true },
+        select: {
+          id: true,
+          title: true,
+          price: true,
+          subjects: true,
+          cycles: true,
+          is_approved: true,
+          preview_url: true,
+        },
+        orderBy: { transactions: { _count: "desc" } },
+        take: 3 - relatedMaterials.length,
+      });
+      relatedMaterials.push(...popularMaterials);
     }
 
     // Transform the response

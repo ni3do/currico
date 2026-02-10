@@ -5,7 +5,7 @@ import { signOut, useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { Bell, ChevronDown, ChevronRight } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import LocaleSwitcher from "@/components/ui/LocaleSwitcher";
 
@@ -15,6 +15,8 @@ export default function TopBar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
+
+  const [unreadCount, setUnreadCount] = useState(0);
 
   const pathname = usePathname();
   const isAdmin = session?.user?.role === "ADMIN";
@@ -47,6 +49,31 @@ export default function TopBar() {
       };
     }
   }, [isUserMenuOpen]);
+
+  // Poll for unread notification count
+  useEffect(() => {
+    if (!session) return;
+    let active = true;
+
+    const fetchCount = async () => {
+      try {
+        const res = await fetch("/api/users/me/notifications?unread=true");
+        if (res.ok && active) {
+          const data = await res.json();
+          setUnreadCount(data.unreadCount ?? 0);
+        }
+      } catch {
+        // Silently ignore — TopBar badge is non-critical
+      }
+    };
+
+    fetchCount();
+    const interval = setInterval(fetchCount, 60_000);
+    return () => {
+      active = false;
+      clearInterval(interval);
+    };
+  }, [session]);
 
   return (
     <header className="border-border-subtle bg-bg/95 sticky top-0 z-50 border-b backdrop-blur-sm">
@@ -88,6 +115,20 @@ export default function TopBar() {
             <div className="flex items-center gap-3">
               <ThemeToggle />
               <LocaleSwitcher />
+              {session && (
+                <Link
+                  href="/account/notifications"
+                  className="text-text-secondary hover:text-primary relative p-2 transition-colors"
+                  aria-label={t("navigation.account")}
+                >
+                  <Bell className="h-5 w-5" />
+                  {unreadCount > 0 && (
+                    <span className="bg-error text-text-on-accent absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-bold">
+                      {unreadCount > 99 ? "99+" : unreadCount}
+                    </span>
+                  )}
+                </Link>
+              )}
               {session ? (
                 <div className="relative" ref={userMenuRef}>
                   {/* User Avatar/Name Dropdown Trigger */}
@@ -337,6 +378,20 @@ export default function TopBar() {
                           />
                         </svg>
                         {t("navigation.profile")}
+                      </Link>
+                      <Link
+                        href="/account/notifications"
+                        className="text-text-secondary hover:text-primary flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors"
+                      >
+                        <div className="relative">
+                          <Bell className="h-5 w-5" />
+                          {unreadCount > 0 && (
+                            <span className="bg-error text-text-on-accent absolute -top-1.5 -right-1.5 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-bold">
+                              {unreadCount > 99 ? "99+" : unreadCount}
+                            </span>
+                          )}
+                        </div>
+                        {t("navigation.notifications")}
                       </Link>
                       {isAdmin && (
                         <Link
