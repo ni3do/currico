@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
 
     // URLs for Stripe onboarding flow
     const refreshUrl = `${baseUrl}/become-seller?stripe_refresh=true`;
-    const returnUrl = `${baseUrl}/seller/onboarding/complete`;
+    const returnUrl = `${baseUrl}/account`;
 
     let stripeAccountId = user.stripe_account_id;
 

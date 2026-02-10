@@ -69,6 +69,19 @@ model EmailVerificationToken {
   @@map("email_verification_tokens")
 }
 
+model PasswordResetToken {
+  id         String   @id @default(cuid()) @db.VarChar(50)
+  token      String   @unique @db.VarChar(255)
+  expires    DateTime
+  created_at DateTime @default(now())
+
+  user_id String @db.VarChar(50)
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("password_reset_tokens")
+}
+
 // ============================================================
 // USER MODEL - Seller Profile
 // ============================================================
@@ -86,7 +99,7 @@ model User {
   image         String?   @db.VarChar(500)
 
   // ============ PUBLIC PROFILE DATA ============
-  display_name String? @db.VarChar(100)
+  display_name String? @db.VarChar(32)
   bio          String? @db.Text
   subjects     Json    @default("[]")
   cycles       Json    @default("[]")
@@ -151,6 +164,7 @@ model User {
   downloads               Download[]
   wishlists               Wishlist[]
   emailVerificationTokens EmailVerificationToken[]
+  passwordResetTokens     PasswordResetToken[]
 
   // Report relations
   reports_submitted Report[] @relation("Reporter")
@@ -173,6 +187,9 @@ model User {
   comments      Comment[]
   commentReplies CommentReply[]
   commentLikes  CommentLike[]
+
+  // Notification relations
+  notifications Notification[]
 
   @@index([role])
   @@map("users")
@@ -206,7 +223,7 @@ model Resource {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  title       String @db.VarChar(255)
+  title       String @db.VarChar(64)
   description String @db.Text
   price       Int
   file_url    String @db.VarChar(500)
@@ -784,5 +801,33 @@ model CommentLike {
   @@unique([user_id, comment_id])
   @@index([comment_id])
   @@map("comment_likes")
+}
+
+// ============================================================
+// NOTIFICATION MODEL - In-app notifications
+// ============================================================
+
+model Notification {
+  id         String           @id @default(cuid()) @db.VarChar(50)
+  created_at DateTime         @default(now())
+  read_at    DateTime?
+  type       NotificationType
+  title      String           @db.VarChar(255)
+  body       String?          @db.Text
+  link       String?          @db.VarChar(500)
+
+  user_id String @db.VarChar(50)
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id, read_at])
+  @@index([created_at])
+  @@map("notifications")
+}
+
+enum NotificationType {
+  SALE
+  FOLLOW
+  REVIEW
+  SYSTEM
 }
 

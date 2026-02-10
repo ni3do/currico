@@ -8,7 +8,7 @@ export const MATERIAL_LANGUAGES = ["de", "fr", "it", "en"] as const;
 
 export const MATERIAL_DIALECTS = ["STANDARD", "SWISS", "BOTH"] as const;
 
-export const MATERIAL_TYPES = ["pdf", "word", "powerpoint", "excel", "other"] as const;
+export const MATERIAL_TYPES = ["pdf", "word", "powerpoint", "excel", "onenote", "other"] as const;
 
 // File size limits (in bytes)
 export const MAX_MATERIAL_FILE_SIZE = 50 * 1024 * 1024; // 50MB
@@ -29,6 +29,7 @@ export const ALLOWED_MATERIAL_TYPES: Record<string, string[]> = {
     "application/vnd.ms-excel",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   ],
+  onenote: ["application/onenote", "application/msonenote"],
   // Safe file types for "other" - educational/document formats only
   other: [
     "application/pdf",
@@ -38,6 +39,8 @@ export const ALLOWED_MATERIAL_TYPES: Record<string, string[]> = {
     "application/vnd.openxmlformats-officedocument.presentationml.presentation",
     "application/vnd.ms-excel",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "application/onenote",
+    "application/msonenote",
     "application/rtf",
     "text/plain",
     "text/csv",
@@ -86,7 +89,7 @@ export const createMaterialSchema = z.object({
   title: z
     .string()
     .min(3, "Titel muss mindestens 3 Zeichen haben")
-    .max(100, "Titel darf maximal 100 Zeichen haben"),
+    .max(64, "Titel darf maximal 64 Zeichen haben"),
   description: z
     .string()
     .min(10, "Beschreibung muss mindestens 10 Zeichen haben")
@@ -95,8 +98,14 @@ export const createMaterialSchema = z.object({
     .number()
     .int("Preis muss eine ganze Zahl sein")
     .min(0, "Preis darf nicht negativ sein")
-    .max(100000, "Preis darf maximal 1000 CHF sein"), // Max 1000 CHF in cents
-  subjects: z.array(z.string().min(1)).min(1, "Mindestens ein Fach auswählen"),
+    .max(100000, "Preis darf maximal 1000 CHF sein") // Max 1000 CHF in cents
+    .refine(
+      (val) => val === 0 || (val >= 50 && val % 50 === 0),
+      "Preis muss 0 (gratis) oder mindestens CHF 0.50 in 50-Rappen-Schritten sein"
+    ),
+  subjects: z
+    .array(z.string().min(2, "Fachkürzel muss mindestens 2 Zeichen haben"))
+    .min(1, "Mindestens ein Fach auswählen"),
   cycles: z.array(z.string().min(1)).min(1, "Mindestens einen Zyklus auswählen"),
   language: z.enum(MATERIAL_LANGUAGES).optional().default("de"),
   dialect: z.enum(MATERIAL_DIALECTS).optional().default("BOTH"),
@@ -109,7 +118,7 @@ export const updateMaterialSchema = z.object({
   title: z
     .string()
     .min(3, "Titel muss mindestens 3 Zeichen haben")
-    .max(100, "Titel darf maximal 100 Zeichen haben")
+    .max(64, "Titel darf maximal 64 Zeichen haben")
     .optional(),
   description: z
     .string()
@@ -121,8 +130,15 @@ export const updateMaterialSchema = z.object({
     .int("Preis muss eine ganze Zahl sein")
     .min(0, "Preis darf nicht negativ sein")
     .max(100000, "Preis darf maximal 1000 CHF sein")
+    .refine(
+      (val) => val === 0 || (val >= 50 && val % 50 === 0),
+      "Preis muss 0 (gratis) oder mindestens CHF 0.50 in 50-Rappen-Schritten sein"
+    )
     .optional(),
-  subjects: z.array(z.string().min(1)).min(1, "Mindestens ein Fach auswählen").optional(),
+  subjects: z
+    .array(z.string().min(2, "Fachkürzel muss mindestens 2 Zeichen haben"))
+    .min(1, "Mindestens ein Fach auswählen")
+    .optional(),
   cycles: z.array(z.string().min(1)).min(1, "Mindestens einen Zyklus auswählen").optional(),
   is_published: z.boolean().optional(),
 });

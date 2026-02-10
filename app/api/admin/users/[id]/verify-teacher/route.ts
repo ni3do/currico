@@ -57,7 +57,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     });
 
     return NextResponse.json({
-      message: "Teacher verification successful",
+      message: "Lehrer-Verifizierung erfolgreich",
       user: updatedUser,
     });
   } catch (error) {
@@ -120,7 +120,7 @@ export async function DELETE(
     });
 
     return NextResponse.json({
-      message: "Teacher verification removed",
+      message: "Lehrer-Verifizierung entfernt",
       user: updatedUser,
     });
   } catch (error) {

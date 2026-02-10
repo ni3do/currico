@@ -96,7 +96,7 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error fetching materials:", error);
-    return NextResponse.json({ error: "Failed to fetch materials" }, { status: 500 });
+    return NextResponse.json({ error: "Fehler beim Laden der Materialien" }, { status: 500 });
   }
 }
 
@@ -111,7 +111,7 @@ export async function PATCH(request: NextRequest) {
     const { id, is_approved, status, is_public } = body;
 
     if (!id) {
-      return NextResponse.json({ error: "Material ID is required" }, { status: 400 });
+      return NextResponse.json({ error: "Material-ID ist erforderlich" }, { status: 400 });
     }
 
     const updateData: Record<string, unknown> = {};
@@ -124,7 +124,7 @@ export async function PATCH(request: NextRequest) {
     // Handle new status field (PENDING, VERIFIED, REJECTED)
     if (status !== undefined) {
       if (!["PENDING", "VERIFIED", "REJECTED"].includes(status)) {
-        return NextResponse.json({ error: "Invalid status value" }, { status: 400 });
+        return NextResponse.json({ error: "Ungültiger Statuswert" }, { status: 400 });
       }
       updateData.status = status;
 
@@ -152,6 +152,6 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json(updated);
   } catch (error) {
     console.error("Error updating material:", error);
-    return NextResponse.json({ error: "Failed to update material" }, { status: 500 });
+    return NextResponse.json({ error: "Fehler beim Aktualisieren des Materials" }, { status: 500 });
   }
 }

@@ -53,7 +53,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     });
 
     return NextResponse.json({
-      message: "Seller verification successful",
+      message: "Verkäufer-Verifizierung erfolgreich",
       user: updatedUser,
     });
   } catch (error) {
@@ -113,7 +113,7 @@ export async function DELETE(
     });
 
     return NextResponse.json({
-      message: "Seller verification removed",
+      message: "Verkäufer-Verifizierung entfernt",
       user: updatedUser,
     });
   } catch (error) {

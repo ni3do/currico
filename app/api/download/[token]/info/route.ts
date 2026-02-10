@@ -50,7 +50,7 @@ export async function GET(
 
     if (!downloadToken) {
       return NextResponse.json(
-        { error: "invalid_token", message: "Download link not found" },
+        { error: "invalid_token", message: "Download-Link nicht gefunden" },
         { status: 404 }
       );
     }
@@ -58,7 +58,7 @@ export async function GET(
     // Check if transaction is completed
     if (downloadToken.transaction.status !== "COMPLETED") {
       return NextResponse.json(
-        { error: "payment_incomplete", message: "Payment has not been completed" },
+        { error: "payment_incomplete", message: "Zahlung wurde noch nicht abgeschlossen" },
         { status: 400 }
       );
     }
@@ -102,7 +102,7 @@ export async function GET(
   } catch (error) {
     console.error("Error fetching download token info:", error);
     return NextResponse.json(
-      { error: "server_error", message: "An error occurred" },
+      { error: "server_error", message: "Ein Fehler ist aufgetreten" },
       { status: 500 }
     );
   }

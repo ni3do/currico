@@ -3,6 +3,7 @@ import crypto from "crypto";
 import { prisma } from "@/lib/db";
 import { constructWebhookEvent } from "@/lib/stripe";
 import { sendPurchaseConfirmationEmail } from "@/lib/email";
+import { notifySale } from "@/lib/notifications";
 import { DOWNLOAD_LINK_EXPIRY_DAYS, DOWNLOAD_LINK_MAX_DOWNLOADS } from "@/lib/constants";
 import Stripe from "stripe";
 
@@ -53,6 +54,10 @@ export async function POST(request: NextRequest) {
 
       case "payment_intent.payment_failed":
         await handlePaymentIntentFailed(event.data.object as Stripe.PaymentIntent);
+        break;
+
+      case "charge.refunded":
+        await handleChargeRefunded(event.data.object as Stripe.Charge);
         break;
 
       default:
@@ -180,6 +185,7 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session):
       resource: {
         select: {
           title: true,
+          seller_id: true,
         },
       },
       buyer: {
@@ -280,6 +286,9 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session):
     console.warn(`Webhook: No email address available for transaction ${transaction.id}`);
   }
 
+  // Notify the seller about the sale (fire-and-forget)
+  notifySale(transaction.resource.seller_id, transaction.resource.title, transaction.amount);
+
   if (isGuestCheckout) {
     console.log(
       `Webhook: Completed guest transaction ${transaction.id} for ${transaction.guest_email}, ` +
@@ -358,6 +367,68 @@ async function handlePaymentIntentFailed(paymentIntent: Stripe.PaymentIntent): P
   console.log(
     `Webhook: Marked transaction ${transaction.id} as FAILED ` +
       `for payment intent ${paymentIntentId}: ${failureMessage}`
+  );
+}
+
+/**
+ * Handle charge.refunded webhook event
+ * Sets Transaction to REFUNDED, invalidates DownloadTokens, deletes Download records
+ */
+async function handleChargeRefunded(charge: Stripe.Charge): Promise<void> {
+  const paymentIntentId =
+    typeof charge.payment_intent === "string" ? charge.payment_intent : charge.payment_intent?.id;
+
+  console.log(`[PAYMENT WEBHOOK] Processing charge.refunded for PI: ${paymentIntentId}`);
+
+  if (!paymentIntentId) {
+    console.warn("[PAYMENT WEBHOOK] No payment_intent on refunded charge");
+    return;
+  }
+
+  // Find the completed transaction by payment intent ID
+  const transaction = await prisma.transaction.findFirst({
+    where: {
+      stripe_payment_intent_id: paymentIntentId,
+      status: "COMPLETED",
+    },
+    select: {
+      id: true,
+      buyer_id: true,
+      resource_id: true,
+    },
+  });
+
+  if (!transaction) {
+    console.warn(`[PAYMENT WEBHOOK] No completed transaction found for PI: ${paymentIntentId}`);
+    return;
+  }
+
+  await prisma.$transaction(async (tx) => {
+    // Mark transaction as REFUNDED
+    await tx.transaction.update({
+      where: { id: transaction.id },
+      data: { status: "REFUNDED" },
+    });
+
+    // Delete all download tokens for this transaction
+    await tx.downloadToken.deleteMany({
+      where: { transaction_id: transaction.id },
+    });
+
+    // Remove download access for authenticated buyer
+    if (transaction.buyer_id) {
+      await tx.download.deleteMany({
+        where: {
+          user_id: transaction.buyer_id,
+          resource_id: transaction.resource_id,
+        },
+      });
+    }
+  });
+
+  console.log(
+    `[PAYMENT WEBHOOK] Refunded transaction ${transaction.id}, ` +
+      `revoked access to resource ${transaction.resource_id}`
   );
 }
 
