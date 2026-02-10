@@ -145,7 +145,7 @@ export default function HilfePage() {
                 }}
                 className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                   activeTab === key
-                    ? "bg-primary-light text-primary border-primary/30 border"
+                    ? "bg-primary text-text-on-accent"
                     : "bg-surface border-border text-text hover:bg-bg-secondary border"
                 }`}
               >

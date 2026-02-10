@@ -186,7 +186,7 @@ export default function Home() {
                         <select
                           value={selectedCycle}
                           onChange={(e) => handleCycleChange(e.target.value)}
-                          className="bg-surface/80 text-text-secondary focus:bg-surface w-full appearance-none rounded-full border-0 py-3 pr-10 pl-4 text-sm font-medium shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:ring-2 focus:ring-[var(--ctp-blue)] focus:outline-none"
+                          className="bg-surface/80 text-text-secondary focus:bg-surface w-full appearance-none rounded-xl border-0 py-3 pr-10 pl-4 text-sm font-medium shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:ring-2 focus:ring-[var(--ctp-blue)] focus:outline-none"
                         >
                           <option value="">{t("hero.search.allCycles")}</option>
                           {zyklen.map((z) => (
@@ -203,7 +203,7 @@ export default function Home() {
                         <select
                           value={selectedSubject}
                           onChange={(e) => handleSubjectChange(e.target.value)}
-                          className="bg-surface/80 text-text-secondary focus:bg-surface w-full appearance-none rounded-full border-0 py-3 pr-10 pl-4 text-sm font-medium shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:ring-2 focus:ring-[var(--ctp-blue)] focus:outline-none"
+                          className="bg-surface/80 text-text-secondary focus:bg-surface w-full appearance-none rounded-xl border-0 py-3 pr-10 pl-4 text-sm font-medium shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:ring-2 focus:ring-[var(--ctp-blue)] focus:outline-none"
                         >
                           <option value="">{t("hero.search.allSubjects")}</option>
                           {availableSubjects.map((fb) => (
@@ -220,7 +220,7 @@ export default function Home() {
                         <select
                           value={selectedKompetenzbereich}
                           onChange={(e) => setSelectedKompetenzbereich(e.target.value)}
-                          className="bg-surface/80 text-text-secondary focus:bg-surface w-full appearance-none rounded-full border-0 py-3 pr-10 pl-4 text-sm font-medium shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:ring-2 focus:ring-[var(--ctp-blue)] focus:outline-none"
+                          className="bg-surface/80 text-text-secondary focus:bg-surface w-full appearance-none rounded-xl border-0 py-3 pr-10 pl-4 text-sm font-medium shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:ring-2 focus:ring-[var(--ctp-blue)] focus:outline-none"
                         >
                           <option value="">{t("hero.search.allKompetenzbereiche")}</option>
                           {availableKompetenzbereiche.map((kb) => (

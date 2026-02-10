@@ -2621,17 +2621,17 @@
       "upload": {
         "question": "How do I upload material?",
         "answer": "Create a free account, click 'Upload Material', and fill in the title, subject, and cycle. Upload your file, publish — done.",
-        "linkLabel": "Register & Upload"
+        "linkLabel": "Register & Upload →"
       },
       "copyright": {
         "question": "What am I allowed to upload? (Copyright)",
         "answer": "Only your own materials or CC0-licensed content. No scans from textbooks, no protected trademarks or characters.",
-        "linkLabel": "Read Copyright Guide"
+        "linkLabel": "Read Copyright Guide →"
       },
       "browse": {
         "question": "Where can I find teaching materials?",
         "answer": "Browse our materials page and filter by cycle, subject, and dialect.",
-        "linkLabel": "Discover Materials"
+        "linkLabel": "Discover Materials →"
       }
     },
     "usefulLinks": {

@@ -2650,17 +2650,17 @@
       "upload": {
         "question": "Wie lade ich Material hoch?",
         "answer": "Erstellen Sie ein kostenloses Konto, klicken Sie auf «Material hochladen» und füllen Sie Titel, Fach und Zyklus aus. Datei hochladen, veröffentlichen – fertig.",
-        "linkLabel": "Registrieren & hochladen"
+        "linkLabel": "Registrieren & hochladen →"
       },
       "copyright": {
         "question": "Was darf ich hochladen? (Urheberrecht)",
         "answer": "Nur eigene Materialien oder CC0-lizenzierte Inhalte. Keine Scans aus Lehrmitteln, keine geschützten Marken oder Figuren.",
-        "linkLabel": "Urheberrechts-Leitfaden lesen"
+        "linkLabel": "Urheberrechts-Leitfaden lesen →"
       },
       "browse": {
         "question": "Wo finde ich Unterrichtsmaterialien?",
         "answer": "Stöbern Sie auf unserer Materialseite und filtern Sie nach Zyklus, Fach und Sprachvariante.",
-        "linkLabel": "Materialien entdecken"
+        "linkLabel": "Materialien entdecken →"
       }
     },
     "usefulLinks": {
