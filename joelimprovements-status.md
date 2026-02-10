@@ -10,6 +10,8 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Sprachvarianten ersetzt durch Kompetenzen-Selector
 - [x] SwissMade rot gelöscht aus TrustBar
 - [x] Empfohlene Materialien laden echte Materialien via API
+- [ ] "Infomaniak Schweiz" zu "Schweizer Server" ändern plus Emblem
+- [ ] "Sichere Zahlung" nach rechts verschieben
 
 ### Eigene Vorschläge (Startseite)
 
@@ -128,6 +130,8 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] FAQ-Tab-Farben angepasst
 - [x] Doppelpfeile bei Schnelleinstieg entfernt
 - [x] Schnelleinstieg-Text voll ausgeschrieben
+- [ ] Schnelleinstieg: noch zwei Pfeile bei "Wie lade ich Material hoch", "Was darf ich hochladen" und "Wo finde ich Unterrichtsmaterialien" — nur ein Pfeil und Link unten ins Kästchen, uniform machen
+- [ ] Häufige Fragen: Bild springt wenn man zwischen Tabs wechselt (Allgemein, Materialien kaufen, Materialien verkaufen, Technisches)
 
 ### Eigene Vorschläge (Hilfe)
 
@@ -279,6 +283,8 @@ Legende: [x] = erledigt, [ ] = offen
 - [ ] Google-Anmeldung überarbeiten (Flow verbessern)
 - [ ] Erneute Google-Anmeldung → braucht Zwischenfenster von Google
 - [ ] "Zurück zur Startseite" sichtbar machen ohne Scrollen
+- [ ] Security: Password Salt implementieren (Simon)
+- [ ] Login über Google Auth überarbeiten (Simon)
 
 ### Eigene Vorschläge (Anmelden)
 
@@ -314,6 +320,9 @@ Legende: [x] = erledigt, [ ] = offen
 
 - [ ] Navigationsbar Farben und ausgewählte Tags überarbeiten
 - [ ] Mitteilungen als Tab in der Profil-Navigationsbar haben
+- [ ] Benachrichtigungen: richtige URL — /notification gibt 404
+- [ ] E-Mail-Benachrichtigungen: schönere Nachricht gestalten
+- [ ] "Geld verdienen" als Titel für Stripe-Anmeldung ist zu offensiv — Segment verbessern
 
 ### Profil vervollständigen
 
@@ -593,10 +602,10 @@ Legende: [x] = erledigt, [ ] = offen
 
 | Seite                     | Erledigt | Offen (Joel) | Offen (Eigene) | Total Offen |
 | ------------------------- | -------- | ------------ | -------------- | ----------- |
-| Startseite                | 4        | 0            | 11             | 11          |
+| Startseite                | 4        | 2            | 11             | 13          |
 | Materialien               | 0        | 21           | 19             | 40          |
 | Material-Vorschau         | 0        | 12           | 17             | 29          |
-| Hilfe                     | 3        | 0            | 7              | 7           |
+| Hilfe                     | 3        | 2            | 7              | 9           |
 | Urheberrecht              | 1        | 0            | 8              | 8           |
 | Impressum                 | 0        | 4            | 9              | 13          |
 | Cookie-Richtlinien        | 0        | 1            | 7              | 8           |
@@ -604,13 +613,13 @@ Legende: [x] = erledigt, [ ] = offen
 | Verifizierter Verkäufer   | 0        | 2            | 6              | 8           |
 | Über uns                  | 0        | 2            | 10             | 12          |
 | Kontakt                   | 0        | 4            | 9              | 13          |
-| Anmelden                  | 0        | 6            | 6              | 12          |
+| Anmelden                  | 0        | 8            | 6              | 14          |
 | Registrieren              | 0        | 0            | 5              | 5           |
-| Konto (alle Unterseiten)  | 0        | 27           | 39             | 66          |
+| Konto (alle Unterseiten)  | 0        | 30           | 39             | 69          |
 | Folge ich                 | 0        | 3            | 8              | 11          |
 | Hochladen                 | 0        | 18           | 13             | 31          |
 | Öffentliches Profil       | 0        | 1            | 10             | 11          |
 | Verkäufer werden / Stripe | 0        | 4            | 10             | 14          |
 | Benachrichtigungen        | 0        | 3            | 0              | 3           |
 | Global                    | 9        | 1            | 13             | 14          |
-| **Total**                 | **17**   | **113**      | **214**        | **327**     |
+| **Total**                 | **17**   | **120**      | **214**        | **334**     |
