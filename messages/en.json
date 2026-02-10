@@ -232,8 +232,9 @@
       "lp21": "LP21 Compliant",
       "swissMade": "Swiss Made",
       "quality": "Quality Checked",
-      "hosting": "Secure Hosting",
-      "privacy": "Data Protection"
+      "hosting": "Infomaniak Swiss",
+      "securePay": "Secure Payment",
+      "ndsg": "nDSG Compliant"
     },
     "categoryQuickAccess": {
       "title": "Popular Subjects",
@@ -600,8 +601,17 @@
     },
     "loading": "Loading...",
     "empty": {
-      "title": "No materials found",
-      "description": "Try different search terms or filters"
+      "title": "No results found",
+      "description": "Try different search terms or filters",
+      "descriptionSearch": "No results found for \"{query}\". Check the spelling or try a more general term.",
+      "descriptionFilters": "No results with the current filters. Try removing some filters.",
+      "descriptionSearchAndFilters": "No results for your search with the current filters. Try adjusting your search or removing some filters.",
+      "clearSearch": "Clear search",
+      "clearFilters": "Reset filters",
+      "clearAll": "Reset all",
+      "suggestionsTitle": "Popular searches",
+      "fetchError": "Could not load materials. Please try again.",
+      "fetchErrorRetry": "Try again"
     },
     "toast": {
       "addedToWishlist": "Added to wishlist",
@@ -1160,7 +1170,7 @@
           "accuracy": "Ensuring the accuracy of your material descriptions",
           "support": "Responding to buyer questions about your materials",
           "updates": "Updating materials if errors are discovered",
-          "taxes": "Handling your own tax obligations for income earned",
+          "taxes": "Handling your own tax obligations for income earned. Note: In Switzerland, VAT registration is required once annual revenue exceeds CHF 100,000. We recommend consulting your cantonal tax authority regarding the correct taxation of your sales revenue",
           "compliance": "Complying with Swiss education standards and regulations"
         }
       },
@@ -1406,8 +1416,8 @@
       "noTrademarksDesc": "My material does not contain protected trademarks, logos, or characters.",
       "swissGerman": "Swiss German Spelling",
       "swissGermanDesc": "My material uses Swiss German spelling (no Eszett).",
-      "acceptTerms": "Accept Seller Agreement",
-      "acceptTermsDesc": "I accept the seller agreement and confirm that I have the rights to sell this material.",
+      "acceptTerms": "Accept Seller Agreement & Liability",
+      "acceptTermsDesc": "I accept the seller agreement, confirm that I own all rights to this material or hold the required licenses, and acknowledge that I am personally liable for any copyright infringement.",
       "incomplete": "Please confirm all points to proceed.",
       "eszettWarning": "Your title or description still contains Eszett characters (ß). Please correct this in step 1.",
       "copyrightGuideLink": "Not sure? Read our",
@@ -1838,7 +1848,8 @@
         "items": {
           "personal": "You receive a personal, non-transferable license to use the materials",
           "noRedistribution": "You may not redistribute, resell, or share purchased materials",
-          "refunds": "Refund requests are handled on a case-by-case basis through our support team"
+          "refunds": "Refund requests are handled on a case-by-case basis through our support team",
+          "pricing": "The displayed price is the final price for buyers. Currico charges a platform fee on each sale, which is deducted from the seller's revenue and is already included in the displayed price"
         }
       },
       "digitalWithdrawal": {
@@ -2573,17 +2584,17 @@
       "title": "Quick Start",
       "upload": {
         "question": "How do I upload material?",
-        "answer": "To upload material, you first need a free Currico account. After registering, click 'Upload Material', fill in the basic information (title, description, cycle, subject), upload your file, and confirm the legal requirements. After publishing, your material is immediately available.",
+        "answer": "Create a free account, click 'Upload Material', and fill in the title, subject, and cycle. Upload your file, publish — done.",
         "linkLabel": "Register & Upload →"
       },
       "copyright": {
         "question": "What am I allowed to upload? (Copyright)",
-        "answer": "You may only upload self-created materials or content with CC0 license. No scans from textbooks, no protected trademarks or characters. Our Copyright Guide explains all the details about licenses, images, and fonts.",
+        "answer": "Only your own materials or CC0-licensed content. No scans from textbooks, no protected trademarks or characters.",
         "linkLabel": "Read Copyright Guide →"
       },
       "browse": {
         "question": "Where can I find teaching materials?",
-        "answer": "On our materials page you can browse all available teaching materials. Filter by cycle, subject area, dialect (Swiss German/Standard German) and more to find exactly what you need.",
+        "answer": "Browse our materials page and filter by cycle, subject, and dialect.",
         "linkLabel": "Discover Materials →"
       }
     },

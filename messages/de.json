@@ -233,8 +233,9 @@
       "lp21": "LP21 konform",
       "swissMade": "Swiss Made",
       "quality": "Qualitätsgeprüft",
-      "hosting": "Sicheres Hosting",
-      "privacy": "Datenschutz"
+      "hosting": "Infomaniak Schweiz",
+      "securePay": "Sichere Zahlung",
+      "ndsg": "nDSG-konform"
     },
     "categoryQuickAccess": {
       "title": "Beliebte Fächer",
@@ -601,8 +602,17 @@
     },
     "loading": "Wird geladen...",
     "empty": {
-      "title": "Keine Materialien gefunden",
-      "description": "Versuchen Sie andere Suchbegriffe oder Filter"
+      "title": "Keine Ergebnisse gefunden",
+      "description": "Versuchen Sie andere Suchbegriffe oder Filter",
+      "descriptionSearch": "Für \"{query}\" wurden keine Ergebnisse gefunden. Prüfen Sie die Schreibweise oder verwenden Sie einen allgemeineren Begriff.",
+      "descriptionFilters": "Keine Ergebnisse mit den aktuellen Filtern. Versuchen Sie, einige Filter zu entfernen.",
+      "descriptionSearchAndFilters": "Keine Ergebnisse für Ihre Suche mit den aktuellen Filtern. Versuchen Sie, die Suche oder einige Filter anzupassen.",
+      "clearSearch": "Suche löschen",
+      "clearFilters": "Filter zurücksetzen",
+      "clearAll": "Alles zurücksetzen",
+      "suggestionsTitle": "Beliebte Suchbegriffe",
+      "fetchError": "Materialien konnten nicht geladen werden. Bitte versuchen Sie es erneut.",
+      "fetchErrorRetry": "Erneut versuchen"
     },
     "toast": {
       "addedToWishlist": "Zur Wunschliste hinzugefügt",
@@ -1161,7 +1171,7 @@
           "accuracy": "Die Richtigkeit Ihrer Materialbeschreibungen",
           "support": "Die Beantwortung von Käuferfragen zu Ihren Materialien",
           "updates": "Die Aktualisierung von Materialien bei entdeckten Fehlern",
-          "taxes": "Die Erfüllung Ihrer eigenen steuerlichen Pflichten für erzielte Einnahmen",
+          "taxes": "Die Erfüllung Ihrer eigenen steuerlichen Pflichten für erzielte Einnahmen. Hinweis: Ab einem Jahresumsatz von CHF 100'000 besteht in der Schweiz eine MWST-Pflicht. Wir empfehlen, sich bei Ihrer kantonalen Steuerverwaltung über die korrekte Versteuerung Ihrer Verkaufserlöse zu informieren",
           "compliance": "Die Einhaltung der Schweizer Bildungsstandards und -vorschriften"
         }
       },
@@ -1407,8 +1417,8 @@
       "noTrademarksDesc": "Mein Material enthält keine geschützten Marken, Logos oder Figuren.",
       "swissGerman": "Schweizer Rechtschreibung",
       "swissGermanDesc": "Mein Material verwendet die Schweizer Rechtschreibung (kein Eszett).",
-      "acceptTerms": "Verkäufervereinbarung akzeptieren",
-      "acceptTermsDesc": "Ich akzeptiere die Verkäufervereinbarung und bestätige, dass ich die Rechte habe, dieses Material zu verkaufen.",
+      "acceptTerms": "Verkäufervereinbarung und Haftung akzeptieren",
+      "acceptTermsDesc": "Ich akzeptiere die Verkäufervereinbarung, bestätige, dass ich alle Rechte an diesem Material besitze oder die erforderlichen Lizenzen habe, und bin mir bewusst, dass ich für Urheberrechtsverletzungen persönlich hafte.",
       "incomplete": "Bitte bestätigen Sie alle Punkte, um fortzufahren.",
       "eszettWarning": "Ihr Titel oder Beschreibung enthält noch Eszett-Zeichen (ß). Bitte korrigieren Sie dies in Schritt 1.",
       "copyrightGuideLink": "Unsicher? Lesen Sie unseren",
@@ -1839,7 +1849,8 @@
         "items": {
           "personal": "Erhalten Sie eine persönliche, nicht übertragbare Lizenz zur Nutzung der Materialien",
           "noRedistribution": "Dürfen Sie gekaufte Materialien nicht weiterverbreiten, weiterverkaufen oder teilen",
-          "refunds": "Rückerstattungsanfragen werden von unserem Support-Team von Fall zu Fall bearbeitet"
+          "refunds": "Rückerstattungsanfragen werden von unserem Support-Team von Fall zu Fall bearbeitet",
+          "pricing": "Der angezeigte Preis ist der Endpreis für Käufer. Currico erhebt eine Vermittlungsgebühr auf jeden Verkauf, die vom Verkäufererlös abgezogen wird und im angezeigten Preis bereits enthalten ist"
         }
       },
       "digitalWithdrawal": {
@@ -2602,17 +2613,17 @@
       "title": "Schnelleinstieg",
       "upload": {
         "question": "Wie lade ich Material hoch?",
-        "answer": "Um Material hochzuladen, benötigen Sie zunächst ein kostenloses Currico-Konto. Nach der Registrierung klicken Sie auf «Material hochladen», füllen die Grundinformationen aus (Titel, Beschreibung, Zyklus, Fach), laden Ihre Datei hoch und bestätigen die rechtlichen Punkte. Nach der Veröffentlichung ist Ihr Material sofort verfügbar.",
+        "answer": "Erstellen Sie ein kostenloses Konto, klicken Sie auf «Material hochladen» und füllen Sie Titel, Fach und Zyklus aus. Datei hochladen, veröffentlichen – fertig.",
         "linkLabel": "Registrieren & hochladen →"
       },
       "copyright": {
         "question": "Was darf ich hochladen? (Urheberrecht)",
-        "answer": "Sie dürfen nur selbst erstellte Materialien oder Inhalte mit CC0-Lizenz hochladen. Keine Scans aus Lehrmitteln, keine geschützten Marken oder Figuren. Unser Urheberrechts-Leitfaden erklärt alle Details zu Lizenzen, Bildern und Schriften.",
+        "answer": "Nur eigene Materialien oder CC0-lizenzierte Inhalte. Keine Scans aus Lehrmitteln, keine geschützten Marken oder Figuren.",
         "linkLabel": "Urheberrechts-Leitfaden lesen →"
       },
       "browse": {
         "question": "Wo finde ich Unterrichtsmaterialien?",
-        "answer": "Auf unserer Materialseite können Sie alle verfügbaren Unterrichtsmaterialien durchstöbern. Filtern Sie nach Zyklus, Fachbereich, Sprachvariante und mehr, um genau das zu finden, was Sie brauchen.",
+        "answer": "Stöbern Sie auf unserer Materialseite und filtern Sie nach Zyklus, Fach und Sprachvariante.",
         "linkLabel": "Materialien entdecken →"
       }
     },

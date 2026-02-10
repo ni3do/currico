@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { BadgeCheck, Shield, Server, Lock } from "lucide-react";
+import { BadgeCheck, Shield, Server, CreditCard, ShieldCheck } from "lucide-react";
 import { FadeIn, StaggerChildren, StaggerItem, motion } from "@/components/ui/animations";
 
 const SwissCross = () => (
@@ -38,9 +38,14 @@ const trustItems: TrustItem[] = [
     labelKey: "hosting",
   },
   {
-    key: "privacy",
-    icon: <Lock className="text-primary h-5 w-5" />,
-    labelKey: "privacy",
+    key: "securePay",
+    icon: <CreditCard className="text-success h-5 w-5" />,
+    labelKey: "securePay",
+  },
+  {
+    key: "ndsg",
+    icon: <ShieldCheck className="text-primary h-5 w-5" />,
+    labelKey: "ndsg",
   },
 ];
 

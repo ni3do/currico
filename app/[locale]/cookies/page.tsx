@@ -1,10 +1,11 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
-import { Mail, Check, X } from "lucide-react";
+import { Cookie, Shield, BarChart3, Settings, Mail } from "lucide-react";
 
 export default function CookiesPage() {
   const t = useTranslations("cookiesPage");
@@ -17,160 +18,118 @@ export default function CookiesPage() {
       <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
         {/* Page Header */}
         <div className="mb-8">
-          <Breadcrumb items={[{ label: tCommon("breadcrumb.cookies") }]} />
+          <Breadcrumb items={[{ label: tCommon("footer.links.cookies") }]} />
           <h1 className="text-text text-2xl font-bold sm:text-3xl">{t("title")}</h1>
           <p className="text-text-muted mt-1">{t("lastUpdated")}</p>
         </div>
 
-        {/* Content */}
-        <div className="prose prose-lg text-text-secondary max-w-none">
-          {/* Introduction */}
-          <div className="border-primary/20 bg-accent-subtle mb-8 rounded-xl border p-6">
-            <p className="text-text">{t("intro")}</p>
-          </div>
+        {/* Intro */}
+        <div className="border-primary/20 bg-accent-subtle mb-8 rounded-xl border p-6">
+          <p className="text-text">{t("intro")}</p>
+        </div>
 
+        <div className="prose prose-lg text-text-secondary max-w-none">
           {/* Section 1: What Are Cookies */}
-          <h2 className="text-text mt-8 text-xl font-semibold">{t("sections.what.title")}</h2>
+          <h2 className="text-text text-xl font-semibold">{t("sections.what.title")}</h2>
           <p>{t("sections.what.content")}</p>
 
           {/* Section 2: How We Use Cookies */}
           <h2 className="text-text mt-8 text-xl font-semibold">{t("sections.howWeUse.title")}</h2>
           <p>{t("sections.howWeUse.content")}</p>
 
-          {/* Section 3: Cookie Types */}
+          {/* Section 3: Types of Cookies */}
           <h2 className="text-text mt-8 text-xl font-semibold">{t("sections.types.title")}</h2>
 
           {/* Essential Cookies */}
-          <div className="bg-bg-secondary mt-4 rounded-lg p-4">
-            <div className="flex items-center gap-2">
-              <Check className="text-success h-5 w-5" />
-              <h3 className="text-text text-lg font-medium">
-                {t("sections.types.essential.title")}
-              </h3>
-              <span className="bg-success/10 text-success rounded-full px-2 py-0.5 text-xs font-medium">
+          <div className="not-prose border-border bg-surface mt-4 rounded-xl border p-6">
+            <div className="mb-3 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Shield className="text-success h-5 w-5" />
+                <h3 className="text-text text-lg font-semibold">
+                  {t("sections.types.essential.title")}
+                </h3>
+              </div>
+              <span className="bg-success/10 text-success rounded-full px-3 py-1 text-xs font-medium">
                 {t("sections.types.essential.badge")}
               </span>
             </div>
-            <p className="mt-2">{t("sections.types.essential.content")}</p>
-            <div className="mt-3 overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-border border-b">
-                    <th className="text-text py-2 text-left font-medium">
-                      {t("sections.types.table.name")}
-                    </th>
-                    <th className="text-text py-2 text-left font-medium">
-                      {t("sections.types.table.purpose")}
-                    </th>
-                    <th className="text-text py-2 text-left font-medium">
-                      {t("sections.types.table.duration")}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-border border-b">
-                    <td className="py-2 font-mono text-xs">cookie-consent</td>
-                    <td className="py-2">{t("sections.types.essential.cookies.consent")}</td>
-                    <td className="py-2">1 {t("sections.types.table.year")}</td>
-                  </tr>
-                  <tr className="border-border border-b">
-                    <td className="py-2 font-mono text-xs">next-auth.session-token</td>
-                    <td className="py-2">{t("sections.types.essential.cookies.session")}</td>
-                    <td className="py-2">30 {t("sections.types.table.days")}</td>
-                  </tr>
-                  <tr className="border-border border-b">
-                    <td className="py-2 font-mono text-xs">next-auth.csrf-token</td>
-                    <td className="py-2">{t("sections.types.essential.cookies.csrf")}</td>
-                    <td className="py-2">{t("sections.types.table.session")}</td>
-                  </tr>
-                  <tr>
-                    <td className="py-2 font-mono text-xs">NEXT_LOCALE</td>
-                    <td className="py-2">{t("sections.types.essential.cookies.locale")}</td>
-                    <td className="py-2">1 {t("sections.types.table.year")}</td>
-                  </tr>
-                </tbody>
-              </table>
+            <p className="text-text-secondary mb-4 text-sm">
+              {t("sections.types.essential.content")}
+            </p>
+
+            <div className="divide-border-subtle divide-y">
+              {(["consent", "session", "csrf", "locale"] as const).map((cookie) => (
+                <div key={cookie} className="flex items-start gap-3 py-3">
+                  <Cookie className="text-text-muted mt-0.5 h-4 w-4 shrink-0" />
+                  <div>
+                    <span className="text-text text-sm font-medium">{cookie}</span>
+                    <p className="text-text-muted text-sm">
+                      {t(`sections.types.essential.cookies.${cookie}`)}
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
           {/* Analytics Cookies */}
-          <div className="bg-bg-secondary mt-4 rounded-lg p-4">
-            <div className="flex items-center gap-2">
-              <X className="text-text-muted h-5 w-5" />
-              <h3 className="text-text text-lg font-medium">
-                {t("sections.types.analytics.title")}
-              </h3>
-              <span className="bg-bg-tertiary text-text-muted rounded-full px-2 py-0.5 text-xs font-medium">
+          <div className="not-prose border-border bg-surface mt-4 rounded-xl border p-6">
+            <div className="mb-3 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <BarChart3 className="text-primary h-5 w-5" />
+                <h3 className="text-text text-lg font-semibold">
+                  {t("sections.types.analytics.title")}
+                </h3>
+              </div>
+              <span className="bg-primary/10 text-primary rounded-full px-3 py-1 text-xs font-medium">
                 {t("sections.types.analytics.badge")}
               </span>
             </div>
-            <p className="mt-2">{t("sections.types.analytics.content")}</p>
-            <p className="mt-2 text-sm italic">{t("sections.types.analytics.note")}</p>
+            <p className="text-text-secondary mb-2 text-sm">
+              {t("sections.types.analytics.content")}
+            </p>
+            <p className="text-text-muted text-sm italic">{t("sections.types.analytics.note")}</p>
           </div>
 
-          {/* Section 4: Managing Cookies */}
+          {/* Section 4: Managing Preferences */}
           <h2 className="text-text mt-8 text-xl font-semibold">{t("sections.managing.title")}</h2>
           <p>{t("sections.managing.content")}</p>
-          <p className="mt-2">{t("sections.managing.browser")}</p>
-          <ul className="mt-2 ml-4 list-disc space-y-1">
-            <li>
-              <a
-                href="https://support.google.com/chrome/answer/95647"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                Chrome
-              </a>
-            </li>
-            <li>
-              <a
-                href="https://support.mozilla.org/en-US/kb/cookies-information-websites-store-on-your-computer"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                Firefox
-              </a>
-            </li>
-            <li>
-              <a
-                href="https://support.apple.com/guide/safari/manage-cookies-sfri11471/mac"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                Safari
-              </a>
-            </li>
-            <li>
-              <a
-                href="https://support.microsoft.com/en-us/microsoft-edge/delete-cookies-in-microsoft-edge-63947406-40ac-c3b8-57b9-2a946a29ae09"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                Microsoft Edge
-              </a>
-            </li>
-          </ul>
+          <p className="mt-2 flex items-center gap-1">
+            <Settings className="h-4 w-4" />
+            {t("sections.managing.browser")}
+          </p>
 
           {/* Section 5: Changes */}
           <h2 className="text-text mt-8 text-xl font-semibold">{t("sections.changes.title")}</h2>
           <p>{t("sections.changes.content")}</p>
+        </div>
 
-          {/* Contact CTA */}
-          <div className="border-border bg-bg-secondary mt-12 rounded-xl border p-6 text-center">
-            <Mail className="text-primary mx-auto mb-4 h-8 w-8" />
-            <h2 className="text-text text-lg font-semibold">{t("contact.title")}</h2>
-            <p className="text-text-muted mt-2">{t("contact.description")}</p>
-            <a
-              href={`mailto:${t("contact.email")}`}
-              className="bg-primary text-text-on-accent hover:bg-primary-hover mt-4 inline-flex items-center gap-2 rounded-lg px-6 py-3 font-medium transition-colors"
-            >
-              {t("contact.email")}
-            </a>
+        {/* Related Links */}
+        <div className="border-border mt-8 rounded-xl border p-6">
+          <div className="flex flex-wrap gap-4">
+            <Link href="/privacy" className="text-primary text-sm font-medium hover:underline">
+              {t("links.privacy")}
+            </Link>
+            <Link href="/impressum" className="text-primary text-sm font-medium hover:underline">
+              {t("links.impressum")}
+            </Link>
+            <Link href="/terms" className="text-primary text-sm font-medium hover:underline">
+              {t("links.terms")}
+            </Link>
           </div>
+        </div>
+
+        {/* Contact CTA */}
+        <div className="border-border bg-bg-secondary mt-12 rounded-xl border p-6 text-center">
+          <Mail className="text-primary mx-auto mb-4 h-8 w-8" />
+          <h2 className="text-text text-lg font-semibold">{t("contact.title")}</h2>
+          <p className="text-text-muted mt-2">{t("contact.description")}</p>
+          <a
+            href={`mailto:${t("contact.email")}`}
+            className="bg-primary text-text-on-accent hover:bg-primary-hover mt-4 inline-flex items-center gap-2 rounded-lg px-6 py-3 font-medium transition-colors"
+          >
+            {t("contact.email")}
+          </a>
         </div>
       </main>
 
