@@ -136,7 +136,7 @@ export default function EditMaterialPage() {
         <main className="flex flex-1 items-center justify-center">
           <div className="text-center">
             <h1 className="text-text mb-2 text-2xl font-bold">{error}</h1>
-            <Link href="/account/uploads" className="btn-primary mt-4 inline-block px-6 py-3">
+            <Link href="/konto/uploads" className="btn-primary mt-4 inline-block px-6 py-3">
               Zurück zu Uploads
             </Link>
           </div>
@@ -293,7 +293,7 @@ export default function EditMaterialPage() {
           {/* Actions */}
           <div className="border-border flex items-center justify-between border-t pt-6">
             <Link
-              href="/account/uploads"
+              href="/konto/uploads"
               className="text-text-muted hover:text-text flex items-center gap-2 text-sm transition-colors"
             >
               <ArrowLeft className="h-4 w-4" />

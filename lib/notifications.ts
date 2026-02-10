@@ -90,7 +90,7 @@ export function notifySale(sellerId: string, resourceTitle: string, amount: numb
     type: "SALE",
     title: `Neuer Verkauf: ${resourceTitle}`,
     body: `Ihr Material "${resourceTitle}" wurde für CHF ${formatted} verkauft.`,
-    link: "/account",
+    link: "/konto",
   }).catch((err) => console.error("Failed to create sale notification:", err));
 }
 
@@ -103,7 +103,7 @@ export function notifyFollow(followedUserId: string, followerName: string) {
     type: "FOLLOW",
     title: "Neuer Follower",
     body: `${followerName} folgt Ihnen jetzt.`,
-    link: "/account",
+    link: "/konto",
   }).catch((err) => console.error("Failed to create follow notification:", err));
 }
 
@@ -116,6 +116,6 @@ export function notifyReview(sellerId: string, resourceTitle: string, rating: nu
     type: "REVIEW",
     title: `Neue Bewertung: ${resourceTitle}`,
     body: `Ihr Material "${resourceTitle}" hat eine ${rating}-Sterne-Bewertung erhalten.`,
-    link: "/account",
+    link: "/konto",
   }).catch((err) => console.error("Failed to create review notification:", err));
 }

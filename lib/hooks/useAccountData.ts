@@ -62,7 +62,7 @@ export function useAccountDataProvider() {
   // Handle redirects
   useEffect(() => {
     if (status === "unauthenticated") {
-      router.push("/login");
+      router.push("/anmelden");
     } else if (status === "authenticated" && session?.user?.role === "ADMIN") {
       router.push("/admin");
     }

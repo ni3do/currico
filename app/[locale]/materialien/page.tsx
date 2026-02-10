@@ -122,7 +122,7 @@ export default function MaterialienPage() {
   const handleWishlistToggle = useCallback(
     async (materialId: string, currentState: boolean): Promise<boolean> => {
       if (!isAuthenticated) {
-        router.push("/login");
+        router.push("/anmelden");
         return false;
       }
 
@@ -188,7 +188,7 @@ export default function MaterialienPage() {
   const handleFollowToggle = useCallback(
     async (profileId: string, currentState: boolean): Promise<boolean> => {
       if (!isAuthenticated) {
-        router.push("/login");
+        router.push("/anmelden");
         return false;
       }
 
@@ -743,7 +743,7 @@ export default function MaterialienPage() {
                       <select
                         value={sortBy}
                         onChange={(e) => handleSortChange(e.target.value)}
-                        className="border-border bg-bg text-text-secondary focus:border-primary focus:ring-focus-ring rounded-lg border px-3 py-2.5 text-sm focus:ring-2 focus:outline-none"
+                        className="border-border bg-bg text-text-secondary focus:border-primary focus:ring-focus-ring rounded-full border px-3 py-2.5 text-sm focus:ring-2 focus:outline-none"
                       >
                         <option value="newest">{t("results.sortOptions.newest")}</option>
                         <option value="price-low">{t("results.sortOptions.priceLow")}</option>

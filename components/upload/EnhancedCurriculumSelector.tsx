@@ -80,18 +80,32 @@ const CYCLES = [
 
 const CANTONS = [
   { value: "", label: "Alle Kantone" },
-  { value: "ZH", label: "Zürich" },
-  { value: "BE", label: "Bern" },
-  { value: "LU", label: "Luzern" },
   { value: "AG", label: "Aargau" },
-  { value: "SG", label: "St. Gallen" },
+  { value: "AI", label: "Appenzell Innerrhoden" },
+  { value: "AR", label: "Appenzell Ausserrhoden" },
+  { value: "BE", label: "Bern" },
   { value: "BL", label: "Basel-Landschaft" },
   { value: "BS", label: "Basel-Stadt" },
-  { value: "GR", label: "Graubünden" },
-  { value: "TG", label: "Thurgau" },
-  { value: "SO", label: "Solothurn" },
   { value: "FR", label: "Freiburg" },
+  { value: "GE", label: "Genf" },
+  { value: "GL", label: "Glarus" },
+  { value: "GR", label: "Graubünden" },
+  { value: "JU", label: "Jura" },
+  { value: "LU", label: "Luzern" },
+  { value: "NE", label: "Neuenburg" },
+  { value: "NW", label: "Nidwalden" },
+  { value: "OW", label: "Obwalden" },
+  { value: "SG", label: "St. Gallen" },
+  { value: "SH", label: "Schaffhausen" },
+  { value: "SO", label: "Solothurn" },
+  { value: "SZ", label: "Schwyz" },
+  { value: "TG", label: "Thurgau" },
+  { value: "TI", label: "Tessin" },
+  { value: "UR", label: "Uri" },
+  { value: "VD", label: "Waadt" },
   { value: "VS", label: "Wallis" },
+  { value: "ZG", label: "Zug" },
+  { value: "ZH", label: "Zürich" },
 ];
 
 export function EnhancedCurriculumSelector({
@@ -746,7 +760,7 @@ export function EnhancedCurriculumSelector({
         <select
           value={canton}
           onChange={(e) => onCantonChange(e.target.value)}
-          className="border-border bg-bg text-text focus:border-primary focus:ring-primary/20 w-full rounded-xl border px-4 py-3 transition-colors duration-150 focus:ring-2 focus:outline-none sm:w-auto sm:min-w-[200px]"
+          className="border-border bg-bg text-text focus:border-primary focus:ring-primary/20 w-full rounded-full border px-4 py-3 transition-colors duration-150 focus:ring-2 focus:outline-none sm:w-auto sm:min-w-[200px]"
         >
           {CANTONS.map((c) => (
             <option key={c.value} value={c.value}>

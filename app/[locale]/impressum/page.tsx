@@ -4,7 +4,8 @@ import { useTranslations } from "next-intl";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
-import { Building2, Mail, Globe } from "lucide-react";
+import { Building2, Mail, Globe, Scale, Users } from "lucide-react";
+import { Link } from "@/i18n/navigation";
 
 export default function ImpressumPage() {
   const t = useTranslations("impressumPage");
@@ -32,6 +33,7 @@ export default function ImpressumPage() {
             </div>
             <div className="text-text-secondary space-y-3">
               <p className="text-text font-medium">{t("company.name")}</p>
+              <p className="text-text-muted text-sm">Handelsname: {t("company.tradeName")}</p>
               <p>{t("company.address.street")}</p>
               <p>{t("company.address.city")}</p>
               <p>{t("company.address.country")}</p>
@@ -53,7 +55,9 @@ export default function ImpressumPage() {
               </p>
               <p className="flex items-center gap-2">
                 <Globe className="text-text-muted h-4 w-4" />
-                <span>{t("contact.website")}</span>
+                <Link href="/" className="text-primary hover:underline">
+                  {t("contact.website")}
+                </Link>
               </p>
             </div>
           </div>
@@ -61,8 +65,15 @@ export default function ImpressumPage() {
 
         {/* Legal Information */}
         <div className="border-border bg-surface mt-8 rounded-xl border p-6">
-          <h2 className="text-text mb-4 text-lg font-semibold">{t("legal.title")}</h2>
+          <div className="mb-4 flex items-center gap-3">
+            <Scale className="text-primary h-5 w-5" />
+            <h2 className="text-text text-lg font-semibold">{t("legal.title")}</h2>
+          </div>
           <div className="text-text-secondary grid gap-4 sm:grid-cols-2">
+            <div>
+              <p className="text-text-muted text-sm">{t("legal.legalForm.label")}</p>
+              <p className="text-text font-medium">{t("legal.legalForm.value")}</p>
+            </div>
             <div>
               <p className="text-text-muted text-sm">{t("legal.uid.label")}</p>
               <p className="text-text font-medium">{t("legal.uid.value")}</p>
@@ -71,18 +82,41 @@ export default function ImpressumPage() {
               <p className="text-text-muted text-sm">{t("legal.register.label")}</p>
               <p className="text-text font-medium">{t("legal.register.value")}</p>
             </div>
+            <div>
+              <p className="text-text-muted text-sm">{t("legal.capital.label")}</p>
+              <p className="text-text font-medium">{t("legal.capital.value")}</p>
+            </div>
+            <div>
+              <p className="text-text-muted text-sm">{t("legal.founded.label")}</p>
+              <p className="text-text font-medium">{t("legal.founded.value")}</p>
+            </div>
           </div>
         </div>
 
-        {/* Responsible Person */}
+        {/* Authorized Representatives */}
         <div className="border-border bg-surface mt-8 rounded-xl border p-6">
-          <h2 className="text-text mb-4 text-lg font-semibold">{t("responsible.title")}</h2>
-          <p className="text-text-secondary">{t("responsible.name")}</p>
-          <p className="text-text-secondary">{t("responsible.role")}</p>
+          <div className="mb-4 flex items-center gap-3">
+            <Users className="text-primary h-5 w-5" />
+            <h2 className="text-text text-lg font-semibold">{t("responsible.title")}</h2>
+          </div>
+          <div className="space-y-3">
+            {(["p1", "p2", "p3"] as const).map((key) => (
+              <div
+                key={key}
+                className="bg-bg-secondary flex items-center justify-between rounded-lg px-4 py-3"
+              >
+                <div>
+                  <p className="text-text font-medium">{t(`responsible.persons.${key}.name`)}</p>
+                  <p className="text-text-muted text-sm">{t(`responsible.persons.${key}.role`)}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="text-text-muted mt-3 text-sm">{t("responsible.signing")}</p>
         </div>
 
         {/* Disclaimer */}
-        <div className="border-border bg-bg-secondary mt-8 rounded-xl border p-6">
+        <div className="border-border bg-surface mt-8 rounded-xl border p-6">
           <h2 className="text-text mb-4 text-lg font-semibold">{t("disclaimer.title")}</h2>
           <div className="text-text-secondary space-y-4 text-sm">
             <div>

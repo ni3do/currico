@@ -165,7 +165,7 @@ export default function MaterialDetailPage() {
   const handleDownload = async () => {
     if (sessionStatus !== "authenticated") {
       // Redirect to login
-      window.location.href = "/login";
+      window.location.href = "/anmelden";
       return;
     }
 
@@ -183,7 +183,7 @@ export default function MaterialDetailPage() {
   // Handle wishlist toggle
   const handleWishlistToggle = async () => {
     if (sessionStatus !== "authenticated") {
-      window.location.href = "/login";
+      window.location.href = "/anmelden";
       return;
     }
 
@@ -223,7 +223,7 @@ export default function MaterialDetailPage() {
     e.preventDefault();
 
     if (sessionStatus !== "authenticated") {
-      window.location.href = "/login";
+      window.location.href = "/anmelden";
       return;
     }
 
@@ -822,7 +822,7 @@ export default function MaterialDetailPage() {
                       name="reason"
                       value={reportReason}
                       onChange={(e) => setReportReason(e.target.value)}
-                      className="input"
+                      className="input rounded-full"
                       required
                     >
                       <option value="inappropriate">Unangemessener Inhalt</option>

@@ -135,8 +135,8 @@ const nextAuth = NextAuth({
     },
   },
   pages: {
-    signIn: "/login",
-    newUser: "/register",
+    signIn: "/anmelden",
+    newUser: "/registrieren",
   },
 });
 

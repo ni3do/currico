@@ -59,6 +59,15 @@
         "verifiedSeller": "Verifizierte Verkäufer"
       }
     },
+    "errors": {
+      "generic": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+      "networkError": "Verbindungsfehler. Bitte prüfen Sie Ihre Internetverbindung.",
+      "loadFailed": "Daten konnten nicht geladen werden.",
+      "saveFailed": "Änderungen konnten nicht gespeichert werden.",
+      "deleteFailed": "Löschen fehlgeschlagen.",
+      "sendFailed": "Nachricht konnte nicht gesendet werden.",
+      "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten."
+    },
     "buttons": {
       "viewAll": "Alle anzeigen",
       "view": "Ansehen",
@@ -138,8 +147,8 @@
       "secondaryButton": "Mehr erfahren",
       "search": {
         "placeholder": "Was unterrichtest du heute? (z.B. Mathe 5. Klasse)",
-        "allCycles": "Alle Zyklen",
-        "allSubjects": "Alle Fächer",
+        "allCycles": "Zyklus wählen…",
+        "allSubjects": "Fach wählen…",
         "math": "Mathematik",
         "german": "Deutsch",
         "english": "Englisch",
@@ -152,7 +161,8 @@
         "dialectLabel": "Kompetenzen",
         "dialectSwiss": "Schweizerdeutsch",
         "dialectStandard": "Hochdeutsch",
-        "allDialects": "Alle Sprachvarianten"
+        "allDialects": "Alle Sprachvarianten",
+        "allKompetenzbereiche": "Kompetenz wählen…"
       }
     },
     "howItWorks": {
@@ -2213,10 +2223,11 @@
     "subtitle": "Rechtliche Angaben gemäss Schweizer Recht",
     "company": {
       "title": "Unternehmen",
-      "name": "Currico (Beta)",
+      "name": "Angle Labs GmbH",
+      "tradeName": "Currico",
       "address": {
-        "street": "GmbH-Eintragung ausstehend",
-        "city": "Schweiz",
+        "street": "Zellmatte 6",
+        "city": "6214 Schenkon",
         "country": "Schweiz"
       }
     },
@@ -2229,17 +2240,42 @@
       "title": "Rechtliche Angaben",
       "uid": {
         "label": "UID-Nummer",
-        "value": "Eintragung ausstehend"
+        "value": "CHE-216.579.392"
       },
       "register": {
         "label": "Handelsregister",
-        "value": "GmbH-Eintragung in Bearbeitung"
+        "value": "Handelsregisteramt des Kantons Luzern"
+      },
+      "legalForm": {
+        "label": "Rechtsform",
+        "value": "Gesellschaft mit beschränkter Haftung (GmbH)"
+      },
+      "capital": {
+        "label": "Stammkapital",
+        "value": "CHF 20'000.00"
+      },
+      "founded": {
+        "label": "Gründungsdatum",
+        "value": "27. Juni 2022"
       }
     },
     "responsible": {
-      "title": "Verantwortliche Person",
-      "name": "Das Currico-Team",
-      "role": "Gründer"
+      "title": "Vertretungsberechtigte Personen",
+      "signing": "Kollektivunterschrift zu zweien",
+      "persons": {
+        "p1": {
+          "name": "Simon Wachter",
+          "role": "Vorsitzender der Geschäftsführung"
+        },
+        "p2": {
+          "name": "Lucas Schenck",
+          "role": "Geschäftsführer"
+        },
+        "p3": {
+          "name": "Jonas Wachter",
+          "role": "Geschäftsführer"
+        }
+      }
     },
     "disclaimer": {
       "title": "Haftungsausschluss",
@@ -2264,7 +2300,7 @@
       "privacy": "Datenschutzerklärung",
       "terms": "Allgemeine Geschäftsbedingungen"
     },
-    "version": "Version 1.1 - Februar 2026"
+    "version": "Version 1.2 - Februar 2026"
   },
   "privacyPage": {
     "title": "Datenschutzerklärung",
@@ -2274,8 +2310,8 @@
       "responsible": {
         "title": "1. Verantwortliche Stelle",
         "content": "Verantwortlich für die Datenverarbeitung auf dieser Website ist:",
-        "company": "Currico (Beta)",
-        "address": "GmbH-Eintragung ausstehend, Schweiz",
+        "company": "Angle Labs GmbH (Currico)",
+        "address": "Zellmatte 6, 6214 Schenkon, Schweiz",
         "emailLabel": "E-Mail",
         "email": "info@currico.ch"
       },
@@ -2433,7 +2469,7 @@
         "content": "Unsere Plattform richtet sich an Lehrpersonen. Minderjährige können die Angebote nur mit der Zustimmung ihrer Erziehungsberechtigten nutzen. Wir erheben nicht wissentlich personenbezogene Daten von Kindern unter 16 Jahren ohne Einwilligung der Erziehungsberechtigten."
       }
     },
-    "version": "Version 1.1 - Februar 2026",
+    "version": "Version 1.2 - Februar 2026",
     "contact": {
       "title": "Fragen zum Datenschutz?",
       "description": "Für Fragen oder Anliegen bezüglich Ihrer Daten kontaktieren Sie uns:",

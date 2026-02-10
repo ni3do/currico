@@ -9,11 +9,11 @@
  * - Navigation to login page
  */
 
-import { Page, Locator, expect } from '@playwright/test';
-import { BasePage } from './base.page';
+import { Page, Locator, expect } from "@playwright/test";
+import { BasePage } from "./base.page";
 
 export class RegisterPage extends BasePage {
-  readonly path = '/register';
+  readonly path = "/register";
 
   // Form fields
   readonly nameInput: Locator;
@@ -49,37 +49,40 @@ export class RegisterPage extends BasePage {
     super(page);
 
     // Form fields - using IDs from the registration page
-    this.nameInput = page.locator('#name');
-    this.emailInput = page.locator('#email');
-    this.passwordInput = page.locator('#password');
-    this.confirmPasswordInput = page.locator('#confirmPassword');
-    this.termsCheckbox = page.locator('#terms');
+    this.nameInput = page.locator("#name");
+    this.emailInput = page.locator("#email");
+    this.passwordInput = page.locator("#password");
+    this.confirmPasswordInput = page.locator("#confirmPassword");
+    this.termsCheckbox = page.locator("#terms");
     this.submitButton = page.locator('button[type="submit"]');
 
     // OAuth buttons - using text content for resilience
-    this.googleButton = page.getByRole('button', { name: /google/i });
-    this.microsoftButton = page.getByRole('button', { name: /microsoft/i });
-    this.eduIdButton = page.getByRole('button', { name: /edu-id/i });
+    this.googleButton = page.getByRole("button", { name: /google/i });
+    this.microsoftButton = page.getByRole("button", { name: /microsoft/i });
+    this.eduIdButton = page.getByRole("button", { name: /edu-id/i });
 
     // Validation error messages - these appear below the corresponding fields
     // The page shows error messages as <p> elements with text-error class
-    this.emailValidationError = page.locator('#email').locator('..').locator('p.text-error');
-    this.passwordValidationError = page.locator('#password').locator('..').locator('p.text-error');
-    this.confirmPasswordValidationError = page.locator('#confirmPassword').locator('..').locator('p.text-error');
+    this.emailValidationError = page.locator("#email").locator("..").locator("p.text-error");
+    this.passwordValidationError = page.locator("#password").locator("..").locator("p.text-error");
+    this.confirmPasswordValidationError = page
+      .locator("#confirmPassword")
+      .locator("..")
+      .locator("p.text-error");
 
     // Form-level error (API errors like duplicate email)
-    this.formError = page.locator('.border-error.bg-error\\/10');
+    this.formError = page.locator(".border-error.bg-error\\/10");
 
     // Navigation links
-    this.loginLink = page.locator('main a[href*="/login"]');
+    this.loginLink = page.locator('main a[href*="/anmelden"]');
     this.termsLink = page.locator('label[for="terms"] a').first();
     this.privacyLink = page.locator('label[for="terms"] a').last();
     this.backToHomeLink = page.locator('footer a[href="/"]');
 
     // Cookie banner
-    this.cookieBanner = page.getByRole('dialog', { name: /cookie/i });
-    this.cookieAcceptButton = page.getByRole('button', { name: /alle akzeptieren|accept all/i });
-    this.cookieRejectButton = page.getByRole('button', { name: /nur essentielle|essential only/i });
+    this.cookieBanner = page.getByRole("dialog", { name: /cookie/i });
+    this.cookieAcceptButton = page.getByRole("button", { name: /alle akzeptieren|accept all/i });
+    this.cookieRejectButton = page.getByRole("button", { name: /nur essentielle|essential only/i });
   }
 
   /**
@@ -213,7 +216,7 @@ export class RegisterPage extends BasePage {
       confirmPassword: data.password,
       acceptTerms: true,
     });
-    await this.waitForUrl('**/account', { timeout: 15000 });
+    await this.waitForUrl("**/account", { timeout: 15000 });
   }
 
   // ===================
@@ -224,24 +227,24 @@ export class RegisterPage extends BasePage {
    * Check if the email field shows validation error state (invalid email format).
    */
   async hasEmailValidationError(): Promise<boolean> {
-    const classes = await this.emailInput.getAttribute('class');
-    return classes?.includes('border-error') ?? false;
+    const classes = await this.emailInput.getAttribute("class");
+    return classes?.includes("border-error") ?? false;
   }
 
   /**
    * Check if the password field shows validation error state (too short).
    */
   async hasPasswordValidationError(): Promise<boolean> {
-    const classes = await this.passwordInput.getAttribute('class');
-    return classes?.includes('border-error') ?? false;
+    const classes = await this.passwordInput.getAttribute("class");
+    return classes?.includes("border-error") ?? false;
   }
 
   /**
    * Check if the confirm password field shows validation error state (mismatch).
    */
   async hasConfirmPasswordValidationError(): Promise<boolean> {
-    const classes = await this.confirmPasswordInput.getAttribute('class');
-    return classes?.includes('border-error') ?? false;
+    const classes = await this.confirmPasswordInput.getAttribute("class");
+    return classes?.includes("border-error") ?? false;
   }
 
   /**
@@ -393,7 +396,7 @@ export class RegisterPage extends BasePage {
    */
   async goToLogin(): Promise<void> {
     await this.loginLink.click();
-    await this.page.waitForURL('**/login');
+    await this.page.waitForURL("**/login");
   }
 
   /**
@@ -426,7 +429,7 @@ export class RegisterPage extends BasePage {
    * Get the page title text.
    */
   async getPageTitleText(): Promise<string | null> {
-    const heading = this.page.locator('h1');
+    const heading = this.page.locator("h1");
     return this.getText(heading);
   }
 
@@ -434,7 +437,7 @@ export class RegisterPage extends BasePage {
    * Get the page subtitle text.
    */
   async getPageSubtitleText(): Promise<string | null> {
-    const subtitle = this.page.locator('h1 + p');
+    const subtitle = this.page.locator("h1 + p");
     return this.getText(subtitle);
   }
 }

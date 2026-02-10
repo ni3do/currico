@@ -100,14 +100,14 @@ export default function TopBar() {
                 {t("navigation.materials")}
               </Link>
               <Link
-                href="/about"
-                className={`px-4 py-2 text-sm font-medium transition-colors ${isActive("/about") ? "text-primary" : "text-text-secondary hover:text-primary"}`}
+                href="/ueber-uns"
+                className={`px-4 py-2 text-sm font-medium transition-colors ${isActive("/ueber-uns") ? "text-primary" : "text-text-secondary hover:text-primary"}`}
               >
                 {t("navigation.aboutUs")}
               </Link>
               <Link
-                href="/contact"
-                className={`px-4 py-2 text-sm font-medium transition-colors ${isActive("/contact") ? "text-primary" : "text-text-secondary hover:text-primary"}`}
+                href="/kontakt"
+                className={`px-4 py-2 text-sm font-medium transition-colors ${isActive("/kontakt") ? "text-primary" : "text-text-secondary hover:text-primary"}`}
               >
                 {t("navigation.contact")}
               </Link>
@@ -117,7 +117,7 @@ export default function TopBar() {
               <LocaleSwitcher />
               {session && (
                 <Link
-                  href="/account/notifications"
+                  href="/konto/notifications"
                   className="text-text-secondary hover:text-primary relative p-2 transition-colors"
                   aria-label={t("navigation.account")}
                 >
@@ -188,7 +188,7 @@ export default function TopBar() {
                         className="border-border bg-surface absolute right-0 z-50 mt-2 w-48 origin-top-right rounded-lg border py-1 shadow-lg"
                       >
                         <Link
-                          href="/account"
+                          href="/konto"
                           onClick={() => setIsUserMenuOpen(false)}
                           className="text-text hover:bg-bg flex items-center gap-2 px-4 py-2 text-sm transition-colors"
                         >
@@ -259,13 +259,13 @@ export default function TopBar() {
               ) : (
                 <>
                   <Link
-                    href="/login"
+                    href="/anmelden"
                     className="text-text-secondary hover:text-primary px-4 py-2 text-sm font-medium transition-colors"
                   >
                     {t("navigation.login")}
                   </Link>
                   <Link
-                    href="/register"
+                    href="/registrieren"
                     className="bg-primary text-text-on-accent hover:bg-primary-hover rounded-lg px-5 py-2 text-sm font-medium transition-colors"
                   >
                     {t("navigation.register")}
@@ -330,8 +330,8 @@ export default function TopBar() {
                   transition={{ delay: 0.1 }}
                 >
                   <Link
-                    href="/about"
-                    className={`block px-4 py-2 text-sm font-medium transition-colors ${isActive("/about") ? "text-primary" : "text-text-secondary hover:text-primary"}`}
+                    href="/ueber-uns"
+                    className={`block px-4 py-2 text-sm font-medium transition-colors ${isActive("/ueber-uns") ? "text-primary" : "text-text-secondary hover:text-primary"}`}
                   >
                     {t("navigation.aboutUs")}
                   </Link>
@@ -342,8 +342,8 @@ export default function TopBar() {
                   transition={{ delay: 0.15 }}
                 >
                   <Link
-                    href="/contact"
-                    className={`block px-4 py-2 text-sm font-medium transition-colors ${isActive("/contact") ? "text-primary" : "text-text-secondary hover:text-primary"}`}
+                    href="/kontakt"
+                    className={`block px-4 py-2 text-sm font-medium transition-colors ${isActive("/kontakt") ? "text-primary" : "text-text-secondary hover:text-primary"}`}
                   >
                     {t("navigation.contact")}
                   </Link>
@@ -361,7 +361,7 @@ export default function TopBar() {
                   {session ? (
                     <>
                       <Link
-                        href="/account"
+                        href="/konto"
                         className="text-text-secondary hover:text-primary flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors"
                       >
                         <svg
@@ -380,7 +380,7 @@ export default function TopBar() {
                         {t("navigation.profile")}
                       </Link>
                       <Link
-                        href="/account/notifications"
+                        href="/konto/notifications"
                         className="text-text-secondary hover:text-primary flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors"
                       >
                         <div className="relative">
@@ -424,13 +424,13 @@ export default function TopBar() {
                   ) : (
                     <>
                       <Link
-                        href="/login"
+                        href="/anmelden"
                         className="text-text-secondary hover:text-primary px-4 py-2 text-sm font-medium transition-colors"
                       >
                         {t("navigation.login")}
                       </Link>
                       <Link
-                        href="/register"
+                        href="/registrieren"
                         className="bg-primary text-text-on-accent hover:bg-primary-hover mx-4 rounded-lg px-5 py-2 text-center text-sm font-medium transition-colors"
                       >
                         {t("navigation.register")}

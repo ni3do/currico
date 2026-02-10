@@ -275,7 +275,7 @@ export function StripeConnectStatus({ isSeller }: StripeConnectStatusProps) {
             )}
 
             <Link
-              href="/become-seller"
+              href="/verkaeufer-werden"
               className="bg-warning text-text-on-accent hover:bg-warning-hover mt-4 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
             >
               {t("pending.continueSetup")}
@@ -333,7 +333,7 @@ export function StripeConnectStatus({ isSeller }: StripeConnectStatusProps) {
             </div>
 
             <Link
-              href="/become-seller"
+              href="/verkaeufer-werden"
               className="bg-primary text-text-on-accent hover:bg-primary-hover mt-4 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
             >
               {t("invite.cta")}
