@@ -45,13 +45,13 @@ test.describe("Seller Dashboard", () => {
     await sellerPage.waitForLoadState("networkidle");
 
     // Find and click the upload link specifically (not material links)
-    const uploadLink = sellerPage.locator('a[href="/upload"]').first();
+    const uploadLink = sellerPage.locator('a[href="/hochladen"]').first();
     await expect(uploadLink).toBeVisible({ timeout: 10000 });
     await uploadLink.click();
 
     // Should be on the upload page
     await sellerPage.waitForURL(/\/upload/);
-    expect(sellerPage.url()).toContain("/upload");
+    expect(sellerPage.url()).toContain("/hochladen");
   });
 
   test("seller sees material status badges", async ({ sellerPage }) => {

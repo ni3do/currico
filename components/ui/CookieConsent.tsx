@@ -133,7 +133,7 @@ export default function CookieConsent() {
                   <p id="cookie-consent-description" className="text-text-secondary mb-4 text-sm">
                     {t("description")}{" "}
                     <Link
-                      href="/privacy"
+                      href="/datenschutz"
                       className="text-primary font-medium underline-offset-2 hover:underline"
                     >
                       {t("privacyLink")}

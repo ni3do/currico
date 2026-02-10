@@ -125,7 +125,7 @@ export function FormSelect({ hasError, className = "", children, ...props }: For
     <select
       {...props}
       aria-invalid={hasError || undefined}
-      className={`text-text w-full rounded-xl border-2 px-4 py-3 transition-all duration-200 focus:shadow-lg focus:ring-2 focus:outline-none ${
+      className={`text-text w-full rounded-full border-2 px-4 py-3 transition-all duration-200 focus:shadow-lg focus:ring-2 focus:outline-none ${
         hasError
           ? "border-error bg-error/5 focus:border-error focus:ring-error/20 focus:shadow-error/10"
           : "border-border bg-bg focus:border-primary focus:ring-primary/20 focus:shadow-primary/10"

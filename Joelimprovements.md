@@ -1,5 +1,4 @@
 Tittel Page
-dropdown abrunden
 alle zyklen, allezyklen option raus
 alle sprachvarianten ersetzten durch kompetentzen
 swissmade rot löschen
@@ -12,6 +11,7 @@ Schnelleinstieg test ausschreiben
 
 Allgemein
 Mous hover über klickable braucht es den finger
+dropdown abrunden
 link anpassen auf deutsch
 Alle hintergrundfarben von segmenten anpassen und einheitlich machen
 nach oben button auf allen seiten inplementieren

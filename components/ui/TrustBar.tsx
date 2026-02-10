@@ -4,12 +4,6 @@ import { useTranslations } from "next-intl";
 import { BadgeCheck, Shield, Server, CreditCard, ShieldCheck } from "lucide-react";
 import { FadeIn, StaggerChildren, StaggerItem, motion } from "@/components/ui/animations";
 
-const SwissCross = () => (
-  <div className="flex h-5 w-5 items-center justify-center rounded bg-red-600">
-    <span className="text-[10px] font-bold text-white">+</span>
-  </div>
-);
-
 interface TrustItem {
   key: string;
   icon: React.ReactNode;
@@ -21,11 +15,6 @@ const trustItems: TrustItem[] = [
     key: "lp21",
     icon: <BadgeCheck className="text-success h-5 w-5" />,
     labelKey: "lp21",
-  },
-  {
-    key: "swissMade",
-    icon: <SwissCross />,
-    labelKey: "swissMade",
   },
   {
     key: "quality",

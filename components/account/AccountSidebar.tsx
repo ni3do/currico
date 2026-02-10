@@ -367,7 +367,7 @@ export function AccountSidebar({
               <Users className="text-text-muted h-3.5 w-3.5" />
               {t("sidebar.followed", { count: stats.followedSellers })}
             </h3>
-            <Link href="/following" className="text-primary text-xs font-medium hover:underline">
+            <Link href="/folge-ich" className="text-primary text-xs font-medium hover:underline">
               {t("sidebar.allFollowed")}
             </Link>
           </div>
@@ -424,7 +424,7 @@ export function AccountSidebar({
         {/* Quick Actions (compact) */}
         <div className="space-y-1.5">
           <Link
-            href="/upload"
+            href="/hochladen"
             className="bg-primary text-text-on-accent hover:bg-primary-hover flex w-full items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition-colors"
           >
             <Upload className="h-4 w-4" />

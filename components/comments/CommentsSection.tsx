@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { MessageCircle, AlertCircle } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { CommentCard } from "./CommentCard";
@@ -42,6 +43,7 @@ interface CommentsSectionProps {
 
 export function CommentsSection({ materialId, className = "" }: CommentsSectionProps) {
   const { data: session, status: sessionStatus } = useSession();
+  const tCommon = useTranslations("common");
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -58,7 +60,7 @@ export function CommentsSection({ materialId, className = "" }: CommentsSectionP
         );
 
         if (!response.ok) {
-          throw new Error("Failed to fetch comments");
+          throw new Error(tCommon("errors.loadFailed"));
         }
 
         const data = await response.json();
@@ -67,7 +69,7 @@ export function CommentsSection({ materialId, className = "" }: CommentsSectionP
         setTotalPages(data.pagination.totalPages);
         setTotalCount(data.pagination.totalCount);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Fehler beim Laden der Kommentare");
+        setError(err instanceof Error ? err.message : tCommon("errors.generic"));
       } finally {
         setLoading(false);
       }
@@ -94,7 +96,7 @@ export function CommentsSection({ materialId, className = "" }: CommentsSectionP
   };
 
   const handleLoginRequired = () => {
-    window.location.href = "/login";
+    window.location.href = "/anmelden";
   };
 
   // Loading state
@@ -138,7 +140,7 @@ export function CommentsSection({ materialId, className = "" }: CommentsSectionP
       ) : (
         <div className="border-border bg-bg-secondary mb-6 rounded-xl border p-4">
           <p className="text-text-muted text-sm">
-            <Link href="/login" className="text-primary hover:underline">
+            <Link href="/anmelden" className="text-primary hover:underline">
               Melden Sie sich an
             </Link>
             , um einen Kommentar zu schreiben.

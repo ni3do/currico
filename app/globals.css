@@ -433,6 +433,16 @@ body {
     color 0.2s ease;
 }
 
+/* Interactive elements: always show pointer cursor */
+button,
+select,
+[role="button"],
+label[for],
+summary,
+a {
+  cursor: pointer;
+}
+
 /* =================================================================
    TYPOGRAPHY
    ================================================================= */

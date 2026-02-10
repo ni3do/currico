@@ -381,7 +381,7 @@ export default function AdminUsersPage() {
                     defaultValue={selectedUser.role}
                     onChange={(e) => handleRoleChange(selectedUser.id, e.target.value)}
                     disabled={selectedUser.is_protected || actionLoading}
-                    className="border-border bg-surface text-text focus:border-primary w-full rounded-lg border px-4 py-2.5 focus:outline-none disabled:opacity-50"
+                    className="border-border bg-surface text-text focus:border-primary w-full rounded-full border px-4 py-2.5 focus:outline-none disabled:opacity-50"
                   >
                     <option value="BUYER">{t("buyer")}</option>
                     <option value="SELLER">{t("seller")}</option>
