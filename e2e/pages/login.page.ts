@@ -8,12 +8,12 @@
  * - Error handling
  */
 
-import { Page, Locator, expect } from '@playwright/test';
-import { BasePage } from './base.page';
-import type { TestUser } from '../fixtures/test-users';
+import { Page, Locator, expect } from "@playwright/test";
+import { BasePage } from "./base.page";
+import type { TestUser } from "../fixtures/test-users";
 
 export class LoginPage extends BasePage {
-  readonly path = '/login';
+  readonly path = "/login";
 
   // Form elements
   readonly emailInput: Locator;
@@ -44,29 +44,33 @@ export class LoginPage extends BasePage {
     super(page);
 
     // Form elements
-    this.emailInput = page.locator('#email');
-    this.passwordInput = page.locator('#password');
-    this.rememberMeCheckbox = page.locator('#remember');
+    this.emailInput = page.locator("#email");
+    this.passwordInput = page.locator("#password");
+    this.rememberMeCheckbox = page.locator("#remember");
     this.submitButton = page.locator('button[type="submit"]');
 
     // OAuth buttons - using text content for resilience
-    this.googleButton = page.getByRole('button', { name: /google/i });
-    this.microsoftButton = page.getByRole('button', { name: /microsoft/i });
-    this.eduIdButton = page.getByRole('button', { name: /edu-id/i });
+    this.googleButton = page.getByRole("button", { name: /google/i });
+    this.microsoftButton = page.getByRole("button", { name: /microsoft/i });
+    this.eduIdButton = page.getByRole("button", { name: /edu-id/i });
 
     // Error display - use role-based selector for reliability
-    this.errorMessage = page.locator('div').filter({ hasText: /^.+$/ }).filter({ has: page.locator('.border-error') }).first();
-    this.emailValidationError = page.locator('p.text-error');
+    this.errorMessage = page
+      .locator("div")
+      .filter({ hasText: /^.+$/ })
+      .filter({ has: page.locator(".border-error") })
+      .first();
+    this.emailValidationError = page.locator("p.text-error");
 
     // Navigation links - use the link inside the form area (not the header link)
-    this.registerLink = page.locator('main a[href*="/register"]');
-    this.forgotPasswordLink = page.locator('a[href*="/coming-soon"]');
+    this.registerLink = page.locator('main a[href*="/registrieren"]');
+    this.forgotPasswordLink = page.locator('a[href*="/bald-verfuegbar"]');
     this.backToHomeLink = page.locator('footer a[href="/"]');
 
     // Cookie banner
-    this.cookieBanner = page.getByRole('dialog', { name: /cookie/i });
-    this.cookieAcceptButton = page.getByRole('button', { name: /alle akzeptieren|accept all/i });
-    this.cookieRejectButton = page.getByRole('button', { name: /nur essentielle|essential only/i });
+    this.cookieBanner = page.getByRole("dialog", { name: /cookie/i });
+    this.cookieAcceptButton = page.getByRole("button", { name: /alle akzeptieren|accept all/i });
+    this.cookieRejectButton = page.getByRole("button", { name: /nur essentielle|essential only/i });
   }
 
   /**
@@ -133,11 +137,7 @@ export class LoginPage extends BasePage {
    * @param password - User password
    * @param options - Optional settings for the login
    */
-  async login(
-    email: string,
-    password: string,
-    options?: { rememberMe?: boolean }
-  ): Promise<void> {
+  async login(email: string, password: string, options?: { rememberMe?: boolean }): Promise<void> {
     await this.fillEmail(email);
     await this.fillPassword(password);
 
@@ -162,11 +162,8 @@ export class LoginPage extends BasePage {
    * @param user - Test user credentials
    * @param expectedPath - Expected URL path after login (e.g., '/account' or '/admin')
    */
-  async loginAndWaitForRedirect(
-    user: TestUser,
-    expectedPath?: string
-  ): Promise<void> {
-    const targetPath = expectedPath ?? (user.role === 'ADMIN' ? '/admin' : '/account');
+  async loginAndWaitForRedirect(user: TestUser, expectedPath?: string): Promise<void> {
+    const targetPath = expectedPath ?? (user.role === "ADMIN" ? "/admin" : "/account");
     await this.loginAsUser(user);
     await this.waitForUrl(`**${targetPath}`, { timeout: 15000 });
   }
@@ -195,8 +192,8 @@ export class LoginPage extends BasePage {
    * Check if the email input shows validation error state.
    */
   async hasEmailValidationError(): Promise<boolean> {
-    const classes = await this.emailInput.getAttribute('class');
-    return classes?.includes('border-error') ?? false;
+    const classes = await this.emailInput.getAttribute("class");
+    return classes?.includes("border-error") ?? false;
   }
 
   /**
@@ -208,7 +205,7 @@ export class LoginPage extends BasePage {
     await expect(this.submitButton).toBeEnabled({ timeout: 15000 });
 
     // Wait for error message to appear with longer timeout
-    const errorDiv = this.page.locator('.border-error.bg-error\\/10');
+    const errorDiv = this.page.locator(".border-error.bg-error\\/10");
     await expect(errorDiv).toBeVisible({ timeout: 5000 });
 
     if (expectedText) {
@@ -238,7 +235,7 @@ export class LoginPage extends BasePage {
     const isDisabled = await this.submitButton.isDisabled();
     const text = await this.submitButton.textContent();
     // The button shows different text when loading
-    return isDisabled || text?.toLowerCase().includes('anmelden') === false;
+    return isDisabled || text?.toLowerCase().includes("anmelden") === false;
   }
 
   /**
@@ -267,7 +264,7 @@ export class LoginPage extends BasePage {
    */
   async goToRegister(): Promise<void> {
     await this.registerLink.click();
-    await this.page.waitForURL('**/register');
+    await this.page.waitForURL("**/register");
   }
 
   /**
@@ -298,7 +295,7 @@ export class LoginPage extends BasePage {
    * Get the page title text.
    */
   async getPageTitleText(): Promise<string | null> {
-    const heading = this.page.locator('h1');
+    const heading = this.page.locator("h1");
     return this.getText(heading);
   }
 

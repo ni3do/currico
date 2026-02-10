@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { MessageCircle, AlertCircle, Filter, ExternalLink, Send, ChevronDown } from "lucide-react";
@@ -44,6 +45,7 @@ interface SellerCommentsSectionProps {
 }
 
 export function SellerCommentsSection({ className = "" }: SellerCommentsSectionProps) {
+  const tCommon = useTranslations("common");
   const [comments, setComments] = useState<SellerComment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -65,7 +67,7 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
         );
 
         if (!response.ok) {
-          throw new Error("Failed to fetch comments");
+          throw new Error(tCommon("errors.loadFailed"));
         }
 
         const data = await response.json();
@@ -103,7 +105,7 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
       });
 
       if (!response.ok) {
-        throw new Error("Failed to submit reply");
+        throw new Error(tCommon("errors.saveFailed"));
       }
 
       setReplyContent("");
@@ -184,7 +186,7 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
           <select
             value={filter}
             onChange={(e) => handleFilterChange(e.target.value as "all" | "unreplied")}
-            className="input py-2 text-sm"
+            className="input rounded-full py-2 text-sm"
           >
             <option value="all">Alle Kommentare</option>
             <option value="unreplied">Unbeantwortet</option>

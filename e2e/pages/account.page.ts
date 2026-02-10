@@ -14,7 +14,7 @@ import { BasePage } from "./base.page";
 export type AccountTab = "overview" | "library" | "uploads" | "wishlist";
 
 export class AccountPage extends BasePage {
-  readonly path = "/account";
+  readonly path = "/konto";
 
   // Tab navigation
   readonly libraryTab: Locator;
@@ -50,7 +50,7 @@ export class AccountPage extends BasePage {
     this.materialCards = page.locator('.grid a[href*="/materialien/"]').locator("..");
 
     // Upload button - link to /upload page (use href to be specific)
-    this.uploadButton = page.locator('a[href="/upload"], a[href*="/upload"]').first();
+    this.uploadButton = page.locator('a[href="/hochladen"], a[href*="/hochladen"]').first();
 
     // Empty state messages
     this.emptyLibraryMessage = page.locator(

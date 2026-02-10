@@ -57,6 +57,15 @@
         "verifiedSeller": "Verified Sellers"
       }
     },
+    "errors": {
+      "generic": "An error occurred. Please try again.",
+      "networkError": "Connection error. Please check your internet connection.",
+      "loadFailed": "Failed to load data.",
+      "saveFailed": "Failed to save changes.",
+      "deleteFailed": "Failed to delete.",
+      "sendFailed": "Failed to send message.",
+      "unexpectedError": "An unexpected error occurred."
+    },
     "buttons": {
       "viewAll": "View All",
       "view": "View",
@@ -136,8 +145,8 @@
       "secondaryButton": "Learn More",
       "search": {
         "placeholder": "Search subject, topic or keyword...",
-        "allCycles": "All Cycles",
-        "allSubjects": "All Subjects",
+        "allCycles": "Choose cycle…",
+        "allSubjects": "Choose subject…",
         "math": "Mathematics",
         "german": "German",
         "english": "English",
@@ -150,7 +159,8 @@
         "dialectLabel": "Dialect",
         "dialectSwiss": "Swiss German",
         "dialectStandard": "Standard German",
-        "allDialects": "All Dialects"
+        "allDialects": "All Dialects",
+        "allKompetenzbereiche": "Choose competency…"
       }
     },
     "howItWorks": {
@@ -2211,10 +2221,11 @@
     "subtitle": "Legal information according to Swiss law",
     "company": {
       "title": "Company",
-      "name": "Currico (Beta)",
+      "name": "Angle Labs GmbH",
+      "tradeName": "Currico",
       "address": {
-        "street": "GmbH registration pending",
-        "city": "Switzerland",
+        "street": "Zellmatte 6",
+        "city": "6214 Schenkon",
         "country": "Switzerland"
       }
     },
@@ -2227,17 +2238,42 @@
       "title": "Legal Information",
       "uid": {
         "label": "UID Number",
-        "value": "Registration pending"
+        "value": "CHE-216.579.392"
       },
       "register": {
         "label": "Commercial Register",
-        "value": "GmbH registration in progress"
+        "value": "Commercial Registry of Canton Lucerne"
+      },
+      "legalForm": {
+        "label": "Legal Form",
+        "value": "Limited Liability Company (GmbH)"
+      },
+      "capital": {
+        "label": "Share Capital",
+        "value": "CHF 20'000.00"
+      },
+      "founded": {
+        "label": "Date of Incorporation",
+        "value": "27 June 2022"
       }
     },
     "responsible": {
-      "title": "Responsible Person",
-      "name": "The Currico Team",
-      "role": "Founders"
+      "title": "Authorized Representatives",
+      "signing": "Joint signatory authority (two required)",
+      "persons": {
+        "p1": {
+          "name": "Simon Wachter",
+          "role": "Chairman of Management"
+        },
+        "p2": {
+          "name": "Lucas Schenck",
+          "role": "Managing Director"
+        },
+        "p3": {
+          "name": "Jonas Wachter",
+          "role": "Managing Director"
+        }
+      }
     },
     "disclaimer": {
       "title": "Disclaimer",
@@ -2262,7 +2298,7 @@
       "privacy": "Privacy Policy",
       "terms": "Terms and Conditions"
     },
-    "version": "Version 1.1 - February 2026"
+    "version": "Version 1.2 - February 2026"
   },
   "privacyPage": {
     "title": "Privacy Policy",
@@ -2272,8 +2308,8 @@
       "responsible": {
         "title": "1. Responsible Party",
         "content": "Responsible for data processing on this website is:",
-        "company": "Currico (Beta)",
-        "address": "GmbH registration pending, Switzerland",
+        "company": "Angle Labs GmbH (Currico)",
+        "address": "Zellmatte 6, 6214 Schenkon, Switzerland",
         "emailLabel": "Email",
         "email": "info@currico.ch"
       },
@@ -2431,7 +2467,7 @@
         "content": "Our platform is aimed at teachers. Minors may only use the services with the consent of their legal guardians. We do not knowingly collect personal data from children under 16 years of age without parental consent."
       }
     },
-    "version": "Version 1.1 - February 2026",
+    "version": "Version 1.2 - February 2026",
     "contact": {
       "title": "Questions About Privacy?",
       "description": "For questions or concerns about your data, contact us:",
@@ -2585,17 +2621,17 @@
       "upload": {
         "question": "How do I upload material?",
         "answer": "Create a free account, click 'Upload Material', and fill in the title, subject, and cycle. Upload your file, publish — done.",
-        "linkLabel": "Register & Upload →"
+        "linkLabel": "Register & Upload"
       },
       "copyright": {
         "question": "What am I allowed to upload? (Copyright)",
         "answer": "Only your own materials or CC0-licensed content. No scans from textbooks, no protected trademarks or characters.",
-        "linkLabel": "Read Copyright Guide →"
+        "linkLabel": "Read Copyright Guide"
       },
       "browse": {
         "question": "Where can I find teaching materials?",
         "answer": "Browse our materials page and filter by cycle, subject, and dialect.",
-        "linkLabel": "Discover Materials →"
+        "linkLabel": "Discover Materials"
       }
     },
     "usefulLinks": {

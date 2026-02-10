@@ -171,32 +171,32 @@ export const CYCLES = ["Zyklus 1", "Zyklus 2", "Zyklus 3"];
 
 // Maps tab types to URL paths
 export const TAB_TO_PATH: Record<TabType, string> = {
-  overview: "/account",
-  library: "/account/library",
-  uploads: "/account/uploads",
-  bundles: "/account/bundles",
-  comments: "/account/comments",
-  wishlist: "/account/wishlist",
-  "settings-profile": "/account/settings",
-  "settings-appearance": "/account/settings/appearance",
-  "settings-notifications": "/account/settings/notifications",
-  "settings-account": "/account/settings/account",
+  overview: "/konto",
+  library: "/konto/library",
+  uploads: "/konto/uploads",
+  bundles: "/konto/bundles",
+  comments: "/konto/comments",
+  wishlist: "/konto/wishlist",
+  "settings-profile": "/konto/settings",
+  "settings-appearance": "/konto/settings/appearance",
+  "settings-notifications": "/konto/settings/notifications",
+  "settings-account": "/konto/settings/account",
 };
 
 // Maps URL paths back to tab types (for sidebar active state)
 export function pathToTab(pathname: string): TabType {
-  // Remove locale prefix (e.g. /de/account -> /account)
+  // Remove locale prefix (e.g. /de/konto -> /konto)
   const path = pathname.replace(/^\/[a-z]{2}/, "");
 
-  if (path === "/account" || path === "/account/") return "overview";
-  if (path.startsWith("/account/library")) return "library";
-  if (path.startsWith("/account/uploads")) return "uploads";
-  if (path.startsWith("/account/bundles")) return "bundles";
-  if (path.startsWith("/account/comments")) return "comments";
-  if (path.startsWith("/account/wishlist")) return "wishlist";
-  if (path.startsWith("/account/settings/appearance")) return "settings-appearance";
-  if (path.startsWith("/account/settings/notifications")) return "settings-notifications";
-  if (path.startsWith("/account/settings/account")) return "settings-account";
-  if (path.startsWith("/account/settings")) return "settings-profile";
+  if (path === "/konto" || path === "/konto/") return "overview";
+  if (path.startsWith("/konto/library")) return "library";
+  if (path.startsWith("/konto/uploads")) return "uploads";
+  if (path.startsWith("/konto/bundles")) return "bundles";
+  if (path.startsWith("/konto/comments")) return "comments";
+  if (path.startsWith("/konto/wishlist")) return "wishlist";
+  if (path.startsWith("/konto/settings/appearance")) return "settings-appearance";
+  if (path.startsWith("/konto/settings/notifications")) return "settings-notifications";
+  if (path.startsWith("/konto/settings/account")) return "settings-account";
+  if (path.startsWith("/konto/settings")) return "settings-profile";
   return "overview";
 }

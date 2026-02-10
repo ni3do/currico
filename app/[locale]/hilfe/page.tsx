@@ -36,7 +36,7 @@ export default function HilfePage() {
     {
       key: "upload" as const,
       icon: <Upload className="text-primary h-5 w-5" />,
-      linkHref: "/register" as const,
+      linkHref: "/registrieren" as const,
     },
     {
       key: "copyright" as const,
@@ -59,12 +59,12 @@ export default function HilfePage() {
     {
       key: "terms" as const,
       icon: <FileText className="text-primary h-5 w-5" />,
-      href: "/terms" as const,
+      href: "/agb" as const,
     },
     {
       key: "privacy" as const,
       icon: <Lock className="text-primary h-5 w-5" />,
-      href: "/privacy" as const,
+      href: "/datenschutz" as const,
     },
     {
       key: "impressum" as const,
@@ -145,7 +145,7 @@ export default function HilfePage() {
                 }}
                 className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                   activeTab === key
-                    ? "bg-primary text-text-on-accent"
+                    ? "bg-primary-light text-primary border-primary/30 border"
                     : "bg-surface border-border text-text hover:bg-bg-secondary border"
                 }`}
               >

@@ -92,7 +92,7 @@ export default function VerifyEmailPage() {
                 <h1 className="text-text text-2xl font-bold">{t("success.title")}</h1>
                 <p className="text-text-muted mt-2">{t("success.message")}</p>
                 <Link
-                  href="/account"
+                  href="/konto"
                   className="bg-primary text-text-on-accent hover:bg-primary-hover mt-6 inline-block w-full rounded-lg px-6 py-3 font-semibold transition-all hover:-translate-y-0.5 hover:shadow-lg"
                 >
                   {t("success.dashboardButton")}
@@ -120,7 +120,7 @@ export default function VerifyEmailPage() {
                 <h1 className="text-text text-2xl font-bold">{t("alreadyVerified.title")}</h1>
                 <p className="text-text-muted mt-2">{t("alreadyVerified.message")}</p>
                 <Link
-                  href="/account"
+                  href="/konto"
                   className="bg-primary text-text-on-accent hover:bg-primary-hover mt-6 inline-block w-full rounded-lg px-6 py-3 font-semibold transition-all hover:-translate-y-0.5 hover:shadow-lg"
                 >
                   {t("alreadyVerified.dashboardButton")}
@@ -148,7 +148,7 @@ export default function VerifyEmailPage() {
                 <h1 className="text-text text-2xl font-bold">{t("error.title")}</h1>
                 <p className="text-text-muted mt-2">{errorMessage}</p>
                 <Link
-                  href="/login"
+                  href="/anmelden"
                   className="bg-primary text-text-on-accent hover:bg-primary-hover mt-6 inline-block w-full rounded-lg px-6 py-3 font-semibold transition-all hover:-translate-y-0.5 hover:shadow-lg"
                 >
                   {t("error.loginButton")}

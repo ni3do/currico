@@ -218,7 +218,7 @@ export function SellerLevelCard({
             </span>
           </div>
           <Link
-            href="/verified-seller"
+            href="/verifizierter-verkaeufer"
             className="text-text-muted hover:text-primary text-xs font-medium transition-colors"
           >
             {t("verifiedInfo")}
@@ -243,7 +243,7 @@ export function SellerLevelCard({
       {/* Link to info page */}
       <div className="border-border border-t px-6 py-3">
         <Link
-          href="/seller-levels"
+          href="/verkaeufer-stufen"
           className="text-text-muted hover:text-primary flex items-center justify-center gap-1.5 text-xs font-medium transition-colors"
         >
           <HelpCircle className="h-3.5 w-3.5" />

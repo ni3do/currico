@@ -96,7 +96,7 @@ export default function SellerOnboardingCompletePage() {
               </div>
               <h1 className="text-text mb-2 text-xl font-bold">{t("notLoggedIn.title")}</h1>
               <p className="text-text-muted mb-6">{t("notLoggedIn.description")}</p>
-              <Link href="/login" className="btn btn-primary px-6 py-2">
+              <Link href="/anmelden" className="btn btn-primary px-6 py-2">
                 {t("notLoggedIn.loginButton")}
               </Link>
             </div>
@@ -119,7 +119,7 @@ export default function SellerOnboardingCompletePage() {
               </div>
               <h1 className="text-text mb-2 text-xl font-bold">{t("error.title")}</h1>
               <p className="text-text-muted mb-6">{error}</p>
-              <Link href="/become-seller" className="btn btn-primary px-6 py-2">
+              <Link href="/verkaeufer-werden" className="btn btn-primary px-6 py-2">
                 {t("error.tryAgain")}
               </Link>
             </div>
@@ -203,7 +203,7 @@ export default function SellerOnboardingCompletePage() {
               </div>
 
               <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-                <Link href="/account/materials/new" className="btn btn-primary px-6 py-2">
+                <Link href="/hochladen" className="btn btn-primary px-6 py-2">
                   {t("success.uploadFirst")}
                 </Link>
                 {stripeStatus?.dashboardUrl && (
@@ -258,7 +258,7 @@ export default function SellerOnboardingCompletePage() {
                 </div>
               )}
 
-              <Link href="/become-seller" className="btn btn-primary px-6 py-2">
+              <Link href="/verkaeufer-werden" className="btn btn-primary px-6 py-2">
                 {t("pending.continueSetup")}
               </Link>
             </div>
@@ -281,7 +281,7 @@ export default function SellerOnboardingCompletePage() {
               </div>
               <h1 className="text-text mb-2 text-xl font-bold">{t("noAccount.title")}</h1>
               <p className="text-text-muted mb-6">{t("noAccount.description")}</p>
-              <Link href="/become-seller" className="btn btn-primary px-6 py-2">
+              <Link href="/verkaeufer-werden" className="btn btn-primary px-6 py-2">
                 {t("noAccount.startSetup")}
               </Link>
             </div>
