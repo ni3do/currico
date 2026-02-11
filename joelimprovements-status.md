@@ -33,26 +33,26 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Suche & Darstellung
 
-- [ ] Entweder Profil ODER Materialien darstellen (nicht beides gemischt)
-- [ ] Ersteller als Default ausschalten, "Ersteller" zu "Profil" ändern
-- [ ] Suchleiste bei Profilen: "nach Lehrpersonen" → "nach Profilen suchen"
-- [ ] Per Default nur Materialien ausgewählt (nicht Profile)
-- [ ] Text in Suchleiste verbessern wenn Materialien ausgewählt
+- [x] Entweder Profil ODER Materialien darstellen (nicht beides gemischt)
+- [x] Ersteller als Default ausschalten, "Ersteller" zu "Profil" ändern
+- [x] Suchleiste bei Profilen: "nach Lehrpersonen" → "nach Profilen suchen"
+- [x] Per Default nur Materialien ausgewählt (nicht Profile)
+- [x] Text in Suchleiste verbessern wenn Materialien ausgewählt
 - [ ] Fuzzy-Match Suche für Materialien
-- [ ] Upload-Button auf der Materialien-Seite hinzufügen
+- [x] Upload-Button auf der Materialien-Seite hinzufügen
 
 ### Filter
 
-- [ ] Aktive Filter Aufpoppen verbessern
+- [x] Aktive Filter Aufpoppen verbessern
 - [ ] Ersteller + Zyklus/Fachbereich: auch Ersteller anzeigen die das anbieten
-- [ ] Fachbereich + Zyklus Filter nicht resetten wenn im gleichen Zyklus
-- [ ] ">" aus Preisoptionen rausnehmen
+- [x] Fachbereich + Zyklus Filter nicht resetten wenn im gleichen Zyklus
+- [x] ">" aus Preisoptionen rausnehmen
 - [x] OneNote als Formatoption hinzufügen
-- [ ] Andere Formate als Option hinzufügen
+- [x] Andere Formate als Option hinzufügen
 - [x] Formate: kein blauer Punkt wenn ausgewählt (wie alle anderen Filter)
-- [ ] Hover-Effekt bei Filtern verbessern und einheitlich machen
+- [x] Hover-Effekt bei Filtern verbessern und einheitlich machen
 - [ ] Nach Kantonen filtern können
-- [ ] Aktive Filter nur rechts unter "Gefundene Materialien" (nicht links in der Bar)
+- [x] Aktive Filter nur rechts unter "Gefundene Materialien" (nicht links in der Bar)
 - [ ] Filter-Funktion überarbeiten (Zyklus/Tab-spezifische Suche)
 
 ### Bugs
@@ -69,14 +69,14 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Pagination `<nav>` hat kein `aria-label="Pagination"` — Screenreader können die Navigation nicht identifizieren
 - [ ] Profil-Suche auf 12 Ergebnisse limitiert ohne Pagination — bei vielen Profilen fehlen Ergebnisse
 - [ ] Sortierung fehlt: kein "Beliebteste" oder "Beste Bewertung" — nur Neueste und Preis
-- [ ] `priceType`-Filter hat keine "Nur kostenpflichtig" Option — nur "Kostenlos" und Max-Preis
+- [x] `priceType`-Filter hat keine "Nur kostenpflichtig" Option — nur "Kostenlos" und Max-Preis
 - [ ] LP21FilterSidebar ist 1769 Zeilen — sollte in Sub-Komponenten aufgeteilt werden (ZyklusFilter, FachbereichFilter, PriceFilter, FormatFilter etc.)
 - [ ] Filter-State wird bei jedem Wechsel komplett neu erstellt statt per Spread-Update — könnte zu unnötigen Re-Renders führen
 - [ ] Kein URL-Encoding bei Suchbegriff in der URL — Sonderzeichen und Umlaute könnten Probleme verursachen
 - [ ] `MaterialCard` bekommt keinen `rating`-Prop — Bewertungen werden auf der Materialien-Übersicht nicht angezeigt
 - [ ] Kein Skeleton-Loading für Profile-Bereich — nur `MaterialGridSkeleton` vorhanden, Profile springen rein
 - [ ] Mobile Filter Drawer hat keinen Focus-Trap — Tab-Navigation kann hinter den Drawer gelangen
-- [ ] Kein `<meta description>` oder SEO-Tags für `/materialien` (ähnlich wie Startseite)
+- [x] Kein `<meta description>` oder SEO-Tags für `/materialien` (ähnlich wie Startseite)
 - [ ] Wenn beide Tabs aktiv (Materialien+Profile), wird die Gesamtzahl addiert — das kann verwirrend sein (z.B. "32 Ergebnisse" bei 30 Materialien + 2 Profile)
 - [ ] Sort-Dropdown ist nur sichtbar wenn `showMaterials=true` — wenn nur Profile gezeigt werden, fehlt jede Sortier-Option
 - [ ] `EmptySearchState` zeigt Vorschläge zum Zurücksetzen — aber keine konkreten Suchvorschläge basierend auf vorhandenen Materialien

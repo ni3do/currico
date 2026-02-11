@@ -422,7 +422,12 @@ export default function MaterialienPage() {
         }
 
         // Price filter
-        if (currentFilters.maxPrice !== null) {
+        if (currentFilters.priceType === "free") {
+          params.set("maxPrice", "0");
+        } else if (currentFilters.priceType === "paid") {
+          params.set("minPrice", "1");
+        }
+        if (currentFilters.maxPrice !== null && currentFilters.priceType !== "free") {
           params.set("maxPrice", currentFilters.maxPrice.toString());
         }
 
@@ -752,167 +757,254 @@ export default function MaterialienPage() {
 
               {/* Active Filter Chips - dismissable */}
               {activeFilterCount > 0 && (
-                <div className="mb-4 flex flex-wrap items-center gap-2">
-                  {filters.searchQuery && (
-                    <span className="bg-primary/10 text-primary border-primary/20 hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
-                      &quot;{filters.searchQuery}&quot;
-                      <button
-                        onClick={() => handleFiltersChange({ ...filters, searchQuery: "" })}
-                        className="hover:bg-primary/20 flex h-5 w-5 items-center justify-center rounded-full transition-colors"
+                <motion.div
+                  className="mb-4 flex flex-wrap items-center gap-2"
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <AnimatePresence mode="popLayout">
+                    {filters.searchQuery && (
+                      <motion.span
+                        key="chip-search"
+                        layout
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.15 }}
+                        className="bg-primary/10 text-primary border-primary/20 hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
                       >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </span>
-                  )}
-                  {filters.zyklus && (
-                    <span className="bg-primary/10 text-primary border-primary/20 hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
-                      {t("sidebar.chipCycle", { number: filters.zyklus })}
-                      <button
+                        &quot;{filters.searchQuery}&quot;
+                        <button
+                          onClick={() => handleFiltersChange({ ...filters, searchQuery: "" })}
+                          className="hover:bg-primary/20 flex h-5 w-5 items-center justify-center rounded-full transition-colors"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </motion.span>
+                    )}
+                    {filters.zyklus && (
+                      <motion.span
+                        key="chip-zyklus"
+                        layout
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.15 }}
+                        className="bg-primary/10 text-primary border-primary/20 hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
+                      >
+                        {t("sidebar.chipCycle", { number: filters.zyklus })}
+                        <button
+                          onClick={() =>
+                            handleFiltersChange({
+                              ...filters,
+                              zyklus: null,
+                              fachbereich: null,
+                              kompetenzbereich: null,
+                              kompetenz: null,
+                            })
+                          }
+                          className="hover:bg-primary/20 flex h-5 w-5 items-center justify-center rounded-full transition-colors"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </motion.span>
+                    )}
+                    {filters.fachbereich && (
+                      <motion.span
+                        key="chip-fachbereich"
+                        layout
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.15 }}
+                        className="bg-accent/10 text-accent border-accent/20 hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
+                      >
+                        {getFachbereichByCode(filters.fachbereich)?.shortName ||
+                          filters.fachbereich}
+                        <button
+                          onClick={() =>
+                            handleFiltersChange({
+                              ...filters,
+                              fachbereich: null,
+                              kompetenzbereich: null,
+                              kompetenz: null,
+                            })
+                          }
+                          className="hover:bg-accent/20 flex h-5 w-5 items-center justify-center rounded-full transition-colors"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </motion.span>
+                    )}
+                    {filters.kompetenzbereich && (
+                      <motion.span
+                        key="chip-kompetenzbereich"
+                        layout
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.15 }}
+                        className="bg-accent/10 text-accent border-accent/20 hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
+                      >
+                        {filters.kompetenzbereich}
+                        <button
+                          onClick={() =>
+                            handleFiltersChange({
+                              ...filters,
+                              kompetenzbereich: null,
+                              kompetenz: null,
+                            })
+                          }
+                          className="hover:bg-accent/20 flex h-5 w-5 items-center justify-center rounded-full transition-colors"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </motion.span>
+                    )}
+                    {filters.kompetenz && (
+                      <motion.span
+                        key="chip-kompetenz"
+                        layout
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.15 }}
+                        className="bg-accent/10 text-accent border-accent/20 hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
+                      >
+                        {filters.kompetenz}
+                        <button
+                          onClick={() => handleFiltersChange({ ...filters, kompetenz: null })}
+                          className="hover:bg-accent/20 flex h-5 w-5 items-center justify-center rounded-full transition-colors"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </motion.span>
+                    )}
+                    {filters.dialect && (
+                      <motion.span
+                        key="chip-dialect"
+                        layout
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.15 }}
+                        className="bg-surface text-text-secondary border-border hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
+                      >
+                        {filters.dialect === "SWISS" ? "CH" : "DE"}
+                        <button
+                          onClick={() => handleFiltersChange({ ...filters, dialect: null })}
+                          className="hover:bg-surface-hover flex h-5 w-5 items-center justify-center rounded-full transition-colors"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </motion.span>
+                    )}
+                    {(filters.priceType || filters.maxPrice !== null) && (
+                      <motion.span
+                        key="chip-price"
+                        layout
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.15 }}
+                        className="bg-surface text-text-secondary border-border hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
+                      >
+                        {filters.priceType === "free"
+                          ? t("sidebar.priceFree")
+                          : filters.priceType === "paid"
+                            ? filters.maxPrice !== null
+                              ? `${t("sidebar.pricePaid")} · ${t("sidebar.priceUnder", { amount: filters.maxPrice })}`
+                              : t("sidebar.pricePaid")
+                            : filters.maxPrice !== null
+                              ? t("sidebar.priceUnder", { amount: filters.maxPrice })
+                              : ""}
+                        <button
+                          onClick={() =>
+                            handleFiltersChange({ ...filters, priceType: null, maxPrice: null })
+                          }
+                          className="hover:bg-surface-hover flex h-5 w-5 items-center justify-center rounded-full transition-colors"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </motion.span>
+                    )}
+                    {filters.formats.map((fmt) => (
+                      <motion.span
+                        key={`chip-fmt-${fmt}`}
+                        layout
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.15 }}
+                        className="bg-surface text-text-secondary border-border hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
+                      >
+                        {fmt.toUpperCase()}
+                        <button
+                          onClick={() =>
+                            handleFiltersChange({
+                              ...filters,
+                              formats: filters.formats.filter((f) => f !== fmt),
+                            })
+                          }
+                          className="hover:bg-surface-hover flex h-5 w-5 items-center justify-center rounded-full transition-colors"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </motion.span>
+                    ))}
+                    {filters.materialScope && (
+                      <motion.span
+                        key="chip-scope"
+                        layout
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.15 }}
+                        className="bg-surface text-text-secondary border-border hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
+                      >
+                        {filters.materialScope === "single"
+                          ? t("sidebar.scopeSingle")
+                          : t("sidebar.scopeBundle")}
+                        <button
+                          onClick={() => handleFiltersChange({ ...filters, materialScope: null })}
+                          className="hover:bg-surface-hover flex h-5 w-5 items-center justify-center rounded-full transition-colors"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </motion.span>
+                    )}
+                    {activeFilterCount > 1 && (
+                      <motion.button
+                        key="chip-reset"
+                        layout
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.15 }}
                         onClick={() =>
                           handleFiltersChange({
-                            ...filters,
+                            showMaterials: filters.showMaterials,
+                            showCreators: filters.showCreators,
                             zyklus: null,
                             fachbereich: null,
                             kompetenzbereich: null,
                             kompetenz: null,
+                            searchQuery: "",
+                            dialect: null,
+                            priceType: null,
+                            maxPrice: null,
+                            formats: [],
+                            materialScope: null,
                           })
                         }
-                        className="hover:bg-primary/20 flex h-5 w-5 items-center justify-center rounded-full transition-colors"
+                        className="text-text-muted hover:text-error text-xs font-medium transition-colors"
                       >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </span>
-                  )}
-                  {filters.fachbereich && (
-                    <span className="bg-accent/10 text-accent border-accent/20 hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
-                      {getFachbereichByCode(filters.fachbereich)?.shortName || filters.fachbereich}
-                      <button
-                        onClick={() =>
-                          handleFiltersChange({
-                            ...filters,
-                            fachbereich: null,
-                            kompetenzbereich: null,
-                            kompetenz: null,
-                          })
-                        }
-                        className="hover:bg-accent/20 flex h-5 w-5 items-center justify-center rounded-full transition-colors"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </span>
-                  )}
-                  {filters.kompetenzbereich && (
-                    <span className="bg-accent/10 text-accent border-accent/20 hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
-                      {filters.kompetenzbereich}
-                      <button
-                        onClick={() =>
-                          handleFiltersChange({
-                            ...filters,
-                            kompetenzbereich: null,
-                            kompetenz: null,
-                          })
-                        }
-                        className="hover:bg-accent/20 flex h-5 w-5 items-center justify-center rounded-full transition-colors"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </span>
-                  )}
-                  {filters.kompetenz && (
-                    <span className="bg-accent/10 text-accent border-accent/20 hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
-                      {filters.kompetenz}
-                      <button
-                        onClick={() => handleFiltersChange({ ...filters, kompetenz: null })}
-                        className="hover:bg-accent/20 flex h-5 w-5 items-center justify-center rounded-full transition-colors"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </span>
-                  )}
-                  {filters.dialect && (
-                    <span className="bg-surface text-text-secondary border-border hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
-                      {filters.dialect === "SWISS" ? "CH" : "DE"}
-                      <button
-                        onClick={() => handleFiltersChange({ ...filters, dialect: null })}
-                        className="hover:bg-surface-hover flex h-5 w-5 items-center justify-center rounded-full transition-colors"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </span>
-                  )}
-                  {(filters.priceType || filters.maxPrice !== null) && (
-                    <span className="bg-surface text-text-secondary border-border hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
-                      {filters.priceType === "free"
-                        ? t("sidebar.priceFree")
-                        : filters.maxPrice !== null
-                          ? t("sidebar.priceUnder", { amount: filters.maxPrice })
-                          : ""}
-                      <button
-                        onClick={() =>
-                          handleFiltersChange({ ...filters, priceType: null, maxPrice: null })
-                        }
-                        className="hover:bg-surface-hover flex h-5 w-5 items-center justify-center rounded-full transition-colors"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </span>
-                  )}
-                  {filters.formats.map((fmt) => (
-                    <span
-                      key={fmt}
-                      className="bg-surface text-text-secondary border-border hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
-                    >
-                      {fmt.toUpperCase()}
-                      <button
-                        onClick={() =>
-                          handleFiltersChange({
-                            ...filters,
-                            formats: filters.formats.filter((f) => f !== fmt),
-                          })
-                        }
-                        className="hover:bg-surface-hover flex h-5 w-5 items-center justify-center rounded-full transition-colors"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </span>
-                  ))}
-                  {filters.materialScope && (
-                    <span className="bg-surface text-text-secondary border-border hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
-                      {filters.materialScope === "single"
-                        ? t("sidebar.scopeSingle")
-                        : t("sidebar.scopeBundle")}
-                      <button
-                        onClick={() => handleFiltersChange({ ...filters, materialScope: null })}
-                        className="hover:bg-surface-hover flex h-5 w-5 items-center justify-center rounded-full transition-colors"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </span>
-                  )}
-                  {activeFilterCount > 1 && (
-                    <button
-                      onClick={() =>
-                        handleFiltersChange({
-                          showMaterials: filters.showMaterials,
-                          showCreators: filters.showCreators,
-                          zyklus: null,
-                          fachbereich: null,
-                          kompetenzbereich: null,
-                          kompetenz: null,
-                          searchQuery: "",
-                          dialect: null,
-                          priceType: null,
-                          maxPrice: null,
-                          formats: [],
-                          materialScope: null,
-                        })
-                      }
-                      className="text-text-muted hover:text-error text-xs font-medium transition-colors"
-                    >
-                      {t("sidebar.reset")}
-                    </button>
-                  )}
-                </div>
+                        {t("sidebar.reset")}
+                      </motion.button>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
               )}
 
               {/* Error State */}

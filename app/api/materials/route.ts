@@ -39,8 +39,9 @@ import { sanitizeSearchQuery, isLP21Code } from "@/lib/search-utils";
  *   - bne: filter by BNE theme code
  *   - mi_integrated: "true" to show only M&I integrated materials
  *   - lehrmittel: filter by lehrmittel ID
- *   - maxPrice: maximum price in CHF (e.g., "10" for CHF 10)
- *   - formats: comma-separated format IDs (pdf,word,ppt,excel,image,onenote)
+ *   - maxPrice: maximum price in CHF (e.g., "10" for CHF 10, "0" for free only)
+ *   - minPrice: minimum price in CHF (e.g., "1" for paid only)
+ *   - formats: comma-separated format IDs (pdf,word,ppt,excel,image,onenote,audio,video,zip)
  */
 export async function GET(request: NextRequest) {
   // Rate limiting check
@@ -81,6 +82,7 @@ export async function GET(request: NextRequest) {
 
     // Additional filters
     const maxPrice = searchParams.get("maxPrice");
+    const minPrice = searchParams.get("minPrice");
     const formats = searchParams.get("formats");
     const materialScope = searchParams.get("materialScope");
 
@@ -307,15 +309,26 @@ export async function GET(request: NextRequest) {
       };
     }
 
-    // Price filter (maxPrice in CHF, stored in cents)
-    if (maxPrice !== null) {
-      const maxPriceValue = parseInt(maxPrice, 10);
-      if (!isNaN(maxPriceValue)) {
-        // Convert CHF to cents (price stored in cents)
-        // maxPrice=0 means free resources only
-        where.price = {
-          lte: maxPriceValue * 100,
-        };
+    // Price filter (maxPrice/minPrice in CHF, stored in cents)
+    if (maxPrice !== null || minPrice !== null) {
+      const priceFilter: Record<string, number> = {};
+      if (maxPrice !== null) {
+        const maxPriceValue = parseInt(maxPrice, 10);
+        if (!isNaN(maxPriceValue)) {
+          // Convert CHF to cents (price stored in cents)
+          // maxPrice=0 means free resources only
+          priceFilter.lte = maxPriceValue * 100;
+        }
+      }
+      if (minPrice !== null) {
+        const minPriceValue = parseInt(minPrice, 10);
+        if (!isNaN(minPriceValue)) {
+          // Convert CHF to cents — minPrice=1 means paid only (price >= 100 cents)
+          priceFilter.gte = minPriceValue * 100;
+        }
+      }
+      if (Object.keys(priceFilter).length > 0) {
+        where.price = priceFilter;
       }
     }
 
@@ -330,6 +343,9 @@ export async function GET(request: NextRequest) {
         excel: ["xls", "xlsx"],
         image: ["jpg", "jpeg", "png", "gif", "webp"],
         onenote: ["one", "onetoc2"],
+        audio: ["mp3", "wav", "ogg"],
+        video: ["mp4", "webm", "mov"],
+        zip: ["zip", "rar", "7z"],
       };
       const allowedExtensions: string[] = [];
       for (const format of formatList) {

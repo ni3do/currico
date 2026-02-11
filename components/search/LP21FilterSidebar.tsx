@@ -17,6 +17,9 @@ import {
   Image as ImageIcon,
   Loader2,
   Users,
+  Music2,
+  Film,
+  Archive,
 } from "lucide-react";
 import { useCurriculum } from "@/lib/hooks/useCurriculum";
 import { FACHBEREICH_ICONS } from "@/lib/constants/subject-icons";
@@ -41,6 +44,9 @@ const FORMAT_OPTIONS = [
   { id: "excel", labelKey: "formatExcel", icon: Table },
   { id: "onenote", labelKey: "formatOnenote", icon: StickyNote },
   { id: "image", labelKey: "formatImage", icon: ImageIcon },
+  { id: "audio", labelKey: "formatAudio", icon: Music2 },
+  { id: "video", labelKey: "formatVideo", icon: Film },
+  { id: "zip", labelKey: "formatZip", icon: Archive },
 ] as const;
 
 // Translation function type
@@ -232,15 +238,21 @@ export function LP21FilterSidebar({
       // Smart reset: keep fachbereich if it exists in the new Zyklus
       let keepFachbereich = false;
       let keepKompetenzbereich = false;
+      let keepKompetenz = false;
       if (newZyklus !== null && filters.fachbereich) {
         const newFachbereiche = getFachbereicheByZyklus(newZyklus);
         const matchedFb = newFachbereiche.find((f) => f.code === filters.fachbereich);
         keepFachbereich = !!matchedFb;
         // Also validate kompetenzbereich still exists under this fachbereich
         if (keepFachbereich && matchedFb && filters.kompetenzbereich) {
-          keepKompetenzbereich = matchedFb.kompetenzbereiche.some(
+          const matchedKb = matchedFb.kompetenzbereiche.find(
             (kb) => kb.code === filters.kompetenzbereich
           );
+          keepKompetenzbereich = !!matchedKb;
+          // Validate kompetenz exists in the matched kompetenzbereich's kompetenzen
+          if (keepKompetenzbereich && matchedKb && filters.kompetenz) {
+            keepKompetenz = matchedKb.kompetenzen.some((k) => k.code === filters.kompetenz);
+          }
         }
       }
       onFiltersChange({
@@ -248,7 +260,7 @@ export function LP21FilterSidebar({
         zyklus: newZyklus,
         fachbereich: keepFachbereich ? filters.fachbereich : null,
         kompetenzbereich: keepKompetenzbereich ? filters.kompetenzbereich : null,
-        kompetenz: keepKompetenzbereich ? filters.kompetenz : null,
+        kompetenz: keepKompetenz ? filters.kompetenz : null,
       });
     },
     [filters, onFiltersChange, getFachbereicheByZyklus]
@@ -615,6 +627,25 @@ export function LP21FilterSidebar({
 
             <div className="divider my-5" />
 
+            {/* Price Filter */}
+            <CollapsibleSection title={t("sidebar.priceSectionLabel")}>
+              <PriceFilter
+                priceType={filters.priceType}
+                maxPrice={filters.maxPrice}
+                onPriceTypeChange={(priceType) =>
+                  onFiltersChange({
+                    ...filters,
+                    priceType,
+                    maxPrice: priceType === "free" ? null : filters.maxPrice,
+                  })
+                }
+                onMaxPriceChange={(maxPrice) => onFiltersChange({ ...filters, maxPrice })}
+                t={t}
+              />
+            </CollapsibleSection>
+
+            <div className="divider my-5" />
+
             {/* Format Filter */}
             <CollapsibleSection title={t("sidebar.formatSectionLabel")}>
               <FormatFilter
@@ -852,6 +883,7 @@ function FachbereichAccordion({
         whileHover={{
           backgroundColor: isSelected ? `${fachbereich.color}25` : `${fachbereich.color}15`,
           x: 2,
+          scale: 1.005,
         }}
         transition={{ duration: 0.15 }}
       >
@@ -987,6 +1019,7 @@ function KompetenzbereichItem({
         whileHover={{
           backgroundColor: isSelected ? `${fachbereichColor}22` : `${fachbereichColor}12`,
           x: 2,
+          scale: 1.005,
         }}
         transition={{ duration: 0.15 }}
       >
@@ -1062,6 +1095,7 @@ function KompetenzbereichItem({
                         ? `${fachbereichColor}20`
                         : `${fachbereichColor}10`,
                       x: 2,
+                      scale: 1.005,
                     }}
                   >
                     <div className="flex items-center">
@@ -1120,14 +1154,104 @@ function FormatFilter({ selectedFormats, onFormatToggle, t }: FormatFilterProps)
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: index * 0.03 }}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{ scale: 1.015, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
+            whileTap={{ scale: 0.97, transition: { duration: 0.1 } }}
           >
             <Icon className="h-4 w-4" />
             <span className="font-medium">{t(`sidebar.${format.labelKey}`)}</span>
           </motion.button>
         );
       })}
+    </div>
+  );
+}
+
+// ============ PRICE FILTER ============
+interface PriceFilterProps {
+  priceType: string | null;
+  maxPrice: number | null;
+  onPriceTypeChange: (priceType: string | null) => void;
+  onMaxPriceChange: (maxPrice: number | null) => void;
+  t: TranslationFn;
+}
+
+function PriceFilter({
+  priceType,
+  maxPrice,
+  onPriceTypeChange,
+  onMaxPriceChange,
+  t,
+}: PriceFilterProps) {
+  const options = [
+    { value: null, labelKey: "sidebar.priceAll" as const },
+    { value: "free", labelKey: "sidebar.priceFree" as const },
+    { value: "paid", labelKey: "sidebar.pricePaid" as const },
+  ];
+
+  return (
+    <div className="space-y-3">
+      <div className="flex gap-2">
+        {options.map((option) => {
+          const isActive = priceType === option.value;
+          return (
+            <motion.button
+              key={option.value ?? "all"}
+              onClick={() =>
+                onPriceTypeChange(isActive && option.value !== null ? null : option.value)
+              }
+              className={`flex-1 rounded-lg border-2 px-3 py-2.5 text-center text-sm font-semibold transition-colors ${
+                isActive
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:bg-surface-hover"
+              }`}
+              whileHover={{ scale: 1.015, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
+              whileTap={{ scale: 0.97, transition: { duration: 0.1 } }}
+            >
+              {t(option.labelKey)}
+            </motion.button>
+          );
+        })}
+      </div>
+
+      {/* Max price input — hidden when "free" is selected */}
+      <AnimatePresence initial={false}>
+        {priceType !== "free" && (
+          <motion.div
+            key="max-price-input"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <label className="text-text-muted mb-1.5 block text-xs font-medium">
+              {t("sidebar.priceMaxLabel")}
+            </label>
+            <div className="relative">
+              <input
+                type="number"
+                min={0}
+                step={1}
+                value={maxPrice ?? ""}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val === "") {
+                    onMaxPriceChange(null);
+                  } else {
+                    const parsed = parseInt(val, 10);
+                    onMaxPriceChange(isNaN(parsed) ? null : Math.max(0, parsed));
+                  }
+                }}
+                placeholder={t("sidebar.priceMaxPlaceholder")}
+                className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 w-full rounded-lg border py-2 pr-14 pl-3 text-sm focus:ring-2 focus:outline-none"
+              />
+              <span className="text-text-muted pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-sm">
+                CHF
+              </span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
