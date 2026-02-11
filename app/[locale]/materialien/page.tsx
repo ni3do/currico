@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
-import { SlidersHorizontal, Users, LayoutGrid, List, Search, X } from "lucide-react";
+import { SlidersHorizontal, LayoutGrid, List, Search, X, Upload } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
@@ -89,8 +89,14 @@ export default function MaterialienPage() {
   const profilesAbortRef = useRef<AbortController | null>(null);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [sortBy, setSortBy] = useState<string>(searchParams.get("sort") || "newest");
+  const [profileSortBy, setProfileSortBy] = useState<string>(
+    searchParams.get("profileSort") || "newest"
+  );
   const [currentPage, setCurrentPage] = useState<number>(
     parseInt(searchParams.get("page") || "1", 10)
+  );
+  const [profilePage, setProfilePage] = useState<number>(
+    parseInt(searchParams.get("profilePage") || "1", 10)
   );
   const [wishlistedIds, setWishlistedIds] = useState<Set<string>>(new Set());
 
@@ -235,17 +241,14 @@ export default function MaterialienPage() {
     const kompetenzbereich = searchParams.get("kompetenzbereich");
     const kompetenz = searchParams.get("kompetenz");
 
-    // Backward compat: old ?searchType=profiles → showMaterials: false, showCreators: true
+    // Default: materials tab active, profiles tab inactive
+    // Backward compat: ?showCreators=true or ?searchType=profiles → profiles tab
     const legacySearchType = searchParams.get("searchType");
-    let showMaterials = searchParams.get("showMaterials") !== "false";
-    let showCreators = searchParams.get("showCreators") !== "false";
-    if (legacySearchType === "profiles") {
+    const showCreatorsParam = searchParams.get("showCreators");
+    let showMaterials = true;
+    let showCreators = false;
+    if (legacySearchType === "profiles" || showCreatorsParam === "true") {
       showMaterials = false;
-      showCreators = true;
-    }
-    // Ensure at least one is true
-    if (!showMaterials && !showCreators) {
-      showMaterials = true;
       showCreators = true;
     }
 
@@ -277,9 +280,8 @@ export default function MaterialienPage() {
   const buildUrlParams = useCallback(
     (currentFilters: LP21FilterState, currentSort: string, page: number = 1) => {
       const params = new URLSearchParams();
-      // Only add params when not default (both true)
-      if (!currentFilters.showMaterials) params.set("showMaterials", "false");
-      if (!currentFilters.showCreators) params.set("showCreators", "false");
+      // Only write showCreators when profiles tab is active (materials is default)
+      if (currentFilters.showCreators) params.set("showCreators", "true");
       if (currentFilters.zyklus) params.set("zyklus", currentFilters.zyklus.toString());
       if (currentFilters.fachbereich) params.set("fachbereich", currentFilters.fachbereich);
       if (currentFilters.kompetenzbereich)
@@ -295,9 +297,13 @@ export default function MaterialienPage() {
       if (currentFilters.materialScope) params.set("materialScope", currentFilters.materialScope);
       if (currentSort && currentSort !== "newest") params.set("sort", currentSort);
       if (page > 1) params.set("page", page.toString());
+      if (currentFilters.showCreators && profileSortBy !== "newest")
+        params.set("profileSort", profileSortBy);
+      if (currentFilters.showCreators && profilePage > 1)
+        params.set("profilePage", profilePage.toString());
       return params;
     },
-    []
+    [profileSortBy, profilePage]
   );
 
   // Update URL when filters change from sidebar (reset to page 1)
@@ -305,6 +311,7 @@ export default function MaterialienPage() {
     (newFilters: LP21FilterState) => {
       setFilters(newFilters);
       setCurrentPage(1);
+      setProfilePage(1);
       const params = buildUrlParams(newFilters, sortBy, 1);
       const newUrl = params.toString() ? `/materialien?${params.toString()}` : "/materialien";
       router.replace(newUrl, { scroll: false });
@@ -322,6 +329,36 @@ export default function MaterialienPage() {
       router.replace(newUrl, { scroll: false });
     },
     [router, filters, buildUrlParams]
+  );
+
+  // Handle profile sort change
+  const handleProfileSortChange = useCallback(
+    (newSort: string) => {
+      setProfileSortBy(newSort);
+      setProfilePage(1);
+      const params = buildUrlParams(filters, sortBy, currentPage);
+      // Override profile-specific params
+      if (newSort !== "newest") params.set("profileSort", newSort);
+      else params.delete("profileSort");
+      params.delete("profilePage");
+      const newUrl = params.toString() ? `/materialien?${params.toString()}` : "/materialien";
+      router.replace(newUrl, { scroll: false });
+    },
+    [router, filters, sortBy, currentPage, buildUrlParams]
+  );
+
+  // Handle profile page change
+  const handleProfilePageChange = useCallback(
+    (newPage: number) => {
+      setProfilePage(newPage);
+      const params = buildUrlParams(filters, sortBy, currentPage);
+      if (newPage > 1) params.set("profilePage", newPage.toString());
+      else params.delete("profilePage");
+      const newUrl = params.toString() ? `/materialien?${params.toString()}` : "/materialien";
+      router.replace(newUrl, { scroll: false });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    },
+    [router, filters, sortBy, currentPage, buildUrlParams]
   );
 
   // Handle page change
@@ -452,43 +489,48 @@ export default function MaterialienPage() {
   }, [filters, sortBy, currentPage, fetchMaterials]);
 
   // Fetch profiles with optional filters
-  const fetchProfiles = useCallback(async (currentFilters: LP21FilterState) => {
-    // Abort any previous in-flight profile request
-    profilesAbortRef.current?.abort();
-    const controller = new AbortController();
-    profilesAbortRef.current = controller;
+  const fetchProfiles = useCallback(
+    async (currentFilters: LP21FilterState, sort: string = "newest", page: number = 1) => {
+      // Abort any previous in-flight profile request
+      profilesAbortRef.current?.abort();
+      const controller = new AbortController();
+      profilesAbortRef.current = controller;
 
-    setProfilesLoading(true);
-    try {
-      const params = new URLSearchParams();
-      if (currentFilters.searchQuery) params.set("q", currentFilters.searchQuery);
-      if (currentFilters.fachbereich) params.set("subject", currentFilters.fachbereich);
-      if (currentFilters.zyklus) params.set("cycle", currentFilters.zyklus.toString());
-      params.set("limit", "12");
+      setProfilesLoading(true);
+      try {
+        const params = new URLSearchParams();
+        if (currentFilters.searchQuery) params.set("q", currentFilters.searchQuery);
+        if (currentFilters.fachbereich) params.set("subject", currentFilters.fachbereich);
+        if (currentFilters.zyklus) params.set("cycle", currentFilters.zyklus.toString());
+        if (sort && sort !== "newest") params.set("sort", sort);
+        if (page > 1) params.set("page", page.toString());
+        params.set("limit", "12");
 
-      const response = await fetch(`/api/users/search?${params.toString()}`, {
-        signal: controller.signal,
-      });
-      if (response.ok) {
-        const data = await response.json();
-        startTransition(() => {
-          setProfiles(data.profiles);
-          setProfilePagination(data.pagination);
+        const response = await fetch(`/api/users/search?${params.toString()}`, {
+          signal: controller.signal,
         });
+        if (response.ok) {
+          const data = await response.json();
+          startTransition(() => {
+            setProfiles(data.profiles);
+            setProfilePagination(data.pagination);
+          });
+        }
+      } catch (error: unknown) {
+        if (error instanceof Error && error.name === "AbortError") return;
+        console.error("Error fetching profiles:", error);
+      } finally {
+        setProfilesLoading(false);
       }
-    } catch (error: unknown) {
-      if (error instanceof Error && error.name === "AbortError") return;
-      console.error("Error fetching profiles:", error);
-    } finally {
-      setProfilesLoading(false);
-    }
-  }, []);
+    },
+    []
+  );
 
   // Fetch profiles when showCreators is true
   useEffect(() => {
     if (filters.showCreators) {
       const debounce = setTimeout(() => {
-        fetchProfiles(filters);
+        fetchProfiles(filters, profileSortBy, profilePage);
       }, 300);
       return () => clearTimeout(debounce);
     } else {
@@ -496,43 +538,7 @@ export default function MaterialienPage() {
       setProfilePagination({ page: 1, limit: 12, total: 0, totalPages: 0 });
       setProfilesLoading(false);
     }
-  }, [filters, fetchProfiles]);
-
-  // Merged grid items for unified view
-  type GridItem = { type: "material"; data: Material } | { type: "profile"; data: Profile };
-
-  const mergedItems = useMemo<GridItem[]>(() => {
-    const materialItems: GridItem[] = filters.showMaterials
-      ? materials.map((r) => ({ type: "material" as const, data: r }))
-      : [];
-    const profileItems: GridItem[] = filters.showCreators
-      ? profiles.map((p) => ({ type: "profile" as const, data: p }))
-      : [];
-
-    // When both are shown, intersperse profiles every 6th position
-    if (filters.showMaterials && filters.showCreators) {
-      const merged: GridItem[] = [];
-      let rIdx = 0;
-      let pIdx = 0;
-      let position = 0;
-
-      while (rIdx < materialItems.length || pIdx < profileItems.length) {
-        // Insert a profile every 6th position (positions 5, 11, 17, ...)
-        if (position > 0 && position % 6 === 5 && pIdx < profileItems.length) {
-          merged.push(profileItems[pIdx++]);
-        } else if (rIdx < materialItems.length) {
-          merged.push(materialItems[rIdx++]);
-        } else if (pIdx < profileItems.length) {
-          merged.push(profileItems[pIdx++]);
-        }
-        position++;
-      }
-      return merged;
-    }
-
-    // When only one type is shown
-    return [...materialItems, ...profileItems];
-  }, [materials, profiles, filters.showMaterials, filters.showCreators]);
+  }, [filters, profileSortBy, profilePage, fetchProfiles]);
 
   // Count active filters for the badge
   const activeFilterCount = [
@@ -548,13 +554,19 @@ export default function MaterialienPage() {
     filters.materialScope,
   ].filter(Boolean).length;
 
-  // Combined loading state
-  const isLoading = (filters.showMaterials && loading) || (filters.showCreators && profilesLoading);
+  // Loading state for active tab
+  const isLoading = filters.showMaterials ? loading : profilesLoading;
 
-  // Combined count
-  const totalCount =
-    (filters.showMaterials ? pagination.total : 0) +
-    (filters.showCreators ? profilePagination.total : 0);
+  // Count for active tab
+  const totalCount = filters.showMaterials ? pagination.total : profilePagination.total;
+
+  // Count label for active tab
+  const countLabel = filters.showMaterials
+    ? t("results.countLabel")
+    : t("results.countLabelProfiles");
+
+  // Items empty check for active tab
+  const hasNoItems = filters.showMaterials ? materials.length === 0 : profiles.length === 0;
 
   return (
     <div className="bg-bg flex min-h-screen flex-col">
@@ -564,8 +576,23 @@ export default function MaterialienPage() {
         {/* Page Header */}
         <div className="mb-6 sm:mb-8">
           <Breadcrumb items={[{ label: tCommon("navigation.materials") }]} />
-          <h1 className="text-text text-2xl font-bold sm:text-3xl">{t("header.title")}</h1>
-          <p className="text-text-muted mt-1.5 text-sm sm:text-base">{t("header.description")}</p>
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <h1 className="text-text text-2xl font-bold sm:text-3xl">{t("header.title")}</h1>
+              <p className="text-text-muted mt-1.5 text-sm sm:text-base">
+                {t("header.description")}
+              </p>
+            </div>
+            {filters.showMaterials && (
+              <Link
+                href="/hochladen"
+                className="bg-primary text-text-on-accent hover:bg-primary-hover hidden items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors sm:inline-flex"
+              >
+                <Upload className="h-4 w-4" />
+                {t("header.uploadButton")}
+              </Link>
+            )}
+          </div>
         </div>
 
         {/* Main Layout: Sidebar + Content */}
@@ -647,21 +674,20 @@ export default function MaterialienPage() {
             </div>
 
             {/* Main Content Area */}
-            <div className="min-w-0 flex-1">
+            <div className="min-w-0 flex-1" id="search-results-panel" role="tabpanel">
               {/* Top Control Bar: Results + Sort */}
               <div className="bg-bg-secondary mb-4 flex flex-col gap-4 rounded-lg p-4 sm:flex-row sm:items-center sm:justify-between">
                 {/* Results Count */}
                 <div>
                   <p className="text-text-muted text-sm">
-                    <span className="text-text font-semibold">{totalCount}</span>{" "}
-                    {t("results.countLabel")}
+                    <span className="text-text font-semibold">{totalCount}</span> {countLabel}
                   </p>
                 </div>
 
                 {/* View Toggle + Sort Dropdown */}
-                {filters.showMaterials && (
-                  <div className="flex items-center gap-3">
-                    {/* Grid/List Toggle */}
+                <div className="flex items-center gap-3">
+                  {/* Grid/List Toggle — materials only */}
+                  {filters.showMaterials && (
                     <div className="border-border flex rounded-lg border">
                       <button
                         onClick={() => setViewMode("grid")}
@@ -688,12 +714,14 @@ export default function MaterialienPage() {
                         <List className="h-4 w-4" />
                       </button>
                     </div>
+                  )}
 
-                    {/* Sort Dropdown */}
-                    <div className="flex items-center gap-2">
-                      <label className="text-text-muted hidden text-sm whitespace-nowrap sm:inline">
-                        {t("results.sortLabel")}
-                      </label>
+                  {/* Sort Dropdown */}
+                  <div className="flex items-center gap-2">
+                    <label className="text-text-muted hidden text-sm whitespace-nowrap sm:inline">
+                      {t("results.sortLabel")}
+                    </label>
+                    {filters.showMaterials ? (
                       <select
                         value={sortBy}
                         onChange={(e) => handleSortChange(e.target.value)}
@@ -703,9 +731,23 @@ export default function MaterialienPage() {
                         <option value="price-low">{t("results.sortOptions.priceLow")}</option>
                         <option value="price-high">{t("results.sortOptions.priceHigh")}</option>
                       </select>
-                    </div>
+                    ) : (
+                      <select
+                        value={profileSortBy}
+                        onChange={(e) => handleProfileSortChange(e.target.value)}
+                        className="border-border bg-bg text-text-secondary focus:border-primary focus:ring-focus-ring rounded-full border px-3 py-2.5 text-sm focus:ring-2 focus:outline-none"
+                      >
+                        <option value="newest">{t("results.profileSortOptions.newest")}</option>
+                        <option value="mostMaterials">
+                          {t("results.profileSortOptions.mostMaterials")}
+                        </option>
+                        <option value="mostFollowers">
+                          {t("results.profileSortOptions.mostFollowers")}
+                        </option>
+                      </select>
+                    )}
                   </div>
-                )}
+                </div>
               </div>
 
               {/* Active Filter Chips - dismissable */}
@@ -836,7 +878,9 @@ export default function MaterialienPage() {
                   ))}
                   {filters.materialScope && (
                     <span className="bg-surface text-text-secondary border-border hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
-                      {filters.materialScope === "single" ? t("sidebar.scopeSingle") : t("sidebar.scopeBundle")}
+                      {filters.materialScope === "single"
+                        ? t("sidebar.scopeSingle")
+                        : t("sidebar.scopeBundle")}
                       <button
                         onClick={() => handleFiltersChange({ ...filters, materialScope: null })}
                         className="hover:bg-surface-hover flex h-5 w-5 items-center justify-center rounded-full transition-colors"
@@ -888,7 +932,7 @@ export default function MaterialienPage() {
               ) : /* Unified Grid */
               isLoading ? (
                 <MaterialGridSkeleton count={6} />
-              ) : mergedItems.length === 0 ? (
+              ) : hasNoItems ? (
                 <EmptySearchState
                   filters={filters}
                   onResetFilters={() =>
@@ -926,197 +970,194 @@ export default function MaterialienPage() {
                   }
                 />
               ) : (
-                <motion.div
-                  className={
-                    viewMode === "grid"
-                      ? "grid gap-5 sm:grid-cols-2 sm:gap-6 xl:grid-cols-3"
-                      : "flex flex-col gap-5"
-                  }
-                  style={{ opacity: isPending ? 0.7 : 1, transition: "opacity 150ms ease" }}
-                  initial="hidden"
-                  animate="visible"
-                  variants={{
-                    hidden: { opacity: 0 },
-                    visible: {
-                      opacity: 1,
-                      transition: {
-                        staggerChildren: 0.05,
-                        delayChildren: 0.02,
-                      },
-                    },
-                  }}
-                >
-                  {mergedItems.map((item) =>
-                    item.type === "material" ? (
-                      <motion.div
-                        key={`material-${item.data.id}`}
-                        variants={{
-                          hidden: { opacity: 0, y: 16, scale: 0.98 },
-                          visible: {
-                            opacity: 1,
-                            y: 0,
-                            scale: 1,
-                            transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
-                          },
-                        }}
-                      >
-                        <MaterialCard
-                          id={item.data.id}
-                          title={item.data.title}
-                          description={item.data.description}
-                          subject={item.data.subject}
-                          cycle={item.data.cycle}
-                          priceFormatted={item.data.priceFormatted}
-                          previewUrl={item.data.previewUrl}
-                          seller={{
-                            displayName: item.data.seller.display_name,
-                            isVerifiedSeller: item.data.seller.is_verified_seller,
-                          }}
-                          subjectPillClass={getSubjectPillClass(item.data.subject)}
-                          showWishlist={true}
-                          isWishlisted={wishlistedIds.has(item.data.id)}
-                          onWishlistToggle={handleWishlistToggle}
-                          variant={viewMode === "list" ? "compact" : "default"}
-                        />
-                      </motion.div>
-                    ) : (
-                      <motion.div
-                        key={`profile-${item.data.id}`}
-                        variants={{
-                          hidden: { opacity: 0, y: 16, scale: 0.98 },
-                          visible: {
-                            opacity: 1,
-                            y: 0,
-                            scale: 1,
-                            transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
-                          },
-                        }}
-                        className="h-full"
-                      >
-                        <ProfileCard
-                          id={item.data.id}
-                          name={item.data.name}
-                          image={item.data.image}
-                          bio={item.data.bio}
-                          subjects={item.data.subjects}
-                          resourceCount={item.data.resourceCount}
-                          followerCount={item.data.followerCount}
-                          isVerified={item.data.is_verified_seller === true}
-                          getSubjectPillClass={getSubjectPillClass}
-                          showFollowButton={true}
-                          isFollowing={followingIds.has(item.data.id)}
-                          onFollowToggle={handleFollowToggle}
-                        />
-                      </motion.div>
-                    )
-                  )}
-                </motion.div>
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={filters.showMaterials ? "materials" : "profiles"}
+                    className={
+                      viewMode === "grid" || !filters.showMaterials
+                        ? "grid gap-5 sm:grid-cols-2 sm:gap-6 xl:grid-cols-3"
+                        : "flex flex-col gap-5"
+                    }
+                    style={{ opacity: isPending ? 0.7 : 1, transition: "opacity 150ms ease" }}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    {filters.showMaterials
+                      ? materials.map((material, index) => (
+                          <motion.div
+                            key={`material-${material.id}`}
+                            initial={{ opacity: 0, y: 16, scale: 0.98 }}
+                            animate={{
+                              opacity: 1,
+                              y: 0,
+                              scale: 1,
+                              transition: {
+                                duration: 0.4,
+                                delay: index * 0.05 + 0.02,
+                                ease: [0.22, 1, 0.36, 1],
+                              },
+                            }}
+                          >
+                            <MaterialCard
+                              id={material.id}
+                              title={material.title}
+                              description={material.description}
+                              subject={material.subject}
+                              cycle={material.cycle}
+                              priceFormatted={material.priceFormatted}
+                              previewUrl={material.previewUrl}
+                              seller={{
+                                displayName: material.seller.display_name,
+                                isVerifiedSeller: material.seller.is_verified_seller,
+                              }}
+                              subjectPillClass={getSubjectPillClass(material.subject)}
+                              showWishlist={true}
+                              isWishlisted={wishlistedIds.has(material.id)}
+                              onWishlistToggle={handleWishlistToggle}
+                              variant={viewMode === "list" ? "compact" : "default"}
+                            />
+                          </motion.div>
+                        ))
+                      : profiles.map((profile, index) => (
+                          <motion.div
+                            key={`profile-${profile.id}`}
+                            initial={{ opacity: 0, y: 16, scale: 0.98 }}
+                            animate={{
+                              opacity: 1,
+                              y: 0,
+                              scale: 1,
+                              transition: {
+                                duration: 0.4,
+                                delay: index * 0.05 + 0.02,
+                                ease: [0.22, 1, 0.36, 1],
+                              },
+                            }}
+                            className="h-full"
+                          >
+                            <ProfileCard
+                              id={profile.id}
+                              name={profile.name}
+                              image={profile.image}
+                              bio={profile.bio}
+                              subjects={profile.subjects}
+                              resourceCount={profile.resourceCount}
+                              followerCount={profile.followerCount}
+                              isVerified={profile.is_verified_seller === true}
+                              getSubjectPillClass={getSubjectPillClass}
+                              showFollowButton={true}
+                              isFollowing={followingIds.has(profile.id)}
+                              onFollowToggle={handleFollowToggle}
+                            />
+                          </motion.div>
+                        ))}
+                  </motion.div>
+                </AnimatePresence>
               )}
 
-              {/* Pagination - only for resources */}
-              {filters.showMaterials && pagination.totalPages > 1 && (
-                <div className="mt-12 flex justify-center">
-                  <nav className="flex items-center gap-1" aria-label={t("pagination.nav")}>
-                    {/* Previous button */}
-                    <button
-                      onClick={() => handlePageChange(currentPage - 1)}
-                      className="text-text-muted hover:bg-surface rounded-md px-3 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
-                      disabled={currentPage === 1}
-                      aria-label={t("pagination.previous")}
-                    >
-                      <svg
-                        className="h-5 w-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
+              {/* Pagination — works for both tabs */}
+              {(() => {
+                const activePagination = filters.showMaterials ? pagination : profilePagination;
+                const activePage = filters.showMaterials ? currentPage : profilePage;
+                const onPageChange = filters.showMaterials
+                  ? handlePageChange
+                  : handleProfilePageChange;
+
+                if (activePagination.totalPages <= 1) return null;
+
+                return (
+                  <div className="mt-12 flex justify-center">
+                    <nav className="flex items-center gap-1" aria-label={t("pagination.nav")}>
+                      {/* Previous button */}
+                      <button
+                        onClick={() => onPageChange(activePage - 1)}
+                        className="text-text-muted hover:bg-surface rounded-md px-3 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                        disabled={activePage === 1}
+                        aria-label={t("pagination.previous")}
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M15 19l-7-7 7-7"
-                        />
-                      </svg>
-                    </button>
+                        <svg
+                          className="h-5 w-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 19l-7-7 7-7"
+                          />
+                        </svg>
+                      </button>
 
-                    {/* Page numbers with ellipsis for large page counts */}
-                    {(() => {
-                      const pages: (number | string)[] = [];
-                      const totalPages = pagination.totalPages;
-                      const current = currentPage;
+                      {/* Page numbers with ellipsis for large page counts */}
+                      {(() => {
+                        const pages: (number | string)[] = [];
+                        const totalPages = activePagination.totalPages;
+                        const current = activePage;
 
-                      if (totalPages <= 7) {
-                        // Show all pages
-                        for (let i = 1; i <= totalPages; i++) pages.push(i);
-                      } else {
-                        // Always show first page
-                        pages.push(1);
-
-                        if (current > 3) {
-                          pages.push("...");
+                        if (totalPages <= 7) {
+                          for (let i = 1; i <= totalPages; i++) pages.push(i);
+                        } else {
+                          pages.push(1);
+                          if (current > 3) pages.push("...");
+                          const start = Math.max(2, current - 1);
+                          const end = Math.min(totalPages - 1, current + 1);
+                          for (let i = start; i <= end; i++) pages.push(i);
+                          if (current < totalPages - 2) pages.push("...");
+                          pages.push(totalPages);
                         }
 
-                        // Show pages around current
-                        const start = Math.max(2, current - 1);
-                        const end = Math.min(totalPages - 1, current + 1);
-                        for (let i = start; i <= end; i++) pages.push(i);
+                        return pages.map((pageNum, idx) =>
+                          pageNum === "..." ? (
+                            <span
+                              key={`ellipsis-${idx}`}
+                              className="text-text-muted px-2 py-2 text-sm"
+                            >
+                              ...
+                            </span>
+                          ) : (
+                            <button
+                              key={pageNum}
+                              onClick={() => onPageChange(pageNum as number)}
+                              className={`min-w-[40px] rounded-md px-4 py-2 text-sm font-medium transition-all duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                                pageNum === activePage
+                                  ? "bg-primary text-text-on-accent shadow-sm"
+                                  : "text-text-secondary hover:bg-surface hover:scale-105 active:scale-95"
+                              }`}
+                            >
+                              {pageNum}
+                            </button>
+                          )
+                        );
+                      })()}
 
-                        if (current < totalPages - 2) {
-                          pages.push("...");
-                        }
-
-                        // Always show last page
-                        pages.push(totalPages);
-                      }
-
-                      return pages.map((pageNum, idx) =>
-                        pageNum === "..." ? (
-                          <span
-                            key={`ellipsis-${idx}`}
-                            className="text-text-muted px-2 py-2 text-sm"
-                          >
-                            ...
-                          </span>
-                        ) : (
-                          <button
-                            key={pageNum}
-                            onClick={() => handlePageChange(pageNum as number)}
-                            className={`min-w-[40px] rounded-md px-4 py-2 text-sm font-medium transition-all duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                              pageNum === currentPage
-                                ? "bg-primary text-text-on-accent shadow-sm"
-                                : "text-text-secondary hover:bg-surface hover:scale-105 active:scale-95"
-                            }`}
-                          >
-                            {pageNum}
-                          </button>
-                        )
-                      );
-                    })()}
-
-                    {/* Next button */}
-                    <button
-                      onClick={() => handlePageChange(currentPage + 1)}
-                      className="text-text-secondary hover:bg-surface rounded-md px-3 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
-                      disabled={currentPage === pagination.totalPages}
-                      aria-label={t("pagination.next")}
-                    >
-                      <svg
-                        className="h-5 w-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
+                      {/* Next button */}
+                      <button
+                        onClick={() => onPageChange(activePage + 1)}
+                        className="text-text-secondary hover:bg-surface rounded-md px-3 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                        disabled={activePage === activePagination.totalPages}
+                        aria-label={t("pagination.next")}
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    </button>
-                  </nav>
-                </div>
-              )}
+                        <svg
+                          className="h-5 w-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
+                        </svg>
+                      </button>
+                    </nav>
+                  </div>
+                );
+              })()}
             </div>
           </div>
         }

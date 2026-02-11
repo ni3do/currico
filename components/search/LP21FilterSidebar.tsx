@@ -219,31 +219,28 @@ export function LP21FilterSidebar({
     filters.formats.length > 0 ||
     filters.materialScope !== null;
 
-  // Handlers for toggling materials/creators checkboxes
+  // Handlers for exclusive tab selection (only one active at a time)
   const handleToggleMaterials = useCallback(() => {
-    // Prevent unchecking the last active checkbox
-    if (filters.showMaterials && !filters.showCreators) return;
-    const newShowMaterials = !filters.showMaterials;
+    if (filters.showMaterials) return; // Already active, no-op
     onFiltersChange({
       ...filters,
-      showMaterials: newShowMaterials,
-      // Clear price/format/scope/dialect filters when turning off materials
-      ...(!newShowMaterials && {
-        dialect: null,
-        priceType: null,
-        maxPrice: null,
-        formats: [],
-        materialScope: null,
-      }),
+      showMaterials: true,
+      showCreators: false,
     });
   }, [filters, onFiltersChange]);
 
   const handleToggleCreators = useCallback(() => {
-    // Prevent unchecking the last active checkbox
-    if (filters.showCreators && !filters.showMaterials) return;
+    if (filters.showCreators) return; // Already active, no-op
     onFiltersChange({
       ...filters,
-      showCreators: !filters.showCreators,
+      showCreators: true,
+      showMaterials: false,
+      // Clear material-specific filters when switching to profiles
+      dialect: null,
+      priceType: null,
+      maxPrice: null,
+      formats: [],
+      materialScope: null,
     });
   }, [filters, onFiltersChange]);
 
@@ -596,8 +593,8 @@ export function LP21FilterSidebar({
           )}
         </div>
 
-        {/* Search Type Checkboxes */}
-        <SearchTypeCheckboxes
+        {/* Search Type Tabs */}
+        <SearchTypeTabs
           showMaterials={filters.showMaterials}
           showCreators={filters.showCreators}
           onToggleMaterials={handleToggleMaterials}
@@ -631,11 +628,9 @@ export function LP21FilterSidebar({
               onFocus={() => setSearchFocused(true)}
               onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
               placeholder={
-                !filters.showMaterials && filters.showCreators
-                  ? t("sidebar.searchPlaceholderCreators")
-                  : filters.showMaterials && filters.showCreators
-                    ? t("sidebar.searchPlaceholderBoth")
-                    : t("sidebar.searchPlaceholderDefault")
+                filters.showCreators
+                  ? t("sidebar.searchPlaceholderProfiles")
+                  : t("sidebar.searchPlaceholderDefault")
               }
               className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 w-full rounded-lg border py-2.5 pr-4 pl-10 text-sm focus:ring-2 focus:outline-none"
             />
@@ -765,8 +760,8 @@ export function LP21FilterSidebar({
   );
 }
 
-// ============ SEARCH TYPE CHECKBOXES ============
-interface SearchTypeCheckboxesProps {
+// ============ SEARCH TYPE TABS ============
+interface SearchTypeTabsProps {
   showMaterials: boolean;
   showCreators: boolean;
   onToggleMaterials: () => void;
@@ -774,50 +769,50 @@ interface SearchTypeCheckboxesProps {
   t: ReturnType<typeof useTranslations>;
 }
 
-function SearchTypeCheckboxes({
+function SearchTypeTabs({
   showMaterials,
   showCreators,
   onToggleMaterials,
   onToggleCreators,
   t,
-}: SearchTypeCheckboxesProps) {
+}: SearchTypeTabsProps) {
   return (
     <div>
       <h3 className="label-meta mb-3">{t("sidebar.displayLabel")}</h3>
-      <div className="flex gap-2">
-        <label
-          className={`group relative flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-lg border-2 px-3 py-2.5 text-center transition-colors select-none ${
+      <div className="flex gap-2" role="tablist" aria-label={t("sidebar.displayLabel")}>
+        <motion.button
+          role="tab"
+          aria-selected={showMaterials}
+          aria-controls="search-results-panel"
+          onClick={onToggleMaterials}
+          className={`flex flex-1 items-center justify-center gap-2 rounded-lg border-2 px-3 py-2.5 text-center transition-colors ${
             showMaterials
               ? "border-primary bg-primary/10 text-primary"
               : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:bg-surface-hover"
-          } ${showMaterials && !showCreators ? "cursor-not-allowed opacity-75" : ""}`}
+          }`}
+          whileHover={{ scale: 1.015, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
+          whileTap={{ scale: 0.97, transition: { duration: 0.1 } }}
         >
-          <input
-            type="checkbox"
-            checked={showMaterials}
-            onChange={onToggleMaterials}
-            className="sr-only"
-          />
           <FileText className="h-4 w-4" />
           <span className="text-sm font-semibold">{t("sidebar.showMaterials")}</span>
-        </label>
+        </motion.button>
 
-        <label
-          className={`group relative flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-lg border-2 px-3 py-2.5 text-center transition-colors select-none ${
+        <motion.button
+          role="tab"
+          aria-selected={showCreators}
+          aria-controls="search-results-panel"
+          onClick={onToggleCreators}
+          className={`flex flex-1 items-center justify-center gap-2 rounded-lg border-2 px-3 py-2.5 text-center transition-colors ${
             showCreators
               ? "border-primary bg-primary/10 text-primary"
               : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:bg-surface-hover"
-          } ${showCreators && !showMaterials ? "cursor-not-allowed opacity-75" : ""}`}
+          }`}
+          whileHover={{ scale: 1.015, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
+          whileTap={{ scale: 0.97, transition: { duration: 0.1 } }}
         >
-          <input
-            type="checkbox"
-            checked={showCreators}
-            onChange={onToggleCreators}
-            className="sr-only"
-          />
           <Users className="h-4 w-4" />
           <span className="text-sm font-semibold">{t("sidebar.showCreators")}</span>
-        </label>
+        </motion.button>
       </div>
     </div>
   );

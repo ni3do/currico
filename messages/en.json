@@ -460,7 +460,8 @@
     },
     "header": {
       "title": "Teaching Materials",
-      "description": "Browse quality-checked materials for your classroom"
+      "description": "Browse quality-checked materials for your classroom",
+      "uploadButton": "Upload material"
     },
     "sidebar": {
       "title": "Filters",
@@ -471,7 +472,7 @@
       "formatLabel": "Format & Properties",
       "priceLabel": "Price",
       "showMaterials": "Materials",
-      "showCreators": "Creators",
+      "showCreators": "Profiles",
       "displayLabel": "Show",
       "dialectLabel": "Dialect",
       "dialectSwiss": "Swiss German",
@@ -489,8 +490,7 @@
       "dialectDE": "DE",
       "activeFilters": "Active Filters",
       "loadingError": "Error loading subjects",
-      "searchPlaceholderCreators": "Search for teachers...",
-      "searchPlaceholderBoth": "Search materials & creators...",
+      "searchPlaceholderProfiles": "Search profiles...",
       "searchPlaceholderDefault": "Search: keyword or code (e.g. MA.1.A)",
       "smartSearchDetected": "Detected",
       "smartSearchApply": "Apply filters",
@@ -602,6 +602,7 @@
     },
     "results": {
       "countLabel": "Materials found",
+      "countLabelProfiles": "Profiles found",
       "showResults": "Show {count} materials",
       "sortLabel": "Sort by:",
       "gridView": "Grid view",
@@ -612,6 +613,11 @@
         "rating": "Best Rating",
         "priceLow": "Price: Low to High",
         "priceHigh": "Price: High to Low"
+      },
+      "profileSortOptions": {
+        "newest": "Newest",
+        "mostMaterials": "Most materials",
+        "mostFollowers": "Most followers"
       }
     },
     "card": {

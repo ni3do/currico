@@ -461,7 +461,8 @@
     },
     "header": {
       "title": "Unterrichtsmaterialien",
-      "description": "Durchsuchen Sie qualitätsgeprüfte Materialien für Ihren Unterricht"
+      "description": "Durchsuchen Sie qualitätsgeprüfte Materialien für Ihren Unterricht",
+      "uploadButton": "Material hochladen"
     },
     "sidebar": {
       "title": "Filter",
@@ -472,7 +473,7 @@
       "formatLabel": "Format & Eigenschaften",
       "priceLabel": "Preis",
       "showMaterials": "Materialien",
-      "showCreators": "Ersteller",
+      "showCreators": "Profile",
       "displayLabel": "Anzeigen",
       "dialectLabel": "Kompetenzen",
       "dialectSwiss": "Schweizerdeutsch",
@@ -490,8 +491,7 @@
       "dialectDE": "DE",
       "activeFilters": "Aktive Filter",
       "loadingError": "Fehler beim Laden der Fachbereiche",
-      "searchPlaceholderCreators": "Nach Lehrpersonen suchen...",
-      "searchPlaceholderBoth": "Materialien & Ersteller suchen...",
+      "searchPlaceholderProfiles": "Nach Profilen suchen...",
       "searchPlaceholderDefault": "Suche: Stichwort oder Code (z.B. MA.1.A)",
       "smartSearchDetected": "Erkannt",
       "smartSearchApply": "Filter anwenden",
@@ -603,6 +603,7 @@
     },
     "results": {
       "countLabel": "Materialien gefunden",
+      "countLabelProfiles": "Profile gefunden",
       "showResults": "{count} Materialien anzeigen",
       "sortLabel": "Sortieren:",
       "gridView": "Rasteransicht",
@@ -613,6 +614,11 @@
         "rating": "Beste Bewertung",
         "priceLow": "Preis aufsteigend",
         "priceHigh": "Preis absteigend"
+      },
+      "profileSortOptions": {
+        "newest": "Neueste",
+        "mostMaterials": "Meiste Materialien",
+        "mostFollowers": "Meiste Follower"
       }
     },
     "card": {
