@@ -14,8 +14,8 @@ export async function generateMetadata({
       ? "Erfahren Sie mehr über Currico – die Schweizer Plattform für Unterrichtsmaterialien."
       : "Learn more about Currico – the Swiss platform for teaching materials.",
     alternates: {
-      canonical: `/${locale}/about`,
-      languages: { de: "/de/about", en: "/en/about" },
+      canonical: `/${locale}/ueber-uns`,
+      languages: { de: "/de/ueber-uns", en: "/en/ueber-uns" },
     },
   };
 }

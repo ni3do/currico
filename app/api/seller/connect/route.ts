@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { createConnectAccount, createAccountOnboardingLink } from "@/lib/stripe";
+import { unauthorized, notFound } from "@/lib/api";
 
 /**
  * POST /api/seller/connect
@@ -12,7 +13,7 @@ export async function POST(request: NextRequest) {
   try {
     const session = await auth();
     if (!session?.user?.id) {
-      return NextResponse.json({ error: "Nicht autorisiert" }, { status: 401 });
+      return unauthorized();
     }
 
     const userId = session.user.id;
@@ -29,7 +30,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (!user) {
-      return NextResponse.json({ error: "Benutzer nicht gefunden" }, { status: 404 });
+      return notFound();
     }
 
     // Require email verification
@@ -54,7 +55,7 @@ export async function POST(request: NextRequest) {
 
     // URLs for Stripe onboarding flow
     const refreshUrl = `${baseUrl}/become-seller?stripe_refresh=true`;
-    const returnUrl = `${baseUrl}/seller/onboarding/complete`;
+    const returnUrl = `${baseUrl}/account`;
 
     let stripeAccountId = user.stripe_account_id;
 

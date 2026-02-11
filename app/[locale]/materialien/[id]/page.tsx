@@ -15,6 +15,7 @@ import { CheckoutButton } from "@/components/checkout/CheckoutButton";
 import { PreviewGallery } from "@/components/ui/PreviewGallery";
 import { ReviewsSection } from "@/components/reviews";
 import { CommentsSection } from "@/components/comments";
+import { Star, MessageCircle } from "lucide-react";
 import { useToast } from "@/components/ui/Toast";
 import { FocusTrap } from "@/components/ui/FocusTrap";
 
@@ -93,6 +94,7 @@ export default function MaterialDetailPage() {
   const id = params.id as string;
   const { data: session, status: sessionStatus } = useSession();
   const tCommon = useTranslations("common");
+  const t = useTranslations("materialDetail");
   const { toast } = useToast();
 
   const [material, setMaterial] = useState<Material | null>(null);
@@ -104,6 +106,7 @@ export default function MaterialDetailPage() {
   const [isFollowing, setIsFollowing] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [wishlistLoading, setWishlistLoading] = useState(false);
+  const [feedbackTab, setFeedbackTab] = useState<"reviews" | "comments">("reviews");
 
   // Report form state
   const [reportReason, setReportReason] = useState("inappropriate");
@@ -244,7 +247,7 @@ export default function MaterialDetailPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Fehler beim Senden der Meldung");
+        throw new Error(data.error || t("report.errorSend"));
       }
 
       setReportStatus("success");
@@ -260,7 +263,7 @@ export default function MaterialDetailPage() {
     } catch (error) {
       setReportStatus("error");
       setReportErrorMessage(
-        error instanceof Error ? error.message : "Ein unerwarteter Fehler ist aufgetreten"
+        error instanceof Error ? error.message : t("report.errorUnexpected")
       );
     } finally {
       setReportSubmitting(false);
@@ -351,16 +354,16 @@ export default function MaterialDetailPage() {
               />
             </svg>
             <h1 className="text-text mb-4 text-2xl font-bold sm:text-3xl">
-              Material nicht gefunden
+              {t("notFound")}
             </h1>
             <p className="text-text-muted mx-auto mb-8 max-w-md">
-              Das gesuchte Material existiert nicht oder ist nicht mehr verfügbar.
+              {t("notFoundDescription")}
             </p>
             <Link
               href="/materialien"
               className="btn-primary inline-flex items-center px-6 py-3 font-semibold"
             >
-              Zurück zu den Materialien
+              {t("backToMaterials")}
             </Link>
           </div>
         </main>
@@ -388,15 +391,15 @@ export default function MaterialDetailPage() {
                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
               />
             </svg>
-            <h1 className="text-text mb-4 text-2xl font-bold sm:text-3xl">Fehler beim Laden</h1>
+            <h1 className="text-text mb-4 text-2xl font-bold sm:text-3xl">{t("loadError")}</h1>
             <p className="text-text-muted mx-auto mb-8 max-w-md">
-              Das Material konnte nicht geladen werden. Bitte versuchen Sie es später erneut.
+              {t("loadErrorDescription")}
             </p>
             <button
               onClick={fetchMaterial}
               className="btn-primary inline-flex items-center px-6 py-3 font-semibold"
             >
-              Erneut versuchen
+              {t("retry")}
             </button>
           </div>
         </main>
@@ -428,9 +431,9 @@ export default function MaterialDetailPage() {
                 />
               </svg>
               <div>
-                <p className="text-warning font-medium">Dieses Material wird noch überprüft</p>
+                <p className="text-warning font-medium">{t("pendingReview")}</p>
                 <p className="text-text-muted text-sm">
-                  Das Material ist sichtbar, aber noch nicht von unserem Team verifiziert worden.
+                  {t("pendingReviewDescription")}
                 </p>
               </div>
             </div>
@@ -486,7 +489,7 @@ export default function MaterialDetailPage() {
                         d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                       />
                     </svg>
-                    <p className="text-sm">Keine Vorschau verfügbar</p>
+                    <p className="text-sm">{t("noPreview")}</p>
                   </div>
                 </div>
               )}
@@ -498,9 +501,9 @@ export default function MaterialDetailPage() {
               <div className="mb-3 flex flex-wrap items-center gap-2">
                 <span className="pill pill-neutral">PDF</span>
                 {material.isApproved ? (
-                  <span className="pill pill-success">Verifiziert</span>
+                  <span className="pill pill-success">{t("verified")}</span>
                 ) : (
-                  <span className="pill pill-warning">Wird überprüft</span>
+                  <span className="pill pill-warning">{t("pendingStatus")}</span>
                 )}
                 {/* LP21 badges for primary competencies */}
                 {material.competencies &&
@@ -538,18 +541,18 @@ export default function MaterialDetailPage() {
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={material.seller.image}
-                    alt={material.seller.displayName || "Verkäufer"}
+                    alt={material.seller.displayName || t("anonymous")}
                     className="h-10 w-10 flex-shrink-0 rounded-full object-cover"
                   />
                 ) : (
                   <div className="bg-primary text-text-on-accent flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full font-bold">
-                    {(material.seller.displayName || "A").charAt(0).toUpperCase()}
+                    {(material.seller.displayName || t("anonymous")).charAt(0).toUpperCase()}
                   </div>
                 )}
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5">
                     <span className="text-text truncate font-medium">
-                      {material.seller.displayName || "Anonym"}
+                      {material.seller.displayName || t("anonymous")}
                     </span>
                     {material.seller.verified && (
                       <span className="text-primary flex items-center gap-1 text-xs">
@@ -564,13 +567,13 @@ export default function MaterialDetailPage() {
                             clipRule="evenodd"
                           />
                         </svg>
-                        Verifiziert
+                        {t("verified")}
                       </span>
                     )}
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-text-muted text-sm">
-                      {material.seller.resourceCount} Materialien
+                      {t("sellerMaterials", { count: material.seller.resourceCount })}
                     </span>
                     <svg
                       className="text-text-muted h-3.5 w-3.5"
@@ -599,7 +602,7 @@ export default function MaterialDetailPage() {
                       : "border-border bg-surface text-text hover:border-primary hover:bg-primary-light"
                   }`}
                 >
-                  {isFollowing ? "Folge ich" : "+ Folgen"}
+                  {isFollowing ? t("following") : t("follow")}
                 </button>
               </Link>
 
@@ -609,9 +612,9 @@ export default function MaterialDetailPage() {
                   {material.subject}
                 </span>
                 <span className="text-border">·</span>
-                <span>Zyklus {material.cycle || "-"}</span>
+                <span>{t("cycle", { number: material.cycle || "-" })}</span>
                 <span className="text-border">·</span>
-                <span>{material.downloadCount} Downloads</span>
+                <span>{t("downloads", { count: material.downloadCount })}</span>
                 <span className="text-border">·</span>
                 <span>{new Date(material.createdAt).toLocaleDateString("de-CH")}</span>
               </div>
@@ -631,7 +634,7 @@ export default function MaterialDetailPage() {
                 {/* Purchase Actions */}
                 {!material.isApproved ? (
                   <div className="border-warning/50 bg-warning/10 rounded-lg border px-6 py-4 text-center">
-                    <span className="text-warning font-medium">Verfügbar nach Überprüfung</span>
+                    <span className="text-warning font-medium">{t("availableAfterReview")}</span>
                   </div>
                 ) : material.price === 0 ? (
                   <button
@@ -639,7 +642,7 @@ export default function MaterialDetailPage() {
                     disabled={downloading}
                     className="btn-primary w-full py-4 text-lg font-semibold disabled:opacity-50"
                   >
-                    {downloading ? "Wird heruntergeladen..." : "Kostenlos herunterladen"}
+                    {downloading ? "..." : t("downloadFree")}
                   </button>
                 ) : (
                   <CheckoutButton
@@ -671,7 +674,7 @@ export default function MaterialDetailPage() {
                   >
                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                   </svg>
-                  {isWishlisted ? "Gemerkt" : "Zur Wunschliste"}
+                  {isWishlisted ? t("wishlisted") : t("addToWishlist")}
                 </button>
               </div>
 
@@ -680,7 +683,7 @@ export default function MaterialDetailPage() {
                 onClick={() => setShowReportModal(true)}
                 className="text-text-muted hover:text-error mt-4 text-sm transition-colors"
               >
-                Material melden
+                {t("reportMaterial")}
               </button>
             </div>
           </div>
@@ -688,7 +691,7 @@ export default function MaterialDetailPage() {
 
         {/* DESCRIPTION SECTION */}
         <section className="mb-12 max-w-3xl">
-          <h2 className="text-text mb-4 text-xl font-semibold">Beschreibung</h2>
+          <h2 className="text-text mb-4 text-xl font-semibold">{t("description")}</h2>
           <p className="text-text-secondary leading-relaxed whitespace-pre-line">
             {material.description}
           </p>
@@ -709,20 +712,43 @@ export default function MaterialDetailPage() {
           </section>
         )}
 
-        {/* REVIEWS SECTION */}
+        {/* FEEDBACK SECTION — Reviews & Comments merged */}
         <section className="border-border mb-12 border-t pt-12">
-          <ReviewsSection materialId={id} />
-        </section>
-
-        {/* COMMENTS SECTION */}
-        <section className="border-border mb-12 border-t pt-12">
-          <CommentsSection materialId={id} />
+          <div className="mb-6 flex gap-2">
+            <button
+              onClick={() => setFeedbackTab("reviews")}
+              className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                feedbackTab === "reviews"
+                  ? "bg-primary text-text-on-accent"
+                  : "bg-surface-hover text-text-muted hover:text-text"
+              }`}
+            >
+              <Star className="h-4 w-4" />
+              {t("reviews")}
+            </button>
+            <button
+              onClick={() => setFeedbackTab("comments")}
+              className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                feedbackTab === "comments"
+                  ? "bg-primary text-text-on-accent"
+                  : "bg-surface-hover text-text-muted hover:text-text"
+              }`}
+            >
+              <MessageCircle className="h-4 w-4" />
+              {t("comments")}
+            </button>
+          </div>
+          {feedbackTab === "reviews" ? (
+            <ReviewsSection materialId={id} />
+          ) : (
+            <CommentsSection materialId={id} />
+          )}
         </section>
 
         {/* RELATED RESOURCES */}
         {relatedMaterials.length > 0 && (
           <section className="border-border border-t pt-12">
-            <h2 className="text-text mb-6 text-xl font-semibold">Ähnliche Materialien</h2>
+            <h2 className="text-text mb-6 text-xl font-semibold">{t("similarMaterials")}</h2>
             <div className="grid gap-4 sm:grid-cols-3 sm:gap-5">
               {relatedMaterials.map((related) => (
                 <MaterialCard
@@ -747,7 +773,7 @@ export default function MaterialDetailPage() {
           <FocusTrap onEscape={handleCloseReportModal}>
             <div className="card mx-4 w-full max-w-md p-6">
               <div className="mb-4 flex items-center justify-between">
-                <h3 className="text-text text-xl font-semibold">Material melden</h3>
+                <h3 className="text-text text-xl font-semibold">{t("report.title")}</h3>
                 <button
                   onClick={handleCloseReportModal}
                   className="text-text-muted hover:text-text"
@@ -780,8 +806,8 @@ export default function MaterialDetailPage() {
                       />
                     </svg>
                   </div>
-                  <h4 className="text-text mb-2 font-semibold">Vielen Dank für Ihre Meldung</h4>
-                  <p className="text-text-muted text-sm">Wir werden das Material überprüfen.</p>
+                  <h4 className="text-text mb-2 font-semibold">{t("report.successTitle")}</h4>
+                  <p className="text-text-muted text-sm">{t("report.successDescription")}</p>
                 </div>
               ) : (
                 <form onSubmit={handleReportSubmit} className="space-y-4">
@@ -790,7 +816,7 @@ export default function MaterialDetailPage() {
                       htmlFor="report-reason"
                       className="text-text mb-2 block text-sm font-medium"
                     >
-                      Grund
+                      {t("report.reason")}
                     </label>
                     <select
                       id="report-reason"
@@ -800,12 +826,12 @@ export default function MaterialDetailPage() {
                       className="input rounded-full"
                       required
                     >
-                      <option value="inappropriate">Unangemessener Inhalt</option>
-                      <option value="copyright">Urheberrechtsverletzung</option>
-                      <option value="quality">Qualitätsprobleme</option>
-                      <option value="spam">Spam</option>
-                      <option value="fraud">Betrug</option>
-                      <option value="other">Anderes</option>
+                      <option value="inappropriate">{t("report.reasons.inappropriate")}</option>
+                      <option value="copyright">{t("report.reasons.copyright")}</option>
+                      <option value="quality">{t("report.reasons.quality")}</option>
+                      <option value="spam">{t("report.reasons.spam")}</option>
+                      <option value="fraud">{t("report.reasons.fraud")}</option>
+                      <option value="other">{t("report.reasons.other")}</option>
                     </select>
                   </div>
 
@@ -814,7 +840,7 @@ export default function MaterialDetailPage() {
                       htmlFor="report-description"
                       className="text-text mb-2 block text-sm font-medium"
                     >
-                      Kommentar (optional)
+                      {t("report.commentLabel")}
                     </label>
                     <textarea
                       id="report-description"
@@ -824,7 +850,7 @@ export default function MaterialDetailPage() {
                       rows={4}
                       maxLength={1000}
                       className="input min-h-[100px] resize-y"
-                      placeholder="Bitte beschreiben Sie das Problem..."
+                      placeholder={t("report.commentPlaceholder")}
                     />
                   </div>
 
@@ -854,7 +880,7 @@ export default function MaterialDetailPage() {
                       disabled={reportSubmitting}
                       className="btn-danger flex-1 px-4 py-3 disabled:opacity-50"
                     >
-                      {reportSubmitting ? "Wird gesendet..." : "Melden"}
+                      {reportSubmitting ? t("report.submitting") : t("report.submit")}
                     </button>
                     <button
                       type="button"
@@ -862,7 +888,7 @@ export default function MaterialDetailPage() {
                       disabled={reportSubmitting}
                       className="btn-secondary px-6 py-3 disabled:opacity-50"
                     >
-                      Abbrechen
+                      {t("report.cancel")}
                     </button>
                   </div>
                 </form>
@@ -890,7 +916,7 @@ export default function MaterialDetailPage() {
                 disabled={downloading}
                 className="btn-action px-6 py-3 font-semibold disabled:opacity-50"
               >
-                {downloading ? "..." : "Download"}
+                {downloading ? "..." : t("download")}
               </button>
             ) : (
               <button
@@ -900,7 +926,7 @@ export default function MaterialDetailPage() {
                 }}
                 className="btn-action px-6 py-3 font-semibold"
               >
-                Kaufen
+                {t("buy")}
               </button>
             )}
           </div>

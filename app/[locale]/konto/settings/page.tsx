@@ -314,10 +314,8 @@ export default function SettingsProfilePage() {
       { done: !!userData?.emailVerified, label: "E-Mail verifizieren" },
       { done: !!(userData?.displayName || userData?.name), label: "Anzeigename" },
       { done: !!userData?.image, label: "Profilbild" },
-      { done: !!userData?.bio, label: "Über mich" },
       { done: userData?.subjects && userData.subjects.length > 0, label: "Fächer" },
       { done: userData?.cycles && userData.cycles.length > 0, label: "Zyklen" },
-      { done: !!userData?.school, label: "Schule" },
       { done: userData?.cantons && userData.cantons.length > 0, label: "Kanton" },
     ];
     const completed = items.filter((i) => i.done).length;
@@ -664,24 +662,7 @@ export default function SettingsProfilePage() {
               </button>
             </div>
 
-            {/* Language Preference */}
-            <div className="flex items-center justify-between py-2">
-              <div className="flex items-center gap-3">
-                <Languages className="text-text-muted h-5 w-5" />
-                <div>
-                  <p className="text-text font-medium">Sprache</p>
-                  <p className="text-text-muted text-sm">Bevorzugte Anzeigesprache</p>
-                </div>
-              </div>
-              <select
-                value={profileFormData.preferred_language}
-                onChange={(e) => handleProfileFieldChange("preferred_language", e.target.value)}
-                className="input w-auto rounded-full"
-              >
-                <option value="de">Deutsch</option>
-                <option value="en">English</option>
-              </select>
-            </div>
+            {/* Language removed — locale is handled by URL */}
           </div>
         </div>
       </div>

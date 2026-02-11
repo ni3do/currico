@@ -6,19 +6,19 @@ import { sendContactNotificationEmail } from "@/lib/email";
 const contactSchema = z.object({
   name: z
     .string()
-    .min(2, "Name must be at least 2 characters")
-    .max(100, "Name must be less than 100 characters"),
-  email: z.string().email("Invalid email address"),
+    .min(2, "Name muss mindestens 2 Zeichen lang sein")
+    .max(100, "Name darf maximal 100 Zeichen lang sein"),
+  email: z.string().email("Ungültige E-Mail-Adresse"),
   phone: z.string().max(30).optional().or(z.literal("")),
   subject: z.enum(["general", "support", "sales", "partnership", "feedback"], {
-    message: "Please select a valid subject",
+    message: "Bitte wählen Sie ein gültiges Thema",
   }),
   message: z
     .string()
-    .min(10, "Message must be at least 10 characters")
-    .max(5000, "Message must be less than 5000 characters"),
+    .min(10, "Nachricht muss mindestens 10 Zeichen lang sein")
+    .max(5000, "Nachricht darf maximal 5000 Zeichen lang sein"),
   consent: z.literal(true, {
-    message: "You must agree to the privacy policy",
+    message: "Sie müssen der Datenschutzrichtlinie zustimmen",
   }),
 });
 
@@ -29,10 +29,7 @@ export async function POST(request: NextRequest) {
     const parsed = contactSchema.safeParse(body);
     if (!parsed.success) {
       const firstError = parsed.error.issues[0];
-      return NextResponse.json(
-        { error: firstError?.message ?? "Invalid input" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: firstError?.message ?? "Invalid input" }, { status: 400 });
     }
 
     const { name, email, phone, subject, message } = parsed.data;
@@ -55,7 +52,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: true,
-        message: "Your message has been sent successfully",
+        message: "Ihre Nachricht wurde erfolgreich gesendet",
         id: contactMessage.id,
       },
       { status: 201 }
@@ -63,7 +60,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Contact form error:", error);
     return NextResponse.json(
-      { error: "An error occurred while sending your message" },
+      { error: "Beim Senden Ihrer Nachricht ist ein Fehler aufgetreten" },
       { status: 500 }
     );
   }

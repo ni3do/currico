@@ -18,6 +18,8 @@ export interface SellerLevel {
   textClass: string;
   badgeBg: string;
   minPoints: number;
+  minUploads: number;
+  minDownloads: number;
 }
 
 export const SELLER_LEVELS: SellerLevel[] = [
@@ -30,6 +32,8 @@ export const SELLER_LEVELS: SellerLevel[] = [
     textClass: "text-text-muted",
     badgeBg: "bg-surface-hover",
     minPoints: 0,
+    minUploads: 0,
+    minDownloads: 0,
   },
   {
     level: 1,
@@ -40,6 +44,8 @@ export const SELLER_LEVELS: SellerLevel[] = [
     textClass: "text-primary",
     badgeBg: "bg-primary/15",
     minPoints: 30,
+    minUploads: 1,
+    minDownloads: 0,
   },
   {
     level: 2,
@@ -50,6 +56,8 @@ export const SELLER_LEVELS: SellerLevel[] = [
     textClass: "text-accent",
     badgeBg: "bg-accent/15",
     minPoints: 150,
+    minUploads: 3,
+    minDownloads: 5,
   },
   {
     level: 3,
@@ -60,6 +68,8 @@ export const SELLER_LEVELS: SellerLevel[] = [
     textClass: "text-warning",
     badgeBg: "bg-warning/15",
     minPoints: 450,
+    minUploads: 5,
+    minDownloads: 20,
   },
   {
     level: 4,
@@ -70,6 +80,8 @@ export const SELLER_LEVELS: SellerLevel[] = [
     textClass: "text-success",
     badgeBg: "bg-success/15",
     minPoints: 1500,
+    minUploads: 10,
+    minDownloads: 50,
   },
 ];
 
@@ -104,31 +116,43 @@ export function calculatePoints(input: PointsInput): number {
   );
 }
 
-export function getCurrentLevel(points: number): SellerLevel {
+export interface SellerStats {
+  uploads: number;
+  downloads: number;
+}
+
+export function getCurrentLevel(points: number, stats?: SellerStats): SellerLevel {
   for (let i = SELLER_LEVELS.length - 1; i >= 0; i--) {
-    if (points >= SELLER_LEVELS[i].minPoints) {
-      return SELLER_LEVELS[i];
+    const lvl = SELLER_LEVELS[i];
+    if (points >= lvl.minPoints) {
+      if (stats && (stats.uploads < lvl.minUploads || stats.downloads < lvl.minDownloads)) {
+        continue; // Points met but activity minimums not reached
+      }
+      return lvl;
     }
   }
   return SELLER_LEVELS[0];
 }
 
-export function getNextLevel(points: number): SellerLevel | null {
-  const current = getCurrentLevel(points);
+export function getNextLevel(points: number, stats?: SellerStats): SellerLevel | null {
+  const current = getCurrentLevel(points, stats);
   const nextIndex = current.level + 1;
   if (nextIndex >= SELLER_LEVELS.length) return null;
   return SELLER_LEVELS[nextIndex];
 }
 
-export function getProgressToNextLevel(points: number): {
+export function getProgressToNextLevel(
+  points: number,
+  stats?: SellerStats
+): {
   current: SellerLevel;
   next: SellerLevel | null;
   progressPercent: number;
   pointsNeeded: number;
   pointsIntoLevel: number;
 } {
-  const current = getCurrentLevel(points);
-  const next = getNextLevel(points);
+  const current = getCurrentLevel(points, stats);
+  const next = getNextLevel(points, stats);
 
   if (!next) {
     return {

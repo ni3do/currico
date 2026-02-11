@@ -205,7 +205,7 @@ export default function LoginPage() {
             <div className="grid gap-3">
               <button
                 type="button"
-                onClick={() => signIn("google")}
+                onClick={() => signIn("google", { callbackUrl: "/konto" })}
                 className="bg-surface text-text hover:bg-surface-elevated flex items-center justify-center gap-3 rounded-lg px-4 py-3.5 font-medium transition-all"
               >
                 <svg className="h-5 w-5" viewBox="0 0 24 24">
@@ -231,7 +231,7 @@ export default function LoginPage() {
 
               <button
                 type="button"
-                onClick={() => signIn("microsoft-entra-id")}
+                onClick={() => signIn("microsoft-entra-id", { callbackUrl: "/konto" })}
                 className="bg-surface text-text hover:bg-surface-elevated flex items-center justify-center gap-3 rounded-lg px-4 py-3.5 font-medium transition-all"
               >
                 <svg className="h-5 w-5" viewBox="0 0 23 23">

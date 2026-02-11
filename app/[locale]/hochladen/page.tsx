@@ -4,7 +4,7 @@ import { useState, useRef, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
@@ -45,6 +45,8 @@ function UploadPageContent() {
   const tCommon = useTranslations("common");
   const tUpload = useTranslations("uploadWizard.upload");
   const tLegal = useTranslations("uploadWizard.legal");
+  const tFields = useTranslations("uploadWizard.fields");
+  const tEszett = useTranslations("uploadWizard.eszett");
   const {
     formData,
     updateFormData,
@@ -396,12 +398,12 @@ function UploadPageContent() {
                   </div>
 
                   <FormField
-                    label="Titel"
+                    label={tFields("title")}
                     tooltipKey="title"
                     required
                     error={getFieldError("title")}
                     touched={touchedFields.title}
-                    hint="Wählen Sie einen aussagekräftigen Titel (5-100 Zeichen)"
+                    hint={tFields("titleHint")}
                   >
                     <FormInput
                       type="text"
@@ -409,32 +411,32 @@ function UploadPageContent() {
                       onChange={(e) => updateFormData("title", e.target.value)}
                       onBlur={() => markFieldTouched("title")}
                       hasError={touchedFields.title && !!getFieldError("title")}
-                      placeholder="z.B. Bruchrechnen Übungsblätter Zyklus 2"
+                      placeholder={tFields("titlePlaceholder")}
                       maxLength={100}
                     />
                   </FormField>
 
                   <FormField
-                    label="Kurzbeschreibung"
+                    label={tFields("description")}
                     tooltipKey="description"
                     required
                     error={getFieldError("description")}
                     touched={touchedFields.description}
-                    hint={`${formData.description.length}/2000 Zeichen (min. 20)`}
+                    hint={tFields("descriptionHint", { count: formData.description.length })}
                   >
                     <FormTextarea
                       value={formData.description}
                       onChange={(e) => updateFormData("description", e.target.value)}
                       onBlur={() => markFieldTouched("description")}
                       hasError={touchedFields.description && !!getFieldError("description")}
-                      placeholder="Beschreiben Sie Ihr Material kurz..."
+                      placeholder={tFields("descriptionPlaceholder")}
                       rows={4}
                       maxLength={2000}
                     />
                   </FormField>
 
                   <div className="grid gap-4 sm:grid-cols-2">
-                    <FormField label="Sprache" tooltipKey="language" required>
+                    <FormField label={tFields("language")} tooltipKey="language" required>
                       <FormSelect
                         value={formData.language}
                         onChange={(e) => {
@@ -445,14 +447,14 @@ function UploadPageContent() {
                           }
                         }}
                       >
-                        <option value="de">Deutsch</option>
-                        <option value="en">Englisch</option>
-                        <option value="fr">Französisch</option>
-                        <option value="it">Italienisch</option>
+                        <option value="de">{tFields("languageDE")}</option>
+                        <option value="en">{tFields("languageEN")}</option>
+                        <option value="fr">{tFields("languageFR")}</option>
+                        <option value="it">{tFields("languageIT")}</option>
                       </FormSelect>
                     </FormField>
 
-                    <FormField label="Materialtyp" tooltipKey="resourceType" required>
+                    <FormField label={tFields("materialType")} tooltipKey="resourceType" required>
                       <FormSelect
                         value={formData.resourceType}
                         onChange={(e) => updateFormData("resourceType", e.target.value)}
@@ -461,7 +463,8 @@ function UploadPageContent() {
                         <option value="word">Word</option>
                         <option value="powerpoint">PowerPoint</option>
                         <option value="excel">Excel</option>
-                        <option value="other">Andere</option>
+                        <option value="onenote">OneNote</option>
+                        <option value="other">{tFields("resourceTypeOther")}</option>
                       </FormSelect>
                     </FormField>
                   </div>
@@ -469,14 +472,14 @@ function UploadPageContent() {
                   {/* Dialect toggle - only shown for German */}
                   {formData.language === "de" && (
                     <FormField
-                      label="Sprachvariante"
-                      hint="Ist Ihr Material in Schweizerdeutsch, Hochdeutsch oder beidem verfasst?"
+                      label={tFields("dialect")}
+                      hint={tFields("dialectHint")}
                     >
                       <div className="flex gap-2">
                         {[
-                          { value: "BOTH" as const, label: "Beide", desc: "CH + DE" },
-                          { value: "SWISS" as const, label: "Schweizerdeutsch", desc: "CH" },
-                          { value: "STANDARD" as const, label: "Hochdeutsch", desc: "DE" },
+                          { value: "BOTH" as const, label: tFields("dialectBoth"), desc: tFields("dialectBothDesc") },
+                          { value: "SWISS" as const, label: tFields("dialectSwiss"), desc: tFields("dialectSwissDesc") },
+                          { value: "STANDARD" as const, label: tFields("dialectStandard"), desc: tFields("dialectStandardDesc") },
                         ].map((opt) => {
                           const isActive = formData.dialect === opt.value;
                           return (
@@ -509,17 +512,16 @@ function UploadPageContent() {
                       <div className="flex items-start gap-3">
                         <AlertTriangle className="text-warning h-5 w-5 flex-shrink-0" />
                         <div className="flex-1">
-                          <h4 className="text-warning font-medium">Eszett (ß) gefunden</h4>
+                          <h4 className="text-warning font-medium">{tEszett("title")}</h4>
                           <p className="text-text mt-1 text-sm">
-                            Ihr Text enthält {eszettCheck.totalCount} Eszett-Zeichen (ß). In der
-                            Schweiz wird stattdessen &quot;ss&quot; verwendet.
+                            {tEszett("message", { count: eszettCheck.totalCount })}
                           </p>
                           <button
                             type="button"
                             onClick={handleFixEszett}
                             className="bg-warning text-text-on-accent hover:bg-warning/90 mt-3 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
                           >
-                            Automatisch zu &quot;ss&quot; ändern
+                            {tEszett("fix")}
                           </button>
                         </div>
                       </div>

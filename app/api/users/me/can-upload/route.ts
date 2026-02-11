@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
 import { canUploadMaterials } from "@/lib/validations/user";
 import { getCurrentUserId } from "@/lib/auth";
+import { unauthorized, notFound, serverError } from "@/lib/api";
 
 /**
  * GET /api/users/me/can-upload
@@ -15,7 +16,7 @@ export async function GET() {
     const userId = await getCurrentUserId();
 
     if (!userId) {
-      return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
+      return unauthorized();
     }
 
     const user = await prisma.user.findUnique({
@@ -31,7 +32,7 @@ export async function GET() {
     });
 
     if (!user) {
-      return NextResponse.json({ error: "Benutzer nicht gefunden" }, { status: 404 });
+      return notFound();
     }
 
     const result = canUploadMaterials({
@@ -46,6 +47,6 @@ export async function GET() {
     return NextResponse.json(result);
   } catch (error) {
     console.error("Error checking upload eligibility:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError();
   }
 }

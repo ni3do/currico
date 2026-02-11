@@ -72,7 +72,7 @@ export async function GET(request: Request) {
     });
 
     if (!curriculum) {
-      return NextResponse.json({ error: "Curriculum not found" }, { status: 404 });
+      return NextResponse.json({ error: "Lehrplan nicht gefunden" }, { status: 404 });
     }
 
     // Build competencies query
@@ -359,7 +359,7 @@ export async function GET(request: Request) {
     });
   } catch (error) {
     console.error("Error fetching curriculum:", error);
-    return NextResponse.json({ error: "Failed to fetch curriculum data" }, { status: 500 });
+    return NextResponse.json({ error: "Fehler beim Laden der Lehrplandaten" }, { status: 500 });
   }
 }
 
@@ -385,7 +385,7 @@ async function handleFilterFormat() {
     });
 
     if (!curriculum) {
-      return NextResponse.json({ error: "LP21 curriculum not found" }, { status: 404 });
+      return NextResponse.json({ error: "LP21-Lehrplan nicht gefunden" }, { status: 404 });
     }
 
     // Color class mapping based on subject code
@@ -492,6 +492,9 @@ async function handleFilterFormat() {
     });
   } catch (error) {
     console.error("Error fetching curriculum filter data:", error);
-    return NextResponse.json({ error: "Failed to fetch curriculum filter data" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Fehler beim Laden der Lehrplan-Filterdaten" },
+      { status: 500 }
+    );
   }
 }

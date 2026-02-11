@@ -12,14 +12,16 @@ export default function AccountUploadsPage() {
 
   const [uploadedItems, setUploadedItems] = useState<UploadedItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<"newest" | "oldest" | "title" | "popular">("newest");
   const [uploadedLoading, setUploadedLoading] = useState(false);
 
   // Fetch uploaded items
-  const fetchUploaded = useCallback(async (search?: string) => {
+  const fetchUploaded = useCallback(async (search?: string, sort?: string) => {
     setUploadedLoading(true);
     try {
       const params = new URLSearchParams({ type: "uploaded" });
       if (search) params.set("search", search);
+      if (sort) params.set("sort", sort);
       const response = await fetch(`/api/user/library?${params.toString()}`);
       if (response.ok) {
         const data = await response.json();
@@ -32,16 +34,16 @@ export default function AccountUploadsPage() {
     }
   }, []);
 
-  // Fetch on mount and when search changes (with debounce)
+  // Fetch on mount and when search/sort changes (with debounce)
   useEffect(() => {
     const debounce = setTimeout(
       () => {
-        fetchUploaded(searchQuery || undefined);
+        fetchUploaded(searchQuery || undefined, sortBy);
       },
       searchQuery ? 300 : 0
     );
     return () => clearTimeout(debounce);
-  }, [searchQuery, fetchUploaded]);
+  }, [searchQuery, sortBy, fetchUploaded]);
 
   return (
     <div className="border-border bg-surface rounded-xl border p-6">
@@ -59,18 +61,26 @@ export default function AccountUploadsPage() {
         </Link>
       </div>
 
-      {/* Search */}
-      {uploadedItems.length > 0 && !uploadedLoading && (
-        <div className="mb-6">
-          <input
-            type="text"
-            placeholder="Uploads durchsuchen..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary w-full rounded-lg border px-4 py-2 text-sm focus:ring-1 focus:outline-none"
-          />
-        </div>
-      )}
+      {/* Search & Sort */}
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row">
+        <input
+          type="text"
+          placeholder="Uploads durchsuchen..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary flex-1 rounded-lg border px-4 py-2 text-sm focus:ring-1 focus:outline-none"
+        />
+        <select
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+          className="border-border bg-bg text-text rounded-lg border px-3 py-2 text-sm"
+        >
+          <option value="newest">Neueste zuerst</option>
+          <option value="oldest">Älteste zuerst</option>
+          <option value="title">Alphabetisch</option>
+          <option value="popular">Beliebteste</option>
+        </select>
+      </div>
 
       {uploadedLoading ? (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -121,9 +131,9 @@ export default function AccountUploadsPage() {
                 purchases: item.purchaseCount,
               }}
               primaryAction={{
-                label: "Ansehen",
+                label: "Bearbeiten",
                 icon: "view",
-                href: `/materialien/${item.id}`,
+                href: `/materialien/${item.id}/edit`,
               }}
             />
           ))}

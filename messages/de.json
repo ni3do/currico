@@ -7,6 +7,16 @@
     "unauthorized": "Nicht autorisiert",
     "serverError": "Serverfehler"
   },
+  "apiErrors": {
+    "unauthorized": "Nicht authentifiziert",
+    "forbidden": "Zugriff verweigert",
+    "notFound": "Nicht gefunden",
+    "badRequest": "Ungültige Anfrage",
+    "internalError": "Interner Serverfehler",
+    "invalidInput": "Ungültige Eingabe",
+    "invalidFileType": "Ungültiger Dateityp",
+    "userNotFound": "Benutzer nicht gefunden"
+  },
   "previewGallery": {
     "title": "Vorschau",
     "pageOf": "Seite {current} von {total}",
@@ -36,6 +46,7 @@
       "dashboard": "Dashboard",
       "profile": "Profil",
       "account": "Mein Konto",
+      "notifications": "Benachrichtigungen",
       "admin": "Admin Panel"
     },
     "footer": {
@@ -157,11 +168,12 @@
         "music": "Musik",
         "sports": "Sport",
         "button": "Suchen",
-        "dialectLabel": "Sprachvariante",
+        "dialectLabel": "Kompetenzen",
         "dialectSwiss": "Schweizerdeutsch",
         "dialectStandard": "Hochdeutsch",
         "allDialects": "Alle Sprachvarianten",
-        "allKompetenzbereiche": "Kompetenz wählen…"
+        "allKompetenzbereiche": "Kompetenz wählen…",
+        "formLabel": "Unterrichtsmaterialien suchen"
       }
     },
     "howItWorks": {
@@ -184,6 +196,9 @@
       "title": "Empfohlene Materialien",
       "description": "Von Experten ausgewählt und qualitätsgeprüft",
       "viewAllMobile": "Alle Materialien anzeigen",
+      "emptyTitle": "Noch keine Materialien vorhanden",
+      "emptyDescription": "Seien Sie die erste Lehrperson, die Unterrichtsmaterial teilt!",
+      "emptyUpload": "Jetzt Material hochladen",
       "card1": {
         "category": "Naturwissenschaften",
         "cycle": "Zyklus 2",
@@ -243,7 +258,7 @@
       "lp21": "LP21 konform",
       "swissMade": "Swiss Made",
       "quality": "Qualitätsgeprüft",
-      "hosting": "Infomaniak Schweiz",
+      "hosting": "Schweizer Server",
       "securePay": "Sichere Zahlung",
       "ndsg": "nDSG-konform"
     },
@@ -446,7 +461,8 @@
     },
     "header": {
       "title": "Unterrichtsmaterialien",
-      "description": "Durchsuchen Sie qualitätsgeprüfte Materialien für Ihren Unterricht"
+      "description": "Durchsuchen Sie qualitätsgeprüfte Materialien für Ihren Unterricht",
+      "uploadButton": "Material hochladen"
     },
     "sidebar": {
       "title": "Filter",
@@ -457,9 +473,9 @@
       "formatLabel": "Format & Eigenschaften",
       "priceLabel": "Preis",
       "showMaterials": "Materialien",
-      "showCreators": "Ersteller",
+      "showCreators": "Profile",
       "displayLabel": "Anzeigen",
-      "dialectLabel": "Sprachvariante",
+      "dialectLabel": "Kompetenzen",
       "dialectSwiss": "Schweizerdeutsch",
       "dialectStandard": "Hochdeutsch",
       "zyklusLabel": "Zyklus",
@@ -470,12 +486,12 @@
       "scopeLabel": "Materialumfang",
       "scopeSingle": "Einzelmaterial",
       "scopeBundle": "Bundle",
+      "chipCycle": "Zyklus {number}",
       "dialectCH": "CH",
       "dialectDE": "DE",
       "activeFilters": "Aktive Filter",
       "loadingError": "Fehler beim Laden der Fachbereiche",
-      "searchPlaceholderCreators": "Nach Lehrpersonen suchen...",
-      "searchPlaceholderBoth": "Materialien & Ersteller suchen...",
+      "searchPlaceholderProfiles": "Nach Profilen suchen...",
       "searchPlaceholderDefault": "Suche: Stichwort oder Code (z.B. MA.1.A)",
       "smartSearchDetected": "Erkannt",
       "smartSearchApply": "Filter anwenden",
@@ -587,6 +603,8 @@
     },
     "results": {
       "countLabel": "Materialien gefunden",
+      "countLabelProfiles": "Profile gefunden",
+      "showResults": "{count} Materialien anzeigen",
       "sortLabel": "Sortieren:",
       "gridView": "Rasteransicht",
       "listView": "Listenansicht",
@@ -596,6 +614,11 @@
         "rating": "Beste Bewertung",
         "priceLow": "Preis aufsteigend",
         "priceHigh": "Preis absteigend"
+      },
+      "profileSortOptions": {
+        "newest": "Neueste",
+        "mostMaterials": "Meiste Materialien",
+        "mostFollowers": "Meiste Follower"
       }
     },
     "card": {
@@ -630,6 +653,11 @@
       "followed": "Profil wird jetzt verfolgt",
       "unfollowed": "Profil entfolgt",
       "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut."
+    },
+    "pagination": {
+      "nav": "Seitennavigation",
+      "previous": "Vorherige Seite",
+      "next": "Nächste Seite"
     }
   },
   "sellerDashboard": {
@@ -1041,7 +1069,7 @@
       "nameLabel": "Ihr Name",
       "namePlaceholder": "Maria Schmidt",
       "emailLabel": "E-Mail-Adresse",
-      "emailPlaceholder": "ihre.email@example.com",
+      "emailPlaceholder": "max.muster@beispiel.ch",
       "phoneLabel": "Telefonnummer (Optional)",
       "phonePlaceholder": "+41 79 123 45 67",
       "phoneHint": "Nur falls Sie einen Rückruf bevorzugen. Wir versprechen, Ihre Nummer nicht weiterzugeben oder unerwartet anzurufen.",
@@ -1052,7 +1080,8 @@
         "support": "Technischer Support",
         "sales": "Verkäufer werden",
         "partnership": "Partnerschaftsanfrage",
-        "feedback": "Feedback oder Vorschlag"
+        "feedback": "Feedback oder Vorschlag",
+        "refund": "Widerruf / Rückgabe"
       },
       "messageLabel": "Ihre Nachricht",
       "messagePlaceholder": "Teilen Sie uns Ihr Anliegen mit...",
@@ -1076,7 +1105,8 @@
     },
     "faq": {
       "title": "Schnelle Antworten gesucht?",
-      "description": "In unserem Hilfe-Center finden Sie Antworten auf häufige Fragen zu Konten, Materialien und dem Verkauf auf Currico."
+      "description": "In unserem Hilfe-Center finden Sie Antworten auf häufige Fragen zu Konten, Materialien und dem Verkauf auf Currico.",
+      "linkLabel": "Zum Hilfe-Center"
     }
   },
   "metadata": {
@@ -1414,7 +1444,20 @@
       "previewImageFormats": "PNG, JPG bis 5 MB",
       "previewSelected": "{count} Vorschaubild(er) ausgewählt",
       "autoPreview": "Automatische Vorschau:",
-      "autoPreviewDesc": "Für PDF-Dateien wird automatisch eine Vorschau aus der ersten Seite erstellt."
+      "autoPreviewDesc": "Für PDF-Dateien wird automatisch eine Vorschau aus der ersten Seite erstellt.",
+      "languageDE": "Deutsch",
+      "languageEN": "Englisch",
+      "languageFR": "Französisch",
+      "languageIT": "Italienisch",
+      "resourceTypeOther": "Andere",
+      "dialect": "Sprachvariante",
+      "dialectHint": "Ist Ihr Material in Schweizerdeutsch, Hochdeutsch oder beidem verfasst?",
+      "dialectBoth": "Beide",
+      "dialectBothDesc": "CH + DE",
+      "dialectSwiss": "Schweizerdeutsch",
+      "dialectSwissDesc": "CH",
+      "dialectStandard": "Hochdeutsch",
+      "dialectStandardDesc": "DE"
     },
     "legal": {
       "title": "Rechtliche Bestätigungen",
@@ -1773,6 +1816,7 @@
     "ctaButton": "Jetzt verkaufen"
   },
   "sellerHero": {
+    "badge": "70% Provision für Sie",
     "headline": "Teilen Sie Ihre Unterrichtsmaterialien",
     "subheadline": "Sie haben tolle Arbeitsblätter, Unterrichtseinheiten oder Prüfungen erstellt? Teilen Sie diese mit Kolleginnen und Kollegen in der ganzen Schweiz und verdienen Sie Geld, während Sie anderen Lehrpersonen Zeit sparen.",
     "whySell": {
@@ -2479,6 +2523,57 @@
       "terms": "Allgemeine Geschäftsbedingungen"
     }
   },
+  "materialDetail": {
+    "notFound": "Material nicht gefunden",
+    "notFoundDescription": "Das gesuchte Material existiert nicht oder ist nicht mehr verfügbar.",
+    "backToMaterials": "Zurück zu den Materialien",
+    "loadError": "Fehler beim Laden",
+    "loadErrorDescription": "Das Material konnte nicht geladen werden. Bitte versuchen Sie es später erneut.",
+    "retry": "Erneut versuchen",
+    "pendingReview": "Dieses Material wird noch überprüft",
+    "pendingReviewDescription": "Das Material ist sichtbar, aber noch nicht von unserem Team verifiziert worden.",
+    "verified": "Verifiziert",
+    "pendingStatus": "Wird überprüft",
+    "following": "Folge ich",
+    "follow": "+ Folgen",
+    "downloadFree": "Kostenlos herunterladen",
+    "download": "Download",
+    "buy": "Kaufen",
+    "wishlisted": "Gemerkt",
+    "addToWishlist": "Zur Wunschliste",
+    "reportMaterial": "Material melden",
+    "description": "Beschreibung",
+    "reviews": "Bewertungen",
+    "comments": "Kommentare",
+    "similarMaterials": "Ähnliche Materialien",
+    "report": {
+      "title": "Material melden",
+      "successTitle": "Vielen Dank für Ihre Meldung",
+      "successDescription": "Wir werden das Material überprüfen.",
+      "reason": "Grund",
+      "reasons": {
+        "inappropriate": "Unangemessener Inhalt",
+        "copyright": "Urheberrechtsverletzung",
+        "quality": "Qualitätsprobleme",
+        "spam": "Spam",
+        "fraud": "Betrug",
+        "other": "Anderes"
+      },
+      "commentLabel": "Kommentar (optional)",
+      "commentPlaceholder": "Bitte beschreiben Sie das Problem...",
+      "submitting": "Wird gesendet...",
+      "submit": "Melden",
+      "cancel": "Abbrechen",
+      "errorSend": "Fehler beim Senden der Meldung",
+      "errorUnexpected": "Ein unerwarteter Fehler ist aufgetreten"
+    },
+    "noPreview": "Keine Vorschau verfügbar",
+    "anonymous": "Anonym",
+    "availableAfterReview": "Verfügbar nach Überprüfung",
+    "sellerMaterials": "{count} Materialien",
+    "cycle": "Zyklus {number}",
+    "downloads": "{count} Downloads"
+  },
   "profile": {
     "notFound": "Profil nicht gefunden",
     "notFoundDescription": "Das gesuchte Profil existiert nicht oder wurde entfernt.",
@@ -2650,17 +2745,17 @@
       "upload": {
         "question": "Wie lade ich Material hoch?",
         "answer": "Erstellen Sie ein kostenloses Konto, klicken Sie auf «Material hochladen» und füllen Sie Titel, Fach und Zyklus aus. Datei hochladen, veröffentlichen – fertig.",
-        "linkLabel": "Registrieren & hochladen →"
+        "linkLabel": "Registrieren & hochladen"
       },
       "copyright": {
         "question": "Was darf ich hochladen? (Urheberrecht)",
         "answer": "Nur eigene Materialien oder CC0-lizenzierte Inhalte. Keine Scans aus Lehrmitteln, keine geschützten Marken oder Figuren.",
-        "linkLabel": "Urheberrechts-Leitfaden lesen →"
+        "linkLabel": "Urheberrechts-Leitfaden lesen"
       },
       "browse": {
         "question": "Wo finde ich Unterrichtsmaterialien?",
         "answer": "Stöbern Sie auf unserer Materialseite und filtern Sie nach Zyklus, Fach und Sprachvariante.",
-        "linkLabel": "Materialien entdecken →"
+        "linkLabel": "Materialien entdecken"
       }
     },
     "usefulLinks": {
@@ -2865,6 +2960,8 @@
       "bundles": "Bundles",
       "comments": "Kommentare",
       "wishlist": "Wunschliste",
+      "notifications": "Benachrichtigungen",
+      "following": "Folge ich",
       "settings": "Einstellungen",
       "settingsProfile": "Profil",
       "settingsAppearance": "Darstellung",
@@ -2890,7 +2987,7 @@
       "earnings": "Einnahmen",
       "downloads": "Downloads",
       "contributions": "Beiträge",
-      "thisMonth": "Diesen Monat",
+      "thisMonth": "Gesamt",
       "totalDownloads": "Gesamte Downloads",
       "materialsPublished": "Materialien veröffentlicht",
       "myMaterials": "Meine Materialien",
@@ -2917,7 +3014,27 @@
       "completeProfile": "Vervollständigen Sie Ihr Profil",
       "fieldsCompleted": "{completed} von {total} Feldern ausgefüllt",
       "editProfile": "Profil bearbeiten",
-      "close": "Schliessen"
+      "close": "Schliessen",
+      "fields": {
+        "emailVerified": "E-Mail verifizieren",
+        "displayName": "Anzeigename",
+        "profileImage": "Profilbild",
+        "bio": "Über mich",
+        "subjects": "Fächer",
+        "cycles": "Zyklen",
+        "school": "Schule",
+        "canton": "Kanton"
+      }
+    },
+    "notifications": {
+      "title": "Benachrichtigungen",
+      "markAllRead": "Alle als gelesen markieren",
+      "empty": "Noch keine Benachrichtigungen",
+      "emptyDescription": "Sie werden über Verkäufe, neue Follower und mehr benachrichtigt.",
+      "justNow": "Gerade eben",
+      "minutesAgo": "vor {count} Min.",
+      "hoursAgo": "vor {count} Std.",
+      "daysAgo": "vor {count} T."
     }
   },
   "copyrightGuide": {

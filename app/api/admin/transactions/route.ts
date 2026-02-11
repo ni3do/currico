@@ -29,53 +29,52 @@ export async function GET(request: NextRequest) {
     weekStart.setDate(weekStart.getDate() - 7);
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 
-    const [transactions, total, todayRevenue, weekRevenue, monthRevenue] =
-      await Promise.all([
-        prisma.transaction.findMany({
-          where,
-          select: {
-            id: true,
-            amount: true,
-            status: true,
-            created_at: true,
-            buyer: {
-              select: {
-                id: true,
-                display_name: true,
-                email: true,
-              },
+    const [transactions, total, todayRevenue, weekRevenue, monthRevenue] = await Promise.all([
+      prisma.transaction.findMany({
+        where,
+        select: {
+          id: true,
+          amount: true,
+          status: true,
+          created_at: true,
+          buyer: {
+            select: {
+              id: true,
+              display_name: true,
+              email: true,
             },
-            resource: {
-              select: {
-                id: true,
-                title: true,
-                seller: {
-                  select: {
-                    id: true,
-                    display_name: true,
-                  },
+          },
+          resource: {
+            select: {
+              id: true,
+              title: true,
+              seller: {
+                select: {
+                  id: true,
+                  display_name: true,
                 },
               },
             },
           },
-          orderBy: { created_at: "desc" },
-          skip,
-          take: limit,
-        }),
-        prisma.transaction.count({ where }),
-        prisma.transaction.aggregate({
-          _sum: { amount: true },
-          where: { status: "COMPLETED", created_at: { gte: todayStart } },
-        }),
-        prisma.transaction.aggregate({
-          _sum: { amount: true },
-          where: { status: "COMPLETED", created_at: { gte: weekStart } },
-        }),
-        prisma.transaction.aggregate({
-          _sum: { amount: true },
-          where: { status: "COMPLETED", created_at: { gte: monthStart } },
-        }),
-      ]);
+        },
+        orderBy: { created_at: "desc" },
+        skip,
+        take: limit,
+      }),
+      prisma.transaction.count({ where }),
+      prisma.transaction.aggregate({
+        _sum: { amount: true },
+        where: { status: "COMPLETED", created_at: { gte: todayStart } },
+      }),
+      prisma.transaction.aggregate({
+        _sum: { amount: true },
+        where: { status: "COMPLETED", created_at: { gte: weekStart } },
+      }),
+      prisma.transaction.aggregate({
+        _sum: { amount: true },
+        where: { status: "COMPLETED", created_at: { gte: monthStart } },
+      }),
+    ]);
 
     // Transform transactions
     const transformedTransactions = transactions.map((tx) => ({
@@ -85,10 +84,10 @@ export async function GET(request: NextRequest) {
         tx.status === "COMPLETED"
           ? "Abgeschlossen"
           : tx.status === "REFUNDED"
-          ? "Erstattet"
-          : tx.status === "PENDING"
-          ? "Ausstehend"
-          : "Fehlgeschlagen",
+            ? "Erstattet"
+            : tx.status === "PENDING"
+              ? "Ausstehend"
+              : "Fehlgeschlagen",
     }));
 
     return NextResponse.json({
@@ -107,9 +106,6 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error fetching transactions:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch transactions" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Fehler beim Laden der Transaktionen" }, { status: 500 });
   }
 }

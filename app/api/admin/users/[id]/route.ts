@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin, unauthorizedResponse } from "@/lib/admin-auth";
+import { notFound, serverError } from "@/lib/api";
 
 /**
  * GET /api/admin/users/[id]
@@ -46,19 +47,13 @@ export async function GET(
     });
 
     if (!user) {
-      return NextResponse.json(
-        { error: "Benutzer nicht gefunden" },
-        { status: 404 }
-      );
+      return notFound();
     }
 
     return NextResponse.json(user);
   } catch (error) {
     console.error("Error fetching user for admin:", error);
-    return NextResponse.json(
-      { error: "Interner Serverfehler" },
-      { status: 500 }
-    );
+    return serverError();
   }
 }
 
@@ -88,10 +83,7 @@ export async function PATCH(
     });
 
     if (!existingUser) {
-      return NextResponse.json(
-        { error: "Benutzer nicht gefunden" },
-        { status: 404 }
-      );
+      return notFound();
     }
 
     // Prevent changing role of protected users
@@ -132,10 +124,7 @@ export async function PATCH(
     return NextResponse.json(updatedUser);
   } catch (error) {
     console.error("Error updating user as admin:", error);
-    return NextResponse.json(
-      { error: "Interner Serverfehler" },
-      { status: 500 }
-    );
+    return serverError();
   }
 }
 
@@ -164,10 +153,7 @@ export async function DELETE(
     });
 
     if (!user) {
-      return NextResponse.json(
-        { error: "Benutzer nicht gefunden" },
-        { status: 404 }
-      );
+      return notFound();
     }
 
     // Prevent deletion of protected users (e.g., super admin)
@@ -194,9 +180,6 @@ export async function DELETE(
     return NextResponse.json({ success: true, message: "Benutzer wurde gelöscht" });
   } catch (error) {
     console.error("Error deleting user:", error);
-    return NextResponse.json(
-      { error: "Interner Serverfehler" },
-      { status: 500 }
-    );
+    return serverError();
   }
 }

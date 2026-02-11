@@ -81,8 +81,30 @@ const nextAuth = NextAuth({
     }),
   ],
   callbacks: {
-    async signIn() {
+    async signIn({ user, account }) {
+      // For OAuth logins, check if this is a first-time user (needs profile completion)
+      if (account?.provider && account.provider !== "credentials" && user?.id) {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: user.id as string },
+          select: { display_name: true, created_at: true },
+        });
+        // New users (no display name, created within last minute) → redirect to profile setup
+        if (dbUser && !dbUser.display_name) {
+          const ageMs = Date.now() - new Date(dbUser.created_at).getTime();
+          if (ageMs < 60_000) {
+            // Mark as new user in the user object for redirect callback
+            (user as Record<string, unknown>).isNewOAuthUser = true;
+          }
+        }
+      }
       return true;
+    },
+    async redirect({ url, baseUrl }) {
+      // If it starts with base URL, allow it
+      if (url.startsWith(baseUrl)) return url;
+      // Allow relative URLs
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      return `${baseUrl}/konto`;
     },
     async jwt({ token, user, trigger }) {
       if (user) {
