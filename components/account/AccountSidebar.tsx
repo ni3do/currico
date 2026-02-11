@@ -106,6 +106,12 @@ export function AccountSidebar({
       icon: Bell,
       count: null,
     },
+    {
+      id: "following" as TabType,
+      label: t("nav.following"),
+      icon: Users,
+      count: stats.followedSellers,
+    },
   ] as const;
 
   const SETTINGS_SUB_ITEMS = [
@@ -371,7 +377,7 @@ export function AccountSidebar({
               <Users className="text-text-muted h-3.5 w-3.5" />
               {t("sidebar.followed", { count: stats.followedSellers })}
             </h3>
-            <Link href="/folge-ich" className="text-primary text-xs font-medium hover:underline">
+            <Link href={TAB_TO_PATH["following"]} className="text-primary text-xs font-medium hover:underline">
               {t("sidebar.allFollowed")}
             </Link>
           </div>
@@ -380,7 +386,7 @@ export function AccountSidebar({
               {followedSellers.slice(0, 3).map((seller) => (
                 <Link
                   key={seller.id}
-                  href={`/seller/${seller.id}`}
+                  href={`/profil/${seller.id}`}
                   className="group border-border bg-bg hover:border-primary flex items-center gap-2.5 rounded-lg border p-2 transition-all hover:shadow-sm"
                 >
                   {seller.image ? (

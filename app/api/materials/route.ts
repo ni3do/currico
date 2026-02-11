@@ -588,7 +588,7 @@ export async function POST(request: NextRequest) {
     if (!uploadCheck.canUpload) {
       if (uploadCheck.missing && uploadCheck.missing.length > 0) {
         // For paid resources without Stripe, give a helpful message
-        if (data.price > 0 && uploadCheck.missing.includes("Stripe-Verifizierung")) {
+        if (data.price > 0 && uploadCheck.missing.includes("STRIPE_VERIFICATION")) {
           return badRequest(
             "Um kostenpflichtige Materialien zu verkaufen, müssen Sie zuerst Ihr Stripe-Konto einrichten",
             { missing: uploadCheck.missing }

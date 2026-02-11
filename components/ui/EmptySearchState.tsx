@@ -37,13 +37,13 @@ export function EmptySearchState({
     filters.formats.length > 0 ||
     filters.materialScope !== null;
   const hasAny = hasSearch || hasFilters;
-  const isCreatorsOnly = !filters.showMaterials && filters.showCreators;
+  const isProfilesTab = !filters.showMaterials && filters.showCreators;
 
   return (
     <div className="border-border-subtle bg-bg-secondary flex flex-col items-center justify-center rounded-xl border px-8 py-16">
       {/* Icon */}
       <div className="bg-surface-hover mb-5 flex h-16 w-16 items-center justify-center rounded-full">
-        {isCreatorsOnly ? (
+        {isProfilesTab ? (
           <Users className="text-text-muted h-8 w-8" />
         ) : (
           <Search className="text-text-muted h-8 w-8" />

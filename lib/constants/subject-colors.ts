@@ -45,15 +45,27 @@ export function getSubjectTextColorByName(subject: string): string {
 
 /**
  * Maps subject names to pill CSS classes
+ * This is the single source of truth — do NOT duplicate in page files.
  */
 export function getSubjectPillClass(subject: string): string {
   const subjectMap: Record<string, string> = {
+    // Core subjects
     Deutsch: "pill-deutsch",
+    D: "pill-deutsch",
     Mathematik: "pill-mathe",
+    MA: "pill-mathe",
+    "Natur, Mensch, Gesellschaft": "pill-nmg",
     NMG: "pill-nmg",
+    "Bildnerisches Gestalten": "pill-gestalten",
     BG: "pill-gestalten",
+    "Textiles und Technisches Gestalten": "pill-ttg",
+    TTG: "pill-ttg",
     Musik: "pill-musik",
+    MU: "pill-musik",
+    "Bewegung und Sport": "pill-sport",
+    BS: "pill-sport",
     Sport: "pill-sport",
+    // Languages
     Französisch: "pill-franzoesisch",
     Franzosisch: "pill-franzoesisch",
     French: "pill-franzoesisch",
@@ -61,6 +73,24 @@ export function getSubjectPillClass(subject: string): string {
     Englisch: "pill-englisch",
     English: "pill-englisch",
     EN: "pill-englisch",
+    Fremdsprachen: "pill-fremdsprachen",
+    FS: "pill-fremdsprachen",
+    // Media
+    "Medien und Informatik": "pill-medien",
+    MI: "pill-medien",
+    // Zyklus 3 specific
+    "Natur und Technik": "pill-nt",
+    NT: "pill-nt",
+    "Wirtschaft, Arbeit, Haushalt": "pill-wah",
+    WAH: "pill-wah",
+    "Räume, Zeiten, Gesellschaften": "pill-rzg",
+    RZG: "pill-rzg",
+    "Ethik, Religionen, Gemeinschaft": "pill-erg",
+    ERG: "pill-erg",
+    "Berufliche Orientierung": "pill-bo",
+    BO: "pill-bo",
+    Projektunterricht: "pill-pu",
+    PU: "pill-pu",
   };
   return subjectMap[subject] || "pill-primary";
 }

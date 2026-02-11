@@ -104,7 +104,7 @@ const nextAuth = NextAuth({
       if (url.startsWith(baseUrl)) return url;
       // Allow relative URLs
       if (url.startsWith("/")) return `${baseUrl}${url}`;
-      return `${baseUrl}/account`;
+      return `${baseUrl}/konto`;
     },
     async jwt({ token, user, trigger }) {
       if (user) {

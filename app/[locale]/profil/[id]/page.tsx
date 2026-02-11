@@ -8,7 +8,9 @@ import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { MaterialCard } from "@/components/ui/MaterialCard";
 import { Users, FileText, FolderOpen, Calendar, MapPin, Instagram, Lock } from "lucide-react";
+import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { VerifiedSellerBadge } from "@/components/ui/VerifiedSellerBadge";
+import { getSubjectPillClass } from "@/lib/constants/subject-colors";
 
 interface ProfileData {
   id: string;
@@ -67,6 +69,7 @@ export default function PublicProfilePage({
 }) {
   const { id } = use(params);
   const t = useTranslations("profile");
+  const tCommon = useTranslations("common");
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [bestMaterials, setBestMaterials] = useState<Material[]>([]);
   const [allMaterials, setAllMaterials] = useState<Material[]>([]);
@@ -169,23 +172,9 @@ export default function PublicProfilePage({
     }
   };
 
-  const displayName = profile?.display_name || profile?.name || "Benutzer";
+  const displayName = profile?.display_name || profile?.name || tCommon("user");
   const formatPrice = (cents: number) =>
-    cents === 0 ? "Gratis" : `CHF ${(cents / 100).toFixed(2)}`;
-
-  const getSubjectPillClass = (subject: string): string => {
-    const subjectMap: Record<string, string> = {
-      Deutsch: "pill-deutsch",
-      Mathematik: "pill-mathe",
-      NMG: "pill-nmg",
-      BG: "pill-gestalten",
-      Musik: "pill-musik",
-      Sport: "pill-sport",
-      Englisch: "pill-fremdsprachen",
-      Franzosisch: "pill-fremdsprachen",
-    };
-    return subjectMap[subject] || "pill-primary";
-  };
+    cents === 0 ? tCommon("free") : `CHF ${(cents / 100).toFixed(2)}`;
 
   if (loading) {
     return (
@@ -208,7 +197,7 @@ export default function PublicProfilePage({
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
               />
             </svg>
-            <span>Profil wird geladen...</span>
+            <span>{t("loading")}</span>
           </div>
         </main>
         <Footer />
@@ -222,12 +211,12 @@ export default function PublicProfilePage({
         <TopBar />
         <main className="flex flex-1 items-center justify-center">
           <div className="text-center">
-            <h1 className="text-text mb-2 text-2xl font-bold sm:text-3xl">Profil nicht gefunden</h1>
+            <h1 className="text-text mb-2 text-2xl font-bold sm:text-3xl">{t("notFound")}</h1>
             <p className="text-text-muted mb-4">
-              Das gesuchte Profil existiert nicht oder wurde entfernt.
+              {t("notFoundDescription")}
             </p>
             <Link href="/materialien" className="btn-primary px-6 py-3">
-              Materialien durchsuchen
+              {tCommon("breadcrumb.materials")}
             </Link>
           </div>
         </main>
@@ -241,6 +230,13 @@ export default function PublicProfilePage({
       <TopBar />
 
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+        <Breadcrumb
+          items={[
+            { label: tCommon("breadcrumb.materials"), href: "/materialien" },
+            { label: displayName },
+          ]}
+        />
+
         {/* Profile Header */}
         <div className="card mb-8 p-8">
           <div className="flex flex-col gap-6 md:flex-row md:items-start">
@@ -299,12 +295,12 @@ export default function PublicProfilePage({
                     ) : profile.isFollowing ? (
                       <>
                         <Users className="h-4 w-4" />
-                        Gefolgt
+                        {t("following")}
                       </>
                     ) : (
                       <>
                         <Users className="h-4 w-4" />
-                        Folgen
+                        {t("follow")}
                       </>
                     )}
                   </button>
@@ -315,7 +311,7 @@ export default function PublicProfilePage({
                     href="/profil/edit"
                     className="border-border bg-surface text-text hover:bg-surface-elevated flex items-center gap-2 rounded-lg border px-6 py-2.5 font-medium transition-colors"
                   >
-                    Profil bearbeiten
+                    {t("editProfile")}
                   </Link>
                 )}
               </div>
@@ -325,7 +321,7 @@ export default function PublicProfilePage({
                 <div className="bg-surface-elevated border-border text-text-muted mt-4 flex items-center gap-2 rounded-lg border p-3 text-sm">
                   <Lock className="h-4 w-4" />
                   <span>
-                    Dieses Profil ist privat. Nur öffentliche Materialien werden angezeigt.
+                    {t("privacy.notice")}
                   </span>
                 </div>
               )}
@@ -345,7 +341,7 @@ export default function PublicProfilePage({
                 )}
                 <div className="flex items-center gap-1">
                   <Calendar className="h-4 w-4" />
-                  Mitglied seit{" "}
+                  {t("memberSince")}{" "}
                   {new Date(profile.created_at).toLocaleDateString("de-CH", {
                     month: "long",
                     year: "numeric",
@@ -398,7 +394,7 @@ export default function PublicProfilePage({
             <div className="border-border flex gap-6 border-t pt-4 md:border-t-0 md:border-l md:pt-0 md:pl-6">
               <div className="text-center">
                 <div className="text-primary text-2xl font-bold">{profile.stats.resourceCount}</div>
-                <div className="text-text-muted text-xs">Materialien</div>
+                <div className="text-text-muted text-xs">{t("stats.materials")}</div>
               </div>
               {!profile.is_private && (
                 <>
@@ -406,13 +402,13 @@ export default function PublicProfilePage({
                     <div className="text-success text-2xl font-bold">
                       {profile.stats.followerCount}
                     </div>
-                    <div className="text-text-muted text-xs">Follower</div>
+                    <div className="text-text-muted text-xs">{t("stats.followers")}</div>
                   </div>
                   <div className="text-center">
                     <div className="text-accent text-2xl font-bold">
                       {profile.stats.followingCount}
                     </div>
-                    <div className="text-text-muted text-xs">Folgt</div>
+                    <div className="text-text-muted text-xs">{t("stats.following")}</div>
                   </div>
                 </>
               )}
@@ -424,7 +420,7 @@ export default function PublicProfilePage({
         {bestMaterials.length > 0 && (
           <section className="mb-8">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-text text-xl font-semibold">Beste Uploads</h2>
+              <h2 className="text-text text-xl font-semibold">{t("bestUploads")}</h2>
             </div>
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {bestMaterials.slice(0, 3).map((material) => (
@@ -456,7 +452,7 @@ export default function PublicProfilePage({
             }`}
           >
             <FileText className="h-4 w-4" />
-            Alle Uploads ({profile.stats.resourceCount})
+            {t("tabs.uploads")} ({profile.stats.resourceCount})
           </button>
           {!profile.is_private && (
             <button
@@ -468,7 +464,7 @@ export default function PublicProfilePage({
               }`}
             >
               <FolderOpen className="h-4 w-4" />
-              Sammlungen ({profile.stats.collectionCount})
+              {t("tabs.collections")} ({profile.stats.collectionCount})
             </button>
           )}
         </div>
@@ -479,11 +475,11 @@ export default function PublicProfilePage({
             {allMaterials.length === 0 ? (
               <div className="card flex flex-col items-center justify-center py-16">
                 <FileText className="text-text-faint mb-4 h-12 w-12" />
-                <p className="text-text">Noch keine Uploads vorhanden</p>
+                <p className="text-text">{t("noUploads")}</p>
                 <p className="text-text-muted text-sm">
                   {profile.isOwnProfile
-                    ? "Laden Sie Ihr erstes Material hoch!"
-                    : "Dieser Benutzer hat noch keine Materialien hochgeladen."}
+                    ? t("noUploadsOwn")
+                    : t("noUploadsOther")}
                 </p>
               </div>
             ) : (
@@ -508,7 +504,7 @@ export default function PublicProfilePage({
                 {hasMoreMaterials && (
                   <div className="mt-8 text-center">
                     <button onClick={loadMoreMaterials} className="btn-secondary px-8 py-3">
-                      Mehr laden
+                      {t("loadMore")}
                     </button>
                   </div>
                 )}
@@ -523,11 +519,11 @@ export default function PublicProfilePage({
             {collections.length === 0 ? (
               <div className="card flex flex-col items-center justify-center py-16">
                 <FolderOpen className="text-text-faint mb-4 h-12 w-12" />
-                <p className="text-text">Noch keine Sammlungen vorhanden</p>
+                <p className="text-text">{t("noCollections")}</p>
                 <p className="text-text-muted text-sm">
                   {profile.isOwnProfile
-                    ? "Erstellen Sie Ihre erste Sammlung!"
-                    : "Dieser Benutzer hat noch keine öffentlichen Sammlungen."}
+                    ? t("noCollectionsOwn")
+                    : t("noCollectionsOther")}
                 </p>
               </div>
             ) : (
@@ -582,7 +578,7 @@ export default function PublicProfilePage({
                       )}
                       <div className="text-text-muted flex items-center gap-1 text-sm">
                         <FileText className="h-4 w-4" />
-                        {collection.itemCount} Materialien
+                        {collection.itemCount} {t("stats.materials")}
                       </div>
                     </div>
                   </Link>

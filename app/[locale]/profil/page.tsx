@@ -299,7 +299,7 @@ export default function ProfilePage() {
                     Materialien durchsuchen
                   </Link>
                   <Link
-                    href="/folge-ich"
+                    href="/konto/folge-ich"
                     className="border-border bg-bg text-text hover:bg-surface-elevated block rounded-lg border px-4 py-3 text-sm transition-colors"
                   >
                     Gefolgte Verkäufer

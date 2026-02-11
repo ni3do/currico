@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { getConnectAccount, createExpressDashboardLink } from "@/lib/stripe";
+import { unauthorized, notFound } from "@/lib/api";
 
 /**
  * GET /api/seller/connect/status
@@ -12,7 +13,7 @@ export async function GET() {
   try {
     const session = await auth();
     if (!session?.user?.id) {
-      return NextResponse.json({ error: "Nicht autorisiert" }, { status: 401 });
+      return unauthorized();
     }
 
     const userId = session.user.id;
@@ -31,7 +32,7 @@ export async function GET() {
     });
 
     if (!user) {
-      return NextResponse.json({ error: "Benutzer nicht gefunden" }, { status: 404 });
+      return notFound();
     }
 
     // If user doesn't have a Stripe account yet, return minimal status

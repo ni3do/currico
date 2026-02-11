@@ -76,7 +76,7 @@ export async function GET() {
         }),
       ]);
 
-    if (!user) return notFound("Benutzer nicht gefunden");
+    if (!user) return notFound();
 
     return NextResponse.json({
       user: {

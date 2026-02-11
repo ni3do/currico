@@ -72,7 +72,7 @@ export function ProfileCard({
   };
 
   return (
-    <Link href={`/profile/${id}`} className="card group flex h-full flex-col overflow-hidden">
+    <Link href={`/profil/${id}`} className="card group flex h-full flex-col overflow-hidden">
       <div className="flex flex-1 flex-col p-5">
         {/* Header: Avatar + Name + Follow Button */}
         <div className="mb-4 flex items-center gap-3">

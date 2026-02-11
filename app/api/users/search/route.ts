@@ -11,6 +11,7 @@ import { parsePagination, paginationResponse } from "@/lib/api";
  *   - subjects: comma-separated list of subjects to filter by
  *   - cycles: comma-separated list of cycles to filter by
  *   - role: filter by role (SELLER, etc.)
+ *   - sort: sorting (newest, mostMaterials, mostFollowers)
  *   - page, limit: pagination
  */
 export async function GET(request: NextRequest) {
@@ -22,6 +23,7 @@ export async function GET(request: NextRequest) {
     const subjectsParam = searchParams.get("subjects");
     const cyclesParam = searchParams.get("cycles");
     const role = searchParams.get("role");
+    const sort = searchParams.get("sort") || "newest";
 
     const subjects = subjectsParam ? subjectsParam.split(",") : [];
     const cycles = cyclesParam ? cyclesParam.split(",") : [];
@@ -94,10 +96,12 @@ export async function GET(request: NextRequest) {
       },
       skip,
       take: limit,
-      orderBy: [
-        { role: "asc" }, // SELLER first
-        { created_at: "desc" },
-      ],
+      orderBy:
+        sort === "mostMaterials"
+          ? [{ resources: { _count: "desc" } }, { created_at: "desc" }]
+          : sort === "mostFollowers"
+            ? [{ followers: { _count: "desc" } }, { created_at: "desc" }]
+            : [{ created_at: "desc" }],
     });
 
     // Transform response

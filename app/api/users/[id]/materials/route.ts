@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { parsePagination, paginationResponse } from "@/lib/api";
+import { parsePagination, paginationResponse, notFound, serverError } from "@/lib/api";
 
 /**
  * GET /api/users/[id]/materials
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     });
 
     if (!user) {
-      return NextResponse.json({ error: "Benutzer nicht gefunden" }, { status: 404 });
+      return notFound();
     }
 
     // Build orderBy based on sort param
@@ -96,6 +96,6 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     });
   } catch (error) {
     console.error("Error fetching user materials:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError();
   }
 }

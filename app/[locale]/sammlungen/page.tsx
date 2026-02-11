@@ -46,7 +46,7 @@ interface Collection {
 }
 
 export default function CollectionsPage() {
-  const { status } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const tCommon = useTranslations("common");
   const t = useTranslations("collections");
@@ -356,12 +356,14 @@ export default function CollectionsPage() {
                         </p>
                       )}
                     </div>
-                    <Link
-                      href={`/profile/${selectedCollection.id}`}
-                      className="text-primary text-sm font-medium hover:underline"
-                    >
-                      {t("viewPublic")}
-                    </Link>
+                    {session?.user?.id && (
+                      <Link
+                        href={`/profil/${session.user.id}`}
+                        className="text-primary text-sm font-medium hover:underline"
+                      >
+                        {t("viewPublic")}
+                      </Link>
+                    )}
                   </div>
                 </div>
 

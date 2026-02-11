@@ -7,6 +7,16 @@
     "unauthorized": "Unauthorized",
     "serverError": "Server error"
   },
+  "apiErrors": {
+    "unauthorized": "Not authenticated",
+    "forbidden": "Access denied",
+    "notFound": "Not found",
+    "badRequest": "Invalid request",
+    "internalError": "Internal server error",
+    "invalidInput": "Invalid input",
+    "invalidFileType": "Invalid file type",
+    "userNotFound": "User not found"
+  },
   "previewGallery": {
     "title": "Preview",
     "pageOf": "Page {current} of {total}",
@@ -161,7 +171,8 @@
         "dialectSwiss": "Swiss German",
         "dialectStandard": "Standard German",
         "allDialects": "All Dialects",
-        "allKompetenzbereiche": "Choose competency…"
+        "allKompetenzbereiche": "Choose competency…",
+        "formLabel": "Search teaching materials"
       }
     },
     "howItWorks": {
@@ -184,6 +195,9 @@
       "title": "Featured Materials",
       "description": "Selected by experts and quality checked",
       "viewAllMobile": "View All Materials",
+      "emptyTitle": "No materials yet",
+      "emptyDescription": "Be the first teacher to share teaching materials!",
+      "emptyUpload": "Upload material now",
       "card1": {
         "category": "Science",
         "cycle": "Cycle 2",
@@ -243,7 +257,7 @@
       "lp21": "LP21 Compliant",
       "swissMade": "Swiss Made",
       "quality": "Quality Checked",
-      "hosting": "Infomaniak Swiss",
+      "hosting": "Swiss Server",
       "securePay": "Secure Payment",
       "ndsg": "nDSG Compliant"
     },
@@ -446,7 +460,8 @@
     },
     "header": {
       "title": "Teaching Materials",
-      "description": "Browse quality-checked materials for your classroom"
+      "description": "Browse quality-checked materials for your classroom",
+      "uploadButton": "Upload material"
     },
     "sidebar": {
       "title": "Filters",
@@ -457,7 +472,7 @@
       "formatLabel": "Format & Properties",
       "priceLabel": "Price",
       "showMaterials": "Materials",
-      "showCreators": "Creators",
+      "showCreators": "Profiles",
       "displayLabel": "Show",
       "dialectLabel": "Dialect",
       "dialectSwiss": "Swiss German",
@@ -470,12 +485,12 @@
       "scopeLabel": "Material Scope",
       "scopeSingle": "Single",
       "scopeBundle": "Bundle",
+      "chipCycle": "Cycle {number}",
       "dialectCH": "CH",
       "dialectDE": "DE",
       "activeFilters": "Active Filters",
       "loadingError": "Error loading subjects",
-      "searchPlaceholderCreators": "Search for teachers...",
-      "searchPlaceholderBoth": "Search materials & creators...",
+      "searchPlaceholderProfiles": "Search profiles...",
       "searchPlaceholderDefault": "Search: keyword or code (e.g. MA.1.A)",
       "smartSearchDetected": "Detected",
       "smartSearchApply": "Apply filters",
@@ -587,6 +602,8 @@
     },
     "results": {
       "countLabel": "Materials found",
+      "countLabelProfiles": "Profiles found",
+      "showResults": "Show {count} materials",
       "sortLabel": "Sort by:",
       "gridView": "Grid view",
       "listView": "List view",
@@ -596,6 +613,11 @@
         "rating": "Best Rating",
         "priceLow": "Price: Low to High",
         "priceHigh": "Price: High to Low"
+      },
+      "profileSortOptions": {
+        "newest": "Newest",
+        "mostMaterials": "Most materials",
+        "mostFollowers": "Most followers"
       }
     },
     "card": {
@@ -630,6 +652,11 @@
       "followed": "Now following this profile",
       "unfollowed": "Unfollowed this profile",
       "error": "Something went wrong. Please try again."
+    },
+    "pagination": {
+      "nav": "Page navigation",
+      "previous": "Previous page",
+      "next": "Next page"
     }
   },
   "sellerDashboard": {
@@ -1041,7 +1068,7 @@
       "nameLabel": "Your Name",
       "namePlaceholder": "Maria Schmidt",
       "emailLabel": "Email Address",
-      "emailPlaceholder": "your.email@example.com",
+      "emailPlaceholder": "max.muster@example.ch",
       "phoneLabel": "Phone Number (Optional)",
       "phonePlaceholder": "+41 79 123 45 67",
       "phoneHint": "Only if you'd prefer a quick call back. We promise not to share it or call unexpectedly.",
@@ -1052,7 +1079,8 @@
         "support": "Technical Support",
         "sales": "Becoming a Seller",
         "partnership": "Partnership Inquiry",
-        "feedback": "Feedback or Suggestion"
+        "feedback": "Feedback or Suggestion",
+        "refund": "Refund / Return"
       },
       "messageLabel": "Your Message",
       "messagePlaceholder": "Tell us what's on your mind...",
@@ -1076,7 +1104,8 @@
     },
     "faq": {
       "title": "Looking for Quick Answers?",
-      "description": "Check our Help Center for answers to common questions about accounts, materials, and selling on Currico."
+      "description": "Check our Help Center for answers to common questions about accounts, materials, and selling on Currico.",
+      "linkLabel": "Help Center"
     }
   },
   "metadata": {
@@ -1414,7 +1443,20 @@
       "previewImageFormats": "PNG, JPG up to 5 MB",
       "previewSelected": "{count} preview image(s) selected",
       "autoPreview": "Automatic Preview:",
-      "autoPreviewDesc": "For PDF files, a preview is automatically created from the first page."
+      "autoPreviewDesc": "For PDF files, a preview is automatically created from the first page.",
+      "languageDE": "German",
+      "languageEN": "English",
+      "languageFR": "French",
+      "languageIT": "Italian",
+      "resourceTypeOther": "Other",
+      "dialect": "Language Variant",
+      "dialectHint": "Is your material written in Swiss German, Standard German, or both?",
+      "dialectBoth": "Both",
+      "dialectBothDesc": "CH + DE",
+      "dialectSwiss": "Swiss German",
+      "dialectSwissDesc": "CH",
+      "dialectStandard": "Standard German",
+      "dialectStandardDesc": "DE"
     },
     "legal": {
       "title": "Legal Confirmations",
@@ -1773,6 +1815,7 @@
     "ctaButton": "Start Selling"
   },
   "sellerHero": {
+    "badge": "70% Commission for You",
     "headline": "Share Your Teaching Materials",
     "subheadline": "You've created great worksheets, lesson plans, or exams? Share them with colleagues across Switzerland and earn money while helping other teachers save time.",
     "whySell": {
@@ -2479,6 +2522,57 @@
       "terms": "Terms and Conditions"
     }
   },
+  "materialDetail": {
+    "notFound": "Material not found",
+    "notFoundDescription": "The material you are looking for does not exist or is no longer available.",
+    "backToMaterials": "Back to materials",
+    "loadError": "Loading error",
+    "loadErrorDescription": "The material could not be loaded. Please try again later.",
+    "retry": "Try again",
+    "pendingReview": "This material is under review",
+    "pendingReviewDescription": "The material is visible but has not yet been verified by our team.",
+    "verified": "Verified",
+    "pendingStatus": "Under review",
+    "following": "Following",
+    "follow": "+ Follow",
+    "downloadFree": "Download for free",
+    "download": "Download",
+    "buy": "Buy",
+    "wishlisted": "Saved",
+    "addToWishlist": "Add to wishlist",
+    "reportMaterial": "Report material",
+    "description": "Description",
+    "reviews": "Reviews",
+    "comments": "Comments",
+    "similarMaterials": "Similar Materials",
+    "report": {
+      "title": "Report material",
+      "successTitle": "Thank you for your report",
+      "successDescription": "We will review the material.",
+      "reason": "Reason",
+      "reasons": {
+        "inappropriate": "Inappropriate content",
+        "copyright": "Copyright infringement",
+        "quality": "Quality issues",
+        "spam": "Spam",
+        "fraud": "Fraud",
+        "other": "Other"
+      },
+      "commentLabel": "Comment (optional)",
+      "commentPlaceholder": "Please describe the issue...",
+      "submitting": "Submitting...",
+      "submit": "Report",
+      "cancel": "Cancel",
+      "errorSend": "Error sending the report",
+      "errorUnexpected": "An unexpected error occurred"
+    },
+    "noPreview": "No preview available",
+    "anonymous": "Anonymous",
+    "availableAfterReview": "Available after review",
+    "sellerMaterials": "{count} materials",
+    "cycle": "Cycle {number}",
+    "downloads": "{count} downloads"
+  },
   "profile": {
     "notFound": "Profile not found",
     "notFoundDescription": "The profile you're looking for doesn't exist or has been removed.",
@@ -2622,17 +2716,17 @@
       "upload": {
         "question": "How do I upload material?",
         "answer": "Create a free account, click 'Upload Material', and fill in the title, subject, and cycle. Upload your file, publish — done.",
-        "linkLabel": "Register & Upload →"
+        "linkLabel": "Register & Upload"
       },
       "copyright": {
         "question": "What am I allowed to upload? (Copyright)",
         "answer": "Only your own materials or CC0-licensed content. No scans from textbooks, no protected trademarks or characters.",
-        "linkLabel": "Read Copyright Guide →"
+        "linkLabel": "Read Copyright Guide"
       },
       "browse": {
         "question": "Where can I find teaching materials?",
         "answer": "Browse our materials page and filter by cycle, subject, and dialect.",
-        "linkLabel": "Discover Materials →"
+        "linkLabel": "Discover Materials"
       }
     },
     "usefulLinks": {
@@ -2838,6 +2932,7 @@
       "comments": "Comments",
       "wishlist": "Wishlist",
       "notifications": "Notifications",
+      "following": "Following",
       "settings": "Settings",
       "settingsProfile": "Profile",
       "settingsAppearance": "Appearance",
@@ -2890,7 +2985,17 @@
       "completeProfile": "Complete your profile",
       "fieldsCompleted": "{completed} of {total} fields completed",
       "editProfile": "Edit Profile",
-      "close": "Close"
+      "close": "Close",
+      "fields": {
+        "emailVerified": "Verify email",
+        "displayName": "Display name",
+        "profileImage": "Profile picture",
+        "bio": "About me",
+        "subjects": "Subjects",
+        "cycles": "Cycles",
+        "school": "School",
+        "canton": "Canton"
+      }
     },
     "notifications": {
       "title": "Notifications",

@@ -14,8 +14,8 @@ export async function generateMetadata({
       ? "Kontaktieren Sie das Currico-Team. Wir helfen Ihnen gerne weiter."
       : "Contact the Currico team. We're happy to help.",
     alternates: {
-      canonical: `/${locale}/contact`,
-      languages: { de: "/de/contact", en: "/en/contact" },
+      canonical: `/${locale}/kontakt`,
+      languages: { de: "/de/kontakt", en: "/en/kontakt" },
     },
   };
 }

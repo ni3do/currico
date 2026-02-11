@@ -44,7 +44,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     });
 
     if (!targetUser) {
-      return notFound("Benutzer nicht gefunden");
+      return notFound();
     }
 
     // Create follow relationship (upsert to handle duplicates)
