@@ -3,6 +3,7 @@ import { prisma, privateUserSelect } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
 import { updateProfileSchema } from "@/lib/validations/user";
 import { getCurrentUserId } from "@/lib/auth";
+import { unauthorized, notFound, serverError } from "@/lib/api";
 
 /**
  * GET /api/users/me
@@ -14,7 +15,7 @@ export async function GET() {
     const userId = await getCurrentUserId();
 
     if (!userId) {
-      return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
+      return unauthorized();
     }
 
     const user = await prisma.user.findUnique({
@@ -23,7 +24,7 @@ export async function GET() {
     });
 
     if (!user) {
-      return NextResponse.json({ error: "Benutzer nicht gefunden" }, { status: 404 });
+      return notFound();
     }
 
     // Ensure JSON array fields are proper arrays
@@ -35,7 +36,7 @@ export async function GET() {
     });
   } catch (error) {
     console.error("Error fetching user profile:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError();
   }
 }
 
@@ -49,7 +50,7 @@ export async function PATCH(request: NextRequest) {
     const userId = await getCurrentUserId();
 
     if (!userId) {
-      return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
+      return unauthorized();
     }
 
     const body = await request.json();
@@ -109,7 +110,7 @@ export async function PATCH(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error updating user profile:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError();
   }
 }
 
@@ -123,7 +124,7 @@ export async function DELETE() {
     const userId = await getCurrentUserId();
 
     if (!userId) {
-      return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
+      return unauthorized();
     }
 
     // Check for completed transactions where user is seller (cannot delete)
@@ -152,6 +153,6 @@ export async function DELETE() {
     return NextResponse.json({ message: "Konto erfolgreich gelöscht" });
   } catch (error) {
     console.error("Error deleting user account:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError();
   }
 }

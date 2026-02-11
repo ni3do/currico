@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
@@ -71,6 +72,20 @@ export default function ContactClient() {
           <Breadcrumb items={[{ label: tCommon("breadcrumb.contact") }]} />
           <h1 className="text-text text-2xl font-bold sm:text-3xl">{t("hero.title")}</h1>
           <p className="text-text-muted mt-1">{t("hero.subtitle")}</p>
+        </div>
+
+        {/* FAQ CTA Section */}
+        <div className="border-border bg-surface mb-8 flex flex-col items-center gap-3 rounded-xl border p-6 text-center sm:flex-row sm:text-left">
+          <div className="flex-1">
+            <h2 className="text-text text-lg font-semibold">{t("faq.title")}</h2>
+            <p className="text-text-muted mt-1 text-sm">{t("faq.description")}</p>
+          </div>
+          <Link
+            href="/hilfe"
+            className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center rounded-lg px-5 py-2.5 text-sm font-medium transition-colors"
+          >
+            {t("faq.linkLabel")}
+          </Link>
         </div>
 
         {/* Contact Form & Info Section */}
@@ -174,6 +189,7 @@ export default function ContactClient() {
                       <option value="partnership">{t("form.subjects.partnership")}</option>
                       <option value="support">{t("form.subjects.support")}</option>
                       <option value="sales">{t("form.subjects.sales")}</option>
+                      <option value="refund">{t("form.subjects.refund")}</option>
                     </select>
                   </div>
 
@@ -284,32 +300,10 @@ export default function ContactClient() {
                 </div>
               </div>
 
-              {/* Response Time Info */}
-              <div className="border-success/30 bg-success/10 flex items-center gap-3 rounded-lg border p-4">
-                <svg
-                  className="text-success h-5 w-5 flex-shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                <p className="text-text-secondary text-sm">{t("direct.responseTime")}</p>
-              </div>
             </div>
           </div>
         </div>
 
-        {/* FAQ CTA Section */}
-        <div className="mt-12 text-center">
-          <h2 className="text-text mb-4 text-xl font-semibold">{t("faq.title")}</h2>
-          <p className="text-text-muted">{t("faq.description")}</p>
-        </div>
       </main>
 
       <Footer />

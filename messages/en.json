@@ -7,6 +7,16 @@
     "unauthorized": "Unauthorized",
     "serverError": "Server error"
   },
+  "apiErrors": {
+    "unauthorized": "Not authenticated",
+    "forbidden": "Access denied",
+    "notFound": "Not found",
+    "badRequest": "Invalid request",
+    "internalError": "Internal server error",
+    "invalidInput": "Invalid input",
+    "invalidFileType": "Invalid file type",
+    "userNotFound": "User not found"
+  },
   "previewGallery": {
     "title": "Preview",
     "pageOf": "Page {current} of {total}",
@@ -161,7 +171,8 @@
         "dialectSwiss": "Swiss German",
         "dialectStandard": "Standard German",
         "allDialects": "All Dialects",
-        "allKompetenzbereiche": "Choose competency…"
+        "allKompetenzbereiche": "Choose competency…",
+        "formLabel": "Search teaching materials"
       }
     },
     "howItWorks": {
@@ -243,7 +254,7 @@
       "lp21": "LP21 Compliant",
       "swissMade": "Swiss Made",
       "quality": "Quality Checked",
-      "hosting": "Infomaniak Swiss",
+      "hosting": "Swiss Server",
       "securePay": "Secure Payment",
       "ndsg": "nDSG Compliant"
     },
@@ -630,6 +641,11 @@
       "followed": "Now following this profile",
       "unfollowed": "Unfollowed this profile",
       "error": "Something went wrong. Please try again."
+    },
+    "pagination": {
+      "nav": "Page navigation",
+      "previous": "Previous page",
+      "next": "Next page"
     }
   },
   "sellerDashboard": {
@@ -1041,7 +1057,7 @@
       "nameLabel": "Your Name",
       "namePlaceholder": "Maria Schmidt",
       "emailLabel": "Email Address",
-      "emailPlaceholder": "your.email@example.com",
+      "emailPlaceholder": "max.muster@example.ch",
       "phoneLabel": "Phone Number (Optional)",
       "phonePlaceholder": "+41 79 123 45 67",
       "phoneHint": "Only if you'd prefer a quick call back. We promise not to share it or call unexpectedly.",
@@ -1052,7 +1068,8 @@
         "support": "Technical Support",
         "sales": "Becoming a Seller",
         "partnership": "Partnership Inquiry",
-        "feedback": "Feedback or Suggestion"
+        "feedback": "Feedback or Suggestion",
+        "refund": "Refund / Return"
       },
       "messageLabel": "Your Message",
       "messagePlaceholder": "Tell us what's on your mind...",
@@ -1076,7 +1093,8 @@
     },
     "faq": {
       "title": "Looking for Quick Answers?",
-      "description": "Check our Help Center for answers to common questions about accounts, materials, and selling on Currico."
+      "description": "Check our Help Center for answers to common questions about accounts, materials, and selling on Currico.",
+      "linkLabel": "Help Center"
     }
   },
   "metadata": {
@@ -1414,7 +1432,20 @@
       "previewImageFormats": "PNG, JPG up to 5 MB",
       "previewSelected": "{count} preview image(s) selected",
       "autoPreview": "Automatic Preview:",
-      "autoPreviewDesc": "For PDF files, a preview is automatically created from the first page."
+      "autoPreviewDesc": "For PDF files, a preview is automatically created from the first page.",
+      "languageDE": "German",
+      "languageEN": "English",
+      "languageFR": "French",
+      "languageIT": "Italian",
+      "resourceTypeOther": "Other",
+      "dialect": "Language Variant",
+      "dialectHint": "Is your material written in Swiss German, Standard German, or both?",
+      "dialectBoth": "Both",
+      "dialectBothDesc": "CH + DE",
+      "dialectSwiss": "Swiss German",
+      "dialectSwissDesc": "CH",
+      "dialectStandard": "Standard German",
+      "dialectStandardDesc": "DE"
     },
     "legal": {
       "title": "Legal Confirmations",
@@ -1773,6 +1804,7 @@
     "ctaButton": "Start Selling"
   },
   "sellerHero": {
+    "badge": "70% Commission for You",
     "headline": "Share Your Teaching Materials",
     "subheadline": "You've created great worksheets, lesson plans, or exams? Share them with colleagues across Switzerland and earn money while helping other teachers save time.",
     "whySell": {
@@ -2622,17 +2654,17 @@
       "upload": {
         "question": "How do I upload material?",
         "answer": "Create a free account, click 'Upload Material', and fill in the title, subject, and cycle. Upload your file, publish — done.",
-        "linkLabel": "Register & Upload →"
+        "linkLabel": "Register & Upload"
       },
       "copyright": {
         "question": "What am I allowed to upload? (Copyright)",
         "answer": "Only your own materials or CC0-licensed content. No scans from textbooks, no protected trademarks or characters.",
-        "linkLabel": "Read Copyright Guide →"
+        "linkLabel": "Read Copyright Guide"
       },
       "browse": {
         "question": "Where can I find teaching materials?",
         "answer": "Browse our materials page and filter by cycle, subject, and dialect.",
-        "linkLabel": "Discover Materials →"
+        "linkLabel": "Discover Materials"
       }
     },
     "usefulLinks": {

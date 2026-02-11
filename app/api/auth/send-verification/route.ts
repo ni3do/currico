@@ -8,6 +8,7 @@ import {
 } from "@/lib/email";
 import { checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
 import { locales, defaultLocale, type Locale } from "@/i18n/config";
+import { unauthorized, notFound } from "@/lib/api";
 
 export async function POST(request: NextRequest) {
   // Rate limiting check
@@ -31,7 +32,7 @@ export async function POST(request: NextRequest) {
   const session = await auth();
 
   if (!session?.user?.id) {
-    return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
+    return unauthorized();
   }
 
   try {
@@ -46,7 +47,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (!user) {
-      return NextResponse.json({ error: "Benutzer nicht gefunden" }, { status: 404 });
+      return notFound();
     }
 
     // Check if already verified

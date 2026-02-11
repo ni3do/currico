@@ -14,6 +14,7 @@ import { TrustBar } from "@/components/ui/TrustBar";
 import { SwissBrandSection } from "@/components/ui/SwissBrandSection";
 import { ValueProposition } from "@/components/ui/ValueProposition";
 import { FadeIn, StaggerChildren, StaggerItem, motion } from "@/components/ui/animations";
+import { getSubjectPillClass } from "@/lib/constants/subject-colors";
 
 interface FeaturedMaterial {
   id: string;
@@ -24,21 +25,6 @@ interface FeaturedMaterial {
   priceFormatted: string;
   previewUrl: string | null;
   seller: { display_name: string | null; is_verified_seller: boolean };
-}
-
-const SUBJECT_PILL_MAP: Record<string, string> = {
-  Deutsch: "pill-deutsch",
-  Mathematik: "pill-mathe",
-  NMG: "pill-nmg",
-  BG: "pill-gestalten",
-  Musik: "pill-musik",
-  Sport: "pill-sport",
-  Englisch: "pill-fremdsprachen",
-  Franzosisch: "pill-fremdsprachen",
-};
-
-function getSubjectPillClass(subject: string): string {
-  return SUBJECT_PILL_MAP[subject] || "pill-primary";
 }
 
 export default function Home() {
@@ -142,7 +128,7 @@ export default function Home() {
                 </FadeIn>
                 {/* Hero Search Bar */}
                 <FadeIn direction="up" delay={0.2}>
-                  <form onSubmit={handleSearch} className="mt-10 w-full max-w-[600px]">
+                  <form onSubmit={handleSearch} className="mt-10 w-full max-w-[600px]" aria-label={t("hero.search.formLabel")}>
                     {/* Search bar */}
                     <motion.div
                       className="bg-surface border-border-subtle relative flex items-center rounded-full border shadow-lg"
@@ -176,6 +162,7 @@ export default function Home() {
                           />
                         </svg>
                         <span className="hidden sm:inline">{t("hero.search.button")}</span>
+                        <span className="sr-only sm:hidden">{t("hero.search.button")}</span>
                       </motion.button>
                     </motion.div>
 
@@ -186,7 +173,7 @@ export default function Home() {
                         <select
                           value={selectedCycle}
                           onChange={(e) => handleCycleChange(e.target.value)}
-                          className="bg-surface/80 text-text-secondary focus:bg-surface w-full appearance-none rounded-xl border-0 py-3 pr-10 pl-4 text-sm font-medium shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:ring-2 focus:ring-[var(--ctp-blue)] focus:outline-none"
+                          className="bg-surface/80 text-text-secondary focus:bg-surface w-full appearance-none rounded-full border-0 py-3 pr-10 pl-4 text-sm font-medium shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:ring-2 focus:ring-[var(--ctp-blue)] focus:outline-none"
                         >
                           <option value="">{t("hero.search.allCycles")}</option>
                           {zyklen.map((z) => (
@@ -203,7 +190,7 @@ export default function Home() {
                         <select
                           value={selectedSubject}
                           onChange={(e) => handleSubjectChange(e.target.value)}
-                          className="bg-surface/80 text-text-secondary focus:bg-surface w-full appearance-none rounded-xl border-0 py-3 pr-10 pl-4 text-sm font-medium shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:ring-2 focus:ring-[var(--ctp-blue)] focus:outline-none"
+                          className="bg-surface/80 text-text-secondary focus:bg-surface w-full appearance-none rounded-full border-0 py-3 pr-10 pl-4 text-sm font-medium shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:ring-2 focus:ring-[var(--ctp-blue)] focus:outline-none"
                         >
                           <option value="">{t("hero.search.allSubjects")}</option>
                           {availableSubjects.map((fb) => (
@@ -220,7 +207,7 @@ export default function Home() {
                         <select
                           value={selectedKompetenzbereich}
                           onChange={(e) => setSelectedKompetenzbereich(e.target.value)}
-                          className="bg-surface/80 text-text-secondary focus:bg-surface w-full appearance-none rounded-xl border-0 py-3 pr-10 pl-4 text-sm font-medium shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:ring-2 focus:ring-[var(--ctp-blue)] focus:outline-none"
+                          className="bg-surface/80 text-text-secondary focus:bg-surface w-full appearance-none rounded-full border-0 py-3 pr-10 pl-4 text-sm font-medium shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:ring-2 focus:ring-[var(--ctp-blue)] focus:outline-none"
                         >
                           <option value="">{t("hero.search.allKompetenzbereiche")}</option>
                           {availableKompetenzbereiche.map((kb) => (
@@ -249,6 +236,7 @@ export default function Home() {
                     width={1000}
                     height={667}
                     className="hero-image aspect-[3/2] w-full max-w-lg object-cover object-center lg:max-w-none"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
                     priority
                   />
                 </motion.div>

@@ -28,7 +28,7 @@ import { DeleteConfirmDialog } from "@/components/account/DeleteConfirmDialog";
 import { SellerLevelCard } from "@/components/account/SellerLevelCard";
 import { useAccountData } from "@/lib/hooks/useAccountData";
 import type { SellerStats, SellerMaterial, LibraryItem } from "@/lib/types/account";
-import { SUBJECT_PILL_CLASSES } from "@/lib/types/account";
+import { getSubjectPillClass } from "@/lib/constants/subject-colors";
 
 export default function AccountOverviewPage() {
   const router = useRouter();
@@ -163,9 +163,6 @@ export default function AccountOverviewPage() {
     }
   };
 
-  const getSubjectPillClass = (subject: string): string => {
-    return SUBJECT_PILL_CLASSES[subject] || "pill-neutral";
-  };
 
   const getStatusConfig = (status: string) => {
     if (status === "Verified")

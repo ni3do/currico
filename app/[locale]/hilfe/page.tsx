@@ -155,7 +155,7 @@ export default function HilfePage() {
           </div>
 
           {/* Questions */}
-          <div className="divide-border border-border divide-y rounded-xl border">
+          <div className="divide-border border-border min-h-[400px] divide-y rounded-xl border">
             {faqCategories
               .filter(({ key }) => key === activeTab)
               .map(({ key: cat, count }) =>

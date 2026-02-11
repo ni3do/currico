@@ -10,18 +10,18 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Sprachvarianten ersetzt durch Kompetenzen-Selector
 - [x] SwissMade rot gelöscht aus TrustBar
 - [x] Empfohlene Materialien laden echte Materialien via API
-- [ ] "Infomaniak Schweiz" zu "Schweizer Server" ändern plus Emblem
-- [ ] "Sichere Zahlung" nach rechts verschieben
+- [x] "Infomaniak Schweiz" zu "Schweizer Server" ändern plus Emblem
+- [x] "Sichere Zahlung" nach rechts verschieben
 
 ### Eigene Vorschläge (Startseite)
 
-- [ ] Hero-Dropdowns haben `rounded-xl` statt `rounded-full` (inkonsistent mit globalem Dropdown-Style)
-- [ ] SellerHeroSection: "70% Provision für Sie" ist hardcoded auf Deutsch — sollte über i18n laufen (`t("badge")`)
-- [ ] `SUBJECT_PILL_MAP` hat "Franzosisch" ohne Umlaut — sollte "Französisch" sein (oder Code-basiert matchen)
+- [x] Hero-Dropdowns haben `rounded-xl` statt `rounded-full` (inkonsistent mit globalem Dropdown-Style)
+- [x] SellerHeroSection: "70% Provision für Sie" ist hardcoded auf Deutsch — sollte über i18n laufen (`t("badge")`)
+- [x] `SUBJECT_PILL_MAP` hat "Franzosisch" ohne Umlaut — sollte "Französisch" sein (oder Code-basiert matchen)
 - [ ] Kein Fallback wenn `/api/materials` keine Materialien zurückgibt — Sektion wird unsichtbar, besser: leerer Zustand mit CTA "Sei der Erste"
-- [ ] Hero-Bild `hero-teachers.png` hat keinen `sizes`-Prop auf `<Image>` — verschlechtert LCP auf Mobile
-- [ ] Suchformular hat kein `aria-label` auf dem `<form>` — Screenreader können es nicht identifizieren
-- [ ] Search-Button zeigt auf Mobile nur das Icon ohne Text — kein `aria-label` auf dem Button
+- [x] Hero-Bild `hero-teachers.png` hat keinen `sizes`-Prop auf `<Image>` — verschlechtert LCP auf Mobile
+- [x] Suchformular hat kein `aria-label` auf dem `<form>` — Screenreader können es nicht identifizieren
+- [x] Search-Button zeigt auf Mobile nur das Icon ohne Text — kein `aria-label` auf dem Button
 - [ ] SwissBrandSection und ValueProposition haben fast identisches Layout — könnten zu einer generischen Sektion vereinheitlicht werden
 - [ ] TrustBar Items sind nicht verlinkt — z.B. "Schweizer Hosting" könnte auf Über-uns oder Datenschutz verlinken
 - [ ] Kein `<meta description>` oder OpenGraph Tags spezifisch für die Startseite (SEO)
@@ -57,16 +57,16 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Bugs
 
-- [ ] Profil anklicken führt zu Error → FIX
+- [x] Profil anklicken führt zu Error → FIX (ProfileCard.tsx: `/profile/` → `/profil/`)
 
 ### Eigene Vorschläge (Materialien)
 
 - [ ] Seite ist 1173 Zeilen lang — Filter-Chips, Pagination und Grid-Rendering sollten in eigene Komponenten extrahiert werden
-- [ ] `getSubjectPillClass()` ist dupliziert zwischen `page.tsx` (Startseite) und `materialien/page.tsx` — in eine gemeinsame Utility-Funktion auslagern
+- [x] `getSubjectPillClass()` ist dupliziert zwischen `page.tsx` (Startseite) und `materialien/page.tsx` — in eine gemeinsame Utility-Funktion auslagern
 - [ ] Hardcoded deutsche Strings in Filter-Chips: "Kostenlos", "Einzelmaterial", "Bundle", "Alle entfernen", "Zyklus" — müssen über i18n (`t()`) laufen
 - [ ] Mobile-Filter-Drawer "anzeigen" Button: `{totalCount} {t("results.countLabel")} anzeigen` — "anzeigen" ist hardcoded Deutsch
-- [ ] Kein `aria-label` auf den Pagination Prev/Next Buttons — nur SVG-Icons ohne Text, unzugänglich für Screenreader
-- [ ] Pagination `<nav>` hat kein `aria-label="Pagination"` — Screenreader können die Navigation nicht identifizieren
+- [x] Kein `aria-label` auf den Pagination Prev/Next Buttons — nur SVG-Icons ohne Text, unzugänglich für Screenreader
+- [x] Pagination `<nav>` hat kein `aria-label="Pagination"` — Screenreader können die Navigation nicht identifizieren
 - [ ] Profil-Suche auf 12 Ergebnisse limitiert ohne Pagination — bei vielen Profilen fehlen Ergebnisse
 - [ ] Sortierung fehlt: kein "Beliebteste" oder "Beste Bewertung" — nur Neueste und Preis
 - [ ] `priceType`-Filter hat keine "Nur kostenpflichtig" Option — nur "Kostenlos" und Max-Preis
@@ -130,12 +130,12 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] FAQ-Tab-Farben angepasst
 - [x] Doppelpfeile bei Schnelleinstieg entfernt
 - [x] Schnelleinstieg-Text voll ausgeschrieben
-- [ ] Schnelleinstieg: noch zwei Pfeile bei "Wie lade ich Material hoch", "Was darf ich hochladen" und "Wo finde ich Unterrichtsmaterialien" — nur ein Pfeil und Link unten ins Kästchen, uniform machen
-- [ ] Häufige Fragen: Bild springt wenn man zwischen Tabs wechselt (Allgemein, Materialien kaufen, Materialien verkaufen, Technisches)
+- [x] Schnelleinstieg: noch zwei Pfeile bei "Wie lade ich Material hoch", "Was darf ich hochladen" und "Wo finde ich Unterrichtsmaterialien" — nur ein Pfeil und Link unten ins Kästchen, uniform machen
+- [x] Häufige Fragen: Bild springt wenn man zwischen Tabs wechselt (Allgemein, Materialien kaufen, Materialien verkaufen, Technisches)
 
 ### Eigene Vorschläge (Hilfe)
 
-- [ ] Keine `generateMetadata()` Funktion — SEO-Metadaten, OpenGraph und Canonical URLs fehlen
+- [x] Keine `generateMetadata()` Funktion — SEO-Metadaten, OpenGraph und Canonical URLs fehlen
 - [ ] Hardcodierte E-Mail `info@currico.ch` (Zeile 194) statt aus i18n — sollte über `t("noResults.contactEmail")` gelöst werden
 - [ ] FAQ-Tabs haben kein `aria-selected` Attribut — Screenreader können aktiven Tab nicht identifizieren
 - [ ] Accordion-Buttons fehlt `aria-expanded` Attribut — Screenreader erkennen geöffneten Zustand nicht
@@ -167,16 +167,16 @@ Legende: [x] = erledigt, [ ] = offen
 - [ ] GmbH nachtragen (Firmenform aktualisieren)
 - [ ] Version update (optional)
 - [ ] Light mode Inselfarben gleich machen (Farbkonsistenz)
-- [ ] Kontakt Currico Link führt nach Mainpage (statt toter Link)
+- [x] Kontakt Currico Link führt nach Mainpage (statt toter Link)
 
 ### Eigene Vorschläge (Impressum)
 
-- [ ] Keine `generateMetadata()` Funktion — Impressum ist wichtig für SEO/Trust
+- [x] Keine `generateMetadata()` Funktion — Impressum ist wichtig für SEO/Trust
 - [ ] "Handelsname:" hardcoded statt i18n — sollte über `t("company.tradeNameLabel")` kommen
 - [ ] Person-Array `["p1", "p2", "p3"]` ist magisch — sollte Konstante oder aus Config geladen werden
-- [ ] Icons (Building2, Mail, Globe, Scale, Users) haben kein `aria-hidden="true"` — werden als Inhalt gelesen
+- [x] Icons (Building2, Mail, Globe, Scale, Users) haben kein `aria-hidden="true"` — werden als Inhalt gelesen
 - [ ] E-Mail-Links ohne `title`-Attribut — Tooltip für Nutzer fehlt
-- [ ] `grid-cols-2` auf Mobile führt zu sehr schmalen Spalten — sollte `grid-cols-1 md:grid-cols-2` sein
+- [x] `grid-cols-2` auf Mobile führt zu sehr schmalen Spalten — sollte `grid-cols-1 md:grid-cols-2` sein
 - [ ] Disclaimer-Sektionen nutzen `<div>` statt `<section>` mit `aria-labelledby` — fehlende Semantik
 - [ ] Keine `Organization`/`LocalBusiness` Schema.org-Daten — für Suchmaschinen-Vertrauen
 - [ ] Links zu anderen Legal-Seiten fehlen (wie bei Cookie-Seite vorhanden)
@@ -189,7 +189,7 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Eigene Vorschläge (Cookie-Richtlinien)
 
-- [ ] Keine `generateMetadata()` Funktion — Cookie Policy ist wichtig für GDPR/Compliance SEO
+- [x] Keine `generateMetadata()` Funktion — Cookie Policy ist wichtig für GDPR/Compliance SEO
 - [ ] Hardcoded Cookie-Namen `["consent", "session", "csrf", "locale"]` — sollten aus zentraler Konstante kommen (Single Source of Truth mit `CookieConsent.tsx`)
 - [ ] Cookie-Listen nutzen `<div>` statt `<dl>`/`<dt>`/`<dd>` — fehlende Semantik für Screenreader
 - [ ] Analytics-Cookie-Informationen zu vage ("Um unsere Dienstleistungen zu verbessern") — welche Tools genau? (Sentry, etc.)
@@ -210,7 +210,7 @@ Legende: [x] = erledigt, [ ] = offen
 
 - [ ] Hardcoded deutsche Strings ("1 Material", "5 Materialien", "25 Downloads", "1 Bewertung" etc.) — sollten über i18n laufen
 - [ ] Hardcoded "Level" Text in Badge — nicht lokalisierbar
-- [ ] Layout-Metadata nutzt Canonical URL "seller-levels" statt "verkaeufer-stufen" — SEO-Fehler
+- [x] Layout-Metadata nutzt Canonical URL "seller-levels" statt "verkaeufer-stufen" — SEO-Fehler
 - [ ] `tipIcons` Array wird per Index gemappt — fragile Zuordnung, bricht wenn Array-Länge ändert
 - [ ] Keine visuelle Hierarchie zwischen aktuellem und angestrebtem Level — alle Level gleich dargestellt
 - [ ] Breadcrumb zeigt nur Seitentitel ohne Home-Link — fehlende Hierarchie
@@ -225,12 +225,13 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Eigene Vorschläge (Verifizierter Verkäufer)
 
+- [x] Keine `generateMetadata()` Funktion — SEO-Metadaten und Canonical URLs fehlen
 - [ ] Keine Validierung dass `VERIFIED_SELLER_CRITERIA` genau 5 Items hat passend zu `criteriaIcons` Array — Icon-Text-Mismatch möglich
 - [ ] Benefits-Section nutzt inline SVG-Icons statt lucide-react wie andere Sektionen — inkonsistentes Icon-System
 - [ ] Nur 3 Benefits gelistet — fühlt sich unvollständig an, Nutzer wollen mehr Detail was "verifiziert" praktisch bedeutet
 - [ ] "How it works" hat 3 kurze Absätze ohne visuelle Differenzierung oder Icons — schwer zu scannen
 - [ ] Kein Vergleich mit nicht-verifizierten Verkäufern — Nutzer sehen keinen konkreten Unterschied
-- [ ] Metadata in Layout nutzt falschen Canonical-Pfad
+- [x] Metadata in Layout nutzt falschen Canonical-Pfad
 
 ---
 
@@ -242,7 +243,7 @@ Legende: [x] = erledigt, [ ] = offen
 ### Eigene Vorschläge (Über uns)
 
 - [ ] `Link` aus "next/link" importiert statt aus `@/i18n/navigation` — umgeht Locale-Handling, kann Mehrsprachigkeit brechen
-- [ ] Layout-Metadata nutzt Canonical "/about" statt "/ueber-uns" — SEO-Fehler
+- [x] Layout-Metadata nutzt Canonical "/about" statt "/ueber-uns" — SEO-Fehler
 - [ ] Hardcoded SVG-Icons für Values statt lucide-react — inkonsistentes Icon-System
 - [ ] Persönliches Zitat (Kursiv-Serif) ohne klaren Kontext wer spricht — mehrdeutig
 - [ ] Values-Section nutzt sehr generische Beschreibungen — nicht differenziert von anderen EdTech-Plattformen
@@ -256,10 +257,10 @@ Legende: [x] = erledigt, [ ] = offen
 
 ## 11. Kontakt (`/kontakt`)
 
-- [ ] Grüner Kasten rechts löschen
-- [ ] E-Mail-Adresse "example" ändern zu "Max Muster"
-- [ ] "Schnelle Antworten gesucht" → Verlinkung nach Hilfe, Sektion ganz nach oben verschieben
-- [ ] "Worum geht es": Widerruf/Rückgabe von Gekauftem als Option hinzufügen
+- [x] Grüner Kasten rechts löschen
+- [x] E-Mail-Adresse "example" ändern zu "Max Muster"
+- [x] "Schnelle Antworten gesucht" → Verlinkung nach Hilfe, Sektion ganz nach oben verschieben
+- [x] "Worum geht es": Widerruf/Rückgabe von Gekauftem als Option hinzufügen
 
 ### Eigene Vorschläge (Kontakt)
 
@@ -279,7 +280,7 @@ Legende: [x] = erledigt, [ ] = offen
 
 - [ ] Weiterleitung nach Login anpassen (wohin wird man geleitet?)
 - [ ] "Vergessenes Passwort" Seite/Link erstellen (mit E-Mail-Reset)
-- [ ] Google-Anmeldung → direkt zum Profil, nicht zurück zum Login
+- [x] Google-Anmeldung → direkt zum Profil, nicht zurück zum Login (auth.ts redirect fallback → `/konto`)
 - [ ] Google-Anmeldung überarbeiten (Flow verbessern)
 - [ ] Erneute Google-Anmeldung → braucht Zwischenfenster von Google
 - [ ] "Zurück zur Startseite" sichtbar machen ohne Scrollen
@@ -320,7 +321,7 @@ Legende: [x] = erledigt, [ ] = offen
 
 - [ ] Navigationsbar Farben und ausgewählte Tags überarbeiten
 - [ ] Mitteilungen als Tab in der Profil-Navigationsbar haben
-- [ ] Benachrichtigungen: richtige URL — /notification gibt 404
+- [x] Benachrichtigungen: richtige URL — /notification gibt 404 (moved page to `/konto/notifications/`)
 - [ ] E-Mail-Benachrichtigungen: schönere Nachricht gestalten
 - [ ] "Geld verdienen" als Titel für Stripe-Anmeldung ist zu offensiv — Segment verbessern
 
@@ -446,8 +447,8 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Eigene Vorschläge (Folge ich)
 
-- [ ] `getSubjectPillClass` ist dupliziert (erscheint in 3+ Dateien) — sollte in gemeinsame Utility
-- [ ] Link href zu `/profile/{id}` statt `/profil/{id}` — URL-Inkonsistenz (alter englischer Pfad)
+- [x] `getSubjectPillClass` ist dupliziert (erscheint in 3+ Dateien) — konsolidiert in `lib/constants/subject-colors.ts`
+- [x] Link href zu `/profile/{id}` statt `/profil/{id}` — URL-Inkonsistenz (alter englischer Pfad) — fixed in folge-ich & sammlungen
 - [ ] Unfollow-Button zeigt Hover-State mit Error-Farben (`hover:border-error`) — impliziert Gefahr statt einfaches Entfolgen
 - [ ] "Discover profiles" Button im Empty-State verlinkt auf `/materialien` statt auf Profil-Suche
 - [ ] "Followed since" Datumsformat nutzt `toLocaleDateString` aber matcht nicht Rest der App
@@ -520,7 +521,8 @@ Legende: [x] = erledigt, [ ] = offen
 ### Eigene Vorschläge (Öffentliches Profil)
 
 - [ ] Hardcoded deutsche Strings: "Profil nicht gefunden", "Das gesuchte Profil existiert nicht", "Benutzer", "Materialien durchsuchen", "Profil wird geladen..." — alles in i18n auslagern
-- [ ] `getSubjectPillClass` und `formatPrice` sind lokal definiert statt aus Shared Utility — Code-Duplikation
+- [x] `getSubjectPillClass` lokal definiert statt aus Shared Utility — jetzt aus `lib/constants/subject-colors.ts` importiert
+- [ ] `formatPrice` ist lokal definiert statt aus Shared Utility — Code-Duplikation
 - [ ] Keine Validierung dass `params.id` ein gültiger UUID/Slug ist vor dem Fetchen
 - [ ] 4 parallele API-Calls bei Seitenaufruf — könnten zu einem einzelnen Endpoint gebündelt werden
 - [ ] Keine SSR/Static Generation — alle Daten Client-seitig gefetcht, schlecht für SEO
@@ -582,16 +584,16 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Eigene Vorschläge (Global)
 
-- [ ] `getSubjectPillClass()` ist in 3+ Dateien dupliziert — in gemeinsame Utility-Funktion `lib/utils/subject-pills.ts` auslagern
-- [ ] Viele Canonical-URLs in Metadata nutzen noch englische Pfade ("/about", "/seller-levels") statt deutsche ("/ueber-uns", "/verkaeufer-stufen") — SEO-Fehler
+- [x] `getSubjectPillClass()` ist in 3+ Dateien dupliziert — in gemeinsame Utility-Funktion `lib/constants/subject-colors.ts` auslagern
+- [x] Viele Canonical-URLs in Metadata nutzen noch englische Pfade ("/about", "/seller-levels") statt deutsche ("/ueber-uns", "/verkaeufer-stufen") — SEO-Fehler
 - [ ] Inkonsistente Loading-States: manche Seiten nutzen Spinner, andere Skeleton, andere Pulse — vereinheitlichen
 - [ ] Inkonsistente Button-Styles (ghost, outline, solid) nicht überall einheitlich verwendet
 - [ ] Card-Layouts nutzen teils `rounded-xl`, teils `rounded-lg` — inkonsistent
-- [ ] Viele Seiten haben keine `generateMetadata()` Funktion — fehlende SEO-Metadaten
+- [x] Viele Seiten haben keine `generateMetadata()` Funktion — fehlende SEO-Metadaten (hilfe, impressum, cookie-richtlinien, verifizierter-verkaeufer)
 - [ ] Keine CSRF-Token-Validierung sichtbar bei POST-Requests
 - [ ] localStorage wird für sensitive Daten genutzt (Drafts, Preferences) — könnte XSS-anfällig sein
 - [ ] `Link` aus "next/link" statt aus `@/i18n/navigation` auf einigen Seiten — umgeht Locale-Handling
-- [ ] Dekorative Icons (lucide-react) haben oft kein `aria-hidden="true"` — werden von Screenreadern vorgelesen
+- [x] Dekorative Icons (lucide-react) haben oft kein `aria-hidden="true"` — werden von Screenreadern vorgelesen (Impressum, TrustBar, SellerHeroSection)
 - [ ] Viele `<div>`-Container sollten semantische Elemente sein (`<section>`, `<nav>`, `<article>`) für bessere Accessibility
 - [ ] Keine Schema.org-Daten auf den meisten Seiten — fehlende Rich Snippets
 - [ ] API-Fehler werden oft als generische "Ein Fehler ist aufgetreten" angezeigt — keine spezifischen Hilfe für 401/403/404/500
@@ -603,7 +605,7 @@ Legende: [x] = erledigt, [ ] = offen
 | Seite                     | Erledigt | Offen (Joel) | Offen (Eigene) | Total Offen |
 | ------------------------- | -------- | ------------ | -------------- | ----------- |
 | Startseite                | 4        | 2            | 11             | 13          |
-| Materialien               | 0        | 21           | 19             | 40          |
+| Materialien               | 1        | 20           | 19             | 39          |
 | Material-Vorschau         | 0        | 12           | 17             | 29          |
 | Hilfe                     | 3        | 2            | 7              | 9           |
 | Urheberrecht              | 1        | 0            | 8              | 8           |
@@ -613,13 +615,13 @@ Legende: [x] = erledigt, [ ] = offen
 | Verifizierter Verkäufer   | 0        | 2            | 6              | 8           |
 | Über uns                  | 0        | 2            | 10             | 12          |
 | Kontakt                   | 0        | 4            | 9              | 13          |
-| Anmelden                  | 0        | 8            | 6              | 14          |
+| Anmelden                  | 1        | 7            | 6              | 13          |
 | Registrieren              | 0        | 0            | 5              | 5           |
-| Konto (alle Unterseiten)  | 0        | 30           | 39             | 69          |
-| Folge ich                 | 0        | 3            | 8              | 11          |
+| Konto (alle Unterseiten)  | 2        | 28           | 39             | 67          |
+| Folge ich                 | 1        | 3            | 7              | 10          |
 | Hochladen                 | 0        | 18           | 13             | 31          |
 | Öffentliches Profil       | 0        | 1            | 10             | 11          |
 | Verkäufer werden / Stripe | 0        | 4            | 10             | 14          |
 | Benachrichtigungen        | 0        | 3            | 0              | 3           |
 | Global                    | 9        | 1            | 13             | 14          |
-| **Total**                 | **17**   | **120**      | **214**        | **334**     |
+| **Total**                 | **22**   | **116**      | **213**        | **329**     |

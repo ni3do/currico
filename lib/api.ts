@@ -3,27 +3,59 @@ import { prisma } from "@/lib/db";
 import { getCurrentUserId } from "@/lib/auth";
 
 // ============================================================
+// ERROR CODES — used by client-side translateApiError() for i18n
+// ============================================================
+
+export const API_ERROR_CODES = {
+  UNAUTHORIZED: "UNAUTHORIZED",
+  FORBIDDEN: "FORBIDDEN",
+  NOT_FOUND: "NOT_FOUND",
+  BAD_REQUEST: "BAD_REQUEST",
+  INTERNAL_ERROR: "INTERNAL_ERROR",
+  INVALID_INPUT: "INVALID_INPUT",
+  INVALID_FILE_TYPE: "INVALID_FILE_TYPE",
+  USER_NOT_FOUND: "USER_NOT_FOUND",
+} as const;
+
+export type ApiErrorCode = (typeof API_ERROR_CODES)[keyof typeof API_ERROR_CODES];
+
+// ============================================================
 // ERROR RESPONSES
 // ============================================================
 
 export function unauthorized(message = "Nicht authentifiziert") {
-  return NextResponse.json({ error: message }, { status: 401 });
+  return NextResponse.json(
+    { error: message, code: API_ERROR_CODES.UNAUTHORIZED },
+    { status: 401 }
+  );
 }
 
 export function forbidden(message = "Zugriff verweigert") {
-  return NextResponse.json({ error: message }, { status: 403 });
+  return NextResponse.json(
+    { error: message, code: API_ERROR_CODES.FORBIDDEN },
+    { status: 403 }
+  );
 }
 
 export function badRequest(message: string, details?: Record<string, unknown>) {
-  return NextResponse.json({ error: message, ...details }, { status: 400 });
+  return NextResponse.json(
+    { error: message, code: API_ERROR_CODES.BAD_REQUEST, ...details },
+    { status: 400 }
+  );
 }
 
 export function notFound(message = "Nicht gefunden") {
-  return NextResponse.json({ error: message }, { status: 404 });
+  return NextResponse.json(
+    { error: message, code: API_ERROR_CODES.NOT_FOUND },
+    { status: 404 }
+  );
 }
 
 export function serverError(message = "Interner Serverfehler") {
-  return NextResponse.json({ error: message }, { status: 500 });
+  return NextResponse.json(
+    { error: message, code: API_ERROR_CODES.INTERNAL_ERROR },
+    { status: 500 }
+  );
 }
 
 // ============================================================
@@ -80,15 +112,15 @@ export async function checkSellerProfile(
     },
   });
 
-  if (!user) return ["Benutzer nicht gefunden"];
+  if (!user) return ["USER_NOT_FOUND"];
 
   const missing: string[] = [];
-  if (!user.display_name) missing.push("Profilname");
-  if (!user.emailVerified) missing.push("E-Mail-Verifizierung");
+  if (!user.display_name) missing.push("PROFILE_NAME");
+  if (!user.emailVerified) missing.push("EMAIL_VERIFICATION");
 
   // Only require Stripe for paid resources
   if (requireStripe && (!user.stripe_onboarding_complete || !user.stripe_charges_enabled)) {
-    missing.push("Stripe-Verifizierung");
+    missing.push("STRIPE_VERIFICATION");
   }
 
   return missing;
@@ -117,19 +149,19 @@ export async function checkCanUpload(
   });
 
   if (!user) {
-    return { canUpload: false, error: "Benutzer nicht gefunden" };
+    return { canUpload: false, error: "USER_NOT_FOUND" };
   }
 
   const missing: string[] = [];
 
   // Basic requirements for all uploads
-  if (!user.display_name) missing.push("Profilname");
-  if (!user.emailVerified) missing.push("E-Mail-Verifizierung");
+  if (!user.display_name) missing.push("PROFILE_NAME");
+  if (!user.emailVerified) missing.push("EMAIL_VERIFICATION");
 
   // Paid resources require Stripe verification
   if (price > 0) {
     if (!user.stripe_onboarding_complete || !user.stripe_charges_enabled) {
-      missing.push("Stripe-Verifizierung");
+      missing.push("STRIPE_VERIFICATION");
     }
   }
 

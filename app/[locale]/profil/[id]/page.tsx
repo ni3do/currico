@@ -8,7 +8,9 @@ import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { MaterialCard } from "@/components/ui/MaterialCard";
 import { Users, FileText, FolderOpen, Calendar, MapPin, Instagram, Lock } from "lucide-react";
+import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { VerifiedSellerBadge } from "@/components/ui/VerifiedSellerBadge";
+import { getSubjectPillClass } from "@/lib/constants/subject-colors";
 
 interface ProfileData {
   id: string;
@@ -67,6 +69,7 @@ export default function PublicProfilePage({
 }) {
   const { id } = use(params);
   const t = useTranslations("profile");
+  const tCommon = useTranslations("common");
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [bestMaterials, setBestMaterials] = useState<Material[]>([]);
   const [allMaterials, setAllMaterials] = useState<Material[]>([]);
@@ -173,20 +176,6 @@ export default function PublicProfilePage({
   const formatPrice = (cents: number) =>
     cents === 0 ? "Gratis" : `CHF ${(cents / 100).toFixed(2)}`;
 
-  const getSubjectPillClass = (subject: string): string => {
-    const subjectMap: Record<string, string> = {
-      Deutsch: "pill-deutsch",
-      Mathematik: "pill-mathe",
-      NMG: "pill-nmg",
-      BG: "pill-gestalten",
-      Musik: "pill-musik",
-      Sport: "pill-sport",
-      Englisch: "pill-fremdsprachen",
-      Franzosisch: "pill-fremdsprachen",
-    };
-    return subjectMap[subject] || "pill-primary";
-  };
-
   if (loading) {
     return (
       <div className="bg-bg flex min-h-screen flex-col">
@@ -241,6 +230,13 @@ export default function PublicProfilePage({
       <TopBar />
 
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+        <Breadcrumb
+          items={[
+            { label: tCommon("breadcrumb.materials"), href: "/materialien" },
+            { label: displayName },
+          ]}
+        />
+
         {/* Profile Header */}
         <div className="card mb-8 p-8">
           <div className="flex flex-col gap-6 md:flex-row md:items-start">

@@ -17,6 +17,7 @@ import { ProfileCard } from "@/components/ui/ProfileCard";
 import { LP21FilterSidebar, type LP21FilterState } from "@/components/search/LP21FilterSidebar";
 import { useCurriculum } from "@/lib/hooks/useCurriculum";
 import { useToast } from "@/components/ui/Toast";
+import { getSubjectPillClass } from "@/lib/constants/subject-colors";
 
 interface Material {
   id: string;
@@ -496,53 +497,6 @@ export default function MaterialienPage() {
       setProfilesLoading(false);
     }
   }, [filters, fetchProfiles]);
-
-  // Get subject pill class based on subject name or code
-  const getSubjectPillClass = (subject: string): string => {
-    const subjectMap: Record<string, string> = {
-      // By name
-      Deutsch: "pill-deutsch",
-      Mathematik: "pill-mathe",
-      "Natur, Mensch, Gesellschaft": "pill-nmg",
-      NMG: "pill-nmg",
-      "Bildnerisches Gestalten": "pill-gestalten",
-      BG: "pill-gestalten",
-      "Textiles und Technisches Gestalten": "pill-ttg",
-      TTG: "pill-ttg",
-      Musik: "pill-musik",
-      MU: "pill-musik",
-      "Bewegung und Sport": "pill-sport",
-      BS: "pill-sport",
-      Französisch: "pill-franzoesisch",
-      FR: "pill-franzoesisch",
-      French: "pill-franzoesisch",
-      Englisch: "pill-englisch",
-      EN: "pill-englisch",
-      English: "pill-englisch",
-      // Legacy - Fremdsprachen
-      Fremdsprachen: "pill-fremdsprachen",
-      FS: "pill-fremdsprachen",
-      "Medien und Informatik": "pill-medien",
-      MI: "pill-medien",
-      // Zyklus 3 specific
-      "Natur und Technik": "pill-nt",
-      NT: "pill-nt",
-      "Wirtschaft, Arbeit, Haushalt": "pill-wah",
-      WAH: "pill-wah",
-      "Räume, Zeiten, Gesellschaften": "pill-rzg",
-      RZG: "pill-rzg",
-      "Ethik, Religionen, Gemeinschaft": "pill-erg",
-      ERG: "pill-erg",
-      "Berufliche Orientierung": "pill-bo",
-      BO: "pill-bo",
-      Projektunterricht: "pill-pu",
-      PU: "pill-pu",
-      // By code
-      D: "pill-deutsch",
-      MA: "pill-mathe",
-    };
-    return subjectMap[subject] || "pill-primary";
-  };
 
   // Merged grid items for unified view
   type GridItem = { type: "material"; data: Material } | { type: "profile"; data: Profile };
@@ -1062,12 +1016,13 @@ export default function MaterialienPage() {
               {/* Pagination - only for resources */}
               {filters.showMaterials && pagination.totalPages > 1 && (
                 <div className="mt-12 flex justify-center">
-                  <nav className="flex items-center gap-1">
+                  <nav className="flex items-center gap-1" aria-label={t("pagination.nav")}>
                     {/* Previous button */}
                     <button
                       onClick={() => handlePageChange(currentPage - 1)}
                       className="text-text-muted hover:bg-surface rounded-md px-3 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
                       disabled={currentPage === 1}
+                      aria-label={t("pagination.previous")}
                     >
                       <svg
                         className="h-5 w-5"
@@ -1143,6 +1098,7 @@ export default function MaterialienPage() {
                       onClick={() => handlePageChange(currentPage + 1)}
                       className="text-text-secondary hover:bg-surface rounded-md px-3 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
                       disabled={currentPage === pagination.totalPages}
+                      aria-label={t("pagination.next")}
                     >
                       <svg
                         className="h-5 w-5"

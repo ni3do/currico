@@ -24,11 +24,11 @@ export default function ImpressumPage() {
         </div>
 
         {/* Content */}
-        <div className="grid gap-8 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
           {/* Company Information */}
           <div className="border-border bg-surface rounded-xl border p-6">
             <div className="mb-4 flex items-center gap-3">
-              <Building2 className="text-primary h-5 w-5" />
+              <Building2 className="text-primary h-5 w-5" aria-hidden="true" />
               <h2 className="text-text text-lg font-semibold">{t("company.title")}</h2>
             </div>
             <div className="text-text-secondary space-y-3">
@@ -43,21 +43,21 @@ export default function ImpressumPage() {
           {/* Contact Information */}
           <div className="border-border bg-surface rounded-xl border p-6">
             <div className="mb-4 flex items-center gap-3">
-              <Mail className="text-primary h-5 w-5" />
+              <Mail className="text-primary h-5 w-5" aria-hidden="true" />
               <h2 className="text-text text-lg font-semibold">{t("contact.title")}</h2>
             </div>
             <div className="text-text-secondary space-y-3">
               <p className="flex items-center gap-2">
-                <Mail className="text-text-muted h-4 w-4" />
+                <Mail className="text-text-muted h-4 w-4" aria-hidden="true" />
                 <a href={`mailto:${t("contact.email")}`} className="text-primary hover:underline">
                   {t("contact.email")}
                 </a>
               </p>
               <p className="flex items-center gap-2">
-                <Globe className="text-text-muted h-4 w-4" />
-                <Link href="/" className="text-primary hover:underline">
+                <Globe className="text-text-muted h-4 w-4" aria-hidden="true" />
+                <a href="https://www.currico.ch" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">
                   {t("contact.website")}
-                </Link>
+                </a>
               </p>
             </div>
           </div>
@@ -66,7 +66,7 @@ export default function ImpressumPage() {
         {/* Legal Information */}
         <div className="border-border bg-surface mt-8 rounded-xl border p-6">
           <div className="mb-4 flex items-center gap-3">
-            <Scale className="text-primary h-5 w-5" />
+            <Scale className="text-primary h-5 w-5" aria-hidden="true" />
             <h2 className="text-text text-lg font-semibold">{t("legal.title")}</h2>
           </div>
           <div className="text-text-secondary grid gap-4 sm:grid-cols-2">
@@ -96,7 +96,7 @@ export default function ImpressumPage() {
         {/* Authorized Representatives */}
         <div className="border-border bg-surface mt-8 rounded-xl border p-6">
           <div className="mb-4 flex items-center gap-3">
-            <Users className="text-primary h-5 w-5" />
+            <Users className="text-primary h-5 w-5" aria-hidden="true" />
             <h2 className="text-text text-lg font-semibold">{t("responsible.title")}</h2>
           </div>
           <div className="space-y-3">

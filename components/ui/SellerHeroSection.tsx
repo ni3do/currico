@@ -14,21 +14,21 @@ export function SellerHeroSection({ className = "" }: SellerHeroSectionProps) {
 
   const features = [
     {
-      icon: <Coins className="h-5 w-5" />,
+      icon: <Coins className="h-5 w-5" aria-hidden="true" />,
       title: t("features.commission.title"),
       description: t("features.commission.description"),
       bgGradient: "from-[var(--ctp-yellow)]/20 to-[var(--ctp-peach)]/10",
       iconColor: "text-[var(--ctp-yellow)]",
     },
     {
-      icon: <Users className="h-5 w-5" />,
+      icon: <Users className="h-5 w-5" aria-hidden="true" />,
       title: t("features.community.title"),
       description: t("features.community.description"),
       bgGradient: "from-[var(--ctp-blue)]/20 to-[var(--ctp-sapphire)]/10",
       iconColor: "text-[var(--ctp-sapphire)]",
     },
     {
-      icon: <Upload className="h-5 w-5" />,
+      icon: <Upload className="h-5 w-5" aria-hidden="true" />,
       title: t("features.curriculum.title"),
       description: t("features.curriculum.description"),
       bgGradient: "from-[var(--ctp-teal)]/20 to-[var(--ctp-green)]/10",
@@ -65,10 +65,10 @@ export function SellerHeroSection({ className = "" }: SellerHeroSectionProps) {
               animate={{ rotate: [0, 15, -15, 0] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
-              <Sparkles className="h-3.5 w-3.5 text-[var(--ctp-blue)]" />
+              <Sparkles className="h-3.5 w-3.5 text-[var(--ctp-blue)]" aria-hidden="true" />
             </motion.span>
             <span className="text-xs font-semibold text-[var(--ctp-blue)]">
-              70% Provision für Sie
+              {t("badge")}
             </span>
           </motion.div>
 
@@ -127,13 +127,13 @@ export function SellerHeroSection({ className = "" }: SellerHeroSectionProps) {
               className="btn-primary group inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-semibold"
             >
               <span>{t("ctaButton")}</span>
-              <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+              <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />
             </Link>
           </motion.div>
 
           {/* Free Note */}
           <p className="text-text-muted flex items-center gap-1.5 text-xs">
-            <CheckCircle2 className="h-3.5 w-3.5 text-[var(--ctp-green)]" />
+            <CheckCircle2 className="h-3.5 w-3.5 text-[var(--ctp-green)]" aria-hidden="true" />
             {t("freeNote")}
           </p>
         </FadeIn>

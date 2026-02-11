@@ -3,6 +3,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { getStripeClient, calculateApplicationFee } from "@/lib/stripe";
+import { notFound } from "@/lib/api";
 
 // Input validation schema
 const createCheckoutSessionSchema = z.object({
@@ -59,7 +60,7 @@ export async function POST(request: NextRequest) {
       select: { email: true },
     });
     if (!user) {
-      return NextResponse.json({ error: "Benutzer nicht gefunden" }, { status: 404 });
+      return notFound();
     }
     buyerEmail = user.email;
   }
@@ -149,7 +150,7 @@ export async function POST(request: NextRequest) {
       });
 
       if (!buyer) {
-        return NextResponse.json({ error: "Benutzer nicht gefunden" }, { status: 404 });
+        return notFound();
       }
 
       stripeCustomerId = buyer.stripe_customer_id || "";

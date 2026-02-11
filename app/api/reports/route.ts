@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
         select: { id: true },
       });
       if (!user) {
-        return notFound("Benutzer nicht gefunden");
+        return notFound();
       }
     }
 
