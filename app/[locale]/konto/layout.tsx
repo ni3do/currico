@@ -15,6 +15,7 @@ import {
   Package,
   MessageCircle,
   Bell,
+  Users,
   ChevronRight,
 } from "lucide-react";
 import { motion } from "framer-motion";
@@ -39,6 +40,7 @@ const MOBILE_TABS = [
     sellerOnly: true,
   },
   { id: "notifications" as TabType, label: "nav.notifications", icon: Bell },
+  { id: "following" as TabType, label: "nav.following", icon: Users },
   {
     id: "settings-profile" as TabType,
     label: "nav.settings",
@@ -121,6 +123,7 @@ function AccountLayoutInner({ children }: { children: ReactNode }) {
         comments: t("nav.comments"),
         wishlist: t("nav.wishlist"),
         notifications: t("nav.notifications"),
+        following: t("nav.following"),
         "settings-profile": t("nav.settingsProfile"),
         "settings-appearance": t("nav.settingsAppearance"),
         "settings-notifications": t("nav.settingsNotifications"),

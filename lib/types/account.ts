@@ -149,6 +149,7 @@ export type TabType =
   | "comments"
   | "wishlist"
   | "notifications"
+  | "following"
   | "settings-profile"
   | "settings-appearance"
   | "settings-notifications"
@@ -179,6 +180,7 @@ export const TAB_TO_PATH: Record<TabType, string> = {
   comments: "/konto/comments",
   wishlist: "/konto/wishlist",
   notifications: "/konto/notifications",
+  following: "/konto/folge-ich",
   "settings-profile": "/konto/settings",
   "settings-appearance": "/konto/settings/appearance",
   "settings-notifications": "/konto/settings/notifications",
@@ -197,6 +199,7 @@ export function pathToTab(pathname: string): TabType {
   if (path.startsWith("/konto/comments")) return "comments";
   if (path.startsWith("/konto/wishlist")) return "wishlist";
   if (path.startsWith("/konto/notifications")) return "notifications";
+  if (path.startsWith("/konto/folge-ich")) return "following";
   if (path.startsWith("/konto/settings/appearance")) return "settings-appearance";
   if (path.startsWith("/konto/settings/notifications")) return "settings-notifications";
   if (path.startsWith("/konto/settings/account")) return "settings-account";
