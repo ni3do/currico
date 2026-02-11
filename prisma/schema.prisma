@@ -284,6 +284,8 @@ model Resource {
   @@index([is_published, is_public])
   @@index([status])
   @@index([created_at])
+  @@index([title(ops: raw("gin_trgm_ops"))], type: Gin, map: "idx_resources_title_trgm")
+  @@index([description(ops: raw("gin_trgm_ops"))], type: Gin, map: "idx_resources_description_trgm")
   @@map("resources")
 }
 
