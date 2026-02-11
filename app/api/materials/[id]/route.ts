@@ -100,6 +100,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       cycles: unknown;
       is_approved: boolean;
       preview_url: string | null;
+      seller: { display_name: string | null };
     }[] = [];
 
     // Strategy: same subject → same cycle → most popular
@@ -124,6 +125,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
             cycles: true,
             is_approved: true,
             preview_url: true,
+            seller: { select: { display_name: true } },
           },
           orderBy: { created_at: "desc" },
         });
@@ -151,6 +153,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
             cycles: true,
             is_approved: true,
             preview_url: true,
+            seller: { select: { display_name: true } },
           },
           orderBy: { created_at: "desc" },
         });
@@ -171,6 +174,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           cycles: true,
           is_approved: true,
           preview_url: true,
+          seller: { select: { display_name: true } },
         },
         orderBy: { transactions: { _count: "desc" } },
         take: 3 - relatedMaterials.length,
@@ -187,6 +191,23 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       ? (material.preview_urls as string[])
       : [];
 
+    // Derive file format from file_url extension
+    const fileExt = material.file_url
+      ? material.file_url.split(".").pop()?.toLowerCase() || "pdf"
+      : "pdf";
+    const formatMap: Record<string, string> = {
+      pdf: "PDF",
+      doc: "Word",
+      docx: "Word",
+      ppt: "PowerPoint",
+      pptx: "PowerPoint",
+      xls: "Excel",
+      xlsx: "Excel",
+      one: "OneNote",
+      onetoc2: "OneNote",
+    };
+    const fileFormat = formatMap[fileExt] || fileExt.toUpperCase();
+
     const transformedMaterial = {
       id: material.id,
       title: material.title,
@@ -194,6 +215,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       price: material.price,
       priceFormatted: formatPrice(material.price),
       fileUrl: material.file_url,
+      fileFormat,
       previewUrl: material.preview_url,
       previewUrls,
       previewCount: material.preview_count || 1,
@@ -227,6 +249,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         cycle: rCycles[0] || "",
         verified: r.is_approved,
         previewUrl: r.preview_url,
+        sellerName: r.seller.display_name,
       };
     });
 

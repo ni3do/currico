@@ -37,6 +37,12 @@ export interface MaterialCardProps {
   onWishlistToggle?: (id: string, currentState: boolean) => Promise<boolean>;
   /** Show/hide the wishlist heart icon */
   showWishlist?: boolean;
+  /** Translated aria-label for adding to wishlist */
+  wishlistAddLabel?: string;
+  /** Translated aria-label for removing from wishlist */
+  wishlistRemoveLabel?: string;
+  /** Translated label for anonymous seller */
+  anonymousLabel?: string;
   /** Average rating (1-5) from reviews */
   averageRating?: number;
   /** Number of reviews */
@@ -60,6 +66,9 @@ export function MaterialCard({
   isWishlisted: initialWishlisted = false,
   onWishlistToggle,
   showWishlist = false,
+  wishlistAddLabel,
+  wishlistRemoveLabel,
+  anonymousLabel,
   averageRating,
   reviewCount,
 }: MaterialCardProps) {
@@ -104,7 +113,7 @@ export function MaterialCard({
     <>
       {/* Preview Image with Price Badge */}
       <div
-        className={`bg-bg-secondary relative overflow-hidden ${isCompact ? "aspect-square w-32 flex-shrink-0 sm:w-40" : "aspect-[16/9] w-full"}`}
+        className={`bg-bg-secondary relative overflow-hidden ${isCompact ? "aspect-square w-32 flex-shrink-0 sm:w-40" : "aspect-[4/3] w-full"}`}
       >
         {previewUrl ? (
           <Image
@@ -131,13 +140,9 @@ export function MaterialCard({
           </div>
         )}
 
-        {/* Price Badge - Top Right with Warm Accent */}
-        {shouldShowPriceBadge && (
-          <span
-            className={`absolute top-3 right-3 rounded-full px-3 py-1 text-sm font-bold shadow-md ${
-              isFree ? "bg-success text-white" : "bg-price text-white"
-            } ${isCompact ? "px-2 py-0.5 text-xs" : ""}`}
-          >
+        {/* Price Badge - moved to footer for non-compact, keep overlay for compact */}
+        {shouldShowPriceBadge && isCompact && (
+          <span className="bg-price absolute top-3 right-3 rounded-full px-2 py-0.5 text-xs font-bold text-white shadow-md">
             {priceFormatted}
           </span>
         )}
@@ -147,13 +152,17 @@ export function MaterialCard({
           <button
             onClick={handleWishlistClick}
             disabled={wishlistLoading}
-            className={`absolute top-3 left-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 shadow-md backdrop-blur-sm transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-110 hover:bg-white active:scale-95 disabled:opacity-50 ${
-              isWishlisted ? "text-red-500" : "text-text-muted hover:text-red-500"
+            className={`absolute top-3 left-3 drop-shadow-md transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-110 active:scale-95 disabled:opacity-50 ${
+              isWishlisted ? "text-red-500" : "text-white hover:text-red-500"
             }`}
-            aria-label={isWishlisted ? "Aus Wunschliste entfernen" : "Zur Wunschliste hinzufügen"}
+            aria-label={
+              isWishlisted
+                ? wishlistRemoveLabel || "Remove from wishlist"
+                : wishlistAddLabel || "Add to wishlist"
+            }
           >
             <Heart
-              className={`h-5 w-5 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${wishlistLoading ? "animate-pulse" : ""} ${isWishlisted ? "scale-100" : "scale-90 group-hover:scale-100"}`}
+              className={`h-7 w-7 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${wishlistLoading ? "animate-pulse" : ""} ${isWishlisted ? "scale-100" : "scale-90 group-hover:scale-100"}`}
               fill={isWishlisted ? "currentColor" : "none"}
               strokeWidth={2}
             />
@@ -207,7 +216,7 @@ export function MaterialCard({
         {isCompact && (
           <div className="text-text-muted mt-2 flex items-center gap-3 text-xs">
             <span className="flex items-center gap-1">
-              {seller?.displayName || "Anonymous"}
+              {seller?.displayName || anonymousLabel || "Anonymous"}
               {seller?.isVerifiedSeller && <VerifiedSellerBadge variant="compact" />}
             </span>
             {priceFormatted && (
@@ -226,22 +235,32 @@ export function MaterialCard({
           (footer ?? (
             <div className="border-border-subtle flex items-center justify-between border-t pt-3">
               <span className="text-text-muted flex items-center gap-1.5 text-sm transition-colors duration-300">
-                {seller?.displayName || "Anonymous"}
+                {seller?.displayName || anonymousLabel || "Anonymous"}
                 {seller?.isVerifiedSeller && <VerifiedSellerBadge variant="compact" />}
               </span>
-              <svg
-                className="text-text-muted group-hover:text-primary h-5 w-5 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-1.5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
+              {shouldShowPriceBadge ? (
+                <span
+                  className={`rounded-full px-3 py-1 text-sm font-bold ${
+                    isFree ? "bg-success text-white" : "bg-price text-white"
+                  }`}
+                >
+                  {priceFormatted}
+                </span>
+              ) : (
+                <svg
+                  className="text-text-muted group-hover:text-primary h-5 w-5 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-1.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              )}
             </div>
           ))}
       </div>

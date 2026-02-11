@@ -52,6 +52,7 @@ interface Material {
   price: number;
   priceFormatted: string;
   fileUrl: string;
+  fileFormat?: string;
   previewUrl: string | null;
   previewUrls?: string[];
   previewCount?: number;
@@ -69,7 +70,7 @@ interface Material {
     displayName: string | null;
     image: string | null;
     verified: boolean;
-    resourceCount: number;
+    materialCount: number;
   };
   // LP21 curriculum fields
   isMiIntegrated?: boolean;
@@ -87,6 +88,7 @@ interface RelatedMaterial {
   cycle: string;
   verified: boolean;
   previewUrl: string | null;
+  sellerName: string | null;
 }
 
 export default function MaterialDetailPage() {
@@ -144,23 +146,33 @@ export default function MaterialDetailPage() {
     }
   }, [id, fetchMaterial]);
 
-  // Check if resource is wishlisted
+  // Check if resource is wishlisted and if following seller
   useEffect(() => {
-    const checkWishlist = async () => {
+    const checkWishlistAndFollowing = async () => {
       if (sessionStatus !== "authenticated" || !id) return;
       try {
-        const response = await fetch("/api/user/wishlist");
-        if (response.ok) {
-          const data = await response.json();
+        const [wishlistRes, followingRes] = await Promise.all([
+          fetch("/api/user/wishlist"),
+          fetch("/api/user/following"),
+        ]);
+        if (wishlistRes.ok) {
+          const data = await wishlistRes.json();
           const isInWishlist = data.items.some((item: { id: string }) => item.id === id);
           setIsWishlisted(isInWishlist);
         }
+        if (followingRes.ok && material?.seller?.id) {
+          const data = await followingRes.json();
+          const isFollowingSeller = data.sellers.some(
+            (s: { id: string }) => s.id === material.seller.id
+          );
+          setIsFollowing(isFollowingSeller);
+        }
       } catch (error) {
-        console.error("Error checking wishlist:", error);
+        console.error("Error checking wishlist/following:", error);
       }
     };
-    checkWishlist();
-  }, [id, sessionStatus]);
+    checkWishlistAndFollowing();
+  }, [id, sessionStatus, material?.seller?.id]);
 
   // Handle download for free resources
   const handleDownload = async () => {
@@ -464,7 +476,7 @@ export default function MaterialDetailPage() {
                   }}
                 />
               ) : (
-                <div className="border-border bg-bg flex aspect-[3/4] items-center justify-center rounded-xl border">
+                <div className="border-border bg-bg flex aspect-[3/4] max-h-[70vh] items-center justify-center rounded-xl border">
                   <div className="text-text-muted text-center">
                     <svg
                       className="mx-auto mb-2 h-16 w-16"
@@ -489,7 +501,7 @@ export default function MaterialDetailPage() {
             <div className="order-1 lg:sticky lg:top-24 lg:order-2">
               {/* Badges Row */}
               <div className="mb-3 flex flex-wrap items-center gap-2">
-                <span className="pill pill-neutral">PDF</span>
+                <span className="pill pill-neutral">{material.fileFormat || "PDF"}</span>
                 {material.isApproved ? (
                   <span className="pill pill-success">{t("verified")}</span>
                 ) : (
@@ -518,9 +530,6 @@ export default function MaterialDetailPage() {
 
               {/* Title */}
               <h1 className="text-text mb-2 text-2xl font-bold sm:text-3xl">{material.title}</h1>
-
-              {/* Brief Description */}
-              <p className="text-text-muted mb-4 line-clamp-2 text-sm">{material.description}</p>
 
               {/* Inline Seller Trust Card */}
               <Link
@@ -563,7 +572,7 @@ export default function MaterialDetailPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-text-muted text-sm">
-                      {t("sellerMaterials", { count: material.seller.resourceCount })}
+                      {t("sellerMaterials", { count: material.seller.materialCount })}
                     </span>
                     <svg
                       className="text-text-muted h-3.5 w-3.5"
@@ -581,10 +590,27 @@ export default function MaterialDetailPage() {
                   </div>
                 </div>
                 <button
-                  onClick={(e) => {
+                  onClick={async (e) => {
                     e.preventDefault();
                     e.stopPropagation();
+                    if (sessionStatus !== "authenticated") {
+                      window.location.href = "/anmelden";
+                      return;
+                    }
+                    const previousState = isFollowing;
                     setIsFollowing(!isFollowing);
+                    try {
+                      const response = await fetch(`/api/users/${material.seller.id}/follow`, {
+                        method: previousState ? "DELETE" : "POST",
+                      });
+                      if (!response.ok) {
+                        setIsFollowing(previousState);
+                        toast(tCommon("toast.error"), "error");
+                      }
+                    } catch {
+                      setIsFollowing(previousState);
+                      toast(tCommon("toast.error"), "error");
+                    }
                   }}
                   className={`flex-shrink-0 rounded-lg border px-3 py-1.5 text-sm font-medium transition-all ${
                     isFollowing
@@ -605,6 +631,12 @@ export default function MaterialDetailPage() {
                 <span>{t("cycle", { number: material.cycle || "-" })}</span>
                 <span className="text-border">·</span>
                 <span>{t("downloads", { count: material.downloadCount })}</span>
+                {material.previewCount && material.previewCount > 0 && (
+                  <>
+                    <span className="text-border">·</span>
+                    <span>{t("pages", { count: material.previewCount })}</span>
+                  </>
+                )}
                 <span className="text-border">·</span>
                 <span>{new Date(material.createdAt).toLocaleDateString("de-CH")}</span>
               </div>
@@ -668,13 +700,32 @@ export default function MaterialDetailPage() {
                 </button>
               </div>
 
-              {/* Report Link */}
-              <button
-                onClick={() => setShowReportModal(true)}
-                className="text-text-muted hover:text-error mt-4 text-sm transition-colors"
-              >
-                {t("reportMaterial")}
-              </button>
+              {/* Share + Report Row */}
+              <div className="mt-4 flex items-center justify-between">
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(window.location.href);
+                    toast(t("linkCopied"), "success");
+                  }}
+                  className="text-text-muted hover:text-primary inline-flex items-center gap-1.5 text-sm transition-colors"
+                >
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
+                    />
+                  </svg>
+                  {t("share")}
+                </button>
+                <button
+                  onClick={() => setShowReportModal(true)}
+                  className="text-text-muted hover:text-error text-sm transition-colors"
+                >
+                  {t("reportMaterial")}
+                </button>
+              </div>
             </div>
           </div>
         </section>
@@ -749,6 +800,8 @@ export default function MaterialDetailPage() {
                   cycle={related.cycle}
                   priceFormatted={related.priceFormatted}
                   previewUrl={related.previewUrl}
+                  seller={{ displayName: related.sellerName }}
+                  anonymousLabel={t("anonymous")}
                   variant="compact"
                 />
               ))}

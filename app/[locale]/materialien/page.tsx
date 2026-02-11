@@ -136,7 +136,7 @@ export default function MaterialienPage() {
   const handleWishlistToggle = useCallback(
     async (materialId: string, currentState: boolean): Promise<boolean> => {
       if (!isAuthenticated) {
-        router.push("/anmelden");
+        toast(t("toast.loginRequired"), "info");
         return false;
       }
 
@@ -690,23 +690,43 @@ export default function MaterialienPage() {
               {/* Top Control Bar: Results + Sort */}
               <div className="bg-bg-secondary mb-4 flex flex-col gap-4 rounded-lg p-4 sm:flex-row sm:items-center sm:justify-between">
                 {/* Results Count */}
-                <div>
-                  <p className="text-text-muted text-sm">
-                    <span className="text-text font-semibold">{totalCount}</span> {countLabel}
-                  </p>
+                <div className="h-5">
+                  <AnimatePresence mode="wait">
+                    {isLoading ? (
+                      <motion.div
+                        key="skeleton"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.15 }}
+                        className="bg-surface h-5 w-40 animate-pulse rounded"
+                      />
+                    ) : (
+                      <motion.p
+                        key={`count-${totalCount}`}
+                        initial={{ opacity: 0, y: 4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        transition={{ duration: 0.2 }}
+                        className="text-text-muted text-sm tabular-nums"
+                      >
+                        <span className="text-text font-semibold">{totalCount}</span> {countLabel}
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
                 </div>
 
                 {/* View Toggle + Sort Dropdown */}
                 <div className="flex items-center gap-3">
                   {/* Grid/List Toggle — materials only */}
                   {filters.showMaterials && (
-                    <div className="border-border flex rounded-lg border">
+                    <div className="bg-surface flex rounded-lg p-0.5">
                       <button
                         onClick={() => setViewMode("grid")}
-                        className={`rounded-l-lg p-2 transition-all duration-200 ${
+                        className={`rounded-md p-2 transition-all duration-200 ${
                           viewMode === "grid"
-                            ? "bg-primary text-text-on-accent"
-                            : "text-text-muted hover:text-text hover:bg-surface active:scale-90"
+                            ? "bg-primary text-text-on-accent shadow-sm"
+                            : "text-text-faint hover:text-text-muted active:scale-90"
                         }`}
                         aria-label={t("results.gridView")}
                         title={t("results.gridView")}
@@ -715,10 +735,10 @@ export default function MaterialienPage() {
                       </button>
                       <button
                         onClick={() => setViewMode("list")}
-                        className={`rounded-r-lg p-2 transition-all duration-200 ${
+                        className={`rounded-md p-2 transition-all duration-200 ${
                           viewMode === "list"
-                            ? "bg-primary text-text-on-accent"
-                            : "text-text-muted hover:text-text hover:bg-surface active:scale-90"
+                            ? "bg-primary text-text-on-accent shadow-sm"
+                            : "text-text-faint hover:text-text-muted active:scale-90"
                         }`}
                         aria-label={t("results.listView")}
                         title={t("results.listView")}
@@ -973,7 +993,7 @@ export default function MaterialienPage() {
                         </button>
                       </motion.span>
                     )}
-                    {activeFilterCount > 1 && (
+                    {activeFilterCount >= 1 && (
                       <motion.button
                         key="chip-reset"
                         layout
@@ -1117,6 +1137,9 @@ export default function MaterialienPage() {
                               variant={viewMode === "list" ? "compact" : "default"}
                               averageRating={material.averageRating}
                               reviewCount={material.reviewCount}
+                              wishlistAddLabel={t("card.wishlistAdd")}
+                              wishlistRemoveLabel={t("card.wishlistRemove")}
+                              anonymousLabel={t("card.anonymous")}
                             />
                           </motion.div>
                         ))

@@ -251,12 +251,9 @@ export function ReviewsSection({ materialId, className = "" }: ReviewsSectionPro
 
       {/* Reviews List */}
       {stats.totalReviews === 0 ? (
-        <div className="border-border bg-bg rounded-xl border p-8 text-center">
-          <Star className="text-text-faint mx-auto mb-3 h-12 w-12" />
-          <p className="text-text-muted mb-2">Noch keine Bewertungen</p>
-          <p className="text-text-faint text-sm">
-            Seien Sie der Erste, der dieses Material bewertet!
-          </p>
+        <div className="text-text-muted flex items-center gap-3 py-4">
+          <Star className="text-text-faint h-5 w-5 flex-shrink-0" />
+          <p className="text-sm">Noch keine Bewertungen — seien Sie der Erste!</p>
         </div>
       ) : (
         <div className="space-y-4">

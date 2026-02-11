@@ -90,7 +90,7 @@ export function CheckoutButton({
   return (
     <div className="flex flex-col gap-4">
       {/* Digital Content Consent Checkbox (Swiss/EU legal requirement) */}
-      <label className="flex cursor-pointer items-start gap-3">
+      <label className="bg-surface/50 border-border flex cursor-pointer items-start gap-3 rounded-lg border p-3">
         <input
           type="checkbox"
           checked={digitalConsent}
@@ -100,9 +100,9 @@ export function CheckoutButton({
               setError(null);
             }
           }}
-          className="border-border text-primary focus:ring-primary mt-1 h-5 w-5 rounded focus:ring-offset-0"
+          className="border-border text-primary focus:ring-primary mt-0.5 h-5 w-5 flex-shrink-0 rounded focus:ring-offset-0"
         />
-        <span className="text-text-secondary text-sm leading-relaxed">
+        <span className="text-text-muted text-xs leading-relaxed sm:text-sm">
           {t("digitalConsent.label")}
         </span>
       </label>

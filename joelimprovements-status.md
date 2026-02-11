@@ -59,6 +59,29 @@ Legende: [x] = erledigt, [ ] = offen
 
 - [x] Profil anklicken führt zu Error → FIX (ProfileCard.tsx: `/profile/` → `/profil/`)
 
+### Neue Bugs (Session 2025-02-11)
+
+- [x] BUG: "0 Materialien gefunden" flash on initial load — show skeleton placeholder while loading
+- [x] BUG: Hardcoded wishlist aria-labels in MaterialCard.tsx — now accepts i18n props
+- [x] BUG: Hardcoded "PDF" badge on detail page — now uses fileFormat from API (derived from file extension)
+- [x] BUG: Hardcoded "Anonymous" fallback in MaterialCard.tsx — now accepts anonymousLabel prop
+- [x] BUG: Follow button on detail page only toggles local state — now calls /api/users/[id]/follow with optimistic updates
+- [x] BUG: Seller material count not displaying correctly on detail page — fixed interface mismatch (resourceCount → materialCount)
+
+### Neue Quick Wins (Session 2025-02-11)
+
+- [x] QW: Add share button (copy link) to detail page — "Teilen" button with clipboard copy + toast
+- [x] QW: Add file info (pages) to detail page metadata row
+- [x] QW: Change card image aspect ratio to portrait for documents (16/9 → 4/3)
+- [x] QW: Fix related materials showing "Anonymous" seller — API now returns sellerName
+- [x] QW: Add "clear all filters" button to search page — shows with 1+ active filters (was 2+)
+
+### UI Verbesserungen — Suchseite (Session 2025-02-11)
+
+- [x] Ergebnis-Zähler hat keine Animation/Transition bei Aktualisierung — AnimatePresence fade+slide added
+- [x] Sidebar Fachbereich-Sektion nimmt zu viel Platz ein — defaultOpen={false}, opens when filter active
+- [x] Grid/List-Toggle aktiver Zustand ist optisch nicht deutlich genug — pill-style with shadow-sm + faint inactive
+
 ### Eigene Vorschläge (Materialien)
 
 - [ ] Seite ist 1173 Zeilen lang — Filter-Chips, Pagination und Grid-Rendering sollten in eigene Komponenten extrahiert werden
@@ -102,6 +125,19 @@ Legende: [x] = erledigt, [ ] = offen
 - [ ] Kommentar-Bearbeitung: Speicherung ohne Refresh anzeigen
 - [ ] Kommentare mit Bewertungen verschmelzen (ein Segment)
 - [ ] Verkäufer des Dokuments kann nicht bewerten (Logik einbauen)
+
+### UI Verbesserungen — Detail-Seite (Session 2025-02-11)
+
+- [x] Vorschaubild ist zu hoch (aspect-[3/4]) — max-h-[70vh] cap + object-contain added
+- [x] Beschreibung wirkt dupliziert — removed brief description from sidebar, kept full section below
+- [x] Kein "Zurück zu Ergebnissen"-Button — ArrowLeft + router.back() above breadcrumb, i18n added
+- [x] Kauf-Box Rechtstext (AGB/Widerruf-Checkbox) ist zu dicht gepackt — bordered card with responsive text size
+- [x] Leere Bewertungssektion nimmt zu viel Platz ein — compact inline message instead of large card
+
+### Code Quality — Detail-Seite (Session 2025-02-11)
+
+- [ ] Detail-Seite ist 930+ Zeilen — PurchaseBox, SellerCard, FeedbackSection, ReportModal in eigene Komponenten extrahieren
+- [ ] `$queryRawUnsafe` in `/api/materials/[id]/route.ts` — SQL-Injection-Risiko bei Related-Materials-Queries, parameterisierte Queries nutzen
 
 ### Eigene Vorschläge (Material-Vorschau)
 

@@ -17,7 +17,6 @@ import {
   Loader2,
   Users,
   MoreHorizontal,
-  MapPin,
 } from "lucide-react";
 import { useCurriculum } from "@/lib/hooks/useCurriculum";
 import { FACHBEREICH_ICONS } from "@/lib/constants/subject-icons";
@@ -637,19 +636,8 @@ export function LP21FilterSidebar({
           <>
             <div className="divider my-5" />
 
-            {/* Dialect Toggle */}
-            <CollapsibleSection title={t("sidebar.dialectLabel")}>
-              <DialectToggle
-                selectedDialect={filters.dialect}
-                onDialectChange={(dialect) => onFiltersChange({ ...filters, dialect })}
-                t={t}
-              />
-            </CollapsibleSection>
-
-            <div className="divider my-5" />
-
             {/* Price Filter */}
-            <CollapsibleSection title={t("sidebar.priceSectionLabel")}>
+            <CollapsibleSection title={t("sidebar.priceSectionLabel")} defaultOpen={false}>
               <PriceFilter
                 maxPrice={filters.maxPrice}
                 onMaxPriceChange={(maxPrice) => onFiltersChange({ ...filters, maxPrice })}
@@ -660,7 +648,7 @@ export function LP21FilterSidebar({
             <div className="divider my-5" />
 
             {/* Format Filter */}
-            <CollapsibleSection title={t("sidebar.formatSectionLabel")}>
+            <CollapsibleSection title={t("sidebar.formatSectionLabel")} defaultOpen={false}>
               <FormatFilter
                 selectedFormats={filters.formats}
                 onFormatToggle={handleFormatToggle}
@@ -670,12 +658,19 @@ export function LP21FilterSidebar({
 
             <div className="divider my-5" />
 
+            {/* Dialect Toggle */}
+            <CollapsibleSection title={t("sidebar.dialectLabel")} defaultOpen={false}>
+              <DialectToggle
+                selectedDialect={filters.dialect}
+                onDialectChange={(dialect) => onFiltersChange({ ...filters, dialect })}
+                t={t}
+              />
+            </CollapsibleSection>
+
+            <div className="divider my-5" />
+
             {/* Canton Filter */}
-            <CollapsibleSection
-              title={t("sidebar.cantonSectionLabel")}
-              icon={<MapPin className="text-text-muted h-4 w-4" />}
-              defaultOpen={false}
-            >
+            <CollapsibleSection title={t("sidebar.cantonSectionLabel")} defaultOpen={false}>
               <CantonFilter
                 selectedCantons={filters.cantons}
                 onCantonsChange={(cantons) => onFiltersChange({ ...filters, cantons })}

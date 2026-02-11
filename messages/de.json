@@ -677,6 +677,7 @@
       "filterSuggestion2": "Anderes Fach"
     },
     "toast": {
+      "loginRequired": "Bitte melden Sie sich an oder registrieren Sie sich, um die Wunschliste zu nutzen.",
       "addedToWishlist": "Zur Wunschliste hinzugefügt",
       "removedFromWishlist": "Aus Wunschliste entfernt",
       "followed": "Profil wird jetzt verfolgt",
@@ -687,6 +688,11 @@
       "nav": "Seitennavigation",
       "previous": "Vorherige Seite",
       "next": "Nächste Seite"
+    },
+    "card": {
+      "wishlistAdd": "Zur Wunschliste hinzufügen",
+      "wishlistRemove": "Aus Wunschliste entfernen",
+      "anonymous": "Anonym"
     }
   },
   "sellerDashboard": {
@@ -2556,6 +2562,7 @@
     "notFound": "Material nicht gefunden",
     "notFoundDescription": "Das gesuchte Material existiert nicht oder ist nicht mehr verfügbar.",
     "backToMaterials": "Zurück zu den Materialien",
+    "backToResults": "Zurück zu den Ergebnissen",
     "loadError": "Fehler beim Laden",
     "loadErrorDescription": "Das Material konnte nicht geladen werden. Bitte versuchen Sie es später erneut.",
     "retry": "Erneut versuchen",
@@ -2571,6 +2578,8 @@
     "wishlisted": "Gemerkt",
     "addToWishlist": "Zur Wunschliste",
     "reportMaterial": "Material melden",
+    "share": "Teilen",
+    "linkCopied": "Link in die Zwischenablage kopiert",
     "description": "Beschreibung",
     "reviews": "Bewertungen",
     "comments": "Kommentare",
@@ -2601,7 +2610,8 @@
     "availableAfterReview": "Verfügbar nach Überprüfung",
     "sellerMaterials": "{count} Materialien",
     "cycle": "Zyklus {number}",
-    "downloads": "{count} Downloads"
+    "downloads": "{count} Downloads",
+    "pages": "{count, plural, one {# Seite} other {# Seiten}}"
   },
   "profile": {
     "notFound": "Profil nicht gefunden",

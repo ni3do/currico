@@ -170,7 +170,7 @@ export function PreviewGallery({
         <div className="flex-1">
           <div
             ref={mainPreviewRef}
-            className="border-border bg-bg relative aspect-[3/4] w-full cursor-pointer overflow-hidden rounded-xl border shadow-sm transition-shadow hover:shadow-lg"
+            className="border-border bg-bg relative aspect-[3/4] max-h-[70vh] w-full cursor-pointer overflow-hidden rounded-xl border shadow-sm transition-shadow hover:shadow-lg"
             onClick={() => setIsLightboxOpen(true)}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
@@ -189,7 +189,7 @@ export function PreviewGallery({
                 <img
                   src={currentUrl}
                   alt={`${resourceTitle} - Seite ${currentPage + 1}`}
-                  className="h-full w-full object-cover"
+                  className="h-full w-full object-contain"
                 />
                 {/* Zoom hint overlay */}
                 <div className="absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition-opacity hover:bg-black/20 hover:opacity-100">

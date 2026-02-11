@@ -676,6 +676,7 @@
       "filterSuggestion2": "Different subject"
     },
     "toast": {
+      "loginRequired": "Please log in or register to use the wishlist.",
       "addedToWishlist": "Added to wishlist",
       "removedFromWishlist": "Removed from wishlist",
       "followed": "Now following this profile",
@@ -686,6 +687,11 @@
       "nav": "Page navigation",
       "previous": "Previous page",
       "next": "Next page"
+    },
+    "card": {
+      "wishlistAdd": "Add to wishlist",
+      "wishlistRemove": "Remove from wishlist",
+      "anonymous": "Anonymous"
     }
   },
   "sellerDashboard": {
@@ -2555,6 +2561,7 @@
     "notFound": "Material not found",
     "notFoundDescription": "The material you are looking for does not exist or is no longer available.",
     "backToMaterials": "Back to materials",
+    "backToResults": "Back to results",
     "loadError": "Loading error",
     "loadErrorDescription": "The material could not be loaded. Please try again later.",
     "retry": "Try again",
@@ -2570,6 +2577,8 @@
     "wishlisted": "Saved",
     "addToWishlist": "Add to wishlist",
     "reportMaterial": "Report material",
+    "share": "Share",
+    "linkCopied": "Link copied to clipboard",
     "description": "Description",
     "reviews": "Reviews",
     "comments": "Comments",
@@ -2600,7 +2609,8 @@
     "availableAfterReview": "Available after review",
     "sellerMaterials": "{count} materials",
     "cycle": "Cycle {number}",
-    "downloads": "{count} downloads"
+    "downloads": "{count} downloads",
+    "pages": "{count, plural, one {# page} other {# pages}}"
   },
   "profile": {
     "notFound": "Profile not found",
