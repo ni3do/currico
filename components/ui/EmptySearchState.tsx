@@ -11,12 +11,6 @@ interface EmptySearchStateProps {
   onSuggestionClick?: (query: string) => void;
 }
 
-// Common search suggestions based on popular Swiss curriculum topics
-const SUGGESTIONS_DE: Record<string, string[]> = {
-  default: ["Mathematik Zyklus 2", "Deutsch Lesen", "NMG Tiere", "Sport Spiele"],
-  search: ["Kürzeren Suchbegriff verwenden", "Rechtschreibung prüfen"],
-};
-
 export function EmptySearchState({
   filters,
   onResetFilters,
@@ -109,9 +103,14 @@ export function EmptySearchState({
             </span>
           </div>
           <div className="flex flex-wrap justify-center gap-2">
-            {SUGGESTIONS_DE.default.map((suggestion) => (
+            {[
+              t("empty.suggestion1"),
+              t("empty.suggestion2"),
+              t("empty.suggestion3"),
+              t("empty.suggestion4"),
+            ].map((suggestion, index) => (
               <button
-                key={suggestion}
+                key={`suggestion-${index}`}
                 onClick={() => onSuggestionClick(suggestion)}
                 className="bg-surface border-border text-text-secondary hover:border-primary hover:text-primary rounded-full border px-3 py-1.5 text-xs font-medium transition-all hover:shadow-sm"
               >
