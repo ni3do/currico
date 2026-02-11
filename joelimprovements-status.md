@@ -51,9 +51,9 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Andere Formate als Option hinzufügen
 - [x] Formate: kein blauer Punkt wenn ausgewählt (wie alle anderen Filter)
 - [x] Hover-Effekt bei Filtern verbessern und einheitlich machen
-- [ ] Nach Kantonen filtern können
+- [x] Nach Kantonen filtern können
 - [x] Aktive Filter nur rechts unter "Gefundene Materialien" (nicht links in der Bar)
-- [ ] Filter-Funktion überarbeiten (Zyklus/Tab-spezifische Suche)
+- [x] Filter-Funktion überarbeiten (Zyklus/Tab-spezifische Suche)
 
 ### Bugs
 
@@ -64,22 +64,22 @@ Legende: [x] = erledigt, [ ] = offen
 - [ ] Seite ist 1173 Zeilen lang — Filter-Chips, Pagination und Grid-Rendering sollten in eigene Komponenten extrahiert werden
 - [x] `getSubjectPillClass()` ist dupliziert zwischen `page.tsx` (Startseite) und `materialien/page.tsx` — in eine gemeinsame Utility-Funktion auslagern
 - [x] Hardcoded deutsche Strings in Filter-Chips: "Kostenlos", "Einzelmaterial", "Bundle", "Alle entfernen", "Zyklus" — müssen über i18n (`t()`) laufen
-- [ ] Mobile-Filter-Drawer "anzeigen" Button: `{totalCount} {t("results.countLabel")} anzeigen` — "anzeigen" ist hardcoded Deutsch
+- [x] Mobile-Filter-Drawer "anzeigen" Button: `{totalCount} {t("results.countLabel")} anzeigen` — uses i18n `t("results.showResults")`
 - [x] Kein `aria-label` auf den Pagination Prev/Next Buttons — nur SVG-Icons ohne Text, unzugänglich für Screenreader
 - [x] Pagination `<nav>` hat kein `aria-label="Pagination"` — Screenreader können die Navigation nicht identifizieren
-- [ ] Profil-Suche auf 12 Ergebnisse limitiert ohne Pagination — bei vielen Profilen fehlen Ergebnisse
-- [ ] Sortierung fehlt: kein "Beliebteste" oder "Beste Bewertung" — nur Neueste und Preis
+- [x] Profil-Suche auf 12 Ergebnisse limitiert ohne Pagination — pagination added for profiles
+- [x] Sortierung fehlt: kein "Beliebteste" oder "Beste Bewertung" — sort dropdown with relevant options exists
 - [x] `priceType`-Filter hat keine "Nur kostenpflichtig" Option — nur "Kostenlos" und Max-Preis
 - [ ] LP21FilterSidebar ist 1769 Zeilen — sollte in Sub-Komponenten aufgeteilt werden (ZyklusFilter, FachbereichFilter, PriceFilter, FormatFilter etc.)
 - [ ] Filter-State wird bei jedem Wechsel komplett neu erstellt statt per Spread-Update — könnte zu unnötigen Re-Renders führen
-- [ ] Kein URL-Encoding bei Suchbegriff in der URL — Sonderzeichen und Umlaute könnten Probleme verursachen
-- [ ] `MaterialCard` bekommt keinen `rating`-Prop — Bewertungen werden auf der Materialien-Übersicht nicht angezeigt
-- [ ] Kein Skeleton-Loading für Profile-Bereich — nur `MaterialGridSkeleton` vorhanden, Profile springen rein
-- [ ] Mobile Filter Drawer hat keinen Focus-Trap — Tab-Navigation kann hinter den Drawer gelangen
+- [x] Kein URL-Encoding bei Suchbegriff in der URL — searchParams handles encoding natively
+- [x] `MaterialCard` bekommt keinen `rating`-Prop — averageRating + reviewCount props added with StarRating display
+- [x] Kein Skeleton-Loading für Profile-Bereich — `ProfileGridSkeleton` imported and used
+- [x] Mobile Filter Drawer hat keinen Focus-Trap — FocusTrap component wraps drawer content
 - [x] Kein `<meta description>` oder SEO-Tags für `/materialien` (ähnlich wie Startseite)
-- [ ] Wenn beide Tabs aktiv (Materialien+Profile), wird die Gesamtzahl addiert — das kann verwirrend sein (z.B. "32 Ergebnisse" bei 30 Materialien + 2 Profile)
-- [ ] Sort-Dropdown ist nur sichtbar wenn `showMaterials=true` — wenn nur Profile gezeigt werden, fehlt jede Sortier-Option
-- [ ] `EmptySearchState` zeigt Vorschläge zum Zurücksetzen — aber keine konkreten Suchvorschläge basierend auf vorhandenen Materialien
+- [x] Wenn beide Tabs aktiv (Materialien+Profile), wird die Gesamtzahl addiert — tabs are mutually exclusive now, count shows per-tab
+- [x] Sort-Dropdown ist nur sichtbar wenn `showMaterials=true` — separate profile sort dropdown now visible
+- [x] `EmptySearchState` zeigt Vorschläge zum Zurücksetzen — contextual suggestions per tab (profiles/materials/filtered)
 
 ---
 

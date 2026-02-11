@@ -116,7 +116,9 @@
       "unfollowed": "Unfollowed this profile",
       "reportSubmitted": "Report submitted successfully",
       "error": "Something went wrong. Please try again."
-    }
+    },
+    "user": "User",
+    "free": "Free"
   },
   "homePage": {
     "hero": {
@@ -492,10 +494,7 @@
       "formatPpt": "PowerPoint",
       "formatExcel": "Excel",
       "formatOnenote": "OneNote",
-      "formatImage": "Images",
-      "formatAudio": "Audio",
-      "formatVideo": "Video",
-      "formatZip": "ZIP",
+      "formatOther": "Other",
       "scopeLabel": "Material Scope",
       "scopeSingle": "Single",
       "scopeBundle": "Bundle",
@@ -514,7 +513,13 @@
       "smartSearchArea": "Area:",
       "searchResultSubject": "Subject",
       "searchResultArea": "Area",
-      "searchResultCompetence": "Competence"
+      "searchResultCompetence": "Competence",
+      "cantonSectionLabel": "Canton",
+      "cantonPlaceholder": "Select canton...",
+      "cantonSearchPlaceholder": "Search cantons...",
+      "cantonSelected": "{count} selected",
+      "cantonNoResults": "No canton found",
+      "cantonChipMultiple": "{count} cantons"
     },
     "search": {
       "placeholder": "Search by title, topic, keyword...",
@@ -662,7 +667,13 @@
       "suggestion1": "Math Cycle 2",
       "suggestion2": "German Reading",
       "suggestion3": "NMG Animals",
-      "suggestion4": "Sports Games"
+      "suggestion4": "Sports Games",
+      "profileSuggestion1": "Math Teacher",
+      "profileSuggestion2": "Cycle 2",
+      "profileSuggestion3": "German",
+      "profileSuggestion4": "NMG",
+      "filterSuggestion1": "Fewer filters",
+      "filterSuggestion2": "Different subject"
     },
     "toast": {
       "addedToWishlist": "Added to wishlist",

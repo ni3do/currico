@@ -14,12 +14,10 @@ import {
   Presentation,
   Table,
   StickyNote,
-  Image as ImageIcon,
   Loader2,
   Users,
-  Music2,
-  Film,
-  Archive,
+  MoreHorizontal,
+  MapPin,
 } from "lucide-react";
 import { useCurriculum } from "@/lib/hooks/useCurriculum";
 import { FACHBEREICH_ICONS } from "@/lib/constants/subject-icons";
@@ -36,6 +34,36 @@ import type {
   CurriculumSearchResult,
 } from "@/lib/curriculum-types";
 
+// Canton abbreviation → full name mapping (matching SWISS_CANTONS order)
+export const CANTON_ABBREVS: { abbrev: string; name: string }[] = [
+  { abbrev: "AG", name: "Aargau" },
+  { abbrev: "AR", name: "Appenzell Ausserrhoden" },
+  { abbrev: "AI", name: "Appenzell Innerrhoden" },
+  { abbrev: "BL", name: "Basel-Landschaft" },
+  { abbrev: "BS", name: "Basel-Stadt" },
+  { abbrev: "BE", name: "Bern" },
+  { abbrev: "FR", name: "Freiburg" },
+  { abbrev: "GE", name: "Genf" },
+  { abbrev: "GL", name: "Glarus" },
+  { abbrev: "GR", name: "Graubünden" },
+  { abbrev: "JU", name: "Jura" },
+  { abbrev: "LU", name: "Luzern" },
+  { abbrev: "NE", name: "Neuenburg" },
+  { abbrev: "NW", name: "Nidwalden" },
+  { abbrev: "OW", name: "Obwalden" },
+  { abbrev: "SH", name: "Schaffhausen" },
+  { abbrev: "SZ", name: "Schwyz" },
+  { abbrev: "SO", name: "Solothurn" },
+  { abbrev: "SG", name: "St. Gallen" },
+  { abbrev: "TG", name: "Thurgau" },
+  { abbrev: "TI", name: "Tessin" },
+  { abbrev: "UR", name: "Uri" },
+  { abbrev: "VD", name: "Waadt" },
+  { abbrev: "VS", name: "Wallis" },
+  { abbrev: "ZG", name: "Zug" },
+  { abbrev: "ZH", name: "Zürich" },
+];
+
 // Format options (labelKey resolved via i18n at render time)
 const FORMAT_OPTIONS = [
   { id: "pdf", labelKey: "formatPdf", icon: FileText },
@@ -43,10 +71,7 @@ const FORMAT_OPTIONS = [
   { id: "ppt", labelKey: "formatPpt", icon: Presentation },
   { id: "excel", labelKey: "formatExcel", icon: Table },
   { id: "onenote", labelKey: "formatOnenote", icon: StickyNote },
-  { id: "image", labelKey: "formatImage", icon: ImageIcon },
-  { id: "audio", labelKey: "formatAudio", icon: Music2 },
-  { id: "video", labelKey: "formatVideo", icon: Film },
-  { id: "zip", labelKey: "formatZip", icon: Archive },
+  { id: "other", labelKey: "formatOther", icon: MoreHorizontal },
 ] as const;
 
 // Translation function type
@@ -112,10 +137,9 @@ export interface LP21FilterState {
   searchQuery: string;
   // New filters
   dialect: string | null;
-  priceType: string | null;
   maxPrice: number | null;
   formats: string[];
-  materialScope: string | null;
+  cantons: string[];
 }
 
 interface LP21FilterSidebarProps {
@@ -201,10 +225,9 @@ export function LP21FilterSidebar({
     filters.kompetenz !== null ||
     filters.searchQuery.length > 0 ||
     filters.dialect !== null ||
-    filters.priceType !== null ||
     filters.maxPrice !== null ||
     filters.formats.length > 0 ||
-    filters.materialScope !== null;
+    filters.cantons.length > 0;
 
   // Handlers for exclusive tab selection (only one active at a time)
   const handleToggleMaterials = useCallback(() => {
@@ -224,10 +247,9 @@ export function LP21FilterSidebar({
       showMaterials: false,
       // Clear material-specific filters when switching to profiles
       dialect: null,
-      priceType: null,
       maxPrice: null,
       formats: [],
-      materialScope: null,
+      cantons: [],
     });
   }, [filters, onFiltersChange]);
 
@@ -432,10 +454,9 @@ export function LP21FilterSidebar({
       kompetenz: null,
       searchQuery: "",
       dialect: null,
-      priceType: null,
       maxPrice: null,
       formats: [],
-      materialScope: null,
+      cantons: [],
     });
     setExpandedFachbereiche(new Set());
     setExpandedKompetenzbereiche(new Set());
@@ -630,15 +651,7 @@ export function LP21FilterSidebar({
             {/* Price Filter */}
             <CollapsibleSection title={t("sidebar.priceSectionLabel")}>
               <PriceFilter
-                priceType={filters.priceType}
                 maxPrice={filters.maxPrice}
-                onPriceTypeChange={(priceType) =>
-                  onFiltersChange({
-                    ...filters,
-                    priceType,
-                    maxPrice: priceType === "free" ? null : filters.maxPrice,
-                  })
-                }
                 onMaxPriceChange={(maxPrice) => onFiltersChange({ ...filters, maxPrice })}
                 t={t}
               />
@@ -651,6 +664,21 @@ export function LP21FilterSidebar({
               <FormatFilter
                 selectedFormats={filters.formats}
                 onFormatToggle={handleFormatToggle}
+                t={t}
+              />
+            </CollapsibleSection>
+
+            <div className="divider my-5" />
+
+            {/* Canton Filter */}
+            <CollapsibleSection
+              title={t("sidebar.cantonSectionLabel")}
+              icon={<MapPin className="text-text-muted h-4 w-4" />}
+              defaultOpen={false}
+            >
+              <CantonFilter
+                selectedCantons={filters.cantons}
+                onCantonsChange={(cantons) => onFiltersChange({ ...filters, cantons })}
                 t={t}
               />
             </CollapsibleSection>
@@ -1168,90 +1196,106 @@ function FormatFilter({ selectedFormats, onFormatToggle, t }: FormatFilterProps)
 
 // ============ PRICE FILTER ============
 interface PriceFilterProps {
-  priceType: string | null;
   maxPrice: number | null;
-  onPriceTypeChange: (priceType: string | null) => void;
   onMaxPriceChange: (maxPrice: number | null) => void;
   t: TranslationFn;
 }
 
-function PriceFilter({
-  priceType,
-  maxPrice,
-  onPriceTypeChange,
-  onMaxPriceChange,
-  t,
-}: PriceFilterProps) {
-  const options = [
-    { value: null, labelKey: "sidebar.priceAll" as const },
-    { value: "free", labelKey: "sidebar.priceFree" as const },
-    { value: "paid", labelKey: "sidebar.pricePaid" as const },
-  ];
+function PriceFilter({ maxPrice, onMaxPriceChange, t }: PriceFilterProps) {
+  return (
+    <div>
+      <div className="mb-1.5 flex items-center justify-between">
+        <label className="text-text-muted text-xs font-medium">{t("sidebar.priceMaxLabel")}</label>
+        <span className="text-text text-xs font-semibold">
+          {maxPrice !== null ? `CHF ${maxPrice}` : t("sidebar.priceAll")}
+        </span>
+      </div>
+      <input
+        type="range"
+        min={0}
+        max={50}
+        step={1}
+        value={maxPrice ?? 50}
+        onChange={(e) => {
+          const val = parseInt(e.target.value, 10);
+          onMaxPriceChange(val >= 50 ? null : val);
+        }}
+        className="bg-surface-hover [&::-webkit-slider-thumb]:bg-primary h-2 w-full cursor-pointer appearance-none rounded-lg accent-[var(--ctp-blue)] [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-md"
+      />
+      <div className="text-text-muted mt-0.5 flex justify-between text-[10px]">
+        <span>CHF 0</span>
+        <span>CHF 50+</span>
+      </div>
+    </div>
+  );
+}
+
+// ============ CANTON FILTER ============
+interface CantonFilterProps {
+  selectedCantons: string[];
+  onCantonsChange: (cantons: string[]) => void;
+  t: TranslationFn;
+}
+
+function CantonFilter({ selectedCantons, onCantonsChange, t }: CantonFilterProps) {
+  const toggleCanton = useCallback(
+    (cantonName: string) => {
+      if (selectedCantons.includes(cantonName)) {
+        onCantonsChange(selectedCantons.filter((c) => c !== cantonName));
+      } else {
+        onCantonsChange([...selectedCantons, cantonName]);
+      }
+    },
+    [selectedCantons, onCantonsChange]
+  );
+
+  const clearAll = useCallback(() => {
+    onCantonsChange([]);
+  }, [onCantonsChange]);
 
   return (
-    <div className="space-y-3">
-      <div className="flex gap-2">
-        {options.map((option) => {
-          const isActive = priceType === option.value;
+    <div>
+      {/* Clear link when cantons are selected */}
+      {selectedCantons.length > 0 && (
+        <div className="mb-2 flex items-center justify-between">
+          <span className="text-text-muted text-xs">
+            {t("sidebar.cantonSelected", { count: selectedCantons.length })}
+          </span>
+          <button
+            onClick={clearAll}
+            className="text-text-muted hover:text-primary text-xs font-medium transition-colors"
+          >
+            <X className="inline h-3 w-3" />
+          </button>
+        </div>
+      )}
+
+      {/* Canton grid */}
+      <div className="grid grid-cols-4 gap-1.5">
+        {CANTON_ABBREVS.map((canton) => {
+          const isSelected = selectedCantons.includes(canton.name);
           return (
             <motion.button
-              key={option.value ?? "all"}
-              onClick={() =>
-                onPriceTypeChange(isActive && option.value !== null ? null : option.value)
-              }
-              className={`flex-1 rounded-lg border-2 px-3 py-2.5 text-center text-sm font-semibold transition-colors ${
-                isActive
+              key={canton.abbrev}
+              onClick={() => toggleCanton(canton.name)}
+              className={`group relative rounded-md border px-1 py-1.5 text-center text-xs font-semibold transition-colors ${
+                isSelected
                   ? "border-primary bg-primary/10 text-primary"
-                  : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:bg-surface-hover"
+                  : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:bg-surface-hover hover:text-text"
               }`}
-              whileHover={{ scale: 1.015, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
-              whileTap={{ scale: 0.97, transition: { duration: 0.1 } }}
+              whileHover={{ scale: 1.05, transition: { duration: 0.15 } }}
+              whileTap={{ scale: 0.95, transition: { duration: 0.1 } }}
+              title={canton.name}
             >
-              {t(option.labelKey)}
+              {canton.abbrev}
+              {/* Tooltip */}
+              <div className="bg-text text-bg pointer-events-none absolute -top-8 left-1/2 z-50 -translate-x-1/2 rounded px-2 py-0.5 text-[10px] whitespace-nowrap opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
+                {canton.name}
+              </div>
             </motion.button>
           );
         })}
       </div>
-
-      {/* Max price input — hidden when "free" is selected */}
-      <AnimatePresence initial={false}>
-        {priceType !== "free" && (
-          <motion.div
-            key="max-price-input"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="overflow-hidden"
-          >
-            <label className="text-text-muted mb-1.5 block text-xs font-medium">
-              {t("sidebar.priceMaxLabel")}
-            </label>
-            <div className="relative">
-              <input
-                type="number"
-                min={0}
-                step={1}
-                value={maxPrice ?? ""}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  if (val === "") {
-                    onMaxPriceChange(null);
-                  } else {
-                    const parsed = parseInt(val, 10);
-                    onMaxPriceChange(isNaN(parsed) ? null : Math.max(0, parsed));
-                  }
-                }}
-                placeholder={t("sidebar.priceMaxPlaceholder")}
-                className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 w-full rounded-lg border py-2 pr-14 pl-3 text-sm focus:ring-2 focus:outline-none"
-              />
-              <span className="text-text-muted pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-sm">
-                CHF
-              </span>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }

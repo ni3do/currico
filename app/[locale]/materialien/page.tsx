@@ -14,7 +14,12 @@ import { MaterialCard } from "@/components/ui/MaterialCard";
 import { MaterialGridSkeleton, ProfileGridSkeleton } from "@/components/ui/Skeleton";
 import { EmptySearchState } from "@/components/ui/EmptySearchState";
 import { ProfileCard } from "@/components/ui/ProfileCard";
-import { LP21FilterSidebar, type LP21FilterState } from "@/components/search/LP21FilterSidebar";
+import {
+  LP21FilterSidebar,
+  CANTON_ABBREVS,
+  type LP21FilterState,
+} from "@/components/search/LP21FilterSidebar";
+import { FocusTrap } from "@/components/ui/FocusTrap";
 import { useCurriculum } from "@/lib/hooks/useCurriculum";
 import { useToast } from "@/components/ui/Toast";
 import { getSubjectPillClass } from "@/lib/constants/subject-colors";
@@ -31,6 +36,8 @@ interface Material {
   cycles: string[];
   previewUrl: string | null;
   createdAt: string;
+  averageRating?: number;
+  reviewCount?: number;
   seller: {
     id: string;
     display_name: string | null;
@@ -261,10 +268,10 @@ export default function MaterialienPage() {
       kompetenz: kompetenz || null,
       searchQuery: searchParams.get("search") || "",
       dialect: searchParams.get("dialect") || null,
-      priceType: searchParams.get("priceType") || null,
+
       maxPrice: searchParams.get("maxPrice") ? parseInt(searchParams.get("maxPrice")!) : null,
       formats: searchParams.get("formats")?.split(",").filter(Boolean) || [],
-      materialScope: searchParams.get("materialScope") || null,
+      cantons: searchParams.get("cantons")?.split(",").filter(Boolean) || [],
     };
   }, [searchParams]);
 
@@ -289,12 +296,12 @@ export default function MaterialienPage() {
       if (currentFilters.kompetenz) params.set("kompetenz", currentFilters.kompetenz);
       if (currentFilters.searchQuery) params.set("search", currentFilters.searchQuery);
       if (currentFilters.dialect) params.set("dialect", currentFilters.dialect);
-      if (currentFilters.priceType) params.set("priceType", currentFilters.priceType);
       if (currentFilters.maxPrice !== null)
         params.set("maxPrice", currentFilters.maxPrice.toString());
       if (currentFilters.formats.length > 0)
         params.set("formats", currentFilters.formats.join(","));
-      if (currentFilters.materialScope) params.set("materialScope", currentFilters.materialScope);
+      if (currentFilters.cantons.length > 0)
+        params.set("cantons", currentFilters.cantons.join(","));
       if (currentSort && currentSort !== "newest") params.set("sort", currentSort);
       if (page > 1) params.set("page", page.toString());
       if (currentFilters.showCreators && profileSortBy !== "newest")
@@ -375,14 +382,15 @@ export default function MaterialienPage() {
   );
 
   // Map Fachbereich code to subject code for API compatibility
-  const mapFachbereichToSubject = useCallback(
-    (code: string | null): string => {
+  // Use a ref so fetchMaterials doesn't re-create when curriculum data loads
+  const mapFachbereichToSubjectRef = useRef((code: string | null): string => code || "");
+  useEffect(() => {
+    mapFachbereichToSubjectRef.current = (code: string | null): string => {
       if (!code) return "";
       const fachbereich = getFachbereichByCode(code);
       return fachbereich?.code || code;
-    },
-    [getFachbereichByCode]
-  );
+    };
+  }, [getFachbereichByCode]);
 
   const fetchMaterials = useCallback(
     async (currentFilters: LP21FilterState, currentSort: string, page: number = 1) => {
@@ -401,7 +409,7 @@ export default function MaterialienPage() {
 
         // Map LP21 filters to API parameters
         if (currentFilters.fachbereich) {
-          params.set("subject", mapFachbereichToSubject(currentFilters.fachbereich));
+          params.set("subject", mapFachbereichToSubjectRef.current(currentFilters.fachbereich));
         }
         if (currentFilters.zyklus) {
           params.set("cycle", currentFilters.zyklus.toString());
@@ -422,12 +430,7 @@ export default function MaterialienPage() {
         }
 
         // Price filter
-        if (currentFilters.priceType === "free") {
-          params.set("maxPrice", "0");
-        } else if (currentFilters.priceType === "paid") {
-          params.set("minPrice", "1");
-        }
-        if (currentFilters.maxPrice !== null && currentFilters.priceType !== "free") {
+        if (currentFilters.maxPrice !== null) {
           params.set("maxPrice", currentFilters.maxPrice.toString());
         }
 
@@ -436,9 +439,9 @@ export default function MaterialienPage() {
           params.set("formats", currentFilters.formats.join(","));
         }
 
-        // Material scope filter (single vs bundle)
-        if (currentFilters.materialScope) {
-          params.set("materialScope", currentFilters.materialScope);
+        // Canton filter
+        if (currentFilters.cantons.length > 0) {
+          params.set("cantons", currentFilters.cantons.join(","));
         }
 
         // Sort parameter
@@ -476,7 +479,7 @@ export default function MaterialienPage() {
         setLoading(false);
       }
     },
-    [mapFachbereichToSubject, toast, t]
+    [toast, t]
   );
 
   // Fetch materials when showMaterials is true (debounced to prevent flicker on rapid filter changes)
@@ -553,10 +556,9 @@ export default function MaterialienPage() {
     filters.kompetenz,
     filters.searchQuery || null,
     filters.dialect,
-    filters.priceType,
     filters.maxPrice !== null ? filters.maxPrice : null,
     ...filters.formats,
-    filters.materialScope,
+    filters.cantons.length > 0 ? true : null,
   ].filter(Boolean).length;
 
   // Loading state for active tab
@@ -639,34 +641,39 @@ export default function MaterialienPage() {
                       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                       className="bg-bg fixed inset-x-0 bottom-0 z-[101] max-h-[85vh] overflow-y-auto rounded-t-2xl shadow-2xl"
                     >
-                      {/* Drawer handle */}
-                      <div className="bg-bg border-border sticky top-0 z-10 flex items-center justify-between border-b px-5 pt-3 pb-4">
-                        <div className="bg-border mx-auto mb-3 h-1 w-10 rounded-full" />
-                      </div>
-                      <div className="bg-bg sticky top-0 z-10 flex items-center justify-between px-5 pb-3">
-                        <h2 className="text-text text-lg font-semibold">{t("sidebar.title")}</h2>
-                        <button
-                          onClick={() => setMobileFiltersOpen(false)}
-                          className="text-text-muted hover:text-text hover:bg-surface flex h-8 w-8 items-center justify-center rounded-full transition-colors"
-                        >
-                          <X className="h-5 w-5" />
-                        </button>
-                      </div>
-                      <div className="px-1 pb-8">
-                        <LP21FilterSidebar
-                          filters={filters}
-                          onFiltersChange={handleFiltersChange}
-                        />
-                      </div>
-                      {/* Apply button */}
-                      <div className="bg-bg border-border sticky bottom-0 border-t px-5 py-4">
-                        <button
-                          onClick={() => setMobileFiltersOpen(false)}
-                          className="bg-primary text-text-on-accent hover:bg-primary-hover w-full rounded-lg px-4 py-3 text-sm font-semibold transition-colors"
-                        >
-                          {t("results.showResults", { count: totalCount })}
-                        </button>
-                      </div>
+                      <FocusTrap
+                        active={mobileFiltersOpen}
+                        onEscape={() => setMobileFiltersOpen(false)}
+                      >
+                        {/* Drawer handle */}
+                        <div className="bg-bg border-border sticky top-0 z-10 flex items-center justify-between border-b px-5 pt-3 pb-4">
+                          <div className="bg-border mx-auto mb-3 h-1 w-10 rounded-full" />
+                        </div>
+                        <div className="bg-bg sticky top-0 z-10 flex items-center justify-between px-5 pb-3">
+                          <h2 className="text-text text-lg font-semibold">{t("sidebar.title")}</h2>
+                          <button
+                            onClick={() => setMobileFiltersOpen(false)}
+                            className="text-text-muted hover:text-text hover:bg-surface flex h-8 w-8 items-center justify-center rounded-full transition-colors"
+                          >
+                            <X className="h-5 w-5" />
+                          </button>
+                        </div>
+                        <div className="px-1 pb-8">
+                          <LP21FilterSidebar
+                            filters={filters}
+                            onFiltersChange={handleFiltersChange}
+                          />
+                        </div>
+                        {/* Apply button */}
+                        <div className="bg-bg border-border sticky bottom-0 border-t px-5 py-4">
+                          <button
+                            onClick={() => setMobileFiltersOpen(false)}
+                            className="bg-primary text-text-on-accent hover:bg-primary-hover w-full rounded-lg px-4 py-3 text-sm font-semibold transition-colors"
+                          >
+                            {t("results.showResults", { count: totalCount })}
+                          </button>
+                        </div>
+                      </FocusTrap>
                     </motion.div>
                   </>
                 )}
@@ -900,7 +907,7 @@ export default function MaterialienPage() {
                         </button>
                       </motion.span>
                     )}
-                    {(filters.priceType || filters.maxPrice !== null) && (
+                    {filters.maxPrice !== null && (
                       <motion.span
                         key="chip-price"
                         layout
@@ -910,19 +917,9 @@ export default function MaterialienPage() {
                         transition={{ duration: 0.15 }}
                         className="bg-surface text-text-secondary border-border hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
                       >
-                        {filters.priceType === "free"
-                          ? t("sidebar.priceFree")
-                          : filters.priceType === "paid"
-                            ? filters.maxPrice !== null
-                              ? `${t("sidebar.pricePaid")} · ${t("sidebar.priceUnder", { amount: filters.maxPrice })}`
-                              : t("sidebar.pricePaid")
-                            : filters.maxPrice !== null
-                              ? t("sidebar.priceUnder", { amount: filters.maxPrice })
-                              : ""}
+                        {t("sidebar.priceUnder", { amount: filters.maxPrice })}
                         <button
-                          onClick={() =>
-                            handleFiltersChange({ ...filters, priceType: null, maxPrice: null })
-                          }
+                          onClick={() => handleFiltersChange({ ...filters, maxPrice: null })}
                           className="hover:bg-surface-hover flex h-5 w-5 items-center justify-center rounded-full transition-colors"
                         >
                           <X className="h-3 w-3" />
@@ -953,9 +950,9 @@ export default function MaterialienPage() {
                         </button>
                       </motion.span>
                     ))}
-                    {filters.materialScope && (
+                    {filters.cantons.length > 0 && (
                       <motion.span
-                        key="chip-scope"
+                        key="chip-cantons"
                         layout
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -963,11 +960,13 @@ export default function MaterialienPage() {
                         transition={{ duration: 0.15 }}
                         className="bg-surface text-text-secondary border-border hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
                       >
-                        {filters.materialScope === "single"
-                          ? t("sidebar.scopeSingle")
-                          : t("sidebar.scopeBundle")}
+                        {filters.cantons.length <= 3
+                          ? filters.cantons
+                              .map((c) => CANTON_ABBREVS.find((ca) => ca.name === c)?.abbrev || c)
+                              .join(", ")
+                          : t("sidebar.cantonChipMultiple", { count: filters.cantons.length })}
                         <button
-                          onClick={() => handleFiltersChange({ ...filters, materialScope: null })}
+                          onClick={() => handleFiltersChange({ ...filters, cantons: [] })}
                           className="hover:bg-surface-hover flex h-5 w-5 items-center justify-center rounded-full transition-colors"
                         >
                           <X className="h-3 w-3" />
@@ -992,10 +991,11 @@ export default function MaterialienPage() {
                             kompetenz: null,
                             searchQuery: "",
                             dialect: null,
-                            priceType: null,
+
                             maxPrice: null,
                             formats: [],
-                            materialScope: null,
+
+                            cantons: [],
                           })
                         }
                         className="text-text-muted hover:text-error text-xs font-medium transition-colors"
@@ -1041,10 +1041,11 @@ export default function MaterialienPage() {
                       kompetenz: null,
                       searchQuery: filters.searchQuery,
                       dialect: null,
-                      priceType: null,
+
                       maxPrice: null,
                       formats: [],
-                      materialScope: null,
+
+                      cantons: [],
                     })
                   }
                   onResetSearch={() => handleFiltersChange({ ...filters, searchQuery: "" })}
@@ -1058,10 +1059,11 @@ export default function MaterialienPage() {
                       kompetenz: null,
                       searchQuery: query,
                       dialect: null,
-                      priceType: null,
+
                       maxPrice: null,
                       formats: [],
-                      materialScope: null,
+
+                      cantons: [],
                     })
                   }
                 />
@@ -1113,6 +1115,8 @@ export default function MaterialienPage() {
                               isWishlisted={wishlistedIds.has(material.id)}
                               onWishlistToggle={handleWishlistToggle}
                               variant={viewMode === "list" ? "compact" : "default"}
+                              averageRating={material.averageRating}
+                              reviewCount={material.reviewCount}
                             />
                           </motion.div>
                         ))

@@ -26,10 +26,9 @@ export function EmptySearchState({
     filters.kompetenzbereich !== null ||
     filters.kompetenz !== null ||
     filters.dialect !== null ||
-    filters.priceType !== null ||
     filters.maxPrice !== null ||
     filters.formats.length > 0 ||
-    filters.materialScope !== null;
+    filters.cantons.length > 0;
   const hasAny = hasSearch || hasFilters;
   const isProfilesTab = !filters.showMaterials && filters.showCreators;
 
@@ -103,12 +102,27 @@ export function EmptySearchState({
             </span>
           </div>
           <div className="flex flex-wrap justify-center gap-2">
-            {[
-              t("empty.suggestion1"),
-              t("empty.suggestion2"),
-              t("empty.suggestion3"),
-              t("empty.suggestion4"),
-            ].map((suggestion, index) => (
+            {(isProfilesTab
+              ? [
+                  t("empty.profileSuggestion1"),
+                  t("empty.profileSuggestion2"),
+                  t("empty.profileSuggestion3"),
+                  t("empty.profileSuggestion4"),
+                ]
+              : hasFilters
+                ? [
+                    t("empty.filterSuggestion1"),
+                    t("empty.filterSuggestion2"),
+                    t("empty.suggestion1"),
+                    t("empty.suggestion2"),
+                  ]
+                : [
+                    t("empty.suggestion1"),
+                    t("empty.suggestion2"),
+                    t("empty.suggestion3"),
+                    t("empty.suggestion4"),
+                  ]
+            ).map((suggestion, index) => (
               <button
                 key={`suggestion-${index}`}
                 onClick={() => onSuggestionClick(suggestion)}

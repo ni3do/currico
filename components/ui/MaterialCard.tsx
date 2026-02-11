@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { Heart } from "lucide-react";
 import { getSubjectTextColor } from "@/lib/constants/subject-colors";
 import { VerifiedSellerBadge } from "@/components/ui/VerifiedSellerBadge";
+import { StarRating } from "@/components/ui/StarRating";
 
 export interface MaterialCardProps {
   id: string;
@@ -36,6 +37,10 @@ export interface MaterialCardProps {
   onWishlistToggle?: (id: string, currentState: boolean) => Promise<boolean>;
   /** Show/hide the wishlist heart icon */
   showWishlist?: boolean;
+  /** Average rating (1-5) from reviews */
+  averageRating?: number;
+  /** Number of reviews */
+  reviewCount?: number;
 }
 
 export function MaterialCard({
@@ -55,6 +60,8 @@ export function MaterialCard({
   isWishlisted: initialWishlisted = false,
   onWishlistToggle,
   showWishlist = false,
+  averageRating,
+  reviewCount,
 }: MaterialCardProps) {
   const [isWishlisted, setIsWishlisted] = useState(initialWishlisted);
   const [wishlistLoading, setWishlistLoading] = useState(false);
@@ -179,6 +186,14 @@ export function MaterialCard({
         >
           {title}
         </h3>
+
+        {/* Rating */}
+        {reviewCount != null && reviewCount > 0 && averageRating != null && (
+          <div className={`flex items-center gap-1.5 ${isCompact ? "mt-0.5" : "mb-1"}`}>
+            <StarRating rating={averageRating} size="sm" />
+            <span className="text-text-muted text-xs">({reviewCount})</span>
+          </div>
+        )}
 
         {/* Description */}
         {!isCompact && description && (

@@ -84,7 +84,7 @@ export async function GET(request: NextRequest) {
     const maxPrice = searchParams.get("maxPrice");
     const minPrice = searchParams.get("minPrice");
     const formats = searchParams.get("formats");
-    const materialScope = searchParams.get("materialScope");
+    const cantons = searchParams.get("cantons");
 
     const skip = (page - 1) * limit;
 
@@ -332,43 +332,66 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Format filter (pdf, word, ppt, excel, image, canva)
+    // Format filter (pdf, word, ppt, excel, onenote, other)
     if (formats) {
       const formatList = formats.split(",").map((f) => f.trim().toLowerCase());
-      // Map format IDs to file extensions/types
       const formatMapping: Record<string, string[]> = {
         pdf: ["pdf"],
         word: ["doc", "docx"],
         ppt: ["ppt", "pptx"],
         excel: ["xls", "xlsx"],
-        image: ["jpg", "jpeg", "png", "gif", "webp"],
         onenote: ["one", "onetoc2"],
-        audio: ["mp3", "wav", "ogg"],
-        video: ["mp4", "webm", "mov"],
-        zip: ["zip", "rar", "7z"],
       };
+      const knownExtensions = Object.values(formatMapping).flat();
       const allowedExtensions: string[] = [];
+      const includeOther = formatList.includes("other");
       for (const format of formatList) {
         if (formatMapping[format]) {
           allowedExtensions.push(...formatMapping[format]);
         }
       }
-      if (allowedExtensions.length > 0) {
-        // Filter by file_url extension using AND with OR conditions
-        where.AND = [
-          ...(Array.isArray(where.AND) ? where.AND : []),
-          {
-            OR: allowedExtensions.map((ext) => ({
-              file_url: { endsWith: `.${ext}` },
-            })),
-          },
-        ];
+      const orConditions: any[] = allowedExtensions.map((ext) => ({
+        file_url: { endsWith: `.${ext}` },
+      }));
+      // "other" = files whose extension is NOT in any known format
+      if (includeOther) {
+        orConditions.push({
+          AND: knownExtensions.map((ext) => ({
+            file_url: { not: { endsWith: `.${ext}` } },
+          })),
+        });
+      }
+      if (orConditions.length > 0) {
+        where.AND = [...(Array.isArray(where.AND) ? where.AND : []), { OR: orConditions }];
       }
     }
 
-    // Material scope filter - single materials only (bundles have their own endpoint)
-    // Note: "bundle" scope would need to query the Bundle model separately
-    // For now, the materials endpoint only returns individual materials
+    // Canton filter - filter by seller's canton(s)
+    if (cantons) {
+      const cantonList = cantons
+        .split(",")
+        .map((c) => c.trim())
+        .filter(Boolean);
+      if (cantonList.length > 0) {
+        // Find sellers whose cantons JSON array contains any of the selected cantons
+        const { Prisma } = await import("@prisma/client");
+        const cantonConditions = cantonList.map(
+          (c) => Prisma.sql`u.cantons::jsonb @> ${JSON.stringify(c)}::jsonb`
+        );
+        const sellerResults = await prisma.$queryRaw<{ id: string }[]>`
+          SELECT id FROM users u
+          WHERE (${Prisma.join(cantonConditions, " OR ")})
+        `;
+        const sellerIds = sellerResults.map((r) => r.id);
+        if (sellerIds.length === 0) {
+          return NextResponse.json({
+            materials: [],
+            pagination: { page, limit, total: 0, totalPages: 0 },
+          });
+        }
+        where.seller_id = { in: sellerIds };
+      }
+    }
 
     // Build orderBy
     // If doing full-text search and sort is "relevance" or not specified, we'll sort by rank
@@ -403,6 +426,11 @@ export async function GET(request: NextRequest) {
               id: true,
               display_name: true,
               is_verified_seller: true,
+            },
+          },
+          reviews: {
+            select: {
+              rating: true,
             },
           },
           competencies: {
@@ -471,6 +499,9 @@ export async function GET(request: NextRequest) {
     const transformedMaterials = sortedMaterials.map((material) => {
       const subjects = toStringArray(material.subjects);
       const cycles = toStringArray(material.cycles);
+      const reviewCount = material.reviews?.length ?? 0;
+      const averageRating =
+        reviewCount > 0 ? material.reviews!.reduce((sum, r) => sum + r.rating, 0) / reviewCount : 0;
       return {
         id: material.id,
         title: material.title,
@@ -485,6 +516,8 @@ export async function GET(request: NextRequest) {
         createdAt: material.created_at,
         dialect: material.dialect,
         seller: material.seller,
+        averageRating: Math.round(averageRating * 10) / 10,
+        reviewCount,
         isMiIntegrated: material.is_mi_integrated,
         competencies: (material.competencies ?? []).map((rc) => ({
           id: rc.competency.id,

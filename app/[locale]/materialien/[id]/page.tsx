@@ -262,9 +262,7 @@ export default function MaterialDetailPage() {
       }, 2000);
     } catch (error) {
       setReportStatus("error");
-      setReportErrorMessage(
-        error instanceof Error ? error.message : t("report.errorUnexpected")
-      );
+      setReportErrorMessage(error instanceof Error ? error.message : t("report.errorUnexpected"));
     } finally {
       setReportSubmitting(false);
     }
@@ -353,12 +351,8 @@ export default function MaterialDetailPage() {
                 d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <h1 className="text-text mb-4 text-2xl font-bold sm:text-3xl">
-              {t("notFound")}
-            </h1>
-            <p className="text-text-muted mx-auto mb-8 max-w-md">
-              {t("notFoundDescription")}
-            </p>
+            <h1 className="text-text mb-4 text-2xl font-bold sm:text-3xl">{t("notFound")}</h1>
+            <p className="text-text-muted mx-auto mb-8 max-w-md">{t("notFoundDescription")}</p>
             <Link
               href="/materialien"
               className="btn-primary inline-flex items-center px-6 py-3 font-semibold"
@@ -392,9 +386,7 @@ export default function MaterialDetailPage() {
               />
             </svg>
             <h1 className="text-text mb-4 text-2xl font-bold sm:text-3xl">{t("loadError")}</h1>
-            <p className="text-text-muted mx-auto mb-8 max-w-md">
-              {t("loadErrorDescription")}
-            </p>
+            <p className="text-text-muted mx-auto mb-8 max-w-md">{t("loadErrorDescription")}</p>
             <button
               onClick={fetchMaterial}
               className="btn-primary inline-flex items-center px-6 py-3 font-semibold"
@@ -432,9 +424,7 @@ export default function MaterialDetailPage() {
               </svg>
               <div>
                 <p className="text-warning font-medium">{t("pendingReview")}</p>
-                <p className="text-text-muted text-sm">
-                  {t("pendingReviewDescription")}
-                </p>
+                <p className="text-text-muted text-sm">{t("pendingReviewDescription")}</p>
               </div>
             </div>
           </div>
@@ -443,7 +433,7 @@ export default function MaterialDetailPage() {
         {/* Breadcrumb */}
         <Breadcrumb
           items={[
-            { label: tCommon("breadcrumb.resources"), href: "/materialien" },
+            { label: tCommon("breadcrumb.materials"), href: "/materialien" },
             { label: material.subject, href: `/materialien?subject=${material.subject}` },
             { label: material.title },
           ]}

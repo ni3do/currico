@@ -117,7 +117,9 @@
       "unfollowed": "Profil entfolgt",
       "reportSubmitted": "Meldung erfolgreich eingereicht",
       "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut."
-    }
+    },
+    "user": "Benutzer",
+    "free": "Gratis"
   },
   "homePage": {
     "hero": {
@@ -493,10 +495,7 @@
       "formatPpt": "PowerPoint",
       "formatExcel": "Excel",
       "formatOnenote": "OneNote",
-      "formatImage": "Bilder",
-      "formatAudio": "Audio",
-      "formatVideo": "Video",
-      "formatZip": "ZIP",
+      "formatOther": "Andere",
       "scopeLabel": "Materialumfang",
       "scopeSingle": "Einzelmaterial",
       "scopeBundle": "Bundle",
@@ -515,7 +514,13 @@
       "smartSearchArea": "Bereich:",
       "searchResultSubject": "Fach",
       "searchResultArea": "Bereich",
-      "searchResultCompetence": "Kompetenz"
+      "searchResultCompetence": "Kompetenz",
+      "cantonSectionLabel": "Kanton",
+      "cantonPlaceholder": "Kanton wählen...",
+      "cantonSearchPlaceholder": "Kanton suchen...",
+      "cantonSelected": "{count} ausgewählt",
+      "cantonNoResults": "Kein Kanton gefunden",
+      "cantonChipMultiple": "{count} Kantone"
     },
     "search": {
       "placeholder": "Suche nach Titel, Thema, Stichwort...",
@@ -663,7 +668,13 @@
       "suggestion1": "Mathematik Zyklus 2",
       "suggestion2": "Deutsch Lesen",
       "suggestion3": "NMG Tiere",
-      "suggestion4": "Sport Spiele"
+      "suggestion4": "Sport Spiele",
+      "profileSuggestion1": "Mathematik Lehrer",
+      "profileSuggestion2": "Zyklus 2",
+      "profileSuggestion3": "Deutsch",
+      "profileSuggestion4": "NMG",
+      "filterSuggestion1": "Weniger Filter",
+      "filterSuggestion2": "Anderes Fach"
     },
     "toast": {
       "addedToWishlist": "Zur Wunschliste hinzugefügt",
