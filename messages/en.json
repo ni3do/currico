@@ -195,6 +195,9 @@
       "title": "Featured Materials",
       "description": "Selected by experts and quality checked",
       "viewAllMobile": "View All Materials",
+      "emptyTitle": "No materials yet",
+      "emptyDescription": "Be the first teacher to share teaching materials!",
+      "emptyUpload": "Upload material now",
       "card1": {
         "category": "Science",
         "cycle": "Cycle 2",
@@ -481,6 +484,7 @@
       "scopeLabel": "Material Scope",
       "scopeSingle": "Single",
       "scopeBundle": "Bundle",
+      "chipCycle": "Cycle {number}",
       "dialectCH": "CH",
       "dialectDE": "DE",
       "activeFilters": "Active Filters",
@@ -598,6 +602,7 @@
     },
     "results": {
       "countLabel": "Materials found",
+      "showResults": "Show {count} materials",
       "sortLabel": "Sort by:",
       "gridView": "Grid view",
       "listView": "List view",
@@ -2511,6 +2516,57 @@
       "terms": "Terms and Conditions"
     }
   },
+  "materialDetail": {
+    "notFound": "Material not found",
+    "notFoundDescription": "The material you are looking for does not exist or is no longer available.",
+    "backToMaterials": "Back to materials",
+    "loadError": "Loading error",
+    "loadErrorDescription": "The material could not be loaded. Please try again later.",
+    "retry": "Try again",
+    "pendingReview": "This material is under review",
+    "pendingReviewDescription": "The material is visible but has not yet been verified by our team.",
+    "verified": "Verified",
+    "pendingStatus": "Under review",
+    "following": "Following",
+    "follow": "+ Follow",
+    "downloadFree": "Download for free",
+    "download": "Download",
+    "buy": "Buy",
+    "wishlisted": "Saved",
+    "addToWishlist": "Add to wishlist",
+    "reportMaterial": "Report material",
+    "description": "Description",
+    "reviews": "Reviews",
+    "comments": "Comments",
+    "similarMaterials": "Similar Materials",
+    "report": {
+      "title": "Report material",
+      "successTitle": "Thank you for your report",
+      "successDescription": "We will review the material.",
+      "reason": "Reason",
+      "reasons": {
+        "inappropriate": "Inappropriate content",
+        "copyright": "Copyright infringement",
+        "quality": "Quality issues",
+        "spam": "Spam",
+        "fraud": "Fraud",
+        "other": "Other"
+      },
+      "commentLabel": "Comment (optional)",
+      "commentPlaceholder": "Please describe the issue...",
+      "submitting": "Submitting...",
+      "submit": "Report",
+      "cancel": "Cancel",
+      "errorSend": "Error sending the report",
+      "errorUnexpected": "An unexpected error occurred"
+    },
+    "noPreview": "No preview available",
+    "anonymous": "Anonymous",
+    "availableAfterReview": "Available after review",
+    "sellerMaterials": "{count} materials",
+    "cycle": "Cycle {number}",
+    "downloads": "{count} downloads"
+  },
   "profile": {
     "notFound": "Profile not found",
     "notFoundDescription": "The profile you're looking for doesn't exist or has been removed.",
@@ -2923,7 +2979,17 @@
       "completeProfile": "Complete your profile",
       "fieldsCompleted": "{completed} of {total} fields completed",
       "editProfile": "Edit Profile",
-      "close": "Close"
+      "close": "Close",
+      "fields": {
+        "emailVerified": "Verify email",
+        "displayName": "Display name",
+        "profileImage": "Profile picture",
+        "bio": "About me",
+        "subjects": "Subjects",
+        "cycles": "Cycles",
+        "school": "School",
+        "canton": "Canton"
+      }
     },
     "notifications": {
       "title": "Notifications",

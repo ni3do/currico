@@ -232,7 +232,7 @@ export default function Home() {
                 <motion.div whileHover={{ y: -8, scale: 1.02 }} transition={{ duration: 0.3 }}>
                   <Image
                     src="/images/hero-teachers.png"
-                    alt="Lehrer hilft Schülern bei Gruppenarbeit im Klassenzimmer"
+                    alt={t("hero.imageAlt")}
                     width={1000}
                     height={667}
                     className="hero-image aspect-[3/2] w-full max-w-lg object-cover object-center lg:max-w-none"
@@ -313,7 +313,15 @@ export default function Home() {
                   </StaggerItem>
                 ))}
               </StaggerChildren>
-            ) : null}
+            ) : (
+              <FadeIn direction="up" className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-bg py-16 text-center">
+                <p className="text-text text-lg font-semibold">{t("featuredResources.emptyTitle")}</p>
+                <p className="text-text-muted mt-2 text-sm">{t("featuredResources.emptyDescription")}</p>
+                <Link href="/hochladen" className="bg-primary text-text-on-accent hover:bg-primary-hover mt-4 inline-flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold transition-colors">
+                  {t("featuredResources.emptyUpload")}
+                </Link>
+              </FadeIn>
+            )}
 
             <FadeIn direction="up" delay={0.3} className="mt-8 text-center sm:hidden">
               <Link

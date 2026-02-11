@@ -196,6 +196,9 @@
       "title": "Empfohlene Materialien",
       "description": "Von Experten ausgewählt und qualitätsgeprüft",
       "viewAllMobile": "Alle Materialien anzeigen",
+      "emptyTitle": "Noch keine Materialien vorhanden",
+      "emptyDescription": "Seien Sie die erste Lehrperson, die Unterrichtsmaterial teilt!",
+      "emptyUpload": "Jetzt Material hochladen",
       "card1": {
         "category": "Naturwissenschaften",
         "cycle": "Zyklus 2",
@@ -482,6 +485,7 @@
       "scopeLabel": "Materialumfang",
       "scopeSingle": "Einzelmaterial",
       "scopeBundle": "Bundle",
+      "chipCycle": "Zyklus {number}",
       "dialectCH": "CH",
       "dialectDE": "DE",
       "activeFilters": "Aktive Filter",
@@ -599,6 +603,7 @@
     },
     "results": {
       "countLabel": "Materialien gefunden",
+      "showResults": "{count} Materialien anzeigen",
       "sortLabel": "Sortieren:",
       "gridView": "Rasteransicht",
       "listView": "Listenansicht",
@@ -2512,6 +2517,57 @@
       "terms": "Allgemeine Geschäftsbedingungen"
     }
   },
+  "materialDetail": {
+    "notFound": "Material nicht gefunden",
+    "notFoundDescription": "Das gesuchte Material existiert nicht oder ist nicht mehr verfügbar.",
+    "backToMaterials": "Zurück zu den Materialien",
+    "loadError": "Fehler beim Laden",
+    "loadErrorDescription": "Das Material konnte nicht geladen werden. Bitte versuchen Sie es später erneut.",
+    "retry": "Erneut versuchen",
+    "pendingReview": "Dieses Material wird noch überprüft",
+    "pendingReviewDescription": "Das Material ist sichtbar, aber noch nicht von unserem Team verifiziert worden.",
+    "verified": "Verifiziert",
+    "pendingStatus": "Wird überprüft",
+    "following": "Folge ich",
+    "follow": "+ Folgen",
+    "downloadFree": "Kostenlos herunterladen",
+    "download": "Download",
+    "buy": "Kaufen",
+    "wishlisted": "Gemerkt",
+    "addToWishlist": "Zur Wunschliste",
+    "reportMaterial": "Material melden",
+    "description": "Beschreibung",
+    "reviews": "Bewertungen",
+    "comments": "Kommentare",
+    "similarMaterials": "Ähnliche Materialien",
+    "report": {
+      "title": "Material melden",
+      "successTitle": "Vielen Dank für Ihre Meldung",
+      "successDescription": "Wir werden das Material überprüfen.",
+      "reason": "Grund",
+      "reasons": {
+        "inappropriate": "Unangemessener Inhalt",
+        "copyright": "Urheberrechtsverletzung",
+        "quality": "Qualitätsprobleme",
+        "spam": "Spam",
+        "fraud": "Betrug",
+        "other": "Anderes"
+      },
+      "commentLabel": "Kommentar (optional)",
+      "commentPlaceholder": "Bitte beschreiben Sie das Problem...",
+      "submitting": "Wird gesendet...",
+      "submit": "Melden",
+      "cancel": "Abbrechen",
+      "errorSend": "Fehler beim Senden der Meldung",
+      "errorUnexpected": "Ein unerwarteter Fehler ist aufgetreten"
+    },
+    "noPreview": "Keine Vorschau verfügbar",
+    "anonymous": "Anonym",
+    "availableAfterReview": "Verfügbar nach Überprüfung",
+    "sellerMaterials": "{count} Materialien",
+    "cycle": "Zyklus {number}",
+    "downloads": "{count} Downloads"
+  },
   "profile": {
     "notFound": "Profil nicht gefunden",
     "notFoundDescription": "Das gesuchte Profil existiert nicht oder wurde entfernt.",
@@ -2952,7 +3008,17 @@
       "completeProfile": "Vervollständigen Sie Ihr Profil",
       "fieldsCompleted": "{completed} von {total} Feldern ausgefüllt",
       "editProfile": "Profil bearbeiten",
-      "close": "Schliessen"
+      "close": "Schliessen",
+      "fields": {
+        "emailVerified": "E-Mail verifizieren",
+        "displayName": "Anzeigename",
+        "profileImage": "Profilbild",
+        "bio": "Über mich",
+        "subjects": "Fächer",
+        "cycles": "Zyklen",
+        "school": "Schule",
+        "canton": "Kanton"
+      }
     },
     "notifications": {
       "title": "Benachrichtigungen",

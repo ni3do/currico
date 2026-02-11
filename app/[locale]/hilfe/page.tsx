@@ -135,10 +135,12 @@ export default function HilfePage() {
           <p className="text-text-muted mb-6">{tFaq("subtitle")}</p>
 
           {/* Category Tabs */}
-          <div className="mb-6 flex flex-wrap gap-2">
+          <div className="mb-6 flex flex-wrap gap-2" role="tablist">
             {faqCategories.map(({ key }) => (
               <button
                 key={key}
+                role="tab"
+                aria-selected={activeTab === key}
                 onClick={() => {
                   setActiveTab(key);
                   setOpenFaq(null);
@@ -166,6 +168,7 @@ export default function HilfePage() {
                     <div key={qKey}>
                       <button
                         onClick={() => setOpenFaq(isOpen ? null : qKey)}
+                        aria-expanded={isOpen}
                         className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
                       >
                         <span className="text-text font-medium">{tFaq(`${qKey}.question`)}</span>

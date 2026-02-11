@@ -632,7 +632,7 @@ export default function MaterialienPage() {
                           onClick={() => setMobileFiltersOpen(false)}
                           className="bg-primary text-text-on-accent hover:bg-primary-hover w-full rounded-lg px-4 py-3 text-sm font-semibold transition-colors"
                         >
-                          {totalCount} {t("results.countLabel")} anzeigen
+                          {t("results.showResults", { count: totalCount })}
                         </button>
                       </div>
                     </motion.div>
@@ -724,7 +724,7 @@ export default function MaterialienPage() {
                   )}
                   {filters.zyklus && (
                     <span className="bg-primary/10 text-primary border-primary/20 hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
-                      Zyklus {filters.zyklus}
+                      {t("sidebar.chipCycle", { number: filters.zyklus })}
                       <button
                         onClick={() =>
                           handleFiltersChange({
@@ -801,9 +801,9 @@ export default function MaterialienPage() {
                   {(filters.priceType || filters.maxPrice !== null) && (
                     <span className="bg-surface text-text-secondary border-border hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
                       {filters.priceType === "free"
-                        ? "Kostenlos"
+                        ? t("sidebar.priceFree")
                         : filters.maxPrice !== null
-                          ? `< CHF ${filters.maxPrice}`
+                          ? t("sidebar.priceUnder", { amount: filters.maxPrice })
                           : ""}
                       <button
                         onClick={() =>
@@ -836,7 +836,7 @@ export default function MaterialienPage() {
                   ))}
                   {filters.materialScope && (
                     <span className="bg-surface text-text-secondary border-border hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
-                      {filters.materialScope === "single" ? "Einzelmaterial" : "Bundle"}
+                      {filters.materialScope === "single" ? t("sidebar.scopeSingle") : t("sidebar.scopeBundle")}
                       <button
                         onClick={() => handleFiltersChange({ ...filters, materialScope: null })}
                         className="hover:bg-surface-hover flex h-5 w-5 items-center justify-center rounded-full transition-colors"
@@ -865,7 +865,7 @@ export default function MaterialienPage() {
                       }
                       className="text-text-muted hover:text-error text-xs font-medium transition-colors"
                     >
-                      Alle entfernen
+                      {t("sidebar.reset")}
                     </button>
                   )}
                 </div>

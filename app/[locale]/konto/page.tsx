@@ -106,14 +106,14 @@ export default function AccountOverviewPage() {
 
   const getProfileCompletion = useCallback(() => {
     const items = [
-      { done: !!userData?.emailVerified, label: "E-Mail verifizieren" },
-      { done: !!(userData?.displayName || userData?.name), label: "Anzeigename" },
-      { done: !!userData?.image, label: "Profilbild" },
-      { done: !!userData?.bio, label: "Über mich" },
-      { done: userData?.subjects && userData.subjects.length > 0, label: "Fächer" },
-      { done: userData?.cycles && userData.cycles.length > 0, label: "Zyklen" },
-      { done: !!userData?.school, label: "Schule" },
-      { done: userData?.cantons && userData.cantons.length > 0, label: "Kanton" },
+      { done: !!userData?.emailVerified, label: t("profile.fields.emailVerified") },
+      { done: !!(userData?.displayName || userData?.name), label: t("profile.fields.displayName") },
+      { done: !!userData?.image, label: t("profile.fields.profileImage") },
+      { done: !!userData?.bio, label: t("profile.fields.bio") },
+      { done: userData?.subjects && userData.subjects.length > 0, label: t("profile.fields.subjects") },
+      { done: userData?.cycles && userData.cycles.length > 0, label: t("profile.fields.cycles") },
+      { done: !!userData?.school, label: t("profile.fields.school") },
+      { done: userData?.cantons && userData.cantons.length > 0, label: t("profile.fields.canton") },
     ];
     const completed = items.filter((i) => i.done).length;
     const missing = items.filter((i) => !i.done).map((i) => i.label);

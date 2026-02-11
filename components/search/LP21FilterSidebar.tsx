@@ -16,6 +16,7 @@ import {
   Table,
   Package,
   File,
+  StickyNote,
   Loader2,
   Users,
 } from "lucide-react";
@@ -48,6 +49,7 @@ const FORMAT_OPTIONS = [
   { id: "word", label: "Word", icon: FileType },
   { id: "ppt", label: "PowerPoint", icon: Presentation },
   { id: "excel", label: "Excel", icon: Table },
+  { id: "onenote", label: "OneNote", icon: StickyNote },
 ] as const;
 
 // Material scope options (labels resolved via i18n at render time)
@@ -1034,7 +1036,7 @@ function ActiveFilterChips({
     const priceLabel = priceOption
       ? getPriceLabel(t, priceOption)
       : filters.maxPrice !== null
-        ? `< CHF ${filters.maxPrice}`
+        ? t("sidebar.priceUnder", { amount: filters.maxPrice })
         : "";
     if (priceLabel) {
       chips.push({
@@ -1552,17 +1554,6 @@ function FormatFilter({ selectedFormats, onFormatToggle }: FormatFilterProps) {
           >
             <Icon className="h-4 w-4" />
             <span className="font-medium">{format.label}</span>
-            <AnimatePresence>
-              {isSelected && (
-                <motion.span
-                  className="bg-primary absolute -top-1 -right-1 h-2 w-2 rounded-full"
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  exit={{ scale: 0 }}
-                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                />
-              )}
-            </AnimatePresence>
           </motion.button>
         );
       })}

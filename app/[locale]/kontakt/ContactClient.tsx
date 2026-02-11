@@ -129,6 +129,7 @@ export default function ContactClient() {
                         type="text"
                         id="name"
                         name="name"
+                        autoComplete="name"
                         value={formData.name}
                         onChange={handleChange}
                         placeholder={t("form.namePlaceholder")}
@@ -144,6 +145,7 @@ export default function ContactClient() {
                         type="email"
                         id="email"
                         name="email"
+                        autoComplete="email"
                         value={formData.email}
                         onChange={handleChange}
                         placeholder={t("form.emailPlaceholder")}
@@ -162,6 +164,7 @@ export default function ContactClient() {
                       type="tel"
                       id="phone"
                       name="phone"
+                      autoComplete="tel"
                       value={formData.phone}
                       onChange={handleChange}
                       placeholder={t("form.phonePlaceholder")}

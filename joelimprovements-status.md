@@ -18,7 +18,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Hero-Dropdowns haben `rounded-xl` statt `rounded-full` (inkonsistent mit globalem Dropdown-Style)
 - [x] SellerHeroSection: "70% Provision für Sie" ist hardcoded auf Deutsch — sollte über i18n laufen (`t("badge")`)
 - [x] `SUBJECT_PILL_MAP` hat "Franzosisch" ohne Umlaut — sollte "Französisch" sein (oder Code-basiert matchen)
-- [ ] Kein Fallback wenn `/api/materials` keine Materialien zurückgibt — Sektion wird unsichtbar, besser: leerer Zustand mit CTA "Sei der Erste"
+- [x] Kein Fallback wenn `/api/materials` keine Materialien zurückgibt — Sektion wird unsichtbar, besser: leerer Zustand mit CTA "Sei der Erste"
 - [x] Hero-Bild `hero-teachers.png` hat keinen `sizes`-Prop auf `<Image>` — verschlechtert LCP auf Mobile
 - [x] Suchformular hat kein `aria-label` auf dem `<form>` — Screenreader können es nicht identifizieren
 - [x] Search-Button zeigt auf Mobile nur das Icon ohne Text — kein `aria-label` auf dem Button
@@ -47,9 +47,9 @@ Legende: [x] = erledigt, [ ] = offen
 - [ ] Ersteller + Zyklus/Fachbereich: auch Ersteller anzeigen die das anbieten
 - [ ] Fachbereich + Zyklus Filter nicht resetten wenn im gleichen Zyklus
 - [ ] ">" aus Preisoptionen rausnehmen
-- [ ] OneNote als Formatoption hinzufügen
+- [x] OneNote als Formatoption hinzufügen
 - [ ] Andere Formate als Option hinzufügen
-- [ ] Formate: kein blauer Punkt wenn ausgewählt (wie alle anderen Filter)
+- [x] Formate: kein blauer Punkt wenn ausgewählt (wie alle anderen Filter)
 - [ ] Hover-Effekt bei Filtern verbessern und einheitlich machen
 - [ ] Nach Kantonen filtern können
 - [ ] Aktive Filter nur rechts unter "Gefundene Materialien" (nicht links in der Bar)
@@ -63,7 +63,7 @@ Legende: [x] = erledigt, [ ] = offen
 
 - [ ] Seite ist 1173 Zeilen lang — Filter-Chips, Pagination und Grid-Rendering sollten in eigene Komponenten extrahiert werden
 - [x] `getSubjectPillClass()` ist dupliziert zwischen `page.tsx` (Startseite) und `materialien/page.tsx` — in eine gemeinsame Utility-Funktion auslagern
-- [ ] Hardcoded deutsche Strings in Filter-Chips: "Kostenlos", "Einzelmaterial", "Bundle", "Alle entfernen", "Zyklus" — müssen über i18n (`t()`) laufen
+- [x] Hardcoded deutsche Strings in Filter-Chips: "Kostenlos", "Einzelmaterial", "Bundle", "Alle entfernen", "Zyklus" — müssen über i18n (`t()`) laufen
 - [ ] Mobile-Filter-Drawer "anzeigen" Button: `{totalCount} {t("results.countLabel")} anzeigen` — "anzeigen" ist hardcoded Deutsch
 - [x] Kein `aria-label` auf den Pagination Prev/Next Buttons — nur SVG-Icons ohne Text, unzugänglich für Screenreader
 - [x] Pagination `<nav>` hat kein `aria-label="Pagination"` — Screenreader können die Navigation nicht identifizieren
@@ -105,9 +105,9 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Eigene Vorschläge (Material-Vorschau)
 
-- [ ] Hardcoded deutsche Strings: "Material nicht gefunden", "Fehler beim Laden", "Dieses Material wird noch überprüft", "Keine Vorschau verfügbar", "PDF", "Verifiziert", "Wird überprüft", "Folge ich", "+Folgen", "Anonym", "Ähnliche Materialien" — alle in i18n auslagern
+- [x] Hardcoded deutsche Strings: "Material nicht gefunden", "Fehler beim Laden", "Dieses Material wird noch überprüft", "Keine Vorschau verfügbar", "PDF", "Verifiziert", "Wird überprüft", "Folge ich", "+Folgen", "Anonym", "Ähnliche Materialien" — alle in i18n auslagern
 - [ ] Browser-native Dialoge (`confirm()`/`alert()`) bei Kommentar-Löschung durch i18n-fähige Modals ersetzen
-- [ ] Report-Modal: Texte komplett hardcoded (Titel, Gründe, Placeholder, Buttons, Erfolgsmeldung) — benötigt eigenen i18n-Namespace
+- [x] Report-Modal: Texte komplett hardcoded (Titel, Gründe, Placeholder, Buttons, Erfolgsmeldung) — benötigt eigenen i18n-Namespace
 - [ ] Report-Modal schliesst nach 2 Sekunden automatisch — zu schnell, Benutzer könnte verwirrt sein
 - [ ] Typ-Duplikation: Interfaces für Material, Comment, Review in mehreren Komponenten definiert — in gemeinsame `lib/types/` auslagern
 - [ ] PreviewGallery: Bilder mit raw `<img>` statt Next.js `<Image>` — kein Lazy Loading, keine responsive Sizes, kein Blur-Placeholder
@@ -137,8 +137,8 @@ Legende: [x] = erledigt, [ ] = offen
 
 - [x] Keine `generateMetadata()` Funktion — SEO-Metadaten, OpenGraph und Canonical URLs fehlen
 - [ ] Hardcodierte E-Mail `info@currico.ch` (Zeile 194) statt aus i18n — sollte über `t("noResults.contactEmail")` gelöst werden
-- [ ] FAQ-Tabs haben kein `aria-selected` Attribut — Screenreader können aktiven Tab nicht identifizieren
-- [ ] Accordion-Buttons fehlt `aria-expanded` Attribut — Screenreader erkennen geöffneten Zustand nicht
+- [x] FAQ-Tabs haben kein `aria-selected` Attribut — Screenreader können aktiven Tab nicht identifizieren
+- [x] Accordion-Buttons fehlt `aria-expanded` Attribut — Screenreader erkennen geöffneten Zustand nicht
 - [ ] Keine Suchfunktion für FAQ — bei 30+ Fragen wäre In-App-Suche hilfreich
 - [ ] Kategorie-State wird bei Tab-Wechsel / Navigation nicht gespeichert — LocalStorage-Persistierung würde helfen
 - [ ] Keine `FAQPage` Schema.org-Daten — Google Featured Snippets werden nicht unterstützt
@@ -242,7 +242,7 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Eigene Vorschläge (Über uns)
 
-- [ ] `Link` aus "next/link" importiert statt aus `@/i18n/navigation` — umgeht Locale-Handling, kann Mehrsprachigkeit brechen
+- [x] `Link` aus "next/link" importiert statt aus `@/i18n/navigation` — umgeht Locale-Handling, kann Mehrsprachigkeit brechen
 - [x] Layout-Metadata nutzt Canonical "/about" statt "/ueber-uns" — SEO-Fehler
 - [ ] Hardcoded SVG-Icons für Values statt lucide-react — inkonsistentes Icon-System
 - [ ] Persönliches Zitat (Kursiv-Serif) ohne klaren Kontext wer spricht — mehrdeutig
@@ -270,7 +270,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [ ] Formular-State nur Client-seitig (useState) — bei Navigation weg sind Daten ohne Warnung verloren
 - [ ] Erfolgs-Nachricht erklärt keine nächsten Schritte (z.B. "Wir melden uns in 24-48 Stunden")
 - [ ] Keine Referenznummer nach Absenden — Nutzer kann Anfrage nicht nachverfolgen
-- [ ] Fehlende `autocomplete`-Hints auf Formularfeldern (z.B. `autocomplete="email"`) — schlechte Accessibility
+- [x] Fehlende `autocomplete`-Hints auf Formularfeldern (z.B. `autocomplete="email"`) — schlechte Accessibility
 - [ ] Keine Schema.org `ContactPoint` Markup
 - [ ] Antwortzeit "24-48 Stunden" ist statischer Text — nicht konfigurierbar oder dynamisch
 
@@ -332,7 +332,7 @@ Legende: [x] = erledigt, [ ] = offen
 ### Eigene Vorschläge (Konto-Übersicht)
 
 - [ ] Profile-Completion-Banner nutzt localStorage mit Prozentwert-Key — könnte bei mehrfachem Speichern zu verwirrenden Zuständen führen
-- [ ] "Pending" Status wird als "Ausstehend" hardcoded — sollte i18n nutzen
+- [x] "Pending" Status wird als "Ausstehend" hardcoded — sollte i18n nutzen
 - [ ] Keine Filterung nach Material-Status auf der Overview
 - [ ] Recent Downloads zeigt max 6 Items ohne Pagination — bei mehr werden diese nicht angezeigt
 - [ ] Download-Funktion öffnet neues Fenster ohne Error-Handling für fehlgeschlagene Downloads
@@ -520,7 +520,7 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Eigene Vorschläge (Öffentliches Profil)
 
-- [ ] Hardcoded deutsche Strings: "Profil nicht gefunden", "Das gesuchte Profil existiert nicht", "Benutzer", "Materialien durchsuchen", "Profil wird geladen..." — alles in i18n auslagern
+- [x] Hardcoded deutsche Strings: "Profil nicht gefunden", "Das gesuchte Profil existiert nicht", "Benutzer", "Materialien durchsuchen", "Profil wird geladen..." — alles in i18n auslagern
 - [x] `getSubjectPillClass` lokal definiert statt aus Shared Utility — jetzt aus `lib/constants/subject-colors.ts` importiert
 - [ ] `formatPrice` ist lokal definiert statt aus Shared Utility — Code-Duplikation
 - [ ] Keine Validierung dass `params.id` ein gültiger UUID/Slug ist vor dem Fetchen
@@ -592,7 +592,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Viele Seiten haben keine `generateMetadata()` Funktion — fehlende SEO-Metadaten (hilfe, impressum, cookie-richtlinien, verifizierter-verkaeufer)
 - [ ] Keine CSRF-Token-Validierung sichtbar bei POST-Requests
 - [ ] localStorage wird für sensitive Daten genutzt (Drafts, Preferences) — könnte XSS-anfällig sein
-- [ ] `Link` aus "next/link" statt aus `@/i18n/navigation` auf einigen Seiten — umgeht Locale-Handling
+- [x] `Link` aus "next/link" statt aus `@/i18n/navigation` auf einigen Seiten — umgeht Locale-Handling
 - [x] Dekorative Icons (lucide-react) haben oft kein `aria-hidden="true"` — werden von Screenreadern vorgelesen (Impressum, TrustBar, SellerHeroSection)
 - [ ] Viele `<div>`-Container sollten semantische Elemente sein (`<section>`, `<nav>`, `<article>`) für bessere Accessibility
 - [ ] Keine Schema.org-Daten auf den meisten Seiten — fehlende Rich Snippets
