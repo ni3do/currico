@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import { Star, AlertCircle } from "lucide-react";
+import { Star, AlertCircle, RefreshCw } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { ReviewCard } from "./ReviewCard";
 import { ReviewForm } from "./ReviewForm";
@@ -85,7 +85,7 @@ export function ReviewsSection({ materialId, className = "" }: ReviewsSectionPro
         setLoading(false);
       }
     },
-    [materialId]
+    [materialId, tCommon]
   );
 
   useEffect(() => {
@@ -143,7 +143,17 @@ export function ReviewsSection({ materialId, className = "" }: ReviewsSectionPro
         <h2 className="text-text mb-6 text-2xl font-bold">{t("title")}</h2>
         <div className="border-error/50 bg-error/10 flex items-center gap-3 rounded-xl border p-6">
           <AlertCircle className="text-error h-5 w-5 flex-shrink-0" />
-          <p className="text-error">{error}</p>
+          <p className="text-error flex-1">{error}</p>
+          <button
+            onClick={() => {
+              setError(null);
+              fetchReviews();
+            }}
+            className="text-error hover:bg-error/10 inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
+          >
+            <RefreshCw className="h-4 w-4" />
+            {tCommon("errors.retry")}
+          </button>
         </div>
       </div>
     );

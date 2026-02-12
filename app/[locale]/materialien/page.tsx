@@ -14,11 +14,9 @@ import { MaterialCard } from "@/components/ui/MaterialCard";
 import { MaterialGridSkeleton, ProfileGridSkeleton } from "@/components/ui/Skeleton";
 import { EmptySearchState } from "@/components/ui/EmptySearchState";
 import { ProfileCard } from "@/components/ui/ProfileCard";
-import {
-  LP21FilterSidebar,
-  CANTON_ABBREVS,
-  type LP21FilterState,
-} from "@/components/search/LP21FilterSidebar";
+import { LP21FilterSidebar, type LP21FilterState } from "@/components/search/LP21FilterSidebar";
+import { FilterChips } from "@/components/search/FilterChips";
+import { PaginationControls } from "@/components/search/PaginationControls";
 import { FocusTrap } from "@/components/ui/FocusTrap";
 import { useCurriculum } from "@/lib/hooks/useCurriculum";
 import { useToast } from "@/components/ui/Toast";
@@ -64,6 +62,11 @@ interface Profile {
   resourceCount: number;
   followerCount: number;
 }
+
+/** Debounce delay (ms) before fetching materials after filter changes */
+const MATERIALS_DEBOUNCE_MS = 150;
+/** Debounce delay (ms) before fetching profiles after filter changes */
+const PROFILES_DEBOUNCE_MS = 300;
 
 export default function MaterialienPage() {
   const t = useTranslations("materialsPage");
@@ -174,7 +177,7 @@ export default function MaterialienPage() {
       }
       return false;
     },
-    [isAuthenticated, router, t, toast]
+    [isAuthenticated, t, toast]
   );
 
   // State for followed profile IDs
@@ -482,12 +485,25 @@ export default function MaterialienPage() {
     [toast, t]
   );
 
+  // Abort in-flight requests on unmount
+  useEffect(() => {
+    return () => {
+      materialsAbortRef.current?.abort();
+      profilesAbortRef.current?.abort();
+    };
+  }, []);
+
+  // Clear fetch error when filters change (so stale errors don't persist across tab switches)
+  useEffect(() => {
+    setFetchError(null);
+  }, [filters]);
+
   // Fetch materials when showMaterials is true (debounced to prevent flicker on rapid filter changes)
   useEffect(() => {
     if (filters.showMaterials) {
       const debounce = setTimeout(() => {
         fetchMaterials(filters, sortBy, currentPage);
-      }, 150);
+      }, MATERIALS_DEBOUNCE_MS);
       return () => clearTimeout(debounce);
     } else {
       setMaterials([]);
@@ -539,7 +555,7 @@ export default function MaterialienPage() {
     if (filters.showCreators) {
       const debounce = setTimeout(() => {
         fetchProfiles(filters, profileSortBy, profilePage);
-      }, 300);
+      }, PROFILES_DEBOUNCE_MS);
       return () => clearTimeout(debounce);
     } else {
       setProfiles([]);
@@ -783,249 +799,13 @@ export default function MaterialienPage() {
               </div>
 
               {/* Active Filter Chips - dismissable */}
-              {activeFilterCount > 0 && (
-                <motion.div
-                  className="mb-4 flex flex-wrap items-center gap-2"
-                  initial={{ opacity: 0, y: -8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <AnimatePresence mode="popLayout">
-                    {filters.searchQuery && (
-                      <motion.span
-                        key="chip-search"
-                        layout
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                        transition={{ duration: 0.15 }}
-                        className="bg-primary/10 text-primary border-primary/20 hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
-                      >
-                        &quot;{filters.searchQuery}&quot;
-                        <button
-                          onClick={() => handleFiltersChange({ ...filters, searchQuery: "" })}
-                          className="hover:bg-primary/20 flex h-5 w-5 items-center justify-center rounded-full transition-colors"
-                        >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </motion.span>
-                    )}
-                    {filters.zyklus && (
-                      <motion.span
-                        key="chip-zyklus"
-                        layout
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                        transition={{ duration: 0.15 }}
-                        className="bg-primary/10 text-primary border-primary/20 hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
-                      >
-                        {t("sidebar.chipCycle", { number: filters.zyklus })}
-                        <button
-                          onClick={() =>
-                            handleFiltersChange({
-                              ...filters,
-                              zyklus: null,
-                              fachbereich: null,
-                              kompetenzbereich: null,
-                              kompetenz: null,
-                            })
-                          }
-                          className="hover:bg-primary/20 flex h-5 w-5 items-center justify-center rounded-full transition-colors"
-                        >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </motion.span>
-                    )}
-                    {filters.fachbereich && (
-                      <motion.span
-                        key="chip-fachbereich"
-                        layout
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                        transition={{ duration: 0.15 }}
-                        className="bg-accent/10 text-accent border-accent/20 hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
-                      >
-                        {getFachbereichByCode(filters.fachbereich)?.shortName ||
-                          filters.fachbereich}
-                        <button
-                          onClick={() =>
-                            handleFiltersChange({
-                              ...filters,
-                              fachbereich: null,
-                              kompetenzbereich: null,
-                              kompetenz: null,
-                            })
-                          }
-                          className="hover:bg-accent/20 flex h-5 w-5 items-center justify-center rounded-full transition-colors"
-                        >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </motion.span>
-                    )}
-                    {filters.kompetenzbereich && (
-                      <motion.span
-                        key="chip-kompetenzbereich"
-                        layout
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                        transition={{ duration: 0.15 }}
-                        className="bg-accent/10 text-accent border-accent/20 hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
-                      >
-                        {filters.kompetenzbereich}
-                        <button
-                          onClick={() =>
-                            handleFiltersChange({
-                              ...filters,
-                              kompetenzbereich: null,
-                              kompetenz: null,
-                            })
-                          }
-                          className="hover:bg-accent/20 flex h-5 w-5 items-center justify-center rounded-full transition-colors"
-                        >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </motion.span>
-                    )}
-                    {filters.kompetenz && (
-                      <motion.span
-                        key="chip-kompetenz"
-                        layout
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                        transition={{ duration: 0.15 }}
-                        className="bg-accent/10 text-accent border-accent/20 hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
-                      >
-                        {filters.kompetenz}
-                        <button
-                          onClick={() => handleFiltersChange({ ...filters, kompetenz: null })}
-                          className="hover:bg-accent/20 flex h-5 w-5 items-center justify-center rounded-full transition-colors"
-                        >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </motion.span>
-                    )}
-                    {filters.dialect && (
-                      <motion.span
-                        key="chip-dialect"
-                        layout
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                        transition={{ duration: 0.15 }}
-                        className="bg-surface text-text-secondary border-border hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
-                      >
-                        {filters.dialect === "SWISS" ? "CH" : "DE"}
-                        <button
-                          onClick={() => handleFiltersChange({ ...filters, dialect: null })}
-                          className="hover:bg-surface-hover flex h-5 w-5 items-center justify-center rounded-full transition-colors"
-                        >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </motion.span>
-                    )}
-                    {filters.maxPrice !== null && (
-                      <motion.span
-                        key="chip-price"
-                        layout
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                        transition={{ duration: 0.15 }}
-                        className="bg-surface text-text-secondary border-border hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
-                      >
-                        {t("sidebar.priceUnder", { amount: filters.maxPrice })}
-                        <button
-                          onClick={() => handleFiltersChange({ ...filters, maxPrice: null })}
-                          className="hover:bg-surface-hover flex h-5 w-5 items-center justify-center rounded-full transition-colors"
-                        >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </motion.span>
-                    )}
-                    {filters.formats.map((fmt) => (
-                      <motion.span
-                        key={`chip-fmt-${fmt}`}
-                        layout
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                        transition={{ duration: 0.15 }}
-                        className="bg-surface text-text-secondary border-border hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
-                      >
-                        {fmt.toUpperCase()}
-                        <button
-                          onClick={() =>
-                            handleFiltersChange({
-                              ...filters,
-                              formats: filters.formats.filter((f) => f !== fmt),
-                            })
-                          }
-                          className="hover:bg-surface-hover flex h-5 w-5 items-center justify-center rounded-full transition-colors"
-                        >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </motion.span>
-                    ))}
-                    {filters.cantons.length > 0 && (
-                      <motion.span
-                        key="chip-cantons"
-                        layout
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                        transition={{ duration: 0.15 }}
-                        className="bg-surface text-text-secondary border-border hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
-                      >
-                        {filters.cantons.length <= 3
-                          ? filters.cantons
-                              .map((c) => CANTON_ABBREVS.find((ca) => ca.name === c)?.abbrev || c)
-                              .join(", ")
-                          : t("sidebar.cantonChipMultiple", { count: filters.cantons.length })}
-                        <button
-                          onClick={() => handleFiltersChange({ ...filters, cantons: [] })}
-                          className="hover:bg-surface-hover flex h-5 w-5 items-center justify-center rounded-full transition-colors"
-                        >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </motion.span>
-                    )}
-                    {activeFilterCount >= 1 && (
-                      <motion.button
-                        key="chip-reset"
-                        layout
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.15 }}
-                        onClick={() =>
-                          handleFiltersChange({
-                            showMaterials: filters.showMaterials,
-                            showCreators: filters.showCreators,
-                            zyklus: null,
-                            fachbereich: null,
-                            kompetenzbereich: null,
-                            kompetenz: null,
-                            searchQuery: "",
-                            dialect: null,
-
-                            maxPrice: null,
-                            formats: [],
-
-                            cantons: [],
-                          })
-                        }
-                        className="text-text-muted hover:text-error text-xs font-medium transition-colors"
-                      >
-                        {t("sidebar.reset")}
-                      </motion.button>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-              )}
+              <FilterChips
+                filters={filters}
+                onFiltersChange={handleFiltersChange}
+                activeFilterCount={activeFilterCount}
+                getFachbereichByCode={getFachbereichByCode}
+                t={t}
+              />
 
               {/* Error State */}
               {fetchError ? (
@@ -1180,107 +960,16 @@ export default function MaterialienPage() {
               )}
 
               {/* Pagination — works for both tabs */}
-              {(() => {
-                const activePagination = filters.showMaterials ? pagination : profilePagination;
-                const activePage = filters.showMaterials ? currentPage : profilePage;
-                const onPageChange = filters.showMaterials
-                  ? handlePageChange
-                  : handleProfilePageChange;
-
-                if (activePagination.totalPages <= 1) return null;
-
-                return (
-                  <div className="mt-12 flex justify-center">
-                    <nav className="flex items-center gap-1" aria-label={t("pagination.nav")}>
-                      {/* Previous button */}
-                      <button
-                        onClick={() => onPageChange(activePage - 1)}
-                        className="text-text-muted hover:bg-surface rounded-md px-3 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
-                        disabled={activePage === 1}
-                        aria-label={t("pagination.previous")}
-                      >
-                        <svg
-                          className="h-5 w-5"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M15 19l-7-7 7-7"
-                          />
-                        </svg>
-                      </button>
-
-                      {/* Page numbers with ellipsis for large page counts */}
-                      {(() => {
-                        const pages: (number | string)[] = [];
-                        const totalPages = activePagination.totalPages;
-                        const current = activePage;
-
-                        if (totalPages <= 7) {
-                          for (let i = 1; i <= totalPages; i++) pages.push(i);
-                        } else {
-                          pages.push(1);
-                          if (current > 3) pages.push("...");
-                          const start = Math.max(2, current - 1);
-                          const end = Math.min(totalPages - 1, current + 1);
-                          for (let i = start; i <= end; i++) pages.push(i);
-                          if (current < totalPages - 2) pages.push("...");
-                          pages.push(totalPages);
-                        }
-
-                        return pages.map((pageNum, idx) =>
-                          pageNum === "..." ? (
-                            <span
-                              key={`ellipsis-${idx}`}
-                              className="text-text-muted px-2 py-2 text-sm"
-                            >
-                              ...
-                            </span>
-                          ) : (
-                            <button
-                              key={pageNum}
-                              onClick={() => onPageChange(pageNum as number)}
-                              className={`min-w-[40px] rounded-md px-4 py-2 text-sm font-medium transition-all duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                                pageNum === activePage
-                                  ? "bg-primary text-text-on-accent shadow-sm"
-                                  : "text-text-secondary hover:bg-surface hover:scale-105 active:scale-95"
-                              }`}
-                            >
-                              {pageNum}
-                            </button>
-                          )
-                        );
-                      })()}
-
-                      {/* Next button */}
-                      <button
-                        onClick={() => onPageChange(activePage + 1)}
-                        className="text-text-secondary hover:bg-surface rounded-md px-3 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
-                        disabled={activePage === activePagination.totalPages}
-                        aria-label={t("pagination.next")}
-                      >
-                        <svg
-                          className="h-5 w-5"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 5l7 7-7 7"
-                          />
-                        </svg>
-                      </button>
-                    </nav>
-                  </div>
-                );
-              })()}
+              <PaginationControls
+                currentPage={filters.showMaterials ? currentPage : profilePage}
+                totalPages={(filters.showMaterials ? pagination : profilePagination).totalPages}
+                onPageChange={filters.showMaterials ? handlePageChange : handleProfilePageChange}
+                labels={{
+                  nav: t("pagination.nav"),
+                  previous: t("pagination.previous"),
+                  next: t("pagination.next"),
+                }}
+              />
             </div>
           </div>
         }

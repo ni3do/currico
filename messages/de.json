@@ -83,7 +83,8 @@
       "saveFailed": "Änderungen konnten nicht gespeichert werden.",
       "deleteFailed": "Löschen fehlgeschlagen.",
       "sendFailed": "Nachricht konnte nicht gesendet werden.",
-      "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten."
+      "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten.",
+      "retry": "Erneut versuchen"
     },
     "sort": {
       "label": "Sortierung",

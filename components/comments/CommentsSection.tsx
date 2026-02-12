@@ -75,7 +75,7 @@ export function CommentsSection({ materialId, className = "" }: CommentsSectionP
         setLoading(false);
       }
     },
-    [materialId]
+    [materialId, tCommon]
   );
 
   useEffect(() => {
@@ -84,7 +84,12 @@ export function CommentsSection({ materialId, className = "" }: CommentsSectionP
 
   const handleCommentSubmitted = (newComment: Comment | Reply) => {
     // The API returns a full Comment object when creating a comment
-    setComments([newComment as Comment, ...comments]);
+    // Ensure it has all Comment fields before adding
+    const comment: Comment =
+      "replyCount" in newComment
+        ? newComment
+        : { ...newComment, likeCount: 0, isLiked: false, replies: [], replyCount: 0 };
+    setComments([comment, ...comments]);
     setTotalCount((prev) => prev + 1);
   };
 
