@@ -23,6 +23,9 @@ import {
 import { getStorage } from "@/lib/storage";
 import { sanitizeSearchQuery, isLP21Code } from "@/lib/search-utils";
 
+/** Minimum trigram similarity score for fuzzy search fallback */
+const FUZZY_MATCH_THRESHOLD = 0.15;
+
 /**
  * GET /api/materials
  * Public endpoint to fetch published and approved materials
@@ -171,8 +174,8 @@ export async function GET(request: NextRequest) {
                 FROM resources
                 WHERE is_published = true AND is_public = true
                   AND (
-                    similarity(title, ${sanitizedSearch}) > 0.15
-                    OR similarity(description, ${sanitizedSearch}) > 0.15
+                    similarity(title, ${sanitizedSearch}) > ${FUZZY_MATCH_THRESHOLD}
+                    OR similarity(description, ${sanitizedSearch}) > ${FUZZY_MATCH_THRESHOLD}
                   )
                 ORDER BY sim DESC
                 LIMIT 50

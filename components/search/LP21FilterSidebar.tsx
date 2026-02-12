@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, useRef, useEffect } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect, useId } from "react";
 import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -65,6 +65,9 @@ export const CANTON_ABBREVS: { abbrev: string; name: string }[] = [
 ];
 
 // Format options (labelKey resolved via i18n at render time)
+/** Debounce delay (ms) before propagating search query to parent */
+const SEARCH_DEBOUNCE_MS = 300;
+
 const FORMAT_OPTIONS = [
   { id: "pdf", labelKey: "formatPdf", icon: FileText },
   { id: "word", labelKey: "formatWord", icon: FileType },
@@ -92,12 +95,15 @@ function CollapsibleSection({
   children,
 }: CollapsibleSectionProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
+  const panelId = useId();
 
   return (
     <div>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="group mb-3 flex w-full items-center gap-2"
+        aria-expanded={isOpen}
+        aria-controls={panelId}
       >
         {icon}
         <h3 className="label-meta flex-1 text-left">{title}</h3>
@@ -112,6 +118,8 @@ function CollapsibleSection({
       <AnimatePresence initial={false}>
         {isOpen && (
           <motion.div
+            id={panelId}
+            role="region"
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -355,7 +363,7 @@ export function LP21FilterSidebar({
         ...filtersRef.current,
         searchQuery: query,
       });
-    }, 300);
+    }, SEARCH_DEBOUNCE_MS);
   }, []);
 
   // Apply smart search suggestions
@@ -917,6 +925,8 @@ function FachbereichAccordion({
           {hasChildren ? (
             <motion.button
               onClick={onToggleExpand}
+              aria-expanded={isExpanded}
+              aria-label={`${isExpanded ? "Collapse" : "Expand"} ${fachbereich.name}`}
               className={`flex h-full items-center px-2 transition-colors ${
                 isSelected ? "text-text hover:text-text" : "text-text-muted hover:text-text"
               }`}
@@ -934,6 +944,7 @@ function FachbereichAccordion({
           {/* Main button */}
           <motion.button
             onClick={onSelect}
+            aria-pressed={isSelected}
             className="flex flex-1 items-center gap-2.5 py-2 pr-3 text-left"
             whileTap={{ scale: 0.98 }}
           >
@@ -1055,6 +1066,8 @@ function KompetenzbereichItem({
               isSelected ? "text-text" : "text-text-muted hover:text-text"
             }`}
             whileTap={{ scale: 0.9 }}
+            aria-expanded={isExpanded}
+            aria-label={`${isExpanded ? "Collapse" : "Expand"} ${kompetenzbereich.code}`}
           >
             <motion.span animate={{ rotate: isExpanded ? 90 : 0 }} transition={{ duration: 0.2 }}>
               <ChevronRight className="h-3.5 w-3.5" />
