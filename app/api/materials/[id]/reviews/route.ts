@@ -23,7 +23,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     // Check if material exists
     const material = await prisma.resource.findUnique({
       where: { id: materialId },
-      select: { id: true },
+      select: { id: true, seller_id: true },
     });
 
     if (!material) {
@@ -80,9 +80,9 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       });
     }
 
-    // Check if current user can review (has purchased/downloaded)
+    // Check if current user can review (has purchased/downloaded, not the seller)
     let canReview = false;
-    if (session?.user?.id && !userReview) {
+    if (session?.user?.id && !userReview && material.seller_id !== session.user.id) {
       const hasPurchased = await prisma.transaction.findFirst({
         where: {
           buyer_id: session.user.id,

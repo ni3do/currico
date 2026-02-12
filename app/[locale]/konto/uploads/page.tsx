@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { FileText } from "lucide-react";
-import { useAccountData } from "@/lib/hooks/useAccountData";
 import { DashboardMaterialCard } from "@/components/ui/DashboardMaterialCard";
 import type { UploadedItem } from "@/lib/types/account";
 
 export default function AccountUploadsPage() {
-  const { userData, stats } = useAccountData();
+  const t = useTranslations("accountPage.uploads");
 
   const [uploadedItems, setUploadedItems] = useState<UploadedItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -49,15 +49,15 @@ export default function AccountUploadsPage() {
     <div className="border-border bg-surface rounded-xl border p-6">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="text-text text-xl font-semibold">Meine Uploads</h2>
-          <p className="text-text-muted mt-1 text-sm">Materialien, die Sie hochgeladen haben</p>
+          <h2 className="text-text text-xl font-semibold">{t("title")}</h2>
+          <p className="text-text-muted mt-1 text-sm">{t("subtitle")}</p>
         </div>
         <Link
           href="/hochladen"
           className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors"
         >
           <span>+</span>
-          Neues Material
+          {t("newMaterial")}
         </Link>
       </div>
 
@@ -65,7 +65,7 @@ export default function AccountUploadsPage() {
       <div className="mb-6 flex flex-col gap-3 sm:flex-row">
         <input
           type="text"
-          placeholder="Uploads durchsuchen..."
+          placeholder={t("search")}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary flex-1 rounded-lg border px-4 py-2 text-sm focus:ring-1 focus:outline-none"
@@ -75,45 +75,48 @@ export default function AccountUploadsPage() {
           onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
           className="border-border bg-bg text-text rounded-lg border px-3 py-2 text-sm"
         >
-          <option value="newest">Neueste zuerst</option>
-          <option value="oldest">Älteste zuerst</option>
-          <option value="title">Alphabetisch</option>
-          <option value="popular">Beliebteste</option>
+          <option value="newest">{t("sort.newest")}</option>
+          <option value="oldest">{t("sort.oldest")}</option>
+          <option value="title">{t("sort.title")}</option>
+          <option value="popular">{t("sort.popular")}</option>
         </select>
       </div>
 
       {uploadedLoading ? (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
           {[1, 2, 3].map((i) => (
             <div key={i} className="card animate-pulse overflow-hidden">
-              <div className="bg-bg-secondary aspect-[16/9]"></div>
-              <div className="p-4">
-                <div className="bg-surface-hover mb-3 h-5 w-20 rounded-full"></div>
-                <div className="bg-surface-hover mb-2 h-3 w-24 rounded"></div>
-                <div className="bg-surface-hover mb-2 h-5 w-full rounded"></div>
-                <div className="bg-surface-hover mb-4 h-4 w-32 rounded"></div>
-                <div className="bg-surface-hover h-10 w-full rounded-lg"></div>
+              <div className="bg-bg-secondary aspect-[4/3]"></div>
+              <div className="px-3 pt-2.5 pb-3">
+                <div className="bg-surface-hover mb-2 h-3 w-20 rounded"></div>
+                <div className="bg-surface-hover mb-1.5 h-4 w-full rounded"></div>
+                <div className="border-border-subtle mt-3 border-t pt-2">
+                  <div className="flex items-center justify-between">
+                    <div className="bg-surface-hover h-3 w-16 rounded"></div>
+                    <div className="bg-surface-hover h-6 w-14 rounded-full"></div>
+                  </div>
+                </div>
               </div>
             </div>
           ))}
         </div>
       ) : uploadedItems.length > 0 ? (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
           {uploadedItems.map((item) => (
             <DashboardMaterialCard
               key={item.id}
               id={item.id}
               title={item.title}
-              description={item.description}
               subject={item.subject}
               cycle={item.cycle}
               previewUrl={item.previewUrl}
+              editHref={`/materialien/${item.id}/edit`}
               badge={{
                 label:
                   item.status === "VERIFIED"
-                    ? "Verifiziert"
+                    ? t("statusVerified")
                     : item.status === "PENDING"
-                      ? "Ausstehend"
+                      ? t("statusPending")
                       : item.status,
                 variant:
                   item.status === "VERIFIED"
@@ -130,28 +133,19 @@ export default function AccountUploadsPage() {
                 downloads: item.downloadCount,
                 purchases: item.purchaseCount,
               }}
-              primaryAction={{
-                label: "Bearbeiten",
-                icon: "view",
-                href: `/materialien/${item.id}/edit`,
-              }}
             />
           ))}
         </div>
       ) : (
         <div className="py-12 text-center">
           <FileText className="text-text-faint mx-auto mb-4 h-16 w-16" />
-          <h3 className="text-text mb-2 text-lg font-medium">
-            Noch keine hochgeladenen Materialien
-          </h3>
-          <p className="text-text-muted mb-4">
-            Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen.
-          </p>
+          <h3 className="text-text mb-2 text-lg font-medium">{t("empty")}</h3>
+          <p className="text-text-muted mb-4">{t("emptyDescription")}</p>
           <Link
             href="/hochladen"
             className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
           >
-            Material hochladen
+            {t("uploadFirst")}
           </Link>
         </div>
       )}

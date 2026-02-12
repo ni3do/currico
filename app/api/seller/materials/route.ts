@@ -43,6 +43,7 @@ export async function GET() {
         preview_url: true,
       },
       orderBy: { created_at: "desc" },
+      take: 100,
     });
 
     // Transform materials for bundle selection

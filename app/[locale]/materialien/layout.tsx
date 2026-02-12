@@ -9,12 +9,12 @@ export async function generateMetadata({
   const isDE = locale === "de";
 
   return {
-    title: isDE ? "Materialien durchsuchen" : "Browse Materials",
+    title: isDE ? "Unterrichtsmaterialien — Currico" : "Teaching Materials — Currico",
     description: isDE
       ? "Unterrichtsmaterialien für den Schweizer Lehrplan 21 durchsuchen. Filtern nach Fachbereich, Zyklus und mehr."
       : "Browse teaching materials for the Swiss LP21 curriculum. Filter by subject, cycle, and more.",
     openGraph: {
-      title: isDE ? "Materialien | Currico" : "Materials | Currico",
+      title: isDE ? "Unterrichtsmaterialien — Currico" : "Teaching Materials — Currico",
       description: isDE
         ? "Unterrichtsmaterialien für den Schweizer Lehrplan 21 durchsuchen."
         : "Browse teaching materials for the Swiss LP21 curriculum.",

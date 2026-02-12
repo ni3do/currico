@@ -31,6 +31,7 @@ export async function GET() {
         },
       },
       orderBy: { created_at: "desc" },
+      take: 100,
     });
 
     const sellers = following.map((f) => ({

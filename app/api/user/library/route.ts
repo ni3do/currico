@@ -21,11 +21,19 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const search = searchParams.get("search") || "";
     const type = searchParams.get("type") || "acquired";
-    const limit = parseInt(searchParams.get("limit") || "50");
+    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") || "50")));
     const offset = parseInt(searchParams.get("offset") || "0");
 
     // If type is "uploaded", return user's own resources
     if (type === "uploaded") {
+      const sort = searchParams.get("sort") || "newest";
+      const orderBy: Record<string, "asc" | "desc"> =
+        sort === "oldest"
+          ? { created_at: "asc" }
+          : sort === "title"
+            ? { title: "asc" }
+            : { created_at: "desc" };
+
       const uploadedResources = await prisma.resource.findMany({
         where: {
           seller_id: userId,
@@ -50,7 +58,7 @@ export async function GET(request: NextRequest) {
             },
           },
         },
-        orderBy: { created_at: "desc" },
+        orderBy,
         take: limit,
         skip: offset,
       });
@@ -59,7 +67,7 @@ export async function GET(request: NextRequest) {
         where: { seller_id: userId },
       });
 
-      const items = uploadedResources.map((r) => {
+      let items = uploadedResources.map((r) => {
         const subjects = toStringArray(r.subjects);
         const cycles = toStringArray(r.cycles);
         return {
@@ -83,6 +91,11 @@ export async function GET(request: NextRequest) {
           purchaseCount: r._count.transactions,
         };
       });
+
+      // Sort by popularity (download count) client-side since Prisma can't sort by _count easily
+      if (sort === "popular") {
+        items = items.sort((a, b) => b.downloadCount - a.downloadCount);
+      }
 
       return NextResponse.json({
         items,

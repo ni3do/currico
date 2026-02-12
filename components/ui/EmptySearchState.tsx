@@ -11,12 +11,6 @@ interface EmptySearchStateProps {
   onSuggestionClick?: (query: string) => void;
 }
 
-// Common search suggestions based on popular Swiss curriculum topics
-const SUGGESTIONS_DE: Record<string, string[]> = {
-  default: ["Mathematik Zyklus 2", "Deutsch Lesen", "NMG Tiere", "Sport Spiele"],
-  search: ["Kürzeren Suchbegriff verwenden", "Rechtschreibung prüfen"],
-};
-
 export function EmptySearchState({
   filters,
   onResetFilters,
@@ -32,10 +26,9 @@ export function EmptySearchState({
     filters.kompetenzbereich !== null ||
     filters.kompetenz !== null ||
     filters.dialect !== null ||
-    filters.priceType !== null ||
     filters.maxPrice !== null ||
     filters.formats.length > 0 ||
-    filters.materialScope !== null;
+    filters.cantons.length > 0;
   const hasAny = hasSearch || hasFilters;
   const isProfilesTab = !filters.showMaterials && filters.showCreators;
 
@@ -109,9 +102,29 @@ export function EmptySearchState({
             </span>
           </div>
           <div className="flex flex-wrap justify-center gap-2">
-            {SUGGESTIONS_DE.default.map((suggestion) => (
+            {(isProfilesTab
+              ? [
+                  t("empty.profileSuggestion1"),
+                  t("empty.profileSuggestion2"),
+                  t("empty.profileSuggestion3"),
+                  t("empty.profileSuggestion4"),
+                ]
+              : hasFilters
+                ? [
+                    t("empty.filterSuggestion1"),
+                    t("empty.filterSuggestion2"),
+                    t("empty.suggestion1"),
+                    t("empty.suggestion2"),
+                  ]
+                : [
+                    t("empty.suggestion1"),
+                    t("empty.suggestion2"),
+                    t("empty.suggestion3"),
+                    t("empty.suggestion4"),
+                  ]
+            ).map((suggestion, index) => (
               <button
-                key={suggestion}
+                key={`suggestion-${index}`}
                 onClick={() => onSuggestionClick(suggestion)}
                 className="bg-surface border-border text-text-secondary hover:border-primary hover:text-primary rounded-full border px-3 py-1.5 text-xs font-medium transition-all hover:shadow-sm"
               >

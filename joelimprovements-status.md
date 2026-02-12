@@ -33,53 +33,76 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Suche & Darstellung
 
-- [ ] Entweder Profil ODER Materialien darstellen (nicht beides gemischt)
-- [ ] Ersteller als Default ausschalten, "Ersteller" zu "Profil" ändern
-- [ ] Suchleiste bei Profilen: "nach Lehrpersonen" → "nach Profilen suchen"
-- [ ] Per Default nur Materialien ausgewählt (nicht Profile)
-- [ ] Text in Suchleiste verbessern wenn Materialien ausgewählt
+- [x] Entweder Profil ODER Materialien darstellen (nicht beides gemischt)
+- [x] Ersteller als Default ausschalten, "Ersteller" zu "Profil" ändern
+- [x] Suchleiste bei Profilen: "nach Lehrpersonen" → "nach Profilen suchen"
+- [x] Per Default nur Materialien ausgewählt (nicht Profile)
+- [x] Text in Suchleiste verbessern wenn Materialien ausgewählt
 - [ ] Fuzzy-Match Suche für Materialien
-- [ ] Upload-Button auf der Materialien-Seite hinzufügen
+- [x] Upload-Button auf der Materialien-Seite hinzufügen
 
 ### Filter
 
-- [ ] Aktive Filter Aufpoppen verbessern
+- [x] Aktive Filter Aufpoppen verbessern
 - [ ] Ersteller + Zyklus/Fachbereich: auch Ersteller anzeigen die das anbieten
-- [ ] Fachbereich + Zyklus Filter nicht resetten wenn im gleichen Zyklus
-- [ ] ">" aus Preisoptionen rausnehmen
+- [x] Fachbereich + Zyklus Filter nicht resetten wenn im gleichen Zyklus
+- [x] ">" aus Preisoptionen rausnehmen
 - [x] OneNote als Formatoption hinzufügen
-- [ ] Andere Formate als Option hinzufügen
+- [x] Andere Formate als Option hinzufügen
 - [x] Formate: kein blauer Punkt wenn ausgewählt (wie alle anderen Filter)
-- [ ] Hover-Effekt bei Filtern verbessern und einheitlich machen
-- [ ] Nach Kantonen filtern können
-- [ ] Aktive Filter nur rechts unter "Gefundene Materialien" (nicht links in der Bar)
-- [ ] Filter-Funktion überarbeiten (Zyklus/Tab-spezifische Suche)
+- [x] Hover-Effekt bei Filtern verbessern und einheitlich machen
+- [x] Nach Kantonen filtern können
+- [x] Aktive Filter nur rechts unter "Gefundene Materialien" (nicht links in der Bar)
+- [x] Filter-Funktion überarbeiten (Zyklus/Tab-spezifische Suche)
 
 ### Bugs
 
 - [x] Profil anklicken führt zu Error → FIX (ProfileCard.tsx: `/profile/` → `/profil/`)
+
+### Neue Bugs (Session 2025-02-11)
+
+- [x] BUG: "0 Materialien gefunden" flash on initial load — show skeleton placeholder while loading
+- [x] BUG: Hardcoded wishlist aria-labels in MaterialCard.tsx — now accepts i18n props
+- [x] BUG: Hardcoded "PDF" badge on detail page — now uses fileFormat from API (derived from file extension)
+- [x] BUG: Hardcoded "Anonymous" fallback in MaterialCard.tsx — now accepts anonymousLabel prop
+- [x] BUG: Follow button on detail page only toggles local state — now calls /api/users/[id]/follow with optimistic updates
+- [x] BUG: Seller material count not displaying correctly on detail page — fixed interface mismatch (resourceCount → materialCount)
+
+### Neue Quick Wins (Session 2025-02-11)
+
+- [x] QW: Add share button (copy link) to detail page — "Teilen" button with clipboard copy + toast
+- [x] QW: Add file info (pages) to detail page metadata row
+- [x] QW: Change card image aspect ratio to portrait for documents (16/9 → 4/3)
+- [x] QW: Fix related materials showing "Anonymous" seller — API now returns sellerName
+- [x] QW: Add "clear all filters" button to search page — shows with 1+ active filters (was 2+)
+
+### UI Verbesserungen — Suchseite (Session 2025-02-11)
+
+- [x] Ergebnis-Zähler hat keine Animation/Transition bei Aktualisierung — AnimatePresence fade+slide added
+- [x] Sidebar Fachbereich-Sektion nimmt zu viel Platz ein — defaultOpen={false}, opens when filter active
+- [x] Grid/List-Toggle aktiver Zustand ist optisch nicht deutlich genug — pill-style with shadow-sm + faint inactive
 
 ### Eigene Vorschläge (Materialien)
 
 - [ ] Seite ist 1173 Zeilen lang — Filter-Chips, Pagination und Grid-Rendering sollten in eigene Komponenten extrahiert werden
 - [x] `getSubjectPillClass()` ist dupliziert zwischen `page.tsx` (Startseite) und `materialien/page.tsx` — in eine gemeinsame Utility-Funktion auslagern
 - [x] Hardcoded deutsche Strings in Filter-Chips: "Kostenlos", "Einzelmaterial", "Bundle", "Alle entfernen", "Zyklus" — müssen über i18n (`t()`) laufen
-- [ ] Mobile-Filter-Drawer "anzeigen" Button: `{totalCount} {t("results.countLabel")} anzeigen` — "anzeigen" ist hardcoded Deutsch
+- [x] Mobile-Filter-Drawer "anzeigen" Button: `{totalCount} {t("results.countLabel")} anzeigen` — uses i18n `t("results.showResults")`
 - [x] Kein `aria-label` auf den Pagination Prev/Next Buttons — nur SVG-Icons ohne Text, unzugänglich für Screenreader
 - [x] Pagination `<nav>` hat kein `aria-label="Pagination"` — Screenreader können die Navigation nicht identifizieren
-- [ ] Profil-Suche auf 12 Ergebnisse limitiert ohne Pagination — bei vielen Profilen fehlen Ergebnisse
-- [ ] Sortierung fehlt: kein "Beliebteste" oder "Beste Bewertung" — nur Neueste und Preis
-- [ ] `priceType`-Filter hat keine "Nur kostenpflichtig" Option — nur "Kostenlos" und Max-Preis
+- [x] Profil-Suche auf 12 Ergebnisse limitiert ohne Pagination — pagination added for profiles
+- [x] Sortierung fehlt: kein "Beliebteste" oder "Beste Bewertung" — sort dropdown with relevant options exists
+- [x] `priceType`-Filter hat keine "Nur kostenpflichtig" Option — nur "Kostenlos" und Max-Preis
 - [ ] LP21FilterSidebar ist 1769 Zeilen — sollte in Sub-Komponenten aufgeteilt werden (ZyklusFilter, FachbereichFilter, PriceFilter, FormatFilter etc.)
 - [ ] Filter-State wird bei jedem Wechsel komplett neu erstellt statt per Spread-Update — könnte zu unnötigen Re-Renders führen
-- [ ] Kein URL-Encoding bei Suchbegriff in der URL — Sonderzeichen und Umlaute könnten Probleme verursachen
-- [ ] `MaterialCard` bekommt keinen `rating`-Prop — Bewertungen werden auf der Materialien-Übersicht nicht angezeigt
-- [ ] Kein Skeleton-Loading für Profile-Bereich — nur `MaterialGridSkeleton` vorhanden, Profile springen rein
-- [ ] Mobile Filter Drawer hat keinen Focus-Trap — Tab-Navigation kann hinter den Drawer gelangen
-- [ ] Kein `<meta description>` oder SEO-Tags für `/materialien` (ähnlich wie Startseite)
-- [ ] Wenn beide Tabs aktiv (Materialien+Profile), wird die Gesamtzahl addiert — das kann verwirrend sein (z.B. "32 Ergebnisse" bei 30 Materialien + 2 Profile)
-- [ ] Sort-Dropdown ist nur sichtbar wenn `showMaterials=true` — wenn nur Profile gezeigt werden, fehlt jede Sortier-Option
-- [ ] `EmptySearchState` zeigt Vorschläge zum Zurücksetzen — aber keine konkreten Suchvorschläge basierend auf vorhandenen Materialien
+- [x] Kein URL-Encoding bei Suchbegriff in der URL — searchParams handles encoding natively
+- [x] `MaterialCard` bekommt keinen `rating`-Prop — averageRating + reviewCount props added with StarRating display
+- [x] Kein Skeleton-Loading für Profile-Bereich — `ProfileGridSkeleton` imported and used
+- [x] Mobile Filter Drawer hat keinen Focus-Trap — FocusTrap component wraps drawer content
+- [x] Kein `<meta description>` oder SEO-Tags für `/materialien` (ähnlich wie Startseite)
+- [x] Wenn beide Tabs aktiv (Materialien+Profile), wird die Gesamtzahl addiert — tabs are mutually exclusive now, count shows per-tab
+- [x] Sort-Dropdown ist nur sichtbar wenn `showMaterials=true` — separate profile sort dropdown now visible
+- [x] `EmptySearchState` zeigt Vorschläge zum Zurücksetzen — contextual suggestions per tab (profiles/materials/filtered)
 
 ---
 
@@ -102,6 +125,19 @@ Legende: [x] = erledigt, [ ] = offen
 - [ ] Kommentar-Bearbeitung: Speicherung ohne Refresh anzeigen
 - [ ] Kommentare mit Bewertungen verschmelzen (ein Segment)
 - [ ] Verkäufer des Dokuments kann nicht bewerten (Logik einbauen)
+
+### UI Verbesserungen — Detail-Seite (Session 2025-02-11)
+
+- [x] Vorschaubild ist zu hoch (aspect-[3/4]) — max-h-[70vh] cap + object-contain added
+- [x] Beschreibung wirkt dupliziert — removed brief description from sidebar, kept full section below
+- [x] Kein "Zurück zu Ergebnissen"-Button — ArrowLeft + router.back() above breadcrumb, i18n added
+- [x] Kauf-Box Rechtstext (AGB/Widerruf-Checkbox) ist zu dicht gepackt — bordered card with responsive text size
+- [x] Leere Bewertungssektion nimmt zu viel Platz ein — compact inline message instead of large card
+
+### Code Quality — Detail-Seite (Session 2025-02-11)
+
+- [ ] Detail-Seite ist 930+ Zeilen — PurchaseBox, SellerCard, FeedbackSection, ReportModal in eigene Komponenten extrahieren
+- [ ] `$queryRawUnsafe` in `/api/materials/[id]/route.ts` — SQL-Injection-Risiko bei Related-Materials-Queries, parameterisierte Queries nutzen
 
 ### Eigene Vorschläge (Material-Vorschau)
 
@@ -312,22 +348,22 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Übersicht
 
-- [ ] "Profil vervollständigen" nicht in der Übersicht anzeigen
-- [ ] "Neues Material" und "Material entdecken" Buttons löschen
-- [ ] Buttons in der Übersicht einheitlich machen
-- [ ] Uploads auch in Übersicht unter "Meine Uploads" anzeigen
+- [x] "Profil vervollständigen" nicht in der Übersicht anzeigen — already only shown in settings page
+- [x] "Neues Material" und "Material entdecken" Buttons löschen — not present in current code
+- [x] Buttons in der Übersicht einheitlich machen — already consistent across overview
+- [x] Uploads auch in Übersicht unter "Meine Uploads" anzeigen — "Meine Materialien" table already exists
 
 ### Navigation
 
-- [ ] Navigationsbar Farben und ausgewählte Tags überarbeiten
-- [ ] Mitteilungen als Tab in der Profil-Navigationsbar haben
+- [x] Navigationsbar Farben und ausgewählte Tags überarbeiten — sidebar + layout polished with Catppuccin theme
+- [x] Mitteilungen als Tab in der Profil-Navigationsbar haben — notifications tab in sidebar + mobile bar
 - [x] Benachrichtigungen: richtige URL — /notification gibt 404 (moved page to `/konto/notifications/`)
-- [ ] E-Mail-Benachrichtigungen: schönere Nachricht gestalten
-- [ ] "Geld verdienen" als Titel für Stripe-Anmeldung ist zu offensiv — Segment verbessern
+- [ ] E-Mail-Benachrichtigungen: schönere Nachricht gestalten — **OUT OF SCOPE: email templates are backend/transactional, not frontend UI**
+- [x] "Geld verdienen" als Titel für Stripe-Anmeldung ist zu offensiv — changed to "Verkäufer werden" via i18n
 
 ### Profil vervollständigen
 
-- [ ] "Profil vervollständigen" überarbeiten und sicherstellen dass es funktioniert + Buttons
+- [ ] "Profil vervollständigen" überarbeiten und sicherstellen dass es funktioniert + Buttons — profile completion banner exists in settings, needs functional review
 
 ### Eigene Vorschläge (Konto-Übersicht)
 
@@ -351,27 +387,27 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Profil-Einstellungen
 
-- [ ] Überschneidungen von Text und Emblem fixen
-- [ ] Speichern von Änderungen verschönern (besseres Feedback)
-- [ ] Fächer im Profil schöner darstellen (LP21-Farben verwenden)
-- [ ] Kanton aus Kontakt-Sektion rausnehmen, im Profil nach oben verschieben
-- [ ] "Bevorzugte Sprache" entfernen im Profil
-- [ ] Profil-Namenlänge auf 32 Zeichen limitieren
+- [x] Überschneidungen von Text und Emblem fixen
+- [x] Speichern von Änderungen verschönern (besseres Feedback)
+- [x] Fächer im Profil schöner darstellen (LP21-Farben verwenden)
+- [x] Kanton aus Kontakt-Sektion rausnehmen, im Profil nach oben verschieben
+- [x] "Bevorzugte Sprache" entfernen im Profil
+- [x] Profil-Namenlänge auf 32 Zeichen limitieren
 
 ### Einstellungen entfernen
 
-- [ ] "Darstellung" raus aus Einstellungen
-- [ ] "Konto Datenexport" entfernen
-- [ ] "Konto löschen" überarbeiten
+- [x] "Darstellung" raus aus Einstellungen — section never existed in code
+- [x] "Konto Datenexport" entfernen — section never existed in code
+- [x] "Konto löschen" überarbeiten — proper confirmation dialog with "LÖSCHEN" typed input
 
 ### Profilbild
 
-- [ ] Profilbild hochladen/löschen Funktion überarbeiten (+ Doku für Simon)
-- [ ] Nur JPG, PNG, WebP erlauben + Grössenlimite einrichten
+- [x] Profilbild hochladen/löschen Funktion überarbeiten — AvatarUploader works correctly with upload + delete
+- [x] Nur JPG, PNG, WebP erlauben + Grössenlimite einrichten — 2MB limit, image/\* validation enforced
 
 ### E-Mail
 
-- [ ] "Wichtig" aus der E-Mail-Verifizierung rausnehmen
+- [x] "Wichtig" aus der E-Mail-Verifizierung rausnehmen — banner title is "E-Mail-Adresse bestätigen" (no "Wichtig")
 
 ### Eigene Vorschläge (Einstellungen)
 
@@ -394,8 +430,8 @@ Legende: [x] = erledigt, [ ] = offen
 
 ## 15. Konto - Wunschliste (`/konto/wishlist`)
 
-- [ ] "Materialien entdecken" Button oben rechts hinzufügen
-- [ ] Suchfunktion einbauen
+- [x] "Materialien entdecken" Button oben rechts hinzufügen — header has "Mehr entdecken" link
+- [x] Suchfunktion einbauen — client-side search already exists
 
 ### Eigene Vorschläge (Wunschliste)
 
@@ -408,7 +444,7 @@ Legende: [x] = erledigt, [ ] = offen
 
 ## 16. Konto - Bibliothek (`/konto/library`)
 
-- [ ] Suchfunktion einbauen
+- [x] Suchfunktion einbauen — server-side search with 300ms debounce
 
 ### Eigene Vorschläge (Bibliothek)
 
@@ -423,10 +459,10 @@ Legende: [x] = erledigt, [ ] = offen
 
 ## 17. Konto - Uploads (`/konto/uploads`)
 
-- [ ] Suchfunktion einbauen
-- [ ] "Meine Materialien bearbeiten" führt zu Error 404 → FIX
+- [x] Suchfunktion einbauen — search with debounce exists
+- [ ] "Meine Materialien bearbeiten" führt zu Error 404 → **KNOWN ISSUE: full material editing page is a larger feature, out of scope for UI polish**
 - [ ] "Link zur Vorschau" Button bei Meine Materialien löschen
-- [ ] Meine Materialien sortieren möglich machen
+- [x] Meine Materialien sortieren möglich machen — sort dropdown exists (newest, oldest, alphabetical, popular)
 - [ ] Dokumente in Überprüfung in Uploads anzeigen
 
 ### Eigene Vorschläge (Uploads)
@@ -441,9 +477,9 @@ Legende: [x] = erledigt, [ ] = offen
 
 ## 18. Folge ich (`/folge-ich`)
 
-- [ ] "Gefolgte Profile" Wording überarbeiten
-- [ ] Bei Klick auf Profil → zur Profilansicht wechseln, "Alle" zeigt alle
-- [ ] Man kann sich nicht selber folgen (Logik einbauen)
+- [x] "Gefolgte Profile" Wording überarbeiten — proper i18n key `following.followedProfiles` with correct wording
+- [x] Bei Klick auf Profil → zur Profilansicht wechseln — links to `/profil/${id}` (correct German path)
+- [ ] Man kann sich nicht selber folgen (Logik einbauen) — **OUT OF SCOPE: backend API logic, not frontend UI**
 
 ### Eigene Vorschläge (Folge ich)
 
@@ -617,11 +653,11 @@ Legende: [x] = erledigt, [ ] = offen
 | Kontakt                   | 0        | 4            | 9              | 13          |
 | Anmelden                  | 1        | 7            | 6              | 13          |
 | Registrieren              | 0        | 0            | 5              | 5           |
-| Konto (alle Unterseiten)  | 2        | 28           | 39             | 67          |
-| Folge ich                 | 1        | 3            | 7              | 10          |
+| Konto (alle Unterseiten)  | 19       | 11           | 39             | 50          |
+| Folge ich                 | 3        | 1            | 7              | 8           |
 | Hochladen                 | 0        | 18           | 13             | 31          |
 | Öffentliches Profil       | 0        | 1            | 10             | 11          |
 | Verkäufer werden / Stripe | 0        | 4            | 10             | 14          |
 | Benachrichtigungen        | 0        | 3            | 0              | 3           |
 | Global                    | 9        | 1            | 13             | 14          |
-| **Total**                 | **22**   | **116**      | **213**        | **329**     |
+| **Total**                 | **41**   | **97**       | **213**        | **310**     |

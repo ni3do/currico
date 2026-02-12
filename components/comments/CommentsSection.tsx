@@ -44,6 +44,7 @@ interface CommentsSectionProps {
 export function CommentsSection({ materialId, className = "" }: CommentsSectionProps) {
   const { data: session, status: sessionStatus } = useSession();
   const tCommon = useTranslations("common");
+  const t = useTranslations("comments");
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -87,8 +88,10 @@ export function CommentsSection({ materialId, className = "" }: CommentsSectionP
     setTotalCount((prev) => prev + 1);
   };
 
-  const handleCommentDeleted = () => {
-    fetchComments(page);
+  const handleCommentDeleted = (commentId: string) => {
+    // Optimistic: remove from UI immediately
+    setComments((prev) => prev.filter((c) => c.id !== commentId));
+    setTotalCount((prev) => Math.max(0, prev - 1));
   };
 
   const handleCommentUpdated = () => {
@@ -103,7 +106,7 @@ export function CommentsSection({ materialId, className = "" }: CommentsSectionP
   if (loading && comments.length === 0) {
     return (
       <div className={`${className}`}>
-        <h2 className="text-text mb-6 text-2xl font-bold">Kommentare</h2>
+        <h2 className="text-text mb-6 text-2xl font-bold">{t("title")}</h2>
         <div className="border-border bg-bg animate-pulse rounded-xl border p-8">
           <div className="bg-surface mb-4 h-6 w-48 rounded" />
           <div className="bg-surface mb-4 h-4 w-full rounded" />
@@ -117,7 +120,7 @@ export function CommentsSection({ materialId, className = "" }: CommentsSectionP
   if (error) {
     return (
       <div className={`${className}`}>
-        <h2 className="text-text mb-6 text-2xl font-bold">Kommentare</h2>
+        <h2 className="text-text mb-6 text-2xl font-bold">{t("title")}</h2>
         <div className="border-error/50 bg-error/10 flex items-center gap-3 rounded-xl border p-6">
           <AlertCircle className="text-error h-5 w-5 flex-shrink-0" />
           <p className="text-error">{error}</p>
@@ -129,7 +132,7 @@ export function CommentsSection({ materialId, className = "" }: CommentsSectionP
   return (
     <div className={`${className}`}>
       <h2 className="text-text mb-6 text-2xl font-bold">
-        Kommentare {totalCount > 0 && <span className="text-text-muted">({totalCount})</span>}
+        {t("title")} {totalCount > 0 && <span className="text-text-muted">({totalCount})</span>}
       </h2>
 
       {/* Comment Form */}
@@ -141,9 +144,9 @@ export function CommentsSection({ materialId, className = "" }: CommentsSectionP
         <div className="border-border bg-bg-secondary mb-6 rounded-xl border p-4">
           <p className="text-text-muted text-sm">
             <Link href="/anmelden" className="text-primary hover:underline">
-              Melden Sie sich an
+              {t("loginPrompt")}
             </Link>
-            , um einen Kommentar zu schreiben.
+            {t("loginSuffix")}
           </p>
         </div>
       )}
@@ -152,10 +155,8 @@ export function CommentsSection({ materialId, className = "" }: CommentsSectionP
       {comments.length === 0 ? (
         <div className="border-border bg-bg rounded-xl border p-8 text-center">
           <MessageCircle className="text-text-faint mx-auto mb-3 h-12 w-12" />
-          <p className="text-text-muted mb-2">Noch keine Kommentare</p>
-          <p className="text-text-faint text-sm">
-            Seien Sie der Erste, der einen Kommentar schreibt!
-          </p>
+          <p className="text-text-muted mb-2">{t("noComments")}</p>
+          <p className="text-text-faint text-sm">{t("beFirst")}</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -165,7 +166,7 @@ export function CommentsSection({ materialId, className = "" }: CommentsSectionP
               comment={comment}
               materialId={materialId}
               onReplyAdded={() => fetchComments(page)}
-              onCommentDeleted={handleCommentDeleted}
+              onCommentDeleted={(id) => handleCommentDeleted(id)}
               onCommentUpdated={handleCommentUpdated}
               onLoginRequired={handleLoginRequired}
             />
@@ -179,17 +180,15 @@ export function CommentsSection({ materialId, className = "" }: CommentsSectionP
                 disabled={page === 1}
                 className="btn-secondary px-4 py-2 disabled:opacity-50"
               >
-                Zurück
+                {t("previous")}
               </button>
-              <span className="text-text-muted text-sm">
-                Seite {page} von {totalPages}
-              </span>
+              <span className="text-text-muted text-sm">{t("pageOf", { page, totalPages })}</span>
               <button
                 onClick={() => fetchComments(page + 1)}
                 disabled={page === totalPages}
                 className="btn-secondary px-4 py-2 disabled:opacity-50"
               >
-                Weiter
+                {t("next")}
               </button>
             </div>
           )}

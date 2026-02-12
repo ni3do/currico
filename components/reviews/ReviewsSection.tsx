@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Star, AlertCircle } from "lucide-react";
@@ -47,6 +47,7 @@ interface ReviewsSectionProps {
 export function ReviewsSection({ materialId, className = "" }: ReviewsSectionProps) {
   const { data: session, status: sessionStatus } = useSession();
   const tCommon = useTranslations("common");
+  const t = useTranslations("reviews");
   const [reviews, setReviews] = useState<Review[]>([]);
   const [stats, setStats] = useState<ReviewStats>({ averageRating: 0, totalReviews: 0 });
   const [userReview, setUserReview] = useState<UserReview | null>(null);
@@ -57,6 +58,7 @@ export function ReviewsSection({ materialId, className = "" }: ReviewsSectionPro
   const [editingReview, setEditingReview] = useState<UserReview | null>(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const formRef = useRef<HTMLDivElement>(null);
 
   const fetchReviews = useCallback(
     async (pageNum: number = 1) => {
@@ -100,6 +102,10 @@ export function ReviewsSection({ materialId, className = "" }: ReviewsSectionPro
     if (userReview) {
       setEditingReview(userReview);
       setShowForm(true);
+      setTimeout(
+        () => formRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }),
+        100
+      );
     }
   };
 
@@ -120,7 +126,7 @@ export function ReviewsSection({ materialId, className = "" }: ReviewsSectionPro
   if (loading && reviews.length === 0) {
     return (
       <div className={`${className}`}>
-        <h2 className="text-text mb-6 text-2xl font-bold">Bewertungen</h2>
+        <h2 className="text-text mb-6 text-2xl font-bold">{t("title")}</h2>
         <div className="border-border bg-bg animate-pulse rounded-xl border p-8">
           <div className="bg-surface mb-4 h-6 w-48 rounded" />
           <div className="bg-surface mb-4 h-4 w-full rounded" />
@@ -134,7 +140,7 @@ export function ReviewsSection({ materialId, className = "" }: ReviewsSectionPro
   if (error) {
     return (
       <div className={`${className}`}>
-        <h2 className="text-text mb-6 text-2xl font-bold">Bewertungen</h2>
+        <h2 className="text-text mb-6 text-2xl font-bold">{t("title")}</h2>
         <div className="border-error/50 bg-error/10 flex items-center gap-3 rounded-xl border p-6">
           <AlertCircle className="text-error h-5 w-5 flex-shrink-0" />
           <p className="text-error">{error}</p>
@@ -145,36 +151,35 @@ export function ReviewsSection({ materialId, className = "" }: ReviewsSectionPro
 
   return (
     <div className={`${className}`}>
-      <h2 className="text-text mb-6 text-2xl font-bold">Bewertungen</h2>
+      <h2 className="text-text mb-6 text-2xl font-bold">{t("title")}</h2>
 
       {/* Stats Summary */}
       {stats.totalReviews > 0 && (
-        <div className="border-border bg-bg mb-6 rounded-xl border p-6">
-          <div className="grid gap-6 md:grid-cols-2">
-            {/* Average Rating */}
-            <div className="text-center md:text-left">
-              <div className="mb-2 flex items-center justify-center gap-3 md:justify-start">
-                <span className="text-text text-4xl font-bold">
-                  {stats.averageRating.toFixed(1)}
-                </span>
-                <Star className="text-warning h-8 w-8" fill="currentColor" />
+        <div className="border-border bg-bg mb-6 rounded-xl border p-4">
+          <div className="flex items-center gap-6">
+            {/* Average Rating — compact */}
+            <div className="flex items-center gap-2">
+              <span className="text-text text-3xl font-bold">{stats.averageRating.toFixed(1)}</span>
+              <div>
+                <RatingSummary
+                  averageRating={stats.averageRating}
+                  totalReviews={stats.totalReviews}
+                  size="sm"
+                />
               </div>
-              <RatingSummary
-                averageRating={stats.averageRating}
-                totalReviews={stats.totalReviews}
-                size="md"
-              />
             </div>
 
-            {/* Rating Distribution */}
-            <RatingDistribution distribution={distribution} totalReviews={stats.totalReviews} />
+            {/* Rating Distribution — compact */}
+            <div className="flex-1">
+              <RatingDistribution distribution={distribution} totalReviews={stats.totalReviews} />
+            </div>
           </div>
         </div>
       )}
 
       {/* Write Review Button / Form */}
       {sessionStatus === "authenticated" && (
-        <div className="mb-6">
+        <div className="mb-6" ref={formRef}>
           <AnimatePresence mode="wait">
             {showForm ? (
               <ReviewForm
@@ -194,7 +199,7 @@ export function ReviewsSection({ materialId, className = "" }: ReviewsSectionPro
                 animate={{ opacity: 1 }}
                 className="border-primary/30 bg-primary/5 rounded-xl border p-4"
               >
-                <p className="text-text mb-2 text-sm font-medium">Ihre Bewertung</p>
+                <p className="text-text mb-2 text-sm font-medium">{t("yourReview")}</p>
                 <ReviewCard
                   review={{
                     ...userReview,
@@ -216,11 +221,17 @@ export function ReviewsSection({ materialId, className = "" }: ReviewsSectionPro
                 key="write-button"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                onClick={() => setShowForm(true)}
+                onClick={() => {
+                  setShowForm(true);
+                  setTimeout(
+                    () => formRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }),
+                    100
+                  );
+                }}
                 className="btn-primary w-full px-6 py-3 sm:w-auto"
               >
                 <Star className="mr-2 h-5 w-5" />
-                Bewertung schreiben
+                {t("writeReview")}
               </motion.button>
             ) : (
               <motion.div
@@ -229,9 +240,7 @@ export function ReviewsSection({ materialId, className = "" }: ReviewsSectionPro
                 animate={{ opacity: 1 }}
                 className="border-border bg-bg-secondary rounded-xl border p-4"
               >
-                <p className="text-text-muted text-sm">
-                  Kaufen oder laden Sie dieses Material herunter, um eine Bewertung abzugeben.
-                </p>
+                <p className="text-text-muted text-sm">{t("mustPurchase")}</p>
               </motion.div>
             )}
           </AnimatePresence>
@@ -242,21 +251,18 @@ export function ReviewsSection({ materialId, className = "" }: ReviewsSectionPro
         <div className="border-border bg-bg-secondary mb-6 rounded-xl border p-4">
           <p className="text-text-muted text-sm">
             <Link href="/anmelden" className="text-primary hover:underline">
-              Melden Sie sich an
+              {t("loginPrompt")}
             </Link>
-            , um eine Bewertung zu schreiben.
+            {t("loginSuffix")}
           </p>
         </div>
       )}
 
       {/* Reviews List */}
       {stats.totalReviews === 0 ? (
-        <div className="border-border bg-bg rounded-xl border p-8 text-center">
-          <Star className="text-text-faint mx-auto mb-3 h-12 w-12" />
-          <p className="text-text-muted mb-2">Noch keine Bewertungen</p>
-          <p className="text-text-faint text-sm">
-            Seien Sie der Erste, der dieses Material bewertet!
-          </p>
+        <div className="text-text-muted flex items-center gap-3 py-4">
+          <Star className="text-text-faint h-5 w-5 flex-shrink-0" />
+          <p className="text-sm">{t("noReviewsBeFirst")}</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -274,17 +280,15 @@ export function ReviewsSection({ materialId, className = "" }: ReviewsSectionPro
                 disabled={page === 1}
                 className="btn-secondary px-4 py-2 disabled:opacity-50"
               >
-                Zurück
+                {t("previous")}
               </button>
-              <span className="text-text-muted text-sm">
-                Seite {page} von {totalPages}
-              </span>
+              <span className="text-text-muted text-sm">{t("pageOf", { page, totalPages })}</span>
               <button
                 onClick={() => fetchReviews(page + 1)}
                 disabled={page === totalPages}
                 className="btn-secondary px-4 py-2 disabled:opacity-50"
               >
-                Weiter
+                {t("next")}
               </button>
             </div>
           )}

@@ -38,6 +38,7 @@ export async function GET() {
           },
         },
         orderBy: { created_at: "desc" },
+        take: 50,
       }),
       // Get recent transactions for this seller's materials
       prisma.transaction.findMany({

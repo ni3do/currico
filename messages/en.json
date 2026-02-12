@@ -17,6 +17,13 @@
     "invalidFileType": "Invalid file type",
     "userNotFound": "User not found"
   },
+  "dashboardCard": {
+    "remove": "Remove",
+    "edit": "Edit",
+    "downloads": "Downloads",
+    "sales": "Sales",
+    "unknownSeller": "Unknown"
+  },
   "previewGallery": {
     "title": "Preview",
     "pageOf": "Page {current} of {total}",
@@ -77,6 +84,18 @@
       "sendFailed": "Failed to send message.",
       "unexpectedError": "An unexpected error occurred."
     },
+    "sort": {
+      "label": "Sort",
+      "newest": "Newest first",
+      "oldest": "Oldest first",
+      "alphabetical": "Alphabetical",
+      "popular": "Most popular"
+    },
+    "badges": {
+      "verified": "Verified",
+      "pending": "Pending",
+      "rejected": "Rejected"
+    },
     "buttons": {
       "viewAll": "View All",
       "view": "View",
@@ -116,7 +135,9 @@
       "unfollowed": "Unfollowed this profile",
       "reportSubmitted": "Report submitted successfully",
       "error": "Something went wrong. Please try again."
-    }
+    },
+    "user": "User",
+    "free": "Free"
   },
   "homePage": {
     "hero": {
@@ -479,9 +500,20 @@
       "dialectStandard": "Standard German",
       "zyklusLabel": "Cycle",
       "priceFree": "Free",
-      "priceUnder": "< CHF {amount}",
+      "pricePaid": "Paid",
+      "priceAll": "All",
+      "priceUnder": "up to CHF {amount}",
       "maxPrice": "Max. Price",
+      "priceSectionLabel": "Price",
+      "priceMaxLabel": "Maximum price",
+      "priceMaxPlaceholder": "CHF",
       "formatSectionLabel": "Format",
+      "formatPdf": "PDF",
+      "formatWord": "Word",
+      "formatPpt": "PowerPoint",
+      "formatExcel": "Excel",
+      "formatOnenote": "OneNote",
+      "formatOther": "Other",
       "scopeLabel": "Material Scope",
       "scopeSingle": "Single",
       "scopeBundle": "Bundle",
@@ -491,7 +523,7 @@
       "activeFilters": "Active Filters",
       "loadingError": "Error loading subjects",
       "searchPlaceholderProfiles": "Search profiles...",
-      "searchPlaceholderDefault": "Search: keyword or code (e.g. MA.1.A)",
+      "searchPlaceholderDefault": "Search materials...",
       "smartSearchDetected": "Detected",
       "smartSearchApply": "Apply filters",
       "smartSearchRemaining": "Search for: \"{query}\"",
@@ -500,7 +532,13 @@
       "smartSearchArea": "Area:",
       "searchResultSubject": "Subject",
       "searchResultArea": "Area",
-      "searchResultCompetence": "Competence"
+      "searchResultCompetence": "Competence",
+      "cantonSectionLabel": "Canton",
+      "cantonPlaceholder": "Select canton...",
+      "cantonSearchPlaceholder": "Search cantons...",
+      "cantonSelected": "{count} selected",
+      "cantonNoResults": "No canton found",
+      "cantonChipMultiple": "{count} cantons"
     },
     "search": {
       "placeholder": "Search by title, topic, keyword...",
@@ -603,7 +641,7 @@
     "results": {
       "countLabel": "Materials found",
       "countLabelProfiles": "Profiles found",
-      "showResults": "Show {count} materials",
+      "showResults": "Show {count} results",
       "sortLabel": "Sort by:",
       "gridView": "Grid view",
       "listView": "List view",
@@ -644,9 +682,20 @@
       "clearAll": "Reset all",
       "suggestionsTitle": "Popular searches",
       "fetchError": "Could not load materials. Please try again.",
-      "fetchErrorRetry": "Try again"
+      "fetchErrorRetry": "Try again",
+      "suggestion1": "Math Cycle 2",
+      "suggestion2": "German Reading",
+      "suggestion3": "NMG Animals",
+      "suggestion4": "Sports Games",
+      "profileSuggestion1": "Math Teacher",
+      "profileSuggestion2": "Cycle 2",
+      "profileSuggestion3": "German",
+      "profileSuggestion4": "NMG",
+      "filterSuggestion1": "Fewer filters",
+      "filterSuggestion2": "Different subject"
     },
     "toast": {
+      "loginRequired": "Please log in or register to use the wishlist.",
       "addedToWishlist": "Added to wishlist",
       "removedFromWishlist": "Removed from wishlist",
       "followed": "Now following this profile",
@@ -657,6 +706,11 @@
       "nav": "Page navigation",
       "previous": "Previous page",
       "next": "Next page"
+    },
+    "card": {
+      "wishlistAdd": "Add to wishlist",
+      "wishlistRemove": "Remove from wishlist",
+      "anonymous": "Anonymous"
     }
   },
   "sellerDashboard": {
@@ -1617,7 +1671,7 @@
       "continueSetup": "Complete Setup"
     },
     "invite": {
-      "title": "Start Earning Money",
+      "title": "Become a Seller",
       "description": "Share your teaching materials and earn 70% of every sale. Set up your seller account in minutes.",
       "benefit1": "Earn 70% per sale",
       "benefit2": "Reach thousands of teachers",
@@ -2526,6 +2580,7 @@
     "notFound": "Material not found",
     "notFoundDescription": "The material you are looking for does not exist or is no longer available.",
     "backToMaterials": "Back to materials",
+    "backToResults": "Back to results",
     "loadError": "Loading error",
     "loadErrorDescription": "The material could not be loaded. Please try again later.",
     "retry": "Try again",
@@ -2541,6 +2596,8 @@
     "wishlisted": "Saved",
     "addToWishlist": "Add to wishlist",
     "reportMaterial": "Report material",
+    "share": "Share",
+    "linkCopied": "Link copied to clipboard",
     "description": "Description",
     "reviews": "Reviews",
     "comments": "Comments",
@@ -2571,13 +2628,15 @@
     "availableAfterReview": "Available after review",
     "sellerMaterials": "{count} materials",
     "cycle": "Cycle {number}",
-    "downloads": "{count} downloads"
+    "downloads": "{count} downloads",
+    "pages": "{count, plural, one {# page} other {# pages}}"
   },
   "profile": {
     "notFound": "Profile not found",
     "notFoundDescription": "The profile you're looking for doesn't exist or has been removed.",
     "loading": "Loading profile...",
     "verifiedSeller": "Verified Seller",
+    "verified": "Verified",
     "memberSince": "Member since",
     "follow": "Follow",
     "following": "Following",
@@ -2654,7 +2713,11 @@
       "title": "Discover More",
       "description": "Find more interesting teachers and their materials.",
       "link": "Browse materials"
-    }
+    },
+    "searchPlaceholder": "Search profiles...",
+    "noSearchResults": "No profiles found",
+    "errorLoading": "Failed to load followed profiles",
+    "retry": "Try again"
   },
   "verifyEmailPage": {
     "loading": {
@@ -2830,7 +2893,22 @@
       "4": "Good",
       "5": "Excellent"
     },
-    "starsLabel": "{count} stars"
+    "starsLabel": "{count} stars",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleting": "Deleting...",
+    "deleteError": "Error deleting review",
+    "edited": "edited",
+    "save": "Save",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "previous": "Back",
+    "next": "Next",
+    "pageOf": "Page {page} of {totalPages}",
+    "loginPrompt": "Sign in",
+    "loginSuffix": " to write a review.",
+    "noReviewsBeFirst": "No reviews yet — be the first!",
+    "options": "Options"
   },
   "likes": {
     "like": "Like",
@@ -2856,6 +2934,21 @@
     "confirmDeleteReply": "Are you sure you want to delete this reply?",
     "edited": "edited",
     "seller": "Seller",
+    "save": "Save",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "deleteError": "Error deleting comment",
+    "updateError": "Error updating comment",
+    "deleteReplyError": "Error deleting reply",
+    "updateReplyError": "Error updating reply",
+    "replyCount": "{count} replies",
+    "previous": "Back",
+    "next": "Next",
+    "pageOf": "Page {page} of {totalPages}",
+    "loginPrompt": "Sign in",
+    "loginSuffix": " to write a comment.",
+    "deleting": "Deleting...",
+    "options": "Options",
     "sellerComments": {
       "title": "Comments on Your Materials",
       "totalComments": "{count} comments total",
@@ -2935,7 +3028,6 @@
       "following": "Following",
       "settings": "Settings",
       "settingsProfile": "Profile",
-      "settingsAppearance": "Appearance",
       "settingsNotifications": "Notifications",
       "settingsAccount": "Account"
     },
@@ -2952,7 +3044,220 @@
       "discover": "Discover",
       "newMaterial": "New Material",
       "discoverMaterials": "Discover Materials",
-      "unknownSeller": "Unknown"
+      "unknownSeller": "Unknown",
+      "materials": "Materials",
+      "followers": "Followers"
+    },
+    "library": {
+      "title": "My Library",
+      "subtitle": "All acquired materials in one place",
+      "stats": {
+        "total": "Total in Library",
+        "free": "Free",
+        "purchased": "Purchased"
+      },
+      "search": "Search library...",
+      "discoverMore": "Discover more",
+      "empty": "Your library is empty",
+      "emptyDescription": "Discover quality teaching materials from other teachers and start your collection.",
+      "discoverButton": "Discover materials",
+      "badgePurchased": "Purchased",
+      "badgeFree": "Free",
+      "badgeVerified": "Verified",
+      "errorLoading": "Failed to load library",
+      "retry": "Try again"
+    },
+    "wishlist": {
+      "title": "Wishlist",
+      "subtitle": "Saved materials for later",
+      "search": "Search wishlist...",
+      "empty": "Your wishlist is empty",
+      "emptyDescription": "Save interesting materials for later.",
+      "discoverButton": "Discover materials",
+      "errorLoading": "Failed to load wishlist",
+      "retry": "Try again"
+    },
+    "bundles": {
+      "title": "My Bundles",
+      "subtitle": "Material bundles at reduced prices",
+      "newBundle": "New Bundle",
+      "search": "Search bundles...",
+      "table": {
+        "title": "Title",
+        "status": "Status",
+        "materials": "Materials",
+        "price": "Price",
+        "savings": "Savings",
+        "actions": "Actions"
+      },
+      "status": {
+        "verified": "Verified",
+        "pending": "Pending",
+        "rejected": "Rejected"
+      },
+      "published": "Published",
+      "draft": "Draft",
+      "view": "View",
+      "publish": "Publish",
+      "unpublish": "Unpublish",
+      "delete": "Delete",
+      "empty": "No bundles created yet",
+      "emptyDescription": "Bundle multiple materials at a reduced price.",
+      "createFirst": "Create first bundle",
+      "actionsLabel": "Actions",
+      "sortLabel": "Sort by",
+      "sort": {
+        "newest": "Newest first",
+        "oldest": "Oldest first",
+        "title": "Alphabetical"
+      },
+      "errorLoading": "Failed to load bundles",
+      "retry": "Try again"
+    },
+    "uploads": {
+      "title": "My Uploads",
+      "subtitle": "Materials you have uploaded",
+      "newMaterial": "New Material",
+      "search": "Search uploads...",
+      "sort": {
+        "newest": "Newest first",
+        "oldest": "Oldest first",
+        "title": "Alphabetical",
+        "popular": "Most popular"
+      },
+      "statusVerified": "Verified",
+      "statusPending": "Pending",
+      "empty": "No uploaded materials yet",
+      "emptyDescription": "Share your teaching materials with other teachers.",
+      "uploadFirst": "Upload material"
+    },
+    "comments": {
+      "title": "Comments on your materials",
+      "totalComments": "Total comments",
+      "unanswered": "unanswered",
+      "filterAll": "All comments",
+      "filterUnanswered": "Unanswered",
+      "empty": "No comments",
+      "emptyDescription": "Comments will appear here once users comment on your materials.",
+      "viewMaterial": "View material",
+      "unansweredBadge": "Unanswered",
+      "reply": "Reply",
+      "replies": "{count} replies",
+      "replyPlaceholder": "Write a reply...",
+      "cancel": "Cancel",
+      "sending": "Sending...",
+      "send": "Reply",
+      "prev": "Previous",
+      "next": "Next",
+      "pageInfo": "Page {page} of {total}",
+      "errorLoading": "Failed to load comments",
+      "errorSending": "Failed to send reply",
+      "notSeller": "Comments are only available for sellers.",
+      "becomeSeller": "Become a seller"
+    },
+    "settingsNotifications": {
+      "title": "Notifications",
+      "subtitle": "Manage which notifications you receive"
+    },
+    "settingsAccount": {
+      "title": "Account & Security",
+      "subtitle": "Manage your account settings and security options",
+      "accountStatus": "Account Status",
+      "accountStatusDesc": "Information about your account",
+      "accountType": "Account Type",
+      "seller": "Seller",
+      "buyer": "Buyer",
+      "emailStatus": "Email Status",
+      "verified": "Verified",
+      "emailSent": "Email sent!",
+      "sending": "Sending...",
+      "notVerified": "Not verified",
+      "clickToSend": "(Click to send)",
+      "sendError": "Failed to send",
+      "genericError": "An error occurred",
+      "dangerZone": "Danger Zone",
+      "dangerZoneDesc": "Irreversible actions",
+      "deleteWarning": "Deleting your account is irreversible. All your data, uploaded materials, and purchases will be permanently deleted.",
+      "deleteAccount": "Delete account",
+      "areYouSure": "Are you sure?",
+      "deleteConfirmDesc": "This action cannot be undone. All materials, reviews, and account data will be deleted.",
+      "typeToConfirm": "Type <strong>DELETE</strong> to confirm",
+      "confirmKeyword": "DELETE",
+      "cancel": "Cancel",
+      "deleting": "Deleting...",
+      "deletePermanently": "Delete permanently",
+      "deleteError": "Failed to delete",
+      "networkError": "Network error"
+    },
+    "settingsProfile": {
+      "avatar": {
+        "errorInvalidType": "Please select an image file (JPG, PNG)",
+        "errorTooLarge": "Image must be smaller than 2MB",
+        "errorUploadFailed": "Upload failed. Please try again.",
+        "uploadLabel": "Upload profile picture"
+      },
+      "multiSelect": {
+        "search": "Search...",
+        "noResults": "No options found"
+      },
+      "title": "Edit Profile",
+      "avatarHint": "Click the image to change it",
+      "avatarFormats": "JPG, PNG or WebP. Max 2MB.",
+      "avatarRemoving": "Removing...",
+      "avatarRemove": "Remove image",
+      "basicInfo": "Basic Information",
+      "basicInfoDesc": "Name, email, and personal description",
+      "displayName": "Display name",
+      "displayNamePlaceholder": "e.g. Ms. M. or Maria S.",
+      "email": "Email",
+      "emailChangeHint": "Contact us to change your email",
+      "aboutMe": "About me",
+      "aboutMePlaceholder": "Tell us about yourself and your teaching...",
+      "teachingProfile": "Teaching Profile",
+      "teachingProfileDesc": "Subjects, cycles, experience, and school",
+      "subjects": "Subjects",
+      "subjectsPlaceholder": "Select subjects...",
+      "cycles": "Cycles",
+      "cyclesPlaceholder": "Select cycles...",
+      "cantons": "Cantons",
+      "cantonsPlaceholder": "Select cantons...",
+      "school": "School / Institution",
+      "schoolPlaceholder": "e.g. Primary School Example",
+      "teachingExperience": "Teaching experience",
+      "selectPlaceholder": "Please select",
+      "experience0_2": "0-2 years",
+      "experience3_5": "3-5 years",
+      "experience6_10": "6-10 years",
+      "experience11_20": "11-20 years",
+      "experience20plus": "Over 20 years",
+      "contactSocial": "Contact & Social Media",
+      "contactSocialDesc": "Website, Instagram, and Pinterest",
+      "website": "Website / Portfolio",
+      "websitePlaceholder": "https://my-website.com",
+      "usernamePlaceholder": "username",
+      "privacy": "Privacy",
+      "privacyDesc": "Control the visibility of your profile",
+      "privateProfile": "Private profile",
+      "privateOn": "Only you can see your profile",
+      "privateOff": "Your profile is visible to others",
+      "unsavedChanges": "You have unsaved changes",
+      "discard": "Discard",
+      "saveChanges": "Save changes",
+      "saving": "Saving...",
+      "saved": "Saved!",
+      "errorNameMin": "Name must be at least 2 characters",
+      "errorNameMax": "Name must be at most 32 characters",
+      "errorInvalidUrl": "Invalid URL (e.g. https://example.com)",
+      "errorSaving": "Failed to save. Please try again.",
+      "errorSavingGeneric": "Failed to save",
+      "successSaved": "Changes saved!",
+      "avatarUploaded": "Profile picture uploaded successfully!",
+      "avatarUploadError": "Upload failed. Please try again.",
+      "avatarUploadErrorGeneric": "Upload failed",
+      "avatarRemoved": "Profile picture removed successfully!",
+      "avatarRemoveError": "Failed to remove. Please try again.",
+      "avatarRemoveErrorGeneric": "Failed to remove",
+      "defaultUser": "User"
     },
     "overview": {
       "earnings": "Earnings",
@@ -2961,7 +3266,7 @@
       "thisMonth": "Total",
       "totalDownloads": "Total downloads",
       "materialsPublished": "Materials published",
-      "myMaterials": "My Materials",
+      "myMaterials": "My Uploads",
       "newMaterial": "+ New Material",
       "noMaterials": "No materials uploaded yet",
       "noMaterialsDescription": "Share your teaching materials with other teachers.",
@@ -2975,15 +3280,18 @@
       "verified": "Verified",
       "aiChecked": "AI-Checked",
       "pending": "Pending",
+      "draft": "Draft",
       "recentDownloads": "Recent Downloads",
       "viewAll": "View all",
       "noDownloads": "No materials yet",
       "discoverLink": "Discover",
-      "loading": "Loading..."
+      "loading": "Loading...",
+      "downloadLabel": "Download material"
     },
     "profile": {
       "completeProfile": "Complete your profile",
       "fieldsCompleted": "{completed} of {total} fields completed",
+      "completionCount": "{completed} of {total} completed",
       "editProfile": "Edit Profile",
       "close": "Close",
       "fields": {
@@ -2995,7 +3303,9 @@
         "cycles": "Cycles",
         "school": "School",
         "canton": "Canton"
-      }
+      },
+      "profileComplete": "Profile complete!",
+      "profileCompleteDescription": "Your profile is all set. Buyers can now find you more easily."
     },
     "notifications": {
       "title": "Notifications",
@@ -3005,7 +3315,24 @@
       "justNow": "Just now",
       "minutesAgo": "{count}m ago",
       "hoursAgo": "{count}h ago",
-      "daysAgo": "{count}d ago"
+      "daysAgo": "{count}d ago",
+      "errorLoading": "Failed to load notifications",
+      "retry": "Try again"
+    },
+    "welcomeGuide": {
+      "welcome": "Welcome, {name}!",
+      "welcomeGeneric": "Welcome!",
+      "subtitle": "Here you'll find everything at a glance",
+      "libraryTitle": "Library",
+      "libraryDesc": "Your purchased materials",
+      "uploadsTitle": "Uploads",
+      "uploadsDesc": "Share your materials",
+      "wishlistTitle": "Wishlist",
+      "wishlistDesc": "Saved for later",
+      "settingsTitle": "Settings",
+      "settingsDesc": "Profile & preferences",
+      "dismiss": "Got it, let's go!",
+      "close": "Close"
     }
   },
   "copyrightGuide": {

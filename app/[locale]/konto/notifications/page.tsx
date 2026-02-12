@@ -3,7 +3,17 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
-import { Bell, Receipt, UserPlus, Star, Info, CheckCheck, BellOff } from "lucide-react";
+import {
+  AlertCircle,
+  Bell,
+  Receipt,
+  RefreshCw,
+  UserPlus,
+  Star,
+  Info,
+  CheckCheck,
+  BellOff,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface Notification {
@@ -47,16 +57,18 @@ export default function NotificationsPage() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   const fetchNotifications = useCallback(async () => {
+    setError(false);
     try {
       const res = await fetch("/api/users/me/notifications");
-      if (!res.ok) return;
+      if (!res.ok) throw new Error();
       const data = await res.json();
       setNotifications(data.notifications);
       setUnreadCount(data.unreadCount);
-    } catch (err) {
-      console.error("Error fetching notifications:", err);
+    } catch {
+      setError(true);
     } finally {
       setLoading(false);
     }
@@ -140,7 +152,22 @@ export default function NotificationsPage() {
       </div>
 
       {/* List */}
-      {notifications.length === 0 ? (
+      {error ? (
+        <div className="border-border bg-surface rounded-xl border py-12 text-center">
+          <AlertCircle className="text-error mx-auto mb-3 h-10 w-10" aria-hidden="true" />
+          <p className="text-text mb-1 font-medium">{t("errorLoading")}</p>
+          <button
+            onClick={() => {
+              setLoading(true);
+              fetchNotifications();
+            }}
+            className="text-primary hover:text-primary-hover mt-2 inline-flex items-center gap-1.5 text-sm font-medium"
+          >
+            <RefreshCw className="h-3.5 w-3.5" />
+            {t("retry")}
+          </button>
+        </div>
+      ) : notifications.length === 0 ? (
         <div className="border-border bg-surface rounded-xl border border-dashed py-16 text-center">
           <BellOff className="text-text-faint mx-auto mb-3 h-10 w-10" />
           <p className="text-text font-medium">{t("empty")}</p>

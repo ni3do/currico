@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { FileText, Users, UserPlus, UserCheck, CheckCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { getSubjectPillClass as defaultGetSubjectPillClass } from "@/lib/constants/subject-colors";
 
 export interface ProfileCardProps {
@@ -39,6 +40,7 @@ export function ProfileCard({
   onFollowToggle,
   showFollowButton = false,
 }: ProfileCardProps) {
+  const t = useTranslations("profile");
   const [isFollowing, setIsFollowing] = useState(initialFollowing);
   const [followLoading, setFollowLoading] = useState(false);
   const [displayedFollowerCount, setDisplayedFollowerCount] = useState(followerCount);
@@ -96,7 +98,7 @@ export function ProfileCard({
             {isVerified && (
               <span className="text-success inline-flex items-center gap-1 text-xs">
                 <CheckCircle className="h-3.5 w-3.5" />
-                Verifiziert
+                {t("verified")}
               </span>
             )}
           </div>
@@ -110,7 +112,7 @@ export function ProfileCard({
                   ? "border-primary text-primary hover:bg-primary/10 border"
                   : "bg-primary hover:bg-primary-hover text-white"
               }`}
-              aria-label={isFollowing ? "Entfolgen" : "Folgen"}
+              aria-label={isFollowing ? t("unfollow") : t("follow")}
             >
               {followLoading ? (
                 <svg className="h-3.5 w-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -133,7 +135,7 @@ export function ProfileCard({
               ) : (
                 <UserPlus className="h-3.5 w-3.5" />
               )}
-              {isFollowing ? "Gefolgt" : "Folgen"}
+              {isFollowing ? t("following") : t("follow")}
             </button>
           )}
         </div>

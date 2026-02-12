@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Star } from "lucide-react";
 
 interface StarRatingProps {
@@ -22,6 +23,7 @@ export function StarRating({
   showValue = false,
   className = "",
 }: StarRatingProps) {
+  const t = useTranslations("reviews");
   const [hoverRating, setHoverRating] = useState(0);
 
   const sizeClasses = {
@@ -83,7 +85,7 @@ export function StarRating({
                   ? "focus:ring-primary cursor-pointer rounded hover:scale-110 focus:ring-2 focus:ring-offset-2 focus:outline-none"
                   : "cursor-default"
               }`}
-              aria-label={`${value} von ${maxRating} Sternen`}
+              aria-label={t("starsLabel", { count: value })}
             >
               {/* Background star (empty) */}
               <Star
@@ -131,6 +133,7 @@ export function RatingSummary({
   size = "md",
   className = "",
 }: RatingSummaryProps) {
+  const t = useTranslations("reviews");
   const textClasses = {
     sm: "text-xs",
     md: "text-sm",
@@ -141,7 +144,7 @@ export function RatingSummary({
     <div className={`flex items-center gap-2 ${className}`}>
       <StarRating rating={averageRating} size={size} showValue />
       <span className={`text-text-muted ${textClasses[size]}`}>
-        ({totalReviews} {totalReviews === 1 ? "Bewertung" : "Bewertungen"})
+        ({t("basedOn", { count: totalReviews })})
       </span>
     </div>
   );
@@ -159,22 +162,40 @@ export function RatingDistribution({
   totalReviews,
   className = "",
 }: RatingDistributionProps) {
+  const t = useTranslations("reviews");
+
   return (
-    <div className={`space-y-2 ${className}`}>
+    <div className={`space-y-1 ${className}`} role="list" aria-label={t("title")}>
       {[5, 4, 3, 2, 1].map((stars) => {
         const count = distribution[stars] || 0;
         const percentage = totalReviews > 0 ? (count / totalReviews) * 100 : 0;
 
         return (
-          <div key={stars} className="flex items-center gap-2 text-sm">
-            <span className="text-text-muted w-12">{stars} Sterne</span>
-            <div className="bg-surface-hover h-2 flex-1 overflow-hidden rounded-full">
+          <div
+            key={stars}
+            className="flex items-center gap-2 text-sm"
+            role="listitem"
+            aria-label={`${t("starsLabel", { count: stars })}: ${count}`}
+          >
+            <span className="text-text-muted w-6 text-right text-xs">{stars}</span>
+            <Star
+              className="text-warning h-3 w-3 flex-shrink-0"
+              fill="currentColor"
+              strokeWidth={0}
+            />
+            <div
+              className="bg-surface-hover h-2 flex-1 overflow-hidden rounded-full"
+              role="progressbar"
+              aria-valuenow={percentage}
+              aria-valuemin={0}
+              aria-valuemax={100}
+            >
               <div
                 className="bg-warning h-full rounded-full transition-all duration-300"
                 style={{ width: `${percentage}%` }}
               />
             </div>
-            <span className="text-text-muted w-8 text-right">{count}</span>
+            <span className="text-text-muted w-6 text-right text-xs">{count}</span>
           </div>
         );
       })}

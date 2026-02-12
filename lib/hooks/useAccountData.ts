@@ -9,6 +9,7 @@ interface AccountDataContextType {
   userData: UserData | null;
   stats: UserStats | null;
   followedSellers: FollowedSeller[];
+  unreadNotifications: number;
   loading: boolean;
   refreshUserData: () => Promise<void>;
   setStats: (stats: UserStats | ((prev: UserStats | null) => UserStats | null)) => void;
@@ -32,6 +33,7 @@ export function useAccountDataProvider() {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [stats, setStats] = useState<UserStats | null>(null);
   const [followedSellers, setFollowedSellers] = useState<FollowedSeller[]>([]);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
   const [loading, setLoading] = useState(true);
 
   const fetchUserStats = useCallback(async () => {
@@ -86,6 +88,11 @@ export function useAccountDataProvider() {
         .then((data) => {
           if (data) setFollowedSellers(data.sellers || []);
         }),
+      fetch("/api/users/me/notifications")
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (data) setUnreadNotifications(data.unreadCount || 0);
+        }),
     ])
       .catch((err) => console.error("Error fetching account data:", err))
       .finally(() => setLoading(false));
@@ -95,6 +102,7 @@ export function useAccountDataProvider() {
     userData,
     stats,
     followedSellers,
+    unreadNotifications,
     loading,
     refreshUserData: fetchUserStats,
     setStats,
