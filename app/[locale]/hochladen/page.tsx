@@ -43,10 +43,13 @@ function UploadPageContent() {
   const router = useRouter();
   const { data: session, status: sessionStatus } = useSession();
   const tCommon = useTranslations("common");
+  const tWizard = useTranslations("uploadWizard");
   const tUpload = useTranslations("uploadWizard.upload");
   const tLegal = useTranslations("uploadWizard.legal");
   const tFields = useTranslations("uploadWizard.fields");
   const tEszett = useTranslations("uploadWizard.eszett");
+  const tNav = useTranslations("uploadWizard.navigation");
+  const tSteps = useTranslations("uploadWizard.steps");
   const {
     formData,
     updateFormData,
@@ -160,7 +163,7 @@ function UploadPageContent() {
     if (selectedFiles) {
       const file = selectedFiles[0];
       if (file && file.size > 5 * 1024 * 1024) {
-        setError("Vorschaubild darf maximal 5 MB gross sein");
+        setError(tFields("previewTooLarge"));
         return;
       }
       setPreviewFiles(file ? [file] : []);
@@ -376,10 +379,8 @@ function UploadPageContent() {
           {/* Page Header */}
           <div className="mb-8">
             <Breadcrumb items={[{ label: tCommon("breadcrumb.upload") }]} />
-            <h1 className="text-text text-2xl font-bold sm:text-3xl">Material hochladen</h1>
-            <p className="text-text-muted mt-1">
-              Teilen Sie Ihre Unterrichtsmaterialien mit der Currico-Community
-            </p>
+            <h1 className="text-text text-2xl font-bold sm:text-3xl">{tWizard("pageTitle")}</h1>
+            <p className="text-text-muted mt-1">{tWizard("pageSubtitle")}</p>
           </div>
 
           {/* Step Navigation */}
@@ -398,8 +399,8 @@ function UploadPageContent() {
               {currentStep === 1 && (
                 <div className="space-y-6">
                   <div className="border-primary/20 border-b pb-4">
-                    <h2 className="text-text text-xl font-semibold">Grundinformationen</h2>
-                    <p className="text-text-muted mt-1 text-sm">Beschreiben Sie Ihr Material</p>
+                    <h2 className="text-text text-xl font-semibold">{tSteps("basics")}</h2>
+                    <p className="text-text-muted mt-1 text-sm">{tSteps("basicsSubtitle")}</p>
                   </div>
 
                   <FormField
@@ -548,10 +549,8 @@ function UploadPageContent() {
               {currentStep === 2 && (
                 <div className="space-y-6">
                   <div className="border-primary/20 border-b pb-4">
-                    <h2 className="text-text text-xl font-semibold">Lehrplan-Zuordnung</h2>
-                    <p className="text-text-muted mt-1 text-sm">
-                      Wählen Sie Zyklus, Fach und Kompetenzen
-                    </p>
+                    <h2 className="text-text text-xl font-semibold">{tSteps("curriculum")}</h2>
+                    <p className="text-text-muted mt-1 text-sm">{tSteps("curriculumSubtitle")}</p>
                   </div>
 
                   <EnhancedCurriculumSelector
@@ -581,33 +580,31 @@ function UploadPageContent() {
               {currentStep === 3 && (
                 <div className="space-y-6">
                   <div className="border-primary/20 border-b pb-4">
-                    <h2 className="text-text text-xl font-semibold">Preis festlegen</h2>
-                    <p className="text-text-muted mt-1 text-sm">
-                      Wählen Sie, ob Ihr Material kostenlos oder kostenpflichtig ist
-                    </p>
+                    <h2 className="text-text text-xl font-semibold">{tSteps("priceTitle")}</h2>
+                    <p className="text-text-muted mt-1 text-sm">{tSteps("priceSubtitle")}</p>
                   </div>
 
-                  <FormField label="Preismodell" tooltipKey="priceType" required>
+                  <FormField label={tFields("priceType")} tooltipKey="priceType" required>
                     <div
                       className="grid grid-cols-2 gap-4"
                       role="radiogroup"
-                      aria-label="Preismodell"
+                      aria-label={tFields("priceType")}
                     >
                       <RadioOption
                         name="priceType"
                         value="free"
                         checked={formData.priceType === "free"}
                         onChange={(val) => updateFormData("priceType", val as "free" | "paid")}
-                        label="Kostenlos"
-                        description="Frei für alle zugänglich"
+                        label={tFields("priceFree")}
+                        description={tFields("priceFreeDesc")}
                       />
                       <RadioOption
                         name="priceType"
                         value="paid"
                         checked={formData.priceType === "paid"}
                         onChange={(val) => updateFormData("priceType", val as "free" | "paid")}
-                        label="Kostenpflichtig"
-                        description="CHF 0.50 – 50"
+                        label={tFields("pricePaid")}
+                        description={tFields("pricePaidDesc")}
                       />
                     </div>
                   </FormField>
@@ -615,12 +612,12 @@ function UploadPageContent() {
                   {formData.priceType === "paid" && (
                     <div>
                       <FormField
-                        label="Preis (CHF)"
+                        label={tFields("price")}
                         tooltipKey="price"
                         required
                         error={getFieldError("price")}
                         touched={touchedFields.price}
-                        hint="Sie erhalten 70% des Verkaufspreises (30% Plattformgebühr). Min: CHF 0.50, Max: CHF 50.00, in 0.50-Schritten"
+                        hint={tFields("priceHint")}
                       >
                         <div className="relative">
                           <FormInput
@@ -632,7 +629,7 @@ function UploadPageContent() {
                             min="0.50"
                             max="50"
                             step="0.50"
-                            placeholder="z.B. 5.00"
+                            placeholder={tFields("pricePlaceholder")}
                             className="pl-14"
                           />
                           <span className="text-text-muted absolute top-1/2 left-4 -translate-y-1/2 font-medium">
@@ -646,7 +643,7 @@ function UploadPageContent() {
                         <div className="border-success/30 bg-success/5 mt-4 rounded-xl border p-4">
                           <div className="flex items-center justify-between">
                             <span className="text-text-muted text-sm">
-                              Ihr Verdienst pro Verkauf:
+                              {tFields("earningsPerSale")}
                             </span>
                             <span className="text-success text-lg font-bold">
                               CHF {(parseFloat(formData.price) * 0.7).toFixed(2)}
@@ -663,15 +660,13 @@ function UploadPageContent() {
               {currentStep === 4 && (
                 <div className="space-y-6">
                   <div className="border-primary/20 border-b pb-4">
-                    <h2 className="text-text text-xl font-semibold">Dateien & Rechtliches</h2>
-                    <p className="text-text-muted mt-1 text-sm">
-                      Laden Sie Ihre Dateien hoch und bestätigen Sie die rechtlichen Anforderungen
-                    </p>
+                    <h2 className="text-text text-xl font-semibold">{tSteps("files")}</h2>
+                    <p className="text-text-muted mt-1 text-sm">{tSteps("filesSubtitle")}</p>
                   </div>
 
                   {/* Main File Upload */}
                   <FormField
-                    label="Hauptdatei(en)"
+                    label={tFields("mainFiles")}
                     tooltipKey="files"
                     required
                     error={getFieldError("files")}
@@ -682,7 +677,7 @@ function UploadPageContent() {
                         <div className="text-center">
                           <Loader2 className="text-primary mx-auto h-12 w-12 animate-spin" />
                           <p className="text-text mt-4 text-sm font-medium">
-                            Datei wird geladen...
+                            {tFields("fileLoading")}
                           </p>
                           <div className="mx-auto mt-4 max-w-xs">
                             <div className="bg-border h-3 overflow-hidden rounded-full">
@@ -712,24 +707,20 @@ function UploadPageContent() {
                               <Upload className="text-primary h-7 w-7" />
                             </div>
                             <p className="text-text mt-3 text-sm font-medium">
-                              Tippen Sie hier, um Dateien auszuwählen
+                              {tFields("mainFilesUploadTouch")}
                             </p>
                             <div className="bg-primary text-text-on-accent mx-auto mt-3 inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold">
                               <Upload className="h-4 w-4" />
-                              Durchsuchen
+                              {tFields("mainFilesBrowse")}
                             </div>
                           </>
                         ) : (
                           <>
                             <Upload className="text-text-muted mx-auto h-12 w-12" />
-                            <p className="text-text mt-2 text-sm">
-                              Klicken Sie hier oder ziehen Sie Dateien hinein
-                            </p>
+                            <p className="text-text mt-2 text-sm">{tFields("mainFilesUpload")}</p>
                           </>
                         )}
-                        <p className="text-text-muted mt-2 text-xs">
-                          PDF, Word, PowerPoint, Excel bis 50 MB
-                        </p>
+                        <p className="text-text-muted mt-2 text-xs">{tFields("mainFilesHint")}</p>
                         <input
                           ref={mainFileInputRef}
                           type="file"
@@ -803,17 +794,16 @@ function UploadPageContent() {
                     <div className="flex gap-3">
                       <Check className="text-success h-5 w-5 flex-shrink-0" />
                       <div className="text-text text-sm">
-                        <strong>Automatische Vorschau:</strong> Für PDF-Dateien wird automatisch
-                        eine Vorschau aus der ersten Seite erstellt.
+                        <strong>{tFields("autoPreview")}</strong> {tFields("autoPreviewDesc")}
                       </div>
                     </div>
                   </div>
 
                   {/* Preview Upload */}
                   <FormField
-                    label="Eigenes Vorschaubild (optional)"
+                    label={tFields("previewImage")}
                     tooltipKey="previewFiles"
-                    hint="Falls Sie ein eigenes Vorschaubild verwenden möchten"
+                    hint={tFields("previewImageHint")}
                   >
                     <div
                       onClick={() => previewFileInputRef.current?.click()}
@@ -823,16 +813,18 @@ function UploadPageContent() {
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={URL.createObjectURL(previewFiles[0])}
-                          alt="Vorschau"
+                          alt={tFields("previewAlt")}
                           className="mx-auto h-24 w-auto rounded-lg object-contain"
                         />
                       ) : (
                         <ImageIcon className="text-text-muted mx-auto h-10 w-10" />
                       )}
-                      <p className="text-text-muted mt-2 text-sm">PNG, JPG bis 5 MB</p>
+                      <p className="text-text-muted mt-2 text-sm">
+                        {tFields("previewImageFormats")}
+                      </p>
                       {previewFiles.length > 0 && (
                         <p className="text-primary mt-2 text-sm font-medium">
-                          {previewFiles.length} Vorschaubild(er) ausgewählt — Tippen zum Ändern
+                          {tFields("previewSelectedChange", { count: previewFiles.length })}
                         </p>
                       )}
                       <input
@@ -893,12 +885,8 @@ function UploadPageContent() {
                   <div className="border-border bg-surface-elevated rounded-xl border p-6">
                     <div className="mb-5 flex items-center justify-between">
                       <div>
-                        <h3 className="text-text text-lg font-semibold">
-                          Rechtliche Bestätigungen
-                        </h3>
-                        <p className="text-text-muted mt-1 text-sm">
-                          Bitte bestätigen Sie alle Punkte, um fortfahren zu können.
-                        </p>
+                        <h3 className="text-text text-lg font-semibold">{tLegal("title")}</h3>
+                        <p className="text-text-muted mt-1 text-sm">{tLegal("subtitle")}</p>
                       </div>
                       <span
                         className={`text-sm font-bold ${allLegalChecked ? "text-[var(--ctp-green)]" : "text-text-muted"}`}
@@ -929,8 +917,8 @@ function UploadPageContent() {
                       <FormCheckbox
                         checked={formData.legalOwnContent}
                         onChange={(checked) => updateFormData("legalOwnContent", checked)}
-                        label="Eigene Inhalte oder CC0-Lizenz"
-                        description="Ich habe alle Bilder, Grafiken und Texte selbst erstellt oder verwende nur Materialien mit CC0-Lizenz."
+                        label={tLegal("ownContent")}
+                        description={tLegal("ownContentDesc")}
                         hasError={touchedFields.legalOwnContent && !formData.legalOwnContent}
                         tooltipKey="legalOwnContent"
                       />
@@ -938,8 +926,8 @@ function UploadPageContent() {
                       <FormCheckbox
                         checked={formData.legalNoTextbookScans}
                         onChange={(checked) => updateFormData("legalNoTextbookScans", checked)}
-                        label="Keine Lehrmittel-Scans"
-                        description="Ich habe keine Seiten aus Lehrmitteln oder Schulbüchern eingescannt oder kopiert."
+                        label={tLegal("noScans")}
+                        description={tLegal("noScansDesc")}
                         hasError={
                           touchedFields.legalNoTextbookScans && !formData.legalNoTextbookScans
                         }
@@ -949,8 +937,8 @@ function UploadPageContent() {
                       <FormCheckbox
                         checked={formData.legalNoTrademarks}
                         onChange={(checked) => updateFormData("legalNoTrademarks", checked)}
-                        label="Keine geschützten Marken oder Charaktere"
-                        description="Mein Material enthält keine geschützten Marken, Logos oder Figuren."
+                        label={tLegal("noTrademarks")}
+                        description={tLegal("noTrademarksDesc")}
                         hasError={touchedFields.legalNoTrademarks && !formData.legalNoTrademarks}
                         tooltipKey="legalNoTrademarks"
                       />
@@ -958,8 +946,8 @@ function UploadPageContent() {
                       <FormCheckbox
                         checked={formData.legalSwissGerman}
                         onChange={(checked) => updateFormData("legalSwissGerman", checked)}
-                        label="Schweizer Rechtschreibung"
-                        description="Mein Material verwendet die Schweizer Rechtschreibung (kein Eszett)."
+                        label={tLegal("swissGerman")}
+                        description={tLegal("swissGermanDesc")}
                         hasError={touchedFields.legalSwissGerman && !formData.legalSwissGerman}
                         tooltipKey="legalSwissGerman"
                       />
@@ -967,20 +955,8 @@ function UploadPageContent() {
                       <FormCheckbox
                         checked={formData.legalTermsAccepted}
                         onChange={(checked) => updateFormData("legalTermsAccepted", checked)}
-                        label="Verkäufervereinbarung akzeptieren"
-                        description={
-                          <>
-                            Ich akzeptiere die{" "}
-                            <Link
-                              href="/agb"
-                              target="_blank"
-                              className="text-primary hover:underline"
-                            >
-                              Verkäufervereinbarung
-                            </Link>{" "}
-                            und bestätige, dass ich die Rechte habe, dieses Material zu verkaufen.
-                          </>
-                        }
+                        label={tLegal("acceptTerms")}
+                        description={tLegal("acceptTermsDesc")}
                         hasError={touchedFields.legalTermsAccepted && !formData.legalTermsAccepted}
                         tooltipKey="legalTermsAccepted"
                       />
@@ -1002,7 +978,7 @@ function UploadPageContent() {
                       <div className="bg-warning/10 text-warning mt-4 rounded-lg p-3 text-sm">
                         <div className="flex items-center gap-2">
                           <AlertTriangle className="h-4 w-4" />
-                          Bitte bestätigen Sie alle Punkte, um fortzufahren.
+                          {tLegal("incomplete")}
                         </div>
                       </div>
                     )}
@@ -1011,8 +987,7 @@ function UploadPageContent() {
                       <div className="bg-error/10 text-error mt-4 rounded-lg p-3 text-sm">
                         <div className="flex items-center gap-2">
                           <AlertTriangle className="h-4 w-4" />
-                          Ihr Titel oder Beschreibung enthält noch Eszett-Zeichen (ß). Bitte
-                          korrigieren Sie dies in Schritt 1.
+                          {tLegal("eszettWarning")}
                         </div>
                       </div>
                     )}
@@ -1028,7 +1003,7 @@ function UploadPageContent() {
                   disabled={currentStep === 1}
                   className="border-border text-text hover:bg-surface-elevated rounded-xl border-2 px-6 py-3 font-medium transition-all duration-200 hover:shadow-md active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  ← Zurück
+                  ← {tNav("back")}
                 </button>
 
                 {currentStep < 4 ? (
@@ -1037,7 +1012,7 @@ function UploadPageContent() {
                     onClick={handleNext}
                     className="bg-primary text-text-on-accent shadow-primary/25 hover:bg-primary-hover hover:shadow-primary/30 rounded-xl px-8 py-3 font-semibold shadow-lg transition-all duration-200 hover:shadow-xl active:scale-[0.98]"
                   >
-                    Weiter →
+                    {tNav("next")} →
                   </button>
                 ) : (
                   <button
@@ -1048,7 +1023,7 @@ function UploadPageContent() {
                   >
                     <span className="flex items-center gap-2">
                       <Check className="h-5 w-5" />
-                      Veröffentlichen
+                      {tNav("publish")}
                     </span>
                   </button>
                 )}

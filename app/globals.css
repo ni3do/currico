@@ -662,7 +662,7 @@ a {
 }
 
 .card:hover {
-  transform: translateY(-4px) scale(1.005);
+  transform: translateY(-4px);
   box-shadow:
     0 12px 28px rgba(0, 0, 0, 0.08),
     0 20px 40px rgba(0, 0, 0, 0.05);
@@ -670,7 +670,7 @@ a {
 }
 
 .card:active {
-  transform: translateY(-2px) scale(1.002);
+  transform: translateY(-2px);
   transition-duration: 0.15s;
 }
 
@@ -1651,7 +1651,7 @@ a {
 }
 
 .hover-card:hover {
-  transform: translateY(-4px) scale(1.005);
+  transform: translateY(-4px);
   box-shadow: var(--shadow-lg);
 }
 

@@ -142,7 +142,7 @@ Legende: [x] = erledigt, [ ] = offen
 ### Eigene Vorschläge (Material-Vorschau)
 
 - [x] Hardcoded deutsche Strings: "Material nicht gefunden", "Fehler beim Laden", "Dieses Material wird noch überprüft", "Keine Vorschau verfügbar", "PDF", "Verifiziert", "Wird überprüft", "Folge ich", "+Folgen", "Anonym", "Ähnliche Materialien" — alle in i18n auslagern
-- [ ] Browser-native Dialoge (`confirm()`/`alert()`) bei Kommentar-Löschung durch i18n-fähige Modals ersetzen
+- [x] Browser-native Dialoge (`confirm()`/`alert()`) bei Kommentar-Löschung durch i18n-fähige Modals ersetzen — replaced 11 instances across admin pages, sammlungen, and SellerCommentsSection with useToast() and ConfirmDialog
 - [x] Report-Modal: Texte komplett hardcoded (Titel, Gründe, Placeholder, Buttons, Erfolgsmeldung) — benötigt eigenen i18n-Namespace
 - [ ] Report-Modal schliesst nach 2 Sekunden automatisch — zu schnell, Benutzer könnte verwirrt sein
 - [ ] Typ-Duplikation: Interfaces für Material, Comment, Review in mehreren Komponenten definiert — in gemeinsame `lib/types/` auslagern
@@ -172,7 +172,7 @@ Legende: [x] = erledigt, [ ] = offen
 ### Eigene Vorschläge (Hilfe)
 
 - [x] Keine `generateMetadata()` Funktion — SEO-Metadaten, OpenGraph und Canonical URLs fehlen
-- [ ] Hardcodierte E-Mail `info@currico.ch` (Zeile 194) statt aus i18n — sollte über `t("noResults.contactEmail")` gelöst werden
+- [x] Hardcodierte E-Mail `info@currico.ch` (Zeile 194) statt aus i18n — now uses `t("noResults.contactEmail")`
 - [x] FAQ-Tabs haben kein `aria-selected` Attribut — Screenreader können aktiven Tab nicht identifizieren
 - [x] Accordion-Buttons fehlt `aria-expanded` Attribut — Screenreader erkennen geöffneten Zustand nicht
 - [ ] Keine Suchfunktion für FAQ — bei 30+ Fragen wäre In-App-Suche hilfreich
@@ -202,13 +202,13 @@ Legende: [x] = erledigt, [ ] = offen
 
 - [ ] GmbH nachtragen (Firmenform aktualisieren)
 - [ ] Version update (optional)
-- [ ] Light mode Inselfarben gleich machen (Farbkonsistenz)
+- [x] Light mode Inselfarben gleich machen (Farbkonsistenz) — standardized text-text-secondary → text-text-muted
 - [x] Kontakt Currico Link führt nach Mainpage (statt toter Link)
 
 ### Eigene Vorschläge (Impressum)
 
 - [x] Keine `generateMetadata()` Funktion — Impressum ist wichtig für SEO/Trust
-- [ ] "Handelsname:" hardcoded statt i18n — sollte über `t("company.tradeNameLabel")` kommen
+- [x] "Handelsname:" hardcoded statt i18n — now uses `t("company.tradeNameLabel")`
 - [ ] Person-Array `["p1", "p2", "p3"]` ist magisch — sollte Konstante oder aus Config geladen werden
 - [x] Icons (Building2, Mail, Globe, Scale, Users) haben kein `aria-hidden="true"` — werden als Inhalt gelesen
 - [ ] E-Mail-Links ohne `title`-Attribut — Tooltip für Nutzer fehlt
@@ -237,15 +237,15 @@ Legende: [x] = erledigt, [ ] = offen
 
 ## 8. Verkäufer-Stufen (`/verkaeufer-stufen`)
 
-- [ ] "So sammelst du Punkte" Raster einheitlich auf gleiche Höhe bringen
+- [x] "So sammelst du Punkte" Raster einheitlich auf gleiche Höhe bringen — flex-col + mt-auto for equal card heights
 - [ ] Lock Tier Upgrade nur bei bestimmten Voraussetzungen (Anzahl Downloads/Uploads)
 - [ ] Namen von Leveln überarbeiten
 - [ ] Punkte/Level-Aufstieg-System überarbeiten
 
 ### Eigene Vorschläge (Verkäufer-Stufen)
 
-- [ ] Hardcoded deutsche Strings ("1 Material", "5 Materialien", "25 Downloads", "1 Bewertung" etc.) — sollten über i18n laufen
-- [ ] Hardcoded "Level" Text in Badge — nicht lokalisierbar
+- [x] Hardcoded deutsche Strings ("1 Material", "5 Materialien", "25 Downloads", "1 Bewertung" etc.) — now use i18n plural forms
+- [x] Hardcoded "Level" Text in Badge — now uses `t("page.levelBadge", { level })`
 - [x] Layout-Metadata nutzt Canonical URL "seller-levels" statt "verkaeufer-stufen" — SEO-Fehler
 - [ ] `tipIcons` Array wird per Index gemappt — fragile Zuordnung, bricht wenn Array-Länge ändert
 - [ ] Keine visuelle Hierarchie zwischen aktuellem und angestrebtem Level — alle Level gleich dargestellt
@@ -257,7 +257,7 @@ Legende: [x] = erledigt, [ ] = offen
 ## 9. Verifizierter Verkäufer (`/verifizierter-verkaeufer`)
 
 - [ ] "Keine offenen Meldungen" Kriterium entfernen
-- [ ] Text-Blur beim Hover fixen (Text muss scharf und lesbar bleiben)
+- [x] Text-Blur beim Hover fixen (Text muss scharf und lesbar bleiben) — removed scale() from card hover, keeping translateY only
 
 ### Eigene Vorschläge (Verifizierter Verkäufer)
 
@@ -300,7 +300,7 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Eigene Vorschläge (Kontakt)
 
-- [ ] E-Mail "info@currico.ch" hardcoded statt aus Config-Konstante — Wartbarkeitsproblem
+- [x] E-Mail "info@currico.ch" hardcoded statt aus Config-Konstante — now uses i18n `t("direct.emailAddress")`
 - [ ] Kein Spam-Schutz (kein Honeypot, kein reCaptcha, kein Rate-Limiting sichtbar) — Formular könnte missbraucht werden
 - [ ] Telefonnummer-Feld hat keine Formatvalidierung — akzeptiert ungültige Nummern
 - [ ] Formular-State nur Client-seitig (useState) — bei Navigation weg sind Daten ohne Warnung verloren
@@ -319,7 +319,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Google-Anmeldung → direkt zum Profil, nicht zurück zum Login (auth.ts redirect fallback → `/konto`)
 - [ ] Google-Anmeldung überarbeiten (Flow verbessern)
 - [ ] Erneute Google-Anmeldung → braucht Zwischenfenster von Google
-- [ ] "Zurück zur Startseite" sichtbar machen ohne Scrollen
+- [x] "Zurück zur Startseite" sichtbar machen ohne Scrollen — moved from footer to above login card
 - [ ] Security: Password Salt implementieren (Simon)
 - [ ] Login über Google Auth überarbeiten (Simon)
 
@@ -534,6 +534,7 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Eigene Vorschläge (Hochladen)
 
+- [x] ~30 hardcoded German strings in upload wizard replaced with i18n — step titles, subtitles, form labels, legal checkboxes, navigation buttons, file upload text, preview text, error messages all now use tWizard/tSteps/tFields/tLegal/tNav translation functions
 - [ ] Eszett (ß) Warnung nur in Step 1, aber User kann in Step 3 auch Text eingeben — nicht alle Felder geprüft
 - [ ] Draft-System speichert Felder aber keine Dateien — bei Browser-Cache-Leerung sind Dateien weg
 - [ ] Keine Anzeige von verbleibender Datei-Grösse/Speicher-Limit
@@ -643,15 +644,15 @@ Legende: [x] = erledigt, [ ] = offen
 | Startseite                | 4        | 2            | 11             | 13          |
 | Materialien               | 1        | 20           | 19             | 39          |
 | Material-Vorschau         | 0        | 12           | 17             | 29          |
-| Hilfe                     | 3        | 2            | 7              | 9           |
+| Hilfe                     | 4        | 2            | 6              | 8           |
 | Urheberrecht              | 1        | 0            | 8              | 8           |
-| Impressum                 | 0        | 4            | 9              | 13          |
+| Impressum                 | 1        | 3            | 9              | 12          |
 | Cookie-Richtlinien        | 0        | 1            | 7              | 8           |
-| Verkäufer-Stufen          | 0        | 4            | 7              | 11          |
-| Verifizierter Verkäufer   | 0        | 2            | 6              | 8           |
+| Verkäufer-Stufen          | 2        | 4            | 5              | 9           |
+| Verifizierter Verkäufer   | 1        | 1            | 6              | 7           |
 | Über uns                  | 0        | 2            | 10             | 12          |
-| Kontakt                   | 0        | 4            | 9              | 13          |
-| Anmelden                  | 1        | 7            | 6              | 13          |
+| Kontakt                   | 0        | 4            | 8              | 12          |
+| Anmelden                  | 2        | 6            | 6              | 12          |
 | Registrieren              | 0        | 0            | 5              | 5           |
 | Konto (alle Unterseiten)  | 19       | 11           | 39             | 50          |
 | Folge ich                 | 3        | 1            | 7              | 8           |
@@ -660,4 +661,4 @@ Legende: [x] = erledigt, [ ] = offen
 | Verkäufer werden / Stripe | 0        | 4            | 10             | 14          |
 | Benachrichtigungen        | 0        | 3            | 0              | 3           |
 | Global                    | 9        | 1            | 13             | 14          |
-| **Total**                 | **41**   | **97**       | **213**        | **310**     |
+| **Total**                 | **48**   | **93**       | **207**        | **300**     |

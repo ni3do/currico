@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { MessageCircle, AlertCircle, Filter, ExternalLink, Send, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useToast } from "@/components/ui/Toast";
 
 interface CommentUser {
   id: string;
@@ -47,6 +48,7 @@ interface SellerCommentsSectionProps {
 export function SellerCommentsSection({ className = "" }: SellerCommentsSectionProps) {
   const tCommon = useTranslations("common");
   const t = useTranslations("accountPage.comments");
+  const { toast } = useToast();
   const [comments, setComments] = useState<SellerComment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -114,7 +116,7 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
       fetchComments(page, filter);
     } catch (err) {
       console.error("Error submitting reply:", err);
-      alert(t("errorSending"));
+      toast(t("errorSending"), "error");
     } finally {
       setSubmittingReply(false);
     }

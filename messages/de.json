@@ -105,7 +105,10 @@
       "cancel": "Abbrechen",
       "apply": "Anwenden",
       "reset": "Zurücksetzen",
-      "backToHome": "Zurück zur Startseite"
+      "backToHome": "Zurück zur Startseite",
+      "showPassword": "Passwort anzeigen",
+      "hidePassword": "Passwort ausblenden",
+      "delete": "Löschen"
     },
     "breadcrumb": {
       "home": "Startseite",
@@ -1011,6 +1014,7 @@
       "markNew": "Als neu markieren",
       "reply": "Antworten",
       "deleteMessage": "Löschen",
+      "confirmDeleteTitle": "Nachricht löschen",
       "confirmDelete": "Möchten Sie diese Nachricht wirklich löschen?",
       "subjectGeneral": "Allgemeine Anfrage",
       "subjectFeedback": "Feedback",
@@ -1148,6 +1152,7 @@
     },
     "direct": {
       "title": "Lieber direkt Kontakt aufnehmen?",
+      "emailAddress": "info@currico.ch",
       "email": {
         "title": "E-Mail schreiben",
         "description": "Für ausführliche Fragen oder Dokumentenaustausch"
@@ -1403,7 +1408,12 @@
       "filesShort": "Dateien",
       "filesDescription": "Upload, Bestätigungen",
       "progress": "Schritt {current} von {total}",
-      "almostDone": "Fast geschafft!"
+      "almostDone": "Fast geschafft!",
+      "basicsSubtitle": "Beschreiben Sie Ihr Material",
+      "curriculumSubtitle": "Wählen Sie Zyklus, Fach und Kompetenzen",
+      "priceTitle": "Preis festlegen",
+      "priceSubtitle": "Wählen Sie, ob Ihr Material kostenlos oder kostenpflichtig ist",
+      "filesSubtitle": "Laden Sie Ihre Dateien hoch und bestätigen Sie die rechtlichen Anforderungen"
     },
     "draft": {
       "saved": "Entwurf gespeichert",
@@ -1512,7 +1522,14 @@
       "dialectSwiss": "Schweizerdeutsch",
       "dialectSwissDesc": "CH",
       "dialectStandard": "Hochdeutsch",
-      "dialectStandardDesc": "DE"
+      "dialectStandardDesc": "DE",
+      "previewTooLarge": "Vorschaubild darf maximal 5 MB gross sein",
+      "earningsPerSale": "Ihr Verdienst pro Verkauf:",
+      "fileLoading": "Datei wird geladen...",
+      "mainFilesUploadTouch": "Tippen Sie hier, um Dateien auszuwählen",
+      "mainFilesBrowse": "Durchsuchen",
+      "previewAlt": "Vorschau",
+      "previewSelectedChange": "{count} Vorschaubild(er) ausgewählt — Tippen zum Ändern"
     },
     "legal": {
       "title": "Rechtliche Bestätigungen",
@@ -2322,6 +2339,7 @@
     "company": {
       "title": "Unternehmen",
       "name": "Angle Labs GmbH",
+      "tradeNameLabel": "Handelsname:",
       "tradeName": "Currico",
       "address": {
         "street": "Zellmatte 6",
@@ -2694,6 +2712,7 @@
       "editCollection": "Sammlung bearbeiten",
       "newCollection": "Neue Sammlung"
     },
+    "confirmDeleteTitle": "Sammlung löschen",
     "confirmDelete": "Sind Sie sicher, dass Sie diese Sammlung löschen möchten?"
   },
   "following": {
@@ -2837,7 +2856,8 @@
     "noResults": {
       "title": "Keine Ergebnisse gefunden",
       "description": "Wir konnten keine Antwort auf Ihre Frage finden. Unser Team hilft Ihnen gerne persönlich weiter.",
-      "contactButton": "Support kontaktieren"
+      "contactButton": "Support kontaktieren",
+      "contactEmail": "info@currico.ch"
     }
   },
   "notifications": {
@@ -3664,6 +3684,10 @@
       "levelsTitle": "Die 5 Levels",
       "levelsDescription": "Jedes Level schaltet eine neue Auszeichnung für dein Profil frei.",
       "levelMinPoints": "Ab {points} Punkten",
+      "levelBadge": "Level {level}",
+      "materialsCount": "{count, plural, =1 {1 Material} other {# Materialien}}",
+      "downloadsCount": "{count, plural, =1 {1 Download} other {# Downloads}}",
+      "reviewsExampleCount": "{count, plural, =1 {1 Bewertung} other {# Bewertungen}}",
       "tipsTitle": "Tipps zum schnelleren Aufstieg",
       "tips": {
         "quality": "Lade qualitativ hochwertige Materialien hoch — gute Materialien werden häufiger heruntergeladen.",

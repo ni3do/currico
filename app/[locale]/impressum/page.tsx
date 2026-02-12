@@ -31,9 +31,11 @@ export default function ImpressumPage() {
               <Building2 className="text-primary h-5 w-5" aria-hidden="true" />
               <h2 className="text-text text-lg font-semibold">{t("company.title")}</h2>
             </div>
-            <div className="text-text-secondary space-y-3">
+            <div className="text-text-muted space-y-3">
               <p className="text-text font-medium">{t("company.name")}</p>
-              <p className="text-text-muted text-sm">Handelsname: {t("company.tradeName")}</p>
+              <p className="text-text-muted text-sm">
+                {t("company.tradeNameLabel")} {t("company.tradeName")}
+              </p>
               <p>{t("company.address.street")}</p>
               <p>{t("company.address.city")}</p>
               <p>{t("company.address.country")}</p>
@@ -46,7 +48,7 @@ export default function ImpressumPage() {
               <Mail className="text-primary h-5 w-5" aria-hidden="true" />
               <h2 className="text-text text-lg font-semibold">{t("contact.title")}</h2>
             </div>
-            <div className="text-text-secondary space-y-3">
+            <div className="text-text-muted space-y-3">
               <p className="flex items-center gap-2">
                 <Mail className="text-text-muted h-4 w-4" aria-hidden="true" />
                 <a href={`mailto:${t("contact.email")}`} className="text-primary hover:underline">
@@ -55,7 +57,12 @@ export default function ImpressumPage() {
               </p>
               <p className="flex items-center gap-2">
                 <Globe className="text-text-muted h-4 w-4" aria-hidden="true" />
-                <a href="https://www.currico.ch" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">
+                <a
+                  href="https://www.currico.ch"
+                  className="text-primary hover:underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   {t("contact.website")}
                 </a>
               </p>
@@ -69,7 +76,7 @@ export default function ImpressumPage() {
             <Scale className="text-primary h-5 w-5" aria-hidden="true" />
             <h2 className="text-text text-lg font-semibold">{t("legal.title")}</h2>
           </div>
-          <div className="text-text-secondary grid gap-4 sm:grid-cols-2">
+          <div className="text-text-muted grid gap-4 sm:grid-cols-2">
             <div>
               <p className="text-text-muted text-sm">{t("legal.legalForm.label")}</p>
               <p className="text-text font-medium">{t("legal.legalForm.value")}</p>
@@ -118,7 +125,7 @@ export default function ImpressumPage() {
         {/* Disclaimer */}
         <div className="border-border bg-surface mt-8 rounded-xl border p-6">
           <h2 className="text-text mb-4 text-lg font-semibold">{t("disclaimer.title")}</h2>
-          <div className="text-text-secondary space-y-4 text-sm">
+          <div className="text-text-muted space-y-4 text-sm">
             <div>
               <h3 className="text-text mb-1 font-medium">{t("disclaimer.liability.title")}</h3>
               <p>{t("disclaimer.liability.content")}</p>
