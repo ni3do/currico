@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
@@ -10,11 +10,9 @@ import {
   Download,
   FileText,
   ExternalLink,
-  User,
   Trash2,
   Sparkles,
   Clock,
-  X,
   CircleCheck,
   FileEdit,
   BarChart3,
@@ -26,6 +24,7 @@ import { EmailVerificationBanner } from "@/components/account/EmailVerificationB
 import { StripeConnectStatus } from "@/components/account/StripeConnectStatus";
 import { DeleteConfirmDialog } from "@/components/account/DeleteConfirmDialog";
 import { SellerLevelCard } from "@/components/account/SellerLevelCard";
+import { ProfileCompletionProgress } from "@/components/account/ProfileCompletionProgress";
 import { useAccountData } from "@/lib/hooks/useAccountData";
 import type { SellerStats, SellerMaterial, LibraryItem } from "@/lib/types/account";
 import { getSubjectPillClass } from "@/lib/constants/subject-colors";
@@ -49,7 +48,6 @@ export default function AccountOverviewPage() {
     type: "material" | "bundle";
     title: string;
   } | null>(null);
-  const [profileBannerDismissed, setProfileBannerDismissed] = useState(true);
   const [levelData, setLevelData] = useState<{
     uploads: number;
     downloads: number;
@@ -104,36 +102,6 @@ export default function AccountOverviewPage() {
     }
   }, [sharedLoading, fetchData]);
 
-  const getProfileCompletion = useCallback(() => {
-    const items = [
-      { done: !!userData?.emailVerified, label: t("profile.fields.emailVerified") },
-      { done: !!(userData?.displayName || userData?.name), label: t("profile.fields.displayName") },
-      { done: !!userData?.image, label: t("profile.fields.profileImage") },
-      { done: !!userData?.bio, label: t("profile.fields.bio") },
-      { done: userData?.subjects && userData.subjects.length > 0, label: t("profile.fields.subjects") },
-      { done: userData?.cycles && userData.cycles.length > 0, label: t("profile.fields.cycles") },
-      { done: !!userData?.school, label: t("profile.fields.school") },
-      { done: userData?.cantons && userData.cantons.length > 0, label: t("profile.fields.canton") },
-    ];
-    const completed = items.filter((i) => i.done).length;
-    const missing = items.filter((i) => !i.done).map((i) => i.label);
-    return {
-      percentage: Math.round((completed / items.length) * 100),
-      missing,
-      completed,
-      total: items.length,
-    };
-  }, [userData]);
-
-  useEffect(() => {
-    const profile = getProfileCompletion();
-    if (typeof window !== "undefined") {
-      const dismissed =
-        localStorage.getItem("currico-profile-banner-dismissed") === String(profile.percentage);
-      setProfileBannerDismissed(dismissed || profile.percentage >= 100);
-    }
-  }, [getProfileCompletion]);
-
   const handleDownload = async (materialId: string) => {
     setDownloading(materialId);
     try {
@@ -163,7 +131,6 @@ export default function AccountOverviewPage() {
     }
   };
 
-
   const getStatusConfig = (status: string) => {
     if (status === "Verified")
       return {
@@ -177,14 +144,18 @@ export default function AccountOverviewPage() {
         icon: Sparkles,
         className: "bg-accent/10 text-accent",
       };
+    if (status === "Draft")
+      return {
+        label: t("overview.draft"),
+        icon: FileEdit,
+        className: "bg-text-muted/10 text-text-muted",
+      };
     return {
       label: t("overview.pending"),
       icon: Clock,
       className: "bg-warning/10 text-warning",
     };
   };
-
-  const profile = getProfileCompletion();
 
   return (
     <>
@@ -197,74 +168,19 @@ export default function AccountOverviewPage() {
           }}
         />
 
-        {/* Profile Completion Banner */}
-        {!profileBannerDismissed && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="border-primary/30 bg-primary/5 relative rounded-2xl border p-5"
-          >
-            <button
-              onClick={() => {
-                localStorage.setItem(
-                  "currico-profile-banner-dismissed",
-                  String(profile.percentage)
-                );
-                setProfileBannerDismissed(true);
-              }}
-              className="text-text-muted hover:text-text absolute top-3 right-3 p-1 transition-colors"
-              aria-label={t("profile.close")}
-            >
-              <X className="h-4 w-4" />
-            </button>
-            <div className="flex items-start gap-4">
-              <div className="bg-primary/20 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full">
-                <User className="text-primary h-5 w-5" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <h3 className="text-text text-sm font-semibold">{t("profile.completeProfile")}</h3>
-                <p className="text-text-muted mt-1 text-xs">
-                  {t("profile.fieldsCompleted", {
-                    completed: profile.completed,
-                    total: profile.total,
-                  })}
-                </p>
-                <div className="bg-border mt-3 h-2 overflow-hidden rounded-full">
-                  <motion.div
-                    className="bg-primary h-full rounded-full"
-                    initial={{ width: 0 }}
-                    animate={{ width: `${profile.percentage}%` }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
-                  />
-                </div>
-                {profile.missing.length > 0 && (
-                  <div className="mt-3 flex flex-wrap gap-1.5">
-                    {profile.missing.map((field) => (
-                      <span
-                        key={field}
-                        className="bg-surface border-border text-text-muted rounded-full border px-2.5 py-0.5 text-xs"
-                      >
-                        {field}
-                      </span>
-                    ))}
-                  </div>
-                )}
-                <Link
-                  href="/konto/settings"
-                  className="bg-primary text-text-on-accent hover:bg-primary-hover mt-4 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
-                >
-                  {t("profile.editProfile")}
-                </Link>
-              </div>
-            </div>
-          </motion.div>
-        )}
-
         {/* Email Verification Banner */}
         {userData && !userData.emailVerified && <EmailVerificationBanner email={userData.email} />}
 
         {/* Stripe Connect Status */}
         {userData && userData.emailVerified && <StripeConnectStatus isSeller={userData.isSeller} />}
+
+        {/* Profile Completion */}
+        {userData && (
+          <ProfileCompletionProgress
+            profile={userData}
+            onNavigateToSettings={() => router.push("/konto/settings")}
+          />
+        )}
 
         {/* KPI Metrics Row */}
         <div className="grid gap-3 sm:gap-4 md:grid-cols-3">
@@ -343,10 +259,11 @@ export default function AccountOverviewPage() {
           <div className="border-border flex items-center justify-between border-b px-5 py-4">
             <h2 className="text-text text-base font-semibold">{t("overview.myMaterials")}</h2>
             <Link
-              href="/hochladen"
-              className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors"
+              href="/konto/uploads"
+              className="text-primary flex items-center gap-1 text-sm font-medium hover:underline"
             >
-              {t("overview.newMaterial")}
+              {t("overview.viewAll")}
+              <ArrowUpRight className="h-3.5 w-3.5" />
             </Link>
           </div>
 
@@ -373,15 +290,9 @@ export default function AccountOverviewPage() {
                   <FileText className="text-text-faint h-8 w-8" />
                 </div>
                 <h3 className="text-text mb-2 text-lg font-medium">{t("overview.noMaterials")}</h3>
-                <p className="text-text-muted mx-auto mb-6 max-w-sm text-sm">
+                <p className="text-text-muted mx-auto max-w-sm text-sm">
                   {t("overview.noMaterialsDescription")}
                 </p>
-                <Link
-                  href="/hochladen"
-                  className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition-colors"
-                >
-                  {t("overview.uploadFirst")}
-                </Link>
               </div>
             ) : (
               <>
@@ -613,8 +524,13 @@ export default function AccountOverviewPage() {
                       disabled={downloading === item.id}
                       className="text-primary hover:bg-primary/10 shrink-0 rounded-lg p-2 transition-colors disabled:opacity-50"
                       title={t("overview.downloads")}
+                      aria-label={t("overview.downloadLabel")}
                     >
-                      <Download className="h-4 w-4" />
+                      {downloading === item.id ? (
+                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                      ) : (
+                        <Download className="h-4 w-4" />
+                      )}
                     </button>
                   </motion.div>
                 ))}
@@ -624,13 +540,7 @@ export default function AccountOverviewPage() {
                 <div className="bg-surface-hover mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl">
                   <Download className="text-text-faint h-6 w-6" />
                 </div>
-                <p className="text-text-muted mb-2 text-sm">{t("overview.noDownloads")}</p>
-                <Link
-                  href="/materialien"
-                  className="text-primary text-sm font-medium hover:underline"
-                >
-                  {t("overview.discoverLink")}
-                </Link>
+                <p className="text-text-muted text-sm">{t("overview.noDownloads")}</p>
               </div>
             )}
           </div>

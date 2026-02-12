@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useAccountData } from "@/lib/hooks/useAccountData";
 import { SellerCommentsSection } from "@/components/account/SellerCommentsSection";
 import { Link } from "@/i18n/navigation";
@@ -7,18 +8,19 @@ import { MessageCircle } from "lucide-react";
 
 export default function AccountCommentsPage() {
   const { userData } = useAccountData();
+  const t = useTranslations("accountPage.comments");
 
   if (!userData?.isSeller) {
     return (
       <div className="py-12 text-center">
         <MessageCircle className="text-text-faint mx-auto mb-4 h-16 w-16" />
-        <h3 className="text-text mb-2 text-lg font-medium">Keine Kommentare</h3>
-        <p className="text-text-muted mb-4 text-sm">Kommentare sind nur für Verkäufer verfügbar.</p>
+        <h3 className="text-text mb-2 text-lg font-medium">{t("empty")}</h3>
+        <p className="text-text-muted mb-4 text-sm">{t("notSeller")}</p>
         <Link
           href="/verkaeufer-werden"
           className="text-primary text-sm font-medium hover:underline"
         >
-          Verkäufer werden
+          {t("becomeSeller")}
         </Link>
       </div>
     );

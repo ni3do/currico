@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const { searchParams } = new URL(request.url);
-    const limit = parseInt(searchParams.get("limit") || "50");
+    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") || "50")));
     const offset = parseInt(searchParams.get("offset") || "0");
 
     const wishlistItems = await prisma.wishlist.findMany({

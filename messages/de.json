@@ -17,6 +17,13 @@
     "invalidFileType": "Ungültiger Dateityp",
     "userNotFound": "Benutzer nicht gefunden"
   },
+  "dashboardCard": {
+    "remove": "Entfernen",
+    "edit": "Bearbeiten",
+    "downloads": "Downloads",
+    "sales": "Verkäufe",
+    "unknownSeller": "Unbekannt"
+  },
   "previewGallery": {
     "title": "Vorschau",
     "pageOf": "Seite {current} von {total}",
@@ -77,6 +84,18 @@
       "deleteFailed": "Löschen fehlgeschlagen.",
       "sendFailed": "Nachricht konnte nicht gesendet werden.",
       "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten."
+    },
+    "sort": {
+      "label": "Sortierung",
+      "newest": "Neueste zuerst",
+      "oldest": "Älteste zuerst",
+      "alphabetical": "Alphabetisch",
+      "popular": "Beliebteste"
+    },
+    "badges": {
+      "verified": "Verifiziert",
+      "pending": "Ausstehend",
+      "rejected": "Abgelehnt"
     },
     "buttons": {
       "viewAll": "Alle anzeigen",
@@ -1653,7 +1672,7 @@
       "continueSetup": "Einrichtung abschliessen"
     },
     "invite": {
-      "title": "Geld verdienen",
+      "title": "Verkäufer werden",
       "description": "Teilen Sie Ihre Unterrichtsmaterialien und verdienen Sie 70% bei jedem Verkauf. Richten Sie Ihr Verkäuferkonto in wenigen Minuten ein.",
       "benefit1": "70% pro Verkauf",
       "benefit2": "Tausende Lehrpersonen erreichen",
@@ -2695,7 +2714,11 @@
       "title": "Mehr entdecken",
       "description": "Finden Sie weitere interessante Lehrpersonen und deren Materialien.",
       "link": "Material durchsuchen"
-    }
+    },
+    "searchPlaceholder": "Profile durchsuchen...",
+    "noSearchResults": "Keine Profile gefunden",
+    "errorLoading": "Fehler beim Laden der gefolgten Profile",
+    "retry": "Erneut versuchen"
   },
   "verifyEmailPage": {
     "loading": {
@@ -2899,7 +2922,22 @@
       "4": "Gut",
       "5": "Ausgezeichnet"
     },
-    "starsLabel": "{count} Sterne"
+    "starsLabel": "{count} Sterne",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "deleting": "Löschen...",
+    "deleteError": "Fehler beim Löschen der Bewertung",
+    "edited": "bearbeitet",
+    "save": "Speichern",
+    "saving": "Speichern...",
+    "cancel": "Abbrechen",
+    "previous": "Zurück",
+    "next": "Weiter",
+    "pageOf": "Seite {page} von {totalPages}",
+    "loginPrompt": "Melden Sie sich an",
+    "loginSuffix": ", um eine Bewertung zu schreiben.",
+    "noReviewsBeFirst": "Noch keine Bewertungen — seien Sie der Erste!",
+    "options": "Optionen"
   },
   "likes": {
     "like": "Gefällt mir",
@@ -2925,6 +2963,21 @@
     "confirmDeleteReply": "Möchten Sie diese Antwort wirklich löschen?",
     "edited": "bearbeitet",
     "seller": "Verkäufer",
+    "save": "Speichern",
+    "saving": "Speichern...",
+    "cancel": "Abbrechen",
+    "deleteError": "Fehler beim Löschen des Kommentars",
+    "updateError": "Fehler beim Aktualisieren des Kommentars",
+    "deleteReplyError": "Fehler beim Löschen der Antwort",
+    "updateReplyError": "Fehler beim Aktualisieren der Antwort",
+    "replyCount": "{count} Antworten",
+    "previous": "Zurück",
+    "next": "Weiter",
+    "pageOf": "Seite {page} von {totalPages}",
+    "loginPrompt": "Melden Sie sich an",
+    "loginSuffix": ", um einen Kommentar zu schreiben.",
+    "deleting": "Löschen...",
+    "options": "Optionen",
     "sellerComments": {
       "title": "Kommentare zu Ihren Materialien",
       "totalComments": "{count} Kommentare insgesamt",
@@ -3004,7 +3057,6 @@
       "following": "Folge ich",
       "settings": "Einstellungen",
       "settingsProfile": "Profil",
-      "settingsAppearance": "Darstellung",
       "settingsNotifications": "Benachrichtigungen",
       "settingsAccount": "Konto"
     },
@@ -3021,7 +3073,220 @@
       "discover": "Entdecken",
       "newMaterial": "Neues Material",
       "discoverMaterials": "Materialien entdecken",
-      "unknownSeller": "Unbekannt"
+      "unknownSeller": "Unbekannt",
+      "materials": "Materialien",
+      "followers": "Follower"
+    },
+    "library": {
+      "title": "Meine Bibliothek",
+      "subtitle": "Alle erworbenen Materialien an einem Ort",
+      "stats": {
+        "total": "Gesamt in Bibliothek",
+        "free": "Gratis erhalten",
+        "purchased": "Gekauft"
+      },
+      "search": "Bibliothek durchsuchen...",
+      "discoverMore": "Mehr entdecken",
+      "empty": "Ihre Bibliothek ist noch leer",
+      "emptyDescription": "Entdecken Sie hochwertige Unterrichtsmaterialien von anderen Lehrpersonen und beginnen Sie Ihre Sammlung.",
+      "discoverButton": "Materialien entdecken",
+      "badgePurchased": "Gekauft",
+      "badgeFree": "Gratis",
+      "badgeVerified": "Verifiziert",
+      "errorLoading": "Fehler beim Laden der Bibliothek",
+      "retry": "Erneut versuchen"
+    },
+    "wishlist": {
+      "title": "Wunschliste",
+      "subtitle": "Gespeicherte Materialien für später",
+      "search": "Wunschliste durchsuchen...",
+      "empty": "Ihre Wunschliste ist leer",
+      "emptyDescription": "Speichern Sie interessante Materialien für später.",
+      "discoverButton": "Materialien entdecken",
+      "errorLoading": "Fehler beim Laden der Wunschliste",
+      "retry": "Erneut versuchen"
+    },
+    "bundles": {
+      "title": "Meine Bundles",
+      "subtitle": "Materialien-Pakete zu reduzierten Preisen",
+      "newBundle": "Neues Bundle",
+      "search": "Bundles durchsuchen...",
+      "table": {
+        "title": "Titel",
+        "status": "Status",
+        "materials": "Materialien",
+        "price": "Preis",
+        "savings": "Ersparnis",
+        "actions": "Aktionen"
+      },
+      "status": {
+        "verified": "Verifiziert",
+        "pending": "Ausstehend",
+        "rejected": "Abgelehnt"
+      },
+      "published": "Veröffentlicht",
+      "draft": "Entwurf",
+      "view": "Ansehen",
+      "publish": "Veröffentlichen",
+      "unpublish": "Veröffentlichung aufheben",
+      "delete": "Löschen",
+      "empty": "Noch keine Bundles erstellt",
+      "emptyDescription": "Bündeln Sie mehrere Materialien zu einem reduzierten Preis.",
+      "createFirst": "Erstes Bundle erstellen",
+      "actionsLabel": "Aktionen",
+      "sortLabel": "Sortierung",
+      "sort": {
+        "newest": "Neueste zuerst",
+        "oldest": "Älteste zuerst",
+        "title": "Alphabetisch"
+      },
+      "errorLoading": "Fehler beim Laden der Bundles",
+      "retry": "Erneut versuchen"
+    },
+    "uploads": {
+      "title": "Meine Uploads",
+      "subtitle": "Materialien, die Sie hochgeladen haben",
+      "newMaterial": "Neues Material",
+      "search": "Uploads durchsuchen...",
+      "sort": {
+        "newest": "Neueste zuerst",
+        "oldest": "Älteste zuerst",
+        "title": "Alphabetisch",
+        "popular": "Beliebteste"
+      },
+      "statusVerified": "Verifiziert",
+      "statusPending": "Ausstehend",
+      "empty": "Noch keine hochgeladenen Materialien",
+      "emptyDescription": "Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen.",
+      "uploadFirst": "Material hochladen"
+    },
+    "comments": {
+      "title": "Kommentare zu Ihren Materialien",
+      "totalComments": "Kommentare insgesamt",
+      "unanswered": "unbeantwortet",
+      "filterAll": "Alle Kommentare",
+      "filterUnanswered": "Unbeantwortet",
+      "empty": "Keine Kommentare",
+      "emptyDescription": "Kommentare erscheinen hier, sobald Nutzer Ihre Materialien kommentieren.",
+      "viewMaterial": "Material ansehen",
+      "unansweredBadge": "Unbeantwortet",
+      "reply": "Antworten",
+      "replies": "{count} Antworten",
+      "replyPlaceholder": "Schreiben Sie eine Antwort...",
+      "cancel": "Abbrechen",
+      "sending": "Senden...",
+      "send": "Antworten",
+      "prev": "Zurück",
+      "next": "Weiter",
+      "pageInfo": "Seite {page} von {total}",
+      "errorLoading": "Fehler beim Laden der Kommentare",
+      "errorSending": "Fehler beim Senden der Antwort",
+      "notSeller": "Kommentare sind nur für Verkäufer verfügbar.",
+      "becomeSeller": "Verkäufer werden"
+    },
+    "settingsNotifications": {
+      "title": "Benachrichtigungen",
+      "subtitle": "Verwalten Sie, welche Benachrichtigungen Sie erhalten möchten"
+    },
+    "settingsAccount": {
+      "title": "Konto & Sicherheit",
+      "subtitle": "Verwalten Sie Ihre Kontoeinstellungen und Sicherheitsoptionen",
+      "accountStatus": "Kontostatus",
+      "accountStatusDesc": "Informationen zu Ihrem Konto",
+      "accountType": "Kontotyp",
+      "seller": "Verkäufer",
+      "buyer": "Käufer",
+      "emailStatus": "E-Mail-Status",
+      "verified": "Verifiziert",
+      "emailSent": "E-Mail gesendet!",
+      "sending": "Wird gesendet...",
+      "notVerified": "Nicht verifiziert",
+      "clickToSend": "(Klicken zum Senden)",
+      "sendError": "Fehler beim Senden",
+      "genericError": "Ein Fehler ist aufgetreten",
+      "dangerZone": "Gefahrenzone",
+      "dangerZoneDesc": "Unwiderrufliche Aktionen",
+      "deleteWarning": "Das Löschen Ihres Kontos ist unwiderruflich. Alle Ihre Daten, hochgeladenen Materialien und Käufe werden permanent gelöscht.",
+      "deleteAccount": "Konto löschen",
+      "areYouSure": "Sind Sie sicher?",
+      "deleteConfirmDesc": "Diese Aktion kann nicht rückgängig gemacht werden. Alle Materialien, Bewertungen und Kontodaten werden gelöscht.",
+      "typeToConfirm": "Tippen Sie <strong>DELETE</strong> zur Bestätigung",
+      "confirmKeyword": "DELETE",
+      "cancel": "Abbrechen",
+      "deleting": "Wird gelöscht...",
+      "deletePermanently": "Endgültig löschen",
+      "deleteError": "Fehler beim Löschen",
+      "networkError": "Netzwerkfehler"
+    },
+    "settingsProfile": {
+      "avatar": {
+        "errorInvalidType": "Bitte wählen Sie ein Bild aus (JPG, PNG)",
+        "errorTooLarge": "Das Bild darf maximal 2MB gross sein",
+        "errorUploadFailed": "Fehler beim Hochladen. Bitte versuchen Sie es erneut.",
+        "uploadLabel": "Profilbild hochladen"
+      },
+      "multiSelect": {
+        "search": "Suchen...",
+        "noResults": "Keine Optionen gefunden"
+      },
+      "title": "Profil bearbeiten",
+      "avatarHint": "Klicken Sie auf das Bild, um es zu ändern",
+      "avatarFormats": "JPG, PNG oder WebP. Max 2MB.",
+      "avatarRemoving": "Wird entfernt...",
+      "avatarRemove": "Bild entfernen",
+      "basicInfo": "Grundinformationen",
+      "basicInfoDesc": "Name, E-Mail und persönliche Beschreibung",
+      "displayName": "Anzeigename",
+      "displayNamePlaceholder": "z.B. Frau M. oder Maria S.",
+      "email": "E-Mail",
+      "emailChangeHint": "Kontaktieren Sie uns, um Ihre E-Mail zu ändern",
+      "aboutMe": "Über mich",
+      "aboutMePlaceholder": "Erzählen Sie etwas über sich und Ihren Unterricht...",
+      "teachingProfile": "Unterrichtsprofil",
+      "teachingProfileDesc": "Fächer, Zyklen, Erfahrung und Schule",
+      "subjects": "Fächer",
+      "subjectsPlaceholder": "Fächer auswählen...",
+      "cycles": "Zyklen",
+      "cyclesPlaceholder": "Zyklen auswählen...",
+      "cantons": "Kantone",
+      "cantonsPlaceholder": "Kantone auswählen...",
+      "school": "Schule / Institution",
+      "schoolPlaceholder": "z.B. Primarschule Muster",
+      "teachingExperience": "Unterrichtserfahrung",
+      "selectPlaceholder": "Bitte auswählen",
+      "experience0_2": "0-2 Jahre",
+      "experience3_5": "3-5 Jahre",
+      "experience6_10": "6-10 Jahre",
+      "experience11_20": "11-20 Jahre",
+      "experience20plus": "Über 20 Jahre",
+      "contactSocial": "Kontakt & Social Media",
+      "contactSocialDesc": "Website, Instagram und Pinterest",
+      "website": "Website / Portfolio",
+      "websitePlaceholder": "https://meine-website.ch",
+      "usernamePlaceholder": "benutzername",
+      "privacy": "Privatsphäre",
+      "privacyDesc": "Sichtbarkeit Ihres Profils steuern",
+      "privateProfile": "Privates Profil",
+      "privateOn": "Nur Sie können Ihr Profil sehen",
+      "privateOff": "Ihr Profil ist für andere sichtbar",
+      "unsavedChanges": "Sie haben ungespeicherte Änderungen",
+      "discard": "Verwerfen",
+      "saveChanges": "Änderungen speichern",
+      "saving": "Speichern...",
+      "saved": "Gespeichert!",
+      "errorNameMin": "Name muss mindestens 2 Zeichen haben",
+      "errorNameMax": "Name darf maximal 32 Zeichen haben",
+      "errorInvalidUrl": "Ungültige URL (z.B. https://example.com)",
+      "errorSaving": "Fehler beim Speichern. Bitte versuchen Sie es erneut.",
+      "errorSavingGeneric": "Fehler beim Speichern",
+      "successSaved": "Änderungen gespeichert!",
+      "avatarUploaded": "Profilbild erfolgreich hochgeladen!",
+      "avatarUploadError": "Fehler beim Hochladen. Bitte versuchen Sie es erneut.",
+      "avatarUploadErrorGeneric": "Fehler beim Hochladen",
+      "avatarRemoved": "Profilbild erfolgreich entfernt!",
+      "avatarRemoveError": "Fehler beim Löschen. Bitte versuchen Sie es erneut.",
+      "avatarRemoveErrorGeneric": "Fehler beim Löschen",
+      "defaultUser": "Benutzer"
     },
     "overview": {
       "earnings": "Einnahmen",
@@ -3030,7 +3295,7 @@
       "thisMonth": "Gesamt",
       "totalDownloads": "Gesamte Downloads",
       "materialsPublished": "Materialien veröffentlicht",
-      "myMaterials": "Meine Materialien",
+      "myMaterials": "Meine Uploads",
       "newMaterial": "+ Neues Material",
       "noMaterials": "Noch keine Materialien hochgeladen",
       "noMaterialsDescription": "Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen.",
@@ -3044,15 +3309,18 @@
       "verified": "Verifiziert",
       "aiChecked": "KI-Geprüft",
       "pending": "Ausstehend",
+      "draft": "Entwurf",
       "recentDownloads": "Letzte Downloads",
       "viewAll": "Alle anzeigen",
       "noDownloads": "Noch keine Materialien",
       "discoverLink": "Entdecken",
-      "loading": "Laden..."
+      "loading": "Laden...",
+      "downloadLabel": "Material herunterladen"
     },
     "profile": {
       "completeProfile": "Vervollständigen Sie Ihr Profil",
       "fieldsCompleted": "{completed} von {total} Feldern ausgefüllt",
+      "completionCount": "{completed} von {total} erledigt",
       "editProfile": "Profil bearbeiten",
       "close": "Schliessen",
       "fields": {
@@ -3064,7 +3332,9 @@
         "cycles": "Zyklen",
         "school": "Schule",
         "canton": "Kanton"
-      }
+      },
+      "profileComplete": "Profil vollständig!",
+      "profileCompleteDescription": "Ihr Profil ist komplett. Käufer finden Sie jetzt leichter."
     },
     "notifications": {
       "title": "Benachrichtigungen",
@@ -3074,7 +3344,24 @@
       "justNow": "Gerade eben",
       "minutesAgo": "vor {count} Min.",
       "hoursAgo": "vor {count} Std.",
-      "daysAgo": "vor {count} T."
+      "daysAgo": "vor {count} T.",
+      "errorLoading": "Fehler beim Laden der Benachrichtigungen",
+      "retry": "Erneut versuchen"
+    },
+    "welcomeGuide": {
+      "welcome": "Willkommen, {name}!",
+      "welcomeGeneric": "Willkommen!",
+      "subtitle": "Hier finden Sie alles auf einen Blick",
+      "libraryTitle": "Bibliothek",
+      "libraryDesc": "Ihre gekauften Materialien",
+      "uploadsTitle": "Uploads",
+      "uploadsDesc": "Teilen Sie Ihre Materialien",
+      "wishlistTitle": "Wunschliste",
+      "wishlistDesc": "Für später gespeichert",
+      "settingsTitle": "Einstellungen",
+      "settingsDesc": "Profil & Präferenzen",
+      "dismiss": "Verstanden, los geht's!",
+      "close": "Schliessen"
     }
   },
   "copyrightGuide": {

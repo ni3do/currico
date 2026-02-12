@@ -7,35 +7,35 @@ import {
   GraduationCap,
   Globe,
   Shield,
-  Check,
   X,
   Building2,
   Clock,
-  Languages,
   Link2,
   Eye,
   EyeOff,
-  CircleCheck,
+  ChevronDown,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { useAccountData } from "@/lib/hooks/useAccountData";
 import { AvatarUploader } from "@/components/profile/AvatarUploader";
 import { MultiSelect } from "@/components/ui/MultiSelect";
-import { ProfileCompletionProgress } from "@/components/account/ProfileCompletionProgress";
 import { CYCLES } from "@/lib/types/account";
 import { SWISS_CANTONS } from "@/lib/validations/user";
+import { getSubjectPillClass } from "@/lib/constants/subject-colors";
 
 // Teaching experience options
 const TEACHING_EXPERIENCE_OPTIONS = [
-  { value: "0-2", label: "0-2 Jahre" },
-  { value: "3-5", label: "3-5 Jahre" },
-  { value: "6-10", label: "6-10 Jahre" },
-  { value: "11-20", label: "11-20 Jahre" },
-  { value: "20+", label: "Über 20 Jahre" },
+  { value: "0-2", labelKey: "experience0_2" as const },
+  { value: "3-5", labelKey: "experience3_5" as const },
+  { value: "6-10", labelKey: "experience6_10" as const },
+  { value: "11-20", labelKey: "experience11_20" as const },
+  { value: "20+", labelKey: "experience20plus" as const },
 ];
 
 export default function SettingsProfilePage() {
   const { userData, refreshUserData } = useAccountData();
+  const tSettings = useTranslations("accountPage.settingsProfile");
 
   // Avatar state
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
@@ -48,6 +48,7 @@ export default function SettingsProfilePage() {
 
   // Profile editing state
   const [isSavingProfile, setIsSavingProfile] = useState(false);
+  const [showSavedState, setShowSavedState] = useState(false);
   const [profileFormData, setProfileFormData] = useState<{
     display_name: string;
     bio: string;
@@ -57,7 +58,6 @@ export default function SettingsProfilePage() {
     website: string;
     school: string;
     teaching_experience: string;
-    preferred_language: string;
     instagram: string;
     pinterest: string;
     is_private: boolean;
@@ -70,7 +70,6 @@ export default function SettingsProfilePage() {
     website: "",
     school: "",
     teaching_experience: "",
-    preferred_language: "de",
     instagram: "",
     pinterest: "",
     is_private: false,
@@ -112,7 +111,6 @@ export default function SettingsProfilePage() {
         website: userData.website || "",
         school: userData.school || "",
         teaching_experience: userData.teaching_experience || "",
-        preferred_language: userData.preferred_language || "de",
         instagram: userData.instagram || "",
         pinterest: userData.pinterest || "",
         is_private: userData.is_private || false,
@@ -139,7 +137,6 @@ export default function SettingsProfilePage() {
       profileFormData.website !== initialProfileData.website ||
       profileFormData.school !== initialProfileData.school ||
       profileFormData.teaching_experience !== initialProfileData.teaching_experience ||
-      profileFormData.preferred_language !== initialProfileData.preferred_language ||
       profileFormData.instagram !== initialProfileData.instagram ||
       profileFormData.pinterest !== initialProfileData.pinterest ||
       profileFormData.is_private !== initialProfileData.is_private
@@ -171,16 +168,16 @@ export default function SettingsProfilePage() {
   const handleSaveProfile = async () => {
     const errors: Record<string, string> = {};
 
-    // Validate display name
     if (!profileFormData.display_name || profileFormData.display_name.length < 2) {
-      errors.display_name = "Name muss mindestens 2 Zeichen haben";
+      errors.display_name = tSettings("errorNameMin");
+    } else if (profileFormData.display_name.length > 32) {
+      errors.display_name = tSettings("errorNameMax");
     }
-    // Validate website URL if provided
     if (profileFormData.website) {
       try {
         new URL(profileFormData.website);
       } catch {
-        errors.website = "Ungültige URL (z.B. https://example.com)";
+        errors.website = tSettings("errorInvalidUrl");
       }
     }
 
@@ -202,7 +199,6 @@ export default function SettingsProfilePage() {
         website: profileFormData.website || null,
         school: profileFormData.school || null,
         teaching_experience: profileFormData.teaching_experience || null,
-        preferred_language: profileFormData.preferred_language,
         instagram: profileFormData.instagram || null,
         pinterest: profileFormData.pinterest || null,
         is_private: profileFormData.is_private,
@@ -216,21 +212,23 @@ export default function SettingsProfilePage() {
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.error || "Fehler beim Speichern");
+        throw new Error(data.error || tSettings("errorSavingGeneric"));
       }
 
-      // Update initial data to match saved data
       setInitialProfileData(profileFormData);
-      setProfileMessage({ type: "success", text: "Änderungen gespeichert!" });
+      setProfileMessage({ type: "success", text: tSettings("successSaved") });
+
+      setShowSavedState(true);
+      setTimeout(() => setShowSavedState(false), 1500);
+
       setTimeout(() => setProfileMessage(null), 3000);
 
-      // Refresh shared user data
       await refreshUserData();
     } catch (error) {
       console.error("Error saving profile:", error);
       setProfileMessage({
         type: "error",
-        text: "Fehler beim Speichern. Bitte versuchen Sie es erneut.",
+        text: tSettings("errorSaving"),
       });
     } finally {
       setIsSavingProfile(false);
@@ -253,21 +251,20 @@ export default function SettingsProfilePage() {
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.error || "Fehler beim Hochladen");
+        throw new Error(data.error || tSettings("avatarUploadErrorGeneric"));
       }
 
       const data = await response.json();
       setAvatarUrl(data.url);
-      setAvatarMessage({ type: "success", text: "Profilbild erfolgreich hochgeladen!" });
+      setAvatarMessage({ type: "success", text: tSettings("avatarUploaded") });
       setTimeout(() => setAvatarMessage(null), 3000);
 
-      // Refresh shared user data
       await refreshUserData();
     } catch (error) {
       console.error("Error uploading avatar:", error);
       setAvatarMessage({
         type: "error",
-        text: "Fehler beim Hochladen. Bitte versuchen Sie es erneut.",
+        text: tSettings("avatarUploadError"),
       });
     } finally {
       setIsUploadingAvatar(false);
@@ -288,85 +285,29 @@ export default function SettingsProfilePage() {
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.error || "Fehler beim Löschen");
+        throw new Error(data.error || tSettings("avatarRemoveErrorGeneric"));
       }
 
       setAvatarUrl(null);
-      setAvatarMessage({ type: "success", text: "Profilbild erfolgreich entfernt!" });
+      setAvatarMessage({ type: "success", text: tSettings("avatarRemoved") });
       setTimeout(() => setAvatarMessage(null), 3000);
 
-      // Refresh shared user data
       await refreshUserData();
     } catch (error) {
       console.error("Error deleting avatar:", error);
       setAvatarMessage({
         type: "error",
-        text: "Fehler beim Löschen. Bitte versuchen Sie es erneut.",
+        text: tSettings("avatarRemoveError"),
       });
     } finally {
       setIsDeletingAvatar(false);
     }
   };
 
-  // Calculate profile completion
-  const getProfileCompletion = () => {
-    const items = [
-      { done: !!userData?.emailVerified, label: "E-Mail verifizieren" },
-      { done: !!(userData?.displayName || userData?.name), label: "Anzeigename" },
-      { done: !!userData?.image, label: "Profilbild" },
-      { done: userData?.subjects && userData.subjects.length > 0, label: "Fächer" },
-      { done: userData?.cycles && userData.cycles.length > 0, label: "Zyklen" },
-      { done: userData?.cantons && userData.cantons.length > 0, label: "Kanton" },
-    ];
-    const completed = items.filter((i) => i.done).length;
-    const missing = items.filter((i) => !i.done).map((i) => i.label);
-    return {
-      percentage: Math.round((completed / items.length) * 100),
-      missing,
-      completed,
-      total: items.length,
-    };
-  };
-
-  const displayName = userData?.name || userData?.displayName || "Benutzer";
+  const displayName = userData?.name || userData?.displayName || tSettings("defaultUser");
 
   return (
-    <div className="space-y-6 pb-20">
-      {/* Profile Completion Progress */}
-      {(() => {
-        const completion = getProfileCompletion();
-        return completion.percentage < 100 ? (
-          <div className="border-border bg-surface rounded-xl border p-5">
-            <div className="mb-3 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-full">
-                  <CircleCheck className="text-primary h-5 w-5" />
-                </div>
-                <div>
-                  <h3 className="text-text font-semibold">Profil vervollständigen</h3>
-                  <p className="text-text-muted text-sm">
-                    {completion.completed} von {completion.total} Feldern ausgefüllt
-                  </p>
-                </div>
-              </div>
-              <span className="text-primary text-lg font-bold">{completion.percentage}%</span>
-            </div>
-            <div className="bg-border h-2 overflow-hidden rounded-full">
-              <div
-                className="bg-primary h-full rounded-full transition-all duration-500"
-                style={{ width: `${completion.percentage}%` }}
-              />
-            </div>
-            {completion.missing.length > 0 && (
-              <p className="text-text-muted mt-2 text-xs">
-                Fehlend: {completion.missing.slice(0, 3).join(", ")}
-                {completion.missing.length > 3 && ` und ${completion.missing.length - 3} weitere`}
-              </p>
-            )}
-          </div>
-        ) : null;
-      })()}
-
+    <div className="space-y-5 pb-20">
       {/* Success/Error Toast */}
       <AnimatePresence>
         {(profileMessage || avatarMessage) && (
@@ -374,109 +315,160 @@ export default function SettingsProfilePage() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className={`flex items-center gap-3 rounded-xl border p-4 ${
+            className={`relative overflow-hidden rounded-xl border p-4 ${
               (profileMessage?.type || avatarMessage?.type) === "success"
                 ? "border-success/30 bg-success/5"
                 : "border-error/30 bg-error/5"
             }`}
           >
-            {(profileMessage?.type || avatarMessage?.type) === "success" ? (
-              <Check className="text-success h-5 w-5" />
-            ) : (
-              <X className="text-error h-5 w-5" />
-            )}
-            <span
-              className={`text-sm font-medium ${
+            <div className="flex items-center gap-3">
+              {(profileMessage?.type || avatarMessage?.type) === "success" ? (
+                <div className="bg-success/10 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full">
+                  <motion.svg
+                    className="text-success h-5 w-5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2.5}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <motion.path
+                      d="M5 13l4 4L19 7"
+                      initial={{ pathLength: 0 }}
+                      animate={{ pathLength: 1 }}
+                      transition={{ duration: 0.4, ease: "easeOut" }}
+                    />
+                  </motion.svg>
+                </div>
+              ) : (
+                <div className="bg-error/10 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full">
+                  <X className="text-error h-5 w-5" />
+                </div>
+              )}
+              <span
+                className={`text-sm font-medium ${
+                  (profileMessage?.type || avatarMessage?.type) === "success"
+                    ? "text-success"
+                    : "text-error"
+                }`}
+              >
+                {profileMessage?.text || avatarMessage?.text}
+              </span>
+            </div>
+            <motion.div
+              className={`absolute right-0 bottom-0 left-0 h-0.5 ${
                 (profileMessage?.type || avatarMessage?.type) === "success"
-                  ? "text-success"
-                  : "text-error"
+                  ? "bg-success/40"
+                  : "bg-error/40"
               }`}
-            >
-              {profileMessage?.text || avatarMessage?.text}
-            </span>
+              initial={{ scaleX: 1 }}
+              animate={{ scaleX: 0 }}
+              transition={{ duration: 3, ease: "linear" }}
+              style={{ transformOrigin: "left" }}
+            />
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Unified Profile Card */}
-      <div className="border-border bg-surface overflow-hidden rounded-xl border">
-        {/* Avatar Section */}
-        <div className="border-border border-b p-6">
-          <div className="flex items-center gap-5">
-            <div className="relative">
-              <AvatarUploader
-                currentAvatarUrl={avatarUrl}
-                displayName={displayName}
-                onUpload={handleAvatarUpload}
-              />
-              {isUploadingAvatar && (
-                <div className="bg-bg/80 absolute inset-0 flex items-center justify-center rounded-full">
-                  <div className="border-primary h-6 w-6 animate-spin rounded-full border-2 border-t-transparent"></div>
-                </div>
-              )}
-            </div>
-            <div className="flex flex-col gap-1">
-              <p className="text-text font-medium">Profilbild</p>
-              <p className="text-text-muted text-sm">Klicken Sie auf das Bild, um es zu ändern</p>
-              {avatarUrl && (
-                <button
-                  onClick={handleAvatarDelete}
-                  disabled={isDeletingAvatar}
-                  className="text-error text-left text-sm font-medium hover:underline disabled:opacity-50"
-                >
-                  {isDeletingAvatar ? "Wird entfernt..." : "Bild entfernen"}
-                </button>
-              )}
+      {/* Avatar Card — Hero-style centered */}
+      <div className="border-border bg-surface rounded-xl border p-6">
+        <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:gap-5">
+          <div className="relative">
+            <AvatarUploader
+              currentAvatarUrl={avatarUrl}
+              displayName={displayName}
+              onUpload={handleAvatarUpload}
+              errorInvalidType={tSettings("avatar.errorInvalidType")}
+              errorTooLarge={tSettings("avatar.errorTooLarge")}
+              errorUploadFailed={tSettings("avatar.errorUploadFailed")}
+              uploadLabel={tSettings("avatar.uploadLabel")}
+            />
+            {isUploadingAvatar && (
+              <div className="bg-bg/80 absolute inset-0 flex items-center justify-center rounded-full">
+                <div className="border-primary h-6 w-6 animate-spin rounded-full border-2 border-t-transparent"></div>
+              </div>
+            )}
+          </div>
+          <div className="text-center sm:text-left">
+            <p className="text-text font-semibold">{displayName}</p>
+            <p className="text-text-muted text-sm">{tSettings("avatarHint")}</p>
+            <p className="text-text-faint text-xs">{tSettings("avatarFormats")}</p>
+            {avatarUrl && (
+              <button
+                onClick={handleAvatarDelete}
+                disabled={isDeletingAvatar}
+                className="text-error mt-1 text-sm font-medium hover:underline disabled:opacity-50"
+              >
+                {isDeletingAvatar ? tSettings("avatarRemoving") : tSettings("avatarRemove")}
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Basic Info Card */}
+      <div className="border-border bg-surface rounded-xl border">
+        <div className="border-border border-b p-5">
+          <div className="flex items-center gap-2.5">
+            <User className="text-primary h-5 w-5" />
+            <div>
+              <h3 className="text-text font-semibold">{tSettings("basicInfo")}</h3>
+              <p className="text-text-faint text-xs">{tSettings("basicInfoDesc")}</p>
             </div>
           </div>
         </div>
-
-        {/* Basic Info Section */}
-        <div className="space-y-5 p-6">
-          <div className="mb-4 flex items-center gap-2">
-            <User className="text-primary h-5 w-5" />
-            <h3 className="text-text font-semibold">Grundinformationen</h3>
-          </div>
-
+        <div className="space-y-5 p-5">
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label className="text-text mb-1.5 block text-sm font-medium">
-                Anzeigename <span className="text-error">*</span>
+                {tSettings("displayName")} <span className="text-error">*</span>
               </label>
-              <input
-                type="text"
-                value={profileFormData.display_name}
-                onChange={(e) => handleProfileFieldChange("display_name", e.target.value)}
-                placeholder="z.B. Frau M. oder Maria S."
-                className={`input w-full ${profileErrors.display_name ? "border-error" : ""}`}
-              />
-              {profileErrors.display_name && (
-                <p className="text-error mt-1 text-xs">{profileErrors.display_name}</p>
-              )}
+              <div className="relative">
+                <User className="text-text-muted absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2" />
+                <input
+                  type="text"
+                  value={profileFormData.display_name}
+                  onChange={(e) => handleProfileFieldChange("display_name", e.target.value)}
+                  placeholder={tSettings("displayNamePlaceholder")}
+                  maxLength={32}
+                  className={`input w-full pl-11 ${profileErrors.display_name ? "border-error" : ""}`}
+                />
+              </div>
+              <div className="mt-1 flex items-center justify-between">
+                {profileErrors.display_name ? (
+                  <p className="text-error text-xs">{profileErrors.display_name}</p>
+                ) : (
+                  <span />
+                )}
+                <p className="text-text-muted text-xs">{profileFormData.display_name.length}/32</p>
+              </div>
             </div>
             <div>
-              <label className="text-text mb-1.5 block text-sm font-medium">E-Mail</label>
+              <label className="text-text mb-1.5 block text-sm font-medium">
+                {tSettings("email")}
+              </label>
               <div className="relative">
-                <Mail className="text-text-muted absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+                <Mail className="text-text-muted absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2" />
                 <input
                   type="email"
                   value={userData?.email || ""}
                   disabled
-                  className="input bg-bg-secondary text-text-muted w-full cursor-not-allowed pl-10"
+                  className="input bg-bg-secondary text-text-muted w-full cursor-not-allowed pl-11"
                 />
               </div>
-              <p className="text-text-muted mt-1 text-xs">
-                Kontaktieren Sie uns, um Ihre E-Mail zu ändern
-              </p>
+              <p className="text-text-muted mt-1 text-xs">{tSettings("emailChangeHint")}</p>
             </div>
           </div>
 
           <div>
-            <label className="text-text mb-1.5 block text-sm font-medium">Über mich</label>
+            <label className="text-text mb-1.5 block text-sm font-medium">
+              {tSettings("aboutMe")}
+            </label>
             <textarea
               value={profileFormData.bio}
               onChange={(e) => handleProfileFieldChange("bio", e.target.value)}
-              placeholder="Erzählen Sie etwas über sich und Ihren Unterricht..."
+              placeholder={tSettings("aboutMePlaceholder")}
               rows={3}
               maxLength={500}
               className="input w-full resize-none"
@@ -486,99 +478,113 @@ export default function SettingsProfilePage() {
             </p>
           </div>
         </div>
+      </div>
 
-        {/* Divider */}
-        <div className="border-border border-t" />
-
-        {/* Teaching Profile Section */}
-        <div className="space-y-5 p-6">
-          <div className="mb-4 flex items-center gap-2">
+      {/* Teaching Profile Card */}
+      <div className="border-border bg-surface rounded-xl border">
+        <div className="border-border border-b p-5">
+          <div className="flex items-center gap-2.5">
             <GraduationCap className="text-success h-5 w-5" />
-            <h3 className="text-text font-semibold">Unterrichtsprofil</h3>
+            <div>
+              <h3 className="text-text font-semibold">{tSettings("teachingProfile")}</h3>
+              <p className="text-text-faint text-xs">{tSettings("teachingProfileDesc")}</p>
+            </div>
           </div>
-
+        </div>
+        <div className="space-y-5 p-5">
           <MultiSelect
-            label="Fächer"
+            label={tSettings("subjects")}
             options={subjectOptions}
             selected={profileFormData.subjects}
             onChange={(value) => handleProfileFieldChange("subjects", value)}
-            placeholder="Fächer auswählen..."
+            placeholder={tSettings("subjectsPlaceholder")}
+            getTagClassName={getSubjectPillClass}
+            searchPlaceholder={tSettings("multiSelect.search")}
+            noResultsText={tSettings("multiSelect.noResults")}
           />
           <MultiSelect
-            label="Zyklen"
+            label={tSettings("cycles")}
             options={CYCLES}
             selected={profileFormData.cycles}
             onChange={(value) => handleProfileFieldChange("cycles", value)}
-            placeholder="Zyklen auswählen..."
+            placeholder={tSettings("cyclesPlaceholder")}
+            searchPlaceholder={tSettings("multiSelect.search")}
+            noResultsText={tSettings("multiSelect.noResults")}
+          />
+          <MultiSelect
+            label={tSettings("cantons")}
+            options={[...SWISS_CANTONS]}
+            selected={profileFormData.cantons}
+            onChange={(value) => handleProfileFieldChange("cantons", value)}
+            placeholder={tSettings("cantonsPlaceholder")}
+            searchPlaceholder={tSettings("multiSelect.search")}
+            noResultsText={tSettings("multiSelect.noResults")}
           />
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label className="text-text mb-1.5 block text-sm font-medium">
-                Schule / Institution
+                {tSettings("school")}
               </label>
               <div className="relative">
-                <Building2 className="text-text-muted absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+                <Building2 className="text-text-muted absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2" />
                 <input
                   type="text"
                   value={profileFormData.school}
                   onChange={(e) => handleProfileFieldChange("school", e.target.value)}
-                  placeholder="z.B. Primarschule Muster"
-                  className="input w-full pl-10"
+                  placeholder={tSettings("schoolPlaceholder")}
+                  className="input w-full pl-11"
                 />
               </div>
             </div>
             <div>
               <label className="text-text mb-1.5 block text-sm font-medium">
-                Unterrichtserfahrung
+                {tSettings("teachingExperience")}
               </label>
               <div className="relative">
-                <Clock className="text-text-muted absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+                <Clock className="text-text-muted absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2" />
                 <select
                   value={profileFormData.teaching_experience}
                   onChange={(e) => handleProfileFieldChange("teaching_experience", e.target.value)}
-                  className="input w-full appearance-none rounded-full pl-10"
+                  className="input w-full appearance-none pr-10 pl-11"
                 >
-                  <option value="">Bitte auswählen</option>
+                  <option value="">{tSettings("selectPlaceholder")}</option>
                   {TEACHING_EXPERIENCE_OPTIONS.map((opt) => (
                     <option key={opt.value} value={opt.value}>
-                      {opt.label}
+                      {tSettings(opt.labelKey)}
                     </option>
                   ))}
                 </select>
+                <ChevronDown className="text-text-muted pointer-events-none absolute top-1/2 right-4 h-4 w-4 -translate-y-1/2" />
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Divider */}
-        <div className="border-border border-t" />
-
-        {/* Contact & Social Section */}
-        <div className="space-y-5 p-6">
-          <div className="mb-4 flex items-center gap-2">
+      {/* Contact & Social Card */}
+      <div className="border-border bg-surface rounded-xl border">
+        <div className="border-border border-b p-5">
+          <div className="flex items-center gap-2.5">
             <Globe className="text-accent h-5 w-5" />
-            <h3 className="text-text font-semibold">Kontakt & Social Media</h3>
+            <div>
+              <h3 className="text-text font-semibold">{tSettings("contactSocial")}</h3>
+              <p className="text-text-faint text-xs">{tSettings("contactSocialDesc")}</p>
+            </div>
           </div>
-
-          <MultiSelect
-            label="Kantone"
-            options={[...SWISS_CANTONS]}
-            selected={profileFormData.cantons}
-            onChange={(value) => handleProfileFieldChange("cantons", value)}
-            placeholder="Kantone auswählen..."
-          />
+        </div>
+        <div className="space-y-5 p-5">
           <div>
             <label className="text-text mb-1.5 block text-sm font-medium">
-              Website / Portfolio
+              {tSettings("website")}
             </label>
             <div className="relative">
-              <Link2 className="text-text-muted absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+              <Link2 className="text-text-muted absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2" />
               <input
                 type="url"
                 value={profileFormData.website}
                 onChange={(e) => handleProfileFieldChange("website", e.target.value)}
-                placeholder="https://meine-website.ch"
-                className={`input w-full pl-10 ${profileErrors.website ? "border-error" : ""}`}
+                placeholder={tSettings("websitePlaceholder")}
+                className={`input w-full pl-11 ${profileErrors.website ? "border-error" : ""}`}
               />
             </div>
             {profileErrors.website && (
@@ -589,80 +595,78 @@ export default function SettingsProfilePage() {
             <div>
               <label className="text-text mb-1.5 block text-sm font-medium">Instagram</label>
               <div className="relative">
-                <span className="text-text-muted absolute top-1/2 left-3 -translate-y-1/2 text-sm">
+                <span className="text-text-muted absolute top-1/2 left-4 -translate-y-1/2 text-sm">
                   @
                 </span>
                 <input
                   type="text"
                   value={profileFormData.instagram}
                   onChange={(e) => handleProfileFieldChange("instagram", e.target.value)}
-                  placeholder="benutzername"
-                  className="input w-full pl-8"
+                  placeholder={tSettings("usernamePlaceholder")}
+                  className="input w-full pl-9"
                 />
               </div>
             </div>
             <div>
               <label className="text-text mb-1.5 block text-sm font-medium">Pinterest</label>
               <div className="relative">
-                <span className="text-text-muted absolute top-1/2 left-3 -translate-y-1/2 text-sm">
+                <span className="text-text-muted absolute top-1/2 left-4 -translate-y-1/2 text-sm">
                   @
                 </span>
                 <input
                   type="text"
                   value={profileFormData.pinterest}
                   onChange={(e) => handleProfileFieldChange("pinterest", e.target.value)}
-                  placeholder="benutzername"
-                  className="input w-full pl-8"
+                  placeholder={tSettings("usernamePlaceholder")}
+                  className="input w-full pl-9"
                 />
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Divider */}
-        <div className="border-border border-t" />
-
-        {/* Privacy & Language Section */}
-        <div className="space-y-5 p-6">
-          <div className="mb-4 flex items-center gap-2">
+      {/* Privacy Card */}
+      <div className="border-border bg-surface rounded-xl border">
+        <div className="border-border border-b p-5">
+          <div className="flex items-center gap-2.5">
             <Shield className="text-warning h-5 w-5" />
-            <h3 className="text-text font-semibold">Privatsphäre & Sprache</h3>
+            <div>
+              <h3 className="text-text font-semibold">{tSettings("privacy")}</h3>
+              <p className="text-text-faint text-xs">{tSettings("privacyDesc")}</p>
+            </div>
           </div>
-
-          <div className="space-y-4">
-            {/* Profile Visibility */}
-            <div className="flex items-center justify-between py-2">
-              <div className="flex items-center gap-3">
-                {profileFormData.is_private ? (
-                  <EyeOff className="text-text-muted h-5 w-5" />
-                ) : (
-                  <Eye className="text-text-muted h-5 w-5" />
-                )}
-                <div>
-                  <p className="text-text font-medium">Privates Profil</p>
-                  <p className="text-text-muted text-sm">
-                    {profileFormData.is_private
-                      ? "Nur Sie können Ihr Profil sehen"
-                      : "Ihr Profil ist für andere sichtbar"}
-                  </p>
-                </div>
+        </div>
+        <div className="p-5">
+          <div className="flex items-center justify-between py-1">
+            <div className="flex items-center gap-3">
+              {profileFormData.is_private ? (
+                <EyeOff className="text-text-muted h-5 w-5" />
+              ) : (
+                <Eye className="text-text-muted h-5 w-5" />
+              )}
+              <div>
+                <p className="text-text font-medium">{tSettings("privateProfile")}</p>
+                <p className="text-text-muted text-sm">
+                  {profileFormData.is_private ? tSettings("privateOn") : tSettings("privateOff")}
+                </p>
               </div>
-              <button
-                type="button"
-                onClick={() => handleProfileFieldChange("is_private", !profileFormData.is_private)}
-                className="relative"
+            </div>
+            <button
+              type="button"
+              onClick={() => handleProfileFieldChange("is_private", !profileFormData.is_private)}
+              className="relative"
+              role="switch"
+              aria-checked={profileFormData.is_private}
+            >
+              <div
+                className={`h-6 w-11 rounded-full transition-colors ${profileFormData.is_private ? "bg-primary" : "bg-border"}`}
               >
                 <div
-                  className={`h-6 w-11 rounded-full transition-colors ${profileFormData.is_private ? "bg-primary" : "bg-border"}`}
-                >
-                  <div
-                    className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform ${profileFormData.is_private ? "translate-x-5" : "translate-x-0.5"}`}
-                  />
-                </div>
-              </button>
-            </div>
-
-            {/* Language removed — locale is handled by URL */}
+                  className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${profileFormData.is_private ? "translate-x-5" : "translate-x-0.5"}`}
+                />
+              </div>
+            </button>
           </div>
         </div>
       </div>
@@ -677,28 +681,70 @@ export default function SettingsProfilePage() {
             className="border-border bg-surface/95 fixed right-0 bottom-0 left-0 z-50 border-t shadow-lg backdrop-blur-sm"
           >
             <div className="mx-auto flex max-w-4xl items-center justify-between gap-4 px-4 py-4">
-              <p className="text-text-muted text-sm">Sie haben ungespeicherte Änderungen</p>
+              <p className="text-text-muted text-sm">{tSettings("unsavedChanges")}</p>
               <div className="flex gap-3">
                 <button
                   onClick={handleCancelEditing}
                   disabled={isSavingProfile}
                   className="btn-secondary"
                 >
-                  Verwerfen
+                  {tSettings("discard")}
                 </button>
                 <button
                   onClick={handleSaveProfile}
-                  disabled={isSavingProfile}
-                  className="btn-primary"
+                  disabled={isSavingProfile || showSavedState}
+                  className={`btn-primary transition-all ${showSavedState ? "!bg-success !border-success" : ""}`}
                 >
-                  {isSavingProfile ? (
-                    <span className="flex items-center gap-2">
-                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                      Speichern...
-                    </span>
-                  ) : (
-                    "Änderungen speichern"
-                  )}
+                  <AnimatePresence mode="wait">
+                    {showSavedState ? (
+                      <motion.span
+                        key="saved"
+                        className="flex items-center gap-2"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <motion.svg
+                          className="h-4 w-4 text-white"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth={3}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <motion.path
+                            d="M5 13l4 4L19 7"
+                            initial={{ pathLength: 0 }}
+                            animate={{ pathLength: 1 }}
+                            transition={{ duration: 0.3, ease: "easeOut" }}
+                          />
+                        </motion.svg>
+                        {tSettings("saved")}
+                      </motion.span>
+                    ) : isSavingProfile ? (
+                      <motion.span
+                        key="saving"
+                        className="flex items-center gap-2"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                      >
+                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                        {tSettings("saving")}
+                      </motion.span>
+                    ) : (
+                      <motion.span
+                        key="default"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                      >
+                        {tSettings("saveChanges")}
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
                 </button>
               </div>
             </div>

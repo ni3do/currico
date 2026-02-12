@@ -15,7 +15,7 @@ import { CheckoutButton } from "@/components/checkout/CheckoutButton";
 import { PreviewGallery } from "@/components/ui/PreviewGallery";
 import { ReviewsSection } from "@/components/reviews";
 import { CommentsSection } from "@/components/comments";
-import { Star, MessageCircle } from "lucide-react";
+import { Flag } from "lucide-react";
 import { useToast } from "@/components/ui/Toast";
 import { FocusTrap } from "@/components/ui/FocusTrap";
 
@@ -108,7 +108,6 @@ export default function MaterialDetailPage() {
   const [isFollowing, setIsFollowing] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [wishlistLoading, setWishlistLoading] = useState(false);
-  const [feedbackTab, setFeedbackTab] = useState<"reviews" | "comments">("reviews");
 
   // Report form state
   const [reportReason, setReportReason] = useState("inappropriate");
@@ -721,8 +720,9 @@ export default function MaterialDetailPage() {
                 </button>
                 <button
                   onClick={() => setShowReportModal(true)}
-                  className="text-text-muted hover:text-error text-sm transition-colors"
+                  className="text-text-muted hover:text-error hover:bg-error/10 inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm transition-colors"
                 >
+                  <Flag className="h-4 w-4" />
                   {t("reportMaterial")}
                 </button>
               </div>
@@ -753,37 +753,14 @@ export default function MaterialDetailPage() {
           </section>
         )}
 
-        {/* FEEDBACK SECTION — Reviews & Comments merged */}
+        {/* REVIEWS SECTION */}
         <section className="border-border mb-12 border-t pt-12">
-          <div className="mb-6 flex gap-2">
-            <button
-              onClick={() => setFeedbackTab("reviews")}
-              className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                feedbackTab === "reviews"
-                  ? "bg-primary text-text-on-accent"
-                  : "bg-surface-hover text-text-muted hover:text-text"
-              }`}
-            >
-              <Star className="h-4 w-4" />
-              {t("reviews")}
-            </button>
-            <button
-              onClick={() => setFeedbackTab("comments")}
-              className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                feedbackTab === "comments"
-                  ? "bg-primary text-text-on-accent"
-                  : "bg-surface-hover text-text-muted hover:text-text"
-              }`}
-            >
-              <MessageCircle className="h-4 w-4" />
-              {t("comments")}
-            </button>
-          </div>
-          {feedbackTab === "reviews" ? (
-            <ReviewsSection materialId={id} />
-          ) : (
-            <CommentsSection materialId={id} />
-          )}
+          <ReviewsSection materialId={id} />
+        </section>
+
+        {/* COMMENTS SECTION */}
+        <section className="border-border mb-12 border-t pt-12">
+          <CommentsSection materialId={id} />
         </section>
 
         {/* RELATED RESOURCES */}

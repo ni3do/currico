@@ -131,7 +131,14 @@ export function SellerLevelCard({
               {t("pointsToNext", { points: pointsNeeded })}
             </span>
           </div>
-          <div className="bg-border h-2.5 overflow-hidden rounded-full">
+          <div
+            className="bg-border h-2.5 overflow-hidden rounded-full"
+            role="progressbar"
+            aria-valuenow={Math.round(progressPercent)}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label={t("pointsToNext", { points: pointsNeeded })}
+          >
             <motion.div
               className="h-full rounded-full"
               style={{

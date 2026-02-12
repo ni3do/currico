@@ -10,6 +10,9 @@ interface MultiSelectProps {
   placeholder?: string;
   required?: boolean;
   error?: string;
+  getTagClassName?: (item: string) => string;
+  searchPlaceholder?: string;
+  noResultsText?: string;
 }
 
 export function MultiSelect({
@@ -20,6 +23,9 @@ export function MultiSelect({
   placeholder = "Auswählen...",
   required = false,
   error,
+  getTagClassName,
+  searchPlaceholder = "Suchen...",
+  noResultsText = "Keine Optionen gefunden",
 }: MultiSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -55,25 +61,25 @@ export function MultiSelect({
 
   return (
     <div ref={containerRef} className="relative">
-      <label className="mb-2 block text-sm font-medium text-text">
+      <label className="text-text mb-2 block text-sm font-medium">
         {label}
-        {required && <span className="ml-1 text-error">*</span>}
+        {required && <span className="text-error ml-1">*</span>}
       </label>
 
       {/* Selected tags */}
       <div
         onClick={() => setIsOpen(!isOpen)}
-        className={`min-h-[42px] w-full cursor-pointer rounded-lg border bg-bg px-3 py-2 ${
-          error
-            ? "border-error"
-            : "border-border focus-within:border-primary"
+        className={`bg-bg min-h-[42px] w-full cursor-pointer rounded-lg border px-3 py-2 ${
+          error ? "border-error" : "border-border focus-within:border-primary"
         }`}
       >
         <div className="flex flex-wrap gap-2">
           {selected.map((item) => (
             <span
               key={item}
-              className="inline-flex items-center gap-1 rounded-full bg-primary/20 px-2 py-1 text-sm text-primary"
+              className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-sm ${
+                getTagClassName ? `pill ${getTagClassName(item)}` : "bg-primary/20 text-primary"
+              }`}
             >
               {item}
               <button
@@ -82,7 +88,7 @@ export function MultiSelect({
                   e.stopPropagation();
                   removeOption(item);
                 }}
-                className="ml-1 hover:text-error"
+                className="hover:text-error ml-1"
               >
                 <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -95,25 +101,23 @@ export function MultiSelect({
               </button>
             </span>
           ))}
-          {selected.length === 0 && (
-            <span className="text-text-muted">{placeholder}</span>
-          )}
+          {selected.length === 0 && <span className="text-text-muted">{placeholder}</span>}
         </div>
       </div>
 
-      {error && <p className="mt-1 text-sm text-error">{error}</p>}
+      {error && <p className="text-error mt-1 text-sm">{error}</p>}
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-lg border border-border bg-surface shadow-lg">
+        <div className="border-border bg-surface absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-lg border shadow-lg">
           {/* Search input */}
-          <div className="sticky top-0 border-b border-border bg-surface p-2">
+          <div className="border-border bg-surface sticky top-0 border-b p-2">
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Suchen..."
-              className="w-full rounded-md border border-border bg-bg px-3 py-1.5 text-sm text-text focus:border-primary focus:outline-none"
+              placeholder={searchPlaceholder}
+              className="border-border bg-bg text-text focus:border-primary w-full rounded-md border px-3 py-1.5 text-sm focus:outline-none"
               onClick={(e) => e.stopPropagation()}
             />
           </div>
@@ -121,9 +125,7 @@ export function MultiSelect({
           {/* Options */}
           <div className="p-1">
             {filteredOptions.length === 0 ? (
-              <div className="px-3 py-2 text-sm text-text-muted">
-                Keine Optionen gefunden
-              </div>
+              <div className="text-text-muted px-3 py-2 text-sm">{noResultsText}</div>
             ) : (
               filteredOptions.map((option) => (
                 <button
@@ -132,20 +134,20 @@ export function MultiSelect({
                   onClick={() => toggleOption(option)}
                   className={`flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm transition-colors ${
                     selected.includes(option)
-                      ? "bg-primary/20 text-primary"
+                      ? getTagClassName
+                        ? `pill ${getTagClassName(option)}`
+                        : "bg-primary/20 text-primary"
                       : "text-text hover:bg-surface-elevated"
                   }`}
                 >
                   <span
                     className={`flex h-4 w-4 items-center justify-center rounded border ${
-                      selected.includes(option)
-                        ? "border-primary bg-primary"
-                        : "border-border"
+                      selected.includes(option) ? "border-primary bg-primary" : "border-border"
                     }`}
                   >
                     {selected.includes(option) && (
                       <svg
-                        className="h-3 w-3 text-text-on-accent"
+                        className="text-text-on-accent h-3 w-3"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"

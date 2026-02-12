@@ -272,8 +272,8 @@ export function UploadWizardProvider({ children }: { children: ReactNode }) {
             errors.push({ field: "title", message: "Titel ist erforderlich" });
           } else if (formData.title.trim().length < 5) {
             errors.push({ field: "title", message: "Titel muss mindestens 5 Zeichen haben" });
-          } else if (formData.title.trim().length > 100) {
-            errors.push({ field: "title", message: "Titel darf maximal 100 Zeichen haben" });
+          } else if (formData.title.trim().length > 64) {
+            errors.push({ field: "title", message: "Titel darf maximal 64 Zeichen haben" });
           }
 
           if (!formData.description.trim()) {
@@ -298,6 +298,9 @@ export function UploadWizardProvider({ children }: { children: ReactNode }) {
           if (!formData.subject) {
             errors.push({ field: "subject", message: "Fach ist erforderlich" });
           }
+          if (formData.competencies.length > 5) {
+            errors.push({ field: "competencies", message: "Maximal 5 Kompetenzen auswählen" });
+          }
           break;
 
         case 3:
@@ -310,8 +313,13 @@ export function UploadWizardProvider({ children }: { children: ReactNode }) {
                 errors.push({ field: "price", message: "Preis muss eine positive Zahl sein" });
               } else if (priceNum > 50) {
                 errors.push({ field: "price", message: "Preis darf maximal CHF 50 sein" });
-              } else if (priceNum < 1 && priceNum > 0) {
-                errors.push({ field: "price", message: "Mindestpreis ist CHF 1" });
+              } else if (priceNum > 0 && priceNum < 0.5) {
+                errors.push({ field: "price", message: "Mindestpreis ist CHF 0.50" });
+              } else if (Math.round(priceNum * 100) % 50 !== 0) {
+                errors.push({
+                  field: "price",
+                  message: "Preis muss in 0.50-Schritten sein (z.B. 1.00, 1.50, 2.00)",
+                });
               }
             }
           }

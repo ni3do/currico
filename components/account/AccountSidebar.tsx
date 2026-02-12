@@ -10,7 +10,6 @@ import {
   Library,
   Heart,
   Settings,
-  Search,
   Upload,
   Users,
   User,
@@ -21,10 +20,8 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ProfileCompletionProgress } from "./ProfileCompletionProgress";
 import { SellerBadge } from "@/components/ui/SellerBadge";
 import { type TabType, TAB_TO_PATH, pathToTab } from "@/lib/types/account";
-import type { FollowedSeller } from "@/lib/types/account";
 
 interface SidebarUserData {
   name: string | null;
@@ -50,7 +47,7 @@ interface SidebarUserStats {
 interface AccountSidebarProps {
   userData: SidebarUserData;
   stats: SidebarUserStats;
-  followedSellers?: FollowedSeller[];
+  unreadNotifications?: number;
   activeTab?: TabType;
   onTabChange?: (tab: TabType) => void;
   className?: string;
@@ -59,7 +56,7 @@ interface AccountSidebarProps {
 export function AccountSidebar({
   userData,
   stats,
-  followedSellers = [],
+  unreadNotifications = 0,
   activeTab: activeTabProp,
   onTabChange,
   className = "",
@@ -104,7 +101,7 @@ export function AccountSidebar({
       id: "notifications" as TabType,
       label: t("nav.notifications"),
       icon: Bell,
-      count: null,
+      count: unreadNotifications > 0 ? unreadNotifications : null,
     },
     {
       id: "following" as TabType,
@@ -139,29 +136,30 @@ export function AccountSidebar({
               alt={displayName}
               width={40}
               height={40}
-              className="h-10 w-10 rounded-full object-cover"
+              className="h-10 w-10 flex-shrink-0 rounded-full object-cover"
             />
           ) : (
-            <div className="bg-primary/10 text-primary flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold">
+            <div className="bg-primary/10 text-primary flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold">
               {displayName.charAt(0).toUpperCase()}
             </div>
           )}
           <div className="min-w-0 flex-1">
             <div className="text-text truncate text-sm font-semibold">{displayName}</div>
             <div className="text-text-muted truncate text-xs">{userData.email}</div>
+            {userData.isSeller &&
+              (userData.sellerPoints !== undefined ? (
+                <SellerBadge points={userData.sellerPoints} variant="compact" className="mt-1.5" />
+              ) : (
+                <span className="bg-accent/10 text-accent mt-1.5 inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase">
+                  {t("roleSeller")}
+                </span>
+              ))}
           </div>
-          {userData.isSeller &&
-            (userData.sellerPoints !== undefined ? (
-              <SellerBadge
-                points={userData.sellerPoints}
-                variant="compact"
-                className="flex-shrink-0"
-              />
-            ) : (
-              <span className="bg-accent/10 text-accent flex-shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase">
-                {t("roleSeller")}
-              </span>
-            ))}
+        </div>
+        {/* Compact stats */}
+        <div className="text-text-muted px-4 pt-2 pb-0 text-xs">
+          {stats.totalInLibrary} {t("sidebar.materials")} &middot; {stats.followedSellers}{" "}
+          {t("sidebar.followers")}
         </div>
       </div>
 
@@ -179,7 +177,7 @@ export function AccountSidebar({
                 {isActive && (
                   <motion.div
                     layoutId="activeTab"
-                    className="bg-primary/10 absolute inset-0 rounded-lg"
+                    className="bg-primary/5 absolute inset-0 rounded-lg"
                     initial={false}
                     transition={{ type: "spring", stiffness: 400, damping: 30 }}
                   />
@@ -199,7 +197,11 @@ export function AccountSidebar({
                 {item.count !== null && item.count > 0 && (
                   <span
                     className={`relative z-10 ml-auto rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${
-                      isActive ? "bg-primary/20 text-primary" : "bg-surface text-text-muted"
+                      item.id === "notifications"
+                        ? "bg-error text-text-on-accent"
+                        : isActive
+                          ? "bg-primary/10 text-primary"
+                          : "bg-surface text-text-muted"
                     }`}
                   >
                     {item.count}
@@ -259,7 +261,7 @@ export function AccountSidebar({
               {isSettingsActive && (
                 <motion.div
                   layoutId="activeTab"
-                  className="bg-primary/10 absolute inset-0 rounded-lg"
+                  className="bg-primary/5 absolute inset-0 rounded-lg"
                   initial={false}
                   transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 />
@@ -303,7 +305,7 @@ export function AccountSidebar({
 
                       const subClassName = `relative flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-medium transition-colors ${
                         isActive
-                          ? "bg-primary/10 text-primary"
+                          ? "bg-primary/5 text-primary"
                           : "text-text-secondary hover:bg-surface-hover hover:text-text"
                       }`;
 
@@ -348,106 +350,6 @@ export function AccountSidebar({
             </AnimatePresence>
           </div>
         </nav>
-
-        {/* Profile Completion Progress */}
-        <ProfileCompletionProgress
-          profile={{
-            name: userData.name,
-            displayName: userData.displayName,
-            image: userData.image,
-            subjects: userData.subjects,
-            cycles: userData.cycles,
-            cantons: userData.cantons,
-            emailVerified: userData.emailVerified,
-          }}
-          onNavigateToSettings={() => {
-            if (onTabChange) {
-              onTabChange("settings-profile");
-            }
-          }}
-          className="mb-4"
-        />
-
-        <div className="divider my-4" />
-
-        {/* Followed Sellers */}
-        <div className="mb-4">
-          <div className="mb-2 flex items-center justify-between">
-            <h3 className="label-meta flex items-center gap-2">
-              <Users className="text-text-muted h-3.5 w-3.5" />
-              {t("sidebar.followed", { count: stats.followedSellers })}
-            </h3>
-            <Link href={TAB_TO_PATH["following"]} className="text-primary text-xs font-medium hover:underline">
-              {t("sidebar.allFollowed")}
-            </Link>
-          </div>
-          {followedSellers.length > 0 ? (
-            <div className="space-y-1.5">
-              {followedSellers.slice(0, 3).map((seller) => (
-                <Link
-                  key={seller.id}
-                  href={`/profil/${seller.id}`}
-                  className="group border-border bg-bg hover:border-primary flex items-center gap-2.5 rounded-lg border p-2 transition-all hover:shadow-sm"
-                >
-                  {seller.image ? (
-                    <Image
-                      src={seller.image}
-                      alt={seller.displayName || t("sidebar.unknownSeller")}
-                      width={28}
-                      height={28}
-                      className="h-7 w-7 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="bg-surface flex h-7 w-7 items-center justify-center rounded-full">
-                      <span className="text-text-muted text-[10px] font-medium">
-                        {(seller.displayName || "V").charAt(0).toUpperCase()}
-                      </span>
-                    </div>
-                  )}
-                  <span className="text-text group-hover:text-primary flex-1 truncate text-xs font-medium">
-                    {seller.displayName || t("sidebar.unknownSeller")}
-                  </span>
-                  {seller.newResources && seller.newResources > 0 && (
-                    <span className="bg-primary text-text-on-accent flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-bold">
-                      {seller.newResources}
-                    </span>
-                  )}
-                </Link>
-              ))}
-            </div>
-          ) : (
-            <div className="border-border bg-bg rounded-lg border border-dashed p-3 text-center">
-              <Users className="text-text-faint mx-auto mb-1.5 h-5 w-5" />
-              <p className="text-text-muted text-xs">{t("sidebar.noFollowed")}</p>
-              <Link
-                href="/materialien"
-                className="text-primary mt-1.5 inline-block text-xs font-medium hover:underline"
-              >
-                {t("sidebar.discover")}
-              </Link>
-            </div>
-          )}
-        </div>
-
-        <div className="divider my-4" />
-
-        {/* Quick Actions (compact) */}
-        <div className="space-y-1.5">
-          <Link
-            href="/hochladen"
-            className="bg-primary text-text-on-accent hover:bg-primary-hover flex w-full items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition-colors"
-          >
-            <Upload className="h-4 w-4" />
-            {t("sidebar.newMaterial")}
-          </Link>
-          <Link
-            href="/materialien"
-            className="border-border bg-bg text-text-secondary hover:border-primary hover:text-primary flex w-full items-center justify-center gap-2 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors"
-          >
-            <Search className="h-3.5 w-3.5" />
-            {t("sidebar.discoverMaterials")}
-          </Link>
-        </div>
       </div>
     </aside>
   );

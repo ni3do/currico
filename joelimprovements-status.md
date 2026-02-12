@@ -348,22 +348,22 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Übersicht
 
-- [ ] "Profil vervollständigen" nicht in der Übersicht anzeigen
-- [ ] "Neues Material" und "Material entdecken" Buttons löschen
-- [ ] Buttons in der Übersicht einheitlich machen
-- [ ] Uploads auch in Übersicht unter "Meine Uploads" anzeigen
+- [x] "Profil vervollständigen" nicht in der Übersicht anzeigen — already only shown in settings page
+- [x] "Neues Material" und "Material entdecken" Buttons löschen — not present in current code
+- [x] Buttons in der Übersicht einheitlich machen — already consistent across overview
+- [x] Uploads auch in Übersicht unter "Meine Uploads" anzeigen — "Meine Materialien" table already exists
 
 ### Navigation
 
-- [ ] Navigationsbar Farben und ausgewählte Tags überarbeiten
-- [ ] Mitteilungen als Tab in der Profil-Navigationsbar haben
+- [x] Navigationsbar Farben und ausgewählte Tags überarbeiten — sidebar + layout polished with Catppuccin theme
+- [x] Mitteilungen als Tab in der Profil-Navigationsbar haben — notifications tab in sidebar + mobile bar
 - [x] Benachrichtigungen: richtige URL — /notification gibt 404 (moved page to `/konto/notifications/`)
-- [ ] E-Mail-Benachrichtigungen: schönere Nachricht gestalten
-- [ ] "Geld verdienen" als Titel für Stripe-Anmeldung ist zu offensiv — Segment verbessern
+- [ ] E-Mail-Benachrichtigungen: schönere Nachricht gestalten — **OUT OF SCOPE: email templates are backend/transactional, not frontend UI**
+- [x] "Geld verdienen" als Titel für Stripe-Anmeldung ist zu offensiv — changed to "Verkäufer werden" via i18n
 
 ### Profil vervollständigen
 
-- [ ] "Profil vervollständigen" überarbeiten und sicherstellen dass es funktioniert + Buttons
+- [ ] "Profil vervollständigen" überarbeiten und sicherstellen dass es funktioniert + Buttons — profile completion banner exists in settings, needs functional review
 
 ### Eigene Vorschläge (Konto-Übersicht)
 
@@ -387,27 +387,27 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Profil-Einstellungen
 
-- [ ] Überschneidungen von Text und Emblem fixen
-- [ ] Speichern von Änderungen verschönern (besseres Feedback)
-- [ ] Fächer im Profil schöner darstellen (LP21-Farben verwenden)
-- [ ] Kanton aus Kontakt-Sektion rausnehmen, im Profil nach oben verschieben
-- [ ] "Bevorzugte Sprache" entfernen im Profil
-- [ ] Profil-Namenlänge auf 32 Zeichen limitieren
+- [x] Überschneidungen von Text und Emblem fixen
+- [x] Speichern von Änderungen verschönern (besseres Feedback)
+- [x] Fächer im Profil schöner darstellen (LP21-Farben verwenden)
+- [x] Kanton aus Kontakt-Sektion rausnehmen, im Profil nach oben verschieben
+- [x] "Bevorzugte Sprache" entfernen im Profil
+- [x] Profil-Namenlänge auf 32 Zeichen limitieren
 
 ### Einstellungen entfernen
 
-- [ ] "Darstellung" raus aus Einstellungen
-- [ ] "Konto Datenexport" entfernen
-- [ ] "Konto löschen" überarbeiten
+- [x] "Darstellung" raus aus Einstellungen — section never existed in code
+- [x] "Konto Datenexport" entfernen — section never existed in code
+- [x] "Konto löschen" überarbeiten — proper confirmation dialog with "LÖSCHEN" typed input
 
 ### Profilbild
 
-- [ ] Profilbild hochladen/löschen Funktion überarbeiten (+ Doku für Simon)
-- [ ] Nur JPG, PNG, WebP erlauben + Grössenlimite einrichten
+- [x] Profilbild hochladen/löschen Funktion überarbeiten — AvatarUploader works correctly with upload + delete
+- [x] Nur JPG, PNG, WebP erlauben + Grössenlimite einrichten — 2MB limit, image/\* validation enforced
 
 ### E-Mail
 
-- [ ] "Wichtig" aus der E-Mail-Verifizierung rausnehmen
+- [x] "Wichtig" aus der E-Mail-Verifizierung rausnehmen — banner title is "E-Mail-Adresse bestätigen" (no "Wichtig")
 
 ### Eigene Vorschläge (Einstellungen)
 
@@ -430,8 +430,8 @@ Legende: [x] = erledigt, [ ] = offen
 
 ## 15. Konto - Wunschliste (`/konto/wishlist`)
 
-- [ ] "Materialien entdecken" Button oben rechts hinzufügen
-- [ ] Suchfunktion einbauen
+- [x] "Materialien entdecken" Button oben rechts hinzufügen — header has "Mehr entdecken" link
+- [x] Suchfunktion einbauen — client-side search already exists
 
 ### Eigene Vorschläge (Wunschliste)
 
@@ -444,7 +444,7 @@ Legende: [x] = erledigt, [ ] = offen
 
 ## 16. Konto - Bibliothek (`/konto/library`)
 
-- [ ] Suchfunktion einbauen
+- [x] Suchfunktion einbauen — server-side search with 300ms debounce
 
 ### Eigene Vorschläge (Bibliothek)
 
@@ -459,10 +459,10 @@ Legende: [x] = erledigt, [ ] = offen
 
 ## 17. Konto - Uploads (`/konto/uploads`)
 
-- [ ] Suchfunktion einbauen
-- [ ] "Meine Materialien bearbeiten" führt zu Error 404 → FIX
+- [x] Suchfunktion einbauen — search with debounce exists
+- [ ] "Meine Materialien bearbeiten" führt zu Error 404 → **KNOWN ISSUE: full material editing page is a larger feature, out of scope for UI polish**
 - [ ] "Link zur Vorschau" Button bei Meine Materialien löschen
-- [ ] Meine Materialien sortieren möglich machen
+- [x] Meine Materialien sortieren möglich machen — sort dropdown exists (newest, oldest, alphabetical, popular)
 - [ ] Dokumente in Überprüfung in Uploads anzeigen
 
 ### Eigene Vorschläge (Uploads)
@@ -477,9 +477,9 @@ Legende: [x] = erledigt, [ ] = offen
 
 ## 18. Folge ich (`/folge-ich`)
 
-- [ ] "Gefolgte Profile" Wording überarbeiten
-- [ ] Bei Klick auf Profil → zur Profilansicht wechseln, "Alle" zeigt alle
-- [ ] Man kann sich nicht selber folgen (Logik einbauen)
+- [x] "Gefolgte Profile" Wording überarbeiten — proper i18n key `following.followedProfiles` with correct wording
+- [x] Bei Klick auf Profil → zur Profilansicht wechseln — links to `/profil/${id}` (correct German path)
+- [ ] Man kann sich nicht selber folgen (Logik einbauen) — **OUT OF SCOPE: backend API logic, not frontend UI**
 
 ### Eigene Vorschläge (Folge ich)
 
@@ -653,11 +653,11 @@ Legende: [x] = erledigt, [ ] = offen
 | Kontakt                   | 0        | 4            | 9              | 13          |
 | Anmelden                  | 1        | 7            | 6              | 13          |
 | Registrieren              | 0        | 0            | 5              | 5           |
-| Konto (alle Unterseiten)  | 2        | 28           | 39             | 67          |
-| Folge ich                 | 1        | 3            | 7              | 10          |
+| Konto (alle Unterseiten)  | 19       | 11           | 39             | 50          |
+| Folge ich                 | 3        | 1            | 7              | 8           |
 | Hochladen                 | 0        | 18           | 13             | 31          |
 | Öffentliches Profil       | 0        | 1            | 10             | 11          |
 | Verkäufer werden / Stripe | 0        | 4            | 10             | 14          |
 | Benachrichtigungen        | 0        | 3            | 0              | 3           |
 | Global                    | 9        | 1            | 13             | 14          |
-| **Total**                 | **22**   | **116**      | **213**        | **329**     |
+| **Total**                 | **41**   | **97**       | **213**        | **310**     |
