@@ -1,28 +1,72 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import {
-  Star,
-  Sparkles,
-  ShoppingBag,
-  Gift,
-  FileText,
-  Mail,
-  Download,
-  Tag,
-  Megaphone,
-  Newspaper,
-  Bell,
-} from "lucide-react";
+import { Bell } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useAccountData } from "@/lib/hooks/useAccountData";
+
+type NotificationKey =
+  | "notify_new_from_followed"
+  | "notify_recommendations"
+  | "notify_material_updates"
+  | "notify_review_reminders"
+  | "notify_wishlist_price_drops"
+  | "notify_welcome_offers"
+  | "notify_sales"
+  | "notify_newsletter"
+  | "notify_platform_updates";
+
+function ToggleRow({
+  title,
+  description,
+  checked,
+  disabled,
+  onToggle,
+}: {
+  title: string;
+  description: string;
+  checked: boolean;
+  disabled: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <label className="hover:bg-bg flex cursor-pointer items-center justify-between gap-4 px-5 py-3.5 transition-colors">
+      <div className="min-w-0">
+        <span className="text-text text-sm font-medium">{title}</span>
+        <p className="text-text-muted mt-0.5 text-xs leading-relaxed">{description}</p>
+      </div>
+      <button
+        type="button"
+        onClick={onToggle}
+        disabled={disabled}
+        className="relative flex-shrink-0"
+        role="switch"
+        aria-checked={checked}
+        aria-label={title}
+      >
+        <div
+          className={`h-6 w-11 rounded-full transition-colors ${checked ? "bg-primary" : "bg-border"}`}
+        >
+          <div
+            className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${checked ? "translate-x-5" : "translate-x-0.5"}`}
+          />
+        </div>
+      </button>
+    </label>
+  );
+}
+
+interface ToggleSection {
+  header: string;
+  items: { key: NotificationKey; title: string; description: string }[];
+}
 
 export default function SettingsNotificationsPage() {
   const { userData } = useAccountData();
   const tCommon = useTranslations("common");
   const tNotif = useTranslations("notifications");
+  const t = useTranslations("accountPage.settingsNotifications");
 
-  // Notification preferences state
   const [notificationPrefs, setNotificationPrefs] = useState({
     notify_new_from_followed: true,
     notify_recommendations: true,
@@ -40,7 +84,6 @@ export default function SettingsNotificationsPage() {
     text: string;
   } | null>(null);
 
-  // Initialize notification prefs from user data
   useEffect(() => {
     if (userData) {
       setNotificationPrefs({
@@ -57,12 +100,10 @@ export default function SettingsNotificationsPage() {
     }
   }, [userData]);
 
-  // Handle notification preference toggle
-  const handleNotificationToggle = async (key: keyof typeof notificationPrefs) => {
+  const handleNotificationToggle = async (key: NotificationKey) => {
     const newValue = !notificationPrefs[key];
     const previousPrefs = { ...notificationPrefs };
 
-    // Optimistically update UI
     setNotificationPrefs((prev) => ({ ...prev, [key]: newValue }));
     setIsSavingNotifications(true);
     setNotificationMessage(null);
@@ -82,7 +123,6 @@ export default function SettingsNotificationsPage() {
       setTimeout(() => setNotificationMessage(null), 2000);
     } catch (error) {
       console.error("Error saving notification preference:", error);
-      // Revert on error
       setNotificationPrefs(previousPrefs);
       setNotificationMessage({ type: "error", text: tNotif("error") });
       setTimeout(() => setNotificationMessage(null), 3000);
@@ -91,15 +131,81 @@ export default function SettingsNotificationsPage() {
     }
   };
 
+  const sections: ToggleSection[] = [
+    {
+      header: tNotif("categories.favoriteAuthors.title"),
+      items: [
+        {
+          key: "notify_new_from_followed",
+          title: tNotif("categories.favoriteAuthors.newFromFollowed.label"),
+          description: tNotif("categories.favoriteAuthors.newFromFollowed.description"),
+        },
+      ],
+    },
+    {
+      header: tNotif("categories.recommendations.title"),
+      items: [
+        {
+          key: "notify_recommendations",
+          title: tNotif("categories.recommendations.materialRecommendations.label"),
+          description: tNotif("categories.recommendations.materialRecommendations.description"),
+        },
+      ],
+    },
+    {
+      header: tNotif("categories.purchased.title"),
+      items: [
+        {
+          key: "notify_material_updates",
+          title: tNotif("categories.purchased.materialUpdates.label"),
+          description: tNotif("categories.purchased.materialUpdates.description"),
+        },
+        {
+          key: "notify_review_reminders",
+          title: tNotif("categories.purchased.reviewReminders.label"),
+          description: tNotif("categories.purchased.reviewReminders.description"),
+        },
+        {
+          key: "notify_wishlist_price_drops",
+          title: tNotif("categories.purchased.wishlistPriceDrops.label"),
+          description: tNotif("categories.purchased.wishlistPriceDrops.description"),
+        },
+      ],
+    },
+    {
+      header: tNotif("categories.promotions.title"),
+      items: [
+        {
+          key: "notify_welcome_offers",
+          title: tNotif("categories.promotions.welcomeOffers.label"),
+          description: tNotif("categories.promotions.welcomeOffers.description"),
+        },
+        {
+          key: "notify_sales",
+          title: tNotif("categories.promotions.sales.label"),
+          description: tNotif("categories.promotions.sales.description"),
+        },
+        {
+          key: "notify_newsletter",
+          title: tNotif("categories.promotions.newsletter.label"),
+          description: tNotif("categories.promotions.newsletter.description"),
+        },
+        {
+          key: "notify_platform_updates",
+          title: tNotif("categories.promotions.platformUpdates.label"),
+          description: tNotif("categories.promotions.platformUpdates.description"),
+        },
+      ],
+    },
+  ];
+
   return (
     <div className="space-y-6">
       {/* Section Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-text text-xl font-semibold">Benachrichtigungen</h2>
-          <p className="text-text-muted mt-1 text-sm">
-            Verwalten Sie, welche Benachrichtigungen Sie erhalten möchten
-          </p>
+          <h2 className="text-text text-xl font-semibold">{t("title")}</h2>
+          <p className="text-text-muted mt-1 text-sm">{t("subtitle")}</p>
         </div>
         {notificationMessage && (
           <span
@@ -110,329 +216,37 @@ export default function SettingsNotificationsPage() {
         )}
       </div>
 
-      {/* Favorite Authors Card */}
-      <div className="border-border bg-surface rounded-xl border">
-        <div className="border-border border-b p-5">
-          <div className="flex items-center gap-3">
-            <div className="bg-warning/10 flex h-10 w-10 items-center justify-center rounded-lg">
-              <Star className="text-warning h-5 w-5" />
-            </div>
-            <div>
-              <h3 className="text-text font-semibold">Lieblings-Autor*innen</h3>
-              <p className="text-text-muted text-sm">Updates von Verkäufern, denen Sie folgen</p>
-            </div>
-          </div>
-        </div>
-        <div className="divide-border divide-y">
-          <label className="hover:bg-bg flex cursor-pointer items-center justify-between p-5 transition-colors">
-            <div className="flex items-start gap-4">
-              <div className="bg-success/10 mt-0.5 flex h-8 w-8 items-center justify-center rounded-lg">
-                <FileText className="text-success h-4 w-4" />
-              </div>
-              <div>
-                <span className="text-text font-medium">
-                  Neue Materialien von Lieblings-Autor*innen
-                </span>
-                <p className="text-text-muted mt-0.5 text-sm">
-                  Benachrichtigung bei neuen Uploads von Verkäufern, denen Sie folgen, passend zu
-                  Ihren Fächern
-                </p>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => handleNotificationToggle("notify_new_from_followed")}
-              disabled={isSavingNotifications}
-              className="relative ml-4 flex-shrink-0"
-              aria-label="Toggle notification"
+      {/* Single card with grouped sections */}
+      <div className="border-border bg-surface overflow-hidden rounded-xl border">
+        {sections.map((section, sectionIndex) => (
+          <div key={section.header}>
+            {/* Section header */}
+            <div
+              className={`flex items-center gap-2.5 px-5 py-3 ${
+                sectionIndex === 0 ? "" : "border-border border-t"
+              } bg-bg-secondary/50`}
             >
-              <div
-                className={`h-6 w-11 rounded-full transition-colors ${notificationPrefs.notify_new_from_followed ? "bg-primary" : "bg-border"}`}
-              >
-                <div
-                  className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform ${notificationPrefs.notify_new_from_followed ? "translate-x-5" : "translate-x-0.5"}`}
-                />
-              </div>
-            </button>
-          </label>
-        </div>
-      </div>
+              <Bell className="text-text-muted h-3.5 w-3.5" aria-hidden="true" />
+              <h3 className="text-text-muted text-xs font-semibold tracking-wide uppercase">
+                {section.header}
+              </h3>
+            </div>
 
-      {/* Personalized Recommendations Card */}
-      <div className="border-border bg-surface rounded-xl border">
-        <div className="border-border border-b p-5">
-          <div className="flex items-center gap-3">
-            <div className="bg-accent/10 flex h-10 w-10 items-center justify-center rounded-lg">
-              <Sparkles className="text-accent h-5 w-5" />
-            </div>
-            <div>
-              <h3 className="text-text font-semibold">Personalisierte Empfehlungen</h3>
-              <p className="text-text-muted text-sm">
-                Materialvorschläge basierend auf Ihren Downloads
-              </p>
+            {/* Toggle rows */}
+            <div className="divide-border divide-y">
+              {section.items.map((item) => (
+                <ToggleRow
+                  key={item.key}
+                  title={item.title}
+                  description={item.description}
+                  checked={notificationPrefs[item.key]}
+                  disabled={isSavingNotifications}
+                  onToggle={() => handleNotificationToggle(item.key)}
+                />
+              ))}
             </div>
           </div>
-        </div>
-        <div className="divide-border divide-y">
-          <label className="hover:bg-bg flex cursor-pointer items-center justify-between p-5 transition-colors">
-            <div className="flex items-start gap-4">
-              <div className="bg-accent/10 mt-0.5 flex h-8 w-8 items-center justify-center rounded-lg">
-                <Mail className="text-accent h-4 w-4" />
-              </div>
-              <div>
-                <span className="text-text font-medium">Material-Empfehlungen per E-Mail</span>
-                <p className="text-text-muted mt-0.5 text-sm">
-                  Beliebte Materialien, die zu Ihren Downloads passen
-                </p>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => handleNotificationToggle("notify_recommendations")}
-              disabled={isSavingNotifications}
-              className="relative ml-4 flex-shrink-0"
-              aria-label="Toggle notification"
-            >
-              <div
-                className={`h-6 w-11 rounded-full transition-colors ${notificationPrefs.notify_recommendations ? "bg-primary" : "bg-border"}`}
-              >
-                <div
-                  className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform ${notificationPrefs.notify_recommendations ? "translate-x-5" : "translate-x-0.5"}`}
-                />
-              </div>
-            </button>
-          </label>
-        </div>
-      </div>
-
-      {/* Purchased Materials Card */}
-      <div className="border-border bg-surface rounded-xl border">
-        <div className="border-border border-b p-5">
-          <div className="flex items-center gap-3">
-            <div className="bg-success/10 flex h-10 w-10 items-center justify-center rounded-lg">
-              <ShoppingBag className="text-success h-5 w-5" />
-            </div>
-            <div>
-              <h3 className="text-text font-semibold">Erworbene Materialien</h3>
-              <p className="text-text-muted text-sm">Updates zu Ihren gekauften Materialien</p>
-            </div>
-          </div>
-        </div>
-        <div className="divide-border divide-y">
-          <label className="hover:bg-bg flex cursor-pointer items-center justify-between p-5 transition-colors">
-            <div className="flex items-start gap-4">
-              <div className="bg-primary/10 mt-0.5 flex h-8 w-8 items-center justify-center rounded-lg">
-                <Download className="text-primary h-4 w-4" />
-              </div>
-              <div>
-                <span className="text-text font-medium">Updates für gekaufte Materialien</span>
-                <p className="text-text-muted mt-0.5 text-sm">
-                  Benachrichtigung, wenn ein gekauftes Material ein kostenloses Update erhält
-                </p>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => handleNotificationToggle("notify_material_updates")}
-              disabled={isSavingNotifications}
-              className="relative ml-4 flex-shrink-0"
-              aria-label="Toggle notification"
-            >
-              <div
-                className={`h-6 w-11 rounded-full transition-colors ${notificationPrefs.notify_material_updates ? "bg-primary" : "bg-border"}`}
-              >
-                <div
-                  className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform ${notificationPrefs.notify_material_updates ? "translate-x-5" : "translate-x-0.5"}`}
-                />
-              </div>
-            </button>
-          </label>
-          <label className="hover:bg-bg flex cursor-pointer items-center justify-between p-5 transition-colors">
-            <div className="flex items-start gap-4">
-              <div className="bg-warning/10 mt-0.5 flex h-8 w-8 items-center justify-center rounded-lg">
-                <Star className="text-warning h-4 w-4" />
-              </div>
-              <div>
-                <span className="text-text font-medium">Erinnerungen zur Bewertung</span>
-                <p className="text-text-muted mt-0.5 text-sm">
-                  Erinnerungen, gekaufte Materialien zu bewerten
-                </p>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => handleNotificationToggle("notify_review_reminders")}
-              disabled={isSavingNotifications}
-              className="relative ml-4 flex-shrink-0"
-              aria-label="Toggle notification"
-            >
-              <div
-                className={`h-6 w-11 rounded-full transition-colors ${notificationPrefs.notify_review_reminders ? "bg-primary" : "bg-border"}`}
-              >
-                <div
-                  className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform ${notificationPrefs.notify_review_reminders ? "translate-x-5" : "translate-x-0.5"}`}
-                />
-              </div>
-            </button>
-          </label>
-          <label className="hover:bg-bg flex cursor-pointer items-center justify-between p-5 transition-colors">
-            <div className="flex items-start gap-4">
-              <div className="bg-price/10 mt-0.5 flex h-8 w-8 items-center justify-center rounded-lg">
-                <Tag className="text-price h-4 w-4" />
-              </div>
-              <div>
-                <span className="text-text font-medium">Preisänderungen auf der Wunschliste</span>
-                <p className="text-text-muted mt-0.5 text-sm">
-                  Benachrichtigung bei Preissenkungen von Artikeln auf Ihrer Wunschliste
-                </p>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => handleNotificationToggle("notify_wishlist_price_drops")}
-              disabled={isSavingNotifications}
-              className="relative ml-4 flex-shrink-0"
-              aria-label="Toggle notification"
-            >
-              <div
-                className={`h-6 w-11 rounded-full transition-colors ${notificationPrefs.notify_wishlist_price_drops ? "bg-primary" : "bg-border"}`}
-              >
-                <div
-                  className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform ${notificationPrefs.notify_wishlist_price_drops ? "translate-x-5" : "translate-x-0.5"}`}
-                />
-              </div>
-            </button>
-          </label>
-        </div>
-      </div>
-
-      {/* Promotions Card */}
-      <div className="border-border bg-surface rounded-xl border">
-        <div className="border-border border-b p-5">
-          <div className="flex items-center gap-3">
-            <div className="bg-error/10 flex h-10 w-10 items-center justify-center rounded-lg">
-              <Gift className="text-error h-5 w-5" />
-            </div>
-            <div>
-              <h3 className="text-text font-semibold">Rabatt- und Sonderaktionen</h3>
-              <p className="text-text-muted text-sm">Angebote und Plattform-Neuigkeiten</p>
-            </div>
-          </div>
-        </div>
-        <div className="divide-border divide-y">
-          <label className="hover:bg-bg flex cursor-pointer items-center justify-between p-5 transition-colors">
-            <div className="flex items-start gap-4">
-              <div className="bg-success/10 mt-0.5 flex h-8 w-8 items-center justify-center rounded-lg">
-                <Gift className="text-success h-4 w-4" />
-              </div>
-              <div>
-                <span className="text-text font-medium">Willkommensangebote</span>
-                <p className="text-text-muted mt-0.5 text-sm">
-                  Willkommens-E-Mails und individuelle Angebote
-                </p>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => handleNotificationToggle("notify_welcome_offers")}
-              disabled={isSavingNotifications}
-              className="relative ml-4 flex-shrink-0"
-              aria-label="Toggle notification"
-            >
-              <div
-                className={`h-6 w-11 rounded-full transition-colors ${notificationPrefs.notify_welcome_offers ? "bg-primary" : "bg-border"}`}
-              >
-                <div
-                  className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform ${notificationPrefs.notify_welcome_offers ? "translate-x-5" : "translate-x-0.5"}`}
-                />
-              </div>
-            </button>
-          </label>
-          <label className="hover:bg-bg flex cursor-pointer items-center justify-between p-5 transition-colors">
-            <div className="flex items-start gap-4">
-              <div className="bg-error/10 mt-0.5 flex h-8 w-8 items-center justify-center rounded-lg">
-                <Megaphone className="text-error h-4 w-4" />
-              </div>
-              <div>
-                <span className="text-text font-medium">Website-weite Aktionen</span>
-                <p className="text-text-muted mt-0.5 text-sm">
-                  Benachrichtigungen über plattformweite Rabattaktionen
-                </p>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => handleNotificationToggle("notify_sales")}
-              disabled={isSavingNotifications}
-              className="relative ml-4 flex-shrink-0"
-              aria-label="Toggle notification"
-            >
-              <div
-                className={`h-6 w-11 rounded-full transition-colors ${notificationPrefs.notify_sales ? "bg-primary" : "bg-border"}`}
-              >
-                <div
-                  className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform ${notificationPrefs.notify_sales ? "translate-x-5" : "translate-x-0.5"}`}
-                />
-              </div>
-            </button>
-          </label>
-          <label className="hover:bg-bg flex cursor-pointer items-center justify-between p-5 transition-colors">
-            <div className="flex items-start gap-4">
-              <div className="bg-primary/10 mt-0.5 flex h-8 w-8 items-center justify-center rounded-lg">
-                <Newspaper className="text-primary h-4 w-4" />
-              </div>
-              <div>
-                <span className="text-text font-medium">Newsletter abonnieren</span>
-                <p className="text-text-muted mt-0.5 text-sm">
-                  Wöchentliche Updates mit Tipps, neuen Funktionen und ausgewählten Materialien
-                </p>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => handleNotificationToggle("notify_newsletter")}
-              disabled={isSavingNotifications}
-              className="relative ml-4 flex-shrink-0"
-              aria-label="Toggle notification"
-            >
-              <div
-                className={`h-6 w-11 rounded-full transition-colors ${notificationPrefs.notify_newsletter ? "bg-primary" : "bg-border"}`}
-              >
-                <div
-                  className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform ${notificationPrefs.notify_newsletter ? "translate-x-5" : "translate-x-0.5"}`}
-                />
-              </div>
-            </button>
-          </label>
-          <label className="hover:bg-bg flex cursor-pointer items-center justify-between p-5 transition-colors">
-            <div className="flex items-start gap-4">
-              <div className="bg-accent/10 mt-0.5 flex h-8 w-8 items-center justify-center rounded-lg">
-                <Bell className="text-accent h-4 w-4" />
-              </div>
-              <div>
-                <span className="text-text font-medium">Plattform-Updates</span>
-                <p className="text-text-muted mt-0.5 text-sm">
-                  Neuigkeiten über neue Funktionen und Verbesserungen der Plattform
-                </p>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => handleNotificationToggle("notify_platform_updates")}
-              disabled={isSavingNotifications}
-              className="relative ml-4 flex-shrink-0"
-              aria-label="Toggle notification"
-            >
-              <div
-                className={`h-6 w-11 rounded-full transition-colors ${notificationPrefs.notify_platform_updates ? "bg-primary" : "bg-border"}`}
-              >
-                <div
-                  className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform ${notificationPrefs.notify_platform_updates ? "translate-x-5" : "translate-x-0.5"}`}
-                />
-              </div>
-            </button>
-          </label>
-        </div>
+        ))}
       </div>
     </div>
   );

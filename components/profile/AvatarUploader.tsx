@@ -6,9 +6,21 @@ interface AvatarUploaderProps {
   currentAvatarUrl?: string | null;
   displayName: string;
   onUpload: (file: File) => Promise<void>;
+  errorInvalidType?: string;
+  errorTooLarge?: string;
+  errorUploadFailed?: string;
+  uploadLabel?: string;
 }
 
-export function AvatarUploader({ currentAvatarUrl, displayName, onUpload }: AvatarUploaderProps) {
+export function AvatarUploader({
+  currentAvatarUrl,
+  displayName,
+  onUpload,
+  errorInvalidType = "Bitte wählen Sie ein Bild aus (JPG, PNG)",
+  errorTooLarge = "Das Bild darf maximal 2MB gross sein",
+  errorUploadFailed = "Fehler beim Hochladen. Bitte versuchen Sie es erneut.",
+  uploadLabel = "Profilbild hochladen",
+}: AvatarUploaderProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -20,13 +32,13 @@ export function AvatarUploader({ currentAvatarUrl, displayName, onUpload }: Avat
 
     // Validate file type
     if (!file.type.startsWith("image/")) {
-      setError("Bitte wählen Sie ein Bild aus (JPG, PNG)");
+      setError(errorInvalidType);
       return;
     }
 
     // Validate file size (max 2MB)
     if (file.size > 2 * 1024 * 1024) {
-      setError("Das Bild darf maximal 2MB gross sein");
+      setError(errorTooLarge);
       return;
     }
 
@@ -44,7 +56,7 @@ export function AvatarUploader({ currentAvatarUrl, displayName, onUpload }: Avat
     try {
       await onUpload(file);
     } catch {
-      setError("Fehler beim Hochladen. Bitte versuchen Sie es erneut.");
+      setError(errorUploadFailed);
       setPreviewUrl(null);
     } finally {
       setIsUploading(false);
@@ -63,12 +75,12 @@ export function AvatarUploader({ currentAvatarUrl, displayName, onUpload }: Avat
     <div className="flex flex-col items-center">
       <div className="relative">
         {/* Avatar display */}
-        <div className="relative h-24 w-24 overflow-hidden rounded-full border-4 border-border bg-gradient-to-br from-primary to-success">
+        <div className="border-border from-primary to-success relative h-24 w-24 overflow-hidden rounded-full border-4 bg-gradient-to-br">
           {displayedAvatar ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={displayedAvatar} alt={displayName} className="h-full w-full object-cover" />
           ) : (
-            <div className="flex h-full w-full items-center justify-center text-2xl font-bold text-text-on-accent">
+            <div className="text-text-on-accent flex h-full w-full items-center justify-center text-2xl font-bold">
               {initials}
             </div>
           )}
@@ -86,7 +98,8 @@ export function AvatarUploader({ currentAvatarUrl, displayName, onUpload }: Avat
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={isUploading}
-          className="absolute right-0 bottom-0 flex h-8 w-8 items-center justify-center rounded-full border-2 border-bg bg-primary text-text-on-accent transition-colors hover:bg-success disabled:opacity-50"
+          aria-label={uploadLabel}
+          className="border-bg bg-primary text-text-on-accent hover:bg-success absolute right-0 bottom-0 flex h-8 w-8 items-center justify-center rounded-full border-2 transition-colors disabled:opacity-50"
         >
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -114,13 +127,8 @@ export function AvatarUploader({ currentAvatarUrl, displayName, onUpload }: Avat
         className="hidden"
       />
 
-      {/* Instructions */}
-      <p className="mt-3 text-center text-xs text-text-muted">
-        JPG, PNG oder WebP. Max 2MB.
-      </p>
-
       {/* Error message */}
-      {error && <p className="mt-2 text-center text-sm text-error">{error}</p>}
+      {error && <p className="text-error mt-2 text-center text-sm">{error}</p>}
     </div>
   );
 }

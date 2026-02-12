@@ -134,29 +134,30 @@ export function AccountSidebar({
               alt={displayName}
               width={40}
               height={40}
-              className="h-10 w-10 rounded-full object-cover"
+              className="h-10 w-10 flex-shrink-0 rounded-full object-cover"
             />
           ) : (
-            <div className="bg-primary/10 text-primary flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold">
+            <div className="bg-primary/10 text-primary flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold">
               {displayName.charAt(0).toUpperCase()}
             </div>
           )}
           <div className="min-w-0 flex-1">
             <div className="text-text truncate text-sm font-semibold">{displayName}</div>
             <div className="text-text-muted truncate text-xs">{userData.email}</div>
+            {userData.isSeller &&
+              (userData.sellerPoints !== undefined ? (
+                <SellerBadge points={userData.sellerPoints} variant="compact" className="mt-1.5" />
+              ) : (
+                <span className="bg-accent/10 text-accent mt-1.5 inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase">
+                  {t("roleSeller")}
+                </span>
+              ))}
           </div>
-          {userData.isSeller &&
-            (userData.sellerPoints !== undefined ? (
-              <SellerBadge
-                points={userData.sellerPoints}
-                variant="compact"
-                className="flex-shrink-0"
-              />
-            ) : (
-              <span className="bg-accent/10 text-accent flex-shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase">
-                {t("roleSeller")}
-              </span>
-            ))}
+        </div>
+        {/* Compact stats */}
+        <div className="text-text-muted px-4 pt-2 pb-0 text-xs">
+          {stats.totalInLibrary} {t("sidebar.materials")} &middot; {stats.followedSellers}{" "}
+          {t("sidebar.followers")}
         </div>
       </div>
 

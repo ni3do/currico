@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { BookOpen, Gift, ShoppingBag, Sparkles } from "lucide-react";
 import { DashboardMaterialCard } from "@/components/ui/DashboardMaterialCard";
@@ -12,14 +13,19 @@ import type { LibraryItem } from "@/lib/types/account";
 export default function AccountLibraryPage() {
   const { status } = useSession();
   const { loading: sharedLoading } = useAccountData();
+  const t = useTranslations("accountPage.library");
+  const tSort = useTranslations("common.sort");
 
   const [libraryItems, setLibraryItems] = useState<LibraryItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<"newest" | "oldest" | "title">("newest");
 
   // Fetch library items
-  const fetchLibrary = useCallback(async () => {
+  const fetchLibrary = useCallback(async (search?: string) => {
     try {
       const params = new URLSearchParams({ type: "acquired" });
+      if (search) params.set("search", search);
       const response = await fetch(`/api/user/library?${params.toString()}`);
       if (response.ok) {
         const data = await response.json();
@@ -32,12 +38,25 @@ export default function AccountLibraryPage() {
     }
   }, []);
 
-  // Initial fetch on mount
+  // Fetch on mount and when search changes (with debounce)
   useEffect(() => {
-    if (status === "authenticated") {
-      fetchLibrary();
-    }
-  }, [status, fetchLibrary]);
+    if (status !== "authenticated") return;
+    const debounce = setTimeout(
+      () => {
+        fetchLibrary(searchQuery || undefined);
+      },
+      searchQuery ? 300 : 0
+    );
+    return () => clearTimeout(debounce);
+  }, [status, searchQuery, fetchLibrary]);
+
+  // Client-side sort (API returns newest first by default)
+  const sortedItems = [...libraryItems].sort((a, b) => {
+    if (sortBy === "oldest")
+      return new Date(a.acquiredAt).getTime() - new Date(b.acquiredAt).getTime();
+    if (sortBy === "title") return a.title.localeCompare(b.title);
+    return 0; // "newest" is the default order from API
+  });
 
   const isLoading = loading || sharedLoading;
 
@@ -58,7 +77,7 @@ export default function AccountLibraryPage() {
               <BookOpen className="text-primary h-5 w-5" />
             </div>
             <div>
-              <p className="text-text-muted text-xs font-medium">Gesamt in Bibliothek</p>
+              <p className="text-text-muted text-xs font-medium">{t("stats.total")}</p>
               <p className="text-text text-xl font-bold">{isLoading ? "-" : libraryItems.length}</p>
             </div>
           </div>
@@ -69,7 +88,7 @@ export default function AccountLibraryPage() {
               <Gift className="text-success h-5 w-5" />
             </div>
             <div>
-              <p className="text-text-muted text-xs font-medium">Gratis erhalten</p>
+              <p className="text-text-muted text-xs font-medium">{t("stats.free")}</p>
               <p className="text-text text-xl font-bold">
                 {isLoading ? "-" : libraryItems.filter((i) => i.type === "free").length}
               </p>
@@ -82,7 +101,7 @@ export default function AccountLibraryPage() {
               <ShoppingBag className="text-accent h-5 w-5" />
             </div>
             <div>
-              <p className="text-text-muted text-xs font-medium">Gekauft</p>
+              <p className="text-text-muted text-xs font-medium">{t("stats.purchased")}</p>
               <p className="text-text text-xl font-bold">
                 {isLoading ? "-" : libraryItems.filter((i) => i.type === "purchased").length}
               </p>
@@ -95,16 +114,38 @@ export default function AccountLibraryPage() {
       <div className="border-border bg-surface rounded-xl border">
         <div className="border-border flex flex-col gap-4 border-b p-6 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-text text-xl font-semibold">Meine Bibliothek</h2>
-            <p className="text-text-muted mt-1 text-sm">Alle erworbenen Materialien an einem Ort</p>
+            <h2 className="text-text text-xl font-semibold">{t("title")}</h2>
+            <p className="text-text-muted mt-1 text-sm">{t("subtitle")}</p>
           </div>
           <Link
             href="/materialien"
             className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors"
           >
-            <Sparkles className="h-4 w-4" />
-            Mehr entdecken
+            <Sparkles className="h-4 w-4" aria-hidden="true" />
+            {t("discoverMore")}
           </Link>
+        </div>
+
+        {/* Search & Sort */}
+        <div className="flex flex-col gap-3 px-6 pt-4 sm:flex-row">
+          <input
+            type="text"
+            placeholder={t("search")}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            aria-label={t("search")}
+            className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary flex-1 rounded-lg border px-4 py-2 text-sm focus:ring-1 focus:outline-none"
+          />
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+            aria-label={tSort("label")}
+            className="border-border bg-bg text-text rounded-lg border px-3 py-2 text-sm"
+          >
+            <option value="newest">{tSort("newest")}</option>
+            <option value="oldest">{tSort("oldest")}</option>
+            <option value="title">{tSort("alphabetical")}</option>
+          </select>
         </div>
 
         <div className="p-6">
@@ -126,9 +167,9 @@ export default function AccountLibraryPage() {
                 </div>
               ))}
             </div>
-          ) : libraryItems.length > 0 ? (
+          ) : sortedItems.length > 0 ? (
             <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
-              {libraryItems.map((item) => (
+              {sortedItems.map((item) => (
                 <DashboardMaterialCard
                   key={item.id}
                   id={item.id}
@@ -137,11 +178,11 @@ export default function AccountLibraryPage() {
                   cycle={item.cycle}
                   previewUrl={item.previewUrl}
                   badge={{
-                    label: item.type === "purchased" ? "Gekauft" : "Gratis",
+                    label: item.type === "purchased" ? t("badgePurchased") : t("badgeFree"),
                     variant: item.type === "purchased" ? "primary" : "success",
                   }}
                   secondaryBadge={
-                    item.verified ? { label: "Verifiziert", variant: "success" } : undefined
+                    item.verified ? { label: t("badgeVerified"), variant: "success" } : undefined
                   }
                   seller={{ displayName: item.seller.displayName }}
                 />
@@ -150,21 +191,16 @@ export default function AccountLibraryPage() {
           ) : (
             <div className="py-16 text-center">
               <div className="bg-primary/10 mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full">
-                <BookOpen className="text-primary h-10 w-10" />
+                <BookOpen className="text-primary h-10 w-10" aria-hidden="true" />
               </div>
-              <h3 className="text-text mb-2 text-xl font-semibold">
-                Ihre Bibliothek ist noch leer
-              </h3>
-              <p className="text-text-muted mx-auto mb-6 max-w-md">
-                Entdecken Sie hochwertige Unterrichtsmaterialien von anderen Lehrpersonen und
-                beginnen Sie Ihre Sammlung.
-              </p>
+              <h3 className="text-text mb-2 text-xl font-semibold">{t("empty")}</h3>
+              <p className="text-text-muted mx-auto mb-6 max-w-md">{t("emptyDescription")}</p>
               <Link
                 href="/materialien"
                 className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-6 py-3 font-semibold transition-colors"
               >
-                <Sparkles className="h-4 w-4" />
-                Materialien entdecken
+                <Sparkles className="h-4 w-4" aria-hidden="true" />
+                {t("discoverButton")}
               </Link>
             </div>
           )}

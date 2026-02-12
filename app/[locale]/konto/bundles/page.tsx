@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useAccountData } from "@/lib/hooks/useAccountData";
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import {
   CircleCheck,
   Clock,
@@ -20,8 +21,10 @@ import type { SellerBundle } from "@/lib/types/account";
 
 export default function AccountBundlesPage() {
   const { userData, loading } = useAccountData();
+  const t = useTranslations("accountPage.bundles");
   const [sellerBundles, setSellerBundles] = useState<SellerBundle[]>([]);
   const [bundlesLoading, setBundlesLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [openBundleActionMenu, setOpenBundleActionMenu] = useState<string | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<{
     id: string;
@@ -117,23 +120,44 @@ export default function AccountBundlesPage() {
     setOpenBundleActionMenu(null);
   };
 
+  // Client-side search filtering
+  const filteredBundles = sellerBundles.filter((bundle) => {
+    if (!searchQuery) return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      bundle.title.toLowerCase().includes(q) ||
+      bundle.subject?.toLowerCase().includes(q) ||
+      bundle.cycle?.toLowerCase().includes(q)
+    );
+  });
+
   return (
     <>
       <div className="border-border bg-surface rounded-xl border p-6">
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <h2 className="text-text text-xl font-semibold">Meine Bundles</h2>
-            <p className="text-text-muted mt-1 text-sm">
-              Materialien-Pakete zu reduzierten Preisen
-            </p>
+            <h2 className="text-text text-xl font-semibold">{t("title")}</h2>
+            <p className="text-text-muted mt-1 text-sm">{t("subtitle")}</p>
           </div>
           <Link
             href="/hochladen/bundle"
             className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors"
           >
             <span>+</span>
-            Neues Bundle
+            {t("newBundle")}
           </Link>
+        </div>
+
+        {/* Search */}
+        <div className="mb-6">
+          <input
+            type="text"
+            placeholder={t("search")}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            aria-label={t("search")}
+            className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary w-full rounded-lg border px-4 py-2 text-sm focus:ring-1 focus:outline-none"
+          />
         </div>
 
         {loading || bundlesLoading ? (
@@ -150,26 +174,26 @@ export default function AccountBundlesPage() {
               </div>
             ))}
           </div>
-        ) : sellerBundles.length > 0 ? (
+        ) : filteredBundles.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="text-text-muted text-left text-xs font-medium tracking-wider uppercase">
-                  <th className="pb-4">Titel</th>
-                  <th className="pb-4">Status</th>
-                  <th className="pb-4 text-center">Materialien</th>
-                  <th className="pb-4 text-right">Preis</th>
-                  <th className="pb-4 text-right">Ersparnis</th>
-                  <th className="pb-4 text-right">Aktionen</th>
+                  <th className="pb-4">{t("table.title")}</th>
+                  <th className="pb-4">{t("table.status")}</th>
+                  <th className="pb-4 text-center">{t("table.materials")}</th>
+                  <th className="pb-4 text-right">{t("table.price")}</th>
+                  <th className="pb-4 text-right">{t("table.savings")}</th>
+                  <th className="pb-4 text-right">{t("table.actions")}</th>
                 </tr>
               </thead>
               <tbody className="divide-border divide-y">
-                {sellerBundles.map((bundle) => (
+                {filteredBundles.map((bundle) => (
                   <tr key={bundle.id} className="group hover:bg-bg transition-colors">
                     <td className="py-4 pr-4">
                       <Link href={`/bundles/${bundle.id}`} className="block">
                         <div className="text-text group-hover:text-primary flex items-center gap-2 text-sm font-medium">
-                          <Package className="h-4 w-4 flex-shrink-0" />
+                          <Package className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
                           {bundle.title}
                         </div>
                         <div className="text-text-muted mt-0.5 text-xs">
@@ -189,24 +213,24 @@ export default function AccountBundlesPage() {
                           }`}
                           aria-label={
                             bundle.status === "VERIFIED"
-                              ? "Status: Verifiziert"
+                              ? `Status: ${t("status.verified")}`
                               : bundle.status === "PENDING"
-                                ? "Status: Ausstehend"
-                                : "Status: Abgelehnt"
+                                ? `Status: ${t("status.pending")}`
+                                : `Status: ${t("status.rejected")}`
                           }
                         >
                           {bundle.status === "VERIFIED" ? (
-                            <CircleCheck className="h-3.5 w-3.5" />
+                            <CircleCheck className="h-3.5 w-3.5" aria-hidden="true" />
                           ) : bundle.status === "PENDING" ? (
-                            <Clock className="h-3.5 w-3.5" />
+                            <Clock className="h-3.5 w-3.5" aria-hidden="true" />
                           ) : (
-                            <XCircle className="h-3.5 w-3.5" />
+                            <XCircle className="h-3.5 w-3.5" aria-hidden="true" />
                           )}
                           {bundle.status === "VERIFIED"
-                            ? "Verifiziert"
+                            ? t("status.verified")
                             : bundle.status === "PENDING"
-                              ? "Ausstehend"
-                              : "Abgelehnt"}
+                              ? t("status.pending")
+                              : t("status.rejected")}
                         </span>
                         <span
                           className={`inline-flex items-center gap-1 text-xs ${
@@ -214,11 +238,11 @@ export default function AccountBundlesPage() {
                           }`}
                         >
                           {bundle.isPublished ? (
-                            <CircleCheck className="h-3 w-3" />
+                            <CircleCheck className="h-3 w-3" aria-hidden="true" />
                           ) : (
-                            <FileEdit className="h-3 w-3" />
+                            <FileEdit className="h-3 w-3" aria-hidden="true" />
                           )}
-                          {bundle.isPublished ? "Veröffentlicht" : "Entwurf"}
+                          {bundle.isPublished ? t("published") : t("draft")}
                         </span>
                       </div>
                     </td>
@@ -247,7 +271,7 @@ export default function AccountBundlesPage() {
                             )
                           }
                           className="text-text-muted hover:bg-surface-hover hover:text-text rounded-lg p-2 transition-colors"
-                          aria-label="Aktionen"
+                          aria-label={t("actionsLabel")}
                         >
                           <MoreVertical className="h-5 w-5" />
                         </button>
@@ -258,8 +282,8 @@ export default function AccountBundlesPage() {
                               className="text-text hover:bg-bg flex items-center gap-2.5 px-4 py-2 text-sm transition-colors"
                               onClick={() => setOpenBundleActionMenu(null)}
                             >
-                              <ExternalLink className="h-4 w-4" />
-                              Ansehen
+                              <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                              {t("view")}
                             </Link>
                             <button
                               onClick={() =>
@@ -269,13 +293,13 @@ export default function AccountBundlesPage() {
                             >
                               {bundle.isPublished ? (
                                 <>
-                                  <X className="h-4 w-4" />
-                                  Veröffentlichung aufheben
+                                  <X className="h-4 w-4" aria-hidden="true" />
+                                  {t("unpublish")}
                                 </>
                               ) : (
                                 <>
-                                  <Check className="h-4 w-4" />
-                                  Veröffentlichen
+                                  <Check className="h-4 w-4" aria-hidden="true" />
+                                  {t("publish")}
                                 </>
                               )}
                             </button>
@@ -283,8 +307,8 @@ export default function AccountBundlesPage() {
                               onClick={() => handleDeleteBundle(bundle.id, bundle.title)}
                               className="text-error hover:bg-error/10 flex w-full items-center gap-2.5 px-4 py-2 text-sm transition-colors"
                             >
-                              <Trash2 className="h-4 w-4" />
-                              Löschen
+                              <Trash2 className="h-4 w-4" aria-hidden="true" />
+                              {t("delete")}
                             </button>
                           </div>
                         )}
@@ -297,16 +321,14 @@ export default function AccountBundlesPage() {
           </div>
         ) : (
           <div className="py-12 text-center">
-            <Package className="text-text-faint mx-auto mb-4 h-16 w-16" />
-            <h3 className="text-text mb-2 text-lg font-medium">Noch keine Bundles erstellt</h3>
-            <p className="text-text-muted mb-4">
-              Bündeln Sie mehrere Materialien zu einem reduzierten Preis.
-            </p>
+            <Package className="text-text-faint mx-auto mb-4 h-16 w-16" aria-hidden="true" />
+            <h3 className="text-text mb-2 text-lg font-medium">{t("empty")}</h3>
+            <p className="text-text-muted mb-4">{t("emptyDescription")}</p>
             <Link
               href="/hochladen/bundle"
               className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
             >
-              Erstes Bundle erstellen
+              {t("createFirst")}
             </Link>
           </div>
         )}

@@ -16,7 +16,6 @@ import {
   MessageCircle,
   Bell,
   Users,
-  ChevronRight,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import TopBar from "@/components/ui/TopBar";
@@ -114,8 +113,6 @@ function AccountLayoutInner({ children }: { children: ReactNode }) {
       { label: tCommon("breadcrumb.account"), href: "/konto" },
     ];
     if (activeTab !== "overview") {
-      const labelKey = `nav.${activeTab.replace("settings-", "settings")}` as const;
-      // Use the tab label as breadcrumb
       const tabLabels: Record<string, string> = {
         library: t("nav.library"),
         uploads: t("nav.uploads"),
@@ -163,7 +160,7 @@ function AccountLayoutInner({ children }: { children: ReactNode }) {
                   </div>
                 )}
                 {isSeller && (
-                  <div className="bg-accent absolute -right-1 -bottom-1 flex h-5 w-5 items-center justify-center rounded-full ring-2 ring-white dark:ring-gray-800">
+                  <div className="bg-accent absolute right-0 -bottom-0.5 flex h-5 w-5 items-center justify-center rounded-full ring-2 ring-white dark:ring-gray-800">
                     <span className="text-[10px] text-white">S</span>
                   </div>
                 )}
@@ -183,33 +180,6 @@ function AccountLayoutInner({ children }: { children: ReactNode }) {
                     {isSeller ? t("roleSeller") : t("roleBuyer")}
                   </span>
                 </div>
-              </div>
-
-              {/* Quick stats (desktop only) */}
-              <div className="hidden items-center gap-6 md:flex">
-                {[
-                  {
-                    label: t("stats.library"),
-                    value: displayStats.totalInLibrary,
-                  },
-                  {
-                    label: t("stats.uploads"),
-                    value: displayStats.uploadedResources,
-                  },
-                  {
-                    label: t("stats.wishlist"),
-                    value: displayStats.wishlistItems,
-                  },
-                  {
-                    label: t("stats.followers"),
-                    value: displayStats.followedSellers,
-                  },
-                ].map((stat) => (
-                  <div key={stat.label} className="text-center">
-                    <div className="text-text text-lg font-bold">{loading ? "-" : stat.value}</div>
-                    <div className="text-text-muted text-xs">{stat.label}</div>
-                  </div>
-                ))}
               </div>
             </div>
           </div>
@@ -243,7 +213,7 @@ function AccountLayoutInner({ children }: { children: ReactNode }) {
                     {isActive && (
                       <motion.div
                         layoutId="mobileActiveTab"
-                        className="bg-primary/60 absolute right-1.5 bottom-0.5 h-0.5 w-3 rounded-full"
+                        className="bg-primary absolute right-1 bottom-0 left-1 h-0.5 rounded-full"
                         transition={{
                           type: "spring",
                           stiffness: 400,

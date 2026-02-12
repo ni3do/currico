@@ -85,6 +85,18 @@
       "sendFailed": "Nachricht konnte nicht gesendet werden.",
       "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten."
     },
+    "sort": {
+      "label": "Sortierung",
+      "newest": "Neueste zuerst",
+      "oldest": "Älteste zuerst",
+      "alphabetical": "Alphabetisch",
+      "popular": "Beliebteste"
+    },
+    "badges": {
+      "verified": "Verifiziert",
+      "pending": "Ausstehend",
+      "rejected": "Abgelehnt"
+    },
     "buttons": {
       "viewAll": "Alle anzeigen",
       "view": "Ansehen",
@@ -3057,7 +3069,82 @@
       "discover": "Entdecken",
       "newMaterial": "Neues Material",
       "discoverMaterials": "Materialien entdecken",
-      "unknownSeller": "Unbekannt"
+      "unknownSeller": "Unbekannt",
+      "materials": "Materialien",
+      "followers": "Follower"
+    },
+    "library": {
+      "title": "Meine Bibliothek",
+      "subtitle": "Alle erworbenen Materialien an einem Ort",
+      "stats": {
+        "total": "Gesamt in Bibliothek",
+        "free": "Gratis erhalten",
+        "purchased": "Gekauft"
+      },
+      "search": "Bibliothek durchsuchen...",
+      "discoverMore": "Mehr entdecken",
+      "empty": "Ihre Bibliothek ist noch leer",
+      "emptyDescription": "Entdecken Sie hochwertige Unterrichtsmaterialien von anderen Lehrpersonen und beginnen Sie Ihre Sammlung.",
+      "discoverButton": "Materialien entdecken",
+      "badgePurchased": "Gekauft",
+      "badgeFree": "Gratis",
+      "badgeVerified": "Verifiziert"
+    },
+    "wishlist": {
+      "title": "Wunschliste",
+      "subtitle": "Gespeicherte Materialien für später",
+      "search": "Wunschliste durchsuchen...",
+      "empty": "Ihre Wunschliste ist leer",
+      "emptyDescription": "Speichern Sie interessante Materialien für später.",
+      "discoverButton": "Materialien entdecken"
+    },
+    "bundles": {
+      "title": "Meine Bundles",
+      "subtitle": "Materialien-Pakete zu reduzierten Preisen",
+      "newBundle": "Neues Bundle",
+      "search": "Bundles durchsuchen...",
+      "table": {
+        "title": "Titel",
+        "status": "Status",
+        "materials": "Materialien",
+        "price": "Preis",
+        "savings": "Ersparnis",
+        "actions": "Aktionen"
+      },
+      "status": {
+        "verified": "Verifiziert",
+        "pending": "Ausstehend",
+        "rejected": "Abgelehnt"
+      },
+      "published": "Veröffentlicht",
+      "draft": "Entwurf",
+      "view": "Ansehen",
+      "publish": "Veröffentlichen",
+      "unpublish": "Veröffentlichung aufheben",
+      "delete": "Löschen",
+      "empty": "Noch keine Bundles erstellt",
+      "emptyDescription": "Bündeln Sie mehrere Materialien zu einem reduzierten Preis.",
+      "createFirst": "Erstes Bundle erstellen",
+      "actionsLabel": "Aktionen"
+    },
+    "uploads": {
+      "search": "Uploads durchsuchen..."
+    },
+    "settingsNotifications": {
+      "title": "Benachrichtigungen",
+      "subtitle": "Verwalten Sie, welche Benachrichtigungen Sie erhalten möchten"
+    },
+    "settingsProfile": {
+      "avatar": {
+        "errorInvalidType": "Bitte wählen Sie ein Bild aus (JPG, PNG)",
+        "errorTooLarge": "Das Bild darf maximal 2MB gross sein",
+        "errorUploadFailed": "Fehler beim Hochladen. Bitte versuchen Sie es erneut.",
+        "uploadLabel": "Profilbild hochladen"
+      },
+      "multiSelect": {
+        "search": "Suchen...",
+        "noResults": "Keine Optionen gefunden"
+      }
     },
     "overview": {
       "earnings": "Einnahmen",
