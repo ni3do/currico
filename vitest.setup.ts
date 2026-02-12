@@ -127,7 +127,6 @@ vi.mock("@/lib/db", () => {
     prisma: mockPrisma,
     publicUserSelect: {},
     privateUserSelect: {},
-    adminUserSelect: {},
   };
 });
 

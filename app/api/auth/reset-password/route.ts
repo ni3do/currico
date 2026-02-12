@@ -8,7 +8,13 @@ import { prisma } from "@/lib/db";
  */
 export async function POST(request: NextRequest) {
   try {
-    const { token, password } = await request.json();
+    let body: { token?: string; password?: string };
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    }
+    const { token, password } = body;
 
     if (!token || !password) {
       return NextResponse.json({ error: "Token und Passwort erforderlich" }, { status: 400 });

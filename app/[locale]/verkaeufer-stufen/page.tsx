@@ -343,8 +343,8 @@ export default function SellerLevelsPage() {
           <div className="space-y-3">
             {SELLER_LEVELS.map((level, index) => {
               const Icon = level.icon;
-              const levelName = t(`levels.${level.name}` as any);
-              const levelDesc = t(`descriptions.${level.name}` as any);
+              const levelName = t(`levels.${level.name}` as never);
+              const levelDesc = t(`descriptions.${level.name}` as never);
               const nextLevel = SELLER_LEVELS[index + 1];
 
               return (
@@ -429,7 +429,7 @@ export default function SellerLevelsPage() {
                     <div className="bg-warning/10 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg">
                       <TipIcon className="text-warning h-4 w-4" />
                     </div>
-                    <p className="text-text-muted text-sm">{t(`page.tips.${tip}` as any)}</p>
+                    <p className="text-text-muted text-sm">{t(`page.tips.${tip}` as never)}</p>
                   </div>
                 </motion.div>
               );

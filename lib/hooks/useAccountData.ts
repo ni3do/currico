@@ -49,18 +49,6 @@ export function useAccountDataProvider() {
     }
   }, []);
 
-  const fetchFollowedSellers = useCallback(async () => {
-    try {
-      const response = await fetch("/api/user/following");
-      if (response.ok) {
-        const data = await response.json();
-        setFollowedSellers(data.sellers || []);
-      }
-    } catch (error) {
-      console.error("Error fetching followed sellers:", error);
-    }
-  }, []);
-
   // Handle redirects
   useEffect(() => {
     if (status === "unauthenticated") {

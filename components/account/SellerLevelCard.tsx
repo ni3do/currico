@@ -40,9 +40,9 @@ export function SellerLevelCard({
   const CurrentIcon = current.icon;
   const NextIcon = next?.icon;
 
-  const currentName = t(`levels.${current.name}` as any);
-  const currentDesc = t(`descriptions.${current.name}` as any);
-  const nextName = next ? t(`levels.${next.name}` as any) : null;
+  const currentName = t(`levels.${current.name}` as never);
+  const currentDesc = t(`descriptions.${current.name}` as never);
+  const nextName = next ? t(`levels.${next.name}` as never) : null;
 
   return (
     <motion.div
@@ -200,7 +200,7 @@ export function SellerLevelCard({
                     isCurrent ? level.textClass : isActive ? "text-text-muted" : "text-text-faint"
                   }`}
                 >
-                  {t(`levels.${level.name}` as any)}
+                  {t(`levels.${level.name}` as never)}
                 </span>
               </div>
             );

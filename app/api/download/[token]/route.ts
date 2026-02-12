@@ -113,19 +113,15 @@ export async function GET(
     const filename = getSafeFilename(resource.title, resource.file_url);
     const contentType = getContentType(resource.file_url);
 
-    // Increment download count before serving the file
-    await prisma.downloadToken.update({
-      where: { id: downloadToken.id },
-      data: { download_count: { increment: 1 } },
-    });
+    // Prepare the response first, then increment count only on success
+    let response: NextResponse;
 
     // Check if this is a legacy local path (starts with /uploads/)
     if (isLegacyLocalPath(resource.file_url)) {
-      // Handle legacy local file
       const filePath = getLegacyFilePath(resource.file_url);
       try {
         const fileBuffer = await readFile(filePath);
-        return new NextResponse(new Uint8Array(fileBuffer), {
+        response = new NextResponse(new Uint8Array(fileBuffer), {
           headers: {
             "Content-Type": contentType,
             "Content-Disposition": `attachment; filename="${encodeURIComponent(filename)}"`,
@@ -139,16 +135,14 @@ export async function GET(
           { status: 404 }
         );
       }
-    }
-
-    // For S3 storage, redirect to signed URL
-    if (!storage.isLocal()) {
+    } else if (!storage.isLocal()) {
+      // For S3 storage, redirect to signed URL
       try {
         const signedUrl = await storage.getSignedUrl(resource.file_url, {
           expiresIn: 3600, // 1 hour
           downloadFilename: filename,
         });
-        return NextResponse.redirect(signedUrl);
+        response = NextResponse.redirect(signedUrl);
       } catch (error) {
         console.error("Failed to generate signed URL:", error);
         return NextResponse.json(
@@ -156,25 +150,33 @@ export async function GET(
           { status: 500 }
         );
       }
+    } else {
+      // For local storage, read and stream the file
+      try {
+        const fileBuffer = await storage.getFile(resource.file_url, "material");
+        response = new NextResponse(new Uint8Array(fileBuffer), {
+          headers: {
+            "Content-Type": contentType,
+            "Content-Disposition": `attachment; filename="${encodeURIComponent(filename)}"`,
+            "Content-Length": fileBuffer.length.toString(),
+          },
+        });
+      } catch {
+        console.error("File not found:", resource.file_url);
+        return NextResponse.json(
+          { error: "file_not_found", message: "Datei nicht gefunden" },
+          { status: 404 }
+        );
+      }
     }
 
-    // For local storage, read and stream the file
-    try {
-      const fileBuffer = await storage.getFile(resource.file_url, "material");
-      return new NextResponse(new Uint8Array(fileBuffer), {
-        headers: {
-          "Content-Type": contentType,
-          "Content-Disposition": `attachment; filename="${encodeURIComponent(filename)}"`,
-          "Content-Length": fileBuffer.length.toString(),
-        },
-      });
-    } catch {
-      console.error("File not found:", resource.file_url);
-      return NextResponse.json(
-        { error: "file_not_found", message: "Datei nicht gefunden" },
-        { status: 404 }
-      );
-    }
+    // Increment download count only after file is successfully prepared
+    await prisma.downloadToken.update({
+      where: { id: downloadToken.id },
+      data: { download_count: { increment: 1 } },
+    });
+
+    return response;
   } catch (error) {
     console.error("Error processing download token:", error);
     return NextResponse.json(

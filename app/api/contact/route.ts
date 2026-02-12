@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { z } from "zod";
 import { sendContactNotificationEmail } from "@/lib/email";
+import { checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
 
 const contactSchema = z.object({
   name: z
@@ -23,6 +24,16 @@ const contactSchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
+  const clientIP = getClientIP(request);
+  const rateLimitResult = checkRateLimit(clientIP, "contact:submit");
+
+  if (!rateLimitResult.success) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again later.", code: "RATE_LIMITED" },
+      { status: 429, headers: rateLimitHeaders(rateLimitResult) }
+    );
+  }
+
   try {
     const body = await request.json();
 

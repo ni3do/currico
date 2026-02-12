@@ -14,8 +14,8 @@ export function SellerBadge({ points, variant = "compact", className = "" }: Sel
   const t = useTranslations("rewards");
   const level = getCurrentLevel(points);
   const Icon = level.icon;
-   
-  const levelName = t(`levels.${level.name}` as any);
+
+  const levelName = t(`levels.${level.name}` as never);
 
   if (variant === "compact") {
     return (

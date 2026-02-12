@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { prisma, publicUserSelect } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
 import { parsePagination, paginationResponse } from "@/lib/api";
@@ -42,26 +43,20 @@ export async function GET(request: NextRequest) {
 
     // For PostgreSQL with JSONB columns, use raw SQL for array overlap checks
     if (subjects.length > 0 || cycles.length > 0) {
-      const conditions: string[] = [];
-      const params: string[][] = [];
-      let paramIndex = 1;
+      const conditions: Prisma.Sql[] = [];
 
       if (subjects.length > 0) {
-        // ?| operator checks if any value in the text array exists in the JSONB array
-        conditions.push(`subjects::jsonb ?| $${paramIndex}::text[]`);
-        params.push(subjects);
-        paramIndex++;
+        conditions.push(Prisma.sql`subjects::jsonb ?| ${subjects}::text[]`);
       }
 
       if (cycles.length > 0) {
-        conditions.push(`cycles::jsonb ?| $${paramIndex}::text[]`);
-        params.push(cycles);
-        paramIndex++;
+        conditions.push(Prisma.sql`cycles::jsonb ?| ${cycles}::text[]`);
       }
 
-      const sqlConditions = conditions.join(" AND ");
-      const query = `SELECT id FROM users WHERE ${sqlConditions}`;
-      const results = await prisma.$queryRawUnsafe<{ id: string }[]>(query, ...params.flat());
+      const whereClause = Prisma.join(conditions, " AND ");
+      const results = await prisma.$queryRaw<{ id: string }[]>(
+        Prisma.sql`SELECT id FROM users WHERE ${whereClause}`
+      );
       const filteredIds = results.map((r) => r.id);
 
       if (filteredIds.length === 0) {

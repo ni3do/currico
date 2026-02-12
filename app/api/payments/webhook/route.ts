@@ -7,14 +7,15 @@ import { notifySale } from "@/lib/notifications";
 import { DOWNLOAD_LINK_EXPIRY_DAYS, DOWNLOAD_LINK_MAX_DOWNLOADS } from "@/lib/constants";
 import Stripe from "stripe";
 
+const isDev = process.env.NODE_ENV === "development";
+
 /**
  * POST /api/payments/webhook
  * Handles Stripe webhooks for payment and Connect events
  * Access: Public (verified via Stripe signature)
  */
 export async function POST(request: NextRequest) {
-  console.log("[PAYMENT WEBHOOK] ========== WEBHOOK RECEIVED ==========");
-  console.log("[PAYMENT WEBHOOK] Timestamp:", new Date().toISOString());
+  if (isDev) console.log("[PAYMENT WEBHOOK] WEBHOOK RECEIVED", new Date().toISOString());
 
   let event: Stripe.Event;
 
@@ -22,8 +23,7 @@ export async function POST(request: NextRequest) {
   const payload = await request.text();
   const signature = request.headers.get("stripe-signature");
 
-  console.log("[PAYMENT WEBHOOK] Payload length:", payload.length);
-  console.log("[PAYMENT WEBHOOK] Signature present:", !!signature);
+  if (isDev) console.log("[PAYMENT WEBHOOK] Payload:", payload.length, "Signature:", !!signature);
 
   if (!signature) {
     console.error("[PAYMENT WEBHOOK] ERROR: Missing stripe-signature header");
@@ -33,9 +33,7 @@ export async function POST(request: NextRequest) {
   // Verify webhook signature
   try {
     event = constructWebhookEvent(payload, signature);
-    console.log("[PAYMENT WEBHOOK] Signature verified successfully");
-    console.log("[PAYMENT WEBHOOK] Event type:", event.type);
-    console.log("[PAYMENT WEBHOOK] Event ID:", event.id);
+    if (isDev) console.log("[PAYMENT WEBHOOK] Verified:", event.type, event.id);
   } catch (error) {
     console.error("[PAYMENT WEBHOOK] ERROR: Signature verification failed:", error);
     return NextResponse.json({ error: "Webhook signature verification failed" }, { status: 400 });
@@ -61,8 +59,7 @@ export async function POST(request: NextRequest) {
         break;
 
       default:
-        // Log unhandled events for debugging
-        console.log(`Webhook: Unhandled event type ${event.type}`);
+        if (isDev) console.log(`Webhook: Unhandled event type ${event.type}`);
     }
 
     return NextResponse.json({ received: true });
@@ -79,7 +76,7 @@ export async function POST(request: NextRequest) {
 async function handleAccountUpdated(account: Stripe.Account): Promise<void> {
   const accountId = account.id;
 
-  console.log(`Webhook: Processing account.updated for ${accountId}`);
+  if (isDev) console.log(`Webhook: account.updated for ${accountId}`);
 
   // Find user with this Stripe account
   const user = await prisma.user.findFirst({
@@ -119,7 +116,7 @@ async function handleAccountUpdated(account: Stripe.Account): Promise<void> {
   // This is the official path to becoming a seller
   if (chargesEnabled && detailsSubmitted && user.role === "BUYER") {
     updateData.role = "SELLER";
-    console.log(`Webhook: Upgrading user ${user.id} to SELLER role`);
+    if (isDev) console.log(`Webhook: Upgrading user ${user.id} to SELLER role`);
   }
 
   // Update user if anything changed
@@ -135,14 +132,15 @@ async function handleAccountUpdated(account: Stripe.Account): Promise<void> {
       data: updateData,
     });
 
-    console.log(`Webhook: Updated user ${user.id}:`, {
-      chargesEnabled,
-      payoutsEnabled,
-      detailsSubmitted,
-      roleUpgrade: updateData.role ?? false,
-    });
+    if (isDev)
+      console.log(`Webhook: Updated user ${user.id}:`, {
+        chargesEnabled,
+        payoutsEnabled,
+        detailsSubmitted,
+        roleUpgrade: updateData.role ?? false,
+      });
   } else {
-    console.log(`Webhook: No changes for user ${user.id}`);
+    if (isDev) console.log(`Webhook: No changes for user ${user.id}`);
   }
 }
 
@@ -158,15 +156,16 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session):
       : session.payment_intent?.id;
   const paymentStatus = session.payment_status;
 
-  console.log("[PAYMENT WEBHOOK] ========== CHECKOUT SESSION COMPLETED ==========");
-  console.log("[PAYMENT WEBHOOK] Session ID:", sessionId);
-  console.log("[PAYMENT WEBHOOK] Payment Intent ID:", paymentIntentId);
-  console.log("[PAYMENT WEBHOOK] Payment Status:", paymentStatus);
-  console.log("[PAYMENT WEBHOOK] Metadata:", JSON.stringify(session.metadata));
+  if (isDev)
+    console.log("[PAYMENT WEBHOOK] CHECKOUT SESSION COMPLETED:", {
+      sessionId,
+      paymentIntentId,
+      paymentStatus,
+    });
 
   // Only process successful payments
   if (paymentStatus !== "paid") {
-    console.log(`Webhook: Skipping session ${sessionId} with status ${paymentStatus}`);
+    if (isDev) console.log(`Webhook: Skipping session ${sessionId} with status ${paymentStatus}`);
     return;
   }
 
@@ -273,9 +272,7 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session):
     });
 
     if (emailResult.success) {
-      console.log(
-        `Webhook: Sent purchase confirmation email to ${buyerEmail} for transaction ${transaction.id}`
-      );
+      if (isDev) console.log(`Webhook: Sent purchase confirmation to ${buyerEmail}`);
     } else {
       // Log as critical error for visibility - transaction completed but buyer won't receive email
       console.error(
@@ -289,16 +286,11 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session):
   // Notify the seller about the sale (fire-and-forget)
   notifySale(transaction.resource.seller_id, transaction.resource.title, transaction.amount);
 
-  if (isGuestCheckout) {
-    console.log(
-      `Webhook: Completed guest transaction ${transaction.id} for ${transaction.guest_email}, ` +
-        `resource ${transaction.resource_id}, token: ${downloadToken}`
-    );
-  } else {
-    console.log(
-      `Webhook: Completed transaction ${transaction.id} for buyer ${transaction.buyer_id}, ` +
-        `granted access to resource ${transaction.resource_id}`
-    );
+  if (isDev) {
+    console.log(`Webhook: Completed transaction ${transaction.id}`, {
+      isGuestCheckout,
+      resourceId: transaction.resource_id,
+    });
   }
 }
 
@@ -310,7 +302,7 @@ async function handlePaymentIntentFailed(paymentIntent: Stripe.PaymentIntent): P
   const paymentIntentId = paymentIntent.id;
   const metadata = paymentIntent.metadata;
 
-  console.log(`Webhook: Processing payment_intent.payment_failed for ${paymentIntentId}`);
+  if (isDev) console.log(`Webhook: payment_intent.payment_failed for ${paymentIntentId}`);
 
   // Extract identifiers from metadata (set during checkout session creation)
   const resourceId = metadata?.resourceId;
@@ -364,10 +356,7 @@ async function handlePaymentIntentFailed(paymentIntent: Stripe.PaymentIntent): P
     },
   });
 
-  console.log(
-    `Webhook: Marked transaction ${transaction.id} as FAILED ` +
-      `for payment intent ${paymentIntentId}: ${failureMessage}`
-  );
+  if (isDev) console.log(`Webhook: FAILED transaction ${transaction.id} for PI ${paymentIntentId}`);
 }
 
 /**
@@ -378,7 +367,7 @@ async function handleChargeRefunded(charge: Stripe.Charge): Promise<void> {
   const paymentIntentId =
     typeof charge.payment_intent === "string" ? charge.payment_intent : charge.payment_intent?.id;
 
-  console.log(`[PAYMENT WEBHOOK] Processing charge.refunded for PI: ${paymentIntentId}`);
+  if (isDev) console.log(`[PAYMENT WEBHOOK] charge.refunded for PI: ${paymentIntentId}`);
 
   if (!paymentIntentId) {
     console.warn("[PAYMENT WEBHOOK] No payment_intent on refunded charge");
@@ -426,10 +415,7 @@ async function handleChargeRefunded(charge: Stripe.Charge): Promise<void> {
     }
   });
 
-  console.log(
-    `[PAYMENT WEBHOOK] Refunded transaction ${transaction.id}, ` +
-      `revoked access to resource ${transaction.resource_id}`
-  );
+  if (isDev) console.log(`[PAYMENT WEBHOOK] Refunded transaction ${transaction.id}`);
 }
 
 // Disable body parsing since we need raw body for signature verification

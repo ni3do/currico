@@ -114,20 +114,23 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     const hasDownloaded = material.downloads.length > 0;
     const isVerified = material.is_approved;
 
-    console.log("[DOWNLOAD] ========== ACCESS CHECK ==========");
-    console.log("[DOWNLOAD] Material ID:", id);
-    console.log("[DOWNLOAD] User ID:", userId);
-    console.log("[DOWNLOAD] Is Admin:", isAdmin);
-    console.log("[DOWNLOAD] Is Owner:", isOwner);
-    console.log("[DOWNLOAD] Is Free:", isFree);
-    console.log("[DOWNLOAD] Is Verified:", isVerified);
-    console.log("[DOWNLOAD] Has Purchased (COMPLETED transactions):", hasPurchased);
-    console.log("[DOWNLOAD] Transactions found:", material.transactions.length);
-    console.log("[DOWNLOAD] Has Download record:", hasDownloaded);
+    if (process.env.NODE_ENV === "development") {
+      console.log("[DOWNLOAD] ACCESS CHECK:", {
+        id,
+        userId,
+        isAdmin,
+        isOwner,
+        isFree,
+        isVerified,
+        hasPurchased,
+        hasDownloaded,
+      });
+    }
 
     // Regular users cannot download unverified materials (except owners/admins)
     if (!isAdmin && !isOwner && !isVerified) {
-      console.log("[DOWNLOAD] ACCESS DENIED - material not yet verified");
+      if (process.env.NODE_ENV === "development")
+        console.log("[DOWNLOAD] ACCESS DENIED - not verified");
       return NextResponse.json(
         { error: "Dieses Material wird noch überprüft und kann noch nicht heruntergeladen werden" },
         { status: 403 }
@@ -136,10 +139,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     // Grant access if: admin, owner, free material, or has purchased
     const hasAccess = isAdmin || isOwner || isFree || hasPurchased;
-    console.log("[DOWNLOAD] Final hasAccess:", hasAccess);
+    if (process.env.NODE_ENV === "development") console.log("[DOWNLOAD] hasAccess:", hasAccess);
 
     if (!hasAccess) {
-      console.log("[DOWNLOAD] ACCESS DENIED - user needs to purchase");
       return NextResponse.json(
         { error: "Bitte kaufen Sie dieses Material, um es herunterzuladen" },
         { status: 403 }

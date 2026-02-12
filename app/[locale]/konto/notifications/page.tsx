@@ -92,7 +92,7 @@ export default function NotificationsPage() {
     });
 
     if (link) {
-      router.push(link as any);
+      router.push(link as never);
     }
   };
 

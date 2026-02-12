@@ -8,10 +8,7 @@ import { notFound, serverError } from "@/lib/api";
  * Get full user details
  * Access: ADMIN only
  */
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const admin = await requireAdmin();
 
@@ -62,10 +59,7 @@ export async function GET(
  * Update user (admin can verify sellers, change roles)
  * Access: ADMIN only
  */
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const admin = await requireAdmin();
 
@@ -74,7 +68,12 @@ export async function PATCH(
     }
 
     const { id } = await params;
-    const body = await request.json();
+    let body: Record<string, unknown>;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    }
 
     // Check if user is protected (e.g., super admin)
     const existingUser = await prisma.user.findUnique({
@@ -166,15 +165,24 @@ export async function DELETE(
 
     // Prevent admin from deleting themselves
     if (id === admin.id) {
-      return NextResponse.json(
-        { error: "Sie können sich nicht selbst löschen" },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: "Sie können sich nicht selbst löschen" }, { status: 403 });
     }
 
-    // Delete the user
-    await prisma.user.delete({
-      where: { id },
+    // Use a transaction to clean up FK dependencies not covered by onDelete: Cascade
+    await prisma.$transaction(async (tx) => {
+      await tx.transaction.updateMany({
+        where: { buyer_id: id },
+        data: { buyer_id: null },
+      });
+      await tx.transaction.deleteMany({
+        where: { resource: { seller_id: id } },
+      });
+      await tx.resource.deleteMany({
+        where: { seller_id: id },
+      });
+      await tx.user.delete({
+        where: { id },
+      });
     });
 
     return NextResponse.json({ success: true, message: "Benutzer wurde gelöscht" });

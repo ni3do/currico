@@ -2,24 +2,20 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
-import {
-  checkRateLimit,
-  getClientIP,
-  rateLimitHeaders,
-} from "@/lib/rateLimit";
+import { checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
 
 const registrationSchema = z.object({
   name: z
     .string()
-    .min(2, "Name muss mindestens 2 Zeichen haben")
-    .max(50, "Name darf maximal 50 Zeichen haben"),
-  email: z.string().email("Ungültige E-Mail-Adresse"),
+    .min(2, "Name must be at least 2 characters")
+    .max(50, "Name must be at most 50 characters"),
+  email: z.string().email("Invalid email address"),
   password: z
     .string()
-    .min(8, "Passwort muss mindestens 8 Zeichen haben")
+    .min(8, "Password must be at least 8 characters")
     .regex(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-      "Passwort muss Gross-, Kleinbuchstaben und Zahlen enthalten"
+      "Password must contain uppercase, lowercase, and numbers"
     ),
   canton: z.string().optional(),
   subjects: z.array(z.string()).optional(),
@@ -146,9 +142,6 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error("Registration error:", error);
-    return NextResponse.json(
-      { error: "Ein Fehler ist aufgetreten" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Ein Fehler ist aufgetreten" }, { status: 500 });
   }
 }

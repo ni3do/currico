@@ -15,6 +15,9 @@ interface RateLimitConfig {
 }
 
 // In-memory store for rate limit tracking
+// NOTE: This store is per-process. In a multi-instance deployment, each instance
+// has its own store, effectively multiplying the allowed rate by instance count.
+// For scaling, consider Redis-backed rate limiting.
 const store = new Map<string, RateLimitEntry>();
 
 // Cleanup interval (runs every 5 minutes)
@@ -25,6 +28,8 @@ export const rateLimitConfigs: Record<string, RateLimitConfig> = {
   "auth:register": { limit: 5, windowMs: 15 * 60 * 1000 }, // 5 per 15 min
   "auth:login": { limit: 10, windowMs: 15 * 60 * 1000 }, // 10 per 15 min
   "auth:send-verification": { limit: 3, windowMs: 15 * 60 * 1000 }, // 3 per 15 min
+  "auth:forgot-password": { limit: 3, windowMs: 15 * 60 * 1000 }, // 3 per 15 min
+  "contact:submit": { limit: 5, windowMs: 15 * 60 * 1000 }, // 5 per 15 min
   "resources:list": { limit: 60, windowMs: 60 * 1000 }, // 60 per minute
   "resources:create": { limit: 10, windowMs: 60 * 1000 }, // 10 per minute
   "user:profile": { limit: 10, windowMs: 60 * 1000 }, // 10 per minute

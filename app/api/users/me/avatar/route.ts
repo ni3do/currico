@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getCurrentUserId } from "@/lib/auth";
-import { writeFile, mkdir } from "fs/promises";
+import { writeFile, mkdir, unlink } from "fs/promises";
 import path from "path";
 
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
@@ -43,20 +43,14 @@ export async function POST(request: NextRequest) {
     const userId = await getCurrentUserId();
 
     if (!userId) {
-      return NextResponse.json(
-        { error: "Nicht authentifiziert" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
     }
 
     const formData = await request.formData();
     const file = formData.get("avatar") as File | null;
 
     if (!file) {
-      return NextResponse.json(
-        { error: "Keine Datei hochgeladen" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Keine Datei hochgeladen" }, { status: 400 });
     }
 
     // Validate file type
@@ -69,10 +63,7 @@ export async function POST(request: NextRequest) {
 
     // Validate file size
     if (file.size > MAX_SIZE) {
-      return NextResponse.json(
-        { error: "Datei zu gross. Maximum: 2MB" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Datei zu gross. Maximum: 2MB" }, { status: 400 });
     }
 
     // Validate file content with magic bytes
@@ -94,6 +85,16 @@ export async function POST(request: NextRequest) {
     const uploadsDir = path.join(process.cwd(), "public", "uploads", "avatars");
     await mkdir(uploadsDir, { recursive: true });
 
+    // Delete old avatar file if it exists
+    const currentUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { image: true },
+    });
+    if (currentUser?.image?.startsWith("/uploads/avatars/")) {
+      const oldPath = path.join(uploadsDir, path.basename(currentUser.image));
+      await unlink(oldPath).catch(() => {}); // ignore if missing
+    }
+
     // Save file
     const filePath = path.join(uploadsDir, filename);
     await writeFile(filePath, buffer);
@@ -111,10 +112,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error uploading avatar:", error);
-    return NextResponse.json(
-      { error: "Interner Serverfehler" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
   }
 }
 
@@ -128,10 +126,7 @@ export async function DELETE() {
     const userId = await getCurrentUserId();
 
     if (!userId) {
-      return NextResponse.json(
-        { error: "Nicht authentifiziert" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
     }
 
     // Remove avatar from database (keep file for now, could add cleanup later)
@@ -145,9 +140,6 @@ export async function DELETE() {
     });
   } catch (error) {
     console.error("Error deleting avatar:", error);
-    return NextResponse.json(
-      { error: "Interner Serverfehler" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
   }
 }

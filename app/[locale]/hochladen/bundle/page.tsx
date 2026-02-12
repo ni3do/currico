@@ -17,6 +17,16 @@ interface SellerMaterial {
   cycles: string[];
 }
 
+interface BundleFormData {
+  title: string;
+  description: string;
+  price: string;
+  selectedMaterials: string[];
+  subject: string;
+  cycle: string;
+  coverImage: File | null;
+}
+
 export default function CreateBundlePage() {
   const router = useRouter();
   const [materials, setMaterials] = useState<SellerMaterial[]>([]);
@@ -25,14 +35,14 @@ export default function CreateBundlePage() {
   const [error, setError] = useState<string | null>(null);
   const [coverImagePreview, setCoverImagePreview] = useState<string | null>(null);
   const coverImageInputRef = useRef<HTMLInputElement>(null);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<BundleFormData>({
     title: "",
     description: "",
     price: "",
-    selectedMaterials: [] as string[],
+    selectedMaterials: [],
     subject: "",
     cycle: "",
-    coverImage: null as File | null,
+    coverImage: null,
   });
 
   useEffect(() => {
@@ -62,7 +72,7 @@ export default function CreateBundlePage() {
     fetchMaterials();
   }, [router]);
 
-  const updateFormData = (field: string, value: any) => {
+  const updateFormData = <K extends keyof BundleFormData>(field: K, value: BundleFormData[K]) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 

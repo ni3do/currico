@@ -190,7 +190,6 @@ export function UploadWizardProvider({ children }: { children: ReactNode }) {
   );
   const [hasDraft, setHasDraft] = useState(initialDraft !== null);
   const [isSaving, setIsSaving] = useState(false);
-  const [isInitialized, setIsInitialized] = useState(true);
 
   // File objects (can't be persisted to localStorage)
   const [files, setFiles] = useState<File[]>([]);
@@ -198,8 +197,6 @@ export function UploadWizardProvider({ children }: { children: ReactNode }) {
 
   // Save to localStorage whenever form data changes (debounced 500ms)
   useEffect(() => {
-    if (!isInitialized) return;
-
     const timeoutId = setTimeout(() => {
       setIsSaving(true);
       try {
@@ -219,7 +216,7 @@ export function UploadWizardProvider({ children }: { children: ReactNode }) {
     }, 500); // 500ms debounce
 
     return () => clearTimeout(timeoutId);
-  }, [formData, currentStep, visitedSteps, isInitialized]);
+  }, [formData, currentStep, visitedSteps]);
 
   // Update form data
   const updateFormData = useCallback(<K extends keyof FormData>(field: K, value: FormData[K]) => {
