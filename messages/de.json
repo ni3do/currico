@@ -19,6 +19,7 @@
   },
   "dashboardCard": {
     "remove": "Entfernen",
+    "edit": "Bearbeiten",
     "downloads": "Downloads",
     "sales": "Verkäufe",
     "unknownSeller": "Unbekannt"
@@ -2905,7 +2906,22 @@
       "4": "Gut",
       "5": "Ausgezeichnet"
     },
-    "starsLabel": "{count} Sterne"
+    "starsLabel": "{count} Sterne",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "deleting": "Löschen...",
+    "deleteError": "Fehler beim Löschen der Bewertung",
+    "edited": "bearbeitet",
+    "save": "Speichern",
+    "saving": "Speichern...",
+    "cancel": "Abbrechen",
+    "previous": "Zurück",
+    "next": "Weiter",
+    "pageOf": "Seite {page} von {totalPages}",
+    "loginPrompt": "Melden Sie sich an",
+    "loginSuffix": ", um eine Bewertung zu schreiben.",
+    "noReviewsBeFirst": "Noch keine Bewertungen — seien Sie der Erste!",
+    "options": "Optionen"
   },
   "likes": {
     "like": "Gefällt mir",
@@ -2931,6 +2947,21 @@
     "confirmDeleteReply": "Möchten Sie diese Antwort wirklich löschen?",
     "edited": "bearbeitet",
     "seller": "Verkäufer",
+    "save": "Speichern",
+    "saving": "Speichern...",
+    "cancel": "Abbrechen",
+    "deleteError": "Fehler beim Löschen des Kommentars",
+    "updateError": "Fehler beim Aktualisieren des Kommentars",
+    "deleteReplyError": "Fehler beim Löschen der Antwort",
+    "updateReplyError": "Fehler beim Aktualisieren der Antwort",
+    "replyCount": "{count} Antworten",
+    "previous": "Zurück",
+    "next": "Weiter",
+    "pageOf": "Seite {page} von {totalPages}",
+    "loginPrompt": "Melden Sie sich an",
+    "loginSuffix": ", um einen Kommentar zu schreiben.",
+    "deleting": "Löschen...",
+    "options": "Optionen",
     "sellerComments": {
       "title": "Kommentare zu Ihren Materialien",
       "totalComments": "{count} Kommentare insgesamt",
@@ -3010,7 +3041,6 @@
       "following": "Folge ich",
       "settings": "Einstellungen",
       "settingsProfile": "Profil",
-      "settingsAppearance": "Darstellung",
       "settingsNotifications": "Benachrichtigungen",
       "settingsAccount": "Konto"
     },

@@ -20,7 +20,6 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ProfileCompletionProgress } from "./ProfileCompletionProgress";
 import { SellerBadge } from "@/components/ui/SellerBadge";
 import { type TabType, TAB_TO_PATH, pathToTab } from "@/lib/types/account";
 
@@ -344,25 +343,6 @@ export function AccountSidebar({
             </AnimatePresence>
           </div>
         </nav>
-
-        {/* Profile Completion Progress */}
-        <ProfileCompletionProgress
-          profile={{
-            name: userData.name,
-            displayName: userData.displayName,
-            image: userData.image,
-            subjects: userData.subjects,
-            cycles: userData.cycles,
-            cantons: userData.cantons,
-            emailVerified: userData.emailVerified,
-          }}
-          onNavigateToSettings={() => {
-            if (onTabChange) {
-              onTabChange("settings-profile");
-            }
-          }}
-          className="mb-4"
-        />
       </div>
     </aside>
   );

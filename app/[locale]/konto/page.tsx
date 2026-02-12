@@ -250,10 +250,11 @@ export default function AccountOverviewPage() {
           <div className="border-border flex items-center justify-between border-b px-5 py-4">
             <h2 className="text-text text-base font-semibold">{t("overview.myMaterials")}</h2>
             <Link
-              href="/hochladen"
-              className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors"
+              href="/konto/uploads"
+              className="text-primary flex items-center gap-1 text-sm font-medium hover:underline"
             >
-              {t("overview.newMaterial")}
+              {t("overview.viewAll")}
+              <ArrowUpRight className="h-3.5 w-3.5" />
             </Link>
           </div>
 
@@ -280,15 +281,9 @@ export default function AccountOverviewPage() {
                   <FileText className="text-text-faint h-8 w-8" />
                 </div>
                 <h3 className="text-text mb-2 text-lg font-medium">{t("overview.noMaterials")}</h3>
-                <p className="text-text-muted mx-auto mb-6 max-w-sm text-sm">
+                <p className="text-text-muted mx-auto max-w-sm text-sm">
                   {t("overview.noMaterialsDescription")}
                 </p>
-                <Link
-                  href="/hochladen"
-                  className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors"
-                >
-                  {t("overview.uploadFirst")}
-                </Link>
               </div>
             ) : (
               <>
@@ -531,13 +526,7 @@ export default function AccountOverviewPage() {
                 <div className="bg-surface-hover mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl">
                   <Download className="text-text-faint h-6 w-6" />
                 </div>
-                <p className="text-text-muted mb-2 text-sm">{t("overview.noDownloads")}</p>
-                <Link
-                  href="/materialien"
-                  className="text-primary text-sm font-medium hover:underline"
-                >
-                  {t("overview.discoverLink")}
-                </Link>
+                <p className="text-text-muted text-sm">{t("overview.noDownloads")}</p>
               </div>
             )}
           </div>

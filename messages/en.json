@@ -19,6 +19,7 @@
   },
   "dashboardCard": {
     "remove": "Remove",
+    "edit": "Edit",
     "downloads": "Downloads",
     "sales": "Sales",
     "unknownSeller": "Unknown"
@@ -2876,7 +2877,22 @@
       "4": "Good",
       "5": "Excellent"
     },
-    "starsLabel": "{count} stars"
+    "starsLabel": "{count} stars",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleting": "Deleting...",
+    "deleteError": "Error deleting review",
+    "edited": "edited",
+    "save": "Save",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "previous": "Back",
+    "next": "Next",
+    "pageOf": "Page {page} of {totalPages}",
+    "loginPrompt": "Sign in",
+    "loginSuffix": " to write a review.",
+    "noReviewsBeFirst": "No reviews yet — be the first!",
+    "options": "Options"
   },
   "likes": {
     "like": "Like",
@@ -2902,6 +2918,21 @@
     "confirmDeleteReply": "Are you sure you want to delete this reply?",
     "edited": "edited",
     "seller": "Seller",
+    "save": "Save",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "deleteError": "Error deleting comment",
+    "updateError": "Error updating comment",
+    "deleteReplyError": "Error deleting reply",
+    "updateReplyError": "Error updating reply",
+    "replyCount": "{count} replies",
+    "previous": "Back",
+    "next": "Next",
+    "pageOf": "Page {page} of {totalPages}",
+    "loginPrompt": "Sign in",
+    "loginSuffix": " to write a comment.",
+    "deleting": "Deleting...",
+    "options": "Options",
     "sellerComments": {
       "title": "Comments on Your Materials",
       "totalComments": "{count} comments total",
@@ -2981,7 +3012,6 @@
       "following": "Following",
       "settings": "Settings",
       "settingsProfile": "Profile",
-      "settingsAppearance": "Appearance",
       "settingsNotifications": "Notifications",
       "settingsAccount": "Account"
     },

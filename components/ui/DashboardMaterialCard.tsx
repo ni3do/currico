@@ -10,6 +10,7 @@ import {
   CircleCheck,
   Clock,
   XCircle,
+  FileEdit,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { getSubjectTextColorByName } from "@/lib/constants/subject-colors";
@@ -50,6 +51,9 @@ export interface DashboardMaterialCardProps {
     displayName: string | null;
   };
 
+  // Edit link (for uploads)
+  editHref?: string;
+
   // Remove button (for wishlist)
   onRemove?: () => void;
 }
@@ -65,6 +69,7 @@ export function DashboardMaterialCard({
   price,
   stats,
   seller,
+  editHref,
   onRemove,
 }: DashboardMaterialCardProps) {
   const t = useTranslations("dashboardCard");
@@ -130,15 +135,26 @@ export function DashboardMaterialCard({
               </>
             )}
           </span>
-          {onRemove && (
-            <button
-              onClick={onRemove}
-              className="text-text-muted hover:text-error relative z-10 -m-0.5 p-0.5 transition-colors"
-              title={t("remove")}
-            >
-              <Trash2 className="h-3.5 w-3.5" />
-            </button>
-          )}
+          <div className="flex items-center gap-1">
+            {editHref && (
+              <Link
+                href={editHref}
+                className="text-text-muted hover:text-primary relative z-10 -m-0.5 p-0.5 transition-colors"
+                title={t("edit")}
+              >
+                <FileEdit className="h-3.5 w-3.5" />
+              </Link>
+            )}
+            {onRemove && (
+              <button
+                onClick={onRemove}
+                className="text-text-muted hover:text-error relative z-10 -m-0.5 p-0.5 transition-colors"
+                title={t("remove")}
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Title */}

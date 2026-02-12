@@ -144,7 +144,7 @@ function UploadPageContent() {
       });
 
       Promise.all(readPromises).then(() => {
-        setFiles([...files, ...fileArray]);
+        setFiles(fileArray);
         setFileLoadingProgress(100);
         markFieldTouched("files");
         setTimeout(() => {
@@ -158,7 +158,12 @@ function UploadPageContent() {
   const handlePreviewFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = e.target.files;
     if (selectedFiles) {
-      setPreviewFiles(Array.from(selectedFiles));
+      const file = selectedFiles[0];
+      if (file && file.size > 5 * 1024 * 1024) {
+        setError("Vorschaubild darf maximal 5 MB gross sein");
+        return;
+      }
+      setPreviewFiles(file ? [file] : []);
       markFieldTouched("previewFiles");
     }
   };
@@ -412,7 +417,7 @@ function UploadPageContent() {
                       onBlur={() => markFieldTouched("title")}
                       hasError={touchedFields.title && !!getFieldError("title")}
                       placeholder={tFields("titlePlaceholder")}
-                      maxLength={100}
+                      maxLength={64}
                     />
                   </FormField>
 
@@ -471,15 +476,24 @@ function UploadPageContent() {
 
                   {/* Dialect toggle - only shown for German */}
                   {formData.language === "de" && (
-                    <FormField
-                      label={tFields("dialect")}
-                      hint={tFields("dialectHint")}
-                    >
+                    <FormField label={tFields("dialect")} hint={tFields("dialectHint")}>
                       <div className="flex gap-2">
                         {[
-                          { value: "BOTH" as const, label: tFields("dialectBoth"), desc: tFields("dialectBothDesc") },
-                          { value: "SWISS" as const, label: tFields("dialectSwiss"), desc: tFields("dialectSwissDesc") },
-                          { value: "STANDARD" as const, label: tFields("dialectStandard"), desc: tFields("dialectStandardDesc") },
+                          {
+                            value: "BOTH" as const,
+                            label: tFields("dialectBoth"),
+                            desc: tFields("dialectBothDesc"),
+                          },
+                          {
+                            value: "SWISS" as const,
+                            label: tFields("dialectSwiss"),
+                            desc: tFields("dialectSwissDesc"),
+                          },
+                          {
+                            value: "STANDARD" as const,
+                            label: tFields("dialectStandard"),
+                            desc: tFields("dialectStandardDesc"),
+                          },
                         ].map((opt) => {
                           const isActive = formData.dialect === opt.value;
                           return (
@@ -593,7 +607,7 @@ function UploadPageContent() {
                         checked={formData.priceType === "paid"}
                         onChange={(val) => updateFormData("priceType", val as "free" | "paid")}
                         label="Kostenpflichtig"
-                        description="CHF 1 – 50"
+                        description="CHF 0.50 – 50"
                       />
                     </div>
                   </FormField>
@@ -606,7 +620,7 @@ function UploadPageContent() {
                         required
                         error={getFieldError("price")}
                         touched={touchedFields.price}
-                        hint="Sie erhalten 70% des Verkaufspreises (30% Plattformgebühr). Maximum: CHF 50.00"
+                        hint="Sie erhalten 70% des Verkaufspreises (30% Plattformgebühr). Min: CHF 0.50, Max: CHF 50.00, in 0.50-Schritten"
                       >
                         <div className="relative">
                           <FormInput
@@ -615,7 +629,7 @@ function UploadPageContent() {
                             onChange={(e) => updateFormData("price", e.target.value)}
                             onBlur={() => markFieldTouched("price")}
                             hasError={touchedFields.price && !!getFieldError("price")}
-                            min="1"
+                            min="0.50"
                             max="50"
                             step="0.50"
                             placeholder="z.B. 5.00"
@@ -719,7 +733,6 @@ function UploadPageContent() {
                         <input
                           ref={mainFileInputRef}
                           type="file"
-                          multiple
                           className="hidden"
                           accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
                           onChange={handleMainFilesChange}
@@ -774,17 +787,9 @@ function UploadPageContent() {
                             </div>
                           ))}
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => mainFileInputRef.current?.click()}
-                          className="border-border bg-bg text-text-muted hover:border-primary hover:text-primary mt-3 w-full rounded-lg border border-dashed p-3 text-sm transition-colors"
-                        >
-                          + Weitere Datei hinzufügen
-                        </button>
                         <input
                           ref={mainFileInputRef}
                           type="file"
-                          multiple
                           className="hidden"
                           accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
                           onChange={handleMainFilesChange}
@@ -833,9 +838,8 @@ function UploadPageContent() {
                       <input
                         ref={previewFileInputRef}
                         type="file"
-                        multiple
                         className="hidden"
-                        accept="image/png,image/jpeg"
+                        accept="image/png,image/jpeg,image/webp"
                         onChange={handlePreviewFilesChange}
                       />
                     </div>

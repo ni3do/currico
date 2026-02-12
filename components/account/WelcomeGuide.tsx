@@ -12,7 +12,6 @@ interface WelcomeGuideProps {
       | "uploads"
       | "wishlist"
       | "settings-profile"
-      | "settings-appearance"
       | "settings-notifications"
       | "settings-account"
   ) => void;
@@ -89,7 +88,6 @@ export function WelcomeGuide({ userName, onNavigate }: WelcomeGuideProps) {
           | "uploads"
           | "wishlist"
           | "settings-profile"
-          | "settings-appearance"
           | "settings-notifications"
           | "settings-account"
       );

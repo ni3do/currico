@@ -26,6 +26,14 @@ export async function GET(request: NextRequest) {
 
     // If type is "uploaded", return user's own resources
     if (type === "uploaded") {
+      const sort = searchParams.get("sort") || "newest";
+      const orderBy: Record<string, "asc" | "desc"> =
+        sort === "oldest"
+          ? { created_at: "asc" }
+          : sort === "title"
+            ? { title: "asc" }
+            : { created_at: "desc" };
+
       const uploadedResources = await prisma.resource.findMany({
         where: {
           seller_id: userId,
@@ -50,7 +58,7 @@ export async function GET(request: NextRequest) {
             },
           },
         },
-        orderBy: { created_at: "desc" },
+        orderBy,
         take: limit,
         skip: offset,
       });
@@ -59,7 +67,7 @@ export async function GET(request: NextRequest) {
         where: { seller_id: userId },
       });
 
-      const items = uploadedResources.map((r) => {
+      let items = uploadedResources.map((r) => {
         const subjects = toStringArray(r.subjects);
         const cycles = toStringArray(r.cycles);
         return {
@@ -83,6 +91,11 @@ export async function GET(request: NextRequest) {
           purchaseCount: r._count.transactions,
         };
       });
+
+      // Sort by popularity (download count) client-side since Prisma can't sort by _count easily
+      if (sort === "popular") {
+        items = items.sort((a, b) => b.downloadCount - a.downloadCount);
+      }
 
       return NextResponse.json({
         items,

@@ -125,7 +125,6 @@ function AccountLayoutInner({ children }: { children: ReactNode }) {
         notifications: t("nav.notifications"),
         following: t("nav.following"),
         "settings-profile": t("nav.settingsProfile"),
-        "settings-appearance": t("nav.settingsAppearance"),
         "settings-notifications": t("nav.settingsNotifications"),
         "settings-account": t("nav.settingsAccount"),
       };

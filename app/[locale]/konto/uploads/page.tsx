@@ -110,6 +110,7 @@ export default function AccountUploadsPage() {
               subject={item.subject}
               cycle={item.cycle}
               previewUrl={item.previewUrl}
+              editHref={`/materialien/${item.id}/edit`}
               badge={{
                 label:
                   item.status === "VERIFIED"

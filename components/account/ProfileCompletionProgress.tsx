@@ -33,7 +33,7 @@ function getCompletionItems(profile: ProfileData): CompletionItem[] {
       id: "email",
       label: "E-Mail verifiziert",
       isComplete: !!profile.emailVerified,
-      priority: "required",
+      priority: "recommended",
     },
     {
       id: "displayName",

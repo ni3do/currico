@@ -11,7 +11,6 @@ import {
   X,
   Building2,
   Clock,
-  Languages,
   Link2,
   Eye,
   EyeOff,
@@ -57,7 +56,6 @@ export default function SettingsProfilePage() {
     website: string;
     school: string;
     teaching_experience: string;
-    preferred_language: string;
     instagram: string;
     pinterest: string;
     is_private: boolean;
@@ -70,7 +68,6 @@ export default function SettingsProfilePage() {
     website: "",
     school: "",
     teaching_experience: "",
-    preferred_language: "de",
     instagram: "",
     pinterest: "",
     is_private: false,
@@ -112,7 +109,6 @@ export default function SettingsProfilePage() {
         website: userData.website || "",
         school: userData.school || "",
         teaching_experience: userData.teaching_experience || "",
-        preferred_language: userData.preferred_language || "de",
         instagram: userData.instagram || "",
         pinterest: userData.pinterest || "",
         is_private: userData.is_private || false,
@@ -139,7 +135,6 @@ export default function SettingsProfilePage() {
       profileFormData.website !== initialProfileData.website ||
       profileFormData.school !== initialProfileData.school ||
       profileFormData.teaching_experience !== initialProfileData.teaching_experience ||
-      profileFormData.preferred_language !== initialProfileData.preferred_language ||
       profileFormData.instagram !== initialProfileData.instagram ||
       profileFormData.pinterest !== initialProfileData.pinterest ||
       profileFormData.is_private !== initialProfileData.is_private
@@ -174,6 +169,8 @@ export default function SettingsProfilePage() {
     // Validate display name
     if (!profileFormData.display_name || profileFormData.display_name.length < 2) {
       errors.display_name = "Name muss mindestens 2 Zeichen haben";
+    } else if (profileFormData.display_name.length > 32) {
+      errors.display_name = "Name darf maximal 32 Zeichen haben";
     }
     // Validate website URL if provided
     if (profileFormData.website) {
@@ -202,7 +199,6 @@ export default function SettingsProfilePage() {
         website: profileFormData.website || null,
         school: profileFormData.school || null,
         teaching_experience: profileFormData.teaching_experience || null,
-        preferred_language: profileFormData.preferred_language,
         instagram: profileFormData.instagram || null,
         pinterest: profileFormData.pinterest || null,
         is_private: profileFormData.is_private,
@@ -448,6 +444,7 @@ export default function SettingsProfilePage() {
                 value={profileFormData.display_name}
                 onChange={(e) => handleProfileFieldChange("display_name", e.target.value)}
                 placeholder="z.B. Frau M. oder Maria S."
+                maxLength={32}
                 className={`input w-full ${profileErrors.display_name ? "border-error" : ""}`}
               />
               {profileErrors.display_name && (
@@ -511,6 +508,13 @@ export default function SettingsProfilePage() {
             onChange={(value) => handleProfileFieldChange("cycles", value)}
             placeholder="Zyklen auswählen..."
           />
+          <MultiSelect
+            label="Kantone"
+            options={[...SWISS_CANTONS]}
+            selected={profileFormData.cantons}
+            onChange={(value) => handleProfileFieldChange("cantons", value)}
+            placeholder="Kantone auswählen..."
+          />
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label className="text-text mb-1.5 block text-sm font-medium">
@@ -560,13 +564,6 @@ export default function SettingsProfilePage() {
             <h3 className="text-text font-semibold">Kontakt & Social Media</h3>
           </div>
 
-          <MultiSelect
-            label="Kantone"
-            options={[...SWISS_CANTONS]}
-            selected={profileFormData.cantons}
-            onChange={(value) => handleProfileFieldChange("cantons", value)}
-            placeholder="Kantone auswählen..."
-          />
           <div>
             <label className="text-text mb-1.5 block text-sm font-medium">
               Website / Portfolio
@@ -626,7 +623,7 @@ export default function SettingsProfilePage() {
         <div className="space-y-5 p-6">
           <div className="mb-4 flex items-center gap-2">
             <Shield className="text-warning h-5 w-5" />
-            <h3 className="text-text font-semibold">Privatsphäre & Sprache</h3>
+            <h3 className="text-text font-semibold">Privatsphäre</h3>
           </div>
 
           <div className="space-y-4">
