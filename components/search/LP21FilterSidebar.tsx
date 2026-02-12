@@ -14,6 +14,7 @@ import {
   Presentation,
   Table,
   StickyNote,
+  Image as ImageIcon,
   Loader2,
   Users,
   MoreHorizontal,
