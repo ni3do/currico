@@ -178,7 +178,7 @@ export default function BundleDetailPage() {
         {/* Breadcrumb */}
         <Breadcrumb
           items={[
-            { label: tCommon("breadcrumb.resources"), href: "/materialien" },
+            { label: tCommon("breadcrumb.materials"), href: "/materialien" },
             { label: tCommon("breadcrumb.bundles"), href: "/materialien" },
             { label: bundle.title },
           ]}

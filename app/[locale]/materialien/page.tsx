@@ -14,7 +14,12 @@ import { MaterialCard } from "@/components/ui/MaterialCard";
 import { MaterialGridSkeleton, ProfileGridSkeleton } from "@/components/ui/Skeleton";
 import { EmptySearchState } from "@/components/ui/EmptySearchState";
 import { ProfileCard } from "@/components/ui/ProfileCard";
-import { LP21FilterSidebar, type LP21FilterState } from "@/components/search/LP21FilterSidebar";
+import {
+  LP21FilterSidebar,
+  CANTON_ABBREVS,
+  type LP21FilterState,
+} from "@/components/search/LP21FilterSidebar";
+import { FocusTrap } from "@/components/ui/FocusTrap";
 import { useCurriculum } from "@/lib/hooks/useCurriculum";
 import { useToast } from "@/components/ui/Toast";
 import { getSubjectPillClass } from "@/lib/constants/subject-colors";
@@ -31,6 +36,8 @@ interface Material {
   cycles: string[];
   previewUrl: string | null;
   createdAt: string;
+  averageRating?: number;
+  reviewCount?: number;
   seller: {
     id: string;
     display_name: string | null;
@@ -129,7 +136,7 @@ export default function MaterialienPage() {
   const handleWishlistToggle = useCallback(
     async (materialId: string, currentState: boolean): Promise<boolean> => {
       if (!isAuthenticated) {
-        router.push("/anmelden");
+        toast(t("toast.loginRequired"), "info");
         return false;
       }
 
@@ -261,10 +268,10 @@ export default function MaterialienPage() {
       kompetenz: kompetenz || null,
       searchQuery: searchParams.get("search") || "",
       dialect: searchParams.get("dialect") || null,
-      priceType: searchParams.get("priceType") || null,
+
       maxPrice: searchParams.get("maxPrice") ? parseInt(searchParams.get("maxPrice")!) : null,
       formats: searchParams.get("formats")?.split(",").filter(Boolean) || [],
-      materialScope: searchParams.get("materialScope") || null,
+      cantons: searchParams.get("cantons")?.split(",").filter(Boolean) || [],
     };
   }, [searchParams]);
 
@@ -289,12 +296,12 @@ export default function MaterialienPage() {
       if (currentFilters.kompetenz) params.set("kompetenz", currentFilters.kompetenz);
       if (currentFilters.searchQuery) params.set("search", currentFilters.searchQuery);
       if (currentFilters.dialect) params.set("dialect", currentFilters.dialect);
-      if (currentFilters.priceType) params.set("priceType", currentFilters.priceType);
       if (currentFilters.maxPrice !== null)
         params.set("maxPrice", currentFilters.maxPrice.toString());
       if (currentFilters.formats.length > 0)
         params.set("formats", currentFilters.formats.join(","));
-      if (currentFilters.materialScope) params.set("materialScope", currentFilters.materialScope);
+      if (currentFilters.cantons.length > 0)
+        params.set("cantons", currentFilters.cantons.join(","));
       if (currentSort && currentSort !== "newest") params.set("sort", currentSort);
       if (page > 1) params.set("page", page.toString());
       if (currentFilters.showCreators && profileSortBy !== "newest")
@@ -375,14 +382,15 @@ export default function MaterialienPage() {
   );
 
   // Map Fachbereich code to subject code for API compatibility
-  const mapFachbereichToSubject = useCallback(
-    (code: string | null): string => {
+  // Use a ref so fetchMaterials doesn't re-create when curriculum data loads
+  const mapFachbereichToSubjectRef = useRef((code: string | null): string => code || "");
+  useEffect(() => {
+    mapFachbereichToSubjectRef.current = (code: string | null): string => {
       if (!code) return "";
       const fachbereich = getFachbereichByCode(code);
       return fachbereich?.code || code;
-    },
-    [getFachbereichByCode]
-  );
+    };
+  }, [getFachbereichByCode]);
 
   const fetchMaterials = useCallback(
     async (currentFilters: LP21FilterState, currentSort: string, page: number = 1) => {
@@ -401,7 +409,7 @@ export default function MaterialienPage() {
 
         // Map LP21 filters to API parameters
         if (currentFilters.fachbereich) {
-          params.set("subject", mapFachbereichToSubject(currentFilters.fachbereich));
+          params.set("subject", mapFachbereichToSubjectRef.current(currentFilters.fachbereich));
         }
         if (currentFilters.zyklus) {
           params.set("cycle", currentFilters.zyklus.toString());
@@ -431,9 +439,9 @@ export default function MaterialienPage() {
           params.set("formats", currentFilters.formats.join(","));
         }
 
-        // Material scope filter (single vs bundle)
-        if (currentFilters.materialScope) {
-          params.set("materialScope", currentFilters.materialScope);
+        // Canton filter
+        if (currentFilters.cantons.length > 0) {
+          params.set("cantons", currentFilters.cantons.join(","));
         }
 
         // Sort parameter
@@ -471,7 +479,7 @@ export default function MaterialienPage() {
         setLoading(false);
       }
     },
-    [mapFachbereichToSubject, toast, t]
+    [toast, t]
   );
 
   // Fetch materials when showMaterials is true (debounced to prevent flicker on rapid filter changes)
@@ -548,10 +556,9 @@ export default function MaterialienPage() {
     filters.kompetenz,
     filters.searchQuery || null,
     filters.dialect,
-    filters.priceType,
     filters.maxPrice !== null ? filters.maxPrice : null,
     ...filters.formats,
-    filters.materialScope,
+    filters.cantons.length > 0 ? true : null,
   ].filter(Boolean).length;
 
   // Loading state for active tab
@@ -634,34 +641,39 @@ export default function MaterialienPage() {
                       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                       className="bg-bg fixed inset-x-0 bottom-0 z-[101] max-h-[85vh] overflow-y-auto rounded-t-2xl shadow-2xl"
                     >
-                      {/* Drawer handle */}
-                      <div className="bg-bg border-border sticky top-0 z-10 flex items-center justify-between border-b px-5 pt-3 pb-4">
-                        <div className="bg-border mx-auto mb-3 h-1 w-10 rounded-full" />
-                      </div>
-                      <div className="bg-bg sticky top-0 z-10 flex items-center justify-between px-5 pb-3">
-                        <h2 className="text-text text-lg font-semibold">{t("sidebar.title")}</h2>
-                        <button
-                          onClick={() => setMobileFiltersOpen(false)}
-                          className="text-text-muted hover:text-text hover:bg-surface flex h-8 w-8 items-center justify-center rounded-full transition-colors"
-                        >
-                          <X className="h-5 w-5" />
-                        </button>
-                      </div>
-                      <div className="px-1 pb-8">
-                        <LP21FilterSidebar
-                          filters={filters}
-                          onFiltersChange={handleFiltersChange}
-                        />
-                      </div>
-                      {/* Apply button */}
-                      <div className="bg-bg border-border sticky bottom-0 border-t px-5 py-4">
-                        <button
-                          onClick={() => setMobileFiltersOpen(false)}
-                          className="bg-primary text-text-on-accent hover:bg-primary-hover w-full rounded-lg px-4 py-3 text-sm font-semibold transition-colors"
-                        >
-                          {t("results.showResults", { count: totalCount })}
-                        </button>
-                      </div>
+                      <FocusTrap
+                        active={mobileFiltersOpen}
+                        onEscape={() => setMobileFiltersOpen(false)}
+                      >
+                        {/* Drawer handle */}
+                        <div className="bg-bg border-border sticky top-0 z-10 flex items-center justify-between border-b px-5 pt-3 pb-4">
+                          <div className="bg-border mx-auto mb-3 h-1 w-10 rounded-full" />
+                        </div>
+                        <div className="bg-bg sticky top-0 z-10 flex items-center justify-between px-5 pb-3">
+                          <h2 className="text-text text-lg font-semibold">{t("sidebar.title")}</h2>
+                          <button
+                            onClick={() => setMobileFiltersOpen(false)}
+                            className="text-text-muted hover:text-text hover:bg-surface flex h-8 w-8 items-center justify-center rounded-full transition-colors"
+                          >
+                            <X className="h-5 w-5" />
+                          </button>
+                        </div>
+                        <div className="px-1 pb-8">
+                          <LP21FilterSidebar
+                            filters={filters}
+                            onFiltersChange={handleFiltersChange}
+                          />
+                        </div>
+                        {/* Apply button */}
+                        <div className="bg-bg border-border sticky bottom-0 border-t px-5 py-4">
+                          <button
+                            onClick={() => setMobileFiltersOpen(false)}
+                            className="bg-primary text-text-on-accent hover:bg-primary-hover w-full rounded-lg px-4 py-3 text-sm font-semibold transition-colors"
+                          >
+                            {t("results.showResults", { count: totalCount })}
+                          </button>
+                        </div>
+                      </FocusTrap>
                     </motion.div>
                   </>
                 )}
@@ -678,23 +690,43 @@ export default function MaterialienPage() {
               {/* Top Control Bar: Results + Sort */}
               <div className="bg-bg-secondary mb-4 flex flex-col gap-4 rounded-lg p-4 sm:flex-row sm:items-center sm:justify-between">
                 {/* Results Count */}
-                <div>
-                  <p className="text-text-muted text-sm">
-                    <span className="text-text font-semibold">{totalCount}</span> {countLabel}
-                  </p>
+                <div className="h-5">
+                  <AnimatePresence mode="wait">
+                    {isLoading ? (
+                      <motion.div
+                        key="skeleton"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.15 }}
+                        className="bg-surface h-5 w-40 animate-pulse rounded"
+                      />
+                    ) : (
+                      <motion.p
+                        key={`count-${totalCount}`}
+                        initial={{ opacity: 0, y: 4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        transition={{ duration: 0.2 }}
+                        className="text-text-muted text-sm tabular-nums"
+                      >
+                        <span className="text-text font-semibold">{totalCount}</span> {countLabel}
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
                 </div>
 
                 {/* View Toggle + Sort Dropdown */}
                 <div className="flex items-center gap-3">
                   {/* Grid/List Toggle — materials only */}
                   {filters.showMaterials && (
-                    <div className="border-border flex rounded-lg border">
+                    <div className="bg-surface flex rounded-lg p-0.5">
                       <button
                         onClick={() => setViewMode("grid")}
-                        className={`rounded-l-lg p-2 transition-all duration-200 ${
+                        className={`rounded-md p-2 transition-all duration-200 ${
                           viewMode === "grid"
-                            ? "bg-primary text-text-on-accent"
-                            : "text-text-muted hover:text-text hover:bg-surface active:scale-90"
+                            ? "bg-primary text-text-on-accent shadow-sm"
+                            : "text-text-faint hover:text-text-muted active:scale-90"
                         }`}
                         aria-label={t("results.gridView")}
                         title={t("results.gridView")}
@@ -703,10 +735,10 @@ export default function MaterialienPage() {
                       </button>
                       <button
                         onClick={() => setViewMode("list")}
-                        className={`rounded-r-lg p-2 transition-all duration-200 ${
+                        className={`rounded-md p-2 transition-all duration-200 ${
                           viewMode === "list"
-                            ? "bg-primary text-text-on-accent"
-                            : "text-text-muted hover:text-text hover:bg-surface active:scale-90"
+                            ? "bg-primary text-text-on-accent shadow-sm"
+                            : "text-text-faint hover:text-text-muted active:scale-90"
                         }`}
                         aria-label={t("results.listView")}
                         title={t("results.listView")}
@@ -752,167 +784,247 @@ export default function MaterialienPage() {
 
               {/* Active Filter Chips - dismissable */}
               {activeFilterCount > 0 && (
-                <div className="mb-4 flex flex-wrap items-center gap-2">
-                  {filters.searchQuery && (
-                    <span className="bg-primary/10 text-primary border-primary/20 hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
-                      &quot;{filters.searchQuery}&quot;
-                      <button
-                        onClick={() => handleFiltersChange({ ...filters, searchQuery: "" })}
-                        className="hover:bg-primary/20 flex h-5 w-5 items-center justify-center rounded-full transition-colors"
+                <motion.div
+                  className="mb-4 flex flex-wrap items-center gap-2"
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <AnimatePresence mode="popLayout">
+                    {filters.searchQuery && (
+                      <motion.span
+                        key="chip-search"
+                        layout
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.15 }}
+                        className="bg-primary/10 text-primary border-primary/20 hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
                       >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </span>
-                  )}
-                  {filters.zyklus && (
-                    <span className="bg-primary/10 text-primary border-primary/20 hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
-                      {t("sidebar.chipCycle", { number: filters.zyklus })}
-                      <button
+                        &quot;{filters.searchQuery}&quot;
+                        <button
+                          onClick={() => handleFiltersChange({ ...filters, searchQuery: "" })}
+                          className="hover:bg-primary/20 flex h-5 w-5 items-center justify-center rounded-full transition-colors"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </motion.span>
+                    )}
+                    {filters.zyklus && (
+                      <motion.span
+                        key="chip-zyklus"
+                        layout
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.15 }}
+                        className="bg-primary/10 text-primary border-primary/20 hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
+                      >
+                        {t("sidebar.chipCycle", { number: filters.zyklus })}
+                        <button
+                          onClick={() =>
+                            handleFiltersChange({
+                              ...filters,
+                              zyklus: null,
+                              fachbereich: null,
+                              kompetenzbereich: null,
+                              kompetenz: null,
+                            })
+                          }
+                          className="hover:bg-primary/20 flex h-5 w-5 items-center justify-center rounded-full transition-colors"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </motion.span>
+                    )}
+                    {filters.fachbereich && (
+                      <motion.span
+                        key="chip-fachbereich"
+                        layout
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.15 }}
+                        className="bg-accent/10 text-accent border-accent/20 hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
+                      >
+                        {getFachbereichByCode(filters.fachbereich)?.shortName ||
+                          filters.fachbereich}
+                        <button
+                          onClick={() =>
+                            handleFiltersChange({
+                              ...filters,
+                              fachbereich: null,
+                              kompetenzbereich: null,
+                              kompetenz: null,
+                            })
+                          }
+                          className="hover:bg-accent/20 flex h-5 w-5 items-center justify-center rounded-full transition-colors"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </motion.span>
+                    )}
+                    {filters.kompetenzbereich && (
+                      <motion.span
+                        key="chip-kompetenzbereich"
+                        layout
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.15 }}
+                        className="bg-accent/10 text-accent border-accent/20 hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
+                      >
+                        {filters.kompetenzbereich}
+                        <button
+                          onClick={() =>
+                            handleFiltersChange({
+                              ...filters,
+                              kompetenzbereich: null,
+                              kompetenz: null,
+                            })
+                          }
+                          className="hover:bg-accent/20 flex h-5 w-5 items-center justify-center rounded-full transition-colors"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </motion.span>
+                    )}
+                    {filters.kompetenz && (
+                      <motion.span
+                        key="chip-kompetenz"
+                        layout
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.15 }}
+                        className="bg-accent/10 text-accent border-accent/20 hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
+                      >
+                        {filters.kompetenz}
+                        <button
+                          onClick={() => handleFiltersChange({ ...filters, kompetenz: null })}
+                          className="hover:bg-accent/20 flex h-5 w-5 items-center justify-center rounded-full transition-colors"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </motion.span>
+                    )}
+                    {filters.dialect && (
+                      <motion.span
+                        key="chip-dialect"
+                        layout
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.15 }}
+                        className="bg-surface text-text-secondary border-border hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
+                      >
+                        {filters.dialect === "SWISS" ? "CH" : "DE"}
+                        <button
+                          onClick={() => handleFiltersChange({ ...filters, dialect: null })}
+                          className="hover:bg-surface-hover flex h-5 w-5 items-center justify-center rounded-full transition-colors"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </motion.span>
+                    )}
+                    {filters.maxPrice !== null && (
+                      <motion.span
+                        key="chip-price"
+                        layout
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.15 }}
+                        className="bg-surface text-text-secondary border-border hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
+                      >
+                        {t("sidebar.priceUnder", { amount: filters.maxPrice })}
+                        <button
+                          onClick={() => handleFiltersChange({ ...filters, maxPrice: null })}
+                          className="hover:bg-surface-hover flex h-5 w-5 items-center justify-center rounded-full transition-colors"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </motion.span>
+                    )}
+                    {filters.formats.map((fmt) => (
+                      <motion.span
+                        key={`chip-fmt-${fmt}`}
+                        layout
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.15 }}
+                        className="bg-surface text-text-secondary border-border hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
+                      >
+                        {fmt.toUpperCase()}
+                        <button
+                          onClick={() =>
+                            handleFiltersChange({
+                              ...filters,
+                              formats: filters.formats.filter((f) => f !== fmt),
+                            })
+                          }
+                          className="hover:bg-surface-hover flex h-5 w-5 items-center justify-center rounded-full transition-colors"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </motion.span>
+                    ))}
+                    {filters.cantons.length > 0 && (
+                      <motion.span
+                        key="chip-cantons"
+                        layout
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.15 }}
+                        className="bg-surface text-text-secondary border-border hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
+                      >
+                        {filters.cantons.length <= 3
+                          ? filters.cantons
+                              .map((c) => CANTON_ABBREVS.find((ca) => ca.name === c)?.abbrev || c)
+                              .join(", ")
+                          : t("sidebar.cantonChipMultiple", { count: filters.cantons.length })}
+                        <button
+                          onClick={() => handleFiltersChange({ ...filters, cantons: [] })}
+                          className="hover:bg-surface-hover flex h-5 w-5 items-center justify-center rounded-full transition-colors"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </motion.span>
+                    )}
+                    {activeFilterCount >= 1 && (
+                      <motion.button
+                        key="chip-reset"
+                        layout
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.15 }}
                         onClick={() =>
                           handleFiltersChange({
-                            ...filters,
+                            showMaterials: filters.showMaterials,
+                            showCreators: filters.showCreators,
                             zyklus: null,
                             fachbereich: null,
                             kompetenzbereich: null,
                             kompetenz: null,
+                            searchQuery: "",
+                            dialect: null,
+
+                            maxPrice: null,
+                            formats: [],
+
+                            cantons: [],
                           })
                         }
-                        className="hover:bg-primary/20 flex h-5 w-5 items-center justify-center rounded-full transition-colors"
+                        className="text-text-muted hover:text-error text-xs font-medium transition-colors"
                       >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </span>
-                  )}
-                  {filters.fachbereich && (
-                    <span className="bg-accent/10 text-accent border-accent/20 hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
-                      {getFachbereichByCode(filters.fachbereich)?.shortName || filters.fachbereich}
-                      <button
-                        onClick={() =>
-                          handleFiltersChange({
-                            ...filters,
-                            fachbereich: null,
-                            kompetenzbereich: null,
-                            kompetenz: null,
-                          })
-                        }
-                        className="hover:bg-accent/20 flex h-5 w-5 items-center justify-center rounded-full transition-colors"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </span>
-                  )}
-                  {filters.kompetenzbereich && (
-                    <span className="bg-accent/10 text-accent border-accent/20 hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
-                      {filters.kompetenzbereich}
-                      <button
-                        onClick={() =>
-                          handleFiltersChange({
-                            ...filters,
-                            kompetenzbereich: null,
-                            kompetenz: null,
-                          })
-                        }
-                        className="hover:bg-accent/20 flex h-5 w-5 items-center justify-center rounded-full transition-colors"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </span>
-                  )}
-                  {filters.kompetenz && (
-                    <span className="bg-accent/10 text-accent border-accent/20 hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
-                      {filters.kompetenz}
-                      <button
-                        onClick={() => handleFiltersChange({ ...filters, kompetenz: null })}
-                        className="hover:bg-accent/20 flex h-5 w-5 items-center justify-center rounded-full transition-colors"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </span>
-                  )}
-                  {filters.dialect && (
-                    <span className="bg-surface text-text-secondary border-border hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
-                      {filters.dialect === "SWISS" ? "CH" : "DE"}
-                      <button
-                        onClick={() => handleFiltersChange({ ...filters, dialect: null })}
-                        className="hover:bg-surface-hover flex h-5 w-5 items-center justify-center rounded-full transition-colors"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </span>
-                  )}
-                  {(filters.priceType || filters.maxPrice !== null) && (
-                    <span className="bg-surface text-text-secondary border-border hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
-                      {filters.priceType === "free"
-                        ? t("sidebar.priceFree")
-                        : filters.maxPrice !== null
-                          ? t("sidebar.priceUnder", { amount: filters.maxPrice })
-                          : ""}
-                      <button
-                        onClick={() =>
-                          handleFiltersChange({ ...filters, priceType: null, maxPrice: null })
-                        }
-                        className="hover:bg-surface-hover flex h-5 w-5 items-center justify-center rounded-full transition-colors"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </span>
-                  )}
-                  {filters.formats.map((fmt) => (
-                    <span
-                      key={fmt}
-                      className="bg-surface text-text-secondary border-border hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
-                    >
-                      {fmt.toUpperCase()}
-                      <button
-                        onClick={() =>
-                          handleFiltersChange({
-                            ...filters,
-                            formats: filters.formats.filter((f) => f !== fmt),
-                          })
-                        }
-                        className="hover:bg-surface-hover flex h-5 w-5 items-center justify-center rounded-full transition-colors"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </span>
-                  ))}
-                  {filters.materialScope && (
-                    <span className="bg-surface text-text-secondary border-border hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold">
-                      {filters.materialScope === "single"
-                        ? t("sidebar.scopeSingle")
-                        : t("sidebar.scopeBundle")}
-                      <button
-                        onClick={() => handleFiltersChange({ ...filters, materialScope: null })}
-                        className="hover:bg-surface-hover flex h-5 w-5 items-center justify-center rounded-full transition-colors"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </span>
-                  )}
-                  {activeFilterCount > 1 && (
-                    <button
-                      onClick={() =>
-                        handleFiltersChange({
-                          showMaterials: filters.showMaterials,
-                          showCreators: filters.showCreators,
-                          zyklus: null,
-                          fachbereich: null,
-                          kompetenzbereich: null,
-                          kompetenz: null,
-                          searchQuery: "",
-                          dialect: null,
-                          priceType: null,
-                          maxPrice: null,
-                          formats: [],
-                          materialScope: null,
-                        })
-                      }
-                      className="text-text-muted hover:text-error text-xs font-medium transition-colors"
-                    >
-                      {t("sidebar.reset")}
-                    </button>
-                  )}
-                </div>
+                        {t("sidebar.reset")}
+                      </motion.button>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
               )}
 
               {/* Error State */}
@@ -949,10 +1061,11 @@ export default function MaterialienPage() {
                       kompetenz: null,
                       searchQuery: filters.searchQuery,
                       dialect: null,
-                      priceType: null,
+
                       maxPrice: null,
                       formats: [],
-                      materialScope: null,
+
+                      cantons: [],
                     })
                   }
                   onResetSearch={() => handleFiltersChange({ ...filters, searchQuery: "" })}
@@ -966,10 +1079,11 @@ export default function MaterialienPage() {
                       kompetenz: null,
                       searchQuery: query,
                       dialect: null,
-                      priceType: null,
+
                       maxPrice: null,
                       formats: [],
-                      materialScope: null,
+
+                      cantons: [],
                     })
                   }
                 />
@@ -1021,6 +1135,11 @@ export default function MaterialienPage() {
                               isWishlisted={wishlistedIds.has(material.id)}
                               onWishlistToggle={handleWishlistToggle}
                               variant={viewMode === "list" ? "compact" : "default"}
+                              averageRating={material.averageRating}
+                              reviewCount={material.reviewCount}
+                              wishlistAddLabel={t("card.wishlistAdd")}
+                              wishlistRemoveLabel={t("card.wishlistRemove")}
+                              anonymousLabel={t("card.anonymous")}
                             />
                           </motion.div>
                         ))

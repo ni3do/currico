@@ -17,6 +17,7 @@ import {
   Image as ImageIcon,
   Loader2,
   Users,
+  MoreHorizontal,
 } from "lucide-react";
 import { useCurriculum } from "@/lib/hooks/useCurriculum";
 import { FACHBEREICH_ICONS } from "@/lib/constants/subject-icons";
@@ -33,6 +34,36 @@ import type {
   CurriculumSearchResult,
 } from "@/lib/curriculum-types";
 
+// Canton abbreviation → full name mapping (matching SWISS_CANTONS order)
+export const CANTON_ABBREVS: { abbrev: string; name: string }[] = [
+  { abbrev: "AG", name: "Aargau" },
+  { abbrev: "AR", name: "Appenzell Ausserrhoden" },
+  { abbrev: "AI", name: "Appenzell Innerrhoden" },
+  { abbrev: "BL", name: "Basel-Landschaft" },
+  { abbrev: "BS", name: "Basel-Stadt" },
+  { abbrev: "BE", name: "Bern" },
+  { abbrev: "FR", name: "Freiburg" },
+  { abbrev: "GE", name: "Genf" },
+  { abbrev: "GL", name: "Glarus" },
+  { abbrev: "GR", name: "Graubünden" },
+  { abbrev: "JU", name: "Jura" },
+  { abbrev: "LU", name: "Luzern" },
+  { abbrev: "NE", name: "Neuenburg" },
+  { abbrev: "NW", name: "Nidwalden" },
+  { abbrev: "OW", name: "Obwalden" },
+  { abbrev: "SH", name: "Schaffhausen" },
+  { abbrev: "SZ", name: "Schwyz" },
+  { abbrev: "SO", name: "Solothurn" },
+  { abbrev: "SG", name: "St. Gallen" },
+  { abbrev: "TG", name: "Thurgau" },
+  { abbrev: "TI", name: "Tessin" },
+  { abbrev: "UR", name: "Uri" },
+  { abbrev: "VD", name: "Waadt" },
+  { abbrev: "VS", name: "Wallis" },
+  { abbrev: "ZG", name: "Zug" },
+  { abbrev: "ZH", name: "Zürich" },
+];
+
 // Format options (labelKey resolved via i18n at render time)
 const FORMAT_OPTIONS = [
   { id: "pdf", labelKey: "formatPdf", icon: FileText },
@@ -40,7 +71,7 @@ const FORMAT_OPTIONS = [
   { id: "ppt", labelKey: "formatPpt", icon: Presentation },
   { id: "excel", labelKey: "formatExcel", icon: Table },
   { id: "onenote", labelKey: "formatOnenote", icon: StickyNote },
-  { id: "image", labelKey: "formatImage", icon: ImageIcon },
+  { id: "other", labelKey: "formatOther", icon: MoreHorizontal },
 ] as const;
 
 // Translation function type
@@ -106,10 +137,9 @@ export interface LP21FilterState {
   searchQuery: string;
   // New filters
   dialect: string | null;
-  priceType: string | null;
   maxPrice: number | null;
   formats: string[];
-  materialScope: string | null;
+  cantons: string[];
 }
 
 interface LP21FilterSidebarProps {
@@ -195,10 +225,9 @@ export function LP21FilterSidebar({
     filters.kompetenz !== null ||
     filters.searchQuery.length > 0 ||
     filters.dialect !== null ||
-    filters.priceType !== null ||
     filters.maxPrice !== null ||
     filters.formats.length > 0 ||
-    filters.materialScope !== null;
+    filters.cantons.length > 0;
 
   // Handlers for exclusive tab selection (only one active at a time)
   const handleToggleMaterials = useCallback(() => {
@@ -218,10 +247,9 @@ export function LP21FilterSidebar({
       showMaterials: false,
       // Clear material-specific filters when switching to profiles
       dialect: null,
-      priceType: null,
       maxPrice: null,
       formats: [],
-      materialScope: null,
+      cantons: [],
     });
   }, [filters, onFiltersChange]);
 
@@ -232,15 +260,21 @@ export function LP21FilterSidebar({
       // Smart reset: keep fachbereich if it exists in the new Zyklus
       let keepFachbereich = false;
       let keepKompetenzbereich = false;
+      let keepKompetenz = false;
       if (newZyklus !== null && filters.fachbereich) {
         const newFachbereiche = getFachbereicheByZyklus(newZyklus);
         const matchedFb = newFachbereiche.find((f) => f.code === filters.fachbereich);
         keepFachbereich = !!matchedFb;
         // Also validate kompetenzbereich still exists under this fachbereich
         if (keepFachbereich && matchedFb && filters.kompetenzbereich) {
-          keepKompetenzbereich = matchedFb.kompetenzbereiche.some(
+          const matchedKb = matchedFb.kompetenzbereiche.find(
             (kb) => kb.code === filters.kompetenzbereich
           );
+          keepKompetenzbereich = !!matchedKb;
+          // Validate kompetenz exists in the matched kompetenzbereich's kompetenzen
+          if (keepKompetenzbereich && matchedKb && filters.kompetenz) {
+            keepKompetenz = matchedKb.kompetenzen.some((k) => k.code === filters.kompetenz);
+          }
         }
       }
       onFiltersChange({
@@ -248,7 +282,7 @@ export function LP21FilterSidebar({
         zyklus: newZyklus,
         fachbereich: keepFachbereich ? filters.fachbereich : null,
         kompetenzbereich: keepKompetenzbereich ? filters.kompetenzbereich : null,
-        kompetenz: keepKompetenzbereich ? filters.kompetenz : null,
+        kompetenz: keepKompetenz ? filters.kompetenz : null,
       });
     },
     [filters, onFiltersChange, getFachbereicheByZyklus]
@@ -420,10 +454,9 @@ export function LP21FilterSidebar({
       kompetenz: null,
       searchQuery: "",
       dialect: null,
-      priceType: null,
       maxPrice: null,
       formats: [],
-      materialScope: null,
+      cantons: [],
     });
     setExpandedFachbereiche(new Set());
     setExpandedKompetenzbereiche(new Set());
@@ -604,8 +637,30 @@ export function LP21FilterSidebar({
           <>
             <div className="divider my-5" />
 
+            {/* Price Filter */}
+            <CollapsibleSection title={t("sidebar.priceSectionLabel")} defaultOpen={false}>
+              <PriceFilter
+                maxPrice={filters.maxPrice}
+                onMaxPriceChange={(maxPrice) => onFiltersChange({ ...filters, maxPrice })}
+                t={t}
+              />
+            </CollapsibleSection>
+
+            <div className="divider my-5" />
+
+            {/* Format Filter */}
+            <CollapsibleSection title={t("sidebar.formatSectionLabel")} defaultOpen={false}>
+              <FormatFilter
+                selectedFormats={filters.formats}
+                onFormatToggle={handleFormatToggle}
+                t={t}
+              />
+            </CollapsibleSection>
+
+            <div className="divider my-5" />
+
             {/* Dialect Toggle */}
-            <CollapsibleSection title={t("sidebar.dialectLabel")}>
+            <CollapsibleSection title={t("sidebar.dialectLabel")} defaultOpen={false}>
               <DialectToggle
                 selectedDialect={filters.dialect}
                 onDialectChange={(dialect) => onFiltersChange({ ...filters, dialect })}
@@ -615,11 +670,11 @@ export function LP21FilterSidebar({
 
             <div className="divider my-5" />
 
-            {/* Format Filter */}
-            <CollapsibleSection title={t("sidebar.formatSectionLabel")}>
-              <FormatFilter
-                selectedFormats={filters.formats}
-                onFormatToggle={handleFormatToggle}
+            {/* Canton Filter */}
+            <CollapsibleSection title={t("sidebar.cantonSectionLabel")} defaultOpen={false}>
+              <CantonFilter
+                selectedCantons={filters.cantons}
+                onCantonsChange={(cantons) => onFiltersChange({ ...filters, cantons })}
                 t={t}
               />
             </CollapsibleSection>
@@ -852,6 +907,7 @@ function FachbereichAccordion({
         whileHover={{
           backgroundColor: isSelected ? `${fachbereich.color}25` : `${fachbereich.color}15`,
           x: 2,
+          scale: 1.005,
         }}
         transition={{ duration: 0.15 }}
       >
@@ -987,6 +1043,7 @@ function KompetenzbereichItem({
         whileHover={{
           backgroundColor: isSelected ? `${fachbereichColor}22` : `${fachbereichColor}12`,
           x: 2,
+          scale: 1.005,
         }}
         transition={{ duration: 0.15 }}
       >
@@ -1062,6 +1119,7 @@ function KompetenzbereichItem({
                         ? `${fachbereichColor}20`
                         : `${fachbereichColor}10`,
                       x: 2,
+                      scale: 1.005,
                     }}
                   >
                     <div className="flex items-center">
@@ -1120,14 +1178,120 @@ function FormatFilter({ selectedFormats, onFormatToggle, t }: FormatFilterProps)
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: index * 0.03 }}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{ scale: 1.015, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
+            whileTap={{ scale: 0.97, transition: { duration: 0.1 } }}
           >
             <Icon className="h-4 w-4" />
             <span className="font-medium">{t(`sidebar.${format.labelKey}`)}</span>
           </motion.button>
         );
       })}
+    </div>
+  );
+}
+
+// ============ PRICE FILTER ============
+interface PriceFilterProps {
+  maxPrice: number | null;
+  onMaxPriceChange: (maxPrice: number | null) => void;
+  t: TranslationFn;
+}
+
+function PriceFilter({ maxPrice, onMaxPriceChange, t }: PriceFilterProps) {
+  return (
+    <div>
+      <div className="mb-1.5 flex items-center justify-between">
+        <label className="text-text-muted text-xs font-medium">{t("sidebar.priceMaxLabel")}</label>
+        <span className="text-text text-xs font-semibold">
+          {maxPrice !== null ? `CHF ${maxPrice}` : t("sidebar.priceAll")}
+        </span>
+      </div>
+      <input
+        type="range"
+        min={0}
+        max={50}
+        step={1}
+        value={maxPrice ?? 50}
+        onChange={(e) => {
+          const val = parseInt(e.target.value, 10);
+          onMaxPriceChange(val >= 50 ? null : val);
+        }}
+        className="bg-surface-hover [&::-webkit-slider-thumb]:bg-primary h-2 w-full cursor-pointer appearance-none rounded-lg accent-[var(--ctp-blue)] [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-md"
+      />
+      <div className="text-text-muted mt-0.5 flex justify-between text-[10px]">
+        <span>CHF 0</span>
+        <span>CHF 50+</span>
+      </div>
+    </div>
+  );
+}
+
+// ============ CANTON FILTER ============
+interface CantonFilterProps {
+  selectedCantons: string[];
+  onCantonsChange: (cantons: string[]) => void;
+  t: TranslationFn;
+}
+
+function CantonFilter({ selectedCantons, onCantonsChange, t }: CantonFilterProps) {
+  const toggleCanton = useCallback(
+    (cantonName: string) => {
+      if (selectedCantons.includes(cantonName)) {
+        onCantonsChange(selectedCantons.filter((c) => c !== cantonName));
+      } else {
+        onCantonsChange([...selectedCantons, cantonName]);
+      }
+    },
+    [selectedCantons, onCantonsChange]
+  );
+
+  const clearAll = useCallback(() => {
+    onCantonsChange([]);
+  }, [onCantonsChange]);
+
+  return (
+    <div>
+      {/* Clear link when cantons are selected */}
+      {selectedCantons.length > 0 && (
+        <div className="mb-2 flex items-center justify-between">
+          <span className="text-text-muted text-xs">
+            {t("sidebar.cantonSelected", { count: selectedCantons.length })}
+          </span>
+          <button
+            onClick={clearAll}
+            className="text-text-muted hover:text-primary text-xs font-medium transition-colors"
+          >
+            <X className="inline h-3 w-3" />
+          </button>
+        </div>
+      )}
+
+      {/* Canton grid */}
+      <div className="grid grid-cols-4 gap-1.5">
+        {CANTON_ABBREVS.map((canton) => {
+          const isSelected = selectedCantons.includes(canton.name);
+          return (
+            <motion.button
+              key={canton.abbrev}
+              onClick={() => toggleCanton(canton.name)}
+              className={`group relative rounded-md border px-1 py-1.5 text-center text-xs font-semibold transition-colors ${
+                isSelected
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:bg-surface-hover hover:text-text"
+              }`}
+              whileHover={{ scale: 1.05, transition: { duration: 0.15 } }}
+              whileTap={{ scale: 0.95, transition: { duration: 0.1 } }}
+              title={canton.name}
+            >
+              {canton.abbrev}
+              {/* Tooltip */}
+              <div className="bg-text text-bg pointer-events-none absolute -top-8 left-1/2 z-50 -translate-x-1/2 rounded px-2 py-0.5 text-[10px] whitespace-nowrap opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
+                {canton.name}
+              </div>
+            </motion.button>
+          );
+        })}
+      </div>
     </div>
   );
 }

@@ -117,7 +117,9 @@
       "unfollowed": "Profil entfolgt",
       "reportSubmitted": "Meldung erfolgreich eingereicht",
       "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut."
-    }
+    },
+    "user": "Benutzer",
+    "free": "Gratis"
   },
   "homePage": {
     "hero": {
@@ -480,15 +482,20 @@
       "dialectStandard": "Hochdeutsch",
       "zyklusLabel": "Zyklus",
       "priceFree": "Kostenlos",
+      "pricePaid": "Kostenpflichtig",
+      "priceAll": "Alle",
       "priceUnder": "bis CHF {amount}",
       "maxPrice": "Max. Preis",
+      "priceSectionLabel": "Preis",
+      "priceMaxLabel": "Maximaler Preis",
+      "priceMaxPlaceholder": "CHF",
       "formatSectionLabel": "Format",
       "formatPdf": "PDF",
       "formatWord": "Word",
       "formatPpt": "PowerPoint",
       "formatExcel": "Excel",
       "formatOnenote": "OneNote",
-      "formatImage": "Bilder",
+      "formatOther": "Andere",
       "scopeLabel": "Materialumfang",
       "scopeSingle": "Einzelmaterial",
       "scopeBundle": "Bundle",
@@ -498,7 +505,7 @@
       "activeFilters": "Aktive Filter",
       "loadingError": "Fehler beim Laden der Fachbereiche",
       "searchPlaceholderProfiles": "Nach Profilen suchen...",
-      "searchPlaceholderDefault": "Suche: Stichwort oder Code (z.B. MA.1.A)",
+      "searchPlaceholderDefault": "Materialien durchsuchen...",
       "smartSearchDetected": "Erkannt",
       "smartSearchApply": "Filter anwenden",
       "smartSearchRemaining": "Suche nach: \"{query}\"",
@@ -507,7 +514,13 @@
       "smartSearchArea": "Bereich:",
       "searchResultSubject": "Fach",
       "searchResultArea": "Bereich",
-      "searchResultCompetence": "Kompetenz"
+      "searchResultCompetence": "Kompetenz",
+      "cantonSectionLabel": "Kanton",
+      "cantonPlaceholder": "Kanton wählen...",
+      "cantonSearchPlaceholder": "Kanton suchen...",
+      "cantonSelected": "{count} ausgewählt",
+      "cantonNoResults": "Kein Kanton gefunden",
+      "cantonChipMultiple": "{count} Kantone"
     },
     "search": {
       "placeholder": "Suche nach Titel, Thema, Stichwort...",
@@ -655,9 +668,16 @@
       "suggestion1": "Mathematik Zyklus 2",
       "suggestion2": "Deutsch Lesen",
       "suggestion3": "NMG Tiere",
-      "suggestion4": "Sport Spiele"
+      "suggestion4": "Sport Spiele",
+      "profileSuggestion1": "Mathematik Lehrer",
+      "profileSuggestion2": "Zyklus 2",
+      "profileSuggestion3": "Deutsch",
+      "profileSuggestion4": "NMG",
+      "filterSuggestion1": "Weniger Filter",
+      "filterSuggestion2": "Anderes Fach"
     },
     "toast": {
+      "loginRequired": "Bitte melden Sie sich an oder registrieren Sie sich, um die Wunschliste zu nutzen.",
       "addedToWishlist": "Zur Wunschliste hinzugefügt",
       "removedFromWishlist": "Aus Wunschliste entfernt",
       "followed": "Profil wird jetzt verfolgt",
@@ -668,6 +688,11 @@
       "nav": "Seitennavigation",
       "previous": "Vorherige Seite",
       "next": "Nächste Seite"
+    },
+    "card": {
+      "wishlistAdd": "Zur Wunschliste hinzufügen",
+      "wishlistRemove": "Aus Wunschliste entfernen",
+      "anonymous": "Anonym"
     }
   },
   "sellerDashboard": {
@@ -2537,6 +2562,7 @@
     "notFound": "Material nicht gefunden",
     "notFoundDescription": "Das gesuchte Material existiert nicht oder ist nicht mehr verfügbar.",
     "backToMaterials": "Zurück zu den Materialien",
+    "backToResults": "Zurück zu den Ergebnissen",
     "loadError": "Fehler beim Laden",
     "loadErrorDescription": "Das Material konnte nicht geladen werden. Bitte versuchen Sie es später erneut.",
     "retry": "Erneut versuchen",
@@ -2552,6 +2578,8 @@
     "wishlisted": "Gemerkt",
     "addToWishlist": "Zur Wunschliste",
     "reportMaterial": "Material melden",
+    "share": "Teilen",
+    "linkCopied": "Link in die Zwischenablage kopiert",
     "description": "Beschreibung",
     "reviews": "Bewertungen",
     "comments": "Kommentare",
@@ -2582,7 +2610,8 @@
     "availableAfterReview": "Verfügbar nach Überprüfung",
     "sellerMaterials": "{count} Materialien",
     "cycle": "Zyklus {number}",
-    "downloads": "{count} Downloads"
+    "downloads": "{count} Downloads",
+    "pages": "{count, plural, one {# Seite} other {# Seiten}}"
   },
   "profile": {
     "notFound": "Profil nicht gefunden",
