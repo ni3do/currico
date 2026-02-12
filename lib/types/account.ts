@@ -189,8 +189,9 @@ export const TAB_TO_PATH: Record<TabType, string> = {
 
 // Maps URL paths back to tab types (for sidebar active state)
 export function pathToTab(pathname: string): TabType {
-  // Remove locale prefix (e.g. /de/konto -> /konto)
-  const path = pathname.replace(/^\/[a-z]{2}/, "");
+  // Remove locale prefix if present (e.g. /en/konto -> /konto)
+  // Only match known locale codes, not arbitrary two-letter sequences
+  const path = pathname.replace(/^\/(de|en)(?=\/|$)/, "");
 
   if (path === "/konto" || path === "/konto/") return "overview";
   if (path.startsWith("/konto/library")) return "library";

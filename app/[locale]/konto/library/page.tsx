@@ -15,14 +15,11 @@ export default function AccountLibraryPage() {
 
   const [libraryItems, setLibraryItems] = useState<LibraryItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [downloading, setDownloading] = useState<string | null>(null);
 
   // Fetch library items
-  const fetchLibrary = useCallback(async (search?: string) => {
+  const fetchLibrary = useCallback(async () => {
     try {
       const params = new URLSearchParams({ type: "acquired" });
-      if (search) params.set("search", search);
       const response = await fetch(`/api/user/library?${params.toString()}`);
       if (response.ok) {
         const data = await response.json();
@@ -30,40 +27,17 @@ export default function AccountLibraryPage() {
       }
     } catch (error) {
       console.error("Error fetching library:", error);
+    } finally {
+      setLoading(false);
     }
   }, []);
 
   // Initial fetch on mount
   useEffect(() => {
     if (status === "authenticated") {
-      setLoading(true);
-      fetchLibrary().finally(() => {
-        setLoading(false);
-      });
+      fetchLibrary();
     }
   }, [status, fetchLibrary]);
-
-  // Handle debounced search
-  useEffect(() => {
-    if (status === "authenticated" && searchQuery) {
-      const debounce = setTimeout(() => {
-        fetchLibrary(searchQuery);
-      }, 300);
-      return () => clearTimeout(debounce);
-    }
-  }, [searchQuery, status, fetchLibrary]);
-
-  // Handle download
-  const handleDownload = async (materialId: string) => {
-    setDownloading(materialId);
-    try {
-      window.open(`/api/materials/${materialId}/download`, "_blank");
-    } catch (error) {
-      console.error("Download error:", error);
-    } finally {
-      setDownloading(null);
-    }
-  };
 
   const isLoading = loading || sharedLoading;
 
@@ -135,28 +109,30 @@ export default function AccountLibraryPage() {
 
         <div className="p-6">
           {isLoading ? (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
               {[1, 2, 3].map((i) => (
                 <div key={i} className="card animate-pulse overflow-hidden">
-                  <div className="bg-bg-secondary aspect-[16/9]"></div>
-                  <div className="p-4">
-                    <div className="bg-surface-hover mb-3 h-5 w-20 rounded-full"></div>
-                    <div className="bg-surface-hover mb-2 h-3 w-24 rounded"></div>
-                    <div className="bg-surface-hover mb-2 h-5 w-full rounded"></div>
-                    <div className="bg-surface-hover mb-4 h-4 w-32 rounded"></div>
-                    <div className="bg-surface-hover h-10 w-full rounded-lg"></div>
+                  <div className="bg-bg-secondary aspect-[4/3]"></div>
+                  <div className="px-3 pt-2.5 pb-3">
+                    <div className="bg-surface-hover mb-2 h-3 w-20 rounded"></div>
+                    <div className="bg-surface-hover mb-1.5 h-4 w-full rounded"></div>
+                    <div className="border-border-subtle mt-3 border-t pt-2">
+                      <div className="flex items-center justify-between">
+                        <div className="bg-surface-hover h-3 w-16 rounded"></div>
+                        <div className="bg-surface-hover h-6 w-14 rounded-full"></div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
           ) : libraryItems.length > 0 ? (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
               {libraryItems.map((item) => (
                 <DashboardMaterialCard
                   key={item.id}
                   id={item.id}
                   title={item.title}
-                  description={item.description}
                   subject={item.subject}
                   cycle={item.cycle}
                   previewUrl={item.previewUrl}
@@ -168,12 +144,6 @@ export default function AccountLibraryPage() {
                     item.verified ? { label: "Verifiziert", variant: "success" } : undefined
                   }
                   seller={{ displayName: item.seller.displayName }}
-                  primaryAction={{
-                    label: "Herunterladen",
-                    icon: "download",
-                    onClick: () => handleDownload(item.id),
-                    loading: downloading === item.id,
-                  }}
                 />
               ))}
             </div>

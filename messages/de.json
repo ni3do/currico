@@ -17,6 +17,12 @@
     "invalidFileType": "Ungültiger Dateityp",
     "userNotFound": "Benutzer nicht gefunden"
   },
+  "dashboardCard": {
+    "remove": "Entfernen",
+    "downloads": "Downloads",
+    "sales": "Verkäufe",
+    "unknownSeller": "Unbekannt"
+  },
   "previewGallery": {
     "title": "Vorschau",
     "pageOf": "Seite {current} von {total}",
@@ -1653,7 +1659,7 @@
       "continueSetup": "Einrichtung abschliessen"
     },
     "invite": {
-      "title": "Geld verdienen",
+      "title": "Verkäufer werden",
       "description": "Teilen Sie Ihre Unterrichtsmaterialien und verdienen Sie 70% bei jedem Verkauf. Richten Sie Ihr Verkäuferkonto in wenigen Minuten ein.",
       "benefit1": "70% pro Verkauf",
       "benefit2": "Tausende Lehrpersonen erreichen",
@@ -3030,7 +3036,7 @@
       "thisMonth": "Gesamt",
       "totalDownloads": "Gesamte Downloads",
       "materialsPublished": "Materialien veröffentlicht",
-      "myMaterials": "Meine Materialien",
+      "myMaterials": "Meine Uploads",
       "newMaterial": "+ Neues Material",
       "noMaterials": "Noch keine Materialien hochgeladen",
       "noMaterialsDescription": "Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen.",
@@ -3044,6 +3050,7 @@
       "verified": "Verifiziert",
       "aiChecked": "KI-Geprüft",
       "pending": "Ausstehend",
+      "draft": "Entwurf",
       "recentDownloads": "Letzte Downloads",
       "viewAll": "Alle anzeigen",
       "noDownloads": "Noch keine Materialien",

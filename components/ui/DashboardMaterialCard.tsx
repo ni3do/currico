@@ -4,7 +4,6 @@ import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import {
   Download,
-  Eye,
   Trash2,
   ShoppingCart,
   FileText,
@@ -12,12 +11,12 @@ import {
   Clock,
   XCircle,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { getSubjectTextColorByName } from "@/lib/constants/subject-colors";
 
 export interface DashboardMaterialCardProps {
   id: string;
   title: string;
-  description?: string;
   subject: string;
   cycle?: string;
   previewUrl?: string | null;
@@ -51,15 +50,6 @@ export interface DashboardMaterialCardProps {
     displayName: string | null;
   };
 
-  // Actions
-  primaryAction?: {
-    label: string;
-    icon: "download" | "view" | "cart";
-    onClick?: () => void;
-    href?: string;
-    loading?: boolean;
-  };
-
   // Remove button (for wishlist)
   onRemove?: () => void;
 }
@@ -67,7 +57,6 @@ export interface DashboardMaterialCardProps {
 export function DashboardMaterialCard({
   id,
   title,
-  description,
   subject,
   cycle,
   previewUrl,
@@ -76,9 +65,10 @@ export function DashboardMaterialCard({
   price,
   stats,
   seller,
-  primaryAction,
   onRemove,
 }: DashboardMaterialCardProps) {
+  const t = useTranslations("dashboardCard");
+
   const getBadgeClasses = (variant: string) => {
     switch (variant) {
       case "success":
@@ -109,151 +99,120 @@ export function DashboardMaterialCard({
     }
   };
 
-  const ActionIcon =
-    primaryAction?.icon === "download"
-      ? Download
-      : primaryAction?.icon === "cart"
-        ? ShoppingCart
-        : Eye;
-
   return (
-    <div className="card group flex h-full flex-col overflow-hidden">
-      {/* Preview Image */}
-      <Link href={`/materialien/${id}`} className="block">
-        <div className="bg-bg-secondary relative aspect-[16/9] w-full overflow-hidden">
-          {previewUrl ? (
-            <Image src={previewUrl} alt={title} fill className="image-zoom object-cover" />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center">
-              <FileText className="text-text-faint h-12 w-12" />
-            </div>
-          )}
+    <div className="card group relative flex h-full flex-col overflow-hidden">
+      {/* Clickable overlay link covering the entire card */}
+      <Link href={`/materialien/${id}`} className="absolute inset-0 z-0" aria-label={title} />
 
-          {/* Price Badge - Top Right */}
-          {price && (
-            <span
-              className={`absolute top-3 right-3 rounded-full px-3 py-1 text-sm font-bold shadow-md ${
-                price.isFree ? "bg-success text-white" : "bg-price text-white"
-              }`}
-            >
-              {price.formatted}
-            </span>
-          )}
-        </div>
-      </Link>
+      {/* Preview Image */}
+      <div className="bg-bg-secondary relative aspect-[4/3] w-full overflow-hidden">
+        {previewUrl ? (
+          <Image src={previewUrl} alt={title} fill className="image-zoom object-cover" />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center">
+            <FileText className="text-text-faint h-8 w-8" />
+          </div>
+        )}
+      </div>
 
       {/* Content */}
-      <div className="flex flex-1 flex-col p-4">
-        {/* Top Row: Badge + Secondary Badge / Remove Button */}
-        <div className="mb-3 flex items-center justify-between gap-2">
-          <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-1 flex-col px-3 pt-2.5 pb-3">
+        {/* Subject + Cycle Eyebrow with Remove Button */}
+        <div className="mb-1 flex items-center justify-between">
+          <span
+            className={`text-[11px] font-semibold tracking-wide uppercase ${getSubjectTextColorByName(subject)}`}
+          >
+            {subject}
+            {cycle && (
+              <>
+                <span className="text-text-faint mx-1">&bull;</span>
+                <span className="text-text-muted">{cycle}</span>
+              </>
+            )}
+          </span>
+          {onRemove && (
+            <button
+              onClick={onRemove}
+              className="text-text-muted hover:text-error relative z-10 -m-0.5 p-0.5 transition-colors"
+              title={t("remove")}
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          )}
+        </div>
+
+        {/* Title */}
+        <h3 className="text-text group-hover:text-primary mb-0.5 line-clamp-2 text-sm leading-snug font-semibold transition-colors">
+          {title}
+        </h3>
+
+        {/* Badges */}
+        {(badge || secondaryBadge) && (
+          <div className="mt-1 flex flex-wrap items-center gap-1">
             {badge && (
               <span
-                className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold ${getBadgeClasses(badge.variant)}`}
+                className={`inline-flex items-center gap-0.5 rounded-full px-2 py-px text-[10px] font-semibold ${getBadgeClasses(badge.variant)}`}
                 aria-label={`Status: ${badge.label}`}
               >
                 {badge.variant === "success" ? (
-                  <CircleCheck className="h-3 w-3" />
+                  <CircleCheck className="h-2.5 w-2.5" />
                 ) : badge.variant === "warning" ? (
-                  <Clock className="h-3 w-3" />
+                  <Clock className="h-2.5 w-2.5" />
                 ) : (
-                  <XCircle className="h-3 w-3" />
+                  <XCircle className="h-2.5 w-2.5" />
                 )}
                 {badge.label}
               </span>
             )}
             {secondaryBadge && (
-              <span className={`pill text-xs ${getPillClasses(secondaryBadge.variant)}`}>
+              <span className={`pill text-[10px] ${getPillClasses(secondaryBadge.variant)}`}>
                 {secondaryBadge.label}
               </span>
             )}
           </div>
-          {onRemove && (
-            <button
-              onClick={onRemove}
-              className="text-text-muted hover:text-error -m-1 p-1 transition-colors"
-              title="Entfernen"
-            >
-              <Trash2 className="h-4 w-4" />
-            </button>
-          )}
-        </div>
-
-        {/* Subject + Cycle Eyebrow */}
-        <div className="mb-2">
-          <span
-            className={`text-xs font-semibold tracking-wide uppercase ${getSubjectTextColorByName(subject)}`}
-          >
-            {subject}
-            {cycle && (
-              <>
-                <span className="text-text-faint mx-1.5">•</span>
-                <span className="text-text-muted">{cycle}</span>
-              </>
-            )}
-          </span>
-        </div>
-
-        {/* Title */}
-        <Link href={`/materialien/${id}`} className="block">
-          <h3 className="text-text group-hover:text-primary mb-2 line-clamp-2 leading-snug font-semibold transition-colors">
-            {title}
-          </h3>
-        </Link>
-
-        {/* Description (optional) */}
-        {description && <p className="text-text-muted mb-3 line-clamp-2 text-sm">{description}</p>}
+        )}
 
         {/* Spacer */}
         <div className="mt-auto" />
 
-        {/* Footer: Stats/Seller + Action Button */}
-        <div className="border-border-subtle mt-3 border-t pt-3">
+        {/* Footer */}
+        <div className="border-border-subtle mt-2 border-t pt-2">
           {/* Stats Row (for uploads) */}
           {stats && (
-            <div className="text-text-muted mb-3 flex items-center justify-between text-xs">
+            <div className="text-text-muted mb-2 flex items-center justify-between text-[11px]">
               {stats.downloads !== undefined && (
                 <span className="flex items-center gap-1">
-                  <Download className="h-3.5 w-3.5" />
-                  {stats.downloads} Downloads
+                  <Download className="h-3 w-3" />
+                  {stats.downloads} {t("downloads")}
                 </span>
               )}
               {stats.purchases !== undefined && (
                 <span className="flex items-center gap-1">
-                  <ShoppingCart className="h-3.5 w-3.5" />
-                  {stats.purchases} Verkäufe
+                  <ShoppingCart className="h-3 w-3" />
+                  {stats.purchases} {t("sales")}
                 </span>
               )}
             </div>
           )}
 
-          {/* Seller Info (for library/wishlist) */}
-          {seller && (
-            <div className="text-text-muted mb-3 text-sm">
-              Von: {seller.displayName || "Unbekannt"}
-            </div>
-          )}
+          {/* Seller Info + Price Row */}
+          <div className="flex items-center justify-between gap-2">
+            {seller && (
+              <span className="text-text-muted truncate text-xs">
+                {seller.displayName || t("unknownSeller")}
+              </span>
+            )}
 
-          {/* Primary Action Button */}
-          {primaryAction &&
-            (primaryAction.href ? (
-              <Link
-                href={primaryAction.href}
-                className="bg-primary text-text-on-accent hover:bg-primary-hover flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors"
+            {price && (
+              <span
+                className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${
+                  price.isFree ? "bg-success text-white" : "bg-price text-white"
+                }`}
               >
-                <ActionIcon className="h-4 w-4" />
-                {primaryAction.label}
-              </Link>
-            ) : (
-              <button
-                onClick={primaryAction.onClick}
-                disabled={primaryAction.loading}
-                className="bg-primary text-text-on-accent hover:bg-primary-hover flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors disabled:opacity-50"
-              >
-                <ActionIcon className="h-4 w-4" />
-                {primaryAction.loading ? "Wird geladen..." : primaryAction.label}
-              </button>
-            ))}
+                {price.formatted}
+              </span>
+            )}
+          </div>
         </div>
       </div>
     </div>

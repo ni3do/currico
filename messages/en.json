@@ -17,6 +17,12 @@
     "invalidFileType": "Invalid file type",
     "userNotFound": "User not found"
   },
+  "dashboardCard": {
+    "remove": "Remove",
+    "downloads": "Downloads",
+    "sales": "Sales",
+    "unknownSeller": "Unknown"
+  },
   "previewGallery": {
     "title": "Preview",
     "pageOf": "Page {current} of {total}",
@@ -1652,7 +1658,7 @@
       "continueSetup": "Complete Setup"
     },
     "invite": {
-      "title": "Start Earning Money",
+      "title": "Become a Seller",
       "description": "Share your teaching materials and earn 70% of every sale. Set up your seller account in minutes.",
       "benefit1": "Earn 70% per sale",
       "benefit2": "Reach thousands of teachers",
@@ -3001,7 +3007,7 @@
       "thisMonth": "Total",
       "totalDownloads": "Total downloads",
       "materialsPublished": "Materials published",
-      "myMaterials": "My Materials",
+      "myMaterials": "My Uploads",
       "newMaterial": "+ New Material",
       "noMaterials": "No materials uploaded yet",
       "noMaterialsDescription": "Share your teaching materials with other teachers.",
@@ -3015,6 +3021,7 @@
       "verified": "Verified",
       "aiChecked": "AI-Checked",
       "pending": "Pending",
+      "draft": "Draft",
       "recentDownloads": "Recent Downloads",
       "viewAll": "View all",
       "noDownloads": "No materials yet",

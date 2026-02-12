@@ -244,7 +244,7 @@ function AccountLayoutInner({ children }: { children: ReactNode }) {
                     {isActive && (
                       <motion.div
                         layoutId="mobileActiveTab"
-                        className="bg-primary absolute right-1.5 bottom-0.5 h-0.5 w-4 rounded-full"
+                        className="bg-primary/60 absolute right-1.5 bottom-0.5 h-0.5 w-3 rounded-full"
                         transition={{
                           type: "spring",
                           stiffness: 400,
@@ -263,11 +263,7 @@ function AccountLayoutInner({ children }: { children: ReactNode }) {
             {/* Desktop Sidebar */}
             <div className="hidden w-72 flex-shrink-0 lg:block">
               <div className="sticky top-24">
-                <AccountSidebar
-                  userData={displayData}
-                  stats={displayStats}
-                  followedSellers={followedSellers}
-                />
+                <AccountSidebar userData={displayData} stats={displayStats} />
               </div>
             </div>
 
