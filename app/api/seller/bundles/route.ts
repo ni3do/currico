@@ -32,6 +32,7 @@ export async function GET() {
         },
       },
       orderBy: { created_at: "desc" },
+      take: 50,
     });
 
     const transformedBundles = bundles.map((bundle) => {

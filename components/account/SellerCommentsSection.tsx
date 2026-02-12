@@ -46,6 +46,7 @@ interface SellerCommentsSectionProps {
 
 export function SellerCommentsSection({ className = "" }: SellerCommentsSectionProps) {
   const tCommon = useTranslations("common");
+  const t = useTranslations("accountPage.comments");
   const [comments, setComments] = useState<SellerComment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -76,12 +77,12 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
         setPage(data.pagination.page);
         setTotalPages(data.pagination.totalPages);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Fehler beim Laden der Kommentare");
+        setError(err instanceof Error ? err.message : t("errorLoading"));
       } finally {
         setLoading(false);
       }
     },
-    [filter]
+    [filter, tCommon, t]
   );
 
   useEffect(() => {
@@ -113,7 +114,7 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
       fetchComments(page, filter);
     } catch (err) {
       console.error("Error submitting reply:", err);
-      alert("Fehler beim Senden der Antwort");
+      alert(t("errorSending"));
     } finally {
       setSubmittingReply(false);
     }
@@ -171,11 +172,13 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
       {/* Header with stats and filter */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-text text-xl font-semibold">Kommentare zu Ihren Materialien</h2>
+          <h2 className="text-text text-xl font-semibold">{t("title")}</h2>
           <p className="text-text-muted mt-1 text-sm">
-            {stats.totalComments} Kommentare insgesamt
+            {stats.totalComments} {t("totalComments")}
             {stats.unrepliedComments > 0 && (
-              <span className="text-warning ml-2">({stats.unrepliedComments} unbeantwortet)</span>
+              <span className="text-warning ml-2">
+                ({stats.unrepliedComments} {t("unanswered")})
+              </span>
             )}
           </p>
         </div>
@@ -188,8 +191,8 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
             onChange={(e) => handleFilterChange(e.target.value as "all" | "unreplied")}
             className="input rounded-full py-2 text-sm"
           >
-            <option value="all">Alle Kommentare</option>
-            <option value="unreplied">Unbeantwortet</option>
+            <option value="all">{t("filterAll")}</option>
+            <option value="unreplied">{t("filterUnanswered")}</option>
           </select>
         </div>
       </div>
@@ -198,14 +201,8 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
       {comments.length === 0 ? (
         <div className="border-border bg-bg rounded-xl border p-8 text-center">
           <MessageCircle className="text-text-faint mx-auto mb-3 h-12 w-12" />
-          <p className="text-text-muted mb-2">
-            {filter === "unreplied"
-              ? "Keine unbeantworteten Kommentare"
-              : "Noch keine Kommentare zu Ihren Materialien"}
-          </p>
-          <p className="text-text-faint text-sm">
-            Kommentare erscheinen hier, sobald Nutzer Ihre Materialien kommentieren.
-          </p>
+          <p className="text-text-muted mb-2">{t("empty")}</p>
+          <p className="text-text-faint text-sm">{t("emptyDescription")}</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -238,7 +235,7 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
                 )}
                 <div className="min-w-0 flex-1">
                   <p className="text-text truncate text-sm font-medium">{comment.resource.title}</p>
-                  <p className="text-text-faint text-xs">Material ansehen</p>
+                  <p className="text-text-faint text-xs">{t("viewMaterial")}</p>
                 </div>
                 <ExternalLink className="text-text-muted h-4 w-4 flex-shrink-0" />
               </Link>
@@ -267,7 +264,7 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
                   </div>
                 </div>
                 {!comment.hasSellerReply && (
-                  <span className="pill pill-warning text-xs">Unbeantwortet</span>
+                  <span className="pill pill-warning text-xs">{t("unansweredBadge")}</span>
                 )}
               </div>
 
@@ -283,7 +280,7 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
                     onClick={() => toggleExpanded(comment.id)}
                     className="text-text-muted hover:text-text mb-2 flex items-center gap-1 text-sm"
                   >
-                    <span>{comment.replies.length} Antworten</span>
+                    <span>{t("replies", { count: comment.replies.length })}</span>
                     <ChevronDown
                       className={`h-4 w-4 transition-transform ${
                         expandedComments.has(comment.id) ? "rotate-180" : ""
@@ -331,7 +328,7 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
                   <textarea
                     value={replyContent}
                     onChange={(e) => setReplyContent(e.target.value)}
-                    placeholder="Schreiben Sie eine Antwort..."
+                    placeholder={t("replyPlaceholder")}
                     maxLength={1000}
                     rows={3}
                     className="input mb-2 min-h-[80px] resize-y"
@@ -348,7 +345,7 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
                         disabled={submittingReply}
                         className="btn-secondary px-4 py-2 text-sm"
                       >
-                        Abbrechen
+                        {t("cancel")}
                       </button>
                       <button
                         onClick={() => handleSubmitReply(comment.id)}
@@ -356,7 +353,7 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
                         className="btn-primary flex items-center gap-2 px-4 py-2 text-sm disabled:opacity-50"
                       >
                         <Send className="h-4 w-4" />
-                        {submittingReply ? "Senden..." : "Antworten"}
+                        {submittingReply ? t("sending") : t("send")}
                       </button>
                     </div>
                   </div>
@@ -367,7 +364,7 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
                   className="text-primary hover:text-primary-hover flex items-center gap-2 text-sm font-medium transition-colors"
                 >
                   <MessageCircle className="h-4 w-4" />
-                  Antworten
+                  {t("reply")}
                 </button>
               )}
             </motion.div>
@@ -381,17 +378,17 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
                 disabled={page === 1 || loading}
                 className="btn-secondary px-4 py-2 disabled:opacity-50"
               >
-                Zurück
+                {t("prev")}
               </button>
               <span className="text-text-muted text-sm">
-                Seite {page} von {totalPages}
+                {t("pageInfo", { page, total: totalPages })}
               </span>
               <button
                 onClick={() => fetchComments(page + 1, filter)}
                 disabled={page === totalPages || loading}
                 className="btn-secondary px-4 py-2 disabled:opacity-50"
               >
-                Weiter
+                {t("next")}
               </button>
             </div>
           )}

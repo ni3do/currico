@@ -47,6 +47,7 @@ interface SidebarUserStats {
 interface AccountSidebarProps {
   userData: SidebarUserData;
   stats: SidebarUserStats;
+  unreadNotifications?: number;
   activeTab?: TabType;
   onTabChange?: (tab: TabType) => void;
   className?: string;
@@ -55,6 +56,7 @@ interface AccountSidebarProps {
 export function AccountSidebar({
   userData,
   stats,
+  unreadNotifications = 0,
   activeTab: activeTabProp,
   onTabChange,
   className = "",
@@ -99,7 +101,7 @@ export function AccountSidebar({
       id: "notifications" as TabType,
       label: t("nav.notifications"),
       icon: Bell,
-      count: null,
+      count: unreadNotifications > 0 ? unreadNotifications : null,
     },
     {
       id: "following" as TabType,
@@ -195,7 +197,11 @@ export function AccountSidebar({
                 {item.count !== null && item.count > 0 && (
                   <span
                     className={`relative z-10 ml-auto rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${
-                      isActive ? "bg-primary/10 text-primary" : "bg-surface text-text-muted"
+                      item.id === "notifications"
+                        ? "bg-error text-text-on-accent"
+                        : isActive
+                          ? "bg-primary/10 text-primary"
+                          : "bg-surface text-text-muted"
                     }`}
                   >
                     {item.count}

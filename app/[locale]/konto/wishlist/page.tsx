@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
+import { AlertCircle, RefreshCw } from "lucide-react";
 import { DashboardMaterialCard } from "@/components/ui/DashboardMaterialCard";
 import { useAccountData } from "@/lib/hooks/useAccountData";
 import type { WishlistItem } from "@/lib/types/account";
@@ -17,21 +18,29 @@ export default function AccountWishlistPage() {
 
   const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"newest" | "oldest" | "title">("newest");
 
-  // Fetch wishlist items on mount
-  useEffect(() => {
-    if (status !== "authenticated") return;
+  const fetchWishlist = useCallback(async () => {
+    setError(false);
+    try {
+      const res = await fetch("/api/user/wishlist");
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      setWishlistItems(data.items);
+    } catch {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-    fetch("/api/user/wishlist")
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (data) setWishlistItems(data.items);
-      })
-      .catch((err) => console.error("Error fetching wishlist:", err))
-      .finally(() => setLoading(false));
-  }, [status]);
+  useEffect(() => {
+    if (status === "authenticated") {
+      fetchWishlist();
+    }
+  }, [status, fetchWishlist]);
 
   // Handle wishlist removal
   const handleRemoveFromWishlist = async (materialId: string) => {
@@ -107,9 +116,24 @@ export default function AccountWishlistPage() {
           </select>
         </div>
 
-        {isLoading ? (
+        {error ? (
+          <div className="py-12 text-center">
+            <AlertCircle className="text-error mx-auto mb-3 h-10 w-10" aria-hidden="true" />
+            <p className="text-text mb-1 font-medium">{t("errorLoading")}</p>
+            <button
+              onClick={() => {
+                setLoading(true);
+                fetchWishlist();
+              }}
+              className="text-primary hover:text-primary-hover mt-2 inline-flex items-center gap-1.5 text-sm font-medium"
+            >
+              <RefreshCw className="h-3.5 w-3.5" />
+              {t("retry")}
+            </button>
+          </div>
+        ) : isLoading ? (
           <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
-            {[1, 2].map((i) => (
+            {[1, 2, 3].map((i) => (
               <div key={i} className="card animate-pulse overflow-hidden">
                 <div className="bg-bg-secondary aspect-[4/3]"></div>
                 <div className="px-3 pt-2.5 pb-3">

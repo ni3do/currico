@@ -24,6 +24,7 @@ import { EmailVerificationBanner } from "@/components/account/EmailVerificationB
 import { StripeConnectStatus } from "@/components/account/StripeConnectStatus";
 import { DeleteConfirmDialog } from "@/components/account/DeleteConfirmDialog";
 import { SellerLevelCard } from "@/components/account/SellerLevelCard";
+import { ProfileCompletionProgress } from "@/components/account/ProfileCompletionProgress";
 import { useAccountData } from "@/lib/hooks/useAccountData";
 import type { SellerStats, SellerMaterial, LibraryItem } from "@/lib/types/account";
 import { getSubjectPillClass } from "@/lib/constants/subject-colors";
@@ -172,6 +173,14 @@ export default function AccountOverviewPage() {
 
         {/* Stripe Connect Status */}
         {userData && userData.emailVerified && <StripeConnectStatus isSeller={userData.isSeller} />}
+
+        {/* Profile Completion */}
+        {userData && (
+          <ProfileCompletionProgress
+            profile={userData}
+            onNavigateToSettings={() => router.push("/konto/settings")}
+          />
+        )}
 
         {/* KPI Metrics Row */}
         <div className="grid gap-3 sm:gap-4 md:grid-cols-3">
@@ -515,8 +524,13 @@ export default function AccountOverviewPage() {
                       disabled={downloading === item.id}
                       className="text-primary hover:bg-primary/10 shrink-0 rounded-lg p-2 transition-colors disabled:opacity-50"
                       title={t("overview.downloads")}
+                      aria-label={t("overview.downloadLabel")}
                     >
-                      <Download className="h-4 w-4" />
+                      {downloading === item.id ? (
+                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                      ) : (
+                        <Download className="h-4 w-4" />
+                      )}
                     </button>
                   </motion.div>
                 ))}

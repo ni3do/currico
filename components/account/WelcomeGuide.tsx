@@ -3,6 +3,7 @@
 import { useState, useSyncExternalStore } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Library, Upload, Heart, Settings, Sparkles } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface WelcomeGuideProps {
   userName?: string | null;
@@ -19,32 +20,14 @@ interface WelcomeGuideProps {
 
 const STORAGE_KEY = "currico-welcome-dismissed";
 
-const FEATURES = [
-  {
-    id: "library",
-    icon: Library,
-    title: "Bibliothek",
-    description: "Deine gekauften Materialien",
-  },
-  {
-    id: "uploads",
-    icon: Upload,
-    title: "Uploads",
-    description: "Teile deine Materialien",
-  },
-  {
-    id: "wishlist",
-    icon: Heart,
-    title: "Wunschliste",
-    description: "Für später gespeichert",
-  },
-  {
-    id: "settings-profile",
-    icon: Settings,
-    title: "Einstellungen",
-    description: "Profil & Präferenzen",
-  },
-] as const;
+const FEATURE_ICONS = {
+  library: Library,
+  uploads: Upload,
+  wishlist: Heart,
+  "settings-profile": Settings,
+} as const;
+
+const FEATURE_IDS = ["library", "uploads", "wishlist", "settings-profile"] as const;
 
 // Hook to read localStorage without triggering the setState-in-effect warning
 function useLocalStorageValue(key: string) {
@@ -68,9 +51,21 @@ function useIsClient() {
 }
 
 export function WelcomeGuide({ userName, onNavigate }: WelcomeGuideProps) {
+  const t = useTranslations("accountPage.welcomeGuide");
   const dismissed = useLocalStorageValue(STORAGE_KEY);
   const isClient = useIsClient();
   const [isVisible, setIsVisible] = useState(true);
+
+  const features = FEATURE_IDS.map((id) => {
+    const titleKey = `${id === "settings-profile" ? "settings" : id}Title` as const;
+    const descKey = `${id === "settings-profile" ? "settings" : id}Desc` as const;
+    return {
+      id,
+      icon: FEATURE_ICONS[id],
+      title: t(titleKey),
+      description: t(descKey),
+    };
+  });
 
   // Hide if dismissed in localStorage
   const shouldShow = isClient && isVisible && !dismissed;
@@ -114,7 +109,7 @@ export function WelcomeGuide({ userName, onNavigate }: WelcomeGuideProps) {
           <button
             onClick={handleDismiss}
             className="text-text-muted hover:text-text hover:bg-surface-hover absolute top-3 right-3 rounded-lg p-1.5 transition-colors"
-            aria-label="Schliessen"
+            aria-label={t("close")}
           >
             <X className="h-5 w-5" />
           </button>
@@ -127,17 +122,15 @@ export function WelcomeGuide({ userName, onNavigate }: WelcomeGuideProps) {
               </div>
               <div>
                 <h2 className="text-text text-lg font-semibold">
-                  Willkommen{userName ? `, ${userName}` : ""}!
+                  {userName ? t("welcome", { name: userName }) : t("welcomeGeneric")}
                 </h2>
-                <p className="text-text-secondary mt-0.5 text-sm">
-                  Hier findest du alles auf einen Blick
-                </p>
+                <p className="text-text-secondary mt-0.5 text-sm">{t("subtitle")}</p>
               </div>
             </div>
 
             {/* Feature Cards Grid */}
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              {FEATURES.map((feature, index) => {
+              {features.map((feature, index) => {
                 const Icon = feature.icon;
                 return (
                   <motion.button
@@ -168,7 +161,7 @@ export function WelcomeGuide({ userName, onNavigate }: WelcomeGuideProps) {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                Verstanden, los geht&apos;s!
+                {t("dismiss")}
               </motion.button>
             </div>
           </div>

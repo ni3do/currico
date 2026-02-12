@@ -5,11 +5,13 @@ import { useAccountData } from "@/lib/hooks/useAccountData";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import {
+  AlertCircle,
   CircleCheck,
   Clock,
   XCircle,
   FileEdit,
   Package,
+  RefreshCw,
   Trash2,
   MoreVertical,
   Check,
@@ -24,7 +26,9 @@ export default function AccountBundlesPage() {
   const t = useTranslations("accountPage.bundles");
   const [sellerBundles, setSellerBundles] = useState<SellerBundle[]>([]);
   const [bundlesLoading, setBundlesLoading] = useState(false);
+  const [bundlesError, setBundlesError] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<"newest" | "oldest" | "title">("newest");
   const [openBundleActionMenu, setOpenBundleActionMenu] = useState<string | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<{
     id: string;
@@ -36,14 +40,17 @@ export default function AccountBundlesPage() {
   // Fetch seller bundles
   const fetchSellerBundles = useCallback(async () => {
     setBundlesLoading(true);
+    setBundlesError(false);
     try {
       const response = await fetch("/api/seller/bundles");
       if (response.ok) {
         const data = await response.json();
         setSellerBundles(data.bundles);
+      } else {
+        setBundlesError(true);
       }
-    } catch (error) {
-      console.error("Error fetching seller bundles:", error);
+    } catch {
+      setBundlesError(true);
     } finally {
       setBundlesLoading(false);
     }
@@ -55,7 +62,7 @@ export default function AccountBundlesPage() {
     }
   }, [userData?.isSeller, fetchSellerBundles]);
 
-  // Close action menu on outside click
+  // Close action menu on outside click or Escape key
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -66,12 +73,20 @@ export default function AccountBundlesPage() {
       }
     };
 
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpenBundleActionMenu(null);
+      }
+    };
+
     if (openBundleActionMenu) {
       document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("keydown", handleKeyDown);
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
     };
   }, [openBundleActionMenu]);
 
@@ -120,16 +135,28 @@ export default function AccountBundlesPage() {
     setOpenBundleActionMenu(null);
   };
 
-  // Client-side search filtering
-  const filteredBundles = sellerBundles.filter((bundle) => {
-    if (!searchQuery) return true;
-    const q = searchQuery.toLowerCase();
-    return (
-      bundle.title.toLowerCase().includes(q) ||
-      bundle.subject?.toLowerCase().includes(q) ||
-      bundle.cycle?.toLowerCase().includes(q)
-    );
-  });
+  // Client-side search filtering and sorting
+  const filteredBundles = sellerBundles
+    .filter((bundle) => {
+      if (!searchQuery) return true;
+      const q = searchQuery.toLowerCase();
+      return (
+        bundle.title.toLowerCase().includes(q) ||
+        bundle.subject?.toLowerCase().includes(q) ||
+        bundle.cycle?.toLowerCase().includes(q)
+      );
+    })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case "oldest":
+          return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        case "title":
+          return a.title.localeCompare(b.title);
+        case "newest":
+        default:
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      }
+    });
 
   return (
     <>
@@ -148,19 +175,41 @@ export default function AccountBundlesPage() {
           </Link>
         </div>
 
-        {/* Search */}
-        <div className="mb-6">
+        {/* Search & Sort */}
+        <div className="mb-6 flex flex-col gap-3 sm:flex-row">
           <input
             type="text"
             placeholder={t("search")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             aria-label={t("search")}
-            className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary w-full rounded-lg border px-4 py-2 text-sm focus:ring-1 focus:outline-none"
+            className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary flex-1 rounded-lg border px-4 py-2 text-sm focus:ring-1 focus:outline-none"
           />
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+            className="border-border bg-bg text-text rounded-lg border px-3 py-2 text-sm"
+            aria-label={t("sortLabel")}
+          >
+            <option value="newest">{t("sort.newest")}</option>
+            <option value="oldest">{t("sort.oldest")}</option>
+            <option value="title">{t("sort.title")}</option>
+          </select>
         </div>
 
-        {loading || bundlesLoading ? (
+        {bundlesError ? (
+          <div className="py-12 text-center">
+            <AlertCircle className="text-error mx-auto mb-3 h-10 w-10" aria-hidden="true" />
+            <p className="text-text mb-1 font-medium">{t("errorLoading")}</p>
+            <button
+              onClick={() => fetchSellerBundles()}
+              className="text-primary hover:text-primary-hover mt-2 inline-flex items-center gap-1.5 text-sm font-medium"
+            >
+              <RefreshCw className="h-3.5 w-3.5" />
+              {t("retry")}
+            </button>
+          </div>
+        ) : loading || bundlesLoading ? (
           <div className="space-y-3">
             {[1, 2, 3].map((i) => (
               <div key={i} className="border-border animate-pulse rounded-xl border p-4">

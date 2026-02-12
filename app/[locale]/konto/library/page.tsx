@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
-import { BookOpen, Gift, ShoppingBag, Sparkles } from "lucide-react";
+import { AlertCircle, BookOpen, Gift, RefreshCw, ShoppingBag, Sparkles } from "lucide-react";
 import { DashboardMaterialCard } from "@/components/ui/DashboardMaterialCard";
 import { useAccountData } from "@/lib/hooks/useAccountData";
 import type { LibraryItem } from "@/lib/types/account";
@@ -18,11 +18,13 @@ export default function AccountLibraryPage() {
 
   const [libraryItems, setLibraryItems] = useState<LibraryItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"newest" | "oldest" | "title">("newest");
 
   // Fetch library items
   const fetchLibrary = useCallback(async (search?: string) => {
+    setError(false);
     try {
       const params = new URLSearchParams({ type: "acquired" });
       if (search) params.set("search", search);
@@ -30,9 +32,11 @@ export default function AccountLibraryPage() {
       if (response.ok) {
         const data = await response.json();
         setLibraryItems(data.items);
+      } else {
+        setError(true);
       }
-    } catch (error) {
-      console.error("Error fetching library:", error);
+    } catch {
+      setError(true);
     } finally {
       setLoading(false);
     }
@@ -149,7 +153,22 @@ export default function AccountLibraryPage() {
         </div>
 
         <div className="p-6">
-          {isLoading ? (
+          {error ? (
+            <div className="py-12 text-center">
+              <AlertCircle className="text-error mx-auto mb-3 h-10 w-10" aria-hidden="true" />
+              <p className="text-text mb-1 font-medium">{t("errorLoading")}</p>
+              <button
+                onClick={() => {
+                  setLoading(true);
+                  fetchLibrary(searchQuery || undefined);
+                }}
+                className="text-primary hover:text-primary-hover mt-2 inline-flex items-center gap-1.5 text-sm font-medium"
+              >
+                <RefreshCw className="h-3.5 w-3.5" />
+                {t("retry")}
+              </button>
+            </div>
+          ) : isLoading ? (
             <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
               {[1, 2, 3].map((i) => (
                 <div key={i} className="card animate-pulse overflow-hidden">

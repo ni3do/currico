@@ -2,11 +2,13 @@
 
 import { useState } from "react";
 import { signOut } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { Shield, Trash2, Check, X, Mail, AlertTriangle } from "lucide-react";
 import { useAccountData } from "@/lib/hooks/useAccountData";
 
 export default function SettingsAccountPage() {
   const { userData } = useAccountData();
+  const t = useTranslations("accountPage.settingsAccount");
 
   // Email verification resend state
   const [verificationSending, setVerificationSending] = useState(false);
@@ -36,12 +38,12 @@ export default function SettingsAccountPage() {
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.error || "Fehler beim Senden");
+        throw new Error(data.error || t("sendError"));
       }
 
       setVerificationSent(true);
     } catch (error) {
-      setVerificationError(error instanceof Error ? error.message : "Ein Fehler ist aufgetreten");
+      setVerificationError(error instanceof Error ? error.message : t("genericError"));
     } finally {
       setVerificationSending(false);
     }
@@ -51,10 +53,8 @@ export default function SettingsAccountPage() {
     <div className="space-y-6">
       {/* Section Header */}
       <div>
-        <h2 className="text-text text-xl font-semibold">Konto & Sicherheit</h2>
-        <p className="text-text-muted mt-1 text-sm">
-          Verwalten Sie Ihre Kontoeinstellungen und Sicherheitsoptionen
-        </p>
+        <h2 className="text-text text-xl font-semibold">{t("title")}</h2>
+        <p className="text-text-muted mt-1 text-sm">{t("subtitle")}</p>
       </div>
 
       {/* Account Info Card */}
@@ -65,8 +65,8 @@ export default function SettingsAccountPage() {
               <Shield className="text-primary h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-text font-semibold">Kontostatus</h3>
-              <p className="text-text-muted text-sm">Informationen zu Ihrem Konto</p>
+              <h3 className="text-text font-semibold">{t("accountStatus")}</h3>
+              <p className="text-text-muted text-sm">{t("accountStatusDesc")}</p>
             </div>
           </div>
         </div>
@@ -74,15 +74,15 @@ export default function SettingsAccountPage() {
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="border-border rounded-lg border p-4">
               <p className="text-text-muted text-xs font-medium tracking-wide uppercase">
-                Kontotyp
+                {t("accountType")}
               </p>
               <p className="text-text mt-1 font-semibold">
-                {userData?.isSeller ? "Verkäufer" : "Käufer"}
+                {userData?.isSeller ? t("seller") : t("buyer")}
               </p>
             </div>
             <div className="border-border rounded-lg border p-4">
               <p className="text-text-muted text-xs font-medium tracking-wide uppercase">
-                E-Mail-Status
+                {t("emailStatus")}
               </p>
               <div className="mt-1">
                 {userData?.emailVerified ? (
@@ -90,14 +90,14 @@ export default function SettingsAccountPage() {
                     <div className="bg-success/20 rounded-full p-1">
                       <Check className="text-success h-3 w-3" />
                     </div>
-                    <span className="text-success font-semibold">Verifiziert</span>
+                    <span className="text-success font-semibold">{t("verified")}</span>
                   </div>
                 ) : verificationSent ? (
                   <div className="flex items-center gap-2">
                     <div className="bg-success/20 rounded-full p-1">
                       <Mail className="text-success h-3 w-3" />
                     </div>
-                    <span className="text-success text-sm font-semibold">E-Mail gesendet!</span>
+                    <span className="text-success text-sm font-semibold">{t("emailSent")}</span>
                   </div>
                 ) : (
                   <button
@@ -113,10 +113,10 @@ export default function SettingsAccountPage() {
                       )}
                     </div>
                     <span className="text-warning font-semibold group-hover:underline">
-                      {verificationSending ? "Wird gesendet..." : "Nicht verifiziert"}
+                      {verificationSending ? t("sending") : t("notVerified")}
                     </span>
                     {!verificationSending && (
-                      <span className="text-text-muted text-xs">(Klicken zum Senden)</span>
+                      <span className="text-text-muted text-xs">{t("clickToSend")}</span>
                     )}
                   </button>
                 )}
@@ -137,24 +137,21 @@ export default function SettingsAccountPage() {
               <Trash2 className="text-error h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-error font-semibold">Gefahrenzone</h3>
-              <p className="text-text-muted text-sm">Unwiderrufliche Aktionen</p>
+              <h3 className="text-error font-semibold">{t("dangerZone")}</h3>
+              <p className="text-text-muted text-sm">{t("dangerZoneDesc")}</p>
             </div>
           </div>
         </div>
         <div className="p-5">
           {!showDeleteConfirm ? (
             <>
-              <p className="text-text-secondary mb-4 text-sm">
-                Das Löschen Ihres Kontos ist unwiderruflich. Alle Ihre Daten, hochgeladenen
-                Materialien und Käufe werden permanent gelöscht.
-              </p>
+              <p className="text-text-secondary mb-4 text-sm">{t("deleteWarning")}</p>
               <button
                 onClick={() => setShowDeleteConfirm(true)}
                 className="border-error text-error hover:bg-error hover:text-text-on-accent inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
               >
                 <Trash2 className="h-4 w-4" />
-                Konto löschen
+                {t("deleteAccount")}
               </button>
             </>
           ) : (
@@ -162,23 +159,21 @@ export default function SettingsAccountPage() {
               <div className="bg-error/10 flex items-start gap-3 rounded-lg p-4">
                 <AlertTriangle className="text-error mt-0.5 h-5 w-5 flex-shrink-0" />
                 <div>
-                  <p className="text-error text-sm font-semibold">Sind Sie sicher?</p>
-                  <p className="text-text-secondary mt-1 text-sm">
-                    Diese Aktion kann nicht rückgängig gemacht werden. Alle Materialien, Bewertungen
-                    und Kontodaten werden gelöscht.
-                  </p>
+                  <p className="text-error text-sm font-semibold">{t("areYouSure")}</p>
+                  <p className="text-text-secondary mt-1 text-sm">{t("deleteConfirmDesc")}</p>
                 </div>
               </div>
               <div>
-                <label className="text-text-muted mb-1 block text-xs">
-                  Tippen Sie <strong>LÖSCHEN</strong> zur Bestätigung
-                </label>
+                <label
+                  className="text-text-muted mb-1 block text-xs"
+                  dangerouslySetInnerHTML={{ __html: t("typeToConfirm") }}
+                />
                 <input
                   type="text"
                   value={deleteConfirmText}
                   onChange={(e) => setDeleteConfirmText(e.target.value)}
                   className="border-border bg-surface text-text w-full rounded-lg border px-3 py-2 text-sm"
-                  placeholder="LÖSCHEN"
+                  placeholder={t("confirmKeyword")}
                 />
               </div>
               {deleteError && <p className="text-error text-sm">{deleteError}</p>}
@@ -191,7 +186,7 @@ export default function SettingsAccountPage() {
                   }}
                   className="border-border text-text hover:bg-surface-elevated rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
                 >
-                  Abbrechen
+                  {t("cancel")}
                 </button>
                 <button
                   onClick={async () => {
@@ -205,18 +200,18 @@ export default function SettingsAccountPage() {
                         await signOut({ callbackUrl: "/" });
                       } else {
                         const data = await response.json();
-                        setDeleteError(data.error || "Fehler beim Löschen");
+                        setDeleteError(data.error || t("deleteError"));
                       }
                     } catch {
-                      setDeleteError("Netzwerkfehler");
+                      setDeleteError(t("networkError"));
                     } finally {
                       setDeleting(false);
                     }
                   }}
-                  disabled={deleteConfirmText !== "LÖSCHEN" || deleting}
+                  disabled={deleteConfirmText !== t("confirmKeyword") || deleting}
                   className="bg-error text-text-on-accent hover:bg-error/90 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  {deleting ? "Wird gelöscht..." : "Endgültig löschen"}
+                  {deleting ? t("deleting") : t("deletePermanently")}
                 </button>
               </div>
             </div>

@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { FileText } from "lucide-react";
-import { useAccountData } from "@/lib/hooks/useAccountData";
 import { DashboardMaterialCard } from "@/components/ui/DashboardMaterialCard";
 import type { UploadedItem } from "@/lib/types/account";
 
 export default function AccountUploadsPage() {
-  useAccountData();
+  const t = useTranslations("accountPage.uploads");
 
   const [uploadedItems, setUploadedItems] = useState<UploadedItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -49,15 +49,15 @@ export default function AccountUploadsPage() {
     <div className="border-border bg-surface rounded-xl border p-6">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="text-text text-xl font-semibold">Meine Uploads</h2>
-          <p className="text-text-muted mt-1 text-sm">Materialien, die Sie hochgeladen haben</p>
+          <h2 className="text-text text-xl font-semibold">{t("title")}</h2>
+          <p className="text-text-muted mt-1 text-sm">{t("subtitle")}</p>
         </div>
         <Link
           href="/hochladen"
           className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors"
         >
           <span>+</span>
-          Neues Material
+          {t("newMaterial")}
         </Link>
       </div>
 
@@ -65,7 +65,7 @@ export default function AccountUploadsPage() {
       <div className="mb-6 flex flex-col gap-3 sm:flex-row">
         <input
           type="text"
-          placeholder="Uploads durchsuchen..."
+          placeholder={t("search")}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary flex-1 rounded-lg border px-4 py-2 text-sm focus:ring-1 focus:outline-none"
@@ -75,10 +75,10 @@ export default function AccountUploadsPage() {
           onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
           className="border-border bg-bg text-text rounded-lg border px-3 py-2 text-sm"
         >
-          <option value="newest">Neueste zuerst</option>
-          <option value="oldest">Älteste zuerst</option>
-          <option value="title">Alphabetisch</option>
-          <option value="popular">Beliebteste</option>
+          <option value="newest">{t("sort.newest")}</option>
+          <option value="oldest">{t("sort.oldest")}</option>
+          <option value="title">{t("sort.title")}</option>
+          <option value="popular">{t("sort.popular")}</option>
         </select>
       </div>
 
@@ -114,9 +114,9 @@ export default function AccountUploadsPage() {
               badge={{
                 label:
                   item.status === "VERIFIED"
-                    ? "Verifiziert"
+                    ? t("statusVerified")
                     : item.status === "PENDING"
-                      ? "Ausstehend"
+                      ? t("statusPending")
                       : item.status,
                 variant:
                   item.status === "VERIFIED"
@@ -139,17 +139,13 @@ export default function AccountUploadsPage() {
       ) : (
         <div className="py-12 text-center">
           <FileText className="text-text-faint mx-auto mb-4 h-16 w-16" />
-          <h3 className="text-text mb-2 text-lg font-medium">
-            Noch keine hochgeladenen Materialien
-          </h3>
-          <p className="text-text-muted mb-4">
-            Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen.
-          </p>
+          <h3 className="text-text mb-2 text-lg font-medium">{t("empty")}</h3>
+          <p className="text-text-muted mb-4">{t("emptyDescription")}</p>
           <Link
             href="/hochladen"
             className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
           >
-            Material hochladen
+            {t("uploadFirst")}
           </Link>
         </div>
       )}

@@ -52,7 +52,7 @@ function AccountLayoutInner({ children }: { children: ReactNode }) {
   const tCommon = useTranslations("common");
   const t = useTranslations("accountPage");
   const accountData = useAccountDataProvider();
-  const { userData, stats, followedSellers, loading } = accountData;
+  const { userData, stats, followedSellers, unreadNotifications, loading } = accountData;
   const pathname = usePathname();
   const activeTab = pathToTab(pathname);
   const tabBarRef = useRef<HTMLDivElement>(null);
@@ -232,7 +232,11 @@ function AccountLayoutInner({ children }: { children: ReactNode }) {
             {/* Desktop Sidebar */}
             <div className="hidden w-72 flex-shrink-0 lg:block">
               <div className="sticky top-24">
-                <AccountSidebar userData={displayData} stats={displayStats} />
+                <AccountSidebar
+                  userData={displayData}
+                  stats={displayStats}
+                  unreadNotifications={unreadNotifications}
+                />
               </div>
             </div>
 
