@@ -23,18 +23,12 @@ export type ApiErrorCode = (typeof API_ERROR_CODES)[keyof typeof API_ERROR_CODES
 // ERROR RESPONSES
 // ============================================================
 
-export function unauthorized(message = "Nicht authentifiziert") {
-  return NextResponse.json(
-    { error: message, code: API_ERROR_CODES.UNAUTHORIZED },
-    { status: 401 }
-  );
+export function unauthorized(message = "Unauthorized") {
+  return NextResponse.json({ error: message, code: API_ERROR_CODES.UNAUTHORIZED }, { status: 401 });
 }
 
-export function forbidden(message = "Zugriff verweigert") {
-  return NextResponse.json(
-    { error: message, code: API_ERROR_CODES.FORBIDDEN },
-    { status: 403 }
-  );
+export function forbidden(message = "Forbidden") {
+  return NextResponse.json({ error: message, code: API_ERROR_CODES.FORBIDDEN }, { status: 403 });
 }
 
 export function badRequest(message: string, details?: Record<string, unknown>) {
@@ -44,14 +38,11 @@ export function badRequest(message: string, details?: Record<string, unknown>) {
   );
 }
 
-export function notFound(message = "Nicht gefunden") {
-  return NextResponse.json(
-    { error: message, code: API_ERROR_CODES.NOT_FOUND },
-    { status: 404 }
-  );
+export function notFound(message = "Not found") {
+  return NextResponse.json({ error: message, code: API_ERROR_CODES.NOT_FOUND }, { status: 404 });
 }
 
-export function serverError(message = "Interner Serverfehler") {
+export function serverError(message = "Internal server error") {
   return NextResponse.json(
     { error: message, code: API_ERROR_CODES.INTERNAL_ERROR },
     { status: 500 }

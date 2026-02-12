@@ -125,7 +125,18 @@ export function CommentCard({
 
   const handleReplySubmitted = (newReply: Reply | Comment) => {
     // The API returns a Reply object when creating a reply
-    setLocalReplies([...localReplies, newReply as Reply]);
+    // Only add if it's actually a Reply (no replyCount field)
+    const reply: Reply =
+      "replyCount" in newReply
+        ? {
+            id: newReply.id,
+            content: newReply.content,
+            createdAt: newReply.createdAt,
+            updatedAt: newReply.updatedAt,
+            user: newReply.user,
+          }
+        : newReply;
+    setLocalReplies([...localReplies, reply]);
     setShowReplyForm(false);
     setShowReplies(true);
     onReplyAdded?.();

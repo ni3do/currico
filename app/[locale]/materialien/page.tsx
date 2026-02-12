@@ -174,7 +174,7 @@ export default function MaterialienPage() {
       }
       return false;
     },
-    [isAuthenticated, router, t, toast]
+    [isAuthenticated, t, toast]
   );
 
   // State for followed profile IDs
@@ -481,6 +481,19 @@ export default function MaterialienPage() {
     },
     [toast, t]
   );
+
+  // Abort in-flight requests on unmount
+  useEffect(() => {
+    return () => {
+      materialsAbortRef.current?.abort();
+      profilesAbortRef.current?.abort();
+    };
+  }, []);
+
+  // Clear fetch error when filters change (so stale errors don't persist across tab switches)
+  useEffect(() => {
+    setFetchError(null);
+  }, [filters]);
 
   // Fetch materials when showMaterials is true (debounced to prevent flicker on rapid filter changes)
   useEffect(() => {

@@ -51,7 +51,8 @@ export async function GET(request: NextRequest) {
   if (!rateLimitResult.success) {
     return NextResponse.json(
       {
-        error: "Zu viele Anfragen. Bitte versuchen Sie es später erneut.",
+        error: "Too many requests",
+        code: "RATE_LIMITED",
         retryAfter: rateLimitResult.retryAfter,
       },
       {
@@ -350,7 +351,7 @@ export async function GET(request: NextRequest) {
           allowedExtensions.push(...formatMapping[format]);
         }
       }
-      const orConditions: any[] = allowedExtensions.map((ext) => ({
+      const orConditions: Record<string, unknown>[] = allowedExtensions.map((ext) => ({
         file_url: { endsWith: `.${ext}` },
       }));
       // "other" = files whose extension is NOT in any known format
@@ -555,7 +556,7 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error fetching materials:", error);
-    return NextResponse.json({ error: "Fehler beim Laden der Materialien" }, { status: 500 });
+    return serverError();
   }
 }
 
@@ -572,7 +573,8 @@ export async function POST(request: NextRequest) {
   if (!rateLimitResult.success) {
     return NextResponse.json(
       {
-        error: "Zu viele Anfragen. Bitte versuchen Sie es später erneut.",
+        error: "Too many requests",
+        code: "RATE_LIMITED",
         retryAfter: rateLimitResult.retryAfter,
       },
       {
@@ -625,7 +627,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (!parsed.success) {
-      return badRequest("Ungültige Eingabe", { details: parsed.error.flatten().fieldErrors });
+      return badRequest("Invalid input", { details: parsed.error.flatten().fieldErrors });
     }
 
     const data = parsed.data;
@@ -638,12 +640,13 @@ export async function POST(request: NextRequest) {
       if (uploadCheck.missing && uploadCheck.missing.length > 0) {
         // For paid resources without Stripe, give a helpful message
         if (data.price > 0 && uploadCheck.missing.includes("STRIPE_VERIFICATION")) {
-          return badRequest(
-            "Um kostenpflichtige Materialien zu verkaufen, müssen Sie zuerst Ihr Stripe-Konto einrichten",
-            { missing: uploadCheck.missing }
-          );
+          return badRequest("Stripe verification required for paid resources", {
+            code: "STRIPE_REQUIRED",
+            missing: uploadCheck.missing,
+          });
         }
-        return badRequest("Bitte vervollständigen Sie Ihr Profil", {
+        return badRequest("Profile incomplete", {
+          code: "PROFILE_INCOMPLETE",
           missing: uploadCheck.missing,
         });
       }
@@ -654,13 +657,13 @@ export async function POST(request: NextRequest) {
     const file = formData.get("file") as File | null;
     const previewFile = formData.get("preview") as File | null;
 
-    if (!file) return badRequest("Keine Datei hochgeladen");
+    if (!file) return badRequest("No file uploaded");
 
     // Validate main file
-    if (file.size > MAX_MATERIAL_FILE_SIZE) return badRequest("Datei zu gross (maximal 50MB)");
+    if (file.size > MAX_MATERIAL_FILE_SIZE) return badRequest("File too large (max 50MB)");
 
     if (!isAllowedMaterialType(file.type, data.resourceType || "other")) {
-      return badRequest(`Ungültiger Dateityp für ${data.resourceType}`);
+      return badRequest(`Invalid file type for ${data.resourceType}`);
     }
 
     // Read file buffer and validate magic bytes
@@ -668,7 +671,7 @@ export async function POST(request: NextRequest) {
     const fileBuffer = Buffer.from(fileBytes);
 
     if (!validateMagicBytes(fileBuffer, file.type)) {
-      return badRequest("Dateiinhalt stimmt nicht mit dem Dateityp überein");
+      return badRequest("File content does not match file type");
     }
 
     // Get storage provider
@@ -726,12 +729,12 @@ export async function POST(request: NextRequest) {
       // User uploaded a preview file
       if (previewFile.size > MAX_PREVIEW_FILE_SIZE) {
         await cleanupOnError(mainFileResult.key);
-        return badRequest("Vorschaubild zu gross (maximal 5MB)");
+        return badRequest("Preview image too large (max 5MB)");
       }
 
       if (!isAllowedPreviewType(previewFile.type)) {
         await cleanupOnError(mainFileResult.key);
-        return badRequest("Ungültiger Vorschaubild-Typ (JPEG, PNG oder WebP)");
+        return badRequest("Invalid preview type (JPEG, PNG or WebP)");
       }
 
       const previewBytes = await previewFile.arrayBuffer();
@@ -739,7 +742,7 @@ export async function POST(request: NextRequest) {
 
       if (!validateMagicBytes(previewBuffer, previewFile.type)) {
         await cleanupOnError(mainFileResult.key);
-        return badRequest("Vorschaubild-Inhalt stimmt nicht mit dem Dateityp überein");
+        return badRequest("Preview content does not match file type");
       }
 
       const previewExt = getExtensionFromMimeType(previewFile.type);
@@ -856,7 +859,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       {
-        message: "Material erfolgreich erstellt",
+        message: "Material created successfully",
         material: updatedMaterial,
       },
       { status: 201 }
