@@ -83,7 +83,7 @@ function AccountLayoutInner({ children }: { children: ReactNode }) {
   // Fallback data from session
   const displayData = userData || {
     id: "",
-    name: session?.user?.name || "Benutzer",
+    name: session?.user?.name || t("userFallback"),
     email: session?.user?.email || "",
     emailVerified: null,
     image: session?.user?.image || null,

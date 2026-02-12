@@ -2649,7 +2649,19 @@
     "sellerMaterials": "{count} Materialien",
     "cycle": "Zyklus {number}",
     "downloads": "{count} Downloads",
-    "pages": "{count, plural, one {# Seite} other {# Seiten}}"
+    "pages": "{count, plural, one {# Seite} other {# Seiten}}",
+    "downloadStarted": "Download gestartet",
+    "a11y": {
+      "followSeller": "Verkäufer folgen",
+      "unfollowSeller": "Verkäufer entfolgen",
+      "downloadFree": "Material kostenlos herunterladen",
+      "addToWishlist": "Zur Wunschliste hinzufügen",
+      "removeFromWishlist": "Von Wunschliste entfernen",
+      "shareLink": "Link teilen",
+      "reportMaterial": "Material melden",
+      "closeDialog": "Dialog schliessen",
+      "scrollToPurchase": "Zum Kaufbereich scrollen"
+    }
   },
   "profile": {
     "notFound": "Profil nicht gefunden",
@@ -2958,7 +2970,12 @@
     "loginPrompt": "Melden Sie sich an",
     "loginSuffix": ", um eine Bewertung zu schreiben.",
     "noReviewsBeFirst": "Noch keine Bewertungen — seien Sie der Erste!",
-    "options": "Optionen"
+    "options": "Optionen",
+    "saveError": "Fehler beim Speichern der Bewertung",
+    "ratingLabel": "Wie bewerten Sie dieses Material?",
+    "titlePlaceholder": "Kurze Zusammenfassung Ihrer Bewertung",
+    "contentPlaceholder": "Beschreiben Sie Ihre Erfahrung mit diesem Material...",
+    "charCount": "{count}/{max} Zeichen"
   },
   "likes": {
     "like": "Gefällt mir",
@@ -3062,6 +3079,7 @@
     "title": "Mein Konto",
     "welcomeBack": "Willkommen zurück, {name}",
     "welcomeGeneric": "Willkommen zurück",
+    "userFallback": "Benutzer",
     "memberSince": "Mitglied seit {date}",
     "roleBuyer": "Käufer",
     "roleSeller": "Verkäufer",

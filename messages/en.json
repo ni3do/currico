@@ -2649,7 +2649,19 @@
     "sellerMaterials": "{count} materials",
     "cycle": "Cycle {number}",
     "downloads": "{count} downloads",
-    "pages": "{count, plural, one {# page} other {# pages}}"
+    "pages": "{count, plural, one {# page} other {# pages}}",
+    "downloadStarted": "Download started",
+    "a11y": {
+      "followSeller": "Follow seller",
+      "unfollowSeller": "Unfollow seller",
+      "downloadFree": "Download material for free",
+      "addToWishlist": "Add to wishlist",
+      "removeFromWishlist": "Remove from wishlist",
+      "shareLink": "Share link",
+      "reportMaterial": "Report material",
+      "closeDialog": "Close dialog",
+      "scrollToPurchase": "Scroll to purchase section"
+    }
   },
   "profile": {
     "notFound": "Profile not found",
@@ -2930,6 +2942,11 @@
     "loginPrompt": "Sign in",
     "loginSuffix": " to write a review.",
     "noReviewsBeFirst": "No reviews yet — be the first!",
+    "saveError": "Error saving the review",
+    "ratingLabel": "How do you rate this material?",
+    "titlePlaceholder": "Brief summary of your review",
+    "contentPlaceholder": "Describe your experience with this material...",
+    "charCount": "{count}/{max} characters",
     "options": "Options"
   },
   "likes": {
@@ -3034,6 +3051,7 @@
     "title": "My Account",
     "welcomeBack": "Welcome back, {name}",
     "welcomeGeneric": "Welcome back",
+    "userFallback": "User",
     "memberSince": "Member since {date}",
     "roleBuyer": "Buyer",
     "roleSeller": "Seller",

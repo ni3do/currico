@@ -144,16 +144,16 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Hardcoded deutsche Strings: "Material nicht gefunden", "Fehler beim Laden", "Dieses Material wird noch überprüft", "Keine Vorschau verfügbar", "PDF", "Verifiziert", "Wird überprüft", "Folge ich", "+Folgen", "Anonym", "Ähnliche Materialien" — alle in i18n auslagern
 - [x] Browser-native Dialoge (`confirm()`/`alert()`) bei Kommentar-Löschung durch i18n-fähige Modals ersetzen — replaced 11 instances across admin pages, sammlungen, and SellerCommentsSection with useToast() and ConfirmDialog
 - [x] Report-Modal: Texte komplett hardcoded (Titel, Gründe, Placeholder, Buttons, Erfolgsmeldung) — benötigt eigenen i18n-Namespace
-- [ ] Report-Modal schliesst nach 2 Sekunden automatisch — zu schnell, Benutzer könnte verwirrt sein
+- [x] Report-Modal schliesst nach 2 Sekunden automatisch — zu schnell, Benutzer könnte verwirrt sein — increased to 4 seconds
 - [ ] Typ-Duplikation: Interfaces für Material, Comment, Review in mehreren Komponenten definiert — in gemeinsame `lib/types/` auslagern
 - [ ] PreviewGallery: Bilder mit raw `<img>` statt Next.js `<Image>` — kein Lazy Loading, keine responsive Sizes, kein Blur-Placeholder
 - [ ] Seller-Avatar mit raw `<img>` statt `<Image>` Component geladen
-- [ ] Keine `aria-label` auf Download-, Wishlist-, Follow-, Report-Buttons — unzugänglich für Screenreader
+- [x] Keine `aria-label` auf Download-, Wishlist-, Follow-, Report-Buttons — unzugänglich für Screenreader — added i18n-based aria-labels to all action buttons (follow, download, wishlist, share, report, close dialog, mobile sticky bar)
 - [ ] PreviewGallery Lightbox hat keinen Focus-Trap — Tab-Navigation kann hinter die Lightbox gelangen
 - [ ] `window.location.href` für unauthentifizierte Redirects statt Next.js Router — inkonsistent und nicht SEO-freundlich
 - [ ] Kein Duplicate-Prevention beim Melden — Benutzer können Material mehrfach hintereinander melden
-- [ ] Review-Labels ("Schlecht", "Mangelhaft", "Okay", "Gut", "Ausgezeichnet") sind hardcoded — nicht lokalisierbar
-- [ ] Keine Feedback wenn Download startet (`window.open()`) — kein Bestätigungs-Toast
+- [x] Review-Labels ("Schlecht", "Mangelhaft", "Okay", "Gut", "Ausgezeichnet") sind hardcoded — nicht lokalisierbar — ReviewForm.tsx fully migrated to i18n with reviews.stars.\* keys
+- [x] Keine Feedback wenn Download startet (`window.open()`) — kein Bestätigungs-Toast — added success toast + error toast on download
 - [ ] Kein Schema.org Markup (`Product`, `AggregateRating`, `BreadcrumbList`) — fehlende Rich Snippets in Suchmaschinen
 - [ ] Redundante Datenfelder: `subject`/`subjects` und `cycle`/`cycles` — sollte normalisiert werden
 - [ ] Kommentar-/Review-Like-Button State wird nach Vote nicht sofort aktualisiert — fehlendes Optimistic Update
@@ -634,6 +634,34 @@ Legende: [x] = erledigt, [ ] = offen
 - [ ] Viele `<div>`-Container sollten semantische Elemente sein (`<section>`, `<nav>`, `<article>`) für bessere Accessibility
 - [ ] Keine Schema.org-Daten auf den meisten Seiten — fehlende Rich Snippets
 - [ ] API-Fehler werden oft als generische "Ein Fehler ist aufgetreten" angezeigt — keine spezifischen Hilfe für 401/403/404/500
+
+---
+
+## Final Touch — Consistency, Hierarchy & Motion Audit
+
+**Task:** Perform a comprehensive Consistency, Hierarchy, and Motion Audit of the website design. The goal is to ensure the entire site follows a strict "Design System" logic and feels like a premium, cohesive product.
+
+### Design Context & Standards
+
+- **The Vibe:** Sleek SaaS / Modern Ed-Tech Platform
+- **Typography:** System font stack (H1: distinct sizing, Body: readable) — Ensure hierarchy is distinct and readable
+- **Button & UI Rules:** Catppuccin theme tokens, `rounded-xl`/`rounded-full` border radii, solid primary color, ghost secondary buttons
+- **Layout Logic:** Responsive grid, specific padding/margins between sections, Tailwind semantic classes (`text-text`, `bg-surface`, `border-border`)
+- **Animation Style:** Subtle fades, hover scale-ups, AnimatePresence transitions — minimal and cohesive
+
+### Audit Criteria
+
+1. **Uniform Hierarchy:** Does the visual weight (size/boldness) of elements guide the eye correctly on every page?
+2. **Structural Consistency:** Are section heights, container widths, and "white space" uniform across the entire site?
+3. **Motion Cohesion:** Are the animations (hovers, page transitions, load-ins) following the same easing and duration? Nothing should feel "jittery" or out of place.
+4. **UI Integrity:** Are buttons, icons, and form fields identical in behavior and appearance everywhere?
+
+### Required Deliverables
+
+- [ ] **Consistency Audit:** A list of any "breaks" in the rules (e.g., "Page B has a different header margin than Page A")
+- [ ] **Motion Report:** Evaluate if the animations feel "uniform." If one page uses a bounce and another a linear fade, flag it
+- [ ] **Ideas for Improvement:** Beyond just fixing errors, give 3-5 creative ideas to elevate the design. Focus on "Micro-interactions" or layout tweaks that would make the site feel more "World Class"
+- [ ] **UX Polish Score:** A rating from 1-10 on the professional "Modern-ness" of the current setup
 
 ---
 

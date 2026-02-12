@@ -185,8 +185,10 @@ export default function MaterialDetailPage() {
     try {
       // Open the download in a new tab
       window.open(`/api/materials/${id}/download`, "_blank");
+      toast(t("downloadStarted"), "success");
     } catch (error) {
       console.error("Download error:", error);
+      toast(tCommon("errors.generic"), "error");
     } finally {
       setDownloading(false);
     }
@@ -270,7 +272,7 @@ export default function MaterialDetailPage() {
         setReportStatus("idle");
         setReportReason("inappropriate");
         setReportDescription("");
-      }, 2000);
+      }, 4000);
     } catch (error) {
       setReportStatus("error");
       setReportErrorMessage(error instanceof Error ? error.message : t("report.errorUnexpected"));
@@ -611,6 +613,7 @@ export default function MaterialDetailPage() {
                       toast(tCommon("toast.error"), "error");
                     }
                   }}
+                  aria-label={isFollowing ? t("a11y.unfollowSeller") : t("a11y.followSeller")}
                   className={`flex-shrink-0 rounded-lg border px-3 py-1.5 text-sm font-medium transition-all ${
                     isFollowing
                       ? "border-primary bg-primary-light text-primary"
@@ -661,6 +664,7 @@ export default function MaterialDetailPage() {
                   <button
                     onClick={handleDownload}
                     disabled={downloading}
+                    aria-label={t("a11y.downloadFree")}
                     className="btn-primary w-full py-4 text-lg font-semibold disabled:opacity-50"
                   >
                     {downloading ? "..." : t("downloadFree")}
@@ -678,6 +682,7 @@ export default function MaterialDetailPage() {
                 <button
                   onClick={handleWishlistToggle}
                   disabled={wishlistLoading}
+                  aria-label={isWishlisted ? t("a11y.removeFromWishlist") : t("a11y.addToWishlist")}
                   className={`mt-4 flex w-full items-center justify-center gap-2 rounded-lg border-2 px-4 py-2.5 font-medium transition-all disabled:opacity-50 ${
                     isWishlisted
                       ? "border-error bg-error/10 text-error"
@@ -706,6 +711,7 @@ export default function MaterialDetailPage() {
                     navigator.clipboard.writeText(window.location.href);
                     toast(t("linkCopied"), "success");
                   }}
+                  aria-label={t("a11y.shareLink")}
                   className="text-text-muted hover:text-primary inline-flex items-center gap-1.5 text-sm transition-colors"
                 >
                   <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -720,6 +726,7 @@ export default function MaterialDetailPage() {
                 </button>
                 <button
                   onClick={() => setShowReportModal(true)}
+                  aria-label={t("a11y.reportMaterial")}
                   className="text-text-muted hover:text-error hover:bg-error/10 inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm transition-colors"
                 >
                   <Flag className="h-4 w-4" />
@@ -796,6 +803,7 @@ export default function MaterialDetailPage() {
                 <h3 className="text-text text-xl font-semibold">{t("report.title")}</h3>
                 <button
                   onClick={handleCloseReportModal}
+                  aria-label={t("a11y.closeDialog")}
                   className="text-text-muted hover:text-text"
                 >
                   <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -934,6 +942,7 @@ export default function MaterialDetailPage() {
               <button
                 onClick={handleDownload}
                 disabled={downloading}
+                aria-label={t("a11y.downloadFree")}
                 className="btn-action px-6 py-3 font-semibold disabled:opacity-50"
               >
                 {downloading ? "..." : t("download")}
@@ -944,6 +953,7 @@ export default function MaterialDetailPage() {
                   const purchaseSection = document.querySelector("[data-purchase-section]");
                   purchaseSection?.scrollIntoView({ behavior: "smooth", block: "center" });
                 }}
+                aria-label={t("a11y.scrollToPurchase")}
                 className="btn-action px-6 py-3 font-semibold"
               >
                 {t("buy")}
