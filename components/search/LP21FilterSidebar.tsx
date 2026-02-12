@@ -9,14 +9,12 @@ import {
   X,
   Search,
   BookOpen,
-  Tag,
   FileText,
   FileType,
   Presentation,
   Table,
-  Package,
-  File,
   StickyNote,
+  Image as ImageIcon,
   Loader2,
   Users,
 } from "lucide-react";
@@ -35,43 +33,18 @@ import type {
   CurriculumSearchResult,
 } from "@/lib/curriculum-types";
 
-// Price options (labels are i18n keys resolved at render time)
-const PRICE_OPTIONS = [
-  { id: "free", value: 0 },
-  { id: "under5", value: 5 },
-  { id: "under10", value: 10 },
-  { id: "under25", value: 25 },
-] as const;
-
-// Format options
+// Format options (labelKey resolved via i18n at render time)
 const FORMAT_OPTIONS = [
-  { id: "pdf", label: "PDF", icon: FileText },
-  { id: "word", label: "Word", icon: FileType },
-  { id: "ppt", label: "PowerPoint", icon: Presentation },
-  { id: "excel", label: "Excel", icon: Table },
-  { id: "onenote", label: "OneNote", icon: StickyNote },
-] as const;
-
-// Material scope options (labels resolved via i18n at render time)
-const MATERIAL_SCOPE_OPTIONS = [
-  { id: "single", icon: File },
-  { id: "bundle", icon: Package },
+  { id: "pdf", labelKey: "formatPdf", icon: FileText },
+  { id: "word", labelKey: "formatWord", icon: FileType },
+  { id: "ppt", labelKey: "formatPpt", icon: Presentation },
+  { id: "excel", labelKey: "formatExcel", icon: Table },
+  { id: "onenote", labelKey: "formatOnenote", icon: StickyNote },
+  { id: "image", labelKey: "formatImage", icon: ImageIcon },
 ] as const;
 
 // Translation function type
 type TranslationFn = ReturnType<typeof useTranslations>;
-
-// Helper to get price label from translation function
-function getPriceLabel(t: TranslationFn, option: { id: string; value: number }): string {
-  if (option.id === "free") return t("sidebar.priceFree");
-  return t("sidebar.priceUnder", { amount: option.value });
-}
-
-// Helper to get scope label from translation function
-function getScopeLabel(t: TranslationFn, id: string): string {
-  if (id === "single") return t("sidebar.scopeSingle");
-  return t("sidebar.scopeBundle");
-}
 
 // ============ COLLAPSIBLE SECTION ============
 interface CollapsibleSectionProps {
@@ -175,6 +148,14 @@ export function LP21FilterSidebar({
   const [localSearchQuery, setLocalSearchQuery] = useState(filters.searchQuery);
   const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Refs for latest filters/onFiltersChange to avoid stale closures in debounced callbacks
+  const filtersRef = useRef(filters);
+  const onFiltersChangeRef = useRef(onFiltersChange);
+  useEffect(() => {
+    filtersRef.current = filters;
+    onFiltersChangeRef.current = onFiltersChange;
+  });
+
   // Sync local value when parent resets search (e.g. "clear search" button, suggestion click)
   // Uses the React-recommended "store previous prop in state" pattern to avoid useEffect
   const [prevSearchQuery, setPrevSearchQuery] = useState(filters.searchQuery);
@@ -247,16 +228,30 @@ export function LP21FilterSidebar({
   // Handlers
   const handleZyklusChange = useCallback(
     (zyklusId: number | null) => {
-      // Clear lower-level selections when Zyklus changes
+      const newZyklus = filters.zyklus === zyklusId ? null : zyklusId;
+      // Smart reset: keep fachbereich if it exists in the new Zyklus
+      let keepFachbereich = false;
+      let keepKompetenzbereich = false;
+      if (newZyklus !== null && filters.fachbereich) {
+        const newFachbereiche = getFachbereicheByZyklus(newZyklus);
+        const matchedFb = newFachbereiche.find((f) => f.code === filters.fachbereich);
+        keepFachbereich = !!matchedFb;
+        // Also validate kompetenzbereich still exists under this fachbereich
+        if (keepFachbereich && matchedFb && filters.kompetenzbereich) {
+          keepKompetenzbereich = matchedFb.kompetenzbereiche.some(
+            (kb) => kb.code === filters.kompetenzbereich
+          );
+        }
+      }
       onFiltersChange({
         ...filters,
-        zyklus: filters.zyklus === zyklusId ? null : zyklusId,
-        fachbereich: null,
-        kompetenzbereich: null,
-        kompetenz: null,
+        zyklus: newZyklus,
+        fachbereich: keepFachbereich ? filters.fachbereich : null,
+        kompetenzbereich: keepKompetenzbereich ? filters.kompetenzbereich : null,
+        kompetenz: keepKompetenzbereich ? filters.kompetenz : null,
       });
     },
-    [filters, onFiltersChange]
+    [filters, onFiltersChange, getFachbereicheByZyklus]
   );
 
   const handleFachbereichChange = useCallback(
@@ -301,36 +296,33 @@ export function LP21FilterSidebar({
     [filters, onFiltersChange]
   );
 
-  const handleSearchChange = useCallback(
-    (query: string) => {
-      // Update local value immediately (no lag while typing)
-      setLocalSearchQuery(query);
+  const handleSearchChange = useCallback((query: string) => {
+    // Update local value immediately (no lag while typing)
+    setLocalSearchQuery(query);
 
-      // Parse the query for smart suggestions (instant, local only)
-      if (query.length >= 2) {
-        const parsed = parseSearchQuery(query);
-        if (parsed.detectedTerms.length > 0) {
-          setParsedQuery(parsed);
-        } else {
-          setParsedQuery(null);
-        }
+    // Parse the query for smart suggestions (instant, local only)
+    if (query.length >= 2) {
+      const parsed = parseSearchQuery(query);
+      if (parsed.detectedTerms.length > 0) {
+        setParsedQuery(parsed);
       } else {
         setParsedQuery(null);
       }
+    } else {
+      setParsedQuery(null);
+    }
 
-      // Debounce the API call (300ms)
-      if (searchDebounceRef.current) {
-        clearTimeout(searchDebounceRef.current);
-      }
-      searchDebounceRef.current = setTimeout(() => {
-        onFiltersChange({
-          ...filters,
-          searchQuery: query,
-        });
-      }, 300);
-    },
-    [filters, onFiltersChange]
-  );
+    // Debounce the API call (300ms)
+    if (searchDebounceRef.current) {
+      clearTimeout(searchDebounceRef.current);
+    }
+    searchDebounceRef.current = setTimeout(() => {
+      onFiltersChangeRef.current({
+        ...filtersRef.current,
+        searchQuery: query,
+      });
+    }, 300);
+  }, []);
 
   // Apply smart search suggestions
   const handleApplySmartSearch = useCallback(() => {
@@ -437,70 +429,6 @@ export function LP21FilterSidebar({
     setExpandedKompetenzbereiche(new Set());
   }, [onFiltersChange, filters.showMaterials, filters.showCreators]);
 
-  const handleRemoveFilter = useCallback(
-    (type: FilterType, value?: string) => {
-      switch (type) {
-        case "zyklus":
-          onFiltersChange({
-            ...filters,
-            zyklus: null,
-            fachbereich: null,
-            kompetenzbereich: null,
-            kompetenz: null,
-          });
-          break;
-        case "fachbereich":
-          onFiltersChange({
-            ...filters,
-            fachbereich: null,
-            kompetenzbereich: null,
-            kompetenz: null,
-          });
-          break;
-        case "kompetenzbereich":
-          onFiltersChange({
-            ...filters,
-            kompetenzbereich: null,
-            kompetenz: null,
-          });
-          break;
-        case "kompetenz":
-          onFiltersChange({
-            ...filters,
-            kompetenz: null,
-          });
-          break;
-        case "dialect":
-          onFiltersChange({
-            ...filters,
-            dialect: null,
-          });
-          break;
-        case "price":
-          onFiltersChange({
-            ...filters,
-            priceType: null,
-            maxPrice: null,
-          });
-          break;
-        case "format":
-          // Remove specific format if value provided, otherwise clear all
-          onFiltersChange({
-            ...filters,
-            formats: value ? filters.formats.filter((f) => f !== value) : [],
-          });
-          break;
-        case "materialScope":
-          onFiltersChange({
-            ...filters,
-            materialScope: null,
-          });
-          break;
-      }
-    },
-    [filters, onFiltersChange]
-  );
-
   const toggleFachbereichExpansion = useCallback((code: string) => {
     setExpandedFachbereiche((prev) => {
       // If already expanded, collapse it
@@ -525,34 +453,6 @@ export function LP21FilterSidebar({
     });
   }, []);
 
-  // New filter handlers
-  const handlePriceTypeChange = useCallback(
-    (priceType: string | null) => {
-      // Find the price option to get its value
-      const option = PRICE_OPTIONS.find((o) => o.id === priceType);
-      const newPriceType = filters.priceType === priceType ? null : priceType;
-
-      onFiltersChange({
-        ...filters,
-        priceType: newPriceType,
-        // Set slider to the option's value for smooth snapping
-        maxPrice: newPriceType && option ? option.value : null,
-      });
-    },
-    [filters, onFiltersChange]
-  );
-
-  const handleMaxPriceChange = useCallback(
-    (maxPrice: number) => {
-      onFiltersChange({
-        ...filters,
-        priceType: null, // Clear preset when using slider
-        maxPrice: maxPrice,
-      });
-    },
-    [filters, onFiltersChange]
-  );
-
   const handleFormatToggle = useCallback(
     (formatId: string) => {
       const newFormats = filters.formats.includes(formatId)
@@ -561,16 +461,6 @@ export function LP21FilterSidebar({
       onFiltersChange({
         ...filters,
         formats: newFormats,
-      });
-    },
-    [filters, onFiltersChange]
-  );
-
-  const handleMaterialScopeChange = useCallback(
-    (scope: string | null) => {
-      onFiltersChange({
-        ...filters,
-        materialScope: filters.materialScope === scope ? null : scope,
       });
     },
     [filters, onFiltersChange]
@@ -603,19 +493,6 @@ export function LP21FilterSidebar({
         />
 
         <div className="divider my-5" />
-
-        {/* Active Filter Chips */}
-        <AnimatePresence>
-          {hasActiveFilters && (
-            <ActiveFilterChips
-              filters={filters}
-              fachbereiche={fachbereiche}
-              zyklen={zyklen}
-              onRemoveFilter={handleRemoveFilter}
-              t={t}
-            />
-          )}
-        </AnimatePresence>
 
         {/* Search Input */}
         <div className="relative mb-5">
@@ -740,16 +617,9 @@ export function LP21FilterSidebar({
 
             {/* Format Filter */}
             <CollapsibleSection title={t("sidebar.formatSectionLabel")}>
-              <FormatFilter selectedFormats={filters.formats} onFormatToggle={handleFormatToggle} />
-            </CollapsibleSection>
-
-            <div className="divider my-5" />
-
-            {/* Material Scope Filter */}
-            <CollapsibleSection title={t("sidebar.scopeLabel")}>
-              <MaterialScopeFilter
-                selectedScope={filters.materialScope}
-                onScopeChange={handleMaterialScopeChange}
+              <FormatFilter
+                selectedFormats={filters.formats}
+                onFormatToggle={handleFormatToggle}
                 t={t}
               />
             </CollapsibleSection>
@@ -923,205 +793,6 @@ function DialectToggle({ selectedDialect, onDialectChange, t }: DialectTogglePro
         );
       })}
     </div>
-  );
-}
-
-// ============ ACTIVE FILTER CHIPS ============
-type FilterType =
-  | "zyklus"
-  | "fachbereich"
-  | "kompetenzbereich"
-  | "kompetenz"
-  | "dialect"
-  | "price"
-  | "format"
-  | "materialScope";
-
-interface ActiveFilterChipsProps {
-  filters: LP21FilterState;
-  fachbereiche: Fachbereich[];
-  zyklen: Zyklus[];
-  onRemoveFilter: (type: FilterType, value?: string) => void;
-  t: TranslationFn;
-}
-
-function ActiveFilterChips({
-  filters,
-  fachbereiche,
-  zyklen,
-  onRemoveFilter,
-  t,
-}: ActiveFilterChipsProps) {
-  const chips: {
-    type: FilterType;
-    label: string;
-    color: string;
-    value?: string;
-  }[] = [];
-
-  // Neutral grey for non-curriculum filters (Catppuccin overlay)
-  const NEUTRAL_GREY = "#7c7f93";
-
-  // Get the selected Fachbereich for color inheritance
-  const selectedFb = filters.fachbereich
-    ? fachbereiche.find((f) => f.code === filters.fachbereich)
-    : null;
-
-  // Always show Zyklus if selected
-  if (filters.zyklus !== null) {
-    const zyklus = zyklen.find((z) => z.id === filters.zyklus);
-    if (zyklus) {
-      chips.push({
-        type: "zyklus",
-        label: zyklus.shortName,
-        color: "#1e66f5", // Primary blue for Zyklus
-      });
-    }
-  }
-
-  // For Fachbereich hierarchy: only show the deepest selected level
-  // Priority: kompetenz > kompetenzbereich > fachbereich
-  if (filters.kompetenz) {
-    // Show only the most specific: Kompetenz
-    let kompetenzColor = selectedFb?.color || "#1e66f5";
-    for (const fb of fachbereiche) {
-      for (const kb of fb.kompetenzbereiche) {
-        if (kb.kompetenzen.some((k) => k.code === filters.kompetenz)) {
-          kompetenzColor = fb.color;
-          break;
-        }
-      }
-    }
-    chips.push({
-      type: "kompetenz",
-      label: filters.kompetenz,
-      color: kompetenzColor,
-    });
-  } else if (filters.kompetenzbereich) {
-    // Show only Kompetenzbereich
-    const parentFb = fachbereiche.find((fb) =>
-      fb.kompetenzbereiche.some((kb) => kb.code === filters.kompetenzbereich)
-    );
-    chips.push({
-      type: "kompetenzbereich",
-      label: filters.kompetenzbereich,
-      color: parentFb?.color || selectedFb?.color || "#1e66f5",
-    });
-  } else if (filters.fachbereich && selectedFb) {
-    // Show only Fachbereich
-    chips.push({
-      type: "fachbereich",
-      label: selectedFb.shortName,
-      color: selectedFb.color,
-    });
-  }
-
-  // Dialect filter chip
-  if (filters.dialect !== null) {
-    chips.push({
-      type: "dialect",
-      label: filters.dialect === "SWISS" ? t("sidebar.dialectCH") : t("sidebar.dialectDE"),
-      color: NEUTRAL_GREY,
-    });
-  }
-
-  // Price filter chip
-  if (filters.priceType !== null || filters.maxPrice !== null) {
-    const priceOption = PRICE_OPTIONS.find((o) => o.id === filters.priceType);
-    const priceLabel = priceOption
-      ? getPriceLabel(t, priceOption)
-      : filters.maxPrice !== null
-        ? t("sidebar.priceUnder", { amount: filters.maxPrice })
-        : "";
-    if (priceLabel) {
-      chips.push({
-        type: "price",
-        label: priceLabel,
-        color: NEUTRAL_GREY,
-      });
-    }
-  }
-
-  // Format filter chips (one chip per selected format)
-  if (filters.formats.length > 0) {
-    filters.formats.forEach((formatId) => {
-      const format = FORMAT_OPTIONS.find((f) => f.id === formatId);
-      if (format) {
-        chips.push({
-          type: "format",
-          label: format.label,
-          color: NEUTRAL_GREY,
-          value: formatId,
-        });
-      }
-    });
-  }
-
-  // Material scope filter chip
-  if (filters.materialScope !== null) {
-    const scope = MATERIAL_SCOPE_OPTIONS.find((s) => s.id === filters.materialScope);
-    if (scope) {
-      chips.push({
-        type: "materialScope",
-        label: getScopeLabel(t, scope.id),
-        color: NEUTRAL_GREY,
-      });
-    }
-  }
-
-  if (chips.length === 0) return null;
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, height: 0 }}
-      animate={{ opacity: 1, height: "auto" }}
-      exit={{ opacity: 0, height: 0 }}
-      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-      className="mb-5 overflow-hidden"
-    >
-      <div className="bg-surface/50 border-border/50 rounded-lg border p-3">
-        <div className="mb-2 flex items-center gap-2">
-          <Tag className="text-text-muted h-3.5 w-3.5" />
-          <span className="text-text-muted text-xs font-medium">{t("sidebar.activeFilters")}</span>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <AnimatePresence mode="popLayout">
-            {chips.map((chip, index) => (
-              <motion.span
-                key={chip.value ? `${chip.type}-${chip.value}` : chip.type}
-                initial={{ opacity: 0, scale: 0.9, y: -8 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9, y: -8 }}
-                transition={{
-                  duration: 0.25,
-                  delay: index * 0.04,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                className="group inline-flex items-center gap-1.5 rounded-full py-1.5 pr-1.5 pl-3 text-xs font-semibold shadow-sm transition-shadow duration-300 hover:shadow-md"
-                style={{
-                  backgroundColor: `${chip.color}18`,
-                  color: chip.color,
-                  border: `1px solid ${chip.color}30`,
-                }}
-              >
-                {chip.label}
-                <motion.button
-                  onClick={() => onRemoveFilter(chip.type, chip.value)}
-                  className="flex h-5 w-5 items-center justify-center rounded-full transition-colors"
-                  style={{
-                    backgroundColor: `${chip.color}20`,
-                  }}
-                  whileHover={{ scale: 1.1, backgroundColor: `${chip.color}35` }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <X className="h-3 w-3" />
-                </motion.button>
-              </motion.span>
-            ))}
-          </AnimatePresence>
-        </div>
-      </div>
-    </motion.div>
   );
 }
 
@@ -1424,109 +1095,14 @@ function KompetenzbereichItem({
   );
 }
 
-// ============ PRICE FILTER ============
-interface PriceFilterProps {
-  selectedPriceType: string | null;
-  maxPrice: number | null;
-  onPriceTypeChange: (priceType: string | null) => void;
-  onMaxPriceChange: (maxPrice: number) => void;
-  t: TranslationFn;
-}
-
-function PriceFilter({
-  selectedPriceType,
-  maxPrice,
-  onPriceTypeChange,
-  onMaxPriceChange,
-  t,
-}: PriceFilterProps) {
-  const MAX_PRICE = 50;
-  // Calculate the effective value for display and slider position
-  const effectiveValue = maxPrice ?? MAX_PRICE;
-  const sliderPercent = (effectiveValue / MAX_PRICE) * 100;
-
-  return (
-    <div>
-      {/* Price preset buttons */}
-      <div className="mb-4 flex flex-wrap gap-1.5">
-        {PRICE_OPTIONS.map((option, index) => {
-          // Check if this option is selected based on priceType OR if slider matches the value
-          const isSelected =
-            selectedPriceType === option.id ||
-            (selectedPriceType === null && maxPrice === option.value);
-          return (
-            <motion.button
-              key={option.id}
-              onClick={() => onPriceTypeChange(option.id)}
-              className={`relative rounded-full px-3 py-1 text-xs font-medium transition-colors ${
-                isSelected
-                  ? "bg-primary text-white"
-                  : "bg-surface border-border text-text-secondary hover:border-primary/50 hover:text-text border"
-              }`}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: index * 0.03 }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              {getPriceLabel(t, option)}
-            </motion.button>
-          );
-        })}
-      </div>
-
-      {/* Price slider */}
-      <div className="space-y-2">
-        <div className="text-text-muted flex items-center justify-between text-xs">
-          <span>{t("sidebar.maxPrice")}</span>
-          <motion.span
-            className="text-text font-medium"
-            key={effectiveValue}
-            initial={{ scale: 1.1 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.15 }}
-          >
-            CHF {effectiveValue}
-          </motion.span>
-        </div>
-        <div className="relative flex h-5 items-center">
-          {/* Track background */}
-          <div className="bg-surface-hover absolute h-2 w-full rounded-full" />
-          {/* Filled track - account for thumb width (16px = 1rem) */}
-          <motion.div
-            className="bg-primary absolute h-2 rounded-full"
-            style={{ left: 0 }}
-            initial={false}
-            animate={{ width: `calc(${sliderPercent}% + ${(100 - sliderPercent) * 0.08}px)` }}
-            transition={{ duration: 0.15, ease: "easeOut" }}
-          />
-          {/* Range input */}
-          <input
-            type="range"
-            min="0"
-            max={MAX_PRICE}
-            step="1"
-            value={effectiveValue}
-            onChange={(e) => onMaxPriceChange(Number(e.target.value))}
-            className="[&::-moz-range-thumb]:bg-primary [&::-webkit-slider-thumb]:bg-primary relative z-10 h-5 w-full cursor-pointer appearance-none bg-transparent [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:shadow-md [&::-moz-range-thumb]:transition-transform [&::-moz-range-thumb]:duration-200 [&::-moz-range-thumb]:hover:scale-110 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:duration-200 [&::-webkit-slider-thumb]:hover:scale-110"
-          />
-        </div>
-        <div className="text-text-faint flex justify-between text-xs">
-          <span>CHF 0</span>
-          <span>CHF {MAX_PRICE}</span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // ============ FORMAT FILTER ============
 interface FormatFilterProps {
   selectedFormats: string[];
   onFormatToggle: (formatId: string) => void;
+  t: TranslationFn;
 }
 
-function FormatFilter({ selectedFormats, onFormatToggle }: FormatFilterProps) {
+function FormatFilter({ selectedFormats, onFormatToggle, t }: FormatFilterProps) {
   return (
     <div className="grid grid-cols-2 gap-2">
       {FORMAT_OPTIONS.map((format, index) => {
@@ -1539,7 +1115,7 @@ function FormatFilter({ selectedFormats, onFormatToggle }: FormatFilterProps) {
             className={`relative flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors ${
               isSelected
                 ? "border-primary bg-primary/10 text-primary"
-                : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:text-text"
+                : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:bg-surface-hover hover:text-text"
             }`}
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -1548,54 +1124,7 @@ function FormatFilter({ selectedFormats, onFormatToggle }: FormatFilterProps) {
             whileTap={{ scale: 0.98 }}
           >
             <Icon className="h-4 w-4" />
-            <span className="font-medium">{format.label}</span>
-          </motion.button>
-        );
-      })}
-    </div>
-  );
-}
-
-// ============ MATERIAL SCOPE FILTER ============
-interface MaterialScopeFilterProps {
-  selectedScope: string | null;
-  onScopeChange: (scope: string | null) => void;
-  t: TranslationFn;
-}
-
-function MaterialScopeFilter({ selectedScope, onScopeChange, t }: MaterialScopeFilterProps) {
-  return (
-    <div className="flex gap-2">
-      {MATERIAL_SCOPE_OPTIONS.map((option, index) => {
-        const Icon = option.icon;
-        const isSelected = selectedScope === option.id;
-        return (
-          <motion.button
-            key={option.id}
-            onClick={() => onScopeChange(option.id)}
-            className={`relative flex flex-1 items-center justify-center gap-2 rounded-lg border-2 px-3 py-2.5 text-sm transition-colors ${
-              isSelected
-                ? "border-primary bg-primary/10 text-primary"
-                : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:text-text"
-            }`}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.05 }}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            {isSelected && (
-              <motion.div
-                layoutId="activeMaterialScope"
-                className="bg-primary/10 absolute inset-0 rounded-lg"
-                initial={false}
-                transition={{ type: "spring", stiffness: 400, damping: 30 }}
-              />
-            )}
-            <span className="relative z-10 flex items-center gap-2">
-              <Icon className="h-4 w-4" />
-              <span className="font-medium">{getScopeLabel(t, option.id)}</span>
-            </span>
+            <span className="font-medium">{t(`sidebar.${format.labelKey}`)}</span>
           </motion.button>
         );
       })}

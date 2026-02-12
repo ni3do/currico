@@ -71,3 +71,49 @@ export function MaterialGridSkeleton({ count = 6 }: { count?: number }) {
     </div>
   );
 }
+
+/** Skeleton for profile cards */
+export function ProfileCardSkeleton() {
+  return (
+    <div className="card overflow-hidden">
+      <div className="p-5">
+        {/* Avatar + name */}
+        <div className="mb-4 flex items-center gap-3">
+          <Skeleton className="h-12 w-12 rounded-full" />
+          <div className="flex-1">
+            <Skeleton className="mb-1.5 h-4 w-32" />
+            <Skeleton className="h-3 w-20" />
+          </div>
+        </div>
+        {/* Bio */}
+        <Skeleton className="mb-2 h-3 w-full" />
+        <Skeleton className="mb-4 h-3 w-2/3" />
+        {/* Subject pills */}
+        <div className="mb-4 flex gap-1.5">
+          <Skeleton className="h-6 w-16 rounded-full" />
+          <Skeleton className="h-6 w-20 rounded-full" />
+          <Skeleton className="h-6 w-14 rounded-full" />
+        </div>
+        {/* Footer stats */}
+        <div className="border-border-subtle flex items-center justify-between border-t pt-3">
+          <div className="flex gap-4">
+            <Skeleton className="h-4 w-10" />
+            <Skeleton className="h-4 w-10" />
+          </div>
+          <Skeleton className="h-5 w-5 rounded-full" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Grid of profile card skeletons */
+export function ProfileGridSkeleton({ count = 6 }: { count?: number }) {
+  return (
+    <div className="grid gap-5 sm:grid-cols-2 sm:gap-6 xl:grid-cols-3">
+      {Array.from({ length: count }).map((_, i) => (
+        <ProfileCardSkeleton key={i} />
+      ))}
+    </div>
+  );
+}

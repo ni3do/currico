@@ -11,7 +11,7 @@ import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { MaterialCard } from "@/components/ui/MaterialCard";
-import { MaterialGridSkeleton } from "@/components/ui/Skeleton";
+import { MaterialGridSkeleton, ProfileGridSkeleton } from "@/components/ui/Skeleton";
 import { EmptySearchState } from "@/components/ui/EmptySearchState";
 import { ProfileCard } from "@/components/ui/ProfileCard";
 import { LP21FilterSidebar, type LP21FilterState } from "@/components/search/LP21FilterSidebar";
@@ -500,8 +500,8 @@ export default function MaterialienPage() {
       try {
         const params = new URLSearchParams();
         if (currentFilters.searchQuery) params.set("q", currentFilters.searchQuery);
-        if (currentFilters.fachbereich) params.set("subject", currentFilters.fachbereich);
-        if (currentFilters.zyklus) params.set("cycle", currentFilters.zyklus.toString());
+        if (currentFilters.fachbereich) params.set("subjects", currentFilters.fachbereich);
+        if (currentFilters.zyklus) params.set("cycles", currentFilters.zyklus.toString());
         if (sort && sort !== "newest") params.set("sort", sort);
         if (page > 1) params.set("page", page.toString());
         params.set("limit", "12");
@@ -586,10 +586,10 @@ export default function MaterialienPage() {
             {filters.showMaterials && (
               <Link
                 href="/hochladen"
-                className="bg-primary text-text-on-accent hover:bg-primary-hover hidden items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors sm:inline-flex"
+                className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors sm:px-4"
               >
                 <Upload className="h-4 w-4" />
-                {t("header.uploadButton")}
+                <span className="hidden sm:inline">{t("header.uploadButton")}</span>
               </Link>
             )}
           </div>
@@ -931,7 +931,11 @@ export default function MaterialienPage() {
                 </div>
               ) : /* Unified Grid */
               isLoading ? (
-                <MaterialGridSkeleton count={6} />
+                filters.showCreators ? (
+                  <ProfileGridSkeleton count={6} />
+                ) : (
+                  <MaterialGridSkeleton count={6} />
+                )
               ) : hasNoItems ? (
                 <EmptySearchState
                   filters={filters}

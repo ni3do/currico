@@ -40,7 +40,7 @@ import { sanitizeSearchQuery, isLP21Code } from "@/lib/search-utils";
  *   - mi_integrated: "true" to show only M&I integrated materials
  *   - lehrmittel: filter by lehrmittel ID
  *   - maxPrice: maximum price in CHF (e.g., "10" for CHF 10)
- *   - formats: comma-separated format IDs (pdf,word,ppt,excel,image,canva)
+ *   - formats: comma-separated format IDs (pdf,word,ppt,excel,image,onenote)
  */
 export async function GET(request: NextRequest) {
   // Rate limiting check
@@ -329,7 +329,7 @@ export async function GET(request: NextRequest) {
         ppt: ["ppt", "pptx"],
         excel: ["xls", "xlsx"],
         image: ["jpg", "jpeg", "png", "gif", "webp"],
-        canva: ["canva"],
+        onenote: ["one", "onetoc2"],
       };
       const allowedExtensions: string[] = [];
       for (const format of formatList) {
