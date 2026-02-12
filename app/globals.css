@@ -40,7 +40,7 @@
   --color-action-hover: var(--ctp-sapphire);
 
   /* Price */
-  --color-price: var(--ctp-peach);
+  --color-price: var(--ctp-blue);
 
   /* Status Colors */
   --color-success: var(--ctp-green);
@@ -68,8 +68,8 @@
   --color-subject-ttg: var(--ctp-peach);
   --color-subject-pu: #6c6f85;
 
-  /* Price Badge Color (warm accent) */
-  --color-price-badge: var(--ctp-peach);
+  /* Price Badge Color */
+  --color-price-badge: var(--ctp-blue);
 
   /* Focus */
   --color-focus: var(--ctp-lavender);
@@ -248,9 +248,9 @@
   --color-action-hover: var(--ctp-sapphire);
   --color-action-light: color-mix(in srgb, var(--ctp-teal) 15%, transparent);
 
-  /* Price/Highlight - Peach for CHF prices */
-  --color-price: var(--ctp-peach);
-  --color-price-light: color-mix(in srgb, var(--ctp-peach) 15%, transparent);
+  /* Price/Highlight - Blue for CHF prices */
+  --color-price: var(--ctp-blue);
+  --color-price-light: color-mix(in srgb, var(--ctp-blue) 15%, transparent);
 
   /* =================================================================
      SUBJECT COLORS (Lehrplan 21 Fächer) - All Fachbereiche
