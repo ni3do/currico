@@ -102,7 +102,7 @@
       "popular": "Beliebteste"
     },
     "badges": {
-      "verified": "Verifiziert",
+      "verified": "Geprüft",
       "pending": "Ausstehend",
       "rejected": "Abgelehnt"
     },
@@ -626,7 +626,7 @@
       "qualityFilter": {
         "label": "Qualität",
         "all": "Alle",
-        "verified": "Verifiziert",
+        "verified": "Geprüft",
         "aiChecked": "KI-Geprüft"
       },
       "priceFilter": {
@@ -673,7 +673,7 @@
       }
     },
     "card": {
-      "verified": "Verifiziert",
+      "verified": "Geprüft",
       "aiChecked": "KI-Geprüft",
       "documents": "Dok.",
       "free": "Gratis",
@@ -764,7 +764,7 @@
         "actions": "Aktionen"
       },
       "statusLabels": {
-        "verified": "Verifiziert",
+        "verified": "Geprüft",
         "aiChecked": "KI-Geprüft",
         "pending": "Ausstehend"
       },
@@ -887,7 +887,7 @@
       "infoText": "Neue Uploads haben den Status \"Ausstehend\" und sind nur für den Besitzer sichtbar. Nach der Verifizierung werden Dokumente öffentlich und für alle Benutzer zugänglich.",
       "all": "Alle",
       "pending": "Ausstehend",
-      "verified": "Verifiziert",
+      "verified": "Geprüft",
       "draft": "Entwurf",
       "documentsFound": "{count} Dokumente gefunden",
       "title": "Titel",
@@ -919,7 +919,7 @@
       "resetToPending": "Zurücksetzen",
       "close": "Schliessen",
       "statusPending": "Ausstehend",
-      "statusVerified": "Verifiziert",
+      "statusVerified": "Geprüft",
       "statusRejected": "Abgelehnt",
       "errorVerifying": "Fehler beim Verifizieren",
       "errorRejecting": "Fehler beim Ablehnen",
@@ -1422,7 +1422,10 @@
       "curriculumSubtitle": "Wählen Sie Zyklus, Fach und Kompetenzen",
       "priceTitle": "Preis festlegen",
       "priceSubtitle": "Wählen Sie, ob Ihr Material kostenlos oder kostenpflichtig ist",
-      "filesSubtitle": "Laden Sie Ihre Dateien hoch und bestätigen Sie die rechtlichen Anforderungen"
+      "filesSubtitle": "Laden Sie Ihre Dateien hoch und bestätigen Sie die rechtlichen Anforderungen",
+      "navLabel": "Upload-Schritte",
+      "incomplete": "unvollständig",
+      "complete": "abgeschlossen"
     },
     "draft": {
       "saved": "Entwurf gespeichert",
@@ -1670,7 +1673,27 @@
       "errorParseResponse": "Fehler beim Verarbeiten der Antwort.",
       "loginAgain": "Erneut anmelden",
       "close": "Schliessen",
-      "retry": "Erneut versuchen"
+      "retry": "Erneut versuchen",
+      "errorProfileIncomplete": "Bitte vervollständigen Sie Ihr Profil, um Materialien hochzuladen.",
+      "errorProfileIncompleteLink": "Profil bearbeiten",
+      "errorEmailNotVerified": "Bitte bestätigen Sie Ihre E-Mail-Adresse, um Materialien hochzuladen.",
+      "errorEmailNotVerifiedLink": "Zu den Einstellungen",
+      "errorStripeRequired": "Um kostenpflichtige Materialien zu verkaufen, müssen Sie sich als Verkäufer registrieren.",
+      "errorStripeRequiredLink": "Verkäufer werden"
+    },
+    "preview": {
+      "title": "Material-Vorschau",
+      "description": "So wird Ihr Material auf der Plattform angezeigt:",
+      "summaryTitle": "Zusammenfassung",
+      "cancel": "Zurück zum Bearbeiten",
+      "confirm": "Jetzt veröffentlichen",
+      "price": "Preis",
+      "type": "Materialtyp",
+      "cycle": "Zyklus",
+      "subject": "Fachbereich",
+      "file": "Datei",
+      "free": "Gratis",
+      "cycleLabel": "Zyklus {number}"
     }
   },
   "becomeSeller": {
@@ -2672,7 +2695,7 @@
     "retry": "Erneut versuchen",
     "pendingReview": "Dieses Material wird noch überprüft",
     "pendingReviewDescription": "Das Material ist sichtbar, aber noch nicht von unserem Team verifiziert worden.",
-    "verified": "Verifiziert",
+    "verified": "Geprüft",
     "pendingStatus": "Wird überprüft",
     "following": "Folge ich",
     "follow": "+ Folgen",
@@ -3140,7 +3163,7 @@
     "loadError": "Fehler beim Laden",
     "loadErrorDescription": "Das Bundle konnte nicht geladen werden. Bitte versuchen Sie es später erneut.",
     "retry": "Erneut versuchen",
-    "verified": "Verifiziert",
+    "verified": "Geprüft",
     "discount": "{percent}% Rabatt",
     "savings": "Sie sparen {amount} ({percent}%)",
     "buyBundle": "Bundle kaufen - {price}",
@@ -3215,7 +3238,7 @@
       "discoverButton": "Materialien entdecken",
       "badgePurchased": "Gekauft",
       "badgeFree": "Gratis",
-      "badgeVerified": "Verifiziert",
+      "badgeVerified": "Geprüft",
       "errorLoading": "Fehler beim Laden der Bibliothek",
       "retry": "Erneut versuchen"
     },
@@ -3243,7 +3266,7 @@
         "actions": "Aktionen"
       },
       "status": {
-        "verified": "Verifiziert",
+        "verified": "Geprüft",
         "pending": "Ausstehend",
         "rejected": "Abgelehnt"
       },
@@ -3277,7 +3300,7 @@
         "title": "Alphabetisch",
         "popular": "Beliebteste"
       },
-      "statusVerified": "Verifiziert",
+      "statusVerified": "Geprüft",
       "statusPending": "Ausstehend",
       "empty": "Noch keine hochgeladenen Materialien",
       "emptyDescription": "Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen.",
@@ -3429,7 +3452,7 @@
       "view": "Ansehen",
       "edit": "Bearbeiten",
       "delete": "Löschen",
-      "verified": "Verifiziert",
+      "verified": "Geprüft",
       "aiChecked": "KI-Geprüft",
       "pending": "Ausstehend",
       "draft": "Entwurf",

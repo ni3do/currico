@@ -1,5 +1,7 @@
 "use client";
 
+import { useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { useUploadWizard, Step } from "./UploadWizardContext";
 import { FileText, BookOpen, Tag, Upload, Check, AlertTriangle } from "lucide-react";
 
@@ -11,47 +13,52 @@ interface StepConfig {
   description: string;
 }
 
-const STEPS: StepConfig[] = [
-  {
-    step: 1,
-    label: "Grundinformationen",
-    shortLabel: "Basics",
-    icon: FileText,
-    description: "Titel, Beschreibung, Sprache",
-  },
-  {
-    step: 2,
-    label: "Lehrplan-Zuordnung",
-    shortLabel: "Lehrplan",
-    icon: BookOpen,
-    description: "Zyklus, Fach, Kompetenzen",
-  },
-  {
-    step: 3,
-    label: "Eigenschaften & Preis",
-    shortLabel: "Preis",
-    icon: Tag,
-    description: "Preistyp, Lizenz",
-  },
-  {
-    step: 4,
-    label: "Dateien & Rechtliches",
-    shortLabel: "Dateien",
-    icon: Upload,
-    description: "Upload, Bestätigungen",
-  },
-];
-
 export function StepNavigationBar() {
   const { currentStep, goToStep, canNavigateToStep, isStepValid, isStepComplete, getFieldErrors } =
     useUploadWizard();
+  const tSteps = useTranslations("uploadWizard.steps");
+  const tValidation = useTranslations("uploadWizard.validation");
+
+  const steps: StepConfig[] = useMemo(
+    () => [
+      {
+        step: 1 as Step,
+        label: tSteps("basics"),
+        shortLabel: tSteps("basicsShort"),
+        icon: FileText,
+        description: tSteps("basicsDescription"),
+      },
+      {
+        step: 2 as Step,
+        label: tSteps("curriculum"),
+        shortLabel: tSteps("curriculumShort"),
+        icon: BookOpen,
+        description: tSteps("curriculumDescription"),
+      },
+      {
+        step: 3 as Step,
+        label: tSteps("price"),
+        shortLabel: tSteps("priceShort"),
+        icon: Tag,
+        description: tSteps("priceDescription"),
+      },
+      {
+        step: 4 as Step,
+        label: tSteps("files"),
+        shortLabel: tSteps("filesShort"),
+        icon: Upload,
+        description: tSteps("filesDescription"),
+      },
+    ],
+    [tSteps]
+  );
 
   return (
     <div className="mb-8">
       {/* Desktop Navigation */}
       <div className="hidden sm:block">
-        <nav className="flex items-center justify-center" aria-label="Upload-Schritte">
-          {STEPS.map((stepConfig, index) => {
+        <nav className="flex items-center justify-center" aria-label={tSteps("navLabel")}>
+          {steps.map((stepConfig, index) => {
             const { step, label, icon: Icon, description } = stepConfig;
             const isCurrent = step === currentStep;
             const isVisited = canNavigateToStep(step);
@@ -80,7 +87,7 @@ export function StepNavigationBar() {
                               : "border-border bg-surface text-text-muted cursor-not-allowed"
                     } `}
                     aria-current={isCurrent ? "step" : undefined}
-                    aria-label={`${label}${hasWarning ? " (unvollständig)" : isComplete ? " (abgeschlossen)" : ""}`}
+                    aria-label={`${label}${hasWarning ? ` (${tSteps("incomplete")})` : isComplete ? ` (${tSteps("complete")})` : ""}`}
                   >
                     {hasWarning ? (
                       <AlertTriangle className="h-6 w-6" />
@@ -125,14 +132,14 @@ export function StepNavigationBar() {
                             ))}
                             {errors.length > 3 && (
                               <li className="text-text-muted text-xs">
-                                +{errors.length - 3} weitere Fehler
+                                {tValidation("moreErrors", { count: errors.length - 3 })}
                               </li>
                             )}
                           </ul>
                         ) : (
                           <div className="text-success flex items-center gap-1.5 text-xs">
                             <Check className="h-3 w-3" />
-                            Alle Angaben vollständig
+                            {tValidation("allComplete")}
                           </div>
                         )}
                       </div>
@@ -141,7 +148,7 @@ export function StepNavigationBar() {
                 </div>
 
                 {/* Connector Line */}
-                {index < STEPS.length - 1 && (
+                {index < steps.length - 1 && (
                   <div className="bg-border relative mx-4 h-1 w-16 overflow-hidden rounded-full lg:w-24">
                     <div
                       className={`absolute inset-y-0 left-0 rounded-full transition-all duration-500 ease-out ${
@@ -165,7 +172,7 @@ export function StepNavigationBar() {
       {/* Mobile Navigation */}
       <div className="sm:hidden">
         <div className="flex items-center justify-between px-2">
-          {STEPS.map((stepConfig) => {
+          {steps.map((stepConfig) => {
             const { step, shortLabel, icon: Icon } = stepConfig;
             const isCurrent = step === currentStep;
             const isVisited = canNavigateToStep(step);
@@ -225,7 +232,8 @@ export function StepNavigationBar() {
         {/* Current Step Indicator */}
         <div className="mt-3 text-center">
           <span className="text-text-muted text-sm">
-            Schritt {currentStep} von 4{currentStep === 4 && " – Fast geschafft!"}
+            {tSteps("progress", { current: currentStep, total: 4 })}
+            {currentStep === 4 && ` – ${tSteps("almostDone")}`}
           </span>
         </div>
       </div>

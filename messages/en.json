@@ -102,7 +102,7 @@
       "popular": "Most popular"
     },
     "badges": {
-      "verified": "Verified",
+      "verified": "Reviewed",
       "pending": "Pending",
       "rejected": "Rejected"
     },
@@ -626,7 +626,7 @@
       "qualityFilter": {
         "label": "Quality",
         "all": "All",
-        "verified": "Verified",
+        "verified": "Reviewed",
         "aiChecked": "AI-Checked"
       },
       "priceFilter": {
@@ -673,7 +673,7 @@
       }
     },
     "card": {
-      "verified": "Verified",
+      "verified": "Reviewed",
       "aiChecked": "AI-Checked",
       "documents": "Docs",
       "free": "Free",
@@ -764,7 +764,7 @@
         "actions": "Actions"
       },
       "statusLabels": {
-        "verified": "Verified",
+        "verified": "Reviewed",
         "aiChecked": "AI-Checked",
         "pending": "Pending"
       },
@@ -887,7 +887,7 @@
       "infoText": "New uploads have the status \"Pending\" and are only visible to the owner. After verification, documents become public and accessible to all users.",
       "all": "All",
       "pending": "Pending",
-      "verified": "Verified",
+      "verified": "Reviewed",
       "draft": "Draft",
       "documentsFound": "{count} documents found",
       "title": "Title",
@@ -919,7 +919,7 @@
       "resetToPending": "Reset",
       "close": "Close",
       "statusPending": "Pending",
-      "statusVerified": "Verified",
+      "statusVerified": "Reviewed",
       "statusRejected": "Rejected",
       "errorVerifying": "Error verifying",
       "errorRejecting": "Error rejecting",
@@ -1422,7 +1422,10 @@
       "curriculumSubtitle": "Select cycle, subject and competencies",
       "priceTitle": "Set price",
       "priceSubtitle": "Choose whether your material is free or paid",
-      "filesSubtitle": "Upload your files and confirm the legal requirements"
+      "filesSubtitle": "Upload your files and confirm the legal requirements",
+      "navLabel": "Upload steps",
+      "incomplete": "incomplete",
+      "complete": "completed"
     },
     "draft": {
       "saved": "Draft saved",
@@ -1670,7 +1673,27 @@
       "errorParseResponse": "Error processing the response.",
       "loginAgain": "Log in again",
       "close": "Close",
-      "retry": "Try Again"
+      "retry": "Try Again",
+      "errorProfileIncomplete": "Please complete your profile to upload materials.",
+      "errorProfileIncompleteLink": "Edit Profile",
+      "errorEmailNotVerified": "Please verify your email address to upload materials.",
+      "errorEmailNotVerifiedLink": "Go to Settings",
+      "errorStripeRequired": "To sell paid materials, you need to register as a seller.",
+      "errorStripeRequiredLink": "Become a Seller"
+    },
+    "preview": {
+      "title": "Material Preview",
+      "description": "This is how your material will appear on the platform:",
+      "summaryTitle": "Summary",
+      "cancel": "Back to Editing",
+      "confirm": "Publish Now",
+      "price": "Price",
+      "type": "Material Type",
+      "cycle": "Cycle",
+      "subject": "Subject",
+      "file": "File",
+      "free": "Free",
+      "cycleLabel": "Cycle {number}"
     }
   },
   "becomeSeller": {
@@ -2672,7 +2695,7 @@
     "retry": "Try again",
     "pendingReview": "This material is under review",
     "pendingReviewDescription": "The material is visible but has not yet been verified by our team.",
-    "verified": "Verified",
+    "verified": "Reviewed",
     "pendingStatus": "Under review",
     "following": "Following",
     "follow": "+ Follow",
@@ -3112,7 +3135,7 @@
     "loadError": "Loading error",
     "loadErrorDescription": "The bundle could not be loaded. Please try again later.",
     "retry": "Try again",
-    "verified": "Verified",
+    "verified": "Reviewed",
     "discount": "{percent}% off",
     "savings": "You save {amount} ({percent}%)",
     "buyBundle": "Buy bundle - {price}",
@@ -3187,7 +3210,7 @@
       "discoverButton": "Discover materials",
       "badgePurchased": "Purchased",
       "badgeFree": "Free",
-      "badgeVerified": "Verified",
+      "badgeVerified": "Reviewed",
       "errorLoading": "Failed to load library",
       "retry": "Try again"
     },
@@ -3215,7 +3238,7 @@
         "actions": "Actions"
       },
       "status": {
-        "verified": "Verified",
+        "verified": "Reviewed",
         "pending": "Pending",
         "rejected": "Rejected"
       },
@@ -3249,7 +3272,7 @@
         "title": "Alphabetical",
         "popular": "Most popular"
       },
-      "statusVerified": "Verified",
+      "statusVerified": "Reviewed",
       "statusPending": "Pending",
       "empty": "No uploaded materials yet",
       "emptyDescription": "Share your teaching materials with other teachers.",
@@ -3401,7 +3424,7 @@
       "view": "View",
       "edit": "Edit",
       "delete": "Delete",
-      "verified": "Verified",
+      "verified": "Reviewed",
       "aiChecked": "AI-Checked",
       "pending": "Pending",
       "draft": "Draft",

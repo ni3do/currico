@@ -21,6 +21,7 @@ import {
   FormSelect,
   FormCheckbox,
   RadioOption,
+  PublishPreviewModal,
 } from "@/components/upload";
 import { checkForEszett, replaceEszett } from "@/lib/validations/swiss-quality";
 import {
@@ -49,6 +50,7 @@ function UploadPageContent() {
   const tEszett = useTranslations("uploadWizard.eszett");
   const tNav = useTranslations("uploadWizard.navigation");
   const tSteps = useTranslations("uploadWizard.steps");
+  const tPreview = useTranslations("uploadWizard.preview");
   const {
     formData,
     updateFormData,
@@ -72,7 +74,10 @@ function UploadPageContent() {
   const [fileLoadingProgress, setFileLoadingProgress] = useState(0);
   const [isLoadingFiles, setIsLoadingFiles] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [errorLink, setErrorLink] = useState<string | null>(null);
+  const [errorLinkLabel, setErrorLinkLabel] = useState<string | null>(null);
   const [createdMaterialId, setCreatedMaterialId] = useState<string | null>(null);
+  const [showPreview, setShowPreview] = useState(false);
   const [showDraftToast, setShowDraftToast] = useState(false);
 
   const mainFileInputRef = useRef<HTMLInputElement>(null);
@@ -96,6 +101,32 @@ function UploadPageContent() {
       };
     }
   }, [hasDraft, formData.title]);
+
+  // Warn before tab close when form has unsaved data
+  useEffect(() => {
+    const hasFormData =
+      formData.title.trim() !== "" ||
+      formData.description.trim() !== "" ||
+      formData.cycle !== "" ||
+      formData.subject !== "" ||
+      files.length > 0;
+
+    if (!hasFormData || uploadStatus === "success") return;
+
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [
+    formData.title,
+    formData.description,
+    formData.cycle,
+    formData.subject,
+    files.length,
+    uploadStatus,
+  ]);
 
   // Eszett validation
   const eszettCheck = useMemo(() => {
@@ -188,9 +219,25 @@ function UploadPageContent() {
     }
   };
 
+  // Pre-publish: validate all steps then show preview modal
+  const handlePrePublish = () => {
+    for (let step = 1; step <= 4; step++) {
+      markStepTouched(step as 1 | 2 | 3 | 4);
+      const errors = getFieldErrors(step as 1 | 2 | 3 | 4);
+      if (errors.length > 0) {
+        setError(errors[0].message);
+        setUploadStatus("error");
+        return;
+      }
+    }
+    setShowPreview(true);
+  };
+
   // Publish
   const handlePublish = async () => {
     setError(null);
+    setErrorLink(null);
+    setErrorLinkLabel(null);
     setUploadStatus("uploading");
     setUploadProgress(0);
 
@@ -271,7 +318,23 @@ function UploadPageContent() {
         } else {
           try {
             const result = JSON.parse(xhr.responseText);
-            setError(result.error || tUpload("error"));
+            if (result.code === "PROFILE_INCOMPLETE" && result.missing) {
+              if (result.missing.includes("EMAIL_VERIFICATION")) {
+                setError(tUpload("errorEmailNotVerified"));
+                setErrorLink("/konto/settings");
+                setErrorLinkLabel(tUpload("errorEmailNotVerifiedLink"));
+              } else {
+                setError(tUpload("errorProfileIncomplete"));
+                setErrorLink("/konto/settings");
+                setErrorLinkLabel(tUpload("errorProfileIncompleteLink"));
+              }
+            } else if (result.code === "STRIPE_REQUIRED") {
+              setError(tUpload("errorStripeRequired"));
+              setErrorLink("/verkaeufer-werden");
+              setErrorLinkLabel(tUpload("errorStripeRequiredLink"));
+            } else {
+              setError(result.error || tUpload("error"));
+            }
           } catch {
             setError(`${tUpload("error")} (Status: ${xhr.status})`);
           }
@@ -722,6 +785,7 @@ function UploadPageContent() {
                           className="hidden"
                           accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
                           onChange={handleMainFilesChange}
+                          aria-label={tFields("mainFiles")}
                         />
                       </div>
                     ) : (
@@ -779,6 +843,7 @@ function UploadPageContent() {
                           className="hidden"
                           accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
                           onChange={handleMainFilesChange}
+                          aria-label={tFields("mainFiles")}
                         />
                       </div>
                     )}
@@ -828,6 +893,7 @@ function UploadPageContent() {
                         className="hidden"
                         accept="image/png,image/jpeg,image/webp"
                         onChange={handlePreviewFilesChange}
+                        aria-label={tFields("previewImage")}
                       />
                     </div>
                   </FormField>
@@ -1012,7 +1078,7 @@ function UploadPageContent() {
                 ) : (
                   <button
                     type="button"
-                    onClick={handlePublish}
+                    onClick={handlePrePublish}
                     disabled={!canPublish || uploadStatus !== "idle"}
                     className="from-primary to-primary-hover text-text-on-accent shadow-primary/25 hover:shadow-primary/30 rounded-xl bg-gradient-to-r px-8 py-3 font-semibold shadow-lg transition-all duration-200 hover:shadow-xl active:scale-[0.98] disabled:cursor-not-allowed disabled:from-gray-400 disabled:to-gray-500 disabled:opacity-50"
                   >
@@ -1032,6 +1098,25 @@ function UploadPageContent() {
 
       {/* Draft Restored Toast */}
       {showDraftToast && <DraftRestoredToast onDismiss={() => setShowDraftToast(false)} />}
+
+      {/* Pre-Publish Preview Modal */}
+      {showPreview && (
+        <PublishPreviewModal
+          title={formData.title}
+          subject={formData.subject}
+          cycle={formData.cycle}
+          price={formData.price}
+          priceType={formData.priceType as "free" | "paid"}
+          resourceType={formData.resourceType}
+          fileName={files[0]?.name || ""}
+          previewImageUrl={previewFiles[0] ? URL.createObjectURL(previewFiles[0]) : null}
+          onCancel={() => setShowPreview(false)}
+          onConfirm={() => {
+            setShowPreview(false);
+            handlePublish();
+          }}
+        />
+      )}
 
       {/* Upload Progress Toast — fixed bottom-right */}
       {uploadStatus !== "idle" && (
@@ -1070,6 +1155,8 @@ function UploadPageContent() {
                     onClick={() => {
                       setUploadStatus("idle");
                       setError(null);
+                      setErrorLink(null);
+                      setErrorLinkLabel(null);
                     }}
                     className="text-text-muted hover:text-text flex-shrink-0 p-1 transition-colors"
                     aria-label={tUpload("close")}
@@ -1108,6 +1195,8 @@ function UploadPageContent() {
                     onClick={() => {
                       setUploadStatus("idle");
                       setError(null);
+                      setErrorLink(null);
+                      setErrorLinkLabel(null);
                     }}
                     className="text-text-muted hover:text-text flex-shrink-0 p-1 transition-colors"
                     aria-label={tUpload("close")}
@@ -1120,6 +1209,8 @@ function UploadPageContent() {
                     onClick={() => {
                       setUploadStatus("idle");
                       setError(null);
+                      setErrorLink(null);
+                      setErrorLinkLabel(null);
                     }}
                     className="border-border text-text hover:bg-surface-elevated flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-colors"
                   >
@@ -1131,6 +1222,13 @@ function UploadPageContent() {
                       className="bg-primary text-text-on-accent hover:bg-primary-hover flex flex-1 items-center justify-center rounded-lg px-3 py-2 text-sm font-medium transition-colors"
                     >
                       {tUpload("loginAgain")}
+                    </Link>
+                  ) : errorLink ? (
+                    <Link
+                      href={errorLink}
+                      className="bg-primary text-text-on-accent hover:bg-primary-hover flex flex-1 items-center justify-center rounded-lg px-3 py-2 text-sm font-medium transition-colors"
+                    >
+                      {errorLinkLabel}
                     </Link>
                   ) : (
                     <button

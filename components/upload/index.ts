@@ -17,3 +17,4 @@ export {
   RadioOption,
 } from "./FormField";
 export { InfoTooltip, FIELD_TOOLTIP_KEYS, useFieldTooltip } from "./InfoTooltip";
+export { PublishPreviewModal } from "./PublishPreviewModal";

@@ -499,14 +499,14 @@ Legende: [x] = erledigt, [ ] = offen
 ### Formular-Validierung
 
 - [x] Titel-Limite auf 64 Zeichen — maxLength={64} on input + validation in UploadWizardContext
-- [ ] Fächer-Abkürzungen mindestens 2 Buchstaben
+- [x] Fächer-Abkürzungen mindestens 2 Buchstaben — enforced by design: subjects selected from LP21 data, not free-text
 - [x] Vorschaubild auf 5 MB limitieren — 5*1024*1024 check in hochladen/page.tsx
 - [x] Nur eine Datei aufs Mal hochladen — no `multiple` attribute on file input
-- [ ] Wenn zwei verschiedene Material-Typen hochgeladen → nicht erlauben (nur ein Typ)
+- [x] Wenn zwei verschiedene Material-Typen hochgeladen → nicht erlauben (nur ein Typ) — enforced by design: single dropdown for resourceType, single file input
 
 ### Kompetenzen
 
-- [ ] Kompetenz-Auswahl im gleichen Style und Layout wie Zyklus/Fach
+- [x] Kompetenz-Auswahl im gleichen Style und Layout wie Zyklus/Fach — EnhancedCurriculumSelector uses consistent card-based pattern (rounded-xl, border-2, same active state) for cycles, subjects, and competencies
 - [x] Maximal 5 Kompetenzen auswählen — MAX_COMPETENCIES = 5 in EnhancedCurriculumSelector
 
 ### Preise
@@ -516,34 +516,34 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Fehlermeldungen
 
-- [ ] "Profil vervollständigen" Fehlermeldung → Link zum Profil
-- [ ] Alle Fehlermeldungen mit Link zum Problem + Rechtschreibung prüfen
+- [x] "Profil vervollständigen" Fehlermeldung → Link zum Profil — structured error parsing (PROFILE_INCOMPLETE, STRIPE_REQUIRED) with i18n error messages and links to settings/become-seller pages
+- [x] Alle Fehlermeldungen mit Link zum Problem + Rechtschreibung prüfen — error toast shows actionable link buttons for profile/email/Stripe errors
 
 ### Nach dem Upload
 
 - [ ] Mehrere Dokumente vom gleichen Typ uploaden möglich machen
 - [x] "Zurück zum Profil" Link richtig verlinken — auto-redirect removed, "Back to uploads" button added
 - [ ] Tag von Material-Typ angleichen
-- [ ] Vor Veröffentlichung: Übersicht wie es auf der Materialseite aussehen wird
-- [ ] "Verifizierte Dokumente" umbenennen zu "Geprüft"
+- [x] Vor Veröffentlichung: Übersicht wie es auf der Materialseite aussehen wird — PublishPreviewModal shows card preview + data summary before publishing
+- [x] "Verifizierte Dokumente" umbenennen zu "Geprüft" — renamed 12 document-status i18n keys from "Verifiziert"/"Verified" to "Geprüft"/"Reviewed" in both de.json and en.json
 
 ### Verkäufer-Dashboard
 
 - [ ] Downloads überarbeiten (funktioniert noch nicht)
-- [ ] Einnahmen total anzeigen (nicht monatlich)
+- [x] Einnahmen total anzeigen (nicht monatlich) — i18n key `accountPage.overview.thisMonth` already reads "Gesamt", API returns lifetime total
 
 ### Eigene Vorschläge (Hochladen)
 
-- [x] ~30 hardcoded German strings in upload wizard replaced with i18n — step titles, subtitles, form labels, legal checkboxes, navigation buttons, file upload text, preview text, error messages all now use tWizard/tSteps/tFields/tLegal/tNav translation functions
+- [x] ~30 hardcoded German strings in upload wizard replaced with i18n — step titles, subtitles, form labels, legal checkboxes, navigation buttons, file upload text, preview text, error messages all now use tWizard/tSteps/tFields/tLegal/tNav translation functions; StepNavigationBar also migrated (17 hardcoded strings → i18n keys for step labels, descriptions, progress indicator, validation messages, and aria-labels)
 - [ ] Eszett (ß) Warnung nur in Step 1, aber User kann in Step 3 auch Text eingeben — nicht alle Felder geprüft
 - [ ] Draft-System speichert Felder aber keine Dateien — bei Browser-Cache-Leerung sind Dateien weg
 - [ ] Keine Anzeige von verbleibender Datei-Grösse/Speicher-Limit
 - [ ] "Automatische Vorschau" Info nur für PDF erwähnt — andere Formate?
 - [ ] Keine Duplikat-Erkennung — User könnte versehentlich gleiches Material mehrmals hochladen
 - [ ] "Lehrplan-Zuordnung" Selektor ist sehr gross — könnte Search-Funktionalität haben
-- [ ] Keine Warnung beim Tab-Schliessen mit ungespeicherten Änderungen
+- [x] Keine Warnung beim Tab-Schliessen mit ungespeicherten Änderungen — beforeunload handler added when form has data, skipped after successful upload
 - [ ] Validierung von Dateinamen wird nicht durchgeführt (z.B. zu lange Namen)
-- [ ] Preview-Bild: keine Vorschau der finalen Galerie-Ansicht
+- [x] Preview-Bild: keine Vorschau der finalen Galerie-Ansicht — PublishPreviewModal shows MaterialCard-like preview with image, title, subject pill, cycle, and price
 - [ ] Bundle: Subject und Cycle sind fixiert auf Bundle-Level — sollten optional sein da Bundle mehrere Subjects haben kann
 - [ ] Bundle: Discount-Berechnung zeigt nur Prozentsatz — sollte auch Ersparnis in CHF zeigen
 - [ ] Bundle: Keine Validierung dass Bundle-Preis unter Summe der Einzelpreise liegt

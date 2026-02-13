@@ -560,8 +560,11 @@ export function EnhancedCurriculumSelector({
             </div>
             <div className="flex items-center gap-3">
               {competencies.length > 0 && (
-                <span className="bg-primary/20 text-primary rounded-full px-3 py-1 text-xs font-semibold">
+                <span
+                  className={`rounded-full px-3 py-1 text-xs font-semibold ${competencies.length >= MAX_COMPETENCIES ? "bg-warning/20 text-warning" : "bg-primary/20 text-primary"}`}
+                >
                   {tCurr("competenciesSelected", { count: competencies.length })}
+                  {competencies.length >= MAX_COMPETENCIES && ` (max)`}
                 </span>
               )}
               <button
@@ -721,16 +724,21 @@ export function EnhancedCurriculumSelector({
                             <div className="grid grid-cols-1 gap-2 px-4 pb-4 sm:grid-cols-2 md:grid-cols-3">
                               {kb.kompetenzen.map((kompetenz) => {
                                 const isSelected = competencies.includes(kompetenz.code);
+                                const isMaxReached =
+                                  competencies.length >= MAX_COMPETENCIES && !isSelected;
 
                                 return (
                                   <button
                                     key={kompetenz.code}
                                     type="button"
                                     onClick={() => toggleCompetency(kompetenz.code)}
+                                    disabled={isMaxReached}
                                     className={`group relative flex items-center gap-3 rounded-xl border-2 px-4 py-3 text-left transition-colors duration-150 ${
                                       isSelected
                                         ? "border-primary bg-primary/10"
-                                        : "border-border bg-bg hover:border-primary/50"
+                                        : isMaxReached
+                                          ? "border-border bg-bg cursor-not-allowed opacity-50"
+                                          : "border-border bg-bg hover:border-primary/50"
                                     }`}
                                   >
                                     {/* Icon area - matches Fach style */}
