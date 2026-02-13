@@ -144,26 +144,36 @@ export function MaterialLikeButton({
   const [likeCount, setLikeCount] = useState(initialCount);
 
   const handleToggle = async () => {
+    const prevLiked = liked;
+    const prevCount = likeCount;
+    // Optimistic update
+    setLiked(!liked);
+    setLikeCount(liked ? likeCount - 1 : likeCount + 1);
+
     try {
       const response = await fetch(`/api/materials/${materialId}/like`, {
         method: "POST",
       });
 
       if (response.status === 401) {
+        setLiked(prevLiked);
+        setLikeCount(prevCount);
         onLoginRequired?.();
         return;
       }
 
       if (!response.ok) {
-        throw new Error("Failed to toggle like");
+        setLiked(prevLiked);
+        setLikeCount(prevCount);
+        return;
       }
 
       const data = await response.json();
       setLiked(data.liked);
       setLikeCount(data.likeCount);
-    } catch (error) {
-      console.error("Error toggling material like:", error);
-      throw error;
+    } catch {
+      setLiked(prevLiked);
+      setLikeCount(prevCount);
     }
   };
 
@@ -209,26 +219,36 @@ export function CommentLikeButton({
   const [likeCount, setLikeCount] = useState(initialCount);
 
   const handleToggle = async () => {
+    const prevLiked = liked;
+    const prevCount = likeCount;
+    // Optimistic update
+    setLiked(!liked);
+    setLikeCount(liked ? likeCount - 1 : likeCount + 1);
+
     try {
       const response = await fetch(`/api/comments/${commentId}/like`, {
         method: "POST",
       });
 
       if (response.status === 401) {
+        setLiked(prevLiked);
+        setLikeCount(prevCount);
         onLoginRequired?.();
         return;
       }
 
       if (!response.ok) {
-        throw new Error("Failed to toggle like");
+        setLiked(prevLiked);
+        setLikeCount(prevCount);
+        return;
       }
 
       const data = await response.json();
       setLiked(data.liked);
       setLikeCount(data.likeCount);
-    } catch (error) {
-      console.error("Error toggling comment like:", error);
-      throw error;
+    } catch {
+      setLiked(prevLiked);
+      setLikeCount(prevCount);
     }
   };
 

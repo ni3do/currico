@@ -1661,6 +1661,7 @@
       "success": "Material erstellt!",
       "successMessage": "Ihr Material wurde hochgeladen und wartet auf Freigabe.",
       "viewMaterial": "Zum Material",
+      "backToUploads": "Zurück zu meinen Uploads",
       "error": "Fehler beim Hochladen",
       "errorFileTooLarge": "Datei zu gross. Maximum: 50 MB. Ihre Datei: {size} MB.",
       "errorAuthExpired": "Sitzung abgelaufen. Bitte melden Sie sich erneut an.",
@@ -2157,7 +2158,8 @@
     "contact": {
       "title": "Fragen?",
       "content": "Wenn Sie Fragen zu diesen Allgemeinen Geschäftsbedingungen haben, kontaktieren Sie uns bitte:",
-      "email": "info@currico.ch"
+      "email": "info@currico.ch",
+      "emailTitle": "E-Mail an Currico senden"
     }
   },
   "cookieConsent": {
@@ -2222,7 +2224,8 @@
     "contact": {
       "title": "Fragen?",
       "description": "Bei Fragen zu unserer Verwendung von Cookies kontaktieren Sie uns bitte.",
-      "email": "info@currico.ch"
+      "email": "info@currico.ch",
+      "emailTitle": "E-Mail an Currico senden"
     },
     "links": {
       "privacy": "Datenschutzerklärung",
@@ -2410,6 +2413,7 @@
     "contact": {
       "title": "Kontakt",
       "email": "info@currico.ch",
+      "emailTitle": "E-Mail an Currico senden",
       "website": "www.currico.ch"
     },
     "legal": {
@@ -2474,7 +2478,9 @@
     },
     "links": {
       "privacy": "Datenschutzerklärung",
-      "terms": "Allgemeine Geschäftsbedingungen"
+      "terms": "Allgemeine Geschäftsbedingungen",
+      "cookies": "Cookie-Richtlinien",
+      "copyright": "Urheberrecht"
     },
     "version": "Version 1.2 - Februar 2026"
   },
@@ -2646,6 +2652,7 @@
       }
     },
     "version": "Version 1.2 - Februar 2026",
+    "emailTitle": "E-Mail an Currico senden",
     "contact": {
       "title": "Fragen zum Datenschutz?",
       "description": "Für Fragen oder Anliegen bezüglich Ihrer Daten kontaktieren Sie uns:",
@@ -3684,7 +3691,8 @@
       "contact": {
         "title": "Noch Fragen?",
         "description": "Wenn Sie unsicher sind, ob Ihr Material den Richtlinien entspricht, kontaktieren Sie uns gerne. Wir helfen Ihnen weiter.",
-        "email": "info@currico.ch"
+        "email": "info@currico.ch",
+        "emailTitle": "E-Mail an Currico senden"
       }
     }
   },
@@ -3799,8 +3807,8 @@
       "description": "Das Abzeichen «Verifizierter Verkäufer» wird an Verkäufer:innen vergeben, die unsere Qualitätskriterien erfüllen. Es zeigt Käufer:innen, dass sie einem erfahrenen und zuverlässigen Anbieter vertrauen können.",
       "whatTitle": "Was bedeutet «Verifizierter Verkäufer»?",
       "whatDescription": "Verifizierte Verkäufer:innen haben bewiesen, dass sie qualitativ hochwertige Materialien anbieten. Das Abzeichen erscheint auf dem Profil und bei jedem Material, sodass Käufer:innen sofort sehen, dass sie einem vertrauenswürdigen Anbieter kaufen.",
-      "criteriaTitle": "Die 5 Kriterien",
-      "criteriaDescription": "Alle 5 Kriterien müssen gleichzeitig erfüllt sein, um das Abzeichen zu erhalten:",
+      "criteriaTitle": "Die 4 Kriterien",
+      "criteriaDescription": "Alle 4 Kriterien müssen gleichzeitig erfüllt sein, um das Abzeichen zu erhalten:",
       "criteria": {
         "minSales": {
           "title": "Mindestverkäufe",
@@ -3821,15 +3829,10 @@
           "title": "Kontoalter",
           "description": "Dein Konto muss mindestens 30 Tage alt sein.",
           "value": "≥ 30 Tage"
-        },
-        "noReports": {
-          "title": "Keine offenen Meldungen",
-          "description": "Keine offenen oder in Bearbeitung befindlichen Meldungen gegen dein Konto.",
-          "value": "0 offen"
         }
       },
       "howTitle": "Wie funktioniert die Verifizierung?",
-      "howAutomatic": "Die Verifizierung erfolgt automatisch: Jedes Mal, wenn du deine Verkäufer-Level-Seite besuchst, werden deine Statistiken überprüft. Sobald du alle 5 Kriterien erfüllst, erhältst du automatisch das Abzeichen.",
+      "howAutomatic": "Die Verifizierung erfolgt automatisch: Jedes Mal, wenn du deine Verkäufer-Level-Seite besuchst, werden deine Statistiken überprüft. Sobald du alle 4 Kriterien erfüllst, erhältst du automatisch das Abzeichen.",
       "howRevocation": "Achtung: Wenn du die Kriterien nicht mehr erfüllst (z.B. durch eine offene Meldung oder sinkende Bewertung), wird die automatische Verifizierung widerrufen.",
       "howManual": "In Ausnahmefällen kann das Currico-Team die Verifizierung auch manuell vergeben oder widerrufen.",
       "benefitsTitle": "Vorteile",

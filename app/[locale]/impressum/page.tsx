@@ -51,7 +51,11 @@ export default function ImpressumPage() {
             <div className="text-text-muted space-y-3">
               <p className="flex items-center gap-2">
                 <Mail className="text-text-muted h-4 w-4" aria-hidden="true" />
-                <a href={`mailto:${t("contact.email")}`} className="text-primary hover:underline">
+                <a
+                  href={`mailto:${t("contact.email")}`}
+                  className="text-primary hover:underline"
+                  title={t("contact.emailTitle")}
+                >
                   {t("contact.email")}
                 </a>
               </p>
@@ -142,6 +146,27 @@ export default function ImpressumPage() {
               <h3 className="text-text mb-1 font-medium">{t("disclaimer.userContent.title")}</h3>
               <p>{t("disclaimer.userContent.content")}</p>
             </div>
+          </div>
+        </div>
+
+        {/* Related Legal Pages */}
+        <div className="border-border mt-8 rounded-xl border p-6">
+          <div className="flex flex-wrap gap-4">
+            <Link href="/datenschutz" className="text-primary text-sm font-medium hover:underline">
+              {t("links.privacy")}
+            </Link>
+            <Link href="/agb" className="text-primary text-sm font-medium hover:underline">
+              {t("links.terms")}
+            </Link>
+            <Link
+              href="/cookie-richtlinien"
+              className="text-primary text-sm font-medium hover:underline"
+            >
+              {t("links.cookies")}
+            </Link>
+            <Link href="/urheberrecht" className="text-primary text-sm font-medium hover:underline">
+              {t("links.copyright")}
+            </Link>
           </div>
         </div>
 

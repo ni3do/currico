@@ -42,6 +42,7 @@ export default function PrivacyPage() {
               <a
                 href={`mailto:${t("sections.responsible.email")}`}
                 className="text-primary hover:underline"
+                title={t("emailTitle")}
               >
                 {t("sections.responsible.email")}
               </a>
@@ -233,6 +234,7 @@ export default function PrivacyPage() {
           <a
             href={`mailto:${t("contact.email")}`}
             className="bg-primary text-text-on-accent hover:bg-primary-hover mt-4 inline-flex items-center gap-2 rounded-lg px-6 py-3 font-medium transition-colors"
+            title={t("emailTitle")}
           >
             {t("contact.email")}
           </a>

@@ -1661,6 +1661,7 @@
       "success": "Material Created!",
       "successMessage": "Your material has been uploaded and is awaiting approval.",
       "viewMaterial": "View Material",
+      "backToUploads": "Back to my uploads",
       "error": "Upload Error",
       "errorFileTooLarge": "File too large. Maximum: 50 MB. Your file: {size} MB.",
       "errorAuthExpired": "Session expired. Please log in again.",
@@ -2157,7 +2158,8 @@
     "contact": {
       "title": "Questions?",
       "content": "If you have any questions about these Terms of Service, please contact us:",
-      "email": "info@currico.ch"
+      "email": "info@currico.ch",
+      "emailTitle": "Send email to Currico"
     }
   },
   "cookieConsent": {
@@ -2222,7 +2224,8 @@
     "contact": {
       "title": "Questions?",
       "description": "If you have any questions about our use of cookies, please contact us.",
-      "email": "info@currico.ch"
+      "email": "info@currico.ch",
+      "emailTitle": "Send email to Currico"
     },
     "links": {
       "privacy": "Privacy Policy",
@@ -2410,6 +2413,7 @@
     "contact": {
       "title": "Contact",
       "email": "info@currico.ch",
+      "emailTitle": "Send email to Currico",
       "website": "www.currico.ch"
     },
     "legal": {
@@ -2474,7 +2478,9 @@
     },
     "links": {
       "privacy": "Privacy Policy",
-      "terms": "Terms and Conditions"
+      "terms": "Terms and Conditions",
+      "cookies": "Cookie Policy",
+      "copyright": "Copyright Guide"
     },
     "version": "Version 1.2 - February 2026"
   },
@@ -2646,6 +2652,7 @@
       }
     },
     "version": "Version 1.2 - February 2026",
+    "emailTitle": "Send email to Currico",
     "contact": {
       "title": "Questions About Privacy?",
       "description": "For questions or concerns about your data, contact us:",
@@ -3656,7 +3663,8 @@
       "contact": {
         "title": "Questions?",
         "description": "If you're unsure whether your material meets the guidelines, feel free to contact us. We're happy to help.",
-        "email": "info@currico.ch"
+        "email": "info@currico.ch",
+        "emailTitle": "Send email to Currico"
       }
     }
   },
@@ -3771,8 +3779,8 @@
       "description": "The 'Verified Seller' badge is awarded to sellers who meet our quality criteria. It shows buyers that they can trust an experienced and reliable provider.",
       "whatTitle": "What does 'Verified Seller' mean?",
       "whatDescription": "Verified sellers have proven that they offer high-quality materials. The badge appears on their profile and next to every material, so buyers can immediately see they're purchasing from a trusted provider.",
-      "criteriaTitle": "The 5 Criteria",
-      "criteriaDescription": "All 5 criteria must be met simultaneously to receive the badge:",
+      "criteriaTitle": "The 4 Criteria",
+      "criteriaDescription": "All 4 criteria must be met simultaneously to receive the badge:",
       "criteria": {
         "minSales": {
           "title": "Minimum Sales",
@@ -3793,15 +3801,10 @@
           "title": "Account Age",
           "description": "Your account must be at least 30 days old.",
           "value": "≥ 30 days"
-        },
-        "noReports": {
-          "title": "No Open Reports",
-          "description": "No open or pending reports against your account.",
-          "value": "0 open"
         }
       },
       "howTitle": "How does verification work?",
-      "howAutomatic": "Verification happens automatically: Every time you visit your seller level page, your statistics are checked. As soon as you meet all 5 criteria, you automatically receive the badge.",
+      "howAutomatic": "Verification happens automatically: Every time you visit your seller level page, your statistics are checked. As soon as you meet all 4 criteria, you automatically receive the badge.",
       "howRevocation": "Note: If you no longer meet the criteria (e.g., due to an open report or declining rating), the automatic verification will be revoked.",
       "howManual": "In exceptional cases, the Currico team can also grant or revoke verification manually.",
       "benefitsTitle": "Benefits",

@@ -248,10 +248,6 @@ function UploadPageContent() {
 
           // Clear draft on success
           localStorage.removeItem("currico_upload_draft");
-
-          setTimeout(() => {
-            router.push("/konto");
-          }, 2000);
         } catch {
           setError(tUpload("errorParseResponse"));
           setUploadStatus("error");
@@ -1089,6 +1085,12 @@ function UploadPageContent() {
                     {tUpload("viewMaterial")} →
                   </button>
                 )}
+                <Link
+                  href="/konto/uploads"
+                  className="border-border text-text hover:bg-surface-elevated mt-2 inline-block w-full rounded-lg border-2 px-4 py-2 text-center text-sm font-medium transition-colors"
+                >
+                  {tUpload("backToUploads")}
+                </Link>
               </div>
             )}
 

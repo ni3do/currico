@@ -156,7 +156,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Keine Feedback wenn Download startet (`window.open()`) — kein Bestätigungs-Toast — added success toast + error toast on download
 - [ ] Kein Schema.org Markup (`Product`, `AggregateRating`, `BreadcrumbList`) — fehlende Rich Snippets in Suchmaschinen
 - [ ] Redundante Datenfelder: `subject`/`subjects` und `cycle`/`cycles` — sollte normalisiert werden
-- [ ] Kommentar-/Review-Like-Button State wird nach Vote nicht sofort aktualisiert — fehlendes Optimistic Update
+- [x] Kommentar-/Review-Like-Button State wird nach Vote nicht sofort aktualisiert — optimistic update implemented in MaterialLikeButton and CommentLikeButton
 - [x] Magische Zahlen in PreviewGallery (50px Swipe-Threshold, 80px Thumbnail-Höhe) — extracted SWIPE_THRESHOLD_PX, THUMBNAIL_HEIGHT_PX, MAX_VISIBLE_THUMBNAILS, THUMBNAIL_GAP_PX constants
 
 ---
@@ -211,11 +211,11 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] "Handelsname:" hardcoded statt i18n — now uses `t("company.tradeNameLabel")`
 - [ ] Person-Array `["p1", "p2", "p3"]` ist magisch — sollte Konstante oder aus Config geladen werden
 - [x] Icons (Building2, Mail, Globe, Scale, Users) haben kein `aria-hidden="true"` — werden als Inhalt gelesen
-- [ ] E-Mail-Links ohne `title`-Attribut — Tooltip für Nutzer fehlt
+- [x] E-Mail-Links ohne `title`-Attribut — title attributes added to all legal page mailto links with i18n
 - [x] `grid-cols-2` auf Mobile führt zu sehr schmalen Spalten — sollte `grid-cols-1 md:grid-cols-2` sein
 - [ ] Disclaimer-Sektionen nutzen `<div>` statt `<section>` mit `aria-labelledby` — fehlende Semantik
 - [ ] Keine `Organization`/`LocalBusiness` Schema.org-Daten — für Suchmaschinen-Vertrauen
-- [ ] Links zu anderen Legal-Seiten fehlen (wie bei Cookie-Seite vorhanden)
+- [x] Links zu anderen Legal-Seiten fehlen — cross-links section added to Impressum (privacy, terms, cookies, copyright)
 
 ---
 
@@ -256,7 +256,7 @@ Legende: [x] = erledigt, [ ] = offen
 
 ## 9. Verifizierter Verkäufer (`/verifizierter-verkaeufer`)
 
-- [ ] "Keine offenen Meldungen" Kriterium entfernen
+- [x] "Keine offenen Meldungen" Kriterium entfernen
 - [x] Text-Blur beim Hover fixen (Text muss scharf und lesbar bleiben) — removed scale() from card hover, keeping translateY only
 
 ### Eigene Vorschläge (Verifizierter Verkäufer)
@@ -461,7 +461,7 @@ Legende: [x] = erledigt, [ ] = offen
 
 - [x] Suchfunktion einbauen — search with debounce exists
 - [ ] "Meine Materialien bearbeiten" führt zu Error 404 → **KNOWN ISSUE: full material editing page is a larger feature, out of scope for UI polish**
-- [ ] "Link zur Vorschau" Button bei Meine Materialien löschen
+- [x] "Link zur Vorschau" Button bei Meine Materialien löschen — no separate preview button exists; card links directly to material
 - [x] Meine Materialien sortieren möglich machen — sort dropdown exists (newest, oldest, alphabetical, popular)
 - [ ] Dokumente in Überprüfung in Uploads anzeigen
 
@@ -486,10 +486,10 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] `getSubjectPillClass` ist dupliziert (erscheint in 3+ Dateien) — konsolidiert in `lib/constants/subject-colors.ts`
 - [x] Link href zu `/profile/{id}` statt `/profil/{id}` — URL-Inkonsistenz (alter englischer Pfad) — fixed in folge-ich & sammlungen
 - [ ] Unfollow-Button zeigt Hover-State mit Error-Farben (`hover:border-error`) — impliziert Gefahr statt einfaches Entfolgen
-- [ ] "Discover profiles" Button im Empty-State verlinkt auf `/materialien` statt auf Profil-Suche
+- [x] "Discover profiles" Button im Empty-State verlinkt auf `/materialien?showCreators=true` — now links to profiles tab
 - [ ] "Followed since" Datumsformat nutzt `toLocaleDateString` aber matcht nicht Rest der App
 - [ ] Alle gefolgten Seller werden auf einmal geladen — keine Pagination für grosse Listen
-- [ ] Keine Metadata für `/folge-ich` Route
+- [x] Keine Metadata für `/folge-ich` Route — layout.tsx with generateMetadata added
 - [ ] API-Response-Struktur wird nicht validiert — nimmt an dass `data.sellers` existiert
 
 ---
@@ -498,21 +498,21 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Formular-Validierung
 
-- [ ] Titel-Limite auf 64 Zeichen
+- [x] Titel-Limite auf 64 Zeichen — maxLength={64} on input + validation in UploadWizardContext
 - [ ] Fächer-Abkürzungen mindestens 2 Buchstaben
-- [ ] Vorschaubild auf 5 MB limitieren
-- [ ] Nur eine Datei aufs Mal hochladen (nicht mehrere gleichzeitig)
+- [x] Vorschaubild auf 5 MB limitieren — 5*1024*1024 check in hochladen/page.tsx
+- [x] Nur eine Datei aufs Mal hochladen — no `multiple` attribute on file input
 - [ ] Wenn zwei verschiedene Material-Typen hochgeladen → nicht erlauben (nur ein Typ)
 
 ### Kompetenzen
 
 - [ ] Kompetenz-Auswahl im gleichen Style und Layout wie Zyklus/Fach
-- [ ] Maximal 5 Kompetenzen auswählen
+- [x] Maximal 5 Kompetenzen auswählen — MAX_COMPETENCIES = 5 in EnhancedCurriculumSelector
 
 ### Preise
 
-- [ ] Mindestpreis 0.50 CHF (0 darf nicht als kostenpflichtig durchgehen)
-- [ ] Kosten nur in 0.50-Schritten erlauben, automatisch auf/abrunden
+- [x] Mindestpreis 0.50 CHF — validation in UploadWizardContext
+- [x] Kosten nur in 0.50-Schritten erlauben — step="0.50" + Math.round validation
 
 ### Fehlermeldungen
 
@@ -522,7 +522,7 @@ Legende: [x] = erledigt, [ ] = offen
 ### Nach dem Upload
 
 - [ ] Mehrere Dokumente vom gleichen Typ uploaden möglich machen
-- [ ] "Zurück zum Profil" Link richtig verlinken
+- [x] "Zurück zum Profil" Link richtig verlinken — auto-redirect removed, "Back to uploads" button added
 - [ ] Tag von Material-Typ angleichen
 - [ ] Vor Veröffentlichung: Übersicht wie es auf der Materialseite aussehen wird
 - [ ] "Verifizierte Dokumente" umbenennen zu "Geprüft"
@@ -559,7 +559,7 @@ Legende: [x] = erledigt, [ ] = offen
 
 - [x] Hardcoded deutsche Strings: "Profil nicht gefunden", "Das gesuchte Profil existiert nicht", "Benutzer", "Materialien durchsuchen", "Profil wird geladen..." — alles in i18n auslagern
 - [x] `getSubjectPillClass` lokal definiert statt aus Shared Utility — jetzt aus `lib/constants/subject-colors.ts` importiert
-- [ ] `formatPrice` ist lokal definiert statt aus Shared Utility — Code-Duplikation
+- [x] `formatPrice` ist lokal definiert statt aus Shared Utility — now imports from `lib/utils/price.ts`
 - [ ] Keine Validierung dass `params.id` ein gültiger UUID/Slug ist vor dem Fetchen
 - [ ] 4 parallele API-Calls bei Seitenaufruf — könnten zu einem einzelnen Endpoint gebündelt werden
 - [ ] Keine SSR/Static Generation — alle Daten Client-seitig gefetcht, schlecht für SEO
@@ -567,7 +567,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [ ] Follow-Button zeigt "Gefolgt" erst nach erfolgreicher Action — kein sofortiges Feedback (kein Optimistic Update)
 - [ ] Private-Profile-Notice versteckt zu viel — Verkäufer wollen evtl. kein privates Profil
 - [ ] Kein Caching von Profil-Daten — jeder Besuch fetcht frische Daten
-- [ ] "Beste Uploads" Titel ist hardcoded Deutsch
+- [x] "Beste Uploads" Titel ist hardcoded Deutsch — already uses t("bestUploads")
 
 ---
 

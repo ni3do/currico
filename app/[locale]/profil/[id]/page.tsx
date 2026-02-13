@@ -11,6 +11,7 @@ import { Users, FileText, FolderOpen, Calendar, MapPin, Instagram, Lock } from "
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { VerifiedSellerBadge } from "@/components/ui/VerifiedSellerBadge";
 import { getSubjectPillClass } from "@/lib/constants/subject-colors";
+import { formatPrice } from "@/lib/utils/price";
 
 interface ProfileData {
   id: string;
@@ -173,8 +174,6 @@ export default function PublicProfilePage({
   };
 
   const displayName = profile?.display_name || profile?.name || tCommon("user");
-  const formatPrice = (cents: number) =>
-    cents === 0 ? tCommon("free") : `CHF ${(cents / 100).toFixed(2)}`;
 
   if (loading) {
     return (
@@ -212,9 +211,7 @@ export default function PublicProfilePage({
         <main className="flex flex-1 items-center justify-center">
           <div className="text-center">
             <h1 className="text-text mb-2 text-2xl font-bold sm:text-3xl">{t("notFound")}</h1>
-            <p className="text-text-muted mb-4">
-              {t("notFoundDescription")}
-            </p>
+            <p className="text-text-muted mb-4">{t("notFoundDescription")}</p>
             <Link href="/materialien" className="btn-primary px-6 py-3">
               {tCommon("breadcrumb.materials")}
             </Link>
@@ -320,9 +317,7 @@ export default function PublicProfilePage({
               {profile.is_private && !profile.isOwnProfile && (
                 <div className="bg-surface-elevated border-border text-text-muted mt-4 flex items-center gap-2 rounded-lg border p-3 text-sm">
                   <Lock className="h-4 w-4" />
-                  <span>
-                    {t("privacy.notice")}
-                  </span>
+                  <span>{t("privacy.notice")}</span>
                 </div>
               )}
 
@@ -431,7 +426,7 @@ export default function PublicProfilePage({
                   description={material.description}
                   subject={material.subjects[0] || ""}
                   cycle={material.cycles[0] || ""}
-                  priceFormatted={formatPrice(material.price)}
+                  priceFormatted={formatPrice(material.price, { freeLabel: tCommon("free") })}
                   previewUrl={material.preview_url}
                   seller={{ displayName }}
                   subjectPillClass={getSubjectPillClass(material.subjects[0] || "")}
@@ -477,9 +472,7 @@ export default function PublicProfilePage({
                 <FileText className="text-text-faint mb-4 h-12 w-12" />
                 <p className="text-text">{t("noUploads")}</p>
                 <p className="text-text-muted text-sm">
-                  {profile.isOwnProfile
-                    ? t("noUploadsOwn")
-                    : t("noUploadsOther")}
+                  {profile.isOwnProfile ? t("noUploadsOwn") : t("noUploadsOther")}
                 </p>
               </div>
             ) : (
@@ -493,7 +486,7 @@ export default function PublicProfilePage({
                       description={material.description}
                       subject={material.subjects[0] || ""}
                       cycle={material.cycles[0] || ""}
-                      priceFormatted={formatPrice(material.price)}
+                      priceFormatted={formatPrice(material.price, { freeLabel: tCommon("free") })}
                       previewUrl={material.preview_url}
                       seller={{ displayName }}
                       subjectPillClass={getSubjectPillClass(material.subjects[0] || "")}
@@ -521,9 +514,7 @@ export default function PublicProfilePage({
                 <FolderOpen className="text-text-faint mb-4 h-12 w-12" />
                 <p className="text-text">{t("noCollections")}</p>
                 <p className="text-text-muted text-sm">
-                  {profile.isOwnProfile
-                    ? t("noCollectionsOwn")
-                    : t("noCollectionsOther")}
+                  {profile.isOwnProfile ? t("noCollectionsOwn") : t("noCollectionsOther")}
                 </p>
               </div>
             ) : (

@@ -378,6 +378,7 @@ export default function TermsPage() {
           <a
             href={`mailto:${t("contact.email")}`}
             className="text-primary mt-2 inline-block font-medium hover:underline"
+            title={t("contact.emailTitle")}
           >
             {t("contact.email")}
           </a>
