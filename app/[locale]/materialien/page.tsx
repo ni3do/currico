@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
-import { SlidersHorizontal, LayoutGrid, List, Search, X, Upload } from "lucide-react";
+import { Search, Upload } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
@@ -14,54 +14,22 @@ import { MaterialCard } from "@/components/ui/MaterialCard";
 import { MaterialGridSkeleton, ProfileGridSkeleton } from "@/components/ui/Skeleton";
 import { EmptySearchState } from "@/components/ui/EmptySearchState";
 import { ProfileCard } from "@/components/ui/ProfileCard";
-import { LP21FilterSidebar, type LP21FilterState } from "@/components/search/LP21FilterSidebar";
+import { LP21FilterSidebar } from "@/components/search/LP21FilterSidebar";
 import { FilterChips } from "@/components/search/FilterChips";
 import { PaginationControls } from "@/components/search/PaginationControls";
-import { FocusTrap } from "@/components/ui/FocusTrap";
+import { MobileFilterDrawer } from "@/components/search/MobileFilterDrawer";
+import { ResultsControlBar } from "@/components/search/ResultsControlBar";
 import { useCurriculum } from "@/lib/hooks/useCurriculum";
+import { useWishlist } from "@/lib/hooks/useWishlist";
+import { useFollowing } from "@/lib/hooks/useFollowing";
 import { useToast } from "@/components/ui/Toast";
 import { getSubjectPillClass } from "@/lib/constants/subject-colors";
-
-interface Material {
-  id: string;
-  title: string;
-  description: string;
-  price: number;
-  priceFormatted: string;
-  subject: string;
-  cycle: string;
-  subjects: string[];
-  cycles: string[];
-  previewUrl: string | null;
-  createdAt: string;
-  averageRating?: number;
-  reviewCount?: number;
-  seller: {
-    id: string;
-    display_name: string | null;
-    is_verified_seller?: boolean;
-  };
-}
-
-interface Pagination {
-  page: number;
-  limit: number;
-  total: number;
-  totalPages: number;
-}
-
-interface Profile {
-  id: string;
-  name: string;
-  image: string | null;
-  bio: string | null;
-  subjects: string[];
-  cycles: string[];
-  role: string;
-  is_verified_seller?: boolean;
-  resourceCount: number;
-  followerCount: number;
-}
+import type {
+  LP21FilterState,
+  MaterialListItem,
+  Pagination,
+  ProfileListItem,
+} from "@/lib/types/search";
 
 /** Debounce delay (ms) before fetching materials after filter changes */
 const MATERIALS_DEBOUNCE_MS = 150;
@@ -74,8 +42,8 @@ export default function MaterialienPage() {
   const { toast } = useToast();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [materials, setMaterials] = useState<Material[]>([]);
-  const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [materials, setMaterials] = useState<MaterialListItem[]>([]);
+  const [profiles, setProfiles] = useState<ProfileListItem[]>([]);
   const [pagination, setPagination] = useState<Pagination>({
     page: 1,
     limit: 20,
@@ -108,7 +76,6 @@ export default function MaterialienPage() {
   const [profilePage, setProfilePage] = useState<number>(
     parseInt(searchParams.get("profilePage") || "1", 10)
   );
-  const [wishlistedIds, setWishlistedIds] = useState<Set<string>>(new Set());
 
   // Auth session for wishlist
   const { status: sessionStatus } = useSession();
@@ -117,132 +84,20 @@ export default function MaterialienPage() {
   // Fetch curriculum data from API
   const { fachbereiche, getFachbereichByCode } = useCurriculum();
 
-  // Fetch user's wishlist
-  useEffect(() => {
-    const fetchWishlist = async () => {
-      if (!isAuthenticated) return;
-      try {
-        const response = await fetch("/api/user/wishlist");
-        if (response.ok) {
-          const data = await response.json();
-          const ids = new Set<string>(data.items.map((item: { id: string }) => item.id));
-          setWishlistedIds(ids);
-        }
-      } catch (error) {
-        console.error("Error fetching wishlist:", error);
-      }
-    };
-    fetchWishlist();
-  }, [isAuthenticated]);
+  // Wishlist hook
+  const { wishlistedIds, handleWishlistToggle } = useWishlist({
+    isAuthenticated,
+    toast,
+    t,
+  });
 
-  // Handle wishlist toggle
-  const handleWishlistToggle = useCallback(
-    async (materialId: string, currentState: boolean): Promise<boolean> => {
-      if (!isAuthenticated) {
-        toast(t("toast.loginRequired"), "info");
-        return false;
-      }
-
-      try {
-        if (currentState) {
-          // Remove from wishlist
-          const response = await fetch(`/api/user/wishlist?resourceId=${materialId}`, {
-            method: "DELETE",
-          });
-          if (response.ok) {
-            setWishlistedIds((prev) => {
-              const next = new Set(prev);
-              next.delete(materialId);
-              return next;
-            });
-            toast(t("toast.removedFromWishlist"), "success");
-            return true;
-          }
-        } else {
-          // Add to wishlist
-          const response = await fetch("/api/user/wishlist", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ resourceId: materialId }),
-          });
-          if (response.ok) {
-            setWishlistedIds((prev) => new Set(prev).add(materialId));
-            toast(t("toast.addedToWishlist"), "success");
-            return true;
-          }
-        }
-      } catch (error) {
-        console.error("Error toggling wishlist:", error);
-        toast(t("toast.error"), "error");
-      }
-      return false;
-    },
-    [isAuthenticated, t, toast]
-  );
-
-  // State for followed profile IDs
-  const [followingIds, setFollowingIds] = useState<Set<string>>(new Set());
-
-  // Fetch user's following list
-  useEffect(() => {
-    const fetchFollowing = async () => {
-      if (!isAuthenticated) return;
-      try {
-        const response = await fetch("/api/user/following");
-        if (response.ok) {
-          const data = await response.json();
-          const ids = new Set<string>(data.sellers.map((item: { id: string }) => item.id));
-          setFollowingIds(ids);
-        }
-      } catch (error) {
-        console.error("Error fetching following:", error);
-      }
-    };
-    fetchFollowing();
-  }, [isAuthenticated]);
-
-  // Handle follow toggle
-  const handleFollowToggle = useCallback(
-    async (profileId: string, currentState: boolean): Promise<boolean> => {
-      if (!isAuthenticated) {
-        router.push("/anmelden");
-        return false;
-      }
-
-      try {
-        if (currentState) {
-          // Unfollow
-          const response = await fetch(`/api/users/${profileId}/follow`, {
-            method: "DELETE",
-          });
-          if (response.ok) {
-            setFollowingIds((prev) => {
-              const next = new Set(prev);
-              next.delete(profileId);
-              return next;
-            });
-            toast(t("toast.unfollowed"), "success");
-            return true;
-          }
-        } else {
-          // Follow
-          const response = await fetch(`/api/users/${profileId}/follow`, {
-            method: "POST",
-          });
-          if (response.ok) {
-            setFollowingIds((prev) => new Set(prev).add(profileId));
-            toast(t("toast.followed"), "success");
-            return true;
-          }
-        }
-      } catch (error) {
-        console.error("Error toggling follow:", error);
-        toast(t("toast.error"), "error");
-      }
-      return false;
-    },
-    [isAuthenticated, router, t, toast]
-  );
+  // Following hook
+  const { followingIds, handleFollowToggle } = useFollowing({
+    isAuthenticated,
+    toast,
+    t,
+    onUnauthenticated: () => router.push("/anmelden"),
+  });
 
   // Initialize filters from URL params
   const initialFilters = useMemo<LP21FilterState>(() => {
@@ -252,7 +107,7 @@ export default function MaterialienPage() {
     const kompetenz = searchParams.get("kompetenz");
 
     // Default: materials tab active, profiles tab inactive
-    // Backward compat: ?showCreators=true or ?searchType=profiles → profiles tab
+    // Backward compat: ?showCreators=true or ?searchType=profiles -> profiles tab
     const legacySearchType = searchParams.get("searchType");
     const showCreatorsParam = searchParams.get("showCreators");
     let showMaterials = true;
@@ -621,80 +476,20 @@ export default function MaterialienPage() {
         {/* Main Layout: Sidebar + Content */}
         {
           <div className="flex flex-col gap-6 lg:flex-row">
-            {/* Mobile Filter Toggle */}
-            <div className="lg:hidden">
-              <button
-                onClick={() => setMobileFiltersOpen(true)}
-                className="border-border bg-bg-secondary text-text-secondary hover:border-primary hover:text-primary flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-3.5 text-sm font-medium shadow-sm transition-all duration-200 hover:shadow-md active:scale-[0.98]"
-              >
-                <SlidersHorizontal className="h-5 w-5" />
-                <span>{t("sidebar.title")}</span>
-                {activeFilterCount > 0 && (
-                  <span className="bg-primary flex h-5 w-5 items-center justify-center rounded-full text-xs text-white">
-                    {activeFilterCount}
-                  </span>
-                )}
-              </button>
-
-              {/* Mobile Filter Drawer (Bottom Sheet) */}
-              <AnimatePresence>
-                {mobileFiltersOpen && (
-                  <>
-                    {/* Backdrop */}
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="fixed inset-0 z-[100] bg-black/40 backdrop-blur-sm"
-                      onClick={() => setMobileFiltersOpen(false)}
-                    />
-                    {/* Drawer */}
-                    <motion.div
-                      initial={{ y: "100%" }}
-                      animate={{ y: 0 }}
-                      exit={{ y: "100%" }}
-                      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                      className="bg-bg fixed inset-x-0 bottom-0 z-[101] max-h-[85vh] overflow-y-auto rounded-t-2xl shadow-2xl"
-                    >
-                      <FocusTrap
-                        active={mobileFiltersOpen}
-                        onEscape={() => setMobileFiltersOpen(false)}
-                      >
-                        {/* Drawer handle */}
-                        <div className="bg-bg border-border sticky top-0 z-10 flex items-center justify-between border-b px-5 pt-3 pb-4">
-                          <div className="bg-border mx-auto mb-3 h-1 w-10 rounded-full" />
-                        </div>
-                        <div className="bg-bg sticky top-0 z-10 flex items-center justify-between px-5 pb-3">
-                          <h2 className="text-text text-lg font-semibold">{t("sidebar.title")}</h2>
-                          <button
-                            onClick={() => setMobileFiltersOpen(false)}
-                            className="text-text-muted hover:text-text hover:bg-surface flex h-8 w-8 items-center justify-center rounded-full transition-colors"
-                          >
-                            <X className="h-5 w-5" />
-                          </button>
-                        </div>
-                        <div className="px-1 pb-8">
-                          <LP21FilterSidebar
-                            filters={filters}
-                            onFiltersChange={handleFiltersChange}
-                          />
-                        </div>
-                        {/* Apply button */}
-                        <div className="bg-bg border-border sticky bottom-0 border-t px-5 py-4">
-                          <button
-                            onClick={() => setMobileFiltersOpen(false)}
-                            className="bg-primary text-text-on-accent hover:bg-primary-hover w-full rounded-lg px-4 py-3 text-sm font-semibold transition-colors"
-                          >
-                            {t("results.showResults", { count: totalCount })}
-                          </button>
-                        </div>
-                      </FocusTrap>
-                    </motion.div>
-                  </>
-                )}
-              </AnimatePresence>
-            </div>
+            {/* Mobile Filter Toggle + Drawer */}
+            <MobileFilterDrawer
+              isOpen={mobileFiltersOpen}
+              onOpen={() => setMobileFiltersOpen(true)}
+              onClose={() => setMobileFiltersOpen(false)}
+              filters={filters}
+              onFiltersChange={handleFiltersChange}
+              activeFilterCount={activeFilterCount}
+              totalCount={totalCount}
+              labels={{
+                filterTitle: t("sidebar.title"),
+                showResults: t("results.showResults", { count: totalCount }),
+              }}
+            />
 
             {/* Desktop Sidebar */}
             <div className="hidden w-72 flex-shrink-0 lg:block">
@@ -704,99 +499,29 @@ export default function MaterialienPage() {
             {/* Main Content Area */}
             <div className="min-w-0 flex-1" id="search-results-panel" role="tabpanel">
               {/* Top Control Bar: Results + Sort */}
-              <div className="bg-bg-secondary mb-4 flex flex-col gap-4 rounded-lg p-4 sm:flex-row sm:items-center sm:justify-between">
-                {/* Results Count */}
-                <div className="h-5">
-                  <AnimatePresence mode="wait">
-                    {isLoading ? (
-                      <motion.div
-                        key="skeleton"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.15 }}
-                        className="bg-surface h-5 w-40 animate-pulse rounded"
-                      />
-                    ) : (
-                      <motion.p
-                        key={`count-${totalCount}`}
-                        initial={{ opacity: 0, y: 4 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -4 }}
-                        transition={{ duration: 0.2 }}
-                        className="text-text-muted text-sm tabular-nums"
-                      >
-                        <span className="text-text font-semibold">{totalCount}</span> {countLabel}
-                      </motion.p>
-                    )}
-                  </AnimatePresence>
-                </div>
-
-                {/* View Toggle + Sort Dropdown */}
-                <div className="flex items-center gap-3">
-                  {/* Grid/List Toggle — materials only */}
-                  {filters.showMaterials && (
-                    <div className="bg-surface flex rounded-lg p-0.5">
-                      <button
-                        onClick={() => setViewMode("grid")}
-                        className={`rounded-md p-2 transition-all duration-200 ${
-                          viewMode === "grid"
-                            ? "bg-primary text-text-on-accent shadow-sm"
-                            : "text-text-faint hover:text-text-muted active:scale-90"
-                        }`}
-                        aria-label={t("results.gridView")}
-                        title={t("results.gridView")}
-                      >
-                        <LayoutGrid className="h-4 w-4" />
-                      </button>
-                      <button
-                        onClick={() => setViewMode("list")}
-                        className={`rounded-md p-2 transition-all duration-200 ${
-                          viewMode === "list"
-                            ? "bg-primary text-text-on-accent shadow-sm"
-                            : "text-text-faint hover:text-text-muted active:scale-90"
-                        }`}
-                        aria-label={t("results.listView")}
-                        title={t("results.listView")}
-                      >
-                        <List className="h-4 w-4" />
-                      </button>
-                    </div>
-                  )}
-
-                  {/* Sort Dropdown */}
-                  <div className="flex items-center gap-2">
-                    <label className="text-text-muted hidden text-sm whitespace-nowrap sm:inline">
-                      {t("results.sortLabel")}
-                    </label>
-                    {filters.showMaterials ? (
-                      <select
-                        value={sortBy}
-                        onChange={(e) => handleSortChange(e.target.value)}
-                        className="border-border bg-bg text-text-secondary focus:border-primary focus:ring-focus-ring rounded-full border px-3 py-2.5 text-sm focus:ring-2 focus:outline-none"
-                      >
-                        <option value="newest">{t("results.sortOptions.newest")}</option>
-                        <option value="price-low">{t("results.sortOptions.priceLow")}</option>
-                        <option value="price-high">{t("results.sortOptions.priceHigh")}</option>
-                      </select>
-                    ) : (
-                      <select
-                        value={profileSortBy}
-                        onChange={(e) => handleProfileSortChange(e.target.value)}
-                        className="border-border bg-bg text-text-secondary focus:border-primary focus:ring-focus-ring rounded-full border px-3 py-2.5 text-sm focus:ring-2 focus:outline-none"
-                      >
-                        <option value="newest">{t("results.profileSortOptions.newest")}</option>
-                        <option value="mostMaterials">
-                          {t("results.profileSortOptions.mostMaterials")}
-                        </option>
-                        <option value="mostFollowers">
-                          {t("results.profileSortOptions.mostFollowers")}
-                        </option>
-                      </select>
-                    )}
-                  </div>
-                </div>
-              </div>
+              <ResultsControlBar
+                isLoading={isLoading}
+                totalCount={totalCount}
+                countLabel={countLabel}
+                viewMode={viewMode}
+                onViewModeChange={setViewMode}
+                showMaterials={filters.showMaterials}
+                sortBy={sortBy}
+                onSortChange={handleSortChange}
+                profileSortBy={profileSortBy}
+                onProfileSortChange={handleProfileSortChange}
+                labels={{
+                  sortLabel: t("results.sortLabel"),
+                  gridView: t("results.gridView"),
+                  listView: t("results.listView"),
+                  sortNewest: t("results.sortOptions.newest"),
+                  sortPriceLow: t("results.sortOptions.priceLow"),
+                  sortPriceHigh: t("results.sortOptions.priceHigh"),
+                  profileSortNewest: t("results.profileSortOptions.newest"),
+                  profileSortMostMaterials: t("results.profileSortOptions.mostMaterials"),
+                  profileSortMostFollowers: t("results.profileSortOptions.mostFollowers"),
+                }}
+              />
 
               {/* Active Filter Chips - dismissable */}
               <FilterChips
@@ -959,7 +684,7 @@ export default function MaterialienPage() {
                 </AnimatePresence>
               )}
 
-              {/* Pagination — works for both tabs */}
+              {/* Pagination -- works for both tabs */}
               <PaginationControls
                 currentPage={filters.showMaterials ? currentPage : profilePage}
                 totalPages={(filters.showMaterials ? pagination : profilePagination).totalPages}

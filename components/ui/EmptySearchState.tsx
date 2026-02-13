@@ -2,7 +2,7 @@
 
 import { Search, Users, SlidersHorizontal, Lightbulb, X } from "lucide-react";
 import { useTranslations } from "next-intl";
-import type { LP21FilterState } from "@/components/search/LP21FilterSidebar";
+import type { LP21FilterState } from "@/lib/types/search";
 
 interface EmptySearchStateProps {
   filters: LP21FilterState;
