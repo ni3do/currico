@@ -21,7 +21,6 @@ import {
   FormSelect,
   FormCheckbox,
   RadioOption,
-  FIELD_TOOLTIPS,
 } from "@/components/upload";
 import { checkForEszett, replaceEszett } from "@/lib/validations/swiss-quality";
 import {

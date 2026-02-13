@@ -24,6 +24,12 @@
     "sales": "Sales",
     "unknownSeller": "Unknown"
   },
+  "avatar": {
+    "errorInvalidType": "Please select an image (JPG, PNG)",
+    "errorTooLarge": "Image must be smaller than 2MB",
+    "errorUploadFailed": "Upload failed. Please try again.",
+    "uploadLabel": "Upload profile picture"
+  },
   "previewGallery": {
     "title": "Preview",
     "pageOf": "Page {current} of {total}",
@@ -34,7 +40,10 @@
       "title": "Preview blurred",
       "description": "Purchase to unlock the full view",
       "cta": "Unlock now"
-    }
+    },
+    "closeLightbox": "Close preview",
+    "previousPage": "Previous page",
+    "nextPage": "Next page"
   },
   "common": {
     "skipToContent": "Skip to content",
@@ -108,7 +117,8 @@
       "backToHome": "Back to Home",
       "showPassword": "Show password",
       "hidePassword": "Hide password",
-      "delete": "Delete"
+      "delete": "Delete",
+      "close": "Close"
     },
     "breadcrumb": {
       "home": "Home",
@@ -1426,12 +1436,14 @@
       "discardConfirm": "Discard",
       "discardCancel": "Cancel",
       "restored": "Draft restored",
-      "restoredMessage": "Your previous draft has been loaded."
+      "restoredMessage": "Your previous draft has been loaded.",
+      "today": "today at {time}",
+      "yesterday": "yesterday at {time}"
     },
     "validation": {
       "titleRequired": "Title is required",
       "titleMinLength": "Title must be at least 5 characters",
-      "titleMaxLength": "Title must not exceed 100 characters",
+      "titleMaxLength": "Title must not exceed 64 characters",
       "descriptionRequired": "Description is required",
       "descriptionMinLength": "Description must be at least 20 characters",
       "descriptionMaxLength": "Description must not exceed 2000 characters",
@@ -1440,7 +1452,9 @@
       "priceRequired": "Price is required",
       "pricePositive": "Price must be a positive number",
       "priceMax": "Price must not exceed CHF 50",
-      "priceMin": "Minimum price is CHF 1",
+      "priceMin": "Minimum price is CHF 0.50",
+      "priceStep": "Price must be in 0.50 steps (e.g., 1.00, 1.50, 2.00)",
+      "competenciesMax": "Maximum 5 competencies allowed",
       "fileRequired": "At least one file is required",
       "legalOwnContent": "Please confirm that you use your own content",
       "legalNoScans": "Please confirm that no textbook scans are included",
@@ -1467,7 +1481,16 @@
       "priceExample": "CHF 5.00",
       "editable": "Enable this if buyers should be able to edit the file (e.g., Word documents). Usually not needed for PDF files.",
       "files": "Upload your main file(s). Supported formats: PDF, Word, PowerPoint, Excel. Maximum file size: 50 MB per file.",
-      "preview": "Optional: Upload a custom preview image. For PDF files, a preview is automatically created from the first page."
+      "preview": "Optional: Upload a custom preview image. For PDF files, a preview is automatically created from the first page.",
+      "lehrmittel": "Optional: Select textbooks that your material complements. This helps teachers find matching supplementary materials.",
+      "lehrmittelExample": "Zahlenbuch, mathwelt",
+      "legalOwnContent": "Confirm that you have created all images, graphics, and texts yourself or only use materials with CC0 license (Public Domain).",
+      "legalNoTextbookScans": "Confirm that you have not scanned or copied pages from textbooks, school books, or other copyrighted works.",
+      "legalNoTrademarks": "Confirm that your material does not contain protected trademarks, logos, or characters (e.g., Disney, Marvel, Pokémon).",
+      "legalSwissGerman": "Confirm that your material uses Swiss German spelling (no Eszett 'ß', using 'ss' instead).",
+      "legalTermsAccepted": "By accepting the seller agreement, you confirm that you have the rights to sell this material and accept the platform rules.",
+      "moreInfo": "More information",
+      "example": "Example:"
     },
     "fields": {
       "title": "Title",
@@ -1575,13 +1598,50 @@
       "cycle3Desc": "7th – 9th Grade",
       "cycle3Grades": "7–9"
     },
+    "curriculum": {
+      "filterLabel": "Filter:",
+      "clearAll": "Clear all",
+      "selectCycleFirst": "Please select a cycle first",
+      "selectCycleHint": "Select a cycle above to see available subjects",
+      "areasCount": "{count} areas",
+      "areasAvailable": "{count} areas available",
+      "selectedCount": "{count} selected",
+      "competenciesFor": "Competencies: {name}",
+      "competenciesSelected": "{count} selected",
+      "competencyCount": "{count, plural, one {# competency} other {# competencies}}",
+      "close": "Close",
+      "removeAll": "Remove all",
+      "noSearchResults": "No competencies found",
+      "noCompetencies": "No competencies available",
+      "deselectAll": "Deselect all",
+      "selectAll": "Select all",
+      "tip": "Tip:",
+      "tipText": "Select all matching competencies for better discoverability.",
+      "cantonOptional": "Canton (optional)",
+      "cantonHint": "For canton-specific textbooks",
+      "allCantons": "All cantons"
+    },
     "summary": {
       "title": "Overview",
       "noTitle": "No title entered yet",
       "noCycle": "No cycle selected yet",
       "noFiles": "No files uploaded yet",
       "legalStatus": "{count}/5 confirmed",
-      "edit": "Edit"
+      "edit": "Edit",
+      "labelTitle": "Title:",
+      "labelDescription": "Description:",
+      "labelLanguage": "Language:",
+      "labelType": "Type:",
+      "labelCycle": "Cycle:",
+      "cycleValue": "Cycle {cycle}",
+      "labelSubject": "Subject:",
+      "labelCompetencies": "Competencies:",
+      "moreItems": "+{count} more",
+      "labelPriceType": "Price type:",
+      "labelPrice": "Price:",
+      "editableNote": "Editable for buyers",
+      "labelFiles": "Files:",
+      "labelLegal": "Legal:"
     },
     "navigation": {
       "back": "Back",
@@ -2621,6 +2681,7 @@
     "description": "Description",
     "reviews": "Reviews",
     "comments": "Comments",
+    "feedbackTitle": "Reviews & Comments",
     "similarMaterials": "Similar Materials",
     "report": {
       "title": "Report material",
@@ -2641,7 +2702,8 @@
       "submit": "Report",
       "cancel": "Cancel",
       "errorSend": "Error sending the report",
-      "errorUnexpected": "An unexpected error occurred"
+      "errorUnexpected": "An unexpected error occurred",
+      "alreadyReported": "You have already reported this material"
     },
     "noPreview": "No preview available",
     "anonymous": "Anonymous",
@@ -2956,6 +3018,20 @@
     "count": "{count} Likes",
     "loginRequired": "Sign in to like this material."
   },
+  "commentForm": {
+    "commentPlaceholder": "Write a comment...",
+    "replyPlaceholder": "Write a reply...",
+    "commentEmpty": "Comment cannot be empty",
+    "replyEmpty": "Reply cannot be empty",
+    "sendComment": "Send comment",
+    "sendReply": "Send reply",
+    "charCount": "{count}/{max} characters"
+  },
+  "deleteConfirm": {
+    "materialTitle": "Delete material?",
+    "bundleTitle": "Delete bundle?",
+    "permanentWarning": "will be permanently deleted. This action cannot be undone."
+  },
   "comments": {
     "title": "Comments",
     "writeComment": "Write a Comment",
@@ -2987,6 +3063,7 @@
     "loginPrompt": "Sign in",
     "loginSuffix": " to write a comment.",
     "deleting": "Deleting...",
+    "helpful": "Helpful",
     "options": "Options",
     "sellerComments": {
       "title": "Comments on Your Materials",

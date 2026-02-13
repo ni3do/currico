@@ -24,6 +24,12 @@
     "sales": "Verkäufe",
     "unknownSeller": "Unbekannt"
   },
+  "avatar": {
+    "errorInvalidType": "Bitte wählen Sie ein Bild aus (JPG, PNG)",
+    "errorTooLarge": "Das Bild darf maximal 2MB gross sein",
+    "errorUploadFailed": "Fehler beim Hochladen. Bitte versuchen Sie es erneut.",
+    "uploadLabel": "Profilbild hochladen"
+  },
   "previewGallery": {
     "title": "Vorschau",
     "pageOf": "Seite {current} von {total}",
@@ -34,7 +40,10 @@
       "title": "Vorschau verschwommen",
       "description": "Kaufen Sie, um die vollständige Ansicht freizuschalten",
       "cta": "Jetzt freischalten"
-    }
+    },
+    "closeLightbox": "Vorschau schliessen",
+    "previousPage": "Vorherige Seite",
+    "nextPage": "Nächste Seite"
   },
   "common": {
     "skipToContent": "Zum Inhalt springen",
@@ -108,7 +117,8 @@
       "backToHome": "Zurück zur Startseite",
       "showPassword": "Passwort anzeigen",
       "hidePassword": "Passwort ausblenden",
-      "delete": "Löschen"
+      "delete": "Löschen",
+      "close": "Schliessen"
     },
     "breadcrumb": {
       "home": "Startseite",
@@ -1426,12 +1436,14 @@
       "discardConfirm": "Verwerfen",
       "discardCancel": "Abbrechen",
       "restored": "Entwurf wiederhergestellt",
-      "restoredMessage": "Ihr vorheriger Entwurf wurde geladen."
+      "restoredMessage": "Ihr vorheriger Entwurf wurde geladen.",
+      "today": "heute um {time}",
+      "yesterday": "gestern um {time}"
     },
     "validation": {
       "titleRequired": "Titel ist erforderlich",
       "titleMinLength": "Titel muss mindestens 5 Zeichen haben",
-      "titleMaxLength": "Titel darf maximal 100 Zeichen haben",
+      "titleMaxLength": "Titel darf maximal 64 Zeichen haben",
       "descriptionRequired": "Beschreibung ist erforderlich",
       "descriptionMinLength": "Beschreibung muss mindestens 20 Zeichen haben",
       "descriptionMaxLength": "Beschreibung darf maximal 2000 Zeichen haben",
@@ -1440,7 +1452,9 @@
       "priceRequired": "Preis ist erforderlich",
       "pricePositive": "Preis muss eine positive Zahl sein",
       "priceMax": "Preis darf maximal CHF 50 sein",
-      "priceMin": "Mindestpreis ist CHF 1",
+      "priceMin": "Mindestpreis ist CHF 0.50",
+      "priceStep": "Preis muss in 0.50-Schritten sein (z.B. 1.00, 1.50, 2.00)",
+      "competenciesMax": "Maximal 5 Kompetenzen auswählen",
       "fileRequired": "Mindestens eine Datei ist erforderlich",
       "legalOwnContent": "Bitte bestätigen Sie, dass Sie eigene Inhalte verwenden",
       "legalNoScans": "Bitte bestätigen Sie, dass keine Lehrmittel-Scans enthalten sind",
@@ -1467,7 +1481,16 @@
       "priceExample": "CHF 5.00",
       "editable": "Aktivieren Sie dies, wenn Käufer die Datei bearbeiten können sollen (z.B. Word-Dokumente). Bei PDF-Dateien ist dies meist nicht nötig.",
       "files": "Laden Sie Ihre Hauptdatei(en) hoch. Unterstützte Formate: PDF, Word, PowerPoint, Excel. Maximale Dateigrösse: 50 MB pro Datei.",
-      "preview": "Optional: Laden Sie ein eigenes Vorschaubild hoch. Bei PDF-Dateien wird automatisch eine Vorschau aus der ersten Seite erstellt."
+      "preview": "Optional: Laden Sie ein eigenes Vorschaubild hoch. Bei PDF-Dateien wird automatisch eine Vorschau aus der ersten Seite erstellt.",
+      "lehrmittel": "Optional: Wählen Sie Lehrmittel aus, zu denen Ihr Material passt. Dies hilft Lehrpersonen, passende Ergänzungsmaterialien zu finden.",
+      "lehrmittelExample": "Zahlenbuch, mathwelt",
+      "legalOwnContent": "Bestätigen Sie, dass Sie alle Bilder, Grafiken und Texte selbst erstellt haben oder nur Materialien mit CC0-Lizenz (Public Domain) verwenden.",
+      "legalNoTextbookScans": "Bestätigen Sie, dass Sie keine Seiten aus Lehrmitteln, Schulbüchern oder anderen urheberrechtlich geschützten Werken eingescannt oder kopiert haben.",
+      "legalNoTrademarks": "Bestätigen Sie, dass Ihr Material keine geschützten Marken, Logos oder Figuren enthält (z.B. Disney, Marvel, Pokémon).",
+      "legalSwissGerman": "Bestätigen Sie, dass Ihr Material die Schweizer Rechtschreibung verwendet (kein Eszett 'ß', stattdessen 'ss').",
+      "legalTermsAccepted": "Mit der Annahme der Verkäufervereinbarung bestätigen Sie, dass Sie die Rechte haben, dieses Material zu verkaufen, und die Plattformregeln akzeptieren.",
+      "moreInfo": "Mehr Informationen",
+      "example": "Beispiel:"
     },
     "fields": {
       "title": "Titel",
@@ -1575,13 +1598,50 @@
       "cycle3Desc": "7. – 9. Klasse",
       "cycle3Grades": "7–9"
     },
+    "curriculum": {
+      "filterLabel": "Filter:",
+      "clearAll": "Alle löschen",
+      "selectCycleFirst": "Bitte zuerst Zyklus wählen",
+      "selectCycleHint": "Wählen Sie oben einen Zyklus, um die verfügbaren Fächer zu sehen",
+      "areasCount": "{count} Bereiche",
+      "areasAvailable": "{count} Bereiche verfügbar",
+      "selectedCount": "{count} gewählt",
+      "competenciesFor": "Kompetenzen: {name}",
+      "competenciesSelected": "{count} ausgewählt",
+      "competencyCount": "{count, plural, one {# Kompetenz} other {# Kompetenzen}}",
+      "close": "Schliessen",
+      "removeAll": "Alle entfernen",
+      "noSearchResults": "Keine Kompetenzen gefunden",
+      "noCompetencies": "Keine Kompetenzen verfügbar",
+      "deselectAll": "Alle abwählen",
+      "selectAll": "Alle auswählen",
+      "tip": "Tipp:",
+      "tipText": "Wählen Sie alle passenden Kompetenzen aus für bessere Auffindbarkeit.",
+      "cantonOptional": "Kanton (optional)",
+      "cantonHint": "Für kantonsspezifische Lehrmittel",
+      "allCantons": "Alle Kantone"
+    },
     "summary": {
       "title": "Übersicht",
       "noTitle": "Noch kein Titel eingegeben",
       "noCycle": "Noch kein Zyklus gewählt",
       "noFiles": "Noch keine Dateien hochgeladen",
       "legalStatus": "{count}/5 bestätigt",
-      "edit": "Bearbeiten"
+      "edit": "Bearbeiten",
+      "labelTitle": "Titel:",
+      "labelDescription": "Beschreibung:",
+      "labelLanguage": "Sprache:",
+      "labelType": "Typ:",
+      "labelCycle": "Zyklus:",
+      "cycleValue": "Zyklus {cycle}",
+      "labelSubject": "Fach:",
+      "labelCompetencies": "Kompetenzen:",
+      "moreItems": "+{count} weitere",
+      "labelPriceType": "Preistyp:",
+      "labelPrice": "Preis:",
+      "editableNote": "Editierbar für Käufer",
+      "labelFiles": "Dateien:",
+      "labelLegal": "Rechtliches:"
     },
     "navigation": {
       "back": "Zurück",
@@ -2621,6 +2681,7 @@
     "description": "Beschreibung",
     "reviews": "Bewertungen",
     "comments": "Kommentare",
+    "feedbackTitle": "Bewertungen & Kommentare",
     "similarMaterials": "Ähnliche Materialien",
     "report": {
       "title": "Material melden",
@@ -2641,7 +2702,8 @@
       "submit": "Melden",
       "cancel": "Abbrechen",
       "errorSend": "Fehler beim Senden der Meldung",
-      "errorUnexpected": "Ein unerwarteter Fehler ist aufgetreten"
+      "errorUnexpected": "Ein unerwarteter Fehler ist aufgetreten",
+      "alreadyReported": "Sie haben dieses Material bereits gemeldet"
     },
     "noPreview": "Keine Vorschau verfügbar",
     "anonymous": "Anonym",
@@ -2984,6 +3046,20 @@
     "count": "{count} Likes",
     "loginRequired": "Melden Sie sich an, um dieses Material zu liken."
   },
+  "commentForm": {
+    "commentPlaceholder": "Schreiben Sie einen Kommentar...",
+    "replyPlaceholder": "Schreiben Sie eine Antwort...",
+    "commentEmpty": "Kommentar darf nicht leer sein",
+    "replyEmpty": "Antwort darf nicht leer sein",
+    "sendComment": "Kommentar senden",
+    "sendReply": "Antwort senden",
+    "charCount": "{count}/{max} Zeichen"
+  },
+  "deleteConfirm": {
+    "materialTitle": "Material löschen?",
+    "bundleTitle": "Bundle löschen?",
+    "permanentWarning": "wird dauerhaft gelöscht. Diese Aktion kann nicht rückgängig gemacht werden."
+  },
   "comments": {
     "title": "Kommentare",
     "writeComment": "Kommentar schreiben",
@@ -3015,6 +3091,7 @@
     "loginPrompt": "Melden Sie sich an",
     "loginSuffix": ", um einen Kommentar zu schreiben.",
     "deleting": "Löschen...",
+    "helpful": "Hilfreich",
     "options": "Optionen",
     "sellerComments": {
       "title": "Kommentare zu Ihren Materialien",

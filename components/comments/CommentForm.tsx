@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Send } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -50,20 +51,20 @@ export function CommentForm({
   onCancel,
   className = "",
 }: CommentFormProps) {
+  const t = useTranslations("commentForm");
+  const tCommon = useTranslations("common");
   const [content, setContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const maxLength = isReply ? 1000 : 2000;
-  const placeholder = isReply
-    ? "Schreiben Sie eine Antwort..."
-    : "Schreiben Sie einen Kommentar...";
+  const placeholder = isReply ? t("replyPlaceholder") : t("commentPlaceholder");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!content.trim()) {
-      setError(isReply ? "Antwort darf nicht leer sein" : "Kommentar darf nicht leer sein");
+      setError(isReply ? t("replyEmpty") : t("commentEmpty"));
       return;
     }
 
@@ -84,14 +85,14 @@ export function CommentForm({
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Fehler beim Speichern");
+        throw new Error(data.error || tCommon("errors.saveFailed"));
       }
 
       const result = isReply ? data.reply : data.comment;
       setContent("");
       onSubmit(result);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Ein Fehler ist aufgetreten");
+      setError(err instanceof Error ? err.message : tCommon("errors.generic"));
     } finally {
       setSubmitting(false);
     }
@@ -123,7 +124,7 @@ export function CommentForm({
           className={`bg-primary text-text-on-accent hover:bg-primary-hover absolute ${
             isReply ? "right-2 bottom-2" : "right-3 bottom-3"
           } flex items-center justify-center rounded-lg p-2 transition-colors disabled:opacity-50`}
-          title={isReply ? "Antwort senden" : "Kommentar senden"}
+          title={isReply ? t("sendReply") : t("sendComment")}
         >
           <Send className={isReply ? "h-4 w-4" : "h-5 w-5"} />
         </button>
@@ -132,7 +133,7 @@ export function CommentForm({
       {/* Character count and error */}
       <div className="mt-2 flex items-center justify-between">
         <p className="text-text-faint text-xs">
-          {content.length}/{maxLength} Zeichen
+          {t("charCount", { count: content.length, max: maxLength })}
         </p>
         {onCancel && (
           <button
@@ -141,7 +142,7 @@ export function CommentForm({
             disabled={submitting}
             className="text-text-muted hover:text-text text-xs transition-colors disabled:opacity-50"
           >
-            Abbrechen
+            {tCommon("buttons.cancel")}
           </button>
         )}
       </div>

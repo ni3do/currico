@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
+import { useTranslations } from "next-intl";
 
 // Storage key for localStorage
 const STORAGE_KEY = "currico_upload_draft";
@@ -178,6 +179,7 @@ function loadDraftFromStorage(): DraftData | null {
 }
 
 export function UploadWizardProvider({ children }: { children: ReactNode }) {
+  const tValidation = useTranslations("uploadWizard.validation");
   // Load draft once and reuse across all useState initializers
   const [initialDraft] = useState(() => loadDraftFromStorage());
 
@@ -266,56 +268,56 @@ export function UploadWizardProvider({ children }: { children: ReactNode }) {
       switch (step) {
         case 1:
           if (!formData.title.trim()) {
-            errors.push({ field: "title", message: "Titel ist erforderlich" });
+            errors.push({ field: "title", message: tValidation("titleRequired") });
           } else if (formData.title.trim().length < 5) {
-            errors.push({ field: "title", message: "Titel muss mindestens 5 Zeichen haben" });
+            errors.push({ field: "title", message: tValidation("titleMinLength") });
           } else if (formData.title.trim().length > 64) {
-            errors.push({ field: "title", message: "Titel darf maximal 64 Zeichen haben" });
+            errors.push({ field: "title", message: tValidation("titleMaxLength") });
           }
 
           if (!formData.description.trim()) {
-            errors.push({ field: "description", message: "Beschreibung ist erforderlich" });
+            errors.push({ field: "description", message: tValidation("descriptionRequired") });
           } else if (formData.description.trim().length < 20) {
             errors.push({
               field: "description",
-              message: "Beschreibung muss mindestens 20 Zeichen haben",
+              message: tValidation("descriptionMinLength"),
             });
           } else if (formData.description.trim().length > 2000) {
             errors.push({
               field: "description",
-              message: "Beschreibung darf maximal 2000 Zeichen haben",
+              message: tValidation("descriptionMaxLength"),
             });
           }
           break;
 
         case 2:
           if (!formData.cycle) {
-            errors.push({ field: "cycle", message: "Zyklus ist erforderlich" });
+            errors.push({ field: "cycle", message: tValidation("cycleRequired") });
           }
           if (!formData.subject) {
-            errors.push({ field: "subject", message: "Fach ist erforderlich" });
+            errors.push({ field: "subject", message: tValidation("subjectRequired") });
           }
           if (formData.competencies.length > 5) {
-            errors.push({ field: "competencies", message: "Maximal 5 Kompetenzen auswählen" });
+            errors.push({ field: "competencies", message: tValidation("competenciesMax") });
           }
           break;
 
         case 3:
           if (formData.priceType === "paid") {
             if (!formData.price) {
-              errors.push({ field: "price", message: "Preis ist erforderlich" });
+              errors.push({ field: "price", message: tValidation("priceRequired") });
             } else {
               const priceNum = parseFloat(formData.price);
               if (isNaN(priceNum) || priceNum < 0) {
-                errors.push({ field: "price", message: "Preis muss eine positive Zahl sein" });
+                errors.push({ field: "price", message: tValidation("pricePositive") });
               } else if (priceNum > 50) {
-                errors.push({ field: "price", message: "Preis darf maximal CHF 50 sein" });
+                errors.push({ field: "price", message: tValidation("priceMax") });
               } else if (priceNum > 0 && priceNum < 0.5) {
-                errors.push({ field: "price", message: "Mindestpreis ist CHF 0.50" });
+                errors.push({ field: "price", message: tValidation("priceMin") });
               } else if (Math.round(priceNum * 100) % 50 !== 0) {
                 errors.push({
                   field: "price",
-                  message: "Preis muss in 0.50-Schritten sein (z.B. 1.00, 1.50, 2.00)",
+                  message: tValidation("priceStep"),
                 });
               }
             }
@@ -324,36 +326,36 @@ export function UploadWizardProvider({ children }: { children: ReactNode }) {
 
         case 4:
           if (files.length === 0) {
-            errors.push({ field: "files", message: "Mindestens eine Datei ist erforderlich" });
+            errors.push({ field: "files", message: tValidation("fileRequired") });
           }
           if (!formData.legalOwnContent) {
             errors.push({
               field: "legalOwnContent",
-              message: "Bitte bestätigen Sie, dass Sie eigene Inhalte verwenden",
+              message: tValidation("legalOwnContent"),
             });
           }
           if (!formData.legalNoTextbookScans) {
             errors.push({
               field: "legalNoTextbookScans",
-              message: "Bitte bestätigen Sie, dass keine Lehrmittel-Scans enthalten sind",
+              message: tValidation("legalNoScans"),
             });
           }
           if (!formData.legalNoTrademarks) {
             errors.push({
               field: "legalNoTrademarks",
-              message: "Bitte bestätigen Sie, dass keine geschützten Marken enthalten sind",
+              message: tValidation("legalNoTrademarks"),
             });
           }
           if (!formData.legalSwissGerman) {
             errors.push({
               field: "legalSwissGerman",
-              message: "Bitte bestätigen Sie die Schweizer Rechtschreibung",
+              message: tValidation("legalSwissGerman"),
             });
           }
           if (!formData.legalTermsAccepted) {
             errors.push({
               field: "legalTermsAccepted",
-              message: "Bitte akzeptieren Sie die Verkäufervereinbarung",
+              message: tValidation("legalTerms"),
             });
           }
           break;
@@ -361,7 +363,7 @@ export function UploadWizardProvider({ children }: { children: ReactNode }) {
 
       return errors;
     },
-    [formData, files]
+    [formData, files, tValidation]
   );
 
   // Check if step is valid

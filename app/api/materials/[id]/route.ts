@@ -108,11 +108,13 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     if (materialSubjects.length > 0) {
       // First: try matching by subject
-      const relatedIds = await prisma.$queryRawUnsafe<{ id: string }[]>(
-        `SELECT id FROM resources WHERE id != $1 AND is_published = true AND is_approved = true AND subjects::jsonb ?| $2::text[] LIMIT 3`,
-        id,
-        materialSubjects
-      );
+      const relatedIds = await prisma.$queryRaw<{ id: string }[]>`
+        SELECT id FROM resources
+        WHERE id != ${id}
+        AND is_published = true AND is_approved = true
+        AND subjects::jsonb ?| ${materialSubjects}::text[]
+        LIMIT 3
+      `;
 
       if (relatedIds.length > 0) {
         relatedMaterials = await prisma.resource.findMany({
@@ -135,12 +137,14 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     // Fallback: if not enough results, fill with same cycle materials
     if (relatedMaterials.length < 3 && materialCycles.length > 0) {
       const existingIds = [id, ...relatedMaterials.map((r) => r.id)];
-      const cycleIds = await prisma.$queryRawUnsafe<{ id: string }[]>(
-        `SELECT id FROM resources WHERE id != ALL($1::text[]) AND is_published = true AND is_approved = true AND cycles::jsonb ?| $2::text[] LIMIT $3`,
-        existingIds,
-        materialCycles,
-        3 - relatedMaterials.length
-      );
+      const remaining = 3 - relatedMaterials.length;
+      const cycleIds = await prisma.$queryRaw<{ id: string }[]>`
+        SELECT id FROM resources
+        WHERE id != ALL(${existingIds}::text[])
+        AND is_published = true AND is_approved = true
+        AND cycles::jsonb ?| ${materialCycles}::text[]
+        LIMIT ${remaining}
+      `;
 
       if (cycleIds.length > 0) {
         const cycleMaterials = await prisma.resource.findMany({

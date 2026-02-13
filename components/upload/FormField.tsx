@@ -1,12 +1,12 @@
 "use client";
 
 import { ReactNode, useId } from "react";
-import { InfoTooltip, FIELD_TOOLTIPS } from "./InfoTooltip";
+import { InfoTooltip, FIELD_TOOLTIP_KEYS, useFieldTooltip } from "./InfoTooltip";
 import { AlertCircle } from "lucide-react";
 
 interface FormFieldProps {
   label: string;
-  tooltipKey?: keyof typeof FIELD_TOOLTIPS;
+  tooltipKey?: string;
   required?: boolean;
   error?: string;
   touched?: boolean;
@@ -29,7 +29,7 @@ export function FormField({
   const showError = touched && error;
   const errorId = `${id}-error`;
   const hintId = `${id}-hint`;
-  const tooltip = tooltipKey ? FIELD_TOOLTIPS[tooltipKey] : null;
+  const tooltip = useFieldTooltip(tooltipKey || "");
 
   // Build aria-describedby value for children
   const describedBy = showError ? errorId : hint ? hintId : undefined;
@@ -45,11 +45,8 @@ export function FormField({
           {label}
           {required && <span className="text-error ml-0.5">*</span>}
         </span>
-        {tooltip && (
-          <InfoTooltip
-            content={tooltip.content}
-            example={(tooltip as { content: string; example?: string }).example}
-          />
+        {tooltipKey && FIELD_TOOLTIP_KEYS[tooltipKey] && (
+          <InfoTooltip content={tooltip.content} example={tooltip.example} />
         )}
       </label>
 
@@ -143,7 +140,7 @@ interface FormCheckboxProps {
   label: ReactNode;
   description?: ReactNode;
   hasError?: boolean;
-  tooltipKey?: keyof typeof FIELD_TOOLTIPS;
+  tooltipKey?: string;
 }
 
 export function FormCheckbox({
@@ -154,7 +151,7 @@ export function FormCheckbox({
   hasError,
   tooltipKey,
 }: FormCheckboxProps) {
-  const tooltip = tooltipKey ? FIELD_TOOLTIPS[tooltipKey] : null;
+  const tooltip = useFieldTooltip(tooltipKey || "");
 
   return (
     <label
@@ -195,11 +192,8 @@ export function FormCheckbox({
       <div className="flex-1">
         <div className="text-text flex items-center gap-1.5 font-medium">
           {label}
-          {tooltip && (
-            <InfoTooltip
-              content={tooltip.content}
-              example={(tooltip as { content: string; example?: string }).example}
-            />
+          {tooltipKey && FIELD_TOOLTIP_KEYS[tooltipKey] && (
+            <InfoTooltip content={tooltip.content} example={tooltip.example} />
           )}
         </div>
         {description && <div className="text-text-muted mt-0.5 text-sm">{description}</div>}

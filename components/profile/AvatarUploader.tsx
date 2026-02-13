@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { useTranslations } from "next-intl";
 
 interface AvatarUploaderProps {
   currentAvatarUrl?: string | null;
@@ -16,11 +17,12 @@ export function AvatarUploader({
   currentAvatarUrl,
   displayName,
   onUpload,
-  errorInvalidType = "Bitte wählen Sie ein Bild aus (JPG, PNG)",
-  errorTooLarge = "Das Bild darf maximal 2MB gross sein",
-  errorUploadFailed = "Fehler beim Hochladen. Bitte versuchen Sie es erneut.",
-  uploadLabel = "Profilbild hochladen",
+  errorInvalidType,
+  errorTooLarge,
+  errorUploadFailed,
+  uploadLabel,
 }: AvatarUploaderProps) {
+  const t = useTranslations("avatar");
   const [isUploading, setIsUploading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -32,13 +34,13 @@ export function AvatarUploader({
 
     // Validate file type
     if (!file.type.startsWith("image/")) {
-      setError(errorInvalidType);
+      setError(errorInvalidType || t("errorInvalidType"));
       return;
     }
 
     // Validate file size (max 2MB)
     if (file.size > 2 * 1024 * 1024) {
-      setError(errorTooLarge);
+      setError(errorTooLarge || t("errorTooLarge"));
       return;
     }
 
@@ -56,7 +58,7 @@ export function AvatarUploader({
     try {
       await onUpload(file);
     } catch {
-      setError(errorUploadFailed);
+      setError(errorUploadFailed || t("errorUploadFailed"));
       setPreviewUrl(null);
     } finally {
       setIsUploading(false);
@@ -98,7 +100,7 @@ export function AvatarUploader({
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={isUploading}
-          aria-label={uploadLabel}
+          aria-label={uploadLabel || t("uploadLabel")}
           className="border-bg bg-primary text-text-on-accent hover:bg-success absolute right-0 bottom-0 flex h-8 w-8 items-center justify-center rounded-full border-2 transition-colors disabled:opacity-50"
         >
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -125,6 +127,7 @@ export function AvatarUploader({
         accept="image/jpeg,image/png,image/webp"
         onChange={handleFileSelect}
         className="hidden"
+        aria-label={uploadLabel || t("uploadLabel")}
       />
 
       {/* Error message */}

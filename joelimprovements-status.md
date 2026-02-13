@@ -24,8 +24,8 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Search-Button zeigt auf Mobile nur das Icon ohne Text — kein `aria-label` auf dem Button
 - [ ] SwissBrandSection und ValueProposition haben fast identisches Layout — könnten zu einer generischen Sektion vereinheitlicht werden
 - [ ] TrustBar Items sind nicht verlinkt — z.B. "Schweizer Hosting" könnte auf Über-uns oder Datenschutz verlinken
-- [ ] Kein `<meta description>` oder OpenGraph Tags spezifisch für die Startseite (SEO)
-- [ ] Featured Materials zeigen keinen Rating/Bewertung — hilft Nutzern bei der Entscheidung
+- [x] Kein `<meta description>` oder OpenGraph Tags spezifisch für die Startseite (SEO) — enhanced locale layout with OG type/siteName/images + Twitter card
+- [x] Featured Materials zeigen keinen Rating/Bewertung — averageRating + reviewCount now passed to MaterialCard on homepage
 
 ---
 
@@ -115,16 +115,16 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Bewertungen & Kommentare
 
-- [ ] Bewertung-Button an Style angleichen
-- [ ] "Material melden" Button grösser machen
-- [ ] Bewertung-Look überarbeiten
-- [ ] Profil des Bewertenden verlinken (klickbar zum Profil)
-- [ ] Kommentar-Bearbeiten Button/Dropdown überarbeiten
-- [ ] Bewertungen-Overview verkleinern/verbessern
-- [ ] Kommentare Daumen-hoch verbessern und ersichtlicher machen
-- [ ] Kommentar-Bearbeitung: Speicherung ohne Refresh anzeigen
-- [ ] Kommentare mit Bewertungen verschmelzen (ein Segment)
-- [ ] Verkäufer des Dokuments kann nicht bewerten (Logik einbauen)
+- [x] Bewertung-Button an Style angleichen
+- [x] "Material melden" Button grösser machen
+- [x] Bewertung-Look überarbeiten
+- [x] Profil des Bewertenden verlinken (klickbar zum Profil)
+- [x] Kommentar-Bearbeiten Button/Dropdown überarbeiten
+- [x] Bewertungen-Overview verkleinern/verbessern
+- [x] Kommentare Daumen-hoch verbessern und ersichtlicher machen
+- [x] Kommentar-Bearbeitung: Speicherung ohne Refresh anzeigen
+- [x] Kommentare mit Bewertungen verschmelzen (ein Segment)
+- [x] Verkäufer des Dokuments kann nicht bewerten (Logik einbauen)
 
 ### UI Verbesserungen — Detail-Seite (Session 2025-02-11)
 
@@ -136,8 +136,8 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Code Quality — Detail-Seite (Session 2025-02-11)
 
-- [ ] Detail-Seite ist 930+ Zeilen — PurchaseBox, SellerCard, FeedbackSection, ReportModal in eigene Komponenten extrahieren
-- [ ] `$queryRawUnsafe` in `/api/materials/[id]/route.ts` — SQL-Injection-Risiko bei Related-Materials-Queries, parameterisierte Queries nutzen
+- [x] Detail-Seite ist 930+ Zeilen — PurchasePanel und ReportModal in eigene Komponenten extrahiert (~560 Zeilen)
+- [x] `$queryRawUnsafe` in `/api/materials/[id]/route.ts` — SQL-Injection behoben mit `$queryRaw` tagged template literals
 
 ### Eigene Vorschläge (Material-Vorschau)
 
@@ -146,18 +146,18 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Report-Modal: Texte komplett hardcoded (Titel, Gründe, Placeholder, Buttons, Erfolgsmeldung) — benötigt eigenen i18n-Namespace
 - [x] Report-Modal schliesst nach 2 Sekunden automatisch — zu schnell, Benutzer könnte verwirrt sein — increased to 4 seconds
 - [ ] Typ-Duplikation: Interfaces für Material, Comment, Review in mehreren Komponenten definiert — in gemeinsame `lib/types/` auslagern
-- [ ] PreviewGallery: Bilder mit raw `<img>` statt Next.js `<Image>` — kein Lazy Loading, keine responsive Sizes, kein Blur-Placeholder
-- [ ] Seller-Avatar mit raw `<img>` statt `<Image>` Component geladen
+- [x] PreviewGallery: Bilder mit raw `<img>` statt Next.js `<Image>` — replaced main preview, thumbnails, and blurred overlay with Next.js Image (fill + sizes), lightbox kept as img
+- [x] Seller-Avatar mit raw `<img>` statt `<Image>` Component geladen — replaced with Next.js Image in PurchasePanel
 - [x] Keine `aria-label` auf Download-, Wishlist-, Follow-, Report-Buttons — unzugänglich für Screenreader — added i18n-based aria-labels to all action buttons (follow, download, wishlist, share, report, close dialog, mobile sticky bar)
-- [ ] PreviewGallery Lightbox hat keinen Focus-Trap — Tab-Navigation kann hinter die Lightbox gelangen
-- [ ] `window.location.href` für unauthentifizierte Redirects statt Next.js Router — inkonsistent und nicht SEO-freundlich
-- [ ] Kein Duplicate-Prevention beim Melden — Benutzer können Material mehrfach hintereinander melden
+- [x] PreviewGallery Lightbox hat keinen Focus-Trap — wrapped with FocusTrap component, added role=dialog, aria-modal, aria-labels on all buttons
+- [x] `window.location.href` für unauthentifizierte Redirects statt Next.js Router — replaced with router.push() in ReportModal, CheckoutButton, CommentsSection, and detail page
+- [x] Kein Duplicate-Prevention beim Melden — server-side duplicate check (409) + client-side error handling with i18n message
 - [x] Review-Labels ("Schlecht", "Mangelhaft", "Okay", "Gut", "Ausgezeichnet") sind hardcoded — nicht lokalisierbar — ReviewForm.tsx fully migrated to i18n with reviews.stars.\* keys
 - [x] Keine Feedback wenn Download startet (`window.open()`) — kein Bestätigungs-Toast — added success toast + error toast on download
 - [ ] Kein Schema.org Markup (`Product`, `AggregateRating`, `BreadcrumbList`) — fehlende Rich Snippets in Suchmaschinen
 - [ ] Redundante Datenfelder: `subject`/`subjects` und `cycle`/`cycles` — sollte normalisiert werden
 - [ ] Kommentar-/Review-Like-Button State wird nach Vote nicht sofort aktualisiert — fehlendes Optimistic Update
-- [ ] Magische Zahlen in PreviewGallery (50px Swipe-Threshold, 80px Thumbnail-Höhe) — als benannte Konstanten definieren
+- [x] Magische Zahlen in PreviewGallery (50px Swipe-Threshold, 80px Thumbnail-Höhe) — extracted SWIPE_THRESHOLD_PX, THUMBNAIL_HEIGHT_PX, MAX_VISIBLE_THUMBNAILS, THUMBNAIL_GAP_PX constants
 
 ---
 
@@ -448,10 +448,10 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Eigene Vorschläge (Bibliothek)
 
-- [ ] Statistik-Karten verwenden hardcoded deutsche Texte ("Gesamt in Bibliothek", "Gratis erhalten", "Gekauft") — sollten i18n nutzen
+- [x] Statistik-Karten verwenden hardcoded deutsche Texte ("Gesamt in Bibliothek", "Gratis erhalten", "Gekauft") — already using i18n t("stats.total/free/purchased")
 - [ ] Suchfunktion: wenn Suchfeld geleert wird, wird nicht neu geladen
 - [ ] Keine Filteroptionen für Material-Typ (kostenlos vs. kostenpflichtig)
-- [ ] Badge-Text "Verifiziert" ist hardcoded statt i18n
+- [x] Badge-Text "Verifiziert" ist hardcoded statt i18n — already using t("badgeVerified")
 - [ ] Keine Sortieroptionen (nach Datum, Preis, Bewertung etc.)
 - [ ] Keine Bulk-Actions (z.B. mehrere auswählen und zu Sammlung hinzufügen)
 
@@ -467,9 +467,9 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Eigene Vorschläge (Uploads)
 
-- [ ] Suchfeld wird nur angezeigt wenn `uploadedItems.length > 0` — sollte immer sichtbar sein
-- [ ] Badge-Texte ("Verifiziert", "Ausstehend") sind hardcoded statt i18n
-- [ ] Placeholder-Text "Uploads durchsuchen..." ist hardcoded (nicht i18n)
+- [x] Suchfeld wird nur angezeigt wenn `uploadedItems.length > 0` — already fixed, search field is unconditional, added aria-label
+- [x] Badge-Texte ("Verifiziert", "Ausstehend") sind hardcoded statt i18n — already using t("statusVerified")/t("statusPending")
+- [x] Placeholder-Text "Uploads durchsuchen..." ist hardcoded (nicht i18n) — already using t("search")
 - [ ] Keine Anzeige von Upload-Fortschritt für Materials im Draft-Status
 - [ ] Keine Möglichkeit, Material zu duplizieren
 
@@ -618,6 +618,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Hintergrundfarben einheitlich
 - [x] Kaufstornierung/Widerrufsrecht in AGB dokumentiert
 - [ ] Info bei Fehlermeldungen auf Deutsch bzw. der Sprache angepasst (restliche prüfen)
+- check the badges, verifiziert is only who is a verifizierter verkäufer, that has to be unique. documents are all verified. so it doesn`t realy say something so we take that verified out. then display the level of the creator in his profile and also when he uploads something
 
 ### Eigene Vorschläge (Global)
 

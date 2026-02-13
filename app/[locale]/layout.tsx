@@ -44,9 +44,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     description: meta.description,
     openGraph: {
+      type: "website",
+      siteName: "Currico",
       locale: locale === "de" ? "de_CH" : "en_US",
       title: meta.title,
       description: meta.description,
+      images: [
+        {
+          url: "/images/hero-teachers.png",
+          width: 1000,
+          height: 667,
+          alt: meta.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: meta.title,
+      description: meta.description,
+      images: ["/images/hero-teachers.png"],
     },
     alternates: {
       canonical: `/${locale}`,

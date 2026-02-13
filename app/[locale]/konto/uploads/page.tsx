@@ -68,6 +68,7 @@ export default function AccountUploadsPage() {
           placeholder={t("search")}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
+          aria-label={t("search")}
           className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary flex-1 rounded-lg border px-4 py-2 text-sm focus:ring-1 focus:outline-none"
         />
         <select

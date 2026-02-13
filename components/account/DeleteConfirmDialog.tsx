@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { Trash2 } from "lucide-react";
 
 interface DeleteConfirmDialogProps {
@@ -18,6 +19,9 @@ export function DeleteConfirmDialog({
   onConfirm,
   onCancel,
 }: DeleteConfirmDialogProps) {
+  const t = useTranslations("deleteConfirm");
+  const tCommon = useTranslations("common");
+
   return (
     <AnimatePresence>
       {open && (
@@ -40,24 +44,23 @@ export function DeleteConfirmDialog({
               <Trash2 className="text-error h-6 w-6" />
             </div>
             <h3 className="text-text text-center text-lg font-bold">
-              {type === "material" ? "Material löschen?" : "Bundle löschen?"}
+              {type === "material" ? t("materialTitle") : t("bundleTitle")}
             </h3>
             <p className="text-text-muted mt-2 text-center text-sm">
-              <strong className="text-text">&ldquo;{title}&rdquo;</strong> wird dauerhaft gelöscht.
-              Diese Aktion kann nicht rückgängig gemacht werden.
+              <strong className="text-text">&ldquo;{title}&rdquo;</strong> {t("permanentWarning")}
             </p>
             <div className="mt-6 flex gap-3">
               <button
                 onClick={onCancel}
                 className="border-border text-text hover:bg-surface-elevated flex-1 rounded-xl border px-4 py-2.5 text-sm font-medium transition-colors"
               >
-                Abbrechen
+                {tCommon("buttons.cancel")}
               </button>
               <button
                 onClick={onConfirm}
                 className="bg-error hover:bg-error/90 flex-1 rounded-xl px-4 py-2.5 text-sm font-medium text-white transition-colors"
               >
-                Löschen
+                {tCommon("buttons.delete")}
               </button>
             </div>
           </motion.div>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 
 interface CheckoutButtonProps {
   materialId: string;
@@ -21,6 +22,7 @@ export function CheckoutButton({
 }: CheckoutButtonProps) {
   const t = useTranslations("checkout");
   const { status: sessionStatus } = useSession();
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [digitalConsent, setDigitalConsent] = useState(false);
@@ -28,7 +30,7 @@ export function CheckoutButton({
   const handleCheckout = async () => {
     // Redirect to login if not authenticated
     if (sessionStatus !== "authenticated") {
-      window.location.href = "/anmelden";
+      router.push("/anmelden");
       return;
     }
 

@@ -16,4 +16,4 @@ export {
   FormCheckbox,
   RadioOption,
 } from "./FormField";
-export { InfoTooltip, FIELD_TOOLTIPS } from "./InfoTooltip";
+export { InfoTooltip, FIELD_TOOLTIP_KEYS, useFieldTooltip } from "./InfoTooltip";

@@ -56,6 +56,23 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Check for duplicate reports from the same user
+    const existingReport = await prisma.report.findFirst({
+      where: {
+        reporter_id: userId,
+        ...(resource_id ? { resource_id } : {}),
+        ...(reported_user_id ? { reported_user_id } : {}),
+      },
+      select: { id: true },
+    });
+
+    if (existingReport) {
+      return NextResponse.json(
+        { error: "Sie haben dieses Material bereits gemeldet" },
+        { status: 409 }
+      );
+    }
+
     // Create the report
     const report = await prisma.report.create({
       data: {
