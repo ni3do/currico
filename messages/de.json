@@ -36,9 +36,8 @@
     "noPreview": "Keine Vorschau verfügbar",
     "fullAccessHint": "Vollständige Dateien nach dem Kauf verfügbar",
     "purchaseHint": "Kaufen Sie, um alle Vorschauseiten freizuschalten",
-    "blurredOverlay": {
-      "title": "Vorschau verschwommen",
-      "description": "Kaufen Sie, um die vollständige Ansicht freizuschalten",
+    "previewOverlay": {
+      "description": "Kaufen für vollständige Ansicht",
       "cta": "Jetzt freischalten"
     },
     "closeLightbox": "Vorschau schliessen",
@@ -2712,6 +2711,7 @@
       "errorUnexpected": "Ein unerwarteter Fehler ist aufgetreten",
       "alreadyReported": "Sie haben dieses Material bereits gemeldet"
     },
+    "fileFormatUnknown": "Datei",
     "noPreview": "Keine Vorschau verfügbar",
     "anonymous": "Anonym",
     "availableAfterReview": "Verfügbar nach Überprüfung",

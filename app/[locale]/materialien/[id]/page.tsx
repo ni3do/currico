@@ -16,78 +16,7 @@ import { CommentsSection } from "@/components/comments";
 import { useToast } from "@/components/ui/Toast";
 import { PurchasePanel } from "@/components/materials/PurchasePanel";
 import { ReportModal } from "@/components/materials/ReportModal";
-
-interface Competency {
-  id: string;
-  code: string;
-  description_de: string;
-  anforderungsstufe?: string | null;
-  subjectCode?: string;
-  subjectColor?: string;
-}
-
-interface Transversal {
-  id: string;
-  code: string;
-  name_de: string;
-  icon?: string | null;
-  color?: string | null;
-}
-
-interface BneTheme {
-  id: string;
-  code: string;
-  name_de: string;
-  sdg_number?: number | null;
-  icon?: string | null;
-  color?: string | null;
-}
-
-interface Material {
-  id: string;
-  title: string;
-  description: string;
-  price: number;
-  priceFormatted: string;
-  fileUrl: string;
-  fileFormat?: string;
-  previewUrl: string | null;
-  previewUrls?: string[];
-  previewCount?: number;
-  hasAccess?: boolean;
-  subjects: string[];
-  cycles: string[];
-  subject: string;
-  cycle: string;
-  createdAt: string;
-  downloadCount: number;
-  isApproved: boolean;
-  status: "PENDING" | "VERIFIED" | "REJECTED";
-  seller: {
-    id: string;
-    displayName: string | null;
-    image: string | null;
-    verified: boolean;
-    materialCount: number;
-  };
-  // LP21 curriculum fields
-  isMiIntegrated?: boolean;
-  competencies?: Competency[];
-  transversals?: Transversal[];
-  bneThemes?: BneTheme[];
-}
-
-interface RelatedMaterial {
-  id: string;
-  title: string;
-  price: number;
-  priceFormatted: string;
-  subject: string;
-  cycle: string;
-  verified: boolean;
-  previewUrl: string | null;
-  sellerName: string | null;
-}
+import type { Material, RelatedMaterial } from "@/lib/types/material";
 
 export default function MaterialDetailPage() {
   const params = useParams();

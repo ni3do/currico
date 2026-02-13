@@ -7,37 +7,8 @@ import { Flag } from "lucide-react";
 import { LP21Badge } from "@/components/curriculum/LP21Badge";
 import { CheckoutButton } from "@/components/checkout/CheckoutButton";
 import { useToast } from "@/components/ui/Toast";
-
-interface Competency {
-  id: string;
-  code: string;
-  description_de: string;
-  anforderungsstufe?: string | null;
-  subjectCode?: string;
-  subjectColor?: string;
-}
-
-interface MaterialForPanel {
-  id: string;
-  title: string;
-  price: number;
-  priceFormatted: string;
-  fileFormat?: string;
-  previewCount?: number;
-  isApproved: boolean;
-  subject: string;
-  cycle: string;
-  downloadCount: number;
-  createdAt: string;
-  competencies?: Competency[];
-  seller: {
-    id: string;
-    displayName: string | null;
-    image: string | null;
-    verified: boolean;
-    materialCount: number;
-  };
-}
+import { getSubjectPillClass } from "@/lib/constants/subject-colors";
+import type { MaterialForPanel } from "@/lib/types/material";
 
 interface PurchasePanelProps {
   material: MaterialForPanel;
@@ -69,7 +40,7 @@ export function PurchasePanel({
     <div className="order-1 lg:sticky lg:top-24 lg:order-2">
       {/* Badges Row */}
       <div className="mb-3 flex flex-wrap items-center gap-2">
-        <span className="pill pill-neutral">{material.fileFormat || "PDF"}</span>
+        <span className="pill pill-neutral">{material.fileFormat || t("fileFormatUnknown")}</span>
         {material.isApproved ? (
           <span className="pill pill-success">{t("verified")}</span>
         ) : (
@@ -165,11 +136,22 @@ export function PurchasePanel({
 
       {/* Quick Metadata Row */}
       <div className="text-text-muted mb-6 flex flex-wrap items-center gap-2 text-sm">
-        <span className={`pill pill-${material.subject.toLowerCase()} text-xs`}>
-          {material.subject}
-        </span>
-        <span className="text-border">·</span>
-        <span>{t("cycle", { number: material.cycle || "-" })}</span>
+        {material.subjects.map((subj) => (
+          <span key={subj} className={`pill ${getSubjectPillClass(subj)} text-xs`}>
+            {subj}
+          </span>
+        ))}
+        {material.subjects.length > 0 && <span className="text-border">·</span>}
+        {material.cycles.length > 0 ? (
+          material.cycles.map((c, i) => (
+            <span key={c}>
+              {t("cycle", { number: c })}
+              {i < material.cycles.length - 1 && ", "}
+            </span>
+          ))
+        ) : (
+          <span>{t("cycle", { number: "-" })}</span>
+        )}
         <span className="text-border">·</span>
         <span>{t("downloads", { count: material.downloadCount })}</span>
         {material.previewCount && material.previewCount > 0 && (

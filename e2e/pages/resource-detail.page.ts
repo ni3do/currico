@@ -58,7 +58,7 @@ export class MaterialDetailPage extends BasePage {
   readonly mainPreviewImage: Locator;
   readonly thumbnailButtons: Locator;
   readonly pageIndicator: Locator;
-  readonly blurredOverlay: Locator;
+  readonly previewOverlay: Locator;
   readonly noPreviewPlaceholder: Locator;
 
   // Lightbox
@@ -181,7 +181,7 @@ export class MaterialDetailPage extends BasePage {
       has: page.locator("img"),
     });
     this.pageIndicator = this.previewGallerySection.locator("text=/seite.*von|page.*of/i");
-    this.blurredOverlay = this.previewGallerySection.locator("div").filter({
+    this.previewOverlay = this.previewGallerySection.locator("div").filter({
       hasText: /kaufen|unlock|freischalten/i,
     });
     this.noPreviewPlaceholder = page.locator("text=/keine vorschau|no preview/i");
@@ -479,10 +479,10 @@ export class MaterialDetailPage extends BasePage {
   }
 
   /**
-   * Check if the blurred overlay (for locked pages) is visible.
+   * Check if the preview overlay (for locked pages) is visible.
    */
-  async hasBlurredOverlay(): Promise<boolean> {
-    return this.blurredOverlay.isVisible().catch(() => false);
+  async hasPreviewOverlay(): Promise<boolean> {
+    return this.previewOverlay.isVisible().catch(() => false);
   }
 
   /**

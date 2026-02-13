@@ -680,6 +680,13 @@ export async function POST(request: NextRequest) {
     // Get storage provider
     const storage = getStorage();
 
+    // Fetch seller's display name for watermark
+    const seller = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { display_name: true },
+    });
+    const sellerName = seller?.display_name || undefined;
+
     // Create material in database first to get ID
     const material = await prisma.resource.create({
       data: {
@@ -773,7 +780,11 @@ export async function POST(request: NextRequest) {
         if (previewModule && previewModule.canGeneratePreview(file.type)) {
           // For PDFs, generate multi-page previews (up to 3 pages)
           if (file.type === "application/pdf" && previewModule.generatePdfPreviewPages) {
-            const previewPages = await previewModule.generatePdfPreviewPages(fileBuffer, 3);
+            const previewPages = await previewModule.generatePdfPreviewPages(
+              fileBuffer,
+              3,
+              sellerName
+            );
 
             for (const page of previewPages) {
               if (Buffer.isBuffer(page.buffer) && page.buffer.length > 0) {
@@ -800,7 +811,11 @@ export async function POST(request: NextRequest) {
             previewCount = previewUrls.length;
           } else {
             // For images, generate a single preview
-            const generatedPreview = await previewModule.generatePreview(fileBuffer, file.type);
+            const generatedPreview = await previewModule.generatePreview(
+              fileBuffer,
+              file.type,
+              sellerName
+            );
 
             // Validate that we got actual buffer data before uploading
             if (

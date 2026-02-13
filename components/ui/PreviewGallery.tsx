@@ -5,7 +5,11 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { FocusTrap } from "@/components/ui/FocusTrap";
 
-function BlurredPreviewOverlay({
+/**
+ * Subtle overlay for watermarked preview pages (non-purchased).
+ * Shows the server-watermarked image clearly with a bottom gradient + CTA.
+ */
+function PreviewOverlay({
   imageUrl,
   pageNumber,
   totalPages,
@@ -30,13 +34,14 @@ function BlurredPreviewOverlay({
         src={imageUrl}
         alt={altText}
         fill
-        className="object-cover blur-[8px]"
+        className="object-contain"
         sizes="(max-width: 640px) 100vw, 50vw"
       />
-      <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 backdrop-blur-sm">
-        <div className="bg-surface/90 mb-4 flex h-16 w-16 items-center justify-center rounded-full shadow-lg">
+      {/* Subtle bottom gradient with CTA */}
+      <div className="absolute inset-x-0 bottom-0 flex flex-col items-center bg-gradient-to-t from-black/60 via-black/20 to-transparent px-4 pt-16 pb-4">
+        <div className="mb-2 flex items-center gap-1.5">
           <svg
-            className="text-text-muted h-8 w-8"
+            className="h-4 w-4 text-white/90"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -48,16 +53,16 @@ function BlurredPreviewOverlay({
               d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
             />
           </svg>
+          <p className="text-center text-sm font-medium text-white/90 drop-shadow-md">
+            {t("previewOverlay.description")}
+          </p>
         </div>
-        <p className="mb-4 text-center text-sm font-medium text-white drop-shadow-md">
-          {t("blurredOverlay.description")}
-        </p>
         {onUnlock && (
           <button
             onClick={onUnlock}
             className="btn-primary rounded-lg px-6 py-2 text-sm font-semibold shadow-lg transition-transform hover:scale-105"
           >
-            {ctaText || t("blurredOverlay.cta")}
+            {ctaText || t("previewOverlay.cta")}
           </button>
         )}
       </div>
@@ -86,7 +91,7 @@ interface PreviewGalleryProps {
 /**
  * Gallery component for displaying multi-page PDF previews.
  * - Page 1 is always shown clearly
- * - Pages 2+ are blurred with "Buy to unlock" CTA for non-purchasers
+ * - Pages 2+ show server-watermarked images with a subtle bottom overlay for non-purchasers
  * - Includes thumbnail strip, main preview, lightbox, and mobile swipe
  */
 export function PreviewGallery({
@@ -171,7 +176,7 @@ export function PreviewGallery({
   }
 
   const currentUrl = previewUrls[currentPage];
-  const isBlurred = !hasAccess && currentPage > 0;
+  const isLocked = !hasAccess && currentPage > 0;
 
   return (
     <div>
@@ -188,13 +193,13 @@ export function PreviewGallery({
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
           >
-            {isBlurred ? (
-              <BlurredPreviewOverlay
+            {isLocked ? (
+              <PreviewOverlay
                 imageUrl={currentUrl}
                 pageNumber={currentPage + 1}
                 totalPages={previewCount}
                 onUnlock={onPurchaseClick}
-                ctaText={`${priceFormatted} - ${t("blurredOverlay.cta")}`}
+                ctaText={`${priceFormatted} - ${t("previewOverlay.cta")}`}
                 alt={resourceTitle}
               />
             ) : (
@@ -244,7 +249,7 @@ export function PreviewGallery({
               }}
             >
               {previewUrls.map((url, index) => {
-                const isThumbBlurred = !hasAccess && index > 0;
+                const isThumbLocked = !hasAccess && index > 0;
                 const isActive = index === currentPage;
 
                 return (
@@ -262,13 +267,13 @@ export function PreviewGallery({
                       src={url}
                       alt={t("pageOf", { current: index + 1, total: previewCount })}
                       fill
-                      className={`object-cover${isThumbBlurred ? "blur-[4px]" : ""}`}
+                      className="object-cover"
                       sizes="64px"
                     />
-                    {isThumbBlurred && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                    {isThumbLocked && (
+                      <div className="absolute inset-x-0 bottom-0 flex items-center justify-center bg-gradient-to-t from-black/40 to-transparent pt-3 pb-1">
                         <svg
-                          className="h-4 w-4 text-white"
+                          className="h-3 w-3 text-white/80"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -408,22 +413,47 @@ export function PreviewGallery({
 
               {/* Lightbox content */}
               <div
-                className="max-h-[90vh] max-w-4xl overflow-hidden"
+                className="relative max-h-[90vh] max-w-4xl overflow-hidden"
                 onClick={(e) => e.stopPropagation()}
               >
-                {isBlurred ? (
-                  <div className="relative aspect-[3/4] w-full max-w-2xl overflow-hidden rounded-xl">
-                    <BlurredPreviewOverlay
-                      imageUrl={currentUrl}
-                      pageNumber={currentPage + 1}
-                      totalPages={previewCount}
-                      onUnlock={() => {
-                        setIsLightboxOpen(false);
-                        onPurchaseClick?.();
-                      }}
-                      ctaText={`${priceFormatted} - ${t("blurredOverlay.cta")}`}
-                      alt={resourceTitle}
+                {isLocked ? (
+                  <div className="relative">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={currentUrl}
+                      alt={`${resourceTitle} - ${t("pageOf", { current: currentPage + 1, total: previewCount })}`}
+                      className="max-h-[90vh] max-w-full rounded-lg object-contain"
                     />
+                    {/* Subtle bottom overlay in lightbox */}
+                    <div className="absolute inset-x-0 bottom-0 flex flex-col items-center rounded-b-lg bg-gradient-to-t from-black/60 via-black/20 to-transparent px-4 pt-16 pb-4">
+                      <div className="mb-2 flex items-center gap-1.5">
+                        <svg
+                          className="h-4 w-4 text-white/90"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                          />
+                        </svg>
+                        <p className="text-center text-sm font-medium text-white/90 drop-shadow-md">
+                          {t("previewOverlay.description")}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => {
+                          setIsLightboxOpen(false);
+                          onPurchaseClick?.();
+                        }}
+                        className="btn-primary rounded-lg px-6 py-2 text-sm font-semibold shadow-lg transition-transform hover:scale-105"
+                      >
+                        {`${priceFormatted} - ${t("previewOverlay.cta")}`}
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -435,8 +465,12 @@ export function PreviewGallery({
                 )}
               </div>
 
-              {/* Page indicator in lightbox */}
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-white/10 px-4 py-2 text-sm text-white">
+              {/* Page indicator in lightbox — positioned higher when overlay is visible */}
+              <div
+                className={`absolute left-1/2 -translate-x-1/2 rounded-full bg-white/10 px-4 py-2 text-sm text-white ${
+                  isLocked ? "bottom-24" : "bottom-4"
+                }`}
+              >
                 {t("pageOf", { current: currentPage + 1, total: previewCount })}
               </div>
             </div>

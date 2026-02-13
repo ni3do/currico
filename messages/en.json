@@ -36,9 +36,8 @@
     "noPreview": "No preview available",
     "fullAccessHint": "Full files available after purchase",
     "purchaseHint": "Purchase to unlock all preview pages",
-    "blurredOverlay": {
-      "title": "Preview blurred",
-      "description": "Purchase to unlock the full view",
+    "previewOverlay": {
+      "description": "Purchase for full version",
       "cta": "Unlock now"
     },
     "closeLightbox": "Close preview",
@@ -2712,6 +2711,7 @@
       "errorUnexpected": "An unexpected error occurred",
       "alreadyReported": "You have already reported this material"
     },
+    "fileFormatUnknown": "File",
     "noPreview": "No preview available",
     "anonymous": "Anonymous",
     "availableAfterReview": "Available after review",
