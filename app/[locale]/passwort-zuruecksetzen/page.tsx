@@ -56,7 +56,7 @@ function ResetPasswordForm() {
         <AlertTriangle className="text-warning mx-auto mb-4 h-12 w-12" />
         <h1 className="text-text mb-2 text-2xl font-bold">{t("invalidTitle")}</h1>
         <p className="text-text-muted mb-6">{t("invalidMessage")}</p>
-        <Link href="/forgot-password" className="btn-primary inline-block px-6 py-3">
+        <Link href="/passwort-vergessen" className="btn-primary inline-block px-6 py-3">
           {t("requestNew")}
         </Link>
       </div>

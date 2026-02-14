@@ -382,7 +382,7 @@ export async function sendPasswordResetEmail(params: {
     const transport = getTransporter();
     const baseUrl =
       process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "https://currico.ch";
-    const resetUrl = `${baseUrl}/${locale}/reset-password?token=${token}`;
+    const resetUrl = `${baseUrl}/${locale}/passwort-zuruecksetzen?token=${token}`;
 
     const isDe = locale === "de";
 

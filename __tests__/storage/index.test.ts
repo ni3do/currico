@@ -80,8 +80,8 @@ describe("Storage Factory", () => {
 
   describe("generateStorageKey", () => {
     it("generates key with correct category prefix for resource", () => {
-      const key = generateStorageKey("resource", "user123", "document.pdf");
-      expect(key).toMatch(/^resources\/user123\/[a-f0-9]+-\d+\.pdf$/);
+      const key = generateStorageKey("material", "user123", "document.pdf");
+      expect(key).toMatch(/^materials\/user123\/[a-f0-9]+-\d+\.pdf$/);
     });
 
     it("generates key with correct category prefix for preview", () => {

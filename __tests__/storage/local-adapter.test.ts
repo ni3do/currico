@@ -25,7 +25,7 @@ describe("LocalStorageAdapter", () => {
     it("uploads a file to the correct category directory", async () => {
       const buffer = Buffer.from("test content");
       const result = await adapter.upload(buffer, {
-        category: "resource",
+        category: "material",
         userId: "user123",
         filename: "test.pdf",
         contentType: "application/pdf",
@@ -70,7 +70,7 @@ describe("LocalStorageAdapter", () => {
     it("does not return publicUrl for resources (private)", async () => {
       const buffer = Buffer.from("private content");
       const result = await adapter.upload(buffer, {
-        category: "resource",
+        category: "material",
         userId: "user123",
         filename: "document.pdf",
         contentType: "application/pdf",

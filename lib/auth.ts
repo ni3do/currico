@@ -6,7 +6,7 @@ import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "./db";
 
-// Extend NextAuth types to include role
+// Extend NextAuth types to include role and onboarding flag
 declare module "next-auth" {
   interface Session {
     user: {
@@ -15,6 +15,7 @@ declare module "next-auth" {
       name?: string | null;
       image?: string | null;
       role: "BUYER" | "SELLER" | "ADMIN";
+      needsOnboarding?: boolean;
     };
   }
 }
@@ -23,6 +24,7 @@ declare module "@auth/core/jwt" {
   interface JWT {
     id?: string;
     role?: "BUYER" | "SELLER" | "ADMIN";
+    needsOnboarding?: boolean;
   }
 }
 
@@ -37,6 +39,7 @@ const nextAuth = NextAuth({
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      authorization: { params: { prompt: "select_account" } },
     }),
     MicrosoftEntraID({
       clientId: process.env.MICROSOFT_CLIENT_ID!,
@@ -81,24 +84,6 @@ const nextAuth = NextAuth({
     }),
   ],
   callbacks: {
-    async signIn({ user, account }) {
-      // For OAuth logins, check if this is a first-time user (needs profile completion)
-      if (account?.provider && account.provider !== "credentials" && user?.id) {
-        const dbUser = await prisma.user.findUnique({
-          where: { id: user.id as string },
-          select: { display_name: true, created_at: true },
-        });
-        // New users (no display name, created within last minute) → redirect to profile setup
-        if (dbUser && !dbUser.display_name) {
-          const ageMs = Date.now() - new Date(dbUser.created_at).getTime();
-          if (ageMs < 60_000) {
-            // Mark as new user in the user object for redirect callback
-            (user as Record<string, unknown>).isNewOAuthUser = true;
-          }
-        }
-      }
-      return true;
-    },
     async redirect({ url, baseUrl }) {
       // If it starts with base URL, allow it
       if (url.startsWith(baseUrl)) return url;
@@ -109,20 +94,22 @@ const nextAuth = NextAuth({
     async jwt({ token, user, trigger }) {
       if (user) {
         token.id = user.id as string;
-        // Fetch role from database
+        // Fetch role and onboarding status from database
         const dbUser = await prisma.user.findUnique({
           where: { id: user.id as string },
-          select: { role: true },
+          select: { role: true, display_name: true },
         });
         token.role = (dbUser?.role ?? "BUYER") as "BUYER" | "SELLER" | "ADMIN";
+        token.needsOnboarding = !dbUser?.display_name;
       }
-      // Refresh role on session update
+      // Refresh role and onboarding status on session update
       if (trigger === "update" && token.id) {
         const dbUser = await prisma.user.findUnique({
           where: { id: token.id as string },
-          select: { role: true },
+          select: { role: true, display_name: true },
         });
         token.role = (dbUser?.role ?? "BUYER") as "BUYER" | "SELLER" | "ADMIN";
+        token.needsOnboarding = !dbUser?.display_name;
       }
       return token;
     },
@@ -130,6 +117,7 @@ const nextAuth = NextAuth({
       if (session.user && token.id) {
         session.user.id = token.id as string;
         session.user.role = (token.role ?? "BUYER") as "BUYER" | "SELLER" | "ADMIN";
+        session.user.needsOnboarding = token.needsOnboarding ?? false;
       }
       return session;
     },

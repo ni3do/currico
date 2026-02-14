@@ -129,6 +129,6 @@ describe("GET /api/admin/stats", () => {
     const data = await parseResponse<{ error: string }>(response);
 
     expect(response.status).toBe(500);
-    expect(data.error).toBe("Failed to fetch stats");
+    expect(data.error).toBe("Fehler beim Laden der Statistiken");
   });
 });
