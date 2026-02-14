@@ -104,7 +104,13 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 const updateBundleSchema = z.object({
   title: z.string().min(1).max(200).optional(),
   description: z.string().max(5000).optional(),
-  price: z.number().min(0).optional(),
+  price: z
+    .number()
+    .min(0)
+    .refine((val) => val === 0 || (val >= 50 && val % 50 === 0), {
+      message: "Price must be in 0.50 CHF increments",
+    })
+    .optional(),
   subject: z.array(z.string()).min(1).optional(),
   cycle: z.array(z.string()).min(1).optional(),
   resourceIds: z.array(z.string()).min(2).optional(),

@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
+import { getLoginUrl } from "@/lib/utils/login-redirect";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
@@ -97,7 +98,7 @@ export default function MaterialDetailPage() {
   // Handle download for free resources
   const handleDownload = async () => {
     if (sessionStatus !== "authenticated") {
-      router.push("/anmelden");
+      window.location.href = getLoginUrl(window.location.pathname);
       return;
     }
 
@@ -116,7 +117,7 @@ export default function MaterialDetailPage() {
   // Handle wishlist toggle
   const handleWishlistToggle = async () => {
     if (sessionStatus !== "authenticated") {
-      router.push("/anmelden");
+      window.location.href = getLoginUrl(window.location.pathname);
       return;
     }
 
@@ -152,7 +153,7 @@ export default function MaterialDetailPage() {
   // Handle follow toggle
   const handleFollowToggle = async () => {
     if (sessionStatus !== "authenticated") {
-      router.push("/anmelden");
+      window.location.href = getLoginUrl(window.location.pathname);
       return;
     }
     if (!material) return;

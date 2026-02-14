@@ -5,6 +5,7 @@ import { usePathname } from "@/i18n/navigation";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Link } from "@/i18n/navigation";
+import { getLoginUrl } from "@/lib/utils/login-redirect";
 import { useTranslations } from "next-intl";
 import { Menu, ChevronDown } from "lucide-react";
 import TopBar from "@/components/ui/TopBar";
@@ -48,7 +49,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   // Redirect non-admin users
   useEffect(() => {
     if (status === "unauthenticated") {
-      router.push("/anmelden");
+      router.push(getLoginUrl("/admin"));
     } else if (status === "authenticated" && session?.user?.role !== "ADMIN") {
       router.push("/konto");
     }

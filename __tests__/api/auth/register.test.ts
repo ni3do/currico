@@ -16,7 +16,9 @@ const mockUserFindUnique = prisma.user.findUnique as ReturnType<typeof vi.fn>;
 const mockUserCreate = prisma.user.create as ReturnType<typeof vi.fn>;
 const mockTransactionFindMany = prisma.transaction.findMany as ReturnType<typeof vi.fn>;
 const mockTransactionUpdateMany = prisma.transaction.updateMany as ReturnType<typeof vi.fn>;
-const mockDownloadCreateMany = (prisma as unknown as { download: { createMany: ReturnType<typeof vi.fn> } }).download.createMany;
+const mockDownloadCreateMany = (
+  prisma as unknown as { download: { createMany: ReturnType<typeof vi.fn> } }
+).download.createMany;
 
 describe("POST /api/auth/register", () => {
   beforeEach(() => {
@@ -87,7 +89,7 @@ describe("POST /api/auth/register", () => {
     const data = await parseResponse<{ error: string }>(response);
 
     expect(response.status).toBe(400);
-    expect(data.error).toContain("mindestens 2 Zeichen");
+    expect(data.error).toContain("at least 2 characters");
   });
 
   it("validates email format", async () => {
@@ -104,7 +106,7 @@ describe("POST /api/auth/register", () => {
     const data = await parseResponse<{ error: string }>(response);
 
     expect(response.status).toBe(400);
-    expect(data.error).toContain("E-Mail");
+    expect(data.error).toContain("email");
   });
 
   it("validates password requirements", async () => {
@@ -121,7 +123,7 @@ describe("POST /api/auth/register", () => {
     const data = await parseResponse<{ error: string }>(response);
 
     expect(response.status).toBe(400);
-    expect(data.error).toContain("Passwort");
+    expect(data.error).toContain("Password");
   });
 
   it("validates password requires uppercase, lowercase and numbers", async () => {
@@ -138,7 +140,7 @@ describe("POST /api/auth/register", () => {
     const data = await parseResponse<{ error: string }>(response);
 
     expect(response.status).toBe(400);
-    expect(data.error).toContain("Gross-, Kleinbuchstaben und Zahlen");
+    expect(data.error).toContain("uppercase, lowercase, and numbers");
   });
 
   it("handles optional fields correctly", async () => {

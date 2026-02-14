@@ -3,6 +3,7 @@
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
+import { getLoginUrl } from "@/lib/utils/login-redirect";
 import { useSearchParams } from "next/navigation";
 import { Search, Upload } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";

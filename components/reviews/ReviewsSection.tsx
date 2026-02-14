@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Star, AlertCircle, RefreshCw } from "lucide-react";
-import { Link } from "@/i18n/navigation";
+import { LoginLink } from "@/components/ui/LoginLink";
 import { ReviewCard } from "./ReviewCard";
 import { ReviewForm } from "./ReviewForm";
 import { RatingSummary, RatingDistribution } from "@/components/ui/StarRating";
@@ -29,6 +29,7 @@ export function ReviewsSection({
   const [stats, setStats] = useState<ReviewStats>({ averageRating: 0, totalReviews: 0 });
   const [userReview, setUserReview] = useState<UserReview | null>(null);
   const [canReview, setCanReview] = useState(false);
+  const [isOwner, setIsOwner] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
@@ -54,6 +55,7 @@ export function ReviewsSection({
         setStats(data.stats);
         setUserReview(data.userReview);
         setCanReview(data.canReview);
+        setIsOwner(data.isOwner ?? false);
         setPage(data.pagination.page);
         setTotalPages(data.pagination.totalPages);
       } catch (err) {
@@ -213,6 +215,15 @@ export function ReviewsSection({
                 <Star className="mr-2 h-5 w-5" />
                 {t("writeReview")}
               </motion.button>
+            ) : isOwner ? (
+              <motion.div
+                key="owner-info"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="border-border bg-bg-secondary rounded-xl border p-4"
+              >
+                <p className="text-text-muted text-sm">{t("cannotReviewOwn")}</p>
+              </motion.div>
             ) : (
               <motion.div
                 key="info"
@@ -230,9 +241,7 @@ export function ReviewsSection({
       {sessionStatus === "unauthenticated" && (
         <div className="border-border bg-bg-secondary mb-6 rounded-xl border p-4">
           <p className="text-text-muted text-sm">
-            <Link href="/anmelden" className="text-primary hover:underline">
-              {t("loginPrompt")}
-            </Link>
+            <LoginLink className="text-primary hover:underline">{t("loginPrompt")}</LoginLink>
             {t("loginSuffix")}
           </p>
         </div>

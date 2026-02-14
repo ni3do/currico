@@ -56,7 +56,10 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           },
         },
         _count: {
-          select: { transactions: { where: { status: "COMPLETED" } } },
+          select: {
+            transactions: { where: { status: "COMPLETED" } },
+            downloads: true,
+          },
         },
         // Include transactions for the current user to check if they've purchased
         transactions: userId
@@ -229,7 +232,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       subject: subjects[0] || "Allgemein",
       cycle: cycles[0] || "",
       createdAt: material.created_at,
-      downloadCount: material._count.transactions,
+      downloadCount: material._count.transactions + material._count.downloads,
       isApproved: material.is_approved,
       status: material.status,
       seller: {

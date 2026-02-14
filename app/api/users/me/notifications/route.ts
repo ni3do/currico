@@ -3,10 +3,15 @@ import { prisma, privateUserSelect } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
 import { updateNotificationPreferencesSchema } from "@/lib/validations/user";
 import { getCurrentUserId } from "@/lib/auth";
+import type { NotificationType } from "@prisma/client";
+
+const VALID_TYPES: NotificationType[] = ["SALE", "FOLLOW", "REVIEW", "COMMENT", "SYSTEM"];
+const DEFAULT_LIMIT = 20;
 
 /**
  * GET /api/users/me/notifications
- * List the current user's notifications (newest first, max 50).
+ * List the current user's notifications (newest first, cursor-based pagination).
+ * Query params: ?type=SALE&cursor=...&limit=20&unread=true
  * Access: Authenticated user only
  */
 export async function GET(request: NextRequest) {
@@ -18,21 +23,42 @@ export async function GET(request: NextRequest) {
 
     const url = new URL(request.url);
     const unreadOnly = url.searchParams.get("unread") === "true";
+    const typeParam = url.searchParams.get("type");
+    const cursor = url.searchParams.get("cursor");
+    const limit = Math.min(
+      50,
+      Math.max(1, parseInt(url.searchParams.get("limit") || String(DEFAULT_LIMIT), 10))
+    );
+
+    // Build where clause
+    const where: Record<string, unknown> = { user_id: userId };
+    if (unreadOnly) where.read_at = null;
+    if (typeParam && VALID_TYPES.includes(typeParam as NotificationType)) {
+      where.type = typeParam as NotificationType;
+    }
 
     const notifications = await prisma.notification.findMany({
-      where: {
-        user_id: userId,
-        ...(unreadOnly ? { read_at: null } : {}),
-      },
+      where,
       orderBy: { created_at: "desc" },
-      take: 50,
+      take: limit + 1, // fetch one extra to determine if there are more
+      ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
     });
+
+    const hasMore = notifications.length > limit;
+    if (hasMore) notifications.pop();
+
+    const nextCursor = hasMore ? notifications[notifications.length - 1]?.id : null;
 
     const unreadCount = await prisma.notification.count({
       where: { user_id: userId, read_at: null },
     });
 
-    return NextResponse.json({ notifications, unreadCount });
+    return NextResponse.json({
+      notifications,
+      unreadCount,
+      nextCursor,
+      hasMore,
+    });
   } catch (error) {
     console.error("Error fetching notifications:", error);
     return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
@@ -119,6 +145,12 @@ export async function PATCH(request: NextRequest) {
         }),
         ...(data.notify_platform_updates !== undefined && {
           notify_platform_updates: data.notify_platform_updates,
+        }),
+        ...(data.notify_comments !== undefined && {
+          notify_comments: data.notify_comments,
+        }),
+        ...(data.notify_new_followers !== undefined && {
+          notify_new_followers: data.notify_new_followers,
         }),
       },
       select: privateUserSelect,

@@ -4,6 +4,9 @@ import { prisma, publicUserSelect } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
 import { parsePagination, paginationResponse } from "@/lib/api";
 
+/** Minimum trigram similarity for user name fuzzy search */
+const USER_NAME_SIMILARITY_THRESHOLD = 0.25;
+
 /**
  * GET /api/users/search
  * Search for users/profiles
@@ -32,41 +35,86 @@ export async function GET(request: NextRequest) {
     // Build where clause
     const where: Record<string, unknown> = {};
 
-    // Search by name/display_name/bio
+    // Search by name/display_name/bio — with trigram fuzzy fallback
     if (query) {
-      where.OR = [
-        { name: { contains: query, mode: "insensitive" } },
-        { display_name: { contains: query, mode: "insensitive" } },
-        { bio: { contains: query, mode: "insensitive" } },
-      ];
+      // First try exact contains match
+      const exactCount = await prisma.user.count({
+        where: {
+          OR: [
+            { name: { contains: query, mode: "insensitive" } },
+            { display_name: { contains: query, mode: "insensitive" } },
+            { bio: { contains: query, mode: "insensitive" } },
+          ],
+        },
+      });
+
+      if (exactCount > 0) {
+        where.OR = [
+          { name: { contains: query, mode: "insensitive" } },
+          { display_name: { contains: query, mode: "insensitive" } },
+          { bio: { contains: query, mode: "insensitive" } },
+        ];
+      } else {
+        // Fuzzy fallback: use trigram similarity on name/display_name
+        try {
+          const fuzzyUsers = await prisma.$queryRaw<{ id: string }[]>`
+            SELECT id FROM users
+            WHERE similarity(COALESCE(name, ''), ${query}) > ${USER_NAME_SIMILARITY_THRESHOLD}
+               OR similarity(COALESCE(display_name, ''), ${query}) > ${USER_NAME_SIMILARITY_THRESHOLD}
+            ORDER BY GREATEST(
+              similarity(COALESCE(name, ''), ${query}),
+              similarity(COALESCE(display_name, ''), ${query})
+            ) DESC
+            LIMIT 50
+          `;
+
+          if (fuzzyUsers.length > 0) {
+            where.id = { in: fuzzyUsers.map((u) => u.id) };
+          } else {
+            // No fuzzy matches either — return empty
+            return NextResponse.json({
+              profiles: [],
+              pagination: paginationResponse(page, limit, 0),
+            });
+          }
+        } catch {
+          // pg_trgm not available — fall back to original contains
+          where.OR = [
+            { name: { contains: query, mode: "insensitive" } },
+            { display_name: { contains: query, mode: "insensitive" } },
+            { bio: { contains: query, mode: "insensitive" } },
+          ];
+        }
+      }
     }
 
-    // For PostgreSQL with JSONB columns, use raw SQL for array overlap checks
+    // Filter by subjects/cycles: look up sellers who have published resources matching the criteria
+    let matchingCountBySeller: Map<string, number> | undefined;
     if (subjects.length > 0 || cycles.length > 0) {
-      const conditions: Prisma.Sql[] = [];
+      const conditions = [Prisma.sql`is_published = true AND is_public = true`];
 
       if (subjects.length > 0) {
         conditions.push(Prisma.sql`subjects::jsonb ?| ${subjects}::text[]`);
       }
-
       if (cycles.length > 0) {
         conditions.push(Prisma.sql`cycles::jsonb ?| ${cycles}::text[]`);
       }
 
-      const whereClause = Prisma.join(conditions, " AND ");
-      const results = await prisma.$queryRaw<{ id: string }[]>(
-        Prisma.sql`SELECT id FROM users WHERE ${whereClause}`
-      );
-      const filteredIds = results.map((r) => r.id);
+      const results = await prisma.$queryRaw<{ seller_id: string; cnt: bigint }[]>`
+        SELECT seller_id, COUNT(*)::bigint AS cnt FROM resources
+        WHERE ${Prisma.join(conditions, " AND ")}
+        GROUP BY seller_id
+      `;
 
-      if (filteredIds.length === 0) {
+      if (results.length === 0) {
         return NextResponse.json({
           profiles: [],
           pagination: paginationResponse(page, limit, 0),
         });
       }
 
-      where.id = { in: filteredIds };
+      matchingCountBySeller = new Map(results.map((r) => [r.seller_id, Number(r.cnt)]));
+      where.id = { in: results.map((r) => r.seller_id) };
     }
 
     // Filter by role
@@ -112,6 +160,7 @@ export async function GET(request: NextRequest) {
       created_at: u.created_at,
       resourceCount: u._count.resources,
       followerCount: u._count.followers,
+      ...(matchingCountBySeller && { matchingResourceCount: matchingCountBySeller.get(u.id) ?? 0 }),
     }));
 
     return NextResponse.json({

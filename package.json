@@ -35,7 +35,7 @@
     "docker:db:studio": "docker compose exec app npx prisma studio",
     "docker:shell": "docker compose exec app sh",
     "prepare": "husky",
-    "validate:all": "npm run lint && npm run build && npm run test:run"
+    "validate:all": "npm run lint && npm run build && npm run test:run && npm run test:e2e"
   },
   "keywords": [],
   "author": "",

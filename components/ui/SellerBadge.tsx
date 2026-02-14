@@ -1,18 +1,30 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { getCurrentLevel } from "@/lib/utils/seller-levels";
+import { getCurrentLevel, SELLER_LEVELS, type SellerStats } from "@/lib/utils/seller-levels";
 
 interface SellerBadgeProps {
   points: number;
+  /** Pass stats so the level is computed with upload/download gates */
+  stats?: SellerStats;
+  /** Or pass a pre-computed level number directly (from cached seller_level) */
+  cachedLevel?: number;
   /** "compact" for cards/sidebar, "full" for profile display */
   variant?: "compact" | "full";
   className?: string;
 }
 
-export function SellerBadge({ points, variant = "compact", className = "" }: SellerBadgeProps) {
+export function SellerBadge({
+  points,
+  stats,
+  cachedLevel,
+  variant = "compact",
+  className = "",
+}: SellerBadgeProps) {
   const t = useTranslations("rewards");
-  const level = getCurrentLevel(points);
+  // Use cached level from DB if available, otherwise compute with stats
+  const computed = getCurrentLevel(points, stats);
+  const level = cachedLevel !== undefined ? (SELLER_LEVELS[cachedLevel] ?? computed) : computed;
   const Icon = level.icon;
 
   const levelName = t(`levels.${level.name}` as never);

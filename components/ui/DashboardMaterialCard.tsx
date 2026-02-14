@@ -25,7 +25,7 @@ export interface DashboardMaterialCardProps {
   // Badge configuration
   badge?: {
     label: string;
-    variant: "success" | "warning" | "primary" | "neutral" | "price";
+    variant: "success" | "warning" | "error" | "primary" | "neutral" | "price";
   };
 
   // Secondary badge (e.g., verified status)
@@ -80,6 +80,8 @@ export function DashboardMaterialCard({
         return "bg-success text-white";
       case "warning":
         return "bg-warning text-white";
+      case "error":
+        return "bg-error text-white";
       case "primary":
         return "bg-primary text-white";
       case "price":
@@ -174,9 +176,9 @@ export function DashboardMaterialCard({
                   <CircleCheck className="h-2.5 w-2.5" />
                 ) : badge.variant === "warning" ? (
                   <Clock className="h-2.5 w-2.5" />
-                ) : (
+                ) : badge.variant === "error" ? (
                   <XCircle className="h-2.5 w-2.5" />
-                )}
+                ) : null}
                 {badge.label}
               </span>
             )}

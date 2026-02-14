@@ -408,6 +408,30 @@ export default function SellerLevelsPage() {
                     </div>
                   </div>
 
+                  {/* Requirements row */}
+                  {(level.minPoints > 0 || level.minUploads > 0 || level.minDownloads > 0) && (
+                    <div className="border-border divide-border grid grid-cols-3 divide-x border-t">
+                      <div className="flex items-center justify-center gap-1.5 px-3 py-2.5">
+                        <TrendingUp className="text-text-muted h-3.5 w-3.5" />
+                        <span className="text-text-muted text-xs">
+                          {t("page.reqPoints", { count: level.minPoints })}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-center gap-1.5 px-3 py-2.5">
+                        <Upload className="text-text-muted h-3.5 w-3.5" />
+                        <span className="text-text-muted text-xs">
+                          {t("page.reqUploads", { count: level.minUploads })}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-center gap-1.5 px-3 py-2.5">
+                        <Download className="text-text-muted h-3.5 w-3.5" />
+                        <span className="text-text-muted text-xs">
+                          {t("page.reqDownloads", { count: level.minDownloads })}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Mobile points display */}
                   <div className="border-border border-t px-5 py-2 sm:hidden">
                     <span className={`text-sm font-semibold ${level.textClass}`}>

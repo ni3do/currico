@@ -144,6 +144,8 @@ export interface UserData {
   notify_sales?: boolean;
   notify_newsletter?: boolean;
   notify_platform_updates?: boolean;
+  notify_comments?: boolean;
+  notify_new_followers?: boolean;
 }
 
 export interface FollowedSeller {

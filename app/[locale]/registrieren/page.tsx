@@ -3,14 +3,18 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 import { Link, useRouter } from "@/i18n/navigation";
 import { isValidEmail } from "@/lib/validations/common";
+import { getLoginUrl } from "@/lib/utils/login-redirect";
 import TopBar from "@/components/ui/TopBar";
 
 export default function RegisterPage() {
   const t = useTranslations("registerPage");
   const tCommon = useTranslations("common");
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -58,10 +62,10 @@ export default function RegisterPage() {
             redirect: false,
           });
           if (result?.ok) {
-            router.push("/konto");
+            router.push(callbackUrl || "/konto");
           } else {
             setError(t("errors.registrationSuccess"));
-            router.push("/anmelden");
+            router.push(getLoginUrl(callbackUrl || undefined));
           }
         } else {
           const data = await response.json();
@@ -342,7 +346,7 @@ export default function RegisterPage() {
             <div className="grid gap-3">
               <button
                 type="button"
-                onClick={() => signIn("google")}
+                onClick={() => signIn("google", { callbackUrl: callbackUrl || "/konto" })}
                 className="bg-surface text-text hover:bg-surface-elevated flex items-center justify-center gap-3 rounded-lg px-4 py-3.5 font-medium transition-all"
               >
                 <svg className="h-5 w-5" viewBox="0 0 24 24">
@@ -368,7 +372,9 @@ export default function RegisterPage() {
 
               <button
                 type="button"
-                onClick={() => signIn("microsoft-entra-id")}
+                onClick={() =>
+                  signIn("microsoft-entra-id", { callbackUrl: callbackUrl || "/konto" })
+                }
                 className="bg-surface text-text hover:bg-surface-elevated flex items-center justify-center gap-3 rounded-lg px-4 py-3.5 font-medium transition-all"
               >
                 <svg className="h-5 w-5" viewBox="0 0 23 23">
@@ -385,7 +391,7 @@ export default function RegisterPage() {
             <p className="text-text-muted mt-8 text-center">
               {t("login.prompt")}{" "}
               <Link
-                href="/anmelden"
+                href={getLoginUrl(callbackUrl || undefined)}
                 className="text-primary hover:text-primary-hover font-semibold transition-colors"
               >
                 {t("login.link")}

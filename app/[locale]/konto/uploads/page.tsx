@@ -7,7 +7,7 @@ import { FileText, AlertTriangle } from "lucide-react";
 import { DashboardMaterialCard } from "@/components/ui/DashboardMaterialCard";
 import type { UploadedItem } from "@/lib/types/account";
 
-type StatusFilter = "all" | "PENDING" | "VERIFIED";
+type StatusFilter = "ALL" | "PENDING" | "VERIFIED" | "REJECTED";
 
 export default function AccountUploadsPage() {
   const t = useTranslations("accountPage.uploads");
@@ -15,8 +15,8 @@ export default function AccountUploadsPage() {
   const [uploadedItems, setUploadedItems] = useState<UploadedItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"newest" | "oldest" | "title" | "popular">("newest");
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [uploadedLoading, setUploadedLoading] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
 
   // Fetch uploaded items
   const fetchUploaded = useCallback(async (search?: string, sort?: string) => {
@@ -48,36 +48,33 @@ export default function AccountUploadsPage() {
     return () => clearTimeout(debounce);
   }, [searchQuery, sortBy, fetchUploaded]);
 
-  // Counts per status
-  const pendingCount = useMemo(
-    () => uploadedItems.filter((i) => i.status === "PENDING").length,
-    [uploadedItems]
-  );
-  const verifiedCount = useMemo(
-    () => uploadedItems.filter((i) => i.status === "VERIFIED").length,
-    [uploadedItems]
-  );
-
-  // Filter and sort items
-  const filteredItems = useMemo(() => {
-    let items = uploadedItems;
-
-    // Apply status filter
-    if (statusFilter !== "all") {
-      items = items.filter((i) => i.status === statusFilter);
+  const statusCounts = useMemo(() => {
+    const counts = { ALL: 0, PENDING: 0, VERIFIED: 0, REJECTED: 0 };
+    for (const item of uploadedItems) {
+      counts.ALL++;
+      if (item.status === "VERIFIED") counts.VERIFIED++;
+      else if (item.status === "PENDING") counts.PENDING++;
+      else if (item.status === "REJECTED") counts.REJECTED++;
     }
+    return counts;
+  }, [uploadedItems]);
 
-    // Sort pending first when showing all
-    if (statusFilter === "all") {
-      items = [...items].sort((a, b) => {
-        if (a.status === "PENDING" && b.status !== "PENDING") return -1;
-        if (a.status !== "PENDING" && b.status === "PENDING") return 1;
-        return 0;
-      });
-    }
+  const pendingCount = statusCounts.PENDING;
 
-    return items;
-  }, [uploadedItems, statusFilter]);
+  const filteredItems = useMemo(
+    () =>
+      statusFilter === "ALL"
+        ? uploadedItems
+        : uploadedItems.filter((item) => item.status === statusFilter),
+    [uploadedItems, statusFilter]
+  );
+
+  const filterOptions: { key: StatusFilter; label: string }[] = [
+    { key: "ALL", label: t("filterAll") },
+    { key: "PENDING", label: t("filterUnderReview") },
+    { key: "VERIFIED", label: t("filterVerified") },
+    { key: "REJECTED", label: t("filterRejected") },
+  ];
 
   return (
     <div className="border-border bg-surface rounded-xl border p-6">
@@ -131,37 +128,28 @@ export default function AccountUploadsPage() {
         </select>
       </div>
 
-      {/* Status Filter Tabs */}
-      <div className="border-border mb-6 flex gap-1 border-b">
-        {(["all", "PENDING", "VERIFIED"] as StatusFilter[]).map((filter) => {
-          const count =
-            filter === "all"
-              ? uploadedItems.length
-              : filter === "PENDING"
-                ? pendingCount
-                : verifiedCount;
-          const label =
-            filter === "all"
-              ? t("filterAll")
-              : filter === "PENDING"
-                ? t("filterPending")
-                : t("filterVerified");
-          return (
-            <button
-              key={filter}
-              onClick={() => setStatusFilter(filter)}
-              className={`relative px-4 py-2.5 text-sm font-medium transition-colors ${
-                statusFilter === filter ? "text-primary" : "text-text-muted hover:text-text"
+      {/* Status Filter Pills */}
+      <div className="mb-6 flex flex-wrap gap-2">
+        {filterOptions.map(({ key, label }) => (
+          <button
+            key={key}
+            onClick={() => setStatusFilter(key)}
+            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
+              statusFilter === key
+                ? "bg-primary text-text-on-accent"
+                : "bg-surface-hover text-text-muted hover:text-text"
+            }`}
+          >
+            {label}
+            <span
+              className={`ml-0.5 rounded-full px-1.5 py-0.5 text-xs ${
+                statusFilter === key ? "bg-white/20" : "bg-bg text-text-faint"
               }`}
             >
-              {label}
-              <span className="text-text-faint ml-1.5 text-xs">({count})</span>
-              {statusFilter === filter && (
-                <span className="bg-primary absolute right-0 bottom-0 left-0 h-0.5 rounded-full" />
-              )}
-            </button>
-          );
-        })}
+              {statusCounts[key]}
+            </span>
+          </button>
+        ))}
       </div>
 
       {uploadedLoading ? (
@@ -199,13 +187,17 @@ export default function AccountUploadsPage() {
                     ? t("statusVerified")
                     : item.status === "PENDING"
                       ? t("statusPending")
-                      : item.status,
+                      : item.status === "REJECTED"
+                        ? t("statusRejected")
+                        : item.status,
                 variant:
                   item.status === "VERIFIED"
                     ? "success"
                     : item.status === "PENDING"
                       ? "warning"
-                      : "neutral",
+                      : item.status === "REJECTED"
+                        ? "error"
+                        : "neutral",
               }}
               price={{
                 formatted: item.priceFormatted,
@@ -222,14 +214,14 @@ export default function AccountUploadsPage() {
         <div className="py-12 text-center">
           <FileText className="text-text-faint mx-auto mb-4 h-16 w-16" />
           <h3 className="text-text mb-2 text-lg font-medium">
-            {statusFilter !== "all" ? t("noMatchingFilter") : t("empty")}
+            {statusFilter !== "ALL" ? t("noMatchingFilter") : t("empty")}
           </h3>
           <p className="text-text-muted mb-4">
-            {statusFilter !== "all" ? t("noMatchingFilterDesc") : t("emptyDescription")}
+            {statusFilter !== "ALL" ? t("noMatchingFilterDesc") : t("emptyDescription")}
           </p>
-          {statusFilter !== "all" ? (
+          {statusFilter !== "ALL" ? (
             <button
-              onClick={() => setStatusFilter("all")}
+              onClick={() => setStatusFilter("ALL")}
               className="text-primary text-sm font-medium hover:underline"
             >
               {t("showAll")}

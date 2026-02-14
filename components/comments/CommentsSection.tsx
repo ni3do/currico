@@ -5,6 +5,8 @@ import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { MessageCircle, AlertCircle } from "lucide-react";
 import { Link, useRouter } from "@/i18n/navigation";
+import { getLoginUrl } from "@/lib/utils/login-redirect";
+import { LoginLink } from "@/components/ui/LoginLink";
 import { CommentCard } from "./CommentCard";
 import { CommentForm } from "./CommentForm";
 import { motion } from "framer-motion";
@@ -84,7 +86,7 @@ export function CommentsSection({
   };
 
   const handleLoginRequired = () => {
-    router.push("/anmelden");
+    window.location.href = getLoginUrl(window.location.pathname);
   };
 
   // Loading state
@@ -130,9 +132,7 @@ export function CommentsSection({
       ) : (
         <div className="border-border bg-bg-secondary mb-6 rounded-xl border p-4">
           <p className="text-text-muted text-sm">
-            <Link href="/anmelden" className="text-primary hover:underline">
-              {t("loginPrompt")}
-            </Link>
+            <LoginLink className="text-primary hover:underline">{t("loginPrompt")}</LoginLink>
             {t("loginSuffix")}
           </p>
         </div>

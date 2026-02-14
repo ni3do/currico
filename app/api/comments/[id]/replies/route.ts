@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { createReplySchema } from "@/lib/validations/review";
+import { notifyCommentReply } from "@/lib/notifications";
 
 // GET /api/comments/[id]/replies - Get all replies for a comment
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -74,8 +75,9 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       where: { id: commentId },
       select: {
         id: true,
+        user_id: true,
         resource: {
-          select: { seller_id: true },
+          select: { seller_id: true, title: true },
         },
       },
     });
@@ -115,6 +117,12 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         },
       },
     });
+
+    // Notify the comment author about the reply (skip if replier is the comment author)
+    if (session.user.id !== comment.user_id) {
+      const replierName = reply.user.display_name || reply.user.name || "Jemand";
+      notifyCommentReply(comment.user_id, comment.resource.title, replierName);
+    }
 
     return NextResponse.json({
       reply: {

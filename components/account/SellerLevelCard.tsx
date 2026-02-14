@@ -3,8 +3,23 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { motion } from "framer-motion";
-import { Upload, Download, ArrowRight, HelpCircle, Star, BadgeCheck, Circle } from "lucide-react";
-import { calculatePoints, getProgressToNextLevel, SELLER_LEVELS } from "@/lib/utils/seller-levels";
+import {
+  Upload,
+  Download,
+  ArrowRight,
+  HelpCircle,
+  Star,
+  BadgeCheck,
+  Circle,
+  AlertCircle,
+  TrendingUp,
+} from "lucide-react";
+import {
+  calculatePoints,
+  getProgressToNextLevel,
+  SELLER_LEVELS,
+  type RequirementProgress,
+} from "@/lib/utils/seller-levels";
 
 interface SellerLevelCardProps {
   uploads: number;
@@ -33,10 +48,8 @@ export function SellerLevelCard({
   const t = useTranslations("rewards");
   const points = calculatePoints({ uploads, downloads, reviews, avgRating, isVerifiedSeller });
   const sellerStats = { uploads, downloads };
-  const { current, next, progressPercent, pointsNeeded } = getProgressToNextLevel(
-    points,
-    sellerStats
-  );
+  const { current, next, progressPercent, pointsNeeded, blockers, requirements } =
+    getProgressToNextLevel(points, sellerStats);
   const CurrentIcon = current.icon;
   const NextIcon = next?.icon;
 
@@ -131,24 +144,55 @@ export function SellerLevelCard({
               {t("pointsToNext", { points: pointsNeeded })}
             </span>
           </div>
-          <div
-            className="bg-border h-2.5 overflow-hidden rounded-full"
-            role="progressbar"
-            aria-valuenow={Math.round(progressPercent)}
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-label={t("pointsToNext", { points: pointsNeeded })}
-          >
-            <motion.div
-              className="h-full rounded-full"
-              style={{
-                background: `var(--color-${current.color === "text-muted" ? "overlay" : current.color})`,
-              }}
-              initial={{ width: 0 }}
-              animate={{ width: `${progressPercent}%` }}
-              transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
-            />
+
+          {/* Per-requirement progress bars */}
+          <div className="space-y-2.5">
+            {requirements.map((req) => {
+              const reqConfig: Record<
+                RequirementProgress["type"],
+                { icon: typeof Upload; label: string; color: string }
+              > = {
+                points: {
+                  icon: TrendingUp,
+                  label: t("requirementPoints"),
+                  color: current.color === "text-muted" ? "overlay" : current.color,
+                },
+                uploads: { icon: Upload, label: t("uploads"), color: "primary" },
+                downloads: { icon: Download, label: t("downloads"), color: "accent" },
+              };
+              const cfg = reqConfig[req.type];
+              const ReqIcon = cfg.icon;
+              return (
+                <div key={req.type}>
+                  <div className="mb-1 flex items-center justify-between">
+                    <span className="text-text-muted flex items-center gap-1 text-[11px]">
+                      <ReqIcon className="h-3 w-3" />
+                      {cfg.label}
+                    </span>
+                    <span className="text-text-muted text-[11px]">
+                      {req.current} / {req.required}
+                    </span>
+                  </div>
+                  <div
+                    className="bg-border h-2 overflow-hidden rounded-full"
+                    role="progressbar"
+                    aria-valuenow={req.percent}
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                  >
+                    <motion.div
+                      className="h-full rounded-full"
+                      style={{ background: `var(--color-${cfg.color})` }}
+                      initial={{ width: 0 }}
+                      animate={{ width: `${req.percent}%` }}
+                      transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
           </div>
+
           <div className="mt-3 flex items-center gap-2">
             <span className={`text-xs font-medium ${current.textClass}`}>{currentName}</span>
             <ArrowRight className="text-text-faint h-3 w-3" />
@@ -159,6 +203,22 @@ export function SellerLevelCard({
               </span>
             )}
           </div>
+
+          {/* Blockers */}
+          {blockers.length > 0 && (
+            <div className="bg-warning/5 mt-3 rounded-lg p-3">
+              <div className="flex items-start gap-2">
+                <AlertCircle className="text-warning mt-0.5 h-3.5 w-3.5 flex-shrink-0" />
+                <div className="space-y-0.5">
+                  {blockers.map((b) => (
+                    <p key={b.key} className="text-text-muted text-xs">
+                      {t(b.key, { count: b.count, level: nextName ?? "" })}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       ) : (
         <div className="px-6 py-5 text-center">

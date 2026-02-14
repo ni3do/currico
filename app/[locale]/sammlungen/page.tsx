@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { getLoginUrl } from "@/lib/utils/login-redirect";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
@@ -64,7 +65,7 @@ export default function CollectionsPage() {
   // Redirect if not authenticated
   useEffect(() => {
     if (status === "unauthenticated") {
-      router.push("/anmelden");
+      router.push(getLoginUrl("/sammlungen"));
     }
   }, [status, router]);
 

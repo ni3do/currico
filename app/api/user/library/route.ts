@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
           _count: {
             select: {
               downloads: true,
-              transactions: true,
+              transactions: { where: { status: "COMPLETED" } },
             },
           },
         },
@@ -87,7 +87,7 @@ export async function GET(request: NextRequest) {
           isApproved: r.is_approved,
           type: "uploaded" as const,
           createdAt: r.created_at,
-          downloadCount: r._count.downloads,
+          downloadCount: r._count.downloads + r._count.transactions,
           purchaseCount: r._count.transactions,
         };
       });

@@ -3,7 +3,9 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
+import { useSearchParams } from "next/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
+import { LoginLink } from "@/components/ui/LoginLink";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
@@ -13,8 +15,106 @@ interface UserData {
   sellerTermsAcceptedAt: string | null;
 }
 
+interface StripeStatus {
+  hasAccount: boolean;
+  accountId: string | null;
+  chargesEnabled: boolean;
+  payoutsEnabled: boolean;
+  detailsSubmitted: boolean;
+  onboardingComplete: boolean;
+  termsAccepted: boolean;
+  role: string;
+  dashboardUrl: string | null;
+  requirements: {
+    currentlyDue: string[];
+    eventuallyDue: string[];
+    pastDue: string[];
+    pendingVerification: string[];
+  } | null;
+}
+
+// Stepper component for onboarding progress
+function OnboardingStepper({
+  isLoggedIn,
+  isEmailVerified,
+  hasAcceptedTerms,
+  stripeComplete,
+  t,
+}: {
+  isLoggedIn: boolean;
+  isEmailVerified: boolean;
+  hasAcceptedTerms: boolean;
+  stripeComplete: boolean;
+  t: ReturnType<typeof useTranslations>;
+}) {
+  const steps = [
+    { label: t("stepLogin"), completed: isLoggedIn },
+    { label: t("stepVerifyEmail"), completed: isEmailVerified },
+    { label: t("stepAcceptTerms"), completed: hasAcceptedTerms },
+    { label: t("stepConnectStripe"), completed: stripeComplete },
+  ];
+
+  // Find the current step (first incomplete)
+  const currentIndex = steps.findIndex((s) => !s.completed);
+
+  return (
+    <div className="mb-10">
+      <div className="flex items-center justify-center">
+        {steps.map((step, i) => (
+          <div key={i} className="flex items-center">
+            {/* Step circle */}
+            <div className="flex flex-col items-center">
+              <div
+                className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium transition-colors ${
+                  step.completed
+                    ? "bg-success text-white"
+                    : i === currentIndex
+                      ? "bg-primary text-white"
+                      : "bg-bg-secondary text-text-muted"
+                }`}
+              >
+                {step.completed ? (
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                ) : (
+                  i + 1
+                )}
+              </div>
+              <span
+                className={`mt-1.5 text-xs ${
+                  step.completed
+                    ? "text-success font-medium"
+                    : i === currentIndex
+                      ? "text-primary font-medium"
+                      : "text-text-muted"
+                }`}
+              >
+                {step.label}
+              </span>
+            </div>
+            {/* Connecting line */}
+            {i < steps.length - 1 && (
+              <div
+                className={`mx-2 mb-5 h-0.5 w-8 sm:w-12 ${
+                  step.completed ? "bg-success" : "bg-bg-secondary"
+                }`}
+              />
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function BecomeSellerPage() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [fetchState, setFetchState] = useState<"idle" | "loading" | "done">("idle");
@@ -23,20 +123,26 @@ export default function BecomeSellerPage() {
   const [termsAcceptedAt, setTermsAcceptedAt] = useState<string | null>(null);
   const [isStripeLoading, setIsStripeLoading] = useState(false);
   const [stripeError, setStripeError] = useState<string | null>(null);
+  const [stripeStatus, setStripeStatus] = useState<StripeStatus | null>(null);
   const t = useTranslations("becomeSeller");
   const tCommon = useTranslations("common");
   const tTerms = useTranslations("sellerTerms");
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
-  // Fetch user data to get emailVerified status and terms acceptance
+  const isStripeRefresh = searchParams.get("stripe_refresh") === "true";
+
+  // Fetch user data and Stripe status on mount
   useEffect(() => {
     let cancelled = false;
 
     async function fetchUserData() {
       try {
-        // Fetch both user stats and terms status in parallel
-        const [statsRes, termsRes] = await Promise.all([
+        // Fetch user stats, terms status, and stripe status in parallel
+        const [statsRes, termsRes, stripeRes] = await Promise.all([
           fetch("/api/user/stats"),
           fetch("/api/seller/accept-terms"),
+          fetch("/api/seller/connect/status"),
         ]);
 
         if (!cancelled) {
@@ -57,6 +163,11 @@ export default function BecomeSellerPage() {
               setTermsAccepted(true);
             }
           }
+
+          if (stripeRes.ok) {
+            const stripeData = await stripeRes.json();
+            setStripeStatus(stripeData);
+          }
         }
       } catch (error) {
         console.error(error);
@@ -76,6 +187,13 @@ export default function BecomeSellerPage() {
       cancelled = true;
     };
   }, [status]);
+
+  // Redirect to account if Stripe is fully active
+  useEffect(() => {
+    if (stripeStatus?.chargesEnabled && stripeStatus?.detailsSubmitted) {
+      router.replace("/konto");
+    }
+  }, [stripeStatus, router]);
 
   const handleAcceptTerms = async () => {
     setIsSubmitting(true);
@@ -133,6 +251,19 @@ export default function BecomeSellerPage() {
   const isLoggedIn = status === "authenticated";
   const isEmailVerified = !!userData?.emailVerified;
   const hasAcceptedTerms = !!termsAcceptedAt;
+  const isPendingVerification =
+    stripeStatus?.hasAccount &&
+    !stripeStatus?.chargesEnabled &&
+    stripeStatus?.detailsSubmitted &&
+    stripeStatus?.requirements?.pendingVerification &&
+    stripeStatus.requirements.pendingVerification.length > 0;
+  const isRestricted =
+    stripeStatus?.hasAccount &&
+    !stripeStatus?.chargesEnabled &&
+    stripeStatus?.requirements &&
+    (stripeStatus.requirements.currentlyDue.length > 0 ||
+      stripeStatus.requirements.pastDue.length > 0);
+  const stripeComplete = !!stripeStatus?.chargesEnabled && !!stripeStatus?.detailsSubmitted;
 
   return (
     <div className="bg-bg flex min-h-screen flex-col">
@@ -145,6 +276,70 @@ export default function BecomeSellerPage() {
           <h1 className="text-text text-2xl font-bold sm:text-3xl">{t("hero.title")}</h1>
           <p className="text-text-muted mt-1">{t("hero.subtitle")}</p>
         </div>
+
+        {/* Stripe Refresh Banner (13a) */}
+        {isStripeRefresh && (
+          <div className="border-warning/30 bg-warning/10 mb-8 rounded-lg border p-4">
+            <div className="flex items-center gap-3">
+              <svg
+                className="text-warning h-5 w-5 flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                />
+              </svg>
+              <p className="text-text-secondary text-sm">{t("stripeRefreshMessage")}</p>
+              {hasAcceptedTerms && (
+                <button
+                  onClick={handleStartStripeOnboarding}
+                  disabled={isStripeLoading}
+                  className="btn btn-primary ml-auto px-4 py-1.5 text-sm whitespace-nowrap"
+                >
+                  {isStripeLoading ? t("cta.stripeOnboardingLoading") : t("retryStripe")}
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Progress Stepper (13c) - show when logged in and data loaded */}
+        {!isLoading && isLoggedIn && (
+          <OnboardingStepper
+            isLoggedIn={isLoggedIn}
+            isEmailVerified={isEmailVerified}
+            hasAcceptedTerms={hasAcceptedTerms}
+            stripeComplete={stripeComplete}
+            t={t}
+          />
+        )}
+
+        {/* Status-aware banners (13b) */}
+        {!isLoading && isLoggedIn && isPendingVerification && (
+          <div className="border-primary/30 bg-primary/5 mb-8 rounded-lg border p-4 text-center">
+            <p className="text-text-secondary">{t("statusPendingVerification")}</p>
+          </div>
+        )}
+
+        {!isLoading && isLoggedIn && isRestricted && !isPendingVerification && (
+          <div className="border-warning/30 bg-warning/5 mb-8 rounded-lg border p-4">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-text-secondary text-sm">{t("statusRestricted")}</p>
+              <button
+                onClick={handleStartStripeOnboarding}
+                disabled={isStripeLoading}
+                className="btn btn-primary px-4 py-1.5 text-sm whitespace-nowrap"
+              >
+                {isStripeLoading ? t("cta.stripeOnboardingLoading") : t("retryStripe")}
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Benefits Section */}
         <section className="mb-12">
@@ -422,9 +617,9 @@ export default function BecomeSellerPage() {
               ) : !isLoggedIn ? (
                 <div className="space-y-3">
                   <p className="text-text-muted">{t("cta.loginRequired")}</p>
-                  <Link href="/anmelden" className="btn btn-primary inline-block px-8 py-3">
+                  <LoginLink className="btn btn-primary inline-block px-8 py-3">
                     {t("cta.login")}
-                  </Link>
+                  </LoginLink>
                 </div>
               ) : !isEmailVerified ? (
                 <div className="space-y-3">

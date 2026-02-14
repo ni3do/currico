@@ -109,6 +109,8 @@ export const updateNotificationPreferencesSchema = z.object({
   notify_sales: z.boolean().optional(),
   notify_newsletter: z.boolean().optional(),
   notify_platform_updates: z.boolean().optional(),
+  notify_comments: z.boolean().optional(),
+  notify_new_followers: z.boolean().optional(),
 });
 
 // ============================================================

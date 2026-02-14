@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { createCommentSchema } from "@/lib/validations/review";
 import { checkRateLimit, rateLimitHeaders, isValidId, safeParseInt } from "@/lib/rateLimit";
+import { notifyComment } from "@/lib/notifications";
 
 // GET /api/materials/[id]/comments - Get all comments for a material
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -140,7 +141,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     // Check if material exists
     const material = await prisma.resource.findUnique({
       where: { id: materialId },
-      select: { id: true, seller_id: true },
+      select: { id: true, seller_id: true, title: true },
     });
 
     if (!material) {
@@ -178,6 +179,12 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         },
       },
     });
+
+    // Notify the seller about the new comment (skip if commenter is the seller)
+    if (session.user.id !== material.seller_id) {
+      const commenterName = comment.user.display_name || comment.user.name || "Jemand";
+      notifyComment(material.seller_id, material.title, commenterName);
+    }
 
     return NextResponse.json({
       comment: {

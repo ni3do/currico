@@ -7,6 +7,7 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bell, ChevronDown, ChevronRight } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { LoginLink } from "@/components/ui/LoginLink";
 import LocaleSwitcher from "@/components/ui/LocaleSwitcher";
 
 export default function TopBar() {
@@ -68,7 +69,7 @@ export default function TopBar() {
     };
 
     fetchCount();
-    const interval = setInterval(fetchCount, 60_000);
+    const interval = setInterval(fetchCount, 30_000);
     return () => {
       active = false;
       clearInterval(interval);
@@ -258,12 +259,9 @@ export default function TopBar() {
                 </div>
               ) : (
                 <>
-                  <Link
-                    href="/anmelden"
-                    className="text-text-secondary hover:text-primary px-4 py-2 text-sm font-medium transition-colors"
-                  >
+                  <LoginLink className="text-text-secondary hover:text-primary px-4 py-2 text-sm font-medium transition-colors">
                     {t("navigation.login")}
-                  </Link>
+                  </LoginLink>
                   <Link
                     href="/registrieren"
                     className="bg-primary text-text-on-accent hover:bg-primary-hover rounded-lg px-5 py-2 text-sm font-medium transition-colors"
@@ -423,12 +421,9 @@ export default function TopBar() {
                     </>
                   ) : (
                     <>
-                      <Link
-                        href="/anmelden"
-                        className="text-text-secondary hover:text-primary px-4 py-2 text-sm font-medium transition-colors"
-                      >
+                      <LoginLink className="text-text-secondary hover:text-primary px-4 py-2 text-sm font-medium transition-colors">
                         {t("navigation.login")}
-                      </Link>
+                      </LoginLink>
                       <Link
                         href="/registrieren"
                         className="bg-primary text-text-on-accent hover:bg-primary-hover mx-4 rounded-lg px-5 py-2 text-center text-sm font-medium transition-colors"

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { LoginLink } from "@/components/ui/LoginLink";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 
@@ -31,6 +32,7 @@ export default function SellerOnboardingCompletePage() {
   const [stripeStatus, setStripeStatus] = useState<StripeStatus | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isStripeLoading, setIsStripeLoading] = useState(false);
   const t = useTranslations("sellerOnboarding");
 
   useEffect(() => {
@@ -58,6 +60,23 @@ export default function SellerOnboardingCompletePage() {
       setIsLoading(false);
     }
   }, [sessionStatus, t]);
+
+  const handleContinueStripeOnboarding = async () => {
+    setIsStripeLoading(true);
+    try {
+      const res = await fetch("/api/seller/connect", { method: "POST" });
+      const data = await res.json();
+      if (res.ok && data.url) {
+        window.location.href = data.url;
+      } else {
+        setError(data.error || t("error.fetchFailed"));
+        setIsStripeLoading(false);
+      }
+    } catch {
+      setError(t("error.fetchFailed"));
+      setIsStripeLoading(false);
+    }
+  };
 
   const isFullySetup = stripeStatus?.chargesEnabled && stripeStatus?.detailsSubmitted;
   const isPending = stripeStatus?.hasAccount && !stripeStatus?.chargesEnabled;
@@ -96,9 +115,9 @@ export default function SellerOnboardingCompletePage() {
               </div>
               <h1 className="text-text mb-2 text-xl font-bold">{t("notLoggedIn.title")}</h1>
               <p className="text-text-muted mb-6">{t("notLoggedIn.description")}</p>
-              <Link href="/anmelden" className="btn btn-primary px-6 py-2">
+              <LoginLink className="btn btn-primary px-6 py-2">
                 {t("notLoggedIn.loginButton")}
-              </Link>
+              </LoginLink>
             </div>
           ) : error ? (
             <div className="card p-8 text-center">
@@ -258,9 +277,13 @@ export default function SellerOnboardingCompletePage() {
                 </div>
               )}
 
-              <Link href="/verkaeufer-werden" className="btn btn-primary px-6 py-2">
-                {t("pending.continueSetup")}
-              </Link>
+              <button
+                onClick={handleContinueStripeOnboarding}
+                disabled={isStripeLoading}
+                className="btn btn-primary px-6 py-2 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {isStripeLoading ? t("pending.continueLoading") : t("pending.continueSetup")}
+              </button>
             </div>
           ) : (
             <div className="card p-8 text-center">
