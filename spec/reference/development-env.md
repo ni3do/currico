@@ -9,7 +9,7 @@ cp .env.example .env
 docker compose up
 ```
 
-This starts the app at `http://localhost:3000` with a MySQL database.
+This starts the app at `http://localhost:3000` with a PostgreSQL database.
 
 ---
 
@@ -17,15 +17,14 @@ This starts the app at `http://localhost:3000` with a MySQL database.
 
 ### Database
 
-| Variable              | Description                          | Default                               |
-| --------------------- | ------------------------------------ | ------------------------------------- |
-| `DATABASE_URL`        | MySQL connection string              | `mysql://mysql:mysql@db:3306/currico` |
-| `MYSQL_ROOT_PASSWORD` | MySQL root password (docker-compose) | `rootpassword`                        |
-| `MYSQL_DATABASE`      | Database name                        | `currico`                             |
-| `MYSQL_USER`          | Database user                        | `mysql`                               |
-| `MYSQL_PASSWORD`      | Database password                    | `mysql`                               |
+| Variable            | Description                          | Default                                          |
+| ------------------- | ------------------------------------ | ------------------------------------------------ |
+| `DATABASE_URL`      | PostgreSQL connection string         | `postgresql://postgres:postgres@db:5432/currico` |
+| `POSTGRES_PASSWORD` | PostgreSQL password (docker-compose) | `postgres`                                       |
+| `POSTGRES_DB`       | Database name                        | `currico`                                        |
+| `POSTGRES_USER`     | Database user                        | `postgres`                                       |
 
-**Note:** Use `db` as hostname when running with Docker Compose, or `localhost` when running MySQL separately.
+**Note:** Use `db` as hostname when running with Docker Compose, or `localhost` when running PostgreSQL separately.
 
 ### Authentication
 
@@ -40,10 +39,10 @@ This starts the app at `http://localhost:3000` with a MySQL database.
 
 ### Port Configuration
 
-| Variable   | Description                  | Default |
-| ---------- | ---------------------------- | ------- |
-| `APP_PORT` | Application port             | `3000`  |
-| `DB_PORT`  | MySQL port (exposed to host) | `3306`  |
+| Variable   | Description                       | Default |
+| ---------- | --------------------------------- | ------- |
+| `APP_PORT` | Application port                  | `3000`  |
+| `DB_PORT`  | PostgreSQL port (exposed to host) | `5432`  |
 
 ### Storage
 
@@ -53,7 +52,7 @@ For local development, files are stored in `public/uploads/`.
 | ------------------ | --------------- | ------- |
 | `STORAGE_PROVIDER` | Storage backend | `local` |
 
-To test S3 integration locally, set `STORAGE_PROVIDER=s3` and configure the S3 variables (see [PRODUCTION_ENV.md](./PRODUCTION_ENV.md)).
+To test S3 integration locally, set `STORAGE_PROVIDER=s3` and configure the S3 variables (see [production-env.md](./production-env.md)).
 
 ### Email
 
@@ -120,11 +119,10 @@ The bare minimum to get started:
 
 ```env
 # Database (works with docker-compose defaults)
-DATABASE_URL="mysql://mysql:mysql@db:3306/currico"
-MYSQL_ROOT_PASSWORD=rootpassword
-MYSQL_DATABASE=currico
-MYSQL_USER=mysql
-MYSQL_PASSWORD=mysql
+DATABASE_URL="postgresql://postgres:postgres@db:5432/currico"
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=currico
+POSTGRES_USER=postgres
 
 # Auth (generate your own secret)
 AUTH_SECRET="your-generated-secret-here"
@@ -142,17 +140,16 @@ STORAGE_PROVIDER="local"
 # ===========================================
 # Database Configuration
 # ===========================================
-DATABASE_URL="mysql://mysql:mysql@db:3306/currico"
-MYSQL_ROOT_PASSWORD=rootpassword
-MYSQL_DATABASE=currico
-MYSQL_USER=mysql
-MYSQL_PASSWORD=mysql
+DATABASE_URL="postgresql://postgres:postgres@db:5432/currico"
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=currico
+POSTGRES_USER=postgres
 
 # ===========================================
 # Port Configuration
 # ===========================================
 APP_PORT=3000
-DB_PORT=3306
+DB_PORT=5432
 
 # ===========================================
 # Authentication
@@ -201,13 +198,13 @@ EDUID_USE_TEST="true"
 If using Docker Compose, ensure you're using `db` as the hostname:
 
 ```env
-DATABASE_URL="mysql://mysql:mysql@db:3306/currico"
+DATABASE_URL="postgresql://postgres:postgres@db:5432/currico"
 ```
 
-If running MySQL locally (not in Docker):
+If running PostgreSQL locally (not in Docker):
 
 ```env
-DATABASE_URL="mysql://mysql:mysql@localhost:3306/currico"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/currico"
 ```
 
 ### Prisma client not generated

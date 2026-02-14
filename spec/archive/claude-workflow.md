@@ -1,11 +1,13 @@
 # Spec-Driven Claude Code Workflow
 
 ## The Command
+
 ```bash
 cat prompt.md | claude --dangerously-skip-permissions
 ```
 
 ## prompt.md Template
+
 ```markdown
 Investigate the spec at <spec-file>.md
 Determine the highest priority task to work on.
@@ -31,6 +33,7 @@ When no more tasks are workable output <promise>COMPLETE</promise>
 4. **Exit signal** - `<promise>COMPLETE</promise>` tells you when all tasks are done
 
 ## Running in a Loop
+
 ```bash
 while ! cat prompt.md | claude --dangerously-skip-permissions 2>&1 | grep -q "COMPLETE"; do
   echo "--- Task completed, continuing ---"
