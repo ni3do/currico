@@ -1,0 +1,73 @@
+"use client";
+
+import { Loader2 } from "lucide-react";
+import type { Fachbereich } from "@/lib/curriculum-types";
+import { FachbereichAccordion } from "./FachbereichAccordion";
+
+interface FachbereichTreeProps {
+  fachbereiche: Fachbereich[];
+  loading: boolean;
+  error: Error | null;
+  selectedFachbereich: string | null;
+  selectedKompetenzbereich: string | null;
+  selectedKompetenz: string | null;
+  expandedFachbereiche: Set<string>;
+  expandedKompetenzbereiche: Set<string>;
+  onFachbereichChange: (code: string) => void;
+  onToggleFachbereichExpansion: (code: string) => void;
+  onKompetenzbereichSelect: (code: string | null) => void;
+  onKompetenzbereichToggle: (code: string) => void;
+  onKompetenzSelect: (code: string | null) => void;
+  errorLabel: string;
+}
+
+export function FachbereichTree({
+  fachbereiche,
+  loading,
+  error,
+  selectedFachbereich,
+  selectedKompetenzbereich,
+  selectedKompetenz,
+  expandedFachbereiche,
+  expandedKompetenzbereiche,
+  onFachbereichChange,
+  onToggleFachbereichExpansion,
+  onKompetenzbereichSelect,
+  onKompetenzbereichToggle,
+  onKompetenzSelect,
+  errorLabel,
+}: FachbereichTreeProps) {
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <Loader2 className="text-primary h-6 w-6 animate-spin" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div className="text-error py-4 text-center text-sm">{errorLabel}</div>;
+  }
+
+  return (
+    <div className="space-y-2">
+      {fachbereiche.map((fb, index) => (
+        <FachbereichAccordion
+          key={fb.code}
+          fachbereich={fb}
+          isSelected={selectedFachbereich === fb.code}
+          isExpanded={expandedFachbereiche.has(fb.code)}
+          selectedKompetenzbereich={selectedKompetenzbereich}
+          selectedKompetenz={selectedKompetenz}
+          expandedKompetenzbereiche={expandedKompetenzbereiche}
+          onSelect={() => onFachbereichChange(fb.code)}
+          onToggleExpand={() => onToggleFachbereichExpansion(fb.code)}
+          onKompetenzbereichSelect={onKompetenzbereichSelect}
+          onKompetenzbereichToggle={onKompetenzbereichToggle}
+          onKompetenzSelect={onKompetenzSelect}
+          index={index}
+        />
+      ))}
+    </div>
+  );
+}

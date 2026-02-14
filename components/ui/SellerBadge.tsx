@@ -27,7 +27,7 @@ export function SellerBadge({
   const level = cachedLevel !== undefined ? (SELLER_LEVELS[cachedLevel] ?? computed) : computed;
   const Icon = level.icon;
 
-  const levelName = t(`levels.${level.name}` as any);
+  const levelName = t(`levels.${level.name}` as never);
 
   if (variant === "compact") {
     return (

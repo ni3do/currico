@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useUploadWizard, Step } from "./UploadWizardContext";
 import {
   FileText,
@@ -23,6 +24,9 @@ interface StepSummaryItemProps {
 }
 
 function StepSummaryItem({ step, title, icon: Icon, isOpen, onToggle }: StepSummaryItemProps) {
+  const tCommon = useTranslations("common");
+  const tSummary = useTranslations("uploadWizard.summary");
+  const tFields = useTranslations("uploadWizard.fields");
   const { formData, files, goToStep, isStepComplete, isStepValid, getFieldErrors, visitedSteps } =
     useUploadWizard();
 
@@ -40,21 +44,27 @@ function StepSummaryItem({ step, title, icon: Icon, isOpen, onToggle }: StepSumm
           <div className="space-y-2 text-sm">
             {formData.title ? (
               <div className="flex items-start gap-2">
-                <span className="text-text-muted w-24 flex-shrink-0">Titel:</span>
+                <span className="text-text-muted w-24 flex-shrink-0">{tSummary("labelTitle")}</span>
                 <span className="text-text truncate font-medium">{formData.title}</span>
               </div>
             ) : (
-              <div className="text-text-muted italic">Noch kein Titel eingegeben</div>
+              <div className="text-text-muted italic">{tSummary("noTitle")}</div>
             )}
             {formData.description ? (
               <div className="flex items-start gap-2">
-                <span className="text-text-muted w-24 flex-shrink-0">Beschreibung:</span>
+                <span className="text-text-muted w-24 flex-shrink-0">
+                  {tSummary("labelDescription")}
+                </span>
                 <span className="text-text line-clamp-2">{formData.description}</span>
               </div>
             ) : null}
             <div className="text-text-muted flex items-center gap-4 text-xs">
-              <span>Sprache: {formData.language.toUpperCase()}</span>
-              <span>Typ: {formData.resourceType.toUpperCase()}</span>
+              <span>
+                {tSummary("labelLanguage")} {formData.language.toUpperCase()}
+              </span>
+              <span>
+                {tSummary("labelType")} {formData.resourceType.toUpperCase()}
+              </span>
             </div>
           </div>
         );
@@ -64,21 +74,27 @@ function StepSummaryItem({ step, title, icon: Icon, isOpen, onToggle }: StepSumm
           <div className="space-y-2 text-sm">
             {formData.cycle ? (
               <div className="flex items-center gap-2">
-                <span className="text-text-muted w-24 flex-shrink-0">Zyklus:</span>
-                <span className="text-text font-medium">Zyklus {formData.cycle}</span>
+                <span className="text-text-muted w-24 flex-shrink-0">{tSummary("labelCycle")}</span>
+                <span className="text-text font-medium">
+                  {tSummary("cycleValue", { cycle: formData.cycle })}
+                </span>
               </div>
             ) : (
-              <div className="text-text-muted italic">Noch kein Zyklus gewählt</div>
+              <div className="text-text-muted italic">{tSummary("noCycle")}</div>
             )}
             {formData.subject ? (
               <div className="flex items-center gap-2">
-                <span className="text-text-muted w-24 flex-shrink-0">Fach:</span>
+                <span className="text-text-muted w-24 flex-shrink-0">
+                  {tSummary("labelSubject")}
+                </span>
                 <span className="text-text font-medium">{formData.subject}</span>
               </div>
             ) : null}
             {formData.competencies.length > 0 && (
               <div className="flex items-start gap-2">
-                <span className="text-text-muted w-24 flex-shrink-0">Kompetenzen:</span>
+                <span className="text-text-muted w-24 flex-shrink-0">
+                  {tSummary("labelCompetencies")}
+                </span>
                 <div className="flex flex-wrap gap-1">
                   {formData.competencies.slice(0, 3).map((code) => (
                     <span
@@ -90,7 +106,7 @@ function StepSummaryItem({ step, title, icon: Icon, isOpen, onToggle }: StepSumm
                   ))}
                   {formData.competencies.length > 3 && (
                     <span className="text-text-muted text-xs">
-                      +{formData.competencies.length - 3} weitere
+                      {tSummary("moreItems", { count: formData.competencies.length - 3 })}
                     </span>
                   )}
                 </div>
@@ -103,19 +119,21 @@ function StepSummaryItem({ step, title, icon: Icon, isOpen, onToggle }: StepSumm
         return (
           <div className="space-y-2 text-sm">
             <div className="flex items-center gap-2">
-              <span className="text-text-muted w-24 flex-shrink-0">Preistyp:</span>
+              <span className="text-text-muted w-24 flex-shrink-0">
+                {tSummary("labelPriceType")}
+              </span>
               <span className="text-text font-medium">
-                {formData.priceType === "free" ? "Kostenlos" : "Kostenpflichtig"}
+                {formData.priceType === "free" ? tFields("priceFree") : tFields("pricePaid")}
               </span>
             </div>
             {formData.priceType === "paid" && formData.price && (
               <div className="flex items-center gap-2">
-                <span className="text-text-muted w-24 flex-shrink-0">Preis:</span>
+                <span className="text-text-muted w-24 flex-shrink-0">{tSummary("labelPrice")}</span>
                 <span className="text-text font-medium">CHF {formData.price}</span>
               </div>
             )}
             {formData.editable && (
-              <div className="text-text-muted text-xs">Editierbar für Käufer</div>
+              <div className="text-text-muted text-xs">{tSummary("editableNote")}</div>
             )}
           </div>
         );
@@ -133,7 +151,7 @@ function StepSummaryItem({ step, title, icon: Icon, isOpen, onToggle }: StepSumm
           <div className="space-y-2 text-sm">
             {files.length > 0 ? (
               <div className="flex items-start gap-2">
-                <span className="text-text-muted w-24 flex-shrink-0">Dateien:</span>
+                <span className="text-text-muted w-24 flex-shrink-0">{tSummary("labelFiles")}</span>
                 <div className="space-y-1">
                   {files.slice(0, 2).map((file, i) => (
                     <div key={i} className="text-text max-w-[200px] truncate">
@@ -141,17 +159,19 @@ function StepSummaryItem({ step, title, icon: Icon, isOpen, onToggle }: StepSumm
                     </div>
                   ))}
                   {files.length > 2 && (
-                    <span className="text-text-muted text-xs">+{files.length - 2} weitere</span>
+                    <span className="text-text-muted text-xs">
+                      {tSummary("moreItems", { count: files.length - 2 })}
+                    </span>
                   )}
                 </div>
               </div>
             ) : (
-              <div className="text-text-muted italic">Noch keine Dateien hochgeladen</div>
+              <div className="text-text-muted italic">{tSummary("noFiles")}</div>
             )}
             <div className="flex items-center gap-2">
-              <span className="text-text-muted w-24 flex-shrink-0">Rechtliches:</span>
+              <span className="text-text-muted w-24 flex-shrink-0">{tSummary("labelLegal")}</span>
               <span className={legalCount === 5 ? "text-success" : "text-warning"}>
-                {legalCount}/5 bestätigt
+                {tSummary("legalStatus", { count: legalCount })}
               </span>
             </div>
           </div>
@@ -236,7 +256,7 @@ function StepSummaryItem({ step, title, icon: Icon, isOpen, onToggle }: StepSumm
             className="text-primary hover:bg-primary/10 mt-3 flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
           >
             <Edit2 className="h-3.5 w-3.5" />
-            Bearbeiten
+            {tCommon("buttons.edit")}
           </button>
         </div>
       )}
@@ -245,6 +265,8 @@ function StepSummaryItem({ step, title, icon: Icon, isOpen, onToggle }: StepSumm
 }
 
 export function StepSummary() {
+  const tSteps = useTranslations("uploadWizard.steps");
+  const tSummary = useTranslations("uploadWizard.summary");
   const [openSteps, setOpenSteps] = useState<Step[]>([]);
 
   const toggleStep = (step: Step) => {
@@ -253,22 +275,27 @@ export function StepSummary() {
     );
   };
 
-  const steps: { step: Step; title: string; icon: React.ComponentType<{ className?: string }> }[] =
-    [
-      { step: 1, title: "Grundinformationen", icon: FileText },
-      { step: 2, title: "Lehrplan-Zuordnung", icon: BookOpen },
-      { step: 3, title: "Eigenschaften & Preis", icon: Tag },
-      { step: 4, title: "Dateien & Rechtliches", icon: Upload },
-    ];
+  const steps: {
+    step: Step;
+    titleKey: string;
+    icon: React.ComponentType<{ className?: string }>;
+  }[] = [
+    { step: 1, titleKey: "basics", icon: FileText },
+    { step: 2, titleKey: "curriculum", icon: BookOpen },
+    { step: 3, titleKey: "price", icon: Tag },
+    { step: 4, titleKey: "files", icon: Upload },
+  ];
 
   return (
     <div className="space-y-3">
-      <h3 className="text-text-muted text-sm font-semibold tracking-wide uppercase">Übersicht</h3>
-      {steps.map(({ step, title, icon }) => (
+      <h3 className="text-text-muted text-sm font-semibold tracking-wide uppercase">
+        {tSummary("title")}
+      </h3>
+      {steps.map(({ step, titleKey, icon }) => (
         <StepSummaryItem
           key={step}
           step={step}
-          title={title}
+          title={tSteps(titleKey)}
           icon={icon}
           isOpen={openSteps.includes(step)}
           onToggle={() => toggleStep(step)}

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 import { getLoginUrl } from "@/lib/utils/login-redirect";
 
 interface CheckoutButtonProps {
@@ -22,6 +23,7 @@ export function CheckoutButton({
 }: CheckoutButtonProps) {
   const t = useTranslations("checkout");
   const { status: sessionStatus } = useSession();
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [digitalConsent, setDigitalConsent] = useState(false);

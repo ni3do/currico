@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useMemo, useRef } from "react";
+import { useTranslations } from "next-intl";
 import { FACHBEREICHE, getFachbereicheByZyklus, getFachbereichByCode } from "@/lib/data/lehrplan21";
 import type { Fachbereich, Kompetenzbereich } from "@/lib/curriculum-types";
-import { InfoTooltip, FIELD_TOOLTIPS } from "./InfoTooltip";
+import { InfoTooltip, useFieldTooltip } from "./InfoTooltip";
 import {
   BookOpen,
   Globe,
@@ -53,33 +54,8 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   "clipboard-list": ClipboardList,
 };
 
-interface EnhancedCurriculumSelectorProps {
-  cycle: string;
-  subject: string;
-  subjectCode: string;
-  canton: string;
-  competencies: string[];
-  onCycleChange: (cycle: string) => void;
-  onSubjectChange: (subject: string, subjectCode: string) => void;
-  onCantonChange: (canton: string) => void;
-  onCompetenciesChange: (competencies: string[]) => void;
-  // Validation
-  touchedCycle?: boolean;
-  touchedSubject?: boolean;
-  cycleError?: string;
-  subjectError?: string;
-  onCycleBlur?: () => void;
-  onSubjectBlur?: () => void;
-}
-
-const CYCLES = [
-  { value: "1", label: "Zyklus 1", description: "Kindergarten – 2. Klasse", grades: "KG–2" },
-  { value: "2", label: "Zyklus 2", description: "3. – 6. Klasse", grades: "3–6" },
-  { value: "3", label: "Zyklus 3", description: "7. – 9. Klasse", grades: "7–9" },
-];
-
-const CANTONS = [
-  { value: "", label: "Alle Kantone" },
+// Canton codes and names (proper nouns, consistent across locales in Swiss context)
+const CANTON_ENTRIES = [
   { value: "AG", label: "Aargau" },
   { value: "AI", label: "Appenzell Innerrhoden" },
   { value: "AR", label: "Appenzell Ausserrhoden" },
@@ -108,6 +84,25 @@ const CANTONS = [
   { value: "ZH", label: "Zürich" },
 ];
 
+interface EnhancedCurriculumSelectorProps {
+  cycle: string;
+  subject: string;
+  subjectCode: string;
+  canton: string;
+  competencies: string[];
+  onCycleChange: (cycle: string) => void;
+  onSubjectChange: (subject: string, subjectCode: string) => void;
+  onCantonChange: (canton: string) => void;
+  onCompetenciesChange: (competencies: string[]) => void;
+  // Validation
+  touchedCycle?: boolean;
+  touchedSubject?: boolean;
+  cycleError?: string;
+  subjectError?: string;
+  onCycleBlur?: () => void;
+  onSubjectBlur?: () => void;
+}
+
 export function EnhancedCurriculumSelector({
   cycle,
   subject,
@@ -125,7 +120,44 @@ export function EnhancedCurriculumSelector({
   onCycleBlur,
   onSubjectBlur,
 }: EnhancedCurriculumSelectorProps) {
+  const tCurr = useTranslations("uploadWizard.curriculum");
+  const tCycles = useTranslations("uploadWizard.cycles");
+  const tFields = useTranslations("uploadWizard.fields");
+  const cycleTooltip = useFieldTooltip("cycle");
+  const subjectTooltip = useFieldTooltip("subject");
+  const cantonTooltip = useFieldTooltip("canton");
   const [competencySearch, setCompetencySearch] = useState("");
+
+  // Build cycles array from i18n
+  const cycles = useMemo(
+    () => [
+      {
+        value: "1",
+        label: tCycles("cycle1"),
+        description: tCycles("cycle1Desc"),
+        grades: tCycles("cycle1Grades"),
+      },
+      {
+        value: "2",
+        label: tCycles("cycle2"),
+        description: tCycles("cycle2Desc"),
+        grades: tCycles("cycle2Grades"),
+      },
+      {
+        value: "3",
+        label: tCycles("cycle3"),
+        description: tCycles("cycle3Desc"),
+        grades: tCycles("cycle3Grades"),
+      },
+    ],
+    [tCycles]
+  );
+
+  // Build cantons array with translated "All" option
+  const cantons = useMemo(
+    () => [{ value: "", label: tCurr("allCantons") }, ...CANTON_ENTRIES],
+    [tCurr]
+  );
 
   // Get available subjects for selected cycle
   const availableSubjects = useMemo(() => {
@@ -220,12 +252,12 @@ export function EnhancedCurriculumSelector({
 
   // Get canton label
   const getCantonLabel = (value: string) => {
-    return CANTONS.find((c) => c.value === value)?.label || value;
+    return cantons.find((c) => c.value === value)?.label || value;
   };
 
   // Get cycle label
   const getCycleLabel = (value: string) => {
-    return CYCLES.find((c) => c.value === value)?.label || value;
+    return cycles.find((c) => c.value === value)?.label || value;
   };
 
   // Check if any filters are selected
@@ -262,7 +294,7 @@ export function EnhancedCurriculumSelector({
         <div className="border-border bg-surface-elevated sticky top-0 z-10 -mx-2 rounded-xl border p-3 shadow-sm backdrop-blur-sm">
           <div className="flex items-center gap-2">
             <Filter className="text-text-muted h-4 w-4 flex-shrink-0" />
-            <span className="text-text-muted text-xs font-medium">Filter:</span>
+            <span className="text-text-muted text-xs font-medium">{tCurr("filterLabel")}</span>
             <div className="flex flex-1 flex-wrap items-center gap-1.5">
               {/* Cycle chip */}
               {cycle && (
@@ -317,7 +349,7 @@ export function EnhancedCurriculumSelector({
               {/* Competencies count chip */}
               {competencies.length > 0 && (
                 <span className="bg-success/10 text-success inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium">
-                  {competencies.length} Kompetenz{competencies.length !== 1 ? "en" : ""}
+                  {tCurr("competencyCount", { count: competencies.length })}
                   <button
                     type="button"
                     onClick={() => onCompetenciesChange([])}
@@ -339,7 +371,7 @@ export function EnhancedCurriculumSelector({
                 }}
                 className="text-text-muted hover:text-error text-xs transition-colors"
               >
-                Alle löschen
+                {tCurr("clearAll")}
               </button>
             )}
           </div>
@@ -350,12 +382,12 @@ export function EnhancedCurriculumSelector({
       <div>
         <div className="mb-3 flex items-center gap-1.5">
           <label className="text-text text-sm font-medium">
-            Zyklus <span className="text-error">*</span>
+            {tFields("cycle")} <span className="text-error">*</span>
           </label>
-          <InfoTooltip content={FIELD_TOOLTIPS.cycle.content} />
+          <InfoTooltip content={cycleTooltip.content} />
         </div>
         <div className="grid gap-3 sm:grid-cols-3">
-          {CYCLES.map((c) => (
+          {cycles.map((c) => (
             <label
               key={c.value}
               className={`group relative flex cursor-pointer flex-col rounded-xl border-2 p-4 transition-colors duration-150 ${
@@ -415,11 +447,11 @@ export function EnhancedCurriculumSelector({
         <div className="mb-3 flex items-center justify-between">
           <div className="flex items-center gap-1.5">
             <label className="text-text text-sm font-medium">
-              Fach <span className="text-error">*</span>
+              {tFields("subject")} <span className="text-error">*</span>
             </label>
-            <InfoTooltip content={FIELD_TOOLTIPS.subject.content} />
+            <InfoTooltip content={subjectTooltip.content} />
           </div>
-          {!cycle && <span className="text-text-muted text-xs">Bitte zuerst Zyklus wählen</span>}
+          {!cycle && <span className="text-text-muted text-xs">{tCurr("selectCycleFirst")}</span>}
         </div>
 
         {cycle ? (
@@ -454,10 +486,12 @@ export function EnhancedCurriculumSelector({
                   <div className="min-w-0 flex-1">
                     <div className="text-text truncate text-sm font-medium">{fachbereich.name}</div>
                     <div className="text-text-muted flex items-center gap-1 text-xs">
-                      <span>{fachbereich.kompetenzbereiche.length} Bereiche</span>
+                      <span>
+                        {tCurr("areasCount", { count: fachbereich.kompetenzbereiche.length })}
+                      </span>
                       {isSelected && competencies.length > 0 && (
                         <span className="text-primary font-medium">
-                          • {competencies.length} gewählt
+                          • {tCurr("selectedCount", { count: competencies.length })}
                         </span>
                       )}
                     </div>
@@ -479,9 +513,7 @@ export function EnhancedCurriculumSelector({
           </div>
         ) : (
           <div className="border-border bg-surface-elevated rounded-xl border-2 border-dashed p-8 text-center">
-            <div className="text-text-muted text-sm">
-              Wählen Sie oben einen Zyklus, um die verfügbaren Fächer zu sehen
-            </div>
+            <div className="text-text-muted text-sm">{tCurr("selectCycleHint")}</div>
           </div>
         )}
 
@@ -519,24 +551,27 @@ export function EnhancedCurriculumSelector({
               </div>
               <div>
                 <div className="text-text text-sm font-semibold">
-                  Kompetenzen: {selectedFachbereich.name}
+                  {tCurr("competenciesFor", { name: selectedFachbereich.name })}
                 </div>
                 <div className="text-text-muted text-xs">
-                  {selectedFachbereich.kompetenzbereiche.length} Bereiche verfügbar
+                  {tCurr("areasAvailable", { count: selectedFachbereich.kompetenzbereiche.length })}
                 </div>
               </div>
             </div>
             <div className="flex items-center gap-3">
               {competencies.length > 0 && (
-                <span className="bg-primary/20 text-primary rounded-full px-3 py-1 text-xs font-semibold">
-                  {competencies.length} ausgewählt
+                <span
+                  className={`rounded-full px-3 py-1 text-xs font-semibold ${competencies.length >= MAX_COMPETENCIES ? "bg-warning/20 text-warning" : "bg-primary/20 text-primary"}`}
+                >
+                  {tCurr("competenciesSelected", { count: competencies.length })}
+                  {competencies.length >= MAX_COMPETENCIES && ` (max)`}
                 </span>
               )}
               <button
                 type="button"
                 onClick={() => setShowCompetencies(false)}
                 className="text-text-muted hover:text-text rounded-lg p-1 transition-colors"
-                title="Schliessen"
+                title={tCurr("close")}
               >
                 <X className="h-5 w-5" />
               </button>
@@ -553,7 +588,7 @@ export function EnhancedCurriculumSelector({
                   type="text"
                   value={competencySearch}
                   onChange={(e) => setCompetencySearch(e.target.value)}
-                  placeholder="Suchen (z.B. MA.1.A)..."
+                  placeholder={tFields("competencySearch")}
                   className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 w-full rounded-lg border py-2 pr-8 pl-8 text-sm transition-colors duration-100 focus:ring-1 focus:outline-none"
                 />
                 {competencySearch && (
@@ -572,7 +607,7 @@ export function EnhancedCurriculumSelector({
                   onClick={() => onCompetenciesChange([])}
                   className="text-text-muted hover:text-error text-xs transition-colors"
                 >
-                  Alle entfernen
+                  {tCurr("removeAll")}
                 </button>
               )}
             </div>
@@ -602,7 +637,7 @@ export function EnhancedCurriculumSelector({
             <div className="bg-surface overflow-hidden rounded-lg">
               {filteredKompetenzbereiche.length === 0 ? (
                 <div className="text-text-muted py-8 text-center text-sm">
-                  {competencySearch ? "Keine Kompetenzen gefunden" : "Keine Kompetenzen verfügbar"}
+                  {competencySearch ? tCurr("noSearchResults") : tCurr("noCompetencies")}
                 </div>
               ) : (
                 <div className="divide-border divide-y">
@@ -670,7 +705,7 @@ export function EnhancedCurriculumSelector({
                                     ? "bg-primary/50"
                                     : "border-border hover:border-primary/50 border-2"
                               }`}
-                              title={allSelected ? "Alle abwählen" : "Alle auswählen"}
+                              title={allSelected ? tCurr("deselectAll") : tCurr("selectAll")}
                             >
                               {(allSelected || someSelected) && (
                                 <Check className="text-text-on-accent h-3.5 w-3.5" />
@@ -689,16 +724,21 @@ export function EnhancedCurriculumSelector({
                             <div className="grid grid-cols-1 gap-2 px-4 pb-4 sm:grid-cols-2 md:grid-cols-3">
                               {kb.kompetenzen.map((kompetenz) => {
                                 const isSelected = competencies.includes(kompetenz.code);
+                                const isMaxReached =
+                                  competencies.length >= MAX_COMPETENCIES && !isSelected;
 
                                 return (
                                   <button
                                     key={kompetenz.code}
                                     type="button"
                                     onClick={() => toggleCompetency(kompetenz.code)}
+                                    disabled={isMaxReached}
                                     className={`group relative flex items-center gap-3 rounded-xl border-2 px-4 py-3 text-left transition-colors duration-150 ${
                                       isSelected
                                         ? "border-primary bg-primary/10"
-                                        : "border-border bg-bg hover:border-primary/50"
+                                        : isMaxReached
+                                          ? "border-border bg-bg cursor-not-allowed opacity-50"
+                                          : "border-border bg-bg hover:border-primary/50"
                                     }`}
                                   >
                                     {/* Icon area - matches Fach style */}
@@ -744,8 +784,7 @@ export function EnhancedCurriculumSelector({
 
             {/* Tip */}
             <p className="text-text-muted mt-3 text-xs">
-              <strong className="text-text">Tipp:</strong> Wählen Sie alle passenden Kompetenzen aus
-              für bessere Auffindbarkeit.
+              <strong className="text-text">{tCurr("tip")}</strong> {tCurr("tipText")}
             </p>
           </div>
         </div>
@@ -754,21 +793,21 @@ export function EnhancedCurriculumSelector({
       {/* Canton Selection - Moved after Competencies */}
       <div>
         <div className="mb-2 flex items-center gap-1.5">
-          <label className="text-text text-sm font-medium">Kanton (optional)</label>
-          <InfoTooltip content={FIELD_TOOLTIPS.canton.content} />
+          <label className="text-text text-sm font-medium">{tCurr("cantonOptional")}</label>
+          <InfoTooltip content={cantonTooltip.content} />
         </div>
         <select
           value={canton}
           onChange={(e) => onCantonChange(e.target.value)}
           className="border-border bg-bg text-text focus:border-primary focus:ring-primary/20 w-full rounded-full border px-4 py-3 transition-colors duration-150 focus:ring-2 focus:outline-none sm:w-auto sm:min-w-[200px]"
         >
-          {CANTONS.map((c) => (
+          {cantons.map((c) => (
             <option key={c.value} value={c.value}>
               {c.label}
             </option>
           ))}
         </select>
-        <p className="text-text-muted mt-1 text-xs">Für kantonsspezifische Lehrmittel</p>
+        <p className="text-text-muted mt-1 text-xs">{tCurr("cantonHint")}</p>
       </div>
     </div>
   );

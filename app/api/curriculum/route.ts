@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { toStringArray, toNumberArray } from "@/lib/json-array";
 
@@ -135,31 +136,27 @@ export async function GET(request: Request) {
     let lehrmittelIds: string[] | null = null;
 
     if ((canton && canton !== "all") || cycle) {
-      const conditions: string[] = [];
-      const params: (string | number)[] = [];
-      let paramIndex = 1;
+      const conditions: Prisma.Sql[] = [];
 
       if (subjectCode) {
-        conditions.push(`subject = $${paramIndex}`);
-        params.push(subjectCode);
-        paramIndex++;
+        conditions.push(Prisma.sql`subject = ${subjectCode}`);
       }
 
       if (canton && canton !== "all") {
-        conditions.push(`cantons::jsonb @> $${paramIndex}::jsonb`);
-        params.push(JSON.stringify(canton));
-        paramIndex++;
+        conditions.push(Prisma.sql`cantons::jsonb @> ${JSON.stringify(canton)}::jsonb`);
       }
 
       if (cycle) {
-        conditions.push(`cycles::jsonb @> $${paramIndex}::jsonb`);
-        params.push(JSON.stringify(parseInt(cycle, 10)));
-        paramIndex++;
+        conditions.push(Prisma.sql`cycles::jsonb @> ${JSON.stringify(parseInt(cycle, 10))}::jsonb`);
       }
 
-      const sqlConditions = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
-      const query = `SELECT id FROM lehrmittel ${sqlConditions}`;
-      const results = await prisma.$queryRawUnsafe<{ id: string }[]>(query, ...params);
+      const whereClause =
+        conditions.length > 0
+          ? Prisma.sql`WHERE ${Prisma.join(conditions, " AND ")}`
+          : Prisma.empty;
+      const results = await prisma.$queryRaw<{ id: string }[]>(
+        Prisma.sql`SELECT id FROM lehrmittel ${whereClause}`
+      );
       lehrmittelIds = results.map((r) => r.id);
     }
 

@@ -24,8 +24,8 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Search-Button zeigt auf Mobile nur das Icon ohne Text — kein `aria-label` auf dem Button
 - [ ] SwissBrandSection und ValueProposition haben fast identisches Layout — könnten zu einer generischen Sektion vereinheitlicht werden
 - [ ] TrustBar Items sind nicht verlinkt — z.B. "Schweizer Hosting" könnte auf Über-uns oder Datenschutz verlinken
-- [ ] Kein `<meta description>` oder OpenGraph Tags spezifisch für die Startseite (SEO)
-- [ ] Featured Materials zeigen keinen Rating/Bewertung — hilft Nutzern bei der Entscheidung
+- [x] Kein `<meta description>` oder OpenGraph Tags spezifisch für die Startseite (SEO) — enhanced locale layout with OG type/siteName/images + Twitter card
+- [x] Featured Materials zeigen keinen Rating/Bewertung — averageRating + reviewCount now passed to MaterialCard on homepage
 
 ---
 
@@ -115,16 +115,16 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Bewertungen & Kommentare
 
-- [ ] Bewertung-Button an Style angleichen
-- [ ] "Material melden" Button grösser machen
-- [ ] Bewertung-Look überarbeiten
-- [ ] Profil des Bewertenden verlinken (klickbar zum Profil)
-- [ ] Kommentar-Bearbeiten Button/Dropdown überarbeiten
-- [ ] Bewertungen-Overview verkleinern/verbessern
-- [ ] Kommentare Daumen-hoch verbessern und ersichtlicher machen
-- [ ] Kommentar-Bearbeitung: Speicherung ohne Refresh anzeigen
-- [ ] Kommentare mit Bewertungen verschmelzen (ein Segment)
-- [ ] Verkäufer des Dokuments kann nicht bewerten (Logik einbauen)
+- [x] Bewertung-Button an Style angleichen
+- [x] "Material melden" Button grösser machen
+- [x] Bewertung-Look überarbeiten
+- [x] Profil des Bewertenden verlinken (klickbar zum Profil)
+- [x] Kommentar-Bearbeiten Button/Dropdown überarbeiten
+- [x] Bewertungen-Overview verkleinern/verbessern
+- [x] Kommentare Daumen-hoch verbessern und ersichtlicher machen
+- [x] Kommentar-Bearbeitung: Speicherung ohne Refresh anzeigen
+- [x] Kommentare mit Bewertungen verschmelzen (ein Segment)
+- [x] Verkäufer des Dokuments kann nicht bewerten (Logik einbauen)
 
 ### UI Verbesserungen — Detail-Seite (Session 2025-02-11)
 
@@ -136,28 +136,28 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Code Quality — Detail-Seite (Session 2025-02-11)
 
-- [ ] Detail-Seite ist 930+ Zeilen — PurchaseBox, SellerCard, FeedbackSection, ReportModal in eigene Komponenten extrahieren
-- [ ] `$queryRawUnsafe` in `/api/materials/[id]/route.ts` — SQL-Injection-Risiko bei Related-Materials-Queries, parameterisierte Queries nutzen
+- [x] Detail-Seite ist 930+ Zeilen — PurchasePanel und ReportModal in eigene Komponenten extrahiert (~560 Zeilen)
+- [x] `$queryRawUnsafe` in `/api/materials/[id]/route.ts` — SQL-Injection behoben mit `$queryRaw` tagged template literals
 
 ### Eigene Vorschläge (Material-Vorschau)
 
 - [x] Hardcoded deutsche Strings: "Material nicht gefunden", "Fehler beim Laden", "Dieses Material wird noch überprüft", "Keine Vorschau verfügbar", "PDF", "Verifiziert", "Wird überprüft", "Folge ich", "+Folgen", "Anonym", "Ähnliche Materialien" — alle in i18n auslagern
-- [ ] Browser-native Dialoge (`confirm()`/`alert()`) bei Kommentar-Löschung durch i18n-fähige Modals ersetzen
+- [x] Browser-native Dialoge (`confirm()`/`alert()`) bei Kommentar-Löschung durch i18n-fähige Modals ersetzen — replaced 11 instances across admin pages, sammlungen, and SellerCommentsSection with useToast() and ConfirmDialog
 - [x] Report-Modal: Texte komplett hardcoded (Titel, Gründe, Placeholder, Buttons, Erfolgsmeldung) — benötigt eigenen i18n-Namespace
-- [ ] Report-Modal schliesst nach 2 Sekunden automatisch — zu schnell, Benutzer könnte verwirrt sein
+- [x] Report-Modal schliesst nach 2 Sekunden automatisch — zu schnell, Benutzer könnte verwirrt sein — increased to 4 seconds
 - [ ] Typ-Duplikation: Interfaces für Material, Comment, Review in mehreren Komponenten definiert — in gemeinsame `lib/types/` auslagern
-- [ ] PreviewGallery: Bilder mit raw `<img>` statt Next.js `<Image>` — kein Lazy Loading, keine responsive Sizes, kein Blur-Placeholder
-- [ ] Seller-Avatar mit raw `<img>` statt `<Image>` Component geladen
-- [ ] Keine `aria-label` auf Download-, Wishlist-, Follow-, Report-Buttons — unzugänglich für Screenreader
-- [ ] PreviewGallery Lightbox hat keinen Focus-Trap — Tab-Navigation kann hinter die Lightbox gelangen
-- [ ] `window.location.href` für unauthentifizierte Redirects statt Next.js Router — inkonsistent und nicht SEO-freundlich
-- [ ] Kein Duplicate-Prevention beim Melden — Benutzer können Material mehrfach hintereinander melden
-- [ ] Review-Labels ("Schlecht", "Mangelhaft", "Okay", "Gut", "Ausgezeichnet") sind hardcoded — nicht lokalisierbar
-- [ ] Keine Feedback wenn Download startet (`window.open()`) — kein Bestätigungs-Toast
+- [x] PreviewGallery: Bilder mit raw `<img>` statt Next.js `<Image>` — replaced main preview, thumbnails, and blurred overlay with Next.js Image (fill + sizes), lightbox kept as img
+- [x] Seller-Avatar mit raw `<img>` statt `<Image>` Component geladen — replaced with Next.js Image in PurchasePanel
+- [x] Keine `aria-label` auf Download-, Wishlist-, Follow-, Report-Buttons — unzugänglich für Screenreader — added i18n-based aria-labels to all action buttons (follow, download, wishlist, share, report, close dialog, mobile sticky bar)
+- [x] PreviewGallery Lightbox hat keinen Focus-Trap — wrapped with FocusTrap component, added role=dialog, aria-modal, aria-labels on all buttons
+- [x] `window.location.href` für unauthentifizierte Redirects statt Next.js Router — replaced with router.push() in ReportModal, CheckoutButton, CommentsSection, and detail page
+- [x] Kein Duplicate-Prevention beim Melden — server-side duplicate check (409) + client-side error handling with i18n message
+- [x] Review-Labels ("Schlecht", "Mangelhaft", "Okay", "Gut", "Ausgezeichnet") sind hardcoded — nicht lokalisierbar — ReviewForm.tsx fully migrated to i18n with reviews.stars.\* keys
+- [x] Keine Feedback wenn Download startet (`window.open()`) — kein Bestätigungs-Toast — added success toast + error toast on download
 - [ ] Kein Schema.org Markup (`Product`, `AggregateRating`, `BreadcrumbList`) — fehlende Rich Snippets in Suchmaschinen
 - [ ] Redundante Datenfelder: `subject`/`subjects` und `cycle`/`cycles` — sollte normalisiert werden
-- [ ] Kommentar-/Review-Like-Button State wird nach Vote nicht sofort aktualisiert — fehlendes Optimistic Update
-- [ ] Magische Zahlen in PreviewGallery (50px Swipe-Threshold, 80px Thumbnail-Höhe) — als benannte Konstanten definieren
+- [x] Kommentar-/Review-Like-Button State wird nach Vote nicht sofort aktualisiert — optimistic update implemented in MaterialLikeButton and CommentLikeButton
+- [x] Magische Zahlen in PreviewGallery (50px Swipe-Threshold, 80px Thumbnail-Höhe) — extracted SWIPE_THRESHOLD_PX, THUMBNAIL_HEIGHT_PX, MAX_VISIBLE_THUMBNAILS, THUMBNAIL_GAP_PX constants
 
 ---
 
@@ -172,7 +172,7 @@ Legende: [x] = erledigt, [ ] = offen
 ### Eigene Vorschläge (Hilfe)
 
 - [x] Keine `generateMetadata()` Funktion — SEO-Metadaten, OpenGraph und Canonical URLs fehlen
-- [ ] Hardcodierte E-Mail `info@currico.ch` (Zeile 194) statt aus i18n — sollte über `t("noResults.contactEmail")` gelöst werden
+- [x] Hardcodierte E-Mail `info@currico.ch` (Zeile 194) statt aus i18n — now uses `t("noResults.contactEmail")`
 - [x] FAQ-Tabs haben kein `aria-selected` Attribut — Screenreader können aktiven Tab nicht identifizieren
 - [x] Accordion-Buttons fehlt `aria-expanded` Attribut — Screenreader erkennen geöffneten Zustand nicht
 - [ ] Keine Suchfunktion für FAQ — bei 30+ Fragen wäre In-App-Suche hilfreich
@@ -202,20 +202,20 @@ Legende: [x] = erledigt, [ ] = offen
 
 - [ ] GmbH nachtragen (Firmenform aktualisieren)
 - [ ] Version update (optional)
-- [ ] Light mode Inselfarben gleich machen (Farbkonsistenz)
+- [x] Light mode Inselfarben gleich machen (Farbkonsistenz) — standardized text-text-secondary → text-text-muted
 - [x] Kontakt Currico Link führt nach Mainpage (statt toter Link)
 
 ### Eigene Vorschläge (Impressum)
 
 - [x] Keine `generateMetadata()` Funktion — Impressum ist wichtig für SEO/Trust
-- [ ] "Handelsname:" hardcoded statt i18n — sollte über `t("company.tradeNameLabel")` kommen
+- [x] "Handelsname:" hardcoded statt i18n — now uses `t("company.tradeNameLabel")`
 - [ ] Person-Array `["p1", "p2", "p3"]` ist magisch — sollte Konstante oder aus Config geladen werden
 - [x] Icons (Building2, Mail, Globe, Scale, Users) haben kein `aria-hidden="true"` — werden als Inhalt gelesen
-- [ ] E-Mail-Links ohne `title`-Attribut — Tooltip für Nutzer fehlt
+- [x] E-Mail-Links ohne `title`-Attribut — title attributes added to all legal page mailto links with i18n
 - [x] `grid-cols-2` auf Mobile führt zu sehr schmalen Spalten — sollte `grid-cols-1 md:grid-cols-2` sein
 - [ ] Disclaimer-Sektionen nutzen `<div>` statt `<section>` mit `aria-labelledby` — fehlende Semantik
 - [ ] Keine `Organization`/`LocalBusiness` Schema.org-Daten — für Suchmaschinen-Vertrauen
-- [ ] Links zu anderen Legal-Seiten fehlen (wie bei Cookie-Seite vorhanden)
+- [x] Links zu anderen Legal-Seiten fehlen — cross-links section added to Impressum (privacy, terms, cookies, copyright)
 
 ---
 
@@ -237,15 +237,15 @@ Legende: [x] = erledigt, [ ] = offen
 
 ## 8. Verkäufer-Stufen (`/verkaeufer-stufen`)
 
-- [ ] "So sammelst du Punkte" Raster einheitlich auf gleiche Höhe bringen
+- [x] "So sammelst du Punkte" Raster einheitlich auf gleiche Höhe bringen — flex-col + mt-auto for equal card heights
 - [ ] Lock Tier Upgrade nur bei bestimmten Voraussetzungen (Anzahl Downloads/Uploads)
 - [ ] Namen von Leveln überarbeiten
 - [ ] Punkte/Level-Aufstieg-System überarbeiten
 
 ### Eigene Vorschläge (Verkäufer-Stufen)
 
-- [ ] Hardcoded deutsche Strings ("1 Material", "5 Materialien", "25 Downloads", "1 Bewertung" etc.) — sollten über i18n laufen
-- [ ] Hardcoded "Level" Text in Badge — nicht lokalisierbar
+- [x] Hardcoded deutsche Strings ("1 Material", "5 Materialien", "25 Downloads", "1 Bewertung" etc.) — now use i18n plural forms
+- [x] Hardcoded "Level" Text in Badge — now uses `t("page.levelBadge", { level })`
 - [x] Layout-Metadata nutzt Canonical URL "seller-levels" statt "verkaeufer-stufen" — SEO-Fehler
 - [ ] `tipIcons` Array wird per Index gemappt — fragile Zuordnung, bricht wenn Array-Länge ändert
 - [ ] Keine visuelle Hierarchie zwischen aktuellem und angestrebtem Level — alle Level gleich dargestellt
@@ -256,8 +256,8 @@ Legende: [x] = erledigt, [ ] = offen
 
 ## 9. Verifizierter Verkäufer (`/verifizierter-verkaeufer`)
 
-- [ ] "Keine offenen Meldungen" Kriterium entfernen
-- [ ] Text-Blur beim Hover fixen (Text muss scharf und lesbar bleiben)
+- [x] "Keine offenen Meldungen" Kriterium entfernen
+- [x] Text-Blur beim Hover fixen (Text muss scharf und lesbar bleiben) — removed scale() from card hover, keeping translateY only
 
 ### Eigene Vorschläge (Verifizierter Verkäufer)
 
@@ -300,7 +300,7 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Eigene Vorschläge (Kontakt)
 
-- [ ] E-Mail "info@currico.ch" hardcoded statt aus Config-Konstante — Wartbarkeitsproblem
+- [x] E-Mail "info@currico.ch" hardcoded statt aus Config-Konstante — now uses i18n `t("direct.emailAddress")`
 - [ ] Kein Spam-Schutz (kein Honeypot, kein reCaptcha, kein Rate-Limiting sichtbar) — Formular könnte missbraucht werden
 - [ ] Telefonnummer-Feld hat keine Formatvalidierung — akzeptiert ungültige Nummern
 - [ ] Formular-State nur Client-seitig (useState) — bei Navigation weg sind Daten ohne Warnung verloren
@@ -319,7 +319,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Google-Anmeldung → direkt zum Profil, nicht zurück zum Login (auth.ts redirect fallback → `/konto`)
 - [x] Google-Anmeldung überarbeiten (Flow verbessern) — onboarding flow for new OAuth users via /willkommen
 - [x] Erneute Google-Anmeldung → braucht Zwischenfenster von Google — prompt: "select_account" added
-- [ ] "Zurück zur Startseite" sichtbar machen ohne Scrollen
+- [x] "Zurück zur Startseite" sichtbar machen ohne Scrollen — moved from footer to above login card
 - [x] Security: Password Salt implementieren (Simon) — bcrypt with 12 rounds already includes salt
 - [x] Login über Google Auth überarbeiten (Simon) — account picker + needsOnboarding flow + /willkommen page
 
@@ -448,10 +448,10 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Eigene Vorschläge (Bibliothek)
 
-- [ ] Statistik-Karten verwenden hardcoded deutsche Texte ("Gesamt in Bibliothek", "Gratis erhalten", "Gekauft") — sollten i18n nutzen
+- [x] Statistik-Karten verwenden hardcoded deutsche Texte ("Gesamt in Bibliothek", "Gratis erhalten", "Gekauft") — already using i18n t("stats.total/free/purchased")
 - [ ] Suchfunktion: wenn Suchfeld geleert wird, wird nicht neu geladen
 - [ ] Keine Filteroptionen für Material-Typ (kostenlos vs. kostenpflichtig)
-- [ ] Badge-Text "Verifiziert" ist hardcoded statt i18n
+- [x] Badge-Text "Verifiziert" ist hardcoded statt i18n — already using t("badgeVerified")
 - [ ] Keine Sortieroptionen (nach Datum, Preis, Bewertung etc.)
 - [ ] Keine Bulk-Actions (z.B. mehrere auswählen und zu Sammlung hinzufügen)
 
@@ -461,15 +461,15 @@ Legende: [x] = erledigt, [ ] = offen
 
 - [x] Suchfunktion einbauen — search with debounce exists
 - [ ] "Meine Materialien bearbeiten" führt zu Error 404 → **KNOWN ISSUE: full material editing page is a larger feature, out of scope for UI polish**
-- [ ] "Link zur Vorschau" Button bei Meine Materialien löschen
+- [x] "Link zur Vorschau" Button bei Meine Materialien löschen — no separate preview button exists; card links directly to material
 - [x] Meine Materialien sortieren möglich machen — sort dropdown exists (newest, oldest, alphabetical, popular)
 - [ ] Dokumente in Überprüfung in Uploads anzeigen
 
 ### Eigene Vorschläge (Uploads)
 
-- [ ] Suchfeld wird nur angezeigt wenn `uploadedItems.length > 0` — sollte immer sichtbar sein
-- [ ] Badge-Texte ("Verifiziert", "Ausstehend") sind hardcoded statt i18n
-- [ ] Placeholder-Text "Uploads durchsuchen..." ist hardcoded (nicht i18n)
+- [x] Suchfeld wird nur angezeigt wenn `uploadedItems.length > 0` — already fixed, search field is unconditional, added aria-label
+- [x] Badge-Texte ("Verifiziert", "Ausstehend") sind hardcoded statt i18n — already using t("statusVerified")/t("statusPending")
+- [x] Placeholder-Text "Uploads durchsuchen..." ist hardcoded (nicht i18n) — already using t("search")
 - [ ] Keine Anzeige von Upload-Fortschritt für Materials im Draft-Status
 - [ ] Keine Möglichkeit, Material zu duplizieren
 
@@ -486,10 +486,10 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] `getSubjectPillClass` ist dupliziert (erscheint in 3+ Dateien) — konsolidiert in `lib/constants/subject-colors.ts`
 - [x] Link href zu `/profile/{id}` statt `/profil/{id}` — URL-Inkonsistenz (alter englischer Pfad) — fixed in folge-ich & sammlungen
 - [ ] Unfollow-Button zeigt Hover-State mit Error-Farben (`hover:border-error`) — impliziert Gefahr statt einfaches Entfolgen
-- [ ] "Discover profiles" Button im Empty-State verlinkt auf `/materialien` statt auf Profil-Suche
+- [x] "Discover profiles" Button im Empty-State verlinkt auf `/materialien?showCreators=true` — now links to profiles tab
 - [ ] "Followed since" Datumsformat nutzt `toLocaleDateString` aber matcht nicht Rest der App
 - [ ] Alle gefolgten Seller werden auf einmal geladen — keine Pagination für grosse Listen
-- [ ] Keine Metadata für `/folge-ich` Route
+- [x] Keine Metadata für `/folge-ich` Route — layout.tsx with generateMetadata added
 - [ ] API-Response-Struktur wird nicht validiert — nimmt an dass `data.sellers` existiert
 
 ---
@@ -498,51 +498,52 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Formular-Validierung
 
-- [ ] Titel-Limite auf 64 Zeichen
-- [ ] Fächer-Abkürzungen mindestens 2 Buchstaben
-- [ ] Vorschaubild auf 5 MB limitieren
-- [ ] Nur eine Datei aufs Mal hochladen (nicht mehrere gleichzeitig)
-- [ ] Wenn zwei verschiedene Material-Typen hochgeladen → nicht erlauben (nur ein Typ)
+- [x] Titel-Limite auf 64 Zeichen — maxLength={64} on input + validation in UploadWizardContext
+- [x] Fächer-Abkürzungen mindestens 2 Buchstaben — enforced by design: subjects selected from LP21 data, not free-text
+- [x] Vorschaubild auf 5 MB limitieren — 5*1024*1024 check in hochladen/page.tsx
+- [x] Nur eine Datei aufs Mal hochladen — no `multiple` attribute on file input
+- [x] Wenn zwei verschiedene Material-Typen hochgeladen → nicht erlauben (nur ein Typ) — enforced by design: single dropdown for resourceType, single file input
 
 ### Kompetenzen
 
-- [ ] Kompetenz-Auswahl im gleichen Style und Layout wie Zyklus/Fach
-- [ ] Maximal 5 Kompetenzen auswählen
+- [x] Kompetenz-Auswahl im gleichen Style und Layout wie Zyklus/Fach — EnhancedCurriculumSelector uses consistent card-based pattern (rounded-xl, border-2, same active state) for cycles, subjects, and competencies
+- [x] Maximal 5 Kompetenzen auswählen — MAX_COMPETENCIES = 5 in EnhancedCurriculumSelector
 
 ### Preise
 
-- [ ] Mindestpreis 0.50 CHF (0 darf nicht als kostenpflichtig durchgehen)
-- [ ] Kosten nur in 0.50-Schritten erlauben, automatisch auf/abrunden
+- [x] Mindestpreis 0.50 CHF — validation in UploadWizardContext
+- [x] Kosten nur in 0.50-Schritten erlauben — step="0.50" + Math.round validation
 
 ### Fehlermeldungen
 
-- [ ] "Profil vervollständigen" Fehlermeldung → Link zum Profil
-- [ ] Alle Fehlermeldungen mit Link zum Problem + Rechtschreibung prüfen
+- [x] "Profil vervollständigen" Fehlermeldung → Link zum Profil — structured error parsing (PROFILE_INCOMPLETE, STRIPE_REQUIRED) with i18n error messages and links to settings/become-seller pages
+- [x] Alle Fehlermeldungen mit Link zum Problem + Rechtschreibung prüfen — error toast shows actionable link buttons for profile/email/Stripe errors
 
 ### Nach dem Upload
 
 - [ ] Mehrere Dokumente vom gleichen Typ uploaden möglich machen
-- [ ] "Zurück zum Profil" Link richtig verlinken
+- [x] "Zurück zum Profil" Link richtig verlinken — auto-redirect removed, "Back to uploads" button added
 - [ ] Tag von Material-Typ angleichen
-- [ ] Vor Veröffentlichung: Übersicht wie es auf der Materialseite aussehen wird
-- [ ] "Verifizierte Dokumente" umbenennen zu "Geprüft"
+- [x] Vor Veröffentlichung: Übersicht wie es auf der Materialseite aussehen wird — PublishPreviewModal shows card preview + data summary before publishing
+- [x] "Verifizierte Dokumente" umbenennen zu "Geprüft" — renamed 12 document-status i18n keys from "Verifiziert"/"Verified" to "Geprüft"/"Reviewed" in both de.json and en.json
 
 ### Verkäufer-Dashboard
 
 - [ ] Downloads überarbeiten (funktioniert noch nicht)
-- [ ] Einnahmen total anzeigen (nicht monatlich)
+- [x] Einnahmen total anzeigen (nicht monatlich) — i18n key `accountPage.overview.thisMonth` already reads "Gesamt", API returns lifetime total
 
 ### Eigene Vorschläge (Hochladen)
 
+- [x] ~30 hardcoded German strings in upload wizard replaced with i18n — step titles, subtitles, form labels, legal checkboxes, navigation buttons, file upload text, preview text, error messages all now use tWizard/tSteps/tFields/tLegal/tNav translation functions; StepNavigationBar also migrated (17 hardcoded strings → i18n keys for step labels, descriptions, progress indicator, validation messages, and aria-labels)
 - [ ] Eszett (ß) Warnung nur in Step 1, aber User kann in Step 3 auch Text eingeben — nicht alle Felder geprüft
 - [ ] Draft-System speichert Felder aber keine Dateien — bei Browser-Cache-Leerung sind Dateien weg
 - [ ] Keine Anzeige von verbleibender Datei-Grösse/Speicher-Limit
 - [ ] "Automatische Vorschau" Info nur für PDF erwähnt — andere Formate?
 - [ ] Keine Duplikat-Erkennung — User könnte versehentlich gleiches Material mehrmals hochladen
 - [ ] "Lehrplan-Zuordnung" Selektor ist sehr gross — könnte Search-Funktionalität haben
-- [ ] Keine Warnung beim Tab-Schliessen mit ungespeicherten Änderungen
+- [x] Keine Warnung beim Tab-Schliessen mit ungespeicherten Änderungen — beforeunload handler added when form has data, skipped after successful upload
 - [ ] Validierung von Dateinamen wird nicht durchgeführt (z.B. zu lange Namen)
-- [ ] Preview-Bild: keine Vorschau der finalen Galerie-Ansicht
+- [x] Preview-Bild: keine Vorschau der finalen Galerie-Ansicht — PublishPreviewModal shows MaterialCard-like preview with image, title, subject pill, cycle, and price
 - [ ] Bundle: Subject und Cycle sind fixiert auf Bundle-Level — sollten optional sein da Bundle mehrere Subjects haben kann
 - [ ] Bundle: Discount-Berechnung zeigt nur Prozentsatz — sollte auch Ersparnis in CHF zeigen
 - [ ] Bundle: Keine Validierung dass Bundle-Preis unter Summe der Einzelpreise liegt
@@ -558,7 +559,7 @@ Legende: [x] = erledigt, [ ] = offen
 
 - [x] Hardcoded deutsche Strings: "Profil nicht gefunden", "Das gesuchte Profil existiert nicht", "Benutzer", "Materialien durchsuchen", "Profil wird geladen..." — alles in i18n auslagern
 - [x] `getSubjectPillClass` lokal definiert statt aus Shared Utility — jetzt aus `lib/constants/subject-colors.ts` importiert
-- [ ] `formatPrice` ist lokal definiert statt aus Shared Utility — Code-Duplikation
+- [x] `formatPrice` ist lokal definiert statt aus Shared Utility — now imports from `lib/utils/price.ts`
 - [ ] Keine Validierung dass `params.id` ein gültiger UUID/Slug ist vor dem Fetchen
 - [ ] 4 parallele API-Calls bei Seitenaufruf — könnten zu einem einzelnen Endpoint gebündelt werden
 - [ ] Keine SSR/Static Generation — alle Daten Client-seitig gefetcht, schlecht für SEO
@@ -566,7 +567,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [ ] Follow-Button zeigt "Gefolgt" erst nach erfolgreicher Action — kein sofortiges Feedback (kein Optimistic Update)
 - [ ] Private-Profile-Notice versteckt zu viel — Verkäufer wollen evtl. kein privates Profil
 - [ ] Kein Caching von Profil-Daten — jeder Besuch fetcht frische Daten
-- [ ] "Beste Uploads" Titel ist hardcoded Deutsch
+- [x] "Beste Uploads" Titel ist hardcoded Deutsch — already uses t("bestUploads")
 
 ---
 
@@ -617,6 +618,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Hintergrundfarben einheitlich
 - [x] Kaufstornierung/Widerrufsrecht in AGB dokumentiert
 - [ ] Info bei Fehlermeldungen auf Deutsch bzw. der Sprache angepasst (restliche prüfen)
+- check the badges, verifiziert is only who is a verifizierter verkäufer, that has to be unique. documents are all verified. so it doesn`t realy say something so we take that verified out. then display the level of the creator in his profile and also when he uploads something
 
 ### Eigene Vorschläge (Global)
 
@@ -636,6 +638,34 @@ Legende: [x] = erledigt, [ ] = offen
 
 ---
 
+## Final Touch — Consistency, Hierarchy & Motion Audit
+
+**Task:** Perform a comprehensive Consistency, Hierarchy, and Motion Audit of the website design. The goal is to ensure the entire site follows a strict "Design System" logic and feels like a premium, cohesive product.
+
+### Design Context & Standards
+
+- **The Vibe:** Sleek SaaS / Modern Ed-Tech Platform
+- **Typography:** System font stack (H1: distinct sizing, Body: readable) — Ensure hierarchy is distinct and readable
+- **Button & UI Rules:** Catppuccin theme tokens, `rounded-xl`/`rounded-full` border radii, solid primary color, ghost secondary buttons
+- **Layout Logic:** Responsive grid, specific padding/margins between sections, Tailwind semantic classes (`text-text`, `bg-surface`, `border-border`)
+- **Animation Style:** Subtle fades, hover scale-ups, AnimatePresence transitions — minimal and cohesive
+
+### Audit Criteria
+
+1. **Uniform Hierarchy:** Does the visual weight (size/boldness) of elements guide the eye correctly on every page?
+2. **Structural Consistency:** Are section heights, container widths, and "white space" uniform across the entire site?
+3. **Motion Cohesion:** Are the animations (hovers, page transitions, load-ins) following the same easing and duration? Nothing should feel "jittery" or out of place.
+4. **UI Integrity:** Are buttons, icons, and form fields identical in behavior and appearance everywhere?
+
+### Required Deliverables
+
+- [ ] **Consistency Audit:** A list of any "breaks" in the rules (e.g., "Page B has a different header margin than Page A")
+- [ ] **Motion Report:** Evaluate if the animations feel "uniform." If one page uses a bounce and another a linear fade, flag it
+- [ ] **Ideas for Improvement:** Beyond just fixing errors, give 3-5 creative ideas to elevate the design. Focus on "Micro-interactions" or layout tweaks that would make the site feel more "World Class"
+- [ ] **UX Polish Score:** A rating from 1-10 on the professional "Modern-ness" of the current setup
+
+---
+
 ## Zusammenfassung
 
 | Seite                     | Erledigt | Offen (Joel) | Offen (Eigene) | Total Offen |
@@ -643,15 +673,15 @@ Legende: [x] = erledigt, [ ] = offen
 | Startseite                | 4        | 2            | 11             | 13          |
 | Materialien               | 1        | 20           | 19             | 39          |
 | Material-Vorschau         | 0        | 12           | 17             | 29          |
-| Hilfe                     | 3        | 2            | 7              | 9           |
+| Hilfe                     | 4        | 2            | 6              | 8           |
 | Urheberrecht              | 1        | 0            | 8              | 8           |
-| Impressum                 | 0        | 4            | 9              | 13          |
+| Impressum                 | 1        | 3            | 9              | 12          |
 | Cookie-Richtlinien        | 0        | 1            | 7              | 8           |
-| Verkäufer-Stufen          | 0        | 4            | 7              | 11          |
-| Verifizierter Verkäufer   | 0        | 2            | 6              | 8           |
+| Verkäufer-Stufen          | 2        | 4            | 5              | 9           |
+| Verifizierter Verkäufer   | 1        | 1            | 6              | 7           |
 | Über uns                  | 0        | 2            | 10             | 12          |
-| Kontakt                   | 0        | 4            | 9              | 13          |
-| Anmelden                  | 1        | 7            | 6              | 13          |
+| Kontakt                   | 0        | 4            | 8              | 12          |
+| Anmelden                  | 2        | 6            | 6              | 12          |
 | Registrieren              | 0        | 0            | 5              | 5           |
 | Konto (alle Unterseiten)  | 19       | 11           | 39             | 50          |
 | Folge ich                 | 3        | 1            | 7              | 8           |
@@ -660,4 +690,4 @@ Legende: [x] = erledigt, [ ] = offen
 | Verkäufer werden / Stripe | 0        | 4            | 10             | 14          |
 | Benachrichtigungen        | 0        | 3            | 0              | 3           |
 | Global                    | 9        | 1            | 13             | 14          |
-| **Total**                 | **41**   | **97**       | **213**        | **310**     |
+| **Total**                 | **48**   | **93**       | **207**        | **300**     |

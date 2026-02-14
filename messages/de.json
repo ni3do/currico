@@ -24,17 +24,25 @@
     "sales": "Verkäufe",
     "unknownSeller": "Unbekannt"
   },
+  "avatar": {
+    "errorInvalidType": "Bitte wählen Sie ein Bild aus (JPG, PNG)",
+    "errorTooLarge": "Das Bild darf maximal 2MB gross sein",
+    "errorUploadFailed": "Fehler beim Hochladen. Bitte versuchen Sie es erneut.",
+    "uploadLabel": "Profilbild hochladen"
+  },
   "previewGallery": {
     "title": "Vorschau",
     "pageOf": "Seite {current} von {total}",
     "noPreview": "Keine Vorschau verfügbar",
     "fullAccessHint": "Vollständige Dateien nach dem Kauf verfügbar",
     "purchaseHint": "Kaufen Sie, um alle Vorschauseiten freizuschalten",
-    "blurredOverlay": {
-      "title": "Vorschau verschwommen",
-      "description": "Kaufen Sie, um die vollständige Ansicht freizuschalten",
+    "previewOverlay": {
+      "description": "Kaufen für vollständige Ansicht",
       "cta": "Jetzt freischalten"
-    }
+    },
+    "closeLightbox": "Vorschau schliessen",
+    "previousPage": "Vorherige Seite",
+    "nextPage": "Nächste Seite"
   },
   "common": {
     "skipToContent": "Zum Inhalt springen",
@@ -94,7 +102,7 @@
       "popular": "Beliebteste"
     },
     "badges": {
-      "verified": "Verifiziert",
+      "verified": "Geprüft",
       "pending": "Ausstehend",
       "rejected": "Abgelehnt"
     },
@@ -105,7 +113,11 @@
       "cancel": "Abbrechen",
       "apply": "Anwenden",
       "reset": "Zurücksetzen",
-      "backToHome": "Zurück zur Startseite"
+      "backToHome": "Zurück zur Startseite",
+      "showPassword": "Passwort anzeigen",
+      "hidePassword": "Passwort ausblenden",
+      "delete": "Löschen",
+      "close": "Schliessen"
     },
     "breadcrumb": {
       "home": "Startseite",
@@ -615,7 +627,7 @@
       "qualityFilter": {
         "label": "Qualität",
         "all": "Alle",
-        "verified": "Verifiziert",
+        "verified": "Geprüft",
         "aiChecked": "KI-Geprüft"
       },
       "priceFilter": {
@@ -663,7 +675,7 @@
       }
     },
     "card": {
-      "verified": "Verifiziert",
+      "verified": "Geprüft",
       "aiChecked": "KI-Geprüft",
       "documents": "Dok.",
       "free": "Gratis",
@@ -754,7 +766,7 @@
         "actions": "Aktionen"
       },
       "statusLabels": {
-        "verified": "Verifiziert",
+        "verified": "Geprüft",
         "aiChecked": "KI-Geprüft",
         "pending": "Ausstehend"
       },
@@ -877,7 +889,7 @@
       "infoText": "Neue Uploads haben den Status \"Ausstehend\" und sind nur für den Besitzer sichtbar. Nach der Verifizierung werden Dokumente öffentlich und für alle Benutzer zugänglich.",
       "all": "Alle",
       "pending": "Ausstehend",
-      "verified": "Verifiziert",
+      "verified": "Geprüft",
       "draft": "Entwurf",
       "documentsFound": "{count} Dokumente gefunden",
       "title": "Titel",
@@ -909,7 +921,7 @@
       "resetToPending": "Zurücksetzen",
       "close": "Schliessen",
       "statusPending": "Ausstehend",
-      "statusVerified": "Verifiziert",
+      "statusVerified": "Geprüft",
       "statusRejected": "Abgelehnt",
       "errorVerifying": "Fehler beim Verifizieren",
       "errorRejecting": "Fehler beim Ablehnen",
@@ -1013,6 +1025,7 @@
       "markNew": "Als neu markieren",
       "reply": "Antworten",
       "deleteMessage": "Löschen",
+      "confirmDeleteTitle": "Nachricht löschen",
       "confirmDelete": "Möchten Sie diese Nachricht wirklich löschen?",
       "subjectGeneral": "Allgemeine Anfrage",
       "subjectFeedback": "Feedback",
@@ -1174,6 +1187,7 @@
     },
     "direct": {
       "title": "Lieber direkt Kontakt aufnehmen?",
+      "emailAddress": "info@currico.ch",
       "email": {
         "title": "E-Mail schreiben",
         "description": "Für ausführliche Fragen oder Dokumentenaustausch"
@@ -1429,7 +1443,15 @@
       "filesShort": "Dateien",
       "filesDescription": "Upload, Bestätigungen",
       "progress": "Schritt {current} von {total}",
-      "almostDone": "Fast geschafft!"
+      "almostDone": "Fast geschafft!",
+      "basicsSubtitle": "Beschreiben Sie Ihr Material",
+      "curriculumSubtitle": "Wählen Sie Zyklus, Fach und Kompetenzen",
+      "priceTitle": "Preis festlegen",
+      "priceSubtitle": "Wählen Sie, ob Ihr Material kostenlos oder kostenpflichtig ist",
+      "filesSubtitle": "Laden Sie Ihre Dateien hoch und bestätigen Sie die rechtlichen Anforderungen",
+      "navLabel": "Upload-Schritte",
+      "incomplete": "unvollständig",
+      "complete": "abgeschlossen"
     },
     "draft": {
       "saved": "Entwurf gespeichert",
@@ -1442,12 +1464,14 @@
       "discardConfirm": "Verwerfen",
       "discardCancel": "Abbrechen",
       "restored": "Entwurf wiederhergestellt",
-      "restoredMessage": "Ihr vorheriger Entwurf wurde geladen."
+      "restoredMessage": "Ihr vorheriger Entwurf wurde geladen.",
+      "today": "heute um {time}",
+      "yesterday": "gestern um {time}"
     },
     "validation": {
       "titleRequired": "Titel ist erforderlich",
       "titleMinLength": "Titel muss mindestens 5 Zeichen haben",
-      "titleMaxLength": "Titel darf maximal 100 Zeichen haben",
+      "titleMaxLength": "Titel darf maximal 64 Zeichen haben",
       "descriptionRequired": "Beschreibung ist erforderlich",
       "descriptionMinLength": "Beschreibung muss mindestens 20 Zeichen haben",
       "descriptionMaxLength": "Beschreibung darf maximal 2000 Zeichen haben",
@@ -1457,6 +1481,8 @@
       "pricePositive": "Preis muss eine positive Zahl sein",
       "priceMax": "Preis darf maximal CHF 50 sein",
       "priceMin": "Mindestpreis ist CHF 0.50",
+      "priceStep": "Preis muss in 0.50-Schritten sein (z.B. 1.00, 1.50, 2.00)",
+      "competenciesMax": "Maximal 5 Kompetenzen auswählen",
       "fileRequired": "Mindestens eine Datei ist erforderlich",
       "legalOwnContent": "Bitte bestätigen Sie, dass Sie eigene Inhalte verwenden",
       "legalNoScans": "Bitte bestätigen Sie, dass keine Lehrmittel-Scans enthalten sind",
@@ -1483,7 +1509,16 @@
       "priceExample": "CHF 5.00",
       "editable": "Aktivieren Sie dies, wenn Käufer die Datei bearbeiten können sollen (z.B. Word-Dokumente). Bei PDF-Dateien ist dies meist nicht nötig.",
       "files": "Laden Sie Ihre Hauptdatei(en) hoch. Unterstützte Formate: PDF, Word, PowerPoint, Excel. Maximale Dateigrösse: 50 MB pro Datei.",
-      "preview": "Optional: Laden Sie ein eigenes Vorschaubild hoch. Bei PDF-Dateien wird automatisch eine Vorschau aus der ersten Seite erstellt."
+      "preview": "Optional: Laden Sie ein eigenes Vorschaubild hoch. Bei PDF-Dateien wird automatisch eine Vorschau aus der ersten Seite erstellt.",
+      "lehrmittel": "Optional: Wählen Sie Lehrmittel aus, zu denen Ihr Material passt. Dies hilft Lehrpersonen, passende Ergänzungsmaterialien zu finden.",
+      "lehrmittelExample": "Zahlenbuch, mathwelt",
+      "legalOwnContent": "Bestätigen Sie, dass Sie alle Bilder, Grafiken und Texte selbst erstellt haben oder nur Materialien mit CC0-Lizenz (Public Domain) verwenden.",
+      "legalNoTextbookScans": "Bestätigen Sie, dass Sie keine Seiten aus Lehrmitteln, Schulbüchern oder anderen urheberrechtlich geschützten Werken eingescannt oder kopiert haben.",
+      "legalNoTrademarks": "Bestätigen Sie, dass Ihr Material keine geschützten Marken, Logos oder Figuren enthält (z.B. Disney, Marvel, Pokémon).",
+      "legalSwissGerman": "Bestätigen Sie, dass Ihr Material die Schweizer Rechtschreibung verwendet (kein Eszett 'ß', stattdessen 'ss').",
+      "legalTermsAccepted": "Mit der Annahme der Verkäufervereinbarung bestätigen Sie, dass Sie die Rechte haben, dieses Material zu verkaufen, und die Plattformregeln akzeptieren.",
+      "moreInfo": "Mehr Informationen",
+      "example": "Beispiel:"
     },
     "fields": {
       "title": "Titel",
@@ -1538,7 +1573,17 @@
       "dialectSwiss": "Schweizerdeutsch",
       "dialectSwissDesc": "CH",
       "dialectStandard": "Hochdeutsch",
-      "dialectStandardDesc": "DE"
+      "dialectStandardDesc": "DE",
+      "previewTooLarge": "Vorschaubild darf maximal 5 MB gross sein",
+      "earningsPerSale": "Ihr Verdienst pro Verkauf:",
+      "fileLoading": "Datei wird geladen...",
+      "mainFilesUploadTouch": "Tippen Sie hier, um Dateien auszuwählen",
+      "mainFilesBrowse": "Durchsuchen",
+      "previewAlt": "Vorschau",
+      "previewSelectedChange": "{count} Vorschaubild(er) ausgewählt — Tippen zum Ändern",
+      "fileNameWarning": "Dateiname-Hinweis",
+      "fileNameTooLong": "Dateiname zu lang (max. 100 Zeichen)",
+      "fileNameDangerousChars": "Dateiname enthält ungültige Zeichen"
     },
     "legal": {
       "title": "Rechtliche Bestätigungen",
@@ -1584,13 +1629,50 @@
       "cycle3Desc": "7. – 9. Klasse",
       "cycle3Grades": "7–9"
     },
+    "curriculum": {
+      "filterLabel": "Filter:",
+      "clearAll": "Alle löschen",
+      "selectCycleFirst": "Bitte zuerst Zyklus wählen",
+      "selectCycleHint": "Wählen Sie oben einen Zyklus, um die verfügbaren Fächer zu sehen",
+      "areasCount": "{count} Bereiche",
+      "areasAvailable": "{count} Bereiche verfügbar",
+      "selectedCount": "{count} gewählt",
+      "competenciesFor": "Kompetenzen: {name}",
+      "competenciesSelected": "{count} ausgewählt",
+      "competencyCount": "{count, plural, one {# Kompetenz} other {# Kompetenzen}}",
+      "close": "Schliessen",
+      "removeAll": "Alle entfernen",
+      "noSearchResults": "Keine Kompetenzen gefunden",
+      "noCompetencies": "Keine Kompetenzen verfügbar",
+      "deselectAll": "Alle abwählen",
+      "selectAll": "Alle auswählen",
+      "tip": "Tipp:",
+      "tipText": "Wählen Sie alle passenden Kompetenzen aus für bessere Auffindbarkeit.",
+      "cantonOptional": "Kanton (optional)",
+      "cantonHint": "Für kantonsspezifische Lehrmittel",
+      "allCantons": "Alle Kantone"
+    },
     "summary": {
       "title": "Übersicht",
       "noTitle": "Noch kein Titel eingegeben",
       "noCycle": "Noch kein Zyklus gewählt",
       "noFiles": "Noch keine Dateien hochgeladen",
       "legalStatus": "{count}/5 bestätigt",
-      "edit": "Bearbeiten"
+      "edit": "Bearbeiten",
+      "labelTitle": "Titel:",
+      "labelDescription": "Beschreibung:",
+      "labelLanguage": "Sprache:",
+      "labelType": "Typ:",
+      "labelCycle": "Zyklus:",
+      "cycleValue": "Zyklus {cycle}",
+      "labelSubject": "Fach:",
+      "labelCompetencies": "Kompetenzen:",
+      "moreItems": "+{count} weitere",
+      "labelPriceType": "Preistyp:",
+      "labelPrice": "Preis:",
+      "editableNote": "Editierbar für Käufer",
+      "labelFiles": "Dateien:",
+      "labelLegal": "Rechtliches:"
     },
     "navigation": {
       "back": "Zurück",
@@ -1610,6 +1692,7 @@
       "success": "Material erstellt!",
       "successMessage": "Ihr Material wurde hochgeladen und wartet auf Freigabe.",
       "viewMaterial": "Zum Material",
+      "backToUploads": "Zurück zu meinen Uploads",
       "error": "Fehler beim Hochladen",
       "errorFileTooLarge": "Datei zu gross. Maximum: 50 MB. Ihre Datei: {size} MB.",
       "errorAuthExpired": "Sitzung abgelaufen. Bitte melden Sie sich erneut an.",
@@ -1619,7 +1702,27 @@
       "errorParseResponse": "Fehler beim Verarbeiten der Antwort.",
       "loginAgain": "Erneut anmelden",
       "close": "Schliessen",
-      "retry": "Erneut versuchen"
+      "retry": "Erneut versuchen",
+      "errorProfileIncomplete": "Bitte vervollständigen Sie Ihr Profil, um Materialien hochzuladen.",
+      "errorProfileIncompleteLink": "Profil bearbeiten",
+      "errorEmailNotVerified": "Bitte bestätigen Sie Ihre E-Mail-Adresse, um Materialien hochzuladen.",
+      "errorEmailNotVerifiedLink": "Zu den Einstellungen",
+      "errorStripeRequired": "Um kostenpflichtige Materialien zu verkaufen, müssen Sie sich als Verkäufer registrieren.",
+      "errorStripeRequiredLink": "Verkäufer werden"
+    },
+    "preview": {
+      "title": "Material-Vorschau",
+      "description": "So wird Ihr Material auf der Plattform angezeigt:",
+      "summaryTitle": "Zusammenfassung",
+      "cancel": "Zurück zum Bearbeiten",
+      "confirm": "Jetzt veröffentlichen",
+      "price": "Preis",
+      "type": "Materialtyp",
+      "cycle": "Zyklus",
+      "subject": "Fachbereich",
+      "file": "Datei",
+      "free": "Gratis",
+      "cycleLabel": "Zyklus {number}"
     }
   },
   "becomeSeller": {
@@ -2117,7 +2220,8 @@
     "contact": {
       "title": "Fragen?",
       "content": "Wenn Sie Fragen zu diesen Allgemeinen Geschäftsbedingungen haben, kontaktieren Sie uns bitte:",
-      "email": "info@currico.ch"
+      "email": "info@currico.ch",
+      "emailTitle": "E-Mail an Currico senden"
     }
   },
   "cookieConsent": {
@@ -2182,7 +2286,8 @@
     "contact": {
       "title": "Fragen?",
       "description": "Bei Fragen zu unserer Verwendung von Cookies kontaktieren Sie uns bitte.",
-      "email": "info@currico.ch"
+      "email": "info@currico.ch",
+      "emailTitle": "E-Mail an Currico senden"
     },
     "links": {
       "privacy": "Datenschutzerklärung",
@@ -2359,6 +2464,7 @@
     "company": {
       "title": "Unternehmen",
       "name": "Angle Labs GmbH",
+      "tradeNameLabel": "Handelsname:",
       "tradeName": "Currico",
       "address": {
         "street": "Zellmatte 6",
@@ -2369,6 +2475,7 @@
     "contact": {
       "title": "Kontakt",
       "email": "info@currico.ch",
+      "emailTitle": "E-Mail an Currico senden",
       "website": "www.currico.ch"
     },
     "legal": {
@@ -2433,7 +2540,9 @@
     },
     "links": {
       "privacy": "Datenschutzerklärung",
-      "terms": "Allgemeine Geschäftsbedingungen"
+      "terms": "Allgemeine Geschäftsbedingungen",
+      "cookies": "Cookie-Richtlinien",
+      "copyright": "Urheberrecht"
     },
     "version": "Version 1.2 - Februar 2026"
   },
@@ -2605,6 +2714,7 @@
       }
     },
     "version": "Version 1.2 - Februar 2026",
+    "emailTitle": "E-Mail an Currico senden",
     "contact": {
       "title": "Fragen zum Datenschutz?",
       "description": "Für Fragen oder Anliegen bezüglich Ihrer Daten kontaktieren Sie uns:",
@@ -2625,7 +2735,7 @@
     "retry": "Erneut versuchen",
     "pendingReview": "Dieses Material wird noch überprüft",
     "pendingReviewDescription": "Das Material ist sichtbar, aber noch nicht von unserem Team verifiziert worden.",
-    "verified": "Verifiziert",
+    "verified": "Geprüft",
     "pendingStatus": "Wird überprüft",
     "following": "Folge ich",
     "follow": "+ Folgen",
@@ -2640,6 +2750,7 @@
     "description": "Beschreibung",
     "reviews": "Bewertungen",
     "comments": "Kommentare",
+    "feedbackTitle": "Bewertungen & Kommentare",
     "similarMaterials": "Ähnliche Materialien",
     "report": {
       "title": "Material melden",
@@ -2660,15 +2771,29 @@
       "submit": "Melden",
       "cancel": "Abbrechen",
       "errorSend": "Fehler beim Senden der Meldung",
-      "errorUnexpected": "Ein unerwarteter Fehler ist aufgetreten"
+      "errorUnexpected": "Ein unerwarteter Fehler ist aufgetreten",
+      "alreadyReported": "Sie haben dieses Material bereits gemeldet"
     },
+    "fileFormatUnknown": "Datei",
     "noPreview": "Keine Vorschau verfügbar",
     "anonymous": "Anonym",
     "availableAfterReview": "Verfügbar nach Überprüfung",
     "sellerMaterials": "{count} Materialien",
     "cycle": "Zyklus {number}",
     "downloads": "{count} Downloads",
-    "pages": "{count, plural, one {# Seite} other {# Seiten}}"
+    "pages": "{count, plural, one {# Seite} other {# Seiten}}",
+    "downloadStarted": "Download gestartet",
+    "a11y": {
+      "followSeller": "Verkäufer folgen",
+      "unfollowSeller": "Verkäufer entfolgen",
+      "downloadFree": "Material kostenlos herunterladen",
+      "addToWishlist": "Zur Wunschliste hinzufügen",
+      "removeFromWishlist": "Von Wunschliste entfernen",
+      "shareLink": "Link teilen",
+      "reportMaterial": "Material melden",
+      "closeDialog": "Dialog schliessen",
+      "scrollToPurchase": "Zum Kaufbereich scrollen"
+    }
   },
   "profile": {
     "notFound": "Profil nicht gefunden",
@@ -2731,6 +2856,7 @@
       "editCollection": "Sammlung bearbeiten",
       "newCollection": "Neue Sammlung"
     },
+    "confirmDeleteTitle": "Sammlung löschen",
     "confirmDelete": "Sind Sie sicher, dass Sie diese Sammlung löschen möchten?"
   },
   "following": {
@@ -2874,7 +3000,8 @@
     "noResults": {
       "title": "Keine Ergebnisse gefunden",
       "description": "Wir konnten keine Antwort auf Ihre Frage finden. Unser Team hilft Ihnen gerne persönlich weiter.",
-      "contactButton": "Support kontaktieren"
+      "contactButton": "Support kontaktieren",
+      "contactEmail": "info@currico.ch"
     }
   },
   "notifications": {
@@ -2987,6 +3114,11 @@
     "loginSuffix": ", um eine Bewertung zu schreiben.",
     "noReviewsBeFirst": "Noch keine Bewertungen — seien Sie der Erste!",
     "options": "Optionen",
+    "saveError": "Fehler beim Speichern der Bewertung",
+    "ratingLabel": "Wie bewerten Sie dieses Material?",
+    "titlePlaceholder": "Kurze Zusammenfassung Ihrer Bewertung",
+    "contentPlaceholder": "Beschreiben Sie Ihre Erfahrung mit diesem Material...",
+    "charCount": "{count}/{max} Zeichen",
     "cannotReviewOwn": "Sie können Ihr eigenes Material nicht bewerten."
   },
   "likes": {
@@ -2995,6 +3127,20 @@
     "unlike": "Gefällt mir nicht mehr",
     "count": "{count} Likes",
     "loginRequired": "Melden Sie sich an, um dieses Material zu liken."
+  },
+  "commentForm": {
+    "commentPlaceholder": "Schreiben Sie einen Kommentar...",
+    "replyPlaceholder": "Schreiben Sie eine Antwort...",
+    "commentEmpty": "Kommentar darf nicht leer sein",
+    "replyEmpty": "Antwort darf nicht leer sein",
+    "sendComment": "Kommentar senden",
+    "sendReply": "Antwort senden",
+    "charCount": "{count}/{max} Zeichen"
+  },
+  "deleteConfirm": {
+    "materialTitle": "Material löschen?",
+    "bundleTitle": "Bundle löschen?",
+    "permanentWarning": "wird dauerhaft gelöscht. Diese Aktion kann nicht rückgängig gemacht werden."
   },
   "comments": {
     "title": "Kommentare",
@@ -3027,6 +3173,7 @@
     "loginPrompt": "Melden Sie sich an",
     "loginSuffix": ", um einen Kommentar zu schreiben.",
     "deleting": "Löschen...",
+    "helpful": "Hilfreich",
     "options": "Optionen",
     "sellerComments": {
       "title": "Kommentare zu Ihren Materialien",
@@ -3068,7 +3215,7 @@
     "loadError": "Fehler beim Laden",
     "loadErrorDescription": "Das Bundle konnte nicht geladen werden. Bitte versuchen Sie es später erneut.",
     "retry": "Erneut versuchen",
-    "verified": "Verifiziert",
+    "verified": "Geprüft",
     "discount": "{percent}% Rabatt",
     "savings": "Sie sparen {amount} ({percent}%)",
     "buyBundle": "Bundle kaufen - {price}",
@@ -3091,6 +3238,7 @@
     "title": "Mein Konto",
     "welcomeBack": "Willkommen zurück, {name}",
     "welcomeGeneric": "Willkommen zurück",
+    "userFallback": "Benutzer",
     "memberSince": "Mitglied seit {date}",
     "roleBuyer": "Käufer",
     "roleSeller": "Verkäufer",
@@ -3142,7 +3290,7 @@
       "discoverButton": "Materialien entdecken",
       "badgePurchased": "Gekauft",
       "badgeFree": "Gratis",
-      "badgeVerified": "Verifiziert",
+      "badgeVerified": "Geprüft",
       "errorLoading": "Fehler beim Laden der Bibliothek",
       "retry": "Erneut versuchen"
     },
@@ -3170,7 +3318,7 @@
         "actions": "Aktionen"
       },
       "status": {
-        "verified": "Verifiziert",
+        "verified": "Geprüft",
         "pending": "Ausstehend",
         "rejected": "Abgelehnt"
       },
@@ -3204,13 +3352,19 @@
         "title": "Alphabetisch",
         "popular": "Beliebteste"
       },
-      "statusVerified": "Verifiziert",
+      "statusVerified": "Geprüft",
       "statusPending": "Ausstehend",
       "statusRejected": "Abgelehnt",
       "filterAll": "Alle",
+      "filterPending": "Ausstehend",
       "filterUnderReview": "In Prüfung",
       "filterVerified": "Verifiziert",
       "filterRejected": "Abgelehnt",
+      "filterShow": "Anzeigen",
+      "pendingBanner": "{count, plural, one {# Material wartet} other {# Materialien warten}} auf Überprüfung",
+      "noMatchingFilter": "Keine Materialien mit diesem Status",
+      "noMatchingFilterDesc": "Es gibt keine Materialien die diesem Filter entsprechen.",
+      "showAll": "Alle anzeigen",
       "empty": "Noch keine hochgeladenen Materialien",
       "emptyDescription": "Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen.",
       "uploadFirst": "Material hochladen"
@@ -3236,6 +3390,7 @@
       "pageInfo": "Seite {page} von {total}",
       "errorLoading": "Fehler beim Laden der Kommentare",
       "errorSending": "Fehler beim Senden der Antwort",
+      "you": "Sie",
       "notSeller": "Kommentare sind nur für Verkäufer verfügbar.",
       "becomeSeller": "Verkäufer werden"
     },
@@ -3361,7 +3516,7 @@
       "view": "Ansehen",
       "edit": "Bearbeiten",
       "delete": "Löschen",
-      "verified": "Verifiziert",
+      "verified": "Geprüft",
       "aiChecked": "KI-Geprüft",
       "pending": "Ausstehend",
       "draft": "Entwurf",
@@ -3630,7 +3785,8 @@
       "contact": {
         "title": "Noch Fragen?",
         "description": "Wenn Sie unsicher sind, ob Ihr Material den Richtlinien entspricht, kontaktieren Sie uns gerne. Wir helfen Ihnen weiter.",
-        "email": "info@currico.ch"
+        "email": "info@currico.ch",
+        "emailTitle": "E-Mail an Currico senden"
       }
     }
   },
@@ -3729,6 +3885,10 @@
       "levelsTitle": "Die 5 Levels",
       "levelsDescription": "Jedes Level schaltet eine neue Auszeichnung für dein Profil frei.",
       "levelMinPoints": "Ab {points} Punkten",
+      "levelBadge": "Level {level}",
+      "materialsCount": "{count, plural, =1 {1 Material} other {# Materialien}}",
+      "downloadsCount": "{count, plural, =1 {1 Download} other {# Downloads}}",
+      "reviewsExampleCount": "{count, plural, =1 {1 Bewertung} other {# Bewertungen}}",
       "reqPoints": "{count, plural, =0 {0 Punkte} =1 {1 Punkt} other {# Punkte}}",
       "reqUploads": "{count, plural, =0 {0 Uploads} =1 {1 Upload} other {# Uploads}}",
       "reqDownloads": "{count, plural, =0 {0 Downloads} =1 {1 Download} other {# Downloads}}",
@@ -3748,8 +3908,8 @@
       "description": "Das Abzeichen «Verifizierter Verkäufer» wird an Verkäufer:innen vergeben, die unsere Qualitätskriterien erfüllen. Es zeigt Käufer:innen, dass sie einem erfahrenen und zuverlässigen Anbieter vertrauen können.",
       "whatTitle": "Was bedeutet «Verifizierter Verkäufer»?",
       "whatDescription": "Verifizierte Verkäufer:innen haben bewiesen, dass sie qualitativ hochwertige Materialien anbieten. Das Abzeichen erscheint auf dem Profil und bei jedem Material, sodass Käufer:innen sofort sehen, dass sie einem vertrauenswürdigen Anbieter kaufen.",
-      "criteriaTitle": "Die 5 Kriterien",
-      "criteriaDescription": "Alle 5 Kriterien müssen gleichzeitig erfüllt sein, um das Abzeichen zu erhalten:",
+      "criteriaTitle": "Die 4 Kriterien",
+      "criteriaDescription": "Alle 4 Kriterien müssen gleichzeitig erfüllt sein, um das Abzeichen zu erhalten:",
       "criteria": {
         "minSales": {
           "title": "Mindestverkäufe",
@@ -3770,15 +3930,10 @@
           "title": "Kontoalter",
           "description": "Dein Konto muss mindestens 30 Tage alt sein.",
           "value": "≥ 30 Tage"
-        },
-        "noReports": {
-          "title": "Keine offenen Meldungen",
-          "description": "Keine offenen oder in Bearbeitung befindlichen Meldungen gegen dein Konto.",
-          "value": "0 offen"
         }
       },
       "howTitle": "Wie funktioniert die Verifizierung?",
-      "howAutomatic": "Die Verifizierung erfolgt automatisch: Jedes Mal, wenn du deine Verkäufer-Level-Seite besuchst, werden deine Statistiken überprüft. Sobald du alle 5 Kriterien erfüllst, erhältst du automatisch das Abzeichen.",
+      "howAutomatic": "Die Verifizierung erfolgt automatisch: Jedes Mal, wenn du deine Verkäufer-Level-Seite besuchst, werden deine Statistiken überprüft. Sobald du alle 4 Kriterien erfüllst, erhältst du automatisch das Abzeichen.",
       "howRevocation": "Achtung: Wenn du die Kriterien nicht mehr erfüllst (z.B. durch eine offene Meldung oder sinkende Bewertung), wird die automatische Verifizierung widerrufen.",
       "howManual": "In Ausnahmefällen kann das Currico-Team die Verifizierung auch manuell vergeben oder widerrufen.",
       "benefitsTitle": "Vorteile",
@@ -3789,6 +3944,40 @@
       },
       "cta": "Materialien hochladen"
     }
+  },
+  "forgotPasswordPage": {
+    "title": "Passwort vergessen?",
+    "subtitle": "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum Zurücksetzen.",
+    "emailLabel": "E-Mail-Adresse",
+    "emailPlaceholder": "ihre@email.ch",
+    "submit": "Link senden",
+    "submitting": "Wird gesendet...",
+    "successTitle": "E-Mail gesendet",
+    "successMessage": "Falls ein Konto mit <b>{email}</b> existiert, erhalten Sie in Kürze einen Link zum Zurücksetzen Ihres Passworts.",
+    "backToLogin": "Zurück zur Anmeldung",
+    "networkError": "Netzwerkfehler. Bitte versuchen Sie es erneut.",
+    "genericError": "Ein Fehler ist aufgetreten"
+  },
+  "resetPasswordPage": {
+    "title": "Neues Passwort setzen",
+    "subtitle": "Wählen Sie ein sicheres Passwort für Ihr Konto.",
+    "passwordLabel": "Neues Passwort",
+    "passwordPlaceholder": "Mindestens 8 Zeichen",
+    "confirmLabel": "Passwort bestätigen",
+    "confirmPlaceholder": "Passwort wiederholen",
+    "showPassword": "Passwort anzeigen",
+    "submit": "Passwort ändern",
+    "submitting": "Wird gespeichert...",
+    "requirements": "Gross-, Kleinbuchstaben und Zahlen erforderlich",
+    "mismatch": "Passwörter stimmen nicht überein",
+    "successTitle": "Passwort geändert",
+    "successMessage": "Ihr Passwort wurde erfolgreich zurückgesetzt.",
+    "loginNow": "Jetzt anmelden",
+    "invalidTitle": "Ungültiger Link",
+    "invalidMessage": "Dieser Link ist ungültig oder abgelaufen.",
+    "requestNew": "Neuen Link anfordern",
+    "networkError": "Netzwerkfehler. Bitte versuchen Sie es erneut.",
+    "genericError": "Ein Fehler ist aufgetreten"
   },
   "welcomePage": {
     "title": "Willkommen, {name}!",

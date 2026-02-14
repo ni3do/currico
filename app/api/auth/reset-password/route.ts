@@ -14,18 +14,18 @@ export async function POST(request: NextRequest) {
 
     if (!rateLimitResult.success) {
       return NextResponse.json(
-        {
-          error: "Zu viele Anfragen. Bitte versuchen Sie es später erneut.",
-          retryAfter: rateLimitResult.retryAfter,
-        },
-        {
-          status: 429,
-          headers: rateLimitHeaders(rateLimitResult),
-        }
+        { error: "Too many requests. Please try again later.", code: "RATE_LIMITED" },
+        { status: 429, headers: rateLimitHeaders(rateLimitResult) }
       );
     }
 
-    const { token, password } = await request.json();
+    let body: { token?: string; password?: string };
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    }
+    const { token, password } = body;
 
     if (!token || !password) {
       return NextResponse.json({ error: "Token und Passwort erforderlich" }, { status: 400 });

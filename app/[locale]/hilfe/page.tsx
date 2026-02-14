@@ -194,7 +194,7 @@ export default function HilfePage() {
           <h2 className="text-text text-lg font-semibold">{t("noResults.title")}</h2>
           <p className="text-text-muted mt-2">{t("noResults.description")}</p>
           <a
-            href="mailto:info@currico.ch"
+            href={`mailto:${t("noResults.contactEmail")}`}
             className="bg-primary text-text-on-accent hover:bg-primary-hover mt-4 inline-flex items-center gap-2 rounded-lg px-6 py-3 font-medium transition-colors"
           >
             {t("noResults.contactButton")}

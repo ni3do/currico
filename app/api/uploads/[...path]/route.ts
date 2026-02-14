@@ -29,21 +29,20 @@ export async function GET(
   try {
     const { path: pathSegments } = await params;
 
-    // Validate path segments to prevent directory traversal
-    for (const segment of pathSegments) {
-      if (segment.includes("..") || segment.includes("~")) {
-        return NextResponse.json({ error: "Ungültiger Pfad" }, { status: 400 });
-      }
-    }
-
     // Only allow serving from previews and avatars directories (public content)
     const category = pathSegments[0];
     if (!["previews", "avatars"].includes(category)) {
-      return NextResponse.json({ error: "Nicht gefunden" }, { status: 404 });
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
 
     const relativePath = pathSegments.join("/");
-    const filePath = path.join(process.cwd(), "public", "uploads", relativePath);
+    const uploadsRoot = path.resolve(process.cwd(), "public", "uploads");
+    const filePath = path.resolve(uploadsRoot, relativePath);
+
+    // Validate resolved path stays under uploads root to prevent traversal
+    if (!filePath.startsWith(uploadsRoot + path.sep)) {
+      return NextResponse.json({ error: "Invalid path" }, { status: 400 });
+    }
 
     // Read the file
     const fileBuffer = await readFile(filePath);

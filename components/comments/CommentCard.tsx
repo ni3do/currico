@@ -11,33 +11,7 @@ import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { useToast } from "@/components/ui/Toast";
 import { CommentForm } from "./CommentForm";
 import { motion, AnimatePresence } from "framer-motion";
-
-interface CommentUser {
-  id: string;
-  displayName: string;
-  image: string | null;
-  isSeller?: boolean;
-}
-
-interface Reply {
-  id: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-  user: CommentUser;
-}
-
-interface Comment {
-  id: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-  user: CommentUser;
-  likeCount: number;
-  isLiked: boolean;
-  replies: Reply[];
-  replyCount: number;
-}
+import type { Comment, Reply } from "@/lib/types/comments";
 
 interface CommentCardProps {
   comment: Comment;
@@ -206,25 +180,26 @@ export function CommentCard({
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.95 }}
-                      className="border-border bg-bg absolute right-0 z-20 mt-1 w-40 rounded-lg border shadow-lg"
+                      className="border-border bg-bg absolute right-0 z-20 mt-1 w-40 overflow-hidden rounded-xl border shadow-lg"
                     >
                       <button
                         onClick={() => {
                           setShowMenu(false);
                           setIsEditing(true);
                         }}
-                        className="text-text hover:bg-surface flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm"
+                        className="text-text hover:bg-surface flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm transition-colors"
                       >
                         <Pencil className="h-4 w-4" />
                         {t("edit")}
                       </button>
+                      <div className="border-border mx-2 border-t" />
                       <button
                         onClick={() => {
                           setShowMenu(false);
                           setShowDeleteDialog(true);
                         }}
                         disabled={deleting}
-                        className="text-error hover:bg-error/10 flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm disabled:opacity-50"
+                        className="text-error hover:bg-error/10 flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm transition-colors disabled:opacity-50"
                       >
                         <Trash2 className="h-4 w-4" />
                         {deleting ? t("deleting") : t("delete")}
@@ -285,6 +260,7 @@ export function CommentCard({
             initialLiked={comment.isLiked}
             initialCount={comment.likeCount}
             size="md"
+            label={t("helpful")}
             onLoginRequired={onLoginRequired}
           />
 
@@ -486,25 +462,26 @@ function ReplyCard({ reply, onDeleted }: ReplyCardProps) {
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.95 }}
-                      className="border-border bg-bg absolute right-0 z-20 mt-1 w-36 rounded-lg border shadow-lg"
+                      className="border-border bg-bg absolute right-0 z-20 mt-1 w-36 overflow-hidden rounded-xl border shadow-lg"
                     >
                       <button
                         onClick={() => {
                           setShowMenu(false);
                           setIsEditing(true);
                         }}
-                        className="text-text hover:bg-surface flex w-full items-center gap-2 px-3 py-2 text-left text-sm"
+                        className="text-text hover:bg-surface flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors"
                       >
                         <Pencil className="h-3.5 w-3.5" />
                         {t("edit")}
                       </button>
+                      <div className="border-border mx-2 border-t" />
                       <button
                         onClick={() => {
                           setShowMenu(false);
                           setShowDeleteDialog(true);
                         }}
                         disabled={deleting}
-                        className="text-error hover:bg-error/10 flex w-full items-center gap-2 px-3 py-2 text-left text-sm disabled:opacity-50"
+                        className="text-error hover:bg-error/10 flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors disabled:opacity-50"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                         {deleting ? t("deleting") : t("delete")}

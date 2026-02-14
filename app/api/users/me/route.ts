@@ -145,9 +145,28 @@ export async function DELETE() {
       );
     }
 
-    // Delete user and cascade (Prisma onDelete: Cascade handles most relations)
-    await prisma.user.delete({
-      where: { id: userId },
+    // Use a transaction to clean up FK dependencies not covered by onDelete: Cascade
+    await prisma.$transaction(async (tx) => {
+      // Nullify buyer_id on transactions where user is buyer (preserves seller history)
+      await tx.transaction.updateMany({
+        where: { buyer_id: userId },
+        data: { buyer_id: null },
+      });
+
+      // Delete transactions referencing user's resources (preserves user but removes orphans)
+      await tx.transaction.deleteMany({
+        where: { resource: { seller_id: userId } },
+      });
+
+      // Delete user's resources (sub-relations cascade via onDelete: Cascade)
+      await tx.resource.deleteMany({
+        where: { seller_id: userId },
+      });
+
+      // Delete user (remaining relations cascade via onDelete: Cascade)
+      await tx.user.delete({
+        where: { id: userId },
+      });
     });
 
     return NextResponse.json({ message: "Konto erfolgreich gelöscht" });

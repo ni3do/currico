@@ -5,6 +5,8 @@ import { useTranslations } from "next-intl";
 import { Mail, Phone, ExternalLink } from "lucide-react";
 import { TableSkeleton } from "@/components/ui/Skeleton";
 import { FocusTrap } from "@/components/ui/FocusTrap";
+import { useToast } from "@/components/ui/Toast";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 interface ContactMessage {
   id: string;
@@ -33,6 +35,8 @@ const statusColors: Record<string, string> = {
 
 export default function AdminMessagesPage() {
   const t = useTranslations("admin.messages");
+  const tCommon = useTranslations("common");
+  const { toast } = useToast();
 
   const getStatusLabel = (status: string) => {
     const labels: Record<string, string> = {
@@ -63,6 +67,7 @@ export default function AdminMessagesPage() {
   const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
+  const [deleteMessageId, setDeleteMessageId] = useState<string | null>(null);
 
   const fetchMessages = useCallback(async () => {
     setLoading(true);
@@ -107,7 +112,7 @@ export default function AdminMessagesPage() {
         }
       } else {
         const error = await response.json();
-        alert(error.error || t("errorUpdating"));
+        toast(error.error || t("errorUpdating"), "error");
       }
     } catch (error) {
       console.error("Error updating message:", error);
@@ -117,8 +122,6 @@ export default function AdminMessagesPage() {
   };
 
   const handleDelete = async (messageId: string) => {
-    if (!confirm(t("confirmDelete"))) return;
-
     setActionLoading(true);
     try {
       const response = await fetch("/api/admin/messages", {
@@ -131,9 +134,10 @@ export default function AdminMessagesPage() {
         fetchMessages();
         setShowModal(false);
         setSelectedMessage(null);
+        setDeleteMessageId(null);
       } else {
         const error = await response.json();
-        alert(error.error || t("errorDeleting"));
+        toast(error.error || t("errorDeleting"), "error");
       }
     } catch (error) {
       console.error("Error deleting message:", error);
@@ -282,6 +286,20 @@ export default function AdminMessagesPage() {
         </div>
       )}
 
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        open={!!deleteMessageId}
+        title={t("confirmDeleteTitle")}
+        message={t("confirmDelete")}
+        confirmLabel={tCommon("buttons.delete")}
+        cancelLabel={tCommon("buttons.cancel")}
+        variant="danger"
+        onConfirm={() => {
+          if (deleteMessageId) handleDelete(deleteMessageId);
+        }}
+        onCancel={() => setDeleteMessageId(null)}
+      />
+
       {/* Message Detail Modal */}
       {showModal && selectedMessage && (
         <div className="bg-bg/80 fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
@@ -417,7 +435,7 @@ export default function AdminMessagesPage() {
                   {t("reply")}
                 </a>
                 <button
-                  onClick={() => handleDelete(selectedMessage.id)}
+                  onClick={() => setDeleteMessageId(selectedMessage.id)}
                   disabled={actionLoading}
                   className="border-error bg-error/10 text-error hover:bg-error/20 rounded-lg border px-4 py-2.5 text-sm font-medium disabled:opacity-50"
                 >

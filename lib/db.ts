@@ -73,11 +73,3 @@ export const privateUserSelect = {
   notify_comments: true,
   notify_new_followers: true,
 } as const;
-
-// Admin view - full access
-export const adminUserSelect = {
-  ...privateUserSelect,
-  password_hash: false, // Never expose password hash
-  is_protected: true,
-  updated_at: true,
-} as const;

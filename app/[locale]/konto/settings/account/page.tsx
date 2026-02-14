@@ -164,10 +164,11 @@ export default function SettingsAccountPage() {
                 </div>
               </div>
               <div>
-                <label
-                  className="text-text-muted mb-1 block text-xs"
-                  dangerouslySetInnerHTML={{ __html: t("typeToConfirm") }}
-                />
+                <label className="text-text-muted mb-1 block text-xs">
+                  {t.rich("typeToConfirm", {
+                    strong: (chunks) => <strong>{chunks}</strong>,
+                  })}
+                </label>
                 <input
                   type="text"
                   value={deleteConfirmText}

@@ -9,42 +9,19 @@ import { ReviewCard } from "./ReviewCard";
 import { ReviewForm } from "./ReviewForm";
 import { RatingSummary, RatingDistribution } from "@/components/ui/StarRating";
 import { motion, AnimatePresence } from "framer-motion";
-
-interface ReviewUser {
-  id: string;
-  displayName: string;
-  image: string | null;
-}
-
-interface Review {
-  id: string;
-  rating: number;
-  title: string | null;
-  content: string | null;
-  createdAt: string;
-  updatedAt: string;
-  isVerifiedPurchase: boolean;
-  user: ReviewUser;
-}
-
-interface ReviewStats {
-  averageRating: number;
-  totalReviews: number;
-}
-
-interface UserReview {
-  id: string;
-  rating: number;
-  title: string | null;
-  content: string | null;
-}
+import type { Review, ReviewStats, UserReview } from "@/lib/types/review";
 
 interface ReviewsSectionProps {
   materialId: string;
+  hideTitle?: boolean;
   className?: string;
 }
 
-export function ReviewsSection({ materialId, className = "" }: ReviewsSectionProps) {
+export function ReviewsSection({
+  materialId,
+  hideTitle = false,
+  className = "",
+}: ReviewsSectionProps) {
   const { data: session, status: sessionStatus } = useSession();
   const tCommon = useTranslations("common");
   const t = useTranslations("reviews");
@@ -128,7 +105,7 @@ export function ReviewsSection({ materialId, className = "" }: ReviewsSectionPro
   if (loading && reviews.length === 0) {
     return (
       <div className={`${className}`}>
-        <h2 className="text-text mb-6 text-2xl font-bold">{t("title")}</h2>
+        {!hideTitle && <h2 className="text-text mb-6 text-2xl font-bold">{t("title")}</h2>}
         <div className="border-border bg-bg animate-pulse rounded-xl border p-8">
           <div className="bg-surface mb-4 h-6 w-48 rounded" />
           <div className="bg-surface mb-4 h-4 w-full rounded" />
@@ -142,7 +119,7 @@ export function ReviewsSection({ materialId, className = "" }: ReviewsSectionPro
   if (error) {
     return (
       <div className={`${className}`}>
-        <h2 className="text-text mb-6 text-2xl font-bold">{t("title")}</h2>
+        {!hideTitle && <h2 className="text-text mb-6 text-2xl font-bold">{t("title")}</h2>}
         <div className="border-error/50 bg-error/10 flex items-center gap-3 rounded-xl border p-6">
           <AlertCircle className="text-error h-5 w-5 flex-shrink-0" />
           <p className="text-error flex-1">{error}</p>
@@ -163,28 +140,21 @@ export function ReviewsSection({ materialId, className = "" }: ReviewsSectionPro
 
   return (
     <div className={`${className}`}>
-      <h2 className="text-text mb-6 text-2xl font-bold">{t("title")}</h2>
+      {!hideTitle && <h2 className="text-text mb-6 text-2xl font-bold">{t("title")}</h2>}
 
-      {/* Stats Summary */}
+      {/* Stats Summary — compact */}
       {stats.totalReviews > 0 && (
-        <div className="border-border bg-bg mb-6 rounded-xl border p-4">
-          <div className="flex items-center gap-6">
-            {/* Average Rating — compact */}
-            <div className="flex items-center gap-2">
-              <span className="text-text text-3xl font-bold">{stats.averageRating.toFixed(1)}</span>
-              <div>
-                <RatingSummary
-                  averageRating={stats.averageRating}
-                  totalReviews={stats.totalReviews}
-                  size="sm"
-                />
-              </div>
-            </div>
-
-            {/* Rating Distribution — compact */}
-            <div className="flex-1">
-              <RatingDistribution distribution={distribution} totalReviews={stats.totalReviews} />
-            </div>
+        <div className="mb-6 flex items-center gap-5">
+          <div className="flex items-center gap-2">
+            <span className="text-text text-2xl font-bold">{stats.averageRating.toFixed(1)}</span>
+            <RatingSummary
+              averageRating={stats.averageRating}
+              totalReviews={stats.totalReviews}
+              size="sm"
+            />
+          </div>
+          <div className="max-w-xs flex-1">
+            <RatingDistribution distribution={distribution} totalReviews={stats.totalReviews} />
           </div>
         </div>
       )}

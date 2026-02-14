@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Heart, ThumbsUp } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -11,6 +12,9 @@ interface LikeButtonProps {
   variant?: "heart" | "thumbs";
   size?: "sm" | "md" | "lg";
   showCount?: boolean;
+  label?: string;
+  likedLabel?: string;
+  unlikedLabel?: string;
   disabled?: boolean;
   className?: string;
 }
@@ -22,6 +26,9 @@ export function LikeButton({
   variant = "heart",
   size = "md",
   showCount = true,
+  label,
+  likedLabel,
+  unlikedLabel,
   disabled = false,
   className = "",
 }: LikeButtonProps) {
@@ -77,8 +84,8 @@ export function LikeButton({
           ? `${activeColor} ${activeBg} border-current`
           : `text-text-muted border-border bg-bg ${hoverColor} hover:border-current`
       } ${disabled || isLoading ? "cursor-not-allowed opacity-50" : "cursor-pointer"} ${className}`}
-      title={liked ? "Gefällt mir nicht mehr" : "Gefällt mir"}
-      aria-label={liked ? "Like entfernen" : "Liken"}
+      title={liked ? likedLabel || label : unlikedLabel || label}
+      aria-label={liked ? likedLabel || label : unlikedLabel || label}
       aria-pressed={liked}
     >
       <motion.div
@@ -93,6 +100,7 @@ export function LikeButton({
           strokeWidth={liked ? 0 : 2}
         />
       </motion.div>
+      {label && <span className={`${textClasses[size]} font-medium`}>{label}</span>}
       {showCount && (
         <AnimatePresence mode="wait">
           <motion.span
@@ -131,30 +139,41 @@ export function MaterialLikeButton({
   onLoginRequired,
   className = "",
 }: MaterialLikeButtonProps) {
+  const t = useTranslations("likes");
   const [liked, setLiked] = useState(initialLiked);
   const [likeCount, setLikeCount] = useState(initialCount);
 
   const handleToggle = async () => {
+    const prevLiked = liked;
+    const prevCount = likeCount;
+    // Optimistic update
+    setLiked(!liked);
+    setLikeCount(liked ? likeCount - 1 : likeCount + 1);
+
     try {
       const response = await fetch(`/api/materials/${materialId}/like`, {
         method: "POST",
       });
 
       if (response.status === 401) {
+        setLiked(prevLiked);
+        setLikeCount(prevCount);
         onLoginRequired?.();
         return;
       }
 
       if (!response.ok) {
-        throw new Error("Failed to toggle like");
+        setLiked(prevLiked);
+        setLikeCount(prevCount);
+        return;
       }
 
       const data = await response.json();
       setLiked(data.liked);
       setLikeCount(data.likeCount);
-    } catch (error) {
-      console.error("Error toggling material like:", error);
-      throw error;
+    } catch {
+      setLiked(prevLiked);
+      setLikeCount(prevCount);
     }
   };
 
@@ -166,6 +185,8 @@ export function MaterialLikeButton({
       variant="heart"
       size={size}
       showCount={showCount}
+      likedLabel={t("liked")}
+      unlikedLabel={t("like")}
       className={className}
     />
   );
@@ -178,6 +199,7 @@ interface CommentLikeButtonProps {
   initialCount?: number;
   size?: "sm" | "md" | "lg";
   showCount?: boolean;
+  label?: string;
   onLoginRequired?: () => void;
   className?: string;
 }
@@ -188,33 +210,45 @@ export function CommentLikeButton({
   initialCount = 0,
   size = "sm",
   showCount = true,
+  label,
   onLoginRequired,
   className = "",
 }: CommentLikeButtonProps) {
+  const t = useTranslations("likes");
   const [liked, setLiked] = useState(initialLiked);
   const [likeCount, setLikeCount] = useState(initialCount);
 
   const handleToggle = async () => {
+    const prevLiked = liked;
+    const prevCount = likeCount;
+    // Optimistic update
+    setLiked(!liked);
+    setLikeCount(liked ? likeCount - 1 : likeCount + 1);
+
     try {
       const response = await fetch(`/api/comments/${commentId}/like`, {
         method: "POST",
       });
 
       if (response.status === 401) {
+        setLiked(prevLiked);
+        setLikeCount(prevCount);
         onLoginRequired?.();
         return;
       }
 
       if (!response.ok) {
-        throw new Error("Failed to toggle like");
+        setLiked(prevLiked);
+        setLikeCount(prevCount);
+        return;
       }
 
       const data = await response.json();
       setLiked(data.liked);
       setLikeCount(data.likeCount);
-    } catch (error) {
-      console.error("Error toggling comment like:", error);
-      throw error;
+    } catch {
+      setLiked(prevLiked);
+      setLikeCount(prevCount);
     }
   };
 
@@ -226,6 +260,9 @@ export function CommentLikeButton({
       variant="thumbs"
       size={size}
       showCount={showCount}
+      label={label}
+      likedLabel={t("liked")}
+      unlikedLabel={t("like")}
       className={className}
     />
   );

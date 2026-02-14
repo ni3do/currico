@@ -1,32 +1,7 @@
 "use client";
 
 import { LP21Badge, TransversalBadge, BneBadge } from "./LP21Badge";
-
-interface Competency {
-  id: string;
-  code: string;
-  description_de: string;
-  anforderungsstufe?: string | null;
-  subjectCode?: string;
-  subjectColor?: string;
-}
-
-interface Transversal {
-  id: string;
-  code: string;
-  name_de: string;
-  icon?: string | null;
-  color?: string | null;
-}
-
-interface BneTheme {
-  id: string;
-  code: string;
-  name_de: string;
-  sdg_number?: number | null;
-  icon?: string | null;
-  color?: string | null;
-}
+import type { Competency, Transversal, BneTheme } from "@/lib/types/material";
 
 interface CurriculumBoxProps {
   competencies?: Competency[];
@@ -63,8 +38,8 @@ export function CurriculumBox({
 
   if (!hasContent && showEmptyState) {
     return (
-      <div className="rounded-xl border border-border bg-surface p-4">
-        <div className="text-center text-sm text-text-muted">
+      <div className="border-border bg-surface rounded-xl border p-4">
+        <div className="text-text-muted text-center text-sm">
           Keine Lehrplan 21 Zuordnung vorhanden
         </div>
       </div>
@@ -72,12 +47,12 @@ export function CurriculumBox({
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-surface">
+    <div className="border-border bg-surface overflow-hidden rounded-xl border">
       {/* Header */}
-      <div className="border-b border-border bg-surface-elevated px-4 py-3">
+      <div className="border-border bg-surface-elevated border-b px-4 py-3">
         <div className="flex items-center gap-2">
           <svg
-            className="h-5 w-5 text-primary"
+            className="text-primary h-5 w-5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -89,7 +64,7 @@ export function CurriculumBox({
               d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
             />
           </svg>
-          <h3 className="font-semibold text-text">Lehrplan 21 Zuordnung</h3>
+          <h3 className="text-text font-semibold">Lehrplan 21 Zuordnung</h3>
         </div>
       </div>
 
@@ -97,7 +72,7 @@ export function CurriculumBox({
         {/* LP21 Competencies */}
         {competencies.length > 0 && (
           <div>
-            <h4 className="mb-2 text-xs font-semibold tracking-wide text-text-muted uppercase">
+            <h4 className="text-text-muted mb-2 text-xs font-semibold tracking-wide uppercase">
               Kompetenzen
             </h4>
             <div className="flex flex-wrap gap-2">
@@ -118,7 +93,7 @@ export function CurriculumBox({
         {/* Transversal Competencies */}
         {transversals.length > 0 && (
           <div>
-            <h4 className="mb-2 text-xs font-semibold tracking-wide text-text-muted uppercase">
+            <h4 className="text-text-muted mb-2 text-xs font-semibold tracking-wide uppercase">
               Überfachliche Kompetenzen
             </h4>
             <div className="flex flex-wrap gap-2">
@@ -139,7 +114,7 @@ export function CurriculumBox({
         {/* BNE Themes */}
         {bneThemes.length > 0 && (
           <div>
-            <h4 className="mb-2 text-xs font-semibold tracking-wide text-text-muted uppercase">
+            <h4 className="text-text-muted mb-2 text-xs font-semibold tracking-wide uppercase">
               BNE Themen
             </h4>
             <div className="flex flex-wrap gap-2">
@@ -183,18 +158,14 @@ export function CurriculumBox({
 
       {/* Legend/Help */}
       {!compact && competencies.some((c) => c.anforderungsstufe) && (
-        <div className="border-t border-border bg-surface-elevated px-4 py-2">
-          <div className="flex items-center gap-4 text-xs text-text-muted">
+        <div className="border-border bg-surface-elevated border-t px-4 py-2">
+          <div className="text-text-muted flex items-center gap-4 text-xs">
             <span className="flex items-center gap-1">
-              <span className="rounded bg-surface-hover px-1 font-bold text-text-muted">
-                G
-              </span>
+              <span className="bg-surface-hover text-text-muted rounded px-1 font-bold">G</span>
               Grundansprüche
             </span>
             <span className="flex items-center gap-1">
-              <span className="rounded bg-warning/15 px-1 font-bold text-warning">
-                E
-              </span>
+              <span className="bg-warning/15 text-warning rounded px-1 font-bold">E</span>
               Erweiterte Ansprüche
             </span>
           </div>
@@ -231,7 +202,7 @@ export function CurriculumBoxCompact({
         />
       ))}
       {competencies.length > 3 && (
-        <span className="text-xs text-text-muted">+{competencies.length - 3}</span>
+        <span className="text-text-muted text-xs">+{competencies.length - 3}</span>
       )}
       {isMiIntegrated && (
         <span

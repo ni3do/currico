@@ -11,24 +11,24 @@ const PASSWORD_RESET_EXPIRY_HOURS = 1;
  * Generate a password reset token and send email
  */
 export async function POST(request: NextRequest) {
+  const clientIP = getClientIP(request);
+  const rateLimitResult = checkRateLimit(clientIP, "auth:forgot-password");
+
+  if (!rateLimitResult.success) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again later.", code: "RATE_LIMITED" },
+      { status: 429, headers: rateLimitHeaders(rateLimitResult) }
+    );
+  }
+
   try {
-    const clientIP = getClientIP(request);
-    const rateLimitResult = checkRateLimit(clientIP, "auth:forgot-password");
-
-    if (!rateLimitResult.success) {
-      return NextResponse.json(
-        {
-          error: "Zu viele Anfragen. Bitte versuchen Sie es später erneut.",
-          retryAfter: rateLimitResult.retryAfter,
-        },
-        {
-          status: 429,
-          headers: rateLimitHeaders(rateLimitResult),
-        }
-      );
+    let body: { email?: string };
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
     }
-
-    const { email } = await request.json();
+    const { email } = body;
 
     if (!email || typeof email !== "string") {
       return NextResponse.json({ error: "E-Mail-Adresse erforderlich" }, { status: 400 });

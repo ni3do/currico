@@ -127,6 +127,7 @@ export default function CookiesPage() {
           <a
             href={`mailto:${t("contact.email")}`}
             className="bg-primary text-text-on-accent hover:bg-primary-hover mt-4 inline-flex items-center gap-2 rounded-lg px-6 py-3 font-medium transition-colors"
+            title={t("contact.emailTitle")}
           >
             {t("contact.email")}
           </a>

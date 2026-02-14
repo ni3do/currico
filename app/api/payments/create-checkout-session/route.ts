@@ -246,13 +246,13 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    console.log("[PAYMENT] ========== CHECKOUT SESSION CREATED ==========");
-    console.log("[PAYMENT] Transaction ID:", transaction.id);
-    console.log("[PAYMENT] Stripe Session ID:", checkoutSession.id);
-    console.log("[PAYMENT] Material ID:", materialId);
-    console.log("[PAYMENT] Buyer ID:", userId);
-    console.log("[PAYMENT] Is Guest:", isGuestCheckout);
-    console.log("[PAYMENT] Amount:", material.price);
+    if (process.env.NODE_ENV === "development") {
+      console.log("[PAYMENT] CHECKOUT SESSION CREATED:", {
+        transactionId: transaction.id,
+        sessionId: checkoutSession.id,
+        materialId,
+      });
+    }
 
     return NextResponse.json({
       checkoutUrl: checkoutSession.url,

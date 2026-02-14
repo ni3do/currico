@@ -1,29 +1,18 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { StarRating } from "@/components/ui/StarRating";
 import { motion } from "framer-motion";
+import type { UserReview } from "@/lib/types/review";
 
 interface ReviewFormProps {
   materialId: string;
-  existingReview?: {
-    id: string;
-    rating: number;
-    title: string | null;
-    content: string | null;
-  };
+  existingReview?: UserReview;
   onSubmit: () => void;
   onCancel?: () => void;
   className?: string;
 }
-
-const RATING_LABELS: { [key: number]: string } = {
-  1: "Schlecht",
-  2: "Mangelhaft",
-  3: "Okay",
-  4: "Gut",
-  5: "Ausgezeichnet",
-};
 
 export function ReviewForm({
   materialId,
@@ -32,6 +21,8 @@ export function ReviewForm({
   onCancel,
   className = "",
 }: ReviewFormProps) {
+  const t = useTranslations("reviews");
+  const tCommon = useTranslations("common");
   const [rating, setRating] = useState(existingReview?.rating || 0);
   const [title, setTitle] = useState(existingReview?.title || "");
   const [content, setContent] = useState(existingReview?.content || "");
@@ -44,7 +35,7 @@ export function ReviewForm({
     e.preventDefault();
 
     if (rating === 0) {
-      setError("Bitte wählen Sie eine Bewertung");
+      setError(t("ratingRequired"));
       return;
     }
 
@@ -69,12 +60,12 @@ export function ReviewForm({
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Fehler beim Speichern der Bewertung");
+        throw new Error(data.error || t("saveError"));
       }
 
       onSubmit();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Ein Fehler ist aufgetreten");
+      setError(err instanceof Error ? err.message : tCommon("errors.generic"));
     } finally {
       setSubmitting(false);
     }
@@ -88,24 +79,26 @@ export function ReviewForm({
       className={`border-border bg-bg-secondary rounded-xl border p-6 ${className}`}
     >
       <h3 className="text-text mb-4 text-lg font-semibold">
-        {isEditing ? "Bewertung bearbeiten" : "Bewertung schreiben"}
+        {isEditing ? t("editReview") : t("writeReview")}
       </h3>
 
       {/* Rating Selection */}
       <div className="mb-6">
-        <label className="text-text mb-2 block text-sm font-medium">
-          Wie bewerten Sie dieses Material? *
-        </label>
+        <label className="text-text mb-2 block text-sm font-medium">{t("ratingLabel")} *</label>
         <div className="flex items-center gap-4">
           <StarRating rating={rating} size="lg" interactive onRatingChange={setRating} />
-          {rating > 0 && <span className="text-text-muted text-sm">{RATING_LABELS[rating]}</span>}
+          {rating > 0 && (
+            <span className="text-text-muted text-sm">
+              {t(`stars.${rating}` as "stars.1" | "stars.2" | "stars.3" | "stars.4" | "stars.5")}
+            </span>
+          )}
         </div>
       </div>
 
       {/* Title (optional) */}
       <div className="mb-4">
         <label htmlFor="review-title" className="text-text mb-2 block text-sm font-medium">
-          Titel (optional)
+          {t("titleOptional")}
         </label>
         <input
           id="review-title"
@@ -113,16 +106,18 @@ export function ReviewForm({
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           maxLength={100}
-          placeholder="Kurze Zusammenfassung Ihrer Bewertung"
+          placeholder={t("titlePlaceholder")}
           className="input"
         />
-        <p className="text-text-faint mt-1 text-xs">{title.length}/100 Zeichen</p>
+        <p className="text-text-faint mt-1 text-xs">
+          {t("charCount", { count: title.length, max: 100 })}
+        </p>
       </div>
 
       {/* Content (optional) */}
       <div className="mb-6">
         <label htmlFor="review-content" className="text-text mb-2 block text-sm font-medium">
-          Detaillierte Bewertung (optional)
+          {t("contentOptional")}
         </label>
         <textarea
           id="review-content"
@@ -130,10 +125,12 @@ export function ReviewForm({
           onChange={(e) => setContent(e.target.value)}
           maxLength={2000}
           rows={4}
-          placeholder="Beschreiben Sie Ihre Erfahrung mit diesem Material..."
+          placeholder={t("contentPlaceholder")}
           className="input min-h-[100px] resize-y"
         />
-        <p className="text-text-faint mt-1 text-xs">{content.length}/2000 Zeichen</p>
+        <p className="text-text-faint mt-1 text-xs">
+          {t("charCount", { count: content.length, max: 2000 })}
+        </p>
       </div>
 
       {/* Error */}
@@ -150,11 +147,7 @@ export function ReviewForm({
           disabled={submitting || rating === 0}
           className="btn-primary flex-1 px-6 py-3 disabled:opacity-50"
         >
-          {submitting
-            ? "Wird gespeichert..."
-            : isEditing
-              ? "Bewertung aktualisieren"
-              : "Bewertung abgeben"}
+          {submitting ? t("saving") : isEditing ? t("updateReview") : t("submitReview")}
         </button>
         {onCancel && (
           <button
@@ -163,7 +156,7 @@ export function ReviewForm({
             disabled={submitting}
             className="btn-secondary px-6 py-3 disabled:opacity-50"
           >
-            Abbrechen
+            {t("cancel")}
           </button>
         )}
       </div>

@@ -3,33 +3,19 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { motion } from "framer-motion";
-import {
-  BadgeCheck,
-  ShoppingCart,
-  Star,
-  FileText,
-  Calendar,
-  ShieldCheck,
-  Upload,
-} from "lucide-react";
+import { BadgeCheck, ShoppingCart, Star, FileText, Calendar, Upload } from "lucide-react";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { VERIFIED_SELLER_CRITERIA } from "@/lib/utils/verified-seller";
 
-const criteriaIcons = [ShoppingCart, Star, FileText, Calendar, ShieldCheck];
+const criteriaIcons = [ShoppingCart, Star, FileText, Calendar];
 
 export default function VerifiedSellerPage() {
   const t = useTranslations("verifiedSeller");
   const tCommon = useTranslations("common");
 
-  const criteriaKeys = [
-    "minSales",
-    "minRating",
-    "minResources",
-    "accountAge",
-    "noReports",
-  ] as const;
+  const criteriaKeys = ["minSales", "minRating", "minResources", "accountAge"] as const;
 
   return (
     <div className="bg-bg flex min-h-screen flex-col">
@@ -54,7 +40,7 @@ export default function VerifiedSellerPage() {
           <p className="text-text-muted mb-4 text-sm">{t("page.whatDescription")}</p>
         </motion.section>
 
-        {/* The 5 Criteria */}
+        {/* The 4 Criteria */}
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

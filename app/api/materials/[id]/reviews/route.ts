@@ -58,11 +58,14 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       _avg: { rating: true },
     });
 
-    // Check if user has purchased/downloaded the material (for verified purchase badge)
+    // Check if review authors have purchased (for verified purchase badge)
+    // Only query buyer IDs for users in the current page of reviews
+    const reviewUserIds = reviews.map((r) => r.user.id);
     const purchasedUserIds = await prisma.transaction.findMany({
       where: {
         resource_id: materialId,
         status: "COMPLETED",
+        buyer_id: { in: reviewUserIds },
       },
       select: { buyer_id: true },
     });

@@ -11,6 +11,7 @@ import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { FocusTrap } from "@/components/ui/FocusTrap";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import {
   Plus,
   FolderOpen,
@@ -59,6 +60,7 @@ export default function CollectionsPage() {
   const [formLoading, setFormLoading] = useState(false);
   const [selectedCollection, setSelectedCollection] = useState<Collection | null>(null);
   const [draggedItem, setDraggedItem] = useState<string | null>(null);
+  const [deleteCollectionId, setDeleteCollectionId] = useState<string | null>(null);
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -140,8 +142,6 @@ export default function CollectionsPage() {
 
   // Delete collection
   const handleDeleteCollection = async (collectionId: string) => {
-    if (!confirm(t("confirmDelete"))) return;
-
     try {
       const response = await fetch(`/api/collections/${collectionId}`, {
         method: "DELETE",
@@ -152,6 +152,7 @@ export default function CollectionsPage() {
         if (selectedCollection?.id === collectionId) {
           setSelectedCollection(null);
         }
+        setDeleteCollectionId(null);
       }
     } catch (error) {
       console.error("Error deleting collection:", error);
@@ -328,7 +329,7 @@ export default function CollectionsPage() {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleDeleteCollection(collection.id);
+                              setDeleteCollectionId(collection.id);
                             }}
                             className="text-text-muted hover:bg-error/10 hover:text-error rounded p-1.5 transition-colors"
                           >
@@ -462,6 +463,20 @@ export default function CollectionsPage() {
           </div>
         </div>
       </main>
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        open={!!deleteCollectionId}
+        title={t("confirmDeleteTitle")}
+        message={t("confirmDelete")}
+        confirmLabel={tCommon("buttons.delete")}
+        cancelLabel={tCommon("buttons.cancel")}
+        variant="danger"
+        onConfirm={() => {
+          if (deleteCollectionId) handleDeleteCollection(deleteCollectionId);
+        }}
+        onCancel={() => setDeleteCollectionId(null)}
+      />
 
       {/* Create Modal */}
       {(showCreateModal || editingCollection) && (

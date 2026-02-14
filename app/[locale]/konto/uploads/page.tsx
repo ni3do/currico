@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { FileText } from "lucide-react";
+import { FileText, AlertTriangle } from "lucide-react";
 import { DashboardMaterialCard } from "@/components/ui/DashboardMaterialCard";
 import type { UploadedItem } from "@/lib/types/account";
 
@@ -59,6 +59,8 @@ export default function AccountUploadsPage() {
     return counts;
   }, [uploadedItems]);
 
+  const pendingCount = statusCounts.PENDING;
+
   const filteredItems = useMemo(
     () =>
       statusFilter === "ALL"
@@ -90,6 +92,20 @@ export default function AccountUploadsPage() {
         </Link>
       </div>
 
+      {/* Pending Banner */}
+      {pendingCount > 0 && statusFilter !== "PENDING" && (
+        <div className="border-warning/50 bg-warning/10 mb-4 flex items-center gap-3 rounded-xl border p-4">
+          <AlertTriangle className="text-warning h-5 w-5 flex-shrink-0" />
+          <p className="text-text flex-1 text-sm">{t("pendingBanner", { count: pendingCount })}</p>
+          <button
+            onClick={() => setStatusFilter("PENDING")}
+            className="text-warning hover:bg-warning/20 rounded-lg px-3 py-1.5 text-sm font-medium whitespace-nowrap transition-colors"
+          >
+            {t("filterShow")}
+          </button>
+        </div>
+      )}
+
       {/* Search & Sort */}
       <div className="mb-4 flex flex-col gap-3 sm:flex-row">
         <input
@@ -97,6 +113,7 @@ export default function AccountUploadsPage() {
           placeholder={t("search")}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
+          aria-label={t("search")}
           className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary flex-1 rounded-lg border px-4 py-2 text-sm focus:ring-1 focus:outline-none"
         />
         <select
@@ -196,14 +213,27 @@ export default function AccountUploadsPage() {
       ) : (
         <div className="py-12 text-center">
           <FileText className="text-text-faint mx-auto mb-4 h-16 w-16" />
-          <h3 className="text-text mb-2 text-lg font-medium">{t("empty")}</h3>
-          <p className="text-text-muted mb-4">{t("emptyDescription")}</p>
-          <Link
-            href="/hochladen"
-            className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
-          >
-            {t("uploadFirst")}
-          </Link>
+          <h3 className="text-text mb-2 text-lg font-medium">
+            {statusFilter !== "ALL" ? t("noMatchingFilter") : t("empty")}
+          </h3>
+          <p className="text-text-muted mb-4">
+            {statusFilter !== "ALL" ? t("noMatchingFilterDesc") : t("emptyDescription")}
+          </p>
+          {statusFilter !== "ALL" ? (
+            <button
+              onClick={() => setStatusFilter("ALL")}
+              className="text-primary text-sm font-medium hover:underline"
+            >
+              {t("showAll")}
+            </button>
+          ) : (
+            <Link
+              href="/hochladen"
+              className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
+            >
+              {t("uploadFirst")}
+            </Link>
+          )}
         </div>
       )}
     </div>

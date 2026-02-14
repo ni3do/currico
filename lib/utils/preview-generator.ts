@@ -10,23 +10,47 @@ const execAsync = promisify(exec);
 const PREVIEW_WIDTH = 800;
 const PREVIEW_HEIGHT = 1131; // A4 aspect ratio (roughly)
 const PREVIEW_QUALITY = 60; // WebP quality
-const WATERMARK_TEXT = "Vorschau - currico.ch";
-const WATERMARK_OPACITY = 0.25;
+const WATERMARK_OPACITY = 0.18;
+const WATERMARK_FALLBACK = "currico.ch";
 
 /**
- * Creates an SVG watermark overlay with repeated diagonal text.
+ * Escapes special XML characters for safe SVG text content.
  */
-function createWatermarkSvg(width: number, height: number): Buffer {
-  const fontSize = Math.round(width / 16);
-  const lineSpacing = fontSize * 4;
-  const lines: string[] = [];
+function escapeXml(text: string): string {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
 
-  for (let y = -height; y < height * 2; y += lineSpacing) {
-    lines.push(
-      `<text x="50%" y="${y}" font-size="${fontSize}" font-family="Arial, sans-serif" ` +
-        `fill="rgba(0,0,0,${WATERMARK_OPACITY})" text-anchor="middle" ` +
-        `transform="rotate(-30, ${width / 2}, ${height / 2})">${WATERMARK_TEXT}</text>`
-    );
+/**
+ * Creates an SVG watermark overlay with the seller's name tiled diagonally.
+ * The name is repeated densely across the entire image at -30 degrees.
+ */
+function createWatermarkSvg(width: number, height: number, sellerName?: string): Buffer {
+  const text = escapeXml(sellerName?.trim() || WATERMARK_FALLBACK);
+  const fontSize = Math.round(width / 20);
+  const rowSpacing = fontSize * 2.5;
+  // Minimum column spacing prevents SVG explosion with short names (e.g. "Jo")
+  const colSpacing = Math.max(fontSize * 8, text.length * fontSize * 0.7);
+  const lines: string[] = [];
+  let rowIndex = 0;
+
+  // Tile text diagonally across the full image. Over-extend by 2x to ensure
+  // full coverage after rotation. Alternate rows are offset by half the column
+  // spacing for a staggered, harder-to-crop pattern.
+  for (let y = -height; y < height * 2; y += rowSpacing) {
+    const xOffset = rowIndex % 2 === 0 ? 0 : colSpacing / 2;
+    for (let x = -width + xOffset; x < width * 2; x += colSpacing) {
+      lines.push(
+        `<text x="${x}" y="${y}" font-size="${fontSize}" font-family="Arial, sans-serif" ` +
+          `fill="rgba(0,0,0,${WATERMARK_OPACITY})" text-anchor="middle" ` +
+          `transform="rotate(-30, ${x}, ${y})">${text}</text>`
+      );
+    }
+    rowIndex++;
   }
 
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
@@ -50,11 +74,13 @@ export interface PreviewPage {
  *
  * @param pdfBuffer The PDF file as a buffer
  * @param maxPages Maximum number of pages to generate (default: 3)
+ * @param sellerName Seller's display name used as watermark text
  * @returns Array of preview pages with page numbers and image buffers
  */
 export async function generatePdfPreviewPages(
   pdfBuffer: Buffer,
-  maxPages: number = 3
+  maxPages: number = 3,
+  sellerName?: string
 ): Promise<PreviewPage[]> {
   let tempDir: string | null = null;
 
@@ -107,7 +133,7 @@ export async function generatePdfPreviewPages(
       const { width: actualW, height: actualH } = await resized.metadata();
       const w = actualW || PREVIEW_WIDTH;
       const h = actualH || PREVIEW_HEIGHT;
-      const watermarkSvg = createWatermarkSvg(w, h);
+      const watermarkSvg = createWatermarkSvg(w, h, sellerName);
 
       const watermarked = await resized
         .composite([{ input: watermarkSvg, blend: "over" }])
@@ -147,8 +173,11 @@ export async function generatePdfPreviewPages(
  * Returns the first page rendered as a PNG buffer.
  * @deprecated Use generatePdfPreviewPages for multi-page support
  */
-export async function generatePdfPreview(pdfBuffer: Buffer): Promise<Buffer | null> {
-  const pages = await generatePdfPreviewPages(pdfBuffer, 1);
+export async function generatePdfPreview(
+  pdfBuffer: Buffer,
+  sellerName?: string
+): Promise<Buffer | null> {
+  const pages = await generatePdfPreviewPages(pdfBuffer, 1, sellerName);
   return pages.length > 0 ? pages[0].buffer : null;
 }
 
@@ -156,7 +185,10 @@ export async function generatePdfPreview(pdfBuffer: Buffer): Promise<Buffer | nu
  * Generates a pixelated preview image from an image file buffer.
  * Creates a heavily pixelated version that's unusable as the actual content.
  */
-export async function generateImagePreview(imageBuffer: Buffer): Promise<Buffer | null> {
+export async function generateImagePreview(
+  imageBuffer: Buffer,
+  sellerName?: string
+): Promise<Buffer | null> {
   try {
     // Create watermarked preview:
     // 1. Resize to preview dimensions
@@ -169,7 +201,7 @@ export async function generateImagePreview(imageBuffer: Buffer): Promise<Buffer 
     const { width: actualW, height: actualH } = await resized.metadata();
     const w = actualW || PREVIEW_WIDTH;
     const h = actualH || PREVIEW_HEIGHT;
-    const watermarkSvg = createWatermarkSvg(w, h);
+    const watermarkSvg = createWatermarkSvg(w, h, sellerName);
 
     const watermarked = await resized
       .composite([{ input: watermarkSvg, blend: "over" }])
@@ -189,16 +221,17 @@ export async function generateImagePreview(imageBuffer: Buffer): Promise<Buffer 
  */
 export async function generatePreview(
   fileBuffer: Buffer,
-  mimeType: string
+  mimeType: string,
+  sellerName?: string
 ): Promise<Buffer | null> {
   // PDF files
   if (mimeType === "application/pdf") {
-    return generatePdfPreview(fileBuffer);
+    return generatePdfPreview(fileBuffer, sellerName);
   }
 
   // Image files - create a resized preview
   if (mimeType.startsWith("image/")) {
-    return generateImagePreview(fileBuffer);
+    return generateImagePreview(fileBuffer, sellerName);
   }
 
   // For Office documents (Word, PowerPoint, Excel), we cannot easily

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { TableSkeleton } from "@/components/ui/Skeleton";
 import { FocusTrap } from "@/components/ui/FocusTrap";
+import { useToast } from "@/components/ui/Toast";
 
 interface AdminUser {
   id: string;
@@ -34,6 +35,7 @@ const roleBadgeColors: Record<string, string> = {
 
 export default function AdminUsersPage() {
   const t = useTranslations("admin.users");
+  const { toast } = useToast();
 
   const getRoleLabel = (role: string) => {
     const labels: Record<string, string> = {
@@ -99,7 +101,7 @@ export default function AdminUsersPage() {
         setSelectedUser(null);
       } else {
         const error = await response.json();
-        alert(error.error || t("errorUpdating"));
+        toast(error.error || t("errorUpdating"), "error");
       }
     } catch (error) {
       console.error("Error updating user:", error);
@@ -121,7 +123,7 @@ export default function AdminUsersPage() {
         setSelectedUser(null);
       } else {
         const error = await response.json();
-        alert(error.error || t("errorUpdating"));
+        toast(error.error || t("errorUpdating"), "error");
       }
     } catch (error) {
       console.error("Error toggling seller verification:", error);
@@ -143,7 +145,7 @@ export default function AdminUsersPage() {
         setSelectedUser(null);
       } else {
         const error = await response.json();
-        alert(error.error || t("errorDeleting"));
+        toast(error.error || t("errorDeleting"), "error");
       }
     } catch (error) {
       console.error("Error deleting user:", error);

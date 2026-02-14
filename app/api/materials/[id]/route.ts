@@ -5,8 +5,8 @@ import { getCurrentUserId } from "@/lib/auth";
 import { requireAdmin } from "@/lib/admin-auth";
 import { updateMaterialSchema } from "@/lib/validations/material";
 import { formatPrice } from "@/lib/utils/price";
+import { getStorage, isLegacyLocalPath, getLegacyFilePath } from "@/lib/storage";
 import { unlink } from "fs/promises";
-import path from "path";
 
 /**
  * GET /api/materials/[id]
@@ -111,11 +111,13 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     if (materialSubjects.length > 0) {
       // First: try matching by subject
-      const relatedIds = await prisma.$queryRawUnsafe<{ id: string }[]>(
-        `SELECT id FROM resources WHERE id != $1 AND is_published = true AND is_approved = true AND subjects::jsonb ?| $2::text[] LIMIT 3`,
-        id,
-        materialSubjects
-      );
+      const relatedIds = await prisma.$queryRaw<{ id: string }[]>`
+        SELECT id FROM resources
+        WHERE id != ${id}
+        AND is_published = true AND is_approved = true
+        AND subjects::jsonb ?| ${materialSubjects}::text[]
+        LIMIT 3
+      `;
 
       if (relatedIds.length > 0) {
         relatedMaterials = await prisma.resource.findMany({
@@ -138,12 +140,14 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     // Fallback: if not enough results, fill with same cycle materials
     if (relatedMaterials.length < 3 && materialCycles.length > 0) {
       const existingIds = [id, ...relatedMaterials.map((r) => r.id)];
-      const cycleIds = await prisma.$queryRawUnsafe<{ id: string }[]>(
-        `SELECT id FROM resources WHERE id != ALL($1::text[]) AND is_published = true AND is_approved = true AND cycles::jsonb ?| $2::text[] LIMIT $3`,
-        existingIds,
-        materialCycles,
-        3 - relatedMaterials.length
-      );
+      const remaining = 3 - relatedMaterials.length;
+      const cycleIds = await prisma.$queryRaw<{ id: string }[]>`
+        SELECT id FROM resources
+        WHERE id != ALL(${existingIds}::text[])
+        AND is_published = true AND is_approved = true
+        AND cycles::jsonb ?| ${materialCycles}::text[]
+        LIMIT ${remaining}
+      `;
 
       if (cycleIds.length > 0) {
         const cycleMaterials = await prisma.resource.findMany({
@@ -418,13 +422,16 @@ export async function DELETE(
       );
     }
 
-    // Delete associated files
-    const uploadsDir = path.join(process.cwd(), "public");
+    // Delete associated files using storage abstraction
+    const storage = getStorage();
 
     if (material.file_url) {
       try {
-        const filePath = path.join(uploadsDir, material.file_url);
-        await unlink(filePath);
+        if (isLegacyLocalPath(material.file_url)) {
+          await unlink(getLegacyFilePath(material.file_url));
+        } else {
+          await storage.delete(material.file_url, "material");
+        }
       } catch {
         // File might not exist, continue with deletion
       }
@@ -432,8 +439,11 @@ export async function DELETE(
 
     if (material.preview_url) {
       try {
-        const previewPath = path.join(uploadsDir, material.preview_url);
-        await unlink(previewPath);
+        if (isLegacyLocalPath(material.preview_url)) {
+          await unlink(getLegacyFilePath(material.preview_url));
+        } else {
+          await storage.delete(material.preview_url, "preview");
+        }
       } catch {
         // File might not exist, continue with deletion
       }

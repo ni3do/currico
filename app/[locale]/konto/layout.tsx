@@ -91,7 +91,7 @@ function AccountLayoutInner({ children }: { children: ReactNode }) {
   // Fallback data from session
   const displayData = userData || {
     id: "",
-    name: session?.user?.name || "Benutzer",
+    name: session?.user?.name || t("userFallback"),
     email: session?.user?.email || "",
     emailVerified: null,
     image: session?.user?.image || null,
@@ -217,7 +217,7 @@ function AccountLayoutInner({ children }: { children: ReactNode }) {
                     }`}
                   >
                     <Icon className="h-3.5 w-3.5" />
-                    {t(tab.label as any)}
+                    {t(tab.label as never)}
                     {isActive && (
                       <motion.div
                         layoutId="mobileActiveTab"

@@ -4,46 +4,27 @@ import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { MessageCircle, AlertCircle } from "lucide-react";
+import { Link, useRouter } from "@/i18n/navigation";
 import { getLoginUrl } from "@/lib/utils/login-redirect";
 import { LoginLink } from "@/components/ui/LoginLink";
 import { CommentCard } from "./CommentCard";
 import { CommentForm } from "./CommentForm";
 import { motion } from "framer-motion";
-
-interface CommentUser {
-  id: string;
-  displayName: string;
-  image: string | null;
-  isSeller?: boolean;
-}
-
-interface Reply {
-  id: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-  user: CommentUser;
-}
-
-interface Comment {
-  id: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-  user: CommentUser;
-  likeCount: number;
-  isLiked: boolean;
-  replies: Reply[];
-  replyCount: number;
-}
+import type { Comment, Reply } from "@/lib/types/comments";
 
 interface CommentsSectionProps {
   materialId: string;
+  hideTitle?: boolean;
   className?: string;
 }
 
-export function CommentsSection({ materialId, className = "" }: CommentsSectionProps) {
+export function CommentsSection({
+  materialId,
+  hideTitle = false,
+  className = "",
+}: CommentsSectionProps) {
   const { data: session, status: sessionStatus } = useSession();
+  const router = useRouter();
   const tCommon = useTranslations("common");
   const t = useTranslations("comments");
   const [comments, setComments] = useState<Comment[]>([]);
@@ -112,7 +93,7 @@ export function CommentsSection({ materialId, className = "" }: CommentsSectionP
   if (loading && comments.length === 0) {
     return (
       <div className={`${className}`}>
-        <h2 className="text-text mb-6 text-2xl font-bold">{t("title")}</h2>
+        {!hideTitle && <h2 className="text-text mb-6 text-2xl font-bold">{t("title")}</h2>}
         <div className="border-border bg-bg animate-pulse rounded-xl border p-8">
           <div className="bg-surface mb-4 h-6 w-48 rounded" />
           <div className="bg-surface mb-4 h-4 w-full rounded" />
@@ -126,7 +107,7 @@ export function CommentsSection({ materialId, className = "" }: CommentsSectionP
   if (error) {
     return (
       <div className={`${className}`}>
-        <h2 className="text-text mb-6 text-2xl font-bold">{t("title")}</h2>
+        {!hideTitle && <h2 className="text-text mb-6 text-2xl font-bold">{t("title")}</h2>}
         <div className="border-error/50 bg-error/10 flex items-center gap-3 rounded-xl border p-6">
           <AlertCircle className="text-error h-5 w-5 flex-shrink-0" />
           <p className="text-error">{error}</p>
@@ -137,9 +118,11 @@ export function CommentsSection({ materialId, className = "" }: CommentsSectionP
 
   return (
     <div className={`${className}`}>
-      <h2 className="text-text mb-6 text-2xl font-bold">
-        {t("title")} {totalCount > 0 && <span className="text-text-muted">({totalCount})</span>}
-      </h2>
+      {!hideTitle && (
+        <h2 className="text-text mb-6 text-2xl font-bold">
+          {t("title")} {totalCount > 0 && <span className="text-text-muted">({totalCount})</span>}
+        </h2>
+      )}
 
       {/* Comment Form */}
       {sessionStatus === "authenticated" ? (

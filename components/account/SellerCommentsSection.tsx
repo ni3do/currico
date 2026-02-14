@@ -6,20 +6,8 @@ import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { MessageCircle, AlertCircle, Filter, ExternalLink, Send, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-
-interface CommentUser {
-  id: string;
-  displayName: string;
-  image: string | null;
-}
-
-interface Reply {
-  id: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-  user: CommentUser & { isSeller?: boolean };
-}
+import { useToast } from "@/components/ui/Toast";
+import type { CommentUser, Reply } from "@/lib/types/comments";
 
 interface CommentResource {
   id: string;
@@ -47,6 +35,7 @@ interface SellerCommentsSectionProps {
 export function SellerCommentsSection({ className = "" }: SellerCommentsSectionProps) {
   const tCommon = useTranslations("common");
   const t = useTranslations("accountPage.comments");
+  const { toast } = useToast();
   const [comments, setComments] = useState<SellerComment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -114,7 +103,7 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
       fetchComments(page, filter);
     } catch (err) {
       console.error("Error submitting reply:", err);
-      alert(t("errorSending"));
+      toast(t("errorSending"), "error");
     } finally {
       setSubmittingReply(false);
     }
@@ -307,7 +296,7 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
                                 {reply.user.displayName}
                               </span>
                               {reply.user.isSeller && (
-                                <span className="pill pill-primary text-xs">Sie</span>
+                                <span className="pill pill-primary text-xs">{t("you")}</span>
                               )}
                               <span className="text-text-faint text-xs">
                                 {formatDate(reply.createdAt)}

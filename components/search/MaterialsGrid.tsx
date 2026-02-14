@@ -1,0 +1,67 @@
+"use client";
+
+import { motion } from "framer-motion";
+import { MaterialCard } from "@/components/ui/MaterialCard";
+import { getSubjectPillClass } from "@/lib/constants/subject-colors";
+import type { MaterialListItem } from "@/lib/types/search";
+
+interface MaterialsGridProps {
+  materials: MaterialListItem[];
+  wishlistedIds: Set<string>;
+  onWishlistToggle: (id: string, currentState: boolean) => Promise<boolean>;
+  viewMode: "grid" | "list";
+  labels: { wishlistAdd: string; wishlistRemove: string; anonymous: string };
+}
+
+export function MaterialsGrid({
+  materials,
+  wishlistedIds,
+  onWishlistToggle,
+  viewMode,
+  labels,
+}: MaterialsGridProps) {
+  return (
+    <>
+      {materials.map((material, index) => (
+        <motion.div
+          key={`material-${material.id}`}
+          initial={{ opacity: 0, y: 16, scale: 0.98 }}
+          animate={{
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            transition: {
+              duration: 0.4,
+              delay: index * 0.05 + 0.02,
+              ease: [0.22, 1, 0.36, 1],
+            },
+          }}
+        >
+          <MaterialCard
+            id={material.id}
+            title={material.title}
+            description={material.description}
+            subject={material.subject}
+            cycle={material.cycle}
+            priceFormatted={material.priceFormatted}
+            previewUrl={material.previewUrl}
+            seller={{
+              displayName: material.seller.display_name,
+              isVerifiedSeller: material.seller.is_verified_seller,
+            }}
+            subjectPillClass={getSubjectPillClass(material.subject)}
+            showWishlist={true}
+            isWishlisted={wishlistedIds.has(material.id)}
+            onWishlistToggle={onWishlistToggle}
+            variant={viewMode === "list" ? "compact" : "default"}
+            averageRating={material.averageRating}
+            reviewCount={material.reviewCount}
+            wishlistAddLabel={labels.wishlistAdd}
+            wishlistRemoveLabel={labels.wishlistRemove}
+            anonymousLabel={labels.anonymous}
+          />
+        </motion.div>
+      ))}
+    </>
+  );
+}

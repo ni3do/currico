@@ -64,6 +64,22 @@ function LoginPageContent() {
       {/* Main Content - Centered Glass Card */}
       <main className="relative z-10 flex flex-1 items-center justify-center px-4 py-8 sm:px-6">
         <div className="w-full max-w-md">
+          {/* Back to Home */}
+          <Link
+            href="/"
+            className="text-text-muted hover:text-primary mb-4 inline-flex items-center text-sm font-medium transition-colors"
+          >
+            <svg className="mr-1.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+            {tCommon("buttons.backToHome")}
+          </Link>
+
           {/* Glass-morphic Card */}
           <div className="glass-card p-8 sm:p-10">
             {/* Title */}
@@ -124,7 +140,11 @@ function LoginPageContent() {
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="text-text-muted hover:text-text absolute top-1/2 right-3 -translate-y-1/2 p-1 transition-colors"
-                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    aria-label={
+                      showPassword
+                        ? tCommon("buttons.hidePassword")
+                        : tCommon("buttons.showPassword")
+                    }
                   >
                     {showPassword ? (
                       <svg
@@ -264,24 +284,6 @@ function LoginPageContent() {
           </div>
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="relative z-10 px-6 py-6 sm:px-8">
-        <Link
-          href="/"
-          className="text-text-muted hover:text-primary inline-flex items-center text-sm font-medium transition-colors"
-        >
-          <svg className="mr-1.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-          {tCommon("buttons.backToHome")}
-        </Link>
-      </footer>
     </div>
   );
 }

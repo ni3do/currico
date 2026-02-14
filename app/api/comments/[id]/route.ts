@@ -118,7 +118,12 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     }
 
     // Parse and validate request body
-    const body = await request.json();
+    let body: unknown;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    }
     const validation = updateCommentSchema.safeParse(body);
 
     if (!validation.success) {

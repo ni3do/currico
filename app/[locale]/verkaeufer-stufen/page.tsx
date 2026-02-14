@@ -67,7 +67,7 @@ export default function SellerLevelsPage() {
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {/* Upload points */}
-            <div className="card p-6">
+            <div className="card flex flex-col p-6">
               <div className="mb-4 flex items-center gap-3">
                 <div className="bg-primary/10 flex h-12 w-12 items-center justify-center rounded-xl">
                   <Upload className="text-primary h-6 w-6" />
@@ -81,23 +81,29 @@ export default function SellerLevelsPage() {
               <p className="text-text-muted text-sm">
                 {t("page.uploadPointsDescription", { points: POINTS_PER_UPLOAD })}
               </p>
-              <div className="bg-primary/5 border-primary/20 mt-4 rounded-lg border p-3">
+              <div className="bg-primary/5 border-primary/20 mt-auto rounded-lg border p-3 pt-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-text text-sm font-medium">1 Material</span>
+                  <span className="text-text text-sm font-medium">
+                    {t("page.materialsCount", { count: 1 })}
+                  </span>
                   <span className="text-primary text-sm font-bold">
                     +{POINTS_PER_UPLOAD} {t("pointsUnit")}
                   </span>
                 </div>
                 <div className="border-border my-2 border-t" />
                 <div className="flex items-center justify-between">
-                  <span className="text-text text-sm font-medium">5 Materialien</span>
+                  <span className="text-text text-sm font-medium">
+                    {t("page.materialsCount", { count: 5 })}
+                  </span>
                   <span className="text-primary text-sm font-bold">
                     +{POINTS_PER_UPLOAD * 5} {t("pointsUnit")}
                   </span>
                 </div>
                 <div className="border-border my-2 border-t" />
                 <div className="flex items-center justify-between">
-                  <span className="text-text text-sm font-medium">25 Materialien</span>
+                  <span className="text-text text-sm font-medium">
+                    {t("page.materialsCount", { count: 25 })}
+                  </span>
                   <span className="text-primary text-sm font-bold">
                     +{POINTS_PER_UPLOAD * 25} {t("pointsUnit")}
                   </span>
@@ -106,7 +112,7 @@ export default function SellerLevelsPage() {
             </div>
 
             {/* Download points */}
-            <div className="card p-6">
+            <div className="card flex flex-col p-6">
               <div className="mb-4 flex items-center gap-3">
                 <div className="bg-accent/10 flex h-12 w-12 items-center justify-center rounded-xl">
                   <Download className="text-accent h-6 w-6" />
@@ -123,16 +129,20 @@ export default function SellerLevelsPage() {
               <p className="text-text-muted text-sm">
                 {t("page.downloadPointsDescription", { points: POINTS_PER_DOWNLOAD_BASE })}
               </p>
-              <div className="bg-accent/5 border-accent/20 mt-4 rounded-lg border p-3">
+              <div className="bg-accent/5 border-accent/20 mt-auto rounded-lg border p-3 pt-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-text text-sm font-medium">1 Download</span>
+                  <span className="text-text text-sm font-medium">
+                    {t("page.downloadsCount", { count: 1 })}
+                  </span>
                   <span className="text-accent text-sm font-bold">
                     +{POINTS_PER_DOWNLOAD_BASE}–{POINTS_PER_DOWNLOAD_GREAT} {t("pointsUnit")}
                   </span>
                 </div>
                 <div className="border-border my-2 border-t" />
                 <div className="flex items-center justify-between">
-                  <span className="text-text text-sm font-medium">25 Downloads</span>
+                  <span className="text-text text-sm font-medium">
+                    {t("page.downloadsCount", { count: 25 })}
+                  </span>
                   <span className="text-accent text-sm font-bold">
                     +{POINTS_PER_DOWNLOAD_BASE * 25}–{POINTS_PER_DOWNLOAD_GREAT * 25}{" "}
                     {t("pointsUnit")}
@@ -140,7 +150,9 @@ export default function SellerLevelsPage() {
                 </div>
                 <div className="border-border my-2 border-t" />
                 <div className="flex items-center justify-between">
-                  <span className="text-text text-sm font-medium">100 Downloads</span>
+                  <span className="text-text text-sm font-medium">
+                    {t("page.downloadsCount", { count: 100 })}
+                  </span>
                   <span className="text-accent text-sm font-bold">
                     +{POINTS_PER_DOWNLOAD_BASE * 100}–{POINTS_PER_DOWNLOAD_GREAT * 100}{" "}
                     {t("pointsUnit")}
@@ -150,7 +162,7 @@ export default function SellerLevelsPage() {
             </div>
 
             {/* Review points */}
-            <div className="card p-6">
+            <div className="card flex flex-col p-6">
               <div className="mb-4 flex items-center gap-3">
                 <div className="bg-warning/10 flex h-12 w-12 items-center justify-center rounded-xl">
                   <Star className="text-warning h-6 w-6" />
@@ -164,23 +176,29 @@ export default function SellerLevelsPage() {
               <p className="text-text-muted text-sm">
                 {t("page.reviewPointsDescription", { points: POINTS_PER_REVIEW })}
               </p>
-              <div className="bg-warning/5 border-warning/20 mt-4 rounded-lg border p-3">
+              <div className="bg-warning/5 border-warning/20 mt-auto rounded-lg border p-3 pt-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-text text-sm font-medium">1 Bewertung</span>
+                  <span className="text-text text-sm font-medium">
+                    {t("page.reviewsExampleCount", { count: 1 })}
+                  </span>
                   <span className="text-warning text-sm font-bold">
                     +{POINTS_PER_REVIEW} {t("pointsUnit")}
                   </span>
                 </div>
                 <div className="border-border my-2 border-t" />
                 <div className="flex items-center justify-between">
-                  <span className="text-text text-sm font-medium">10 Bewertungen</span>
+                  <span className="text-text text-sm font-medium">
+                    {t("page.reviewsExampleCount", { count: 10 })}
+                  </span>
                   <span className="text-warning text-sm font-bold">
                     +{POINTS_PER_REVIEW * 10} {t("pointsUnit")}
                   </span>
                 </div>
                 <div className="border-border my-2 border-t" />
                 <div className="flex items-center justify-between">
-                  <span className="text-text text-sm font-medium">50 Bewertungen</span>
+                  <span className="text-text text-sm font-medium">
+                    {t("page.reviewsExampleCount", { count: 50 })}
+                  </span>
                   <span className="text-warning text-sm font-bold">
                     +{POINTS_PER_REVIEW * 50} {t("pointsUnit")}
                   </span>
@@ -343,8 +361,8 @@ export default function SellerLevelsPage() {
           <div className="space-y-3">
             {SELLER_LEVELS.map((level, index) => {
               const Icon = level.icon;
-              const levelName = t(`levels.${level.name}` as any);
-              const levelDesc = t(`descriptions.${level.name}` as any);
+              const levelName = t(`levels.${level.name}` as never);
+              const levelDesc = t(`descriptions.${level.name}` as never);
               const nextLevel = SELLER_LEVELS[index + 1];
 
               return (
@@ -370,7 +388,7 @@ export default function SellerLevelsPage() {
                         <span
                           className={`rounded-full px-2 py-0.5 text-xs font-semibold ${level.badgeBg} ${level.textClass}`}
                         >
-                          Level {level.level}
+                          {t("page.levelBadge", { level: level.level })}
                         </span>
                       </div>
                       <p className="text-text-muted mt-0.5 text-sm">{levelDesc}</p>
@@ -453,7 +471,7 @@ export default function SellerLevelsPage() {
                     <div className="bg-warning/10 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg">
                       <TipIcon className="text-warning h-4 w-4" />
                     </div>
-                    <p className="text-text-muted text-sm">{t(`page.tips.${tip}` as any)}</p>
+                    <p className="text-text-muted text-sm">{t(`page.tips.${tip}` as never)}</p>
                   </div>
                 </motion.div>
               );

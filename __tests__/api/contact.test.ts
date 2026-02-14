@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { POST } from "@/app/api/contact/route";
 import { createMockRequest, parseResponse } from "../helpers/api-test-utils";
 import { prisma } from "@/lib/db";
+import { clearAllRateLimits } from "@/lib/rateLimit";
 
 // Get mocked prisma functions
 const mockContactMessageCreate = prisma.contactMessage.create as ReturnType<typeof vi.fn>;
@@ -9,6 +10,7 @@ const mockContactMessageCreate = prisma.contactMessage.create as ReturnType<type
 describe("POST /api/contact", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    clearAllRateLimits();
   });
 
   it("successfully submits a contact message", async () => {

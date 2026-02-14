@@ -442,7 +442,7 @@ export default function EditProfilePage() {
             {/* Submit Button */}
             <div className="flex justify-end gap-4">
               <Link
-                href="/profil"
+                href="/konto/settings"
                 className="border-border text-text hover:bg-surface-elevated rounded-lg border px-6 py-3 font-medium transition-colors"
               >
                 Abbrechen

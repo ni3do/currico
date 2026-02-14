@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { TableSkeleton } from "@/components/ui/Skeleton";
 import { FocusTrap } from "@/components/ui/FocusTrap";
+import { useToast } from "@/components/ui/Toast";
 
 interface AdminMaterial {
   id: string;
@@ -47,6 +48,7 @@ const statusColors: Record<string, string> = {
 
 export default function AdminDocumentsPage() {
   const t = useTranslations("admin.documents");
+  const { toast } = useToast();
   const [materials, setMaterials] = useState<AdminMaterial[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("pending");
@@ -108,7 +110,7 @@ export default function AdminDocumentsPage() {
         setSelectedMaterial(null);
       } else {
         const error = await response.json();
-        alert(error.error || t("errorVerifying"));
+        toast(error.error || t("errorVerifying"), "error");
       }
     } catch (error) {
       console.error("Error verifying resource:", error);
@@ -132,7 +134,7 @@ export default function AdminDocumentsPage() {
         setSelectedMaterial(null);
       } else {
         const error = await response.json();
-        alert(error.error || t("errorRejecting"));
+        toast(error.error || t("errorRejecting"), "error");
       }
     } catch (error) {
       console.error("Error rejecting resource:", error);
@@ -156,7 +158,7 @@ export default function AdminDocumentsPage() {
         setSelectedMaterial(null);
       } else {
         const error = await response.json();
-        alert(error.error || t("errorResetting"));
+        toast(error.error || t("errorResetting"), "error");
       }
     } catch (error) {
       console.error("Error resetting resource:", error);

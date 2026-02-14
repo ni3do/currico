@@ -1,13 +1,16 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import Image from "next/image";
 import { Link, useRouter } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
+import { AlertTriangle } from "lucide-react";
 import { getLoginUrl } from "@/lib/utils/login-redirect";
 import { roundToNearestHalfFranc } from "@/lib/utils/price";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
+import { checkForEszett, replaceEszett } from "@/lib/validations/swiss-quality";
 
 interface SellerMaterial {
   id: string;
@@ -19,22 +22,36 @@ interface SellerMaterial {
   cycles: string[];
 }
 
+interface BundleFormData {
+  title: string;
+  description: string;
+  price: string;
+  selectedMaterials: string[];
+  subject: string;
+  cycle: string;
+  coverImage: File | null;
+}
+
 export default function CreateBundlePage() {
   const router = useRouter();
+  const tEszett = useTranslations("uploadWizard.eszett");
   const [materials, setMaterials] = useState<SellerMaterial[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [coverImagePreview, setCoverImagePreview] = useState<string | null>(null);
   const coverImageInputRef = useRef<HTMLInputElement>(null);
-  const [formData, setFormData] = useState({
+  const [materialSearch, setMaterialSearch] = useState("");
+  const [autoFilledSubject, setAutoFilledSubject] = useState(false);
+  const [autoFilledCycle, setAutoFilledCycle] = useState(false);
+  const [formData, setFormData] = useState<BundleFormData>({
     title: "",
     description: "",
     price: "",
-    selectedMaterials: [] as string[],
+    selectedMaterials: [],
     subject: "",
     cycle: "",
-    coverImage: null as File | null,
+    coverImage: null,
   });
 
   useEffect(() => {
@@ -64,7 +81,7 @@ export default function CreateBundlePage() {
     fetchMaterials();
   }, [router]);
 
-  const updateFormData = (field: string, value: any) => {
+  const updateFormData = <K extends keyof BundleFormData>(field: K, value: BundleFormData[K]) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -76,6 +93,43 @@ export default function CreateBundlePage() {
     updateFormData("selectedMaterials", newSelection);
   };
 
+  // Auto-derive subject/cycle from selected materials
+  useEffect(() => {
+    if (formData.selectedMaterials.length === 0) return;
+    const selected = materials.filter((m) => formData.selectedMaterials.includes(m.id));
+    if (selected.length === 0) return;
+
+    // Find most common subject
+    const subjectCounts: Record<string, number> = {};
+    selected.forEach((m) => {
+      (m.subjects || [m.subject]).forEach((s) => {
+        subjectCounts[s] = (subjectCounts[s] || 0) + 1;
+      });
+    });
+    const topSubject = Object.entries(subjectCounts).sort((a, b) => b[1] - a[1])[0]?.[0];
+
+    // Find most common cycle
+    const cycleCounts: Record<string, number> = {};
+    selected.forEach((m) => {
+      (m.cycles || []).forEach((c) => {
+        // Normalize "Zyklus 1" → "1" to match select option values
+        const num = c.replace(/^Zyklus\s*/i, "");
+        cycleCounts[num] = (cycleCounts[num] || 0) + 1;
+      });
+    });
+    const topCycle = Object.entries(cycleCounts).sort((a, b) => b[1] - a[1])[0]?.[0];
+
+    if (topSubject && !formData.subject) {
+      updateFormData("subject", topSubject);
+      setAutoFilledSubject(true);
+    }
+    if (topCycle && !formData.cycle) {
+      updateFormData("cycle", topCycle);
+      setAutoFilledCycle(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formData.selectedMaterials, materials]);
+
   const calculateTotal = () => {
     return materials
       .filter((r) => formData.selectedMaterials.includes(r.id))
@@ -86,6 +140,23 @@ export default function CreateBundlePage() {
     const total = calculateTotal();
     const bundlePrice = (parseFloat(formData.price) || 0) * 100; // Convert to cents
     return total > 0 ? Math.round(((total - bundlePrice) / total) * 100) : 0;
+  };
+
+  // Eszett validation
+  const eszettCheck = useMemo(() => {
+    const titleCheck = checkForEszett(formData.title);
+    const descriptionCheck = checkForEszett(formData.description);
+    return {
+      title: titleCheck,
+      description: descriptionCheck,
+      hasAny: titleCheck.hasEszett || descriptionCheck.hasEszett,
+      totalCount: titleCheck.count + descriptionCheck.count,
+    };
+  }, [formData.title, formData.description]);
+
+  const handleFixEszett = () => {
+    updateFormData("title", replaceEszett(formData.title));
+    updateFormData("description", replaceEszett(formData.description));
   };
 
   const handleCoverImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -140,6 +211,20 @@ export default function CreateBundlePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Block if ß found
+    if (eszettCheck.hasAny) return;
+
+    // Block if bundle price >= total individual prices
+    if (
+      formData.selectedMaterials.length > 0 &&
+      parseFloat(formData.price) > 0 &&
+      calculateDiscount() <= 0
+    ) {
+      setError("Der Bundle-Preis muss unter dem Gesamtpreis der Einzelmaterialien liegen.");
+      return;
+    }
+
     setSubmitting(true);
     setError(null);
 
@@ -158,7 +243,7 @@ export default function CreateBundlePage() {
           description: formData.description,
           price: Math.round(parseFloat(formData.price) * 100), // Convert to cents
           subject: [formData.subject],
-          cycle: [formData.cycle],
+          cycle: [`Zyklus ${formData.cycle}`],
           resourceIds: formData.selectedMaterials,
           coverImageUrl,
         }),
@@ -251,12 +336,42 @@ export default function CreateBundlePage() {
                   />
                 </div>
 
+                {/* Eszett Warning */}
+                {eszettCheck.hasAny && (
+                  <div className="border-warning/50 bg-warning/10 rounded-xl border p-4">
+                    <div className="flex items-start gap-3">
+                      <AlertTriangle className="text-warning h-5 w-5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="text-warning font-medium">{tEszett("title")}</h4>
+                        <p className="text-text mt-1 text-sm">
+                          {tEszett("message", { count: eszettCheck.totalCount })}
+                        </p>
+                        <button
+                          type="button"
+                          onClick={handleFixEszett}
+                          className="bg-warning/20 text-warning hover:bg-warning/30 mt-2 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
+                        >
+                          {tEszett("fix")}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
-                    <label className="text-text mb-2 block text-sm font-medium">Hauptfach *</label>
+                    <label className="text-text mb-2 block text-sm font-medium">
+                      Hauptfach *
+                      {autoFilledSubject && formData.subject && (
+                        <span className="text-text-muted ml-1 text-xs font-normal">(auto)</span>
+                      )}
+                    </label>
                     <select
                       value={formData.subject}
-                      onChange={(e) => updateFormData("subject", e.target.value)}
+                      onChange={(e) => {
+                        updateFormData("subject", e.target.value);
+                        setAutoFilledSubject(false);
+                      }}
                       required
                       className={`border-border bg-bg focus:border-primary focus:ring-primary/20 w-full rounded-full border px-4 py-3 focus:ring-2 focus:outline-none ${
                         formData.subject === "" ? "text-text-faint" : "text-text"
@@ -284,10 +399,18 @@ export default function CreateBundlePage() {
                   </div>
 
                   <div>
-                    <label className="text-text mb-2 block text-sm font-medium">Zyklus *</label>
+                    <label className="text-text mb-2 block text-sm font-medium">
+                      Zyklus *
+                      {autoFilledCycle && formData.cycle && (
+                        <span className="text-text-muted ml-1 text-xs font-normal">(auto)</span>
+                      )}
+                    </label>
                     <select
                       value={formData.cycle}
-                      onChange={(e) => updateFormData("cycle", e.target.value)}
+                      onChange={(e) => {
+                        updateFormData("cycle", e.target.value);
+                        setAutoFilledCycle(false);
+                      }}
                       required
                       className={`border-border bg-bg focus:border-primary focus:ring-primary/20 w-full rounded-full border px-4 py-3 focus:ring-2 focus:outline-none ${
                         formData.cycle === "" ? "text-text-faint" : "text-text"
@@ -389,29 +512,45 @@ export default function CreateBundlePage() {
                 Wählen Sie mindestens 2 Ihrer veröffentlichten Materialien für dieses Bundle
               </p>
 
+              {materials.length > 10 && (
+                <input
+                  type="text"
+                  value={materialSearch}
+                  onChange={(e) => setMaterialSearch(e.target.value)}
+                  placeholder="Materialien durchsuchen..."
+                  className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 mb-4 w-full rounded-xl border px-4 py-2.5 text-sm focus:ring-2 focus:outline-none"
+                />
+              )}
+
               <div className="space-y-3">
-                {materials.map((material) => (
-                  <label
-                    key={material.id}
-                    className={`flex cursor-pointer items-center gap-4 rounded-xl border-2 p-4 transition-all ${
-                      formData.selectedMaterials.includes(material.id)
-                        ? "border-primary bg-primary/10"
-                        : "border-border bg-bg hover:border-primary/50"
-                    }`}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={formData.selectedMaterials.includes(material.id)}
-                      onChange={() => toggleMaterial(material.id)}
-                      className="border-border text-primary focus:ring-primary/20 h-5 w-5 rounded focus:ring-2"
-                    />
-                    <div className="flex-1">
-                      <div className="text-text font-medium">{material.title}</div>
-                      <div className="text-text-muted text-sm">{material.subject}</div>
-                    </div>
-                    <div className="text-primary font-semibold">{material.priceFormatted}</div>
-                  </label>
-                ))}
+                {materials
+                  .filter(
+                    (m) =>
+                      !materialSearch ||
+                      m.title.toLowerCase().includes(materialSearch.toLowerCase())
+                  )
+                  .map((material) => (
+                    <label
+                      key={material.id}
+                      className={`flex cursor-pointer items-center gap-4 rounded-xl border-2 p-4 transition-all ${
+                        formData.selectedMaterials.includes(material.id)
+                          ? "border-primary bg-primary/10"
+                          : "border-border bg-bg hover:border-primary/50"
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={formData.selectedMaterials.includes(material.id)}
+                        onChange={() => toggleMaterial(material.id)}
+                        className="border-border text-primary focus:ring-primary/20 h-5 w-5 rounded focus:ring-2"
+                      />
+                      <div className="flex-1">
+                        <div className="text-text font-medium">{material.title}</div>
+                        <div className="text-text-muted text-sm">{material.subject}</div>
+                      </div>
+                      <div className="text-primary font-semibold">{material.priceFormatted}</div>
+                    </label>
+                  ))}
               </div>
 
               {formData.selectedMaterials.length > 0 && (
@@ -462,35 +601,49 @@ export default function CreateBundlePage() {
                   </span>
                 </div>
 
-                {formData.price &&
-                  formData.selectedMaterials.length > 0 &&
-                  calculateDiscount() > 0 && (
-                    <div className="border-success/30 bg-success/10 mt-4 rounded-xl border p-4">
-                      <div className="flex items-center gap-2">
-                        <svg
-                          className="text-success h-5 w-5"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                        <div>
-                          <div className="text-success font-semibold">
-                            {calculateDiscount()}% Ersparnis!
-                          </div>
-                          <div className="text-text-muted text-sm">
-                            Käufer sparen CHF{" "}
-                            {(calculateTotal() / 100 - parseFloat(formData.price)).toFixed(2)} im
-                            Vergleich zum Einzelkauf
+                {formData.price && formData.selectedMaterials.length > 0 && (
+                  <>
+                    {calculateDiscount() > 0 ? (
+                      <div className="border-success/30 bg-success/10 mt-4 rounded-xl border p-4">
+                        <div className="flex items-center gap-2">
+                          <svg
+                            className="text-success h-5 w-5"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                          <div>
+                            <div className="text-success font-semibold">
+                              {calculateDiscount()}% Ersparnis (CHF{" "}
+                              {(calculateTotal() / 100 - parseFloat(formData.price)).toFixed(2)}{" "}
+                              gespart)
+                            </div>
+                            <div className="text-text-muted text-sm">
+                              Käufer sparen im Vergleich zum Einzelkauf
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  )}
+                    ) : (
+                      <div className="border-error/30 bg-error/10 mt-4 rounded-xl border p-4">
+                        <div className="flex items-center gap-2">
+                          <AlertTriangle className="text-error h-5 w-5 flex-shrink-0" />
+                          <div>
+                            <div className="text-error text-sm font-medium">
+                              Der Bundle-Preis muss unter dem Gesamtpreis der Einzelmaterialien
+                              liegen (CHF {(calculateTotal() / 100).toFixed(2)})
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
 
                 <p className="text-text-muted mt-2 text-xs">
                   Sie erhalten 70% des Verkaufspreises (30% Plattformgebühr)
@@ -508,7 +661,14 @@ export default function CreateBundlePage() {
               </Link>
               <button
                 type="submit"
-                disabled={formData.selectedMaterials.length < 2 || submitting}
+                disabled={
+                  formData.selectedMaterials.length < 2 ||
+                  submitting ||
+                  eszettCheck.hasAny ||
+                  (formData.selectedMaterials.length > 0 &&
+                    parseFloat(formData.price) > 0 &&
+                    calculateDiscount() <= 0)
+                }
                 className="bg-primary text-text-on-accent shadow-primary/20 hover:bg-primary-hover flex-1 rounded-xl px-6 py-4 font-semibold shadow-lg transition-colors disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {submitting ? "Wird erstellt..." : "Bundle erstellen"}

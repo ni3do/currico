@@ -10,23 +10,7 @@ import { StarRating } from "@/components/ui/StarRating";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { useToast } from "@/components/ui/Toast";
 import { motion, AnimatePresence } from "framer-motion";
-
-interface ReviewUser {
-  id: string;
-  displayName: string;
-  image: string | null;
-}
-
-interface Review {
-  id: string;
-  rating: number;
-  title: string | null;
-  content: string | null;
-  createdAt: string;
-  updatedAt: string;
-  isVerifiedPurchase: boolean;
-  user: ReviewUser;
-}
+import type { Review } from "@/lib/types/review";
 
 interface ReviewCardProps {
   review: Review;
@@ -77,45 +61,59 @@ export function ReviewCard({ review, onEdit, onDelete, className = "" }: ReviewC
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`border-border bg-bg rounded-xl border p-5 ${className}`}
+        className={`border-border bg-bg rounded-xl border p-4 ${className}`}
       >
-        {/* Header */}
-        <div className="mb-4 flex items-start justify-between">
-          <div className="flex items-center gap-3">
+        {/* Rating + Verified badge */}
+        <div className="mb-2 flex items-center gap-2">
+          <StarRating rating={review.rating} size="lg" />
+          {review.isVerifiedPurchase && (
+            <span className="pill pill-success flex items-center gap-1 text-xs">
+              <BadgeCheck className="h-3 w-3" />
+              {t("verifiedPurchase")}
+            </span>
+          )}
+        </div>
+
+        {/* Title */}
+        {review.title && <h4 className="text-text mb-1.5 text-base font-bold">{review.title}</h4>}
+
+        {/* Content */}
+        {review.content && (
+          <p className="text-text-secondary mb-3 text-sm leading-relaxed whitespace-pre-wrap">
+            {review.content}
+          </p>
+        )}
+
+        {/* Footer: User info + menu */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
             <Link href={`/profil/${review.user.id}`} className="shrink-0">
               {review.user.image ? (
                 <Image
                   src={review.user.image}
                   alt={review.user.displayName}
-                  width={40}
-                  height={40}
-                  className="h-10 w-10 rounded-full object-cover"
+                  width={28}
+                  height={28}
+                  className="h-7 w-7 rounded-full object-cover"
                 />
               ) : (
-                <div className="bg-surface flex h-10 w-10 items-center justify-center rounded-full">
-                  <span className="text-text-muted text-sm font-medium">
+                <div className="bg-surface flex h-7 w-7 items-center justify-center rounded-full">
+                  <span className="text-text-muted text-xs font-medium">
                     {review.user.displayName.charAt(0).toUpperCase()}
                   </span>
                 </div>
               )}
             </Link>
-            <div>
-              <div className="flex items-center gap-2">
-                <Link
-                  href={`/profil/${review.user.id}`}
-                  className="text-text hover:text-primary font-medium transition-colors"
-                >
-                  {review.user.displayName}
-                </Link>
-                {review.isVerifiedPurchase && (
-                  <span className="pill pill-success flex items-center gap-1 text-xs">
-                    <BadgeCheck className="h-3 w-3" />
-                    {t("verifiedPurchase")}
-                  </span>
-                )}
-              </div>
-              <div className="text-text-muted text-sm">{formattedDate}</div>
-            </div>
+            <Link
+              href={`/profil/${review.user.id}`}
+              className="text-text hover:text-primary text-sm font-medium transition-colors"
+            >
+              {review.user.displayName}
+            </Link>
+            <span className="text-text-faint text-xs">· {formattedDate}</span>
+            {review.createdAt !== review.updatedAt && (
+              <span className="text-text-faint text-xs">({t("edited")})</span>
+            )}
           </div>
 
           {/* Menu for owner */}
@@ -126,7 +124,7 @@ export function ReviewCard({ review, onEdit, onDelete, className = "" }: ReviewC
                 className="text-text-muted hover:text-text hover:bg-surface rounded-lg p-1.5 transition-colors"
                 aria-label={t("options")}
               >
-                <MoreVertical className="h-5 w-5" />
+                <MoreVertical className="h-4 w-4" />
               </button>
               <AnimatePresence>
                 {showMenu && (
@@ -136,7 +134,7 @@ export function ReviewCard({ review, onEdit, onDelete, className = "" }: ReviewC
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.95 }}
-                      className="border-border bg-bg absolute right-0 z-20 mt-1 w-40 rounded-lg border shadow-lg"
+                      className="border-border bg-bg absolute right-0 z-20 mt-1 w-40 overflow-hidden rounded-xl border shadow-lg"
                     >
                       <button
                         onClick={() => {
@@ -148,6 +146,7 @@ export function ReviewCard({ review, onEdit, onDelete, className = "" }: ReviewC
                         <Pencil className="h-4 w-4" />
                         {t("edit")}
                       </button>
+                      <div className="border-border mx-2 border-t" />
                       <button
                         onClick={() => {
                           setShowMenu(false);
@@ -166,26 +165,6 @@ export function ReviewCard({ review, onEdit, onDelete, className = "" }: ReviewC
             </div>
           )}
         </div>
-
-        {/* Rating */}
-        <div className="mb-3">
-          <StarRating rating={review.rating} size="md" />
-        </div>
-
-        {/* Title */}
-        {review.title && <h4 className="text-text mb-2 font-semibold">{review.title}</h4>}
-
-        {/* Content */}
-        {review.content && (
-          <p className="text-text-secondary leading-relaxed whitespace-pre-wrap">
-            {review.content}
-          </p>
-        )}
-
-        {/* Edited indicator */}
-        {review.createdAt !== review.updatedAt && (
-          <p className="text-text-faint mt-3 text-xs">({t("edited")})</p>
-        )}
       </motion.div>
 
       <ConfirmDialog

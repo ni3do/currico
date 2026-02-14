@@ -2,7 +2,8 @@
 
 import { X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CANTON_ABBREVS, type LP21FilterState } from "./LP21FilterSidebar";
+import { CANTON_ABBREVS } from "./filters/CantonFilter";
+import type { LP21FilterState } from "@/lib/types/search";
 import type { Fachbereich } from "@/lib/curriculum-types";
 
 const CHIP_TRANSITION = { duration: 0.15 };

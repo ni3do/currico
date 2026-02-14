@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { TableSkeleton } from "@/components/ui/Skeleton";
 import { FocusTrap } from "@/components/ui/FocusTrap";
+import { useToast } from "@/components/ui/Toast";
 
 interface AdminReport {
   id: string;
@@ -49,6 +50,7 @@ const statusColors: Record<string, string> = {
 
 export default function AdminReportsPage() {
   const t = useTranslations("admin.reports");
+  const { toast } = useToast();
   const [reports, setReports] = useState<AdminReport[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("");
@@ -129,7 +131,7 @@ export default function AdminReportsPage() {
         setResolution("");
       } else {
         const error = await response.json();
-        alert(error.error || t("errorUpdating"));
+        toast(error.error || t("errorUpdating"), "error");
       }
     } catch (error) {
       console.error("Error updating report:", error);

@@ -24,6 +24,8 @@ interface FeaturedMaterial {
   cycle: string;
   priceFormatted: string;
   previewUrl: string | null;
+  averageRating?: number;
+  reviewCount?: number;
   seller: { display_name: string | null; is_verified_seller: boolean };
 }
 
@@ -128,7 +130,11 @@ export default function Home() {
                 </FadeIn>
                 {/* Hero Search Bar */}
                 <FadeIn direction="up" delay={0.2}>
-                  <form onSubmit={handleSearch} className="mt-10 w-full max-w-[600px]" aria-label={t("hero.search.formLabel")}>
+                  <form
+                    onSubmit={handleSearch}
+                    className="mt-10 w-full max-w-[600px]"
+                    aria-label={t("hero.search.formLabel")}
+                  >
                     {/* Search bar */}
                     <motion.div
                       className="bg-surface border-border-subtle relative flex items-center rounded-full border shadow-lg"
@@ -303,6 +309,8 @@ export default function Home() {
                       cycle={mat.cycle}
                       priceFormatted={mat.priceFormatted}
                       previewUrl={mat.previewUrl}
+                      averageRating={mat.averageRating}
+                      reviewCount={mat.reviewCount}
                       subjectPillClass={getSubjectPillClass(mat.subject)}
                       seller={{
                         displayName: mat.seller.display_name,
@@ -314,10 +322,20 @@ export default function Home() {
                 ))}
               </StaggerChildren>
             ) : (
-              <FadeIn direction="up" className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-bg py-16 text-center">
-                <p className="text-text text-lg font-semibold">{t("featuredResources.emptyTitle")}</p>
-                <p className="text-text-muted mt-2 text-sm">{t("featuredResources.emptyDescription")}</p>
-                <Link href="/hochladen" className="bg-primary text-text-on-accent hover:bg-primary-hover mt-4 inline-flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold transition-colors">
+              <FadeIn
+                direction="up"
+                className="border-border bg-bg flex flex-col items-center justify-center rounded-2xl border border-dashed py-16 text-center"
+              >
+                <p className="text-text text-lg font-semibold">
+                  {t("featuredResources.emptyTitle")}
+                </p>
+                <p className="text-text-muted mt-2 text-sm">
+                  {t("featuredResources.emptyDescription")}
+                </p>
+                <Link
+                  href="/hochladen"
+                  className="bg-primary text-text-on-accent hover:bg-primary-hover mt-4 inline-flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold transition-colors"
+                >
                   {t("featuredResources.emptyUpload")}
                 </Link>
               </FadeIn>

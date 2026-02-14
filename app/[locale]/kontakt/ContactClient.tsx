@@ -224,10 +224,7 @@ export default function ContactClient() {
                       required
                       className="border-border text-primary focus:ring-primary/20 mt-1 h-4 w-4 rounded"
                     />
-                    <label
-                      htmlFor="consent"
-                      className="text-text-secondary text-sm leading-relaxed"
-                    >
+                    <label htmlFor="consent" className="text-text-muted text-sm leading-relaxed">
                       {t("form.consentText")}
                     </label>
                   </div>
@@ -294,19 +291,17 @@ export default function ContactClient() {
                     <h3 className="text-text mb-1 font-semibold">{t("direct.email.title")}</h3>
                     <p className="text-text-muted mb-2 text-sm">{t("direct.email.description")}</p>
                     <a
-                      href="mailto:info@currico.ch"
+                      href={`mailto:${t("direct.emailAddress")}`}
                       className="text-primary hover:text-primary-hover font-medium transition-colors"
                     >
-                      info@currico.ch
+                      {t("direct.emailAddress")}
                     </a>
                   </div>
                 </div>
               </div>
-
             </div>
           </div>
         </div>
-
       </main>
 
       <Footer />

@@ -5,6 +5,15 @@ import type { NotificationType } from "@prisma/client";
 
 const APP_NAME = "Currico";
 
+/** Escape user-supplied strings before embedding in HTML emails */
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
 let transporter: Transporter | null = null;
 
 function getTransporter(): Transporter {
@@ -175,8 +184,8 @@ export async function sendPurchaseConfirmationEmail({
 
   const subject =
     locale === "de"
-      ? `${APP_NAME}: Kaufbestätigung - ${resourceTitle}`
-      : `${APP_NAME}: Purchase Confirmation - ${resourceTitle}`;
+      ? `${APP_NAME}: Kaufbestätigung - ${escapeHtml(resourceTitle)}`
+      : `${APP_NAME}: Purchase Confirmation - ${escapeHtml(resourceTitle)}`;
 
   const downloadInfo =
     locale === "de"
@@ -222,7 +231,7 @@ export async function sendPurchaseConfirmationEmail({
 
   <div style="background-color: #f8fafc; border-radius: 8px; padding: 20px; margin-bottom: 24px;">
     <p style="margin: 0 0 8px 0; font-weight: 500;">Material:</p>
-    <p style="margin: 0 0 16px 0; font-size: 18px;">${resourceTitle}</p>
+    <p style="margin: 0 0 16px 0; font-size: 18px;">${escapeHtml(resourceTitle)}</p>
     <p style="margin: 0 0 8px 0; font-weight: 500;">Preis:</p>
     <p style="margin: 0; font-size: 18px;">CHF ${formattedPrice}</p>
   </div>
@@ -252,7 +261,7 @@ export async function sendPurchaseConfirmationEmail({
 
   <div style="background-color: #f8fafc; border-radius: 8px; padding: 20px; margin-bottom: 24px;">
     <p style="margin: 0 0 8px 0; font-weight: 500;">Material:</p>
-    <p style="margin: 0 0 16px 0; font-size: 18px;">${resourceTitle}</p>
+    <p style="margin: 0 0 16px 0; font-size: 18px;">${escapeHtml(resourceTitle)}</p>
     <p style="margin: 0 0 8px 0; font-weight: 500;">Price:</p>
     <p style="margin: 0; font-size: 18px;">CHF ${formattedPrice}</p>
   </div>
@@ -321,7 +330,7 @@ export async function sendContactNotificationEmail({
       from: getFromEmail(),
       to: adminEmail,
       replyTo: email,
-      subject: `[${APP_NAME}] Neue Kontaktanfrage: ${subjectLabels[subject] || subject}`,
+      subject: `[${APP_NAME}] Neue Kontaktanfrage: ${subjectLabels[subject] || escapeHtml(subject)}`,
       text: `Neue Kontaktanfrage von ${name} (${email})
 
 Betreff: ${subjectLabels[subject] || subject}
@@ -340,11 +349,11 @@ Diese E-Mail wurde automatisch generiert.`,
 </head>
 <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
   <h2 style="color: #1e3a5f;">Neue Kontaktanfrage</h2>
-  <p><strong>Von:</strong> ${name} (${email})</p>
-  <p><strong>Betreff:</strong> ${subjectLabels[subject] || subject}</p>
+  <p><strong>Von:</strong> ${escapeHtml(name)} (${escapeHtml(email)})</p>
+  <p><strong>Betreff:</strong> ${escapeHtml(subjectLabels[subject] || subject)}</p>
   <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;">
   <p><strong>Nachricht:</strong></p>
-  <p style="white-space: pre-wrap;">${message}</p>
+  <p style="white-space: pre-wrap;">${escapeHtml(message)}</p>
   <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;">
   <p style="color: #6b7280; font-size: 12px;">Diese E-Mail wurde automatisch generiert.</p>
 </body>

@@ -162,7 +162,11 @@ export default function RegisterPage() {
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="text-text-muted hover:text-text absolute top-1/2 right-3 -translate-y-1/2 p-1 transition-colors"
-                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    aria-label={
+                      showPassword
+                        ? tCommon("buttons.hidePassword")
+                        : tCommon("buttons.showPassword")
+                    }
                   >
                     {showPassword ? (
                       <svg
@@ -234,7 +238,11 @@ export default function RegisterPage() {
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="text-text-muted hover:text-text absolute top-1/2 right-3 -translate-y-1/2 p-1 transition-colors"
-                    aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                    aria-label={
+                      showConfirmPassword
+                        ? tCommon("buttons.hidePassword")
+                        : tCommon("buttons.showPassword")
+                    }
                   >
                     {showConfirmPassword ? (
                       <svg
@@ -292,15 +300,12 @@ export default function RegisterPage() {
                 />
                 <label htmlFor="terms" className="text-text-muted text-sm">
                   {t("form.termsText")}{" "}
-                  <Link
-                    href="/bald-verfuegbar"
-                    className="text-primary hover:text-primary-hover font-medium"
-                  >
+                  <Link href="/agb" className="text-primary hover:text-primary-hover font-medium">
                     {t("form.termsLink")}
                   </Link>{" "}
                   {t("form.termsAnd")}{" "}
                   <Link
-                    href="/bald-verfuegbar"
+                    href="/datenschutz"
                     className="text-primary hover:text-primary-hover font-medium"
                   >
                     {t("form.privacyLink")}

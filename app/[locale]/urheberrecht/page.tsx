@@ -134,7 +134,7 @@ export default function CopyrightGuidePage() {
             <div className="sticky top-24">
               <nav
                 className="no-print border-border bg-bg-secondary rounded-xl border p-4 shadow-sm"
-                aria-label="Table of contents"
+                aria-label={t("toc.title")}
               >
                 <h2 className="text-text mb-3 text-sm font-semibold">{t("toc.title")}</h2>
                 <ol className="space-y-0.5">
@@ -169,7 +169,7 @@ export default function CopyrightGuidePage() {
               {/* Table of Contents (mobile only, desktop uses sidebar) */}
               <nav
                 className="no-print bg-surface border-border rounded-xl border p-6 lg:hidden"
-                aria-label="Table of contents"
+                aria-label={t("toc.title")}
               >
                 <h2 className="text-text mb-4 text-lg font-semibold">{t("toc.title")}</h2>
                 <ol className="grid gap-1.5 sm:grid-cols-2">
@@ -714,6 +714,7 @@ export default function CopyrightGuidePage() {
                 <a
                   href={`mailto:${t("sections.contact.email")}`}
                   className="bg-primary text-text-on-accent hover:bg-primary-hover mt-4 inline-flex items-center gap-2 rounded-lg px-6 py-3 font-medium transition-colors"
+                  title={t("sections.contact.emailTitle")}
                 >
                   {t("sections.contact.email")}
                 </a>

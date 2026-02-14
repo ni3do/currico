@@ -1,35 +1,47 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { FocusTrap } from "@/components/ui/FocusTrap";
 
-function BlurredPreviewOverlay({
+/**
+ * Subtle overlay for watermarked preview pages (non-purchased).
+ * Shows the server-watermarked image clearly with a bottom gradient + CTA.
+ */
+function PreviewOverlay({
   imageUrl,
   pageNumber,
+  totalPages,
   onUnlock,
   ctaText,
-  alt = "Vorschau",
+  alt,
 }: {
   imageUrl: string;
   pageNumber: number;
+  totalPages: number;
   onUnlock?: () => void;
   ctaText?: string;
   alt?: string;
 }) {
   const t = useTranslations("previewGallery");
+  const altText = alt
+    ? `${alt} - ${t("pageOf", { current: pageNumber, total: totalPages })}`
+    : t("pageOf", { current: pageNumber, total: totalPages });
   return (
     <div className="relative h-full w-full overflow-hidden">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
+      <Image
         src={imageUrl}
-        alt={`${alt} - Seite ${pageNumber}`}
-        className="h-full w-full object-cover"
-        style={{ filter: "blur(8px)" }}
+        alt={altText}
+        fill
+        className="object-contain"
+        sizes="(max-width: 640px) 100vw, 50vw"
       />
-      <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 backdrop-blur-sm">
-        <div className="bg-surface/90 mb-4 flex h-16 w-16 items-center justify-center rounded-full shadow-lg">
+      {/* Subtle bottom gradient with CTA */}
+      <div className="absolute inset-x-0 bottom-0 flex flex-col items-center bg-gradient-to-t from-black/60 via-black/20 to-transparent px-4 pt-16 pb-4">
+        <div className="mb-2 flex items-center gap-1.5">
           <svg
-            className="text-text-muted h-8 w-8"
+            className="h-4 w-4 text-white/90"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -41,22 +53,31 @@ function BlurredPreviewOverlay({
               d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
             />
           </svg>
+          <p className="text-center text-sm font-medium text-white/90 drop-shadow-md">
+            {t("previewOverlay.description")}
+          </p>
         </div>
-        <p className="mb-4 text-center text-sm font-medium text-white drop-shadow-md">
-          {t("blurredOverlay.description")}
-        </p>
         {onUnlock && (
           <button
             onClick={onUnlock}
             className="btn-primary rounded-lg px-6 py-2 text-sm font-semibold shadow-lg transition-transform hover:scale-105"
           >
-            {ctaText || t("blurredOverlay.cta")}
+            {ctaText || t("previewOverlay.cta")}
           </button>
         )}
       </div>
     </div>
   );
 }
+
+/** Minimum swipe distance (px) to trigger page navigation */
+const SWIPE_THRESHOLD_PX = 50;
+/** Maximum number of visible thumbnails before scrolling */
+const MAX_VISIBLE_THUMBNAILS = 4;
+/** Height of each thumbnail button (px) */
+const THUMBNAIL_HEIGHT_PX = 80;
+/** Gap between thumbnails (px) */
+const THUMBNAIL_GAP_PX = 6;
 
 interface PreviewGalleryProps {
   previewUrls: string[];
@@ -70,7 +91,7 @@ interface PreviewGalleryProps {
 /**
  * Gallery component for displaying multi-page PDF previews.
  * - Page 1 is always shown clearly
- * - Pages 2+ are blurred with "Buy to unlock" CTA for non-purchasers
+ * - Pages 2+ show server-watermarked images with a subtle bottom overlay for non-purchasers
  * - Includes thumbnail strip, main preview, lightbox, and mobile swipe
  */
 export function PreviewGallery({
@@ -92,9 +113,7 @@ export function PreviewGallery({
     if (!isLightboxOpen) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setIsLightboxOpen(false);
-      } else if (e.key === "ArrowLeft" && currentPage > 0) {
+      if (e.key === "ArrowLeft" && currentPage > 0) {
         setCurrentPage(currentPage - 1);
       } else if (e.key === "ArrowRight" && currentPage < previewUrls.length - 1) {
         setCurrentPage(currentPage + 1);
@@ -117,8 +136,7 @@ export function PreviewGallery({
       const touchEndX = e.changedTouches[0].clientX;
       const diff = touchStartX.current - touchEndX;
 
-      // Swipe threshold of 50px
-      if (Math.abs(diff) > 50) {
+      if (Math.abs(diff) > SWIPE_THRESHOLD_PX) {
         if (diff > 0 && currentPage < previewUrls.length - 1) {
           // Swipe left - next page
           setCurrentPage(currentPage + 1);
@@ -158,7 +176,7 @@ export function PreviewGallery({
   }
 
   const currentUrl = previewUrls[currentPage];
-  const isBlurred = !hasAccess && currentPage > 0;
+  const isLocked = !hasAccess && currentPage > 0;
 
   return (
     <div>
@@ -175,21 +193,23 @@ export function PreviewGallery({
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
           >
-            {isBlurred ? (
-              <BlurredPreviewOverlay
+            {isLocked ? (
+              <PreviewOverlay
                 imageUrl={currentUrl}
                 pageNumber={currentPage + 1}
+                totalPages={previewCount}
                 onUnlock={onPurchaseClick}
-                ctaText={`${priceFormatted} - ${t("blurredOverlay.cta")}`}
+                ctaText={`${priceFormatted} - ${t("previewOverlay.cta")}`}
                 alt={resourceTitle}
               />
             ) : (
               <>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   src={currentUrl}
-                  alt={`${resourceTitle} - Seite ${currentPage + 1}`}
-                  className="h-full w-full object-contain"
+                  alt={`${resourceTitle} - ${t("pageOf", { current: currentPage + 1, total: previewCount })}`}
+                  fill
+                  className="object-contain"
+                  sizes="(max-width: 640px) 100vw, 50vw"
                 />
                 {/* Zoom hint overlay */}
                 <div className="absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition-opacity hover:bg-black/20 hover:opacity-100">
@@ -224,33 +244,36 @@ export function PreviewGallery({
           <div className="flex flex-col">
             <div
               className="flex gap-2 overflow-x-auto pb-2 sm:flex-col sm:overflow-x-visible sm:overflow-y-auto sm:pr-2 sm:pb-0"
-              style={{ maxHeight: "calc(80px * 4 + 24px)" }}
+              style={{
+                maxHeight: `calc(${THUMBNAIL_HEIGHT_PX}px * ${MAX_VISIBLE_THUMBNAILS} + ${THUMBNAIL_GAP_PX * (MAX_VISIBLE_THUMBNAILS - 1)}px)`,
+              }}
             >
               {previewUrls.map((url, index) => {
-                const isThumbBlurred = !hasAccess && index > 0;
+                const isThumbLocked = !hasAccess && index > 0;
                 const isActive = index === currentPage;
 
                 return (
                   <button
                     key={index}
                     onClick={() => setCurrentPage(index)}
+                    aria-label={t("pageOf", { current: index + 1, total: previewCount })}
                     className={`relative h-20 w-16 flex-shrink-0 overflow-hidden rounded-lg border-2 transition-all ${
                       isActive
                         ? "border-primary ring-primary/30 ring-2"
                         : "border-border hover:border-primary/50"
                     }`}
                   >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                    <Image
                       src={url}
-                      alt={`Seite ${index + 1}`}
-                      className="h-full w-full object-cover"
-                      style={isThumbBlurred ? { filter: "blur(4px)" } : undefined}
+                      alt={t("pageOf", { current: index + 1, total: previewCount })}
+                      fill
+                      className="object-cover"
+                      sizes="64px"
                     />
-                    {isThumbBlurred && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                    {isThumbLocked && (
+                      <div className="absolute inset-x-0 bottom-0 flex items-center justify-center bg-gradient-to-t from-black/40 to-transparent pt-3 pb-1">
                         <svg
-                          className="h-4 w-4 text-white"
+                          className="h-3 w-3 text-white/80"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -290,7 +313,7 @@ export function PreviewGallery({
               className={`h-2 w-2 rounded-full transition-all ${
                 index === currentPage ? "bg-primary w-4" : "bg-border"
               }`}
-              aria-label={`Seite ${index + 1}`}
+              aria-label={t("pageOf", { current: index + 1, total: previewCount })}
             />
           ))}
         </div>
@@ -306,94 +329,152 @@ export function PreviewGallery({
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
           onClick={() => setIsLightboxOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${resourceTitle} - ${t("title")}`}
         >
-          {/* Close button */}
-          <button
-            className="absolute top-4 right-4 rounded-full bg-white/10 p-2 text-white transition-colors hover:bg-white/20"
-            onClick={() => setIsLightboxOpen(false)}
-          >
-            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
+          <FocusTrap active={isLightboxOpen} onEscape={() => setIsLightboxOpen(false)}>
+            <div className="contents">
+              {/* Close button */}
+              <button
+                className="absolute top-4 right-4 z-10 rounded-full bg-white/10 p-2 text-white transition-colors hover:bg-white/20"
+                onClick={() => setIsLightboxOpen(false)}
+                aria-label={t("closeLightbox")}
+              >
+                <svg
+                  className="h-6 w-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
 
-          {/* Navigation arrows */}
-          {currentPage > 0 && (
-            <button
-              className="absolute left-4 rounded-full bg-white/10 p-3 text-white transition-colors hover:bg-white/20"
-              onClick={(e) => {
-                e.stopPropagation();
-                setCurrentPage(currentPage - 1);
-              }}
-            >
-              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
-            </button>
-          )}
-
-          {currentPage < previewUrls.length - 1 && (
-            <button
-              className="absolute right-4 rounded-full bg-white/10 p-3 text-white transition-colors hover:bg-white/20"
-              onClick={(e) => {
-                e.stopPropagation();
-                setCurrentPage(currentPage + 1);
-              }}
-              style={{ right: "4rem" }} // Offset from close button
-            >
-              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            </button>
-          )}
-
-          {/* Lightbox content */}
-          <div
-            className="max-h-[90vh] max-w-4xl overflow-hidden"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {isBlurred ? (
-              <div className="relative aspect-[3/4] w-full max-w-2xl overflow-hidden rounded-xl">
-                <BlurredPreviewOverlay
-                  imageUrl={currentUrl}
-                  pageNumber={currentPage + 1}
-                  onUnlock={() => {
-                    setIsLightboxOpen(false);
-                    onPurchaseClick?.();
+              {/* Navigation arrows */}
+              {currentPage > 0 && (
+                <button
+                  className="absolute left-4 rounded-full bg-white/10 p-3 text-white transition-colors hover:bg-white/20"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCurrentPage(currentPage - 1);
                   }}
-                  ctaText={`${priceFormatted} - ${t("blurredOverlay.cta")}`}
-                  alt={resourceTitle}
-                />
-              </div>
-            ) : (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={currentUrl}
-                alt={`${resourceTitle} - Seite ${currentPage + 1}`}
-                className="max-h-[90vh] max-w-full rounded-lg object-contain"
-              />
-            )}
-          </div>
+                  aria-label={t("previousPage")}
+                >
+                  <svg
+                    className="h-6 w-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 19l-7-7 7-7"
+                    />
+                  </svg>
+                </button>
+              )}
 
-          {/* Page indicator in lightbox */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-white/10 px-4 py-2 text-sm text-white">
-            {t("pageOf", { current: currentPage + 1, total: previewCount })}
-          </div>
+              {currentPage < previewUrls.length - 1 && (
+                <button
+                  className="absolute right-4 rounded-full bg-white/10 p-3 text-white transition-colors hover:bg-white/20"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCurrentPage(currentPage + 1);
+                  }}
+                  style={{ right: "4rem" }}
+                  aria-label={t("nextPage")}
+                >
+                  <svg
+                    className="h-6 w-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </button>
+              )}
+
+              {/* Lightbox content */}
+              <div
+                className="relative max-h-[90vh] max-w-4xl overflow-hidden"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {isLocked ? (
+                  <div className="relative">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={currentUrl}
+                      alt={`${resourceTitle} - ${t("pageOf", { current: currentPage + 1, total: previewCount })}`}
+                      className="max-h-[90vh] max-w-full rounded-lg object-contain"
+                    />
+                    {/* Subtle bottom overlay in lightbox */}
+                    <div className="absolute inset-x-0 bottom-0 flex flex-col items-center rounded-b-lg bg-gradient-to-t from-black/60 via-black/20 to-transparent px-4 pt-16 pb-4">
+                      <div className="mb-2 flex items-center gap-1.5">
+                        <svg
+                          className="h-4 w-4 text-white/90"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                          />
+                        </svg>
+                        <p className="text-center text-sm font-medium text-white/90 drop-shadow-md">
+                          {t("previewOverlay.description")}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => {
+                          setIsLightboxOpen(false);
+                          onPurchaseClick?.();
+                        }}
+                        className="btn-primary rounded-lg px-6 py-2 text-sm font-semibold shadow-lg transition-transform hover:scale-105"
+                      >
+                        {`${priceFormatted} - ${t("previewOverlay.cta")}`}
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={currentUrl}
+                    alt={`${resourceTitle} - ${t("pageOf", { current: currentPage + 1, total: previewCount })}`}
+                    className="max-h-[90vh] max-w-full rounded-lg object-contain"
+                  />
+                )}
+              </div>
+
+              {/* Page indicator in lightbox — positioned higher when overlay is visible */}
+              <div
+                className={`absolute left-1/2 -translate-x-1/2 rounded-full bg-white/10 px-4 py-2 text-sm text-white ${
+                  isLocked ? "bottom-24" : "bottom-4"
+                }`}
+              >
+                {t("pageOf", { current: currentPage + 1, total: previewCount })}
+              </div>
+            </div>
+          </FocusTrap>
         </div>
       )}
     </div>
