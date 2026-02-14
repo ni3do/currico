@@ -20,6 +20,22 @@ else
   fi
 fi
 
+# Run e2e tests
+if [ -n "$SKIP_E2E_CHECK" ]; then
+  echo "⏭️  Skipping e2e tests (SKIP_E2E_CHECK is set)"
+else
+  echo "🎭 Running e2e tests..."
+  echo "💡 Tip: Set SKIP_E2E_CHECK=1 to skip: SKIP_E2E_CHECK=1 git push"
+
+  if npm run test:e2e; then
+    echo "✅ E2e tests passed"
+  else
+    echo "❌ E2e tests failed. Please fix before pushing."
+    echo "To skip this check: SKIP_E2E_CHECK=1 git push"
+    exit 1
+  fi
+fi
+
 # Doc freshness check — only runs when code paths changed and claude is installed
 if command -v claude >/dev/null 2>&1; then
   DIFF=$(git diff origin/main...HEAD --stat -- 'app/' 'components/' 'lib/' 'prisma/schema.prisma' 'package.json' 'i18n/')
