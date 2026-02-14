@@ -564,7 +564,8 @@
         "rzg": "Räume, Zeiten, Gesellschaften (RZG)",
         "erg": "Ethik, Religionen, Gemeinschaft (ERG)"
       },
-      "filterButton": "Filter"
+      "filterButton": "Filter",
+      "fuzzyResults": "Ähnliche Ergebnisse werden angezeigt"
     },
     "advancedFilters": {
       "title": "Erweiterte Filter",
@@ -648,6 +649,7 @@
       "gridView": "Rasteransicht",
       "listView": "Listenansicht",
       "sortOptions": {
+        "relevance": "Relevanz",
         "newest": "Neueste",
         "popular": "Beliebteste",
         "rating": "Beste Bewertung",
@@ -1023,6 +1025,30 @@
       "statusArchived": "Archiviert",
       "errorUpdating": "Fehler beim Aktualisieren",
       "errorDeleting": "Fehler beim Löschen"
+    },
+    "newsletters": {
+      "title": "Newsletter",
+      "create": "Newsletter erstellen",
+      "subject": "Betreff",
+      "content": "Inhalt",
+      "save": "Speichern",
+      "send": "Senden",
+      "confirmSend": "Sind Sie sicher? Diese E-Mail wird an alle Abonnenten gesendet.",
+      "confirmDelete": "Newsletter wirklich löschen?",
+      "statusDraft": "Entwurf",
+      "statusSending": "Wird gesendet",
+      "statusSent": "Gesendet",
+      "statusFailed": "Fehlgeschlagen",
+      "recipients": "Empfänger",
+      "sentAt": "Gesendet am",
+      "edit": "Bearbeiten",
+      "delete": "Löschen",
+      "cancel": "Abbrechen",
+      "empty": "Noch keine Newsletter erstellt",
+      "created": "Newsletter erstellt",
+      "updated": "Newsletter aktualisiert",
+      "deleted": "Newsletter gelöscht",
+      "sending": "Newsletter wird gesendet..."
     },
     "settings": {
       "accountSettings": "Konto-Einstellungen",
@@ -1430,7 +1456,7 @@
       "priceRequired": "Preis ist erforderlich",
       "pricePositive": "Preis muss eine positive Zahl sein",
       "priceMax": "Preis darf maximal CHF 50 sein",
-      "priceMin": "Mindestpreis ist CHF 1",
+      "priceMin": "Mindestpreis ist CHF 0.50",
       "fileRequired": "Mindestens eine Datei ist erforderlich",
       "legalOwnContent": "Bitte bestätigen Sie, dass Sie eigene Inhalte verwenden",
       "legalNoScans": "Bitte bestätigen Sie, dass keine Lehrmittel-Scans enthalten sind",
@@ -1648,7 +1674,16 @@
       "loginRequired": "Sie müssen sich anmelden, um Verkäufer zu werden",
       "verifyEmail": "Verifizieren Sie Ihre E-Mail, um fortzufahren",
       "emailRequired": "Bitte verifizieren Sie Ihre E-Mail-Adresse, bevor Sie Verkäufer werden"
-    }
+    },
+    "stripeRefreshMessage": "Ihre Stripe-Sitzung ist abgelaufen. Bitte versuchen Sie es erneut.",
+    "stepLogin": "Anmelden",
+    "stepVerifyEmail": "E-Mail verifizieren",
+    "stepAcceptTerms": "Bedingungen akzeptieren",
+    "stepConnectStripe": "Stripe verbinden",
+    "statusPendingVerification": "Ihre Verifizierung wird bearbeitet",
+    "statusActive": "Ihr Stripe-Konto ist aktiv",
+    "statusRestricted": "Bitte vervollständigen Sie Ihre Stripe-Verifizierung",
+    "retryStripe": "Erneut mit Stripe verbinden"
   },
   "stripeConnectStatus": {
     "error": {
@@ -1670,7 +1705,8 @@
       "requirementsNeeded": "Zusätzliche Informationen sind erforderlich, um die Einrichtung abzuschliessen.",
       "requiredInfo": "Erforderliche Informationen:",
       "andMore": "und {count} weitere...",
-      "continueSetup": "Einrichtung abschliessen"
+      "continueSetup": "Einrichtung abschliessen",
+      "continueLoading": "Weiterleitung zu Stripe..."
     },
     "invite": {
       "title": "Verkäufer werden",
@@ -1723,7 +1759,8 @@
       "requirementsNeeded": "Stripe benötigt einige zusätzliche Informationen, um Ihr Konto einzurichten.",
       "requiredInfo": "Erforderliche Informationen:",
       "andMore": "und {count} weitere...",
-      "continueSetup": "Einrichtung fortsetzen"
+      "continueSetup": "Einrichtung fortsetzen",
+      "continueLoading": "Weiterleitung zu Stripe..."
     },
     "noAccount": {
       "title": "Verkaufen starten",
@@ -2847,6 +2884,17 @@
     "saved": "Gespeichert",
     "error": "Fehler beim Speichern",
     "categories": {
+      "authorActivity": {
+        "title": "Aktivität auf meinen Materialien",
+        "comments": {
+          "label": "Kommentare und Antworten",
+          "description": "Benachrichtigung bei neuen Kommentaren oder Antworten auf Ihre Materialien"
+        },
+        "newFollowers": {
+          "label": "Neue Follower",
+          "description": "Benachrichtigung, wenn jemand Ihrem Profil folgt"
+        }
+      },
       "favoriteAuthors": {
         "title": "Lieblings-Autor*innen",
         "newFromFollowed": {
@@ -2938,7 +2986,8 @@
     "loginPrompt": "Melden Sie sich an",
     "loginSuffix": ", um eine Bewertung zu schreiben.",
     "noReviewsBeFirst": "Noch keine Bewertungen — seien Sie der Erste!",
-    "options": "Optionen"
+    "options": "Optionen",
+    "cannotReviewOwn": "Sie können Ihr eigenes Material nicht bewerten."
   },
   "likes": {
     "like": "Gefällt mir",
@@ -3157,6 +3206,11 @@
       },
       "statusVerified": "Verifiziert",
       "statusPending": "Ausstehend",
+      "statusRejected": "Abgelehnt",
+      "filterAll": "Alle",
+      "filterUnderReview": "In Prüfung",
+      "filterVerified": "Verifiziert",
+      "filterRejected": "Abgelehnt",
       "empty": "Noch keine hochgeladenen Materialien",
       "emptyDescription": "Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen.",
       "uploadFirst": "Material hochladen"
@@ -3293,7 +3347,7 @@
       "earnings": "Einnahmen",
       "downloads": "Downloads",
       "contributions": "Beiträge",
-      "thisMonth": "Gesamt",
+      "total": "Gesamt",
       "totalDownloads": "Gesamte Downloads",
       "materialsPublished": "Materialien veröffentlicht",
       "myMaterials": "Meine Uploads",
@@ -3347,7 +3401,14 @@
       "hoursAgo": "vor {count} Std.",
       "daysAgo": "vor {count} T.",
       "errorLoading": "Fehler beim Laden der Benachrichtigungen",
-      "retry": "Erneut versuchen"
+      "retry": "Erneut versuchen",
+      "filterAll": "Alle",
+      "filterSales": "Verkäufe",
+      "filterReviews": "Bewertungen",
+      "filterComments": "Kommentare",
+      "filterFollows": "Follower",
+      "filterSystem": "System",
+      "loadMore": "Mehr laden"
     },
     "welcomeGuide": {
       "welcome": "Willkommen, {name}!",
@@ -3593,6 +3654,10 @@
     "verificationProgress": "{met}/{total} Kriterien erfüllt",
     "notVerified": "Nicht verifiziert",
     "verifiedInfo": "Mehr erfahren",
+    "requirementPoints": "Punkte",
+    "needMorePoints": "Sie benötigen noch {count} Punkte für {level}",
+    "needMoreUploads": "Sie benötigen noch {count, plural, =1 {1 weiteren Upload} other {# weitere Uploads}} für {level}",
+    "needMoreDownloads": "Sie benötigen noch {count, plural, =1 {1 weiteren Download} other {# weitere Downloads}} für {level}",
     "levels": {
       "newcomer": "Newcomer",
       "contributor": "Mitwirkende:r",
@@ -3664,6 +3729,9 @@
       "levelsTitle": "Die 5 Levels",
       "levelsDescription": "Jedes Level schaltet eine neue Auszeichnung für dein Profil frei.",
       "levelMinPoints": "Ab {points} Punkten",
+      "reqPoints": "{count, plural, =0 {0 Punkte} =1 {1 Punkt} other {# Punkte}}",
+      "reqUploads": "{count, plural, =0 {0 Uploads} =1 {1 Upload} other {# Uploads}}",
+      "reqDownloads": "{count, plural, =0 {0 Downloads} =1 {1 Download} other {# Downloads}}",
       "tipsTitle": "Tipps zum schnelleren Aufstieg",
       "tips": {
         "quality": "Lade qualitativ hochwertige Materialien hoch — gute Materialien werden häufiger heruntergeladen.",

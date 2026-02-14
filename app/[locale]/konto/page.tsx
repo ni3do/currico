@@ -188,7 +188,7 @@ export default function AccountOverviewPage() {
             {
               label: t("overview.earnings"),
               value: loading ? "-" : sellerStats.netEarnings,
-              subtitle: t("overview.thisMonth"),
+              subtitle: t("overview.total"),
               icon: TrendingUp,
               iconBg: "bg-success/10",
               iconColor: "text-success",

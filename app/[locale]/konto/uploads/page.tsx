@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { FileText } from "lucide-react";
 import { DashboardMaterialCard } from "@/components/ui/DashboardMaterialCard";
 import type { UploadedItem } from "@/lib/types/account";
+
+type StatusFilter = "ALL" | "PENDING" | "VERIFIED" | "REJECTED";
 
 export default function AccountUploadsPage() {
   const t = useTranslations("accountPage.uploads");
@@ -14,6 +16,7 @@ export default function AccountUploadsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"newest" | "oldest" | "title" | "popular">("newest");
   const [uploadedLoading, setUploadedLoading] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
 
   // Fetch uploaded items
   const fetchUploaded = useCallback(async (search?: string, sort?: string) => {
@@ -45,6 +48,32 @@ export default function AccountUploadsPage() {
     return () => clearTimeout(debounce);
   }, [searchQuery, sortBy, fetchUploaded]);
 
+  const statusCounts = useMemo(() => {
+    const counts = { ALL: 0, PENDING: 0, VERIFIED: 0, REJECTED: 0 };
+    for (const item of uploadedItems) {
+      counts.ALL++;
+      if (item.status === "VERIFIED") counts.VERIFIED++;
+      else if (item.status === "PENDING") counts.PENDING++;
+      else if (item.status === "REJECTED") counts.REJECTED++;
+    }
+    return counts;
+  }, [uploadedItems]);
+
+  const filteredItems = useMemo(
+    () =>
+      statusFilter === "ALL"
+        ? uploadedItems
+        : uploadedItems.filter((item) => item.status === statusFilter),
+    [uploadedItems, statusFilter]
+  );
+
+  const filterOptions: { key: StatusFilter; label: string }[] = [
+    { key: "ALL", label: t("filterAll") },
+    { key: "PENDING", label: t("filterUnderReview") },
+    { key: "VERIFIED", label: t("filterVerified") },
+    { key: "REJECTED", label: t("filterRejected") },
+  ];
+
   return (
     <div className="border-border bg-surface rounded-xl border p-6">
       <div className="mb-6 flex items-center justify-between">
@@ -62,7 +91,7 @@ export default function AccountUploadsPage() {
       </div>
 
       {/* Search & Sort */}
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row">
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row">
         <input
           type="text"
           placeholder={t("search")}
@@ -80,6 +109,30 @@ export default function AccountUploadsPage() {
           <option value="title">{t("sort.title")}</option>
           <option value="popular">{t("sort.popular")}</option>
         </select>
+      </div>
+
+      {/* Status Filter Pills */}
+      <div className="mb-6 flex flex-wrap gap-2">
+        {filterOptions.map(({ key, label }) => (
+          <button
+            key={key}
+            onClick={() => setStatusFilter(key)}
+            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
+              statusFilter === key
+                ? "bg-primary text-text-on-accent"
+                : "bg-surface-hover text-text-muted hover:text-text"
+            }`}
+          >
+            {label}
+            <span
+              className={`ml-0.5 rounded-full px-1.5 py-0.5 text-xs ${
+                statusFilter === key ? "bg-white/20" : "bg-bg text-text-faint"
+              }`}
+            >
+              {statusCounts[key]}
+            </span>
+          </button>
+        ))}
       </div>
 
       {uploadedLoading ? (
@@ -100,9 +153,9 @@ export default function AccountUploadsPage() {
             </div>
           ))}
         </div>
-      ) : uploadedItems.length > 0 ? (
+      ) : filteredItems.length > 0 ? (
         <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
-          {uploadedItems.map((item) => (
+          {filteredItems.map((item) => (
             <DashboardMaterialCard
               key={item.id}
               id={item.id}
@@ -117,13 +170,17 @@ export default function AccountUploadsPage() {
                     ? t("statusVerified")
                     : item.status === "PENDING"
                       ? t("statusPending")
-                      : item.status,
+                      : item.status === "REJECTED"
+                        ? t("statusRejected")
+                        : item.status,
                 variant:
                   item.status === "VERIFIED"
                     ? "success"
                     : item.status === "PENDING"
                       ? "warning"
-                      : "neutral",
+                      : item.status === "REJECTED"
+                        ? "error"
+                        : "neutral",
               }}
               price={{
                 formatted: item.priceFormatted,

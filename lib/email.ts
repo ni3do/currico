@@ -1,5 +1,7 @@
 import * as nodemailer from "nodemailer";
 import type { Transporter } from "nodemailer";
+import { wrapEmailTemplate, generateUnsubscribeUrl } from "@/lib/email-templates";
+import type { NotificationType } from "@prisma/client";
 
 const APP_NAME = "Currico";
 
@@ -435,8 +437,10 @@ export async function sendNotificationEmail(params: {
   body: string;
   link?: string;
   locale?: "de" | "en";
+  notificationType?: NotificationType;
+  userId?: string;
 }): Promise<SendEmailResult> {
-  const { email, title, body, link, locale = "de" } = params;
+  const { email, title, body, link, locale = "de", notificationType, userId } = params;
 
   try {
     const transport = getTransporter();
@@ -445,25 +449,21 @@ export async function sendNotificationEmail(params: {
 
     const isDe = locale === "de";
     const ctaText = isDe ? "Auf Currico ansehen" : "View on Currico";
-    const fullLink = link ? `${baseUrl}${link.startsWith("/") ? `/${locale}${link}` : link}` : null;
+    const fullLink = link
+      ? `${baseUrl}${link.startsWith("/") ? `/${locale}${link}` : link}`
+      : undefined;
 
-    const ctaHtml = fullLink
-      ? `<p style="margin: 24px 0; text-align: center;">
-           <a href="${fullLink}" style="display: inline-block; background: #1e66f5; color: #fff; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-weight: 600;">${ctaText}</a>
-         </p>`
-      : "";
+    const unsubscribeUrl =
+      userId && notificationType ? generateUnsubscribeUrl(userId, notificationType) : undefined;
 
-    const text = `${title}\n\n${body}${fullLink ? `\n\n${ctaText}: ${fullLink}` : ""}`;
-
-    const html = `
-      <div style="font-family: -apple-system, system-ui, sans-serif; max-width: 520px; margin: 0 auto; padding: 32px 20px;">
-        <h2 style="color: #1e1e2e; margin-bottom: 16px;">${title}</h2>
-        <p style="color: #4c4f69; line-height: 1.6;">${body}</p>
-        ${ctaHtml}
-        <hr style="border: none; border-top: 1px solid #ccd0da; margin: 24px 0;" />
-        <p style="color: #9ca0b0; font-size: 12px;">${APP_NAME}</p>
-      </div>
-    `;
+    const { html, text } = wrapEmailTemplate({
+      title,
+      body,
+      ctaText: fullLink ? ctaText : undefined,
+      ctaUrl: fullLink,
+      unsubscribeUrl,
+      locale,
+    });
 
     await transport.sendMail({
       from: `"${APP_NAME}" <${getFromEmail()}>`,

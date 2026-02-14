@@ -31,6 +31,7 @@ export function StripeConnectStatus({ isSeller }: StripeConnectStatusProps) {
   const [stripeStatus, setStripeStatus] = useState<StripeStatus | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isStripeLoading, setIsStripeLoading] = useState(false);
   const t = useTranslations("stripeConnectStatus");
 
   const fetchStatus = useCallback(async () => {
@@ -54,6 +55,23 @@ export function StripeConnectStatus({ isSeller }: StripeConnectStatusProps) {
   useEffect(() => {
     fetchStatus();
   }, [fetchStatus]);
+
+  const handleContinueStripeOnboarding = async () => {
+    setIsStripeLoading(true);
+    try {
+      const res = await fetch("/api/seller/connect", { method: "POST" });
+      const data = await res.json();
+      if (res.ok && data.url) {
+        window.location.href = data.url;
+      } else {
+        setError(data.error || t("error.fetchFailed"));
+        setIsStripeLoading(false);
+      }
+    } catch {
+      setError(t("error.fetchFailed"));
+      setIsStripeLoading(false);
+    }
+  };
 
   const isFullySetup = stripeStatus?.chargesEnabled && stripeStatus?.detailsSubmitted;
   const isPending = stripeStatus?.hasAccount && !stripeStatus?.chargesEnabled;
@@ -286,11 +304,12 @@ export function StripeConnectStatus({ isSeller }: StripeConnectStatusProps) {
               </div>
             )}
 
-            <Link
-              href="/verkaeufer-werden"
-              className="bg-warning text-text-on-accent hover:bg-warning-hover mt-4 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+            <button
+              onClick={handleContinueStripeOnboarding}
+              disabled={isStripeLoading}
+              className="bg-warning text-text-on-accent hover:bg-warning-hover mt-4 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
             >
-              {t("pending.continueSetup")}
+              {isStripeLoading ? t("pending.continueLoading") : t("pending.continueSetup")}
               <svg
                 className="h-4 w-4"
                 fill="none"
@@ -305,7 +324,7 @@ export function StripeConnectStatus({ isSeller }: StripeConnectStatusProps) {
                   d="M9 5l7 7-7 7"
                 />
               </svg>
-            </Link>
+            </button>
           </div>
         </div>
       </div>

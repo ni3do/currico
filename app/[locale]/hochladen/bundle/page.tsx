@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { Link, useRouter } from "@/i18n/navigation";
+import { getLoginUrl } from "@/lib/utils/login-redirect";
+import { roundToNearestHalfFranc } from "@/lib/utils/price";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
@@ -41,7 +43,7 @@ export default function CreateBundlePage() {
         const response = await fetch("/api/seller/materials");
         if (!response.ok) {
           if (response.status === 401) {
-            router.push("/anmelden");
+            router.push(getLoginUrl("/hochladen/bundle"));
             return;
           }
           if (response.status === 403) {
@@ -442,8 +444,14 @@ export default function CreateBundlePage() {
                     type="number"
                     value={formData.price}
                     onChange={(e) => updateFormData("price", e.target.value)}
+                    onBlur={() => {
+                      const val = parseFloat(formData.price);
+                      if (!isNaN(val) && val > 0) {
+                        updateFormData("price", roundToNearestHalfFranc(val).toFixed(2));
+                      }
+                    }}
                     required
-                    min="0"
+                    min="0.50"
                     max="25"
                     step="0.50"
                     className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 w-full rounded-xl border px-4 py-3 pl-12 focus:ring-2 focus:outline-none"

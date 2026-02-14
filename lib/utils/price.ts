@@ -4,6 +4,18 @@
  */
 
 /**
+ * Round a CHF price to the nearest 0.50 increment.
+ * Returns 0 for zero/negative input, minimum 0.50 for positive input.
+ * @param priceCHF - Price in CHF (e.g., 2.30)
+ * @returns Rounded price (e.g., 2.50)
+ */
+export function roundToNearestHalfFranc(priceCHF: number): number {
+  if (priceCHF <= 0) return 0;
+  const rounded = Math.round(priceCHF * 2) / 2;
+  return Math.max(0.5, rounded);
+}
+
+/**
  * Format a price in cents to a display string
  * @param priceInCents - Price in cents (e.g., 500 = CHF 5.00)
  * @param options - Formatting options
@@ -17,11 +29,7 @@ export function formatPrice(
     includePrefix?: boolean;
   } = {}
 ): string {
-  const {
-    showFreeLabel = true,
-    freeLabel = "Gratis",
-    includePrefix = true,
-  } = options;
+  const { showFreeLabel = true, freeLabel = "Gratis", includePrefix = true } = options;
 
   if (priceInCents === 0 && showFreeLabel) {
     return freeLabel;
@@ -46,10 +54,7 @@ export function formatPriceAdmin(priceInCents: number): string {
  * @param isApproved - Whether the resource is approved
  * @returns Status string
  */
-export function getResourceStatus(
-  isPublished: boolean,
-  isApproved: boolean
-): string {
+export function getResourceStatus(isPublished: boolean, isApproved: boolean): string {
   if (isApproved) {
     return "Verified";
   }

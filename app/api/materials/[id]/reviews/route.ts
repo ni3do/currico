@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { createReviewSchema } from "@/lib/validations/review";
 import { checkRateLimit, rateLimitHeaders, isValidId, safeParseInt } from "@/lib/rateLimit";
+import { notifyReview } from "@/lib/notifications";
 
 // GET /api/materials/[id]/reviews - Get all reviews for a material
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -80,9 +81,12 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       });
     }
 
+    // Check if current user is the owner of this material
+    const isOwner = session?.user?.id === material.seller_id;
+
     // Check if current user can review (has purchased/downloaded, not the seller)
     let canReview = false;
-    if (session?.user?.id && !userReview && material.seller_id !== session.user.id) {
+    if (session?.user?.id && !userReview && !isOwner) {
       const hasPurchased = await prisma.transaction.findFirst({
         where: {
           buyer_id: session.user.id,
@@ -133,6 +137,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
           }
         : null,
       canReview,
+      isOwner: isOwner ?? false,
     });
   } catch (error) {
     console.error("Error fetching reviews:", error);
@@ -170,7 +175,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     // Check if material exists
     const material = await prisma.resource.findUnique({
       where: { id: materialId },
-      select: { id: true, seller_id: true },
+      select: { id: true, seller_id: true, title: true },
     });
 
     if (!material) {
@@ -260,6 +265,9 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         },
       },
     });
+
+    // Notify the seller about the new review
+    notifyReview(material.seller_id, material.title, review.rating);
 
     return NextResponse.json({
       review: {

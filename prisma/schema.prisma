@@ -112,8 +112,8 @@ model User {
   preferred_language  String  @default("de") @db.VarChar(5)
 
   // Social Media Links (usernames only)
-  instagram    String? @db.VarChar(100)
-  pinterest    String? @db.VarChar(100)
+  instagram String? @db.VarChar(100)
+  pinterest String? @db.VarChar(100)
 
   // ============ PRIVATE DATA ============
   password_hash String? @db.VarChar(255)
@@ -124,18 +124,18 @@ model User {
   is_private   Boolean  @default(false)
 
   // ============ TEACHER VERIFICATION ============
-  is_teacher_verified          Boolean   @default(false)
-  teacher_verified_at          DateTime?
-  teacher_verification_method  String?   @db.VarChar(50) // "email_domain" | "manual" | "eduid"
+  is_teacher_verified         Boolean   @default(false)
+  teacher_verified_at         DateTime?
+  teacher_verification_method String?   @db.VarChar(50) // "email_domain" | "manual" | "eduid"
 
   // ============ SELLER REWARD LEVEL ============
   seller_level Int @default(0) @db.SmallInt
   seller_xp    Int @default(0)
 
   // ============ VERIFIED SELLER ============
-  is_verified_seller           Boolean   @default(false)
-  verified_seller_at           DateTime?
-  verified_seller_method       String?   @db.VarChar(50) // "auto" | "manual"
+  is_verified_seller     Boolean   @default(false)
+  verified_seller_at     DateTime?
+  verified_seller_method String?   @db.VarChar(50) // "auto" | "manual"
 
   // ============ STRIPE CONNECT ============
   stripe_account_id          String?   @db.VarChar(255)
@@ -155,6 +155,8 @@ model User {
   notify_sales                Boolean @default(true)
   notify_newsletter           Boolean @default(false)
   notify_platform_updates     Boolean @default(true)
+  notify_comments             Boolean @default(true)
+  notify_new_followers        Boolean @default(true)
 
   // ============ RELATIONS ============
   accounts                Account[]
@@ -182,16 +184,18 @@ model User {
   collections Collection[]
 
   // Review and rating relations
-  resourceLikes ResourceLike[]
-  reviews       Review[]
-  comments      Comment[]
+  resourceLikes  ResourceLike[]
+  reviews        Review[]
+  comments       Comment[]
   commentReplies CommentReply[]
-  commentLikes  CommentLike[]
+  commentLikes   CommentLike[]
 
   // Notification relations
   notifications Notification[]
 
   @@index([role])
+  @@index([name(ops: raw("gin_trgm_ops"))], type: Gin, map: "idx_users_name_trigram")
+  @@index([display_name(ops: raw("gin_trgm_ops"))], type: Gin, map: "idx_users_display_name_trigram")
   @@map("users")
 }
 
@@ -223,14 +227,14 @@ model Resource {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  title       String @db.VarChar(64)
-  description String @db.Text
+  title       String  @db.VarChar(64)
+  description String  @db.Text
   price       Int
-  file_url    String @db.VarChar(500)
+  file_url    String  @db.VarChar(500)
   preview_url String? @db.VarChar(500)
 
   // Multi-page preview support
-  preview_urls  Json @default("[]")   // Array of preview image URLs for pages 1-3
+  preview_urls  Json @default("[]") // Array of preview image URLs for pages 1-3
   preview_count Int  @default(1) @db.SmallInt
 
   subjects Json @default("[]")
@@ -250,11 +254,11 @@ model Resource {
   dialect        Dialect @default(BOTH)
 
   // Full-text search vector (managed by database trigger)
-  search_vector  Unsupported("tsvector")?
+  search_vector Unsupported("tsvector")?
 
   // Relations
-  seller_id    String       @db.VarChar(50)
-  seller       User         @relation(fields: [seller_id], references: [id])
+  seller_id    String        @db.VarChar(50)
+  seller       User          @relation(fields: [seller_id], references: [id])
   transactions Transaction[]
   downloads    Download[]
   wishlists    Wishlist[]
@@ -297,7 +301,7 @@ model Transaction {
   id         String   @id @default(cuid()) @db.VarChar(50)
   created_at DateTime @default(now())
 
-  amount Int             
+  amount Int
   status TransactionStatus @default(PENDING)
 
   // Payment tracking
@@ -694,7 +698,7 @@ model Bundle {
   updated_at      DateTime       @updatedAt
   title           String         @db.VarChar(255)
   description     String?        @db.Text
-  price           Int           
+  price           Int
   subject         Json           @default("[]")
   cycle           Json           @default("[]")
   cover_image_url String?        @db.VarChar(500)
@@ -830,6 +834,44 @@ enum NotificationType {
   SALE
   FOLLOW
   REVIEW
+  COMMENT
   SYSTEM
 }
 
+// ============================================================
+// NEWSLETTER
+// ============================================================
+
+model Newsletter {
+  id              String           @id @default(cuid()) @db.VarChar(50)
+  created_at      DateTime         @default(now())
+  updated_at      DateTime         @updatedAt
+  subject         String           @db.VarChar(255)
+  content         String           @db.Text
+  status          NewsletterStatus @default(DRAFT)
+  sent_at         DateTime?
+  recipient_count Int              @default(0)
+
+  @@index([status])
+  @@map("newsletters")
+}
+
+enum NewsletterStatus {
+  DRAFT
+  SCHEDULED
+  SENDING
+  SENT
+  FAILED
+}
+
+model NewsletterSubscriber {
+  id              String    @id @default(cuid()) @db.VarChar(50)
+  created_at      DateTime  @default(now())
+  email           String    @unique @db.VarChar(255)
+  confirmed       Boolean   @default(false)
+  confirm_token   String?   @db.VarChar(255)
+  unsubscribed_at DateTime?
+
+  @@index([confirmed, unsubscribed_at])
+  @@map("newsletter_subscribers")
+}

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { LoginLink } from "@/components/ui/LoginLink";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
@@ -24,6 +25,7 @@ import {
   FIELD_TOOLTIPS,
 } from "@/components/upload";
 import { checkForEszett, replaceEszett } from "@/lib/validations/swiss-quality";
+import { roundToNearestHalfFranc } from "@/lib/utils/price";
 import {
   Upload,
   FileText,
@@ -353,12 +355,9 @@ function UploadPageContent() {
               >
                 {tUpload("authRequired.register")}
               </Link>
-              <Link
-                href="/anmelden"
-                className="border-border text-text hover:bg-surface-elevated inline-flex items-center justify-center gap-2 rounded-xl border-2 px-6 py-3 text-sm font-medium transition-colors"
-              >
+              <LoginLink className="border-border text-text hover:bg-surface-elevated inline-flex items-center justify-center gap-2 rounded-xl border-2 px-6 py-3 text-sm font-medium transition-colors">
                 {tUpload("authRequired.login")}
-              </Link>
+              </LoginLink>
             </div>
           </div>
         </main>
@@ -627,7 +626,13 @@ function UploadPageContent() {
                             type="number"
                             value={formData.price}
                             onChange={(e) => updateFormData("price", e.target.value)}
-                            onBlur={() => markFieldTouched("price")}
+                            onBlur={() => {
+                              markFieldTouched("price");
+                              const val = parseFloat(formData.price);
+                              if (!isNaN(val) && val > 0) {
+                                updateFormData("price", roundToNearestHalfFranc(val).toFixed(2));
+                              }
+                            }}
                             hasError={touchedFields.price && !!getFieldError("price")}
                             min="0.50"
                             max="50"
@@ -1150,12 +1155,9 @@ function UploadPageContent() {
                     {tUpload("close")}
                   </button>
                   {error === tUpload("errorAuthExpired") ? (
-                    <Link
-                      href="/anmelden"
-                      className="bg-primary text-text-on-accent hover:bg-primary-hover flex flex-1 items-center justify-center rounded-lg px-3 py-2 text-sm font-medium transition-colors"
-                    >
+                    <LoginLink className="bg-primary text-text-on-accent hover:bg-primary-hover flex flex-1 items-center justify-center rounded-lg px-3 py-2 text-sm font-medium transition-colors">
                       {tUpload("loginAgain")}
-                    </Link>
+                    </LoginLink>
                   ) : (
                     <button
                       onClick={handlePublish}

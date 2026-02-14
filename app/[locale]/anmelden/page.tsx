@@ -1,16 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 import { Link, useRouter } from "@/i18n/navigation";
 import { isValidEmail } from "@/lib/validations/common";
+import { isValidCallbackUrl } from "@/lib/utils/login-redirect";
 import TopBar from "@/components/ui/TopBar";
 
-export default function LoginPage() {
+function LoginPageContent() {
   const t = useTranslations("loginPage");
   const tCommon = useTranslations("common");
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -33,16 +37,17 @@ export default function LoginPage() {
         setError(t("errors.invalidCredentials"));
       } else {
         // Fetch user role to determine redirect
+        const validCallback = callbackUrl && isValidCallbackUrl(callbackUrl) ? callbackUrl : null;
         const userResponse = await fetch("/api/user/me");
         if (userResponse.ok) {
           const userData = await userResponse.json();
-          if (userData.role === "ADMIN") {
+          if (userData.role === "ADMIN" && !validCallback) {
             router.push("/admin");
           } else {
-            router.push("/konto");
+            router.push(validCallback || "/konto");
           }
         } else {
-          router.push("/konto");
+          router.push(validCallback || "/konto");
         }
       }
     } catch {
@@ -205,7 +210,7 @@ export default function LoginPage() {
             <div className="grid gap-3">
               <button
                 type="button"
-                onClick={() => signIn("google", { callbackUrl: "/konto" })}
+                onClick={() => signIn("google", { callbackUrl: callbackUrl || "/konto" })}
                 className="bg-surface text-text hover:bg-surface-elevated flex items-center justify-center gap-3 rounded-lg px-4 py-3.5 font-medium transition-all"
               >
                 <svg className="h-5 w-5" viewBox="0 0 24 24">
@@ -231,7 +236,9 @@ export default function LoginPage() {
 
               <button
                 type="button"
-                onClick={() => signIn("microsoft-entra-id", { callbackUrl: "/konto" })}
+                onClick={() =>
+                  signIn("microsoft-entra-id", { callbackUrl: callbackUrl || "/konto" })
+                }
                 className="bg-surface text-text hover:bg-surface-elevated flex items-center justify-center gap-3 rounded-lg px-4 py-3.5 font-medium transition-all"
               >
                 <svg className="h-5 w-5" viewBox="0 0 23 23">
@@ -276,5 +283,13 @@ export default function LoginPage() {
         </Link>
       </footer>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginPageContent />
+    </Suspense>
   );
 }

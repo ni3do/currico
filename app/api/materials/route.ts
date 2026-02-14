@@ -22,9 +22,11 @@ import {
 } from "@/lib/validations/material";
 import { getStorage } from "@/lib/storage";
 import { sanitizeSearchQuery, isLP21Code } from "@/lib/search-utils";
+import { notifyNewMaterial } from "@/lib/notifications";
 
-/** Minimum trigram similarity score for fuzzy search fallback */
-const FUZZY_MATCH_THRESHOLD = 0.15;
+/** Trigram similarity thresholds for fuzzy search */
+const TITLE_SIMILARITY_THRESHOLD = 0.2;
+const DESCRIPTION_SIMILARITY_THRESHOLD = 0.15;
 
 /**
  * GET /api/materials
@@ -130,10 +132,11 @@ export async function GET(request: NextRequest) {
       where.id = { in: jsonFilteredIds };
     }
 
-    // Full-text search using PostgreSQL tsvector
+    // Full-text search using PostgreSQL tsvector + trigram similarity
     // Track if we're doing a full-text search for sorting
     let fullTextSearchIds: string[] | null = null;
     let fullTextRankMap: Map<string, number> | null = null;
+    let searchMatchMode: "exact" | "fuzzy" | "combined" = "exact";
 
     if (search) {
       const sanitizedSearch = sanitizeSearchQuery(search);
@@ -141,60 +144,106 @@ export async function GET(request: NextRequest) {
       if (sanitizedSearch) {
         // Check if search looks like an LP21 code (will be handled by competency filter)
         if (!isLP21Code(sanitizedSearch)) {
-          // Execute full-text search with ranking
-          const searchResults = await prisma.$queryRaw<{ id: string; rank: number }[]>`
-            SELECT id, ts_rank(search_vector, plainto_tsquery('german', ${sanitizedSearch})) as rank
-            FROM resources
-            WHERE search_vector @@ plainto_tsquery('german', ${sanitizedSearch})
-              AND is_published = true
-              AND is_public = true
-            ORDER BY rank DESC
-          `;
+          // Blended query: combine FTS results and trigram results using UNION
+          try {
+            const blendedResults = await prisma.$queryRaw<
+              { id: string; score: number; match_type: string }[]
+            >`
+              SELECT id, score, match_type FROM (
+                -- Full-text search results
+                SELECT id,
+                  ts_rank(search_vector, plainto_tsquery('german', ${sanitizedSearch})) AS score,
+                  'exact' AS match_type
+                FROM resources
+                WHERE search_vector @@ plainto_tsquery('german', ${sanitizedSearch})
+                  AND is_published = true AND is_public = true
 
-          if (searchResults.length > 0) {
-            fullTextSearchIds = searchResults.map((r) => r.id);
-            fullTextRankMap = new Map(searchResults.map((r) => [r.id, r.rank]));
+                UNION ALL
 
-            // Combine with existing ID filter if present
-            if (where.id && typeof where.id === "object" && "in" in (where.id as object)) {
-              // Intersection of JSON-filtered IDs and full-text search IDs
-              const existingIds = new Set((where.id as { in: string[] }).in);
-              fullTextSearchIds = fullTextSearchIds.filter((id) => existingIds.has(id));
-            }
-
-            where.id = { in: fullTextSearchIds };
-          } else {
-            // Full-text returned nothing — try fuzzy match with pg_trgm
-            try {
-              const fuzzyResults = await prisma.$queryRaw<{ id: string; sim: number }[]>`
-                SELECT id, GREATEST(
-                  similarity(title, ${sanitizedSearch}),
-                  similarity(description, ${sanitizedSearch})
-                ) as sim
+                -- Trigram similarity results (title and description)
+                SELECT id,
+                  GREATEST(
+                    similarity(title, ${sanitizedSearch}) * 2,
+                    similarity(description, ${sanitizedSearch})
+                  ) AS score,
+                  'fuzzy' AS match_type
                 FROM resources
                 WHERE is_published = true AND is_public = true
                   AND (
-                    similarity(title, ${sanitizedSearch}) > ${FUZZY_MATCH_THRESHOLD}
-                    OR similarity(description, ${sanitizedSearch}) > ${FUZZY_MATCH_THRESHOLD}
+                    similarity(title, ${sanitizedSearch}) > ${TITLE_SIMILARITY_THRESHOLD}
+                    OR similarity(description, ${sanitizedSearch}) > ${DESCRIPTION_SIMILARITY_THRESHOLD}
                   )
-                ORDER BY sim DESC
-                LIMIT 50
-              `;
-              if (fuzzyResults.length > 0) {
-                fullTextSearchIds = fuzzyResults.map((r) => r.id);
-                fullTextRankMap = new Map(fuzzyResults.map((r) => [r.id, r.sim]));
-                where.id = { in: fullTextSearchIds };
-              } else {
-                return NextResponse.json({
-                  materials: [],
-                  pagination: { page, limit, total: 0, totalPages: 0 },
-                });
+              ) AS combined
+              ORDER BY score DESC
+            `;
+
+            if (blendedResults.length > 0) {
+              // Deduplicate: keep highest score per ID and track match types
+              const scoreMap = new Map<string, number>();
+              const matchTypes = new Set<string>();
+
+              for (const r of blendedResults) {
+                matchTypes.add(r.match_type);
+                const existing = scoreMap.get(r.id);
+                if (existing === undefined || r.score > existing) {
+                  scoreMap.set(r.id, r.score);
+                }
               }
-            } catch {
-              // pg_trgm extension might not be available — return empty
+
+              // Determine match mode
+              const hasExact = matchTypes.has("exact");
+              const hasFuzzy = matchTypes.has("fuzzy");
+              if (hasExact && hasFuzzy) {
+                searchMatchMode = "combined";
+              } else if (hasFuzzy) {
+                searchMatchMode = "fuzzy";
+              } else {
+                searchMatchMode = "exact";
+              }
+
+              fullTextSearchIds = [...scoreMap.keys()];
+              fullTextRankMap = scoreMap;
+
+              // Combine with existing ID filter if present
+              if (where.id && typeof where.id === "object" && "in" in (where.id as object)) {
+                const existingIds = new Set((where.id as { in: string[] }).in);
+                fullTextSearchIds = fullTextSearchIds.filter((id) => existingIds.has(id));
+              }
+
+              where.id = { in: fullTextSearchIds };
+            } else {
               return NextResponse.json({
                 materials: [],
                 pagination: { page, limit, total: 0, totalPages: 0 },
+                searchMeta: { matchMode: "exact" },
+              });
+            }
+          } catch {
+            // pg_trgm extension might not be available — fall back to FTS only
+            const searchResults = await prisma.$queryRaw<{ id: string; rank: number }[]>`
+              SELECT id, ts_rank(search_vector, plainto_tsquery('german', ${sanitizedSearch})) as rank
+              FROM resources
+              WHERE search_vector @@ plainto_tsquery('german', ${sanitizedSearch})
+                AND is_published = true AND is_public = true
+              ORDER BY rank DESC
+            `;
+
+            if (searchResults.length > 0) {
+              fullTextSearchIds = searchResults.map((r) => r.id);
+              fullTextRankMap = new Map(searchResults.map((r) => [r.id, r.rank]));
+
+              if (where.id && typeof where.id === "object" && "in" in (where.id as object)) {
+                const existingIds = new Set((where.id as { in: string[] }).in);
+                fullTextSearchIds = fullTextSearchIds.filter((id) => existingIds.has(id));
+              }
+
+              where.id = { in: fullTextSearchIds };
+              searchMatchMode = "exact";
+            } else {
+              return NextResponse.json({
+                materials: [],
+                pagination: { page, limit, total: 0, totalPages: 0 },
+                searchMeta: { matchMode: "exact" },
               });
             }
           }
@@ -556,6 +605,7 @@ export async function GET(request: NextRequest) {
         total,
         totalPages: Math.ceil(total / limit),
       },
+      ...(search ? { searchMeta: { matchMode: searchMatchMode } } : {}),
     });
   } catch (error) {
     console.error("Error fetching materials:", error);
@@ -859,6 +909,22 @@ export async function POST(request: NextRequest) {
         created_at: true,
       },
     });
+
+    // Notify followers when a new material is published
+    if (updatedMaterial.is_published) {
+      const seller = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { display_name: true, name: true },
+      });
+      const sellerName = seller?.display_name || seller?.name || "Ein Autor";
+
+      const followers = await prisma.follow.findMany({
+        where: { followed_id: userId },
+        select: { follower_id: true },
+      });
+      const followerIds = followers.map((f) => f.follower_id);
+      notifyNewMaterial(followerIds, updatedMaterial.title, sellerName);
+    }
 
     return NextResponse.json(
       {

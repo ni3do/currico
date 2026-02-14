@@ -141,16 +141,31 @@ export function getNextLevel(points: number, stats?: SellerStats): SellerLevel |
   return SELLER_LEVELS[nextIndex];
 }
 
-export function getProgressToNextLevel(
-  points: number,
-  stats?: SellerStats
-): {
+export interface DetailedProgress {
   current: SellerLevel;
   next: SellerLevel | null;
   progressPercent: number;
   pointsNeeded: number;
   pointsIntoLevel: number;
-} {
+  /** Human-readable blockers preventing advancement (i18n keys + params) */
+  blockers: Blocker[];
+  /** Per-requirement progress toward the next level */
+  requirements: RequirementProgress[];
+}
+
+export interface Blocker {
+  key: "needMorePoints" | "needMoreUploads" | "needMoreDownloads";
+  count: number;
+}
+
+export interface RequirementProgress {
+  type: "points" | "uploads" | "downloads";
+  current: number;
+  required: number;
+  percent: number;
+}
+
+export function getProgressToNextLevel(points: number, stats?: SellerStats): DetailedProgress {
   const current = getCurrentLevel(points, stats);
   const next = getNextLevel(points, stats);
 
@@ -161,13 +176,60 @@ export function getProgressToNextLevel(
       progressPercent: 100,
       pointsNeeded: 0,
       pointsIntoLevel: 0,
+      blockers: [],
+      requirements: [],
     };
   }
 
   const levelRange = next.minPoints - current.minPoints;
   const pointsIntoLevel = points - current.minPoints;
   const progressPercent = Math.min(100, Math.round((pointsIntoLevel / levelRange) * 100));
-  const pointsNeeded = next.minPoints - points;
+  const pointsNeeded = Math.max(0, next.minPoints - points);
+
+  // Compute blockers and per-requirement progress
+  const blockers: Blocker[] = [];
+  const requirements: RequirementProgress[] = [];
+
+  // Points requirement
+  requirements.push({
+    type: "points",
+    current: points,
+    required: next.minPoints,
+    percent: Math.min(100, Math.round((points / next.minPoints) * 100)),
+  });
+  if (pointsNeeded > 0) {
+    blockers.push({ key: "needMorePoints", count: pointsNeeded });
+  }
+
+  // Upload requirement
+  if (next.minUploads > 0) {
+    const currentUploads = stats?.uploads ?? 0;
+    requirements.push({
+      type: "uploads",
+      current: currentUploads,
+      required: next.minUploads,
+      percent: Math.min(100, Math.round((currentUploads / next.minUploads) * 100)),
+    });
+    const gap = next.minUploads - currentUploads;
+    if (gap > 0) {
+      blockers.push({ key: "needMoreUploads", count: gap });
+    }
+  }
+
+  // Download requirement
+  if (next.minDownloads > 0) {
+    const currentDownloads = stats?.downloads ?? 0;
+    requirements.push({
+      type: "downloads",
+      current: currentDownloads,
+      required: next.minDownloads,
+      percent: Math.min(100, Math.round((currentDownloads / next.minDownloads) * 100)),
+    });
+    const gap = next.minDownloads - currentDownloads;
+    if (gap > 0) {
+      blockers.push({ key: "needMoreDownloads", count: gap });
+    }
+  }
 
   return {
     current,
@@ -175,5 +237,7 @@ export function getProgressToNextLevel(
     progressPercent,
     pointsNeeded,
     pointsIntoLevel,
+    blockers,
+    requirements,
   };
 }

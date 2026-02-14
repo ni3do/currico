@@ -26,6 +26,8 @@ export async function POST(request: NextRequest) {
         emailVerified: true,
         seller_terms_accepted_at: true,
         stripe_account_id: true,
+        display_name: true,
+        name: true,
       },
     });
 
@@ -54,16 +56,18 @@ export async function POST(request: NextRequest) {
     const baseUrl = `${protocol}://${host}`;
 
     // URLs for Stripe onboarding flow
-    const refreshUrl = `${baseUrl}/become-seller?stripe_refresh=true`;
-    const returnUrl = `${baseUrl}/account`;
+    const refreshUrl = `${baseUrl}/verkaeufer-werden?stripe_refresh=true`;
+    const returnUrl = `${baseUrl}/seller/onboarding/complete`;
 
     let stripeAccountId = user.stripe_account_id;
 
     // Create Stripe account if user doesn't have one
     if (!stripeAccountId) {
-      const account = await createConnectAccount(user.email, {
-        user_id: userId,
-      });
+      const account = await createConnectAccount(
+        user.email,
+        { user_id: userId },
+        user.display_name || user.name || undefined
+      );
 
       stripeAccountId = account.id;
 

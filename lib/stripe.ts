@@ -47,15 +47,28 @@ export function calculateApplicationFee(amountCents: number): number {
  */
 export async function createConnectAccount(
   email: string,
-  metadata?: Record<string, string>
+  metadata?: Record<string, string>,
+  displayName?: string
 ): Promise<Stripe.Account> {
   const stripe = getStripeClient();
+  // Split display name into first/last for Stripe individual fields
+  const nameParts = displayName?.trim().split(/\s+/);
+  const firstName = nameParts?.[0] || undefined;
+  const lastName = nameParts && nameParts.length > 1 ? nameParts.slice(1).join(" ") : undefined;
+
   return stripe.accounts.create({
     type: "express",
     country: "CH",
     business_type: "individual",
     email,
     metadata,
+    ...(firstName && {
+      individual: {
+        first_name: firstName,
+        ...(lastName && { last_name: lastName }),
+        email,
+      },
+    }),
     capabilities: {
       card_payments: { requested: true },
       transfers: { requested: true },

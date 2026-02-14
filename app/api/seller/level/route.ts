@@ -6,8 +6,10 @@ import {
   getCurrentLevel,
   getProgressToNextLevel,
   getDownloadMultiplier,
+  SELLER_LEVELS,
 } from "@/lib/utils/seller-levels";
 import { checkVerificationEligibility } from "@/lib/utils/verified-seller";
+import { createNotification } from "@/lib/notifications";
 
 /**
  * GET /api/seller/level
@@ -23,37 +25,50 @@ export async function GET() {
     const seller = await requireSeller(userId);
     if (!seller) return forbidden("Nur für Verkäufer zugänglich");
 
-    const [uploadCount, downloadCount, reviewData, publishedResourceCount, user] =
-      await Promise.all([
-        prisma.resource.count({
-          where: { seller_id: userId },
-        }),
-        prisma.transaction.count({
-          where: {
-            resource: { seller_id: userId },
-            status: "COMPLETED",
-          },
-        }),
-        prisma.review.aggregate({
-          where: {
-            resource: { seller_id: userId },
-          },
-          _count: { id: true },
-          _avg: { rating: true },
-        }),
-        prisma.resource.count({
-          where: { seller_id: userId, is_published: true, is_public: true },
-        }),
-        prisma.user.findUniqueOrThrow({
-          where: { id: userId },
-          select: {
-            created_at: true,
-            is_verified_seller: true,
-            verified_seller_method: true,
-          },
-        }),
-      ]);
+    const [
+      uploadCount,
+      paidDownloadCount,
+      freeDownloadCount,
+      reviewData,
+      publishedResourceCount,
+      user,
+    ] = await Promise.all([
+      prisma.resource.count({
+        where: { seller_id: userId },
+      }),
+      prisma.transaction.count({
+        where: {
+          resource: { seller_id: userId },
+          status: "COMPLETED",
+        },
+      }),
+      prisma.download.count({
+        where: {
+          resource: { seller_id: userId },
+        },
+      }),
+      prisma.review.aggregate({
+        where: {
+          resource: { seller_id: userId },
+        },
+        _count: { id: true },
+        _avg: { rating: true },
+      }),
+      prisma.resource.count({
+        where: { seller_id: userId, is_published: true, is_public: true },
+      }),
+      prisma.user.findUniqueOrThrow({
+        where: { id: userId },
+        select: {
+          created_at: true,
+          is_verified_seller: true,
+          verified_seller_method: true,
+          seller_level: true,
+        },
+      }),
+    ]);
 
+    const downloadCount = paidDownloadCount + freeDownloadCount;
     const reviewCount = reviewData._count.id;
     const avgRating = reviewData._avg.rating;
     const downloadMultiplier = getDownloadMultiplier(avgRating);
@@ -106,6 +121,19 @@ export async function GET() {
     updateData.seller_level = level.level;
     updateData.seller_xp = points;
 
+    // Level-up notification: compare previous cached level with current
+    const previousLevel = user.seller_level ?? 0;
+    if (level.level > previousLevel) {
+      const newLevelDef = SELLER_LEVELS[level.level];
+      createNotification({
+        userId,
+        type: "SYSTEM",
+        title: `Level-Up: ${newLevelDef?.name ?? ""}!`,
+        body: `Herzlichen Glückwunsch! Sie haben Level ${level.level} (${newLevelDef?.name ?? ""}) erreicht.`,
+        link: "/konto",
+      }).catch((err) => console.error("Failed to create level-up notification:", err));
+    }
+
     // Fire-and-forget update
     prisma.user
       .update({
@@ -126,6 +154,8 @@ export async function GET() {
       progressPercent: progress.progressPercent,
       pointsNeeded: progress.pointsNeeded,
       nextLevelName: progress.next?.name ?? null,
+      blockers: progress.blockers,
+      requirements: progress.requirements,
       isVerifiedSeller,
       verificationProgress: {
         metCount: verification.metCount,

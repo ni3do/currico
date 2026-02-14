@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useMemo, useTransition, useRef } from
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
+import { getLoginUrl } from "@/lib/utils/login-redirect";
 import { useSearchParams } from "next/navigation";
 import { SlidersHorizontal, LayoutGrid, List, Search, X, Upload } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -109,6 +110,7 @@ export default function MaterialienPage() {
     parseInt(searchParams.get("profilePage") || "1", 10)
   );
   const [wishlistedIds, setWishlistedIds] = useState<Set<string>>(new Set());
+  const [searchMatchMode, setSearchMatchMode] = useState<"exact" | "fuzzy" | "combined">("exact");
 
   // Auth session for wishlist
   const { status: sessionStatus } = useSession();
@@ -205,7 +207,7 @@ export default function MaterialienPage() {
   const handleFollowToggle = useCallback(
     async (profileId: string, currentState: boolean): Promise<boolean> => {
       if (!isAuthenticated) {
-        router.push("/anmelden");
+        router.push(getLoginUrl("/materialien"));
         return false;
       }
 
@@ -471,6 +473,11 @@ export default function MaterialienPage() {
         startTransition(() => {
           setMaterials(data.materials);
           setPagination(data.pagination);
+          if (data.searchMeta?.matchMode) {
+            setSearchMatchMode(data.searchMeta.matchMode);
+          } else {
+            setSearchMatchMode("exact");
+          }
         });
       } catch (error: unknown) {
         // Ignore aborted requests (user changed filters quickly)
@@ -775,6 +782,9 @@ export default function MaterialienPage() {
                         onChange={(e) => handleSortChange(e.target.value)}
                         className="border-border bg-bg text-text-secondary focus:border-primary focus:ring-focus-ring rounded-full border px-3 py-2.5 text-sm focus:ring-2 focus:outline-none"
                       >
+                        {filters.searchQuery && (
+                          <option value="relevance">{t("results.sortOptions.relevance")}</option>
+                        )}
                         <option value="newest">{t("results.sortOptions.newest")}</option>
                         <option value="price-low">{t("results.sortOptions.priceLow")}</option>
                         <option value="price-high">{t("results.sortOptions.priceHigh")}</option>
@@ -806,6 +816,16 @@ export default function MaterialienPage() {
                 getFachbereichByCode={getFachbereichByCode}
                 t={t}
               />
+
+              {/* Fuzzy search indicator banner */}
+              {!isLoading &&
+                filters.searchQuery &&
+                (searchMatchMode === "fuzzy" || searchMatchMode === "combined") &&
+                materials.length > 0 && (
+                  <div className="bg-warning/10 border-warning/30 text-warning-foreground mb-4 rounded-lg border px-4 py-2.5 text-sm">
+                    {t("search.fuzzyResults")}
+                  </div>
+                )}
 
               {/* Error State */}
               {fetchError ? (
