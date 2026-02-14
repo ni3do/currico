@@ -53,7 +53,7 @@ For local development, files are stored in `public/uploads/`.
 | ------------------ | --------------- | ------- |
 | `STORAGE_PROVIDER` | Storage backend | `local` |
 
-To test S3 integration locally, set `STORAGE_PROVIDER=s3` and configure the S3 variables (see [PRODUCTION_ENV.md](./PRODUCTION_ENV.md)).
+To test S3 integration locally, set `STORAGE_PROVIDER=s3` and configure the S3 variables (see [production-env.md](./production-env.md)).
 
 ### Email
 

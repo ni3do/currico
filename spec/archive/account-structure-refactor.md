@@ -4,19 +4,19 @@ This spec documents the decisions and implementation plan for refactoring the ac
 
 ## Summary of Decisions
 
-| Decision | Choice |
-|----------|--------|
-| Role system | Use `role` enum only, remove `is_seller` boolean |
-| Payout fields | Remove all (IBAN, address, legal names) - Stripe handles |
-| Seller verification | Trust Stripe KYC only, remove `seller_verified` |
-| User roles | BUYER, SELLER, ADMIN (remove SCHOOL for now) |
-| Email verification | Required before becoming a seller |
-| Seller terms | Show and require acceptance before Stripe onboarding |
-| Platform fee | 30% (hardcoded constant) |
-| Seller onboarding UI | Prominent CTAs on landing, dashboard, resource pages |
-| Guest checkout | Allowed - email delivery + prompt to create account |
-| Migration | Fresh start, no existing sellers to migrate |
-| Profile edit page | Public profile + account settings combined |
+| Decision             | Choice                                                   |
+| -------------------- | -------------------------------------------------------- |
+| Role system          | Use `role` enum only, remove `is_seller` boolean         |
+| Payout fields        | Remove all (IBAN, address, legal names) - Stripe handles |
+| Seller verification  | Trust Stripe KYC only, remove `seller_verified`          |
+| User roles           | BUYER, SELLER, ADMIN (remove SCHOOL for now)             |
+| Email verification   | Required before becoming a seller                        |
+| Seller terms         | Show and require acceptance before Stripe onboarding     |
+| Platform fee         | 30% (hardcoded constant)                                 |
+| Seller onboarding UI | Prominent CTAs on landing, dashboard, resource pages     |
+| Guest checkout       | Allowed - email delivery + prompt to create account      |
+| Migration            | Fresh start, no existing sellers to migrate              |
+| Profile edit page    | Public profile + account settings combined               |
 
 ---
 

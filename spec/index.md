@@ -13,12 +13,19 @@ Swiss platform for teachers to buy, sell, and share teaching materials.
 ### Implementation Plans
 
 - [Playwright E2E Testing](./2026-01-29-playwright-e2e-testing/plan.md) - End-to-end browser testing setup
-- [Account Structure Refactor](./account-structure-refactor.md) - Schema cleanup and Stripe Connect preparation
 - [Stripe Connect Plan](./stripe-connect-implementation-plan.md) - Payment integration implementation
 - [Stripe Connect Architecture](./stripe-connect-architecture.md) - How Stripe Connect works (reference)
-- [i18n Plan](./i18n-plan.md) - Internationalization implementation
-- [OAuth Integration](./oauth-integration.md) - Google/Microsoft/edu-ID OAuth setup
 - [Observability Plan](./observability-plan.md) - Monitoring and logging (future)
+- [Observability Implementation](./observability-implementation.md) - Current monitoring setup
+
+### Environment
+
+- [Development Environment](./development-env.md) - Local development setup and variables
+- [Production Environment](./production-env.md) - Production deployment configuration
+
+### Archive
+
+Completed implementation plans are in [`archive/`](./archive/). These are kept for historical reference.
 
 ## Design Principles
 
