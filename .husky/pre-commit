@@ -15,3 +15,19 @@ fi
 
 # Run lint-staged
 npx lint-staged
+
+# Run unit tests
+if [ -n "$SKIP_TESTS" ]; then
+  echo "⏭️  Skipping unit tests (SKIP_TESTS is set)"
+else
+  echo "🧪 Running unit tests..."
+  echo "💡 Tip: Set SKIP_TESTS=1 to skip: SKIP_TESTS=1 git commit"
+
+  if npm run test:run; then
+    echo "✅ Unit tests passed"
+  else
+    echo "❌ Unit tests failed. Please fix failing tests before committing."
+    echo "To skip this check: SKIP_TESTS=1 git commit"
+    exit 1
+  fi
+fi

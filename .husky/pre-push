@@ -1,5 +1,21 @@
 #!/bin/sh
 
+# Run e2e tests (requires dev server + database)
+if [ -n "$SKIP_E2E" ]; then
+  echo "⏭️  Skipping e2e tests (SKIP_E2E is set)"
+else
+  echo "🎭 Running Playwright e2e tests (chromium-de)..."
+  echo "💡 Tip: Set SKIP_E2E=1 to skip: SKIP_E2E=1 git push"
+
+  if npx playwright test --project=chromium-de; then
+    echo "✅ E2e tests passed"
+  else
+    echo "❌ E2e tests failed. Please fix failing tests before pushing."
+    echo "To skip this check: SKIP_E2E=1 git push"
+    exit 1
+  fi
+fi
+
 # Skip Docker build check if SKIP_DOCKER_CHECK is set
 if [ -n "$SKIP_DOCKER_CHECK" ]; then
   echo "⏭️  Skipping Docker build check (SKIP_DOCKER_CHECK is set)"
