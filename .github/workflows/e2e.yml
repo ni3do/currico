@@ -50,7 +50,7 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Seed test data
-        run: npx tsx e2e/utils/seed-test-data.ts
+        run: npx tsx e2e/fixtures/seed-test-data.ts
 
       - name: Build application
         run: npm run build
