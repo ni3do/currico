@@ -8,9 +8,9 @@ These variables **must** be set for the application to function in production.
 
 ### Database
 
-| Variable       | Description             | Example                               |
-| -------------- | ----------------------- | ------------------------------------- |
-| `DATABASE_URL` | MySQL connection string | `mysql://user:pass@host:3306/currico` |
+| Variable       | Description                  | Example                                    |
+| -------------- | ---------------------------- | ------------------------------------------ |
+| `DATABASE_URL` | PostgreSQL connection string | `postgresql://user:pass@host:5432/currico` |
 
 ### Authentication
 
@@ -150,7 +150,7 @@ NEXT_PUBLIC_STORAGE_PUBLIC_URL=https://currico-public.s3.pub1.infomaniak.cloud
 
 ```env
 # Database
-DATABASE_URL="mysql://produser:securepassword@db.example.com:3306/currico"
+DATABASE_URL="postgresql://produser:securepassword@db.example.com:5432/currico"
 
 # Authentication
 AUTH_SECRET="generate-with-openssl-rand-base64-32"
