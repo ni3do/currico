@@ -1,0 +1,44 @@
+name: Doc Freshness Check
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'app/**'
+      - 'components/**'
+      - 'lib/**'
+      - 'prisma/schema.prisma'
+      - 'package.json'
+      - 'i18n/**'
+
+jobs:
+  doc-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Check doc freshness
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          DIFF=$(git diff origin/main...HEAD --stat)
+          claude -p "You are a documentation freshness checker for the Currico project.
+
+          Here are the files changed in this PR:
+          $DIFF
+
+          Read CLAUDE.md and spec/index.md. Check if any changes in this PR would make the documentation inaccurate or incomplete.
+
+          If docs need updating, exit with code 1 and explain what needs to change.
+          If docs are still accurate, exit with code 0 and say 'Docs are up to date.'
+
+          Only flag genuine inaccuracies — don't flag missing docs for minor internal changes." \
+            --allowedTools 'Read,Glob,Grep' \
+            --max-turns 5
