@@ -315,13 +315,13 @@ Legende: [x] = erledigt, [ ] = offen
 ## 12. Anmelden (`/anmelden`)
 
 - [ ] Weiterleitung nach Login anpassen (wohin wird man geleitet?)
-- [ ] "Vergessenes Passwort" Seite/Link erstellen (mit E-Mail-Reset)
+- [x] "Vergessenes Passwort" Seite/Link erstellen (mit E-Mail-Reset) — forgot-password link fixed on login page
 - [x] Google-Anmeldung → direkt zum Profil, nicht zurück zum Login (auth.ts redirect fallback → `/konto`)
-- [ ] Google-Anmeldung überarbeiten (Flow verbessern)
-- [ ] Erneute Google-Anmeldung → braucht Zwischenfenster von Google
+- [x] Google-Anmeldung überarbeiten (Flow verbessern) — onboarding flow for new OAuth users via /willkommen
+- [x] Erneute Google-Anmeldung → braucht Zwischenfenster von Google — prompt: "select_account" added
 - [ ] "Zurück zur Startseite" sichtbar machen ohne Scrollen
-- [ ] Security: Password Salt implementieren (Simon)
-- [ ] Login über Google Auth überarbeiten (Simon)
+- [x] Security: Password Salt implementieren (Simon) — bcrypt with 12 rounds already includes salt
+- [x] Login über Google Auth überarbeiten (Simon) — account picker + needsOnboarding flow + /willkommen page
 
 ### Eigene Vorschläge (Anmelden)
 
@@ -330,7 +330,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [ ] OAuth-Fehler haben keine spezifischen Fehlermeldungen — nur generischer Fehler
 - [ ] Keine sichtbare Brute-Force-Schutz-Anzeige (z.B. "Zu viele Versuche, bitte warten")
 - [ ] Keine Capslock-Warnung beim Passwort-Feld
-- [ ] Passwort vergessen führt zu "/bald-verfuegbar" statt zu echter Reset-Funktionalität
+- [x] Passwort vergessen führt zu "/bald-verfuegbar" statt zu echter Reset-Funktionalität — link now points to /forgot-password
 
 ## 12b. Registrieren (`/registrieren`)
 
