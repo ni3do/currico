@@ -15,7 +15,7 @@ export default function WelcomePage() {
   const router = useRouter();
   const t = useTranslations("welcomePage");
 
-  const [displayName, setDisplayName] = useState("");
+  const [editedName, setEditedName] = useState<string | null>(null);
   const [subjects, setSubjects] = useState<string[]>([]);
   const [cycles, setCycles] = useState<string[]>([]);
   const [cantons, setCantons] = useState<string[]>([]);
@@ -37,12 +37,7 @@ export default function WelcomePage() {
     }
   }, [status, session, router]);
 
-  // Pre-fill display name from Google name
-  useEffect(() => {
-    if (session?.user?.name && !displayName) {
-      setDisplayName(session.user.name);
-    }
-  }, [session?.user?.name, displayName]);
+  const displayName = editedName ?? session?.user?.name ?? "";
 
   // Fetch subjects from curriculum API
   useEffect(() => {
@@ -51,7 +46,7 @@ export default function WelcomePage() {
         const res = await fetch("/api/curriculum?curriculum=LP21");
         if (res.ok) {
           const data = await res.json();
-          setAvailableSubjects(data.subjects || []);
+          setAvailableSubjects((data.subjects || []).map((s: { name_de: string }) => s.name_de));
         }
       } catch {
         // Subjects will remain empty — user can still submit
@@ -148,7 +143,7 @@ export default function WelcomePage() {
                   type="text"
                   id="displayName"
                   value={displayName}
-                  onChange={(e) => setDisplayName(e.target.value)}
+                  onChange={(e) => setEditedName(e.target.value)}
                   required
                   minLength={2}
                   maxLength={32}
