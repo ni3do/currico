@@ -25,6 +25,8 @@ export const rateLimitConfigs: Record<string, RateLimitConfig> = {
   "auth:register": { limit: 5, windowMs: 15 * 60 * 1000 }, // 5 per 15 min
   "auth:login": { limit: 10, windowMs: 15 * 60 * 1000 }, // 10 per 15 min
   "auth:send-verification": { limit: 3, windowMs: 15 * 60 * 1000 }, // 3 per 15 min
+  "auth:forgot-password": { limit: 3, windowMs: 15 * 60 * 1000 }, // 3 per 15 min
+  "auth:reset-password": { limit: 5, windowMs: 15 * 60 * 1000 }, // 5 per 15 min
   "resources:list": { limit: 60, windowMs: 60 * 1000 }, // 60 per minute
   "resources:create": { limit: 10, windowMs: 60 * 1000 }, // 10 per minute
   "user:profile": { limit: 10, windowMs: 60 * 1000 }, // 10 per minute

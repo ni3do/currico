@@ -99,7 +99,7 @@ export default function LoginPage() {
                     {t("form.passwordLabel")}
                   </label>
                   <Link
-                    href="/bald-verfuegbar"
+                    href="/forgot-password"
                     className="text-primary hover:text-primary-hover text-sm font-medium transition-colors"
                   >
                     {t("form.forgotPassword")}

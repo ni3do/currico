@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
+import { checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
 
 /**
  * POST /api/auth/reset-password
@@ -8,6 +9,22 @@ import { prisma } from "@/lib/db";
  */
 export async function POST(request: NextRequest) {
   try {
+    const clientIP = getClientIP(request);
+    const rateLimitResult = checkRateLimit(clientIP, "auth:reset-password");
+
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        {
+          error: "Zu viele Anfragen. Bitte versuchen Sie es später erneut.",
+          retryAfter: rateLimitResult.retryAfter,
+        },
+        {
+          status: 429,
+          headers: rateLimitHeaders(rateLimitResult),
+        }
+      );
+    }
+
     const { token, password } = await request.json();
 
     if (!token || !password) {

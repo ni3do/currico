@@ -82,7 +82,7 @@ export default function ResetPasswordPage() {
                 <p className="text-text-muted mb-6">
                   Ihr Passwort wurde erfolgreich zurückgesetzt.
                 </p>
-                <Link href="/login" className="btn-primary inline-block px-6 py-3">
+                <Link href="/anmelden" className="btn-primary inline-block px-6 py-3">
                   Jetzt anmelden
                 </Link>
               </div>
