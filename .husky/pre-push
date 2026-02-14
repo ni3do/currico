@@ -4,10 +4,10 @@
 if [ -n "$SKIP_E2E" ]; then
   echo "⏭️  Skipping e2e tests (SKIP_E2E is set)"
 else
-  echo "🎭 Running Playwright e2e tests (chromium-de)..."
+  echo "🎭 Running e2e tests..."
   echo "💡 Tip: Set SKIP_E2E=1 to skip: SKIP_E2E=1 git push"
 
-  if npx playwright test --project=chromium-de; then
+  if npm run test:e2e; then
     echo "✅ E2e tests passed"
   else
     echo "❌ E2e tests failed. Please fix failing tests before pushing."
@@ -32,22 +32,6 @@ else
     echo "❌ Docker build failed. Please fix the Dockerfile before pushing."
     echo "Run 'docker build -t currico-test .' to see the error details."
     echo "To skip this check: SKIP_DOCKER_CHECK=1 git push"
-    exit 1
-  fi
-fi
-
-# Run e2e tests
-if [ -n "$SKIP_E2E_CHECK" ]; then
-  echo "⏭️  Skipping e2e tests (SKIP_E2E_CHECK is set)"
-else
-  echo "🎭 Running e2e tests..."
-  echo "💡 Tip: Set SKIP_E2E_CHECK=1 to skip: SKIP_E2E_CHECK=1 git push"
-
-  if npm run test:e2e; then
-    echo "✅ E2e tests passed"
-  else
-    echo "❌ E2e tests failed. Please fix before pushing."
-    echo "To skip this check: SKIP_E2E_CHECK=1 git push"
     exit 1
   fi
 fi
