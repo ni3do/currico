@@ -5,6 +5,7 @@ This plan covers the implementation of comprehensive E2E browser tests for Curri
 ## Current State
 
 **Implemented:**
+
 - ✅ Playwright configuration with multi-browser/locale support
 - ✅ Global setup for authentication
 - ✅ Auth fixtures (buyerPage, sellerPage, adminPage, schoolPage)
@@ -14,6 +15,7 @@ This plan covers the implementation of comprehensive E2E browser tests for Curri
 - ✅ Smoke tests and login flow tests
 
 **Missing:**
+
 - Page objects for catalog, resources, admin, seller dashboard, account, etc.
 - Test suites for core user flows
 - Registration flow tests
