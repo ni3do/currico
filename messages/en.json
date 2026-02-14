@@ -3693,5 +3693,28 @@
       },
       "cta": "Upload Materials"
     }
+  },
+  "welcomePage": {
+    "title": "Welcome, {name}!",
+    "subtitle": "Complete your profile so we can show you relevant materials.",
+    "fields": {
+      "displayName": "Display name",
+      "displayNamePlaceholder": "Your name on Currico",
+      "displayNameHint": "2–32 characters. Visible to other users.",
+      "subjects": "Subjects",
+      "subjectsPlaceholder": "Select subjects...",
+      "cycles": "Cycles",
+      "cyclesPlaceholder": "Select cycles...",
+      "cantons": "Cantons (optional)",
+      "cantonsPlaceholder": "Select cantons..."
+    },
+    "submit": "Save profile",
+    "submitting": "Saving...",
+    "errors": {
+      "displayNameLength": "Name must be between 2 and 32 characters.",
+      "subjectsRequired": "Please select at least one subject.",
+      "cyclesRequired": "Please select at least one cycle.",
+      "generic": "An error occurred. Please try again."
+    }
   }
 }

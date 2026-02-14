@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { prisma } from "@/lib/db";
 import { sendPasswordResetEmail } from "@/lib/email";
+import { checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
 
 const PASSWORD_RESET_EXPIRY_HOURS = 1;
 
@@ -11,6 +12,22 @@ const PASSWORD_RESET_EXPIRY_HOURS = 1;
  */
 export async function POST(request: NextRequest) {
   try {
+    const clientIP = getClientIP(request);
+    const rateLimitResult = checkRateLimit(clientIP, "auth:forgot-password");
+
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        {
+          error: "Zu viele Anfragen. Bitte versuchen Sie es später erneut.",
+          retryAfter: rateLimitResult.retryAfter,
+        },
+        {
+          status: 429,
+          headers: rateLimitHeaders(rateLimitResult),
+        }
+      );
+    }
+
     const { email } = await request.json();
 
     if (!email || typeof email !== "string") {

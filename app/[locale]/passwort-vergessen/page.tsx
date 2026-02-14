@@ -55,7 +55,7 @@ export default function ForgotPasswordPage() {
                   Falls ein Konto mit <strong>{email}</strong> existiert, erhalten Sie in Kürze
                   einen Link zum Zurücksetzen Ihres Passworts.
                 </p>
-                <Link href="/login" className="btn-primary inline-block px-6 py-3">
+                <Link href="/anmelden" className="btn-primary inline-block px-6 py-3">
                   Zurück zur Anmeldung
                 </Link>
               </div>
@@ -105,7 +105,7 @@ export default function ForgotPasswordPage() {
 
                 <div className="mt-6 text-center">
                   <Link
-                    href="/login"
+                    href="/anmelden"
                     className="text-text-muted hover:text-primary inline-flex items-center gap-1 text-sm transition-colors"
                   >
                     <ArrowLeft className="h-4 w-4" />

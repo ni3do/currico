@@ -3721,5 +3721,28 @@
       },
       "cta": "Materialien hochladen"
     }
+  },
+  "welcomePage": {
+    "title": "Willkommen, {name}!",
+    "subtitle": "Vervollständige dein Profil, damit wir dir passende Materialien zeigen können.",
+    "fields": {
+      "displayName": "Anzeigename",
+      "displayNamePlaceholder": "Dein Name auf Currico",
+      "displayNameHint": "2–32 Zeichen. Wird anderen Nutzern angezeigt.",
+      "subjects": "Fächer",
+      "subjectsPlaceholder": "Fächer auswählen...",
+      "cycles": "Zyklen",
+      "cyclesPlaceholder": "Zyklen auswählen...",
+      "cantons": "Kantone (optional)",
+      "cantonsPlaceholder": "Kantone auswählen..."
+    },
+    "submit": "Profil speichern",
+    "submitting": "Wird gespeichert...",
+    "errors": {
+      "displayNameLength": "Der Name muss zwischen 2 und 32 Zeichen lang sein.",
+      "subjectsRequired": "Bitte wähle mindestens ein Fach aus.",
+      "cyclesRequired": "Bitte wähle mindestens einen Zyklus aus.",
+      "generic": "Ein Fehler ist aufgetreten. Bitte versuche es erneut."
+    }
   }
 }

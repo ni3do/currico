@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, type ReactNode } from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import Image from "next/image";
 import {
   Home,
@@ -49,6 +49,7 @@ const MOBILE_TABS = [
 
 function AccountLayoutInner({ children }: { children: ReactNode }) {
   const { data: session, status } = useSession();
+  const router = useRouter();
   const tCommon = useTranslations("common");
   const t = useTranslations("accountPage");
   const accountData = useAccountDataProvider();
@@ -56,6 +57,13 @@ function AccountLayoutInner({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const activeTab = pathToTab(pathname);
   const tabBarRef = useRef<HTMLDivElement>(null);
+
+  // Redirect new OAuth users to onboarding
+  useEffect(() => {
+    if (status === "authenticated" && session?.user?.needsOnboarding) {
+      router.replace("/willkommen");
+    }
+  }, [status, session?.user?.needsOnboarding, router]);
 
   // Scroll active mobile tab into view
   useEffect(() => {

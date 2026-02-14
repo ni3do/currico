@@ -130,7 +130,7 @@ describe("Seller Onboarding Flow", () => {
       const data = await parseResponse<AcceptTermsResponse>(response);
 
       expect(response.status).toBe(401);
-      expect(data.error).toBe("Nicht autorisiert");
+      expect(data.error).toBe("Unauthorized");
     });
 
     it("returns 400 when email not verified", async () => {
@@ -159,7 +159,7 @@ describe("Seller Onboarding Flow", () => {
       const data = await parseResponse<AcceptTermsResponse>(response);
 
       expect(response.status).toBe(404);
-      expect(data.error).toBe("Benutzer nicht gefunden");
+      expect(data.error).toBe("Not found");
     });
 
     it("returns 500 on database error", async () => {
@@ -221,7 +221,7 @@ describe("Seller Onboarding Flow", () => {
       const data = await parseResponse<AcceptTermsResponse>(response);
 
       expect(response.status).toBe(401);
-      expect(data.error).toBe("Nicht autorisiert");
+      expect(data.error).toBe("Unauthorized");
     });
 
     it("returns 404 when user not found", async () => {
@@ -234,7 +234,7 @@ describe("Seller Onboarding Flow", () => {
       const data = await parseResponse<AcceptTermsResponse>(response);
 
       expect(response.status).toBe(404);
-      expect(data.error).toBe("Benutzer nicht gefunden");
+      expect(data.error).toBe("Not found");
     });
   });
 
@@ -331,7 +331,7 @@ describe("Seller Onboarding Flow", () => {
       const data = await parseResponse<ConnectResponse>(response);
 
       expect(response.status).toBe(401);
-      expect(data.error).toBe("Nicht autorisiert");
+      expect(data.error).toBe("Unauthorized");
     });
 
     it("returns 400 when email not verified", async () => {
@@ -392,7 +392,7 @@ describe("Seller Onboarding Flow", () => {
       const data = await parseResponse<ConnectResponse>(response);
 
       expect(response.status).toBe(404);
-      expect(data.error).toBe("Benutzer nicht gefunden");
+      expect(data.error).toBe("Not found");
     });
 
     it("returns 500 on Stripe account creation error", async () => {
@@ -611,7 +611,7 @@ describe("Seller Onboarding Flow", () => {
       const data = await parseResponse<ConnectStatusResponse>(response);
 
       expect(response.status).toBe(401);
-      expect(data.error).toBe("Nicht autorisiert");
+      expect(data.error).toBe("Unauthorized");
     });
 
     it("returns 404 when user not found", async () => {
@@ -624,7 +624,7 @@ describe("Seller Onboarding Flow", () => {
       const data = await parseResponse<ConnectStatusResponse>(response);
 
       expect(response.status).toBe(404);
-      expect(data.error).toBe("Benutzer nicht gefunden");
+      expect(data.error).toBe("Not found");
     });
   });
 });
