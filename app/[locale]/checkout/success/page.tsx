@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { LoginLink } from "@/components/ui/LoginLink";
 import Image from "next/image";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
@@ -138,9 +139,9 @@ export default function CheckoutSuccessPage() {
               </div>
               <h1 className="text-text mb-2 text-xl font-bold">{t("notLoggedIn.title")}</h1>
               <p className="text-text-muted mb-6">{t("notLoggedIn.description")}</p>
-              <Link href="/anmelden" className="btn btn-primary px-6 py-2">
+              <LoginLink className="btn btn-primary px-6 py-2">
                 {t("notLoggedIn.loginButton")}
-              </Link>
+              </LoginLink>
             </div>
           ) : error ? (
             <div className="card p-8 text-center">

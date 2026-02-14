@@ -70,6 +70,8 @@ export const privateUserSelect = {
   notify_sales: true,
   notify_newsletter: true,
   notify_platform_updates: true,
+  notify_comments: true,
+  notify_new_followers: true,
 } as const;
 
 // Admin view - full access

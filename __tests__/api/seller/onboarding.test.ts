@@ -248,6 +248,8 @@ describe("Seller Onboarding Flow", () => {
         emailVerified: new Date("2024-01-01"),
         seller_terms_accepted_at: new Date("2024-01-15"),
         stripe_account_id: null,
+        display_name: "Test User",
+        name: "Test",
       });
       mockCreateConnectAccount.mockResolvedValue({
         id: "acct_test123",
@@ -273,10 +275,12 @@ describe("Seller Onboarding Flow", () => {
       expect(data.url).toBe("https://connect.stripe.com/setup/test");
       expect(data.stripeAccountId).toBe("acct_test123");
 
-      // Verify Stripe account was created with correct metadata
-      expect(mockCreateConnectAccount).toHaveBeenCalledWith("test@example.com", {
-        user_id: "user-123",
-      });
+      // Verify Stripe account was created with correct metadata and display name
+      expect(mockCreateConnectAccount).toHaveBeenCalledWith(
+        "test@example.com",
+        { user_id: "user-123" },
+        "Test User"
+      );
 
       // Verify account ID was saved to user
       expect(mockUserUpdate).toHaveBeenCalledWith({

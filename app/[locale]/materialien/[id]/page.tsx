@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { getLoginUrl } from "@/lib/utils/login-redirect";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
@@ -176,8 +177,7 @@ export default function MaterialDetailPage() {
   // Handle download for free resources
   const handleDownload = async () => {
     if (sessionStatus !== "authenticated") {
-      // Redirect to login
-      window.location.href = "/anmelden";
+      window.location.href = getLoginUrl(window.location.pathname);
       return;
     }
 
@@ -195,7 +195,7 @@ export default function MaterialDetailPage() {
   // Handle wishlist toggle
   const handleWishlistToggle = async () => {
     if (sessionStatus !== "authenticated") {
-      window.location.href = "/anmelden";
+      window.location.href = getLoginUrl(window.location.pathname);
       return;
     }
 
@@ -235,7 +235,7 @@ export default function MaterialDetailPage() {
     e.preventDefault();
 
     if (sessionStatus !== "authenticated") {
-      window.location.href = "/anmelden";
+      window.location.href = getLoginUrl(window.location.pathname);
       return;
     }
 
@@ -593,7 +593,7 @@ export default function MaterialDetailPage() {
                     e.preventDefault();
                     e.stopPropagation();
                     if (sessionStatus !== "authenticated") {
-                      window.location.href = "/anmelden";
+                      window.location.href = getLoginUrl(window.location.pathname);
                       return;
                     }
                     const previousState = isFollowing;

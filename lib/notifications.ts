@@ -5,8 +5,9 @@ import type { NotificationType } from "@prisma/client";
 /** Maps notification type → user preference column */
 const TYPE_TO_PREF: Record<NotificationType, string> = {
   SALE: "notify_sales",
-  FOLLOW: "notify_new_from_followed",
+  FOLLOW: "notify_new_followers",
   REVIEW: "notify_review_reminders",
+  COMMENT: "notify_comments",
   SYSTEM: "notify_platform_updates",
 };
 
@@ -53,7 +54,9 @@ async function sendEmailIfOptedIn(params: CreateNotificationParams) {
       preferred_language: true,
       notify_sales: true,
       notify_new_from_followed: true,
+      notify_new_followers: true,
       notify_review_reminders: true,
+      notify_comments: true,
       notify_platform_updates: true,
     },
   });
@@ -64,7 +67,9 @@ async function sendEmailIfOptedIn(params: CreateNotificationParams) {
   const prefs: Record<string, boolean> = {
     notify_sales: user.notify_sales,
     notify_new_from_followed: user.notify_new_from_followed,
+    notify_new_followers: user.notify_new_followers,
     notify_review_reminders: user.notify_review_reminders,
+    notify_comments: user.notify_comments,
     notify_platform_updates: user.notify_platform_updates,
   };
   if (!prefs[prefColumn]) return;
@@ -77,6 +82,8 @@ async function sendEmailIfOptedIn(params: CreateNotificationParams) {
     body: params.body || params.title,
     link: params.link,
     locale,
+    notificationType: params.type,
+    userId: params.userId,
   });
 }
 
@@ -118,4 +125,57 @@ export function notifyReview(sellerId: string, resourceTitle: string, rating: nu
     body: `Ihr Material "${resourceTitle}" hat eine ${rating}-Sterne-Bewertung erhalten.`,
     link: "/konto",
   }).catch((err) => console.error("Failed to create review notification:", err));
+}
+
+/**
+ * Notify a seller that someone commented on their material.
+ */
+export function notifyComment(sellerId: string, resourceTitle: string, commenterName: string) {
+  createNotification({
+    userId: sellerId,
+    type: "COMMENT",
+    title: `Neuer Kommentar: ${resourceTitle}`,
+    body: `${commenterName} hat einen Kommentar zu "${resourceTitle}" hinterlassen.`,
+    link: "/konto",
+  }).catch((err) => console.error("Failed to create comment notification:", err));
+}
+
+/**
+ * Notify a comment author that someone replied to their comment.
+ */
+export function notifyCommentReply(
+  commentAuthorId: string,
+  resourceTitle: string,
+  replierName: string
+) {
+  createNotification({
+    userId: commentAuthorId,
+    type: "COMMENT",
+    title: `Neue Antwort auf Ihren Kommentar`,
+    body: `${replierName} hat auf Ihren Kommentar zu "${resourceTitle}" geantwortet.`,
+    link: "/konto",
+  }).catch((err) => console.error("Failed to create comment reply notification:", err));
+}
+
+/**
+ * Notify followers when a seller publishes new material.
+ */
+export function notifyNewMaterial(
+  followerIds: string[],
+  resourceTitle: string,
+  sellerName: string
+) {
+  if (followerIds.length === 0) return;
+
+  prisma.notification
+    .createMany({
+      data: followerIds.map((followerId) => ({
+        user_id: followerId,
+        type: "FOLLOW" as NotificationType,
+        title: `Neues Material von ${sellerName}`,
+        body: `${sellerName} hat "${resourceTitle}" veröffentlicht.`,
+        link: "/materialien",
+      })),
+    })
+    .catch((err) => console.error("Failed to create new material notifications:", err));
 }

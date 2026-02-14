@@ -10,6 +10,7 @@ import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { useToast } from "@/components/ui/Toast";
 import { Save, Loader2, ArrowLeft, Eye } from "lucide-react";
 import { Link } from "@/i18n/navigation";
+import { roundToNearestHalfFranc } from "@/lib/utils/price";
 
 interface MaterialData {
   id: string;
@@ -241,6 +242,13 @@ export default function EditMaterialPage() {
               type="number"
               value={price / 100}
               onChange={(e) => setPrice(Math.round(parseFloat(e.target.value || "0") * 100))}
+              onBlur={() => {
+                const valCHF = price / 100;
+                if (valCHF > 0) {
+                  const rounded = roundToNearestHalfFranc(valCHF);
+                  setPrice(Math.round(rounded * 100));
+                }
+              }}
               disabled={material?.isApproved}
               min={0}
               max={1000}

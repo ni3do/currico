@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { getLoginUrl } from "@/lib/utils/login-redirect";
 import type { UserData, UserStats, FollowedSeller } from "@/lib/types/account";
 
 interface AccountDataContextType {
@@ -64,7 +65,7 @@ export function useAccountDataProvider() {
   // Handle redirects
   useEffect(() => {
     if (status === "unauthenticated") {
-      router.push("/anmelden");
+      router.push(getLoginUrl());
     } else if (status === "authenticated" && session?.user?.role === "ADMIN") {
       router.push("/admin");
     }

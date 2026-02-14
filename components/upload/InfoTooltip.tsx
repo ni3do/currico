@@ -141,7 +141,7 @@ export const FIELD_TOOLTIPS = {
   },
   price: {
     content:
-      "Legen Sie den Verkaufspreis in CHF fest. Sie erhalten 70% des Verkaufspreises, 30% sind Plattformgebühr. Der Mindestpreis ist CHF 1, Maximum CHF 50.",
+      "Legen Sie den Verkaufspreis in CHF fest. Sie erhalten 70% des Verkaufspreises, 30% sind Plattformgebühr. Der Mindestpreis ist CHF 0.50, Maximum CHF 50.",
     example: "CHF 5.00",
   },
   editable: {

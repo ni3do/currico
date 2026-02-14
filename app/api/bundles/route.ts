@@ -7,7 +7,12 @@ import { requireAuth, requireSeller, unauthorized, forbidden, badRequest } from 
 const createBundleSchema = z.object({
   title: z.string().min(1, "Titel ist erforderlich").max(200),
   description: z.string().max(5000).optional(),
-  price: z.number().min(0, "Preis muss positiv sein"),
+  price: z
+    .number()
+    .min(0, "Preis muss positiv sein")
+    .refine((val) => val === 0 || (val >= 50 && val % 50 === 0), {
+      message: "Price must be in 0.50 CHF increments",
+    }),
   subject: z.array(z.string()).min(1, "Mindestens ein Fach ist erforderlich"),
   cycle: z.array(z.string()).min(1, "Mindestens ein Zyklus ist erforderlich"),
   resourceIds: z.array(z.string()).min(2, "Mindestens 2 Materialien sind erforderlich"),

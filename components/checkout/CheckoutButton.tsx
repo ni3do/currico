@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import { getLoginUrl } from "@/lib/utils/login-redirect";
 
 interface CheckoutButtonProps {
   materialId: string;
@@ -28,7 +29,7 @@ export function CheckoutButton({
   const handleCheckout = async () => {
     // Redirect to login if not authenticated
     if (sessionStatus !== "authenticated") {
-      window.location.href = "/anmelden";
+      window.location.href = getLoginUrl(window.location.pathname);
       return;
     }
 

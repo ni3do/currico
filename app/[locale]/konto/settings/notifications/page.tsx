@@ -14,7 +14,9 @@ type NotificationKey =
   | "notify_welcome_offers"
   | "notify_sales"
   | "notify_newsletter"
-  | "notify_platform_updates";
+  | "notify_platform_updates"
+  | "notify_comments"
+  | "notify_new_followers";
 
 function ToggleRow({
   title,
@@ -77,6 +79,8 @@ export default function SettingsNotificationsPage() {
     notify_sales: true,
     notify_newsletter: false,
     notify_platform_updates: true,
+    notify_comments: true,
+    notify_new_followers: true,
   });
   const [isSavingNotifications, setIsSavingNotifications] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState<{
@@ -96,6 +100,8 @@ export default function SettingsNotificationsPage() {
         notify_sales: userData.notify_sales ?? true,
         notify_newsletter: userData.notify_newsletter ?? false,
         notify_platform_updates: userData.notify_platform_updates ?? true,
+        notify_comments: userData.notify_comments ?? true,
+        notify_new_followers: userData.notify_new_followers ?? true,
       });
     }
   }, [userData]);
@@ -132,6 +138,21 @@ export default function SettingsNotificationsPage() {
   };
 
   const sections: ToggleSection[] = [
+    {
+      header: tNotif("categories.authorActivity.title"),
+      items: [
+        {
+          key: "notify_comments",
+          title: tNotif("categories.authorActivity.comments.label"),
+          description: tNotif("categories.authorActivity.comments.description"),
+        },
+        {
+          key: "notify_new_followers",
+          title: tNotif("categories.authorActivity.newFollowers.label"),
+          description: tNotif("categories.authorActivity.newFollowers.description"),
+        },
+      ],
+    },
     {
       header: tNotif("categories.favoriteAuthors.title"),
       items: [

@@ -30,7 +30,10 @@ export async function GET() {
           is_approved: true,
           created_at: true,
           _count: {
-            select: { transactions: { where: { status: "COMPLETED" } } },
+            select: {
+              transactions: { where: { status: "COMPLETED" } },
+              downloads: true,
+            },
           },
           transactions: {
             where: { status: "COMPLETED" },
@@ -75,7 +78,10 @@ export async function GET() {
     const platformFeeRate = PLATFORM_FEE_PERCENT / 100;
     const totalGross = totalEarnings._sum.amount || 0;
     const totalNet = totalGross * (1 - platformFeeRate);
-    const totalDownloads = materials.reduce((sum, r) => sum + r._count.transactions, 0);
+    const totalDownloads = materials.reduce(
+      (sum, r) => sum + r._count.transactions + r._count.downloads,
+      0
+    );
 
     // Transform materials
     const transformedMaterials = materials.map((material) => {
@@ -87,7 +93,7 @@ export async function GET() {
         title: material.title,
         type: "Material",
         status: getResourceStatus(material.is_published, material.is_approved),
-        downloads: material._count.transactions,
+        downloads: material._count.transactions + material._count.downloads,
         netEarnings: formatPrice(netEarnings, { showFreeLabel: false }),
       };
     });

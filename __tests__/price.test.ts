@@ -3,6 +3,7 @@ import {
   formatPrice,
   formatPriceAdmin,
   getResourceStatus,
+  roundToNearestHalfFranc,
 } from "@/lib/utils/price";
 
 describe("formatPrice", () => {
@@ -38,6 +39,31 @@ describe("formatPriceAdmin", () => {
 
   it("shows 0.00 for zero price", () => {
     expect(formatPriceAdmin(0)).toBe("0.00");
+  });
+});
+
+describe("roundToNearestHalfFranc", () => {
+  it("returns 0 for zero input", () => {
+    expect(roundToNearestHalfFranc(0)).toBe(0);
+  });
+
+  it("returns 0 for negative input", () => {
+    expect(roundToNearestHalfFranc(-1)).toBe(0);
+  });
+
+  it("rounds up small values to minimum 0.50", () => {
+    expect(roundToNearestHalfFranc(0.1)).toBe(0.5);
+    expect(roundToNearestHalfFranc(0.25)).toBe(0.5);
+  });
+
+  it("rounds to nearest 0.50 increment", () => {
+    expect(roundToNearestHalfFranc(2.3)).toBe(2.5);
+    expect(roundToNearestHalfFranc(2.75)).toBe(3.0);
+  });
+
+  it("keeps exact 0.50 increments unchanged", () => {
+    expect(roundToNearestHalfFranc(2.5)).toBe(2.5);
+    expect(roundToNearestHalfFranc(3.0)).toBe(3.0);
   });
 });
 

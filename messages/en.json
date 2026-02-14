@@ -564,7 +564,8 @@
         "rzg": "Spaces, Times, Societies (RZG)",
         "erg": "Ethics, Religions, Community (ERG)"
       },
-      "filterButton": "Filter"
+      "filterButton": "Filter",
+      "fuzzyResults": "Showing similar results"
     },
     "advancedFilters": {
       "title": "Advanced Filters",
@@ -648,6 +649,7 @@
       "gridView": "Grid view",
       "listView": "List view",
       "sortOptions": {
+        "relevance": "Relevance",
         "newest": "Newest",
         "popular": "Most Popular",
         "rating": "Best Rating",
@@ -1023,6 +1025,30 @@
       "statusArchived": "Archived",
       "errorUpdating": "Error updating",
       "errorDeleting": "Error deleting"
+    },
+    "newsletters": {
+      "title": "Newsletters",
+      "create": "Create newsletter",
+      "subject": "Subject",
+      "content": "Content",
+      "save": "Save",
+      "send": "Send",
+      "confirmSend": "Are you sure? This email will be sent to all subscribers.",
+      "confirmDelete": "Really delete this newsletter?",
+      "statusDraft": "Draft",
+      "statusSending": "Sending",
+      "statusSent": "Sent",
+      "statusFailed": "Failed",
+      "recipients": "Recipients",
+      "sentAt": "Sent at",
+      "edit": "Edit",
+      "delete": "Delete",
+      "cancel": "Cancel",
+      "empty": "No newsletters created yet",
+      "created": "Newsletter created",
+      "updated": "Newsletter updated",
+      "deleted": "Newsletter deleted",
+      "sending": "Newsletter is being sent..."
     },
     "settings": {
       "accountSettings": "Account Settings",
@@ -1430,7 +1456,7 @@
       "priceRequired": "Price is required",
       "pricePositive": "Price must be a positive number",
       "priceMax": "Price must not exceed CHF 50",
-      "priceMin": "Minimum price is CHF 1",
+      "priceMin": "Minimum price is CHF 0.50",
       "fileRequired": "At least one file is required",
       "legalOwnContent": "Please confirm that you use your own content",
       "legalNoScans": "Please confirm that no textbook scans are included",
@@ -1648,7 +1674,16 @@
       "loginRequired": "You need to sign in to become a seller",
       "verifyEmail": "Verify your email to continue",
       "emailRequired": "Please verify your email address before becoming a seller"
-    }
+    },
+    "stripeRefreshMessage": "Your Stripe session has expired. Please try again.",
+    "stepLogin": "Sign In",
+    "stepVerifyEmail": "Verify Email",
+    "stepAcceptTerms": "Accept Terms",
+    "stepConnectStripe": "Connect Stripe",
+    "statusPendingVerification": "Your verification is being processed",
+    "statusActive": "Your Stripe account is active",
+    "statusRestricted": "Please complete your Stripe verification",
+    "retryStripe": "Retry Stripe Connection"
   },
   "stripeConnectStatus": {
     "error": {
@@ -1670,7 +1705,8 @@
       "requirementsNeeded": "Additional information is needed to complete your setup.",
       "requiredInfo": "Required information:",
       "andMore": "and {count} more...",
-      "continueSetup": "Complete Setup"
+      "continueSetup": "Complete Setup",
+      "continueLoading": "Redirecting to Stripe..."
     },
     "invite": {
       "title": "Become a Seller",
@@ -1723,7 +1759,8 @@
       "requirementsNeeded": "Stripe needs some additional information to complete your account setup.",
       "requiredInfo": "Required information:",
       "andMore": "and {count} more...",
-      "continueSetup": "Continue Setup"
+      "continueSetup": "Continue Setup",
+      "continueLoading": "Redirecting to Stripe..."
     },
     "noAccount": {
       "title": "Start Selling",
@@ -2819,6 +2856,17 @@
     "saved": "Saved",
     "error": "Error saving",
     "categories": {
+      "authorActivity": {
+        "title": "Activity on My Materials",
+        "comments": {
+          "label": "Comments and replies",
+          "description": "Notification when someone comments on or replies to your materials"
+        },
+        "newFollowers": {
+          "label": "New followers",
+          "description": "Notification when someone follows your profile"
+        }
+      },
       "favoriteAuthors": {
         "title": "Favorite Authors",
         "newFromFollowed": {
@@ -2910,7 +2958,8 @@
     "loginPrompt": "Sign in",
     "loginSuffix": " to write a review.",
     "noReviewsBeFirst": "No reviews yet — be the first!",
-    "options": "Options"
+    "options": "Options",
+    "cannotReviewOwn": "You cannot review your own material."
   },
   "likes": {
     "like": "Like",
@@ -3129,6 +3178,11 @@
       },
       "statusVerified": "Verified",
       "statusPending": "Pending",
+      "statusRejected": "Rejected",
+      "filterAll": "All",
+      "filterUnderReview": "Under Review",
+      "filterVerified": "Verified",
+      "filterRejected": "Rejected",
       "empty": "No uploaded materials yet",
       "emptyDescription": "Share your teaching materials with other teachers.",
       "uploadFirst": "Upload material"
@@ -3265,7 +3319,7 @@
       "earnings": "Earnings",
       "downloads": "Downloads",
       "contributions": "Contributions",
-      "thisMonth": "Total",
+      "total": "Total",
       "totalDownloads": "Total downloads",
       "materialsPublished": "Materials published",
       "myMaterials": "My Uploads",
@@ -3319,7 +3373,14 @@
       "hoursAgo": "{count}h ago",
       "daysAgo": "{count}d ago",
       "errorLoading": "Failed to load notifications",
-      "retry": "Try again"
+      "retry": "Try again",
+      "filterAll": "All",
+      "filterSales": "Sales",
+      "filterReviews": "Reviews",
+      "filterComments": "Comments",
+      "filterFollows": "Followers",
+      "filterSystem": "System",
+      "loadMore": "Load more"
     },
     "welcomeGuide": {
       "welcome": "Welcome, {name}!",
@@ -3565,6 +3626,10 @@
     "verificationProgress": "{met}/{total} criteria met",
     "notVerified": "Not verified",
     "verifiedInfo": "Learn more",
+    "requirementPoints": "Points",
+    "needMorePoints": "You need {count} more points for {level}",
+    "needMoreUploads": "You need {count, plural, =1 {1 more upload} other {# more uploads}} for {level}",
+    "needMoreDownloads": "You need {count, plural, =1 {1 more download} other {# more downloads}} for {level}",
     "levels": {
       "newcomer": "Newcomer",
       "contributor": "Contributor",
@@ -3636,6 +3701,9 @@
       "levelsTitle": "The 5 Levels",
       "levelsDescription": "Each level unlocks a new badge for your profile.",
       "levelMinPoints": "From {points} points",
+      "reqPoints": "{count, plural, =0 {0 points} =1 {1 point} other {# points}}",
+      "reqUploads": "{count, plural, =0 {0 uploads} =1 {1 upload} other {# uploads}}",
+      "reqDownloads": "{count, plural, =0 {0 downloads} =1 {1 download} other {# downloads}}",
       "tipsTitle": "Tips to Level Up Faster",
       "tips": {
         "quality": "Upload high-quality materials — great content gets downloaded more often.",

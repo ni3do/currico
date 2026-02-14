@@ -13,32 +13,40 @@ import {
   Info,
   CheckCheck,
   BellOff,
+  MessageSquare,
+  Loader2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+
+type NotificationType = "SALE" | "FOLLOW" | "REVIEW" | "COMMENT" | "SYSTEM";
 
 interface Notification {
   id: string;
   created_at: string;
   read_at: string | null;
-  type: "SALE" | "FOLLOW" | "REVIEW" | "SYSTEM";
+  type: NotificationType;
   title: string;
   body: string | null;
   link: string | null;
 }
 
-const TYPE_ICON: Record<Notification["type"], typeof Receipt> = {
+const TYPE_ICON: Record<NotificationType, typeof Receipt> = {
   SALE: Receipt,
   FOLLOW: UserPlus,
   REVIEW: Star,
+  COMMENT: MessageSquare,
   SYSTEM: Info,
 };
 
-const TYPE_COLOR: Record<Notification["type"], string> = {
+const TYPE_COLOR: Record<NotificationType, string> = {
   SALE: "bg-success/10 text-success",
   FOLLOW: "bg-primary/10 text-primary",
   REVIEW: "bg-warning/10 text-warning",
+  COMMENT: "bg-blue/10 text-blue",
   SYSTEM: "bg-accent/10 text-accent",
 };
+
+type FilterType = "ALL" | NotificationType;
 
 function timeAgo(dateStr: string, t: ReturnType<typeof useTranslations>) {
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -57,29 +65,57 @@ export default function NotificationsPage() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<FilterType>("ALL");
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const [hasMore, setHasMore] = useState(false);
 
-  const fetchNotifications = useCallback(async () => {
-    setError(false);
-    try {
-      const res = await fetch("/api/users/me/notifications");
-      if (!res.ok) throw new Error();
-      const data = await res.json();
-      setNotifications(data.notifications);
-      setUnreadCount(data.unreadCount);
-    } catch {
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const fetchNotifications = useCallback(
+    async (cursor?: string) => {
+      if (!cursor) setError(false);
+      try {
+        const params = new URLSearchParams();
+        if (activeFilter !== "ALL") params.set("type", activeFilter);
+        if (cursor) params.set("cursor", cursor);
+        params.set("limit", "20");
+
+        const res = await fetch(`/api/users/me/notifications?${params.toString()}`);
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+
+        if (cursor) {
+          setNotifications((prev) => [...prev, ...data.notifications]);
+        } else {
+          setNotifications(data.notifications);
+        }
+        setUnreadCount(data.unreadCount);
+        setNextCursor(data.nextCursor);
+        setHasMore(data.hasMore);
+      } catch {
+        setError(true);
+      } finally {
+        setLoading(false);
+        setLoadingMore(false);
+      }
+    },
+    [activeFilter]
+  );
 
   useEffect(() => {
+    setLoading(true);
+    setNotifications([]);
+    setNextCursor(null);
     fetchNotifications();
   }, [fetchNotifications]);
 
+  const loadMore = () => {
+    if (!nextCursor || loadingMore) return;
+    setLoadingMore(true);
+    fetchNotifications(nextCursor);
+  };
+
   const markAsRead = async (id: string, link: string | null) => {
-    // Optimistically mark as read
     setNotifications((prev) =>
       prev.map((n) => (n.id === id ? { ...n, read_at: new Date().toISOString() } : n))
     );
@@ -92,7 +128,7 @@ export default function NotificationsPage() {
     });
 
     if (link) {
-      router.push(link as any);
+      router.push(link as Parameters<typeof router.push>[0]);
     }
   };
 
@@ -108,6 +144,15 @@ export default function NotificationsPage() {
       body: JSON.stringify({ markAllRead: true }),
     });
   };
+
+  const filterTabs: { key: FilterType; label: string }[] = [
+    { key: "ALL", label: t("filterAll") },
+    { key: "SALE", label: t("filterSales") },
+    { key: "REVIEW", label: t("filterReviews") },
+    { key: "COMMENT", label: t("filterComments") },
+    { key: "FOLLOW", label: t("filterFollows") },
+    { key: "SYSTEM", label: t("filterSystem") },
+  ];
 
   if (loading) {
     return (
@@ -149,6 +194,23 @@ export default function NotificationsPage() {
             {t("markAllRead")}
           </button>
         )}
+      </div>
+
+      {/* Filter Tabs */}
+      <div className="flex flex-wrap gap-1.5">
+        {filterTabs.map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => setActiveFilter(tab.key)}
+            className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
+              activeFilter === tab.key
+                ? "bg-primary text-text-on-accent"
+                : "bg-surface-hover text-text-muted hover:text-text"
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
       {/* List */}
@@ -222,6 +284,20 @@ export default function NotificationsPage() {
               );
             })}
           </AnimatePresence>
+
+          {/* Load More */}
+          {hasMore && (
+            <div className="pt-2 text-center">
+              <button
+                onClick={loadMore}
+                disabled={loadingMore}
+                className="text-primary hover:text-primary-hover inline-flex items-center gap-2 text-sm font-medium transition-colors disabled:opacity-50"
+              >
+                {loadingMore ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                {t("loadMore")}
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>
