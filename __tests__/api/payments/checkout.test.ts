@@ -204,7 +204,7 @@ describe("Checkout Flow", () => {
       const data = await parseResponse<CreateCheckoutResponse>(response);
 
       expect(response.status).toBe(401);
-      expect(data.error).toBe("Authentication or guest email required");
+      expect(data.error).toBe("Authentifizierung oder Gast-E-Mail erforderlich");
     });
 
     it("returns 400 when materialId is missing", async () => {
@@ -221,7 +221,7 @@ describe("Checkout Flow", () => {
       const data = await parseResponse<CreateCheckoutResponse>(response);
 
       expect(response.status).toBe(400);
-      expect(data.error).toBe("Invalid input");
+      expect(data.error).toBe("Ungültige Eingabe");
     });
 
     it("returns 404 when material not found", async () => {
@@ -240,7 +240,7 @@ describe("Checkout Flow", () => {
       const data = await parseResponse<CreateCheckoutResponse>(response);
 
       expect(response.status).toBe(404);
-      expect(data.error).toBe("Resource not found");
+      expect(data.error).toBe("Material nicht gefunden");
     });
 
     it("returns 400 when material is not published", async () => {
@@ -262,7 +262,7 @@ describe("Checkout Flow", () => {
       const data = await parseResponse<CreateCheckoutResponse>(response);
 
       expect(response.status).toBe(400);
-      expect(data.error).toBe("Resource is not available for purchase");
+      expect(data.error).toBe("Material ist nicht zum Kauf verfügbar");
     });
 
     it("returns 400 when material is not approved", async () => {
@@ -284,7 +284,7 @@ describe("Checkout Flow", () => {
       const data = await parseResponse<CreateCheckoutResponse>(response);
 
       expect(response.status).toBe(400);
-      expect(data.error).toBe("Resource is not available for purchase");
+      expect(data.error).toBe("Material ist nicht zum Kauf verfügbar");
     });
 
     it("returns 400 when trying to purchase own material", async () => {
@@ -303,7 +303,7 @@ describe("Checkout Flow", () => {
       const data = await parseResponse<CreateCheckoutResponse>(response);
 
       expect(response.status).toBe(400);
-      expect(data.error).toBe("Cannot purchase your own material");
+      expect(data.error).toBe("Eigenes Material kann nicht gekauft werden");
     });
 
     it("returns 400 when user already owns the material", async () => {
@@ -326,7 +326,7 @@ describe("Checkout Flow", () => {
       const data = await parseResponse<CreateCheckoutResponse>(response);
 
       expect(response.status).toBe(400);
-      expect(data.error).toBe("You already own this material");
+      expect(data.error).toBe("Sie besitzen dieses Material bereits");
     });
 
     it("returns 400 when seller cannot receive payments", async () => {
@@ -353,7 +353,7 @@ describe("Checkout Flow", () => {
       const data = await parseResponse<CreateCheckoutResponse>(response);
 
       expect(response.status).toBe(400);
-      expect(data.error).toBe("Seller cannot receive payments at this time");
+      expect(data.error).toBe("Der Verkäufer kann derzeit keine Zahlungen empfangen");
     });
 
     it("returns 400 for free materials", async () => {
@@ -376,7 +376,7 @@ describe("Checkout Flow", () => {
       const data = await parseResponse<CreateCheckoutResponse>(response);
 
       expect(response.status).toBe(400);
-      expect(data.error).toBe("Free resources do not require checkout");
+      expect(data.error).toBe("Kostenlose Materialien benötigen keinen Checkout");
     });
 
     it("returns 400 for invalid JSON body", async () => {
@@ -397,7 +397,7 @@ describe("Checkout Flow", () => {
       const data = await parseResponse<CreateCheckoutResponse>(response);
 
       expect(response.status).toBe(400);
-      expect(data.error).toBe("Invalid JSON body");
+      expect(data.error).toBe("Ungültiger JSON-Body");
     });
 
     it("returns 404 when authenticated user not found", async () => {
@@ -415,7 +415,7 @@ describe("Checkout Flow", () => {
       const data = await parseResponse<CreateCheckoutResponse>(response);
 
       expect(response.status).toBe(404);
-      expect(data.error).toBe("User not found");
+      expect(data.error).toBe("Not found");
     });
 
     it("handles Stripe API error gracefully", async () => {
@@ -578,7 +578,7 @@ describe("Checkout Flow", () => {
       const data = await parseResponse<GetCheckoutSessionResponse>(response);
 
       expect(response.status).toBe(200);
-      expect(data.amountFormatted).toBe("Free");
+      expect(data.amountFormatted).toBe("Kostenlos");
     });
 
     it("returns 401 when not authenticated", async () => {
@@ -591,7 +591,7 @@ describe("Checkout Flow", () => {
       const data = await parseResponse<GetCheckoutSessionResponse>(response);
 
       expect(response.status).toBe(401);
-      expect(data.error).toBe("Authentication required");
+      expect(data.error).toBe("Authentifizierung erforderlich");
     });
 
     it("returns 400 when session ID is missing", async () => {
@@ -606,7 +606,7 @@ describe("Checkout Flow", () => {
       const data = await parseResponse<GetCheckoutSessionResponse>(response);
 
       expect(response.status).toBe(400);
-      expect(data.error).toBe("Session ID is required");
+      expect(data.error).toBe("Session-ID ist erforderlich");
     });
 
     it("returns 404 when transaction not found", async () => {
@@ -622,7 +622,7 @@ describe("Checkout Flow", () => {
       const data = await parseResponse<GetCheckoutSessionResponse>(response);
 
       expect(response.status).toBe(404);
-      expect(data.error).toBe("Transaction not found");
+      expect(data.error).toBe("Transaktion nicht gefunden");
     });
 
     it("returns 404 when transaction belongs to different user", async () => {
@@ -639,7 +639,7 @@ describe("Checkout Flow", () => {
       const data = await parseResponse<GetCheckoutSessionResponse>(response);
 
       expect(response.status).toBe(404);
-      expect(data.error).toBe("Transaction not found");
+      expect(data.error).toBe("Transaktion nicht gefunden");
     });
 
     it("returns 500 on database error", async () => {
@@ -655,7 +655,7 @@ describe("Checkout Flow", () => {
       const data = await parseResponse<GetCheckoutSessionResponse>(response);
 
       expect(response.status).toBe(500);
-      expect(data.error).toBe("Failed to fetch checkout session");
+      expect(data.error).toBe("Fehler beim Laden der Checkout-Session");
     });
   });
 });

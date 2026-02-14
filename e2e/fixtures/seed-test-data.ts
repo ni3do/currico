@@ -15,11 +15,17 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import {
   ALL_TEST_USERS,
-  TEST_RESOURCE_IDS,
+  TEST_MATERIAL_IDS,
   TEST_COLLECTION_IDS,
   TEST_SELLER,
   TEST_BUYER,
 } from "./test-users";
+
+const TEST_RESOURCE_IDS = {
+  FREE_RESOURCE: TEST_MATERIAL_IDS.FREE_MATERIAL,
+  PAID_RESOURCE: TEST_MATERIAL_IDS.PAID_MATERIAL,
+  PENDING_RESOURCE: TEST_MATERIAL_IDS.PENDING_MATERIAL,
+} as const;
 
 const prisma = new PrismaClient();
 

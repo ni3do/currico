@@ -92,7 +92,7 @@ describe("S3StorageAdapter", () => {
     it("uploads resource to private bucket", async () => {
       const buffer = Buffer.from("test content");
       const result = await adapter.upload(buffer, {
-        category: "resource",
+        category: "material",
         userId: "user123",
         filename: "document.pdf",
         contentType: "application/pdf",
@@ -232,7 +232,7 @@ describe("S3StorageAdapter", () => {
 
   describe("delete", () => {
     it("deletes from private bucket for resources", async () => {
-      await adapter.delete("resources/user123/file.pdf", "resource");
+      await adapter.delete("resources/user123/file.pdf", "material");
 
       expect(mockSend).toHaveBeenCalledTimes(1);
       const command = mockSend.mock.calls[0][0];
