@@ -1554,7 +1554,10 @@
       "mainFilesUploadTouch": "Tippen Sie hier, um Dateien auszuwählen",
       "mainFilesBrowse": "Durchsuchen",
       "previewAlt": "Vorschau",
-      "previewSelectedChange": "{count} Vorschaubild(er) ausgewählt — Tippen zum Ändern"
+      "previewSelectedChange": "{count} Vorschaubild(er) ausgewählt — Tippen zum Ändern",
+      "fileNameWarning": "Dateiname-Hinweis",
+      "fileNameTooLong": "Dateiname zu lang (max. 100 Zeichen)",
+      "fileNameDangerousChars": "Dateiname enthält ungültige Zeichen"
     },
     "legal": {
       "title": "Rechtliche Bestätigungen",
@@ -3302,6 +3305,14 @@
       },
       "statusVerified": "Geprüft",
       "statusPending": "Ausstehend",
+      "filterAll": "Alle",
+      "filterPending": "Ausstehend",
+      "filterVerified": "Geprüft",
+      "filterShow": "Anzeigen",
+      "pendingBanner": "{count, plural, one {# Material wartet} other {# Materialien warten}} auf Überprüfung",
+      "noMatchingFilter": "Keine Materialien mit diesem Status",
+      "noMatchingFilterDesc": "Es gibt keine Materialien die diesem Filter entsprechen.",
+      "showAll": "Alle anzeigen",
       "empty": "Noch keine hochgeladenen Materialien",
       "emptyDescription": "Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen.",
       "uploadFirst": "Material hochladen"
@@ -3327,6 +3338,7 @@
       "pageInfo": "Seite {page} von {total}",
       "errorLoading": "Fehler beim Laden der Kommentare",
       "errorSending": "Fehler beim Senden der Antwort",
+      "you": "Sie",
       "notSeller": "Kommentare sind nur für Verkäufer verfügbar.",
       "becomeSeller": "Verkäufer werden"
     },
@@ -3866,5 +3878,39 @@
       },
       "cta": "Materialien hochladen"
     }
+  },
+  "forgotPasswordPage": {
+    "title": "Passwort vergessen?",
+    "subtitle": "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum Zurücksetzen.",
+    "emailLabel": "E-Mail-Adresse",
+    "emailPlaceholder": "ihre@email.ch",
+    "submit": "Link senden",
+    "submitting": "Wird gesendet...",
+    "successTitle": "E-Mail gesendet",
+    "successMessage": "Falls ein Konto mit <b>{email}</b> existiert, erhalten Sie in Kürze einen Link zum Zurücksetzen Ihres Passworts.",
+    "backToLogin": "Zurück zur Anmeldung",
+    "networkError": "Netzwerkfehler. Bitte versuchen Sie es erneut.",
+    "genericError": "Ein Fehler ist aufgetreten"
+  },
+  "resetPasswordPage": {
+    "title": "Neues Passwort setzen",
+    "subtitle": "Wählen Sie ein sicheres Passwort für Ihr Konto.",
+    "passwordLabel": "Neues Passwort",
+    "passwordPlaceholder": "Mindestens 8 Zeichen",
+    "confirmLabel": "Passwort bestätigen",
+    "confirmPlaceholder": "Passwort wiederholen",
+    "showPassword": "Passwort anzeigen",
+    "submit": "Passwort ändern",
+    "submitting": "Wird gespeichert...",
+    "requirements": "Gross-, Kleinbuchstaben und Zahlen erforderlich",
+    "mismatch": "Passwörter stimmen nicht überein",
+    "successTitle": "Passwort geändert",
+    "successMessage": "Ihr Passwort wurde erfolgreich zurückgesetzt.",
+    "loginNow": "Jetzt anmelden",
+    "invalidTitle": "Ungültiger Link",
+    "invalidMessage": "Dieser Link ist ungültig oder abgelaufen.",
+    "requestNew": "Neuen Link anfordern",
+    "networkError": "Netzwerkfehler. Bitte versuchen Sie es erneut.",
+    "genericError": "Ein Fehler ist aufgetreten"
   }
 }

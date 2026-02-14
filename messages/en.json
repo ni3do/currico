@@ -1554,7 +1554,10 @@
       "mainFilesUploadTouch": "Tap here to select files",
       "mainFilesBrowse": "Browse",
       "previewAlt": "Preview",
-      "previewSelectedChange": "{count} preview image(s) selected — Tap to change"
+      "previewSelectedChange": "{count} preview image(s) selected — Tap to change",
+      "fileNameWarning": "File name notice",
+      "fileNameTooLong": "File name too long (max. 100 characters)",
+      "fileNameDangerousChars": "File name contains invalid characters"
     },
     "legal": {
       "title": "Legal Confirmations",
@@ -3274,6 +3277,14 @@
       },
       "statusVerified": "Reviewed",
       "statusPending": "Pending",
+      "filterAll": "All",
+      "filterPending": "Pending",
+      "filterVerified": "Reviewed",
+      "filterShow": "Show",
+      "pendingBanner": "{count, plural, one {# material is} other {# materials are}} pending review",
+      "noMatchingFilter": "No materials with this status",
+      "noMatchingFilterDesc": "There are no materials matching this filter.",
+      "showAll": "Show all",
       "empty": "No uploaded materials yet",
       "emptyDescription": "Share your teaching materials with other teachers.",
       "uploadFirst": "Upload material"
@@ -3299,6 +3310,7 @@
       "pageInfo": "Page {page} of {total}",
       "errorLoading": "Failed to load comments",
       "errorSending": "Failed to send reply",
+      "you": "You",
       "notSeller": "Comments are only available for sellers.",
       "becomeSeller": "Become a seller"
     },
@@ -3838,5 +3850,39 @@
       },
       "cta": "Upload Materials"
     }
+  },
+  "forgotPasswordPage": {
+    "title": "Forgot your password?",
+    "subtitle": "Enter your email address and we'll send you a reset link.",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "your@email.com",
+    "submit": "Send link",
+    "submitting": "Sending...",
+    "successTitle": "Email sent",
+    "successMessage": "If an account with <b>{email}</b> exists, you will receive a password reset link shortly.",
+    "backToLogin": "Back to login",
+    "networkError": "Network error. Please try again.",
+    "genericError": "An error occurred"
+  },
+  "resetPasswordPage": {
+    "title": "Set new password",
+    "subtitle": "Choose a secure password for your account.",
+    "passwordLabel": "New password",
+    "passwordPlaceholder": "At least 8 characters",
+    "confirmLabel": "Confirm password",
+    "confirmPlaceholder": "Repeat password",
+    "showPassword": "Show password",
+    "submit": "Change password",
+    "submitting": "Saving...",
+    "requirements": "Uppercase, lowercase and digits required",
+    "mismatch": "Passwords do not match",
+    "successTitle": "Password changed",
+    "successMessage": "Your password has been successfully reset.",
+    "loginNow": "Log in now",
+    "invalidTitle": "Invalid link",
+    "invalidMessage": "This link is invalid or expired.",
+    "requestNew": "Request new link",
+    "networkError": "Network error. Please try again.",
+    "genericError": "An error occurred"
   }
 }

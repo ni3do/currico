@@ -4,15 +4,11 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { StarRating } from "@/components/ui/StarRating";
 import { motion } from "framer-motion";
+import type { UserReview } from "@/lib/types/review";
 
 interface ReviewFormProps {
   materialId: string;
-  existingReview?: {
-    id: string;
-    rating: number;
-    title: string | null;
-    content: string | null;
-  };
+  existingReview?: UserReview;
   onSubmit: () => void;
   onCancel?: () => void;
   className?: string;

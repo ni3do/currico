@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import type { useTranslations } from "next-intl";
+import { Tooltip } from "./Tooltip";
 
 interface DialectToggleProps {
   selectedDialect: string | null;
@@ -47,10 +48,7 @@ export function DialectToggle({ selectedDialect, onDialectChange, t }: DialectTo
             >
               {title}
             </div>
-            {/* Tooltip on hover */}
-            <div className="bg-text text-bg pointer-events-none absolute -top-10 left-1/2 z-50 -translate-x-1/2 rounded px-2 py-1 text-xs whitespace-nowrap opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-              {title}
-            </div>
+            <Tooltip text={title} />
           </motion.button>
         );
       })}

@@ -41,9 +41,13 @@ export interface Material {
   previewUrls?: string[];
   previewCount?: number;
   hasAccess?: boolean;
+  /** Source of truth — always use arrays for display */
   subjects: string[];
+  /** Source of truth — always use arrays for display */
   cycles: string[];
+  /** @derived First element of `subjects[]` — for backwards compat only */
   subject: string;
+  /** @derived First element of `cycles[]` — for backwards compat only */
   cycle: string;
   createdAt: string;
   downloadCount: number;

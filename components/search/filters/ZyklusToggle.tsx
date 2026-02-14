@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import type { Zyklus } from "@/lib/curriculum-types";
+import { Tooltip } from "./Tooltip";
 
 interface ZyklusToggleProps {
   zyklen: Zyklus[];
@@ -43,10 +44,7 @@ export function ZyklusToggle({ zyklen, selectedZyklus, onZyklusChange }: ZyklusT
             >
               {zyklus.id === 1 ? "KG-2" : zyklus.id === 2 ? "3-6" : "7-9"}
             </div>
-            {/* Tooltip on hover */}
-            <div className="bg-text text-bg pointer-events-none absolute -top-10 left-1/2 z-50 -translate-x-1/2 rounded px-2 py-1 text-xs whitespace-nowrap opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-              {zyklus.description}
-            </div>
+            <Tooltip text={zyklus.description} />
           </motion.button>
         );
       })}

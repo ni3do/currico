@@ -4,33 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Send } from "lucide-react";
 import { motion } from "framer-motion";
-
-interface CommentUser {
-  id: string;
-  displayName: string;
-  image: string | null;
-  isSeller?: boolean;
-}
-
-interface Reply {
-  id: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-  user: CommentUser;
-}
-
-interface Comment {
-  id: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-  user: CommentUser;
-  likeCount: number;
-  isLiked: boolean;
-  replies: Reply[];
-  replyCount: number;
-}
+import type { Comment, Reply } from "@/lib/types/comments";
 
 type CommentFormData = Comment | Reply;
 

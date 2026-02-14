@@ -21,6 +21,7 @@ import {
   MAX_PREVIEW_FILE_SIZE,
 } from "@/lib/validations/material";
 import { getStorage } from "@/lib/storage";
+import { sanitizeFileName } from "@/lib/validations/filename";
 import { sanitizeSearchQuery, isLP21Code } from "@/lib/search-utils";
 
 /** Minimum trigram similarity score for fuzzy search fallback */
@@ -726,7 +727,7 @@ export async function POST(request: NextRequest) {
       contentType: file.type,
       metadata: {
         resourceId: material.id,
-        originalName: file.name,
+        originalName: sanitizeFileName(file.name),
       },
     });
 

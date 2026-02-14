@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { getSuggestedFilters, type ParsedSearchQuery } from "@/lib/search-query-parser";
 import type { Fachbereich, Zyklus } from "@/lib/curriculum-types";
 import type { useTranslations } from "next-intl";
+import { Tooltip } from "./Tooltip";
 
 interface SmartSearchSuggestionsProps {
   parsedQuery: ParsedSearchQuery | null;
@@ -33,6 +34,17 @@ export function SmartSearchSuggestions({
     : null;
   const suggestedZyklus = suggestions.zyklus
     ? zyklen.find((z) => z.id === suggestions.zyklus)
+    : null;
+
+  // Resolve kompetenzbereich name from code
+  const kompetenzbereichName = suggestions.kompetenzbereich
+    ? (() => {
+        for (const fb of fachbereiche) {
+          const kb = fb.kompetenzbereiche.find((k) => k.code === suggestions.kompetenzbereich);
+          if (kb) return kb.name;
+        }
+        return suggestions.kompetenzbereich;
+      })()
     : null;
 
   return (
@@ -66,10 +78,7 @@ export function SmartSearchSuggestions({
               <span className="bg-primary/10 text-primary group relative inline-flex cursor-help items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium">
                 <span className="text-primary/70">{t("sidebar.smartSearchLevel")}</span>
                 {suggestedZyklus.shortName}
-                {/* Tooltip */}
-                <span className="bg-text text-bg pointer-events-none absolute bottom-full left-0 z-50 mb-1 rounded px-2 py-1 text-xs whitespace-nowrap opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
-                  {suggestedZyklus.description}
-                </span>
+                <Tooltip text={suggestedZyklus.description} position="bottom" />
               </span>
             )}
             {suggestedFachbereich && (
@@ -82,10 +91,7 @@ export function SmartSearchSuggestions({
               >
                 <span style={{ opacity: 0.7 }}>{t("sidebar.smartSearchSubject")}</span>
                 {suggestedFachbereich.shortName}
-                {/* Tooltip */}
-                <span className="bg-text text-bg pointer-events-none absolute bottom-full left-0 z-50 mb-1 rounded px-2 py-1 text-xs whitespace-nowrap opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
-                  {suggestedFachbereich.name}
-                </span>
+                <Tooltip text={suggestedFachbereich.name} position="bottom" />
               </span>
             )}
             {suggestions.kompetenzbereich && (
@@ -100,19 +106,7 @@ export function SmartSearchSuggestions({
               >
                 <span style={{ opacity: 0.7 }}>{t("sidebar.smartSearchArea")}</span>
                 {suggestions.kompetenzbereich}
-                {/* Tooltip */}
-                <span className="bg-text text-bg pointer-events-none absolute bottom-full left-0 z-50 mb-1 rounded px-2 py-1 text-xs whitespace-nowrap opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
-                  {(() => {
-                    // Find the kompetenzbereich name from code
-                    for (const fb of fachbereiche) {
-                      const kb = fb.kompetenzbereiche.find(
-                        (k) => k.code === suggestions.kompetenzbereich
-                      );
-                      if (kb) return kb.name;
-                    }
-                    return suggestions.kompetenzbereich;
-                  })()}
-                </span>
+                <Tooltip text={kompetenzbereichName!} position="bottom" />
               </span>
             )}
           </div>

@@ -10,23 +10,7 @@ import { StarRating } from "@/components/ui/StarRating";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { useToast } from "@/components/ui/Toast";
 import { motion, AnimatePresence } from "framer-motion";
-
-interface ReviewUser {
-  id: string;
-  displayName: string;
-  image: string | null;
-}
-
-interface Review {
-  id: string;
-  rating: number;
-  title: string | null;
-  content: string | null;
-  createdAt: string;
-  updatedAt: string;
-  isVerifiedPurchase: boolean;
-  user: ReviewUser;
-}
+import type { Review } from "@/lib/types/review";
 
 interface ReviewCardProps {
   review: Review;

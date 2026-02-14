@@ -4,6 +4,7 @@ import { useCallback } from "react";
 import { X } from "lucide-react";
 import { motion } from "framer-motion";
 import type { useTranslations } from "next-intl";
+import { Tooltip } from "./Tooltip";
 
 // Canton abbreviation -> full name mapping (matching SWISS_CANTONS order)
 export const CANTON_ABBREVS: { abbrev: string; name: string }[] = [
@@ -92,10 +93,7 @@ export function CantonFilter({ selectedCantons, onCantonsChange, t }: CantonFilt
               title={canton.name}
             >
               {canton.abbrev}
-              {/* Tooltip */}
-              <div className="bg-text text-bg pointer-events-none absolute -top-8 left-1/2 z-50 -translate-x-1/2 rounded px-2 py-0.5 text-[10px] whitespace-nowrap opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
-                {canton.name}
-              </div>
+              <Tooltip text={canton.name} className="py-0.5 text-[10px]" />
             </motion.button>
           );
         })}

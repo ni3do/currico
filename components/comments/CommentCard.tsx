@@ -11,33 +11,7 @@ import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { useToast } from "@/components/ui/Toast";
 import { CommentForm } from "./CommentForm";
 import { motion, AnimatePresence } from "framer-motion";
-
-interface CommentUser {
-  id: string;
-  displayName: string;
-  image: string | null;
-  isSeller?: boolean;
-}
-
-interface Reply {
-  id: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-  user: CommentUser;
-}
-
-interface Comment {
-  id: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-  user: CommentUser;
-  likeCount: number;
-  isLiked: boolean;
-  replies: Reply[];
-  replyCount: number;
-}
+import type { Comment, Reply } from "@/lib/types/comments";
 
 interface CommentCardProps {
   comment: Comment;

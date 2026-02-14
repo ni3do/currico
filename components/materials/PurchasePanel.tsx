@@ -3,7 +3,15 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { Flag } from "lucide-react";
+import {
+  Flag,
+  FileText,
+  FileSpreadsheet,
+  FileImage,
+  File,
+  FileArchive,
+  Presentation,
+} from "lucide-react";
 import { LP21Badge } from "@/components/curriculum/LP21Badge";
 import { CheckoutButton } from "@/components/checkout/CheckoutButton";
 import { useToast } from "@/components/ui/Toast";
@@ -36,11 +44,33 @@ export function PurchasePanel({
   const t = useTranslations("materialDetail");
   const { toast } = useToast();
 
+  const formatIcon = (() => {
+    const fmt = (material.fileFormat || "").toLowerCase();
+    if (fmt.includes("pdf")) return <FileText className="h-3.5 w-3.5" />;
+    if (fmt.includes("xls") || fmt.includes("excel") || fmt.includes("csv"))
+      return <FileSpreadsheet className="h-3.5 w-3.5" />;
+    if (fmt.includes("ppt") || fmt.includes("powerpoint") || fmt.includes("keynote"))
+      return <Presentation className="h-3.5 w-3.5" />;
+    if (
+      fmt.includes("jpg") ||
+      fmt.includes("jpeg") ||
+      fmt.includes("png") ||
+      fmt.includes("svg") ||
+      fmt.includes("webp")
+    )
+      return <FileImage className="h-3.5 w-3.5" />;
+    if (fmt.includes("zip") || fmt.includes("rar")) return <FileArchive className="h-3.5 w-3.5" />;
+    return <File className="h-3.5 w-3.5" />;
+  })();
+
   return (
     <div className="order-1 lg:sticky lg:top-24 lg:order-2">
       {/* Badges Row */}
       <div className="mb-3 flex flex-wrap items-center gap-2">
-        <span className="pill pill-neutral">{material.fileFormat || t("fileFormatUnknown")}</span>
+        <span className="pill pill-neutral inline-flex items-center gap-1">
+          {formatIcon}
+          {material.fileFormat || t("fileFormatUnknown")}
+        </span>
         {material.isApproved ? (
           <span className="pill pill-success">{t("verified")}</span>
         ) : (
@@ -141,17 +171,14 @@ export function PurchasePanel({
             {subj}
           </span>
         ))}
-        {material.subjects.length > 0 && <span className="text-border">·</span>}
-        {material.cycles.length > 0 ? (
-          material.cycles.map((c, i) => (
-            <span key={c}>
-              {t("cycle", { number: c })}
-              {i < material.cycles.length - 1 && ", "}
-            </span>
-          ))
-        ) : (
-          <span>{t("cycle", { number: "-" })}</span>
+        {material.subjects.length > 0 && material.cycles.length > 0 && (
+          <span className="text-border">·</span>
         )}
+        {material.cycles.map((c) => (
+          <span key={c} className="pill pill-neutral text-xs">
+            {t("cycle", { number: c })}
+          </span>
+        ))}
         <span className="text-border">·</span>
         <span>{t("downloads", { count: material.downloadCount })}</span>
         {material.previewCount && material.previewCount > 0 && (

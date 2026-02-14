@@ -7,7 +7,7 @@ import TopBar from "@/components/ui/TopBar";
 import { Mail, ArrowLeft, Check } from "lucide-react";
 
 export default function ForgotPasswordPage() {
-  const t = useTranslations("common");
+  const t = useTranslations("forgotPasswordPage");
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [sent, setSent] = useState(false);
@@ -29,10 +29,10 @@ export default function ForgotPasswordPage() {
         setSent(true);
       } else {
         const data = await response.json();
-        setError(data.error || "Ein Fehler ist aufgetreten");
+        setError(data.error || t("genericError"));
       }
     } catch {
-      setError("Netzwerkfehler. Bitte versuchen Sie es erneut.");
+      setError(t("networkError"));
     } finally {
       setIsLoading(false);
     }
@@ -50,13 +50,15 @@ export default function ForgotPasswordPage() {
                 <div className="bg-success/10 mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full">
                   <Check className="text-success h-6 w-6" />
                 </div>
-                <h1 className="text-text mb-2 text-2xl font-bold">E-Mail gesendet</h1>
+                <h1 className="text-text mb-2 text-2xl font-bold">{t("successTitle")}</h1>
                 <p className="text-text-muted mb-6">
-                  Falls ein Konto mit <strong>{email}</strong> existiert, erhalten Sie in Kürze
-                  einen Link zum Zurücksetzen Ihres Passworts.
+                  {t.rich("successMessage", {
+                    email,
+                    b: (chunks) => <strong>{chunks}</strong>,
+                  })}
                 </p>
-                <Link href="/login" className="btn-primary inline-block px-6 py-3">
-                  Zurück zur Anmeldung
+                <Link href="/anmelden" className="btn-primary inline-block px-6 py-3">
+                  {t("backToLogin")}
                 </Link>
               </div>
             ) : (
@@ -65,17 +67,14 @@ export default function ForgotPasswordPage() {
                   <div className="bg-primary/10 mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full">
                     <Mail className="text-primary h-6 w-6" />
                   </div>
-                  <h1 className="text-text text-2xl font-bold">Passwort vergessen?</h1>
-                  <p className="text-text-muted mt-2">
-                    Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum
-                    Zurücksetzen.
-                  </p>
+                  <h1 className="text-text text-2xl font-bold">{t("title")}</h1>
+                  <p className="text-text-muted mt-2">{t("subtitle")}</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
                     <label htmlFor="email" className="text-text mb-2 block text-sm font-medium">
-                      E-Mail-Adresse
+                      {t("emailLabel")}
                     </label>
                     <input
                       type="email"
@@ -84,7 +83,7 @@ export default function ForgotPasswordPage() {
                       onChange={(e) => setEmail(e.target.value)}
                       required
                       className="border-border bg-surface text-text placeholder:text-text-muted focus:border-primary focus:ring-primary/20 w-full rounded-lg border px-4 py-3.5 transition-all focus:ring-[3px] focus:outline-none"
-                      placeholder="ihre@email.ch"
+                      placeholder={t("emailPlaceholder")}
                     />
                   </div>
 
@@ -99,17 +98,17 @@ export default function ForgotPasswordPage() {
                     disabled={isLoading || !email}
                     className="bg-primary text-text-on-accent hover:bg-primary-hover w-full rounded-lg px-6 py-3.5 font-semibold transition-all disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    {isLoading ? "Wird gesendet..." : "Link senden"}
+                    {isLoading ? t("submitting") : t("submit")}
                   </button>
                 </form>
 
                 <div className="mt-6 text-center">
                   <Link
-                    href="/login"
+                    href="/anmelden"
                     className="text-text-muted hover:text-primary inline-flex items-center gap-1 text-sm transition-colors"
                   >
                     <ArrowLeft className="h-4 w-4" />
-                    Zurück zur Anmeldung
+                    {t("backToLogin")}
                   </Link>
                 </div>
               </>

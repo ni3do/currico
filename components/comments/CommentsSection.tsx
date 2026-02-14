@@ -8,33 +8,7 @@ import { Link, useRouter } from "@/i18n/navigation";
 import { CommentCard } from "./CommentCard";
 import { CommentForm } from "./CommentForm";
 import { motion } from "framer-motion";
-
-interface CommentUser {
-  id: string;
-  displayName: string;
-  image: string | null;
-  isSeller?: boolean;
-}
-
-interface Reply {
-  id: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-  user: CommentUser;
-}
-
-interface Comment {
-  id: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-  user: CommentUser;
-  likeCount: number;
-  isLiked: boolean;
-  replies: Reply[];
-  replyCount: number;
-}
+import type { Comment, Reply } from "@/lib/types/comments";
 
 interface CommentsSectionProps {
   materialId: string;

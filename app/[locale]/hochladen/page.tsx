@@ -24,6 +24,7 @@ import {
   PublishPreviewModal,
 } from "@/components/upload";
 import { checkForEszett, replaceEszett } from "@/lib/validations/swiss-quality";
+import { validateFileName } from "@/lib/validations/filename";
 import {
   Upload,
   FileText,
@@ -79,6 +80,7 @@ function UploadPageContent() {
   const [createdMaterialId, setCreatedMaterialId] = useState<string | null>(null);
   const [showPreview, setShowPreview] = useState(false);
   const [showDraftToast, setShowDraftToast] = useState(false);
+  const [fileNameWarnings, setFileNameWarnings] = useState<string[]>([]);
 
   const mainFileInputRef = useRef<HTMLInputElement>(null);
   const previewFileInputRef = useRef<HTMLInputElement>(null);
@@ -153,6 +155,23 @@ function UploadPageContent() {
       setFileLoadingProgress(0);
 
       const fileArray = Array.from(selectedFiles);
+
+      // Validate file names
+      const warnings: string[] = [];
+      fileArray.forEach((file) => {
+        const result = validateFileName(file.name);
+        if (!result.isValid) {
+          result.errors.forEach((err) => {
+            if (err === "fileNameTooLong") {
+              const truncated = file.name.length > 30 ? file.name.slice(0, 30) + "..." : file.name;
+              warnings.push(`"${truncated}" — ${tFields("fileNameTooLong")}`);
+            } else if (err === "fileNameDangerousChars") {
+              warnings.push(`"${file.name}" — ${tFields("fileNameDangerousChars")}`);
+            }
+          });
+        }
+      });
+      setFileNameWarnings(warnings);
       const totalSize = fileArray.reduce((acc, file) => acc + file.size, 0);
       let loadedSize = 0;
 
@@ -848,6 +867,25 @@ function UploadPageContent() {
                       </div>
                     )}
                   </FormField>
+
+                  {/* File Name Warnings */}
+                  {fileNameWarnings.length > 0 && (
+                    <div className="border-warning/50 bg-warning/10 rounded-xl border p-4">
+                      <div className="flex items-start gap-3">
+                        <AlertTriangle className="text-warning h-5 w-5 flex-shrink-0" />
+                        <div className="text-text text-sm">
+                          <p className="text-warning mb-1 font-medium">
+                            {tFields("fileNameWarning")}
+                          </p>
+                          <ul className="list-inside list-disc space-y-0.5">
+                            {fileNameWarnings.map((w, i) => (
+                              <li key={i}>{w}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Auto Preview Info */}
                   <div className="border-success/30 bg-success/5 rounded-xl border p-4">

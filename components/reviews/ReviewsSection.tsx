@@ -9,35 +9,7 @@ import { ReviewCard } from "./ReviewCard";
 import { ReviewForm } from "./ReviewForm";
 import { RatingSummary, RatingDistribution } from "@/components/ui/StarRating";
 import { motion, AnimatePresence } from "framer-motion";
-
-interface ReviewUser {
-  id: string;
-  displayName: string;
-  image: string | null;
-}
-
-interface Review {
-  id: string;
-  rating: number;
-  title: string | null;
-  content: string | null;
-  createdAt: string;
-  updatedAt: string;
-  isVerifiedPurchase: boolean;
-  user: ReviewUser;
-}
-
-interface ReviewStats {
-  averageRating: number;
-  totalReviews: number;
-}
-
-interface UserReview {
-  id: string;
-  rating: number;
-  title: string | null;
-  content: string | null;
-}
+import type { Review, ReviewStats, UserReview } from "@/lib/types/review";
 
 interface ReviewsSectionProps {
   materialId: string;
