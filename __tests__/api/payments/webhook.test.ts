@@ -489,7 +489,7 @@ describe("Webhook Handler", () => {
     const mockPaymentIntent: Partial<Stripe.PaymentIntent> = {
       id: "pi_failed123",
       metadata: {
-        materialId: "material-123",
+        resourceId: "material-123",
         buyerId: "buyer-123",
       },
       last_payment_error: {
@@ -534,7 +534,7 @@ describe("Webhook Handler", () => {
       const guestPaymentIntent = {
         ...mockPaymentIntent,
         metadata: {
-          materialId: "material-123",
+          resourceId: "material-123",
           guestEmail: "guest@example.com",
         },
       };
