@@ -87,9 +87,9 @@ export async function PATCH(request: NextRequest) {
       where: { id: userId },
       data: {
         ...restData,
-        ...(subjects !== undefined && { subjects: { set: subjects } }),
-        ...(cycles !== undefined && { cycles: { set: cycles } }),
-        ...(cantons !== undefined && { cantons: { set: cantons } }),
+        ...(subjects !== undefined && { subjects }),
+        ...(cycles !== undefined && { cycles }),
+        ...(cantons !== undefined && { cantons }),
         instagram: instagram ?? null,
         pinterest: pinterest ?? null,
         website: website || null,

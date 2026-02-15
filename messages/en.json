@@ -403,8 +403,7 @@
     "divider": "Or continue with",
     "oauth": {
       "google": "Sign in with Google",
-      "github": "Sign in with GitHub",
-      "microsoft": "Sign in with Microsoft"
+      "github": "Sign in with GitHub"
     },
     "register": {
       "prompt": "Don't have an account?",
@@ -446,8 +445,7 @@
     },
     "divider": "Or register with",
     "oauth": {
-      "google": "Register with Google",
-      "microsoft": "Register with Microsoft Office"
+      "google": "Register with Google"
     },
     "login": {
       "prompt": "Already registered?",

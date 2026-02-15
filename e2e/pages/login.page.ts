@@ -13,7 +13,7 @@ import { BasePage } from "./base.page";
 import type { TestUser } from "../fixtures/test-users";
 
 export class LoginPage extends BasePage {
-  readonly path = "/login";
+  readonly path = "/anmelden";
 
   // Form elements
   readonly emailInput: Locator;
@@ -23,7 +23,6 @@ export class LoginPage extends BasePage {
 
   // OAuth buttons
   readonly googleButton: Locator;
-  readonly microsoftButton: Locator;
   readonly eduIdButton: Locator;
 
   // Error and validation elements
@@ -51,7 +50,6 @@ export class LoginPage extends BasePage {
 
     // OAuth buttons - using text content for resilience
     this.googleButton = page.getByRole("button", { name: /google/i });
-    this.microsoftButton = page.getByRole("button", { name: /microsoft/i });
     this.eduIdButton = page.getByRole("button", { name: /edu-id/i });
 
     // Error display - use role-based selector for reliability
@@ -163,7 +161,7 @@ export class LoginPage extends BasePage {
    * @param expectedPath - Expected URL path after login (e.g., '/account' or '/admin')
    */
   async loginAndWaitForRedirect(user: TestUser, expectedPath?: string): Promise<void> {
-    const targetPath = expectedPath ?? (user.role === "ADMIN" ? "/admin" : "/account");
+    const targetPath = expectedPath ?? (user.role === "ADMIN" ? "/admin" : "/konto");
     await this.loginAsUser(user);
     await this.waitForUrl(`**${targetPath}`, { timeout: 15000 });
   }
@@ -246,13 +244,6 @@ export class LoginPage extends BasePage {
   }
 
   /**
-   * Click the Microsoft OAuth button.
-   */
-  async clickMicrosoftOAuth(): Promise<void> {
-    await this.microsoftButton.click();
-  }
-
-  /**
    * Click the edu-ID OAuth button.
    */
   async clickEduIdOAuth(): Promise<void> {
@@ -264,7 +255,7 @@ export class LoginPage extends BasePage {
    */
   async goToRegister(): Promise<void> {
     await this.registerLink.click();
-    await this.page.waitForURL("**/register");
+    await this.page.waitForURL("**/registrieren");
   }
 
   /**
@@ -287,8 +278,6 @@ export class LoginPage extends BasePage {
    */
   async expectOAuthButtonsVisible(): Promise<void> {
     await expect(this.googleButton).toBeVisible();
-    await expect(this.microsoftButton).toBeVisible();
-    await expect(this.eduIdButton).toBeVisible();
   }
 
   /**

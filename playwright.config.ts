@@ -1,13 +1,13 @@
-import { defineConfig, devices } from '@playwright/test';
-import path from 'path';
+import { defineConfig, devices } from "@playwright/test";
+import path from "path";
 
 // Storage state paths for authenticated sessions
-const AUTH_DIR = path.join(__dirname, '.auth');
+const AUTH_DIR = path.join(__dirname, ".auth");
 export const STORAGE_STATES = {
-  buyer: path.join(AUTH_DIR, 'buyer.json'),
-  seller: path.join(AUTH_DIR, 'seller.json'),
-  admin: path.join(AUTH_DIR, 'admin.json'),
-  school: path.join(AUTH_DIR, 'school.json'),
+  buyer: path.join(AUTH_DIR, "buyer.json"),
+  seller: path.join(AUTH_DIR, "seller.json"),
+  admin: path.join(AUTH_DIR, "admin.json"),
+  school: path.join(AUTH_DIR, "school.json"),
 } as const;
 
 /**
@@ -16,10 +16,10 @@ export const STORAGE_STATES = {
  */
 export default defineConfig({
   // Test directory
-  testDir: './e2e/tests',
+  testDir: "./e2e/tests",
 
   // Global setup runs once before all tests to authenticate test users
-  globalSetup: './e2e/global-setup.ts',
+  globalSetup: "./e2e/global-setup.ts",
 
   // Run tests in files in parallel
   fullyParallel: true,
@@ -35,22 +35,22 @@ export default defineConfig({
 
   // Reporter configuration
   reporter: process.env.CI
-    ? [['github'], ['html', { open: 'never' }]]
-    : [['html', { open: 'on-failure' }]],
+    ? [["github"], ["html", { open: "never" }]]
+    : [["html", { open: "on-failure" }]],
 
   // Shared settings for all projects
   use: {
     // Base URL for navigation
-    baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000',
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || "http://localhost:3000",
 
     // Collect trace when retrying the failed test
-    trace: 'on-first-retry',
+    trace: "on-first-retry",
 
     // Take screenshot on failure
-    screenshot: 'only-on-failure',
+    screenshot: "only-on-failure",
 
     // Record video on failure
-    video: 'on-first-retry',
+    video: "on-first-retry",
   },
 
   // Global timeouts
@@ -60,71 +60,72 @@ export default defineConfig({
   },
 
   // Configure projects for major browsers and locales
+  // Locally only chromium-de runs by default; CI runs all projects
   projects: [
-    // Desktop Chrome - German (primary locale)
+    // Desktop Chrome - German (primary locale) — always active
     {
-      name: 'chromium-de',
+      name: "chromium-de",
       use: {
-        ...devices['Desktop Chrome'],
-        locale: 'de-CH',
-        baseURL: 'http://localhost:3000/de',
+        ...devices["Desktop Chrome"],
+        locale: "de-CH",
+        baseURL: "http://localhost:3000/de",
       },
     },
-    // Desktop Chrome - English
-    {
-      name: 'chromium-en',
-      use: {
-        ...devices['Desktop Chrome'],
-        locale: 'en-US',
-        baseURL: 'http://localhost:3000/en',
-      },
-    },
-    // Desktop Firefox - German
-    {
-      name: 'firefox-de',
-      use: {
-        ...devices['Desktop Firefox'],
-        locale: 'de-CH',
-        baseURL: 'http://localhost:3000/de',
-      },
-    },
-    // Desktop Safari - German
-    {
-      name: 'webkit-de',
-      use: {
-        ...devices['Desktop Safari'],
-        locale: 'de-CH',
-        baseURL: 'http://localhost:3000/de',
-      },
-    },
-    // Mobile Chrome - German
-    {
-      name: 'mobile-chrome-de',
-      use: {
-        ...devices['Pixel 5'],
-        locale: 'de-CH',
-        baseURL: 'http://localhost:3000/de',
-      },
-    },
-    // Mobile Safari - German
-    {
-      name: 'mobile-safari-de',
-      use: {
-        ...devices['iPhone 12'],
-        locale: 'de-CH',
-        baseURL: 'http://localhost:3000/de',
-      },
-    },
+    // The remaining projects only run in CI
+    ...(process.env.CI
+      ? [
+          {
+            name: "chromium-en",
+            use: {
+              ...devices["Desktop Chrome"],
+              locale: "en-US",
+              baseURL: "http://localhost:3000/en",
+            },
+          },
+          {
+            name: "firefox-de",
+            use: {
+              ...devices["Desktop Firefox"],
+              locale: "de-CH",
+              baseURL: "http://localhost:3000/de",
+            },
+          },
+          {
+            name: "webkit-de",
+            use: {
+              ...devices["Desktop Safari"],
+              locale: "de-CH",
+              baseURL: "http://localhost:3000/de",
+            },
+          },
+          {
+            name: "mobile-chrome-de",
+            use: {
+              ...devices["Pixel 5"],
+              locale: "de-CH",
+              baseURL: "http://localhost:3000/de",
+            },
+          },
+          {
+            name: "mobile-safari-de",
+            use: {
+              ...devices["iPhone 12"],
+              locale: "de-CH",
+              baseURL: "http://localhost:3000/de",
+            },
+          },
+        ]
+      : []),
   ],
 
   // Run local dev server before starting the tests
   webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:3000',
+    command: "npm run dev",
+    url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,
     timeout: 120_000, // 2 minutes to start the server
   },
 
   // Output directory for test artifacts
-  outputDir: 'test-results',
+  outputDir: "test-results",
 });

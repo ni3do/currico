@@ -63,7 +63,7 @@ baseTest.describe("Comments - Unauthenticated", () => {
       await materialPage.likeComment(0);
 
       // Should redirect to login
-      await expect(page).toHaveURL(/\/login/);
+      await expect(page).toHaveURL(/\/anmelden/);
     }
   );
 });

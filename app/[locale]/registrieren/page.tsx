@@ -369,22 +369,6 @@ export default function RegisterPage() {
                 </svg>
                 {t("oauth.google")}
               </button>
-
-              <button
-                type="button"
-                onClick={() =>
-                  signIn("microsoft-entra-id", { callbackUrl: callbackUrl || "/konto" })
-                }
-                className="bg-surface text-text hover:bg-surface-elevated flex items-center justify-center gap-3 rounded-lg px-4 py-3.5 font-medium transition-all"
-              >
-                <svg className="h-5 w-5" viewBox="0 0 23 23">
-                  <path fill="#f35325" d="M1 1h10v10H1z" />
-                  <path fill="#81bc06" d="M12 1h10v10H12z" />
-                  <path fill="#05a6f0" d="M1 12h10v10H1z" />
-                  <path fill="#ffba08" d="M12 12h10v10H12z" />
-                </svg>
-                {t("oauth.microsoft")}
-              </button>
             </div>
 
             {/* Login Link */}

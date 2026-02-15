@@ -133,7 +133,7 @@ baseTest.describe("Wishlist - Unauthenticated", () => {
       await materialPage.toggleWishlist();
 
       // Should be redirected to login page
-      await expect(page).toHaveURL(/\/login/, { timeout: 10000 });
+      await expect(page).toHaveURL(/\/anmelden/, { timeout: 10000 });
     }
   );
 });
