@@ -9,7 +9,7 @@ Currico: Swiss platform for teachers to buy, sell, and share teaching materials.
 - Next.js 16 (App Router, Turbopack)
 - TypeScript, Tailwind CSS
 - Prisma ORM, PostgreSQL
-- NextAuth v5 (Google, Microsoft, Credentials)
+- NextAuth v5 (Google, Credentials)
 - next-intl for i18n (de active, en prepared)
 - Stripe Connect for payments
 - Infomaniak S3 for file storage
@@ -76,6 +76,10 @@ npm run db:studio           # Prisma Studio GUI
 npm run db:seed-curriculum   # Seed LP21 curriculum data
 npm run db:bootstrap-admin   # Create admin user
 ```
+
+## Rules
+
+- **Never skip tests.** Do not use `SKIP_TESTS=1`, `SKIP_E2E=1`, `--no-verify`, or similar flags to bypass test hooks. If tests fail, fix the underlying issue. If e2e tests fail because the dev server isn't running, ask the user to start it rather than skipping.
 
 ## Production
 

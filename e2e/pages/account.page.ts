@@ -90,7 +90,7 @@ export class AccountPage extends BasePage {
    * Navigate to account page with a specific tab via URL.
    */
   async gotoTab(tab: AccountTab): Promise<void> {
-    await this.page.goto(`/account?tab=${tab}`);
+    await this.page.goto(`/konto?tab=${tab}`);
     await this.waitForPageLoad();
     // Dismiss cookie consent if blocking
     await this.dismissCookieConsent();

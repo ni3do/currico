@@ -13,7 +13,7 @@ import { Page, Locator, expect } from "@playwright/test";
 import { BasePage } from "./base.page";
 
 export class RegisterPage extends BasePage {
-  readonly path = "/register";
+  readonly path = "/registrieren";
 
   // Form fields
   readonly nameInput: Locator;
@@ -25,7 +25,6 @@ export class RegisterPage extends BasePage {
 
   // OAuth buttons
   readonly googleButton: Locator;
-  readonly microsoftButton: Locator;
   readonly eduIdButton: Locator;
 
   // Validation error messages
@@ -58,7 +57,6 @@ export class RegisterPage extends BasePage {
 
     // OAuth buttons - using text content for resilience
     this.googleButton = page.getByRole("button", { name: /google/i });
-    this.microsoftButton = page.getByRole("button", { name: /microsoft/i });
     this.eduIdButton = page.getByRole("button", { name: /edu-id/i });
 
     // Validation error messages - these appear below the corresponding fields
@@ -216,7 +214,7 @@ export class RegisterPage extends BasePage {
       confirmPassword: data.password,
       acceptTerms: true,
     });
-    await this.waitForUrl("**/account", { timeout: 15000 });
+    await this.waitForUrl("**/konto", { timeout: 15000 });
   }
 
   // ===================
@@ -335,8 +333,6 @@ export class RegisterPage extends BasePage {
    */
   async expectOAuthButtonsVisible(): Promise<void> {
     await expect(this.googleButton).toBeVisible();
-    await expect(this.microsoftButton).toBeVisible();
-    await expect(this.eduIdButton).toBeVisible();
   }
 
   /**
@@ -374,13 +370,6 @@ export class RegisterPage extends BasePage {
   }
 
   /**
-   * Click the Microsoft OAuth button.
-   */
-  async clickMicrosoftOAuth(): Promise<void> {
-    await this.microsoftButton.click();
-  }
-
-  /**
    * Click the edu-ID OAuth button.
    */
   async clickEduIdOAuth(): Promise<void> {
@@ -396,7 +385,7 @@ export class RegisterPage extends BasePage {
    */
   async goToLogin(): Promise<void> {
     await this.loginLink.click();
-    await this.page.waitForURL("**/login");
+    await this.page.waitForURL("**/anmelden");
   }
 
   /**

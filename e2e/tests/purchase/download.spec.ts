@@ -58,7 +58,7 @@ baseTest.describe("Download - Unauthenticated", () => {
     await materialPage.clickDownload();
 
     // Should be redirected to login page
-    await expect(page).toHaveURL(/\/login/, { timeout: 10000 });
+    await expect(page).toHaveURL(/\/anmelden/, { timeout: 10000 });
   });
 });
 
