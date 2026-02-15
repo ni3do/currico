@@ -124,7 +124,19 @@ export default function WelcomePage() {
             {/* Header */}
             <div className="mb-8 text-center">
               <div className="bg-primary/10 mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full">
-                <span className="text-2xl">👋</span>
+                <svg
+                  className="text-primary h-7 w-7"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
+                </svg>
               </div>
               <h1 className="text-text text-2xl font-bold sm:text-3xl">
                 {t("title", { name: session?.user?.name || "" })}

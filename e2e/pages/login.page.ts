@@ -23,7 +23,6 @@ export class LoginPage extends BasePage {
 
   // OAuth buttons
   readonly googleButton: Locator;
-  readonly microsoftButton: Locator;
   readonly eduIdButton: Locator;
 
   // Error and validation elements
@@ -51,7 +50,6 @@ export class LoginPage extends BasePage {
 
     // OAuth buttons - using text content for resilience
     this.googleButton = page.getByRole("button", { name: /google/i });
-    this.microsoftButton = page.getByRole("button", { name: /microsoft/i });
     this.eduIdButton = page.getByRole("button", { name: /edu-id/i });
 
     // Error display - use role-based selector for reliability
@@ -246,13 +244,6 @@ export class LoginPage extends BasePage {
   }
 
   /**
-   * Click the Microsoft OAuth button.
-   */
-  async clickMicrosoftOAuth(): Promise<void> {
-    await this.microsoftButton.click();
-  }
-
-  /**
    * Click the edu-ID OAuth button.
    */
   async clickEduIdOAuth(): Promise<void> {
@@ -287,8 +278,6 @@ export class LoginPage extends BasePage {
    */
   async expectOAuthButtonsVisible(): Promise<void> {
     await expect(this.googleButton).toBeVisible();
-    await expect(this.microsoftButton).toBeVisible();
-    await expect(this.eduIdButton).toBeVisible();
   }
 
   /**

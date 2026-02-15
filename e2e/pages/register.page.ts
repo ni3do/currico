@@ -25,7 +25,6 @@ export class RegisterPage extends BasePage {
 
   // OAuth buttons
   readonly googleButton: Locator;
-  readonly microsoftButton: Locator;
   readonly eduIdButton: Locator;
 
   // Validation error messages
@@ -58,7 +57,6 @@ export class RegisterPage extends BasePage {
 
     // OAuth buttons - using text content for resilience
     this.googleButton = page.getByRole("button", { name: /google/i });
-    this.microsoftButton = page.getByRole("button", { name: /microsoft/i });
     this.eduIdButton = page.getByRole("button", { name: /edu-id/i });
 
     // Validation error messages - these appear below the corresponding fields
@@ -335,8 +333,6 @@ export class RegisterPage extends BasePage {
    */
   async expectOAuthButtonsVisible(): Promise<void> {
     await expect(this.googleButton).toBeVisible();
-    await expect(this.microsoftButton).toBeVisible();
-    await expect(this.eduIdButton).toBeVisible();
   }
 
   /**
@@ -371,13 +367,6 @@ export class RegisterPage extends BasePage {
    */
   async clickGoogleOAuth(): Promise<void> {
     await this.googleButton.click();
-  }
-
-  /**
-   * Click the Microsoft OAuth button.
-   */
-  async clickMicrosoftOAuth(): Promise<void> {
-    await this.microsoftButton.click();
   }
 
   /**
