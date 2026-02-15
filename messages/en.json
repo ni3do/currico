@@ -2823,6 +2823,8 @@
     "noCollectionsOwn": "Create your first collection!",
     "noCollectionsOther": "This user doesn't have any public collections.",
     "loadMore": "Load more",
+    "startUpload": "Upload material",
+    "collectionItems": "Materials",
     "privacy": {
       "label": "Keep my profile private",
       "tooltip": "When enabled, only your name and avatar will be shown on your public profile. Your bio, subjects, cycles, cantons, statistics, and social media links will be hidden.",

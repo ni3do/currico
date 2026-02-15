@@ -2823,6 +2823,8 @@
     "noCollectionsOwn": "Erstellen Sie Ihre erste Sammlung!",
     "noCollectionsOther": "Dieser Benutzer hat noch keine öffentlichen Sammlungen.",
     "loadMore": "Mehr laden",
+    "startUpload": "Material hochladen",
+    "collectionItems": "Materialien",
     "privacy": {
       "label": "Mein Profil soll privat bleiben",
       "tooltip": "Wenn aktiviert, werden nur Ihr Name und Avatar auf Ihrem öffentlichen Profil angezeigt. Ihre Bio, Fächer, Zyklen, Kantone, Statistiken und Social-Media-Links bleiben verborgen.",
