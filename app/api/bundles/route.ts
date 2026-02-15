@@ -13,8 +13,8 @@ const createBundleSchema = z.object({
     .refine((val) => val === 0 || (val >= 50 && val % 50 === 0), {
       message: "Price must be in 0.50 CHF increments",
     }),
-  subject: z.array(z.string()).min(1, "Mindestens ein Fach ist erforderlich"),
-  cycle: z.array(z.string()).min(1, "Mindestens ein Zyklus ist erforderlich"),
+  subject: z.array(z.string()).optional().default([]),
+  cycle: z.array(z.string()).optional().default([]),
   resourceIds: z.array(z.string()).min(2, "Mindestens 2 Materialien sind erforderlich"),
   coverImageUrl: z.string().url().optional().nullable(),
 });

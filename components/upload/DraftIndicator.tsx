@@ -128,7 +128,13 @@ export function DraftIndicator() {
 }
 
 // Toast notification for draft restored
-export function DraftRestoredToast({ onDismiss }: { onDismiss: () => void }) {
+export function DraftRestoredToast({
+  onDismiss,
+  filesRestored = false,
+}: {
+  onDismiss: () => void;
+  filesRestored?: boolean;
+}) {
   const t = useTranslations("uploadWizard.draft");
   const tCommon = useTranslations("common");
 
@@ -140,7 +146,9 @@ export function DraftRestoredToast({ onDismiss }: { onDismiss: () => void }) {
         </div>
         <div>
           <p className="text-text font-medium">{t("restored")}</p>
-          <p className="text-text-muted text-sm">{t("restoredMessage")}</p>
+          <p className="text-text-muted text-sm">
+            {filesRestored ? t("restoredWithFiles") : t("restoredMessage")}
+          </p>
         </div>
         <button
           type="button"

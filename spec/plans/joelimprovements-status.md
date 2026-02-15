@@ -22,8 +22,8 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Hero-Bild `hero-teachers.png` hat keinen `sizes`-Prop auf `<Image>` — verschlechtert LCP auf Mobile
 - [x] Suchformular hat kein `aria-label` auf dem `<form>` — Screenreader können es nicht identifizieren
 - [x] Search-Button zeigt auf Mobile nur das Icon ohne Text — kein `aria-label` auf dem Button
-- [ ] SwissBrandSection und ValueProposition haben fast identisches Layout — könnten zu einer generischen Sektion vereinheitlicht werden
-- [ ] TrustBar Items sind nicht verlinkt — z.B. "Schweizer Hosting" könnte auf Über-uns oder Datenschutz verlinken
+- [x] SwissBrandSection und ValueProposition haben fast identisches Layout — könnten zu einer generischen Sektion vereinheitlicht werden — extracted shared FeatureGrid component with compact/spacious variants, both sections now use it
+- [x] TrustBar Items sind nicht verlinkt — z.B. "Schweizer Hosting" könnte auf Über-uns oder Datenschutz verlinken — all 5 items now link to relevant pages (LP21→/materialien, Quality→/verifizierter-verkaeufer, Hosting+nDSG→/datenschutz, Payment→/agb) with hover color transition
 - [x] Kein `<meta description>` oder OpenGraph Tags spezifisch für die Startseite (SEO) — enhanced locale layout with OG type/siteName/images + Twitter card
 - [x] Featured Materials zeigen keinen Rating/Bewertung — averageRating + reviewCount now passed to MaterialCard on homepage
 
@@ -187,14 +187,14 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Eigene Vorschläge (Urheberrecht)
 
-- [ ] Duplizierte Icon + Sektions-Header-Struktur (12 Sektionen gleiches Pattern) — in wiederverwendbare Komponente extrahieren
-- [ ] Sticky-TOC Offset `top-24` ist hart kodiert — variiert je nach Header-Höhe, sollte dynamisch sein
-- [ ] Mobile TOC verschwindet ab `lg:hidden` (1024px) — auch Tablet-Nutzer verlieren Orientierung, Toggle-Button wäre besser
-- [ ] TOC-Links ohne `aria-current="page"` für aktiven Link — nur CSS-Styling, kein Screenreader-Hinweis
-- [ ] Sektions-Icons (CheckCircle, XCircle etc.) haben kein `aria-hidden="true"` — werden als Inhalt für Screenreader gelesen
-- [ ] "Back to Top" Link hat nur `onClick` — sollte auch echtes `<a href="#top">` sein für Keyboard-Navigation
-- [ ] Kein Anker-Navigation beim Seitenladen — wenn User mit `#aiContent` kommt, öffnet Seite oben statt am Anker
-- [ ] Fehlende `BreadcrumbList` Schema.org-Daten
+- [x] Duplizierte Icon + Sektions-Header-Struktur (12 Sektionen gleiches Pattern) — in wiederverwendbare Komponente extrahieren — extracted SectionHeader component with SECTION_CONFIG mapping and ICON_COLOR_CLASSES, used across 11 sections
+- [x] Sticky-TOC Offset `top-24` ist hart kodiert — variiert je nach Header-Höhe, sollte dynamisch sein — replaced with CSS custom property `--header-offset: 6rem`, referenced via `top-[var(--header-offset)]` and `scroll-mt-[var(--header-offset)]`
+- [x] Mobile TOC verschwindet ab `lg:hidden` (1024px) — auch Tablet-Nutzer verlieren Orientierung, Toggle-Button wäre besser — floating FAB button on mobile/tablet opens bottom-sheet TOC overlay with backdrop, auto-closes on link click
+- [x] TOC-Links ohne `aria-current="page"` für aktiven Link — nur CSS-Styling, kein Screenreader-Hinweis — added `aria-current="true"` on active TOC link in shared renderTocLinks helper
+- [x] Sektions-Icons (CheckCircle, XCircle etc.) haben kein `aria-hidden="true"` — werden als Inhalt für Screenreader gelesen — added `aria-hidden="true"` to all ~40 decorative icons across sections, lists, tips, and warnings
+- [x] "Back to Top" Link hat nur `onClick` — sollte auch echtes `<a href="#top">` sein für Keyboard-Navigation — changed to `href="#top"` with `id="top"` on page wrapper, smooth scroll as progressive enhancement
+- [x] Kein Anker-Navigation beim Seitenladen — wenn User mit `#aiContent` kommt, öffnet Seite oben statt am Anker — useEffect checks window.location.hash on mount and scrolls to element via requestAnimationFrame
+- [x] Fehlende `BreadcrumbList` Schema.org-Daten — JSON-LD BreadcrumbList schema added in layout.tsx with locale-aware breadcrumb items
 
 ---
 
@@ -221,17 +221,17 @@ Legende: [x] = erledigt, [ ] = offen
 
 ## 7. Cookie-Richtlinien (`/cookie-richtlinien`)
 
-- [ ] Inhalt überprüfen (stimmen die Angaben noch?)
+- [x] Inhalt überprüfen (stimmen die Angaben noch?) — corrected: actual cookies are `authjs.session-token` and `next-auth.csrf-token` (set by NextAuth), not the previously listed names. `consent`/`theme` are localStorage, not cookies. `locale` is URL-based, not a cookie. Analytics section now specifically mentions Sentry.
 
 ### Eigene Vorschläge (Cookie-Richtlinien)
 
 - [x] Keine `generateMetadata()` Funktion — Cookie Policy ist wichtig für GDPR/Compliance SEO
-- [ ] Hardcoded Cookie-Namen `["consent", "session", "csrf", "locale"]` — sollten aus zentraler Konstante kommen (Single Source of Truth mit `CookieConsent.tsx`)
-- [ ] Cookie-Listen nutzen `<div>` statt `<dl>`/`<dt>`/`<dd>` — fehlende Semantik für Screenreader
-- [ ] Analytics-Cookie-Informationen zu vage ("Um unsere Dienstleistungen zu verbessern") — welche Tools genau? (Sentry, etc.)
-- [ ] Keine Table of Contents — im Gegensatz zu Urheberrecht-Seite, bei 5+ Sektionen wäre TOC hilfreich
-- [ ] Related-Links Section nutzt `<div>` statt `<nav>` — fehlende Navigation-Semantik
-- [ ] Keine visuelle Unterscheidung zwischen Cookie-Typen — Essential vs. Analytics sollten farblich getrennt sein
+- [x] Hardcoded Cookie-Namen `["consent", "session", "csrf", "locale"]` — extracted to `lib/constants/cookies.ts` with `APP_COOKIES` and `APP_LOCAL_STORAGE` arrays, single source of truth
+- [x] Cookie-Listen nutzen `<div>` statt `<dl>`/`<dt>`/`<dd>` — replaced with semantic `<dl>`/`<dt>`/`<dd>` elements for all cookie and localStorage listings
+- [x] Analytics-Cookie-Informationen zu vage — now specifically mentions Sentry for error detection and performance monitoring, clarifies no tracking cookies are set
+- [x] Keine Table of Contents — TOC with `<nav>` + `<ol>` + anchor links to all 6 sections
+- [x] Related-Links Section nutzt `<div>` statt `<nav>` — replaced with `<nav aria-label>` semantic element
+- [x] Keine visuelle Unterscheidung zwischen Cookie-Typen — Essential uses green left-border + green tint (`border-success/30 bg-success/5`), Analytics uses blue (`border-primary/30 bg-primary/5`), localStorage uses neutral
 
 ---
 
@@ -301,14 +301,14 @@ Legende: [x] = erledigt, [ ] = offen
 ### Eigene Vorschläge (Kontakt)
 
 - [x] E-Mail "info@currico.ch" hardcoded statt aus Config-Konstante — now uses i18n `t("direct.emailAddress")`
-- [ ] Kein Spam-Schutz (kein Honeypot, kein reCaptcha, kein Rate-Limiting sichtbar) — Formular könnte missbraucht werden
-- [ ] Telefonnummer-Feld hat keine Formatvalidierung — akzeptiert ungültige Nummern
-- [ ] Formular-State nur Client-seitig (useState) — bei Navigation weg sind Daten ohne Warnung verloren
-- [ ] Erfolgs-Nachricht erklärt keine nächsten Schritte (z.B. "Wir melden uns in 24-48 Stunden")
-- [ ] Keine Referenznummer nach Absenden — Nutzer kann Anfrage nicht nachverfolgen
+- [x] Kein Spam-Schutz (kein Honeypot, kein reCaptcha, kein Rate-Limiting sichtbar) — honeypot field added + API already has rate limiting via `checkRateLimit()`
+- [x] Telefonnummer-Feld hat keine Formatvalidierung — Swiss phone pattern validation (`+41`/`0` prefix) with i18n error message
+- [x] Formular-State nur Client-seitig (useState) — beforeunload warning when navigating away with unsaved form data
+- [x] Erfolgs-Nachricht erklärt keine nächsten Schritte — success view now shows response time ("within 24h") via i18n key `form.successNextSteps`
+- [x] Keine Referenznummer nach Absenden — API-returned ID now displayed in success view with `form.referenceLabel`
 - [x] Fehlende `autocomplete`-Hints auf Formularfeldern (z.B. `autocomplete="email"`) — schlechte Accessibility
-- [ ] Keine Schema.org `ContactPoint` Markup
-- [ ] Antwortzeit "24-48 Stunden" ist statischer Text — nicht konfigurierbar oder dynamisch
+- [x] Keine Schema.org `ContactPoint` Markup — JSON-LD ContactPage + ContactPoint schema in layout.tsx
+- [x] Antwortzeit "24-48 Stunden" ist statischer Text — now uses i18n key `form.successNextSteps`, configurable per locale
 
 ---
 
@@ -535,19 +535,19 @@ Legende: [x] = erledigt, [ ] = offen
 ### Eigene Vorschläge (Hochladen)
 
 - [x] ~30 hardcoded German strings in upload wizard replaced with i18n — step titles, subtitles, form labels, legal checkboxes, navigation buttons, file upload text, preview text, error messages all now use tWizard/tSteps/tFields/tLegal/tNav translation functions; StepNavigationBar also migrated (17 hardcoded strings → i18n keys for step labels, descriptions, progress indicator, validation messages, and aria-labels)
-- [ ] Eszett (ß) Warnung nur in Step 1, aber User kann in Step 3 auch Text eingeben — nicht alle Felder geprüft
-- [ ] Draft-System speichert Felder aber keine Dateien — bei Browser-Cache-Leerung sind Dateien weg
-- [ ] Keine Anzeige von verbleibender Datei-Grösse/Speicher-Limit
-- [ ] "Automatische Vorschau" Info nur für PDF erwähnt — andere Formate?
-- [ ] Keine Duplikat-Erkennung — User könnte versehentlich gleiches Material mehrmals hochladen
-- [ ] "Lehrplan-Zuordnung" Selektor ist sehr gross — könnte Search-Funktionalität haben
+- [x] Eszett (ß) Warnung nur in Step 1, aber User kann in Step 3 auch Text eingeben — both title and description (the only free-text fields) are checked
+- [x] Draft-System speichert Felder aber keine Dateien — IndexedDB storage for File objects via draft-file-storage.ts, auto-save with 1s debounce, restored on mount with toast notification
+- [x] Keine Anzeige von verbleibender Datei-Grösse/Speicher-Limit — shows X.XX MB / 50 MB with color-coded progress bar
+- [x] "Automatische Vorschau" Info nur für PDF erwähnt — format-specific messages for PDF, images, and other document types
+- [x] Keine Duplikat-Erkennung — exact match (yellow warning) + fuzzy pg_trgm word_similarity match (blue info) via /api/materials/check-title
+- [x] "Lehrplan-Zuordnung" Selektor ist sehr gross — unified search with hint text added below search bar
 - [x] Keine Warnung beim Tab-Schliessen mit ungespeicherten Änderungen — beforeunload handler added when form has data, skipped after successful upload
 - [x] Validierung von Dateinamen wird nicht durchgeführt — `validateFileName()` with dangerous char checks, 100 char max, path traversal prevention
 - [x] Preview-Bild: keine Vorschau der finalen Galerie-Ansicht — PublishPreviewModal shows MaterialCard-like preview with image, title, subject pill, cycle, and price
-- [ ] Bundle: Subject und Cycle sind fixiert auf Bundle-Level — sollten optional sein da Bundle mehrere Subjects haben kann
-- [ ] Bundle: Discount-Berechnung zeigt nur Prozentsatz — sollte auch Ersparnis in CHF zeigen
+- [x] Bundle: Subject und Cycle sind fixiert auf Bundle-Level — made optional in API schemas and form, shows "auto-derived from materials" hint
+- [x] Bundle: Discount-Berechnung zeigt nur Prozentsatz — calculateSavingsChf() + formatPrice() displays savings in CHF
 - [x] Bundle: Keine Validierung dass Bundle-Preis unter Summe der Einzelpreise liegt — blocks if `calculateDiscount() <= 0`
-- [ ] Bundle: Materials-Liste hat keine Pagination — bei 100+ Materials sehr lang
+- [x] Bundle: Materials-Liste hat keine Pagination — show first 5 materials with "Show all X materials" expand/collapse toggle
 
 ---
 
@@ -573,28 +573,28 @@ Legende: [x] = erledigt, [ ] = offen
 
 ## 21. Verkäufer werden (`/verkaeufer-werden`)
 
-- [ ] Stripe Konto einrichten Button + Bestätigungsbutton überarbeiten
+- [x] Stripe Konto einrichten Button + Bestätigungsbutton überarbeiten — buttons polished with ArrowRight icons, larger padding, better visual hierarchy for Stripe CTA
 
 ### Eigene Vorschläge (Verkäufer werden)
 
-- [ ] Hardcoded deutsche Strings in gesamter Komponente — nicht lokalisierbar
-- [ ] Inline SVG-Icons statt lucide-react — inkonsistent mit Rest der App
-- [ ] Seller-Terms-Inhalt direkt in Komponente eingebettet — sollte in separater Datei oder von CMS geladen werden
-- [ ] Terms-Section hat nur 500px max-height mit `overflow-y-auto` — beengtes Leseerlebnis
-- [ ] Requirements-Section zeigt 3 Anforderungen ohne Anzeige welche der User schon erfüllt hat (z.B. grüner Haken für erledigt)
+- [x] Hardcoded deutsche Strings in gesamter Komponente — nicht lokalisierbar — page already uses useTranslations("becomeSeller") throughout, all strings from i18n
+- [x] Inline SVG-Icons statt lucide-react — inkonsistent mit Rest der App — replaced all ~15 inline SVGs with lucide-react (Check, AlertTriangle, Coins, Users, RefreshCw, ExternalLink, ArrowRight, Info)
+- [x] Seller-Terms-Inhalt direkt in Komponente eingebettet — terms content uses i18n via tTerms("sellerTerms"), copyright callout integrated into terms card header
+- [x] Terms-Section hat nur 500px max-height mit `overflow-y-auto` — beengtes Leseerlebnis — increased to max-h-[70vh] for better reading experience
+- [x] Requirements-Section zeigt 3 Anforderungen ohne Anzeige welche der User schon erfüllt hat (z.B. grüner Haken für erledigt) — dynamic checklist with green circle+check when completed, gray empty circle when pending
 - [x] Kein Fortschrittsanzeiger für den 4-Schritte-Prozess — `OnboardingStepper` component with 4-step progress tracker
-- [ ] E-Mail-Verifizierungs-Fehler hat keinen direkten Link zu Einstellungen
-- [ ] Stripe Redirect nutzt `window.location.href` statt Next.js Navigation
-- [ ] CTA-Buttons erklären nicht per Tooltip warum sie disabled sind
-- [ ] Copyright-Section fühlt sich vom Hauptflow abgekoppelt an
+- [x] E-Mail-Verifizierungs-Fehler hat keinen direkten Link zu Einstellungen — link changed from /konto to /konto/settings/profile
+- [x] Stripe Redirect nutzt `window.location.href` statt Next.js Navigation — correct, Stripe is an external URL, Next.js router can't navigate there
+- [x] CTA-Buttons erklären nicht per Tooltip warum sie disabled sind — title attributes with i18n tooltips for login/email/terms disabled states
+- [x] Copyright-Section fühlt sich vom Hauptflow abgekoppelt an — moved copyright callout into terms card header as subtle badge link
 
 ---
 
 ## 22. Stripe Konto (Seller Onboarding)
 
-- [ ] Einstellungen verbessern
-- [ ] Weniger Angaben bei der Einrichtung
-- [ ] Rückkehr von Stripe zu Currico → Buttons überarbeiten und funktionierend machen
+- [x] Einstellungen verbessern — replaced all inline SVGs with lucide-react, added breadcrumb, back-to-account link, arrow icons on buttons
+- [x] Weniger Angaben bei der Einrichtung — `lib/stripe.ts:102` already uses `future_requirements: "omit"`
+- [x] Rückkehr von Stripe zu Currico → Buttons überarbeiten und funktionierend machen — polished buttons with ArrowRight/ExternalLink icons, added "Zurück zur Kontoübersicht" secondary link
 
 ---
 
@@ -670,24 +670,25 @@ Legende: [x] = erledigt, [ ] = offen
 
 | Seite                     | Erledigt | Offen (Joel) | Offen (Eigene) | Total Offen |
 | ------------------------- | -------- | ------------ | -------------- | ----------- |
-| Startseite                | 4        | 2            | 11             | 13          |
-| Materialien               | 1        | 16           | 16             | 32          |
-| Material-Vorschau         | 0        | 11           | 14             | 25          |
-| Hilfe                     | 4        | 2            | 5              | 7           |
-| Urheberrecht              | 1        | 0            | 8              | 8           |
-| Impressum                 | 1        | 3            | 9              | 12          |
-| Cookie-Richtlinien        | 0        | 1            | 7              | 8           |
-| Verkäufer-Stufen          | 2        | 4            | 5              | 9           |
-| Verifizierter Verkäufer   | 1        | 1            | 6              | 7           |
-| Über uns                  | 0        | 2            | 10             | 12          |
-| Kontakt                   | 0        | 4            | 8              | 12          |
-| Anmelden                  | 2        | 5            | 6              | 11          |
+| Startseite                | 16       | 0            | 0              | 0           |
+| Materialien               | 53       | 0            | 0              | 0           |
+| Material-Vorschau         | 35       | 1            | 1              | 2           |
+| Hilfe                     | 10       | 0            | 2              | 2           |
+| Urheberrecht              | 9        | 0            | 0              | 0           |
+| Impressum                 | 8        | 2            | 3              | 5           |
+| Cookie-Richtlinien        | 8        | 0            | 0              | 0           |
+| Verkäufer-Stufen          | 4        | 3            | 4              | 7           |
+| Verifizierter Verkäufer   | 4        | 0            | 5              | 5           |
+| Über uns                  | 2        | 2            | 8              | 10          |
+| Kontakt                   | 13       | 0            | 0              | 0           |
+| Anmelden                  | 9        | 0            | 5              | 5           |
 | Registrieren              | 0        | 0            | 5              | 5           |
-| Konto (alle Unterseiten)  | 19       | 10           | 35             | 45          |
-| Folge ich                 | 3        | 1            | 7              | 8           |
-| Hochladen                 | 0        | 16           | 11             | 27          |
-| Öffentliches Profil       | 0        | 1            | 9              | 10          |
-| Verkäufer werden / Stripe | 0        | 4            | 9              | 13          |
+| Konto (alle Unterseiten)  | 41       | 2            | 26             | 28          |
+| Folge ich                 | 6        | 1            | 4              | 5           |
+| Hochladen                 | 29       | 3            | 0              | 3           |
+| Öffentliches Profil       | 5        | 1            | 6              | 7           |
+| Verkäufer werden / Stripe | 14       | 0            | 0              | 0           |
 | Benachrichtigungen        | 0        | 3            | 0              | 3           |
-| Global                    | 9        | 1            | 13             | 14          |
-| **Total**                 | **48**   | **69**       | **183**        | **276**     |
+| Global                    | 14       | 2            | 8              | 10          |
+| Final Touch Audit         | 0        | 4            | 0              | 4           |
+| **Total**                 | **272**  | **24**       | **85**         | **109**     |

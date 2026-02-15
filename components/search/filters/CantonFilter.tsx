@@ -83,7 +83,7 @@ export function CantonFilter({ selectedCantons, onCantonsChange, t }: CantonFilt
             <motion.button
               key={canton.abbrev}
               onClick={() => toggleCanton(canton.name)}
-              className={`group relative rounded-md border px-1 py-1.5 text-center text-xs font-semibold transition-colors ${
+              className={`group relative rounded-lg border px-1 py-1.5 text-center text-xs font-semibold transition-colors ${
                 isSelected
                   ? "border-primary bg-primary/10 text-primary"
                   : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:bg-surface-hover hover:text-text"

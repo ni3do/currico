@@ -8,7 +8,7 @@ import { useTranslations, useLocale } from "next-intl";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
-import { Package, FileText, Tag } from "lucide-react";
+import { Package, FileText, Tag, ChevronDown, ChevronUp } from "lucide-react";
 import type { Bundle } from "@/lib/types/material";
 
 export default function BundleDetailPage() {
@@ -23,6 +23,10 @@ export default function BundleDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [followLoading, setFollowLoading] = useState(false);
+  const [showAllResources, setShowAllResources] = useState(false);
+
+  const INITIAL_RESOURCES_SHOWN = 5;
 
   const fetchBundle = useCallback(async () => {
     setLoading(true);
@@ -51,6 +55,41 @@ export default function BundleDetailPage() {
       fetchBundle();
     }
   }, [id, fetchBundle]);
+
+  // Check follow status when bundle loads and user is authenticated
+  useEffect(() => {
+    if (!bundle || sessionStatus !== "authenticated") return;
+    fetch("/api/user/following")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data?.sellers) {
+          setIsFollowing(data.sellers.some((s: { id: string }) => s.id === bundle.seller.id));
+        }
+      })
+      .catch(() => {});
+  }, [bundle, sessionStatus]);
+
+  const handleFollowToggle = async () => {
+    if (!bundle || followLoading || sessionStatus !== "authenticated") return;
+    setFollowLoading(true);
+    const previousState = isFollowing;
+    setIsFollowing(!isFollowing);
+
+    try {
+      const res = isFollowing
+        ? await fetch(`/api/user/following?sellerId=${bundle.seller.id}`, { method: "DELETE" })
+        : await fetch("/api/user/following", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ sellerId: bundle.seller.id }),
+          });
+      if (!res.ok) setIsFollowing(previousState);
+    } catch {
+      setIsFollowing(previousState);
+    } finally {
+      setFollowLoading(false);
+    }
+  };
 
   // Loading state
   if (loading) {
@@ -210,7 +249,10 @@ export default function BundleDetailPage() {
                   {t("includedMaterials", { count: bundle.resourceCount })}
                 </h2>
                 <div className="space-y-3">
-                  {bundle.resources.map((resource) => (
+                  {(showAllResources
+                    ? bundle.resources
+                    : bundle.resources.slice(0, INITIAL_RESOURCES_SHOWN)
+                  ).map((resource) => (
                     <Link
                       key={resource.id}
                       href={`/materialien/${resource.id}`}
@@ -245,6 +287,25 @@ export default function BundleDetailPage() {
                     </Link>
                   ))}
                 </div>
+                {bundle.resources.length > INITIAL_RESOURCES_SHOWN && (
+                  <button
+                    type="button"
+                    onClick={() => setShowAllResources(!showAllResources)}
+                    className="text-primary hover:text-primary-hover mt-3 flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-medium transition-colors"
+                  >
+                    {showAllResources ? (
+                      <>
+                        {t("showLess")}
+                        <ChevronUp className="h-4 w-4" />
+                      </>
+                    ) : (
+                      <>
+                        {t("showAllMaterials", { count: bundle.resources.length })}
+                        <ChevronDown className="h-4 w-4" />
+                      </>
+                    )}
+                  </button>
+                )}
               </div>
 
               {/* Metadata Block */}
@@ -253,11 +314,11 @@ export default function BundleDetailPage() {
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
                     <div className="text-text-muted text-sm">{t("subject")}</div>
-                    <div className="text-text font-medium">{bundle.subject}</div>
+                    <div className="text-text font-medium">{bundle.subjects[0] || "Allgemein"}</div>
                   </div>
                   <div>
                     <div className="text-text-muted text-sm">{t("cycle")}</div>
-                    <div className="text-text font-medium">{bundle.cycle || "-"}</div>
+                    <div className="text-text font-medium">{bundle.cycles[0] || "-"}</div>
                   </div>
                   <div>
                     <div className="text-text-muted text-sm">{t("materials")}</div>
@@ -316,16 +377,19 @@ export default function BundleDetailPage() {
               </div>
 
               {/* Follow Button */}
-              <button
-                onClick={() => setIsFollowing(!isFollowing)}
-                className={`w-full rounded-lg border-2 px-4 py-3 font-medium transition-all ${
-                  isFollowing
-                    ? "border-primary bg-primary-light text-primary"
-                    : "border-border bg-bg text-text hover:border-primary hover:bg-primary-light"
-                }`}
-              >
-                {isFollowing ? t("following") : t("follow")}
-              </button>
+              {sessionStatus === "authenticated" && (
+                <button
+                  onClick={handleFollowToggle}
+                  disabled={followLoading}
+                  className={`w-full rounded-lg border-2 px-4 py-3 font-medium transition-all disabled:opacity-50 ${
+                    isFollowing
+                      ? "border-primary bg-primary-light text-primary"
+                      : "border-border bg-bg text-text hover:border-primary hover:bg-primary-light"
+                  }`}
+                >
+                  {isFollowing ? t("following") : t("follow")}
+                </button>
+              )}
 
               {/* More from Seller */}
               <div className="border-border mt-6 border-t pt-6">

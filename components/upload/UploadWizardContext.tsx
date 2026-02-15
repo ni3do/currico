@@ -1,7 +1,16 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  ReactNode,
+} from "react";
 import { useTranslations } from "next-intl";
+import { saveDraftFiles, loadDraftFiles, clearDraftFiles } from "@/lib/utils/draft-file-storage";
 
 // Storage key for localStorage
 const STORAGE_KEY = "currico_upload_draft";
@@ -107,11 +116,12 @@ interface UploadWizardContextType {
   clearDraft: () => void;
   isSaving: boolean;
 
-  // File management (actual File objects, not persisted)
+  // File management (actual File objects, persisted via IndexedDB)
   files: File[];
   setFiles: (files: File[]) => void;
   previewFiles: File[];
   setPreviewFiles: (files: File[]) => void;
+  filesRestored: boolean;
 }
 
 const defaultFormData: FormData = {
@@ -193,9 +203,48 @@ export function UploadWizardProvider({ children }: { children: ReactNode }) {
   const [hasDraft, setHasDraft] = useState(initialDraft !== null);
   const [isSaving, setIsSaving] = useState(false);
 
-  // File objects (can't be persisted to localStorage)
+  // File objects (persisted via IndexedDB)
   const [files, setFiles] = useState<File[]>([]);
   const [previewFiles, setPreviewFiles] = useState<File[]>([]);
+  const [filesRestored, setFilesRestored] = useState(false);
+  const filesLoadedRef = useRef(false);
+
+  // Load draft files from IndexedDB on mount
+  useEffect(() => {
+    if (filesLoadedRef.current || !initialDraft) return;
+    filesLoadedRef.current = true;
+
+    (async () => {
+      try {
+        const [mainFiles, prevFiles] = await Promise.all([
+          loadDraftFiles("main_files"),
+          loadDraftFiles("preview_files"),
+        ]);
+        if (mainFiles.length > 0) {
+          setFiles(mainFiles);
+          setFilesRestored(true);
+        }
+        if (prevFiles.length > 0) {
+          setPreviewFiles(prevFiles);
+        }
+      } catch (error) {
+        console.error("Failed to restore draft files:", error);
+      }
+    })();
+  }, [initialDraft]);
+
+  // Save files to IndexedDB when they change (1000ms debounce)
+  useEffect(() => {
+    // Skip the initial empty-files state before restoration
+    if (!filesLoadedRef.current) return;
+
+    const timeoutId = setTimeout(() => {
+      saveDraftFiles("main_files", files);
+      saveDraftFiles("preview_files", previewFiles);
+    }, 1000);
+
+    return () => clearTimeout(timeoutId);
+  }, [files, previewFiles]);
 
   // Save to localStorage whenever form data changes (debounced 500ms)
   useEffect(() => {
@@ -444,6 +493,7 @@ export function UploadWizardProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error("Failed to clear local draft:", error);
     }
+    clearDraftFiles();
     setFormData(defaultFormData);
     setCurrentStep(1);
     setVisitedSteps([1]);
@@ -452,6 +502,7 @@ export function UploadWizardProvider({ children }: { children: ReactNode }) {
     setHasDraft(false);
     setFiles([]);
     setPreviewFiles([]);
+    setFilesRestored(false);
   }, []);
 
   // Sync file names to formData for display purposes
@@ -492,6 +543,7 @@ export function UploadWizardProvider({ children }: { children: ReactNode }) {
     setFiles,
     previewFiles,
     setPreviewFiles,
+    filesRestored,
   };
 
   return <UploadWizardContext.Provider value={value}>{children}</UploadWizardContext.Provider>;

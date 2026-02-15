@@ -1,11 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
+
+// Swiss phone number pattern: +41/0 prefix, 9-10 digits
+const SWISS_PHONE_PATTERN = /^(\+41|0)\s?\d{2}\s?\d{3}\s?\d{2}\s?\d{2}$/;
 
 export default function ContactClient() {
   const t = useTranslations("contactPage");
@@ -18,9 +21,28 @@ export default function ContactClient() {
     message: "",
     consent: false,
   });
+  const [honeypot, setHoneypot] = useState("");
+  const [phoneError, setPhoneError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [referenceId, setReferenceId] = useState<string | null>(null);
+
+  // Warn user about unsaved changes when navigating away
+  const hasFormData = formData.name || formData.email || formData.phone || formData.message;
+  const handleBeforeUnload = useCallback(
+    (e: BeforeUnloadEvent) => {
+      if (hasFormData && submitStatus !== "success") {
+        e.preventDefault();
+      }
+    },
+    [hasFormData, submitStatus]
+  );
+
+  useEffect(() => {
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [handleBeforeUnload]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -31,10 +53,25 @@ export default function ContactClient() {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
+
+    // Clear phone error on edit
+    if (name === "phone") {
+      setPhoneError("");
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Honeypot check — bots fill hidden fields
+    if (honeypot) return;
+
+    // Validate phone if provided
+    if (formData.phone && !SWISS_PHONE_PATTERN.test(formData.phone.trim())) {
+      setPhoneError(t("form.phoneError"));
+      return;
+    }
+
     setIsSubmitting(true);
     setErrorMessage("");
 
@@ -53,6 +90,7 @@ export default function ContactClient() {
         throw new Error(data.error || tCommon("errors.sendFailed"));
       }
 
+      setReferenceId(data.id ?? null);
       setSubmitStatus("success");
     } catch (error) {
       setSubmitStatus("error");
@@ -105,6 +143,7 @@ export default function ContactClient() {
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
+                      aria-hidden="true"
                     >
                       <path
                         strokeLinecap="round"
@@ -116,9 +155,30 @@ export default function ContactClient() {
                   </div>
                   <h3 className="text-text mb-2 text-lg font-semibold">{t("form.successTitle")}</h3>
                   <p className="text-text-muted">{t("form.successMessage")}</p>
+                  <p className="text-text-muted mt-2 text-sm">{t("form.successNextSteps")}</p>
+                  {referenceId && (
+                    <p className="bg-bg-secondary mt-4 inline-block rounded-lg px-4 py-2 text-sm">
+                      <span className="text-text-muted">{t("form.referenceLabel")}</span>{" "}
+                      <span className="text-text font-mono font-medium">{referenceId}</span>
+                    </p>
+                  )}
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Honeypot field — hidden from users, catches bots */}
+                  <div className="absolute left-[-9999px]" aria-hidden="true">
+                    <label htmlFor="website">Website</label>
+                    <input
+                      type="text"
+                      id="website"
+                      name="website"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      value={honeypot}
+                      onChange={(e) => setHoneypot(e.target.value)}
+                    />
+                  </div>
+
                   {/* Name & Email Row */}
                   <div className="grid gap-6 sm:grid-cols-2">
                     <div>
@@ -171,6 +231,7 @@ export default function ContactClient() {
                       className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 w-full rounded-lg border px-4 py-3 transition-colors focus:ring-2 focus:outline-none"
                     />
                     <p className="text-text-muted mt-2 text-sm">{t("form.phoneHint")}</p>
+                    {phoneError && <p className="text-error mt-1 text-sm">{phoneError}</p>}
                   </div>
 
                   {/* Subject Field */}

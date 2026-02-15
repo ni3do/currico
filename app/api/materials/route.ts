@@ -563,14 +563,16 @@ export async function GET(request: NextRequest) {
         description: material.description,
         price: material.price,
         priceFormatted: formatPrice(material.price),
-        subject: subjects[0] || "Allgemein",
-        cycle: cycles[0] || "",
         subjects,
         cycles,
         previewUrl: material.preview_url,
         createdAt: material.created_at,
         dialect: material.dialect,
-        seller: material.seller,
+        seller: {
+          id: material.seller.id,
+          displayName: material.seller.display_name,
+          isVerifiedSeller: material.seller.is_verified_seller,
+        },
         averageRating: Math.round(averageRating * 10) / 10,
         reviewCount,
         isMiIntegrated: material.is_mi_integrated,
@@ -705,7 +707,7 @@ export async function POST(request: NextRequest) {
           missing: uploadCheck.missing,
         });
       }
-      return forbidden(uploadCheck.error || "Zugriff verweigert");
+      return forbidden(uploadCheck.error || "ACCESS_DENIED");
     }
 
     // Handle file upload
@@ -951,7 +953,23 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         message: "Material created successfully",
-        material: updatedMaterial,
+        material: {
+          id: updatedMaterial.id,
+          title: updatedMaterial.title,
+          description: updatedMaterial.description,
+          price: updatedMaterial.price,
+          subjects: updatedMaterial.subjects,
+          cycles: updatedMaterial.cycles,
+          fileUrl: updatedMaterial.file_url,
+          previewUrl: updatedMaterial.preview_url,
+          previewUrls: updatedMaterial.preview_urls,
+          previewCount: updatedMaterial.preview_count,
+          isPublished: updatedMaterial.is_published,
+          isApproved: updatedMaterial.is_approved,
+          status: updatedMaterial.status,
+          isPublic: updatedMaterial.is_public,
+          createdAt: updatedMaterial.created_at,
+        },
       },
       { status: 201 }
     );
