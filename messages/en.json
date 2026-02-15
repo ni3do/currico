@@ -577,7 +577,7 @@
         "erg": "Ethics, Religions, Community (ERG)"
       },
       "filterButton": "Filter",
-      "fuzzyResults": "Showing similar results"
+      "fuzzyResults": "Showing similar results for \"{query}\""
     },
     "advancedFilters": {
       "title": "Advanced Filters",

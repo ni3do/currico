@@ -26,9 +26,9 @@ import { sanitizeSearchQuery, isLP21Code } from "@/lib/search-utils";
 import { notifyNewMaterial } from "@/lib/notifications";
 import { checkAndUpdateVerification } from "@/lib/utils/verified-seller";
 
-/** Trigram similarity thresholds for fuzzy search */
-const TITLE_SIMILARITY_THRESHOLD = 0.2;
-const DESCRIPTION_SIMILARITY_THRESHOLD = 0.15;
+/** Word-level trigram similarity thresholds for fuzzy search */
+const TITLE_WORD_SIMILARITY_THRESHOLD = 0.4;
+const DESC_WORD_SIMILARITY_THRESHOLD = 0.3;
 
 /**
  * GET /api/materials
@@ -162,18 +162,18 @@ export async function GET(request: NextRequest) {
 
                 UNION ALL
 
-                -- Trigram similarity results (title and description)
+                -- Trigram word_similarity results (title and description)
                 SELECT id,
                   GREATEST(
-                    similarity(title, ${sanitizedSearch}) * 2,
-                    similarity(description, ${sanitizedSearch})
+                    word_similarity(${sanitizedSearch}, title) * 2,
+                    word_similarity(${sanitizedSearch}, description)
                   ) AS score,
                   'fuzzy' AS match_type
                 FROM resources
                 WHERE is_published = true AND is_public = true
                   AND (
-                    similarity(title, ${sanitizedSearch}) > ${TITLE_SIMILARITY_THRESHOLD}
-                    OR similarity(description, ${sanitizedSearch}) > ${DESCRIPTION_SIMILARITY_THRESHOLD}
+                    word_similarity(${sanitizedSearch}, title) > ${TITLE_WORD_SIMILARITY_THRESHOLD}
+                    OR word_similarity(${sanitizedSearch}, description) > ${DESC_WORD_SIMILARITY_THRESHOLD}
                   )
               ) AS combined
               ORDER BY score DESC

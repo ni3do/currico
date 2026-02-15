@@ -8,6 +8,8 @@ import type {
   ProfileListItem,
 } from "@/lib/types/search";
 
+export type SearchMatchMode = "exact" | "fuzzy" | "combined" | null;
+
 interface UseSearchFetcherOptions {
   toast: (message: string, type?: "success" | "error" | "warning" | "info") => void;
   t: (key: string, values?: Record<string, string | number | Date>) => string;
@@ -23,6 +25,7 @@ export interface SearchFetcherResult {
   profilesLoading: boolean;
   fetchError: string | null;
   isPending: boolean;
+  searchMatchMode: SearchMatchMode;
   setLoading: (v: boolean) => void;
   setProfilesLoading: (v: boolean) => void;
   fetchMaterials: (filters: LP21FilterState, sort: string, page?: number) => Promise<void>;
@@ -52,6 +55,7 @@ export function useSearchFetcher({
   const [profilesLoading, setProfilesLoading] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [searchMatchMode, setSearchMatchMode] = useState<SearchMatchMode>(null);
 
   const materialsAbortRef = useRef<AbortController | null>(null);
   const profilesAbortRef = useRef<AbortController | null>(null);
@@ -139,6 +143,7 @@ export function useSearchFetcher({
         startTransition(() => {
           setMaterials(data.materials);
           setPagination(data.pagination);
+          setSearchMatchMode(data.searchMeta?.matchMode ?? null);
           setLoading(false);
         });
       } catch (error: unknown) {
@@ -201,6 +206,7 @@ export function useSearchFetcher({
     profilesLoading,
     fetchError,
     isPending,
+    searchMatchMode,
     setLoading,
     setProfilesLoading,
     fetchMaterials,

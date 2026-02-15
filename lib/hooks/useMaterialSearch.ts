@@ -36,6 +36,7 @@ export function useMaterialSearch({
     profilesLoading,
     fetchError,
     isPending,
+    searchMatchMode,
     setLoading,
     setProfilesLoading,
     fetchMaterials,
@@ -291,6 +292,7 @@ export function useMaterialSearch({
     currentPage,
     profilePage,
     isPending,
+    searchMatchMode,
     // Computed
     activeFilterCount,
     isLoading,

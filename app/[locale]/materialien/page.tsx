@@ -69,6 +69,7 @@ export default function MaterialienPage() {
     currentPage,
     profilePage,
     isPending,
+    searchMatchMode,
     activeFilterCount,
     isLoading,
     totalCount,
@@ -169,6 +170,13 @@ export default function MaterialienPage() {
               getFachbereichByCode={getFachbereichByCode}
               t={t}
             />
+
+            {/* Fuzzy search banner */}
+            {searchMatchMode === "fuzzy" && filters.searchQuery && !isLoading && !hasNoItems && (
+              <div className="bg-info/10 text-info border-info/20 mb-4 rounded-lg border px-4 py-2.5 text-sm">
+                {t("search.fuzzyResults", { query: filters.searchQuery })}
+              </div>
+            )}
 
             {/* Error State */}
             {fetchError ? (

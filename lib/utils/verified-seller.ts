@@ -115,9 +115,9 @@ export async function checkAndUpdateVerification(sellerId: string): Promise<void
           title: "Herzlichen Glückwunsch — Sie sind jetzt ein verifizierter Verkäufer!",
           body: "Sie erfüllen alle Kriterien und haben das Abzeichen «Verifizierter Verkäufer» erhalten.",
           link: "/verifizierter-verkaeufer",
-        }).catch((err) => console.error("Failed to create verification notification:", err));
+        }).catch((err: unknown) => console.error("Failed to create verification notification:", err));
       })
-      .catch((err) => console.error("Failed to auto-verify seller:", err));
+      .catch((err: unknown) => console.error("Failed to auto-verify seller:", err));
     return;
   }
 
@@ -132,6 +132,6 @@ export async function checkAndUpdateVerification(sellerId: string): Promise<void
           verified_seller_method: null,
         },
       })
-      .catch((err) => console.error("Failed to auto-revoke seller verification:", err));
+      .catch((err: unknown) => console.error("Failed to auto-revoke seller verification:", err));
   }
 }

@@ -577,7 +577,7 @@
         "erg": "Ethik, Religionen, Gemeinschaft (ERG)"
       },
       "filterButton": "Filter",
-      "fuzzyResults": "Ähnliche Ergebnisse werden angezeigt"
+      "fuzzyResults": "Ähnliche Ergebnisse für «{query}»"
     },
     "advancedFilters": {
       "title": "Erweiterte Filter",
