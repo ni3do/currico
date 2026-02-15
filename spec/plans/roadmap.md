@@ -623,13 +623,14 @@ Placement:
 | ---- | -------------------------------------------- | -------- | ------ |
 | 3.1a | Create "Meet the Team" page with real photos | P2       | ✅     |
 | 3.1b | Write founder bios with credentials          | P2       | ✅     |
-| 3.2a | Define Verified Seller criteria              | P2       | ⬜     |
-| 3.2b | Implement auto-verification system           | P2       | ⬜     |
-| 3.2c | Display badges on profiles/cards             | P2       | ⬜     |
+| 3.2a | Define Verified Seller criteria              | P2       | ✅     |
+| 3.2b | Implement auto-verification system           | P2       | ✅     |
+| 3.2c | Display badges on profiles/cards             | P2       | ✅     |
 | 3.3a | Collect testimonials from pilot teachers     | P2       | ✅     |
 | 3.3b | Display testimonials on landing page         | P2       | ✅     |
 
 > **3.1a/b**: `about/page.tsx` — two founders with real photos, bios from i18n
+> **3.2a/b/c**: `lib/utils/verified-seller.ts` — VERIFIED_SELLER_CRITERIA (10 sales, 4.5 rating, 3 resources, 30 days), auto-verification via `checkAndUpdateVerification()`, `SellerBadge.tsx` + `VerifiedSellerBadge.tsx` on profiles/cards
 > **3.3a/b**: `TestimonialsSection.tsx` on homepage — 3 testimonials with quotes, names, roles, cantons
 
 ---

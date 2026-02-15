@@ -24,6 +24,7 @@ import { getStorage } from "@/lib/storage";
 import { sanitizeFileName } from "@/lib/validations/filename";
 import { sanitizeSearchQuery, isLP21Code } from "@/lib/search-utils";
 import { notifyNewMaterial } from "@/lib/notifications";
+import { checkAndUpdateVerification } from "@/lib/utils/verified-seller";
 
 /** Trigram similarity thresholds for fuzzy search */
 const TITLE_SIMILARITY_THRESHOLD = 0.2;
@@ -941,6 +942,11 @@ export async function POST(request: NextRequest) {
       const followerIds = followers.map((f) => f.follower_id);
       notifyNewMaterial(followerIds, updatedMaterial.title, sellerName);
     }
+
+    // Check if seller now qualifies for verified status (fire-and-forget)
+    checkAndUpdateVerification(userId).catch((err) =>
+      console.error("Verification check failed after publish:", err)
+    );
 
     return NextResponse.json(
       {
