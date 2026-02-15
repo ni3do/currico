@@ -7,24 +7,7 @@ import { TableSkeleton } from "@/components/ui/Skeleton";
 import { FocusTrap } from "@/components/ui/FocusTrap";
 import { useToast } from "@/components/ui/Toast";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
-
-interface ContactMessage {
-  id: string;
-  name: string;
-  email: string;
-  phone: string | null;
-  subject: string;
-  message: string;
-  status: string;
-  created_at: string;
-}
-
-interface PaginatedResponse {
-  messages: ContactMessage[];
-  total: number;
-  page: number;
-  totalPages: number;
-}
+import type { ContactMessage, AdminMessagesResponse } from "@/lib/types/admin";
 
 const statusColors: Record<string, string> = {
   NEW: "bg-accent/10 text-accent",
@@ -80,7 +63,7 @@ export default function AdminMessagesPage() {
 
       const response = await fetch(`/api/admin/messages?${params}`);
       if (response.ok) {
-        const data: PaginatedResponse = await response.json();
+        const data: AdminMessagesResponse = await response.json();
         setMessages(data.messages);
         setTotalPages(data.totalPages);
         setTotal(data.total);

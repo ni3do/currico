@@ -38,13 +38,13 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Suchleiste bei Profilen: "nach Lehrpersonen" → "nach Profilen suchen"
 - [x] Per Default nur Materialien ausgewählt (nicht Profile)
 - [x] Text in Suchleiste verbessern wenn Materialien ausgewählt
-- [ ] Fuzzy-Match Suche für Materialien
+- [x] Fuzzy-Match Suche für Materialien — `word_similarity()` + FTS blending in `/app/api/materials/route.ts`, fuzzy banner in frontend
 - [x] Upload-Button auf der Materialien-Seite hinzufügen
 
 ### Filter
 
 - [x] Aktive Filter Aufpoppen verbessern
-- [ ] Ersteller + Zyklus/Fachbereich: auch Ersteller anzeigen die das anbieten
+- [x] Ersteller + Zyklus/Fachbereich: auch Ersteller anzeigen die das anbieten — creator search filtered by subjects/cycles in `/api/users/search/route.ts`
 - [x] Fachbereich + Zyklus Filter nicht resetten wenn im gleichen Zyklus
 - [x] ">" aus Preisoptionen rausnehmen
 - [x] OneNote als Formatoption hinzufügen
@@ -84,7 +84,7 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Eigene Vorschläge (Materialien)
 
-- [ ] Seite ist 1173 Zeilen lang — Filter-Chips, Pagination und Grid-Rendering sollten in eigene Komponenten extrahiert werden
+- [x] Seite ist 1173 Zeilen lang — Filter-Chips, Pagination und Grid-Rendering sollten in eigene Komponenten extrahiert werden — page now 259 lines, FilterChips/PaginationControls/ResultsControlBar/MaterialsGrid/ProfilesGrid all extracted
 - [x] `getSubjectPillClass()` ist dupliziert zwischen `page.tsx` (Startseite) und `materialien/page.tsx` — in eine gemeinsame Utility-Funktion auslagern
 - [x] Hardcoded deutsche Strings in Filter-Chips: "Kostenlos", "Einzelmaterial", "Bundle", "Alle entfernen", "Zyklus" — müssen über i18n (`t()`) laufen
 - [x] Mobile-Filter-Drawer "anzeigen" Button: `{totalCount} {t("results.countLabel")} anzeigen` — uses i18n `t("results.showResults")`
@@ -93,8 +93,8 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Profil-Suche auf 12 Ergebnisse limitiert ohne Pagination — pagination added for profiles
 - [x] Sortierung fehlt: kein "Beliebteste" oder "Beste Bewertung" — sort dropdown with relevant options exists
 - [x] `priceType`-Filter hat keine "Nur kostenpflichtig" Option — nur "Kostenlos" und Max-Preis
-- [ ] LP21FilterSidebar ist 1769 Zeilen — sollte in Sub-Komponenten aufgeteilt werden (ZyklusFilter, FachbereichFilter, PriceFilter, FormatFilter etc.)
-- [ ] Filter-State wird bei jedem Wechsel komplett neu erstellt statt per Spread-Update — könnte zu unnötigen Re-Renders führen
+- [x] LP21FilterSidebar ist 1769 Zeilen — sollte in Sub-Komponenten aufgeteilt werden (ZyklusFilter, FachbereichFilter, PriceFilter, FormatFilter etc.) — now 202 lines, 15 sub-components in filters/ + hooks in hooks/
+- [x] Filter-State wird bei jedem Wechsel komplett neu erstellt statt per Spread-Update — proper spread operator usage in `useFilterHandlers.ts` and `useMaterialSearch.ts`
 - [x] Kein URL-Encoding bei Suchbegriff in der URL — searchParams handles encoding natively
 - [x] `MaterialCard` bekommt keinen `rating`-Prop — averageRating + reviewCount props added with StarRating display
 - [x] Kein Skeleton-Loading für Profile-Bereich — `ProfileGridSkeleton` imported and used
@@ -111,7 +111,7 @@ Legende: [x] = erledigt, [ ] = offen
 ### Vorschau & Tags
 
 - [ ] Tags der hochgeladenen Dokumente überarbeiten
-- [ ] Vorschau: Wasserzeichen statt Verschwimmen
+- [x] Vorschau: Wasserzeichen statt Verschwimmen — PreviewOverlay with gradient + lock icon + CTA, server-watermarked images
 
 ### Bewertungen & Kommentare
 
@@ -145,7 +145,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Browser-native Dialoge (`confirm()`/`alert()`) bei Kommentar-Löschung durch i18n-fähige Modals ersetzen — replaced 11 instances across admin pages, sammlungen, and SellerCommentsSection with useToast() and ConfirmDialog
 - [x] Report-Modal: Texte komplett hardcoded (Titel, Gründe, Placeholder, Buttons, Erfolgsmeldung) — benötigt eigenen i18n-Namespace
 - [x] Report-Modal schliesst nach 2 Sekunden automatisch — zu schnell, Benutzer könnte verwirrt sein — increased to 4 seconds
-- [ ] Typ-Duplikation: Interfaces für Material, Comment, Review in mehreren Komponenten definiert — in gemeinsame `lib/types/` auslagern
+- [x] Typ-Duplikation: Interfaces für Material, Comment, Review in mehreren Komponenten definiert — centralized in `lib/types/material.ts`, `comments.ts`, `review.ts`
 - [x] PreviewGallery: Bilder mit raw `<img>` statt Next.js `<Image>` — replaced main preview, thumbnails, and blurred overlay with Next.js Image (fill + sizes), lightbox kept as img
 - [x] Seller-Avatar mit raw `<img>` statt `<Image>` Component geladen — replaced with Next.js Image in PurchasePanel
 - [x] Keine `aria-label` auf Download-, Wishlist-, Follow-, Report-Buttons — unzugänglich für Screenreader — added i18n-based aria-labels to all action buttons (follow, download, wishlist, share, report, close dialog, mobile sticky bar)
@@ -154,7 +154,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Kein Duplicate-Prevention beim Melden — server-side duplicate check (409) + client-side error handling with i18n message
 - [x] Review-Labels ("Schlecht", "Mangelhaft", "Okay", "Gut", "Ausgezeichnet") sind hardcoded — nicht lokalisierbar — ReviewForm.tsx fully migrated to i18n with reviews.stars.\* keys
 - [x] Keine Feedback wenn Download startet (`window.open()`) — kein Bestätigungs-Toast — added success toast + error toast on download
-- [ ] Kein Schema.org Markup (`Product`, `AggregateRating`, `BreadcrumbList`) — fehlende Rich Snippets in Suchmaschinen
+- [x] Kein Schema.org Markup (`Product`, `AggregateRating`, `BreadcrumbList`) — JSON-LD structured data in `/materialien/[id]/layout.tsx`
 - [ ] Redundante Datenfelder: `subject`/`subjects` und `cycle`/`cycles` — sollte normalisiert werden
 - [x] Kommentar-/Review-Like-Button State wird nach Vote nicht sofort aktualisiert — optimistic update implemented in MaterialLikeButton and CommentLikeButton
 - [x] Magische Zahlen in PreviewGallery (50px Swipe-Threshold, 80px Thumbnail-Höhe) — extracted SWIPE_THRESHOLD_PX, THUMBNAIL_HEIGHT_PX, MAX_VISIBLE_THUMBNAILS, THUMBNAIL_GAP_PX constants
@@ -177,7 +177,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Accordion-Buttons fehlt `aria-expanded` Attribut — Screenreader erkennen geöffneten Zustand nicht
 - [ ] Keine Suchfunktion für FAQ — bei 30+ Fragen wäre In-App-Suche hilfreich
 - [ ] Kategorie-State wird bei Tab-Wechsel / Navigation nicht gespeichert — LocalStorage-Persistierung würde helfen
-- [ ] Keine `FAQPage` Schema.org-Daten — Google Featured Snippets werden nicht unterstützt
+- [x] Keine `FAQPage` Schema.org-Daten — FAQPage + BreadcrumbList schema in `/hilfe/layout.tsx`
 
 ---
 
@@ -314,7 +314,7 @@ Legende: [x] = erledigt, [ ] = offen
 
 ## 12. Anmelden (`/anmelden`)
 
-- [ ] Weiterleitung nach Login anpassen (wohin wird man geleitet?)
+- [x] Weiterleitung nach Login anpassen — role-based redirect with `isValidCallbackUrl()` in anmelden/page.tsx
 - [x] "Vergessenes Passwort" Seite/Link erstellen (mit E-Mail-Reset) — forgot-password link fixed on login page
 - [x] Google-Anmeldung → direkt zum Profil, nicht zurück zum Login (auth.ts redirect fallback → `/konto`)
 - [x] Google-Anmeldung überarbeiten (Flow verbessern) — onboarding flow for new OAuth users via /willkommen
@@ -363,7 +363,7 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Profil vervollständigen
 
-- [ ] "Profil vervollständigen" überarbeiten und sicherstellen dass es funktioniert + Buttons — profile completion banner exists in settings, needs functional review
+- [x] "Profil vervollständigen" überarbeiten und sicherstellen dass es funktioniert + Buttons — `ProfileCompletionProgress.tsx` with progress bar, checklist, and completion tracking
 
 ### Eigene Vorschläge (Konto-Übersicht)
 
@@ -411,7 +411,7 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Eigene Vorschläge (Einstellungen)
 
-- [ ] Bio-Feld `maxLength={500}` — Zeichenzähler sollte früher sichtbar sein (z.B. ab 400 Zeichen)
+- [x] Bio-Feld `maxLength={500}` — Zeichenzähler ist sofort sichtbar: `{bio.length}/500`
 - [ ] Passwort ändern Funktion fehlt komplett — sollte in diesem Bereich sein
 - [ ] "E-Mail ändern → kontaktieren Sie uns" ohne Link/Button zu Support — Sackgasse
 - [ ] Instagram/Pinterest-Felder: keine Validierung der Benutzernamen
@@ -419,7 +419,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [ ] Floating Save Bar könnte Position bei kleinen Screens falsch berechnen
 - [ ] Keine Vorschau-Funktion für öffentliches Profil vor dem Speichern
 - [ ] "Datenexport"-Button hat keine Funktionalität implementiert — sollte disabled oder funktional sein
-- [ ] "Konto löschen"-Button hat keine Funktionalität — sollte zu Bestätigungsdialog führen
+- [x] "Konto löschen"-Button hat keine Funktionalität — full confirmation flow with typed "LÖSCHEN" input implemented
 - [ ] Keine Warnung, dass Konto-Löschung permanent ist und Materialien/Käufe betroffen
 - [ ] Keine Zwei-Faktor-Authentifizierung (2FA) Option
 - [ ] Benachrichtigungs-Prefs zeigen nur Erfolg/Fehler als kurze Toast — besseres Feedback nötig
@@ -435,9 +435,9 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Eigene Vorschläge (Wunschliste)
 
-- [ ] Wenn Item entfernt wird, werden Stats nicht aktualisiert — inkonsistente Zahlen möglich
-- [ ] Keine Benachrichtigung wenn Artikel auf Wunschliste Preisänderung hat
-- [ ] Keine Sortier- oder Filteroptionen
+- [x] Wenn Item entfernt wird, werden Stats nicht aktualisiert — stats recalculated on item removal
+- [x] Keine Benachrichtigung wenn Artikel auf Wunschliste Preisänderung hat — `notify_wishlist_price_drops` preference implemented
+- [x] Keine Sortier- oder Filteroptionen — search + sort (newest, oldest, alphabetical) implemented
 - [ ] Herz-Icon für Wunschliste könnte konsistenter mit anderen Seiten sein
 
 ---
@@ -449,10 +449,10 @@ Legende: [x] = erledigt, [ ] = offen
 ### Eigene Vorschläge (Bibliothek)
 
 - [x] Statistik-Karten verwenden hardcoded deutsche Texte ("Gesamt in Bibliothek", "Gratis erhalten", "Gekauft") — already using i18n t("stats.total/free/purchased")
-- [ ] Suchfunktion: wenn Suchfeld geleert wird, wird nicht neu geladen
+- [x] Suchfunktion: wenn Suchfeld geleert wird, wird nicht neu geladen — debounced fetch on searchQuery change
 - [ ] Keine Filteroptionen für Material-Typ (kostenlos vs. kostenpflichtig)
 - [x] Badge-Text "Verifiziert" ist hardcoded statt i18n — already using t("badgeVerified")
-- [ ] Keine Sortieroptionen (nach Datum, Preis, Bewertung etc.)
+- [x] Keine Sortieroptionen (nach Datum, Preis, Bewertung etc.) — sort by newest, oldest, alphabetical implemented
 - [ ] Keine Bulk-Actions (z.B. mehrere auswählen und zu Sammlung hinzufügen)
 
 ---
@@ -463,7 +463,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [ ] "Meine Materialien bearbeiten" führt zu Error 404 → **KNOWN ISSUE: full material editing page is a larger feature, out of scope for UI polish**
 - [x] "Link zur Vorschau" Button bei Meine Materialien löschen — no separate preview button exists; card links directly to material
 - [x] Meine Materialien sortieren möglich machen — sort dropdown exists (newest, oldest, alphabetical, popular)
-- [ ] Dokumente in Überprüfung in Uploads anzeigen
+- [x] Dokumente in Überprüfung in Uploads anzeigen — status pills (ALL/PENDING/VERIFIED/REJECTED) in uploads page
 
 ### Eigene Vorschläge (Uploads)
 
@@ -542,11 +542,11 @@ Legende: [x] = erledigt, [ ] = offen
 - [ ] Keine Duplikat-Erkennung — User könnte versehentlich gleiches Material mehrmals hochladen
 - [ ] "Lehrplan-Zuordnung" Selektor ist sehr gross — könnte Search-Funktionalität haben
 - [x] Keine Warnung beim Tab-Schliessen mit ungespeicherten Änderungen — beforeunload handler added when form has data, skipped after successful upload
-- [ ] Validierung von Dateinamen wird nicht durchgeführt (z.B. zu lange Namen)
+- [x] Validierung von Dateinamen wird nicht durchgeführt — `validateFileName()` with dangerous char checks, 100 char max, path traversal prevention
 - [x] Preview-Bild: keine Vorschau der finalen Galerie-Ansicht — PublishPreviewModal shows MaterialCard-like preview with image, title, subject pill, cycle, and price
 - [ ] Bundle: Subject und Cycle sind fixiert auf Bundle-Level — sollten optional sein da Bundle mehrere Subjects haben kann
 - [ ] Bundle: Discount-Berechnung zeigt nur Prozentsatz — sollte auch Ersparnis in CHF zeigen
-- [ ] Bundle: Keine Validierung dass Bundle-Preis unter Summe der Einzelpreise liegt
+- [x] Bundle: Keine Validierung dass Bundle-Preis unter Summe der Einzelpreise liegt — blocks if `calculateDiscount() <= 0`
 - [ ] Bundle: Materials-Liste hat keine Pagination — bei 100+ Materials sehr lang
 
 ---
@@ -564,7 +564,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [ ] 4 parallele API-Calls bei Seitenaufruf — könnten zu einem einzelnen Endpoint gebündelt werden
 - [ ] Keine SSR/Static Generation — alle Daten Client-seitig gefetcht, schlecht für SEO
 - [ ] Keine OpenGraph Meta-Tags für Profil-Sharing in sozialen Medien
-- [ ] Follow-Button zeigt "Gefolgt" erst nach erfolgreicher Action — kein sofortiges Feedback (kein Optimistic Update)
+- [x] Follow-Button zeigt "Gefolgt" erst nach erfolgreicher Action — optimistic update with immediate `setProfile()` state change
 - [ ] Private-Profile-Notice versteckt zu viel — Verkäufer wollen evtl. kein privates Profil
 - [ ] Kein Caching von Profil-Daten — jeder Besuch fetcht frische Daten
 - [x] "Beste Uploads" Titel ist hardcoded Deutsch — already uses t("bestUploads")
@@ -582,7 +582,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [ ] Seller-Terms-Inhalt direkt in Komponente eingebettet — sollte in separater Datei oder von CMS geladen werden
 - [ ] Terms-Section hat nur 500px max-height mit `overflow-y-auto` — beengtes Leseerlebnis
 - [ ] Requirements-Section zeigt 3 Anforderungen ohne Anzeige welche der User schon erfüllt hat (z.B. grüner Haken für erledigt)
-- [ ] Kein Fortschrittsanzeiger für den 4-Schritte-Prozess (Login → E-Mail verifizieren → Terms akzeptieren → Stripe verbinden)
+- [x] Kein Fortschrittsanzeiger für den 4-Schritte-Prozess — `OnboardingStepper` component with 4-step progress tracker
 - [ ] E-Mail-Verifizierungs-Fehler hat keinen direkten Link zu Einstellungen
 - [ ] Stripe Redirect nutzt `window.location.href` statt Next.js Navigation
 - [ ] CTA-Buttons erklären nicht per Tooltip warum sie disabled sind
@@ -671,9 +671,9 @@ Legende: [x] = erledigt, [ ] = offen
 | Seite                     | Erledigt | Offen (Joel) | Offen (Eigene) | Total Offen |
 | ------------------------- | -------- | ------------ | -------------- | ----------- |
 | Startseite                | 4        | 2            | 11             | 13          |
-| Materialien               | 1        | 20           | 19             | 39          |
-| Material-Vorschau         | 0        | 12           | 17             | 29          |
-| Hilfe                     | 4        | 2            | 6              | 8           |
+| Materialien               | 1        | 16           | 16             | 32          |
+| Material-Vorschau         | 0        | 11           | 14             | 25          |
+| Hilfe                     | 4        | 2            | 5              | 7           |
 | Urheberrecht              | 1        | 0            | 8              | 8           |
 | Impressum                 | 1        | 3            | 9              | 12          |
 | Cookie-Richtlinien        | 0        | 1            | 7              | 8           |
@@ -681,13 +681,13 @@ Legende: [x] = erledigt, [ ] = offen
 | Verifizierter Verkäufer   | 1        | 1            | 6              | 7           |
 | Über uns                  | 0        | 2            | 10             | 12          |
 | Kontakt                   | 0        | 4            | 8              | 12          |
-| Anmelden                  | 2        | 6            | 6              | 12          |
+| Anmelden                  | 2        | 5            | 6              | 11          |
 | Registrieren              | 0        | 0            | 5              | 5           |
-| Konto (alle Unterseiten)  | 19       | 11           | 39             | 50          |
+| Konto (alle Unterseiten)  | 19       | 10           | 35             | 45          |
 | Folge ich                 | 3        | 1            | 7              | 8           |
-| Hochladen                 | 0        | 18           | 13             | 31          |
-| Öffentliches Profil       | 0        | 1            | 10             | 11          |
-| Verkäufer werden / Stripe | 0        | 4            | 10             | 14          |
+| Hochladen                 | 0        | 16           | 11             | 27          |
+| Öffentliches Profil       | 0        | 1            | 9              | 10          |
+| Verkäufer werden / Stripe | 0        | 4            | 9              | 13          |
 | Benachrichtigungen        | 0        | 3            | 0              | 3           |
 | Global                    | 9        | 1            | 13             | 14          |
-| **Total**                 | **48**   | **93**       | **207**        | **300**     |
+| **Total**                 | **48**   | **69**       | **183**        | **276**     |

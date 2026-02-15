@@ -9,43 +9,7 @@ import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { Package, FileText, Tag } from "lucide-react";
-
-interface BundleResource {
-  id: string;
-  title: string;
-  price: number;
-  priceFormatted: string;
-  previewUrl: string | null;
-  description: string | null;
-}
-
-interface Bundle {
-  id: string;
-  title: string;
-  description: string | null;
-  price: number;
-  priceFormatted: string;
-  subject: string;
-  subjects: string[];
-  cycle: string;
-  cycles: string[];
-  coverImageUrl: string | null;
-  createdAt: string;
-  seller: {
-    id: string;
-    displayName: string | null;
-    image: string | null;
-    verified: boolean;
-    resourceCount: number;
-  };
-  resources: BundleResource[];
-  resourceCount: number;
-  totalIndividualPrice: number;
-  totalIndividualPriceFormatted: string;
-  savings: number;
-  savingsFormatted: string;
-  savingsPercent: number;
-}
+import type { Bundle } from "@/lib/types/material";
 
 export default function BundleDetailPage() {
   const params = useParams();

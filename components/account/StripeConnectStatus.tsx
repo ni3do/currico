@@ -3,25 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-
-interface StripeStatus {
-  hasAccount: boolean;
-  accountId: string | null;
-  chargesEnabled: boolean;
-  payoutsEnabled: boolean;
-  detailsSubmitted: boolean;
-  onboardingComplete: boolean;
-  termsAccepted: boolean;
-  role: string;
-  dashboardUrl: string | null;
-  requirements: {
-    currentlyDue: string[];
-    eventuallyDue: string[];
-    pastDue: string[];
-    pendingVerification: string[];
-  } | null;
-  error?: string;
-}
+import type { StripeStatus } from "@/lib/types/account";
 
 interface StripeConnectStatusProps {
   isSeller: boolean;

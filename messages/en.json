@@ -575,7 +575,7 @@
         "erg": "Ethics, Religions, Community (ERG)"
       },
       "filterButton": "Filter",
-      "fuzzyResults": "Showing similar results"
+      "fuzzyResults": "Showing similar results for \"{query}\""
     },
     "advancedFilters": {
       "title": "Advanced Filters",
@@ -1071,57 +1071,81 @@
   },
   "aboutPage": {
     "hero": {
-      "badge": "Hi, we're Currico",
-      "title": "We're teachers too. We get it.",
-      "subtitle": "Currico was born out of our own frustration with lesson prep. We built the tool we always wished existed.",
+      "badge": "By Teachers, for Teachers",
+      "title": "We know your day. We've been there.",
+      "subtitle": "Currico was born from real frustration — from teachers who spent evenings and weekends on lesson prep. We wanted to change that. Not with a big budget, but with heart.",
       "imageAlt": "The Currico team"
     },
-    "mission": {
-      "title": "Why we started Currico",
-      "paragraph1": "Honestly? Because we were tired. Tired of spending our Sundays searching for worksheets. Tired of adapting German materials to Swiss standards. Tired of feeling like prep time was eating into our lives.",
-      "paragraph2": "So we asked ourselves: what if there was a place built by Swiss teachers, for Swiss teachers? A place where you can find quality materials in minutes, not hours. Where everything already fits the Lehrplan 21. Where you don't have to reinvent the wheel every week.",
-      "paragraph3": "That's Currico. It's not a faceless platform. It's a small team with a big heart, working to give you back the time you deserve — for your students, your family, and yourself."
-    },
-    "values": {
-      "title": "What matters to us",
-      "value1": {
-        "title": "Your time is precious",
-        "description": "Find what you need, print it, teach it. We want your evenings and weekends to be yours again."
+    "problem": {
+      "title": "We've all been there",
+      "subtitle": "Teachers kept telling us about the same challenges. These three came up again and again.",
+      "point1": {
+        "title": "Hours on a single worksheet",
+        "description": "Creating one worksheet — researching, designing, adapting, printing. For every lesson, every week. The hours add up fast."
       },
-      "value2": {
-        "title": "Made for Switzerland",
-        "description": "No more adapting foreign content. Everything here is designed for Swiss classrooms and the Lehrplan 21."
+      "point2": {
+        "title": "Finding diverse materials is hard",
+        "description": "Students love varied, engaging materials. But finding them takes time you simply don't have."
       },
-      "value3": {
-        "title": "Quality you can trust",
-        "description": "Every material is reviewed by real teachers. We'd rather have fewer great materials than a flood of mediocre ones."
+      "point3": {
+        "title": "Differentiation takes time",
+        "description": "Every child learns differently. Preparing materials for different levels matters — but it's incredibly time-consuming."
       }
     },
     "origin": {
-      "title": "Our story",
-      "paragraph1": "It started with a simple idea between two friends: what if we could make each other's school prep easier? Simon, with his background in education, and Laurent, with his tech skills, started sharing materials and building tools.",
-      "paragraph2": "That small experiment turned into Currico. Today, we're still the same two people — passionate about education, obsessed with making things simple, and always happy to hear from you. We read every message, we listen to every suggestion, and we build what you actually need.",
+      "title": "How it all started",
+      "paragraph1": "It started at a kitchen table. Simon came home frustrated from school, talking about how much time he'd spent on worksheets again. Laurent, his friend from the tech world, asked: \"Why isn't there a solution for this?\"",
+      "paragraph2": "We talked to other teachers — and heard the same thing everywhere: prep eats up all your free time. Hours spent searching, adapting, designing materials. And even then, it's often not quite what you need.",
+      "paragraph3": "So we started building something. Not with investors or a grand plan. Just two people who believe teachers deserve tools that give them their time back.",
       "imageAlt": "Simon and Laurent working together"
     },
     "founders": {
-      "title": "The people behind Currico",
-      "subtitle": "No corporate team. Just two guys who care about making your school day easier.",
+      "title": "The two behind Currico",
+      "subtitle": "No corporation, no investors, no budget. Just two people with one mission: making your school day a little bit easier.",
       "founder1": {
         "name": "Simon Wachter",
         "role": "Co-Founder & Education",
-        "bio": "I know what it's like to stand in front of a class and wish you had better materials. That's why I make sure everything on Currico is practical, classroom-tested, and aligned with what Swiss teachers actually need."
+        "bio": "I was a teacher myself and know what it feels like to spend Sunday evenings creating worksheets. At Currico, I make sure every material is practical and made for Swiss classrooms."
       },
       "founder2": {
         "name": "Laurent Zoccoletti",
         "role": "Co-Founder & Tech",
-        "bio": "I build the platform so it just works — fast, simple, no headaches. My job is to make sure technology gets out of your way and lets you focus on what you do best: teaching."
+        "bio": "I build Currico to just work — fast, simple, no frustration. My goal: technology should help you, never get in the way."
       },
-      "story": "We started Currico at a kitchen table, fueled by coffee and a shared belief: teachers deserve better tools. We're not a startup chasing investors. We're two people building something we genuinely believe in — and we'd love for you to be part of it.",
+      "story": "We're not a startup chasing investors. We're two people who started at a kitchen table because we believe teachers deserve someone who makes their day easier. And we're happy about every person who joins us on this journey.",
       "highlight": "Got a question, an idea, or just want to say hi? We'd genuinely love to hear from you."
     },
+    "values": {
+      "title": "What we believe in",
+      "value1": {
+        "title": "Your time is yours",
+        "description": "Find it, print it, teach it. We want your evenings and weekends back — not lost to prep work."
+      },
+      "value2": {
+        "title": "Stronger together",
+        "description": "Currico is a family. Teachers helping teachers — through shared materials, feedback, and ideas."
+      },
+      "value3": {
+        "title": "Made for Switzerland",
+        "description": "Everything here fits the Lehrplan 21 and Swiss classrooms. No more adapting foreign materials."
+      },
+      "value4": {
+        "title": "Quality over quantity",
+        "description": "We'd rather have fewer great materials than a flood of mediocre ones. Reviewed by real teachers."
+      }
+    },
+    "helpUs": {
+      "title": "Help us make Currico better",
+      "paragraph1": "We're a tiny team with no budget. We're not doing this for profit — we're doing it because we believe we can make a teacher's day better. And for that, we need you.",
+      "paragraph2": "If you have an idea, miss a feature, or would improve something — tell us. Every suggestion counts. We read everything, we respond, and if your idea fits, we build it. Together, we make Currico what teachers truly need.",
+      "idea1": "Share your ideas for new features",
+      "idea2": "Tell us what's missing or bothering you",
+      "idea3": "Help build a community together",
+      "button": "Share your idea with us"
+    },
     "cta": {
-      "title": "Come join us",
-      "subtitle": "Hundreds of Swiss teachers are already saving hours every week. Give it a try — it's free to start.",
+      "title": "Join the Currico family",
+      "subtitle": "Every teacher who joins makes Currico a little bit better. For you, for everyone. It's free to start.",
       "button": "Explore Materials",
       "secondaryButton": "Sign Up Free"
     },
@@ -2821,6 +2845,8 @@
     "noCollectionsOwn": "Create your first collection!",
     "noCollectionsOther": "This user doesn't have any public collections.",
     "loadMore": "Load more",
+    "startUpload": "Upload material",
+    "collectionItems": "Materials",
     "privacy": {
       "label": "Keep my profile private",
       "tooltip": "When enabled, only your name and avatar will be shown on your public profile. Your bio, subjects, cycles, cantons, statistics, and social media links will be hidden.",

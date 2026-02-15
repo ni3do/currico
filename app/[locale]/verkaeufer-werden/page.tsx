@@ -9,28 +9,11 @@ import { LoginLink } from "@/components/ui/LoginLink";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
+import type { StripeStatus } from "@/lib/types/account";
 
 interface UserData {
   emailVerified: string | null;
   sellerTermsAcceptedAt: string | null;
-}
-
-interface StripeStatus {
-  hasAccount: boolean;
-  accountId: string | null;
-  chargesEnabled: boolean;
-  payoutsEnabled: boolean;
-  detailsSubmitted: boolean;
-  onboardingComplete: boolean;
-  termsAccepted: boolean;
-  role: string;
-  dashboardUrl: string | null;
-  requirements: {
-    currentlyDue: string[];
-    eventuallyDue: string[];
-    pastDue: string[];
-    pendingVerification: string[];
-  } | null;
 }
 
 // Stepper component for onboarding progress

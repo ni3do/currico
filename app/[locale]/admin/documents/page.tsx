@@ -5,40 +5,7 @@ import { useTranslations } from "next-intl";
 import { TableSkeleton } from "@/components/ui/Skeleton";
 import { FocusTrap } from "@/components/ui/FocusTrap";
 import { useToast } from "@/components/ui/Toast";
-
-interface AdminMaterial {
-  id: string;
-  title: string;
-  description: string;
-  price: number;
-  priceFormatted: string;
-  subjects: string[];
-  cycles: string[];
-  is_published: boolean;
-  is_approved: boolean;
-  status: string;
-  is_public: boolean;
-  file_url: string;
-  preview_url: string | null;
-  created_at: string;
-  updated_at: string;
-  seller: {
-    id: string;
-    display_name: string | null;
-    email: string;
-  };
-  salesCount: number;
-}
-
-interface PaginatedResponse {
-  materials: AdminMaterial[];
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-  };
-}
+import type { AdminMaterial, AdminMaterialsResponse } from "@/lib/types/admin";
 
 const statusColors: Record<string, string> = {
   PENDING: "bg-[var(--badge-warning-bg)] text-[var(--badge-warning-text)]",
@@ -79,7 +46,7 @@ export default function AdminDocumentsPage() {
 
       const response = await fetch(`/api/admin/materials?${params}`);
       if (response.ok) {
-        const data: PaginatedResponse = await response.json();
+        const data: AdminMaterialsResponse = await response.json();
         setMaterials(data.materials);
         setTotalPages(data.pagination.totalPages);
         setTotal(data.pagination.total);

@@ -3,16 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { Plus, Send, Pencil, Trash2, Mail } from "lucide-react";
-
-interface Newsletter {
-  id: string;
-  subject: string;
-  content: string;
-  status: "DRAFT" | "SENDING" | "SENT" | "FAILED";
-  recipient_count: number;
-  sent_at: string | null;
-  created_at: string;
-}
+import type { Newsletter } from "@/lib/types/admin";
 
 export default function AdminNewslettersPage() {
   const t = useTranslations("admin.newsletters");

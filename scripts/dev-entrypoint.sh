@@ -20,6 +20,11 @@ done
 
 PRISMA_EXEC="npx prisma db execute --stdin --schema prisma/schema.prisma"
 
+echo "==> Enabling required PostgreSQL extensions..."
+$PRISMA_EXEC <<'SQL' || true
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+SQL
+
 echo "==> Dropping search trigger before schema push..."
 $PRISMA_EXEC <<'SQL' || true
 DROP TRIGGER IF EXISTS resources_search_vector_trigger ON "resources";

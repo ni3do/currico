@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { constructWebhookEvent } from "@/lib/stripe";
 import { sendPurchaseConfirmationEmail } from "@/lib/email";
 import { notifySale } from "@/lib/notifications";
+import { checkAndUpdateVerification } from "@/lib/utils/verified-seller";
 import { DOWNLOAD_LINK_EXPIRY_DAYS, DOWNLOAD_LINK_MAX_DOWNLOADS } from "@/lib/constants";
 import Stripe from "stripe";
 
@@ -285,6 +286,11 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session):
 
   // Notify the seller about the sale (fire-and-forget)
   notifySale(transaction.resource.seller_id, transaction.resource.title, transaction.amount);
+
+  // Check if seller now qualifies for verified status (fire-and-forget)
+  checkAndUpdateVerification(transaction.resource.seller_id).catch((err) =>
+    console.error("Verification check failed after purchase:", err)
+  );
 
   if (isDev) {
     console.log(`Webhook: Completed transaction ${transaction.id}`, {

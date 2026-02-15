@@ -1,13 +1,9 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo, useTransition, useRef } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import type { ReadonlyURLSearchParams } from "next/navigation";
-import type {
-  LP21FilterState,
-  MaterialListItem,
-  Pagination,
-  ProfileListItem,
-} from "@/lib/types/search";
+import type { LP21FilterState } from "@/lib/types/search";
+import { useSearchFetcher } from "./useSearchFetcher";
 
 /** Debounce delay (ms) before fetching materials after filter changes */
 const MATERIALS_DEBOUNCE_MS = 150;
@@ -30,28 +26,25 @@ export function useMaterialSearch({
   t,
   getFachbereichByCode,
 }: UseMaterialSearchOptions) {
-  // --- State ---
-  const [materials, setMaterials] = useState<MaterialListItem[]>([]);
-  const [profiles, setProfiles] = useState<ProfileListItem[]>([]);
-  const [pagination, setPagination] = useState<Pagination>({
-    page: 1,
-    limit: 20,
-    total: 0,
-    totalPages: 0,
-  });
-  const [profilePagination, setProfilePagination] = useState<Pagination>({
-    page: 1,
-    limit: 12,
-    total: 0,
-    totalPages: 0,
-  });
-  const [loading, setLoading] = useState(true);
-  const [profilesLoading, setProfilesLoading] = useState(false);
-  const [fetchError, setFetchError] = useState<string | null>(null);
+  // --- Data fetching (delegated to useSearchFetcher) ---
+  const {
+    materials,
+    profiles,
+    pagination,
+    profilePagination,
+    loading,
+    profilesLoading,
+    fetchError,
+    isPending,
+    searchMatchMode,
+    setLoading,
+    setProfilesLoading,
+    fetchMaterials,
+    fetchProfiles,
+  } = useSearchFetcher({ toast, t, getFachbereichByCode });
+
+  // --- Local state ---
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-  const [isPending, startTransition] = useTransition();
-  const materialsAbortRef = useRef<AbortController | null>(null);
-  const profilesAbortRef = useRef<AbortController | null>(null);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [sortBy, setSortBy] = useState<string>(searchParams.get("sort") || "newest");
   const [profileSortBy, setProfileSortBy] = useState<string>(
@@ -152,7 +145,7 @@ export function useMaterialSearch({
       setProfilePage(1);
       navigateTo(buildUrlParams(newFilters, sortBy, 1));
     },
-    [sortBy, buildUrlParams, navigateTo, filters.showMaterials]
+    [sortBy, buildUrlParams, navigateTo, filters.showMaterials, setLoading, setProfilesLoading]
   );
 
   const handleSortChange = useCallback(
@@ -198,147 +191,7 @@ export function useMaterialSearch({
     [filters, sortBy, buildUrlParams, navigateTo]
   );
 
-  // --- Fachbereich mapping ref ---
-  const mapFachbereichToSubjectRef = useRef((code: string | null): string => code || "");
-  useEffect(() => {
-    mapFachbereichToSubjectRef.current = (code: string | null): string => {
-      if (!code) return "";
-      const fachbereich = getFachbereichByCode(code);
-      return fachbereich?.code || code;
-    };
-  }, [getFachbereichByCode]);
-
-  // --- Fetch materials ---
-  const fetchMaterials = useCallback(
-    async (currentFilters: LP21FilterState, currentSort: string, page: number = 1) => {
-      materialsAbortRef.current?.abort();
-      const controller = new AbortController();
-      materialsAbortRef.current = controller;
-
-      setLoading(true);
-      setFetchError(null);
-      try {
-        const params = new URLSearchParams();
-        params.set("page", page.toString());
-
-        if (currentFilters.fachbereich) {
-          params.set("subject", mapFachbereichToSubjectRef.current(currentFilters.fachbereich));
-        }
-        if (currentFilters.zyklus) {
-          params.set("cycle", currentFilters.zyklus.toString());
-        }
-        if (currentFilters.searchQuery) {
-          params.set("search", currentFilters.searchQuery);
-        }
-        if (currentFilters.kompetenz) {
-          params.set("competency", currentFilters.kompetenz);
-        } else if (currentFilters.kompetenzbereich) {
-          params.set("competency", currentFilters.kompetenzbereich);
-        }
-        if (currentFilters.dialect) {
-          params.set("dialect", currentFilters.dialect);
-        }
-        if (currentFilters.maxPrice !== null) {
-          params.set("maxPrice", currentFilters.maxPrice.toString());
-        }
-        if (currentFilters.formats.length > 0) {
-          params.set("formats", currentFilters.formats.join(","));
-        }
-        if (currentFilters.cantons.length > 0) {
-          params.set("cantons", currentFilters.cantons.join(","));
-        }
-        if (currentSort) {
-          params.set("sort", currentSort);
-        }
-
-        const response = await fetch(`/api/materials?${params.toString()}`, {
-          signal: controller.signal,
-        });
-
-        if (!response.ok) {
-          if (response.status === 429) {
-            setFetchError("rateLimit");
-            toast(t("toast.error"), "error");
-          } else {
-            setFetchError("server");
-            toast(t("empty.fetchError"), "error");
-          }
-          setLoading(false);
-          return;
-        }
-
-        const data = await response.json();
-        // setLoading(false) MUST be inside startTransition so it's atomic with data updates.
-        // Otherwise React renders loading=false before pagination updates, causing a "0 results" flash.
-        startTransition(() => {
-          setMaterials(data.materials);
-          setPagination(data.pagination);
-          setLoading(false);
-        });
-      } catch (error: unknown) {
-        if (error instanceof Error && error.name === "AbortError") return;
-        console.error("Error fetching materials:", error);
-        setFetchError("network");
-        toast(t("empty.fetchError"), "error");
-        setLoading(false);
-      }
-    },
-    [toast, t]
-  );
-
-  // --- Fetch profiles ---
-  const fetchProfiles = useCallback(
-    async (currentFilters: LP21FilterState, sort: string = "newest", page: number = 1) => {
-      profilesAbortRef.current?.abort();
-      const controller = new AbortController();
-      profilesAbortRef.current = controller;
-
-      setProfilesLoading(true);
-      try {
-        const params = new URLSearchParams();
-        if (currentFilters.searchQuery) params.set("q", currentFilters.searchQuery);
-        if (currentFilters.fachbereich) params.set("subjects", currentFilters.fachbereich);
-        if (currentFilters.zyklus) params.set("cycles", currentFilters.zyklus.toString());
-        if (sort && sort !== "newest") params.set("sort", sort);
-        if (page > 1) params.set("page", page.toString());
-        params.set("limit", "12");
-
-        const response = await fetch(`/api/users/search?${params.toString()}`, {
-          signal: controller.signal,
-        });
-        if (response.ok) {
-          const data = await response.json();
-          startTransition(() => {
-            setProfiles(data.profiles);
-            setProfilePagination(data.pagination);
-            setProfilesLoading(false);
-          });
-        } else {
-          setProfilesLoading(false);
-        }
-      } catch (error: unknown) {
-        if (error instanceof Error && error.name === "AbortError") return;
-        console.error("Error fetching profiles:", error);
-        setProfilesLoading(false);
-      }
-    },
-    []
-  );
-
   // --- Effects ---
-
-  // Abort in-flight requests on unmount
-  useEffect(() => {
-    return () => {
-      materialsAbortRef.current?.abort();
-      profilesAbortRef.current?.abort();
-    };
-  }, []);
-
-  // Clear fetch error when filters change
-  useEffect(() => {
-    setFetchError(null);
-  }, [filters]);
 
   // Fetch materials when showMaterials is true (debounced)
   useEffect(() => {
@@ -349,11 +202,9 @@ export function useMaterialSearch({
       }, MATERIALS_DEBOUNCE_MS);
       return () => clearTimeout(debounce);
     } else {
-      setMaterials([]);
-      // Keep pagination.total so switching back doesn't flash "0"
       setLoading(false);
     }
-  }, [filters, sortBy, currentPage, fetchMaterials]);
+  }, [filters, sortBy, currentPage, fetchMaterials, setLoading]);
 
   // Fetch profiles when showCreators is true (debounced)
   useEffect(() => {
@@ -364,11 +215,9 @@ export function useMaterialSearch({
       }, PROFILES_DEBOUNCE_MS);
       return () => clearTimeout(debounce);
     } else {
-      setProfiles([]);
-      // Keep profilePagination.total so switching back doesn't flash "0"
       setProfilesLoading(false);
     }
-  }, [filters, profileSortBy, profilePage, fetchProfiles]);
+  }, [filters, profileSortBy, profilePage, fetchProfiles, setProfilesLoading]);
 
   // --- Computed values ---
   const activeFilterCount = [
@@ -443,6 +292,7 @@ export function useMaterialSearch({
     currentPage,
     profilePage,
     isPending,
+    searchMatchMode,
     // Computed
     activeFilterCount,
     isLoading,

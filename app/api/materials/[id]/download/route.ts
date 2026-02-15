@@ -5,6 +5,7 @@ import { requireAdmin } from "@/lib/admin-auth";
 import { readFile } from "fs/promises";
 import path from "path";
 import { getStorage, isLegacyLocalPath, getLegacyFilePath } from "@/lib/storage";
+import { checkAndUpdateVerification } from "@/lib/utils/verified-seller";
 
 /**
  * Content type map for file extensions
@@ -303,6 +304,11 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
         },
         update: {},
       });
+
+      // Check if seller now qualifies for verified status (fire-and-forget)
+      checkAndUpdateVerification(material.seller_id).catch((err) =>
+        console.error("Verification check failed after download:", err)
+      );
     }
 
     return NextResponse.json({

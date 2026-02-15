@@ -4,8 +4,8 @@ import { prisma, publicUserSelect } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
 import { parsePagination, paginationResponse } from "@/lib/api";
 
-/** Minimum trigram similarity for user name fuzzy search */
-const USER_NAME_SIMILARITY_THRESHOLD = 0.25;
+/** Minimum word-level trigram similarity for user name fuzzy search */
+const USER_NAME_WORD_SIMILARITY_THRESHOLD = 0.4;
 
 /**
  * GET /api/users/search
@@ -59,11 +59,11 @@ export async function GET(request: NextRequest) {
         try {
           const fuzzyUsers = await prisma.$queryRaw<{ id: string }[]>`
             SELECT id FROM users
-            WHERE similarity(COALESCE(name, ''), ${query}) > ${USER_NAME_SIMILARITY_THRESHOLD}
-               OR similarity(COALESCE(display_name, ''), ${query}) > ${USER_NAME_SIMILARITY_THRESHOLD}
+            WHERE word_similarity(${query}, COALESCE(name, '')) > ${USER_NAME_WORD_SIMILARITY_THRESHOLD}
+               OR word_similarity(${query}, COALESCE(display_name, '')) > ${USER_NAME_WORD_SIMILARITY_THRESHOLD}
             ORDER BY GREATEST(
-              similarity(COALESCE(name, ''), ${query}),
-              similarity(COALESCE(display_name, ''), ${query})
+              word_similarity(${query}, COALESCE(name, '')),
+              word_similarity(${query}, COALESCE(display_name, ''))
             ) DESC
             LIMIT 50
           `;

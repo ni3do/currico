@@ -17,18 +17,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-
-type NotificationType = "SALE" | "FOLLOW" | "REVIEW" | "COMMENT" | "SYSTEM";
-
-interface Notification {
-  id: string;
-  created_at: string;
-  read_at: string | null;
-  type: NotificationType;
-  title: string;
-  body: string | null;
-  link: string | null;
-}
+import type { NotificationType, Notification } from "@/lib/types/account";
 
 const TYPE_ICON: Record<NotificationType, typeof Receipt> = {
   SALE: Receipt,

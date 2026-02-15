@@ -14,23 +14,7 @@ import {
   DollarSign,
 } from "lucide-react";
 import { DashboardCardSkeleton, Skeleton } from "@/components/ui/Skeleton";
-
-interface AdminStats {
-  totalUsers: number;
-  newUsersToday: number;
-  totalResources: number;
-  pendingApproval: number;
-  totalRevenue: number;
-  revenueToday: number;
-  activeSchools: number;
-  openReports: number;
-  userBreakdown: {
-    buyers: number;
-    sellers: number;
-    schools: number;
-  };
-  weeklyRevenue: number[];
-}
+import type { AdminStats } from "@/lib/types/admin";
 
 export default function AdminDashboardPage() {
   const t = useTranslations("admin.dashboard");

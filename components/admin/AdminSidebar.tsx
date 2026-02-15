@@ -17,6 +17,7 @@ import {
   Briefcase,
   MessageSquare,
 } from "lucide-react";
+import type { AdminStats, AdminTabType } from "@/lib/types/admin";
 
 // Color classes for each tab (active state) - using semantic tokens where available
 const TAB_STYLES: Record<string, { bg: string; text: string; dot: string }> = {
@@ -92,27 +93,8 @@ const NAV_SECTIONS = [
   },
 ] as const;
 
-type TabType =
-  | "overview"
-  | "users"
-  | "documents"
-  | "messages"
-  | "reports"
-  | "transactions"
-  | "settings";
-
-interface AdminStats {
-  totalUsers: number;
-  newUsersToday: number;
-  pendingApproval: number;
-  openReports: number;
-  newMessages: number;
-  totalRevenue: number;
-  revenueToday: number;
-}
-
 interface AdminSidebarProps {
-  activeTab: TabType;
+  activeTab: AdminTabType;
   stats?: AdminStats | null;
   adminName?: string;
   adminEmail?: string;

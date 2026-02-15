@@ -29,3 +29,14 @@ export interface Comment {
   replies: Reply[];
   replyCount: number;
 }
+
+export interface CommentResource {
+  id: string;
+  title: string;
+  previewUrl: string | null;
+}
+
+export interface SellerComment extends Omit<Comment, "isLiked"> {
+  resource: CommentResource;
+  hasSellerReply: boolean;
+}

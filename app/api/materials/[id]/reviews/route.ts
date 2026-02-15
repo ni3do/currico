@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { createReviewSchema } from "@/lib/validations/review";
 import { checkRateLimit, rateLimitHeaders, isValidId, safeParseInt } from "@/lib/rateLimit";
 import { notifyReview } from "@/lib/notifications";
+import { checkAndUpdateVerification } from "@/lib/utils/verified-seller";
 
 // GET /api/materials/[id]/reviews - Get all reviews for a material
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -271,6 +272,11 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
     // Notify the seller about the new review
     notifyReview(material.seller_id, material.title, review.rating);
+
+    // Check if seller now qualifies for verified status (fire-and-forget)
+    checkAndUpdateVerification(material.seller_id).catch((err) =>
+      console.error("Verification check failed after review:", err)
+    );
 
     return NextResponse.json({
       review: {

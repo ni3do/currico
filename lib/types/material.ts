@@ -97,3 +97,63 @@ export type MaterialForPanel = Pick<
   | "competencies"
   | "seller"
 >;
+
+export interface BundleMaterialOption {
+  id: string;
+  title: string;
+  price: number;
+  priceFormatted: string;
+  subject: string;
+  subjects: string[];
+  cycles: string[];
+}
+
+export interface FeaturedMaterial {
+  id: string;
+  title: string;
+  description: string;
+  subject: string;
+  cycle: string;
+  priceFormatted: string;
+  previewUrl: string | null;
+  averageRating?: number;
+  reviewCount?: number;
+  seller: { display_name: string | null; is_verified_seller: boolean };
+}
+
+export interface BundleResource {
+  id: string;
+  title: string;
+  price: number;
+  priceFormatted: string;
+  previewUrl: string | null;
+  description: string | null;
+}
+
+export interface Bundle {
+  id: string;
+  title: string;
+  description: string | null;
+  price: number;
+  priceFormatted: string;
+  subject: string;
+  subjects: string[];
+  cycle: string;
+  cycles: string[];
+  coverImageUrl: string | null;
+  createdAt: string;
+  seller: {
+    id: string;
+    displayName: string | null;
+    image: string | null;
+    verified: boolean;
+    resourceCount: number;
+  };
+  resources: BundleResource[];
+  resourceCount: number;
+  totalIndividualPrice: number;
+  totalIndividualPriceFormatted: string;
+  savings: number;
+  savingsFormatted: string;
+  savingsPercent: number;
+}
