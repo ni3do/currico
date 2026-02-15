@@ -16,27 +16,21 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 // Note: The 'use' function below is Playwright's fixture mechanism, not React's use() hook.
 
-import { test as base, expect, Page, BrowserContext } from '@playwright/test';
-import path from 'path';
-import {
-  TestUser,
-  TEST_BUYER,
-  TEST_SELLER,
-  TEST_ADMIN,
-  TEST_SCHOOL,
-} from './test-users';
+import { test as base, expect, Page, BrowserContext } from "@playwright/test";
+import path from "path";
+import { TestUser, TEST_BUYER, TEST_SELLER, TEST_ADMIN, TEST_SCHOOL } from "./test-users";
 
 /**
  * Storage state file paths for each role.
  * These are stored in the .auth directory (should be gitignored).
  */
-const AUTH_DIR = path.join(process.cwd(), '.auth');
+const AUTH_DIR = path.join(process.cwd(), ".auth");
 
 export const STORAGE_STATE_PATHS = {
-  buyer: path.join(AUTH_DIR, 'buyer.json'),
-  seller: path.join(AUTH_DIR, 'seller.json'),
-  admin: path.join(AUTH_DIR, 'admin.json'),
-  school: path.join(AUTH_DIR, 'school.json'),
+  buyer: path.join(AUTH_DIR, "buyer.json"),
+  seller: path.join(AUTH_DIR, "seller.json"),
+  admin: path.join(AUTH_DIR, "admin.json"),
+  school: path.join(AUTH_DIR, "school.json"),
 } as const;
 
 /**
@@ -51,19 +45,19 @@ export async function loginAndSaveState(
   user: TestUser,
   storagePath: string
 ): Promise<void> {
-  // Navigate to login page
-  await page.goto('/login');
+  // Navigate to login page (German slug)
+  await page.goto("/anmelden");
 
   // Fill in credentials
-  await page.locator('#email').fill(user.email);
-  await page.locator('#password').fill(user.password);
+  await page.locator("#email").fill(user.email);
+  await page.locator("#password").fill(user.password);
 
   // Submit the form
   await page.locator('button[type="submit"]').click();
 
   // Wait for navigation after successful login
-  // Admins go to /admin, others go to /account
-  const expectedPath = user.role === 'ADMIN' ? '/admin' : '/account';
+  // Admins go to /admin, others go to /konto
+  const expectedPath = user.role === "ADMIN" ? "/admin" : "/konto";
   await page.waitForURL(`**${expectedPath}`, { timeout: 15000 });
 
   // Save the authenticated state
@@ -78,13 +72,13 @@ export async function loginAndSaveState(
  * @param user - Test user credentials
  */
 export async function login(page: Page, user: TestUser): Promise<void> {
-  await page.goto('/login');
-  await page.locator('#email').fill(user.email);
-  await page.locator('#password').fill(user.password);
+  await page.goto("/anmelden");
+  await page.locator("#email").fill(user.email);
+  await page.locator("#password").fill(user.password);
   await page.locator('button[type="submit"]').click();
 
   // Wait for redirect
-  const expectedPath = user.role === 'ADMIN' ? '/admin' : '/account';
+  const expectedPath = user.role === "ADMIN" ? "/admin" : "/konto";
   await page.waitForURL(`**${expectedPath}`, { timeout: 15000 });
 }
 
@@ -95,14 +89,14 @@ export async function login(page: Page, user: TestUser): Promise<void> {
  */
 export async function logout(page: Page): Promise<void> {
   // Navigate to account page (where logout is accessible)
-  await page.goto('/account');
+  await page.goto("/konto");
 
   // Click logout button/link
   // The exact selector depends on the UI implementation
   await page.locator('[data-testid="logout-button"], a[href*="signout"]').click();
 
   // Wait for redirect to home or login page
-  await page.waitForURL(/\/(login)?$/);
+  await page.waitForURL(/\/(anmelden)?$/);
 }
 
 /**
@@ -111,12 +105,9 @@ export async function logout(page: Page): Promise<void> {
  * @param page - Playwright page instance
  * @param user - Expected test user
  */
-export async function expectAuthenticated(
-  page: Page,
-  user: TestUser
-): Promise<void> {
+export async function expectAuthenticated(page: Page, user: TestUser): Promise<void> {
   // Check session by visiting the user API endpoint
-  const response = await page.request.get('/api/user/me');
+  const response = await page.request.get("/api/user/me");
   expect(response.ok()).toBe(true);
 
   const userData = await response.json();
@@ -130,7 +121,7 @@ export async function expectAuthenticated(
  * @param page - Playwright page instance
  */
 export async function expectNotAuthenticated(page: Page): Promise<void> {
-  const response = await page.request.get('/api/user/me');
+  const response = await page.request.get("/api/user/me");
   // Should return 401 or redirect when not authenticated
   expect(response.ok()).toBe(false);
 }

@@ -201,6 +201,6 @@ export class CheckoutSuccessPage extends BasePage {
    */
   async goToLibrary(): Promise<void> {
     await this.goToLibraryButton.click();
-    await this.page.waitForURL(/\/account/);
+    await this.page.waitForURL(/\/konto/);
   }
 }

@@ -13,7 +13,7 @@ import { Page, Locator, expect } from "@playwright/test";
 import { BasePage } from "./base.page";
 
 export class RegisterPage extends BasePage {
-  readonly path = "/register";
+  readonly path = "/registrieren";
 
   // Form fields
   readonly nameInput: Locator;
@@ -214,7 +214,7 @@ export class RegisterPage extends BasePage {
       confirmPassword: data.password,
       acceptTerms: true,
     });
-    await this.waitForUrl("**/account", { timeout: 15000 });
+    await this.waitForUrl("**/konto", { timeout: 15000 });
   }
 
   // ===================
@@ -385,7 +385,7 @@ export class RegisterPage extends BasePage {
    */
   async goToLogin(): Promise<void> {
     await this.loginLink.click();
-    await this.page.waitForURL("**/login");
+    await this.page.waitForURL("**/anmelden");
   }
 
   /**

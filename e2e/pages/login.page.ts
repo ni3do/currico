@@ -13,7 +13,7 @@ import { BasePage } from "./base.page";
 import type { TestUser } from "../fixtures/test-users";
 
 export class LoginPage extends BasePage {
-  readonly path = "/login";
+  readonly path = "/anmelden";
 
   // Form elements
   readonly emailInput: Locator;
@@ -161,7 +161,7 @@ export class LoginPage extends BasePage {
    * @param expectedPath - Expected URL path after login (e.g., '/account' or '/admin')
    */
   async loginAndWaitForRedirect(user: TestUser, expectedPath?: string): Promise<void> {
-    const targetPath = expectedPath ?? (user.role === "ADMIN" ? "/admin" : "/account");
+    const targetPath = expectedPath ?? (user.role === "ADMIN" ? "/admin" : "/konto");
     await this.loginAsUser(user);
     await this.waitForUrl(`**${targetPath}`, { timeout: 15000 });
   }
@@ -255,7 +255,7 @@ export class LoginPage extends BasePage {
    */
   async goToRegister(): Promise<void> {
     await this.registerLink.click();
-    await this.page.waitForURL("**/register");
+    await this.page.waitForURL("**/registrieren");
   }
 
   /**
