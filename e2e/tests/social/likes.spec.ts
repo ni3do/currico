@@ -34,7 +34,7 @@ baseTest.describe("Comment Likes - Unauthenticated", () => {
     await commentLikeBtn.click();
 
     // Should redirect to login
-    await expect(page).toHaveURL(/\/login/);
+    await expect(page).toHaveURL(/\/anmelden/);
   });
 
   baseTest("displays like count on comments", async ({ page }) => {

@@ -353,6 +353,12 @@ function UploadPageContent() {
               setError(tUpload("errorStripeRequired"));
               setErrorLink("/verkaeufer-werden");
               setErrorLinkLabel(tUpload("errorStripeRequiredLink"));
+            } else if (result.details) {
+              // Surface Zod field-level validation errors from the API
+              const fieldErrors = Object.entries(result.details)
+                .map(([field, messages]) => `${field}: ${(messages as string[]).join(", ")}`)
+                .join("; ");
+              setError(`${tUpload("errorValidation", { details: fieldErrors })}`);
             } else {
               setError(result.error || tUpload("error"));
             }
@@ -386,7 +392,13 @@ function UploadPageContent() {
     formData.legalSwissGerman &&
     formData.legalTermsAccepted;
 
-  const canPublish = allLegalChecked && files.length > 0 && !eszettCheck.hasAny;
+  const canPublish =
+    allLegalChecked &&
+    files.length > 0 &&
+    !eszettCheck.hasAny &&
+    isStepValid(1) &&
+    isStepValid(2) &&
+    isStepValid(3);
 
   // File type icons
   const getFileIcon = (file: File) => {

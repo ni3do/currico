@@ -279,7 +279,7 @@ test.describe("Upload Wizard - Access Control", () => {
       .isVisible()
       .catch(() => false);
     const isRedirected =
-      buyerPage.url().includes("/become-seller") || buyerPage.url().includes("/login");
+      buyerPage.url().includes("/verkaeufer-werden") || buyerPage.url().includes("/anmelden");
 
     // Any of these outcomes is acceptable
     expect(hasUploadForm || hasBecomeSeller || isRedirected).toBe(true);
