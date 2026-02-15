@@ -5,27 +5,7 @@ import { useTranslations } from "next-intl";
 import { TableSkeleton } from "@/components/ui/Skeleton";
 import { FocusTrap } from "@/components/ui/FocusTrap";
 import { useToast } from "@/components/ui/Toast";
-
-interface AdminUser {
-  id: string;
-  email: string;
-  name: string | null;
-  display_name: string | null;
-  role: string;
-  stripe_charges_enabled: boolean;
-  is_protected: boolean;
-  is_verified_seller: boolean;
-  created_at: string;
-  resourceCount: number;
-  transactionCount: number;
-}
-
-interface PaginatedResponse {
-  users: AdminUser[];
-  total: number;
-  page: number;
-  totalPages: number;
-}
+import type { AdminUser, AdminUsersResponse } from "@/lib/types/admin";
 
 const roleBadgeColors: Record<string, string> = {
   BUYER: "pill-primary",
@@ -70,7 +50,7 @@ export default function AdminUsersPage() {
 
       const response = await fetch(`/api/admin/users?${params}`);
       if (response.ok) {
-        const data: PaginatedResponse = await response.json();
+        const data: AdminUsersResponse = await response.json();
         setUsers(data.users);
         setTotalPages(data.totalPages);
         setTotal(data.total);

@@ -11,16 +11,7 @@ import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { checkForEszett, replaceEszett } from "@/lib/validations/swiss-quality";
-
-interface SellerMaterial {
-  id: string;
-  title: string;
-  price: number;
-  priceFormatted: string;
-  subject: string;
-  subjects: string[];
-  cycles: string[];
-}
+import type { BundleMaterialOption } from "@/lib/types/material";
 
 interface BundleFormData {
   title: string;
@@ -35,7 +26,7 @@ interface BundleFormData {
 export default function CreateBundlePage() {
   const router = useRouter();
   const tEszett = useTranslations("uploadWizard.eszett");
-  const [materials, setMaterials] = useState<SellerMaterial[]>([]);
+  const [materials, setMaterials] = useState<BundleMaterialOption[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);

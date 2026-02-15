@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { FileText, FolderOpen } from "lucide-react";
 import type { ProfileCollection } from "@/lib/types/profile";
@@ -14,10 +13,7 @@ export function CollectionCard({ collection }: CollectionCardProps) {
   const t = useTranslations("profile");
 
   return (
-    <Link
-      href={`/collections/${collection.id}`}
-      className="card group overflow-hidden transition-shadow hover:shadow-lg"
-    >
+    <div className="card group overflow-hidden">
       {/* Preview Grid */}
       <div className="bg-bg-secondary grid h-40 grid-cols-2 gap-1 p-1">
         {collection.previewItems.slice(0, 4).map((item) => (
@@ -50,9 +46,7 @@ export function CollectionCard({ collection }: CollectionCardProps) {
 
       {/* Collection Info */}
       <div className="p-4">
-        <h3 className="text-text group-hover:text-primary mb-1 font-semibold transition-colors">
-          {collection.name}
-        </h3>
+        <h3 className="text-text mb-1 font-semibold">{collection.name}</h3>
         {collection.description && (
           <p className="text-text-muted mb-2 line-clamp-2 text-sm">{collection.description}</p>
         )}
@@ -61,6 +55,6 @@ export function CollectionCard({ collection }: CollectionCardProps) {
           {collection.itemCount} {t("collectionItems")}
         </div>
       </div>
-    </Link>
+    </div>
   );
 }

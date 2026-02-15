@@ -7,26 +7,7 @@ import { Link } from "@/i18n/navigation";
 import { MessageCircle, AlertCircle, Filter, ExternalLink, Send, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "@/components/ui/Toast";
-import type { CommentUser, Reply } from "@/lib/types/comments";
-
-interface CommentResource {
-  id: string;
-  title: string;
-  previewUrl: string | null;
-}
-
-interface SellerComment {
-  id: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-  user: CommentUser;
-  resource: CommentResource;
-  likeCount: number;
-  replies: Reply[];
-  replyCount: number;
-  hasSellerReply: boolean;
-}
+import type { SellerComment } from "@/lib/types/comments";
 
 interface SellerCommentsSectionProps {
   className?: string;

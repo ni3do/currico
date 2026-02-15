@@ -26,7 +26,7 @@ import { DeleteConfirmDialog } from "@/components/account/DeleteConfirmDialog";
 import { SellerLevelCard } from "@/components/account/SellerLevelCard";
 import { ProfileCompletionProgress } from "@/components/account/ProfileCompletionProgress";
 import { useAccountData } from "@/lib/hooks/useAccountData";
-import type { SellerStats, SellerMaterial, LibraryItem } from "@/lib/types/account";
+import type { SellerStats, SellerMaterialStats, LibraryItem } from "@/lib/types/account";
 import { getSubjectPillClass } from "@/lib/constants/subject-colors";
 
 export default function AccountOverviewPage() {
@@ -39,7 +39,7 @@ export default function AccountOverviewPage() {
     totalDownloads: 0,
     followers: 0,
   });
-  const [sellerMaterials, setSellerMaterials] = useState<SellerMaterial[]>([]);
+  const [sellerMaterials, setSellerMaterials] = useState<SellerMaterialStats[]>([]);
   const [libraryItems, setLibraryItems] = useState<LibraryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState<string | null>(null);

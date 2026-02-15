@@ -97,7 +97,7 @@ export interface SellerStats {
   followers: number;
 }
 
-export interface SellerMaterial {
+export interface SellerMaterialStats {
   id: string;
   title: string;
   type: string;
@@ -167,6 +167,37 @@ export type TabType =
   | "settings-profile"
   | "settings-notifications"
   | "settings-account";
+
+export interface StripeStatus {
+  hasAccount: boolean;
+  accountId: string | null;
+  chargesEnabled: boolean;
+  payoutsEnabled: boolean;
+  detailsSubmitted: boolean;
+  onboardingComplete: boolean;
+  termsAccepted: boolean;
+  role: string;
+  dashboardUrl: string | null;
+  requirements: {
+    currentlyDue: string[];
+    eventuallyDue: string[];
+    pastDue: string[];
+    pendingVerification: string[];
+  } | null;
+  error?: string;
+}
+
+export type NotificationType = "SALE" | "FOLLOW" | "REVIEW" | "COMMENT" | "SYSTEM";
+
+export interface Notification {
+  id: string;
+  created_at: string;
+  read_at: string | null;
+  type: NotificationType;
+  title: string;
+  body: string | null;
+  link: string | null;
+}
 
 // Subject color mapping for pills
 export const SUBJECT_PILL_CLASSES: Record<string, string> = {

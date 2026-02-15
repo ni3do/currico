@@ -15,19 +15,7 @@ import { SwissBrandSection } from "@/components/ui/SwissBrandSection";
 import { ValueProposition } from "@/components/ui/ValueProposition";
 import { FadeIn, StaggerChildren, StaggerItem, motion } from "@/components/ui/animations";
 import { getSubjectPillClass } from "@/lib/constants/subject-colors";
-
-interface FeaturedMaterial {
-  id: string;
-  title: string;
-  description: string;
-  subject: string;
-  cycle: string;
-  priceFormatted: string;
-  previewUrl: string | null;
-  averageRating?: number;
-  reviewCount?: number;
-  seller: { display_name: string | null; is_verified_seller: boolean };
-}
+import type { FeaturedMaterial } from "@/lib/types/material";
 
 export default function Home() {
   const t = useTranslations("homePage");

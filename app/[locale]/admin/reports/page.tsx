@@ -5,41 +5,7 @@ import { useTranslations } from "next-intl";
 import { TableSkeleton } from "@/components/ui/Skeleton";
 import { FocusTrap } from "@/components/ui/FocusTrap";
 import { useToast } from "@/components/ui/Toast";
-
-interface AdminReport {
-  id: string;
-  reason: string;
-  description: string | null;
-  status: string;
-  resolution: string | null;
-  created_at: string;
-  handled_at: string | null;
-  reporter: {
-    id: string;
-    display_name: string | null;
-    email: string;
-  };
-  resource: {
-    id: string;
-    title: string;
-  } | null;
-  reported_user: {
-    id: string;
-    display_name: string | null;
-    email: string;
-  } | null;
-  handled_by: {
-    id: string;
-    display_name: string | null;
-  } | null;
-}
-
-interface PaginatedResponse {
-  reports: AdminReport[];
-  total: number;
-  page: number;
-  totalPages: number;
-}
+import type { AdminReport, AdminReportsResponse } from "@/lib/types/admin";
 
 const statusColors: Record<string, string> = {
   OPEN: "pill-error",
@@ -94,7 +60,7 @@ export default function AdminReportsPage() {
 
       const response = await fetch(`/api/admin/reports?${params}`);
       if (response.ok) {
-        const data: PaginatedResponse = await response.json();
+        const data: AdminReportsResponse = await response.json();
         setReports(data.reports);
         setTotalPages(data.totalPages);
         setTotal(data.total);

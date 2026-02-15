@@ -12,31 +12,11 @@ import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
+import type { AdminStats, AdminTabType } from "@/lib/types/admin";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
 }
-
-interface AdminStats {
-  totalUsers: number;
-  newUsersToday: number;
-  totalResources: number;
-  pendingApproval: number;
-  totalRevenue: number;
-  revenueToday: number;
-  activeSchools: number;
-  openReports: number;
-  newMessages: number;
-}
-
-type TabType =
-  | "overview"
-  | "users"
-  | "documents"
-  | "messages"
-  | "reports"
-  | "transactions"
-  | "settings";
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const pathname = usePathname();
@@ -85,7 +65,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   }, [status, session?.user?.role]);
 
   // Get active tab based on pathname
-  const getActiveTab = (): TabType => {
+  const getActiveTab = (): AdminTabType => {
     if (pathname === "/admin") return "overview";
     if (pathname.startsWith("/admin/users")) return "users";
     if (pathname.startsWith("/admin/documents")) return "documents";
