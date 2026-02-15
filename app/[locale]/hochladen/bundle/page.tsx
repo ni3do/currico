@@ -4,28 +4,43 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import Image from "next/image";
 import { Link, useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
-import { AlertTriangle } from "lucide-react";
+import {
+  AlertTriangle,
+  CheckCircle,
+  ChevronLeft,
+  ChevronRight,
+  Image as ImageIcon,
+  X,
+} from "lucide-react";
 import { getLoginUrl } from "@/lib/utils/login-redirect";
-import { roundToNearestHalfFranc } from "@/lib/utils/price";
+import { roundToNearestHalfFranc, formatPrice } from "@/lib/utils/price";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { checkForEszett, replaceEszett } from "@/lib/validations/swiss-quality";
 import type { BundleMaterialOption } from "@/lib/types/material";
 
+const MATERIALS_PER_PAGE = 20;
+
+const SUBJECT_OPTIONS = ["Mathematik", "Deutsch", "Englisch", "Französisch", "NMG"] as const;
+
+const CYCLE_VALUES = ["1", "2", "3"] as const;
+
 interface BundleFormData {
   title: string;
   description: string;
   price: string;
   selectedMaterials: string[];
-  subject: string;
-  cycle: string;
+  subjects: string[];
+  cycles: string[];
   coverImage: File | null;
 }
 
 export default function CreateBundlePage() {
   const router = useRouter();
   const tEszett = useTranslations("uploadWizard.eszett");
+  const tCycles = useTranslations("uploadWizard.cycles");
+  const tBundle = useTranslations("bundle");
   const [materials, setMaterials] = useState<BundleMaterialOption[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -33,15 +48,16 @@ export default function CreateBundlePage() {
   const [coverImagePreview, setCoverImagePreview] = useState<string | null>(null);
   const coverImageInputRef = useRef<HTMLInputElement>(null);
   const [materialSearch, setMaterialSearch] = useState("");
-  const [autoFilledSubject, setAutoFilledSubject] = useState(false);
-  const [autoFilledCycle, setAutoFilledCycle] = useState(false);
+  const [materialPage, setMaterialPage] = useState(1);
+  const [autoFilledSubjects, setAutoFilledSubjects] = useState(false);
+  const [autoFilledCycles, setAutoFilledCycles] = useState(false);
   const [formData, setFormData] = useState<BundleFormData>({
     title: "",
     description: "",
     price: "",
     selectedMaterials: [],
-    subject: "",
-    cycle: "",
+    subjects: [],
+    cycles: [],
     coverImage: null,
   });
 
@@ -55,22 +71,22 @@ export default function CreateBundlePage() {
             return;
           }
           if (response.status === 403) {
-            setError("Sie müssen Verkäufer sein, um Bundles zu erstellen.");
+            setError(tBundle("errorNotSeller"));
             setLoading(false);
             return;
           }
-          throw new Error("Fehler beim Laden der Materialien");
+          throw new Error(tBundle("errorLoadingMaterials"));
         }
         const data = await response.json();
         setMaterials(data.materials);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Ein Fehler ist aufgetreten");
+        setError(err instanceof Error ? err.message : tBundle("errorGeneric"));
       } finally {
         setLoading(false);
       }
     }
     fetchMaterials();
-  }, [router]);
+  }, [router, tBundle]);
 
   const updateFormData = <K extends keyof BundleFormData>(field: K, value: BundleFormData[K]) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -84,42 +100,55 @@ export default function CreateBundlePage() {
     updateFormData("selectedMaterials", newSelection);
   };
 
-  // Auto-derive subject/cycle from selected materials
+  // Auto-derive subjects/cycles from selected materials (multi-select)
   useEffect(() => {
     if (formData.selectedMaterials.length === 0) return;
     const selected = materials.filter((m) => formData.selectedMaterials.includes(m.id));
     if (selected.length === 0) return;
 
-    // Find most common subject
-    const subjectCounts: Record<string, number> = {};
+    // Collect ALL unique subjects
+    const allSubjects = new Set<string>();
     selected.forEach((m) => {
-      (m.subjects || [m.subject]).forEach((s) => {
-        subjectCounts[s] = (subjectCounts[s] || 0) + 1;
-      });
+      (m.subjects || []).forEach((s) => allSubjects.add(s));
     });
-    const topSubject = Object.entries(subjectCounts).sort((a, b) => b[1] - a[1])[0]?.[0];
 
-    // Find most common cycle
-    const cycleCounts: Record<string, number> = {};
+    // Collect ALL unique cycles (normalized)
+    const allCycles = new Set<string>();
     selected.forEach((m) => {
       (m.cycles || []).forEach((c) => {
-        // Normalize "Zyklus 1" → "1" to match select option values
         const num = c.replace(/^Zyklus\s*/i, "");
-        cycleCounts[num] = (cycleCounts[num] || 0) + 1;
+        allCycles.add(num);
       });
     });
-    const topCycle = Object.entries(cycleCounts).sort((a, b) => b[1] - a[1])[0]?.[0];
 
-    if (topSubject && !formData.subject) {
-      updateFormData("subject", topSubject);
-      setAutoFilledSubject(true);
+    if (allSubjects.size > 0 && formData.subjects.length === 0) {
+      updateFormData("subjects", Array.from(allSubjects));
+      setAutoFilledSubjects(true);
     }
-    if (topCycle && !formData.cycle) {
-      updateFormData("cycle", topCycle);
-      setAutoFilledCycle(true);
+    if (allCycles.size > 0 && formData.cycles.length === 0) {
+      updateFormData("cycles", Array.from(allCycles));
+      setAutoFilledCycles(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData.selectedMaterials, materials]);
+
+  // Reset pagination when search changes
+  useEffect(() => {
+    setMaterialPage(1);
+  }, [materialSearch]);
+
+  // Filter and paginate materials
+  const filteredMaterials = useMemo(() => {
+    return materials.filter(
+      (m) => !materialSearch || m.title.toLowerCase().includes(materialSearch.toLowerCase())
+    );
+  }, [materials, materialSearch]);
+
+  const totalPages = Math.ceil(filteredMaterials.length / MATERIALS_PER_PAGE);
+  const paginatedMaterials = filteredMaterials.slice(
+    (materialPage - 1) * MATERIALS_PER_PAGE,
+    materialPage * MATERIALS_PER_PAGE
+  );
 
   const calculateTotal = () => {
     return materials
@@ -129,8 +158,14 @@ export default function CreateBundlePage() {
 
   const calculateDiscount = () => {
     const total = calculateTotal();
-    const bundlePrice = (parseFloat(formData.price) || 0) * 100; // Convert to cents
+    const bundlePrice = (parseFloat(formData.price) || 0) * 100;
     return total > 0 ? Math.round(((total - bundlePrice) / total) * 100) : 0;
+  };
+
+  const calculateSavingsChf = () => {
+    const total = calculateTotal();
+    const bundlePrice = (parseFloat(formData.price) || 0) * 100;
+    return total - bundlePrice;
   };
 
   // Eszett validation
@@ -150,22 +185,45 @@ export default function CreateBundlePage() {
     updateFormData("description", replaceEszett(formData.description));
   };
 
+  const toggleSubject = (subject: string) => {
+    const isSelected = formData.subjects.includes(subject);
+    if (isSelected) {
+      updateFormData(
+        "subjects",
+        formData.subjects.filter((s) => s !== subject)
+      );
+    } else {
+      updateFormData("subjects", [...formData.subjects, subject]);
+    }
+    setAutoFilledSubjects(false);
+  };
+
+  const toggleCycle = (cycle: string) => {
+    const isSelected = formData.cycles.includes(cycle);
+    if (isSelected) {
+      updateFormData(
+        "cycles",
+        formData.cycles.filter((c) => c !== cycle)
+      );
+    } else {
+      updateFormData("cycles", [...formData.cycles, cycle]);
+    }
+    setAutoFilledCycles(false);
+  };
+
   const handleCoverImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Validate file type
       if (!file.type.startsWith("image/")) {
-        setError("Bitte wählen Sie eine Bilddatei aus.");
+        setError(tBundle("errorInvalidImage"));
         return;
       }
-      // Validate file size (5MB max)
       if (file.size > 5 * 1024 * 1024) {
-        setError("Das Bild darf maximal 5 MB gross sein.");
+        setError(tBundle("errorImageTooLarge"));
         return;
       }
       setError(null);
       updateFormData("coverImage", file);
-      // Create preview URL
       const previewUrl = URL.createObjectURL(file);
       setCoverImagePreview(previewUrl);
     }
@@ -193,7 +251,7 @@ export default function CreateBundlePage() {
     });
 
     if (!response.ok) {
-      throw new Error("Fehler beim Hochladen des Cover-Bildes");
+      throw new Error(tBundle("errorCoverUpload"));
     }
 
     const data = await response.json();
@@ -203,16 +261,14 @@ export default function CreateBundlePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Block if ß found
     if (eszettCheck.hasAny) return;
 
-    // Block if bundle price >= total individual prices
     if (
       formData.selectedMaterials.length > 0 &&
       parseFloat(formData.price) > 0 &&
       calculateDiscount() <= 0
     ) {
-      setError("Der Bundle-Preis muss unter dem Gesamtpreis der Einzelmaterialien liegen.");
+      setError(tBundle("errorPriceTooHigh"));
       return;
     }
 
@@ -220,7 +276,6 @@ export default function CreateBundlePage() {
     setError(null);
 
     try {
-      // Upload cover image if provided
       let coverImageUrl: string | null = null;
       if (formData.coverImage) {
         coverImageUrl = await uploadCoverImage(formData.coverImage);
@@ -232,9 +287,9 @@ export default function CreateBundlePage() {
         body: JSON.stringify({
           title: formData.title,
           description: formData.description,
-          price: Math.round(parseFloat(formData.price) * 100), // Convert to cents
-          subject: [formData.subject],
-          cycle: [`Zyklus ${formData.cycle}`],
+          price: Math.round(parseFloat(formData.price) * 100),
+          subject: formData.subjects,
+          cycle: formData.cycles.map((c) => `Zyklus ${c}`),
           resourceIds: formData.selectedMaterials,
           coverImageUrl,
         }),
@@ -242,12 +297,12 @@ export default function CreateBundlePage() {
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.error || "Fehler beim Erstellen des Bundles");
+        throw new Error(data.error || tBundle("errorCreateBundle"));
       }
 
       router.push("/konto");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Ein Fehler ist aufgetreten");
+      setError(err instanceof Error ? err.message : tBundle("errorGeneric"));
     } finally {
       setSubmitting(false);
     }
@@ -260,11 +315,9 @@ export default function CreateBundlePage() {
       <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
         {/* Page Header */}
         <div className="mb-8">
-          <Breadcrumb items={[{ label: "Bundle erstellen" }]} />
-          <h1 className="text-text text-2xl font-bold sm:text-3xl">Bundle erstellen</h1>
-          <p className="text-text-muted mt-1">
-            Kombinieren Sie mehrere Materialien zu einem vergünstigten Paket
-          </p>
+          <Breadcrumb items={[{ label: tBundle("breadcrumb") }]} />
+          <h1 className="text-text text-2xl font-bold sm:text-3xl">{tBundle("pageTitle")}</h1>
+          <p className="text-text-muted mt-1">{tBundle("pageSubtitle")}</p>
         </div>
 
         {loading ? (
@@ -275,20 +328,17 @@ export default function CreateBundlePage() {
           <div className="border-error/30 bg-error/10 rounded-xl border p-6 text-center">
             <p className="text-error">{error}</p>
             <Link href="/konto" className="text-primary mt-4 inline-block hover:underline">
-              Zurück zum Konto
+              {tBundle("backToAccount")}
             </Link>
           </div>
         ) : materials.length === 0 ? (
           <div className="border-border bg-surface rounded-xl border p-8 text-center">
-            <p className="text-text-muted">
-              Sie haben noch keine veröffentlichten Materialien. Laden Sie zuerst Materialien hoch,
-              um ein Bundle zu erstellen.
-            </p>
+            <p className="text-text-muted">{tBundle("noMaterials")}</p>
             <Link
               href="/hochladen"
               className="bg-primary text-text-on-accent mt-4 inline-block rounded-xl px-6 py-3 font-semibold"
             >
-              Material hochladen
+              {tBundle("uploadMaterial")}
             </Link>
           </div>
         ) : (
@@ -298,32 +348,37 @@ export default function CreateBundlePage() {
                 <p className="text-error">{error}</p>
               </div>
             )}
+
             {/* Basic Information */}
             <div className="border-border bg-surface rounded-2xl border p-8">
-              <h2 className="text-text mb-6 text-xl font-semibold">Bundle-Informationen</h2>
+              <h2 className="text-text mb-6 text-xl font-semibold">{tBundle("infoTitle")}</h2>
 
               <div className="space-y-6">
                 <div>
-                  <label className="text-text mb-2 block text-sm font-medium">Bundle-Titel *</label>
+                  <label className="text-text mb-2 block text-sm font-medium">
+                    {tBundle("titleLabel")} *
+                  </label>
                   <input
                     type="text"
                     value={formData.title}
                     onChange={(e) => updateFormData("title", e.target.value)}
                     required
                     className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 w-full rounded-xl border px-4 py-3 focus:ring-2 focus:outline-none"
-                    placeholder="z.B. Mathematik Komplett-Paket Zyklus 2"
+                    placeholder={tBundle("titlePlaceholder")}
                   />
                 </div>
 
                 <div>
-                  <label className="text-text mb-2 block text-sm font-medium">Beschreibung *</label>
+                  <label className="text-text mb-2 block text-sm font-medium">
+                    {tBundle("descriptionLabel")} *
+                  </label>
                   <textarea
                     value={formData.description}
                     onChange={(e) => updateFormData("description", e.target.value)}
                     required
                     rows={4}
                     className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 w-full rounded-xl border px-4 py-3 focus:ring-2 focus:outline-none"
-                    placeholder="Beschreiben Sie das Bundle und welchen Mehrwert es bietet..."
+                    placeholder={tBundle("descriptionPlaceholder")}
                   />
                 </div>
 
@@ -349,88 +404,85 @@ export default function CreateBundlePage() {
                   </div>
                 )}
 
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div>
-                    <label className="text-text mb-2 block text-sm font-medium">
-                      Hauptfach *
-                      {autoFilledSubject && formData.subject && (
-                        <span className="text-text-muted ml-1 text-xs font-normal">(auto)</span>
-                      )}
-                    </label>
-                    <select
-                      value={formData.subject}
-                      onChange={(e) => {
-                        updateFormData("subject", e.target.value);
-                        setAutoFilledSubject(false);
-                      }}
-                      required
-                      className={`border-border bg-bg focus:border-primary focus:ring-primary/20 w-full rounded-full border px-4 py-3 focus:ring-2 focus:outline-none ${
-                        formData.subject === "" ? "text-text-faint" : "text-text"
-                      }`}
-                    >
-                      <option value="" disabled hidden>
-                        Fach auswählen...
-                      </option>
-                      <option value="Mathematik" className="text-text">
-                        Mathematik
-                      </option>
-                      <option value="Deutsch" className="text-text">
-                        Deutsch
-                      </option>
-                      <option value="Englisch" className="text-text">
-                        Englisch
-                      </option>
-                      <option value="Französisch" className="text-text">
-                        Französisch
-                      </option>
-                      <option value="NMG" className="text-text">
-                        NMG
-                      </option>
-                    </select>
+                {/* Subject multi-select */}
+                <div>
+                  <label className="text-text mb-2 block text-sm font-medium">
+                    {tBundle("subjectsLabel")}
+                    {autoFilledSubjects && formData.subjects.length > 0 && (
+                      <span className="text-text-muted ml-1 text-xs font-normal">(auto)</span>
+                    )}
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {SUBJECT_OPTIONS.map((subject) => {
+                      const isSelected = formData.subjects.includes(subject);
+                      return (
+                        <button
+                          key={subject}
+                          type="button"
+                          aria-pressed={isSelected}
+                          onClick={() => toggleSubject(subject)}
+                          className={`rounded-full border-2 px-4 py-2 text-sm font-medium transition-colors ${
+                            isSelected
+                              ? "border-primary bg-primary/10 text-primary"
+                              : "border-border bg-bg text-text hover:border-primary/50"
+                          }`}
+                        >
+                          {subject}
+                          {isSelected && <X className="ml-1 inline h-3 w-3" />}
+                        </button>
+                      );
+                    })}
                   </div>
-
-                  <div>
-                    <label className="text-text mb-2 block text-sm font-medium">
-                      Zyklus *
-                      {autoFilledCycle && formData.cycle && (
-                        <span className="text-text-muted ml-1 text-xs font-normal">(auto)</span>
-                      )}
-                    </label>
-                    <select
-                      value={formData.cycle}
-                      onChange={(e) => {
-                        updateFormData("cycle", e.target.value);
-                        setAutoFilledCycle(false);
-                      }}
-                      required
-                      className={`border-border bg-bg focus:border-primary focus:ring-primary/20 w-full rounded-full border px-4 py-3 focus:ring-2 focus:outline-none ${
-                        formData.cycle === "" ? "text-text-faint" : "text-text"
-                      }`}
-                    >
-                      <option value="" disabled hidden>
-                        Zyklus auswählen...
-                      </option>
-                      <option value="1" className="text-text">
-                        Zyklus 1
-                      </option>
-                      <option value="2" className="text-text">
-                        Zyklus 2
-                      </option>
-                      <option value="3" className="text-text">
-                        Zyklus 3
-                      </option>
-                    </select>
-                  </div>
+                  {formData.subjects.length === 0 && (
+                    <p className="text-text-muted mt-1 text-xs">{tBundle("subjectOptionalHint")}</p>
+                  )}
                 </div>
 
+                {/* Cycle multi-select */}
                 <div>
-                  <label className="text-text mb-2 block text-sm font-medium">Cover-Bild</label>
+                  <label className="text-text mb-2 block text-sm font-medium">
+                    {tBundle("cyclesLabel")}
+                    {autoFilledCycles && formData.cycles.length > 0 && (
+                      <span className="text-text-muted ml-1 text-xs font-normal">(auto)</span>
+                    )}
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {CYCLE_VALUES.map((value) => {
+                      const isSelected = formData.cycles.includes(value);
+                      return (
+                        <button
+                          key={value}
+                          type="button"
+                          aria-pressed={isSelected}
+                          onClick={() => toggleCycle(value)}
+                          className={`rounded-full border-2 px-4 py-2 text-sm font-medium transition-colors ${
+                            isSelected
+                              ? "border-primary bg-primary/10 text-primary"
+                              : "border-border bg-bg text-text hover:border-primary/50"
+                          }`}
+                        >
+                          {tCycles(`cycle${value}` as "cycle1" | "cycle2" | "cycle3")}
+                          {isSelected && <X className="ml-1 inline h-3 w-3" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {formData.cycles.length === 0 && (
+                    <p className="text-text-muted mt-1 text-xs">{tBundle("cycleOptionalHint")}</p>
+                  )}
+                </div>
+
+                {/* Cover image */}
+                <div>
+                  <label className="text-text mb-2 block text-sm font-medium">
+                    {tBundle("coverLabel")}
+                  </label>
                   {coverImagePreview ? (
                     <div className="border-primary bg-primary/5 relative rounded-xl border-2 p-4">
                       <div className="relative aspect-video w-full overflow-hidden rounded-lg">
                         <Image
                           src={coverImagePreview}
-                          alt="Cover-Vorschau"
+                          alt={tBundle("coverPreviewAlt")}
                           fill
                           className="object-cover"
                           unoptimized
@@ -443,20 +495,8 @@ export default function CreateBundlePage() {
                           onClick={removeCoverImage}
                           className="text-error hover:bg-error/10 flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm transition-colors"
                         >
-                          <svg
-                            className="h-4 w-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M6 18L18 6M6 6l12 12"
-                            />
-                          </svg>
-                          Entfernen
+                          <X className="h-4 w-4" />
+                          {tBundle("remove")}
                         </button>
                       </div>
                     </div>
@@ -465,23 +505,9 @@ export default function CreateBundlePage() {
                       onClick={() => coverImageInputRef.current?.click()}
                       className="border-border bg-bg hover:border-primary cursor-pointer rounded-xl border-2 border-dashed p-8 text-center transition-colors"
                     >
-                      <svg
-                        className="text-text-muted mx-auto h-12 w-12"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                        />
-                      </svg>
-                      <p className="text-text mt-2 text-sm">Cover-Bild hochladen (optional)</p>
-                      <p className="text-text-muted mt-1 text-xs">
-                        PNG, JPG bis 5 MB - empfohlen: 1200x630 px
-                      </p>
+                      <ImageIcon className="text-text-muted mx-auto h-12 w-12" aria-hidden="true" />
+                      <p className="text-text mt-2 text-sm">{tBundle("coverUploadLabel")}</p>
+                      <p className="text-text-muted mt-1 text-xs">{tBundle("coverUploadHint")}</p>
                     </div>
                   )}
                   <input
@@ -490,6 +516,7 @@ export default function CreateBundlePage() {
                     className="hidden"
                     accept="image/png,image/jpeg"
                     onChange={handleCoverImageChange}
+                    aria-label={tBundle("coverLabel")}
                   />
                 </div>
               </div>
@@ -497,63 +524,91 @@ export default function CreateBundlePage() {
 
             {/* Select Resources */}
             <div className="border-border bg-surface rounded-2xl border p-8">
-              <h2 className="text-text mb-6 text-xl font-semibold">Materialien auswählen</h2>
+              <h2 className="text-text mb-6 text-xl font-semibold">{tBundle("selectMaterials")}</h2>
 
-              <p className="text-text-muted mb-4 text-sm">
-                Wählen Sie mindestens 2 Ihrer veröffentlichten Materialien für dieses Bundle
-              </p>
+              <p className="text-text-muted mb-4 text-sm">{tBundle("selectMaterialsHint")}</p>
 
               {materials.length > 10 && (
                 <input
                   type="text"
                   value={materialSearch}
                   onChange={(e) => setMaterialSearch(e.target.value)}
-                  placeholder="Materialien durchsuchen..."
+                  placeholder={tBundle("searchPlaceholder")}
                   className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 mb-4 w-full rounded-xl border px-4 py-2.5 text-sm focus:ring-2 focus:outline-none"
                 />
               )}
 
               <div className="space-y-3">
-                {materials
-                  .filter(
-                    (m) =>
-                      !materialSearch ||
-                      m.title.toLowerCase().includes(materialSearch.toLowerCase())
-                  )
-                  .map((material) => (
-                    <label
-                      key={material.id}
-                      className={`flex cursor-pointer items-center gap-4 rounded-xl border-2 p-4 transition-all ${
-                        formData.selectedMaterials.includes(material.id)
-                          ? "border-primary bg-primary/10"
-                          : "border-border bg-bg hover:border-primary/50"
-                      }`}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={formData.selectedMaterials.includes(material.id)}
-                        onChange={() => toggleMaterial(material.id)}
-                        className="border-border text-primary focus:ring-primary/20 h-5 w-5 rounded focus:ring-2"
-                      />
-                      <div className="flex-1">
-                        <div className="text-text font-medium">{material.title}</div>
-                        <div className="text-text-muted text-sm">{material.subject}</div>
-                      </div>
-                      <div className="text-primary font-semibold">{material.priceFormatted}</div>
-                    </label>
-                  ))}
+                {paginatedMaterials.map((material) => (
+                  <label
+                    key={material.id}
+                    className={`flex cursor-pointer items-center gap-4 rounded-xl border-2 p-4 transition-all ${
+                      formData.selectedMaterials.includes(material.id)
+                        ? "border-primary bg-primary/10"
+                        : "border-border bg-bg hover:border-primary/50"
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={formData.selectedMaterials.includes(material.id)}
+                      onChange={() => toggleMaterial(material.id)}
+                      className="border-border text-primary focus:ring-primary/20 h-5 w-5 rounded focus:ring-2"
+                    />
+                    <div className="flex-1">
+                      <div className="text-text font-medium">{material.title}</div>
+                      <div className="text-text-muted text-sm">{material.subjects?.[0] || ""}</div>
+                    </div>
+                    <div className="text-primary font-semibold">{material.priceFormatted}</div>
+                  </label>
+                ))}
               </div>
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="mt-4 flex items-center justify-between">
+                  <span className="text-text-muted text-sm">
+                    {tBundle("showingMaterials", {
+                      start: (materialPage - 1) * MATERIALS_PER_PAGE + 1,
+                      end: Math.min(materialPage * MATERIALS_PER_PAGE, filteredMaterials.length),
+                      total: filteredMaterials.length,
+                    })}
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setMaterialPage((p) => Math.max(1, p - 1))}
+                      disabled={materialPage === 1}
+                      className="border-border text-text hover:bg-surface-elevated rounded-lg border p-2 transition-colors disabled:opacity-50"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </button>
+                    <span className="text-text text-sm">
+                      {materialPage} / {totalPages}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setMaterialPage((p) => Math.min(totalPages, p + 1))}
+                      disabled={materialPage === totalPages}
+                      className="border-border text-text hover:bg-surface-elevated rounded-lg border p-2 transition-colors disabled:opacity-50"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {formData.selectedMaterials.length > 0 && (
                 <div className="border-border bg-bg mt-6 rounded-xl border p-4">
                   <div className="flex items-center justify-between">
                     <span className="text-text-muted text-sm">
-                      {formData.selectedMaterials.length} Materialien ausgewählt
+                      {tBundle("materialsSelected", { count: formData.selectedMaterials.length })}
                     </span>
                     <div className="text-right">
-                      <div className="text-text-muted text-sm">Gesamt-Einzelpreis</div>
+                      <div className="text-text-muted text-sm">
+                        {tBundle("totalIndividualPrice")}
+                      </div>
                       <div className="text-text text-lg font-bold">
-                        CHF {(calculateTotal() / 100).toFixed(2)}
+                        {formatPrice(calculateTotal())}
                       </div>
                     </div>
                   </div>
@@ -563,11 +618,11 @@ export default function CreateBundlePage() {
 
             {/* Pricing */}
             <div className="border-border bg-surface rounded-2xl border p-8">
-              <h2 className="text-text mb-6 text-xl font-semibold">Bundle-Preis</h2>
+              <h2 className="text-text mb-6 text-xl font-semibold">{tBundle("priceTitle")}</h2>
 
               <div>
                 <label className="text-text mb-2 block text-sm font-medium">
-                  Bundle-Preis (CHF) *
+                  {tBundle("priceLabel")} *
                 </label>
                 <div className="relative">
                   <input
@@ -585,7 +640,7 @@ export default function CreateBundlePage() {
                     max="25"
                     step="0.50"
                     className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 w-full rounded-xl border px-4 py-3 pl-12 focus:ring-2 focus:outline-none"
-                    placeholder="z.B. 25.00"
+                    placeholder={tBundle("pricePlaceholder")}
                   />
                   <span className="text-text-muted absolute top-1/2 left-4 -translate-y-1/2">
                     CHF
@@ -597,25 +652,16 @@ export default function CreateBundlePage() {
                     {calculateDiscount() > 0 ? (
                       <div className="border-success/30 bg-success/10 mt-4 rounded-xl border p-4">
                         <div className="flex items-center gap-2">
-                          <svg
-                            className="text-success h-5 w-5"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
+                          <CheckCircle className="text-success h-5 w-5" aria-hidden="true" />
                           <div>
                             <div className="text-success font-semibold">
-                              {calculateDiscount()}% Ersparnis (CHF{" "}
-                              {(calculateTotal() / 100 - parseFloat(formData.price)).toFixed(2)}{" "}
-                              gespart)
+                              {tBundle("savings", {
+                                percent: calculateDiscount(),
+                                amount: formatPrice(calculateSavingsChf()),
+                              })}
                             </div>
                             <div className="text-text-muted text-sm">
-                              Käufer sparen im Vergleich zum Einzelkauf
+                              {tBundle("savingsBuyerHint")}
                             </div>
                           </div>
                         </div>
@@ -626,8 +672,9 @@ export default function CreateBundlePage() {
                           <AlertTriangle className="text-error h-5 w-5 flex-shrink-0" />
                           <div>
                             <div className="text-error text-sm font-medium">
-                              Der Bundle-Preis muss unter dem Gesamtpreis der Einzelmaterialien
-                              liegen (CHF {(calculateTotal() / 100).toFixed(2)})
+                              {tBundle("errorPriceMustBeLower", {
+                                total: formatPrice(calculateTotal()),
+                              })}
                             </div>
                           </div>
                         </div>
@@ -636,9 +683,7 @@ export default function CreateBundlePage() {
                   </>
                 )}
 
-                <p className="text-text-muted mt-2 text-xs">
-                  Sie erhalten 70% des Verkaufspreises (30% Plattformgebühr)
-                </p>
+                <p className="text-text-muted mt-2 text-xs">{tBundle("platformFeeHint")}</p>
               </div>
             </div>
 
@@ -648,7 +693,7 @@ export default function CreateBundlePage() {
                 href="/konto"
                 className="border-border bg-surface text-text hover:bg-surface-elevated flex-1 rounded-xl border px-6 py-4 text-center font-semibold transition-colors"
               >
-                Abbrechen
+                {tBundle("cancel")}
               </Link>
               <button
                 type="submit"
@@ -662,7 +707,7 @@ export default function CreateBundlePage() {
                 }
                 className="bg-primary text-text-on-accent shadow-primary/20 hover:bg-primary-hover flex-1 rounded-xl px-6 py-4 font-semibold shadow-lg transition-colors disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {submitting ? "Wird erstellt..." : "Bundle erstellen"}
+                {submitting ? tBundle("creating") : tBundle("createBundle")}
               </button>
             </div>
           </form>

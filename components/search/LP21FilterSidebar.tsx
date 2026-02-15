@@ -177,6 +177,8 @@ export function LP21FilterSidebar({
             onKompetenzbereichToggle={toggleKompetenzbereichExpansion}
             onKompetenzSelect={handleKompetenzChange}
             errorLabel={t("sidebar.loadingError")}
+            expandLabel={t("sidebar.expand")}
+            collapseLabel={t("sidebar.collapse")}
           />
         </CollapsibleSection>
 

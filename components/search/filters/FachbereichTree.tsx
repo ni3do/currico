@@ -19,6 +19,8 @@ interface FachbereichTreeProps {
   onKompetenzbereichToggle: (code: string) => void;
   onKompetenzSelect: (code: string | null) => void;
   errorLabel: string;
+  expandLabel: string;
+  collapseLabel: string;
 }
 
 export function FachbereichTree({
@@ -36,6 +38,8 @@ export function FachbereichTree({
   onKompetenzbereichToggle,
   onKompetenzSelect,
   errorLabel,
+  expandLabel,
+  collapseLabel,
 }: FachbereichTreeProps) {
   if (loading) {
     return (
@@ -65,6 +69,8 @@ export function FachbereichTree({
           onKompetenzbereichSelect={onKompetenzbereichSelect}
           onKompetenzbereichToggle={onKompetenzbereichToggle}
           onKompetenzSelect={onKompetenzSelect}
+          expandLabel={expandLabel}
+          collapseLabel={collapseLabel}
           index={index}
         />
       ))}

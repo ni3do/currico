@@ -142,8 +142,8 @@ export default function AccountBundlesPage() {
       const q = searchQuery.toLowerCase();
       return (
         bundle.title.toLowerCase().includes(q) ||
-        bundle.subject?.toLowerCase().includes(q) ||
-        bundle.cycle?.toLowerCase().includes(q)
+        bundle.subjects[0]?.toLowerCase().includes(q) ||
+        bundle.cycles[0]?.toLowerCase().includes(q)
       );
     })
     .sort((a, b) => {
@@ -246,7 +246,7 @@ export default function AccountBundlesPage() {
                           {bundle.title}
                         </div>
                         <div className="text-text-muted mt-0.5 text-xs">
-                          {bundle.subject} · {bundle.cycle}
+                          {bundle.subjects[0] || "Allgemein"} · {bundle.cycles[0] || ""}
                         </div>
                       </Link>
                     </td>

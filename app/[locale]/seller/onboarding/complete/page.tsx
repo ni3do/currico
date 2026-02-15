@@ -7,25 +7,9 @@ import { Link } from "@/i18n/navigation";
 import { LoginLink } from "@/components/ui/LoginLink";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
-
-interface StripeStatus {
-  hasAccount: boolean;
-  accountId: string | null;
-  chargesEnabled: boolean;
-  payoutsEnabled: boolean;
-  detailsSubmitted: boolean;
-  onboardingComplete: boolean;
-  termsAccepted: boolean;
-  role: string;
-  dashboardUrl: string | null;
-  requirements: {
-    currentlyDue: string[];
-    eventuallyDue: string[];
-    pastDue: string[];
-    pendingVerification: string[];
-  } | null;
-  error?: string;
-}
+import { Breadcrumb } from "@/components/ui/Breadcrumb";
+import { Check, AlertTriangle, X, Clock, Info, ArrowRight, ExternalLink } from "lucide-react";
+import type { StripeStatus } from "@/lib/types/account";
 
 export default function SellerOnboardingCompletePage() {
   const { status: sessionStatus } = useSession();
@@ -34,6 +18,7 @@ export default function SellerOnboardingCompletePage() {
   const [error, setError] = useState<string | null>(null);
   const [isStripeLoading, setIsStripeLoading] = useState(false);
   const t = useTranslations("sellerOnboarding");
+  const tCommon = useTranslations("common");
 
   useEffect(() => {
     async function fetchStripeStatus() {
@@ -91,6 +76,16 @@ export default function SellerOnboardingCompletePage() {
 
       <main className="flex-1">
         <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 lg:px-8">
+          {/* Breadcrumb */}
+          <div className="mb-6">
+            <Breadcrumb
+              items={[
+                { label: tCommon("breadcrumb.becomeSeller"), href: "/verkaeufer-werden" },
+                { label: t("breadcrumbComplete") },
+              ]}
+            />
+          </div>
+
           {sessionStatus === "loading" || isLoading ? (
             <div className="text-center">
               <div className="border-primary mx-auto mb-4 h-16 w-16 animate-spin rounded-full border-4 border-t-transparent" />
@@ -99,19 +94,7 @@ export default function SellerOnboardingCompletePage() {
           ) : sessionStatus === "unauthenticated" ? (
             <div className="card p-8 text-center">
               <div className="bg-error-light mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full">
-                <svg
-                  className="text-error h-8 w-8"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                  />
-                </svg>
+                <AlertTriangle className="text-error h-8 w-8" aria-hidden="true" />
               </div>
               <h1 className="text-text mb-2 text-xl font-bold">{t("notLoggedIn.title")}</h1>
               <p className="text-text-muted mb-6">{t("notLoggedIn.description")}</p>
@@ -122,19 +105,7 @@ export default function SellerOnboardingCompletePage() {
           ) : error ? (
             <div className="card p-8 text-center">
               <div className="bg-error-light mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full">
-                <svg
-                  className="text-error h-8 w-8"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                <X className="text-error h-8 w-8" aria-hidden="true" />
               </div>
               <h1 className="text-text mb-2 text-xl font-bold">{t("error.title")}</h1>
               <p className="text-text-muted mb-6">{error}</p>
@@ -145,19 +116,7 @@ export default function SellerOnboardingCompletePage() {
           ) : isFullySetup ? (
             <div className="card p-8 text-center">
               <div className="bg-success-light mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full">
-                <svg
-                  className="text-success h-8 w-8"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
+                <Check className="text-success h-8 w-8" aria-hidden="true" />
               </div>
               <h1 className="text-text mb-2 text-2xl font-bold">{t("success.title")}</h1>
               <p className="text-text-muted mb-6">{t("success.description")}</p>
@@ -165,52 +124,16 @@ export default function SellerOnboardingCompletePage() {
               <div className="bg-bg-secondary mb-8 rounded-lg p-4">
                 <div className="flex items-center justify-center gap-6">
                   <div className="flex items-center gap-2">
-                    <svg
-                      className="text-success h-5 w-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
+                    <Check className="text-success h-5 w-5" aria-hidden="true" />
                     <span className="text-text-secondary text-sm">
                       {t("success.chargesEnabled")}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
                     {stripeStatus?.payoutsEnabled ? (
-                      <svg
-                        className="text-success h-5 w-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
+                      <Check className="text-success h-5 w-5" aria-hidden="true" />
                     ) : (
-                      <svg
-                        className="text-warning h-5 w-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
+                      <Clock className="text-warning h-5 w-5" aria-hidden="true" />
                     )}
                     <span className="text-text-secondary text-sm">
                       {stripeStatus?.payoutsEnabled
@@ -222,37 +145,36 @@ export default function SellerOnboardingCompletePage() {
               </div>
 
               <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-                <Link href="/hochladen" className="btn btn-primary px-6 py-2">
+                <Link
+                  href="/hochladen"
+                  className="btn btn-primary inline-flex items-center justify-center gap-2 px-6 py-2"
+                >
                   {t("success.uploadFirst")}
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
                 </Link>
                 {stripeStatus?.dashboardUrl && (
                   <a
                     href={stripeStatus.dashboardUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="btn btn-secondary px-6 py-2"
+                    className="btn btn-secondary inline-flex items-center justify-center gap-2 px-6 py-2"
                   >
                     {t("success.viewDashboard")}
+                    <ExternalLink className="h-4 w-4" aria-hidden="true" />
                   </a>
                 )}
+              </div>
+
+              <div className="mt-4">
+                <Link href="/konto" className="text-text-muted text-sm hover:underline">
+                  {t("backToAccount")}
+                </Link>
               </div>
             </div>
           ) : isPending ? (
             <div className="card p-8 text-center">
               <div className="bg-warning-light mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full">
-                <svg
-                  className="text-warning h-8 w-8"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
+                <Clock className="text-warning h-8 w-8" aria-hidden="true" />
               </div>
               <h1 className="text-text mb-2 text-xl font-bold">{t("pending.title")}</h1>
               <p className="text-text-muted mb-6">
@@ -280,32 +202,31 @@ export default function SellerOnboardingCompletePage() {
               <button
                 onClick={handleContinueStripeOnboarding}
                 disabled={isStripeLoading}
-                className="btn btn-primary px-6 py-2 disabled:cursor-not-allowed disabled:opacity-50"
+                className="btn btn-primary inline-flex items-center gap-2 px-6 py-2 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isStripeLoading ? t("pending.continueLoading") : t("pending.continueSetup")}
+                {!isStripeLoading && <ArrowRight className="h-4 w-4" aria-hidden="true" />}
               </button>
+
+              <div className="mt-4">
+                <Link href="/konto" className="text-text-muted text-sm hover:underline">
+                  {t("backToAccount")}
+                </Link>
+              </div>
             </div>
           ) : (
             <div className="card p-8 text-center">
               <div className="bg-primary-light mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full">
-                <svg
-                  className="text-primary h-8 w-8"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
+                <Info className="text-primary h-8 w-8" aria-hidden="true" />
               </div>
               <h1 className="text-text mb-2 text-xl font-bold">{t("noAccount.title")}</h1>
               <p className="text-text-muted mb-6">{t("noAccount.description")}</p>
-              <Link href="/verkaeufer-werden" className="btn btn-primary px-6 py-2">
+              <Link
+                href="/verkaeufer-werden"
+                className="btn btn-primary inline-flex items-center gap-2 px-6 py-2"
+              >
                 {t("noAccount.startSetup")}
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
             </div>
           )}

@@ -65,7 +65,7 @@
       "admin": "Admin Panel"
     },
     "footer": {
-      "copyright": "\u00a9 2026 Currico",
+      "copyright": "© 2026 Currico",
       "madeIn": "Made in Switzerland",
       "swissMade": "Swiss Made",
       "swissHosted": "Hosted in Switzerland by Infomaniak",
@@ -151,7 +151,15 @@
       "error": "Something went wrong. Please try again."
     },
     "user": "User",
-    "free": "Free"
+    "free": "Free",
+    "materialTypes": {
+      "pdf": "PDF",
+      "word": "Word",
+      "powerpoint": "PowerPoint",
+      "excel": "Excel",
+      "onenote": "OneNote",
+      "other": "Other"
+    }
   },
   "homePage": {
     "hero": {
@@ -550,7 +558,10 @@
       "cantonSearchPlaceholder": "Search cantons...",
       "cantonSelected": "{count} selected",
       "cantonNoResults": "No canton found",
-      "cantonChipMultiple": "{count} cantons"
+      "cantonChipMultiple": "{count} cantons",
+      "expand": "Expand",
+      "collapse": "Collapse",
+      "closeFilters": "Close filters"
     },
     "search": {
       "placeholder": "Search by title, topic, keyword...",
@@ -673,11 +684,9 @@
       }
     },
     "card": {
-      "verified": "Reviewed",
-      "aiChecked": "AI-Checked",
-      "documents": "Docs",
-      "free": "Free",
-      "viewButton": "View"
+      "wishlistAdd": "Add to wishlist",
+      "wishlistRemove": "Remove from wishlist",
+      "anonymous": "Anonymous"
     },
     "sellerCta": {
       "title": "Have Materials to Share?",
@@ -720,11 +729,6 @@
       "nav": "Page navigation",
       "previous": "Previous page",
       "next": "Next page"
-    },
-    "card": {
-      "wishlistAdd": "Add to wishlist",
-      "wishlistRemove": "Remove from wishlist",
-      "anonymous": "Anonymous"
     }
   },
   "sellerDashboard": {
@@ -1074,7 +1078,9 @@
       "badge": "By Teachers, for Teachers",
       "title": "We know your day. We've been there.",
       "subtitle": "Currico was born from real frustration — from teachers who spent evenings and weekends on lesson prep. We wanted to change that. Not with a big budget, but with heart.",
-      "imageAlt": "The Currico team"
+      "imageAlt": "The Currico team",
+      "primaryCta": "Explore Materials",
+      "secondaryCta": "Sign Up Free"
     },
     "problem": {
       "title": "We've all been there",
@@ -1113,25 +1119,27 @@
         "bio": "I build Currico to just work — fast, simple, no frustration. My goal: technology should help you, never get in the way."
       },
       "story": "We're not a startup chasing investors. We're two people who started at a kitchen table because we believe teachers deserve someone who makes their day easier. And we're happy about every person who joins us on this journey.",
-      "highlight": "Got a question, an idea, or just want to say hi? We'd genuinely love to hear from you."
+      "highlight": "Got a question, an idea, or just want to say hi? We'd genuinely love to hear from you.",
+      "quoteAttribution": "Simon & Laurent, Founders of Currico",
+      "emailLabel": "Email {name}"
     },
     "values": {
       "title": "What we believe in",
       "value1": {
         "title": "Your time is yours",
-        "description": "Find it, print it, teach it. We want your evenings and weekends back — not lost to prep work."
+        "description": "No more hours of prep. Find materials that fit your lesson in minutes — and take your evening back."
       },
       "value2": {
         "title": "Stronger together",
-        "description": "Currico is a family. Teachers helping teachers — through shared materials, feedback, and ideas."
+        "description": "Hundreds of teachers already share materials, give feedback, and inspire each other. Join the community."
       },
       "value3": {
         "title": "Made for Switzerland",
-        "description": "Everything here fits the Lehrplan 21 and Swiss classrooms. No more adapting foreign materials."
+        "description": "Every material aligns with Lehrplan 21 and fits all 26 cantons. No adapting foreign content required."
       },
       "value4": {
         "title": "Quality over quantity",
-        "description": "We'd rather have fewer great materials than a flood of mediocre ones. Reviewed by real teachers."
+        "description": "Every material is rated by the community. So you only find reviewed content that actually works in the classroom."
       }
     },
     "helpUs": {
@@ -1205,7 +1213,10 @@
       "submitButton": "Send Message",
       "submitting": "Sending...",
       "successTitle": "Message Sent!",
-      "successMessage": "Thanks for reaching out. We've received your message and will get back to you shortly."
+      "successMessage": "Thanks for reaching out. We've received your message and will get back to you shortly.",
+      "successNextSteps": "We typically respond within 24 hours — usually much faster on business days.",
+      "referenceLabel": "Your reference number:",
+      "phoneError": "Please enter a valid Swiss phone number (e.g. +41 79 123 45 67)"
     },
     "direct": {
       "title": "Prefer to Reach Out Directly?",
@@ -1488,7 +1499,8 @@
       "restored": "Draft restored",
       "restoredMessage": "Your previous draft has been loaded.",
       "today": "today at {time}",
-      "yesterday": "yesterday at {time}"
+      "yesterday": "yesterday at {time}",
+      "restoredWithFiles": "Your draft and files have been restored."
     },
     "validation": {
       "titleRequired": "Title is required",
@@ -1605,7 +1617,14 @@
       "previewSelectedChange": "{count} preview image(s) selected — Tap to change",
       "fileNameWarning": "File name notice",
       "fileNameTooLong": "File name too long (max. 100 characters)",
-      "fileNameDangerousChars": "File name contains invalid characters"
+      "fileNameDangerousChars": "File name contains invalid characters",
+      "autoPreviewPdf": "A preview is automatically created for PDF files.",
+      "autoPreviewOther": "No automatic preview is created for this format. We recommend uploading a custom preview image.",
+      "duplicateTitle": "You already have a material with this title.",
+      "duplicateTitleLink": "View existing material",
+      "draftFilesNotSaved": "Files not saved in draft",
+      "draftFilesNotSavedDesc": "Files cannot be saved in drafts. Please re-upload your files.",
+      "similarTitle": "Similar title found: \"{title}\""
     },
     "legal": {
       "title": "Legal Confirmations",
@@ -1638,7 +1657,8 @@
     "eszett": {
       "title": "Eszett (ß) found",
       "message": "Your text contains {count} Eszett character(s) (ß). In Switzerland, \"ss\" is used instead.",
-      "fix": "Automatically change to \"ss\""
+      "fix": "Automatically change to \"ss\"",
+      "goToStep": "Go to Step 1 to fix this"
     },
     "cycles": {
       "cycle1": "Cycle 1",
@@ -1672,7 +1692,13 @@
       "tipText": "Select all matching competencies for better discoverability.",
       "cantonOptional": "Canton (optional)",
       "cantonHint": "For canton-specific textbooks",
-      "allCantons": "All cantons"
+      "allCantons": "All cantons",
+      "unifiedSearch": "Search subject or competency...",
+      "noResults": "No results found",
+      "searchResultSubject": "Subject",
+      "searchResultArea": "Area",
+      "searchResultCompetency": "Competency",
+      "searchHint": "Search directly for subject, competency area, or competency"
     },
     "summary": {
       "title": "Overview",
@@ -1798,7 +1824,10 @@
       "login": "Sign in to become a seller",
       "loginRequired": "You need to sign in to become a seller",
       "verifyEmail": "Verify your email to continue",
-      "emailRequired": "Please verify your email address before becoming a seller"
+      "emailRequired": "Please verify your email address before becoming a seller",
+      "disabledLoginTooltip": "You need to sign in first",
+      "disabledEmailTooltip": "Please verify your email address first",
+      "disabledTermsTooltip": "Please accept the Seller Terms & Conditions first"
     },
     "stripeRefreshMessage": "Your Stripe session has expired. Please try again.",
     "stepLogin": "Sign In",
@@ -1859,6 +1888,8 @@
   },
   "sellerOnboarding": {
     "loading": "Checking your seller status...",
+    "breadcrumbComplete": "Registration",
+    "backToAccount": "Back to Account",
     "notLoggedIn": {
       "title": "Not Logged In",
       "description": "You need to be signed in to complete seller onboarding.",
@@ -2258,6 +2289,10 @@
     "title": "Cookie Policy",
     "lastUpdated": "Last updated: February 2026",
     "intro": "This Cookie Policy explains how Currico uses cookies and similar technologies when you visit our website. We are committed to transparency about the data we collect and how we use it.",
+    "toc": {
+      "title": "Table of Contents",
+      "label": "Table of Contents"
+    },
     "sections": {
       "what": {
         "title": "1. What Are Cookies?",
@@ -2265,7 +2300,7 @@
       },
       "howWeUse": {
         "title": "2. How We Use Cookies",
-        "content": "We use cookies to provide essential website functionality, remember your preferences (like language settings), keep you signed in, and understand how visitors use our platform so we can improve it."
+        "content": "We use cookies exclusively for essential website functionality: to keep you signed in and protect your session from attacks. Your language preference is determined via the URL, not cookies."
       },
       "types": {
         "title": "3. Types of Cookies We Use",
@@ -2275,33 +2310,41 @@
           "duration": "Duration",
           "year": "year",
           "days": "days",
-          "session": "Session"
+          "session": "Session",
+          "thirtyDays": "30 days"
         },
         "essential": {
           "title": "Essential Cookies",
           "badge": "Always Active",
-          "content": "These cookies are necessary for the website to function properly. They enable core functionality such as security, authentication, and accessibility. You cannot disable these cookies.",
+          "content": "These cookies are necessary for the website to function properly. They enable core functionality such as authentication and security. You cannot disable these cookies.",
           "cookies": {
-            "consent": "Stores your cookie preferences",
-            "session": "Keeps you signed in to your account",
-            "csrf": "Protects against cross-site request forgery attacks",
-            "locale": "Remembers your language preference"
+            "sessionToken": "Keeps you signed in to your account (JWT session token)",
+            "csrfToken": "Protects against cross-site request forgery attacks during sign-in"
           }
         },
         "analytics": {
           "title": "Analytics Cookies",
           "badge": "Optional",
-          "content": "These cookies help us understand how visitors interact with our website by collecting and reporting information anonymously. This helps us improve the website experience.",
-          "note": "We currently do not use analytics cookies. If we add them in the future, they will only be activated with your explicit consent."
+          "content": "We use Sentry for error detection and performance monitoring. Sentry collects technical data (error reports, load times) to improve platform stability. No personalized tracking cookies are set.",
+          "note": "We currently do not use analytics cookies. Sentry operates without cookies and only collects anonymized error data. If we add analytics cookies in the future, they will only be activated with your explicit consent."
+        }
+      },
+      "localStorage": {
+        "title": "4. Local Storage",
+        "content": "In addition to cookies, we store some preferences in your browser's local storage. This data is not sent to our servers and remains exclusively on your device.",
+        "subtitle": "Stored Preferences",
+        "items": {
+          "consent": "Stores your cookie preference choice (accepted/declined)",
+          "theme": "Stores your chosen color scheme (light/dark)"
         }
       },
       "managing": {
-        "title": "4. Managing Your Cookie Preferences",
+        "title": "5. Managing Your Cookie Preferences",
         "content": "When you first visit our website, you'll see a cookie consent banner where you can choose to accept all cookies or only essential cookies. You can change your preferences at any time by clearing your browser cookies and revisiting the site.",
         "browser": "You can also manage cookies through your browser settings:"
       },
       "changes": {
-        "title": "5. Changes to This Policy",
+        "title": "6. Changes to This Policy",
         "content": "We may update this Cookie Policy from time to time to reflect changes in technology, legislation, or our data practices. Any changes will be posted on this page with an updated revision date."
       }
     },
@@ -2314,7 +2357,8 @@
     "links": {
       "privacy": "Privacy Policy",
       "impressum": "Legal Notice",
-      "terms": "Terms of Service"
+      "terms": "Terms of Service",
+      "ariaLabel": "Related legal pages"
     }
   },
   "faqPage": {
@@ -2937,18 +2981,11 @@
     }
   },
   "search": {
-    "tabs": {
-      "materials": "Materials",
-      "profiles": "Profiles"
-    },
-    "profiles": {
-      "placeholder": "Search for teachers...",
-      "loading": "Loading profiles...",
-      "noResults": "No profiles found",
-      "noResultsWithQuery": "Try different search terms",
-      "noResultsEmpty": "Enter a search term to find profiles",
-      "found": "profiles found",
-      "seller": "Seller"
+    "sortOptions": {
+      "relevance": "Relevance",
+      "newest": "Newest",
+      "priceLow": "Price: Low to High",
+      "priceHigh": "Price: High to Low"
     }
   },
   "hilfePage": {
@@ -3196,14 +3233,6 @@
     "methodManual": "Manual Review",
     "methodEduId": "edu-ID"
   },
-  "search": {
-    "sortOptions": {
-      "relevance": "Relevance",
-      "newest": "Newest",
-      "priceLow": "Price: Low to High",
-      "priceHigh": "Price: High to Low"
-    }
-  },
   "bundleDetail": {
     "notFound": "Bundle not found",
     "notFoundDescription": "The bundle you are looking for does not exist or is no longer available.",
@@ -3227,6 +3256,8 @@
     "following": "Following",
     "follow": "+ Follow",
     "viewAllMaterials": "View all materials",
+    "showAllMaterials": "Show all {count} materials",
+    "showLess": "Show less",
     "bundle": "Bundle",
     "anonymous": "Anonymous"
   },
@@ -3583,6 +3614,8 @@
     "intro": "This guide helps you understand which materials you can sell on Currico and what to look out for. We want you to feel confident — so we explain the key rules clearly and practically.",
     "toc": {
       "title": "Contents",
+      "showContents": "Show contents",
+      "hideContents": "Hide contents",
       "legalBasis": "Legal Basis",
       "allowed": "What can I sell?",
       "notAllowed": "What can I not sell?",
@@ -3997,5 +4030,55 @@
       "cyclesRequired": "Please select at least one cycle.",
       "generic": "An error occurred. Please try again."
     }
+  },
+  "bundle": {
+    "pageTitle": "Create Bundle",
+    "pageSubtitle": "Combine multiple materials into a discounted package",
+    "breadcrumb": "Create Bundle",
+    "infoTitle": "Bundle Information",
+    "titleLabel": "Bundle Title",
+    "titlePlaceholder": "e.g., Math Complete Package Cycle 2",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Describe what is included in this bundle...",
+    "subjectsLabel": "Subjects",
+    "cyclesLabel": "Cycles",
+    "subjectRequired": "At least one subject is required",
+    "cycleRequired": "At least one cycle is required",
+    "coverLabel": "Cover Image (optional)",
+    "coverPreviewAlt": "Bundle cover image",
+    "coverUploadLabel": "Upload cover image",
+    "coverUploadHint": "PNG or JPG, max. 5 MB",
+    "remove": "Remove",
+    "selectMaterials": "Select Materials",
+    "selectMaterialsHint": "Choose the materials to include in this bundle.",
+    "searchPlaceholder": "Search materials...",
+    "showingMaterials": "Showing {start}–{end} of {total} materials",
+    "materialsSelected": "{count} materials selected",
+    "totalIndividualPrice": "Total individual price:",
+    "priceTitle": "Bundle Price",
+    "priceLabel": "Price (CHF)",
+    "pricePlaceholder": "e.g., 12.00",
+    "savings": "{percent}% savings ({amount} saved)",
+    "savingsBuyerHint": "Buyers save compared to buying individually",
+    "errorPriceMustBeLower": "Bundle price must be lower than the total price ({total})",
+    "platformFeeHint": "30% platform fee will be deducted",
+    "cancel": "Cancel",
+    "creating": "Creating...",
+    "createBundle": "Create Bundle",
+    "errorNotSeller": "Only accessible for sellers",
+    "errorLoadingMaterials": "Error loading materials",
+    "errorGeneric": "An error occurred. Please try again.",
+    "errorInvalidImage": "Please select a valid image format (PNG, JPG)",
+    "errorImageTooLarge": "Image must be 5 MB or less",
+    "errorCoverUpload": "Error uploading cover image",
+    "errorPriceTooHigh": "Bundle price cannot exceed the total price",
+    "errorCreateBundle": "Error creating the bundle",
+    "backToAccount": "Back to Account",
+    "noMaterials": "You haven't uploaded any materials yet. Upload individual materials first to create a bundle.",
+    "uploadMaterial": "Upload Material",
+    "previous": "Previous",
+    "next": "Next",
+    "subjectOptionalHint": "Optional — auto-derived from selected materials",
+    "cycleOptionalHint": "Optional — auto-derived from selected materials"
   }
 }

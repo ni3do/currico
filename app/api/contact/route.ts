@@ -11,7 +11,7 @@ const contactSchema = z.object({
     .max(100, "Name darf maximal 100 Zeichen lang sein"),
   email: z.string().email("Ungültige E-Mail-Adresse"),
   phone: z.string().max(30).optional().or(z.literal("")),
-  subject: z.enum(["general", "support", "sales", "partnership", "feedback"], {
+  subject: z.enum(["general", "support", "sales", "partnership", "feedback", "refund"], {
     message: "Bitte wählen Sie ein gültiges Thema",
   }),
   message: z

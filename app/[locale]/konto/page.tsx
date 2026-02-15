@@ -513,10 +513,12 @@ export default function AccountOverviewPage() {
                         {item.title}
                       </h3>
                       <div className="mt-0.5 flex items-center gap-2">
-                        <span className={`pill text-[10px] ${getSubjectPillClass(item.subject)}`}>
-                          {item.subject}
+                        <span
+                          className={`pill text-[10px] ${getSubjectPillClass(item.subjects[0] || "Allgemein")}`}
+                        >
+                          {item.subjects[0] || "Allgemein"}
                         </span>
-                        <span className="text-text-faint text-[10px]">{item.cycle}</span>
+                        <span className="text-text-faint text-[10px]">{item.cycles[0] || ""}</span>
                       </div>
                     </div>
                     <button

@@ -127,6 +127,7 @@ export default function MaterialienPage() {
             labels={{
               filterTitle: t("sidebar.title"),
               showResults: t("results.showResults", { count: totalCount }),
+              closeFilters: t("sidebar.closeFilters"),
             }}
           />
 

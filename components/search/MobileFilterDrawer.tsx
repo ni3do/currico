@@ -17,6 +17,7 @@ interface MobileFilterDrawerProps {
   labels: {
     filterTitle: string;
     showResults: string;
+    closeFilters: string;
   };
 }
 
@@ -64,17 +65,24 @@ export function MobileFilterDrawer({
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              role="dialog"
+              aria-modal="true"
+              aria-label={labels.filterTitle}
               className="bg-bg fixed inset-x-0 bottom-0 z-[101] max-h-[85vh] overflow-y-auto rounded-t-2xl shadow-2xl"
             >
               <FocusTrap active={isOpen} onEscape={onClose}>
                 {/* Drawer handle */}
                 <div className="bg-bg border-border sticky top-0 z-10 flex items-center justify-between border-b px-5 pt-3 pb-4">
-                  <div className="bg-border mx-auto mb-3 h-1 w-10 rounded-full" />
+                  <div
+                    aria-hidden="true"
+                    className="bg-border mx-auto mb-3 h-1 w-10 rounded-full"
+                  />
                 </div>
                 <div className="bg-bg sticky top-0 z-10 flex items-center justify-between px-5 pb-3">
                   <h2 className="text-text text-lg font-semibold">{labels.filterTitle}</h2>
                   <button
                     onClick={onClose}
+                    aria-label={labels.closeFilters}
                     className="text-text-muted hover:text-text hover:bg-surface flex h-8 w-8 items-center justify-center rounded-full transition-colors"
                   >
                     <X className="h-5 w-5" />

@@ -36,16 +36,27 @@ export function SearchInput({
           onFocus={() => setSearchFocused(true)}
           onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
           placeholder={placeholder}
+          role="combobox"
+          aria-expanded={searchFocused && searchResults.length > 0}
+          aria-haspopup="listbox"
+          aria-controls="search-results-listbox"
           className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 w-full rounded-lg border py-2.5 pr-4 pl-10 text-sm focus:ring-2 focus:outline-none"
         />
       </div>
 
       {/* Search Results Dropdown */}
       {searchFocused && searchResults.length > 0 && (
-        <div className="border-border bg-surface absolute top-full right-0 left-0 z-50 mt-1 rounded-lg border shadow-lg">
+        <div
+          id="search-results-listbox"
+          role="listbox"
+          aria-label={placeholder}
+          className="border-border bg-surface absolute top-full right-0 left-0 z-50 mt-1 rounded-lg border shadow-lg"
+        >
           <div className="max-h-64 overflow-y-auto p-2">
             {searchResults.map((result) => (
               <button
+                role="option"
+                aria-selected={false}
                 key={result.code}
                 onClick={() => onResultSelect(result)}
                 className="hover:bg-surface-hover flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm transition-colors"

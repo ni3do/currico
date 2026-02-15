@@ -65,7 +65,7 @@
       "admin": "Admin Panel"
     },
     "footer": {
-      "copyright": "\u00a9 2026 Currico",
+      "copyright": "© 2026 Currico",
       "madeIn": "Made in Switzerland",
       "swissMade": "Swiss Made",
       "swissHosted": "Gehostet in der Schweiz bei Infomaniak",
@@ -151,7 +151,15 @@
       "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut."
     },
     "user": "Benutzer",
-    "free": "Gratis"
+    "free": "Gratis",
+    "materialTypes": {
+      "pdf": "PDF",
+      "word": "Word",
+      "powerpoint": "PowerPoint",
+      "excel": "Excel",
+      "onenote": "OneNote",
+      "other": "Andere"
+    }
   },
   "homePage": {
     "hero": {
@@ -550,7 +558,10 @@
       "cantonSearchPlaceholder": "Kanton suchen...",
       "cantonSelected": "{count} ausgewählt",
       "cantonNoResults": "Kein Kanton gefunden",
-      "cantonChipMultiple": "{count} Kantone"
+      "cantonChipMultiple": "{count} Kantone",
+      "expand": "Aufklappen",
+      "collapse": "Zuklappen",
+      "closeFilters": "Filter schliessen"
     },
     "search": {
       "placeholder": "Suche nach Titel, Thema, Stichwort...",
@@ -673,11 +684,9 @@
       }
     },
     "card": {
-      "verified": "Geprüft",
-      "aiChecked": "KI-Geprüft",
-      "documents": "Dok.",
-      "free": "Gratis",
-      "viewButton": "Ansehen"
+      "wishlistAdd": "Zur Wunschliste hinzufügen",
+      "wishlistRemove": "Aus Wunschliste entfernen",
+      "anonymous": "Anonym"
     },
     "sellerCta": {
       "title": "Haben Sie Materialien zum Teilen?",
@@ -720,11 +729,6 @@
       "nav": "Seitennavigation",
       "previous": "Vorherige Seite",
       "next": "Nächste Seite"
-    },
-    "card": {
-      "wishlistAdd": "Zur Wunschliste hinzufügen",
-      "wishlistRemove": "Aus Wunschliste entfernen",
-      "anonymous": "Anonym"
     }
   },
   "sellerDashboard": {
@@ -1074,7 +1078,9 @@
       "badge": "Von Lehrpersonen, für Lehrpersonen",
       "title": "Wir kennen deinen Alltag. Wir waren da.",
       "subtitle": "Currico ist aus echtem Frust entstanden — dem Frust von Lehrpersonen, die Abende und Wochenenden mit Unterrichtsvorbereitung verbringen. Wir wollten das ändern. Nicht mit einem grossen Budget, sondern mit Herzblut.",
-      "imageAlt": "Das Currico-Team"
+      "imageAlt": "Das Currico-Team",
+      "primaryCta": "Materialien entdecken",
+      "secondaryCta": "Kostenlos registrieren"
     },
     "problem": {
       "title": "Das kennen wir alle",
@@ -1113,25 +1119,27 @@
         "bio": "Ich baue Currico so, dass es einfach funktioniert — schnell, simpel, ohne Frust. Mein Ziel: Die Technik soll dir helfen und nie im Weg stehen."
       },
       "story": "Wir sind kein Startup, das Investoren sucht. Wir sind zwei Leute, die an einem Küchentisch angefangen haben, weil wir glauben: Lehrpersonen verdienen es, dass jemand ihnen den Alltag erleichtert. Und wir freuen uns über jede Person, die diesen Weg mit uns geht.",
-      "highlight": "Hast du eine Frage, eine Idee oder willst einfach Hallo sagen? Wir freuen uns ehrlich, von dir zu hören."
+      "highlight": "Hast du eine Frage, eine Idee oder willst einfach Hallo sagen? Wir freuen uns ehrlich, von dir zu hören.",
+      "quoteAttribution": "Simon & Laurent, Gründer von Currico",
+      "emailLabel": "E-Mail an {name}"
     },
     "values": {
       "title": "Woran wir glauben",
       "value1": {
         "title": "Deine Zeit gehört dir",
-        "description": "Finden, drucken, unterrichten. Wir wollen, dass deine Abende und Wochenenden wieder dir gehören — nicht der Vorbereitung."
+        "description": "Schluss mit stundenlanger Vorbereitung. Finde in Minuten Material, das zu deiner Lektion passt — und nimm dir den Abend zurück."
       },
       "value2": {
         "title": "Zusammen stärker",
-        "description": "Currico ist eine Familie. Lehrpersonen helfen Lehrpersonen — durch geteiltes Material, Feedback und gemeinsame Ideen."
+        "description": "Hunderte Lehrpersonen teilen bereits Material, geben Feedback und inspirieren sich gegenseitig. Werde Teil der Community."
       },
       "value3": {
         "title": "Gemacht für die Schweiz",
-        "description": "Alles hier passt zum Lehrplan 21 und zu Schweizer Klassenzimmern. Kein Anpassen von ausländischem Material nötig."
+        "description": "Jedes Material orientiert sich am Lehrplan 21 und passt zu den 26 Kantonen. Kein Anpassen von ausländischen Inhalten nötig."
       },
       "value4": {
         "title": "Qualität vor Quantität",
-        "description": "Lieber weniger Materialien, die wirklich gut sind, als eine Flut mittelmässiger. Geprüft von echten Lehrpersonen."
+        "description": "Jedes Material wird von der Community bewertet. So findest du nur geprüfte Inhalte, die im Klassenzimmer wirklich funktionieren."
       }
     },
     "helpUs": {
@@ -1205,7 +1213,10 @@
       "submitButton": "Nachricht senden",
       "submitting": "Wird gesendet...",
       "successTitle": "Nachricht gesendet!",
-      "successMessage": "Vielen Dank für Ihre Nachricht. Wir haben sie erhalten und melden uns in Kürze bei Ihnen."
+      "successMessage": "Vielen Dank für Ihre Nachricht. Wir haben sie erhalten und melden uns in Kürze bei Ihnen.",
+      "successNextSteps": "Wir melden uns in der Regel innerhalb von 24 Stunden bei Ihnen — an Werktagen meist deutlich schneller.",
+      "referenceLabel": "Ihre Referenznummer:",
+      "phoneError": "Bitte geben Sie eine gültige Schweizer Telefonnummer ein (z.B. +41 79 123 45 67)"
     },
     "direct": {
       "title": "Lieber direkt Kontakt aufnehmen?",
@@ -1488,7 +1499,8 @@
       "restored": "Entwurf wiederhergestellt",
       "restoredMessage": "Ihr vorheriger Entwurf wurde geladen.",
       "today": "heute um {time}",
-      "yesterday": "gestern um {time}"
+      "yesterday": "gestern um {time}",
+      "restoredWithFiles": "Ihr Entwurf und Dateien wurden wiederhergestellt."
     },
     "validation": {
       "titleRequired": "Titel ist erforderlich",
@@ -1605,7 +1617,14 @@
       "previewSelectedChange": "{count} Vorschaubild(er) ausgewählt — Tippen zum Ändern",
       "fileNameWarning": "Dateiname-Hinweis",
       "fileNameTooLong": "Dateiname zu lang (max. 100 Zeichen)",
-      "fileNameDangerousChars": "Dateiname enthält ungültige Zeichen"
+      "fileNameDangerousChars": "Dateiname enthält ungültige Zeichen",
+      "autoPreviewPdf": "Für PDF-Dateien wird automatisch eine Vorschau erstellt.",
+      "autoPreviewOther": "Für dieses Format wird keine automatische Vorschau erstellt. Wir empfehlen, ein eigenes Vorschaubild hochzuladen.",
+      "duplicateTitle": "Sie haben bereits ein Material mit diesem Titel.",
+      "duplicateTitleLink": "Vorhandenes Material ansehen",
+      "draftFilesNotSaved": "Dateien nicht im Entwurf gespeichert",
+      "draftFilesNotSavedDesc": "Dateien können nicht im Entwurf gespeichert werden. Bitte laden Sie Ihre Dateien erneut hoch.",
+      "similarTitle": "Ähnlicher Titel gefunden: \"{title}\""
     },
     "legal": {
       "title": "Rechtliche Bestätigungen",
@@ -1638,7 +1657,8 @@
     "eszett": {
       "title": "Eszett (ß) gefunden",
       "message": "Ihr Text enthält {count} Eszett-Zeichen (ß). In der Schweiz wird stattdessen \"ss\" verwendet.",
-      "fix": "Automatisch zu \"ss\" ändern"
+      "fix": "Automatisch zu \"ss\" ändern",
+      "goToStep": "Gehen Sie zu Schritt 1, um dies zu korrigieren"
     },
     "cycles": {
       "cycle1": "Zyklus 1",
@@ -1672,7 +1692,13 @@
       "tipText": "Wählen Sie alle passenden Kompetenzen aus für bessere Auffindbarkeit.",
       "cantonOptional": "Kanton (optional)",
       "cantonHint": "Für kantonsspezifische Lehrmittel",
-      "allCantons": "Alle Kantone"
+      "allCantons": "Alle Kantone",
+      "unifiedSearch": "Fach oder Kompetenz suchen...",
+      "noResults": "Keine Ergebnisse gefunden",
+      "searchResultSubject": "Fach",
+      "searchResultArea": "Bereich",
+      "searchResultCompetency": "Kompetenz",
+      "searchHint": "Suchen Sie direkt nach Fach, Kompetenzbereich oder Kompetenz"
     },
     "summary": {
       "title": "Übersicht",
@@ -1798,7 +1824,10 @@
       "login": "Anmelden, um Verkäufer zu werden",
       "loginRequired": "Sie müssen sich anmelden, um Verkäufer zu werden",
       "verifyEmail": "Verifizieren Sie Ihre E-Mail, um fortzufahren",
-      "emailRequired": "Bitte verifizieren Sie Ihre E-Mail-Adresse, bevor Sie Verkäufer werden"
+      "emailRequired": "Bitte verifizieren Sie Ihre E-Mail-Adresse, bevor Sie Verkäufer werden",
+      "disabledLoginTooltip": "Sie müssen sich zuerst anmelden",
+      "disabledEmailTooltip": "Bitte verifizieren Sie zuerst Ihre E-Mail-Adresse",
+      "disabledTermsTooltip": "Bitte akzeptieren Sie zuerst die Verkäufer-AGB"
     },
     "stripeRefreshMessage": "Ihre Stripe-Sitzung ist abgelaufen. Bitte versuchen Sie es erneut.",
     "stepLogin": "Anmelden",
@@ -1859,6 +1888,8 @@
   },
   "sellerOnboarding": {
     "loading": "Verkäuferstatus wird überprüft...",
+    "breadcrumbComplete": "Registrierung",
+    "backToAccount": "Zurück zur Kontoübersicht",
     "notLoggedIn": {
       "title": "Nicht angemeldet",
       "description": "Sie müssen angemeldet sein, um die Verkäuferregistrierung abzuschliessen.",
@@ -2258,6 +2289,10 @@
     "title": "Cookie-Richtlinie",
     "lastUpdated": "Stand: Februar 2026",
     "intro": "Diese Cookie-Richtlinie erklärt, wie Currico Cookies und ähnliche Technologien verwendet, wenn Sie unsere Website besuchen. Wir setzen auf Transparenz bezüglich der Daten, die wir erheben und wie wir sie nutzen.",
+    "toc": {
+      "title": "Inhaltsverzeichnis",
+      "label": "Inhaltsverzeichnis"
+    },
     "sections": {
       "what": {
         "title": "1. Was sind Cookies?",
@@ -2265,7 +2300,7 @@
       },
       "howWeUse": {
         "title": "2. Wie wir Cookies verwenden",
-        "content": "Wir verwenden Cookies, um wesentliche Website-Funktionen bereitzustellen, Ihre Einstellungen (wie Sprachpräferenzen) zu speichern, Sie angemeldet zu halten und zu verstehen, wie Besucher unsere Plattform nutzen, damit wir sie verbessern können."
+        "content": "Wir verwenden Cookies ausschliesslich für wesentliche Website-Funktionen: um Sie angemeldet zu halten und Ihre Sitzung vor Angriffen zu schützen. Ihre Sprachpräferenz wird über die URL bestimmt, nicht über Cookies."
       },
       "types": {
         "title": "3. Arten von Cookies, die wir verwenden",
@@ -2275,33 +2310,41 @@
           "duration": "Dauer",
           "year": "Jahr",
           "days": "Tage",
-          "session": "Sitzung"
+          "session": "Sitzung",
+          "thirtyDays": "30 Tage"
         },
         "essential": {
           "title": "Essentielle Cookies",
           "badge": "Immer aktiv",
-          "content": "Diese Cookies sind für das ordnungsgemässe Funktionieren der Website erforderlich. Sie ermöglichen Kernfunktionen wie Sicherheit, Authentifizierung und Barrierefreiheit. Sie können diese Cookies nicht deaktivieren.",
+          "content": "Diese Cookies sind für das ordnungsgemässe Funktionieren der Website erforderlich. Sie ermöglichen Kernfunktionen wie Authentifizierung und Sicherheit. Sie können diese Cookies nicht deaktivieren.",
           "cookies": {
-            "consent": "Speichert Ihre Cookie-Präferenzen",
-            "session": "Hält Sie in Ihrem Konto angemeldet",
-            "csrf": "Schützt vor Cross-Site-Request-Forgery-Angriffen",
-            "locale": "Speichert Ihre Sprachpräferenz"
+            "sessionToken": "Hält Sie in Ihrem Konto angemeldet (JWT-Sitzungstoken)",
+            "csrfToken": "Schützt vor Cross-Site-Request-Forgery-Angriffen bei der Anmeldung"
           }
         },
         "analytics": {
           "title": "Statistik-Cookies",
           "badge": "Optional",
-          "content": "Diese Cookies helfen uns zu verstehen, wie Besucher mit unserer Website interagieren, indem sie anonym Informationen sammeln und melden. Dies hilft uns, das Website-Erlebnis zu verbessern.",
-          "note": "Wir verwenden derzeit keine Statistik-Cookies. Sollten wir diese in Zukunft hinzufügen, werden sie nur mit Ihrer ausdrücklichen Zustimmung aktiviert."
+          "content": "Wir verwenden Sentry für die Fehlererkennung und Leistungsüberwachung. Sentry sammelt technische Daten (Fehlerberichte, Ladezeiten) um die Stabilität der Plattform zu verbessern. Es werden dabei keine personalisierten Tracking-Cookies gesetzt.",
+          "note": "Wir verwenden derzeit keine Statistik-Cookies. Sentry arbeitet ohne Cookies und sammelt nur anonymisierte Fehlerdaten. Sollten wir in Zukunft Statistik-Cookies hinzufügen, werden sie nur mit Ihrer ausdrücklichen Zustimmung aktiviert."
+        }
+      },
+      "localStorage": {
+        "title": "4. Lokaler Speicher (Local Storage)",
+        "content": "Zusätzlich zu Cookies speichern wir einige Einstellungen im lokalen Speicher Ihres Browsers. Diese Daten werden nicht an unsere Server gesendet und verbleiben ausschliesslich auf Ihrem Gerät.",
+        "subtitle": "Gespeicherte Einstellungen",
+        "items": {
+          "consent": "Speichert Ihre Cookie-Einstellungspräferenz (akzeptiert/abgelehnt)",
+          "theme": "Speichert Ihr gewähltes Farbschema (Hell/Dunkel)"
         }
       },
       "managing": {
-        "title": "4. Verwaltung Ihrer Cookie-Einstellungen",
+        "title": "5. Verwaltung Ihrer Cookie-Einstellungen",
         "content": "Wenn Sie unsere Website zum ersten Mal besuchen, sehen Sie ein Cookie-Banner, in dem Sie wählen können, ob Sie alle Cookies oder nur essentielle Cookies akzeptieren möchten. Sie können Ihre Einstellungen jederzeit ändern, indem Sie die Browser-Cookies löschen und die Website erneut besuchen.",
         "browser": "Sie können Cookies auch über Ihre Browser-Einstellungen verwalten:"
       },
       "changes": {
-        "title": "5. Änderungen dieser Richtlinie",
+        "title": "6. Änderungen dieser Richtlinie",
         "content": "Wir können diese Cookie-Richtlinie von Zeit zu Zeit aktualisieren, um Änderungen in der Technologie, Gesetzgebung oder unseren Datenpraktiken widerzuspiegeln. Alle Änderungen werden auf dieser Seite mit einem aktualisierten Revisionsdatum veröffentlicht."
       }
     },
@@ -2314,7 +2357,8 @@
     "links": {
       "privacy": "Datenschutzerklärung",
       "impressum": "Impressum",
-      "terms": "Allgemeine Geschäftsbedingungen"
+      "terms": "Allgemeine Geschäftsbedingungen",
+      "ariaLabel": "Verwandte rechtliche Seiten"
     }
   },
   "faqPage": {
@@ -2936,47 +2980,12 @@
       "generic": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut."
     }
   },
-  "verifyEmailPage": {
-    "loading": {
-      "title": "E-Mail wird bestätigt...",
-      "message": "Bitte warten Sie einen Moment."
-    },
-    "success": {
-      "title": "E-Mail bestätigt!",
-      "message": "Ihre E-Mail-Adresse wurde erfolgreich bestätigt.",
-      "loginButton": "Zur Anmeldung",
-      "dashboardButton": "Zum Dashboard"
-    },
-    "alreadyVerified": {
-      "title": "Bereits bestätigt",
-      "message": "Ihre E-Mail-Adresse wurde bereits bestätigt.",
-      "loginButton": "Zur Anmeldung",
-      "dashboardButton": "Zum Dashboard"
-    },
-    "error": {
-      "title": "Bestätigung fehlgeschlagen",
-      "loginButton": "Zur Anmeldung"
-    },
-    "errors": {
-      "missingToken": "Der Bestätigungslink ist ungültig. Bitte fordern Sie einen neuen Link an.",
-      "invalidToken": "Der Bestätigungslink ist ungültig oder wurde bereits verwendet.",
-      "tokenExpired": "Der Bestätigungslink ist abgelaufen. Bitte fordern Sie einen neuen Link an.",
-      "generic": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut."
-    }
-  },
   "search": {
-    "tabs": {
-      "materials": "Materialien",
-      "profiles": "Profile"
-    },
-    "profiles": {
-      "placeholder": "Nach Lehrpersonen suchen...",
-      "loading": "Profile werden geladen...",
-      "noResults": "Keine Profile gefunden",
-      "noResultsWithQuery": "Versuchen Sie es mit anderen Suchbegriffen",
-      "noResultsEmpty": "Geben Sie einen Suchbegriff ein, um Profile zu finden",
-      "found": "Profile gefunden",
-      "seller": "Verkäufer"
+    "sortOptions": {
+      "relevance": "Relevanz",
+      "newest": "Neueste",
+      "priceLow": "Preis: Aufsteigend",
+      "priceHigh": "Preis: Absteigend"
     }
   },
   "hilfePage": {
@@ -3224,14 +3233,6 @@
     "methodManual": "Manuelle Prüfung",
     "methodEduId": "edu-ID"
   },
-  "search": {
-    "sortOptions": {
-      "relevance": "Relevanz",
-      "newest": "Neueste",
-      "priceLow": "Preis: Aufsteigend",
-      "priceHigh": "Preis: Absteigend"
-    }
-  },
   "bundleDetail": {
     "notFound": "Bundle nicht gefunden",
     "notFoundDescription": "Das gesuchte Bundle existiert nicht oder ist nicht mehr verfügbar.",
@@ -3255,6 +3256,8 @@
     "following": "Folge ich",
     "follow": "+ Folgen",
     "viewAllMaterials": "Alle Materialien ansehen",
+    "showAllMaterials": "Alle {count} Materialien anzeigen",
+    "showLess": "Weniger anzeigen",
     "bundle": "Bundle",
     "anonymous": "Anonym"
   },
@@ -3611,6 +3614,8 @@
     "intro": "Dieser Leitfaden hilft Ihnen zu verstehen, welche Materialien Sie auf Currico verkaufen dürfen und worauf Sie achten müssen. Wir möchten, dass Sie sich sicher fühlen — deshalb erklären wir die wichtigsten Regeln verständlich und praxisnah.",
     "toc": {
       "title": "Inhalt",
+      "showContents": "Inhalt anzeigen",
+      "hideContents": "Inhalt ausblenden",
       "legalBasis": "Rechtliche Grundlage",
       "allowed": "Was darf ich verkaufen?",
       "notAllowed": "Was darf ich nicht verkaufen?",
@@ -4025,5 +4030,55 @@
       "cyclesRequired": "Bitte wähle mindestens einen Zyklus aus.",
       "generic": "Ein Fehler ist aufgetreten. Bitte versuche es erneut."
     }
+  },
+  "bundle": {
+    "pageTitle": "Bundle erstellen",
+    "pageSubtitle": "Fassen Sie mehrere Materialien zu einem vergünstigten Paket zusammen",
+    "breadcrumb": "Bundle erstellen",
+    "infoTitle": "Bundle-Informationen",
+    "titleLabel": "Bundle-Titel",
+    "titlePlaceholder": "z.B. Mathematik Komplettpaket Zyklus 2",
+    "descriptionLabel": "Beschreibung",
+    "descriptionPlaceholder": "Beschreiben Sie, was in diesem Bundle enthalten ist...",
+    "subjectsLabel": "Fächer",
+    "cyclesLabel": "Zyklen",
+    "subjectRequired": "Mindestens ein Fach ist erforderlich",
+    "subjectOptionalHint": "Optional — wird automatisch von den Materialien abgeleitet",
+    "cycleRequired": "Mindestens ein Zyklus ist erforderlich",
+    "cycleOptionalHint": "Optional — wird automatisch von den Materialien abgeleitet",
+    "coverLabel": "Titelbild (optional)",
+    "coverPreviewAlt": "Bundle-Titelbild",
+    "coverUploadLabel": "Titelbild hochladen",
+    "coverUploadHint": "PNG oder JPG, max. 5 MB",
+    "remove": "Entfernen",
+    "selectMaterials": "Materialien auswählen",
+    "selectMaterialsHint": "Wählen Sie die Materialien aus, die in diesem Bundle enthalten sein sollen.",
+    "searchPlaceholder": "Materialien suchen...",
+    "showingMaterials": "Zeige {start}–{end} von {total} Materialien",
+    "materialsSelected": "{count} Materialien ausgewählt",
+    "totalIndividualPrice": "Gesamt-Einzelpreis:",
+    "priceTitle": "Bundle-Preis",
+    "priceLabel": "Preis (CHF)",
+    "pricePlaceholder": "z.B. 12.00",
+    "savings": "{percent}% Ersparnis ({amount} gespart)",
+    "savingsBuyerHint": "Käufer sparen im Vergleich zum Einzelkauf",
+    "errorPriceMustBeLower": "Der Bundle-Preis muss niedriger sein als der Gesamtpreis ({total})",
+    "platformFeeHint": "30% Plattformgebühr wird abgezogen",
+    "cancel": "Abbrechen",
+    "creating": "Wird erstellt...",
+    "createBundle": "Bundle erstellen",
+    "errorNotSeller": "Nur für Verkäufer zugänglich",
+    "errorLoadingMaterials": "Fehler beim Laden der Materialien",
+    "errorGeneric": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+    "errorInvalidImage": "Bitte wählen Sie ein gültiges Bildformat (PNG, JPG)",
+    "errorImageTooLarge": "Bild darf maximal 5 MB gross sein",
+    "errorCoverUpload": "Fehler beim Hochladen des Titelbildes",
+    "errorPriceTooHigh": "Der Bundle-Preis darf den Gesamtpreis nicht übersteigen",
+    "errorCreateBundle": "Fehler beim Erstellen des Bundles",
+    "backToAccount": "Zurück zum Konto",
+    "noMaterials": "Sie haben noch keine Materialien hochgeladen. Laden Sie zuerst einzelne Materialien hoch, um ein Bundle zu erstellen.",
+    "uploadMaterial": "Material hochladen",
+    "previous": "Zurück",
+    "next": "Weiter"
   }
 }

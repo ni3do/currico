@@ -141,6 +141,7 @@ export function ProfileTabs({
                         description={material.description}
                         subject={material.subjects[0] || ""}
                         cycle={material.cycles[0] || ""}
+                        price={material.price}
                         priceFormatted={formatPrice(material.price, { freeLabel: tCommon("free") })}
                         previewUrl={material.preview_url}
                         seller={{ displayName }}

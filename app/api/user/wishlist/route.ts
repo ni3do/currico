@@ -14,12 +14,17 @@ export async function GET(request: NextRequest) {
 
   try {
     const { searchParams } = new URL(request.url);
-    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") || "50")));
-    const offset = parseInt(searchParams.get("offset") || "0");
+    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") || "50", 10)));
+    const offset = Math.max(0, parseInt(searchParams.get("offset") || "0", 10) || 0);
 
     const wishlistItems = await prisma.wishlist.findMany({
       where: {
         user_id: userId,
+        resource: {
+          is_published: true,
+          is_approved: true,
+          is_public: true,
+        },
       },
       select: {
         id: true,
@@ -33,9 +38,6 @@ export async function GET(request: NextRequest) {
             preview_url: true,
             subjects: true,
             cycles: true,
-            is_published: true,
-            is_approved: true,
-            is_public: true,
             seller: {
               select: {
                 id: true,
@@ -51,34 +53,37 @@ export async function GET(request: NextRequest) {
       skip: offset,
     });
 
-    // Transform and filter only publicly available resources
-    const items = wishlistItems
-      .filter((w) => w.resource.is_published && w.resource.is_approved && w.resource.is_public)
-      .map((w) => {
-        const subjects = toStringArray(w.resource.subjects);
-        const cycles = toStringArray(w.resource.cycles);
-        return {
-          id: w.resource.id,
-          title: w.resource.title,
-          description: w.resource.description,
-          price: w.resource.price,
-          priceFormatted: formatPrice(w.resource.price),
-          previewUrl: w.resource.preview_url,
-          subjects,
-          cycles,
-          subject: subjects[0] || "Allgemein",
-          cycle: cycles[0] || "",
-          addedAt: w.created_at,
-          seller: {
-            id: w.resource.seller.id,
-            displayName: w.resource.seller.display_name,
-            image: w.resource.seller.image,
-          },
-        };
-      });
+    // Transform items (already filtered by DB query)
+    const items = wishlistItems.map((w) => {
+      const subjects = toStringArray(w.resource.subjects);
+      const cycles = toStringArray(w.resource.cycles);
+      return {
+        id: w.resource.id,
+        title: w.resource.title,
+        description: w.resource.description,
+        price: w.resource.price,
+        priceFormatted: formatPrice(w.resource.price),
+        previewUrl: w.resource.preview_url,
+        subjects,
+        cycles,
+        addedAt: w.created_at,
+        seller: {
+          id: w.resource.seller.id,
+          displayName: w.resource.seller.display_name,
+          image: w.resource.seller.image,
+        },
+      };
+    });
 
     const totalCount = await prisma.wishlist.count({
-      where: { user_id: userId },
+      where: {
+        user_id: userId,
+        resource: {
+          is_published: true,
+          is_approved: true,
+          is_public: true,
+        },
+      },
     });
 
     return NextResponse.json({
@@ -94,7 +99,7 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error fetching wishlist:", error);
-    return NextResponse.json({ error: "Fehler beim Laden der Wunschliste" }, { status: 500 });
+    return NextResponse.json({ error: "WISHLIST_FETCH_FAILED" }, { status: 500 });
   }
 }
 
@@ -111,7 +116,7 @@ export async function POST(request: NextRequest) {
     const { resourceId } = body;
 
     if (!resourceId) {
-      return NextResponse.json({ error: "Material-ID erforderlich" }, { status: 400 });
+      return NextResponse.json({ error: "RESOURCE_ID_REQUIRED" }, { status: 400 });
     }
 
     // Check if resource exists and is public
@@ -127,19 +132,16 @@ export async function POST(request: NextRequest) {
     });
 
     if (!resource) {
-      return NextResponse.json({ error: "Material nicht gefunden" }, { status: 404 });
+      return NextResponse.json({ error: "MATERIAL_NOT_FOUND" }, { status: 404 });
     }
 
     // Don't allow wishlisting own resources
     if (resource.seller_id === userId) {
-      return NextResponse.json(
-        { error: "Sie können Ihre eigenen Materialien nicht auf die Wunschliste setzen" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "CANNOT_WISHLIST_OWN_MATERIAL" }, { status: 400 });
     }
 
     if (!resource.is_published || !resource.is_approved || !resource.is_public) {
-      return NextResponse.json({ error: "Dieses Material ist nicht verfügbar" }, { status: 400 });
+      return NextResponse.json({ error: "MATERIAL_NOT_AVAILABLE" }, { status: 400 });
     }
 
     // Add to wishlist (upsert to avoid duplicates)
@@ -159,11 +161,11 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: "Zur Wunschliste hinzugefügt",
+      message: "WISHLIST_ADDED",
     });
   } catch (error) {
     console.error("Error adding to wishlist:", error);
-    return NextResponse.json({ error: "Fehler beim Hinzufügen zur Wunschliste" }, { status: 500 });
+    return NextResponse.json({ error: "WISHLIST_ADD_FAILED" }, { status: 500 });
   }
 }
 
@@ -180,7 +182,7 @@ export async function DELETE(request: NextRequest) {
     const resourceId = searchParams.get("resourceId");
 
     if (!resourceId) {
-      return NextResponse.json({ error: "Material-ID erforderlich" }, { status: 400 });
+      return NextResponse.json({ error: "RESOURCE_ID_REQUIRED" }, { status: 400 });
     }
 
     // Delete from wishlist
@@ -193,13 +195,10 @@ export async function DELETE(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: "Von der Wunschliste entfernt",
+      message: "WISHLIST_REMOVED",
     });
   } catch (error) {
     console.error("Error removing from wishlist:", error);
-    return NextResponse.json(
-      { error: "Fehler beim Entfernen von der Wunschliste" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "WISHLIST_REMOVE_FAILED" }, { status: 500 });
   }
 }

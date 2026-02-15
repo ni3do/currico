@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
+import type { LucideIcon } from "lucide-react";
 import {
   CheckCircle,
   XCircle,
@@ -21,6 +22,8 @@ import {
   HelpCircle,
   BookOpen,
   Bot,
+  List,
+  X,
 } from "lucide-react";
 
 const TOC_SECTIONS = [
@@ -55,10 +58,61 @@ const GREY_AREA_KEYS = [
   "schoolLogo",
 ] as const;
 
+/** Tailwind color classes for section header icons — full strings to avoid purge issues */
+const ICON_COLOR_CLASSES = {
+  primary: { bg: "bg-primary/10", text: "text-primary" },
+  success: { bg: "bg-success/10", text: "text-success" },
+  error: { bg: "bg-error/10", text: "text-error" },
+  warning: { bg: "bg-warning/10", text: "text-warning" },
+} as const;
+
+type SectionColor = keyof typeof ICON_COLOR_CLASSES;
+
+/** Maps each content section to its header icon and color */
+const SECTION_CONFIG: Record<string, { icon: LucideIcon; color: SectionColor }> = {
+  legalBasis: { icon: Scale, color: "primary" },
+  allowed: { icon: CheckCircle, color: "success" },
+  notAllowed: { icon: XCircle, color: "error" },
+  ccLicenses: { icon: BookOpen, color: "primary" },
+  aiContent: { icon: Bot, color: "primary" },
+  images: { icon: ImageIcon, color: "primary" },
+  imageSources: { icon: ExternalLink, color: "success" },
+  fonts: { icon: Type, color: "primary" },
+  greyAreas: { icon: HelpCircle, color: "primary" },
+  commonMistakes: { icon: AlertTriangle, color: "warning" },
+  checklist: { icon: ClipboardCheck, color: "success" },
+};
+
+/** Reusable section header: icon box + title (extracted from 11 repeated instances) */
+function SectionHeader({
+  sectionKey,
+  title,
+  children,
+}: {
+  sectionKey: string;
+  title: string;
+  children?: React.ReactNode;
+}) {
+  const config = SECTION_CONFIG[sectionKey];
+  if (!config) return null;
+  const { icon: Icon, color } = config;
+  const colors = ICON_COLOR_CLASSES[color];
+  return (
+    <div className="mb-4 flex items-center gap-3">
+      <div className={`${colors.bg} flex h-10 w-10 items-center justify-center rounded-lg`}>
+        <Icon className={`${colors.text} h-5 w-5`} aria-hidden="true" />
+      </div>
+      <h2 className="text-text text-xl font-semibold">{title}</h2>
+      {children}
+    </div>
+  );
+}
+
 export default function CopyrightGuidePage() {
   const t = useTranslations("copyrightGuide");
   const tCommon = useTranslations("common");
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
+  const [mobileTocOpen, setMobileTocOpen] = useState(false);
 
   const toggleChecked = (key: string) => {
     setCheckedItems((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -76,6 +130,7 @@ export default function CopyrightGuidePage() {
 
   const [activeSection, setActiveSection] = useState<string>("");
 
+  // Scroll-spy: highlight active TOC link based on visible section
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -96,8 +151,48 @@ export default function CopyrightGuidePage() {
     return () => observer.disconnect();
   }, []);
 
+  // Scroll to anchor on page load (e.g. /urheberrecht#aiContent)
+  useEffect(() => {
+    const hash = window.location.hash.slice(1);
+    if (hash) {
+      requestAnimationFrame(() => {
+        const el = document.getElementById(hash);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth" });
+        }
+      });
+    }
+  }, []);
+
+  /** Shared TOC link list used by both desktop sidebar and mobile overlay */
+  const renderTocLinks = (onLinkClick?: () => void) => (
+    <ol className="space-y-0.5">
+      {TOC_SECTIONS.map((section, index) => (
+        <li key={section}>
+          <a
+            href={`#${section}`}
+            onClick={onLinkClick}
+            aria-current={activeSection === section ? "true" : undefined}
+            className={`flex items-center gap-2 rounded-lg px-2 py-1.5 text-[13px] transition-colors ${
+              activeSection === section
+                ? "bg-primary/10 text-primary font-medium"
+                : "text-text-secondary hover:text-primary hover:bg-primary/5"
+            }`}
+          >
+            <span className="text-text-muted w-4 text-xs">{index + 1}.</span>
+            {t(`toc.${section}`)}
+          </a>
+        </li>
+      ))}
+    </ol>
+  );
+
   return (
-    <div className="bg-bg flex min-h-screen flex-col">
+    <div
+      id="top"
+      className="bg-bg flex min-h-screen flex-col"
+      style={{ "--header-offset": "6rem" } as React.CSSProperties}
+    >
       {/* Print styles */}
       <style jsx global>{`
         @media print {
@@ -131,29 +226,13 @@ export default function CopyrightGuidePage() {
         <div className="flex flex-col gap-6 lg:flex-row">
           {/* Desktop Sidebar TOC */}
           <div className="hidden w-72 flex-shrink-0 lg:block">
-            <div className="sticky top-24">
+            <div className="sticky top-[var(--header-offset)]">
               <nav
                 className="no-print border-border bg-bg-secondary rounded-xl border p-4 shadow-sm"
                 aria-label={t("toc.title")}
               >
                 <h2 className="text-text mb-3 text-sm font-semibold">{t("toc.title")}</h2>
-                <ol className="space-y-0.5">
-                  {TOC_SECTIONS.map((section, index) => (
-                    <li key={section}>
-                      <a
-                        href={`#${section}`}
-                        className={`flex items-center gap-2 rounded-lg px-2 py-1.5 text-[13px] transition-colors ${
-                          activeSection === section
-                            ? "bg-primary/10 text-primary font-medium"
-                            : "text-text-secondary hover:text-primary hover:bg-primary/5"
-                        }`}
-                      >
-                        <span className="text-text-muted w-4 text-xs">{index + 1}.</span>
-                        {t(`toc.${section}`)}
-                      </a>
-                    </li>
-                  ))}
-                </ol>
+                {renderTocLinks()}
               </nav>
             </div>
           </div>
@@ -166,40 +245,12 @@ export default function CopyrightGuidePage() {
                 <p className="text-text">{t("intro")}</p>
               </div>
 
-              {/* Table of Contents (mobile only, desktop uses sidebar) */}
-              <nav
-                className="no-print bg-surface border-border rounded-xl border p-6 lg:hidden"
-                aria-label={t("toc.title")}
-              >
-                <h2 className="text-text mb-4 text-lg font-semibold">{t("toc.title")}</h2>
-                <ol className="grid gap-1.5 sm:grid-cols-2">
-                  {TOC_SECTIONS.map((section, index) => (
-                    <li key={section}>
-                      <a
-                        href={`#${section}`}
-                        className="text-text-secondary hover:text-primary hover:bg-primary/5 flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm transition-colors"
-                      >
-                        <span className="text-text-muted w-5 text-xs">{index + 1}.</span>
-                        {t(`toc.${section}`)}
-                      </a>
-                    </li>
-                  ))}
-                </ol>
-              </nav>
-
               {/* Section 1: Legal Basis */}
               <section
                 id="legalBasis"
-                className="bg-surface border-border scroll-mt-24 rounded-xl border p-6"
+                className="bg-surface border-border scroll-mt-[var(--header-offset)] rounded-xl border p-6"
               >
-                <div className="mb-4 flex items-center gap-3">
-                  <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
-                    <Scale className="text-primary h-5 w-5" />
-                  </div>
-                  <h2 className="text-text text-xl font-semibold">
-                    {t("sections.legalBasis.title")}
-                  </h2>
-                </div>
+                <SectionHeader sectionKey="legalBasis" title={t("sections.legalBasis.title")} />
                 <p className="text-text-secondary mb-4">{t("sections.legalBasis.description")}</p>
 
                 <div className="bg-bg-secondary mb-4 rounded-lg p-4">
@@ -213,7 +264,10 @@ export default function CopyrightGuidePage() {
 
                 <div className="bg-warning/10 border-warning/20 rounded-lg border p-4">
                   <div className="flex items-start gap-3">
-                    <AlertTriangle className="text-warning mt-0.5 h-5 w-5 flex-shrink-0" />
+                    <AlertTriangle
+                      className="text-warning mt-0.5 h-5 w-5 flex-shrink-0"
+                      aria-hidden="true"
+                    />
                     <p className="text-text text-sm font-medium">
                       {t("sections.legalBasis.important")}
                     </p>
@@ -228,14 +282,9 @@ export default function CopyrightGuidePage() {
               {/* Section 2: What can I sell? */}
               <section
                 id="allowed"
-                className="bg-surface border-border scroll-mt-24 rounded-xl border p-6"
+                className="bg-surface border-border scroll-mt-[var(--header-offset)] rounded-xl border p-6"
               >
-                <div className="mb-4 flex items-center gap-3">
-                  <div className="bg-success/10 flex h-10 w-10 items-center justify-center rounded-lg">
-                    <CheckCircle className="text-success h-5 w-5" />
-                  </div>
-                  <h2 className="text-text text-xl font-semibold">{t("sections.allowed.title")}</h2>
-                </div>
+                <SectionHeader sectionKey="allowed" title={t("sections.allowed.title")} />
                 <p className="text-text-secondary mb-4">{t("sections.allowed.description")}</p>
                 <ul className="space-y-2">
                   {(
@@ -248,7 +297,10 @@ export default function CopyrightGuidePage() {
                     ] as const
                   ).map((key) => (
                     <li key={key} className="flex items-start gap-3">
-                      <CheckCircle className="text-success mt-0.5 h-4 w-4 flex-shrink-0" />
+                      <CheckCircle
+                        className="text-success mt-0.5 h-4 w-4 flex-shrink-0"
+                        aria-hidden="true"
+                      />
                       <span className="text-text-secondary text-sm">
                         {t(`sections.allowed.items.${key}`)}
                       </span>
@@ -260,16 +312,9 @@ export default function CopyrightGuidePage() {
               {/* Section 3: What can I NOT sell? */}
               <section
                 id="notAllowed"
-                className="bg-surface border-border scroll-mt-24 rounded-xl border p-6"
+                className="bg-surface border-border scroll-mt-[var(--header-offset)] rounded-xl border p-6"
               >
-                <div className="mb-4 flex items-center gap-3">
-                  <div className="bg-error/10 flex h-10 w-10 items-center justify-center rounded-lg">
-                    <XCircle className="text-error h-5 w-5" />
-                  </div>
-                  <h2 className="text-text text-xl font-semibold">
-                    {t("sections.notAllowed.title")}
-                  </h2>
-                </div>
+                <SectionHeader sectionKey="notAllowed" title={t("sections.notAllowed.title")} />
                 <p className="text-text-secondary mb-4">{t("sections.notAllowed.description")}</p>
                 <ul className="space-y-2">
                   {(
@@ -282,7 +327,10 @@ export default function CopyrightGuidePage() {
                     ] as const
                   ).map((key) => (
                     <li key={key} className="flex items-start gap-3">
-                      <XCircle className="text-error mt-0.5 h-4 w-4 flex-shrink-0" />
+                      <XCircle
+                        className="text-error mt-0.5 h-4 w-4 flex-shrink-0"
+                        aria-hidden="true"
+                      />
                       <span className="text-text-secondary text-sm">
                         {t(`sections.notAllowed.items.${key}`)}
                       </span>
@@ -294,16 +342,9 @@ export default function CopyrightGuidePage() {
               {/* Section 4: Creative Commons Licenses */}
               <section
                 id="ccLicenses"
-                className="bg-surface border-border scroll-mt-24 rounded-xl border p-6"
+                className="bg-surface border-border scroll-mt-[var(--header-offset)] rounded-xl border p-6"
               >
-                <div className="mb-4 flex items-center gap-3">
-                  <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
-                    <BookOpen className="text-primary h-5 w-5" />
-                  </div>
-                  <h2 className="text-text text-xl font-semibold">
-                    {t("sections.ccLicenses.title")}
-                  </h2>
-                </div>
+                <SectionHeader sectionKey="ccLicenses" title={t("sections.ccLicenses.title")} />
                 <p className="text-text-secondary mb-4">{t("sections.ccLicenses.description")}</p>
 
                 <div className="grid gap-4 sm:grid-cols-2">
@@ -315,7 +356,10 @@ export default function CopyrightGuidePage() {
                     <ul className="space-y-2">
                       {(["cc0", "ccBy", "ccBySa"] as const).map((key) => (
                         <li key={key} className="flex items-start gap-2">
-                          <CheckCircle className="text-success mt-0.5 h-3.5 w-3.5 flex-shrink-0" />
+                          <CheckCircle
+                            className="text-success mt-0.5 h-3.5 w-3.5 flex-shrink-0"
+                            aria-hidden="true"
+                          />
                           <span className="text-text-secondary text-sm">
                             {t(`sections.ccLicenses.allowed.${key}`)}
                           </span>
@@ -332,7 +376,10 @@ export default function CopyrightGuidePage() {
                     <ul className="space-y-2">
                       {(["ccByNc", "ccByNd", "ccByNcSa"] as const).map((key) => (
                         <li key={key} className="flex items-start gap-2">
-                          <XCircle className="text-error mt-0.5 h-3.5 w-3.5 flex-shrink-0" />
+                          <XCircle
+                            className="text-error mt-0.5 h-3.5 w-3.5 flex-shrink-0"
+                            aria-hidden="true"
+                          />
                           <span className="text-text-secondary text-sm">
                             {t(`sections.ccLicenses.notAllowed.${key}`)}
                           </span>
@@ -344,7 +391,10 @@ export default function CopyrightGuidePage() {
 
                 <div className="bg-primary/5 border-primary/20 mt-4 rounded-lg border p-3">
                   <div className="flex items-start gap-2">
-                    <Sparkles className="text-primary mt-0.5 h-4 w-4 flex-shrink-0" />
+                    <Sparkles
+                      className="text-primary mt-0.5 h-4 w-4 flex-shrink-0"
+                      aria-hidden="true"
+                    />
                     <span className="text-text-secondary text-sm">
                       {t("sections.ccLicenses.tip")}
                     </span>
@@ -355,16 +405,9 @@ export default function CopyrightGuidePage() {
               {/* Section 5: AI-Generated Content */}
               <section
                 id="aiContent"
-                className="bg-surface border-border scroll-mt-24 rounded-xl border p-6"
+                className="bg-surface border-border scroll-mt-[var(--header-offset)] rounded-xl border p-6"
               >
-                <div className="mb-4 flex items-center gap-3">
-                  <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
-                    <Bot className="text-primary h-5 w-5" />
-                  </div>
-                  <h2 className="text-text text-xl font-semibold">
-                    {t("sections.aiContent.title")}
-                  </h2>
-                </div>
+                <SectionHeader sectionKey="aiContent" title={t("sections.aiContent.title")} />
                 <p className="text-text-secondary mb-4">{t("sections.aiContent.description")}</p>
 
                 <div className="space-y-4">
@@ -376,7 +419,10 @@ export default function CopyrightGuidePage() {
                     <ul className="space-y-2">
                       {(["aiText", "aiInspiration", "aiLayout"] as const).map((key) => (
                         <li key={key} className="flex items-start gap-2">
-                          <CheckCircle className="text-success mt-0.5 h-3.5 w-3.5 flex-shrink-0" />
+                          <CheckCircle
+                            className="text-success mt-0.5 h-3.5 w-3.5 flex-shrink-0"
+                            aria-hidden="true"
+                          />
                           <span className="text-text-secondary text-sm">
                             {t(`sections.aiContent.allowedItems.${key}`)}
                           </span>
@@ -393,7 +439,10 @@ export default function CopyrightGuidePage() {
                     <ul className="space-y-2">
                       {(["aiImages", "aiFullContent"] as const).map((key) => (
                         <li key={key} className="flex items-start gap-2">
-                          <AlertTriangle className="text-warning mt-0.5 h-3.5 w-3.5 flex-shrink-0" />
+                          <AlertTriangle
+                            className="text-warning mt-0.5 h-3.5 w-3.5 flex-shrink-0"
+                            aria-hidden="true"
+                          />
                           <span className="text-text-secondary text-sm">
                             {t(`sections.aiContent.cautionItems.${key}`)}
                           </span>
@@ -410,7 +459,10 @@ export default function CopyrightGuidePage() {
                     <ul className="space-y-2">
                       {(["aiCopy", "aiStyle"] as const).map((key) => (
                         <li key={key} className="flex items-start gap-2">
-                          <XCircle className="text-error mt-0.5 h-3.5 w-3.5 flex-shrink-0" />
+                          <XCircle
+                            className="text-error mt-0.5 h-3.5 w-3.5 flex-shrink-0"
+                            aria-hidden="true"
+                          />
                           <span className="text-text-secondary text-sm">
                             {t(`sections.aiContent.notAllowedItems.${key}`)}
                           </span>
@@ -422,7 +474,10 @@ export default function CopyrightGuidePage() {
 
                 <div className="bg-primary/5 border-primary/20 mt-4 rounded-lg border p-3">
                   <div className="flex items-start gap-2">
-                    <Sparkles className="text-primary mt-0.5 h-4 w-4 flex-shrink-0" />
+                    <Sparkles
+                      className="text-primary mt-0.5 h-4 w-4 flex-shrink-0"
+                      aria-hidden="true"
+                    />
                     <span className="text-text-secondary text-sm">
                       {t("sections.aiContent.notice")}
                     </span>
@@ -433,21 +488,16 @@ export default function CopyrightGuidePage() {
               {/* Section 6: Images */}
               <section
                 id="images"
-                className="bg-surface border-border scroll-mt-24 rounded-xl border p-6"
+                className="bg-surface border-border scroll-mt-[var(--header-offset)] rounded-xl border p-6"
               >
-                <div className="mb-4 flex items-center gap-3">
-                  <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
-                    <ImageIcon className="text-primary h-5 w-5" />
-                  </div>
-                  <h2 className="text-text text-xl font-semibold">{t("sections.images.title")}</h2>
-                </div>
+                <SectionHeader sectionKey="images" title={t("sections.images.title")} />
                 <p className="text-text-secondary mb-4">{t("sections.images.description")}</p>
 
                 <div className="grid gap-4 sm:grid-cols-2">
                   {/* Allowed images */}
                   <div className="border-success/20 bg-success/5 rounded-lg border p-4">
                     <div className="mb-3 flex items-center gap-2">
-                      <CheckCircle className="text-success h-4 w-4" />
+                      <CheckCircle className="text-success h-4 w-4" aria-hidden="true" />
                       <h3 className="text-success font-medium">
                         {t("sections.images.allowedTitle")}
                       </h3>
@@ -457,7 +507,10 @@ export default function CopyrightGuidePage() {
                         ["ownPhotos", "cc0Images", "purchasedStock", "createdGraphics"] as const
                       ).map((key) => (
                         <li key={key} className="flex items-start gap-2">
-                          <CheckCircle className="text-success mt-0.5 h-3.5 w-3.5 flex-shrink-0" />
+                          <CheckCircle
+                            className="text-success mt-0.5 h-3.5 w-3.5 flex-shrink-0"
+                            aria-hidden="true"
+                          />
                           <span className="text-text-secondary text-sm">
                             {t(`sections.images.allowedItems.${key}`)}
                           </span>
@@ -469,7 +522,7 @@ export default function CopyrightGuidePage() {
                   {/* Not allowed images */}
                   <div className="border-error/20 bg-error/5 rounded-lg border p-4">
                     <div className="mb-3 flex items-center gap-2">
-                      <XCircle className="text-error h-4 w-4" />
+                      <XCircle className="text-error h-4 w-4" aria-hidden="true" />
                       <h3 className="text-error font-medium">
                         {t("sections.images.notAllowedTitle")}
                       </h3>
@@ -479,7 +532,10 @@ export default function CopyrightGuidePage() {
                         ["googleImages", "socialMedia", "editorialStock", "otherTeachers"] as const
                       ).map((key) => (
                         <li key={key} className="flex items-start gap-2">
-                          <XCircle className="text-error mt-0.5 h-3.5 w-3.5 flex-shrink-0" />
+                          <XCircle
+                            className="text-error mt-0.5 h-3.5 w-3.5 flex-shrink-0"
+                            aria-hidden="true"
+                          />
                           <span className="text-text-secondary text-sm">
                             {t(`sections.images.notAllowedItems.${key}`)}
                           </span>
@@ -493,23 +549,19 @@ export default function CopyrightGuidePage() {
               {/* Section 7: Image Sources */}
               <section
                 id="imageSources"
-                className="bg-surface border-border scroll-mt-24 rounded-xl border p-6"
+                className="bg-surface border-border scroll-mt-[var(--header-offset)] rounded-xl border p-6"
               >
-                <div className="mb-4 flex items-center gap-3">
-                  <div className="bg-success/10 flex h-10 w-10 items-center justify-center rounded-lg">
-                    <ExternalLink className="text-success h-5 w-5" />
-                  </div>
-                  <h2 className="text-text text-xl font-semibold">
-                    {t("sections.imageSources.title")}
-                  </h2>
-                </div>
+                <SectionHeader sectionKey="imageSources" title={t("sections.imageSources.title")} />
                 <p className="text-text-secondary mb-4">{t("sections.imageSources.description")}</p>
                 <ul className="space-y-3">
                   {(
                     ["unsplash", "pixabay", "pexels", "openclipart", "wikimediaCommons"] as const
                   ).map((key) => (
                     <li key={key} className="flex items-start gap-3">
-                      <CheckCircle className="text-success mt-0.5 h-4 w-4 flex-shrink-0" />
+                      <CheckCircle
+                        className="text-success mt-0.5 h-4 w-4 flex-shrink-0"
+                        aria-hidden="true"
+                      />
                       <span className="text-text-secondary text-sm">
                         {t(`sections.imageSources.sources.${key}`)}
                       </span>
@@ -518,7 +570,10 @@ export default function CopyrightGuidePage() {
                 </ul>
                 <div className="bg-primary/5 border-primary/20 mt-4 rounded-lg border p-3">
                   <div className="flex items-start gap-2">
-                    <Sparkles className="text-primary mt-0.5 h-4 w-4 flex-shrink-0" />
+                    <Sparkles
+                      className="text-primary mt-0.5 h-4 w-4 flex-shrink-0"
+                      aria-hidden="true"
+                    />
                     <span className="text-text-secondary text-sm">
                       {t("sections.imageSources.tip")}
                     </span>
@@ -529,21 +584,19 @@ export default function CopyrightGuidePage() {
               {/* Section 8: Fonts */}
               <section
                 id="fonts"
-                className="bg-surface border-border scroll-mt-24 rounded-xl border p-6"
+                className="bg-surface border-border scroll-mt-[var(--header-offset)] rounded-xl border p-6"
               >
-                <div className="mb-4 flex items-center gap-3">
-                  <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
-                    <Type className="text-primary h-5 w-5" />
-                  </div>
-                  <h2 className="text-text text-xl font-semibold">{t("sections.fonts.title")}</h2>
-                </div>
+                <SectionHeader sectionKey="fonts" title={t("sections.fonts.title")} />
                 <p className="text-text-secondary mb-4">{t("sections.fonts.description")}</p>
                 <ul className="space-y-2">
                   {(
                     ["googleFonts", "purchasedFonts", "systemFonts", "freeWithLicense"] as const
                   ).map((key) => (
                     <li key={key} className="flex items-start gap-3">
-                      <CheckCircle className="text-success mt-0.5 h-4 w-4 flex-shrink-0" />
+                      <CheckCircle
+                        className="text-success mt-0.5 h-4 w-4 flex-shrink-0"
+                        aria-hidden="true"
+                      />
                       <span className="text-text-secondary text-sm">
                         {t(`sections.fonts.items.${key}`)}
                       </span>
@@ -552,7 +605,10 @@ export default function CopyrightGuidePage() {
                 </ul>
                 <div className="bg-warning/10 border-warning/20 mt-4 rounded-lg border p-3">
                   <div className="flex items-start gap-2">
-                    <AlertTriangle className="text-warning mt-0.5 h-4 w-4 flex-shrink-0" />
+                    <AlertTriangle
+                      className="text-warning mt-0.5 h-4 w-4 flex-shrink-0"
+                      aria-hidden="true"
+                    />
                     <span className="text-text-secondary text-sm">
                       {t("sections.fonts.warning")}
                     </span>
@@ -563,16 +619,9 @@ export default function CopyrightGuidePage() {
               {/* Section 9: Grey Areas */}
               <section
                 id="greyAreas"
-                className="bg-surface border-border scroll-mt-24 rounded-xl border p-6"
+                className="bg-surface border-border scroll-mt-[var(--header-offset)] rounded-xl border p-6"
               >
-                <div className="mb-4 flex items-center gap-3">
-                  <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
-                    <HelpCircle className="text-primary h-5 w-5" />
-                  </div>
-                  <h2 className="text-text text-xl font-semibold">
-                    {t("sections.greyAreas.title")}
-                  </h2>
-                </div>
+                <SectionHeader sectionKey="greyAreas" title={t("sections.greyAreas.title")} />
                 <p className="text-text-secondary mb-4">{t("sections.greyAreas.description")}</p>
 
                 <div className="space-y-3">
@@ -592,16 +641,12 @@ export default function CopyrightGuidePage() {
               {/* Section 10: Common Mistakes */}
               <section
                 id="commonMistakes"
-                className="bg-surface border-border scroll-mt-24 rounded-xl border p-6"
+                className="bg-surface border-border scroll-mt-[var(--header-offset)] rounded-xl border p-6"
               >
-                <div className="mb-4 flex items-center gap-3">
-                  <div className="bg-warning/10 flex h-10 w-10 items-center justify-center rounded-lg">
-                    <AlertTriangle className="text-warning h-5 w-5" />
-                  </div>
-                  <h2 className="text-text text-xl font-semibold">
-                    {t("sections.commonMistakes.title")}
-                  </h2>
-                </div>
+                <SectionHeader
+                  sectionKey="commonMistakes"
+                  title={t("sections.commonMistakes.title")}
+                />
                 <p className="text-text-secondary mb-4">
                   {t("sections.commonMistakes.description")}
                 </p>
@@ -609,7 +654,10 @@ export default function CopyrightGuidePage() {
                   {COMMON_MISTAKE_KEYS.map((key) => (
                     <div key={key} className="border-warning/20 bg-warning/5 rounded-lg border p-4">
                       <div className="flex items-start gap-3">
-                        <XCircle className="text-warning mt-0.5 h-4 w-4 flex-shrink-0" />
+                        <XCircle
+                          className="text-warning mt-0.5 h-4 w-4 flex-shrink-0"
+                          aria-hidden="true"
+                        />
                         <div>
                           <p className="text-text text-sm font-medium">
                             {t(`sections.commonMistakes.items.${key}.mistake`)}
@@ -627,21 +675,15 @@ export default function CopyrightGuidePage() {
               {/* Section 11: Checklist */}
               <section
                 id="checklist"
-                className="bg-surface border-border scroll-mt-24 rounded-xl border p-6"
+                className="bg-surface border-border scroll-mt-[var(--header-offset)] rounded-xl border p-6"
               >
-                <div className="mb-4 flex items-center gap-3">
-                  <div className="bg-success/10 flex h-10 w-10 items-center justify-center rounded-lg">
-                    <ClipboardCheck className="text-success h-5 w-5" />
-                  </div>
-                  <h2 className="text-text text-xl font-semibold">
-                    {t("sections.checklist.title")}
-                  </h2>
+                <SectionHeader sectionKey="checklist" title={t("sections.checklist.title")}>
                   <span
                     className={`ml-auto text-sm font-bold ${checkedCount === 5 ? "text-success" : "text-text-muted"}`}
                   >
                     {checkedCount} / 5
                   </span>
-                </div>
+                </SectionHeader>
                 <p className="text-text-secondary mb-4">{t("sections.checklist.description")}</p>
 
                 {/* Progress bar */}
@@ -671,7 +713,9 @@ export default function CopyrightGuidePage() {
                               : "border-border bg-surface"
                           }`}
                         >
-                          {checkedItems[key] && <CheckCircle className="h-3.5 w-3.5" />}
+                          {checkedItems[key] && (
+                            <CheckCircle className="h-3.5 w-3.5" aria-hidden="true" />
+                          )}
                         </div>
                         <span
                           className={`text-sm transition-colors ${
@@ -706,9 +750,9 @@ export default function CopyrightGuidePage() {
               {/* Section 12: Contact CTA */}
               <section
                 id="contact"
-                className="border-border bg-bg-secondary scroll-mt-24 rounded-xl border p-6 text-center"
+                className="border-border bg-bg-secondary scroll-mt-[var(--header-offset)] rounded-xl border p-6 text-center"
               >
-                <Mail className="text-primary mx-auto mb-4 h-8 w-8" />
+                <Mail className="text-primary mx-auto mb-4 h-8 w-8" aria-hidden="true" />
                 <h2 className="text-text text-lg font-semibold">{t("sections.contact.title")}</h2>
                 <p className="text-text-muted mt-2">{t("sections.contact.description")}</p>
                 <a
@@ -721,17 +765,17 @@ export default function CopyrightGuidePage() {
               </section>
             </div>
 
-            {/* Back to top */}
+            {/* Back to top — real anchor for keyboard nav, smooth scroll enhancement */}
             <div className="no-print mt-8 text-center">
               <a
-                href="#"
+                href="#top"
                 onClick={(e) => {
                   e.preventDefault();
-                  window.scrollTo({ top: 0, behavior: "smooth" });
+                  document.getElementById("top")?.scrollIntoView({ behavior: "smooth" });
                 }}
                 className="text-text-muted hover:text-primary inline-flex items-center gap-1.5 text-sm transition-colors"
               >
-                <ArrowUp className="h-4 w-4" />
+                <ArrowUp className="h-4 w-4" aria-hidden="true" />
                 {t("backToTop")}
               </a>
             </div>
@@ -742,6 +786,49 @@ export default function CopyrightGuidePage() {
       </main>
 
       <Footer />
+
+      {/* Mobile/Tablet TOC floating button (visible below lg breakpoint) */}
+      {!mobileTocOpen && (
+        <button
+          type="button"
+          className="no-print bg-primary text-text-on-accent fixed right-6 bottom-6 z-40 flex items-center gap-2 rounded-full px-4 py-3 shadow-lg transition-transform hover:scale-105 lg:hidden"
+          onClick={() => setMobileTocOpen(true)}
+          aria-label={t("toc.showContents")}
+        >
+          <List className="h-5 w-5" aria-hidden="true" />
+          <span className="text-sm font-medium">{t("toc.title")}</span>
+        </button>
+      )}
+
+      {/* Mobile/Tablet TOC overlay panel */}
+      {mobileTocOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/40"
+            onClick={() => setMobileTocOpen(false)}
+            aria-hidden="true"
+          />
+          {/* Bottom sheet */}
+          <nav
+            className="bg-surface absolute right-0 bottom-0 left-0 max-h-[70vh] overflow-y-auto rounded-t-2xl p-6 shadow-xl"
+            aria-label={t("toc.title")}
+          >
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-text text-lg font-semibold">{t("toc.title")}</h2>
+              <button
+                type="button"
+                onClick={() => setMobileTocOpen(false)}
+                aria-label={t("toc.hideContents")}
+                className="text-text-muted hover:text-text rounded-lg p-1 transition-colors"
+              >
+                <X className="h-5 w-5" aria-hidden="true" />
+              </button>
+            </div>
+            {renderTocLinks(() => setMobileTocOpen(false))}
+          </nav>
+        </div>
+      )}
     </div>
   );
 }

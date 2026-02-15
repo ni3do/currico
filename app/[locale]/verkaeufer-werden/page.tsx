@@ -9,6 +9,16 @@ import { LoginLink } from "@/components/ui/LoginLink";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
+import {
+  Check,
+  AlertTriangle,
+  Coins,
+  Users,
+  RefreshCw,
+  ExternalLink,
+  ArrowRight,
+  Info,
+} from "lucide-react";
 import type { StripeStatus } from "@/lib/types/account";
 
 interface UserData {
@@ -56,18 +66,7 @@ function OnboardingStepper({
                       : "bg-bg-secondary text-text-muted"
                 }`}
               >
-                {step.completed ? (
-                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                ) : (
-                  i + 1
-                )}
+                {step.completed ? <Check className="h-4 w-4" aria-hidden="true" /> : i + 1}
               </div>
               <span
                 className={`mt-1.5 text-xs ${
@@ -248,6 +247,14 @@ export default function BecomeSellerPage() {
       stripeStatus.requirements.pastDue.length > 0);
   const stripeComplete = !!stripeStatus?.chargesEnabled && !!stripeStatus?.detailsSubmitted;
 
+  // Determine disabled tooltip for CTA buttons
+  const getDisabledTooltip = () => {
+    if (!isLoggedIn) return t("cta.disabledLoginTooltip");
+    if (!isEmailVerified) return t("cta.disabledEmailTooltip");
+    if (!hasAcceptedTerms && !termsAccepted) return t("cta.disabledTermsTooltip");
+    return undefined;
+  };
+
   return (
     <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
@@ -260,23 +267,11 @@ export default function BecomeSellerPage() {
           <p className="text-text-muted mt-1">{t("hero.subtitle")}</p>
         </div>
 
-        {/* Stripe Refresh Banner (13a) */}
+        {/* Stripe Refresh Banner */}
         {isStripeRefresh && (
           <div className="border-warning/30 bg-warning/10 mb-8 rounded-lg border p-4">
             <div className="flex items-center gap-3">
-              <svg
-                className="text-warning h-5 w-5 flex-shrink-0"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                />
-              </svg>
+              <AlertTriangle className="text-warning h-5 w-5 flex-shrink-0" aria-hidden="true" />
               <p className="text-text-secondary text-sm">{t("stripeRefreshMessage")}</p>
               {hasAcceptedTerms && (
                 <button
@@ -291,7 +286,7 @@ export default function BecomeSellerPage() {
           </div>
         )}
 
-        {/* Progress Stepper (13c) - show when logged in and data loaded */}
+        {/* Progress Stepper - show when logged in and data loaded */}
         {!isLoading && isLoggedIn && (
           <OnboardingStepper
             isLoggedIn={isLoggedIn}
@@ -302,7 +297,7 @@ export default function BecomeSellerPage() {
           />
         )}
 
-        {/* Status-aware banners (13b) */}
+        {/* Status-aware banners */}
         {!isLoading && isLoggedIn && isPendingVerification && (
           <div className="border-primary/30 bg-primary/5 mb-8 rounded-lg border p-4 text-center">
             <p className="text-text-secondary">{t("statusPendingVerification")}</p>
@@ -334,19 +329,7 @@ export default function BecomeSellerPage() {
             {/* Benefit 1 - Earn */}
             <div className="card p-6 text-center">
               <div className="bg-success/15 mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full">
-                <svg
-                  className="text-success h-8 w-8"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
+                <Coins className="text-success h-8 w-8" aria-hidden="true" />
               </div>
               <h3 className="heading-4 mb-3">{t("benefits.earn.title")}</h3>
               <p className="text-text-muted leading-relaxed">{t("benefits.earn.description")}</p>
@@ -355,19 +338,7 @@ export default function BecomeSellerPage() {
             {/* Benefit 2 - Reach */}
             <div className="card p-6 text-center">
               <div className="bg-primary/15 mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full">
-                <svg
-                  className="text-primary h-8 w-8"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                  />
-                </svg>
+                <Users className="text-primary h-8 w-8" aria-hidden="true" />
               </div>
               <h3 className="heading-4 mb-3">{t("benefits.reach.title")}</h3>
               <p className="text-text-muted leading-relaxed">{t("benefits.reach.description")}</p>
@@ -376,19 +347,7 @@ export default function BecomeSellerPage() {
             {/* Benefit 3 - Simple */}
             <div className="card p-6 text-center sm:col-span-2 lg:col-span-1">
               <div className="bg-accent/15 mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full">
-                <svg
-                  className="text-accent h-8 w-8"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                  />
-                </svg>
+                <RefreshCw className="text-accent h-8 w-8" aria-hidden="true" />
               </div>
               <h3 className="heading-4 mb-3">{t("benefits.simple.title")}</h3>
               <p className="text-text-muted leading-relaxed">{t("benefits.simple.description")}</p>
@@ -396,78 +355,37 @@ export default function BecomeSellerPage() {
           </div>
         </section>
 
-        {/* Requirements Section */}
+        {/* Requirements Section - dynamic checklist */}
         <section className="mb-12">
           <div className="card mx-auto max-w-3xl p-6">
             <h2 className="text-text mb-6 text-xl font-semibold">{t("requirements.title")}</h2>
             <ul className="space-y-3">
-              <li className="text-text-secondary flex items-center gap-3">
-                <svg
-                  className="text-success h-5 w-5 flex-shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                {t("requirements.emailVerified")}
-              </li>
-              <li className="text-text-secondary flex items-center gap-3">
-                <svg
-                  className="text-success h-5 w-5 flex-shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                {t("requirements.acceptTerms")}
-              </li>
-              <li className="text-text-secondary flex items-center gap-3">
-                <svg
-                  className="text-success h-5 w-5 flex-shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                {t("requirements.stripeAccount")}
-              </li>
+              {[
+                {
+                  label: t("requirements.emailVerified"),
+                  completed: isLoggedIn && isEmailVerified,
+                },
+                { label: t("requirements.acceptTerms"), completed: isLoggedIn && hasAcceptedTerms },
+                { label: t("requirements.stripeAccount"), completed: stripeComplete },
+              ].map((req, i) => (
+                <li key={i} className="text-text-secondary flex items-center gap-3">
+                  {isLoggedIn && !isLoading ? (
+                    req.completed ? (
+                      <div className="bg-success flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full">
+                        <Check className="h-4 w-4 text-white" aria-hidden="true" />
+                      </div>
+                    ) : (
+                      <div className="border-border h-6 w-6 flex-shrink-0 rounded-full border-2" />
+                    )
+                  ) : (
+                    <div className="border-border h-6 w-6 flex-shrink-0 rounded-full border-2" />
+                  )}
+                  <span className={req.completed && isLoggedIn && !isLoading ? "text-text" : ""}>
+                    {req.label}
+                  </span>
+                </li>
+              ))}
             </ul>
-          </div>
-        </section>
-
-        {/* Copyright Guide Callout */}
-        <section className="mb-12">
-          <div className="mx-auto max-w-4xl">
-            <div className="border-primary/20 bg-primary/5 rounded-xl border p-6 text-center">
-              <h3 className="text-text text-lg font-semibold">{t("copyrightCallout.title")}</h3>
-              <p className="text-text-muted mx-auto mt-2 max-w-md text-sm">
-                {t("copyrightCallout.description")}
-              </p>
-              <Link
-                href="/urheberrecht"
-                className="text-primary mt-3 inline-flex items-center gap-1 text-sm font-medium hover:underline"
-              >
-                {t("copyrightCallout.link")} →
-              </Link>
-            </div>
           </div>
         </section>
 
@@ -482,11 +400,32 @@ export default function BecomeSellerPage() {
             {/* Terms Card */}
             <div className="card overflow-hidden">
               <div className="border-border bg-bg-secondary border-b px-6 py-4">
-                <h3 className="text-text font-semibold">{tTerms("pageTitle")}</h3>
-                <p className="text-text-muted mt-1 text-sm">{tTerms("lastUpdated")}</p>
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <h3 className="text-text font-semibold">{tTerms("pageTitle")}</h3>
+                    <p className="text-text-muted mt-1 text-sm">{tTerms("lastUpdated")}</p>
+                  </div>
+                  {/* Copyright callout integrated into terms header */}
+                  <Link
+                    href="/urheberrecht"
+                    className="text-primary border-primary/20 bg-primary/5 hidden items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium hover:underline sm:inline-flex"
+                  >
+                    <Info className="h-3.5 w-3.5" aria-hidden="true" />
+                    {t("copyrightCallout.link")}
+                    <ExternalLink className="h-3 w-3" aria-hidden="true" />
+                  </Link>
+                </div>
+                {/* Mobile copyright callout */}
+                <Link
+                  href="/urheberrecht"
+                  className="text-primary mt-2 inline-flex items-center gap-1 text-xs font-medium hover:underline sm:hidden"
+                >
+                  <Info className="h-3.5 w-3.5" aria-hidden="true" />
+                  {t("copyrightCallout.link")}
+                </Link>
               </div>
 
-              <div className="max-h-[500px] overflow-y-auto px-6 py-6">
+              <div className="max-h-[70vh] overflow-y-auto px-6 py-6">
                 <div className="prose prose-sm text-text-secondary max-w-none">
                   {/* Overview */}
                   <h4 className="text-text text-base font-semibold">
@@ -607,33 +546,32 @@ export default function BecomeSellerPage() {
               ) : !isEmailVerified ? (
                 <div className="space-y-3">
                   <p className="text-text-muted">{t("cta.emailRequired")}</p>
-                  <Link href="/konto" className="btn btn-primary inline-block px-8 py-3">
+                  <Link
+                    href="/konto/settings/profile"
+                    className="btn btn-primary inline-block px-8 py-3"
+                  >
                     {t("cta.verifyEmail")}
                   </Link>
                 </div>
               ) : hasAcceptedTerms ? (
                 <div className="space-y-4">
-                  <div className="bg-success-light text-success inline-flex items-center gap-2 rounded-lg px-4 py-2">
-                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
+                  <div className="bg-success/10 text-success border-success/20 inline-flex items-center gap-2 rounded-lg border px-4 py-2 font-medium">
+                    <Check className="h-5 w-5" aria-hidden="true" />
                     {t("cta.termsAccepted")}
                   </div>
                   {stripeError && <p className="text-error text-sm">{stripeError}</p>}
-                  <button
-                    onClick={handleStartStripeOnboarding}
-                    disabled={isStripeLoading}
-                    className="btn btn-primary px-8 py-3 disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    {isStripeLoading
-                      ? t("cta.stripeOnboardingLoading")
-                      : t("cta.startStripeOnboarding")}
-                  </button>
+                  <div>
+                    <button
+                      onClick={handleStartStripeOnboarding}
+                      disabled={isStripeLoading}
+                      className="btn btn-primary inline-flex items-center gap-2 px-10 py-3.5 text-base disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      {isStripeLoading
+                        ? t("cta.stripeOnboardingLoading")
+                        : t("cta.startStripeOnboarding")}
+                      {!isStripeLoading && <ArrowRight className="h-5 w-5" aria-hidden="true" />}
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -644,9 +582,13 @@ export default function BecomeSellerPage() {
                   <button
                     onClick={handleAcceptTerms}
                     disabled={!termsAccepted || isSubmitting}
-                    className="btn btn-primary px-8 py-3 disabled:cursor-not-allowed disabled:opacity-50"
+                    title={!termsAccepted ? getDisabledTooltip() : undefined}
+                    className="btn btn-primary inline-flex items-center gap-2 px-8 py-3 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {isSubmitting ? t("cta.submitting") : t("cta.button")}
+                    {!isSubmitting && termsAccepted && (
+                      <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                    )}
                   </button>
                 </div>
               )}

@@ -14,6 +14,8 @@ export interface MaterialCardProps {
   description?: string;
   subject: string;
   cycle?: string;
+  /** Numeric price in cents (used for free detection — avoids fragile string comparison) */
+  price?: number;
   priceFormatted?: string;
   previewUrl?: string | null;
   verified?: boolean;
@@ -55,6 +57,7 @@ export function MaterialCard({
   description,
   subject,
   cycle,
+  price,
   priceFormatted,
   previewUrl,
   seller,
@@ -82,7 +85,8 @@ export function MaterialCard({
 
   const isCompact = variant === "compact";
   const linkHref = href ?? `/materialien/${id}`;
-  const isFree = priceFormatted === "Gratis" || priceFormatted === "Free";
+  const isFree =
+    price !== undefined ? price === 0 : priceFormatted === "Gratis" || priceFormatted === "Free";
   const shouldShowPriceBadge = showPriceBadge && priceFormatted;
 
   const handleWishlistClick = async (e: React.MouseEvent) => {
@@ -156,11 +160,7 @@ export function MaterialCard({
             className={`absolute top-3 left-3 drop-shadow-md transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-110 active:scale-95 disabled:opacity-50 ${
               isWishlisted ? "text-red-500" : "text-white hover:text-red-500"
             }`}
-            aria-label={
-              isWishlisted
-                ? wishlistRemoveLabel || "Remove from wishlist"
-                : wishlistAddLabel || "Add to wishlist"
-            }
+            aria-label={isWishlisted ? wishlistRemoveLabel || "" : wishlistAddLabel || ""}
           >
             <Heart
               className={`h-7 w-7 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${wishlistLoading ? "animate-pulse" : ""} ${isWishlisted ? "scale-100" : "scale-90 group-hover:scale-100"}`}
@@ -217,7 +217,7 @@ export function MaterialCard({
         {isCompact && (
           <div className="text-text-muted mt-2 flex items-center gap-3 text-xs">
             <span className="flex items-center gap-1">
-              {seller?.displayName || anonymousLabel || "Anonymous"}
+              {seller?.displayName || anonymousLabel || ""}
               {seller?.isVerifiedSeller && <VerifiedSellerBadge variant="compact" />}
             </span>
             {priceFormatted && (
@@ -236,7 +236,7 @@ export function MaterialCard({
           (footer ?? (
             <div className="border-border-subtle flex items-center justify-between border-t pt-3">
               <span className="text-text-muted flex items-center gap-1.5 text-sm transition-colors duration-300">
-                {seller?.displayName || anonymousLabel || "Anonymous"}
+                {seller?.displayName || anonymousLabel || ""}
                 {seller?.isVerifiedSeller && <VerifiedSellerBadge variant="compact" />}
               </span>
               {shouldShowPriceBadge ? (

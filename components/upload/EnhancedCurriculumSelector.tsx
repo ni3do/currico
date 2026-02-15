@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useCallback, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { FACHBEREICHE, getFachbereicheByZyklus, getFachbereichByCode } from "@/lib/data/lehrplan21";
 import type { Fachbereich, Kompetenzbereich } from "@/lib/curriculum-types";
@@ -103,6 +103,14 @@ interface EnhancedCurriculumSelectorProps {
   onSubjectBlur?: () => void;
 }
 
+type UnifiedSearchResult = {
+  type: "subject" | "area" | "competency";
+  label: string;
+  code: string;
+  fachbereich: Fachbereich;
+  cycleValues: number[];
+};
+
 export function EnhancedCurriculumSelector({
   cycle,
   subject,
@@ -127,6 +135,100 @@ export function EnhancedCurriculumSelector({
   const subjectTooltip = useFieldTooltip("subject");
   const cantonTooltip = useFieldTooltip("canton");
   const [competencySearch, setCompetencySearch] = useState("");
+  const [unifiedSearch, setUnifiedSearch] = useState("");
+  const [showUnifiedResults, setShowUnifiedResults] = useState(false);
+  const unifiedSearchRef = useRef<HTMLDivElement>(null);
+  const MAX_COMPETENCIES = 5;
+  // State to control competencies panel visibility with animation
+  const [showCompetencies, setShowCompetencies] = useState(false);
+
+  // Close unified search dropdown on click outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (unifiedSearchRef.current && !unifiedSearchRef.current.contains(event.target as Node)) {
+        setShowUnifiedResults(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Unified search across all subjects and competencies
+  const unifiedSearchResults = useMemo((): UnifiedSearchResult[] => {
+    const query = unifiedSearch.trim().toLowerCase();
+    if (query.length < 2) return [];
+
+    const results: UnifiedSearchResult[] = [];
+    const allFachbereiche = cycle ? getFachbereicheByZyklus(parseInt(cycle)) : FACHBEREICHE;
+
+    for (const fb of allFachbereiche) {
+      // Search subject names
+      if (fb.name.toLowerCase().includes(query) || fb.code.toLowerCase().includes(query)) {
+        results.push({
+          type: "subject",
+          label: fb.name,
+          code: fb.code,
+          fachbereich: fb,
+          cycleValues: fb.cycles,
+        });
+      }
+
+      for (const kb of fb.kompetenzbereiche) {
+        // Search area names/codes
+        if (kb.name.toLowerCase().includes(query) || kb.code.toLowerCase().includes(query)) {
+          results.push({
+            type: "area",
+            label: `${kb.name} (${kb.code})`,
+            code: kb.code,
+            fachbereich: fb,
+            cycleValues: fb.cycles,
+          });
+        }
+
+        for (const k of kb.kompetenzen) {
+          // Search competency names/codes
+          if (k.name.toLowerCase().includes(query) || k.code.toLowerCase().includes(query)) {
+            results.push({
+              type: "competency",
+              label: `${k.name} (${k.code})`,
+              code: k.code,
+              fachbereich: fb,
+              cycleValues: fb.cycles,
+            });
+          }
+        }
+      }
+
+      if (results.length >= 20) break;
+    }
+
+    return results.slice(0, 20);
+  }, [unifiedSearch, cycle]);
+
+  const handleUnifiedResultClick = useCallback(
+    (result: UnifiedSearchResult) => {
+      // Auto-select cycle if not selected
+      if (!cycle && result.cycleValues.length > 0) {
+        onCycleChange(result.cycleValues[0].toString());
+      }
+
+      // Select the subject
+      onSubjectChange(result.fachbereich.name, result.fachbereich.code);
+
+      // If it's a competency, also select it
+      if (result.type === "competency" && !competencies.includes(result.code)) {
+        if (competencies.length < MAX_COMPETENCIES) {
+          onCompetenciesChange([...competencies, result.code]);
+        }
+      }
+
+      // Open competencies panel
+      setShowCompetencies(true);
+      setUnifiedSearch("");
+      setShowUnifiedResults(false);
+    },
+    [cycle, competencies, onCycleChange, onSubjectChange, onCompetenciesChange]
+  );
 
   // Build cycles array from i18n
   const cycles = useMemo(
@@ -191,8 +293,6 @@ export function EnhancedCurriculumSelector({
       .filter((kb) => kb.kompetenzen.length > 0);
   }, [selectedFachbereich, competencySearch]);
 
-  const MAX_COMPETENCIES = 5;
-
   // Toggle competency selection
   const toggleCompetency = (code: string) => {
     if (competencies.includes(code)) {
@@ -224,9 +324,6 @@ export function EnhancedCurriculumSelector({
   const getSubjectIcon = (iconName: string) => {
     return ICON_MAP[iconName] || BookOpen;
   };
-
-  // State to control competencies panel visibility with animation
-  const [showCompetencies, setShowCompetencies] = useState(false);
 
   // Handle subject selection - opens competencies panel
   const handleSelectSubject = (fachbereich: Fachbereich) => {
@@ -377,6 +474,86 @@ export function EnhancedCurriculumSelector({
           </div>
         </div>
       )}
+
+      {/* Unified Search */}
+      <div ref={unifiedSearchRef} className="relative">
+        <div className="relative">
+          <Search className="text-text-muted absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+          <input
+            type="text"
+            value={unifiedSearch}
+            onChange={(e) => {
+              setUnifiedSearch(e.target.value);
+              setShowUnifiedResults(e.target.value.trim().length >= 2);
+            }}
+            onFocus={() => {
+              if (unifiedSearch.trim().length >= 2) {
+                setShowUnifiedResults(true);
+              }
+            }}
+            placeholder={tCurr("unifiedSearch")}
+            role="combobox"
+            aria-expanded={showUnifiedResults && unifiedSearchResults.length > 0}
+            aria-controls="unified-search-results"
+            aria-autocomplete="list"
+            className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 w-full rounded-xl border py-3 pr-4 pl-10 text-sm transition-colors focus:ring-2 focus:outline-none"
+          />
+          {unifiedSearch && (
+            <button
+              type="button"
+              onClick={() => {
+                setUnifiedSearch("");
+                setShowUnifiedResults(false);
+              }}
+              className="text-text-muted hover:text-text absolute top-1/2 right-3 -translate-y-1/2"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+        {!unifiedSearch && <p className="text-text-muted mt-1.5 text-xs">{tCurr("searchHint")}</p>}
+        {showUnifiedResults && unifiedSearchResults.length > 0 && (
+          <div
+            id="unified-search-results"
+            role="listbox"
+            className="border-border bg-surface absolute z-20 mt-1 max-h-64 w-full overflow-auto rounded-xl border shadow-lg"
+          >
+            {unifiedSearchResults.map((result, i) => (
+              <button
+                key={`${result.type}-${result.code}-${i}`}
+                type="button"
+                role="option"
+                aria-selected={false}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => handleUnifiedResultClick(result)}
+                className="hover:bg-surface-elevated flex w-full items-center gap-3 px-4 py-2.5 text-left transition-colors"
+              >
+                <span
+                  className="rounded px-1.5 py-0.5 text-[10px] font-bold uppercase"
+                  style={{
+                    backgroundColor: `${result.fachbereich.color}20`,
+                    color: result.fachbereich.color,
+                  }}
+                >
+                  {result.type === "subject"
+                    ? tCurr("searchResultSubject")
+                    : result.type === "area"
+                      ? tCurr("searchResultArea")
+                      : tCurr("searchResultCompetency")}
+                </span>
+                <span className="text-text min-w-0 flex-1 truncate text-sm">{result.label}</span>
+              </button>
+            ))}
+          </div>
+        )}
+        {showUnifiedResults &&
+          unifiedSearch.trim().length >= 2 &&
+          unifiedSearchResults.length === 0 && (
+            <div className="border-border bg-surface absolute z-20 mt-1 w-full rounded-xl border p-4 text-center shadow-lg">
+              <span className="text-text-muted text-sm">{tCurr("noSearchResults")}</span>
+            </div>
+          )}
+      </div>
 
       {/* Cycle Selection - Cards */}
       <div>

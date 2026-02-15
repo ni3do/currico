@@ -293,16 +293,17 @@ export default function Home() {
                       id={mat.id}
                       title={mat.title}
                       description={mat.description}
-                      subject={mat.subject}
-                      cycle={mat.cycle}
+                      subject={mat.subjects[0] || "Allgemein"}
+                      cycle={mat.cycles[0] || ""}
+                      price={mat.price}
                       priceFormatted={mat.priceFormatted}
                       previewUrl={mat.previewUrl}
                       averageRating={mat.averageRating}
                       reviewCount={mat.reviewCount}
-                      subjectPillClass={getSubjectPillClass(mat.subject)}
+                      subjectPillClass={getSubjectPillClass(mat.subjects[0] || "Allgemein")}
                       seller={{
-                        displayName: mat.seller.display_name,
-                        isVerifiedSeller: mat.seller.is_verified_seller,
+                        displayName: mat.seller.displayName,
+                        isVerifiedSeller: mat.seller.isVerifiedSeller,
                       }}
                       href={`/materialien/${mat.id}`}
                     />

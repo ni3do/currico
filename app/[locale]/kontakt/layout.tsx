@@ -21,5 +21,32 @@ export async function generateMetadata({
 }
 
 export default function ContactLayout({ children }: { children: React.ReactNode }) {
-  return children;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    name: "Currico Kontakt",
+    url: "https://currico.ch/de/kontakt",
+    mainEntity: {
+      "@type": "Organization",
+      name: "Currico",
+      url: "https://currico.ch",
+      contactPoint: {
+        "@type": "ContactPoint",
+        email: "info@currico.ch",
+        contactType: "customer service",
+        availableLanguage: ["German", "English"],
+        areaServed: "CH",
+      },
+    },
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      {children}
+    </>
+  );
 }

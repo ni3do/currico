@@ -41,14 +41,8 @@ export interface Material {
   previewUrls?: string[];
   previewCount?: number;
   hasAccess?: boolean;
-  /** Source of truth — always use arrays for display */
   subjects: string[];
-  /** Source of truth — always use arrays for display */
   cycles: string[];
-  /** @derived First element of `subjects[]` — for backwards compat only */
-  subject: string;
-  /** @derived First element of `cycles[]` — for backwards compat only */
-  cycle: string;
   createdAt: string;
   downloadCount: number;
   isApproved: boolean;
@@ -72,8 +66,8 @@ export interface RelatedMaterial {
   title: string;
   price: number;
   priceFormatted: string;
-  subject: string;
-  cycle: string;
+  subjects: string[];
+  cycles: string[];
   verified: boolean;
   previewUrl: string | null;
   sellerName: string | null;
@@ -90,8 +84,6 @@ export type MaterialForPanel = Pick<
   | "isApproved"
   | "subjects"
   | "cycles"
-  | "subject"
-  | "cycle"
   | "downloadCount"
   | "createdAt"
   | "competencies"
@@ -103,7 +95,6 @@ export interface BundleMaterialOption {
   title: string;
   price: number;
   priceFormatted: string;
-  subject: string;
   subjects: string[];
   cycles: string[];
 }
@@ -112,13 +103,14 @@ export interface FeaturedMaterial {
   id: string;
   title: string;
   description: string;
-  subject: string;
-  cycle: string;
+  price: number;
+  subjects: string[];
+  cycles: string[];
   priceFormatted: string;
   previewUrl: string | null;
   averageRating?: number;
   reviewCount?: number;
-  seller: { display_name: string | null; is_verified_seller: boolean };
+  seller: { id: string; displayName: string | null; isVerifiedSeller: boolean };
 }
 
 export interface BundleResource {
@@ -136,9 +128,7 @@ export interface Bundle {
   description: string | null;
   price: number;
   priceFormatted: string;
-  subject: string;
   subjects: string[];
-  cycle: string;
   cycles: string[];
   coverImageUrl: string | null;
   createdAt: string;

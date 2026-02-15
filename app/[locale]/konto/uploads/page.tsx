@@ -177,8 +177,8 @@ export default function AccountUploadsPage() {
               key={item.id}
               id={item.id}
               title={item.title}
-              subject={item.subject}
-              cycle={item.cycle}
+              subject={item.subjects[0] || "Allgemein"}
+              cycle={item.cycles[0] || ""}
               previewUrl={item.previewUrl}
               editHref={`/materialien/${item.id}/edit`}
               badge={{

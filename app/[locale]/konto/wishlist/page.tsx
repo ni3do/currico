@@ -68,7 +68,7 @@ export default function AccountWishlistPage() {
       const q = searchQuery.toLowerCase();
       return (
         item.title.toLowerCase().includes(q) ||
-        item.subject?.toLowerCase().includes(q) ||
+        item.subjects[0]?.toLowerCase().includes(q) ||
         item.seller.displayName?.toLowerCase().includes(q)
       );
     })
@@ -156,8 +156,8 @@ export default function AccountWishlistPage() {
                 key={item.id}
                 id={item.id}
                 title={item.title}
-                subject={item.subject}
-                cycle={item.cycle}
+                subject={item.subjects[0] || "Allgemein"}
+                cycle={item.cycles[0] || ""}
                 previewUrl={item.previewUrl}
                 price={{
                   formatted: item.priceFormatted,
