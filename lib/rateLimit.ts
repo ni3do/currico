@@ -40,6 +40,7 @@ export const rateLimitConfigs: Record<string, RateLimitConfig> = {
   "resources:review": { limit: 5, windowMs: 60 * 1000 }, // 5 per minute
   "resources:comment": { limit: 10, windowMs: 60 * 1000 }, // 10 per minute
   "users:follow": { limit: 20, windowMs: 60 * 1000 }, // 20 per minute
+  "resources:duplicate": { limit: 10, windowMs: 60 * 1000 }, // 10 per minute
 };
 
 export interface RateLimitResult {

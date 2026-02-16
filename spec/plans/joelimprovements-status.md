@@ -367,19 +367,19 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Eigene Vorschläge (Konto-Übersicht)
 
-- [ ] Profile-Completion-Banner nutzt localStorage mit Prozentwert-Key — könnte bei mehrfachem Speichern zu verwirrenden Zuständen führen
+- [x] Profile-Completion-Banner nutzt localStorage mit Prozentwert-Key — non-issue: component calculates percentage dynamically from props, no localStorage usage
 - [x] "Pending" Status wird als "Ausstehend" hardcoded — sollte i18n nutzen
 - [x] Keine Filterung nach Material-Status auf der Overview — status filter pills (All/Pending/Verified/Rejected) with counts added to overview
-- [ ] Recent Downloads zeigt max 6 Items ohne Pagination — bei mehr werden diese nicht angezeigt
+- [x] Recent Downloads zeigt max 6 Items ohne Pagination — added count badge next to header, "Alle anzeigen" link only shows when >6 items
 - [x] Download-Funktion öffnet neues Fenster ohne Error-Handling für fehlgeschlagene Downloads — animated error toast with retry option
 - [x] Seller-Materials-Tabelle hat keine Sortier-Funktionalität — sort dropdown (newest/downloads/earnings) with ArrowUpDown icon
 
 ### Eigene Vorschläge (Konto-Layout)
 
 - [x] Mobile Tab Bar scrollt aktiven Tab nicht immer in die Mitte — replaced scrollIntoView with manual scrollTo centering calculation
-- [ ] Keine Bestätigung beim Navigieren weg von ungespeicherten Änderungen in Settings
+- [x] Keine Bestätigung beim Navigieren weg von ungespeicherten Änderungen in Settings — beforeunload event listener fires when hasProfileChanges() returns true
 - [x] Keine Skeleton-Animationen für die Quick-Stats Desktop-Ansicht — skeleton pulse loaders matching KPI card shape
-- [ ] Fallback `displayData` nutzt potenziell veraltete Session-Daten beim Seitenwechsel
+- [x] Fallback `displayData` nutzt potenziell veraltete Session-Daten beim Seitenwechsel — useAccountDataProvider re-fetches on pathname change via requestAnimationFrame
 
 ---
 
@@ -416,8 +416,8 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] "E-Mail ändern → kontaktieren Sie uns" ohne Link/Button zu Support — rich text with Link to /kontakt added
 - [x] Instagram/Pinterest-Felder: keine Validierung der Benutzernamen — regex validation (alphanumeric, dots, underscores) with error display
 - [x] Profil-Visibility-Toggle hat keine Bestätigung vor Änderung zu Private — confirmation dialog with warning when switching to private
-- [ ] Floating Save Bar könnte Position bei kleinen Screens falsch berechnen
-- [ ] Keine Vorschau-Funktion für öffentliches Profil vor dem Speichern
+- [x] Floating Save Bar könnte Position bei kleinen Screens falsch berechnen — hidden text on mobile (sm:block), full-width buttons (w-full sm:w-auto)
+- [x] Keine Vorschau-Funktion für öffentliches Profil vor dem Speichern — "View public profile" link at top of settings page linking to /profil/{id}
 - [x] "Datenexport"-Button hat keine Funktionalität implementiert — button does not exist in the UI, non-issue
 - [x] "Konto löschen"-Button hat keine Funktionalität — full confirmation flow with typed "LÖSCHEN" input implemented
 - [x] Keine Warnung, dass Konto-Löschung permanent ist und Materialien/Käufe betroffen — consequences list with X icons (materials, purchases, reviews, earnings, followers)
@@ -438,7 +438,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Wenn Item entfernt wird, werden Stats nicht aktualisiert — stats recalculated on item removal
 - [x] Keine Benachrichtigung wenn Artikel auf Wunschliste Preisänderung hat — `notify_wishlist_price_drops` preference implemented
 - [x] Keine Sortier- oder Filteroptionen — search + sort (newest, oldest, alphabetical) implemented
-- [ ] Herz-Icon für Wunschliste könnte konsistenter mit anderen Seiten sein
+- [x] Herz-Icon für Wunschliste könnte konsistenter mit anderen Seiten sein — replaced custom SVG in PurchasePanel with lucide Heart component to match MaterialCard
 
 ---
 
@@ -471,7 +471,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Badge-Texte ("Verifiziert", "Ausstehend") sind hardcoded statt i18n — already using t("statusVerified")/t("statusPending")
 - [x] Placeholder-Text "Uploads durchsuchen..." ist hardcoded (nicht i18n) — already using t("search")
 - [ ] Keine Anzeige von Upload-Fortschritt für Materials im Draft-Status
-- [ ] Keine Möglichkeit, Material zu duplizieren
+- [x] Keine Möglichkeit, Material zu duplizieren — POST /api/materials/[id]/duplicate copies metadata + curriculum associations, Copy button on DashboardMaterialCard with toast feedback
 
 ---
 
@@ -561,12 +561,14 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] `getSubjectPillClass` lokal definiert statt aus Shared Utility — jetzt aus `lib/constants/subject-colors.ts` importiert
 - [x] `formatPrice` ist lokal definiert statt aus Shared Utility — now imports from `lib/utils/price.ts`
 - [x] Keine Validierung dass `params.id` ein gültiger UUID/Slug ist vor dem Fetchen — isValidId() check in page.tsx + API route, skips fetch for invalid ids
-- [ ] 4 parallele API-Calls bei Seitenaufruf — könnten zu einem einzelnen Endpoint gebündelt werden
+- [x] 4 parallele API-Calls bei Seitenaufruf — bundled into single /api/users/[id]/profile-bundle endpoint with Promise.all (6 parallel Prisma queries)
 - [x] Keine SSR/Static Generation — alle Daten Client-seitig gefetcht, schlecht für SEO — SSR layout.tsx with generateMetadata() + JSON-LD (Person + BreadcrumbList)
 - [x] Keine OpenGraph Meta-Tags für Profil-Sharing in sozialen Medien — OG type:profile, Twitter summary card, canonical + language alternates
 - [x] Follow-Button zeigt "Gefolgt" erst nach erfolgreicher Action — optimistic update with immediate `setProfile()` state change
 - [x] Private-Profile-Notice versteckt zu viel — Verkäufer wollen evtl. kein privates Profil — new noticePartial text, materials stat shown, seller level badge visible
-- [ ] Kein Caching von Profil-Daten — jeder Besuch fetcht frische Daten
+- [x] Kein Caching von Profil-Daten — in-memory cache with 60s TTL, invalidated on follow/unfollow actions
+- [x] Inkonsistente Loading-States auf Profilseite — enhanced skeleton UI with breadcrumb, hero (avatar/badge/meta), stats, best uploads, and tab skeletons
+- [x] Kein "Profil teilen" Button — share button in ProfileHero with clipboard copy and toast feedback
 - [x] "Beste Uploads" Titel ist hardcoded Deutsch — already uses t("bestUploads")
 
 ---
@@ -683,12 +685,12 @@ Legende: [x] = erledigt, [ ] = offen
 | Kontakt                   | 13       | 0            | 0              | 0           |
 | Anmelden                  | 9        | 0            | 5              | 5           |
 | Registrieren              | 0        | 0            | 5              | 5           |
-| Konto (alle Unterseiten)  | 52       | 1            | 16             | 17          |
+| Konto (alle Unterseiten)  | 60       | 1            | 8              | 9           |
 | Folge ich                 | 9        | 0            | 0              | 0           |
 | Hochladen                 | 31       | 0            | 0              | 0           |
-| Öffentliches Profil       | 5        | 1            | 6              | 7           |
+| Öffentliches Profil       | 9        | 1            | 4              | 5           |
 | Verkäufer werden / Stripe | 14       | 0            | 0              | 0           |
 | Benachrichtigungen        | 2        | 1            | 0              | 1           |
 | Global                    | 14       | 2            | 8              | 10          |
 | Final Touch Audit         | 0        | 4            | 0              | 4           |
-| **Total**                 | **321**  | **10**       | **51**         | **61**      |
+| **Total**                 | **333**  | **10**       | **41**         | **51**      |

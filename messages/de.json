@@ -20,6 +20,7 @@
   "dashboardCard": {
     "remove": "Entfernen",
     "edit": "Bearbeiten",
+    "duplicate": "Duplizieren",
     "downloads": "Downloads",
     "sales": "Verkäufe",
     "unknownSeller": "Unbekannt"
@@ -2933,7 +2934,10 @@
       "notice": "Dieses Profil ist privat. Nur öffentliche Materialien werden angezeigt.",
       "noticePartial": "Dieses Profil ist privat. Persönliche Informationen sind verborgen, aber öffentliche Materialien sind sichtbar.",
       "sectionTitle": "Privatsphäre-Einstellungen"
-    }
+    },
+    "share": "Teilen",
+    "shareCopied": "Profil-Link kopiert!",
+    "shareLabel": "Profil-Link teilen"
   },
   "collections": {
     "title": "Meine Sammlungen",
@@ -3436,7 +3440,9 @@
       "showAll": "Alle anzeigen",
       "empty": "Noch keine hochgeladenen Materialien",
       "emptyDescription": "Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen.",
-      "uploadFirst": "Material hochladen"
+      "uploadFirst": "Material hochladen",
+      "duplicateSuccess": "Material dupliziert! Bearbeiten Sie die Kopie nach Bedarf.",
+      "duplicateError": "Fehler beim Duplizieren. Bitte versuchen Sie es erneut."
     },
     "comments": {
       "title": "Kommentare zu Ihren Materialien",
@@ -3602,6 +3608,8 @@
       "errorSaving": "Fehler beim Speichern. Bitte versuchen Sie es erneut.",
       "errorSavingGeneric": "Fehler beim Speichern",
       "successSaved": "Änderungen gespeichert!",
+      "previewProfile": "Öffentliches Profil ansehen",
+      "previewProfileDesc": "So sehen andere Ihr Profil",
       "avatarUploaded": "Profilbild erfolgreich hochgeladen!",
       "avatarUploadError": "Fehler beim Hochladen. Bitte versuchen Sie es erneut.",
       "avatarUploadErrorGeneric": "Fehler beim Hochladen",

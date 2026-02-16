@@ -633,14 +633,23 @@ export default function AccountOverviewPage() {
         {/* Recent Downloads */}
         <div className="border-border bg-surface rounded-2xl border">
           <div className="border-border flex items-center justify-between border-b px-5 py-4">
-            <h2 className="text-text text-base font-semibold">{t("overview.recentDownloads")}</h2>
-            <Link
-              href="/konto/library"
-              className="text-primary flex items-center gap-1 text-sm font-medium hover:underline"
-            >
-              {t("overview.viewAll")}
-              <ArrowUpRight className="h-3.5 w-3.5" />
-            </Link>
+            <div className="flex items-center gap-2">
+              <h2 className="text-text text-base font-semibold">{t("overview.recentDownloads")}</h2>
+              {!loading && libraryItems.length > 0 && (
+                <span className="bg-bg-secondary text-text-muted rounded-full px-2 py-0.5 text-xs font-medium">
+                  {libraryItems.length}
+                </span>
+              )}
+            </div>
+            {libraryItems.length > 6 && (
+              <Link
+                href="/konto/library"
+                className="text-primary flex items-center gap-1 text-sm font-medium hover:underline"
+              >
+                {t("overview.viewAll")}
+                <ArrowUpRight className="h-3.5 w-3.5" />
+              </Link>
+            )}
           </div>
           <div className="p-4">
             {/* Download error/success toast */}

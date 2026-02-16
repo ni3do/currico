@@ -20,6 +20,7 @@
   "dashboardCard": {
     "remove": "Remove",
     "edit": "Edit",
+    "duplicate": "Duplicate",
     "downloads": "Downloads",
     "sales": "Sales",
     "unknownSeller": "Unknown"
@@ -2933,7 +2934,10 @@
       "notice": "This profile is private. Only public materials are displayed.",
       "noticePartial": "This profile is private. Personal information is hidden, but public materials are visible.",
       "sectionTitle": "Privacy Settings"
-    }
+    },
+    "share": "Share",
+    "shareCopied": "Profile link copied!",
+    "shareLabel": "Share profile link"
   },
   "collections": {
     "title": "My Collections",
@@ -3436,7 +3440,9 @@
       "showAll": "Show all",
       "empty": "No uploaded materials yet",
       "emptyDescription": "Share your teaching materials with other teachers.",
-      "uploadFirst": "Upload material"
+      "uploadFirst": "Upload material",
+      "duplicateSuccess": "Material duplicated! Edit the copy as needed.",
+      "duplicateError": "Failed to duplicate. Please try again."
     },
     "comments": {
       "title": "Comments on your materials",
@@ -3602,6 +3608,8 @@
       "errorSaving": "Failed to save. Please try again.",
       "errorSavingGeneric": "Failed to save",
       "successSaved": "Changes saved!",
+      "previewProfile": "View public profile",
+      "previewProfileDesc": "How others see your profile",
       "avatarUploaded": "Profile picture uploaded successfully!",
       "avatarUploadError": "Upload failed. Please try again.",
       "avatarUploadErrorGeneric": "Upload failed",
