@@ -24,6 +24,8 @@ export default function AdminDocumentsPage() {
   const [total, setTotal] = useState(0);
   const [selectedMaterial, setSelectedMaterial] = useState<AdminMaterial | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [showRejectModal, setShowRejectModal] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState("");
   const [actionLoading, setActionLoading] = useState(false);
 
   const getStatusLabel = (status: string) => {
@@ -86,18 +88,23 @@ export default function AdminDocumentsPage() {
     }
   };
 
-  const handleReject = async (materialId: string) => {
+  const handleReject = async (materialId: string, reason?: string) => {
     setActionLoading(true);
     try {
+      const body: Record<string, string> = { id: materialId, status: "REJECTED" };
+      if (reason?.trim()) body.rejection_reason = reason.trim();
+
       const response = await fetch("/api/admin/materials", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: materialId, status: "REJECTED" }),
+        body: JSON.stringify(body),
       });
 
       if (response.ok) {
         fetchMaterials();
         setShowModal(false);
+        setShowRejectModal(false);
+        setRejectionReason("");
         setSelectedMaterial(null);
       } else {
         const error = await response.json();
@@ -459,7 +466,10 @@ export default function AdminDocumentsPage() {
                   )}
                   {selectedMaterial.status !== "REJECTED" && (
                     <button
-                      onClick={() => handleReject(selectedMaterial.id)}
+                      onClick={() => {
+                        setRejectionReason("");
+                        setShowRejectModal(true);
+                      }}
                       disabled={actionLoading}
                       className="flex items-center justify-center gap-2 rounded-lg bg-[var(--badge-error-bg)] px-4 py-3 text-sm font-medium text-[var(--badge-error-text)] hover:opacity-90 disabled:opacity-50"
                     >
@@ -513,6 +523,66 @@ export default function AdminDocumentsPage() {
                   className="border-border bg-surface text-text hover:bg-bg w-full rounded-lg border px-4 py-2.5 text-sm font-medium"
                 >
                   {t("close")}
+                </button>
+              </div>
+            </div>
+          </FocusTrap>
+        </div>
+      )}
+
+      {/* Rejection Reason Modal */}
+      {showRejectModal && selectedMaterial && (
+        <div className="modal-overlay">
+          <FocusTrap
+            onEscape={() => {
+              setShowRejectModal(false);
+              setRejectionReason("");
+            }}
+          >
+            <div className="modal-content mx-4 max-w-md">
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="text-text text-lg font-semibold">{t("rejectReason.title")}</h3>
+                <button
+                  onClick={() => {
+                    setShowRejectModal(false);
+                    setRejectionReason("");
+                  }}
+                  className="text-text-muted hover:text-text"
+                >
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <p className="text-text-muted mb-3 text-sm">{t("rejectReason.description")}</p>
+              <textarea
+                value={rejectionReason}
+                onChange={(e) => setRejectionReason(e.target.value)}
+                placeholder={t("rejectReason.placeholder")}
+                className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary w-full rounded-lg border px-3 py-2 text-sm focus:ring-1 focus:outline-none"
+                rows={3}
+              />
+              <div className="mt-4 flex gap-3">
+                <button
+                  onClick={() => {
+                    setShowRejectModal(false);
+                    setRejectionReason("");
+                  }}
+                  className="border-border bg-surface text-text hover:bg-bg flex-1 rounded-lg border px-4 py-2 text-sm font-medium"
+                >
+                  {t("close")}
+                </button>
+                <button
+                  onClick={() => handleReject(selectedMaterial.id, rejectionReason)}
+                  disabled={actionLoading}
+                  className="flex-1 rounded-lg bg-[var(--badge-error-bg)] px-4 py-2 text-sm font-medium text-[var(--badge-error-text)] hover:opacity-90 disabled:opacity-50"
+                >
+                  {t("rejectReason.confirm")}
                 </button>
               </div>
             </div>

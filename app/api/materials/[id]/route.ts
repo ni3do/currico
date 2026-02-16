@@ -5,6 +5,7 @@ import { getCurrentUserId } from "@/lib/auth";
 import { requireAdmin } from "@/lib/admin-auth";
 import { updateMaterialSchema } from "@/lib/validations/material";
 import { formatPrice } from "@/lib/utils/price";
+import { getFileFormatLabel } from "@/lib/utils/file-format";
 import { getStorage, isLegacyLocalPath, getLegacyFilePath } from "@/lib/storage";
 import { unlink } from "fs/promises";
 
@@ -244,21 +245,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       : [];
 
     // Derive file format from file_url extension
-    const fileExt = material.file_url
-      ? material.file_url.split(".").pop()?.toLowerCase() || "pdf"
-      : "pdf";
-    const formatMap: Record<string, string> = {
-      pdf: "PDF",
-      doc: "Word",
-      docx: "Word",
-      ppt: "PowerPoint",
-      pptx: "PowerPoint",
-      xls: "Excel",
-      xlsx: "Excel",
-      one: "OneNote",
-      onetoc2: "OneNote",
-    };
-    const fileFormat = formatMap[fileExt] || fileExt.toUpperCase();
+    const fileFormat = getFileFormatLabel(material.file_url);
 
     const transformedMaterial = {
       id: material.id,

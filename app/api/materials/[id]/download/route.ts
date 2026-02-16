@@ -6,6 +6,7 @@ import { readFile } from "fs/promises";
 import path from "path";
 import { getStorage, isLegacyLocalPath, getLegacyFilePath } from "@/lib/storage";
 import { checkAndUpdateVerification } from "@/lib/utils/verified-seller";
+import { checkDownloadMilestone } from "@/lib/notifications";
 
 /**
  * Content type map for file extensions
@@ -157,6 +158,11 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           resource_id: id,
         },
       });
+
+      // Check for download milestones (fire-and-forget)
+      checkDownloadMilestone(id).catch((err) =>
+        console.error("Milestone check failed after free download:", err)
+      );
     }
 
     const storage = getStorage();
@@ -308,6 +314,11 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       // Check if seller now qualifies for verified status (fire-and-forget)
       checkAndUpdateVerification(material.seller_id).catch((err) =>
         console.error("Verification check failed after download:", err)
+      );
+
+      // Check for download milestones (fire-and-forget)
+      checkDownloadMilestone(id).catch((err) =>
+        console.error("Milestone check failed after free download record:", err)
       );
     }
 

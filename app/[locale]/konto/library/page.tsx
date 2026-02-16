@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useSession } from "next-auth/react";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
@@ -9,6 +9,8 @@ import { AlertCircle, BookOpen, Gift, RefreshCw, ShoppingBag, Sparkles } from "l
 import { DashboardMaterialCard } from "@/components/ui/DashboardMaterialCard";
 import { useAccountData } from "@/lib/hooks/useAccountData";
 import type { LibraryItem } from "@/lib/types/account";
+
+type TypeFilter = "all" | "free" | "purchased";
 
 export default function AccountLibraryPage() {
   const { status } = useSession();
@@ -21,6 +23,7 @@ export default function AccountLibraryPage() {
   const [error, setError] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"newest" | "oldest" | "title">("newest");
+  const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
 
   // Fetch library items
   const fetchLibrary = useCallback(async (search?: string) => {
@@ -54,13 +57,22 @@ export default function AccountLibraryPage() {
     return () => clearTimeout(debounce);
   }, [status, searchQuery, fetchLibrary]);
 
-  // Client-side sort (API returns newest first by default)
-  const sortedItems = [...libraryItems].sort((a, b) => {
+  // Client-side filter and sort
+  const filteredAndSortedItems = useMemo(() => {
+    let items = [...libraryItems];
+
+    // Apply type filter
+    if (typeFilter !== "all") {
+      items = items.filter((i) => i.type === typeFilter);
+    }
+
+    // Apply sort
     if (sortBy === "oldest")
-      return new Date(a.acquiredAt).getTime() - new Date(b.acquiredAt).getTime();
-    if (sortBy === "title") return a.title.localeCompare(b.title);
-    return 0; // "newest" is the default order from API
-  });
+      items.sort((a, b) => new Date(a.acquiredAt).getTime() - new Date(b.acquiredAt).getTime());
+    else if (sortBy === "title") items.sort((a, b) => a.title.localeCompare(b.title));
+
+    return items;
+  }, [libraryItems, typeFilter, sortBy]);
 
   const isLoading = loading || sharedLoading;
 
@@ -152,6 +164,46 @@ export default function AccountLibraryPage() {
           </select>
         </div>
 
+        {/* Type Filter Pills */}
+        {!isLoading && libraryItems.length > 0 && (
+          <div className="flex gap-1.5 px-6 pt-3">
+            {(
+              [
+                { value: "all", label: t("filterAll"), count: libraryItems.length },
+                {
+                  value: "free",
+                  label: t("filterFree"),
+                  count: libraryItems.filter((i) => i.type === "free").length,
+                },
+                {
+                  value: "purchased",
+                  label: t("filterPurchased"),
+                  count: libraryItems.filter((i) => i.type === "purchased").length,
+                },
+              ] as const
+            ).map((filter) => (
+              <button
+                key={filter.value}
+                onClick={() => setTypeFilter(filter.value)}
+                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
+                  typeFilter === filter.value
+                    ? "bg-primary text-text-on-accent"
+                    : "bg-bg text-text-muted hover:text-text hover:bg-bg-secondary"
+                }`}
+              >
+                {filter.label}
+                <span
+                  className={`rounded-full px-1.5 py-0.5 text-[10px] leading-none ${
+                    typeFilter === filter.value ? "bg-white/20" : "bg-border"
+                  }`}
+                >
+                  {filter.count}
+                </span>
+              </button>
+            ))}
+          </div>
+        )}
+
         <div className="p-6">
           {error ? (
             <div className="py-12 text-center">
@@ -186,9 +238,9 @@ export default function AccountLibraryPage() {
                 </div>
               ))}
             </div>
-          ) : sortedItems.length > 0 ? (
+          ) : filteredAndSortedItems.length > 0 ? (
             <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
-              {sortedItems.map((item) => (
+              {filteredAndSortedItems.map((item) => (
                 <DashboardMaterialCard
                   key={item.id}
                   id={item.id}

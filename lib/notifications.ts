@@ -158,6 +158,107 @@ export function notifyCommentReply(
 }
 
 /**
+ * Notify a seller that their material was approved.
+ */
+export function notifyMaterialApproved(
+  authorId: string,
+  resourceTitle: string,
+  materialId: string
+) {
+  createNotification({
+    userId: authorId,
+    type: "SYSTEM",
+    title: `Material freigegeben: ${resourceTitle}`,
+    body: `Ihr Material "${resourceTitle}" wurde geprüft und ist jetzt öffentlich sichtbar.`,
+    link: `/materialien/${materialId}`,
+  }).catch((err) => console.error("Failed to create material approved notification:", err));
+}
+
+/**
+ * Notify a seller that their material was rejected.
+ */
+export function notifyMaterialRejected(
+  authorId: string,
+  resourceTitle: string,
+  rejectionReason?: string
+) {
+  const body = rejectionReason
+    ? `Ihr Material "${resourceTitle}" wurde abgelehnt. Grund: ${rejectionReason}`
+    : `Ihr Material "${resourceTitle}" wurde abgelehnt. Bitte überprüfen Sie die Richtlinien und laden Sie es erneut hoch.`;
+
+  createNotification({
+    userId: authorId,
+    type: "SYSTEM",
+    title: `Material abgelehnt: ${resourceTitle}`,
+    body,
+    link: "/konto/uploads",
+  }).catch((err) => console.error("Failed to create material rejected notification:", err));
+}
+
+/**
+ * Notify a user that they were manually verified as a seller by an admin.
+ */
+export function notifyManualVerification(userId: string) {
+  createNotification({
+    userId,
+    type: "SYSTEM",
+    title: "Verkäufer-Verifizierung bestätigt",
+    body: "Ihr Konto wurde manuell als verifizierter Verkäufer freigeschaltet. Sie erhalten nun das Verifizierungsabzeichen.",
+    link: "/konto",
+  }).catch((err) => console.error("Failed to create manual verification notification:", err));
+}
+
+/**
+ * Check if a resource has hit a download milestone and notify the author.
+ * Thresholds: 10, 50, 100, 500, 1000
+ * Deduplicates by checking existing milestone notifications.
+ */
+export async function checkDownloadMilestone(resourceId: string) {
+  const MILESTONES = [10, 50, 100, 500, 1000];
+
+  const resource = await prisma.resource.findUnique({
+    where: { id: resourceId },
+    select: {
+      title: true,
+      seller_id: true,
+      _count: {
+        select: { downloads: true, transactions: true },
+      },
+    },
+  });
+
+  if (!resource) return;
+
+  const totalDownloads = resource._count.downloads + resource._count.transactions;
+
+  // Find the highest milestone reached
+  const reached = MILESTONES.filter((m) => totalDownloads >= m);
+  if (reached.length === 0) return;
+
+  const milestone = reached[reached.length - 1];
+
+  // Check if we already notified for this milestone
+  const existing = await prisma.notification.findFirst({
+    where: {
+      user_id: resource.seller_id,
+      type: "SYSTEM",
+      title: { contains: `${milestone} Downloads` },
+      body: { contains: resource.title },
+    },
+  });
+
+  if (existing) return;
+
+  createNotification({
+    userId: resource.seller_id,
+    type: "SYSTEM",
+    title: `Meilenstein: ${milestone} Downloads erreicht!`,
+    body: `Ihr Material "${resource.title}" hat ${milestone} Downloads erreicht. Herzlichen Glückwunsch!`,
+    link: "/konto/uploads",
+  }).catch((err) => console.error("Failed to create download milestone notification:", err));
+}
+
+/**
  * Notify followers when a seller publishes new material.
  */
 export function notifyNewMaterial(

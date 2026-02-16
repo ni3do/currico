@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { getSubjectTextColorByName } from "@/lib/constants/subject-colors";
+import { MaterialTypeBadge } from "@/components/ui/MaterialTypeBadge";
 
 export interface DashboardMaterialCardProps {
   id: string;
@@ -51,6 +52,9 @@ export interface DashboardMaterialCardProps {
     displayName: string | null;
   };
 
+  // File format key for MaterialTypeBadge (e.g. "pdf", "word")
+  fileFormat?: string;
+
   // Edit link (for uploads)
   editHref?: string;
 
@@ -69,6 +73,7 @@ export function DashboardMaterialCard({
   price,
   stats,
   seller,
+  fileFormat,
   editHref,
   onRemove,
 }: DashboardMaterialCardProps) {
@@ -118,6 +123,11 @@ export function DashboardMaterialCard({
         ) : (
           <div className="flex h-full w-full items-center justify-center">
             <FileText className="text-text-faint h-8 w-8" />
+          </div>
+        )}
+        {fileFormat && (
+          <div className="absolute bottom-2 left-2 z-[1]">
+            <MaterialTypeBadge format={fileFormat} size="sm" />
           </div>
         )}
       </div>

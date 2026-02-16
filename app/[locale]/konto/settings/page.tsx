@@ -14,6 +14,7 @@ import {
   Eye,
   EyeOff,
   ChevronDown,
+  AlertTriangle,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
@@ -76,6 +77,7 @@ export default function SettingsProfilePage() {
     is_private: false,
   });
   const [initialProfileData, setInitialProfileData] = useState<typeof profileFormData | null>(null);
+  const [showPrivateConfirm, setShowPrivateConfirm] = useState(false);
   const [profileErrors, setProfileErrors] = useState<Record<string, string>>({});
   const [profileMessage, setProfileMessage] = useState<{
     type: "success" | "error";
@@ -680,7 +682,14 @@ export default function SettingsProfilePage() {
             </div>
             <button
               type="button"
-              onClick={() => handleProfileFieldChange("is_private", !profileFormData.is_private)}
+              onClick={() => {
+                // Show confirmation when switching TO private
+                if (!profileFormData.is_private) {
+                  setShowPrivateConfirm(true);
+                } else {
+                  handleProfileFieldChange("is_private", false);
+                }
+              }}
               className="relative"
               role="switch"
               aria-checked={profileFormData.is_private}
@@ -694,6 +703,49 @@ export default function SettingsProfilePage() {
               </div>
             </button>
           </div>
+
+          {/* Privacy Confirmation Dialog */}
+          <AnimatePresence>
+            {showPrivateConfirm && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="border-warning/30 bg-warning/5 mt-4 rounded-lg border p-4">
+                  <div className="flex items-start gap-3">
+                    <AlertTriangle className="text-warning mt-0.5 h-5 w-5 flex-shrink-0" />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-text text-sm font-semibold">
+                        {tSettings("privateConfirmTitle")}
+                      </p>
+                      <p className="text-text-muted mt-1 text-sm">
+                        {tSettings("privateConfirmDesc")}
+                      </p>
+                      <div className="mt-3 flex gap-2">
+                        <button
+                          onClick={() => {
+                            handleProfileFieldChange("is_private", true);
+                            setShowPrivateConfirm(false);
+                          }}
+                          className="bg-warning text-text-on-accent rounded-lg px-3 py-1.5 text-sm font-medium transition-colors hover:opacity-90"
+                        >
+                          {tSettings("privateConfirmAction")}
+                        </button>
+                        <button
+                          onClick={() => setShowPrivateConfirm(false)}
+                          className="border-border text-text-muted hover:text-text rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors"
+                        >
+                          {tSettings("privateConfirmCancel")}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 

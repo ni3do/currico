@@ -65,18 +65,20 @@ function AccountLayoutInner({ children }: { children: ReactNode }) {
     }
   }, [status, session?.user?.needsOnboarding, router]);
 
-  // Scroll active mobile tab into view
+  // Scroll active mobile tab into view (manual centering for reliability)
   useEffect(() => {
-    if (tabBarRef.current) {
-      const activeEl = tabBarRef.current.querySelector('[data-active="true"]') as HTMLElement;
-      if (activeEl) {
-        activeEl.scrollIntoView({
-          behavior: "smooth",
-          block: "nearest",
-          inline: "center",
-        });
-      }
-    }
+    const container = tabBarRef.current;
+    if (!container) return;
+    const activeEl = container.querySelector('[data-active="true"]') as HTMLElement;
+    if (!activeEl) return;
+
+    // Calculate scroll position to center the active tab
+    const containerWidth = container.offsetWidth;
+    const activeLeft = activeEl.offsetLeft;
+    const activeWidth = activeEl.offsetWidth;
+    const scrollTarget = activeLeft - containerWidth / 2 + activeWidth / 2;
+
+    container.scrollTo({ left: scrollTarget, behavior: "smooth" });
   }, [activeTab]);
 
   // Show loading state while checking auth or redirecting

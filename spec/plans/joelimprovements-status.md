@@ -369,16 +369,16 @@ Legende: [x] = erledigt, [ ] = offen
 
 - [ ] Profile-Completion-Banner nutzt localStorage mit Prozentwert-Key — könnte bei mehrfachem Speichern zu verwirrenden Zuständen führen
 - [x] "Pending" Status wird als "Ausstehend" hardcoded — sollte i18n nutzen
-- [ ] Keine Filterung nach Material-Status auf der Overview
+- [x] Keine Filterung nach Material-Status auf der Overview — status filter pills (All/Pending/Verified/Rejected) with counts added to overview
 - [ ] Recent Downloads zeigt max 6 Items ohne Pagination — bei mehr werden diese nicht angezeigt
-- [ ] Download-Funktion öffnet neues Fenster ohne Error-Handling für fehlgeschlagene Downloads
-- [ ] Seller-Materials-Tabelle hat keine Sortier-Funktionalität
+- [x] Download-Funktion öffnet neues Fenster ohne Error-Handling für fehlgeschlagene Downloads — animated error toast with retry option
+- [x] Seller-Materials-Tabelle hat keine Sortier-Funktionalität — sort dropdown (newest/downloads/earnings) with ArrowUpDown icon
 
 ### Eigene Vorschläge (Konto-Layout)
 
-- [ ] Mobile Tab Bar scrollt aktiven Tab nicht immer in die Mitte — `scrollIntoView` Positionierung verbessern
+- [x] Mobile Tab Bar scrollt aktiven Tab nicht immer in die Mitte — replaced scrollIntoView with manual scrollTo centering calculation
 - [ ] Keine Bestätigung beim Navigieren weg von ungespeicherten Änderungen in Settings
-- [ ] Keine Skeleton-Animationen für die Quick-Stats Desktop-Ansicht
+- [x] Keine Skeleton-Animationen für die Quick-Stats Desktop-Ansicht — skeleton pulse loaders matching KPI card shape
 - [ ] Fallback `displayData` nutzt potenziell veraltete Session-Daten beim Seitenwechsel
 
 ---
@@ -415,16 +415,16 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Passwort ändern Funktion fehlt komplett — POST /api/auth/change-password with bcrypt verify, rate limiting, strength validation; form in account settings with show/hide toggles, autocomplete hints, error code→i18n mapping, OAuth-only fallback message
 - [x] "E-Mail ändern → kontaktieren Sie uns" ohne Link/Button zu Support — rich text with Link to /kontakt added
 - [x] Instagram/Pinterest-Felder: keine Validierung der Benutzernamen — regex validation (alphanumeric, dots, underscores) with error display
-- [ ] Profil-Visibility-Toggle hat keine Bestätigung vor Änderung zu Private
+- [x] Profil-Visibility-Toggle hat keine Bestätigung vor Änderung zu Private — confirmation dialog with warning when switching to private
 - [ ] Floating Save Bar könnte Position bei kleinen Screens falsch berechnen
 - [ ] Keine Vorschau-Funktion für öffentliches Profil vor dem Speichern
 - [x] "Datenexport"-Button hat keine Funktionalität implementiert — button does not exist in the UI, non-issue
 - [x] "Konto löschen"-Button hat keine Funktionalität — full confirmation flow with typed "LÖSCHEN" input implemented
-- [ ] Keine Warnung, dass Konto-Löschung permanent ist und Materialien/Käufe betroffen
+- [x] Keine Warnung, dass Konto-Löschung permanent ist und Materialien/Käufe betroffen — consequences list with X icons (materials, purchases, reviews, earnings, followers)
 - [ ] Keine Zwei-Faktor-Authentifizierung (2FA) Option
-- [ ] Benachrichtigungs-Prefs zeigen nur Erfolg/Fehler als kurze Toast — besseres Feedback nötig
+- [x] Benachrichtigungs-Prefs zeigen nur Erfolg/Fehler als kurze Toast — descriptive feedback shows which notification was toggled with animated pill
 - [ ] Keine Unterteilung in "E-Mail" vs. "In-App" Benachrichtigungen
-- [ ] Keine Batch-Option "Alle Benachrichtigungen deaktivieren"
+- [x] Keine Batch-Option "Alle Benachrichtigungen deaktivieren" — batch toggle with Bell/BellOff icons at top of notifications page
 
 ---
 
@@ -450,7 +450,7 @@ Legende: [x] = erledigt, [ ] = offen
 
 - [x] Statistik-Karten verwenden hardcoded deutsche Texte ("Gesamt in Bibliothek", "Gratis erhalten", "Gekauft") — already using i18n t("stats.total/free/purchased")
 - [x] Suchfunktion: wenn Suchfeld geleert wird, wird nicht neu geladen — debounced fetch on searchQuery change
-- [ ] Keine Filteroptionen für Material-Typ (kostenlos vs. kostenpflichtig)
+- [x] Keine Filteroptionen für Material-Typ (kostenlos vs. kostenpflichtig) — filter pills (All/Free/Purchased) with counts
 - [x] Badge-Text "Verifiziert" ist hardcoded statt i18n — already using t("badgeVerified")
 - [x] Keine Sortieroptionen (nach Datum, Preis, Bewertung etc.) — sort by newest, oldest, alphabetical implemented
 - [ ] Keine Bulk-Actions (z.B. mehrere auswählen und zu Sammlung hinzufügen)
@@ -521,15 +521,15 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Nach dem Upload
 
-- [ ] Mehrere Dokumente vom gleichen Typ uploaden möglich machen
+- ~~Mehrere Dokumente vom gleichen Typ uploaden möglich machen~~ — **DROPPED: feature not needed**
 - [x] "Zurück zum Profil" Link richtig verlinken — auto-redirect removed, "Back to uploads" button added
-- [ ] Tag von Material-Typ angleichen
+- [x] Tag von Material-Typ angleichen — shared `getFileFormat` utility extracted to `lib/utils/file-format.ts`, MaterialTypeBadge now shown on DashboardMaterialCard (uploads page) and seller dashboard overview (konto page), detail API refactored to use shared utility
 - [x] Vor Veröffentlichung: Übersicht wie es auf der Materialseite aussehen wird — PublishPreviewModal shows card preview + data summary before publishing
 - [x] "Verifizierte Dokumente" umbenennen zu "Geprüft" — renamed 12 document-status i18n keys from "Verifiziert"/"Verified" to "Geprüft"/"Reviewed" in both de.json and en.json
 
 ### Verkäufer-Dashboard
 
-- [ ] Downloads überarbeiten (funktioniert noch nicht)
+- [x] Downloads überarbeiten (funktioniert noch nicht) — seller dashboard API now returns `totalPurchases` and per-material `purchases` count; KPI cards expanded to 4 (earnings, downloads, purchases, contributions); materials table gains purchases column; `SellerStats` type updated with `totalPurchases`; i18n keys added for de/en
 - [x] Einnahmen total anzeigen (nicht monatlich) — i18n key `accountPage.overview.thisMonth` already reads "Gesamt", API returns lifetime total
 
 ### Eigene Vorschläge (Hochladen)
@@ -683,12 +683,12 @@ Legende: [x] = erledigt, [ ] = offen
 | Kontakt                   | 13       | 0            | 0              | 0           |
 | Anmelden                  | 9        | 0            | 5              | 5           |
 | Registrieren              | 0        | 0            | 5              | 5           |
-| Konto (alle Unterseiten)  | 41       | 2            | 26             | 28          |
+| Konto (alle Unterseiten)  | 51       | 2            | 16             | 18          |
 | Folge ich                 | 9        | 0            | 0              | 0           |
-| Hochladen                 | 29       | 3            | 0              | 3           |
+| Hochladen                 | 31       | 0            | 0              | 0           |
 | Öffentliches Profil       | 5        | 1            | 6              | 7           |
 | Verkäufer werden / Stripe | 14       | 0            | 0              | 0           |
 | Benachrichtigungen        | 0        | 3            | 0              | 3           |
 | Global                    | 14       | 2            | 8              | 10          |
 | Final Touch Audit         | 0        | 4            | 0              | 4           |
-| **Total**                 | **304**  | **17**       | **62**         | **79**      |
+| **Total**                 | **316**  | **14**       | **52**         | **66**      |

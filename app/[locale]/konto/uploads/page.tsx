@@ -180,6 +180,7 @@ export default function AccountUploadsPage() {
               subject={item.subjects[0] || "Allgemein"}
               cycle={item.cycles[0] || ""}
               previewUrl={item.previewUrl}
+              fileFormat={item.fileFormat}
               editHref={`/materialien/${item.id}/edit`}
               badge={{
                 label:
