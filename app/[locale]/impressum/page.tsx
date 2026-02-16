@@ -7,6 +7,10 @@ import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { Building2, Mail, Globe, Scale, Users } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 
+const AUTHORIZED_REPRESENTATIVES = ["p1", "p2", "p3"] as const;
+
+const DISCLAIMER_SECTIONS = ["liability", "links", "copyright", "userContent"] as const;
+
 export default function ImpressumPage() {
   const t = useTranslations("impressumPage");
   const tCommon = useTranslations("common");
@@ -111,7 +115,7 @@ export default function ImpressumPage() {
             <h2 className="text-text text-lg font-semibold">{t("responsible.title")}</h2>
           </div>
           <div className="space-y-3">
-            {(["p1", "p2", "p3"] as const).map((key) => (
+            {AUTHORIZED_REPRESENTATIVES.map((key) => (
               <div
                 key={key}
                 className="bg-bg-secondary flex items-center justify-between rounded-lg px-4 py-3"
@@ -127,27 +131,24 @@ export default function ImpressumPage() {
         </div>
 
         {/* Disclaimer */}
-        <div className="border-border bg-surface mt-8 rounded-xl border p-6">
-          <h2 className="text-text mb-4 text-lg font-semibold">{t("disclaimer.title")}</h2>
+        <section
+          className="border-border bg-surface mt-8 rounded-xl border p-6"
+          aria-labelledby="disclaimer-heading"
+        >
+          <h2 id="disclaimer-heading" className="text-text mb-4 text-lg font-semibold">
+            {t("disclaimer.title")}
+          </h2>
           <div className="text-text-muted space-y-4 text-sm">
-            <div>
-              <h3 className="text-text mb-1 font-medium">{t("disclaimer.liability.title")}</h3>
-              <p>{t("disclaimer.liability.content")}</p>
-            </div>
-            <div>
-              <h3 className="text-text mb-1 font-medium">{t("disclaimer.links.title")}</h3>
-              <p>{t("disclaimer.links.content")}</p>
-            </div>
-            <div>
-              <h3 className="text-text mb-1 font-medium">{t("disclaimer.copyright.title")}</h3>
-              <p>{t("disclaimer.copyright.content")}</p>
-            </div>
-            <div>
-              <h3 className="text-text mb-1 font-medium">{t("disclaimer.userContent.title")}</h3>
-              <p>{t("disclaimer.userContent.content")}</p>
-            </div>
+            {DISCLAIMER_SECTIONS.map((key) => (
+              <section key={key} aria-labelledby={`disclaimer-${key}`}>
+                <h3 id={`disclaimer-${key}`} className="text-text mb-1 font-medium">
+                  {t(`disclaimer.${key}.title`)}
+                </h3>
+                <p>{t(`disclaimer.${key}.content`)}</p>
+              </section>
+            ))}
           </div>
-        </div>
+        </section>
 
         {/* Related Legal Pages */}
         <div className="border-border mt-8 rounded-xl border p-6">

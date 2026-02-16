@@ -33,7 +33,7 @@ export default async function ImpressumLayout({
   const jsonLd = [
     {
       "@context": "https://schema.org",
-      "@type": "Organization",
+      "@type": ["Organization", "LocalBusiness"],
       name: "Currico",
       legalName: "Angle Labs GmbH",
       url: "https://www.currico.ch",
@@ -44,9 +44,38 @@ export default async function ImpressumLayout({
         streetAddress: "Zellmatte 6",
         postalCode: "6214",
         addressLocality: "Schenkon",
+        addressRegion: "LU",
         addressCountry: "CH",
       },
       vatID: "CHE-216.579.392",
+      areaServed: {
+        "@type": "Country",
+        name: "Switzerland",
+      },
+      contactPoint: {
+        "@type": "ContactPoint",
+        contactType: locale === "de" ? "Kundendienst" : "Customer Support",
+        email: "info@currico.ch",
+        availableLanguage: ["German", "English"],
+      },
+      founder: [
+        {
+          "@type": "Person",
+          name: "Simon Wachter",
+          jobTitle:
+            locale === "de" ? "Vorsitzender der Geschäftsführung" : "Chairman of Management",
+        },
+        {
+          "@type": "Person",
+          name: "Lucas Schenck",
+          jobTitle: locale === "de" ? "Geschäftsführer" : "Managing Director",
+        },
+        {
+          "@type": "Person",
+          name: "Jonas Wachter",
+          jobTitle: locale === "de" ? "Geschäftsführer" : "Managing Director",
+        },
+      ],
       description:
         locale === "de"
           ? "Schweizer Plattform für Lehrpersonen zum Kaufen und Verkaufen von Unterrichtsmaterialien."

@@ -200,8 +200,8 @@ Legende: [x] = erledigt, [ ] = offen
 
 ## 6. Impressum (`/impressum`)
 
-- [ ] GmbH nachtragen (Firmenform aktualisieren)
-- [ ] Version update (optional)
+- [x] GmbH nachtragen (Firmenform aktualisieren) — already reflected as "Angle Labs GmbH" in company name and "GmbH" in legal form
+- [x] Version update (optional) — bumped to Version 1.3
 - [x] Light mode Inselfarben gleich machen (Farbkonsistenz) — standardized text-text-secondary → text-text-muted
 - [x] Kontakt Currico Link führt nach Mainpage (statt toter Link)
 
@@ -209,12 +209,12 @@ Legende: [x] = erledigt, [ ] = offen
 
 - [x] Keine `generateMetadata()` Funktion — Impressum ist wichtig für SEO/Trust
 - [x] "Handelsname:" hardcoded statt i18n — now uses `t("company.tradeNameLabel")`
-- [ ] Person-Array `["p1", "p2", "p3"]` ist magisch — sollte Konstante oder aus Config geladen werden
+- [x] Person-Array `["p1", "p2", "p3"]` ist magisch — extracted to `AUTHORIZED_REPRESENTATIVES` constant
 - [x] Icons (Building2, Mail, Globe, Scale, Users) haben kein `aria-hidden="true"` — werden als Inhalt gelesen
 - [x] E-Mail-Links ohne `title`-Attribut — title attributes added to all legal page mailto links with i18n
 - [x] `grid-cols-2` auf Mobile führt zu sehr schmalen Spalten — sollte `grid-cols-1 md:grid-cols-2` sein
-- [ ] Disclaimer-Sektionen nutzen `<div>` statt `<section>` mit `aria-labelledby` — fehlende Semantik
-- [ ] Keine `Organization`/`LocalBusiness` Schema.org-Daten — für Suchmaschinen-Vertrauen
+- [x] Disclaimer-Sektionen nutzen `<div>` statt `<section>` mit `aria-labelledby` — replaced with `<section>` elements with `aria-labelledby` IDs, disclaimer sections rendered via `DISCLAIMER_SECTIONS` constant
+- [x] Keine `Organization`/`LocalBusiness` Schema.org-Daten — enhanced to dual `["Organization", "LocalBusiness"]` type with `ContactPoint`, `founder` array, `areaServed`, and `addressRegion`
 - [x] Links zu anderen Legal-Seiten fehlen — cross-links section added to Impressum (privacy, terms, cookies, copyright)
 
 ---
@@ -675,7 +675,7 @@ Legende: [x] = erledigt, [ ] = offen
 | Material-Vorschau         | 35       | 1            | 1              | 2           |
 | Hilfe                     | 10       | 0            | 2              | 2           |
 | Urheberrecht              | 9        | 0            | 0              | 0           |
-| Impressum                 | 8        | 2            | 3              | 5           |
+| Impressum                 | 13       | 0            | 0              | 0           |
 | Cookie-Richtlinien        | 8        | 0            | 0              | 0           |
 | Verkäufer-Stufen          | 4        | 3            | 4              | 7           |
 | Verifizierter Verkäufer   | 4        | 0            | 5              | 5           |
@@ -691,4 +691,4 @@ Legende: [x] = erledigt, [ ] = offen
 | Benachrichtigungen        | 0        | 3            | 0              | 3           |
 | Global                    | 14       | 2            | 8              | 10          |
 | Final Touch Audit         | 0        | 4            | 0              | 4           |
-| **Total**                 | **272**  | **24**       | **85**         | **109**     |
+| **Total**                 | **277**  | **22**       | **82**         | **104**     |
