@@ -39,6 +39,51 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         preview_count: true,
         subjects: true,
         cycles: true,
+        is_mi_integrated: true,
+        competencies: {
+          select: {
+            competency: {
+              select: {
+                id: true,
+                code: true,
+                description_de: true,
+                anforderungsstufe: true,
+                subject: {
+                  select: {
+                    code: true,
+                    color: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        transversals: {
+          select: {
+            transversal: {
+              select: {
+                id: true,
+                code: true,
+                name_de: true,
+                icon: true,
+                color: true,
+              },
+            },
+          },
+        },
+        bne_themes: {
+          select: {
+            bne: {
+              select: {
+                id: true,
+                code: true,
+                name_de: true,
+                icon: true,
+                color: true,
+              },
+            },
+          },
+        },
         is_published: true,
         is_approved: true,
         status: true,
@@ -77,7 +122,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     // Return 404 if not found
     if (!material) {
-      return NextResponse.json({ error: "Material nicht gefunden" }, { status: 404 });
+      return NextResponse.json({ error: "MATERIAL_NOT_FOUND" }, { status: 404 });
     }
 
     // Check visibility: admins and material owners can see any material
@@ -85,7 +130,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     const isOwner = userId === material.seller_id;
 
     if (!isAdmin && !isOwner && !material.is_published) {
-      return NextResponse.json({ error: "Material nicht gefunden" }, { status: 404 });
+      return NextResponse.json({ error: "MATERIAL_NOT_FOUND" }, { status: 404 });
     }
 
     // Check if user has access to full previews (owner, purchased, free, or admin)
@@ -229,9 +274,30 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       hasAccess, // true if user can see all preview pages without blur
       subjects,
       cycles,
-      subject: subjects[0] || "Allgemein",
-      cycle: cycles[0] || "",
       createdAt: material.created_at,
+      isMiIntegrated: material.is_mi_integrated,
+      competencies: (material.competencies ?? []).map((rc) => ({
+        id: rc.competency.id,
+        code: rc.competency.code,
+        description_de: rc.competency.description_de,
+        anforderungsstufe: rc.competency.anforderungsstufe,
+        subjectCode: rc.competency.subject.code,
+        subjectColor: rc.competency.subject.color,
+      })),
+      transversals: (material.transversals ?? []).map((rt) => ({
+        id: rt.transversal.id,
+        code: rt.transversal.code,
+        name_de: rt.transversal.name_de,
+        icon: rt.transversal.icon,
+        color: rt.transversal.color,
+      })),
+      bneThemes: (material.bne_themes ?? []).map((rb) => ({
+        id: rb.bne.id,
+        code: rb.bne.code,
+        name_de: rb.bne.name_de,
+        icon: rb.bne.icon,
+        color: rb.bne.color,
+      })),
       downloadCount: material._count.transactions + material._count.downloads,
       isApproved: material.is_approved,
       status: material.status,
@@ -244,21 +310,17 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       },
     };
 
-    const transformedRelated = relatedMaterials.map((r) => {
-      const rSubjects = toStringArray(r.subjects);
-      const rCycles = toStringArray(r.cycles);
-      return {
-        id: r.id,
-        title: r.title,
-        price: r.price,
-        priceFormatted: formatPrice(r.price),
-        subject: rSubjects[0] || "Allgemein",
-        cycle: rCycles[0] || "",
-        verified: r.is_approved,
-        previewUrl: r.preview_url,
-        sellerName: r.seller.display_name,
-      };
-    });
+    const transformedRelated = relatedMaterials.map((r) => ({
+      id: r.id,
+      title: r.title,
+      price: r.price,
+      priceFormatted: formatPrice(r.price),
+      subjects: toStringArray(r.subjects),
+      cycles: toStringArray(r.cycles),
+      verified: r.is_approved,
+      previewUrl: r.preview_url,
+      sellerName: r.seller.display_name,
+    }));
 
     return NextResponse.json({
       material: transformedMaterial,
@@ -266,7 +328,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     });
   } catch (error) {
     console.error("Error fetching material:", error);
-    return NextResponse.json({ error: "Fehler beim Laden des Materials" }, { status: 500 });
+    return NextResponse.json({ error: "MATERIAL_FETCH_FAILED" }, { status: 500 });
   }
 }
 
@@ -278,7 +340,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   // Authentication check
   const userId = await getCurrentUserId();
   if (!userId) {
-    return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
+    return NextResponse.json({ error: "AUTH_REQUIRED" }, { status: 401 });
   }
 
   try {
@@ -295,15 +357,12 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     });
 
     if (!material) {
-      return NextResponse.json({ error: "Material nicht gefunden" }, { status: 404 });
+      return NextResponse.json({ error: "MATERIAL_NOT_FOUND" }, { status: 404 });
     }
 
     // Check ownership
     if (material.seller_id !== userId) {
-      return NextResponse.json(
-        { error: "Keine Berechtigung zum Bearbeiten dieses Materials" },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: "MATERIAL_EDIT_FORBIDDEN" }, { status: 403 });
     }
 
     // Parse and validate request body
@@ -313,7 +372,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     if (!parsed.success) {
       return NextResponse.json(
         {
-          error: "Ungültige Eingabe",
+          error: "VALIDATION_ERROR",
           details: parsed.error.flatten().fieldErrors,
         },
         { status: 400 }
@@ -325,10 +384,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     // If material is already approved, some fields cannot be changed
     // Price changes on approved materials would affect buyers
     if (material.is_approved && data.price !== undefined) {
-      return NextResponse.json(
-        { error: "Preis kann nach Genehmigung nicht mehr geändert werden" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "PRICE_CHANGE_AFTER_APPROVAL" }, { status: 400 });
     }
 
     // Update the material
@@ -359,12 +415,25 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     });
 
     return NextResponse.json({
-      message: "Material erfolgreich aktualisiert",
-      material: updatedMaterial,
+      message: "MATERIAL_UPDATED",
+      material: {
+        id: updatedMaterial.id,
+        title: updatedMaterial.title,
+        description: updatedMaterial.description,
+        price: updatedMaterial.price,
+        subjects: updatedMaterial.subjects,
+        cycles: updatedMaterial.cycles,
+        fileUrl: updatedMaterial.file_url,
+        previewUrl: updatedMaterial.preview_url,
+        isPublished: updatedMaterial.is_published,
+        isApproved: updatedMaterial.is_approved,
+        createdAt: updatedMaterial.created_at,
+        updatedAt: updatedMaterial.updated_at,
+      },
     });
   } catch (error) {
     console.error("Error updating material:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return NextResponse.json({ error: "MATERIAL_UPDATE_FAILED" }, { status: 500 });
   }
 }
 
@@ -379,7 +448,7 @@ export async function DELETE(
   // Authentication check
   const userId = await getCurrentUserId();
   if (!userId) {
-    return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
+    return NextResponse.json({ error: "AUTH_REQUIRED" }, { status: 401 });
   }
 
   try {
@@ -400,22 +469,19 @@ export async function DELETE(
     });
 
     if (!material) {
-      return NextResponse.json({ error: "Material nicht gefunden" }, { status: 404 });
+      return NextResponse.json({ error: "MATERIAL_NOT_FOUND" }, { status: 404 });
     }
 
     // Check ownership
     if (material.seller_id !== userId) {
-      return NextResponse.json(
-        { error: "Keine Berechtigung zum Löschen dieses Materials" },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: "MATERIAL_DELETE_FORBIDDEN" }, { status: 403 });
     }
 
     // Check for completed transactions
     if (material._count.transactions > 0) {
       return NextResponse.json(
         {
-          error: "Material kann nicht gelöscht werden, da bereits Käufe existieren",
+          error: "MATERIAL_HAS_PURCHASES",
           transactionCount: material._count.transactions,
         },
         { status: 400 }
@@ -453,10 +519,10 @@ export async function DELETE(
     await prisma.resource.delete({ where: { id } });
 
     return NextResponse.json({
-      message: "Material erfolgreich gelöscht",
+      message: "MATERIAL_DELETED",
     });
   } catch (error) {
     console.error("Error deleting material:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return NextResponse.json({ error: "MATERIAL_DELETE_FAILED" }, { status: 500 });
   }
 }

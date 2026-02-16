@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma, publicUserSelect } from "@/lib/db";
 import { getCurrentUserId } from "@/lib/auth";
+import { isValidId } from "@/lib/rateLimit";
 
 /**
  * GET /api/users/[id]/public
@@ -16,6 +17,14 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
+
+    if (!isValidId(id)) {
+      return NextResponse.json(
+        { error: "Ungültige ID" },
+        { status: 400 }
+      );
+    }
+
     const currentUserId = await getCurrentUserId();
 
     const user = await prisma.user.findUnique({
@@ -66,6 +75,7 @@ export async function GET(
         role: user.role,
         created_at: user.created_at,
         is_private: true,
+        is_verified_seller: user.is_verified_seller,
         // Hide these fields for private profiles
         bio: null,
         subjects: [],
@@ -73,6 +83,13 @@ export async function GET(
         cantons: [],
         instagram: null,
         pinterest: null,
+        website: null,
+        school: null,
+        teaching_experience: null,
+        is_teacher_verified: false,
+        // Seller level is public (it's a badge), but hide XP detail
+        seller_level: user.seller_level,
+        seller_xp: 0,
         stripe_charges_enabled: user.stripe_charges_enabled,
         stats: {
           resourceCount: user._count.resources,
@@ -85,13 +102,14 @@ export async function GET(
       });
     }
 
+    const { _count, ...userData } = user;
     return NextResponse.json({
-      ...user,
+      ...userData,
       stats: {
-        resourceCount: user._count.resources,
-        followerCount: user._count.followers,
-        followingCount: user._count.following,
-        collectionCount: user._count.collections,
+        resourceCount: _count.resources,
+        followerCount: _count.followers,
+        followingCount: _count.following,
+        collectionCount: _count.collections,
       },
       isFollowing,
       isOwnProfile,

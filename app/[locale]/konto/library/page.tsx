@@ -193,8 +193,8 @@ export default function AccountLibraryPage() {
                   key={item.id}
                   id={item.id}
                   title={item.title}
-                  subject={item.subject}
-                  cycle={item.cycle}
+                  subject={item.subjects[0] || "Allgemein"}
+                  cycle={item.cycles[0] || ""}
                   previewUrl={item.previewUrl}
                   badge={{
                     label: item.type === "purchased" ? t("badgePurchased") : t("badgeFree"),

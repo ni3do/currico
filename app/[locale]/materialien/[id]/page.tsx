@@ -316,7 +316,10 @@ export default function MaterialDetailPage() {
         <Breadcrumb
           items={[
             { label: tCommon("breadcrumb.materials"), href: "/materialien" },
-            { label: material.subject, href: `/materialien?subject=${material.subject}` },
+            {
+              label: material.subjects[0] || "Allgemein",
+              href: `/materialien?subject=${material.subjects[0] || ""}`,
+            },
             { label: material.title },
           ]}
           className="mb-8"
@@ -423,8 +426,9 @@ export default function MaterialDetailPage() {
                   key={related.id}
                   id={related.id}
                   title={related.title}
-                  subject={related.subject}
-                  cycle={related.cycle}
+                  subject={related.subjects[0] || "Allgemein"}
+                  cycle={related.cycles[0] || ""}
+                  price={related.price}
                   priceFormatted={related.priceFormatted}
                   previewUrl={related.previewUrl}
                   seller={{ displayName: related.sellerName }}

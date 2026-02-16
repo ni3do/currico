@@ -6,12 +6,8 @@ export interface LibraryItem {
   description: string;
   price: number;
   priceFormatted: string;
-  /** @derived First element of `subjects[]` */
-  subject: string;
-  /** @derived First element of `cycles[]` */
-  cycle: string;
-  subjects?: string[];
-  cycles?: string[];
+  subjects: string[];
+  cycles: string[];
   verified: boolean;
   type: "purchased" | "free";
   acquiredAt: string;
@@ -29,12 +25,8 @@ export interface UploadedItem {
   description: string;
   price: number;
   priceFormatted: string;
-  /** @derived First element of `subjects[]` */
-  subject: string;
-  /** @derived First element of `cycles[]` */
-  cycle: string;
-  subjects?: string[];
-  cycles?: string[];
+  subjects: string[];
+  cycles: string[];
   verified: boolean;
   status: string;
   isApproved: boolean;
@@ -51,12 +43,8 @@ export interface WishlistItem {
   description: string;
   price: number;
   priceFormatted: string;
-  /** @derived First element of `subjects[]` */
-  subject: string;
-  /** @derived First element of `cycles[]` */
-  cycle: string;
-  subjects?: string[];
-  cycles?: string[];
+  subjects: string[];
+  cycles: string[];
   addedAt: string;
   previewUrl?: string | null;
   seller: {
@@ -72,8 +60,8 @@ export interface SellerBundle {
   description: string | null;
   price: number;
   priceFormatted: string;
-  subject: string;
-  cycle: string;
+  subjects: string[];
+  cycles: string[];
   status: string;
   isPublished: boolean;
   resourceCount: number;

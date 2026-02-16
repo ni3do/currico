@@ -18,13 +18,7 @@ export interface MaterialListItem {
   description: string;
   price: number;
   priceFormatted: string;
-  /** @derived First element of `subjects[]` — for backwards compat only */
-  subject: string;
-  /** @derived First element of `cycles[]` — for backwards compat only */
-  cycle: string;
-  /** Source of truth — always use arrays for display */
   subjects: string[];
-  /** Source of truth — always use arrays for display */
   cycles: string[];
   previewUrl: string | null;
   createdAt: string;
@@ -32,8 +26,8 @@ export interface MaterialListItem {
   reviewCount?: number;
   seller: {
     id: string;
-    display_name: string | null;
-    is_verified_seller?: boolean;
+    displayName: string | null;
+    isVerifiedSeller?: boolean;
   };
 }
 

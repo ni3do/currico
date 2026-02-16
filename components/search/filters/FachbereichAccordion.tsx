@@ -17,6 +17,8 @@ interface FachbereichAccordionProps {
   onKompetenzbereichSelect: (code: string | null) => void;
   onKompetenzbereichToggle: (code: string) => void;
   onKompetenzSelect: (code: string | null) => void;
+  expandLabel: string;
+  collapseLabel: string;
   index?: number;
 }
 
@@ -32,6 +34,8 @@ export function FachbereichAccordion({
   onKompetenzbereichSelect,
   onKompetenzbereichToggle,
   onKompetenzSelect,
+  expandLabel,
+  collapseLabel,
   index = 0,
 }: FachbereichAccordionProps) {
   const hasChildren = fachbereich.kompetenzbereiche.length > 0;
@@ -70,7 +74,7 @@ export function FachbereichAccordion({
             <motion.button
               onClick={onToggleExpand}
               aria-expanded={isExpanded}
-              aria-label={`${isExpanded ? "Collapse" : "Expand"} ${fachbereich.name}`}
+              aria-label={`${isExpanded ? collapseLabel : expandLabel} ${fachbereich.name}`}
               className={`flex h-full items-center px-2 transition-colors ${
                 isSelected ? "text-text hover:text-text" : "text-text-muted hover:text-text"
               }`}
@@ -145,6 +149,8 @@ export function FachbereichAccordion({
                       onSelect={() => onKompetenzbereichSelect(kb.code)}
                       onToggleExpand={() => onKompetenzbereichToggle(kb.code)}
                       onKompetenzSelect={onKompetenzSelect}
+                      expandLabel={expandLabel}
+                      collapseLabel={collapseLabel}
                       index={kbIndex}
                     />
                   ))}

@@ -205,7 +205,7 @@ export default function AccountFollowingPage() {
                       <button
                         onClick={() => handleUnfollow(seller.id)}
                         disabled={unfollowingId === seller.id}
-                        className="border-border text-text hover:border-error hover:text-error flex items-center gap-1.5 rounded-lg border px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
+                        className="border-border text-text hover:border-primary hover:text-primary flex items-center gap-1.5 rounded-lg border px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
                       >
                         {unfollowingId === seller.id ? (
                           <>
@@ -250,7 +250,7 @@ export default function AccountFollowingPage() {
                         <Calendar className="h-4 w-4" />
                         {t("followedSince")}{" "}
                         {new Date(seller.followedAt).toLocaleDateString(
-                          locale === "de" ? "de-CH" : "en-CH",
+                          locale === "de" ? "de-CH" : "en-US",
                           {
                             month: "short",
                             year: "numeric",
