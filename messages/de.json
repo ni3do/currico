@@ -3966,14 +3966,38 @@
         }
       },
       "howTitle": "Wie funktioniert die Verifizierung?",
-      "howAutomatic": "Die Verifizierung erfolgt automatisch: Jedes Mal, wenn du deine Verkäufer-Level-Seite besuchst, werden deine Statistiken überprüft. Sobald du alle 4 Kriterien erfüllst, erhältst du automatisch das Abzeichen.",
-      "howRevocation": "Achtung: Wenn du die Kriterien nicht mehr erfüllst (z.B. durch eine offene Meldung oder sinkende Bewertung), wird die automatische Verifizierung widerrufen.",
-      "howManual": "In Ausnahmefällen kann das Currico-Team die Verifizierung auch manuell vergeben oder widerrufen.",
+      "howSteps": {
+        "automatic": {
+          "title": "Automatische Prüfung",
+          "description": "Deine Statistiken werden bei jedem Verkauf, Download und jeder Bewertung überprüft. Sobald du alle 4 Kriterien erfüllst, erhältst du automatisch das Abzeichen."
+        },
+        "revocation": {
+          "title": "Widerruf möglich",
+          "description": "Wenn du die Kriterien nicht mehr erfüllst (z.B. durch sinkende Bewertungen), wird die automatische Verifizierung widerrufen."
+        },
+        "manual": {
+          "title": "Manuelle Vergabe",
+          "description": "In Ausnahmefällen kann das Currico-Team die Verifizierung auch manuell vergeben oder widerrufen."
+        }
+      },
       "benefitsTitle": "Vorteile",
       "benefits": {
         "badge": "Sichtbares Abzeichen auf deinem Profil und bei allen deinen Materialien.",
         "trust": "Erhöhtes Vertrauen bei Käufer:innen — verifizierte Verkäufer:innen werden bevorzugt.",
-        "visibility": "Bessere Sichtbarkeit auf der Plattform."
+        "visibility": "Bessere Sichtbarkeit in Suchergebnissen und Empfehlungen.",
+        "credibility": "Dein Profil wird als «vertrauenswürdig» hervorgehoben — ideal für neue Käufer:innen.",
+        "recognition": "Anerkennung deiner Arbeit als erfahrene Lehrperson und Materialerstellerin."
+      },
+      "comparisonTitle": "Was unterscheidet verifizierte Verkäufer?",
+      "comparison": {
+        "uploadMaterials": "Materialien hochladen",
+        "sellMaterials": "Materialien verkaufen",
+        "receiveReviews": "Bewertungen erhalten",
+        "profileBadge": "Verifiziertes Abzeichen auf Profil",
+        "materialBadge": "Abzeichen auf allen Materialien",
+        "searchBoost": "Hervorgehobene Platzierung in Suchergebnissen",
+        "regular": "Regulärer Verkäufer",
+        "verified": "Verifizierter Verkäufer"
       },
       "cta": "Materialien hochladen"
     }

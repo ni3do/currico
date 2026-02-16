@@ -262,11 +262,11 @@ Legende: [x] = erledigt, [ ] = offen
 ### Eigene Vorschläge (Verifizierter Verkäufer)
 
 - [x] Keine `generateMetadata()` Funktion — SEO-Metadaten und Canonical URLs fehlen
-- [ ] Keine Validierung dass `VERIFIED_SELLER_CRITERIA` genau 5 Items hat passend zu `criteriaIcons` Array — Icon-Text-Mismatch möglich
-- [ ] Benefits-Section nutzt inline SVG-Icons statt lucide-react wie andere Sektionen — inkonsistentes Icon-System
-- [ ] Nur 3 Benefits gelistet — fühlt sich unvollständig an, Nutzer wollen mehr Detail was "verifiziert" praktisch bedeutet
-- [ ] "How it works" hat 3 kurze Absätze ohne visuelle Differenzierung oder Icons — schwer zu scannen
-- [ ] Kein Vergleich mit nicht-verifizierten Verkäufern — Nutzer sehen keinen konkreten Unterschied
+- [x] Keine Validierung dass `VERIFIED_SELLER_CRITERIA` genau 5 Items hat passend zu `criteriaIcons` Array — unified into `CRITERIA_CONFIG` array mapping keys to icons, typed with `LucideIcon`
+- [x] Benefits-Section nutzt inline SVG-Icons statt lucide-react wie andere Sektionen — all icons now from lucide-react via `BENEFITS` config (BadgeCheck, Shield, Eye, Award, Star)
+- [x] Nur 3 Benefits gelistet — expanded to 5 benefits with distinct icons and i18n keys (credibility + recognition added)
+- [x] "How it works" hat 3 kurze Absätze ohne visuelle Differenzierung oder Icons — replaced with `HOW_STEPS` config: numbered cards with icons (Zap, AlertTriangle, UserCog), title+description per step
+- [x] Kein Vergleich mit nicht-verifizierten Verkäufern — comparison table with 6 feature rows, check/X marks, highlighted verified column with green tint
 - [x] Metadata in Layout nutzt falschen Canonical-Pfad
 
 ---
@@ -678,7 +678,7 @@ Legende: [x] = erledigt, [ ] = offen
 | Impressum                 | 13       | 0            | 0              | 0           |
 | Cookie-Richtlinien        | 8        | 0            | 0              | 0           |
 | Verkäufer-Stufen          | 4        | 3            | 4              | 7           |
-| Verifizierter Verkäufer   | 4        | 0            | 5              | 5           |
+| Verifizierter Verkäufer   | 9        | 0            | 0              | 0           |
 | Über uns                  | 2        | 2            | 8              | 10          |
 | Kontakt                   | 13       | 0            | 0              | 0           |
 | Anmelden                  | 9        | 0            | 5              | 5           |
@@ -691,4 +691,4 @@ Legende: [x] = erledigt, [ ] = offen
 | Benachrichtigungen        | 0        | 3            | 0              | 3           |
 | Global                    | 14       | 2            | 8              | 10          |
 | Final Touch Audit         | 0        | 4            | 0              | 4           |
-| **Total**                 | **279**  | **22**       | **80**         | **102**     |
+| **Total**                 | **284**  | **22**       | **75**         | **97**      |

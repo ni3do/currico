@@ -3966,14 +3966,38 @@
         }
       },
       "howTitle": "How does verification work?",
-      "howAutomatic": "Verification happens automatically: Every time you visit your seller level page, your statistics are checked. As soon as you meet all 4 criteria, you automatically receive the badge.",
-      "howRevocation": "Note: If you no longer meet the criteria (e.g., due to an open report or declining rating), the automatic verification will be revoked.",
-      "howManual": "In exceptional cases, the Currico team can also grant or revoke verification manually.",
+      "howSteps": {
+        "automatic": {
+          "title": "Automatic Check",
+          "description": "Your statistics are checked with every sale, download, and review. As soon as you meet all 4 criteria, you automatically receive the badge."
+        },
+        "revocation": {
+          "title": "Revocation Possible",
+          "description": "If you no longer meet the criteria (e.g., due to declining ratings), the automatic verification will be revoked."
+        },
+        "manual": {
+          "title": "Manual Granting",
+          "description": "In exceptional cases, the Currico team can also grant or revoke verification manually."
+        }
+      },
       "benefitsTitle": "Benefits",
       "benefits": {
         "badge": "Visible badge on your profile and on all your materials.",
         "trust": "Increased trust with buyers — verified sellers are preferred.",
-        "visibility": "Better visibility on the platform."
+        "visibility": "Better visibility in search results and recommendations.",
+        "credibility": "Your profile is highlighted as 'trusted' — ideal for new buyers.",
+        "recognition": "Recognition of your work as an experienced teacher and material creator."
+      },
+      "comparisonTitle": "What sets verified sellers apart?",
+      "comparison": {
+        "uploadMaterials": "Upload materials",
+        "sellMaterials": "Sell materials",
+        "receiveReviews": "Receive reviews",
+        "profileBadge": "Verified badge on profile",
+        "materialBadge": "Badge on all materials",
+        "searchBoost": "Highlighted placement in search results",
+        "regular": "Regular Seller",
+        "verified": "Verified Seller"
       },
       "cta": "Upload Materials"
     }
