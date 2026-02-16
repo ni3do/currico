@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getCurrentUserId } from "@/lib/auth";
-import { writeFile, mkdir, unlink } from "fs/promises";
-import path from "path";
+import {
+  getStorage,
+  generateStorageKey,
+  isLegacyLocalPath,
+  getLegacyFilePath,
+} from "@/lib/storage";
+import { unlink } from "fs/promises";
 
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 const MAX_SIZE = 2 * 1024 * 1024; // 2MB
@@ -77,30 +82,38 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate unique filename
-    const ext = file.type.split("/")[1];
-    const filename = `${userId}-${Date.now()}.${ext}`;
-
-    // Ensure uploads directory exists
-    const uploadsDir = path.join(process.cwd(), "public", "uploads", "avatars");
-    await mkdir(uploadsDir, { recursive: true });
-
     // Delete old avatar file if it exists
     const currentUser = await prisma.user.findUnique({
       where: { id: userId },
       select: { image: true },
     });
-    if (currentUser?.image?.startsWith("/uploads/avatars/")) {
-      const oldPath = path.join(uploadsDir, path.basename(currentUser.image));
-      await unlink(oldPath).catch(() => {}); // ignore if missing
+
+    const storage = getStorage();
+
+    if (currentUser?.image) {
+      try {
+        if (isLegacyLocalPath(currentUser.image)) {
+          await unlink(getLegacyFilePath(currentUser.image));
+        } else {
+          await storage.delete(currentUser.image, "avatar");
+        }
+      } catch {
+        // Old file might not exist, continue
+      }
     }
 
-    // Save file
-    const filePath = path.join(uploadsDir, filename);
-    await writeFile(filePath, buffer);
+    // Upload via storage abstraction
+    const ext = file.type.split("/")[1];
+    const result = await storage.upload(buffer, {
+      category: "avatar",
+      userId,
+      filename: `avatar.${ext}`,
+      contentType: file.type,
+    });
+
+    const imageUrl = result.publicUrl || result.key;
 
     // Update user's image in database
-    const imageUrl = `/uploads/avatars/${filename}`;
     await prisma.user.update({
       where: { id: userId },
       data: { image: imageUrl },
