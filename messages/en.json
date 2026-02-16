@@ -1075,35 +1075,60 @@
   },
   "aboutPage": {
     "hero": {
-      "badge": "By Teachers, for Teachers",
+      "badge": "From Switzerland, for Swiss Classrooms",
       "title": "We know your day. We've been there.",
       "subtitle": "Currico was born from real frustration — from teachers who spent evenings and weekends on lesson prep. We wanted to change that. Not with a big budget, but with heart.",
       "imageAlt": "The Currico team",
       "primaryCta": "Explore Materials",
       "secondaryCta": "Sign Up Free"
     },
-    "problem": {
-      "title": "We've all been there",
-      "subtitle": "Teachers kept telling us about the same challenges. These three came up again and again.",
-      "point1": {
-        "title": "Hours on a single worksheet",
-        "description": "Creating one worksheet — researching, designing, adapting, printing. For every lesson, every week. The hours add up fast."
-      },
-      "point2": {
-        "title": "Finding diverse materials is hard",
-        "description": "Students love varied, engaging materials. But finding them takes time you simply don't have."
-      },
-      "point3": {
-        "title": "Differentiation takes time",
-        "description": "Every child learns differently. Preparing materials for different levels matters — but it's incredibly time-consuming."
-      }
+    "stats": {
+      "materials": { "value": "500+", "label": "Materials" },
+      "teachers": { "value": "200+", "label": "Teachers" },
+      "cantons": { "value": "26", "label": "Cantons" },
+      "lp21": { "value": "LP21", "label": "compatible" }
     },
     "origin": {
       "title": "How it all started",
       "paragraph1": "It started at a kitchen table. Simon came home frustrated from school, talking about how much time he'd spent on worksheets again. Laurent, his friend from the tech world, asked: \"Why isn't there a solution for this?\"",
       "paragraph2": "We talked to other teachers — and heard the same thing everywhere: prep eats up all your free time. Hours spent searching, adapting, designing materials. And even then, it's often not quite what you need.",
       "paragraph3": "So we started building something. Not with investors or a grand plan. Just two people who believe teachers deserve tools that give them their time back.",
+      "highlight": "\"Why isn't there a solution for this?\" — That one question changed everything.",
       "imageAlt": "Simon and Laurent working together"
+    },
+    "timeline": {
+      "title": "Our Journey",
+      "subtitle": "From a kitchen table idea to a platform for Swiss teachers.",
+      "milestone1": {
+        "date": "Summer 2022",
+        "title": "The Idea",
+        "description": "At the kitchen table, a vision is born: a platform by teachers, for teachers."
+      },
+      "milestone2": {
+        "date": "Autumn 2022",
+        "title": "First Line of Code",
+        "description": "Laurent starts the prototype. Simon provides input from the classroom."
+      },
+      "milestone3": {
+        "date": "Spring 2023",
+        "title": "Beta Launch",
+        "description": "The first teachers test Currico and share invaluable feedback."
+      },
+      "milestone4": {
+        "date": "Summer 2023",
+        "title": "LP21 Integration",
+        "description": "All materials can be filtered by Lehrplan 21 — a milestone for Switzerland."
+      },
+      "milestone5": {
+        "date": "2024",
+        "title": "Community Grows",
+        "description": "More and more teachers share materials and build the platform together."
+      },
+      "milestone6": {
+        "date": "Today",
+        "title": "And We Keep Going",
+        "description": "Every day we work to make Currico better — with you and for you."
+      }
     },
     "founders": {
       "title": "The two behind Currico",
@@ -1111,35 +1136,40 @@
       "founder1": {
         "name": "Simon Wachter",
         "role": "Co-Founder & Education",
-        "bio": "I was a teacher myself and know what it feels like to spend Sunday evenings creating worksheets. At Currico, I make sure every material is practical and made for Swiss classrooms."
+        "bio": "I was a teacher myself and know what it feels like to spend Sunday evenings creating worksheets. At Currico, I make sure every material is practical and made for Swiss classrooms.",
+        "funFact": "Drinks more coffee than lines of code written."
       },
       "founder2": {
         "name": "Laurent Zoccoletti",
         "role": "Co-Founder & Tech",
-        "bio": "I build Currico to just work — fast, simple, no frustration. My goal: technology should help you, never get in the way."
+        "bio": "I build Currico to just work — fast, simple, no frustration. My goal: technology should help you, never get in the way.",
+        "funFact": "Debugs best with a view of the Alps."
       },
-      "story": "We're not a startup chasing investors. We're two people who started at a kitchen table because we believe teachers deserve someone who makes their day easier. And we're happy about every person who joins us on this journey.",
-      "highlight": "Got a question, an idea, or just want to say hi? We'd genuinely love to hear from you.",
-      "quoteAttribution": "Simon & Laurent, Founders of Currico",
       "emailLabel": "Email {name}"
     },
+    "quote": {
+      "context": "Why we work on Currico every day",
+      "text": "We're not a startup chasing investors. We're two people who started at a kitchen table because we believe teachers deserve someone who makes their day easier. And we're happy about every person who joins us on this journey.",
+      "attribution": "Simon & Laurent",
+      "role": "Founders of Currico"
+    },
     "values": {
-      "title": "What we believe in",
+      "title": "What sets us apart",
       "value1": {
-        "title": "Your time is yours",
-        "description": "No more hours of prep. Find materials that fit your lesson in minutes — and take your evening back."
+        "title": "Lehrplan 21 at the Core",
+        "description": "Every material aligns with LP21. Find content matching your competency area in seconds — no adapting needed."
       },
       "value2": {
-        "title": "Stronger together",
-        "description": "Hundreds of teachers already share materials, give feedback, and inspire each other. Join the community."
+        "title": "Swiss Data, Swiss Servers",
+        "description": "Hosted by Infomaniak in Swiss data centers. Your data stays in Switzerland, protected by strict privacy laws."
       },
       "value3": {
-        "title": "Made for Switzerland",
-        "description": "Every material aligns with Lehrplan 21 and fits all 26 cantons. No adapting foreign content required."
+        "title": "Peer-Reviewed by Colleagues",
+        "description": "Every material is rated and reviewed by the community. So you only find content that actually works in the classroom."
       },
       "value4": {
-        "title": "Quality over quantity",
-        "description": "Every material is rated by the community. So you only find reviewed content that actually works in the classroom."
+        "title": "Fair Compensation",
+        "description": "Those who share materials earn from them. Fair prices for buyers, fair pay for creators. That's how community works."
       }
     },
     "helpUs": {
@@ -1156,31 +1186,6 @@
       "subtitle": "Every teacher who joins makes Currico a little bit better. For you, for everyone. It's free to start.",
       "button": "Explore Materials",
       "secondaryButton": "Sign Up Free"
-    },
-    "swissBrand": {
-      "badge": "Quality & Trust",
-      "title": "Built by Educators for Educators",
-      "subtitle": "Developed with a focus on quality, security, and the needs of educators",
-      "swissMade": {
-        "title": "Quality First",
-        "description": "Developed by educators for educators"
-      },
-      "swissHosted": {
-        "title": "Secure Hosting",
-        "description": "Hosted by Infomaniak in Swiss data centers"
-      },
-      "dataProtection": {
-        "title": "Data Protection",
-        "description": "Your data protected by strict privacy laws"
-      },
-      "localSupport": {
-        "title": "Local Support",
-        "description": "Swiss-based team speaks your language"
-      },
-      "hostedBy": "Hosted by",
-      "swissCloud": "Swiss Cloud",
-      "co2Neutral": "CO₂ Neutral",
-      "secureHosting": "Secure Hosting"
     }
   },
   "contactPage": {

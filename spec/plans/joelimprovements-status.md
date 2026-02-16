@@ -273,21 +273,21 @@ Legende: [x] = erledigt, [ ] = offen
 
 ## 10. Über uns (`/ueber-uns`)
 
-- [ ] Ganze Seite überarbeiten und persönlicher gestalten
-- [ ] Bilder überarbeiten und einheitlicher machen
+- [x] Ganze Seite überarbeiten und persönlicher gestalten — full overhaul with 9 sections: Hero (with animations), Stats Bar (new), Origin Story (with pull-quote), Timeline/Journey (new vertical timeline with 6 milestones), Meet the Team (with MotionCard + funFact), Founders Quote (dedicated section with circular photos), Values (Swiss-specific: LP21, Swiss servers, peer-reviewed, fair pay), Help Us Grow (with stagger animations), Final CTA
+- [ ] Bilder überarbeiten und einheitlicher machen — user will provide real photos
 
 ### Eigene Vorschläge (Über uns)
 
 - [x] `Link` aus "next/link" importiert statt aus `@/i18n/navigation` — umgeht Locale-Handling, kann Mehrsprachigkeit brechen
 - [x] Layout-Metadata nutzt Canonical "/about" statt "/ueber-uns" — SEO-Fehler
-- [ ] Hardcoded SVG-Icons für Values statt lucide-react — inkonsistentes Icon-System
-- [ ] Persönliches Zitat (Kursiv-Serif) ohne klaren Kontext wer spricht — mehrdeutig
-- [ ] Values-Section nutzt sehr generische Beschreibungen — nicht differenziert von anderen EdTech-Plattformen
-- [ ] Kein CTA-Button am Seitenanfang — erst ganz unten nach viel Text
-- [ ] Kein Schema.org `Organization` Markup — fehlende strukturierte Daten
-- [ ] Meta-Description zu generisch — sollte spezifischer für Schweizer Kontext sein
-- [ ] Keine Social-Media-Links oder Kontaktmöglichkeiten beim Team — Nutzer können Team nicht kontaktieren
-- [ ] Kein Fallback wenn Team-Member-Bilder nicht laden
+- [x] Hardcoded SVG-Icons für Values statt lucide-react — inkonsistentes Icon-System — now uses lucide-react icons via VALUES_CONFIG array (BookOpen, Shield, Users, Coins)
+- [x] Persönliches Zitat (Kursiv-Serif) ohne klaren Kontext wer spricht — mehrdeutig — extracted to dedicated Quote section with context heading, circular founder photos, and clear attribution
+- [x] Values-Section nutzt sehr generische Beschreibungen — nicht differenziert von anderen EdTech-Plattformen — rewritten with Swiss-specific values: LP21 im Kern, Schweizer Daten/Server, Von Kolleg:innen geprüft, Faire Vergütung
+- [x] Kein CTA-Button am Seitenanfang — erst ganz unten nach viel Text — Hero section now has 2 CTA buttons (Materialien entdecken + Kostenlos registrieren)
+- [ ] Kein Schema.org `Organization` Markup — fehlende strukturierte Daten — already exists in layout.tsx
+- [x] Meta-Description zu generisch — sollte spezifischer für Schweizer Kontext sein — updated to "Lerne Simon und Laurent kennen — die zwei Schweizer hinter Currico..."
+- [x] Keine Social-Media-Links oder Kontaktmöglichkeiten beim Team — Nutzer können Team nicht kontaktieren — email icons on both founder cards link to info@currico.ch
+- [x] Kein Fallback wenn Team-Member-Bilder nicht laden — both founders have onError fallback to gradient + initials (SW/LZ)
 
 ---
 
@@ -679,7 +679,7 @@ Legende: [x] = erledigt, [ ] = offen
 | Cookie-Richtlinien        | 8        | 0            | 0              | 0           |
 | Verkäufer-Stufen          | 4        | 3            | 4              | 7           |
 | Verifizierter Verkäufer   | 9        | 0            | 0              | 0           |
-| Über uns                  | 2        | 2            | 8              | 10          |
+| Über uns                  | 10       | 1            | 1              | 2           |
 | Kontakt                   | 13       | 0            | 0              | 0           |
 | Anmelden                  | 9        | 0            | 5              | 5           |
 | Registrieren              | 0        | 0            | 5              | 5           |
@@ -691,4 +691,4 @@ Legende: [x] = erledigt, [ ] = offen
 | Benachrichtigungen        | 0        | 3            | 0              | 3           |
 | Global                    | 14       | 2            | 8              | 10          |
 | Final Touch Audit         | 0        | 4            | 0              | 4           |
-| **Total**                 | **289**  | **21**       | **73**         | **94**      |
+| **Total**                 | **297**  | **20**       | **66**         | **86**      |
