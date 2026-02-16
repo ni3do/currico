@@ -11,8 +11,8 @@ export async function generateMetadata({
   return {
     title: isDE ? "Über uns" : "About Us",
     description: isDE
-      ? "Erfahren Sie mehr über Currico – die Schweizer Plattform für Unterrichtsmaterialien."
-      : "Learn more about Currico – the Swiss platform for teaching materials.",
+      ? "Simon & Laurent haben Currico gegründet, um Schweizer Lehrpersonen die Unterrichtsvorbereitung zu erleichtern. Erfahre unsere Geschichte."
+      : "Simon & Laurent founded Currico to make lesson prep easier for Swiss teachers. Learn our story.",
     alternates: {
       canonical: `/${locale}/ueber-uns`,
       languages: { de: "/de/ueber-uns", en: "/en/ueber-uns" },
@@ -20,6 +20,65 @@ export async function generateMetadata({
   };
 }
 
-export default function AboutLayout({ children }: { children: React.ReactNode }) {
-  return children;
+export default async function AboutLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://currico.ch";
+
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      name: "Currico",
+      legalName: "Angle Labs GmbH",
+      url: "https://www.currico.ch",
+      email: "info@currico.ch",
+      foundingDate: "2022-06-27",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "Zellmatte 6",
+        postalCode: "6214",
+        addressLocality: "Schenkon",
+        addressCountry: "CH",
+      },
+      vatID: "CHE-216.579.392",
+      description:
+        locale === "de"
+          ? "Schweizer Plattform für Lehrpersonen zum Kaufen und Verkaufen von Unterrichtsmaterialien."
+          : "Swiss platform for teachers to buy and sell teaching materials.",
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: locale === "de" ? "Startseite" : "Home",
+          item: `${baseUrl}/${locale}`,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: locale === "de" ? "Über uns" : "About Us",
+          item: `${baseUrl}/${locale}/ueber-uns`,
+        },
+      ],
+    },
+  ];
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      {children}
+    </>
+  );
 }

@@ -13,7 +13,7 @@ export async function GET() {
   try {
     const session = await auth();
     if (!session?.user?.id) {
-      return NextResponse.json({ error: "Nicht autorisiert" }, { status: 401 });
+      return NextResponse.json({ error: "AUTH_REQUIRED" }, { status: 401 });
     }
 
     const userId = session.user.id;
@@ -25,7 +25,7 @@ export async function GET() {
     });
 
     if (user?.role !== "SELLER") {
-      return NextResponse.json({ error: "Nur für Verkäufer zugänglich" }, { status: 403 });
+      return NextResponse.json({ error: "SELLER_ONLY" }, { status: 403 });
     }
 
     // Fetch seller's published materials
@@ -55,7 +55,6 @@ export async function GET() {
         title: material.title,
         price: material.price,
         priceFormatted: formatPrice(material.price, { showFreeLabel: true }),
-        subject: subjects[0] || "",
         subjects,
         cycles,
         previewUrl: material.preview_url,
@@ -67,6 +66,6 @@ export async function GET() {
     });
   } catch (error) {
     console.error("Error fetching seller materials:", error);
-    return NextResponse.json({ error: "Fehler beim Laden der Materialien" }, { status: 500 });
+    return NextResponse.json({ error: "MATERIALS_FETCH_FAILED" }, { status: 500 });
   }
 }

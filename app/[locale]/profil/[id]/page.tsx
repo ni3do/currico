@@ -11,6 +11,7 @@ import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { FadeIn, StaggerChildren, StaggerItem } from "@/components/ui/animations";
 import { getSubjectPillClass } from "@/lib/constants/subject-colors";
 import { formatPrice } from "@/lib/utils/price";
+import { isValidId } from "@/lib/rateLimit";
 import { ProfileHero } from "@/components/profile/ProfileHero";
 import { ProfileStats } from "@/components/profile/ProfileStats";
 import { ProfileTabs } from "@/components/profile/ProfileTabs";
@@ -28,15 +29,17 @@ export default function PublicProfilePage({
   const [bestMaterials, setBestMaterials] = useState<ProfileMaterial[]>([]);
   const [allMaterials, setAllMaterials] = useState<ProfileMaterial[]>([]);
   const [collections, setCollections] = useState<ProfileCollection[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => isValidId(id));
   const [followLoading, setFollowLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [activeTab, setActiveTab] = useState<"uploads" | "collections">("uploads");
   const [materialPage, setMaterialPage] = useState(1);
   const [hasMoreMaterials, setHasMoreMaterials] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState(() => !isValidId(id));
 
   useEffect(() => {
+    if (!isValidId(id)) return;
+
     async function fetchData() {
       setLoading(true);
       try {

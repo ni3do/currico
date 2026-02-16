@@ -21,8 +21,8 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const search = searchParams.get("search") || "";
     const type = searchParams.get("type") || "acquired";
-    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") || "50")));
-    const offset = parseInt(searchParams.get("offset") || "0");
+    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") || "50", 10)));
+    const offset = Math.max(0, parseInt(searchParams.get("offset") || "0", 10) || 0);
 
     // If type is "uploaded", return user's own resources
     if (type === "uploaded") {
@@ -80,8 +80,6 @@ export async function GET(request: NextRequest) {
           previewUrl: r.preview_url,
           subjects,
           cycles,
-          subject: subjects[0] || "Allgemein",
-          cycle: cycles[0] || "",
           verified: r.is_approved && r.status === "VERIFIED",
           status: r.status,
           isApproved: r.is_approved,
@@ -210,8 +208,6 @@ export async function GET(request: NextRequest) {
           previewUrl: t.resource.preview_url,
           subjects,
           cycles,
-          subject: subjects[0] || "Allgemein",
-          cycle: cycles[0] || "",
           verified: t.resource.is_approved && t.resource.status === "VERIFIED",
           type: "purchased" as const,
           acquiredAt: t.created_at,
@@ -236,8 +232,6 @@ export async function GET(request: NextRequest) {
           previewUrl: d.resource.preview_url,
           subjects,
           cycles,
-          subject: subjects[0] || "Allgemein",
-          cycle: cycles[0] || "",
           verified: d.resource.is_approved && d.resource.status === "VERIFIED",
           type: "free" as const,
           acquiredAt: d.created_at,
@@ -291,6 +285,6 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error fetching library:", error);
-    return NextResponse.json({ error: "Fehler beim Laden der Bibliothek" }, { status: 500 });
+    return NextResponse.json({ error: "LIBRARY_FETCH_FAILED" }, { status: 500 });
   }
 }

@@ -13,6 +13,8 @@ interface KompetenzbereichItemProps {
   onSelect: () => void;
   onToggleExpand: () => void;
   onKompetenzSelect: (code: string | null) => void;
+  expandLabel: string;
+  collapseLabel: string;
   index?: number;
 }
 
@@ -25,6 +27,8 @@ export function KompetenzbereichItem({
   onSelect,
   onToggleExpand,
   onKompetenzSelect,
+  expandLabel,
+  collapseLabel,
   index = 0,
 }: KompetenzbereichItemProps) {
   const hasChildren = kompetenzbereich.kompetenzen.length > 0;
@@ -57,7 +61,7 @@ export function KompetenzbereichItem({
             }`}
             whileTap={{ scale: 0.9 }}
             aria-expanded={isExpanded}
-            aria-label={`${isExpanded ? "Collapse" : "Expand"} ${kompetenzbereich.code}`}
+            aria-label={`${isExpanded ? collapseLabel : expandLabel} ${kompetenzbereich.code}`}
           >
             <motion.span animate={{ rotate: isExpanded ? 90 : 0 }} transition={{ duration: 0.2 }}>
               <ChevronRight className="h-3.5 w-3.5" />

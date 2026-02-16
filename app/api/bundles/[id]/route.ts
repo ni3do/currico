@@ -46,7 +46,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     // Return 404 if not found or not publicly visible
     if (!bundle || !bundle.is_published || bundle.status !== "VERIFIED") {
-      return notFound("Bundle nicht gefunden");
+      return notFound("BUNDLE_NOT_FOUND");
     }
 
     // Calculate savings
@@ -65,9 +65,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       description: bundle.description,
       price: bundle.price,
       priceFormatted: formatPrice(bundle.price, { showFreeLabel: true }),
-      subject: subjects[0] || "Allgemein",
       subjects,
-      cycle: cycles[0] || "",
       cycles,
       coverImageUrl: bundle.cover_image_url,
       createdAt: bundle.created_at,
@@ -97,7 +95,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     return NextResponse.json({ bundle: transformedBundle });
   } catch (error) {
     console.error("Error fetching bundle:", error);
-    return NextResponse.json({ error: "Fehler beim Laden des Bundles" }, { status: 500 });
+    return NextResponse.json({ error: "BUNDLE_FETCH_FAILED" }, { status: 500 });
   }
 }
 
@@ -111,8 +109,8 @@ const updateBundleSchema = z.object({
       message: "Price must be in 0.50 CHF increments",
     })
     .optional(),
-  subject: z.array(z.string()).min(1).optional(),
-  cycle: z.array(z.string()).min(1).optional(),
+  subject: z.array(z.string()).optional(),
+  cycle: z.array(z.string()).optional(),
   resourceIds: z.array(z.string()).min(2).optional(),
   coverImageUrl: z.string().url().optional().nullable(),
   isPublished: z.boolean().optional(),
@@ -140,11 +138,11 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     });
 
     if (!bundle) {
-      return notFound("Bundle nicht gefunden");
+      return notFound("BUNDLE_NOT_FOUND");
     }
 
     if (bundle.seller_id !== userId) {
-      return forbidden("Keine Berechtigung zum Bearbeiten dieses Bundles");
+      return forbidden("BUNDLE_EDIT_FORBIDDEN");
     }
 
     // Parse and validate request body
@@ -153,7 +151,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
     if (!parsed.success) {
       const firstError = parsed.error.issues[0];
-      return badRequest(firstError?.message ?? "Ungültige Eingabe");
+      return badRequest(firstError?.message ?? "VALIDATION_ERROR");
     }
 
     const { title, description, price, subject, cycle, resourceIds, coverImageUrl, isPublished } =
@@ -171,7 +169,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       });
 
       if (materials.length !== resourceIds.length) {
-        return badRequest("Einige Materialien wurden nicht gefunden oder gehören Ihnen nicht");
+        return badRequest("BUNDLE_MATERIALS_INVALID");
       }
     }
 
@@ -211,11 +209,11 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
     return NextResponse.json({
       success: true,
-      message: "Bundle erfolgreich aktualisiert",
+      message: "BUNDLE_UPDATED",
     });
   } catch (error) {
     console.error("Error updating bundle:", error);
-    return NextResponse.json({ error: "Fehler beim Aktualisieren des Bundles" }, { status: 500 });
+    return NextResponse.json({ error: "BUNDLE_UPDATE_FAILED" }, { status: 500 });
   }
 }
 
@@ -243,11 +241,11 @@ export async function DELETE(
     });
 
     if (!bundle) {
-      return notFound("Bundle nicht gefunden");
+      return notFound("BUNDLE_NOT_FOUND");
     }
 
     if (bundle.seller_id !== userId) {
-      return forbidden("Keine Berechtigung zum Löschen dieses Bundles");
+      return forbidden("BUNDLE_DELETE_FORBIDDEN");
     }
 
     // Delete bundle (cascade will remove BundleResource entries)
@@ -255,10 +253,10 @@ export async function DELETE(
 
     return NextResponse.json({
       success: true,
-      message: "Bundle erfolgreich gelöscht",
+      message: "BUNDLE_DELETED",
     });
   } catch (error) {
     console.error("Error deleting bundle:", error);
-    return NextResponse.json({ error: "Fehler beim Löschen des Bundles" }, { status: 500 });
+    return NextResponse.json({ error: "BUNDLE_DELETE_FAILED" }, { status: 500 });
   }
 }

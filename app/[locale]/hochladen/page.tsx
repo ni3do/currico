@@ -25,11 +25,11 @@ import {
   PublishPreviewModal,
 } from "@/components/upload";
 import { checkForEszett, replaceEszett } from "@/lib/validations/swiss-quality";
+import { clearDraftFiles } from "@/lib/utils/draft-file-storage";
 import { validateFileName } from "@/lib/validations/filename";
 import { roundToNearestHalfFranc } from "@/lib/utils/price";
 import {
   Upload,
-  FileText,
   Image as ImageIcon,
   X,
   ExternalLink,
@@ -38,7 +38,11 @@ import {
   Loader2,
   ClipboardCheck,
   Scale,
+  Info,
 } from "lucide-react";
+import { MaterialTypeBadge } from "@/components/ui/MaterialTypeBadge";
+import { MAX_MATERIAL_FILE_SIZE, MAX_PREVIEW_FILE_SIZE } from "@/lib/validations/material";
+import { SELLER_PAYOUT_PERCENT } from "@/lib/constants";
 
 type UploadStatus = "idle" | "uploading" | "success" | "error";
 
@@ -60,6 +64,7 @@ function UploadPageContent() {
     currentStep,
     goNext,
     goBack,
+    goToStep,
     touchedFields,
     markFieldTouched,
     markStepTouched,
@@ -70,6 +75,7 @@ function UploadPageContent() {
     previewFiles,
     setPreviewFiles,
     hasDraft,
+    filesRestored,
   } = useUploadWizard();
 
   const [uploadStatus, setUploadStatus] = useState<UploadStatus>("idle");
@@ -83,14 +89,40 @@ function UploadPageContent() {
   const [showPreview, setShowPreview] = useState(false);
   const [showDraftToast, setShowDraftToast] = useState(false);
   const [fileNameWarnings, setFileNameWarnings] = useState<string[]>([]);
+  const [duplicateTitle, setDuplicateTitle] = useState<{
+    exists: boolean;
+    matchType?: "exact" | "similar";
+    existingTitle?: string;
+    existingId?: string;
+    similarity?: number;
+  } | null>(null);
 
   const mainFileInputRef = useRef<HTMLInputElement>(null);
   const previewFileInputRef = useRef<HTMLInputElement>(null);
   const hasShownDraftToast = useRef(false);
 
+  // Stable object URLs for file previews (avoids memory leak from calling createObjectURL in render)
+  const fileObjectUrls = useMemo(() => files.map((f) => URL.createObjectURL(f)), [files]);
+  useEffect(
+    () => () => fileObjectUrls.forEach((url) => URL.revokeObjectURL(url)),
+    [fileObjectUrls]
+  );
+  const previewObjectUrl = useMemo(
+    () => (previewFiles[0] ? URL.createObjectURL(previewFiles[0]) : null),
+    [previewFiles]
+  );
+  useEffect(() => {
+    return () => {
+      if (previewObjectUrl) URL.revokeObjectURL(previewObjectUrl);
+    };
+  }, [previewObjectUrl]);
+
   // Detect touch device for mobile-friendly upload area
-  const isTouchDevice =
-    typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0);
+  const isTouchDevice = useMemo(
+    () =>
+      typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0),
+    []
+  );
 
   // Show draft restored toast on mount if draft exists
   useEffect(() => {
@@ -131,6 +163,29 @@ function UploadPageContent() {
     files.length,
     uploadStatus,
   ]);
+
+  // Duplicate title check (debounced)
+  useEffect(() => {
+    const title = formData.title.trim();
+    if (title.length < 3) {
+      const timer = setTimeout(() => setDuplicateTitle(null), 0);
+      return () => clearTimeout(timer);
+    }
+
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/materials/check-title?title=${encodeURIComponent(title)}`);
+        if (res.ok) {
+          const data = await res.json();
+          setDuplicateTitle(data);
+        }
+      } catch {
+        // Silently ignore network errors for this non-blocking check
+      }
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [formData.title]);
 
   // Eszett validation
   const eszettCheck = useMemo(() => {
@@ -316,6 +371,7 @@ function UploadPageContent() {
 
           // Clear draft on success
           localStorage.removeItem("currico_upload_draft");
+          clearDraftFiles();
         } catch {
           setError(tUpload("errorParseResponse"));
           setUploadStatus("error");
@@ -400,18 +456,13 @@ function UploadPageContent() {
     isStepValid(2) &&
     isStepValid(3);
 
-  // File type icons
-  const getFileIcon = (file: File) => {
-    if (file.type === "application/pdf") {
-      return <FileText className="h-8 w-8 text-red-500" />;
-    } else if (file.type.includes("word") || file.name.match(/\.docx?$/)) {
-      return <FileText className="h-8 w-8 text-blue-600" />;
-    } else if (file.type.includes("powerpoint") || file.name.match(/\.pptx?$/)) {
-      return <FileText className="h-8 w-8 text-orange-500" />;
-    } else if (file.type.includes("excel") || file.name.match(/\.xlsx?$/)) {
-      return <FileText className="h-8 w-8 text-green-600" />;
-    }
-    return <FileText className="text-text-muted h-8 w-8" />;
+  // Derive material type from file for badge display
+  const getFileFormat = (file: File): string => {
+    if (file.type === "application/pdf") return "pdf";
+    if (file.type.includes("word") || file.name.match(/\.docx?$/)) return "word";
+    if (file.type.includes("powerpoint") || file.name.match(/\.pptx?$/)) return "powerpoint";
+    if (file.type.includes("excel") || file.name.match(/\.xlsx?$/)) return "excel";
+    return "other";
   };
 
   // Auth gate: show login prompt if not authenticated
@@ -481,6 +532,43 @@ function UploadPageContent() {
               <DraftIndicator />
             </div>
 
+            {/* Eszett Warning - visible on all steps */}
+            {eszettCheck.hasAny && (
+              <div
+                role="alert"
+                className="border-warning/50 bg-warning/10 mb-6 rounded-xl border p-4"
+              >
+                <div className="flex items-start gap-3">
+                  <AlertTriangle className="text-warning h-5 w-5 flex-shrink-0" />
+                  <div className="flex-1">
+                    <h4 className="text-warning font-medium">{tEszett("title")}</h4>
+                    <p className="text-text mt-1 text-sm">
+                      {tEszett("message", { count: eszettCheck.totalCount })}
+                    </p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {currentStep === 1 ? (
+                        <button
+                          type="button"
+                          onClick={handleFixEszett}
+                          className="bg-warning text-text-on-accent hover:bg-warning/90 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+                        >
+                          {tEszett("fix")}
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => goToStep(1)}
+                          className="bg-warning text-text-on-accent hover:bg-warning/90 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+                        >
+                          {tEszett("goToStep")}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Form Card */}
             <div className="border-border bg-surface rounded-2xl border p-6 shadow-lg shadow-black/5 transition-shadow duration-300 hover:shadow-xl sm:p-8">
               {/* Step 1: Basics */}
@@ -509,6 +597,52 @@ function UploadPageContent() {
                       maxLength={64}
                     />
                   </FormField>
+
+                  {/* Duplicate title warning */}
+                  {duplicateTitle?.exists && duplicateTitle.matchType === "exact" && (
+                    <div className="border-warning/50 bg-warning/10 -mt-4 rounded-xl border p-3">
+                      <div className="flex items-start gap-2">
+                        <AlertTriangle className="text-warning mt-0.5 h-4 w-4 flex-shrink-0" />
+                        <div className="text-sm">
+                          <span className="text-warning font-medium">
+                            {tFields("duplicateTitle")}
+                          </span>
+                          {duplicateTitle.existingId && (
+                            <Link
+                              href={`/materialien/${duplicateTitle.existingId}`}
+                              target="_blank"
+                              className="text-primary ml-2 inline-flex items-center gap-1 text-sm font-medium hover:underline"
+                            >
+                              {tFields("duplicateTitleLink")}
+                              <ExternalLink className="h-3 w-3" />
+                            </Link>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {duplicateTitle?.exists && duplicateTitle.matchType === "similar" && (
+                    <div className="border-info/50 bg-info/10 -mt-4 rounded-xl border p-3">
+                      <div className="flex items-start gap-2">
+                        <Info className="text-info mt-0.5 h-4 w-4 flex-shrink-0" />
+                        <div className="text-sm">
+                          <span className="text-info font-medium">
+                            {tFields("similarTitle", { title: duplicateTitle.existingTitle ?? "" })}
+                          </span>
+                          {duplicateTitle.existingId && (
+                            <Link
+                              href={`/materialien/${duplicateTitle.existingId}`}
+                              target="_blank"
+                              className="text-primary ml-2 inline-flex items-center gap-1 text-sm font-medium hover:underline"
+                            >
+                              {tFields("duplicateTitleLink")}
+                              <ExternalLink className="h-3 w-3" />
+                            </Link>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   <FormField
                     label={tFields("description")}
@@ -607,28 +741,6 @@ function UploadPageContent() {
                         })}
                       </div>
                     </FormField>
-                  )}
-
-                  {/* Eszett Warning */}
-                  {eszettCheck.hasAny && (
-                    <div className="border-warning/50 bg-warning/10 rounded-xl border p-4">
-                      <div className="flex items-start gap-3">
-                        <AlertTriangle className="text-warning h-5 w-5 flex-shrink-0" />
-                        <div className="flex-1">
-                          <h4 className="text-warning font-medium">{tEszett("title")}</h4>
-                          <p className="text-text mt-1 text-sm">
-                            {tEszett("message", { count: eszettCheck.totalCount })}
-                          </p>
-                          <button
-                            type="button"
-                            onClick={handleFixEszett}
-                            className="bg-warning text-text-on-accent hover:bg-warning/90 mt-3 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
-                          >
-                            {tEszett("fix")}
-                          </button>
-                        </div>
-                      </div>
-                    </div>
                   )}
                 </div>
               )}
@@ -740,7 +852,10 @@ function UploadPageContent() {
                               {tFields("earningsPerSale")}
                             </span>
                             <span className="text-success text-lg font-bold">
-                              CHF {(parseFloat(formData.price) * 0.7).toFixed(2)}
+                              CHF{" "}
+                              {((parseFloat(formData.price) * SELLER_PAYOUT_PERCENT) / 100).toFixed(
+                                2
+                              )}
                             </span>
                           </div>
                         </div>
@@ -788,7 +903,15 @@ function UploadPageContent() {
                       </div>
                     ) : files.length === 0 ? (
                       <div
+                        role="button"
+                        tabIndex={0}
                         onClick={() => mainFileInputRef.current?.click()}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            mainFileInputRef.current?.click();
+                          }
+                        }}
                         className={`cursor-pointer rounded-xl border-2 border-dashed p-8 text-center transition-colors ${
                           touchedFields.files && getFieldError("files")
                             ? "border-error bg-error/5 hover:border-error"
@@ -836,30 +959,44 @@ function UploadPageContent() {
                                 className="flex flex-1 cursor-pointer items-center gap-4"
                                 onClick={() => handleFilePreview(file)}
                               >
-                                <div className="relative flex-shrink-0">
+                                <div className="flex-shrink-0">
                                   {file.type.startsWith("image/") ? (
                                     // eslint-disable-next-line @next/next/no-img-element
                                     <img
-                                      src={URL.createObjectURL(file)}
+                                      src={fileObjectUrls[index]}
                                       alt={file.name}
                                       className="h-10 w-10 rounded-lg object-cover"
                                     />
                                   ) : (
-                                    getFileIcon(file)
-                                  )}
-                                  {file.type === "application/pdf" && (
-                                    <span className="bg-primary/90 absolute -right-1 -bottom-1 rounded px-1 py-0.5 text-[8px] font-bold text-white">
-                                      PDF
-                                    </span>
+                                    <MaterialTypeBadge format={getFileFormat(file)} />
                                   )}
                                 </div>
                                 <div className="min-w-0 flex-1">
                                   <p className="text-text truncate text-sm font-medium">
                                     {file.name}
                                   </p>
-                                  <p className="text-text-muted text-xs">
-                                    {(file.size / 1024 / 1024).toFixed(2)} MB
-                                  </p>
+                                  <div className="mt-1">
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-text-muted text-xs">
+                                        {(file.size / 1024 / 1024).toFixed(2)} MB /{" "}
+                                        {(MAX_MATERIAL_FILE_SIZE / 1024 / 1024).toFixed(0)} MB
+                                      </span>
+                                    </div>
+                                    <div className="bg-border mt-1 h-1 w-full overflow-hidden rounded-full">
+                                      <div
+                                        className={`h-full rounded-full transition-all ${
+                                          file.size / MAX_MATERIAL_FILE_SIZE > 0.9
+                                            ? "bg-error"
+                                            : file.size / MAX_MATERIAL_FILE_SIZE > 0.7
+                                              ? "bg-warning"
+                                              : "bg-success"
+                                        }`}
+                                        style={{
+                                          width: `${Math.min(100, (file.size / MAX_MATERIAL_FILE_SIZE) * 100)}%`,
+                                        }}
+                                      />
+                                    </div>
+                                  </div>
                                 </div>
                                 <ExternalLink className="text-text-muted h-4 w-4" />
                               </div>
@@ -885,6 +1022,21 @@ function UploadPageContent() {
                     )}
                   </FormField>
 
+                  {/* Draft file warning */}
+                  {hasDraft && files.length === 0 && formData.title.trim() !== "" && (
+                    <div className="border-info/30 bg-info/5 rounded-xl border p-4">
+                      <div className="flex items-start gap-3">
+                        <Info className="text-info h-5 w-5 flex-shrink-0" />
+                        <div className="text-text text-sm">
+                          <p className="text-info font-medium">{tFields("draftFilesNotSaved")}</p>
+                          <p className="text-text-muted mt-1">
+                            {tFields("draftFilesNotSavedDesc")}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   {/* File Name Warnings */}
                   {fileNameWarnings.length > 0 && (
                     <div className="border-warning/50 bg-warning/10 rounded-xl border p-4">
@@ -904,15 +1056,26 @@ function UploadPageContent() {
                     </div>
                   )}
 
-                  {/* Auto Preview Info */}
-                  <div className="border-success/30 bg-success/5 rounded-xl border p-4">
-                    <div className="flex gap-3">
-                      <Check className="text-success h-5 w-5 flex-shrink-0" />
-                      <div className="text-text text-sm">
-                        <strong>{tFields("autoPreview")}</strong> {tFields("autoPreviewDesc")}
+                  {/* Auto Preview Info - dynamic per format */}
+                  {formData.resourceType === "pdf" ? (
+                    <div className="border-success/30 bg-success/5 rounded-xl border p-4">
+                      <div className="flex gap-3">
+                        <Check className="text-success h-5 w-5 flex-shrink-0" />
+                        <div className="text-text text-sm">
+                          <strong>{tFields("autoPreview")}</strong> {tFields("autoPreviewPdf")}
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="border-info/30 bg-info/5 rounded-xl border p-4">
+                      <div className="flex gap-3">
+                        <Info className="text-info h-5 w-5 flex-shrink-0" />
+                        <div className="text-text text-sm">
+                          <strong>{tFields("autoPreview")}</strong> {tFields("autoPreviewOther")}
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Preview Upload */}
                   <FormField
@@ -921,13 +1084,21 @@ function UploadPageContent() {
                     hint={tFields("previewImageHint")}
                   >
                     <div
+                      role="button"
+                      tabIndex={0}
                       onClick={() => previewFileInputRef.current?.click()}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          previewFileInputRef.current?.click();
+                        }
+                      }}
                       className="border-border bg-bg hover:border-primary cursor-pointer rounded-xl border-2 border-dashed p-6 text-center transition-colors"
                     >
                       {previewFiles.length > 0 ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
-                          src={URL.createObjectURL(previewFiles[0])}
+                          src={previewObjectUrl!}
                           alt={tFields("previewAlt")}
                           className="mx-auto h-24 w-auto rounded-lg object-contain"
                         />
@@ -938,9 +1109,31 @@ function UploadPageContent() {
                         {tFields("previewImageFormats")}
                       </p>
                       {previewFiles.length > 0 && (
-                        <p className="text-primary mt-2 text-sm font-medium">
-                          {tFields("previewSelectedChange", { count: previewFiles.length })}
-                        </p>
+                        <div className="mt-2">
+                          <p className="text-primary text-sm font-medium">
+                            {tFields("previewSelectedChange", { count: previewFiles.length })}
+                          </p>
+                          <div className="mx-auto mt-1 max-w-xs">
+                            <span className="text-text-muted text-xs">
+                              {(previewFiles[0].size / 1024 / 1024).toFixed(2)} MB /{" "}
+                              {(MAX_PREVIEW_FILE_SIZE / 1024 / 1024).toFixed(0)} MB
+                            </span>
+                            <div className="bg-border mt-0.5 h-1 w-full overflow-hidden rounded-full">
+                              <div
+                                className={`h-full rounded-full transition-all ${
+                                  previewFiles[0].size / MAX_PREVIEW_FILE_SIZE > 0.9
+                                    ? "bg-error"
+                                    : previewFiles[0].size / MAX_PREVIEW_FILE_SIZE > 0.7
+                                      ? "bg-warning"
+                                      : "bg-success"
+                                }`}
+                                style={{
+                                  width: `${Math.min(100, (previewFiles[0].size / MAX_PREVIEW_FILE_SIZE) * 100)}%`,
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </div>
                       )}
                       <input
                         ref={previewFileInputRef}
@@ -1152,7 +1345,12 @@ function UploadPageContent() {
       <Footer />
 
       {/* Draft Restored Toast */}
-      {showDraftToast && <DraftRestoredToast onDismiss={() => setShowDraftToast(false)} />}
+      {showDraftToast && (
+        <DraftRestoredToast
+          onDismiss={() => setShowDraftToast(false)}
+          filesRestored={filesRestored}
+        />
+      )}
 
       {/* Pre-Publish Preview Modal */}
       {showPreview && (
@@ -1164,7 +1362,7 @@ function UploadPageContent() {
           priceType={formData.priceType as "free" | "paid"}
           resourceType={formData.resourceType}
           fileName={files[0]?.name || ""}
-          previewImageUrl={previewFiles[0] ? URL.createObjectURL(previewFiles[0]) : null}
+          previewImageUrl={previewObjectUrl}
           onCancel={() => setShowPreview(false)}
           onConfirm={() => {
             setShowPreview(false);

@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { useAccountData } from "@/lib/hooks/useAccountData";
 import { AvatarUploader } from "@/components/profile/AvatarUploader";
 import { MultiSelect } from "@/components/ui/MultiSelect";
@@ -179,6 +180,14 @@ export default function SettingsProfilePage() {
       } catch {
         errors.website = tSettings("errorInvalidUrl");
       }
+    }
+    // Social media username validation: alphanumeric, dots, underscores only
+    const usernameRegex = /^[a-zA-Z0-9._]{1,30}$/;
+    if (profileFormData.instagram && !usernameRegex.test(profileFormData.instagram)) {
+      errors.instagram = tSettings("errorInvalidUsername");
+    }
+    if (profileFormData.pinterest && !usernameRegex.test(profileFormData.pinterest)) {
+      errors.pinterest = tSettings("errorInvalidUsername");
     }
 
     if (Object.keys(errors).length > 0) {
@@ -457,7 +466,18 @@ export default function SettingsProfilePage() {
                   className="input bg-bg-secondary text-text-muted w-full cursor-not-allowed pl-11"
                 />
               </div>
-              <p className="text-text-muted mt-1 text-xs">{tSettings("emailChangeHint")}</p>
+              <p className="text-text-muted mt-1 text-xs">
+                {tSettings.rich("emailChangeHint", {
+                  link: (chunks) => (
+                    <Link
+                      href="/kontakt"
+                      className="text-primary hover:text-primary-hover font-medium"
+                    >
+                      {chunks}
+                    </Link>
+                  ),
+                })}
+              </p>
             </div>
           </div>
 
@@ -603,9 +623,12 @@ export default function SettingsProfilePage() {
                   value={profileFormData.instagram}
                   onChange={(e) => handleProfileFieldChange("instagram", e.target.value)}
                   placeholder={tSettings("usernamePlaceholder")}
-                  className="input w-full pl-9"
+                  className={`input w-full pl-9 ${profileErrors.instagram ? "border-error" : ""}`}
                 />
               </div>
+              {profileErrors.instagram && (
+                <p className="text-error mt-1 text-xs">{profileErrors.instagram}</p>
+              )}
             </div>
             <div>
               <label className="text-text mb-1.5 block text-sm font-medium">Pinterest</label>
@@ -618,9 +641,12 @@ export default function SettingsProfilePage() {
                   value={profileFormData.pinterest}
                   onChange={(e) => handleProfileFieldChange("pinterest", e.target.value)}
                   placeholder={tSettings("usernamePlaceholder")}
-                  className="input w-full pl-9"
+                  className={`input w-full pl-9 ${profileErrors.pinterest ? "border-error" : ""}`}
                 />
               </div>
+              {profileErrors.pinterest && (
+                <p className="text-error mt-1 text-xs">{profileErrors.pinterest}</p>
+              )}
             </div>
           </div>
         </div>

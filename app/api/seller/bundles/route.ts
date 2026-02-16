@@ -14,7 +14,7 @@ export async function GET() {
     if (!userId) return unauthorized();
 
     const seller = await requireSeller(userId);
-    if (!seller) return forbidden("Nur für Verkäufer zugänglich");
+    if (!seller) return forbidden("SELLER_ONLY");
 
     const bundles = await prisma.bundle.findMany({
       where: { seller_id: userId },
@@ -50,8 +50,8 @@ export async function GET() {
         description: bundle.description,
         price: bundle.price,
         priceFormatted: formatPrice(bundle.price, { showFreeLabel: true }),
-        subject: subjects[0] || "Allgemein",
-        cycle: cycles[0] || "",
+        subjects,
+        cycles,
         coverImageUrl: bundle.cover_image_url,
         status: bundle.status,
         isPublished: bundle.is_published,
@@ -73,6 +73,6 @@ export async function GET() {
     return NextResponse.json({ bundles: transformedBundles });
   } catch (error) {
     console.error("Error fetching seller bundles:", error);
-    return NextResponse.json({ error: "Fehler beim Laden der Bundles" }, { status: 500 });
+    return NextResponse.json({ error: "BUNDLES_FETCH_FAILED" }, { status: 500 });
   }
 }

@@ -32,7 +32,7 @@ export function MaterialsGrid({
             scale: 1,
             transition: {
               duration: 0.4,
-              delay: index * 0.05 + 0.02,
+              delay: Math.min(index * 0.05, 0.5) + 0.02,
               ease: [0.22, 1, 0.36, 1],
             },
           }}
@@ -41,15 +41,16 @@ export function MaterialsGrid({
             id={material.id}
             title={material.title}
             description={material.description}
-            subject={material.subject}
-            cycle={material.cycle}
+            subject={material.subjects[0] || "Allgemein"}
+            cycle={material.cycles[0] || ""}
+            price={material.price}
             priceFormatted={material.priceFormatted}
             previewUrl={material.previewUrl}
             seller={{
-              displayName: material.seller.display_name,
-              isVerifiedSeller: material.seller.is_verified_seller,
+              displayName: material.seller.displayName,
+              isVerifiedSeller: material.seller.isVerifiedSeller,
             }}
-            subjectPillClass={getSubjectPillClass(material.subject)}
+            subjectPillClass={getSubjectPillClass(material.subjects[0] || "Allgemein")}
             showWishlist={true}
             isWishlisted={wishlistedIds.has(material.id)}
             onWishlistToggle={onWishlistToggle}

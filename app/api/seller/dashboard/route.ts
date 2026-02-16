@@ -19,7 +19,7 @@ export async function GET() {
 
     // Fetch data in parallel
     const [materials, transactions, totalEarnings, followerCount] = await Promise.all([
-      // Get seller's materials with transaction counts
+      // Get seller's materials with transaction counts and actual download data
       prisma.resource.findMany({
         where: { seller_id: userId },
         select: {
@@ -37,7 +37,12 @@ export async function GET() {
           },
           transactions: {
             where: { status: "COMPLETED" },
-            select: { amount: true },
+            select: {
+              amount: true,
+              downloadTokens: {
+                select: { download_count: true },
+              },
+            },
           },
         },
         orderBy: { created_at: "desc" },
@@ -78,22 +83,33 @@ export async function GET() {
     const platformFeeRate = PLATFORM_FEE_PERCENT / 100;
     const totalGross = totalEarnings._sum.amount || 0;
     const totalNet = totalGross * (1 - platformFeeRate);
-    const totalDownloads = materials.reduce(
-      (sum, r) => sum + r._count.transactions + r._count.downloads,
-      0
-    );
+
+    // Calculate actual downloads from download tokens + free downloads
+    const totalDownloads = materials.reduce((sum, r) => {
+      const paidDownloads = r.transactions.reduce(
+        (tSum, t) => tSum + t.downloadTokens.reduce((dSum, dt) => dSum + dt.download_count, 0),
+        0
+      );
+      return sum + paidDownloads + r._count.downloads;
+    }, 0);
+    const totalPurchases = materials.reduce((sum, r) => sum + r._count.transactions, 0);
 
     // Transform materials
     const transformedMaterials = materials.map((material) => {
       const grossEarnings = material.transactions.reduce((sum, t) => sum + t.amount, 0);
       const netEarnings = grossEarnings * (1 - platformFeeRate);
+      const paidDownloads = material.transactions.reduce(
+        (tSum, t) => tSum + t.downloadTokens.reduce((dSum, dt) => dSum + dt.download_count, 0),
+        0
+      );
 
       return {
         id: material.id,
         title: material.title,
         type: "Material",
         status: getResourceStatus(material.is_published, material.is_approved),
-        downloads: material._count.transactions + material._count.downloads,
+        purchases: material._count.transactions,
+        downloads: paidDownloads + material._count.downloads,
         netEarnings: formatPrice(netEarnings, { showFreeLabel: false }),
       };
     });
@@ -118,6 +134,7 @@ export async function GET() {
       stats: {
         netEarnings: formatPrice(totalNet, { showFreeLabel: false }),
         totalDownloads,
+        totalPurchases,
         followers: followerCount,
       },
       materials: transformedMaterials,
