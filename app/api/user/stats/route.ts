@@ -62,6 +62,7 @@ export async function GET() {
             role: true,
             seller_xp: true,
             stripe_charges_enabled: true,
+            password_hash: true,
             // Notification preferences
             notify_new_from_followed: true,
             notify_recommendations: true,
@@ -100,6 +101,7 @@ export async function GET() {
         isSeller: user.role === "SELLER",
         sellerPoints: user.seller_xp,
         stripeChargesEnabled: user.stripe_charges_enabled,
+        hasPassword: !!user.password_hash,
         // Notification preferences
         notify_new_from_followed: user.notify_new_from_followed,
         notify_recommendations: user.notify_recommendations,

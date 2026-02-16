@@ -3463,7 +3463,32 @@
       "deleting": "Wird gelöscht...",
       "deletePermanently": "Endgültig löschen",
       "deleteError": "Fehler beim Löschen",
-      "networkError": "Netzwerkfehler"
+      "networkError": "Netzwerkfehler",
+      "password": {
+        "title": "Passwort ändern",
+        "subtitle": "Aktualisieren Sie Ihr Anmeldepasswort",
+        "currentPassword": "Aktuelles Passwort",
+        "currentPlaceholder": "Aktuelles Passwort eingeben",
+        "newPassword": "Neues Passwort",
+        "newPlaceholder": "Neues Passwort eingeben",
+        "confirmPassword": "Passwort bestätigen",
+        "confirmPlaceholder": "Neues Passwort wiederholen",
+        "requirements": "Mind. 8 Zeichen, Gross-/Kleinbuchstaben und Zahl",
+        "mismatch": "Passwörter stimmen nicht überein",
+        "submit": "Passwort ändern",
+        "submitting": "Wird geändert...",
+        "success": "Passwort erfolgreich geändert",
+        "genericError": "Ein Fehler ist aufgetreten",
+        "errorRateLimited": "Zu viele Versuche. Bitte versuchen Sie es später erneut.",
+        "errorFieldsRequired": "Alle Felder sind erforderlich",
+        "errorCurrentWrong": "Das aktuelle Passwort ist falsch",
+        "errorSamePassword": "Das neue Passwort muss sich vom aktuellen unterscheiden",
+        "oauthMessage": "Sie haben sich mit Google angemeldet und kein Passwort gesetzt.",
+        "forgotPasswordLink": "Passwort vergessen?",
+        "setPasswordLink": "Passwort über E-Mail setzen",
+        "showPassword": "Passwort anzeigen",
+        "hidePassword": "Passwort verbergen"
+      }
     },
     "settingsProfile": {
       "avatar": {

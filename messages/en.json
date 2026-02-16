@@ -3463,7 +3463,32 @@
       "deleting": "Deleting...",
       "deletePermanently": "Delete permanently",
       "deleteError": "Failed to delete",
-      "networkError": "Network error"
+      "networkError": "Network error",
+      "password": {
+        "title": "Change Password",
+        "subtitle": "Update your login password",
+        "currentPassword": "Current Password",
+        "currentPlaceholder": "Enter current password",
+        "newPassword": "New Password",
+        "newPlaceholder": "Enter new password",
+        "confirmPassword": "Confirm Password",
+        "confirmPlaceholder": "Repeat new password",
+        "requirements": "Min. 8 characters, upper/lowercase and a number",
+        "mismatch": "Passwords do not match",
+        "submit": "Change Password",
+        "submitting": "Changing...",
+        "success": "Password changed successfully",
+        "genericError": "An error occurred",
+        "errorRateLimited": "Too many attempts. Please try again later.",
+        "errorFieldsRequired": "All fields are required",
+        "errorCurrentWrong": "Current password is incorrect",
+        "errorSamePassword": "New password must be different from current password",
+        "oauthMessage": "You signed in with Google and don't have a password set.",
+        "forgotPasswordLink": "Forgot password?",
+        "setPasswordLink": "Set password via email",
+        "showPassword": "Show password",
+        "hidePassword": "Hide password"
+      }
     },
     "settingsProfile": {
       "avatar": {

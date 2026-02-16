@@ -412,7 +412,7 @@ Legende: [x] = erledigt, [ ] = offen
 ### Eigene Vorschläge (Einstellungen)
 
 - [x] Bio-Feld `maxLength={500}` — Zeichenzähler ist sofort sichtbar: `{bio.length}/500`
-- [ ] Passwort ändern Funktion fehlt komplett — sollte in diesem Bereich sein
+- [x] Passwort ändern Funktion fehlt komplett — POST /api/auth/change-password with bcrypt verify, rate limiting, strength validation; form in account settings with show/hide toggles, autocomplete hints, error code→i18n mapping, OAuth-only fallback message
 - [x] "E-Mail ändern → kontaktieren Sie uns" ohne Link/Button zu Support — rich text with Link to /kontakt added
 - [x] Instagram/Pinterest-Felder: keine Validierung der Benutzernamen — regex validation (alphanumeric, dots, underscores) with error display
 - [ ] Profil-Visibility-Toggle hat keine Bestätigung vor Änderung zu Private
