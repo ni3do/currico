@@ -18,6 +18,7 @@ import {
   Lock,
   CheckCircle2,
   LogIn,
+  AlertTriangle,
 } from "lucide-react";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
@@ -90,7 +91,10 @@ export default function SellerLevelsPage() {
                           <div
                             className={`flex h-14 w-14 items-center justify-center rounded-xl ${levelDef.badgeBg}`}
                           >
-                            <CurrentIcon className={`h-7 w-7 ${levelDef.textClass}`} />
+                            <CurrentIcon
+                              aria-hidden="true"
+                              className={`h-7 w-7 ${levelDef.textClass}`}
+                            />
                           </div>
                           <div>
                             <p className="text-text-muted text-xs font-medium tracking-wider uppercase">
@@ -116,17 +120,17 @@ export default function SellerLevelsPage() {
               </div>
               <div className="border-border grid grid-cols-3 border-t">
                 <div className="border-border flex items-center justify-center gap-2 border-r px-4 py-3">
-                  <Upload className="text-primary h-4 w-4" />
+                  <Upload aria-hidden="true" className="text-primary h-4 w-4" />
                   <span className="text-text text-sm font-semibold">{sellerData.uploads}</span>
                   <span className="text-text-muted text-xs">{t("uploads")}</span>
                 </div>
                 <div className="border-border flex items-center justify-center gap-2 border-r px-4 py-3">
-                  <Download className="text-accent h-4 w-4" />
+                  <Download aria-hidden="true" className="text-accent h-4 w-4" />
                   <span className="text-text text-sm font-semibold">{sellerData.downloads}</span>
                   <span className="text-text-muted text-xs">{t("downloads")}</span>
                 </div>
                 <div className="flex items-center justify-center gap-2 px-4 py-3">
-                  <Star className="text-warning h-4 w-4" />
+                  <Star aria-hidden="true" className="text-warning h-4 w-4" />
                   <span className="text-text text-sm font-semibold">
                     {sellerData.avgRating !== null ? sellerData.avgRating.toFixed(1) : "—"}
                   </span>
@@ -192,7 +196,7 @@ export default function SellerLevelsPage() {
                 href="/anmelden"
                 className="bg-primary text-text-on-accent hover:bg-primary-hover flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors"
               >
-                <LogIn className="h-4 w-4" />
+                <LogIn aria-hidden="true" className="h-4 w-4" />
                 {t("page.loginCta")}
               </Link>
             </div>
@@ -214,7 +218,7 @@ export default function SellerLevelsPage() {
             <div className="card flex flex-col p-6">
               <div className="mb-4 flex items-center gap-3">
                 <div className="bg-primary/10 flex h-12 w-12 items-center justify-center rounded-xl">
-                  <Upload className="text-primary h-6 w-6" />
+                  <Upload aria-hidden="true" className="text-primary h-6 w-6" />
                 </div>
                 <div>
                   <h3 className="text-text text-lg font-bold">
@@ -259,7 +263,7 @@ export default function SellerLevelsPage() {
             <div className="card flex flex-col p-6">
               <div className="mb-4 flex items-center gap-3">
                 <div className="bg-accent/10 flex h-12 w-12 items-center justify-center rounded-xl">
-                  <Download className="text-accent h-6 w-6" />
+                  <Download aria-hidden="true" className="text-accent h-6 w-6" />
                 </div>
                 <div>
                   <h3 className="text-text text-lg font-bold">
@@ -309,7 +313,7 @@ export default function SellerLevelsPage() {
             <div className="card flex flex-col p-6">
               <div className="mb-4 flex items-center gap-3">
                 <div className="bg-warning/10 flex h-12 w-12 items-center justify-center rounded-xl">
-                  <Star className="text-warning h-6 w-6" />
+                  <Star aria-hidden="true" className="text-warning h-6 w-6" />
                 </div>
                 <div>
                   <h3 className="text-text text-lg font-bold">
@@ -360,7 +364,7 @@ export default function SellerLevelsPage() {
           className="mb-10"
         >
           <h2 className="text-text mb-2 text-xl font-semibold">
-            <TrendingUp className="text-success mr-2 inline-block h-5 w-5" />
+            <TrendingUp aria-hidden="true" className="text-success mr-2 inline-block h-5 w-5" />
             {t("page.ratingBonusTitle")}
           </h2>
           <p className="text-text-muted mb-4 text-sm">{t("page.ratingBonusDescription")}</p>
@@ -370,7 +374,7 @@ export default function SellerLevelsPage() {
               {/* Base */}
               <div className="p-5 text-center">
                 <div className="bg-surface-hover mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full">
-                  <Star className="text-text-muted h-5 w-5" />
+                  <Star aria-hidden="true" className="text-text-muted h-5 w-5" />
                 </div>
                 <p className="text-text-muted text-xs font-medium">{t("page.ratingBonusBase")}</p>
                 <p className="text-text mt-1 text-2xl font-bold">{POINTS_PER_DOWNLOAD_BASE}</p>
@@ -381,7 +385,7 @@ export default function SellerLevelsPage() {
               {/* Good */}
               <div className="bg-warning/5 p-5 text-center">
                 <div className="bg-warning/15 mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full">
-                  <Star className="text-warning h-5 w-5" />
+                  <Star aria-hidden="true" className="text-warning h-5 w-5" />
                 </div>
                 <p className="text-warning text-xs font-medium">{t("page.ratingBonusGood")}</p>
                 <p className="text-warning mt-1 text-2xl font-bold">{POINTS_PER_DOWNLOAD_GOOD}</p>
@@ -392,7 +396,7 @@ export default function SellerLevelsPage() {
               {/* Great */}
               <div className="bg-success/5 p-5 text-center">
                 <div className="bg-success/15 mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full">
-                  <Star className="text-success h-5 w-5" />
+                  <Star aria-hidden="true" className="text-success h-5 w-5" />
                 </div>
                 <p className="text-success text-xs font-medium">{t("page.ratingBonusGreat")}</p>
                 <p className="text-success mt-1 text-2xl font-bold">{POINTS_PER_DOWNLOAD_GREAT}</p>
@@ -412,7 +416,7 @@ export default function SellerLevelsPage() {
           className="mb-10"
         >
           <h2 className="text-text mb-2 text-xl font-semibold">
-            <BadgeCheck className="text-success mr-2 inline-block h-5 w-5" />
+            <BadgeCheck aria-hidden="true" className="text-success mr-2 inline-block h-5 w-5" />
             {t("page.verifiedBonusTitle")}
           </h2>
           <p className="text-text-muted mb-4 text-sm">{t("page.verifiedBonusDescription")}</p>
@@ -420,7 +424,7 @@ export default function SellerLevelsPage() {
           <div className="border-border bg-surface overflow-hidden rounded-2xl border">
             <div className="flex items-center gap-4 p-6">
               <div className="bg-success/10 flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl">
-                <BadgeCheck className="text-success h-7 w-7" />
+                <BadgeCheck aria-hidden="true" className="text-success h-7 w-7" />
               </div>
               <div className="min-w-0 flex-1">
                 <h3 className="text-text text-lg font-bold">
@@ -434,7 +438,7 @@ export default function SellerLevelsPage() {
                 href="/verifizierter-verkaeufer"
                 className="text-success hover:text-success/80 flex items-center gap-1.5 text-sm font-medium transition-colors"
               >
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight aria-hidden="true" className="h-4 w-4" />
                 {t("page.verifiedBonusLink")}
               </Link>
             </div>
@@ -477,7 +481,7 @@ export default function SellerLevelsPage() {
             </div>
             <div className="px-6 py-3">
               <div className="flex items-center gap-2">
-                <ArrowRight className="text-text-muted h-4 w-4" />
+                <ArrowRight aria-hidden="true" className="text-text-muted h-4 w-4" />
                 <span className="text-text-muted text-sm">
                   {t("page.exampleFormula", {
                     uploads: exampleUploads,
@@ -545,9 +549,9 @@ export default function SellerLevelsPage() {
                       }`}
                     >
                       {isLocked ? (
-                        <Lock className="text-text-faint h-7 w-7" />
+                        <Lock aria-hidden="true" className="text-text-faint h-7 w-7" />
                       ) : (
-                        <Icon className={`h-7 w-7 ${level.textClass}`} />
+                        <Icon aria-hidden="true" className={`h-7 w-7 ${level.textClass}`} />
                       )}
                     </div>
 
@@ -577,13 +581,13 @@ export default function SellerLevelsPage() {
                         )}
                         {isUnlocked && (
                           <span className="text-text-muted flex items-center gap-1 text-xs font-medium">
-                            <CheckCircle2 className="h-3.5 w-3.5" />
+                            <CheckCircle2 aria-hidden="true" className="h-3.5 w-3.5" />
                             {t("page.levelUnlocked")}
                           </span>
                         )}
                         {isLocked && (
                           <span className="text-text-faint flex items-center gap-1 text-xs font-medium">
-                            <Lock className="h-3 w-3" />
+                            <Lock aria-hidden="true" className="h-3 w-3" />
                             {t("page.levelLocked")}
                           </span>
                         )}
@@ -631,6 +635,81 @@ export default function SellerLevelsPage() {
                           transition={{ duration: 1, ease: "easeOut", delay: 0.5 }}
                         />
                       </div>
+
+                      {/* Per-requirement progress */}
+                      {sellerData.requirements.length > 0 && (
+                        <div className="mt-3 space-y-2">
+                          {sellerData.requirements.map((req) => {
+                            const reqIcon =
+                              req.type === "points"
+                                ? TrendingUp
+                                : req.type === "uploads"
+                                  ? Upload
+                                  : Download;
+                            const ReqIcon = reqIcon;
+                            const reqLabel =
+                              req.type === "points"
+                                ? t("page.requirementPoints")
+                                : req.type === "uploads"
+                                  ? t("page.requirementUploads")
+                                  : t("page.requirementDownloads");
+                            return (
+                              <div key={req.type} className="flex items-center gap-2">
+                                <ReqIcon
+                                  aria-hidden="true"
+                                  className="text-text-muted h-3.5 w-3.5 flex-shrink-0"
+                                />
+                                <div className="min-w-0 flex-1">
+                                  <div className="bg-border h-1.5 overflow-hidden rounded-full">
+                                    <motion.div
+                                      className="h-full rounded-full"
+                                      style={{
+                                        background: `var(--color-${level.color === "text-muted" ? "overlay" : level.color})`,
+                                      }}
+                                      initial={{ width: 0 }}
+                                      animate={{ width: `${req.percent}%` }}
+                                      transition={{ duration: 0.8, ease: "easeOut", delay: 0.7 }}
+                                    />
+                                  </div>
+                                </div>
+                                <span className="text-text-muted text-[11px] whitespace-nowrap">
+                                  {t("page.requirementProgress", {
+                                    current: req.current,
+                                    required: req.required,
+                                  })}{" "}
+                                  {reqLabel}
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+
+                      {/* Blocker messages */}
+                      {sellerData.blockers.length > 0 && (
+                        <div className="mt-2 space-y-1">
+                          {sellerData.blockers.map((blocker) => {
+                            const msg =
+                              blocker.key === "needMorePoints"
+                                ? t("page.blockerNeedMorePoints", { count: blocker.count })
+                                : blocker.key === "needMoreUploads"
+                                  ? t("page.blockerNeedMoreUploads", { count: blocker.count })
+                                  : t("page.blockerNeedMoreDownloads", { count: blocker.count });
+                            return (
+                              <div
+                                key={blocker.key}
+                                className="text-warning flex items-center gap-1.5 text-[11px]"
+                              >
+                                <AlertTriangle
+                                  aria-hidden="true"
+                                  className="h-3 w-3 flex-shrink-0"
+                                />
+                                <span>{msg}</span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
                   )}
 
@@ -638,19 +717,19 @@ export default function SellerLevelsPage() {
                   {(level.minPoints > 0 || level.minUploads > 0 || level.minDownloads > 0) && (
                     <div className="border-border divide-border grid grid-cols-3 divide-x border-t">
                       <div className="flex items-center justify-center gap-1.5 px-3 py-2.5">
-                        <TrendingUp className="text-text-muted h-3.5 w-3.5" />
+                        <TrendingUp aria-hidden="true" className="text-text-muted h-3.5 w-3.5" />
                         <span className="text-text-muted text-xs">
                           {t("page.reqPoints", { count: level.minPoints })}
                         </span>
                       </div>
                       <div className="flex items-center justify-center gap-1.5 px-3 py-2.5">
-                        <Upload className="text-text-muted h-3.5 w-3.5" />
+                        <Upload aria-hidden="true" className="text-text-muted h-3.5 w-3.5" />
                         <span className="text-text-muted text-xs">
                           {t("page.reqUploads", { count: level.minUploads })}
                         </span>
                       </div>
                       <div className="flex items-center justify-center gap-1.5 px-3 py-2.5">
-                        <Download className="text-text-muted h-3.5 w-3.5" />
+                        <Download aria-hidden="true" className="text-text-muted h-3.5 w-3.5" />
                         <span className="text-text-muted text-xs">
                           {t("page.reqDownloads", { count: level.minDownloads })}
                         </span>
@@ -680,7 +759,7 @@ export default function SellerLevelsPage() {
           className="mb-10"
         >
           <h2 className="text-text mb-2 text-xl font-semibold">
-            <Lightbulb className="text-warning mr-2 inline-block h-5 w-5" />
+            <Lightbulb aria-hidden="true" className="text-warning mr-2 inline-block h-5 w-5" />
             {t("page.tipsTitle")}
           </h2>
 
@@ -697,7 +776,7 @@ export default function SellerLevelsPage() {
                 >
                   <div className="flex gap-3">
                     <div className="bg-warning/10 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg">
-                      <TipIcon className="text-warning h-4 w-4" />
+                      <TipIcon aria-hidden="true" className="text-warning h-4 w-4" />
                     </div>
                     <p className="text-text-muted text-sm">{t(`page.tips.${tip}` as never)}</p>
                   </div>
@@ -718,7 +797,7 @@ export default function SellerLevelsPage() {
             href="/hochladen"
             className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold transition-colors"
           >
-            <Upload className="h-4 w-4" />
+            <Upload aria-hidden="true" className="h-4 w-4" />
             {t("keepGoing")}
           </Link>
         </motion.div>

@@ -3946,7 +3946,14 @@
       "loginToSeeProgress": "Melde dich an, um deinen persönlichen Fortschritt zu sehen.",
       "loginCta": "Anmelden",
       "becomeSeller": "Werde Verkäufer:in, um Levels freizuschalten!",
-      "becomeSellerCta": "Verkäufer:in werden"
+      "becomeSellerCta": "Verkäufer:in werden",
+      "requirementProgress": "{current}/{required}",
+      "requirementPoints": "Punkte",
+      "requirementUploads": "Uploads",
+      "requirementDownloads": "Downloads",
+      "blockerNeedMorePoints": "Du benötigst noch {count} Punkte",
+      "blockerNeedMoreUploads": "{count, plural, =1 {Du benötigst noch 1 Upload} other {Du benötigst noch # Uploads}}",
+      "blockerNeedMoreDownloads": "{count, plural, =1 {Du benötigst noch 1 Download} other {Du benötigst noch # Downloads}}"
     }
   },
   "verifiedSeller": {

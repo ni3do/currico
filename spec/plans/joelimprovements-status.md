@@ -238,19 +238,19 @@ Legende: [x] = erledigt, [ ] = offen
 ## 8. Verkäufer-Stufen (`/verkaeufer-stufen`)
 
 - [x] "So sammelst du Punkte" Raster einheitlich auf gleiche Höhe bringen — flex-col + mt-auto for equal card heights
-- [ ] Lock Tier Upgrade nur bei bestimmten Voraussetzungen (Anzahl Downloads/Uploads)
-- [ ] Namen von Leveln überarbeiten
-- [ ] Punkte/Level-Aufstieg-System überarbeiten
+- [x] Lock Tier Upgrade nur bei bestimmten Voraussetzungen (Anzahl Downloads/Uploads) — `getCurrentLevel()` checks `minUploads`/`minDownloads`; page shows lock/unlock states
+- [x] Namen von Leveln überarbeiten — bronze/silber/gold/platin/diamant
+- [x] Punkte/Level-Aufstieg-System überarbeiten — new thresholds, rating multipliers, verified bonus
 
 ### Eigene Vorschläge (Verkäufer-Stufen)
 
 - [x] Hardcoded deutsche Strings ("1 Material", "5 Materialien", "25 Downloads", "1 Bewertung" etc.) — now use i18n plural forms
 - [x] Hardcoded "Level" Text in Badge — now uses `t("page.levelBadge", { level })`
 - [x] Layout-Metadata nutzt Canonical URL "seller-levels" statt "verkaeufer-stufen" — SEO-Fehler
-- [ ] `tipIcons` Array wird per Index gemappt — fragile Zuordnung, bricht wenn Array-Länge ändert
-- [ ] Keine visuelle Hierarchie zwischen aktuellem und angestrebtem Level — alle Level gleich dargestellt
-- [ ] Breadcrumb zeigt nur Seitentitel ohne Home-Link — fehlende Hierarchie
-- [ ] Keine Schema.org-Daten für Punkte-System
+- [x] `tipIcons` Array wird per Index gemappt — fragile Zuordnung, bricht wenn Array-Länge ändert — replaced with `TIP_CONFIG` record keyed by string
+- [x] Keine visuelle Hierarchie zwischen aktuellem und angestrebtem Level — alle Level gleich dargestellt — current/unlocked/next/locked states with ring, opacity, lock icons
+- [x] Breadcrumb zeigt nur Seitentitel ohne Home-Link — fehlende Hierarchie — `Breadcrumb` component has `showHome=true` by default
+- [x] Keine Schema.org-Daten für Punkte-System — ItemList JSON-LD describing 5 levels added in layout.tsx
 
 ---
 
@@ -677,7 +677,7 @@ Legende: [x] = erledigt, [ ] = offen
 | Urheberrecht              | 9        | 0            | 0              | 0           |
 | Impressum                 | 13       | 0            | 0              | 0           |
 | Cookie-Richtlinien        | 8        | 0            | 0              | 0           |
-| Verkäufer-Stufen          | 4        | 3            | 4              | 7           |
+| Verkäufer-Stufen          | 11       | 0            | 0              | 0           |
 | Verifizierter Verkäufer   | 9        | 0            | 0              | 0           |
 | Über uns                  | 10       | 1            | 1              | 2           |
 | Kontakt                   | 13       | 0            | 0              | 0           |
@@ -691,4 +691,4 @@ Legende: [x] = erledigt, [ ] = offen
 | Benachrichtigungen        | 0        | 3            | 0              | 3           |
 | Global                    | 14       | 2            | 8              | 10          |
 | Final Touch Audit         | 0        | 4            | 0              | 4           |
-| **Total**                 | **297**  | **20**       | **66**         | **86**      |
+| **Total**                 | **304**  | **17**       | **62**         | **79**      |
