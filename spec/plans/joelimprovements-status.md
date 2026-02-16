@@ -175,8 +175,8 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Hardcodierte E-Mail `info@currico.ch` (Zeile 194) statt aus i18n — now uses `t("noResults.contactEmail")`
 - [x] FAQ-Tabs haben kein `aria-selected` Attribut — Screenreader können aktiven Tab nicht identifizieren
 - [x] Accordion-Buttons fehlt `aria-expanded` Attribut — Screenreader erkennen geöffneten Zustand nicht
-- [ ] Keine Suchfunktion für FAQ — bei 30+ Fragen wäre In-App-Suche hilfreich
-- [ ] Kategorie-State wird bei Tab-Wechsel / Navigation nicht gespeichert — LocalStorage-Persistierung würde helfen
+- [x] Keine Suchfunktion für FAQ — search input above tabs filters across all categories by question+answer text, shows result count and category badges, uses existing i18n keys
+- [x] Kategorie-State wird bei Tab-Wechsel / Navigation nicht gespeichert — active tab persisted to localStorage via `hilfe-faq-tab` key, restored on mount with validation
 - [x] Keine `FAQPage` Schema.org-Daten — FAQPage + BreadcrumbList schema in `/hilfe/layout.tsx`
 
 ---
@@ -673,7 +673,7 @@ Legende: [x] = erledigt, [ ] = offen
 | Startseite                | 16       | 0            | 0              | 0           |
 | Materialien               | 53       | 0            | 0              | 0           |
 | Material-Vorschau         | 35       | 1            | 1              | 2           |
-| Hilfe                     | 10       | 0            | 2              | 2           |
+| Hilfe                     | 12       | 0            | 0              | 0           |
 | Urheberrecht              | 9        | 0            | 0              | 0           |
 | Impressum                 | 13       | 0            | 0              | 0           |
 | Cookie-Richtlinien        | 8        | 0            | 0              | 0           |
@@ -691,4 +691,4 @@ Legende: [x] = erledigt, [ ] = offen
 | Benachrichtigungen        | 0        | 3            | 0              | 3           |
 | Global                    | 14       | 2            | 8              | 10          |
 | Final Touch Audit         | 0        | 4            | 0              | 4           |
-| **Total**                 | **277**  | **22**       | **82**         | **104**     |
+| **Total**                 | **279**  | **22**       | **80**         | **102**     |
