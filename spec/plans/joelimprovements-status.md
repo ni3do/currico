@@ -326,7 +326,7 @@ Legende: [x] = erledigt, [ ] = offen
 ### Eigene Vorschläge (Anmelden)
 
 - [ ] "Remember Me" Kontrollkästchen ist vorhanden, aber Auswahl wird nicht gespeichert — Funktionalität fehlt
-- [ ] Nach fehlgeschlagenem Login werden E-Mail und Passwort geleert — sollten bestehen bleiben für schnelleres Ausprobieren
+- [x] Nach fehlgeschlagenem Login werden E-Mail und Passwort geleert — already working correctly, fields are preserved after failed login
 - [ ] OAuth-Fehler haben keine spezifischen Fehlermeldungen — nur generischer Fehler
 - [ ] Keine sichtbare Brute-Force-Schutz-Anzeige (z.B. "Zu viele Versuche, bitte warten")
 - [ ] Keine Capslock-Warnung beim Passwort-Feld
@@ -339,7 +339,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [ ] Passwort-Anforderungen (8 Zeichen Minimum) werden nicht vor dem Absenden angezeigt — nur bei der Eingabe
 - [ ] Keine Prüfung auf häufig verwendete Passwörter (z.B. "password123")
 - [ ] Keine Passwort-Stärke-Anzeige — nur Mindestlänge wird validiert
-- [ ] AGB/Datenschutz-Links zeigen "/bald-verfuegbar" — sollten auf echte Seiten verlinken
+- [x] AGB/Datenschutz-Links zeigen "/bald-verfuegbar" — already fixed, links point to /agb and /datenschutz (real pages)
 - [ ] Keine klare Indication nach Registrierung, dass E-Mail bestätigt werden muss
 
 ---
@@ -413,12 +413,12 @@ Legende: [x] = erledigt, [ ] = offen
 
 - [x] Bio-Feld `maxLength={500}` — Zeichenzähler ist sofort sichtbar: `{bio.length}/500`
 - [ ] Passwort ändern Funktion fehlt komplett — sollte in diesem Bereich sein
-- [ ] "E-Mail ändern → kontaktieren Sie uns" ohne Link/Button zu Support — Sackgasse
-- [ ] Instagram/Pinterest-Felder: keine Validierung der Benutzernamen
+- [x] "E-Mail ändern → kontaktieren Sie uns" ohne Link/Button zu Support — rich text with Link to /kontakt added
+- [x] Instagram/Pinterest-Felder: keine Validierung der Benutzernamen — regex validation (alphanumeric, dots, underscores) with error display
 - [ ] Profil-Visibility-Toggle hat keine Bestätigung vor Änderung zu Private
 - [ ] Floating Save Bar könnte Position bei kleinen Screens falsch berechnen
 - [ ] Keine Vorschau-Funktion für öffentliches Profil vor dem Speichern
-- [ ] "Datenexport"-Button hat keine Funktionalität implementiert — sollte disabled oder funktional sein
+- [x] "Datenexport"-Button hat keine Funktionalität implementiert — button does not exist in the UI, non-issue
 - [x] "Konto löschen"-Button hat keine Funktionalität — full confirmation flow with typed "LÖSCHEN" input implemented
 - [ ] Keine Warnung, dass Konto-Löschung permanent ist und Materialien/Käufe betroffen
 - [ ] Keine Zwei-Faktor-Authentifizierung (2FA) Option
@@ -485,9 +485,9 @@ Legende: [x] = erledigt, [ ] = offen
 
 - [x] `getSubjectPillClass` ist dupliziert (erscheint in 3+ Dateien) — konsolidiert in `lib/constants/subject-colors.ts`
 - [x] Link href zu `/profile/{id}` statt `/profil/{id}` — URL-Inkonsistenz (alter englischer Pfad) — fixed in folge-ich & sammlungen
-- [ ] Unfollow-Button zeigt Hover-State mit Error-Farben (`hover:border-error`) — impliziert Gefahr statt einfaches Entfolgen
+- [x] Unfollow-Button zeigt Hover-State mit Error-Farben (`hover:border-error`) — changed to hover:border-primary hover:text-primary
 - [x] "Discover profiles" Button im Empty-State verlinkt auf `/materialien?showCreators=true` — now links to profiles tab
-- [ ] "Followed since" Datumsformat nutzt `toLocaleDateString` aber matcht nicht Rest der App
+- [x] "Followed since" Datumsformat nutzt `toLocaleDateString` aber matcht nicht Rest der App — fixed en-CH → en-US for consistency
 - [ ] Alle gefolgten Seller werden auf einmal geladen — keine Pagination für grosse Listen
 - [x] Keine Metadata für `/folge-ich` Route — layout.tsx with generateMetadata added
 - [ ] API-Response-Struktur wird nicht validiert — nimmt an dass `data.sellers` existiert
@@ -553,19 +553,19 @@ Legende: [x] = erledigt, [ ] = offen
 
 ## 20. Öffentliches Profil (`/profil/[id]`)
 
-- [ ] Profilseite komplett überarbeiten und funktionierend machen
+- [x] Profilseite komplett überarbeiten und funktionierend machen — SSR metadata layout with OG/Twitter/JSON-LD, seller level badge, teacher badge, school, experience, website, improved private profile (shows material count + partial notice), id validation
 
 ### Eigene Vorschläge (Öffentliches Profil)
 
 - [x] Hardcoded deutsche Strings: "Profil nicht gefunden", "Das gesuchte Profil existiert nicht", "Benutzer", "Materialien durchsuchen", "Profil wird geladen..." — alles in i18n auslagern
 - [x] `getSubjectPillClass` lokal definiert statt aus Shared Utility — jetzt aus `lib/constants/subject-colors.ts` importiert
 - [x] `formatPrice` ist lokal definiert statt aus Shared Utility — now imports from `lib/utils/price.ts`
-- [ ] Keine Validierung dass `params.id` ein gültiger UUID/Slug ist vor dem Fetchen
+- [x] Keine Validierung dass `params.id` ein gültiger UUID/Slug ist vor dem Fetchen — isValidId() check in page.tsx + API route, skips fetch for invalid ids
 - [ ] 4 parallele API-Calls bei Seitenaufruf — könnten zu einem einzelnen Endpoint gebündelt werden
-- [ ] Keine SSR/Static Generation — alle Daten Client-seitig gefetcht, schlecht für SEO
-- [ ] Keine OpenGraph Meta-Tags für Profil-Sharing in sozialen Medien
+- [x] Keine SSR/Static Generation — alle Daten Client-seitig gefetcht, schlecht für SEO — SSR layout.tsx with generateMetadata() + JSON-LD (Person + BreadcrumbList)
+- [x] Keine OpenGraph Meta-Tags für Profil-Sharing in sozialen Medien — OG type:profile, Twitter summary card, canonical + language alternates
 - [x] Follow-Button zeigt "Gefolgt" erst nach erfolgreicher Action — optimistic update with immediate `setProfile()` state change
-- [ ] Private-Profile-Notice versteckt zu viel — Verkäufer wollen evtl. kein privates Profil
+- [x] Private-Profile-Notice versteckt zu viel — Verkäufer wollen evtl. kein privates Profil — new noticePartial text, materials stat shown, seller level badge visible
 - [ ] Kein Caching von Profil-Daten — jeder Besuch fetcht frische Daten
 - [x] "Beste Uploads" Titel ist hardcoded Deutsch — already uses t("bestUploads")
 

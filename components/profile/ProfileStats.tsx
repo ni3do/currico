@@ -41,13 +41,14 @@ export function ProfileStats({
     following: followingCount,
   };
 
-  if (isPrivate) {
-    return null;
-  }
+  // For private profiles, only show the materials stat
+  const visibleStats = isPrivate ? stats.filter((s) => s.key === "materials") : stats;
 
   return (
-    <StaggerChildren className="mb-8 grid grid-cols-3 gap-4">
-      {stats.map(({ key, icon: Icon, colorClass, bgClass }) => (
+    <StaggerChildren
+      className={`mb-8 grid gap-4 ${isPrivate ? "max-w-xs grid-cols-1" : "grid-cols-3"}`}
+    >
+      {visibleStats.map(({ key, icon: Icon, colorClass, bgClass }) => (
         <StaggerItem
           key={key}
           variant="card"

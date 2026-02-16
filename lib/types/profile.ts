@@ -14,8 +14,14 @@ export interface PublicProfileData {
   cantons: string[];
   instagram: string | null;
   pinterest: string | null;
+  website: string | null;
+  school: string | null;
+  teaching_experience: string | null;
+  is_teacher_verified: boolean;
   role: string;
   is_verified_seller: boolean;
+  seller_level: number;
+  seller_xp: number;
   created_at: string;
   is_private: boolean;
   stats: {

@@ -2891,10 +2891,13 @@
     "loadMore": "Mehr laden",
     "startUpload": "Material hochladen",
     "collectionItems": "Materialien",
+    "website": "Webseite",
+    "teacherVerified": "Verifizierte Lehrperson",
     "privacy": {
       "label": "Mein Profil soll privat bleiben",
       "tooltip": "Wenn aktiviert, werden nur Ihr Name und Avatar auf Ihrem öffentlichen Profil angezeigt. Ihre Bio, Fächer, Zyklen, Kantone, Statistiken und Social-Media-Links bleiben verborgen.",
       "notice": "Dieses Profil ist privat. Nur öffentliche Materialien werden angezeigt.",
+      "noticePartial": "Dieses Profil ist privat. Persönliche Informationen sind verborgen, aber öffentliche Materialien sind sichtbar.",
       "sectionTitle": "Privatsphäre-Einstellungen"
     }
   },
@@ -3476,7 +3479,7 @@
       "displayName": "Anzeigename",
       "displayNamePlaceholder": "z.B. Frau M. oder Maria S.",
       "email": "E-Mail",
-      "emailChangeHint": "Kontaktieren Sie uns, um Ihre E-Mail zu ändern",
+      "emailChangeHint": "<link>Kontaktieren Sie uns</link>, um Ihre E-Mail zu ändern",
       "aboutMe": "Über mich",
       "aboutMePlaceholder": "Erzählen Sie etwas über sich und Ihren Unterricht...",
       "teachingProfile": "Unterrichtsprofil",
@@ -3514,6 +3517,7 @@
       "errorNameMin": "Name muss mindestens 2 Zeichen haben",
       "errorNameMax": "Name darf maximal 32 Zeichen haben",
       "errorInvalidUrl": "Ungültige URL (z.B. https://example.com)",
+      "errorInvalidUsername": "Nur Buchstaben, Zahlen, Punkte und Unterstriche erlaubt",
       "errorSaving": "Fehler beim Speichern. Bitte versuchen Sie es erneut.",
       "errorSavingGeneric": "Fehler beim Speichern",
       "successSaved": "Änderungen gespeichert!",

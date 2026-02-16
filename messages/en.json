@@ -2891,10 +2891,13 @@
     "loadMore": "Load more",
     "startUpload": "Upload material",
     "collectionItems": "Materials",
+    "website": "Website",
+    "teacherVerified": "Verified Teacher",
     "privacy": {
       "label": "Keep my profile private",
       "tooltip": "When enabled, only your name and avatar will be shown on your public profile. Your bio, subjects, cycles, cantons, statistics, and social media links will be hidden.",
       "notice": "This profile is private. Only public materials are displayed.",
+      "noticePartial": "This profile is private. Personal information is hidden, but public materials are visible.",
       "sectionTitle": "Privacy Settings"
     }
   },
@@ -3476,7 +3479,7 @@
       "displayName": "Display name",
       "displayNamePlaceholder": "e.g. Ms. M. or Maria S.",
       "email": "Email",
-      "emailChangeHint": "Contact us to change your email",
+      "emailChangeHint": "<link>Contact us</link> to change your email",
       "aboutMe": "About me",
       "aboutMePlaceholder": "Tell us about yourself and your teaching...",
       "teachingProfile": "Teaching Profile",
@@ -3514,6 +3517,7 @@
       "errorNameMin": "Name must be at least 2 characters",
       "errorNameMax": "Name must be at most 32 characters",
       "errorInvalidUrl": "Invalid URL (e.g. https://example.com)",
+      "errorInvalidUsername": "Only letters, numbers, dots, and underscores allowed",
       "errorSaving": "Failed to save. Please try again.",
       "errorSavingGeneric": "Failed to save",
       "successSaved": "Changes saved!",
