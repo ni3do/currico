@@ -699,8 +699,8 @@ model Bundle {
   title           String         @db.VarChar(255)
   description     String?        @db.Text
   price           Int
-  subject         Json           @default("[]")
-  cycle           Json           @default("[]")
+  subjects        Json           @default("[]") @map("subject")
+  cycles          Json           @default("[]") @map("cycle")
   cover_image_url String?        @db.VarChar(500)
   is_published    Boolean        @default(false)
   status          ResourceStatus @default(PENDING)

@@ -44,6 +44,17 @@ export function getSubjectTextColorByName(subject: string): string {
 }
 
 /**
+ * Maps cycle strings (e.g. "Zyklus 1", "1", "Zyklus 2") to cycle pill CSS classes
+ */
+export function getCyclePillClass(cycle: string): string {
+  const normalized = cycle.replace(/[^0-9]/g, "");
+  if (normalized === "1") return "pill-cycle-1";
+  if (normalized === "2") return "pill-cycle-2";
+  if (normalized === "3") return "pill-cycle-3";
+  return "pill-neutral";
+}
+
+/**
  * Maps subject names to pill CSS classes
  * This is the single source of truth — do NOT duplicate in page files.
  */

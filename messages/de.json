@@ -2873,6 +2873,7 @@
       "errorUnexpected": "Ein unerwarteter Fehler ist aufgetreten",
       "alreadyReported": "Sie haben dieses Material bereits gemeldet"
     },
+    "subjectFallback": "Allgemein",
     "fileFormatUnknown": "Datei",
     "noPreview": "Keine Vorschau verfügbar",
     "anonymous": "Anonym",

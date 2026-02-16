@@ -173,8 +173,8 @@ async function main() {
         description:
           "Alle Naturkunde-Arbeitsblätter für Zyklus 2 in einem günstigen Paket. Enthält Material zu Pflanzen, Tieren und dem Wasserkreislauf. Sparen Sie 20% gegenüber dem Einzelkauf!",
         price: 720,
-        subject: ["NMG"],
-        cycle: ["2"],
+        subjects: ["NMG"],
+        cycles: ["2"],
         cover_image_url: "https://placehold.co/800x600/e2e3e5/383d41?text=Naturkunde+Bundle",
         is_published: true,
         status: "VERIFIED",

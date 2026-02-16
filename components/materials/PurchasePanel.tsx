@@ -15,7 +15,7 @@ import {
 import { LP21Badge } from "@/components/curriculum/LP21Badge";
 import { CheckoutButton } from "@/components/checkout/CheckoutButton";
 import { useToast } from "@/components/ui/Toast";
-import { getSubjectPillClass } from "@/lib/constants/subject-colors";
+import { getSubjectPillClass, getCyclePillClass } from "@/lib/constants/subject-colors";
 import type { MaterialForPanel } from "@/lib/types/material";
 
 interface PurchasePanelProps {
@@ -164,22 +164,22 @@ export function PurchasePanel({
         </button>
       </Link>
 
-      {/* Quick Metadata Row */}
-      <div className="text-text-muted mb-6 flex flex-wrap items-center gap-2 text-sm">
+      {/* Tags Row — Subjects & Cycles */}
+      <div className="mb-3 flex flex-wrap items-center gap-1.5">
         {material.subjects.map((subj) => (
           <span key={subj} className={`pill ${getSubjectPillClass(subj)} text-xs`}>
             {subj}
           </span>
         ))}
-        {material.subjects.length > 0 && material.cycles.length > 0 && (
-          <span className="text-border">·</span>
-        )}
         {material.cycles.map((c) => (
-          <span key={c} className="pill pill-neutral text-xs">
+          <span key={c} className={`pill ${getCyclePillClass(c)} text-xs`}>
             {t("cycle", { number: c })}
           </span>
         ))}
-        <span className="text-border">·</span>
+      </div>
+
+      {/* Stats Row — Downloads, Pages, Date */}
+      <div className="text-text-muted mb-6 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
         <span>{t("downloads", { count: material.downloadCount })}</span>
         {material.previewCount && material.previewCount > 0 && (
           <>

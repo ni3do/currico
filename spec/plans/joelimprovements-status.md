@@ -110,7 +110,7 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Vorschau & Tags
 
-- [ ] Tags der hochgeladenen Dokumente überarbeiten
+- [x] Tags der hochgeladenen Dokumente überarbeiten — subject pills use LP21 colors via getSubjectPillClass(), cycle pills get distinct colored pills (green/sapphire/mauve for Zyklus 1/2/3) via getCyclePillClass(), metadata row split into tags row + stats row, i18n subjectFallback replaces hardcoded "Allgemein", related materials pass subjectPillClass for proper eyebrow coloring
 - [x] Vorschau: Wasserzeichen statt Verschwimmen — PreviewOverlay with gradient + lock icon + CTA, server-watermarked images
 
 ### Bewertungen & Kommentare
@@ -155,7 +155,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Review-Labels ("Schlecht", "Mangelhaft", "Okay", "Gut", "Ausgezeichnet") sind hardcoded — nicht lokalisierbar — ReviewForm.tsx fully migrated to i18n with reviews.stars.\* keys
 - [x] Keine Feedback wenn Download startet (`window.open()`) — kein Bestätigungs-Toast — added success toast + error toast on download
 - [x] Kein Schema.org Markup (`Product`, `AggregateRating`, `BreadcrumbList`) — JSON-LD structured data in `/materialien/[id]/layout.tsx`
-- [ ] Redundante Datenfelder: `subject`/`subjects` und `cycle`/`cycles` — sollte normalisiert werden
+- [x] Redundante Datenfelder: `subject`/`subjects` und `cycle`/`cycles` — normalisiert: Bundle model fields renamed to `subjects`/`cycles` via Prisma @map (no DB migration), all API routes, Zod schemas, and frontend callers updated to use plural consistently
 - [x] Kommentar-/Review-Like-Button State wird nach Vote nicht sofort aktualisiert — optimistic update implemented in MaterialLikeButton and CommentLikeButton
 - [x] Magische Zahlen in PreviewGallery (50px Swipe-Threshold, 80px Thumbnail-Höhe) — extracted SWIPE_THRESHOLD_PX, THUMBNAIL_HEIGHT_PX, MAX_VISIBLE_THUMBNAILS, THUMBNAIL_GAP_PX constants
 
@@ -423,7 +423,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Keine Warnung, dass Konto-Löschung permanent ist und Materialien/Käufe betroffen — consequences list with X icons (materials, purchases, reviews, earnings, followers)
 - [ ] Keine Zwei-Faktor-Authentifizierung (2FA) Option
 - [x] Benachrichtigungs-Prefs zeigen nur Erfolg/Fehler als kurze Toast — descriptive feedback shows which notification was toggled with animated pill
-- [ ] Keine Unterteilung in "E-Mail" vs. "In-App" Benachrichtigungen
+- [x] Keine Unterteilung in "E-Mail" vs. "In-App" Benachrichtigungen — info banner explains toggles control email only, E-Mail badge on each toggle, in-app always active
 - [x] Keine Batch-Option "Alle Benachrichtigungen deaktivieren" — batch toggle with Bell/BellOff icons at top of notifications page
 
 ---
@@ -600,9 +600,9 @@ Legende: [x] = erledigt, [ ] = offen
 
 ## 23. Benachrichtigungen
 
-- [ ] Autoren-Benachrichtigungen einrichten
+- [x] Autoren-Benachrichtigungen einrichten — added notifyMaterialApproved, notifyMaterialRejected, notifyManualVerification, checkDownloadMilestone; wired into admin materials PATCH, verify-seller POST, download routes, and payment webhook
 - [ ] Newsletter-System
-- [ ] Gesamtes Benachrichtigungssystem überarbeiten
+- [x] Gesamtes Benachrichtigungssystem überarbeiten — bell dropdown on desktop with latest 5 notifications, mark-all-read, shared notification display utils; settings page shows email clarification banner, E-Mail badge on toggles, toast feedback; admin rejection reason dialog with author notification
 
 ---
 
@@ -672,7 +672,7 @@ Legende: [x] = erledigt, [ ] = offen
 | ------------------------- | -------- | ------------ | -------------- | ----------- |
 | Startseite                | 16       | 0            | 0              | 0           |
 | Materialien               | 53       | 0            | 0              | 0           |
-| Material-Vorschau         | 35       | 1            | 1              | 2           |
+| Material-Vorschau         | 37       | 0            | 0              | 0           |
 | Hilfe                     | 12       | 0            | 0              | 0           |
 | Urheberrecht              | 9        | 0            | 0              | 0           |
 | Impressum                 | 13       | 0            | 0              | 0           |
@@ -683,12 +683,12 @@ Legende: [x] = erledigt, [ ] = offen
 | Kontakt                   | 13       | 0            | 0              | 0           |
 | Anmelden                  | 9        | 0            | 5              | 5           |
 | Registrieren              | 0        | 0            | 5              | 5           |
-| Konto (alle Unterseiten)  | 51       | 2            | 16             | 18          |
+| Konto (alle Unterseiten)  | 52       | 1            | 16             | 17          |
 | Folge ich                 | 9        | 0            | 0              | 0           |
 | Hochladen                 | 31       | 0            | 0              | 0           |
 | Öffentliches Profil       | 5        | 1            | 6              | 7           |
 | Verkäufer werden / Stripe | 14       | 0            | 0              | 0           |
-| Benachrichtigungen        | 0        | 3            | 0              | 3           |
+| Benachrichtigungen        | 2        | 1            | 0              | 1           |
 | Global                    | 14       | 2            | 8              | 10          |
 | Final Touch Audit         | 0        | 4            | 0              | 4           |
-| **Total**                 | **316**  | **14**       | **52**         | **66**      |
+| **Total**                 | **321**  | **10**       | **51**         | **61**      |
