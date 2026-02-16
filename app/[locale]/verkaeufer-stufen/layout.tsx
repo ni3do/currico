@@ -20,6 +20,42 @@ export async function generateMetadata({
   };
 }
 
-export default function SellerLevelsLayout({ children }: { children: React.ReactNode }) {
-  return children;
+export default async function SellerLevelsLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://currico.ch";
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: locale === "de" ? "Startseite" : "Home",
+        item: `${baseUrl}/${locale}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: locale === "de" ? "Verkäufer-Levels" : "Seller Levels",
+        item: `${baseUrl}/${locale}/verkaeufer-stufen`,
+      },
+    ],
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      {children}
+    </>
+  );
 }

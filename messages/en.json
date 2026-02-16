@@ -3855,18 +3855,18 @@
     "needMoreUploads": "You need {count, plural, =1 {1 more upload} other {# more uploads}} for {level}",
     "needMoreDownloads": "You need {count, plural, =1 {1 more download} other {# more downloads}} for {level}",
     "levels": {
-      "newcomer": "Newcomer",
-      "contributor": "Contributor",
-      "expert": "Expert",
-      "star": "Star",
-      "legend": "Legend"
+      "bronze": "Bronze",
+      "silber": "Silver",
+      "gold": "Gold",
+      "platin": "Platinum",
+      "diamant": "Diamond"
     },
     "descriptions": {
-      "newcomer": "Welcome! Upload your first material.",
-      "contributor": "You're actively sharing knowledge — keep it up!",
-      "expert": "Your materials are in demand. Great work!",
-      "star": "You're a community star!",
-      "legend": "Legend! You're shaping Currico."
+      "bronze": "Welcome! Upload your first material.",
+      "silber": "You're actively sharing knowledge — keep it up!",
+      "gold": "Your materials are in demand. Great work!",
+      "platin": "You're a Platinum seller in the community!",
+      "diamant": "Diamond! You're shaping Currico."
     },
     "page": {
       "heroTitle": "Seller Levels",
@@ -3938,7 +3938,15 @@
         "variety": "Offer different subjects and cycles to reach more teachers.",
         "keywords": "Use descriptive titles and descriptions so your materials can be found.",
         "regular": "Upload new materials regularly — active sellers level up faster."
-      }
+      },
+      "yourLevel": "Your Current Level",
+      "currentLevel": "Current Level",
+      "levelLocked": "Locked",
+      "levelUnlocked": "Unlocked",
+      "loginToSeeProgress": "Log in to see your personal progress.",
+      "loginCta": "Log in",
+      "becomeSeller": "Become a seller to unlock levels!",
+      "becomeSellerCta": "Become a seller"
     }
   },
   "verifiedSeller": {

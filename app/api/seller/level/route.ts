@@ -122,14 +122,22 @@ export async function GET() {
     updateData.seller_xp = points;
 
     // Level-up notification: compare previous cached level with current
+    const LEVEL_DISPLAY_NAMES: Record<string, string> = {
+      bronze: "Bronze",
+      silber: "Silber",
+      gold: "Gold",
+      platin: "Platin",
+      diamant: "Diamant",
+    };
     const previousLevel = user.seller_level ?? 0;
     if (level.level > previousLevel) {
       const newLevelDef = SELLER_LEVELS[level.level];
+      const displayName = LEVEL_DISPLAY_NAMES[newLevelDef?.name ?? ""] ?? newLevelDef?.name ?? "";
       createNotification({
         userId,
         type: "SYSTEM",
-        title: `Level-Up: ${newLevelDef?.name ?? ""}!`,
-        body: `Herzlichen Glückwunsch! Sie haben Level ${level.level} (${newLevelDef?.name ?? ""}) erreicht.`,
+        title: `Level-Up: ${displayName}!`,
+        body: `Herzlichen Glückwunsch! Sie haben Level ${level.level} (${displayName}) erreicht.`,
         link: "/konto",
       }).catch((err) => console.error("Failed to create level-up notification:", err));
     }

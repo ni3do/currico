@@ -3855,18 +3855,18 @@
     "needMoreUploads": "Sie benötigen noch {count, plural, =1 {1 weiteren Upload} other {# weitere Uploads}} für {level}",
     "needMoreDownloads": "Sie benötigen noch {count, plural, =1 {1 weiteren Download} other {# weitere Downloads}} für {level}",
     "levels": {
-      "newcomer": "Newcomer",
-      "contributor": "Mitwirkende:r",
-      "expert": "Expert:in",
-      "star": "Star",
-      "legend": "Legende"
+      "bronze": "Bronze",
+      "silber": "Silber",
+      "gold": "Gold",
+      "platin": "Platin",
+      "diamant": "Diamant"
     },
     "descriptions": {
-      "newcomer": "Willkommen! Lade dein erstes Material hoch.",
-      "contributor": "Du teilst aktiv dein Wissen — weiter so!",
-      "expert": "Deine Materialien sind gefragt. Tolle Arbeit!",
-      "star": "Du bist ein Star der Community!",
-      "legend": "Legende! Du prägst Currico."
+      "bronze": "Willkommen! Lade dein erstes Material hoch.",
+      "silber": "Du teilst aktiv dein Wissen — weiter so!",
+      "gold": "Deine Materialien sind gefragt. Tolle Arbeit!",
+      "platin": "Du bist ein Platin-Verkäufer der Community!",
+      "diamant": "Diamant! Du prägst Currico."
     },
     "page": {
       "heroTitle": "Verkäufer-Levels",
@@ -3938,7 +3938,15 @@
         "variety": "Biete verschiedene Fächer und Zyklen an, um mehr Lehrpersonen zu erreichen.",
         "keywords": "Verwende aussagekräftige Titel und Beschreibungen, damit deine Materialien gefunden werden.",
         "regular": "Lade regelmässig neue Materialien hoch — aktive Verkäufer:innen steigen schneller auf."
-      }
+      },
+      "yourLevel": "Dein aktuelles Level",
+      "currentLevel": "Aktuelles Level",
+      "levelLocked": "Gesperrt",
+      "levelUnlocked": "Erreicht",
+      "loginToSeeProgress": "Melde dich an, um deinen persönlichen Fortschritt zu sehen.",
+      "loginCta": "Anmelden",
+      "becomeSeller": "Werde Verkäufer:in, um Levels freizuschalten!",
+      "becomeSellerCta": "Verkäufer:in werden"
     }
   },
   "verifiedSeller": {

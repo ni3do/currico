@@ -7,18 +7,18 @@ import { SELLER_LEVELS } from "@/lib/utils/seller-levels";
 // Translated level names for SSR metadata (can't use useTranslations in server components)
 const LEVEL_NAMES: Record<string, Record<string, string>> = {
   de: {
-    newcomer: "Newcomer",
-    contributor: "Mitwirkende:r",
-    expert: "Expert:in",
-    star: "Star",
-    legend: "Legende",
+    bronze: "Bronze",
+    silber: "Silber",
+    gold: "Gold",
+    platin: "Platin",
+    diamant: "Diamant",
   },
   en: {
-    newcomer: "Newcomer",
-    contributor: "Contributor",
-    expert: "Expert",
-    star: "Star",
-    legend: "Legend",
+    bronze: "Bronze",
+    silber: "Silver",
+    gold: "Gold",
+    platin: "Platinum",
+    diamant: "Diamond",
   },
 };
 
