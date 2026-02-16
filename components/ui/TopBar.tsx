@@ -9,6 +9,7 @@ import { Bell, ChevronDown, ChevronRight } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { LoginLink } from "@/components/ui/LoginLink";
 import LocaleSwitcher from "@/components/ui/LocaleSwitcher";
+import NotificationDropdown from "@/components/ui/NotificationDropdown";
 
 export default function TopBar() {
   const t = useTranslations("common");
@@ -117,18 +118,7 @@ export default function TopBar() {
               <ThemeToggle />
               <LocaleSwitcher />
               {session && (
-                <Link
-                  href="/konto/notifications"
-                  className="text-text-secondary hover:text-primary relative p-2 transition-colors"
-                  aria-label={t("navigation.account")}
-                >
-                  <Bell className="h-5 w-5" />
-                  {unreadCount > 0 && (
-                    <span className="bg-error text-text-on-accent absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-bold">
-                      {unreadCount > 99 ? "99+" : unreadCount}
-                    </span>
-                  )}
-                </Link>
+                <NotificationDropdown unreadCount={unreadCount} onCountChange={setUnreadCount} />
               )}
               {session ? (
                 <div className="relative" ref={userMenuRef}>
