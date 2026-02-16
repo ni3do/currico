@@ -2953,7 +2953,9 @@
     "searchPlaceholder": "Profile durchsuchen...",
     "noSearchResults": "Keine Profile gefunden",
     "errorLoading": "Fehler beim Laden der gefolgten Profile",
-    "retry": "Erneut versuchen"
+    "retry": "Erneut versuchen",
+    "loadMore": "Weitere laden",
+    "loadingMore": "Wird geladen..."
   },
   "verifyEmailPage": {
     "loading": {

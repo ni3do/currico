@@ -2953,7 +2953,9 @@
     "searchPlaceholder": "Search profiles...",
     "noSearchResults": "No profiles found",
     "errorLoading": "Failed to load followed profiles",
-    "retry": "Try again"
+    "retry": "Try again",
+    "loadMore": "Load more",
+    "loadingMore": "Loading..."
   },
   "verifyEmailPage": {
     "loading": {

@@ -479,7 +479,7 @@ Legende: [x] = erledigt, [ ] = offen
 
 - [x] "Gefolgte Profile" Wording überarbeiten — proper i18n key `following.followedProfiles` with correct wording
 - [x] Bei Klick auf Profil → zur Profilansicht wechseln — links to `/profil/${id}` (correct German path)
-- [ ] Man kann sich nicht selber folgen (Logik einbauen) — **OUT OF SCOPE: backend API logic, not frontend UI**
+- [x] Man kann sich nicht selber folgen (Logik einbauen) — already handled server-side: `CANNOT_FOLLOW_SELF` check in POST `/api/user/following`
 
 ### Eigene Vorschläge (Folge ich)
 
@@ -488,9 +488,9 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Unfollow-Button zeigt Hover-State mit Error-Farben (`hover:border-error`) — changed to hover:border-primary hover:text-primary
 - [x] "Discover profiles" Button im Empty-State verlinkt auf `/materialien?showCreators=true` — now links to profiles tab
 - [x] "Followed since" Datumsformat nutzt `toLocaleDateString` aber matcht nicht Rest der App — fixed en-CH → en-US for consistency
-- [ ] Alle gefolgten Seller werden auf einmal geladen — keine Pagination für grosse Listen
+- [x] Alle gefolgten Seller werden auf einmal geladen — paginated API (`page`/`limit` params, `total`/`hasMore` response) with "Load more" button, 20 per page
 - [x] Keine Metadata für `/folge-ich` Route — layout.tsx with generateMetadata added
-- [ ] API-Response-Struktur wird nicht validiert — nimmt an dass `data.sellers` existiert
+- [x] API-Response-Struktur wird nicht validiert — `isValidFollowingResponse()` type guard validates shape before setting state, graceful fallback on invalid data
 
 ---
 
@@ -684,11 +684,11 @@ Legende: [x] = erledigt, [ ] = offen
 | Anmelden                  | 9        | 0            | 5              | 5           |
 | Registrieren              | 0        | 0            | 5              | 5           |
 | Konto (alle Unterseiten)  | 41       | 2            | 26             | 28          |
-| Folge ich                 | 6        | 1            | 4              | 5           |
+| Folge ich                 | 9        | 0            | 0              | 0           |
 | Hochladen                 | 29       | 3            | 0              | 3           |
 | Öffentliches Profil       | 5        | 1            | 6              | 7           |
 | Verkäufer werden / Stripe | 14       | 0            | 0              | 0           |
 | Benachrichtigungen        | 0        | 3            | 0              | 3           |
 | Global                    | 14       | 2            | 8              | 10          |
 | Final Touch Audit         | 0        | 4            | 0              | 4           |
-| **Total**                 | **284**  | **22**       | **75**         | **97**      |
+| **Total**                 | **289**  | **21**       | **73**         | **94**      |
