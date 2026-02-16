@@ -406,7 +406,8 @@
       "forgotPassword": "Vergessen?",
       "rememberMe": "Angemeldet bleiben",
       "submitButton": "Anmelden",
-      "submitting": "Wird angemeldet..."
+      "submitting": "Wird angemeldet...",
+      "capsLockWarning": "Feststelltaste ist aktiviert"
     },
     "divider": "Oder fortfahren mit",
     "oauth": {
@@ -419,7 +420,11 @@
     },
     "errors": {
       "invalidCredentials": "Ungültige E-Mail-Adresse oder Passwort",
-      "generic": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
+      "generic": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+      "tooManyAttempts": "Zu viele Anmeldeversuche. Bitte warten Sie einen Moment.",
+      "accountExistsWithDifferentProvider": "Ein Konto mit dieser E-Mail existiert bereits. Bitte verwenden Sie die ursprüngliche Anmeldemethode.",
+      "accessDenied": "Zugriff verweigert. Bitte versuchen Sie es erneut.",
+      "oauthError": "Fehler bei der Anmeldung mit dem externen Anbieter."
     }
   },
   "registerPage": {
@@ -449,7 +454,8 @@
       "termsAnd": "und die",
       "privacyLink": "Datenschutzerklärung",
       "submitButton": "Registrieren",
-      "submitting": "Wird registriert..."
+      "submitting": "Wird registriert...",
+      "capsLockWarning": "Feststelltaste ist aktiviert"
     },
     "divider": "Oder registrieren mit",
     "oauth": {
@@ -463,6 +469,16 @@
       "registrationSuccess": "Registrierung erfolgreich. Bitte melden Sie sich an.",
       "registrationFailed": "Registrierung fehlgeschlagen. Bitte versuchen Sie es erneut.",
       "generic": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
+    },
+    "emailSent": {
+      "title": "Fast geschafft!",
+      "subtitle": "Bestätigen Sie Ihre E-Mail-Adresse",
+      "description": "Wir haben eine Bestätigungs-E-Mail an <strong>{email}</strong> gesendet. Bitte prüfen Sie Ihren Posteingang und klicken Sie auf den Bestätigungslink.",
+      "checkSpam": "Nicht erhalten? Prüfen Sie Ihren Spam-Ordner.",
+      "continueButton": "Weiter zum Dashboard",
+      "resendButton": "E-Mail erneut senden",
+      "resending": "Wird gesendet...",
+      "resent": "E-Mail wurde erneut gesendet"
     },
     "cantons": {
       "ZH": "Zürich",
@@ -494,6 +510,18 @@
     },
     "subjects": ["Mathematik", "Deutsch", "Englisch", "Französisch", "NMG", "BG", "Musik", "Sport"],
     "cycles": ["Zyklus 1", "Zyklus 2", "Zyklus 3"]
+  },
+  "passwordRequirements": {
+    "minLength": "Mindestens 8 Zeichen",
+    "uppercase": "Ein Grossbuchstabe",
+    "lowercase": "Ein Kleinbuchstabe",
+    "number": "Eine Zahl",
+    "commonPassword": "Dieses Passwort ist zu häufig. Bitte wählen Sie ein sichereres.",
+    "strength": {
+      "weak": "Schwach",
+      "medium": "Mittel",
+      "strong": "Stark"
+    }
   },
   "materialsPage": {
     "breadcrumb": {
@@ -3328,6 +3356,9 @@
       "badgePurchased": "Gekauft",
       "badgeFree": "Gratis",
       "badgeVerified": "Geprüft",
+      "filterAll": "Alle",
+      "filterFree": "Gratis",
+      "filterPurchased": "Gekauft",
       "errorLoading": "Fehler beim Laden der Bibliothek",
       "retry": "Erneut versuchen"
     },
@@ -3433,7 +3464,13 @@
     },
     "settingsNotifications": {
       "title": "Benachrichtigungen",
-      "subtitle": "Verwalten Sie, welche Benachrichtigungen Sie erhalten möchten"
+      "subtitle": "Verwalten Sie, welche Benachrichtigungen Sie erhalten möchten",
+      "disableAll": "Alle deaktivieren",
+      "enableAll": "Alle aktivieren",
+      "allDisabled": "Alle Benachrichtigungen sind deaktiviert",
+      "allEnabled": "Alle Benachrichtigungen sind aktiviert",
+      "toggledOn": "{name} aktiviert",
+      "toggledOff": "{name} deaktiviert"
     },
     "settingsAccount": {
       "title": "Konto & Sicherheit",
@@ -3456,7 +3493,14 @@
       "deleteWarning": "Das Löschen Ihres Kontos ist unwiderruflich. Alle Ihre Daten, hochgeladenen Materialien und Käufe werden permanent gelöscht.",
       "deleteAccount": "Konto löschen",
       "areYouSure": "Sind Sie sicher?",
-      "deleteConfirmDesc": "Diese Aktion kann nicht rückgängig gemacht werden. Alle Materialien, Bewertungen und Kontodaten werden gelöscht.",
+      "deleteConfirmDesc": "Diese Aktion kann nicht rückgängig gemacht werden:",
+      "deleteConsequences": {
+        "materials": "Alle hochgeladenen Materialien werden gelöscht",
+        "purchases": "Zugang zu gekauften Materialien geht verloren",
+        "reviews": "Ihre Bewertungen und Kommentare werden entfernt",
+        "earnings": "Ausstehende Auszahlungen verfallen",
+        "followers": "Follower und Wunschliste werden gelöscht"
+      },
       "typeToConfirm": "Tippen Sie <strong>DELETE</strong> zur Bestätigung",
       "confirmKeyword": "DELETE",
       "cancel": "Abbrechen",
@@ -3541,6 +3585,10 @@
       "privateProfile": "Privates Profil",
       "privateOn": "Nur Sie können Ihr Profil sehen",
       "privateOff": "Ihr Profil ist für andere sichtbar",
+      "privateConfirmTitle": "Profil auf privat stellen?",
+      "privateConfirmDesc": "Wenn Ihr Profil privat ist, können andere Benutzer Ihre Informationen, Fächer und Biografie nicht sehen. Ihre veröffentlichten Materialien bleiben sichtbar.",
+      "privateConfirmAction": "Auf privat stellen",
+      "privateConfirmCancel": "Abbrechen",
       "unsavedChanges": "Sie haben ungespeicherte Änderungen",
       "discard": "Verwerfen",
       "saveChanges": "Änderungen speichern",
@@ -3567,6 +3615,8 @@
       "contributions": "Beiträge",
       "total": "Gesamt",
       "totalDownloads": "Gesamte Downloads",
+      "purchases": "Verkäufe",
+      "totalPurchases": "Gesamte Verkäufe",
       "materialsPublished": "Materialien veröffentlicht",
       "myMaterials": "Meine Uploads",
       "newMaterial": "+ Neues Material",
@@ -3588,7 +3638,17 @@
       "noDownloads": "Noch keine Materialien",
       "discoverLink": "Entdecken",
       "loading": "Laden...",
-      "downloadLabel": "Material herunterladen"
+      "downloadLabel": "Material herunterladen",
+      "downloadError": "Fehler beim Herunterladen. Bitte versuchen Sie es erneut.",
+      "downloadStarted": "Download gestartet",
+      "filterAll": "Alle",
+      "filterPending": "Ausstehend",
+      "filterVerified": "Geprüft",
+      "filterRejected": "Abgelehnt",
+      "sortLabel": "Sortierung",
+      "sortNewest": "Neueste zuerst",
+      "sortDownloads": "Meiste Downloads",
+      "sortEarnings": "Höchste Einnahmen"
     },
     "profile": {
       "completeProfile": "Vervollständigen Sie Ihr Profil",

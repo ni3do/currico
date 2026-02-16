@@ -325,22 +325,22 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Eigene Vorschläge (Anmelden)
 
-- [ ] "Remember Me" Kontrollkästchen ist vorhanden, aber Auswahl wird nicht gespeichert — Funktionalität fehlt
+- [x] "Remember Me" Kontrollkästchen ist vorhanden, aber Auswahl wird nicht gespeichert — saves/restores email to localStorage, pre-fills on return
 - [x] Nach fehlgeschlagenem Login werden E-Mail und Passwort geleert — already working correctly, fields are preserved after failed login
-- [ ] OAuth-Fehler haben keine spezifischen Fehlermeldungen — nur generischer Fehler
-- [ ] Keine sichtbare Brute-Force-Schutz-Anzeige (z.B. "Zu viele Versuche, bitte warten")
-- [ ] Keine Capslock-Warnung beim Passwort-Feld
+- [x] OAuth-Fehler haben keine spezifischen Fehlermeldungen — maps OAuthAccountNotLinked, AccessDenied, etc. to specific German messages
+- [x] Keine sichtbare Brute-Force-Schutz-Anzeige (z.B. "Zu viele Versuche, bitte warten") — detects 429 status and shows "Zu viele Anmeldeversuche" message
+- [x] Keine Capslock-Warnung beim Passwort-Feld — onKeyDown/onKeyUp CapsLock detection with inline warning
 - [x] Passwort vergessen führt zu "/bald-verfuegbar" statt zu echter Reset-Funktionalität — link now points to /forgot-password
 
 ## 12b. Registrieren (`/registrieren`)
 
 ### Eigene Vorschläge (Registrieren)
 
-- [ ] Passwort-Anforderungen (8 Zeichen Minimum) werden nicht vor dem Absenden angezeigt — nur bei der Eingabe
-- [ ] Keine Prüfung auf häufig verwendete Passwörter (z.B. "password123")
-- [ ] Keine Passwort-Stärke-Anzeige — nur Mindestlänge wird validiert
+- [x] Passwort-Anforderungen (8 Zeichen Minimum) werden nicht vor dem Absenden angezeigt — PasswordRequirements component shows live checklist (8 chars, uppercase, lowercase, number)
+- [x] Keine Prüfung auf häufig verwendete Passwörter (z.B. "password123") — client-side common passwords list blocks submission + shows warning
+- [x] Keine Passwort-Stärke-Anzeige — 3-bar strength meter (Schwach/Mittel/Stark) with color coding
 - [x] AGB/Datenschutz-Links zeigen "/bald-verfuegbar" — already fixed, links point to /agb and /datenschutz (real pages)
-- [ ] Keine klare Indication nach Registrierung, dass E-Mail bestätigt werden muss
+- [x] Keine klare Indication nach Registrierung, dass E-Mail bestätigt werden muss — post-registration screen with mail icon, "check your inbox" message, resend button
 
 ---
 

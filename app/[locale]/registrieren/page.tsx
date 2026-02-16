@@ -1,12 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { Link, useRouter } from "@/i18n/navigation";
-import { isValidEmail } from "@/lib/validations/common";
+import {
+  isValidEmail,
+  isCommonPassword,
+  checkPasswordRequirements,
+} from "@/lib/validations/common";
 import { getLoginUrl } from "@/lib/utils/login-redirect";
+import { PasswordRequirements } from "@/components/auth/PasswordRequirements";
 import TopBar from "@/components/ui/TopBar";
 
 export default function RegisterPage() {
@@ -24,13 +29,22 @@ export default function RegisterPage() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [capsLockOn, setCapsLockOn] = useState(false);
+
+  // Post-registration email confirmation state
+  const [registrationComplete, setRegistrationComplete] = useState(false);
+  const [registeredEmail, setRegisteredEmail] = useState("");
+  const [resendState, setResendState] = useState<"idle" | "sending" | "sent">("idle");
 
   const isFormValid = () => {
+    const reqs = checkPasswordRequirements(formData.password);
+    const allReqsMet = reqs.every((r) => r.met);
     return (
       formData.name.trim() !== "" &&
       formData.email.trim() !== "" &&
       isValidEmail(formData.email) &&
-      formData.password.length >= 8 &&
+      allReqsMet &&
+      !isCommonPassword(formData.password) &&
       formData.password === formData.confirmPassword &&
       formData.agreeToTerms
     );
@@ -38,6 +52,10 @@ export default function RegisterPage() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const handleCapsLock = (e: React.KeyboardEvent) => {
+    setCapsLockOn(e.getModifierState("CapsLock"));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,7 +80,11 @@ export default function RegisterPage() {
             redirect: false,
           });
           if (result?.ok) {
-            router.push(callbackUrl || "/konto");
+            // Trigger verification email
+            fetch("/api/auth/send-verification", { method: "POST" }).catch(() => {});
+            // Show email confirmation screen
+            setRegisteredEmail(formData.email);
+            setRegistrationComplete(true);
           } else {
             setError(t("errors.registrationSuccess"));
             router.push(getLoginUrl(callbackUrl || undefined));
@@ -79,9 +101,87 @@ export default function RegisterPage() {
     }
   };
 
+  const handleResendVerification = useCallback(async () => {
+    if (resendState === "sending") return;
+    setResendState("sending");
+    try {
+      await fetch("/api/auth/send-verification", { method: "POST" });
+      setResendState("sent");
+    } catch {
+      setResendState("idle");
+    }
+  }, [resendState]);
+
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
+
+  // Post-registration email confirmation screen
+  if (registrationComplete) {
+    return (
+      <div className="bg-bg flex min-h-screen flex-col">
+        <TopBar />
+        <main className="relative z-10 flex flex-1 items-center justify-center px-4 py-8 sm:px-6">
+          <div className="w-full max-w-lg">
+            <div className="glass-card p-8 sm:p-10">
+              <div className="text-center">
+                {/* Mail icon */}
+                <div className="bg-primary/10 mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full">
+                  <svg
+                    className="text-primary h-8 w-8"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                    />
+                  </svg>
+                </div>
+
+                <h1 className="text-text text-2xl font-bold sm:text-3xl">{t("emailSent.title")}</h1>
+                <h2 className="text-text-muted mt-2 text-lg">{t("emailSent.subtitle")}</h2>
+
+                <p
+                  className="text-text-muted mt-4 text-sm"
+                  dangerouslySetInnerHTML={{
+                    __html: t("emailSent.description", { email: registeredEmail }),
+                  }}
+                />
+
+                <p className="text-text-muted mt-3 text-xs">{t("emailSent.checkSpam")}</p>
+
+                <div className="mt-8 space-y-3">
+                  <button
+                    onClick={() => router.push(callbackUrl || "/konto")}
+                    className="bg-primary text-text-on-accent hover:bg-primary-hover w-full rounded-lg px-6 py-3.5 font-semibold transition-all hover:-translate-y-0.5 hover:shadow-lg"
+                  >
+                    {t("emailSent.continueButton")}
+                  </button>
+
+                  <button
+                    onClick={handleResendVerification}
+                    disabled={resendState === "sending" || resendState === "sent"}
+                    className="text-primary hover:text-primary-hover w-full text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {resendState === "sending"
+                      ? t("emailSent.resending")
+                      : resendState === "sent"
+                        ? t("emailSent.resent")
+                        : t("emailSent.resendButton")}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-bg flex min-h-screen flex-col">
@@ -150,9 +250,13 @@ export default function RegisterPage() {
                     id="password"
                     value={formData.password}
                     onChange={(e) => handleInputChange("password", e.target.value)}
+                    onKeyDown={handleCapsLock}
+                    onKeyUp={handleCapsLock}
                     required
                     className={`bg-surface text-text placeholder:text-text-muted w-full rounded-lg border px-4 py-3.5 pr-12 transition-all focus:ring-[3px] focus:outline-none ${
-                      formData.password && formData.password.length < 8
+                      formData.password &&
+                      formData.password.length > 0 &&
+                      formData.password.length < 8
                         ? "border-error focus:border-error focus:ring-error/20"
                         : "border-border focus:border-primary focus:ring-primary/20"
                     }`}
@@ -205,11 +309,28 @@ export default function RegisterPage() {
                     )}
                   </button>
                 </div>
-                {formData.password && formData.password.length < 8 && (
-                  <p className="animate-fade-in text-error mt-2 text-sm">
-                    {t("form.passwordError")}
+                {/* CapsLock Warning */}
+                {capsLockOn && (
+                  <p className="animate-fade-in text-warning mt-2 flex items-center gap-1.5 text-sm">
+                    <svg
+                      className="h-4 w-4 flex-shrink-0"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"
+                      />
+                    </svg>
+                    {t("form.capsLockWarning")}
                   </p>
                 )}
+                {/* Password requirements + strength meter */}
+                <PasswordRequirements password={formData.password} />
               </div>
 
               {/* Confirm Password Field */}
@@ -226,6 +347,8 @@ export default function RegisterPage() {
                     id="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
+                    onKeyDown={handleCapsLock}
+                    onKeyUp={handleCapsLock}
                     required
                     className={`bg-surface text-text placeholder:text-text-muted w-full rounded-lg border px-4 py-3.5 pr-12 transition-all focus:ring-[3px] focus:outline-none ${
                       formData.confirmPassword && formData.password !== formData.confirmPassword

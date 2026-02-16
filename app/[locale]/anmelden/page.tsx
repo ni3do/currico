@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
@@ -9,17 +9,49 @@ import { isValidEmail } from "@/lib/validations/common";
 import { isValidCallbackUrl } from "@/lib/utils/login-redirect";
 import TopBar from "@/components/ui/TopBar";
 
+const REMEMBER_EMAIL_KEY = "currico_remember_email";
+
 function LoginPageContent() {
   const t = useTranslations("loginPage");
   const tCommon = useTranslations("common");
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
+  const oauthError = searchParams.get("error");
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [capsLockOn, setCapsLockOn] = useState(false);
+
+  // Restore remembered email on mount
+  useEffect(() => {
+    const savedEmail = localStorage.getItem(REMEMBER_EMAIL_KEY);
+    if (savedEmail) {
+      setEmail(savedEmail);
+      setRememberMe(true);
+    }
+  }, []);
+
+  // Show OAuth-specific error messages
+  useEffect(() => {
+    if (!oauthError) return;
+    const errorMap: Record<string, string> = {
+      OAuthAccountNotLinked: t("errors.accountExistsWithDifferentProvider"),
+      AccessDenied: t("errors.accessDenied"),
+      OAuthCallback: t("errors.oauthError"),
+      OAuthSignin: t("errors.oauthError"),
+      OAuthCreateAccount: t("errors.oauthError"),
+    };
+    setError(errorMap[oauthError] || t("errors.oauthError"));
+  }, [oauthError, t]);
+
+  const handleCapsLock = (e: React.KeyboardEvent) => {
+    setCapsLockOn(e.getModifierState("CapsLock"));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,8 +66,21 @@ function LoginPageContent() {
       });
 
       if (result?.error) {
-        setError(t("errors.invalidCredentials"));
+        // Check for rate limit (429) — NextAuth returns a generic error,
+        // but we can check the status code
+        if (result.status === 429) {
+          setError(t("errors.tooManyAttempts"));
+        } else {
+          setError(t("errors.invalidCredentials"));
+        }
       } else {
+        // Save or clear remembered email
+        if (rememberMe) {
+          localStorage.setItem(REMEMBER_EMAIL_KEY, email);
+        } else {
+          localStorage.removeItem(REMEMBER_EMAIL_KEY);
+        }
+
         // Fetch user role to determine redirect
         const validCallback = callbackUrl && isValidCallbackUrl(callbackUrl) ? callbackUrl : null;
         const userResponse = await fetch("/api/user/me");
@@ -132,6 +177,8 @@ function LoginPageContent() {
                     id="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    onKeyDown={handleCapsLock}
+                    onKeyUp={handleCapsLock}
                     required
                     className="border-border bg-surface text-text placeholder:text-text-muted focus:border-primary focus:ring-primary/20 w-full rounded-lg border px-4 py-3.5 pr-12 transition-all focus:ring-[3px] focus:outline-none"
                     placeholder={t("form.passwordPlaceholder")}
@@ -183,6 +230,26 @@ function LoginPageContent() {
                     )}
                   </button>
                 </div>
+                {/* CapsLock Warning */}
+                {capsLockOn && (
+                  <p className="animate-fade-in text-warning mt-2 flex items-center gap-1.5 text-sm">
+                    <svg
+                      className="h-4 w-4 flex-shrink-0"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"
+                      />
+                    </svg>
+                    {t("form.capsLockWarning")}
+                  </p>
+                )}
               </div>
 
               {/* Remember Me */}
@@ -190,6 +257,8 @@ function LoginPageContent() {
                 <input
                   type="checkbox"
                   id="remember"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
                   className="border-border text-primary focus:ring-primary/20 h-4 w-4 cursor-pointer rounded focus:ring-2"
                 />
                 <label htmlFor="remember" className="text-text-muted ml-2.5 cursor-pointer text-sm">
