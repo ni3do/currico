@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { updateReviewSchema } from "@/lib/validations/review";
+import { requireAuth, unauthorized } from "@/lib/api";
 
 // GET /api/reviews/[id] - Get a single review
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -70,10 +70,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 // PUT /api/reviews/[id] - Update own review
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
-    }
+    const userId = await requireAuth();
+    if (!userId) return unauthorized();
 
     const { id: reviewId } = await params;
 
@@ -86,7 +84,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
       return NextResponse.json({ error: "Bewertung nicht gefunden" }, { status: 404 });
     }
 
-    if (review.user_id !== session.user.id) {
+    if (review.user_id !== userId) {
       return NextResponse.json(
         { error: "Sie können nur Ihre eigenen Bewertungen bearbeiten" },
         { status: 403 }
@@ -156,10 +154,8 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 // DELETE /api/reviews/[id] - Delete own review
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
-    }
+    const userId = await requireAuth();
+    if (!userId) return unauthorized();
 
     const { id: reviewId } = await params;
 
@@ -174,11 +170,11 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 
     // Allow deletion by owner or admin
     const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
+      where: { id: userId },
       select: { role: true },
     });
 
-    if (review.user_id !== session.user.id && user?.role !== "ADMIN") {
+    if (review.user_id !== userId && user?.role !== "ADMIN") {
       return NextResponse.json(
         { error: "Sie können nur Ihre eigenen Bewertungen löschen" },
         { status: 403 }

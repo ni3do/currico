@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { createReplySchema } from "@/lib/validations/review";
 import { notifyCommentReply } from "@/lib/notifications";
+import { requireAuth, unauthorized } from "@/lib/api";
 
 // GET /api/comments/[id]/replies - Get all replies for a comment
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -63,10 +63,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 // POST /api/comments/[id]/replies - Create a new reply
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
-    }
+    const userId = await requireAuth();
+    if (!userId) return unauthorized();
 
     const { id: commentId } = await params;
 
@@ -103,7 +101,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     const reply = await prisma.commentReply.create({
       data: {
         content,
-        user_id: session.user.id,
+        user_id: userId,
         comment_id: commentId,
       },
       include: {
@@ -119,7 +117,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     });
 
     // Notify the comment author about the reply (skip if replier is the comment author)
-    if (session.user.id !== comment.user_id) {
+    if (userId !== comment.user_id) {
       const replierName = reply.user.display_name || reply.user.name || "Jemand";
       notifyCommentReply(comment.user_id, comment.resource.title, replierName);
     }

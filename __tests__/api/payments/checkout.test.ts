@@ -3,7 +3,7 @@ import { POST as createCheckoutPOST } from "@/app/api/payments/create-checkout-s
 import { GET as getCheckoutSessionGET } from "@/app/api/payments/checkout-session/[sessionId]/route";
 import { createMockRequest, parseResponse } from "../../helpers/api-test-utils";
 import { prisma } from "@/lib/db";
-import { auth } from "@/lib/auth";
+import { auth, getCurrentUserId } from "@/lib/auth";
 
 // Mock Stripe client
 vi.mock("@/lib/stripe", () => ({
@@ -27,6 +27,7 @@ const mockMaterialFindUnique = prisma.resource.findUnique as ReturnType<typeof v
 const mockTransactionFindFirst = prisma.transaction.findFirst as ReturnType<typeof vi.fn>;
 const mockTransactionCreate = prisma.transaction.create as ReturnType<typeof vi.fn>;
 const mockAuth = auth as ReturnType<typeof vi.fn>;
+const mockGetCurrentUserId = getCurrentUserId as ReturnType<typeof vi.fn>;
 
 // Import Stripe mocks after vi.mock
 import { getStripeClient } from "@/lib/stripe";
@@ -498,9 +499,7 @@ describe("Checkout Flow", () => {
   describe("GET /api/payments/checkout-session/[sessionId]", () => {
     it("returns transaction info for authenticated buyer", async () => {
       const createdAt = new Date("2024-01-15T10:00:00Z");
-      mockAuth.mockResolvedValue({
-        user: { id: "buyer-123", email: "buyer@example.com" },
-      });
+      mockGetCurrentUserId.mockResolvedValue("buyer-123");
       mockTransactionFindFirst.mockResolvedValue({
         id: "txn-123",
         amount: 1000,
@@ -547,9 +546,7 @@ describe("Checkout Flow", () => {
     });
 
     it("formats free materials correctly", async () => {
-      mockAuth.mockResolvedValue({
-        user: { id: "buyer-123", email: "buyer@example.com" },
-      });
+      mockGetCurrentUserId.mockResolvedValue("buyer-123");
       mockTransactionFindFirst.mockResolvedValue({
         id: "txn-123",
         amount: 0,
@@ -582,7 +579,7 @@ describe("Checkout Flow", () => {
     });
 
     it("returns 401 when not authenticated", async () => {
-      mockAuth.mockResolvedValue(null);
+      mockGetCurrentUserId.mockResolvedValue(null);
 
       const request = createMockRequest("/api/payments/checkout-session/cs_test123");
       const response = await getCheckoutSessionGET(request, {
@@ -591,13 +588,11 @@ describe("Checkout Flow", () => {
       const data = await parseResponse<GetCheckoutSessionResponse>(response);
 
       expect(response.status).toBe(401);
-      expect(data.error).toBe("Authentifizierung erforderlich");
+      expect(data.error).toBe("Unauthorized");
     });
 
     it("returns 400 when session ID is missing", async () => {
-      mockAuth.mockResolvedValue({
-        user: { id: "buyer-123", email: "buyer@example.com" },
-      });
+      mockGetCurrentUserId.mockResolvedValue("buyer-123");
 
       const request = createMockRequest("/api/payments/checkout-session/");
       const response = await getCheckoutSessionGET(request, {
@@ -610,9 +605,7 @@ describe("Checkout Flow", () => {
     });
 
     it("returns 404 when transaction not found", async () => {
-      mockAuth.mockResolvedValue({
-        user: { id: "buyer-123", email: "buyer@example.com" },
-      });
+      mockGetCurrentUserId.mockResolvedValue("buyer-123");
       mockTransactionFindFirst.mockResolvedValue(null);
 
       const request = createMockRequest("/api/payments/checkout-session/cs_unknown");
@@ -626,9 +619,7 @@ describe("Checkout Flow", () => {
     });
 
     it("returns 404 when transaction belongs to different user", async () => {
-      mockAuth.mockResolvedValue({
-        user: { id: "other-user-123", email: "other@example.com" },
-      });
+      mockGetCurrentUserId.mockResolvedValue("other-user-123");
       // Transaction not found because buyer_id doesn't match
       mockTransactionFindFirst.mockResolvedValue(null);
 
@@ -643,9 +634,7 @@ describe("Checkout Flow", () => {
     });
 
     it("returns 500 on database error", async () => {
-      mockAuth.mockResolvedValue({
-        user: { id: "buyer-123", email: "buyer@example.com" },
-      });
+      mockGetCurrentUserId.mockResolvedValue("buyer-123");
       mockTransactionFindFirst.mockRejectedValue(new Error("Database error"));
 
       const request = createMockRequest("/api/payments/checkout-session/cs_test123");

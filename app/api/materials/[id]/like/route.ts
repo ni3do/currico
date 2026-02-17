@@ -1,18 +1,16 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { checkRateLimit, rateLimitHeaders, isValidId } from "@/lib/rateLimit";
+import { requireAuth, unauthorized } from "@/lib/api";
 
 // POST /api/materials/[id]/like - Toggle like on a material
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
-    }
+    const userId = await requireAuth();
+    if (!userId) return unauthorized();
 
     // Rate limiting check
-    const rateLimitResult = checkRateLimit(session.user.id, "materials:like");
+    const rateLimitResult = checkRateLimit(userId, "materials:like");
     if (!rateLimitResult.success) {
       return NextResponse.json(
         {
@@ -44,7 +42,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     const existingLike = await prisma.resourceLike.findUnique({
       where: {
         user_id_resource_id: {
-          user_id: session.user.id,
+          user_id: userId,
           resource_id: materialId,
         },
       },
@@ -69,7 +67,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       // Like - add new like
       await prisma.resourceLike.create({
         data: {
-          user_id: session.user.id,
+          user_id: userId,
           resource_id: materialId,
         },
       });
@@ -93,7 +91,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 // GET /api/materials/[id]/like - Get like status for a material
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await auth();
+    const userId = await requireAuth();
     const { id: materialId } = await params;
 
     // Check if material exists
@@ -113,11 +111,11 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
     // Check if current user has liked
     let liked = false;
-    if (session?.user?.id) {
+    if (userId) {
       const existingLike = await prisma.resourceLike.findUnique({
         where: {
           user_id_resource_id: {
-            user_id: session.user.id,
+            user_id: userId,
             resource_id: materialId,
           },
         },

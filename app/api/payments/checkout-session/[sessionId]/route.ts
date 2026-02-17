@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { auth } from "@/lib/auth";
+import { requireAuth, unauthorized } from "@/lib/api";
 
 /**
  * GET /api/payments/checkout-session/[sessionId]
@@ -11,13 +11,8 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ sessionId: string }> }
 ) {
-  // Get authenticated user
-  const session = await auth();
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Authentifizierung erforderlich" }, { status: 401 });
-  }
-
-  const userId = session.user.id;
+  const userId = await requireAuth();
+  if (!userId) return unauthorized();
   const { sessionId } = await params;
 
   if (!sessionId) {

@@ -1,14 +1,12 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { requireAuth, unauthorized } from "@/lib/api";
 
 // POST /api/comments/[id]/like - Toggle like on a comment
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
-    }
+    const userId = await requireAuth();
+    if (!userId) return unauthorized();
 
     const { id: commentId } = await params;
 
@@ -26,7 +24,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     const existingLike = await prisma.commentLike.findUnique({
       where: {
         user_id_comment_id: {
-          user_id: session.user.id,
+          user_id: userId,
           comment_id: commentId,
         },
       },
@@ -51,7 +49,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       // Like - add new like
       await prisma.commentLike.create({
         data: {
-          user_id: session.user.id,
+          user_id: userId,
           comment_id: commentId,
         },
       });
@@ -75,7 +73,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 // GET /api/comments/[id]/like - Get like status for a comment
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await auth();
+    const userId = await requireAuth();
     const { id: commentId } = await params;
 
     // Check if comment exists
@@ -95,11 +93,11 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
     // Check if current user has liked
     let liked = false;
-    if (session?.user?.id) {
+    if (userId) {
       const existingLike = await prisma.commentLike.findUnique({
         where: {
           user_id_comment_id: {
-            user_id: session.user.id,
+            user_id: userId,
             comment_id: commentId,
           },
         },

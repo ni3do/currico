@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { updateCommentSchema } from "@/lib/validations/review";
+import { requireAuth, unauthorized } from "@/lib/api";
 
 // GET /api/comments/[id] - Get a single comment
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id: commentId } = await params;
-    const session = await auth();
+    const userId = await requireAuth();
 
     const comment = await prisma.comment.findUnique({
       where: { id: commentId },
@@ -67,9 +67,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
           title: comment.resource.title,
         },
         likeCount: comment.likes.length,
-        isLiked: session?.user?.id
-          ? comment.likes.some((like) => like.user_id === session.user.id)
-          : false,
+        isLiked: userId ? comment.likes.some((like) => like.user_id === userId) : false,
         replies: comment.replies.map((reply) => ({
           id: reply.id,
           content: reply.content,
@@ -94,10 +92,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 // PUT /api/comments/[id] - Update own comment
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
-    }
+    const userId = await requireAuth();
+    if (!userId) return unauthorized();
 
     const { id: commentId } = await params;
 
@@ -110,7 +106,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
       return NextResponse.json({ error: "Kommentar nicht gefunden" }, { status: 404 });
     }
 
-    if (comment.user_id !== session.user.id) {
+    if (comment.user_id !== userId) {
       return NextResponse.json(
         { error: "Sie können nur Ihre eigenen Kommentare bearbeiten" },
         { status: 403 }
@@ -174,10 +170,8 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 // DELETE /api/comments/[id] - Delete own comment
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
-    }
+    const userId = await requireAuth();
+    if (!userId) return unauthorized();
 
     const { id: commentId } = await params;
 
@@ -197,14 +191,12 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 
     // Allow deletion by owner, resource seller, or admin
     const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
+      where: { id: userId },
       select: { role: true },
     });
 
     const canDelete =
-      comment.user_id === session.user.id ||
-      comment.resource.seller_id === session.user.id ||
-      user?.role === "ADMIN";
+      comment.user_id === userId || comment.resource.seller_id === userId || user?.role === "ADMIN";
 
     if (!canDelete) {
       return NextResponse.json(

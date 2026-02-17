@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
-import { auth } from "@/lib/auth";
+import { requireAuth, requireSeller, unauthorized, forbidden } from "@/lib/api";
 import { formatPrice } from "@/lib/utils/price";
 
 /**
@@ -11,22 +11,11 @@ import { formatPrice } from "@/lib/utils/price";
  */
 export async function GET() {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "AUTH_REQUIRED" }, { status: 401 });
-    }
+    const userId = await requireAuth();
+    if (!userId) return unauthorized();
 
-    const userId = session.user.id;
-
-    // Check if user is a seller
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { role: true },
-    });
-
-    if (user?.role !== "SELLER") {
-      return NextResponse.json({ error: "SELLER_ONLY" }, { status: 403 });
-    }
+    const seller = await requireSeller(userId);
+    if (!seller) return forbidden("SELLER_ONLY");
 
     // Fetch seller's published materials
     const materials = await prisma.resource.findMany({

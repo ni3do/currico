@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { updateReplySchema } from "@/lib/validations/review";
+import { requireAuth, unauthorized } from "@/lib/api";
 
 // GET /api/replies/[id] - Get a single reply
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -68,10 +68,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 // PUT /api/replies/[id] - Update own reply
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
-    }
+    const userId = await requireAuth();
+    if (!userId) return unauthorized();
 
     const { id: replyId } = await params;
 
@@ -84,7 +82,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
       return NextResponse.json({ error: "Antwort nicht gefunden" }, { status: 404 });
     }
 
-    if (reply.user_id !== session.user.id) {
+    if (reply.user_id !== userId) {
       return NextResponse.json(
         { error: "Sie können nur Ihre eigenen Antworten bearbeiten" },
         { status: 403 }
@@ -143,10 +141,8 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 // DELETE /api/replies/[id] - Delete own reply
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
-    }
+    const userId = await requireAuth();
+    if (!userId) return unauthorized();
 
     const { id: replyId } = await params;
 
@@ -170,13 +166,13 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 
     // Allow deletion by owner, resource seller, or admin
     const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
+      where: { id: userId },
       select: { role: true },
     });
 
     const canDelete =
-      reply.user_id === session.user.id ||
-      reply.comment.resource.seller_id === session.user.id ||
+      reply.user_id === userId ||
+      reply.comment.resource.seller_id === userId ||
       user?.role === "ADMIN";
 
     if (!canDelete) {
