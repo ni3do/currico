@@ -62,8 +62,8 @@ export default function AdminReportsPage() {
       if (response.ok) {
         const data: AdminReportsResponse = await response.json();
         setReports(data.reports);
-        setTotalPages(data.totalPages);
-        setTotal(data.total);
+        setTotalPages(data.pagination.totalPages);
+        setTotal(data.pagination.total);
       }
     } catch (error) {
       console.error("Error fetching reports:", error);
@@ -84,10 +84,10 @@ export default function AdminReportsPage() {
         body.resolution = resolution;
       }
 
-      const response = await fetch("/api/admin/reports", {
+      const response = await fetch(`/api/admin/reports/${reportId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: reportId, ...body }),
+        body: JSON.stringify(body),
       });
 
       if (response.ok) {

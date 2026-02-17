@@ -22,9 +22,12 @@ interface FollowedSellerDetail {
 
 interface FollowingApiResponse {
   sellers: FollowedSellerDetail[];
-  total: number;
-  page: number;
-  hasMore: boolean;
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
 }
 
 function isValidFollowingResponse(data: unknown): data is FollowingApiResponse {
@@ -33,8 +36,8 @@ function isValidFollowingResponse(data: unknown): data is FollowingApiResponse {
     data !== null &&
     "sellers" in data &&
     Array.isArray((data as FollowingApiResponse).sellers) &&
-    "total" in data &&
-    typeof (data as FollowingApiResponse).total === "number"
+    "pagination" in data &&
+    typeof (data as FollowingApiResponse).pagination?.total === "number"
   );
 }
 
@@ -66,9 +69,9 @@ export default function AccountFollowingPage() {
         const data: unknown = await response.json();
         if (isValidFollowingResponse(data)) {
           setFollowedSellers((prev) => (append ? [...prev, ...data.sellers] : data.sellers));
-          setTotalCount(data.total);
-          setHasMore(data.hasMore);
-          setCurrentPage(data.page);
+          setTotalCount(data.pagination.total);
+          setHasMore(data.pagination.page < data.pagination.totalPages);
+          setCurrentPage(data.pagination.page);
         } else {
           setFollowedSellers((prev) => (append ? prev : []));
           setTotalCount(0);

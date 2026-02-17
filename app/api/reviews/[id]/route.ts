@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { updateReviewSchema } from "@/lib/validations/review";
-import { requireAuth, unauthorized } from "@/lib/api";
+import { requireAuth, unauthorized, badRequest } from "@/lib/api";
+import { isValidId } from "@/lib/rateLimit";
 
 // GET /api/reviews/[id] - Get a single review
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id: reviewId } = await params;
+    if (!isValidId(reviewId)) return badRequest("Invalid ID");
 
     const review = await prisma.review.findUnique({
       where: { id: reviewId },
@@ -74,6 +76,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     if (!userId) return unauthorized();
 
     const { id: reviewId } = await params;
+    if (!isValidId(reviewId)) return badRequest("Invalid ID");
 
     // Check if review exists and belongs to user
     const review = await prisma.review.findUnique({
@@ -158,6 +161,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     if (!userId) return unauthorized();
 
     const { id: reviewId } = await params;
+    if (!isValidId(reviewId)) return badRequest("Invalid ID");
 
     // Check if review exists and belongs to user
     const review = await prisma.review.findUnique({

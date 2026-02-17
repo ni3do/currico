@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
+import { badRequest, serverError } from "@/lib/api";
 import { checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
+import { resetPasswordSchema } from "@/lib/validations/auth";
 
 /**
  * POST /api/auth/reset-password
@@ -19,32 +21,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    let body: { token?: string; password?: string };
+    let body: unknown;
     try {
       body = await request.json();
     } catch {
-      return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
-    }
-    const { token, password } = body;
-
-    if (!token || !password) {
-      return NextResponse.json({ error: "Token und Passwort erforderlich" }, { status: 400 });
+      return badRequest("Invalid JSON body");
     }
 
-    // Validate password strength
-    if (password.length < 8) {
-      return NextResponse.json(
-        { error: "Passwort muss mindestens 8 Zeichen haben" },
-        { status: 400 }
-      );
+    const parsed = resetPasswordSchema.safeParse(body);
+    if (!parsed.success) {
+      return badRequest("Invalid token or password requirements not met");
     }
-
-    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
-      return NextResponse.json(
-        { error: "Passwort muss Gross-, Kleinbuchstaben und Zahlen enthalten" },
-        { status: 400 }
-      );
-    }
+    const { token, password } = parsed.data;
 
     // Find valid token
     const resetToken = await prisma.passwordResetToken.findUnique({
@@ -53,16 +41,13 @@ export async function POST(request: NextRequest) {
     });
 
     if (!resetToken) {
-      return NextResponse.json({ error: "Ungültiger oder abgelaufener Link" }, { status: 400 });
+      return badRequest("Invalid or expired link");
     }
 
     if (new Date() > resetToken.expires) {
       // Clean up expired token
       await prisma.passwordResetToken.delete({ where: { id: resetToken.id } });
-      return NextResponse.json(
-        { error: "Der Link ist abgelaufen. Bitte fordern Sie einen neuen an." },
-        { status: 400 }
-      );
+      return badRequest("Link has expired. Please request a new one.");
     }
 
     // Hash new password and update user
@@ -84,6 +69,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error in reset-password:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError();
   }
 }

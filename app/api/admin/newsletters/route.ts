@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin, unauthorizedResponse } from "@/lib/admin-auth";
+import { badRequest, serverError } from "@/lib/api";
 
 /**
  * GET /api/admin/newsletters
@@ -21,7 +22,7 @@ export async function GET() {
     return NextResponse.json(newsletters);
   } catch (error) {
     console.error("Error fetching newsletters:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError();
   }
 }
 
@@ -41,7 +42,7 @@ export async function POST(request: NextRequest) {
     const { subject, content } = body;
 
     if (!subject || !content) {
-      return NextResponse.json({ error: "Betreff und Inhalt sind erforderlich" }, { status: 400 });
+      return badRequest("Subject and content are required");
     }
 
     const newsletter = await prisma.newsletter.create({
@@ -55,6 +56,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(newsletter, { status: 201 });
   } catch (error) {
     console.error("Error creating newsletter:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError();
   }
 }

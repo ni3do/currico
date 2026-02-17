@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { requireAdmin, unauthorizedResponse } from "@/lib/admin-auth";
+import { serverError } from "@/lib/api";
 import { formatPriceAdmin, getResourceStatus } from "@/lib/utils/price";
-import { notifyMaterialApproved, notifyMaterialRejected } from "@/lib/notifications";
 
 const materialSelect = Prisma.validator<Prisma.ResourceSelect>()({
   id: true,
@@ -97,69 +97,6 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error fetching materials:", error);
-    return NextResponse.json({ error: "Fehler beim Laden der Materialien" }, { status: 500 });
-  }
-}
-
-export async function PATCH(request: NextRequest) {
-  const admin = await requireAdmin();
-  if (!admin) {
-    return unauthorizedResponse();
-  }
-
-  try {
-    const body = await request.json();
-    const { id, is_approved, status, is_public, rejection_reason } = body;
-
-    if (!id) {
-      return NextResponse.json({ error: "Material-ID ist erforderlich" }, { status: 400 });
-    }
-
-    const updateData: Record<string, unknown> = {};
-
-    // Handle legacy is_approved field
-    if (is_approved !== undefined) {
-      updateData.is_approved = is_approved;
-    }
-
-    // Handle new status field (PENDING, VERIFIED, REJECTED)
-    if (status !== undefined) {
-      if (!["PENDING", "VERIFIED", "REJECTED"].includes(status)) {
-        return NextResponse.json({ error: "Ungültiger Statuswert" }, { status: 400 });
-      }
-      updateData.status = status;
-
-      // When verifying, also set is_approved and is_public
-      if (status === "VERIFIED") {
-        updateData.is_approved = true;
-        updateData.is_public = true;
-      } else if (status === "REJECTED") {
-        updateData.is_approved = false;
-        updateData.is_public = false;
-      }
-    }
-
-    // Handle explicit is_public update
-    if (is_public !== undefined) {
-      updateData.is_public = is_public;
-    }
-
-    const updated = await prisma.resource.update({
-      where: { id },
-      data: updateData,
-      select: materialSelect,
-    });
-
-    // Notify the author about approval/rejection (fire-and-forget)
-    if (status === "VERIFIED") {
-      notifyMaterialApproved(updated.seller.id, updated.title, updated.id);
-    } else if (status === "REJECTED") {
-      notifyMaterialRejected(updated.seller.id, updated.title, rejection_reason);
-    }
-
-    return NextResponse.json(updated);
-  } catch (error) {
-    console.error("Error updating material:", error);
-    return NextResponse.json({ error: "Fehler beim Aktualisieren des Materials" }, { status: 500 });
+    return serverError();
   }
 }

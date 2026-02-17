@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { updateReplySchema } from "@/lib/validations/review";
-import { requireAuth, unauthorized } from "@/lib/api";
+import { requireAuth, unauthorized, badRequest } from "@/lib/api";
+import { isValidId } from "@/lib/rateLimit";
 
 // GET /api/replies/[id] - Get a single reply
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id: replyId } = await params;
+    if (!isValidId(replyId)) return badRequest("Invalid ID");
 
     const reply = await prisma.commentReply.findUnique({
       where: { id: replyId },
@@ -72,6 +74,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     if (!userId) return unauthorized();
 
     const { id: replyId } = await params;
+    if (!isValidId(replyId)) return badRequest("Invalid ID");
 
     // Check if reply exists and belongs to user
     const reply = await prisma.commentReply.findUnique({
@@ -145,6 +148,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     if (!userId) return unauthorized();
 
     const { id: replyId } = await params;
+    if (!isValidId(replyId)) return badRequest("Invalid ID");
 
     // Check if reply exists and belongs to user
     const reply = await prisma.commentReply.findUnique({

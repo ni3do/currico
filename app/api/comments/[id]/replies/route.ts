@@ -2,13 +2,14 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { createReplySchema } from "@/lib/validations/review";
 import { notifyCommentReply } from "@/lib/notifications";
-import { requireAuth, unauthorized } from "@/lib/api";
-import { checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
+import { requireAuth, unauthorized, badRequest } from "@/lib/api";
+import { checkRateLimit, getClientIP, isValidId, rateLimitHeaders } from "@/lib/rateLimit";
 
 // GET /api/comments/[id]/replies - Get all replies for a comment
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id: commentId } = await params;
+    if (!isValidId(commentId)) return badRequest("Invalid ID");
 
     // Check if comment exists
     const comment = await prisma.comment.findUnique({
@@ -77,6 +78,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     }
 
     const { id: commentId } = await params;
+    if (!isValidId(commentId)) return badRequest("Invalid ID");
 
     // Check if comment exists
     const comment = await prisma.comment.findUnique({

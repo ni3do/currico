@@ -2327,8 +2327,11 @@
     "intro": "This Cookie Policy explains how Currico uses cookies and similar technologies when you visit our website. We are committed to transparency about the data we collect and how we use it.",
     "toc": {
       "title": "Table of Contents",
-      "label": "Table of Contents"
+      "label": "Table of Contents",
+      "showContents": "Show table of contents",
+      "hideContents": "Close table of contents"
     },
+    "backToTop": "Back to top",
     "sections": {
       "what": {
         "title": "1. What Are Cookies?",

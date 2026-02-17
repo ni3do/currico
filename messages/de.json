@@ -2327,8 +2327,11 @@
     "intro": "Diese Cookie-Richtlinie erklärt, wie Currico Cookies und ähnliche Technologien verwendet, wenn Sie unsere Website besuchen. Wir setzen auf Transparenz bezüglich der Daten, die wir erheben und wie wir sie nutzen.",
     "toc": {
       "title": "Inhaltsverzeichnis",
-      "label": "Inhaltsverzeichnis"
+      "label": "Inhaltsverzeichnis",
+      "showContents": "Inhaltsverzeichnis anzeigen",
+      "hideContents": "Inhaltsverzeichnis schliessen"
     },
+    "backToTop": "Nach oben",
     "sections": {
       "what": {
         "title": "1. Was sind Cookies?",

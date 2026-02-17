@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { requireAuth, unauthorized } from "@/lib/api";
-import { checkRateLimit, rateLimitHeaders } from "@/lib/rateLimit";
+import { requireAuth, unauthorized, badRequest } from "@/lib/api";
+import { checkRateLimit, isValidId, rateLimitHeaders } from "@/lib/rateLimit";
 
 // POST /api/comments/[id]/like - Toggle like on a comment
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -19,6 +19,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     }
 
     const { id: commentId } = await params;
+    if (!isValidId(commentId)) return badRequest("Invalid ID");
 
     // Check if comment exists
     const comment = await prisma.comment.findUnique({
@@ -85,6 +86,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   try {
     const userId = await requireAuth();
     const { id: commentId } = await params;
+    if (!isValidId(commentId)) return badRequest("Invalid ID");
 
     // Check if comment exists
     const comment = await prisma.comment.findUnique({

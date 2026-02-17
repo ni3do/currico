@@ -3,7 +3,8 @@ import { prisma } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
 import { getCurrentUserId } from "@/lib/auth";
 import { requireAdmin } from "@/lib/admin-auth";
-import { requireAuth, unauthorized } from "@/lib/api";
+import { requireAuth, unauthorized, badRequest } from "@/lib/api";
+import { isValidId } from "@/lib/rateLimit";
 import { updateMaterialSchema } from "@/lib/validations/material";
 import { formatPrice } from "@/lib/utils/price";
 import { getFileFormatLabel } from "@/lib/utils/file-format";
@@ -19,6 +20,7 @@ import { unlink } from "fs/promises";
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
+    if (!isValidId(id)) return badRequest("Invalid ID");
 
     // Check if user is admin
     const admin = await requireAdmin();
@@ -271,6 +273,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 
   try {
     const { id } = await params;
+    if (!isValidId(id)) return badRequest("Invalid ID");
 
     // Fetch the material to verify ownership
     const material = await prisma.resource.findUnique({
@@ -376,6 +379,7 @@ export async function DELETE(
 
   try {
     const { id } = await params;
+    if (!isValidId(id)) return badRequest("Invalid ID");
 
     // Fetch the material with transaction count
     const material = await prisma.resource.findUnique({

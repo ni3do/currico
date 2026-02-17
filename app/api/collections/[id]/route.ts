@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAuth, unauthorized, badRequest, notFound, forbidden } from "@/lib/api";
+import { isValidId } from "@/lib/rateLimit";
 import { z } from "zod";
 
 const updateCollectionSchema = z.object({
@@ -17,6 +18,7 @@ const updateCollectionSchema = z.object({
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
+    if (!isValidId(id)) return badRequest("Invalid ID");
 
     const collection = await prisma.collection.findUnique({
       where: { id },
@@ -91,6 +93,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 
   try {
     const { id } = await params;
+    if (!isValidId(id)) return badRequest("Invalid ID");
     const body = await request.json();
     const validation = updateCollectionSchema.safeParse(body);
 
@@ -142,6 +145,7 @@ export async function DELETE(
 
   try {
     const { id } = await params;
+    if (!isValidId(id)) return badRequest("Invalid ID");
 
     // Check ownership
     const existing = await prisma.collection.findUnique({

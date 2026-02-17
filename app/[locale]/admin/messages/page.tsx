@@ -65,8 +65,8 @@ export default function AdminMessagesPage() {
       if (response.ok) {
         const data: AdminMessagesResponse = await response.json();
         setMessages(data.messages);
-        setTotalPages(data.totalPages);
-        setTotal(data.total);
+        setTotalPages(data.pagination.totalPages);
+        setTotal(data.pagination.total);
       }
     } catch (error) {
       console.error("Error fetching messages:", error);
@@ -82,10 +82,10 @@ export default function AdminMessagesPage() {
   const handleStatusUpdate = async (messageId: string, newStatus: string) => {
     setActionLoading(true);
     try {
-      const response = await fetch("/api/admin/messages", {
+      const response = await fetch(`/api/admin/messages/${messageId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: messageId, status: newStatus }),
+        body: JSON.stringify({ status: newStatus }),
       });
 
       if (response.ok) {
@@ -107,10 +107,8 @@ export default function AdminMessagesPage() {
   const handleDelete = async (messageId: string) => {
     setActionLoading(true);
     try {
-      const response = await fetch("/api/admin/messages", {
+      const response = await fetch(`/api/admin/messages/${messageId}`, {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: messageId }),
       });
 
       if (response.ok) {

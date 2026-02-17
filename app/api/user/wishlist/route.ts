@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
 import { formatPrice } from "@/lib/utils/price";
-import { requireAuth, unauthorized } from "@/lib/api";
+import { requireAuth, unauthorized, parsePagination, paginationResponse } from "@/lib/api";
 
 /**
  * GET /api/user/wishlist
@@ -14,8 +14,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const { searchParams } = new URL(request.url);
-    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") || "50", 10)));
-    const offset = Math.max(0, parseInt(searchParams.get("offset") || "0", 10) || 0);
+    const { page, limit, skip } = parsePagination(searchParams, { limit: 50 });
 
     const wishlistItems = await prisma.wishlist.findMany({
       where: {
@@ -50,7 +49,7 @@ export async function GET(request: NextRequest) {
       },
       orderBy: { created_at: "desc" },
       take: limit,
-      skip: offset,
+      skip,
     });
 
     // Transform items (already filtered by DB query)
@@ -91,11 +90,7 @@ export async function GET(request: NextRequest) {
       stats: {
         totalItems: totalCount,
       },
-      pagination: {
-        limit,
-        offset,
-        hasMore: wishlistItems.length === limit,
-      },
+      pagination: paginationResponse(page, limit, totalCount),
     });
   } catch (error) {
     console.error("Error fetching wishlist:", error);

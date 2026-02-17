@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin, unauthorizedResponse } from "@/lib/admin-auth";
+import { badRequest, notFound, serverError } from "@/lib/api";
+import { isValidId } from "@/lib/rateLimit";
 import { sendNewsletter } from "@/lib/newsletter";
 
 /**
@@ -16,14 +18,15 @@ export async function POST(_request: NextRequest, { params }: { params: Promise<
     }
 
     const { id } = await params;
+    if (!isValidId(id)) return badRequest("Invalid ID");
 
     const newsletter = await prisma.newsletter.findUnique({ where: { id } });
     if (!newsletter) {
-      return NextResponse.json({ error: "Newsletter nicht gefunden" }, { status: 404 });
+      return notFound("Newsletter not found");
     }
 
     if (newsletter.status !== "DRAFT") {
-      return NextResponse.json({ error: "Nur Entwürfe können gesendet werden" }, { status: 400 });
+      return badRequest("Only drafts can be sent");
     }
 
     // Set status to SENDING
@@ -40,6 +43,6 @@ export async function POST(_request: NextRequest, { params }: { params: Promise<
     return NextResponse.json({ success: true, message: "Newsletter wird gesendet" });
   } catch (error) {
     console.error("Error sending newsletter:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError();
   }
 }

@@ -67,10 +67,10 @@ export default function AdminDocumentsPage() {
   const handleVerify = async (materialId: string) => {
     setActionLoading(true);
     try {
-      const response = await fetch("/api/admin/materials", {
+      const response = await fetch(`/api/admin/materials/${materialId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: materialId, status: "VERIFIED" }),
+        body: JSON.stringify({ status: "VERIFIED" }),
       });
 
       if (response.ok) {
@@ -91,10 +91,10 @@ export default function AdminDocumentsPage() {
   const handleReject = async (materialId: string, reason?: string) => {
     setActionLoading(true);
     try {
-      const body: Record<string, string> = { id: materialId, status: "REJECTED" };
+      const body: Record<string, string> = { status: "REJECTED" };
       if (reason?.trim()) body.rejection_reason = reason.trim();
 
-      const response = await fetch("/api/admin/materials", {
+      const response = await fetch(`/api/admin/materials/${materialId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -120,10 +120,10 @@ export default function AdminDocumentsPage() {
   const handleResetToPending = async (materialId: string) => {
     setActionLoading(true);
     try {
-      const response = await fetch("/api/admin/materials", {
+      const response = await fetch(`/api/admin/materials/${materialId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: materialId, status: "PENDING" }),
+        body: JSON.stringify({ status: "PENDING" }),
       });
 
       if (response.ok) {

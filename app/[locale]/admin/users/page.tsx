@@ -52,8 +52,8 @@ export default function AdminUsersPage() {
       if (response.ok) {
         const data: AdminUsersResponse = await response.json();
         setUsers(data.users);
-        setTotalPages(data.totalPages);
-        setTotal(data.total);
+        setTotalPages(data.pagination.totalPages);
+        setTotal(data.pagination.total);
       }
     } catch (error) {
       console.error("Error fetching users:", error);

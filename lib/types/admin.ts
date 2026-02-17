@@ -127,23 +127,24 @@ export interface AdminMaterialsResponse {
   };
 }
 
+export interface PaginationMeta {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
 export interface AdminUsersResponse {
   users: AdminUser[];
-  total: number;
-  page: number;
-  totalPages: number;
+  pagination: PaginationMeta;
 }
 
 export interface AdminReportsResponse {
   reports: AdminReport[];
-  total: number;
-  page: number;
-  totalPages: number;
+  pagination: PaginationMeta;
 }
 
 export interface AdminMessagesResponse {
   messages: ContactMessage[];
-  total: number;
-  page: number;
-  totalPages: number;
+  pagination: PaginationMeta;
 }
