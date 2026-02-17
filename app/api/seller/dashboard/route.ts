@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { formatPrice, getResourceStatus } from "@/lib/utils/price";
 import { requireAuth, requireSeller, unauthorized, forbidden } from "@/lib/api";
 import { PLATFORM_FEE_PERCENT } from "@/lib/constants";
+import { getFileFormat } from "@/lib/utils/file-format";
 
 /**
  * GET /api/seller/dashboard
@@ -26,6 +27,7 @@ export async function GET() {
           id: true,
           title: true,
           price: true,
+          file_url: true,
           is_published: true,
           is_approved: true,
           created_at: true,
@@ -107,6 +109,7 @@ export async function GET() {
         id: material.id,
         title: material.title,
         type: "Material",
+        fileFormat: getFileFormat(material.file_url),
         status: getResourceStatus(material.is_published, material.is_approved),
         purchases: material._count.transactions,
         downloads: paidDownloads + material._count.downloads,

@@ -55,9 +55,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     const savingsPercent =
       totalIndividualPrice > 0 ? Math.round((savings / totalIndividualPrice) * 100) : 0;
 
-    // Transform subject and cycle arrays
-    const subjects = toStringArray(bundle.subject);
-    const cycles = toStringArray(bundle.cycle);
+    // Transform subjects and cycles arrays
+    const subjects = toStringArray(bundle.subjects);
+    const cycles = toStringArray(bundle.cycles);
 
     const transformedBundle = {
       id: bundle.id,
@@ -109,8 +109,8 @@ const updateBundleSchema = z.object({
       message: "Price must be in 0.50 CHF increments",
     })
     .optional(),
-  subject: z.array(z.string()).optional(),
-  cycle: z.array(z.string()).optional(),
+  subjects: z.array(z.string()).optional(),
+  cycles: z.array(z.string()).optional(),
   resourceIds: z.array(z.string()).min(2).optional(),
   coverImageUrl: z.string().url().optional().nullable(),
   isPublished: z.boolean().optional(),
@@ -154,7 +154,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       return badRequest(firstError?.message ?? "VALIDATION_ERROR");
     }
 
-    const { title, description, price, subject, cycle, resourceIds, coverImageUrl, isPublished } =
+    const { title, description, price, subjects, cycles, resourceIds, coverImageUrl, isPublished } =
       parsed.data;
 
     // If resourceIds provided, verify they belong to the seller
@@ -178,8 +178,8 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     if (title !== undefined) updateData.title = title;
     if (description !== undefined) updateData.description = description;
     if (price !== undefined) updateData.price = price;
-    if (subject !== undefined) updateData.subject = subject;
-    if (cycle !== undefined) updateData.cycle = cycle;
+    if (subjects !== undefined) updateData.subjects = subjects;
+    if (cycles !== undefined) updateData.cycles = cycles;
     if (coverImageUrl !== undefined) updateData.cover_image_url = coverImageUrl;
     if (isPublished !== undefined) updateData.is_published = isPublished;
 

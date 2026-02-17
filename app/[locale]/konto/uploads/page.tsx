@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { FileText, AlertTriangle } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { DashboardMaterialCard } from "@/components/ui/DashboardMaterialCard";
 import type { UploadedItem } from "@/lib/types/account";
 
@@ -17,6 +18,11 @@ export default function AccountUploadsPage() {
   const [sortBy, setSortBy] = useState<"newest" | "oldest" | "title" | "popular">("newest");
   const [uploadedLoading, setUploadedLoading] = useState(false);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
+  const [duplicatingId, setDuplicatingId] = useState<string | null>(null);
+  const [duplicateMessage, setDuplicateMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
   // Fetch uploaded items
   const fetchUploaded = useCallback(async (search?: string, sort?: string) => {
@@ -47,6 +53,28 @@ export default function AccountUploadsPage() {
     );
     return () => clearTimeout(debounce);
   }, [searchQuery, sortBy, fetchUploaded]);
+
+  const handleDuplicate = async (materialId: string) => {
+    setDuplicatingId(materialId);
+    setDuplicateMessage(null);
+    try {
+      const response = await fetch(`/api/materials/${materialId}/duplicate`, {
+        method: "POST",
+      });
+      if (response.ok) {
+        setDuplicateMessage({ type: "success", text: t("duplicateSuccess") });
+        // Re-fetch to show the new duplicate
+        fetchUploaded(searchQuery || undefined, sortBy);
+      } else {
+        setDuplicateMessage({ type: "error", text: t("duplicateError") });
+      }
+    } catch {
+      setDuplicateMessage({ type: "error", text: t("duplicateError") });
+    } finally {
+      setDuplicatingId(null);
+      setTimeout(() => setDuplicateMessage(null), 4000);
+    }
+  };
 
   const statusCounts = useMemo(() => {
     const counts = { ALL: 0, PENDING: 0, VERIFIED: 0, REJECTED: 0 };
@@ -128,6 +156,24 @@ export default function AccountUploadsPage() {
         </select>
       </div>
 
+      {/* Duplicate feedback toast */}
+      <AnimatePresence>
+        {duplicateMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className={`mb-4 rounded-lg p-3 text-sm font-medium ${
+              duplicateMessage.type === "success"
+                ? "bg-success/10 text-success"
+                : "bg-error/10 text-error"
+            }`}
+          >
+            {duplicateMessage.text}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Status Filter Pills */}
       <div className="mb-6 flex flex-wrap gap-2">
         {filterOptions.map(({ key, label }) => (
@@ -180,7 +226,10 @@ export default function AccountUploadsPage() {
               subject={item.subjects[0] || "Allgemein"}
               cycle={item.cycles[0] || ""}
               previewUrl={item.previewUrl}
+              fileFormat={item.fileFormat}
               editHref={`/materialien/${item.id}/edit`}
+              onDuplicate={() => handleDuplicate(item.id)}
+              duplicating={duplicatingId === item.id}
               badge={{
                 label:
                   item.status === "VERIFIED"

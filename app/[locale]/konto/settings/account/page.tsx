@@ -395,6 +395,28 @@ export default function SettingsAccountPage() {
                 <div>
                   <p className="text-error text-sm font-semibold">{t("areYouSure")}</p>
                   <p className="text-text-secondary mt-1 text-sm">{t("deleteConfirmDesc")}</p>
+                  <ul className="text-text-secondary mt-2 space-y-1 text-sm">
+                    <li className="flex items-center gap-2">
+                      <X className="text-error h-3.5 w-3.5 flex-shrink-0" />
+                      {t("deleteConsequences.materials")}
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <X className="text-error h-3.5 w-3.5 flex-shrink-0" />
+                      {t("deleteConsequences.purchases")}
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <X className="text-error h-3.5 w-3.5 flex-shrink-0" />
+                      {t("deleteConsequences.reviews")}
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <X className="text-error h-3.5 w-3.5 flex-shrink-0" />
+                      {t("deleteConsequences.earnings")}
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <X className="text-error h-3.5 w-3.5 flex-shrink-0" />
+                      {t("deleteConsequences.followers")}
+                    </li>
+                  </ul>
                 </div>
               </div>
               <div>

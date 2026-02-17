@@ -68,6 +68,11 @@
   --color-subject-ttg: var(--ctp-peach);
   --color-subject-pu: #6c6f85;
 
+  /* Cycle Colors (Zyklus 1/2/3) */
+  --color-cycle-1: var(--ctp-green);
+  --color-cycle-2: var(--ctp-sapphire);
+  --color-cycle-3: var(--ctp-mauve);
+
   /* Price Badge Color */
   --color-price-badge: var(--ctp-blue);
 
@@ -814,6 +819,25 @@ a {
 .pill-pu {
   background-color: color-mix(in srgb, var(--color-subject-pu) 20%, transparent);
   color: var(--color-subject-pu);
+}
+
+/* Cycle Pills (Zyklus 1/2/3) */
+.pill-cycle-1 {
+  background-color: color-mix(in srgb, var(--color-cycle-1) 15%, transparent);
+  color: var(--color-cycle-1);
+  border: 1px solid color-mix(in srgb, var(--color-cycle-1) 30%, transparent);
+}
+
+.pill-cycle-2 {
+  background-color: color-mix(in srgb, var(--color-cycle-2) 15%, transparent);
+  color: var(--color-cycle-2);
+  border: 1px solid color-mix(in srgb, var(--color-cycle-2) 30%, transparent);
+}
+
+.pill-cycle-3 {
+  background-color: color-mix(in srgb, var(--color-cycle-3) 15%, transparent);
+  color: var(--color-cycle-3);
+  border: 1px solid color-mix(in srgb, var(--color-cycle-3) 30%, transparent);
 }
 
 /* =================================================================

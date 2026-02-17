@@ -15,6 +15,8 @@ import {
   Globe,
   GraduationCap,
   School2,
+  Share2,
+  Check,
 } from "lucide-react";
 import { VerifiedSellerBadge } from "@/components/ui/VerifiedSellerBadge";
 import { SellerBadge } from "@/components/ui/SellerBadge";
@@ -49,6 +51,26 @@ export function ProfileHero({
   const locale = useLocale();
   const dateLocale = locale === "de" ? "de-CH" : "en-US";
   const [avatarError, setAvatarError] = useState(false);
+  const [shareCopied, setShareCopied] = useState(false);
+
+  const handleShare = async () => {
+    const url = window.location.href;
+    try {
+      await navigator.clipboard.writeText(url);
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 2000);
+    } catch {
+      // Fallback for older browsers
+      const input = document.createElement("input");
+      input.value = url;
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand("copy");
+      document.body.removeChild(input);
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 2000);
+    }
+  };
 
   const showInitials = !profile.image || avatarError;
 
@@ -105,35 +127,51 @@ export function ProfileHero({
                 )}
               </div>
 
-              {/* Action Button */}
-              {!profile.isOwnProfile ? (
+              {/* Action Buttons */}
+              <div className="flex items-center gap-2">
                 <button
-                  onClick={onFollowToggle}
-                  disabled={followLoading}
-                  className={`flex items-center justify-center gap-2 rounded-full px-6 py-2.5 font-medium transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 active:scale-95 disabled:opacity-50 ${
-                    profile.isFollowing
-                      ? "border-primary text-primary hover:bg-primary/10 border"
-                      : "bg-primary hover:bg-primary-hover text-white"
-                  }`}
-                  aria-label={profile.isFollowing ? t("unfollow") : t("follow")}
+                  onClick={handleShare}
+                  className="border-border bg-surface text-text-muted hover:text-text hover:bg-surface-elevated flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 active:scale-95"
+                  aria-label={t("shareLabel")}
                 >
-                  {followLoading ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : profile.isFollowing ? (
-                    <UserCheck className="h-4 w-4" />
+                  {shareCopied ? (
+                    <Check className="text-success h-4 w-4" />
                   ) : (
-                    <UserPlus className="h-4 w-4" />
+                    <Share2 className="h-4 w-4" />
                   )}
-                  {profile.isFollowing ? t("following") : t("follow")}
+                  <span className="hidden sm:inline">
+                    {shareCopied ? t("shareCopied") : t("share")}
+                  </span>
                 </button>
-              ) : (
-                <Link
-                  href="/konto/settings"
-                  className="border-border bg-surface text-text hover:bg-surface-elevated flex items-center gap-2 rounded-full border px-6 py-2.5 font-medium transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 active:scale-95"
-                >
-                  {t("editProfile")}
-                </Link>
-              )}
+                {!profile.isOwnProfile ? (
+                  <button
+                    onClick={onFollowToggle}
+                    disabled={followLoading}
+                    className={`flex items-center justify-center gap-2 rounded-full px-6 py-2.5 font-medium transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 active:scale-95 disabled:opacity-50 ${
+                      profile.isFollowing
+                        ? "border-primary text-primary hover:bg-primary/10 border"
+                        : "bg-primary hover:bg-primary-hover text-white"
+                    }`}
+                    aria-label={profile.isFollowing ? t("unfollow") : t("follow")}
+                  >
+                    {followLoading ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : profile.isFollowing ? (
+                      <UserCheck className="h-4 w-4" />
+                    ) : (
+                      <UserPlus className="h-4 w-4" />
+                    )}
+                    {profile.isFollowing ? t("following") : t("follow")}
+                  </button>
+                ) : (
+                  <Link
+                    href="/konto/settings"
+                    className="border-border bg-surface text-text hover:bg-surface-elevated flex items-center gap-2 rounded-full border px-6 py-2.5 font-medium transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 active:scale-95"
+                  >
+                    {t("editProfile")}
+                  </Link>
+                )}
+              </div>
             </div>
 
             {/* Private Profile Notice */}

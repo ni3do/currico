@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { getLoginUrl } from "@/lib/utils/login-redirect";
+import { getSubjectPillClass } from "@/lib/constants/subject-colors";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
@@ -317,7 +318,7 @@ export default function MaterialDetailPage() {
           items={[
             { label: tCommon("breadcrumb.materials"), href: "/materialien" },
             {
-              label: material.subjects[0] || "Allgemein",
+              label: material.subjects[0] || t("subjectFallback"),
               href: `/materialien?subject=${material.subjects[0] || ""}`,
             },
             { label: material.title },
@@ -426,7 +427,8 @@ export default function MaterialDetailPage() {
                   key={related.id}
                   id={related.id}
                   title={related.title}
-                  subject={related.subjects[0] || "Allgemein"}
+                  subject={related.subjects[0] || t("subjectFallback")}
+                  subjectPillClass={getSubjectPillClass(related.subjects[0] || "")}
                   cycle={related.cycles[0] || ""}
                   price={related.price}
                   priceFormatted={related.priceFormatted}

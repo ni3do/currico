@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/admin-auth";
 import { unauthorized, badRequest, notFound, serverError } from "@/lib/api";
+import { notifyManualVerification } from "@/lib/notifications";
 
 /**
  * POST /api/admin/users/[id]/verify-seller
@@ -51,6 +52,9 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
         verified_seller_method: true,
       },
     });
+
+    // Notify the user about manual verification (fire-and-forget)
+    notifyManualVerification(userId);
 
     return NextResponse.json({
       message: "Verkäufer-Verifizierung erfolgreich",

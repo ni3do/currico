@@ -3,6 +3,7 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { requireAdmin, unauthorizedResponse } from "@/lib/admin-auth";
 import { formatPriceAdmin, getResourceStatus } from "@/lib/utils/price";
+import { notifyMaterialApproved, notifyMaterialRejected } from "@/lib/notifications";
 
 const materialSelect = Prisma.validator<Prisma.ResourceSelect>()({
   id: true,
@@ -108,7 +109,7 @@ export async function PATCH(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { id, is_approved, status, is_public } = body;
+    const { id, is_approved, status, is_public, rejection_reason } = body;
 
     if (!id) {
       return NextResponse.json({ error: "Material-ID ist erforderlich" }, { status: 400 });
@@ -148,6 +149,13 @@ export async function PATCH(request: NextRequest) {
       data: updateData,
       select: materialSelect,
     });
+
+    // Notify the author about approval/rejection (fire-and-forget)
+    if (status === "VERIFIED") {
+      notifyMaterialApproved(updated.seller.id, updated.title, updated.id);
+    } else if (status === "REJECTED") {
+      notifyMaterialRejected(updated.seller.id, updated.title, rejection_reason);
+    }
 
     return NextResponse.json(updated);
   } catch (error) {

@@ -1,8 +1,8 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { getLoginUrl } from "@/lib/utils/login-redirect";
 import type { UserData, UserStats, FollowedSeller } from "@/lib/types/account";
 
@@ -31,11 +31,13 @@ export function useAccountData() {
 export function useAccountDataProvider() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const pathname = usePathname();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [stats, setStats] = useState<UserStats | null>(null);
   const [followedSellers, setFollowedSellers] = useState<FollowedSeller[]>([]);
   const [unreadNotifications, setUnreadNotifications] = useState(0);
   const [loading, setLoading] = useState(true);
+  const initialLoadDone = useRef(false);
 
   const fetchUserStats = useCallback(async () => {
     try {
@@ -84,8 +86,24 @@ export function useAccountDataProvider() {
         }),
     ])
       .catch((err) => console.error("Error fetching account data:", err))
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setLoading(false);
+        initialLoadDone.current = true;
+      });
   }, [status]);
+
+  // Re-fetch user data when navigating between konto subpages (keeps header fresh after edits)
+  const prevPathname = useRef(pathname);
+  useEffect(() => {
+    if (prevPathname.current !== pathname) {
+      prevPathname.current = pathname;
+      if (initialLoadDone.current && status === "authenticated") {
+        // Defer to avoid synchronous setState-in-effect lint warning
+        const id = requestAnimationFrame(() => fetchUserStats());
+        return () => cancelAnimationFrame(id);
+      }
+    }
+  }, [pathname, fetchUserStats, status]);
 
   return {
     userData,

@@ -5,6 +5,7 @@ import { getCurrentUserId } from "@/lib/auth";
 import { requireAdmin } from "@/lib/admin-auth";
 import { updateMaterialSchema } from "@/lib/validations/material";
 import { formatPrice } from "@/lib/utils/price";
+import { getFileFormatLabel } from "@/lib/utils/file-format";
 import { getStorage, isLegacyLocalPath, getLegacyFilePath } from "@/lib/storage";
 import { unlink } from "fs/promises";
 
@@ -138,101 +139,42 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     const isFree = material.price === 0;
     const hasAccess = isOwner || hasPurchased || isFree || isAdmin;
 
-    // Fetch related materials from the same subject using raw SQL for JSON overlap
+    // Fetch related materials using a single ranked query:
+    // Priority 1: same subject, Priority 2: same cycle, Priority 3: most popular
     const materialSubjects = toStringArray(material.subjects);
-    let relatedMaterials: {
-      id: string;
-      title: string;
-      price: number;
-      subjects: unknown;
-      cycles: unknown;
-      is_approved: boolean;
-      preview_url: string | null;
-      seller: { display_name: string | null };
-    }[] = [];
-
-    // Strategy: same subject → same cycle → most popular
     const materialCycles = toStringArray(material.cycles);
 
-    if (materialSubjects.length > 0) {
-      // First: try matching by subject
-      const relatedIds = await prisma.$queryRaw<{ id: string }[]>`
-        SELECT id FROM resources
-        WHERE id != ${id}
+    const hasSubjects = materialSubjects.length > 0;
+    const hasCycles = materialCycles.length > 0;
+
+    const rankedIds = await prisma.$queryRaw<{ id: string }[]>`
+      SELECT id FROM resources
+      WHERE id != ${id}
         AND is_published = true AND is_approved = true
-        AND subjects::jsonb ?| ${materialSubjects}::text[]
-        LIMIT 3
-      `;
+      ORDER BY
+        CASE WHEN ${hasSubjects} AND subjects::jsonb ?| ${materialSubjects.length > 0 ? materialSubjects : [""]}::text[] THEN 0 ELSE 1 END,
+        CASE WHEN ${hasCycles} AND cycles::jsonb ?| ${materialCycles.length > 0 ? materialCycles : [""]}::text[] THEN 0 ELSE 1 END,
+        created_at DESC
+      LIMIT 3
+    `;
 
-      if (relatedIds.length > 0) {
-        relatedMaterials = await prisma.resource.findMany({
-          where: { id: { in: relatedIds.map((r) => r.id) } },
-          select: {
-            id: true,
-            title: true,
-            price: true,
-            subjects: true,
-            cycles: true,
-            is_approved: true,
-            preview_url: true,
-            seller: { select: { display_name: true } },
-          },
-          orderBy: { created_at: "desc" },
-        });
-      }
-    }
-
-    // Fallback: if not enough results, fill with same cycle materials
-    if (relatedMaterials.length < 3 && materialCycles.length > 0) {
-      const existingIds = [id, ...relatedMaterials.map((r) => r.id)];
-      const remaining = 3 - relatedMaterials.length;
-      const cycleIds = await prisma.$queryRaw<{ id: string }[]>`
-        SELECT id FROM resources
-        WHERE id != ALL(${existingIds}::text[])
-        AND is_published = true AND is_approved = true
-        AND cycles::jsonb ?| ${materialCycles}::text[]
-        LIMIT ${remaining}
-      `;
-
-      if (cycleIds.length > 0) {
-        const cycleMaterials = await prisma.resource.findMany({
-          where: { id: { in: cycleIds.map((r) => r.id) } },
-          select: {
-            id: true,
-            title: true,
-            price: true,
-            subjects: true,
-            cycles: true,
-            is_approved: true,
-            preview_url: true,
-            seller: { select: { display_name: true } },
-          },
-          orderBy: { created_at: "desc" },
-        });
-        relatedMaterials.push(...cycleMaterials);
-      }
-    }
-
-    // Last fallback: most popular materials
-    if (relatedMaterials.length < 3) {
-      const existingIds = [id, ...relatedMaterials.map((r) => r.id)];
-      const popularMaterials = await prisma.resource.findMany({
-        where: { id: { notIn: existingIds }, is_published: true, is_approved: true },
-        select: {
-          id: true,
-          title: true,
-          price: true,
-          subjects: true,
-          cycles: true,
-          is_approved: true,
-          preview_url: true,
-          seller: { select: { display_name: true } },
-        },
-        orderBy: { transactions: { _count: "desc" } },
-        take: 3 - relatedMaterials.length,
-      });
-      relatedMaterials.push(...popularMaterials);
-    }
+    const relatedMaterials =
+      rankedIds.length > 0
+        ? await prisma.resource.findMany({
+            where: { id: { in: rankedIds.map((r) => r.id) } },
+            select: {
+              id: true,
+              title: true,
+              price: true,
+              subjects: true,
+              cycles: true,
+              is_approved: true,
+              preview_url: true,
+              seller: { select: { display_name: true } },
+            },
+            orderBy: { created_at: "desc" },
+          })
+        : [];
 
     // Transform the response
     const subjects = toStringArray(material.subjects);
@@ -244,21 +186,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       : [];
 
     // Derive file format from file_url extension
-    const fileExt = material.file_url
-      ? material.file_url.split(".").pop()?.toLowerCase() || "pdf"
-      : "pdf";
-    const formatMap: Record<string, string> = {
-      pdf: "PDF",
-      doc: "Word",
-      docx: "Word",
-      ppt: "PowerPoint",
-      pptx: "PowerPoint",
-      xls: "Excel",
-      xlsx: "Excel",
-      one: "OneNote",
-      onetoc2: "OneNote",
-    };
-    const fileFormat = formatMap[fileExt] || fileExt.toUpperCase();
+    const fileFormat = getFileFormatLabel(material.file_url);
 
     const transformedMaterial = {
       id: material.id,

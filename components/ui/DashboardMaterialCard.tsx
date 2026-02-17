@@ -11,9 +11,11 @@ import {
   Clock,
   XCircle,
   FileEdit,
+  Copy,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { getSubjectTextColorByName } from "@/lib/constants/subject-colors";
+import { MaterialTypeBadge } from "@/components/ui/MaterialTypeBadge";
 
 export interface DashboardMaterialCardProps {
   id: string;
@@ -51,11 +53,18 @@ export interface DashboardMaterialCardProps {
     displayName: string | null;
   };
 
+  // File format key for MaterialTypeBadge (e.g. "pdf", "word")
+  fileFormat?: string;
+
   // Edit link (for uploads)
   editHref?: string;
 
   // Remove button (for wishlist)
   onRemove?: () => void;
+
+  // Duplicate button (for uploads)
+  onDuplicate?: () => void;
+  duplicating?: boolean;
 }
 
 export function DashboardMaterialCard({
@@ -69,8 +78,11 @@ export function DashboardMaterialCard({
   price,
   stats,
   seller,
+  fileFormat,
   editHref,
   onRemove,
+  onDuplicate,
+  duplicating,
 }: DashboardMaterialCardProps) {
   const t = useTranslations("dashboardCard");
 
@@ -120,6 +132,11 @@ export function DashboardMaterialCard({
             <FileText className="text-text-faint h-8 w-8" />
           </div>
         )}
+        {fileFormat && (
+          <div className="absolute bottom-2 left-2 z-[1]">
+            <MaterialTypeBadge format={fileFormat} size="sm" />
+          </div>
+        )}
       </div>
 
       {/* Content */}
@@ -138,6 +155,16 @@ export function DashboardMaterialCard({
             )}
           </span>
           <div className="flex items-center gap-1">
+            {onDuplicate && (
+              <button
+                onClick={onDuplicate}
+                disabled={duplicating}
+                className="text-text-muted hover:text-primary relative z-10 -m-0.5 p-0.5 transition-colors disabled:opacity-50"
+                title={t("duplicate")}
+              >
+                <Copy className={`h-3.5 w-3.5 ${duplicating ? "animate-pulse" : ""}`} />
+              </button>
+            )}
             {editHref && (
               <Link
                 href={editHref}

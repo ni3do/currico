@@ -35,6 +35,7 @@ export interface UploadedItem {
   downloadCount: number;
   purchaseCount: number;
   previewUrl?: string | null;
+  fileFormat?: string;
 }
 
 export interface WishlistItem {
@@ -82,6 +83,7 @@ export interface UserStats {
 export interface SellerStats {
   netEarnings: string;
   totalDownloads: number;
+  totalPurchases: number;
   followers: number;
 }
 
@@ -91,7 +93,9 @@ export interface SellerMaterialStats {
   type: string;
   status: string;
   downloads: number;
+  purchases: number;
   netEarnings: string;
+  fileFormat?: string;
 }
 
 export interface Transaction {

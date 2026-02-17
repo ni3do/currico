@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
 import { formatPrice } from "@/lib/utils/price";
+import { getFileFormat } from "@/lib/utils/file-format";
 import { requireAuth, unauthorized } from "@/lib/api";
 
 /**
@@ -84,6 +85,7 @@ export async function GET(request: NextRequest) {
           status: r.status,
           isApproved: r.is_approved,
           type: "uploaded" as const,
+          fileFormat: getFileFormat(r.file_url),
           createdAt: r.created_at,
           downloadCount: r._count.downloads + r._count.transactions,
           purchaseCount: r._count.transactions,

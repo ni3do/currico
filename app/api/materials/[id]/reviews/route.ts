@@ -91,19 +91,21 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     // Check if current user can review (has purchased/downloaded, not the seller)
     let canReview = false;
     if (session?.user?.id && !userReview && !isOwner) {
-      const hasPurchased = await prisma.transaction.findFirst({
-        where: {
-          buyer_id: session.user.id,
-          resource_id: materialId,
-          status: "COMPLETED",
-        },
-      });
-      const hasDownloaded = await prisma.download.findFirst({
-        where: {
-          user_id: session.user.id,
-          resource_id: materialId,
-        },
-      });
+      const [hasPurchased, hasDownloaded] = await Promise.all([
+        prisma.transaction.findFirst({
+          where: {
+            buyer_id: session.user.id,
+            resource_id: materialId,
+            status: "COMPLETED",
+          },
+        }),
+        prisma.download.findFirst({
+          where: {
+            user_id: session.user.id,
+            resource_id: materialId,
+          },
+        }),
+      ]);
       canReview = !!(hasPurchased || hasDownloaded);
     }
 
@@ -195,20 +197,21 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     }
 
     // Check if user has purchased or downloaded this material
-    const hasPurchased = await prisma.transaction.findFirst({
-      where: {
-        buyer_id: session.user.id,
-        resource_id: materialId,
-        status: "COMPLETED",
-      },
-    });
-
-    const hasDownloaded = await prisma.download.findFirst({
-      where: {
-        user_id: session.user.id,
-        resource_id: materialId,
-      },
-    });
+    const [hasPurchased, hasDownloaded] = await Promise.all([
+      prisma.transaction.findFirst({
+        where: {
+          buyer_id: session.user.id,
+          resource_id: materialId,
+          status: "COMPLETED",
+        },
+      }),
+      prisma.download.findFirst({
+        where: {
+          user_id: session.user.id,
+          resource_id: materialId,
+        },
+      }),
+    ]);
 
     if (!hasPurchased && !hasDownloaded) {
       return NextResponse.json(

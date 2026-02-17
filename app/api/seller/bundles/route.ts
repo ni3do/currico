@@ -41,8 +41,8 @@ export async function GET() {
       const savingsPercent =
         totalIndividualPrice > 0 ? Math.round((savings / totalIndividualPrice) * 100) : 0;
 
-      const subjects = toStringArray(bundle.subject);
-      const cycles = toStringArray(bundle.cycle);
+      const subjects = toStringArray(bundle.subjects);
+      const cycles = toStringArray(bundle.cycles);
 
       return {
         id: bundle.id,

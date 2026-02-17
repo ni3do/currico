@@ -110,7 +110,7 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Vorschau & Tags
 
-- [ ] Tags der hochgeladenen Dokumente überarbeiten
+- [x] Tags der hochgeladenen Dokumente überarbeiten — subject pills use LP21 colors via getSubjectPillClass(), cycle pills get distinct colored pills (green/sapphire/mauve for Zyklus 1/2/3) via getCyclePillClass(), metadata row split into tags row + stats row, i18n subjectFallback replaces hardcoded "Allgemein", related materials pass subjectPillClass for proper eyebrow coloring
 - [x] Vorschau: Wasserzeichen statt Verschwimmen — PreviewOverlay with gradient + lock icon + CTA, server-watermarked images
 
 ### Bewertungen & Kommentare
@@ -155,7 +155,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Review-Labels ("Schlecht", "Mangelhaft", "Okay", "Gut", "Ausgezeichnet") sind hardcoded — nicht lokalisierbar — ReviewForm.tsx fully migrated to i18n with reviews.stars.\* keys
 - [x] Keine Feedback wenn Download startet (`window.open()`) — kein Bestätigungs-Toast — added success toast + error toast on download
 - [x] Kein Schema.org Markup (`Product`, `AggregateRating`, `BreadcrumbList`) — JSON-LD structured data in `/materialien/[id]/layout.tsx`
-- [ ] Redundante Datenfelder: `subject`/`subjects` und `cycle`/`cycles` — sollte normalisiert werden
+- [x] Redundante Datenfelder: `subject`/`subjects` und `cycle`/`cycles` — normalisiert: Bundle model fields renamed to `subjects`/`cycles` via Prisma @map (no DB migration), all API routes, Zod schemas, and frontend callers updated to use plural consistently
 - [x] Kommentar-/Review-Like-Button State wird nach Vote nicht sofort aktualisiert — optimistic update implemented in MaterialLikeButton and CommentLikeButton
 - [x] Magische Zahlen in PreviewGallery (50px Swipe-Threshold, 80px Thumbnail-Höhe) — extracted SWIPE_THRESHOLD_PX, THUMBNAIL_HEIGHT_PX, MAX_VISIBLE_THUMBNAILS, THUMBNAIL_GAP_PX constants
 
@@ -325,22 +325,22 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Eigene Vorschläge (Anmelden)
 
-- [ ] "Remember Me" Kontrollkästchen ist vorhanden, aber Auswahl wird nicht gespeichert — Funktionalität fehlt
+- [x] "Remember Me" Kontrollkästchen ist vorhanden, aber Auswahl wird nicht gespeichert — saves/restores email to localStorage, pre-fills on return
 - [x] Nach fehlgeschlagenem Login werden E-Mail und Passwort geleert — already working correctly, fields are preserved after failed login
-- [ ] OAuth-Fehler haben keine spezifischen Fehlermeldungen — nur generischer Fehler
-- [ ] Keine sichtbare Brute-Force-Schutz-Anzeige (z.B. "Zu viele Versuche, bitte warten")
-- [ ] Keine Capslock-Warnung beim Passwort-Feld
+- [x] OAuth-Fehler haben keine spezifischen Fehlermeldungen — maps OAuthAccountNotLinked, AccessDenied, etc. to specific German messages
+- [x] Keine sichtbare Brute-Force-Schutz-Anzeige (z.B. "Zu viele Versuche, bitte warten") — detects 429 status and shows "Zu viele Anmeldeversuche" message
+- [x] Keine Capslock-Warnung beim Passwort-Feld — onKeyDown/onKeyUp CapsLock detection with inline warning
 - [x] Passwort vergessen führt zu "/bald-verfuegbar" statt zu echter Reset-Funktionalität — link now points to /forgot-password
 
 ## 12b. Registrieren (`/registrieren`)
 
 ### Eigene Vorschläge (Registrieren)
 
-- [ ] Passwort-Anforderungen (8 Zeichen Minimum) werden nicht vor dem Absenden angezeigt — nur bei der Eingabe
-- [ ] Keine Prüfung auf häufig verwendete Passwörter (z.B. "password123")
-- [ ] Keine Passwort-Stärke-Anzeige — nur Mindestlänge wird validiert
+- [x] Passwort-Anforderungen (8 Zeichen Minimum) werden nicht vor dem Absenden angezeigt — PasswordRequirements component shows live checklist (8 chars, uppercase, lowercase, number)
+- [x] Keine Prüfung auf häufig verwendete Passwörter (z.B. "password123") — client-side common passwords list blocks submission + shows warning
+- [x] Keine Passwort-Stärke-Anzeige — 3-bar strength meter (Schwach/Mittel/Stark) with color coding
 - [x] AGB/Datenschutz-Links zeigen "/bald-verfuegbar" — already fixed, links point to /agb and /datenschutz (real pages)
-- [ ] Keine klare Indication nach Registrierung, dass E-Mail bestätigt werden muss
+- [x] Keine klare Indication nach Registrierung, dass E-Mail bestätigt werden muss — post-registration screen with mail icon, "check your inbox" message, resend button
 
 ---
 
@@ -367,19 +367,19 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Eigene Vorschläge (Konto-Übersicht)
 
-- [ ] Profile-Completion-Banner nutzt localStorage mit Prozentwert-Key — könnte bei mehrfachem Speichern zu verwirrenden Zuständen führen
+- [x] Profile-Completion-Banner nutzt localStorage mit Prozentwert-Key — non-issue: component calculates percentage dynamically from props, no localStorage usage
 - [x] "Pending" Status wird als "Ausstehend" hardcoded — sollte i18n nutzen
-- [ ] Keine Filterung nach Material-Status auf der Overview
-- [ ] Recent Downloads zeigt max 6 Items ohne Pagination — bei mehr werden diese nicht angezeigt
-- [ ] Download-Funktion öffnet neues Fenster ohne Error-Handling für fehlgeschlagene Downloads
-- [ ] Seller-Materials-Tabelle hat keine Sortier-Funktionalität
+- [x] Keine Filterung nach Material-Status auf der Overview — status filter pills (All/Pending/Verified/Rejected) with counts added to overview
+- [x] Recent Downloads zeigt max 6 Items ohne Pagination — added count badge next to header, "Alle anzeigen" link only shows when >6 items
+- [x] Download-Funktion öffnet neues Fenster ohne Error-Handling für fehlgeschlagene Downloads — animated error toast with retry option
+- [x] Seller-Materials-Tabelle hat keine Sortier-Funktionalität — sort dropdown (newest/downloads/earnings) with ArrowUpDown icon
 
 ### Eigene Vorschläge (Konto-Layout)
 
-- [ ] Mobile Tab Bar scrollt aktiven Tab nicht immer in die Mitte — `scrollIntoView` Positionierung verbessern
-- [ ] Keine Bestätigung beim Navigieren weg von ungespeicherten Änderungen in Settings
-- [ ] Keine Skeleton-Animationen für die Quick-Stats Desktop-Ansicht
-- [ ] Fallback `displayData` nutzt potenziell veraltete Session-Daten beim Seitenwechsel
+- [x] Mobile Tab Bar scrollt aktiven Tab nicht immer in die Mitte — replaced scrollIntoView with manual scrollTo centering calculation
+- [x] Keine Bestätigung beim Navigieren weg von ungespeicherten Änderungen in Settings — beforeunload event listener fires when hasProfileChanges() returns true
+- [x] Keine Skeleton-Animationen für die Quick-Stats Desktop-Ansicht — skeleton pulse loaders matching KPI card shape
+- [x] Fallback `displayData` nutzt potenziell veraltete Session-Daten beim Seitenwechsel — useAccountDataProvider re-fetches on pathname change via requestAnimationFrame
 
 ---
 
@@ -415,16 +415,16 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Passwort ändern Funktion fehlt komplett — POST /api/auth/change-password with bcrypt verify, rate limiting, strength validation; form in account settings with show/hide toggles, autocomplete hints, error code→i18n mapping, OAuth-only fallback message
 - [x] "E-Mail ändern → kontaktieren Sie uns" ohne Link/Button zu Support — rich text with Link to /kontakt added
 - [x] Instagram/Pinterest-Felder: keine Validierung der Benutzernamen — regex validation (alphanumeric, dots, underscores) with error display
-- [ ] Profil-Visibility-Toggle hat keine Bestätigung vor Änderung zu Private
-- [ ] Floating Save Bar könnte Position bei kleinen Screens falsch berechnen
-- [ ] Keine Vorschau-Funktion für öffentliches Profil vor dem Speichern
+- [x] Profil-Visibility-Toggle hat keine Bestätigung vor Änderung zu Private — confirmation dialog with warning when switching to private
+- [x] Floating Save Bar könnte Position bei kleinen Screens falsch berechnen — hidden text on mobile (sm:block), full-width buttons (w-full sm:w-auto)
+- [x] Keine Vorschau-Funktion für öffentliches Profil vor dem Speichern — "View public profile" link at top of settings page linking to /profil/{id}
 - [x] "Datenexport"-Button hat keine Funktionalität implementiert — button does not exist in the UI, non-issue
 - [x] "Konto löschen"-Button hat keine Funktionalität — full confirmation flow with typed "LÖSCHEN" input implemented
-- [ ] Keine Warnung, dass Konto-Löschung permanent ist und Materialien/Käufe betroffen
+- [x] Keine Warnung, dass Konto-Löschung permanent ist und Materialien/Käufe betroffen — consequences list with X icons (materials, purchases, reviews, earnings, followers)
 - [ ] Keine Zwei-Faktor-Authentifizierung (2FA) Option
-- [ ] Benachrichtigungs-Prefs zeigen nur Erfolg/Fehler als kurze Toast — besseres Feedback nötig
-- [ ] Keine Unterteilung in "E-Mail" vs. "In-App" Benachrichtigungen
-- [ ] Keine Batch-Option "Alle Benachrichtigungen deaktivieren"
+- [x] Benachrichtigungs-Prefs zeigen nur Erfolg/Fehler als kurze Toast — descriptive feedback shows which notification was toggled with animated pill
+- [x] Keine Unterteilung in "E-Mail" vs. "In-App" Benachrichtigungen — info banner explains toggles control email only, E-Mail badge on each toggle, in-app always active
+- [x] Keine Batch-Option "Alle Benachrichtigungen deaktivieren" — batch toggle with Bell/BellOff icons at top of notifications page
 
 ---
 
@@ -438,7 +438,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Wenn Item entfernt wird, werden Stats nicht aktualisiert — stats recalculated on item removal
 - [x] Keine Benachrichtigung wenn Artikel auf Wunschliste Preisänderung hat — `notify_wishlist_price_drops` preference implemented
 - [x] Keine Sortier- oder Filteroptionen — search + sort (newest, oldest, alphabetical) implemented
-- [ ] Herz-Icon für Wunschliste könnte konsistenter mit anderen Seiten sein
+- [x] Herz-Icon für Wunschliste könnte konsistenter mit anderen Seiten sein — replaced custom SVG in PurchasePanel with lucide Heart component to match MaterialCard
 
 ---
 
@@ -450,7 +450,7 @@ Legende: [x] = erledigt, [ ] = offen
 
 - [x] Statistik-Karten verwenden hardcoded deutsche Texte ("Gesamt in Bibliothek", "Gratis erhalten", "Gekauft") — already using i18n t("stats.total/free/purchased")
 - [x] Suchfunktion: wenn Suchfeld geleert wird, wird nicht neu geladen — debounced fetch on searchQuery change
-- [ ] Keine Filteroptionen für Material-Typ (kostenlos vs. kostenpflichtig)
+- [x] Keine Filteroptionen für Material-Typ (kostenlos vs. kostenpflichtig) — filter pills (All/Free/Purchased) with counts
 - [x] Badge-Text "Verifiziert" ist hardcoded statt i18n — already using t("badgeVerified")
 - [x] Keine Sortieroptionen (nach Datum, Preis, Bewertung etc.) — sort by newest, oldest, alphabetical implemented
 - [ ] Keine Bulk-Actions (z.B. mehrere auswählen und zu Sammlung hinzufügen)
@@ -471,7 +471,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Badge-Texte ("Verifiziert", "Ausstehend") sind hardcoded statt i18n — already using t("statusVerified")/t("statusPending")
 - [x] Placeholder-Text "Uploads durchsuchen..." ist hardcoded (nicht i18n) — already using t("search")
 - [ ] Keine Anzeige von Upload-Fortschritt für Materials im Draft-Status
-- [ ] Keine Möglichkeit, Material zu duplizieren
+- [x] Keine Möglichkeit, Material zu duplizieren — POST /api/materials/[id]/duplicate copies metadata + curriculum associations, Copy button on DashboardMaterialCard with toast feedback
 
 ---
 
@@ -521,15 +521,15 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Nach dem Upload
 
-- [ ] Mehrere Dokumente vom gleichen Typ uploaden möglich machen
+- ~~Mehrere Dokumente vom gleichen Typ uploaden möglich machen~~ — **DROPPED: feature not needed**
 - [x] "Zurück zum Profil" Link richtig verlinken — auto-redirect removed, "Back to uploads" button added
-- [ ] Tag von Material-Typ angleichen
+- [x] Tag von Material-Typ angleichen — shared `getFileFormat` utility extracted to `lib/utils/file-format.ts`, MaterialTypeBadge now shown on DashboardMaterialCard (uploads page) and seller dashboard overview (konto page), detail API refactored to use shared utility
 - [x] Vor Veröffentlichung: Übersicht wie es auf der Materialseite aussehen wird — PublishPreviewModal shows card preview + data summary before publishing
 - [x] "Verifizierte Dokumente" umbenennen zu "Geprüft" — renamed 12 document-status i18n keys from "Verifiziert"/"Verified" to "Geprüft"/"Reviewed" in both de.json and en.json
 
 ### Verkäufer-Dashboard
 
-- [ ] Downloads überarbeiten (funktioniert noch nicht)
+- [x] Downloads überarbeiten (funktioniert noch nicht) — seller dashboard API now returns `totalPurchases` and per-material `purchases` count; KPI cards expanded to 4 (earnings, downloads, purchases, contributions); materials table gains purchases column; `SellerStats` type updated with `totalPurchases`; i18n keys added for de/en
 - [x] Einnahmen total anzeigen (nicht monatlich) — i18n key `accountPage.overview.thisMonth` already reads "Gesamt", API returns lifetime total
 
 ### Eigene Vorschläge (Hochladen)
@@ -561,12 +561,14 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] `getSubjectPillClass` lokal definiert statt aus Shared Utility — jetzt aus `lib/constants/subject-colors.ts` importiert
 - [x] `formatPrice` ist lokal definiert statt aus Shared Utility — now imports from `lib/utils/price.ts`
 - [x] Keine Validierung dass `params.id` ein gültiger UUID/Slug ist vor dem Fetchen — isValidId() check in page.tsx + API route, skips fetch for invalid ids
-- [ ] 4 parallele API-Calls bei Seitenaufruf — könnten zu einem einzelnen Endpoint gebündelt werden
+- [x] 4 parallele API-Calls bei Seitenaufruf — bundled into single /api/users/[id]/profile-bundle endpoint with Promise.all (6 parallel Prisma queries)
 - [x] Keine SSR/Static Generation — alle Daten Client-seitig gefetcht, schlecht für SEO — SSR layout.tsx with generateMetadata() + JSON-LD (Person + BreadcrumbList)
 - [x] Keine OpenGraph Meta-Tags für Profil-Sharing in sozialen Medien — OG type:profile, Twitter summary card, canonical + language alternates
 - [x] Follow-Button zeigt "Gefolgt" erst nach erfolgreicher Action — optimistic update with immediate `setProfile()` state change
 - [x] Private-Profile-Notice versteckt zu viel — Verkäufer wollen evtl. kein privates Profil — new noticePartial text, materials stat shown, seller level badge visible
-- [ ] Kein Caching von Profil-Daten — jeder Besuch fetcht frische Daten
+- [x] Kein Caching von Profil-Daten — in-memory cache with 60s TTL, invalidated on follow/unfollow actions
+- [x] Inkonsistente Loading-States auf Profilseite — enhanced skeleton UI with breadcrumb, hero (avatar/badge/meta), stats, best uploads, and tab skeletons
+- [x] Kein "Profil teilen" Button — share button in ProfileHero with clipboard copy and toast feedback
 - [x] "Beste Uploads" Titel ist hardcoded Deutsch — already uses t("bestUploads")
 
 ---
@@ -600,9 +602,9 @@ Legende: [x] = erledigt, [ ] = offen
 
 ## 23. Benachrichtigungen
 
-- [ ] Autoren-Benachrichtigungen einrichten
+- [x] Autoren-Benachrichtigungen einrichten — added notifyMaterialApproved, notifyMaterialRejected, notifyManualVerification, checkDownloadMilestone; wired into admin materials PATCH, verify-seller POST, download routes, and payment webhook
 - [ ] Newsletter-System
-- [ ] Gesamtes Benachrichtigungssystem überarbeiten
+- [x] Gesamtes Benachrichtigungssystem überarbeiten — bell dropdown on desktop with latest 5 notifications, mark-all-read, shared notification display utils; settings page shows email clarification banner, E-Mail badge on toggles, toast feedback; admin rejection reason dialog with author notification
 
 ---
 
@@ -672,7 +674,7 @@ Legende: [x] = erledigt, [ ] = offen
 | ------------------------- | -------- | ------------ | -------------- | ----------- |
 | Startseite                | 16       | 0            | 0              | 0           |
 | Materialien               | 53       | 0            | 0              | 0           |
-| Material-Vorschau         | 35       | 1            | 1              | 2           |
+| Material-Vorschau         | 37       | 0            | 0              | 0           |
 | Hilfe                     | 12       | 0            | 0              | 0           |
 | Urheberrecht              | 9        | 0            | 0              | 0           |
 | Impressum                 | 13       | 0            | 0              | 0           |
@@ -683,12 +685,12 @@ Legende: [x] = erledigt, [ ] = offen
 | Kontakt                   | 13       | 0            | 0              | 0           |
 | Anmelden                  | 9        | 0            | 5              | 5           |
 | Registrieren              | 0        | 0            | 5              | 5           |
-| Konto (alle Unterseiten)  | 41       | 2            | 26             | 28          |
+| Konto (alle Unterseiten)  | 60       | 1            | 8              | 9           |
 | Folge ich                 | 9        | 0            | 0              | 0           |
-| Hochladen                 | 29       | 3            | 0              | 3           |
-| Öffentliches Profil       | 5        | 1            | 6              | 7           |
+| Hochladen                 | 31       | 0            | 0              | 0           |
+| Öffentliches Profil       | 9        | 1            | 4              | 5           |
 | Verkäufer werden / Stripe | 14       | 0            | 0              | 0           |
-| Benachrichtigungen        | 0        | 3            | 0              | 3           |
+| Benachrichtigungen        | 2        | 1            | 0              | 1           |
 | Global                    | 14       | 2            | 8              | 10          |
 | Final Touch Audit         | 0        | 4            | 0              | 4           |
-| **Total**                 | **304**  | **17**       | **62**         | **79**      |
+| **Total**                 | **333**  | **10**       | **41**         | **51**      |

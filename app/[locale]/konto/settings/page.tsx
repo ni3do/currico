@@ -14,6 +14,8 @@ import {
   Eye,
   EyeOff,
   ChevronDown,
+  AlertTriangle,
+  ExternalLink,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
@@ -76,6 +78,7 @@ export default function SettingsProfilePage() {
     is_private: false,
   });
   const [initialProfileData, setInitialProfileData] = useState<typeof profileFormData | null>(null);
+  const [showPrivateConfirm, setShowPrivateConfirm] = useState(false);
   const [profileErrors, setProfileErrors] = useState<Record<string, string>>({});
   const [profileMessage, setProfileMessage] = useState<{
     type: "success" | "error";
@@ -143,6 +146,17 @@ export default function SettingsProfilePage() {
       profileFormData.is_private !== initialProfileData.is_private
     );
   }, [profileFormData, initialProfileData]);
+
+  // Warn on navigation away with unsaved changes
+  useEffect(() => {
+    const handler = (e: BeforeUnloadEvent) => {
+      if (hasProfileChanges()) {
+        e.preventDefault();
+      }
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [hasProfileChanges]);
 
   // Cancel editing - reset to initial values
   const handleCancelEditing = () => {
@@ -379,6 +393,25 @@ export default function SettingsProfilePage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Profile Preview Link */}
+      {userData?.id && (
+        <Link
+          href={`/profil/${userData.id}`}
+          className="border-border bg-surface hover:border-primary/30 group flex items-center justify-between rounded-xl border p-4 transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            <div className="bg-primary/10 flex h-9 w-9 items-center justify-center rounded-lg">
+              <Eye className="text-primary h-4.5 w-4.5" />
+            </div>
+            <div>
+              <p className="text-text text-sm font-medium">{tSettings("previewProfile")}</p>
+              <p className="text-text-muted text-xs">{tSettings("previewProfileDesc")}</p>
+            </div>
+          </div>
+          <ExternalLink className="text-text-faint group-hover:text-primary h-4 w-4 transition-colors" />
+        </Link>
+      )}
 
       {/* Avatar Card — Hero-style centered */}
       <div className="border-border bg-surface rounded-xl border p-6">
@@ -680,7 +713,14 @@ export default function SettingsProfilePage() {
             </div>
             <button
               type="button"
-              onClick={() => handleProfileFieldChange("is_private", !profileFormData.is_private)}
+              onClick={() => {
+                // Show confirmation when switching TO private
+                if (!profileFormData.is_private) {
+                  setShowPrivateConfirm(true);
+                } else {
+                  handleProfileFieldChange("is_private", false);
+                }
+              }}
               className="relative"
               role="switch"
               aria-checked={profileFormData.is_private}
@@ -694,6 +734,49 @@ export default function SettingsProfilePage() {
               </div>
             </button>
           </div>
+
+          {/* Privacy Confirmation Dialog */}
+          <AnimatePresence>
+            {showPrivateConfirm && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="border-warning/30 bg-warning/5 mt-4 rounded-lg border p-4">
+                  <div className="flex items-start gap-3">
+                    <AlertTriangle className="text-warning mt-0.5 h-5 w-5 flex-shrink-0" />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-text text-sm font-semibold">
+                        {tSettings("privateConfirmTitle")}
+                      </p>
+                      <p className="text-text-muted mt-1 text-sm">
+                        {tSettings("privateConfirmDesc")}
+                      </p>
+                      <div className="mt-3 flex gap-2">
+                        <button
+                          onClick={() => {
+                            handleProfileFieldChange("is_private", true);
+                            setShowPrivateConfirm(false);
+                          }}
+                          className="bg-warning text-text-on-accent rounded-lg px-3 py-1.5 text-sm font-medium transition-colors hover:opacity-90"
+                        >
+                          {tSettings("privateConfirmAction")}
+                        </button>
+                        <button
+                          onClick={() => setShowPrivateConfirm(false)}
+                          className="border-border text-text-muted hover:text-text rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors"
+                        >
+                          {tSettings("privateConfirmCancel")}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
@@ -706,9 +789,11 @@ export default function SettingsProfilePage() {
             exit={{ opacity: 0, y: 20 }}
             className="border-border bg-surface/95 fixed right-0 bottom-0 left-0 z-50 border-t shadow-lg backdrop-blur-sm"
           >
-            <div className="mx-auto flex max-w-4xl items-center justify-between gap-4 px-4 py-4">
-              <p className="text-text-muted text-sm">{tSettings("unsavedChanges")}</p>
-              <div className="flex gap-3">
+            <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:gap-4 sm:py-4">
+              <p className="text-text-muted hidden text-sm sm:block">
+                {tSettings("unsavedChanges")}
+              </p>
+              <div className="flex w-full gap-3 sm:w-auto">
                 <button
                   onClick={handleCancelEditing}
                   disabled={isSavingProfile}

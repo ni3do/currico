@@ -20,6 +20,7 @@
   "dashboardCard": {
     "remove": "Remove",
     "edit": "Edit",
+    "duplicate": "Duplicate",
     "downloads": "Downloads",
     "sales": "Sales",
     "unknownSeller": "Unknown"
@@ -406,7 +407,8 @@
       "forgotPassword": "Forgot?",
       "rememberMe": "Remember me",
       "submitButton": "Sign In",
-      "submitting": "Signing in..."
+      "submitting": "Signing in...",
+      "capsLockWarning": "Caps Lock is on"
     },
     "divider": "Or continue with",
     "oauth": {
@@ -419,7 +421,11 @@
     },
     "errors": {
       "invalidCredentials": "Invalid email address or password",
-      "generic": "An error occurred. Please try again."
+      "generic": "An error occurred. Please try again.",
+      "tooManyAttempts": "Too many login attempts. Please wait a moment.",
+      "accountExistsWithDifferentProvider": "An account with this email already exists. Please use the original sign-in method.",
+      "accessDenied": "Access denied. Please try again.",
+      "oauthError": "Error signing in with external provider."
     }
   },
   "registerPage": {
@@ -449,7 +455,8 @@
       "termsAnd": "and the",
       "privacyLink": "Privacy Policy",
       "submitButton": "Register",
-      "submitting": "Registering..."
+      "submitting": "Registering...",
+      "capsLockWarning": "Caps Lock is on"
     },
     "divider": "Or register with",
     "oauth": {
@@ -463,6 +470,16 @@
       "registrationSuccess": "Registration successful. Please sign in.",
       "registrationFailed": "Registration failed. Please try again.",
       "generic": "An error occurred. Please try again."
+    },
+    "emailSent": {
+      "title": "Almost there!",
+      "subtitle": "Confirm your email address",
+      "description": "We sent a confirmation email to <strong>{email}</strong>. Please check your inbox and click the confirmation link.",
+      "checkSpam": "Didn't receive it? Check your spam folder.",
+      "continueButton": "Continue to dashboard",
+      "resendButton": "Resend email",
+      "resending": "Sending...",
+      "resent": "Email has been resent"
     },
     "cantons": {
       "ZH": "Zurich",
@@ -494,6 +511,18 @@
     },
     "subjects": ["Mathematics", "German", "English", "French", "NMG", "Arts", "Music", "Sports"],
     "cycles": ["Cycle 1", "Cycle 2", "Cycle 3"]
+  },
+  "passwordRequirements": {
+    "minLength": "At least 8 characters",
+    "uppercase": "One uppercase letter",
+    "lowercase": "One lowercase letter",
+    "number": "One number",
+    "commonPassword": "This password is too common. Please choose a more secure one.",
+    "strength": {
+      "weak": "Weak",
+      "medium": "Medium",
+      "strong": "Strong"
+    }
   },
   "materialsPage": {
     "breadcrumb": {
@@ -2845,6 +2874,7 @@
       "errorUnexpected": "An unexpected error occurred",
       "alreadyReported": "You have already reported this material"
     },
+    "subjectFallback": "General",
     "fileFormatUnknown": "File",
     "noPreview": "No preview available",
     "anonymous": "Anonymous",
@@ -2904,7 +2934,10 @@
       "notice": "This profile is private. Only public materials are displayed.",
       "noticePartial": "This profile is private. Personal information is hidden, but public materials are visible.",
       "sectionTitle": "Privacy Settings"
-    }
+    },
+    "share": "Share",
+    "shareCopied": "Profile link copied!",
+    "shareLabel": "Share profile link"
   },
   "collections": {
     "title": "My Collections",
@@ -3328,6 +3361,9 @@
       "badgePurchased": "Purchased",
       "badgeFree": "Free",
       "badgeVerified": "Reviewed",
+      "filterAll": "All",
+      "filterFree": "Free",
+      "filterPurchased": "Purchased",
       "errorLoading": "Failed to load library",
       "retry": "Try again"
     },
@@ -3404,7 +3440,9 @@
       "showAll": "Show all",
       "empty": "No uploaded materials yet",
       "emptyDescription": "Share your teaching materials with other teachers.",
-      "uploadFirst": "Upload material"
+      "uploadFirst": "Upload material",
+      "duplicateSuccess": "Material duplicated! Edit the copy as needed.",
+      "duplicateError": "Failed to duplicate. Please try again."
     },
     "comments": {
       "title": "Comments on your materials",
@@ -3433,7 +3471,13 @@
     },
     "settingsNotifications": {
       "title": "Notifications",
-      "subtitle": "Manage which notifications you receive"
+      "subtitle": "Manage which notifications you receive",
+      "disableAll": "Disable all",
+      "enableAll": "Enable all",
+      "allDisabled": "All notifications are disabled",
+      "allEnabled": "All notifications are enabled",
+      "toggledOn": "{name} enabled",
+      "toggledOff": "{name} disabled"
     },
     "settingsAccount": {
       "title": "Account & Security",
@@ -3456,7 +3500,14 @@
       "deleteWarning": "Deleting your account is irreversible. All your data, uploaded materials, and purchases will be permanently deleted.",
       "deleteAccount": "Delete account",
       "areYouSure": "Are you sure?",
-      "deleteConfirmDesc": "This action cannot be undone. All materials, reviews, and account data will be deleted.",
+      "deleteConfirmDesc": "This action cannot be undone:",
+      "deleteConsequences": {
+        "materials": "All uploaded materials will be deleted",
+        "purchases": "Access to purchased materials will be lost",
+        "reviews": "Your reviews and comments will be removed",
+        "earnings": "Pending payouts will be forfeited",
+        "followers": "Followers and wishlist will be deleted"
+      },
       "typeToConfirm": "Type <strong>DELETE</strong> to confirm",
       "confirmKeyword": "DELETE",
       "cancel": "Cancel",
@@ -3541,6 +3592,10 @@
       "privateProfile": "Private profile",
       "privateOn": "Only you can see your profile",
       "privateOff": "Your profile is visible to others",
+      "privateConfirmTitle": "Make profile private?",
+      "privateConfirmDesc": "When your profile is private, other users cannot see your information, subjects, and bio. Your published materials will remain visible.",
+      "privateConfirmAction": "Make private",
+      "privateConfirmCancel": "Cancel",
       "unsavedChanges": "You have unsaved changes",
       "discard": "Discard",
       "saveChanges": "Save changes",
@@ -3553,6 +3608,8 @@
       "errorSaving": "Failed to save. Please try again.",
       "errorSavingGeneric": "Failed to save",
       "successSaved": "Changes saved!",
+      "previewProfile": "View public profile",
+      "previewProfileDesc": "How others see your profile",
       "avatarUploaded": "Profile picture uploaded successfully!",
       "avatarUploadError": "Upload failed. Please try again.",
       "avatarUploadErrorGeneric": "Upload failed",
@@ -3567,6 +3624,8 @@
       "contributions": "Contributions",
       "total": "Total",
       "totalDownloads": "Total downloads",
+      "purchases": "Sales",
+      "totalPurchases": "Total sales",
       "materialsPublished": "Materials published",
       "myMaterials": "My Uploads",
       "newMaterial": "+ New Material",
@@ -3588,7 +3647,17 @@
       "noDownloads": "No materials yet",
       "discoverLink": "Discover",
       "loading": "Loading...",
-      "downloadLabel": "Download material"
+      "downloadLabel": "Download material",
+      "downloadError": "Download failed. Please try again.",
+      "downloadStarted": "Download started",
+      "filterAll": "All",
+      "filterPending": "Pending",
+      "filterVerified": "Verified",
+      "filterRejected": "Rejected",
+      "sortLabel": "Sort by",
+      "sortNewest": "Newest first",
+      "sortDownloads": "Most downloads",
+      "sortEarnings": "Highest earnings"
     },
     "profile": {
       "completeProfile": "Complete your profile",

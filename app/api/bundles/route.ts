@@ -13,8 +13,8 @@ const createBundleSchema = z.object({
     .refine((val) => val === 0 || (val >= 50 && val % 50 === 0), {
       message: "Price must be in 0.50 CHF increments",
     }),
-  subject: z.array(z.string()).optional().default([]),
-  cycle: z.array(z.string()).optional().default([]),
+  subjects: z.array(z.string()).optional().default([]),
+  cycles: z.array(z.string()).optional().default([]),
   resourceIds: z.array(z.string()).min(2, "Mindestens 2 Materialien sind erforderlich"),
   coverImageUrl: z.string().url().optional().nullable(),
 });
@@ -73,8 +73,8 @@ export async function GET(request: NextRequest) {
         description: bundle.description,
         price: bundle.price,
         priceFormatted: formatPrice(bundle.price, { showFreeLabel: true }),
-        subject: bundle.subject,
-        cycle: bundle.cycle,
+        subjects: bundle.subjects,
+        cycles: bundle.cycles,
         coverImageUrl: bundle.cover_image_url,
         seller: {
           id: bundle.seller.id,
@@ -123,7 +123,7 @@ export async function POST(request: NextRequest) {
       return badRequest(firstError?.message ?? "Ungültige Eingabe");
     }
 
-    const { title, description, price, subject, cycle, resourceIds, coverImageUrl } = parsed.data;
+    const { title, description, price, subjects, cycles, resourceIds, coverImageUrl } = parsed.data;
 
     // Verify all resources belong to the seller
     const resources = await prisma.resource.findMany({
@@ -145,8 +145,8 @@ export async function POST(request: NextRequest) {
         title,
         description,
         price,
-        subject,
-        cycle,
+        subjects,
+        cycles,
         cover_image_url: coverImageUrl,
         seller_id: userId,
         is_published: false,

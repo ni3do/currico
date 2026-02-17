@@ -28,6 +28,7 @@ import { checkForEszett, replaceEszett } from "@/lib/validations/swiss-quality";
 import { clearDraftFiles } from "@/lib/utils/draft-file-storage";
 import { validateFileName } from "@/lib/validations/filename";
 import { roundToNearestHalfFranc } from "@/lib/utils/price";
+import { getFileFormat as getFileFormatFromUrl } from "@/lib/utils/file-format";
 import {
   Upload,
   Image as ImageIcon,
@@ -457,13 +458,7 @@ function UploadPageContent() {
     isStepValid(3);
 
   // Derive material type from file for badge display
-  const getFileFormat = (file: File): string => {
-    if (file.type === "application/pdf") return "pdf";
-    if (file.type.includes("word") || file.name.match(/\.docx?$/)) return "word";
-    if (file.type.includes("powerpoint") || file.name.match(/\.pptx?$/)) return "powerpoint";
-    if (file.type.includes("excel") || file.name.match(/\.xlsx?$/)) return "excel";
-    return "other";
-  };
+  const getFileFormat = (file: File): string => getFileFormatFromUrl(file.name);
 
   // Auth gate: show login prompt if not authenticated
   if (sessionStatus === "loading") {
