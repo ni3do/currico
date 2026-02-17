@@ -23,7 +23,10 @@ export default function Footer() {
           </div>
 
           {/* Right: Links */}
-          <nav className="grid grid-cols-2 gap-x-6 gap-y-1.5 sm:flex sm:flex-wrap sm:items-center sm:gap-3 md:gap-5">
+          <nav
+            aria-label="Footer links"
+            className="grid grid-cols-2 gap-x-6 gap-y-1.5 sm:flex sm:flex-wrap sm:items-center sm:gap-3 md:gap-5"
+          >
             <Link
               href="/hilfe"
               className="text-text-muted hover:text-primary text-sm transition-colors"

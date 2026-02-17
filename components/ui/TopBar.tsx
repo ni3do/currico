@@ -93,7 +93,7 @@ export default function TopBar() {
             </div>
           </Link>
 
-          <nav className="hidden items-center lg:flex">
+          <nav aria-label="Main navigation" className="hidden items-center lg:flex">
             <div className="border-border mr-6 flex items-center border-r pr-6">
               <Link
                 href="/materialien"
@@ -235,7 +235,7 @@ export default function TopBar() {
               transition={{ duration: 0.2, ease: "easeInOut" }}
               className="border-border overflow-hidden border-t lg:hidden"
             >
-              <nav className="flex flex-col space-y-2 py-4">
+              <nav aria-label="Mobile navigation" className="flex flex-col space-y-2 py-4">
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}

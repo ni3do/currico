@@ -103,7 +103,11 @@ export default function Home() {
 
       <main className="flex-1">
         {/* Hero Section - Split-Screen Layout */}
-        <section ref={heroRef} className="hero-section flex min-h-[calc(100vh-4rem)] items-center">
+        <section
+          ref={heroRef}
+          aria-label="Hero"
+          className="hero-section flex min-h-[calc(100vh-4rem)] items-center"
+        >
           {/* Decorative floating shapes with parallax */}
           {prefersReducedMotion ? (
             <>
@@ -288,11 +292,13 @@ export default function Home() {
         <SwissBrandSection />
 
         {/* Featured Resources - Visual Direction */}
-        <section className="bg-surface py-24">
+        <section aria-labelledby="featured-heading" className="bg-surface py-24">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <FadeIn direction="up" className="mb-8 flex items-end justify-between">
               <div>
-                <h2 className="text-text text-xl font-semibold">{t("featuredResources.title")}</h2>
+                <h2 id="featured-heading" className="text-text text-xl font-semibold">
+                  {t("featuredResources.title")}
+                </h2>
                 <p className="text-text-muted mt-2">{t("featuredResources.description")}</p>
               </div>
               <motion.div whileHover={{ x: 5 }} transition={{ duration: 0.2 }}>

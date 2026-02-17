@@ -257,11 +257,13 @@ export function MaterialCard({
     : "card group flex h-full flex-col overflow-hidden cursor-pointer";
 
   return (
-    <Link
-      href={linkHref}
-      className={`${cardClasses} focus-visible:ring-primary focus-visible:ring-2 focus-visible:ring-offset-2`}
-    >
-      {cardContent}
-    </Link>
+    <article>
+      <Link
+        href={linkHref}
+        className={`${cardClasses} focus-visible:ring-primary focus-visible:ring-2 focus-visible:ring-offset-2`}
+      >
+        {cardContent}
+      </Link>
+    </article>
   );
 }
