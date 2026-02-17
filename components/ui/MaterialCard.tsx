@@ -50,6 +50,8 @@ export interface MaterialCardProps {
   averageRating?: number;
   /** Number of reviews */
   reviewCount?: number;
+  /** LP21 competency codes to display as badges */
+  competencies?: { code: string; subjectColor?: string }[];
 }
 
 export function MaterialCard({
@@ -75,6 +77,7 @@ export function MaterialCard({
   anonymousLabel,
   averageRating,
   reviewCount,
+  competencies,
 }: MaterialCardProps) {
   const [isWishlisted, setIsWishlisted] = useState(initialWishlisted);
   const [wishlistLoading, setWishlistLoading] = useState(false);
@@ -182,6 +185,27 @@ export function MaterialCard({
               </>
             )}
           </span>
+          {/* LP21 Competency Badges - show up to 2 codes */}
+          {competencies && competencies.length > 0 && !isCompact && (
+            <div className="mt-1 flex flex-wrap items-center gap-1">
+              {competencies.slice(0, 2).map((c) => (
+                <span
+                  key={c.code}
+                  className="inline-flex items-center rounded px-1.5 py-0.5 font-mono text-[10px] font-semibold"
+                  style={{
+                    backgroundColor: `${c.subjectColor || "#6b7280"}20`,
+                    color: c.subjectColor || "#6b7280",
+                    border: `1px solid ${c.subjectColor || "#6b7280"}40`,
+                  }}
+                >
+                  {c.code}
+                </span>
+              ))}
+              {competencies.length > 2 && (
+                <span className="text-text-faint text-[10px]">+{competencies.length - 2}</span>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Title - Primary Heading Style */}

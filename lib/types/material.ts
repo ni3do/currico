@@ -110,6 +110,7 @@ export interface FeaturedMaterial {
   previewUrl: string | null;
   averageRating?: number;
   reviewCount?: number;
+  competencies?: { code: string; subjectColor?: string }[];
   seller: { id: string; displayName: string | null; isVerifiedSeller: boolean };
 }
 

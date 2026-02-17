@@ -57,6 +57,7 @@ export function MaterialsGrid({
             variant={viewMode === "list" ? "compact" : "default"}
             averageRating={material.averageRating}
             reviewCount={material.reviewCount}
+            competencies={material.competencies}
             wishlistAddLabel={labels.wishlistAdd}
             wishlistRemoveLabel={labels.wishlistRemove}
             anonymousLabel={labels.anonymous}

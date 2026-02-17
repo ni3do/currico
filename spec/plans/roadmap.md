@@ -1,7 +1,7 @@
 # Currico Product Roadmap
 
 **Version:** 2.0
-**Last Updated:** January 2026
+**Last Updated:** February 2026
 **Status:** MVP Phase
 **Target Audience:** Swiss teachers (Lehrplan 21)
 

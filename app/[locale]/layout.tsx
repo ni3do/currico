@@ -88,9 +88,33 @@ export default async function LocaleLayout({ children, params }: Props) {
   // Get messages for the current locale
   const messages = await getMessages();
 
+  const baseUrl = process.env.NEXTAUTH_URL || "https://currico.siwachter.com";
+
+  // WebSite schema with SearchAction for Google site search
+  const websiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Currico",
+    url: `${baseUrl}/${locale}`,
+    description: localeMetadata[locale]?.description || localeMetadata.de.description,
+    inLanguage: locale === "de" ? "de-CH" : "en",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${baseUrl}/${locale}/materialien?search={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
+  };
+
   return (
     <NextIntlClientProvider messages={messages}>
       <SkipToContent />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+      />
       {children}
       <ScrollToTop />
       <CookieConsent />

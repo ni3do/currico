@@ -284,7 +284,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Persönliches Zitat (Kursiv-Serif) ohne klaren Kontext wer spricht — mehrdeutig — extracted to dedicated Quote section with context heading, circular founder photos, and clear attribution
 - [x] Values-Section nutzt sehr generische Beschreibungen — nicht differenziert von anderen EdTech-Plattformen — rewritten with Swiss-specific values: LP21 im Kern, Schweizer Daten/Server, Von Kolleg:innen geprüft, Faire Vergütung
 - [x] Kein CTA-Button am Seitenanfang — erst ganz unten nach viel Text — Hero section now has 2 CTA buttons (Materialien entdecken + Kostenlos registrieren)
-- [ ] Kein Schema.org `Organization` Markup — fehlende strukturierte Daten — already exists in layout.tsx
+- [x] Kein Schema.org `Organization` Markup — fehlende strukturierte Daten — already exists in layout.tsx
 - [x] Meta-Description zu generisch — sollte spezifischer für Schweizer Kontext sein — updated to "Lerne Simon und Laurent kennen — die zwei Schweizer hinter Currico..."
 - [x] Keine Social-Media-Links oder Kontaktmöglichkeiten beim Team — Nutzer können Team nicht kontaktieren — email icons on both founder cards link to info@currico.ch
 - [x] Kein Fallback wenn Team-Member-Bilder nicht laden — both founders have onError fallback to gradient + initials (SW/LZ)
@@ -620,7 +620,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Hintergrundfarben einheitlich
 - [x] Kaufstornierung/Widerrufsrecht in AGB dokumentiert
 - [ ] Info bei Fehlermeldungen auf Deutsch bzw. der Sprache angepasst (restliche prüfen)
-- check the badges, verifiziert is only who is a verifizierter verkäufer, that has to be unique. documents are all verified. so it doesn`t realy say something so we take that verified out. then display the level of the creator in his profile and also when he uploads something
+- [ ] Badge-System aufräumen: "Verifiziert" nur noch für Verifizierte Verkäufer (einzigartige Auszeichnung). Bei Dokumenten das Verifiziert-Badge entfernen. Stattdessen das Seller-Level des Erstellers im Profil und bei Uploads anzeigen.
 
 ### Eigene Vorschläge (Global)
 
@@ -670,27 +670,31 @@ Legende: [x] = erledigt, [ ] = offen
 
 ## Zusammenfassung
 
-| Seite                     | Erledigt | Offen (Joel) | Offen (Eigene) | Total Offen |
-| ------------------------- | -------- | ------------ | -------------- | ----------- |
-| Startseite                | 16       | 0            | 0              | 0           |
-| Materialien               | 53       | 0            | 0              | 0           |
-| Material-Vorschau         | 37       | 0            | 0              | 0           |
-| Hilfe                     | 12       | 0            | 0              | 0           |
-| Urheberrecht              | 9        | 0            | 0              | 0           |
-| Impressum                 | 13       | 0            | 0              | 0           |
-| Cookie-Richtlinien        | 8        | 0            | 0              | 0           |
-| Verkäufer-Stufen          | 11       | 0            | 0              | 0           |
-| Verifizierter Verkäufer   | 9        | 0            | 0              | 0           |
-| Über uns                  | 10       | 1            | 1              | 2           |
-| Kontakt                   | 13       | 0            | 0              | 0           |
-| Anmelden                  | 9        | 0            | 5              | 5           |
-| Registrieren              | 0        | 0            | 5              | 5           |
-| Konto (alle Unterseiten)  | 60       | 1            | 8              | 9           |
-| Folge ich                 | 9        | 0            | 0              | 0           |
-| Hochladen                 | 31       | 0            | 0              | 0           |
-| Öffentliches Profil       | 9        | 1            | 4              | 5           |
-| Verkäufer werden / Stripe | 14       | 0            | 0              | 0           |
-| Benachrichtigungen        | 2        | 1            | 0              | 1           |
-| Global                    | 14       | 2            | 8              | 10          |
-| Final Touch Audit         | 4        | 0            | 0              | 0           |
-| **Total**                 | **333**  | **10**       | **41**         | **51**      |
+> Letzte Aktualisierung: 2026-02-17
+
+| Seite                     | Erledigt | Offen  | Bemerkung                                       |
+| ------------------------- | -------- | ------ | ----------------------------------------------- |
+| Startseite                | 16       | 0      |                                                 |
+| Materialien               | 53       | 0      |                                                 |
+| Material-Vorschau         | 37       | 0      |                                                 |
+| Hilfe                     | 12       | 0      |                                                 |
+| Urheberrecht              | 9        | 0      |                                                 |
+| Impressum                 | 13       | 0      |                                                 |
+| Cookie-Richtlinien        | 8        | 0      |                                                 |
+| Verkäufer-Stufen          | 11       | 0      |                                                 |
+| Verifizierter Verkäufer   | 9        | 0      |                                                 |
+| Über uns                  | 11       | 1      | Photos ausstehend (User liefert)                |
+| Kontakt                   | 13       | 0      |                                                 |
+| Anmelden                  | 14       | 0      |                                                 |
+| Registrieren              | 5        | 0      |                                                 |
+| Konto (alle Unterseiten)  | 63       | 5      | 2FA, Bulk-Actions, Edit-404, Drafts, E-Mail\*   |
+| Folge ich                 | 11       | 0      |                                                 |
+| Hochladen                 | 31       | 0      |                                                 |
+| Öffentliches Profil       | 13       | 0      |                                                 |
+| Verkäufer werden / Stripe | 14       | 0      |                                                 |
+| Benachrichtigungen        | 2        | 1      | Newsletter-System                               |
+| Global                    | 13       | 9      | Badge-Cleanup, Loading, Buttons, a11y, Security |
+| Final Touch Audit         | 4        | 0      |                                                 |
+| **Total**                 | **362**  | **16** |                                                 |
+
+\* E-Mail-Templates = OUT OF SCOPE (Backend), Edit-404 = KNOWN ISSUE (grösseres Feature)

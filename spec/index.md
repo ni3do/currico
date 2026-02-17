@@ -12,12 +12,12 @@ Documentation is organized into three tiers:
 
 ## Active Plans
 
-- [Roadmap](./plans/roadmap.md) - Strategic roadmap for Swiss-specific features
-- [Joel Improvements Status](./plans/joelimprovements-status.md) - Page-by-page improvements tracker (310+ items)
-- [S3 Storage](./plans/s3-storage.md) - Infomaniak S3 file storage integration
-- [Stripe Connect Plan](./plans/stripe-connect-implementation-plan.md) - Payment integration implementation
-- [UI Improvements](./plans/ui-improvements.md) - Batch UI improvement plans
+- [Launch Checklist](./plans/launch-checklist.md) - Pre-launch readiness: 22 done / 31 open across 5 priority tiers
+- [Roadmap](./plans/roadmap.md) - Strategic roadmap (domain migration + pilot program remaining)
+- [Joel Improvements Status](./plans/joelimprovements-status.md) - Page-by-page tracker: 362 done / 16 open (96%)
 - [Consistency Audit Plan](./plans/consistency-audit-plan.md) - Full-project audit: 53 improvements across security, API, theme, UI, a11y, polish
+- [Final Touch Audit](./plans/final-touch-audit.md) - Design consistency audit report (score: 7.5/10)
+- [UX Polish 9-10](./plans/ux-polish-9-and-10.md) - Path from 8.5 → 10/10 UX polish score
 
 ## Reference
 
@@ -39,10 +39,14 @@ Documentation is organized into three tiers:
 Completed implementation plans in [`archive/`](./archive/):
 
 - [Account Structure Refactor](./archive/account-structure-refactor.md)
+- [Backend Improvements](./archive/backend-improvements.md)
 - [Claude Workflow](./archive/claude-workflow.md)
 - [i18n Plan](./archive/i18n-plan.md)
 - [OAuth Integration](./archive/oauth-integration.md)
 - [Observability Plan](./archive/observability-plan.md) (superseded by [reference/observability.md](./reference/observability.md))
+- [S3 Storage](./archive/s3-storage.md)
+- [Stripe Connect Plan](./archive/stripe-connect-implementation-plan.md)
+- [UI Improvements](./archive/ui-improvements.md)
 
 ## Design Principles
 

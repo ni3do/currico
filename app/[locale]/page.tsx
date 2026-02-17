@@ -14,6 +14,8 @@ import { SellerHeroSection } from "@/components/ui/SellerHeroSection";
 import { TrustBar } from "@/components/ui/TrustBar";
 import { SwissBrandSection } from "@/components/ui/SwissBrandSection";
 import { ValueProposition } from "@/components/ui/ValueProposition";
+import { HowItWorks } from "@/components/ui/HowItWorks";
+import { TestimonialsSection } from "@/components/ui/TestimonialsSection";
 import { FadeIn, StaggerChildren, StaggerItem, motion } from "@/components/ui/animations";
 import { getSubjectPillClass } from "@/lib/constants/subject-colors";
 import type { FeaturedMaterial } from "@/lib/types/material";
@@ -348,6 +350,7 @@ export default function Home() {
                       previewUrl={mat.previewUrl}
                       averageRating={mat.averageRating}
                       reviewCount={mat.reviewCount}
+                      competencies={mat.competencies}
                       subjectPillClass={getSubjectPillClass(mat.subjects[0] || "Allgemein")}
                       seller={{
                         displayName: mat.seller.displayName,
@@ -396,6 +399,12 @@ export default function Home() {
             </FadeIn>
           </div>
         </section>
+
+        {/* How It Works - 3-Step Guide */}
+        <HowItWorks />
+
+        {/* Testimonials - Social Proof */}
+        <TestimonialsSection />
 
         {/* Value Proposition Triptych - Rule of Three */}
         <ValueProposition />
