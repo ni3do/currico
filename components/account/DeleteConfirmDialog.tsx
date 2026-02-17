@@ -58,7 +58,7 @@ export function DeleteConfirmDialog({
               </button>
               <button
                 onClick={onConfirm}
-                className="bg-error hover:bg-error/90 flex-1 rounded-xl px-4 py-2.5 text-sm font-medium text-white transition-colors"
+                className="bg-error hover:bg-error/90 text-text-on-accent flex-1 rounded-xl px-4 py-2.5 text-sm font-medium transition-colors"
               >
                 {tCommon("buttons.delete")}
               </button>

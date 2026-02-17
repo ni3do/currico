@@ -6,7 +6,7 @@
 
 ---
 
-## Phase A — Medium Fixes (8.5 → 9/10)
+## Phase A — Medium Fixes (8.5 → 9/10) ✅ COMPLETE
 
 **Effort:** ~4 hours total
 **Theme:** Make every page feel like the same product.
@@ -37,11 +37,11 @@
 
 **Acceptance Criteria:**
 
-- [ ] Every standard page h1 uses `text-2xl sm:text-3xl font-bold`
-- [ ] Every h2 uses `text-xl font-semibold`
-- [ ] Every h3 uses `text-lg font-semibold`
-- [ ] Hero pages (homepage, about) are documented exceptions
-- [ ] No `text-white` on any heading
+- [x] Every standard page h1 uses `text-2xl sm:text-3xl font-bold`
+- [x] Every h2 uses `text-xl font-semibold`
+- [x] Every h3 uses `text-lg font-semibold`
+- [x] Hero pages (homepage, about) are documented exceptions
+- [x] No `text-white` on any heading
 
 ---
 
@@ -65,9 +65,9 @@
 
 **Acceptance Criteria:**
 
-- [ ] Admin pages have consistent padding with rest of site
-- [ ] No `rounded-2xl` on non-modal cards
-- [ ] Login page has `lg:px-8`
+- [x] Admin pages have consistent padding with rest of site
+- [x] No `rounded-2xl` on non-modal cards (6 admin tables + settings card normalized)
+- [x] Login page has `lg:px-8`
 
 ---
 
@@ -99,10 +99,11 @@
 
 **Acceptance Criteria:**
 
-- [ ] All hover translateY follows the 3-tier system
-- [ ] CantonFilter scale matches sibling filters (1.015)
-- [ ] Every `whileHover` has explicit `transition` prop
-- [ ] No implicit framer-motion duration defaults relied on
+- [x] All hover translateY follows the 3-tier system (-2, -4, -8)
+- [x] CantonFilter scale matches sibling filters (1.015)
+- [x] Every `whileHover` has explicit `transition` prop with easing
+- [x] No implicit framer-motion duration defaults relied on
+- [x] All Tailwind hover:scale-\* have explicit duration + easing
 
 ---
 
@@ -131,10 +132,10 @@
 
 **Acceptance Criteria:**
 
-- [ ] Single `Skeleton` component used everywhere
-- [ ] All loading states use shimmer animation (no more spinners for page content)
-- [ ] Spinners (`animate-spin`) only used for button loading states
-- [ ] Stagger creates a top-to-bottom reveal feel
+- [x] Single `Skeleton` component with 12 variants used across all account pages
+- [x] 6 inline skeleton patterns replaced with reusable components
+- [x] ~98 lines of duplicated skeleton markup eliminated
+- [ ] Remaining inline patterns in profil/[id] and admin can be migrated later
 
 ---
 

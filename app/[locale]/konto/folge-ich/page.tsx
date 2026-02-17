@@ -207,7 +207,7 @@ export default function AccountFollowingPage() {
                         className="border-border rounded-full border-2 object-cover"
                       />
                     ) : (
-                      <div className="from-primary to-success flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br text-xl font-bold text-white">
+                      <div className="from-primary to-success text-text-on-accent flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br text-xl font-bold">
                         {seller.name.charAt(0).toUpperCase()}
                       </div>
                     )}

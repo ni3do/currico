@@ -709,7 +709,7 @@ export default function CopyrightGuidePage() {
                         <div
                           className={`mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded border transition-colors ${
                             checkedItems[key]
-                              ? "border-success bg-success text-white"
+                              ? "border-success bg-success text-text-on-accent"
                               : "border-border bg-surface"
                           }`}
                         >

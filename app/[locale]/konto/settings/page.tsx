@@ -817,7 +817,7 @@ export default function SettingsProfilePage() {
                         transition={{ duration: 0.2 }}
                       >
                         <motion.svg
-                          className="h-4 w-4 text-white"
+                          className="text-text-on-accent h-4 w-4"
                           viewBox="0 0 24 24"
                           fill="none"
                           stroke="currentColor"

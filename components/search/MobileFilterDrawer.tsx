@@ -40,7 +40,7 @@ export function MobileFilterDrawer({
         <SlidersHorizontal className="h-5 w-5" />
         <span>{labels.filterTitle}</span>
         {activeFilterCount > 0 && (
-          <span className="bg-primary flex h-5 w-5 items-center justify-center rounded-full text-xs text-white">
+          <span className="bg-primary text-text-on-accent flex h-5 w-5 items-center justify-center rounded-full text-xs">
             {activeFilterCount}
           </span>
         )}

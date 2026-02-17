@@ -60,9 +60,9 @@ function OnboardingStepper({
               <div
                 className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium transition-colors ${
                   step.completed
-                    ? "bg-success text-white"
+                    ? "bg-success text-text-on-accent"
                     : i === currentIndex
-                      ? "bg-primary text-white"
+                      ? "bg-primary text-text-on-accent"
                       : "bg-bg-secondary text-text-muted"
                 }`}
               >
@@ -372,7 +372,7 @@ export default function BecomeSellerPage() {
                   {isLoggedIn && !isLoading ? (
                     req.completed ? (
                       <div className="bg-success flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full">
-                        <Check className="h-4 w-4 text-white" aria-hidden="true" />
+                        <Check className="text-text-on-accent h-4 w-4" aria-hidden="true" />
                       </div>
                     ) : (
                       <div className="border-border h-6 w-6 flex-shrink-0 rounded-full border-2" />

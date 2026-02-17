@@ -155,7 +155,7 @@ export default function AdminMessagesPage() {
             }}
             className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
               statusFilter === tab.value
-                ? "bg-accent text-white shadow-sm"
+                ? "bg-accent text-text-on-accent shadow-sm"
                 : "text-text-secondary hover:bg-surface hover:text-text"
             }`}
           >
@@ -233,7 +233,7 @@ export default function AdminMessagesPage() {
                     <td className="px-6 py-4 text-right">
                       <button
                         onClick={() => openMessageModal(message)}
-                        className="bg-accent rounded-lg px-4 py-1.5 text-xs font-medium text-white transition-colors hover:opacity-90"
+                        className="bg-accent text-text-on-accent rounded-lg px-4 py-1.5 text-xs font-medium transition-colors hover:opacity-90"
                       >
                         {t("view")}
                       </button>
@@ -411,7 +411,7 @@ export default function AdminMessagesPage() {
               <div className="border-border mt-6 flex gap-3 border-t pt-4">
                 <a
                   href={`mailto:${selectedMessage.email}?subject=Re: ${getSubjectLabel(selectedMessage.subject)}`}
-                  className="bg-accent flex-1 rounded-lg px-4 py-2.5 text-center text-sm font-medium text-white hover:opacity-90"
+                  className="bg-accent text-text-on-accent flex-1 rounded-lg px-4 py-2.5 text-center text-sm font-medium hover:opacity-90"
                 >
                   {t("reply")}
                 </a>
