@@ -3080,6 +3080,12 @@
       "description": "Wir konnten keine Antwort auf Ihre Frage finden. Unser Team hilft Ihnen gerne persönlich weiter.",
       "contactButton": "Support kontaktieren",
       "contactEmail": "info@currico.ch"
+    },
+    "contactCta": {
+      "title": "Brauchen Sie weitere Hilfe?",
+      "description": "Unser Team hilft Ihnen gerne persönlich weiter — schreiben Sie uns einfach.",
+      "contactButton": "Support kontaktieren",
+      "contactEmail": "info@currico.ch"
     }
   },
   "notifications": {
@@ -3699,6 +3705,12 @@
       "filterFollows": "Follower",
       "filterSystem": "System",
       "loadMore": "Mehr laden"
+    },
+    "notificationDropdown": {
+      "title": "Benachrichtigungen",
+      "markAllRead": "Alle als gelesen markieren",
+      "empty": "Noch keine Benachrichtigungen",
+      "viewAll": "Alle anzeigen"
     },
     "welcomeGuide": {
       "welcome": "Willkommen, {name}!",

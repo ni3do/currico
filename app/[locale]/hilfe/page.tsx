@@ -305,13 +305,13 @@ export default function HilfePage() {
         {/* Contact CTA */}
         <div className="border-border bg-bg-secondary rounded-xl border p-6 text-center">
           <Mail className="text-primary mx-auto mb-4 h-8 w-8" />
-          <h2 className="text-text text-lg font-semibold">{t("noResults.title")}</h2>
-          <p className="text-text-muted mt-2">{t("noResults.description")}</p>
+          <h2 className="text-text text-lg font-semibold">{t("contactCta.title")}</h2>
+          <p className="text-text-muted mt-2">{t("contactCta.description")}</p>
           <a
-            href={`mailto:${t("noResults.contactEmail")}`}
+            href={`mailto:${t("contactCta.contactEmail")}`}
             className="bg-primary text-text-on-accent hover:bg-primary-hover mt-4 inline-flex items-center gap-2 rounded-lg px-6 py-3 font-medium transition-colors"
           >
-            {t("noResults.contactButton")}
+            {t("contactCta.contactButton")}
           </a>
         </div>
       </main>

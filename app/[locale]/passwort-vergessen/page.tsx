@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
+import Footer from "@/components/ui/Footer";
 import { Mail, ArrowLeft, Check } from "lucide-react";
 
 export default function ForgotPasswordPage() {
@@ -116,6 +117,7 @@ export default function ForgotPasswordPage() {
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

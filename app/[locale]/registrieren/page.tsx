@@ -13,6 +13,7 @@ import {
 import { getLoginUrl } from "@/lib/utils/login-redirect";
 import { PasswordRequirements } from "@/components/auth/PasswordRequirements";
 import TopBar from "@/components/ui/TopBar";
+import Footer from "@/components/ui/Footer";
 
 export default function RegisterPage() {
   const t = useTranslations("registerPage");
@@ -508,23 +509,7 @@ export default function RegisterPage() {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="relative z-10 px-6 py-6 sm:px-8">
-        <Link
-          href="/"
-          className="text-text-muted hover:text-primary inline-flex items-center text-sm font-medium transition-colors"
-        >
-          <svg className="mr-1.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-          {tCommon("buttons.backToHome")}
-        </Link>
-      </footer>
+      <Footer />
     </div>
   );
 }
