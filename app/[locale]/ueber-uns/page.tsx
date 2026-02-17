@@ -1,13 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useTranslations } from "next-intl";
+import { useScroll, useTransform, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
-import { FadeIn, StaggerChildren, StaggerItem, MotionCard } from "@/components/ui/animations";
+import {
+  FadeIn,
+  StaggerChildren,
+  StaggerItem,
+  MotionCard,
+  motion,
+} from "@/components/ui/animations";
 import {
   BookOpen,
   Shield,
@@ -64,13 +71,22 @@ export default function AboutPage() {
   const [simonImgError, setSimonImgError] = useState(false);
   const [laurentImgError, setLaurentImgError] = useState(false);
 
+  // Parallax scroll for hero section
+  const heroRef = useRef<HTMLElement>(null);
+  const prefersReducedMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const heroImageY = useTransform(scrollYProgress, [0, 1], [0, -20]);
+
   return (
     <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
       <main className="flex-1">
         {/* ──────────── 1. Hero ──────────── */}
-        <section className="relative overflow-hidden">
+        <section ref={heroRef} className="relative overflow-hidden">
           <div className="bg-bg-secondary">
             <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
               <Breadcrumb items={[{ label: tCommon("breadcrumb.about") }]} />
@@ -101,7 +117,10 @@ export default function AboutPage() {
                   </div>
                 </FadeIn>
                 <FadeIn direction="right">
-                  <div className="relative aspect-square overflow-hidden rounded-2xl">
+                  <motion.div
+                    className="relative aspect-square overflow-hidden rounded-2xl"
+                    style={prefersReducedMotion ? undefined : { y: heroImageY }}
+                  >
                     <Image
                       src="/images/about-hero.png"
                       alt={t("hero.imageAlt")}
@@ -110,7 +129,7 @@ export default function AboutPage() {
                       className="object-cover"
                       priority
                     />
-                  </div>
+                  </motion.div>
                 </FadeIn>
               </div>
             </div>

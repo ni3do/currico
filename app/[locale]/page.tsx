@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { ChevronDown } from "lucide-react";
 import { useCurriculum } from "@/lib/hooks/useCurriculum";
+import { useScroll, useTransform, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
@@ -27,6 +28,16 @@ export default function Home() {
   const [selectedKompetenzbereich, setSelectedKompetenzbereich] = useState("");
 
   const { zyklen, getFachbereicheByZyklus, fachbereiche } = useCurriculum();
+
+  // Parallax scroll for hero section
+  const heroRef = useRef<HTMLElement>(null);
+  const prefersReducedMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const decorationY = useTransform(scrollYProgress, [0, 1], [0, -40]);
+  const heroImageY = useTransform(scrollYProgress, [0, 1], [0, -20]);
 
   const availableSubjects = useMemo(() => {
     if (!selectedCycle) return fachbereiche;
@@ -92,11 +103,33 @@ export default function Home() {
 
       <main className="flex-1">
         {/* Hero Section - Split-Screen Layout */}
-        <section className="hero-section flex min-h-[calc(100vh-4rem)] items-center">
-          {/* Decorative floating shapes */}
-          <div className="hero-decoration hero-decoration-1" aria-hidden="true" />
-          <div className="hero-decoration hero-decoration-2" aria-hidden="true" />
-          <div className="hero-decoration hero-decoration-3" aria-hidden="true" />
+        <section ref={heroRef} className="hero-section flex min-h-[calc(100vh-4rem)] items-center">
+          {/* Decorative floating shapes with parallax */}
+          {prefersReducedMotion ? (
+            <>
+              <div className="hero-decoration hero-decoration-1" aria-hidden="true" />
+              <div className="hero-decoration hero-decoration-2" aria-hidden="true" />
+              <div className="hero-decoration hero-decoration-3" aria-hidden="true" />
+            </>
+          ) : (
+            <>
+              <motion.div
+                className="hero-decoration hero-decoration-1"
+                style={{ y: decorationY }}
+                aria-hidden="true"
+              />
+              <motion.div
+                className="hero-decoration hero-decoration-2"
+                style={{ y: decorationY }}
+                aria-hidden="true"
+              />
+              <motion.div
+                className="hero-decoration hero-decoration-3"
+                style={{ y: decorationY }}
+                aria-hidden="true"
+              />
+            </>
+          )}
 
           <div className="relative mx-auto w-full max-w-7xl px-6 pt-6 pb-12 sm:px-8 sm:pt-8 sm:pb-16 lg:px-12 lg:pt-10 lg:pb-20">
             <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
@@ -219,13 +252,14 @@ export default function Home() {
                 </FadeIn>
               </div>
 
-              {/* Right Side - Hero Image with decorative container */}
+              {/* Right Side - Hero Image with decorative container + parallax */}
               <FadeIn
                 direction="right"
                 delay={0.2}
                 className="hero-image-container order-2 flex items-center justify-center"
               >
                 <motion.div
+                  style={prefersReducedMotion ? undefined : { y: heroImageY }}
                   whileHover={{
                     y: -8,
                     scale: 1.02,
