@@ -105,7 +105,7 @@ export function ReviewsSection({
   if (loading && reviews.length === 0) {
     return (
       <div className={`${className}`}>
-        {!hideTitle && <h2 className="text-text mb-6 text-2xl font-bold">{t("title")}</h2>}
+        {!hideTitle && <h2 className="text-text mb-6 text-xl font-semibold">{t("title")}</h2>}
         <div className="border-border bg-bg animate-pulse rounded-xl border p-8">
           <div className="bg-surface mb-4 h-6 w-48 rounded" />
           <div className="bg-surface mb-4 h-4 w-full rounded" />
@@ -119,7 +119,7 @@ export function ReviewsSection({
   if (error) {
     return (
       <div className={`${className}`}>
-        {!hideTitle && <h2 className="text-text mb-6 text-2xl font-bold">{t("title")}</h2>}
+        {!hideTitle && <h2 className="text-text mb-6 text-xl font-semibold">{t("title")}</h2>}
         <div className="border-error/50 bg-error/10 flex items-center gap-3 rounded-xl border p-6">
           <AlertCircle className="text-error h-5 w-5 flex-shrink-0" />
           <p className="text-error flex-1">{error}</p>
@@ -140,7 +140,7 @@ export function ReviewsSection({
 
   return (
     <div className={`${className}`}>
-      {!hideTitle && <h2 className="text-text mb-6 text-2xl font-bold">{t("title")}</h2>}
+      {!hideTitle && <h2 className="text-text mb-6 text-xl font-semibold">{t("title")}</h2>}
 
       {/* Stats Summary — compact */}
       {stats.totalReviews > 0 && (

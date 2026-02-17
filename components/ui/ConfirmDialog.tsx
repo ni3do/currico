@@ -72,7 +72,7 @@ export function ConfirmDialog({
                 <AlertTriangle className="text-error h-6 w-6" />
               </div>
             )}
-            <h3 id="confirm-dialog-title" className="text-text text-center text-lg font-bold">
+            <h3 id="confirm-dialog-title" className="text-text text-center text-lg font-semibold">
               {title}
             </h3>
             <p id="confirm-dialog-message" className="text-text-muted mt-2 text-center text-sm">

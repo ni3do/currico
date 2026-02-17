@@ -76,7 +76,7 @@ export function SellerLevelCard({
               <p className="text-text-muted text-xs font-medium tracking-wider uppercase">
                 {t("yourLevel")}
               </p>
-              <h3 className={`text-lg font-bold ${current.textClass}`}>{currentName}</h3>
+              <h3 className={`text-lg font-semibold ${current.textClass}`}>{currentName}</h3>
             </div>
           </div>
           <div className="text-right">

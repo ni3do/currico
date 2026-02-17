@@ -54,7 +54,7 @@ export function PublishPreviewModal({
         >
           {/* Header */}
           <div className="border-border flex items-center justify-between border-b p-5">
-            <h2 id="preview-modal-title" className="text-text text-lg font-bold">
+            <h2 id="preview-modal-title" className="text-text text-lg font-semibold">
               {tPreview("title")}
             </h2>
             <button

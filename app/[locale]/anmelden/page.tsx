@@ -108,7 +108,7 @@ function LoginPageContent() {
       <TopBar />
 
       {/* Main Content - Centered Glass Card */}
-      <main className="relative z-10 flex flex-1 items-center justify-center px-4 py-8 sm:px-6">
+      <main className="relative z-10 flex flex-1 items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
         <div className="w-full max-w-md">
           {/* Back to Home */}
           <Link

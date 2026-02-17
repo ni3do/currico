@@ -52,7 +52,7 @@ export default function PrivacyPage() {
           {/* Section 2: Data Collection */}
           <h2 className="text-text mt-8 text-xl font-semibold">{t("sections.collection.title")}</h2>
           <p>{t("sections.collection.intro")}</p>
-          <h3 className="text-text mt-4 text-lg font-medium">
+          <h3 className="text-text mt-4 text-lg font-semibold">
             {t("sections.collection.account.title")}
           </h3>
           <ul className="ml-4 list-disc space-y-1">
@@ -61,7 +61,7 @@ export default function PrivacyPage() {
             <li>{t("sections.collection.account.items.password")}</li>
             <li>{t("sections.collection.account.items.profile")}</li>
           </ul>
-          <h3 className="text-text mt-4 text-lg font-medium">
+          <h3 className="text-text mt-4 text-lg font-semibold">
             {t("sections.collection.payment.title")}
           </h3>
           <ul className="ml-4 list-disc space-y-1">
@@ -70,7 +70,7 @@ export default function PrivacyPage() {
           </ul>
           <p className="mt-2 text-sm">{t("sections.collection.payment.note")}</p>
 
-          <h3 className="text-text mt-4 text-lg font-medium">
+          <h3 className="text-text mt-4 text-lg font-semibold">
             {t("sections.collection.serverLogs.title")}
           </h3>
           <p>{t("sections.collection.serverLogs.intro")}</p>
@@ -82,7 +82,7 @@ export default function PrivacyPage() {
           </ul>
           <p className="mt-2 text-sm">{t("sections.collection.serverLogs.note")}</p>
 
-          <h3 className="text-text mt-4 text-lg font-medium">
+          <h3 className="text-text mt-4 text-lg font-semibold">
             {t("sections.collection.thirdPartyData.title")}
           </h3>
           <p>{t("sections.collection.thirdPartyData.content")}</p>
@@ -108,11 +108,11 @@ export default function PrivacyPage() {
           <h2 className="text-text mt-8 text-xl font-semibold">{t("sections.cookies.title")}</h2>
           <p>{t("sections.cookies.intro")}</p>
           <p className="mt-2">{t("sections.cookies.noPersonalData")}</p>
-          <h3 className="text-text mt-4 text-lg font-medium">
+          <h3 className="text-text mt-4 text-lg font-semibold">
             {t("sections.cookies.essential.title")}
           </h3>
           <p>{t("sections.cookies.essential.content")}</p>
-          <h3 className="text-text mt-4 text-lg font-medium">
+          <h3 className="text-text mt-4 text-lg font-semibold">
             {t("sections.cookies.analytics.title")}
           </h3>
           <p>{t("sections.cookies.analytics.content")}</p>
@@ -126,7 +126,7 @@ export default function PrivacyPage() {
 
           {/* Stripe */}
           <div className="bg-bg-secondary mt-4 rounded-lg p-4">
-            <h3 className="text-text text-lg font-medium">
+            <h3 className="text-text text-lg font-semibold">
               {t("sections.paymentProcessors.stripe.title")}
             </h3>
             <p className="mt-2">{t("sections.paymentProcessors.stripe.content")}</p>
@@ -139,7 +139,7 @@ export default function PrivacyPage() {
 
           {/* TWINT */}
           <div className="bg-bg-secondary mt-4 rounded-lg p-4">
-            <h3 className="text-text text-lg font-medium">
+            <h3 className="text-text text-lg font-semibold">
               {t("sections.paymentProcessors.twint.title")}
             </h3>
             <p className="mt-2">{t("sections.paymentProcessors.twint.content")}</p>

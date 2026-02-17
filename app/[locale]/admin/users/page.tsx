@@ -188,7 +188,7 @@ export default function AdminUsersPage() {
       <div className="text-text-muted text-sm">{t("usersFound", { count: total })}</div>
 
       {/* Users Table */}
-      <div className="border-border bg-surface overflow-hidden rounded-2xl border">
+      <div className="border-border bg-surface overflow-hidden rounded-lg border">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-bg">

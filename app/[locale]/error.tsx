@@ -30,7 +30,7 @@ export default function LocaleError({
             />
           </svg>
         </div>
-        <h2 className="text-text mb-4 text-2xl font-bold">{t("title")}</h2>
+        <h2 className="text-text mb-4 text-xl font-semibold">{t("title")}</h2>
         <p className="text-text-muted mb-6">{t("description")}</p>
         <button
           onClick={reset}

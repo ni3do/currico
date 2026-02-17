@@ -129,7 +129,7 @@ export default function NotificationsPage() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Bell className="text-primary h-5 w-5" />
-          <h2 className="text-text text-lg font-bold">{t("title")}</h2>
+          <h2 className="text-text text-xl font-semibold">{t("title")}</h2>
           {unreadCount > 0 && (
             <span className="bg-error text-text-on-accent rounded-full px-2 py-0.5 text-xs font-bold">
               {unreadCount}

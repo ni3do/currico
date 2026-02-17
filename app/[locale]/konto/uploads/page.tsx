@@ -263,7 +263,7 @@ export default function AccountUploadsPage() {
       ) : (
         <div className="py-12 text-center">
           <FileText className="text-text-faint mx-auto mb-4 h-16 w-16" />
-          <h3 className="text-text mb-2 text-lg font-medium">
+          <h3 className="text-text mb-2 text-lg font-semibold">
             {statusFilter !== "ALL" ? t("noMatchingFilter") : t("empty")}
           </h3>
           <p className="text-text-muted mb-4">

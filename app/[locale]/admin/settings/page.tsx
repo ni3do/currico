@@ -12,7 +12,7 @@ export default function AdminSettingsPage() {
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       {/* Admin Account Settings */}
-      <div className="border-border bg-surface rounded-2xl border p-8">
+      <div className="border-border bg-surface rounded-lg border p-8">
         <h2 className="text-text mb-6 text-xl font-semibold">{t("accountSettings")}</h2>
 
         <div className="space-y-6">
