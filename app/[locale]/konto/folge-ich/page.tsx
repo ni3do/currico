@@ -8,6 +8,7 @@ import { Link } from "@/i18n/navigation";
 import { motion } from "framer-motion";
 import { AlertCircle, RefreshCw, Users, FileText, Calendar } from "lucide-react";
 import { useAccountData } from "@/lib/hooks/useAccountData";
+import { FollowedSellerSkeleton } from "@/components/ui/Skeleton";
 import { SUBJECT_PILL_CLASSES } from "@/lib/types/account";
 
 interface FollowedSellerDetail {
@@ -119,25 +120,7 @@ export default function AccountFollowingPage() {
   };
 
   if (loading || sharedLoading) {
-    return (
-      <div className="card space-y-4 p-8">
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="border-border animate-pulse rounded-xl border p-6">
-            <div className="flex items-start gap-4">
-              <div className="bg-border h-16 w-16 flex-shrink-0 rounded-full" />
-              <div className="flex-1 space-y-3">
-                <div className="bg-border h-5 w-40 rounded" />
-                <div className="bg-border h-4 w-64 rounded" />
-                <div className="flex gap-2">
-                  <div className="bg-border h-5 w-16 rounded-full" />
-                  <div className="bg-border h-5 w-20 rounded-full" />
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    );
+    return <FollowedSellerSkeleton />;
   }
 
   const filteredSellers = followedSellers.filter((seller) => {

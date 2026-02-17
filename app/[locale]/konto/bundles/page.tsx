@@ -19,6 +19,7 @@ import {
   X,
 } from "lucide-react";
 import { DeleteConfirmDialog } from "@/components/account/DeleteConfirmDialog";
+import { BundleSkeleton } from "@/components/ui/Skeleton";
 import type { SellerBundle } from "@/lib/types/account";
 
 export default function AccountBundlesPage() {
@@ -210,19 +211,7 @@ export default function AccountBundlesPage() {
             </button>
           </div>
         ) : loading || bundlesLoading ? (
-          <div className="space-y-3">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="border-border animate-pulse rounded-xl border p-4">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-2">
-                    <div className="bg-surface-hover h-4 w-48 rounded" />
-                    <div className="bg-surface-hover h-3 w-32 rounded" />
-                  </div>
-                  <div className="bg-surface-hover h-6 w-20 rounded-full" />
-                </div>
-              </div>
-            ))}
-          </div>
+          <BundleSkeleton />
         ) : filteredBundles.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full">

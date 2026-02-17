@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { AlertCircle, BookOpen, Gift, RefreshCw, ShoppingBag, Sparkles } from "lucide-react";
 import { DashboardMaterialCard } from "@/components/ui/DashboardMaterialCard";
+import { DashboardMaterialGridSkeleton } from "@/components/ui/Skeleton";
 import { useAccountData } from "@/lib/hooks/useAccountData";
 import type { LibraryItem } from "@/lib/types/account";
 
@@ -221,23 +222,7 @@ export default function AccountLibraryPage() {
               </button>
             </div>
           ) : isLoading ? (
-            <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="card animate-pulse overflow-hidden">
-                  <div className="bg-bg-secondary aspect-[4/3]"></div>
-                  <div className="px-3 pt-2.5 pb-3">
-                    <div className="bg-surface-hover mb-2 h-3 w-20 rounded"></div>
-                    <div className="bg-surface-hover mb-1.5 h-4 w-full rounded"></div>
-                    <div className="border-border-subtle mt-3 border-t pt-2">
-                      <div className="flex items-center justify-between">
-                        <div className="bg-surface-hover h-3 w-16 rounded"></div>
-                        <div className="bg-surface-hover h-6 w-14 rounded-full"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <DashboardMaterialGridSkeleton />
           ) : filteredAndSortedItems.length > 0 ? (
             <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
               {filteredAndSortedItems.map((item) => (

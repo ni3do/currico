@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { AlertCircle, Bell, RefreshCw, CheckCheck, BellOff, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { NotificationType, Notification } from "@/lib/types/account";
+import { NotificationSkeleton } from "@/components/ui/Skeleton";
 import { TYPE_ICON, TYPE_COLOR, timeAgo } from "@/lib/utils/notification-display";
 
 type FilterType = "ALL" | NotificationType;
@@ -106,21 +107,7 @@ export default function NotificationsPage() {
   ];
 
   if (loading) {
-    return (
-      <div className="space-y-3">
-        {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="border-border bg-surface animate-pulse rounded-xl border p-4">
-            <div className="flex items-start gap-3">
-              <div className="bg-border h-10 w-10 rounded-full" />
-              <div className="flex-1 space-y-2">
-                <div className="bg-border h-4 w-48 rounded" />
-                <div className="bg-border h-3 w-32 rounded" />
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    );
+    return <NotificationSkeleton />;
   }
 
   return (
