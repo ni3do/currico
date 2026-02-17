@@ -266,7 +266,7 @@ export default function TopBar() {
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="text-text-secondary hover:text-primary p-2 lg:hidden"
-            aria-label="Toggle navigation"
+            aria-label={t("toggleNavigation")}
           >
             {isMobileMenuOpen ? (
               <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

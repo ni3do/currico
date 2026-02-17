@@ -131,7 +131,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           <div className="lg:hidden">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="border-border bg-bg-secondary text-text-secondary hover:border-error hover:text-error flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-3 text-sm font-medium transition-colors"
+              className="border-border bg-bg-secondary text-text-secondary hover:border-primary hover:text-primary flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-3 text-sm font-medium transition-colors"
             >
               <Menu className="h-5 w-5" />
               <span>{t("menu")}</span>

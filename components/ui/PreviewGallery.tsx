@@ -386,12 +386,11 @@ export function PreviewGallery({
 
               {currentPage < previewUrls.length - 1 && (
                 <button
-                  className="absolute right-4 rounded-full bg-white/10 p-3 text-white transition-colors hover:bg-white/20"
+                  className="absolute right-16 rounded-full bg-white/10 p-3 text-white transition-colors hover:bg-white/20"
                   onClick={(e) => {
                     e.stopPropagation();
                     setCurrentPage(currentPage + 1);
                   }}
-                  style={{ right: "4rem" }}
                   aria-label={t("nextPage")}
                 >
                   <svg

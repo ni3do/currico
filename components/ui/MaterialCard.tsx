@@ -160,7 +160,11 @@ export function MaterialCard({
             className={`absolute top-3 left-3 drop-shadow-md transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-110 active:scale-95 disabled:opacity-50 ${
               isWishlisted ? "text-error" : "text-text-on-accent hover:text-error"
             }`}
-            aria-label={isWishlisted ? wishlistRemoveLabel || "" : wishlistAddLabel || ""}
+            aria-label={
+              isWishlisted
+                ? wishlistRemoveLabel || "Von Wunschliste entfernen"
+                : wishlistAddLabel || "Zur Wunschliste hinzufügen"
+            }
           >
             <Heart
               className={`h-7 w-7 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${wishlistLoading ? "animate-pulse" : ""} ${isWishlisted ? "scale-100" : "scale-90 group-hover:scale-100"}`}

@@ -47,6 +47,8 @@
   },
   "common": {
     "skipToContent": "Zum Inhalt springen",
+    "scrollToTop": "Nach oben scrollen",
+    "toggleNavigation": "Navigation ein-/ausblenden",
     "brand": {
       "logoText": "C",
       "name": "Currico",
@@ -3420,6 +3422,7 @@
       "newMaterial": "Neues Material",
       "search": "Uploads durchsuchen...",
       "sort": {
+        "label": "Sortierung",
         "newest": "Neueste zuerst",
         "oldest": "Älteste zuerst",
         "title": "Alphabetisch",

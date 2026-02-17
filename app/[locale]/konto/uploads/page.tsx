@@ -147,6 +147,7 @@ export default function AccountUploadsPage() {
         <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+          aria-label={t("sort.label")}
           className="border-border bg-bg text-text rounded-lg border px-3 py-2 text-sm"
         >
           <option value="newest">{t("sort.newest")}</option>
@@ -180,7 +181,7 @@ export default function AccountUploadsPage() {
           <button
             key={key}
             onClick={() => setStatusFilter(key)}
-            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
+            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
               statusFilter === key
                 ? "bg-primary text-text-on-accent"
                 : "bg-surface-hover text-text-muted hover:text-text"
