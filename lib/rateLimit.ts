@@ -39,6 +39,7 @@ export const rateLimitConfigs: Record<string, RateLimitConfig> = {
   "resources:like": { limit: 30, windowMs: 60 * 1000 }, // 30 per minute
   "resources:review": { limit: 5, windowMs: 60 * 1000 }, // 5 per minute
   "resources:comment": { limit: 10, windowMs: 60 * 1000 }, // 10 per minute
+  "resources:reply": { limit: 10, windowMs: 60 * 1000 }, // 10 per minute
   "users:follow": { limit: 20, windowMs: 60 * 1000 }, // 20 per minute
   "resources:duplicate": { limit: 10, windowMs: 60 * 1000 }, // 10 per minute
   // Public search/browse endpoints (expensive DB queries)

@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma, privateUserSelect } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
 import { updateProfileSchema } from "@/lib/validations/user";
-import { getCurrentUserId } from "@/lib/auth";
-import { unauthorized, notFound, serverError } from "@/lib/api";
+import { requireAuth, unauthorized, notFound, serverError } from "@/lib/api";
 
 /**
  * GET /api/users/me
@@ -12,11 +11,8 @@ import { unauthorized, notFound, serverError } from "@/lib/api";
  */
 export async function GET() {
   try {
-    const userId = await getCurrentUserId();
-
-    if (!userId) {
-      return unauthorized();
-    }
+    const userId = await requireAuth();
+    if (!userId) return unauthorized();
 
     const user = await prisma.user.findUnique({
       where: { id: userId },
@@ -47,11 +43,8 @@ export async function GET() {
  */
 export async function PATCH(request: NextRequest) {
   try {
-    const userId = await getCurrentUserId();
-
-    if (!userId) {
-      return unauthorized();
-    }
+    const userId = await requireAuth();
+    if (!userId) return unauthorized();
 
     const body = await request.json();
 
@@ -121,11 +114,8 @@ export async function PATCH(request: NextRequest) {
  */
 export async function DELETE() {
   try {
-    const userId = await getCurrentUserId();
-
-    if (!userId) {
-      return unauthorized();
-    }
+    const userId = await requireAuth();
+    if (!userId) return unauthorized();
 
     // Check for completed transactions where user is seller (cannot delete)
     const sellerTransactions = await prisma.transaction.count({

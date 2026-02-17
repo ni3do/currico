@@ -1,12 +1,22 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAuth, unauthorized } from "@/lib/api";
+import { checkRateLimit, rateLimitHeaders } from "@/lib/rateLimit";
 
 // POST /api/comments/[id]/like - Toggle like on a comment
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const userId = await requireAuth();
     if (!userId) return unauthorized();
+
+    // Rate limit like toggling
+    const rateLimit = checkRateLimit(userId, "resources:like");
+    if (!rateLimit.success) {
+      return NextResponse.json(
+        { error: "Zu viele Anfragen. Bitte versuchen Sie es später erneut." },
+        { status: 429, headers: rateLimitHeaders(rateLimit) }
+      );
+    }
 
     const { id: commentId } = await params;
 

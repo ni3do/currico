@@ -2,8 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
 import { canUploadMaterials } from "@/lib/validations/user";
-import { getCurrentUserId } from "@/lib/auth";
-import { unauthorized, notFound, serverError } from "@/lib/api";
+import { requireAuth, unauthorized, notFound, serverError } from "@/lib/api";
 
 /**
  * GET /api/users/me/can-upload
@@ -13,11 +12,8 @@ import { unauthorized, notFound, serverError } from "@/lib/api";
  */
 export async function GET() {
   try {
-    const userId = await getCurrentUserId();
-
-    if (!userId) {
-      return unauthorized();
-    }
+    const userId = await requireAuth();
+    if (!userId) return unauthorized();
 
     const user = await prisma.user.findUnique({
       where: { id: userId },

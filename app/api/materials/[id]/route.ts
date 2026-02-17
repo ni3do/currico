@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
 import { getCurrentUserId } from "@/lib/auth";
 import { requireAdmin } from "@/lib/admin-auth";
+import { requireAuth, unauthorized } from "@/lib/api";
 import { updateMaterialSchema } from "@/lib/validations/material";
 import { formatPrice } from "@/lib/utils/price";
 import { getFileFormatLabel } from "@/lib/utils/file-format";
@@ -265,11 +266,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
  * Update a material (owner only)
  */
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  // Authentication check
-  const userId = await getCurrentUserId();
-  if (!userId) {
-    return NextResponse.json({ error: "AUTH_REQUIRED" }, { status: 401 });
-  }
+  const userId = await requireAuth();
+  if (!userId) return unauthorized();
 
   try {
     const { id } = await params;
@@ -373,11 +371,8 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  // Authentication check
-  const userId = await getCurrentUserId();
-  if (!userId) {
-    return NextResponse.json({ error: "AUTH_REQUIRED" }, { status: 401 });
-  }
+  const userId = await requireAuth();
+  if (!userId) return unauthorized();
 
   try {
     const { id } = await params;

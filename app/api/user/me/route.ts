@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { requireAuth, unauthorized } from "@/lib/api";
+import { requireAuth, unauthorized, notFound, serverError } from "@/lib/api";
 
 /**
  * GET /api/user/me
@@ -23,13 +23,11 @@ export async function GET() {
       },
     });
 
-    if (!user) {
-      return NextResponse.json({ error: "Benutzer nicht gefunden" }, { status: 404 });
-    }
+    if (!user) return notFound();
 
     return NextResponse.json(user);
   } catch (error) {
     console.error("Error fetching current user:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError();
   }
 }

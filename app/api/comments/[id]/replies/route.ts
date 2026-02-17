@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { createReplySchema } from "@/lib/validations/review";
 import { notifyCommentReply } from "@/lib/notifications";
 import { requireAuth, unauthorized } from "@/lib/api";
+import { checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
 
 // GET /api/comments/[id]/replies - Get all replies for a comment
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -65,6 +66,15 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   try {
     const userId = await requireAuth();
     if (!userId) return unauthorized();
+
+    // Rate limit reply creation
+    const rateLimit = checkRateLimit(userId, "resources:reply");
+    if (!rateLimit.success) {
+      return NextResponse.json(
+        { error: "Zu viele Anfragen. Bitte versuchen Sie es später erneut." },
+        { status: 429, headers: rateLimitHeaders(rateLimit) }
+      );
+    }
 
     const { id: commentId } = await params;
 
