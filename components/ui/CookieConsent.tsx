@@ -103,7 +103,7 @@ export default function CookieConsent() {
         >
           <div className="mx-auto max-w-4xl">
             <motion.div
-              className="border-border rounded-xl border bg-white p-4 shadow-lg sm:p-6 dark:bg-[#1e1e2e]"
+              className="border-border bg-surface rounded-xl border p-4 shadow-lg sm:p-6"
               initial={{ scale: 0.95 }}
               animate={{ scale: 1 }}
               transition={{ delay: 0.1 }}

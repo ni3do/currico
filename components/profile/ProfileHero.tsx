@@ -85,7 +85,7 @@ export function ProfileHero({
           {/* Avatar */}
           <StaggerItem className="flex-shrink-0">
             {showInitials ? (
-              <div className="from-primary to-success flex h-28 w-28 items-center justify-center rounded-full bg-gradient-to-br text-4xl font-bold text-white shadow-lg">
+              <div className="from-primary to-success text-text-on-accent flex h-28 w-28 items-center justify-center rounded-full bg-gradient-to-br text-4xl font-bold shadow-lg">
                 {displayName.charAt(0).toUpperCase()}
               </div>
             ) : (
@@ -150,7 +150,7 @@ export function ProfileHero({
                     className={`flex items-center justify-center gap-2 rounded-full px-6 py-2.5 font-medium transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 active:scale-95 disabled:opacity-50 ${
                       profile.isFollowing
                         ? "border-primary text-primary hover:bg-primary/10 border"
-                        : "bg-primary hover:bg-primary-hover text-white"
+                        : "bg-primary hover:bg-primary-hover text-text-on-accent"
                     }`}
                     aria-label={profile.isFollowing ? t("unfollow") : t("follow")}
                   >
@@ -229,7 +229,7 @@ export function ProfileHero({
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`${t("website")}: ${profile.website}`}
-                  className="text-text-muted hover:text-primary border-border flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm transition-colors hover:bg-blue-500/10"
+                  className="text-text-muted hover:text-primary border-border hover:bg-primary/10 flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm transition-colors"
                 >
                   <Globe className="h-3.5 w-3.5" />
                   {t("website")}
@@ -241,7 +241,7 @@ export function ProfileHero({
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`Instagram: @${profile.instagram}`}
-                  className="text-text-muted hover:text-primary border-border flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm transition-colors hover:bg-pink-500/10"
+                  className="text-text-muted hover:text-primary border-border hover:bg-accent/10 flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm transition-colors"
                 >
                   <Instagram className="h-3.5 w-3.5" />@{profile.instagram}
                 </a>
@@ -252,7 +252,7 @@ export function ProfileHero({
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`Pinterest: @${profile.pinterest}`}
-                  className="text-text-muted hover:text-primary border-border flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm transition-colors hover:bg-red-500/10"
+                  className="text-text-muted hover:text-primary border-border hover:bg-error/10 flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm transition-colors"
                 >
                   <svg
                     className="h-3.5 w-3.5"

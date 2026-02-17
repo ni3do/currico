@@ -93,6 +93,28 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       );
     }
 
+    // Validate role if provided
+    const validRoles = ["BUYER", "SELLER", "ADMIN"];
+    if ("role" in body && !validRoles.includes(body.role as string)) {
+      return NextResponse.json(
+        { error: "Ungültige Rolle. Erlaubt: BUYER, SELLER, ADMIN" },
+        { status: 400 }
+      );
+    }
+
+    // Validate emailVerified if provided
+    if (
+      "emailVerified" in body &&
+      body.emailVerified !== null &&
+      !(body.emailVerified instanceof Date) &&
+      typeof body.emailVerified !== "string"
+    ) {
+      return NextResponse.json(
+        { error: "emailVerified muss ein Datum oder null sein" },
+        { status: 400 }
+      );
+    }
+
     // Only allow admin to update specific fields
     // Note: Seller verification is now handled via Stripe KYC, not admin toggle
     const allowedFields = ["role", "emailVerified"];

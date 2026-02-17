@@ -1,24 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { generateVerificationToken } from "@/lib/email";
-
-// Simple in-memory rate limiting by IP
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
-const RATE_LIMIT_MAX = 5;
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(ip);
-
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-    return false;
-  }
-
-  entry.count++;
-  return entry.count > RATE_LIMIT_MAX;
-}
+import { checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
 
 /**
  * POST /api/newsletter/subscribe
@@ -26,12 +9,11 @@ function isRateLimited(ip: string): boolean {
  */
 export async function POST(request: NextRequest) {
   try {
-    const ip =
-      request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip") || "unknown";
-    if (isRateLimited(ip)) {
+    const rateLimit = checkRateLimit(getClientIP(request), "newsletter:subscribe");
+    if (!rateLimit.success) {
       return NextResponse.json(
         { error: "Zu viele Anfragen. Bitte versuchen Sie es später erneut." },
-        { status: 429 }
+        { status: 429, headers: rateLimitHeaders(rateLimit) }
       );
     }
 

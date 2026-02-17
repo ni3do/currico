@@ -1193,7 +1193,7 @@ function UploadPageContent() {
                         <p className="text-text-muted mt-1 text-sm">{tLegal("subtitle")}</p>
                       </div>
                       <span
-                        className={`text-sm font-bold ${allLegalChecked ? "text-[var(--ctp-green)]" : "text-text-muted"}`}
+                        className={`text-sm font-bold ${allLegalChecked ? "text-success" : "text-text-muted"}`}
                       >
                         {
                           [
@@ -1210,7 +1210,7 @@ function UploadPageContent() {
                     {/* Progress bar */}
                     <div className="bg-border mb-5 h-1.5 overflow-hidden rounded-full">
                       <div
-                        className={`h-full transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${allLegalChecked ? "bg-[var(--ctp-green)]" : "bg-primary"}`}
+                        className={`h-full transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${allLegalChecked ? "bg-success" : "bg-primary"}`}
                         style={{
                           width: `${([formData.legalOwnContent, formData.legalNoTextbookScans, formData.legalNoTrademarks, formData.legalSwissGerman, formData.legalTermsAccepted].filter(Boolean).length / 5) * 100}%`,
                         }}

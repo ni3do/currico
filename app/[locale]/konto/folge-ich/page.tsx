@@ -192,7 +192,7 @@ export default function AccountFollowingPage() {
             <p className="text-text-muted mb-4 text-sm">{t("noFollowingDescription")}</p>
             <Link
               href="/materialien?showCreators=true"
-              className="bg-primary hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-6 py-2.5 font-medium text-white transition-colors"
+              className="bg-primary hover:bg-primary-hover text-text-on-accent inline-flex items-center gap-2 rounded-lg px-6 py-2.5 font-medium transition-colors"
             >
               {t("discoverProfiles")}
             </Link>

@@ -22,7 +22,7 @@ export function Toggle({ checked, onChange, label, description, className = "" }
         className={`h-6 w-11 rounded-full transition-colors ${checked ? "bg-primary" : "bg-border"}`}
       >
         <div
-          className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${checked ? "translate-x-5" : "translate-x-0.5"}`}
+          className={`bg-surface absolute top-0.5 h-5 w-5 rounded-full shadow-sm transition-transform ${checked ? "translate-x-5" : "translate-x-0.5"}`}
         />
       </div>
     </button>

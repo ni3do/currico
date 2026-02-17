@@ -39,8 +39,8 @@ export function SwissBrandSection() {
       bgClass="bg-bg"
       badge={
         <div className="bg-primary mb-4 inline-flex items-center gap-2 rounded-full px-4 py-2">
-          <Star className="h-5 w-5 text-white" aria-hidden="true" />
-          <span className="font-semibold text-white">{t("badge")}</span>
+          <Star className="text-text-on-accent h-5 w-5" aria-hidden="true" />
+          <span className="text-text-on-accent font-semibold">{t("badge")}</span>
         </div>
       }
       title={t("title")}

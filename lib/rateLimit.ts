@@ -41,6 +41,11 @@ export const rateLimitConfigs: Record<string, RateLimitConfig> = {
   "resources:comment": { limit: 10, windowMs: 60 * 1000 }, // 10 per minute
   "users:follow": { limit: 20, windowMs: 60 * 1000 }, // 20 per minute
   "resources:duplicate": { limit: 10, windowMs: 60 * 1000 }, // 10 per minute
+  // Public search/browse endpoints (expensive DB queries)
+  "curriculum:search": { limit: 30, windowMs: 60 * 1000 }, // 30 per minute
+  "users:search": { limit: 30, windowMs: 60 * 1000 }, // 30 per minute
+  "profile:bundle": { limit: 30, windowMs: 60 * 1000 }, // 30 per minute
+  "newsletter:subscribe": { limit: 5, windowMs: 60 * 1000 }, // 5 per minute
 };
 
 export interface RateLimitResult {

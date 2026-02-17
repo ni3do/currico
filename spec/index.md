@@ -17,6 +17,7 @@ Documentation is organized into three tiers:
 - [S3 Storage](./plans/s3-storage.md) - Infomaniak S3 file storage integration
 - [Stripe Connect Plan](./plans/stripe-connect-implementation-plan.md) - Payment integration implementation
 - [UI Improvements](./plans/ui-improvements.md) - Batch UI improvement plans
+- [Consistency Audit Plan](./plans/consistency-audit-plan.md) - Full-project audit: 53 improvements across security, API, theme, UI, a11y, polish
 
 ## Reference
 

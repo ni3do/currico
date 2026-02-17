@@ -87,7 +87,7 @@ export function PublishPreviewModal({
                     <span
                       className={`rounded-lg px-2.5 py-1 text-xs font-bold ${
                         priceType === "free"
-                          ? "bg-[var(--ctp-green)] text-white"
+                          ? "bg-success text-text-on-accent"
                           : "bg-surface text-text border-border border shadow-sm"
                       }`}
                     >

@@ -87,7 +87,7 @@ export function ProfileCard({
               className="border-border h-12 w-12 rounded-full border-2 object-cover"
             />
           ) : (
-            <div className="from-primary to-success flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br text-lg font-bold text-white">
+            <div className="from-primary to-success text-text-on-accent flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br text-lg font-bold">
               {name.charAt(0).toUpperCase()}
             </div>
           )}
@@ -110,7 +110,7 @@ export function ProfileCard({
               className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 active:scale-95 disabled:opacity-50 ${
                 isFollowing
                   ? "border-primary text-primary hover:bg-primary/10 border"
-                  : "bg-primary hover:bg-primary-hover text-white"
+                  : "bg-primary hover:bg-primary-hover text-text-on-accent"
               }`}
               aria-label={isFollowing ? t("unfollow") : t("follow")}
             >

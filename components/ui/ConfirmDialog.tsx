@@ -43,7 +43,7 @@ export function ConfirmDialog({
   }, [open, onCancel]);
 
   const confirmStyles =
-    variant === "danger" ? "bg-error hover:bg-error/90 text-white" : "btn-primary";
+    variant === "danger" ? "bg-error hover:bg-error/90 text-text-on-accent" : "btn-primary";
 
   return (
     <AnimatePresence>

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma, publicUserSelect } from "@/lib/db";
 import { getCurrentUserId } from "@/lib/auth";
-import { isValidId } from "@/lib/rateLimit";
+import { isValidId, checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
 
 /**
  * GET /api/users/[id]/profile-bundle
@@ -13,6 +13,14 @@ import { isValidId } from "@/lib/rateLimit";
  */
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const rateLimit = checkRateLimit(getClientIP(request), "profile:bundle");
+    if (!rateLimit.success) {
+      return NextResponse.json(
+        { error: "Too many requests" },
+        { status: 429, headers: rateLimitHeaders(rateLimit) }
+      );
+    }
+
     const { id } = await params;
 
     if (!isValidId(id)) {

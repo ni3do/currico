@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
 
 /**
  * GET /api/curriculum/search
@@ -16,6 +17,13 @@ import { prisma } from "@/lib/db";
  */
 export async function GET(request: Request) {
   try {
+    const rateLimit = checkRateLimit(getClientIP(request), "curriculum:search");
+    if (!rateLimit.success) {
+      return NextResponse.json(
+        { error: "Too many requests" },
+        { status: 429, headers: rateLimitHeaders(rateLimit) }
+      );
+    }
     const { searchParams } = new URL(request.url);
     const query = searchParams.get("q");
     const type = searchParams.get("type") || "all";

@@ -147,7 +147,7 @@ export function MaterialCard({
 
         {/* Price Badge - moved to footer for non-compact, keep overlay for compact */}
         {shouldShowPriceBadge && isCompact && (
-          <span className="bg-price absolute top-3 right-3 rounded-full px-2 py-0.5 text-xs font-bold text-white shadow-md">
+          <span className="bg-price text-text-on-accent absolute top-3 right-3 rounded-full px-2 py-0.5 text-xs font-bold shadow-md">
             {priceFormatted}
           </span>
         )}
@@ -158,7 +158,7 @@ export function MaterialCard({
             onClick={handleWishlistClick}
             disabled={wishlistLoading}
             className={`absolute top-3 left-3 drop-shadow-md transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-110 active:scale-95 disabled:opacity-50 ${
-              isWishlisted ? "text-red-500" : "text-white hover:text-red-500"
+              isWishlisted ? "text-error" : "text-text-on-accent hover:text-error"
             }`}
             aria-label={isWishlisted ? wishlistRemoveLabel || "" : wishlistAddLabel || ""}
           >
@@ -242,7 +242,7 @@ export function MaterialCard({
               {shouldShowPriceBadge ? (
                 <span
                   className={`rounded-full px-3 py-1 text-sm font-bold ${
-                    isFree ? "bg-success text-white" : "bg-price text-white"
+                    isFree ? "bg-success text-text-on-accent" : "bg-price text-text-on-accent"
                   }`}
                 >
                   {priceFormatted}

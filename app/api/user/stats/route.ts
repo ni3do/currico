@@ -13,69 +13,77 @@ export async function GET() {
 
   try {
     // Get user data with relations counts
-    const [purchasedCount, downloadedCount, wishlistCount, uploadedCount, followingCount, user] =
-      await Promise.all([
-        // Purchased resources (completed transactions)
-        prisma.transaction.count({
-          where: {
-            buyer_id: userId,
-            status: "COMPLETED",
-          },
-        }),
-        // Free downloads
-        prisma.download.count({
-          where: { user_id: userId },
-        }),
-        // Wishlist items
-        prisma.wishlist.count({
-          where: { user_id: userId },
-        }),
-        // Uploaded resources (as seller)
-        prisma.resource.count({
-          where: { seller_id: userId },
-        }),
-        // Following count
-        prisma.follow.count({
-          where: { follower_id: userId },
-        }),
-        // User profile data
-        prisma.user.findUnique({
-          where: { id: userId },
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            emailVerified: true,
-            image: true,
-            display_name: true,
-            bio: true,
-            subjects: true,
-            cycles: true,
-            cantons: true,
-            website: true,
-            school: true,
-            teaching_experience: true,
-            preferred_language: true,
-            instagram: true,
-            pinterest: true,
-            is_private: true,
-            role: true,
-            seller_xp: true,
-            stripe_charges_enabled: true,
-            password_hash: true,
-            // Notification preferences
-            notify_new_from_followed: true,
-            notify_recommendations: true,
-            notify_material_updates: true,
-            notify_review_reminders: true,
-            notify_wishlist_price_drops: true,
-            notify_welcome_offers: true,
-            notify_sales: true,
-            notify_newsletter: true,
-            notify_platform_updates: true,
-          },
-        }),
-      ]);
+    const [
+      purchasedCount,
+      downloadedCount,
+      wishlistCount,
+      uploadedCount,
+      followingCount,
+      hasPassword,
+      user,
+    ] = await Promise.all([
+      // Purchased resources (completed transactions)
+      prisma.transaction.count({
+        where: {
+          buyer_id: userId,
+          status: "COMPLETED",
+        },
+      }),
+      // Free downloads
+      prisma.download.count({
+        where: { user_id: userId },
+      }),
+      // Wishlist items
+      prisma.wishlist.count({
+        where: { user_id: userId },
+      }),
+      // Uploaded resources (as seller)
+      prisma.resource.count({
+        where: { seller_id: userId },
+      }),
+      // Following count
+      prisma.follow.count({
+        where: { follower_id: userId },
+      }),
+      // Check if user has a password (without selecting the hash)
+      prisma.user.count({ where: { id: userId, password_hash: { not: null } } }).then((c) => c > 0),
+      // User profile data
+      prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          emailVerified: true,
+          image: true,
+          display_name: true,
+          bio: true,
+          subjects: true,
+          cycles: true,
+          cantons: true,
+          website: true,
+          school: true,
+          teaching_experience: true,
+          preferred_language: true,
+          instagram: true,
+          pinterest: true,
+          is_private: true,
+          role: true,
+          seller_xp: true,
+          stripe_charges_enabled: true,
+          // Notification preferences
+          notify_new_from_followed: true,
+          notify_recommendations: true,
+          notify_material_updates: true,
+          notify_review_reminders: true,
+          notify_wishlist_price_drops: true,
+          notify_welcome_offers: true,
+          notify_sales: true,
+          notify_newsletter: true,
+          notify_platform_updates: true,
+        },
+      }),
+    ]);
 
     if (!user) return notFound();
 
@@ -101,7 +109,7 @@ export async function GET() {
         isSeller: user.role === "SELLER",
         sellerPoints: user.seller_xp,
         stripeChargesEnabled: user.stripe_charges_enabled,
-        hasPassword: !!user.password_hash,
+        hasPassword,
         // Notification preferences
         notify_new_from_followed: user.notify_new_from_followed,
         notify_recommendations: user.notify_recommendations,
