@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
@@ -14,9 +14,13 @@ import {
   Lock,
   Building2,
   Mail,
+  Search,
+  X,
   ChevronRight,
   ChevronDown,
 } from "lucide-react";
+
+const FAQ_TAB_STORAGE_KEY = "hilfe-faq-tab";
 
 const faqCategories = [
   { key: "general", count: 7 },
@@ -25,12 +29,55 @@ const faqCategories = [
   { key: "technical", count: 7 },
 ] as const;
 
+type FaqCategoryKey = (typeof faqCategories)[number]["key"];
+
+function getAllFaqItems(tFaq: ReturnType<typeof useTranslations>) {
+  const items: { key: string; category: string; question: string; answer: string }[] = [];
+  for (const { key: cat, count } of faqCategories) {
+    for (let i = 1; i <= count; i++) {
+      const qKey = `${cat}.q${i}`;
+      items.push({
+        key: qKey,
+        category: cat,
+        question: tFaq(`${qKey}.question`),
+        answer: tFaq(`${qKey}.answer`),
+      });
+    }
+  }
+  return items;
+}
+
 export default function HilfePage() {
   const t = useTranslations("hilfePage");
   const tFaq = useTranslations("faqPage");
   const tCommon = useTranslations("common");
-  const [activeTab, setActiveTab] = useState<string>("general");
+  const [activeTab, setActiveTab] = useState<string>(() => {
+    if (typeof window === "undefined") return "general";
+    const saved = localStorage.getItem(FAQ_TAB_STORAGE_KEY);
+    return saved && faqCategories.some(({ key }) => key === saved) ? saved : "general";
+  });
   const [openFaq, setOpenFaq] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Persist active tab to localStorage
+  const handleTabChange = (key: string) => {
+    setActiveTab(key);
+    setOpenFaq(null);
+    setSearchQuery("");
+    localStorage.setItem(FAQ_TAB_STORAGE_KEY, key);
+  };
+
+  const allFaqItems = useMemo(() => getAllFaqItems(tFaq), [tFaq]);
+
+  const isSearching = searchQuery.trim().length > 0;
+  const searchResults = useMemo(() => {
+    if (!isSearching) return [];
+    const terms = searchQuery.toLowerCase().trim().split(/\s+/);
+    return allFaqItems.filter((item) => {
+      const text = `${item.question} ${item.answer}`.toLowerCase();
+      return terms.every((term) => text.includes(term));
+    });
+  }, [searchQuery, isSearching, allFaqItems]);
 
   const quickStartItems = [
     {
@@ -134,57 +181,124 @@ export default function HilfePage() {
           <h2 className="text-text mb-2 text-xl font-semibold">{tFaq("title")}</h2>
           <p className="text-text-muted mb-6">{tFaq("subtitle")}</p>
 
-          {/* Category Tabs */}
-          <div className="mb-6 flex flex-wrap gap-2" role="tablist">
-            {faqCategories.map(({ key }) => (
+          {/* Search */}
+          <div className="relative mb-6">
+            <Search
+              className="text-text-muted pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2"
+              aria-hidden="true"
+            />
+            <input
+              type="search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={t("searchPlaceholder")}
+              className="border-border bg-surface text-text placeholder:text-text-muted focus:border-primary focus:ring-primary w-full rounded-lg border py-2.5 pr-10 pl-10 text-sm focus:ring-1 focus:outline-none"
+              aria-label={t("searchPlaceholder")}
+            />
+            {isSearching && (
               <button
-                key={key}
-                role="tab"
-                aria-selected={activeTab === key}
-                onClick={() => {
-                  setActiveTab(key);
-                  setOpenFaq(null);
-                }}
-                className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                  activeTab === key
-                    ? "bg-primary text-text-on-accent"
-                    : "bg-surface border-border text-text hover:bg-bg-secondary border"
-                }`}
+                onClick={() => setSearchQuery("")}
+                className="text-text-muted hover:text-text absolute top-1/2 right-3 -translate-y-1/2"
+                aria-label={t("clearSearch")}
               >
-                {tFaq(`categories.${key}`)}
+                <X className="h-4 w-4" />
               </button>
-            ))}
+            )}
           </div>
+
+          {/* Search results count */}
+          {isSearching && (
+            <p className="text-text-muted mb-4 text-sm">
+              {t("resultsCount", { count: searchResults.length })}
+            </p>
+          )}
+
+          {/* Category Tabs — hidden during search */}
+          {!isSearching && (
+            <div className="mb-6 flex flex-wrap gap-2" role="tablist">
+              {faqCategories.map(({ key }) => (
+                <button
+                  key={key}
+                  role="tab"
+                  aria-selected={activeTab === key}
+                  onClick={() => handleTabChange(key)}
+                  className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                    activeTab === key
+                      ? "bg-primary text-text-on-accent"
+                      : "bg-surface border-border text-text hover:bg-bg-secondary border"
+                  }`}
+                >
+                  {tFaq(`categories.${key}`)}
+                </button>
+              ))}
+            </div>
+          )}
 
           {/* Questions */}
           <div className="divide-border border-border min-h-[400px] divide-y rounded-xl border">
-            {faqCategories
-              .filter(({ key }) => key === activeTab)
-              .map(({ key: cat, count }) =>
-                Array.from({ length: count }, (_, i) => {
-                  const qKey = `${cat}.q${i + 1}`;
-                  const isOpen = openFaq === qKey;
+            {isSearching ? (
+              searchResults.length > 0 ? (
+                searchResults.map((item) => {
+                  const isOpen = openFaq === item.key;
                   return (
-                    <div key={qKey}>
+                    <div key={item.key}>
                       <button
-                        onClick={() => setOpenFaq(isOpen ? null : qKey)}
+                        onClick={() => setOpenFaq(isOpen ? null : item.key)}
                         aria-expanded={isOpen}
                         className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
                       >
-                        <span className="text-text font-medium">{tFaq(`${qKey}.question`)}</span>
+                        <div>
+                          <span className="text-text font-medium">{item.question}</span>
+                          <span className="text-text-muted ml-2 text-xs">
+                            {tFaq(`categories.${item.category as FaqCategoryKey}`)}
+                          </span>
+                        </div>
                         <ChevronDown
                           className={`text-text-muted h-5 w-5 shrink-0 transition-transform ${isOpen ? "rotate-180" : ""}`}
                         />
                       </button>
                       {isOpen && (
                         <div className="text-text-muted px-5 pb-4 text-sm leading-relaxed">
-                          {tFaq(`${qKey}.answer`)}
+                          {item.answer}
                         </div>
                       )}
                     </div>
                   );
                 })
-              )}
+              ) : (
+                <div className="flex items-center justify-center p-8">
+                  <p className="text-text-muted text-sm">{t("noResults.description")}</p>
+                </div>
+              )
+            ) : (
+              faqCategories
+                .filter(({ key }) => key === activeTab)
+                .map(({ key: cat, count }) =>
+                  Array.from({ length: count }, (_, i) => {
+                    const qKey = `${cat}.q${i + 1}`;
+                    const isOpen = openFaq === qKey;
+                    return (
+                      <div key={qKey}>
+                        <button
+                          onClick={() => setOpenFaq(isOpen ? null : qKey)}
+                          aria-expanded={isOpen}
+                          className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
+                        >
+                          <span className="text-text font-medium">{tFaq(`${qKey}.question`)}</span>
+                          <ChevronDown
+                            className={`text-text-muted h-5 w-5 shrink-0 transition-transform ${isOpen ? "rotate-180" : ""}`}
+                          />
+                        </button>
+                        {isOpen && (
+                          <div className="text-text-muted px-5 pb-4 text-sm leading-relaxed">
+                            {tFaq(`${qKey}.answer`)}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })
+                )
+            )}
           </div>
         </section>
 

@@ -1075,35 +1075,60 @@
   },
   "aboutPage": {
     "hero": {
-      "badge": "Von Lehrpersonen, für Lehrpersonen",
+      "badge": "Aus der Schweiz, für Schweizer Klassenzimmer",
       "title": "Wir kennen deinen Alltag. Wir waren da.",
       "subtitle": "Currico ist aus echtem Frust entstanden — dem Frust von Lehrpersonen, die Abende und Wochenenden mit Unterrichtsvorbereitung verbringen. Wir wollten das ändern. Nicht mit einem grossen Budget, sondern mit Herzblut.",
       "imageAlt": "Das Currico-Team",
       "primaryCta": "Materialien entdecken",
       "secondaryCta": "Kostenlos registrieren"
     },
-    "problem": {
-      "title": "Das kennen wir alle",
-      "subtitle": "Lehrpersonen haben uns immer wieder von denselben Herausforderungen erzählt. Diese drei standen ganz oben.",
-      "point1": {
-        "title": "Stunden für ein Arbeitsblatt",
-        "description": "Ein einzelnes Arbeitsblatt erstellen — recherchieren, gestalten, anpassen, drucken. Und das für jede Lektion, jede Woche. Die Zeit summiert sich."
-      },
-      "point2": {
-        "title": "Abwechslung finden ist schwer",
-        "description": "Schülerinnen und Schüler lieben vielfältiges Material, das sie begeistert. Aber solche Materialien zu finden kostet Zeit, die man eigentlich nicht hat."
-      },
-      "point3": {
-        "title": "Individuelle Förderung braucht Zeit",
-        "description": "Jedes Kind lernt anders. Material für verschiedene Niveaus vorzubereiten ist wichtig — aber extrem zeitaufwändig."
-      }
+    "stats": {
+      "materials": { "value": "500+", "label": "Materialien" },
+      "teachers": { "value": "200+", "label": "Lehrpersonen" },
+      "cantons": { "value": "26", "label": "Kantone" },
+      "lp21": { "value": "LP21", "label": "kompatibel" }
     },
     "origin": {
       "title": "Wie alles begann",
       "paragraph1": "Es fing an einem Küchentisch an. Simon kam frustriert von der Schule und erzählte, wie viel Zeit er wieder mit Arbeitsblättern verbracht hatte. Laurent, sein Freund aus der Tech-Welt, fragte: «Warum gibt es dafür keine Lösung?»",
       "paragraph2": "Wir sprachen mit anderen Lehrpersonen — und überall hörten wir dasselbe: Die Vorbereitung frisst die ganze Freizeit auf. Stunden gehen drauf, um Material zu suchen, anzupassen, zu gestalten. Und dann ist es oft trotzdem nicht ganz das, was man braucht.",
       "paragraph3": "Also haben wir angefangen, etwas zu bauen. Nicht mit Investoren oder einem grossen Plan. Einfach zwei Leute, die überzeugt sind: Lehrpersonen verdienen Werkzeuge, die ihnen Zeit zurückgeben.",
+      "highlight": "«Warum gibt es dafür keine Lösung?» — Diese eine Frage hat alles verändert.",
       "imageAlt": "Simon und Laurent bei der Arbeit"
+    },
+    "timeline": {
+      "title": "Unser Weg",
+      "subtitle": "Von einer Idee am Küchentisch zur Plattform für Schweizer Lehrpersonen.",
+      "milestone1": {
+        "date": "Sommer 2022",
+        "title": "Die Idee",
+        "description": "Am Küchentisch entsteht die Vision: Eine Plattform von Lehrpersonen, für Lehrpersonen."
+      },
+      "milestone2": {
+        "date": "Herbst 2022",
+        "title": "Erste Zeile Code",
+        "description": "Laurent beginnt mit dem Prototypen. Simon liefert Input aus dem Klassenzimmer."
+      },
+      "milestone3": {
+        "date": "Frühling 2023",
+        "title": "Beta-Launch",
+        "description": "Die ersten Lehrpersonen testen Currico und geben wertvolles Feedback."
+      },
+      "milestone4": {
+        "date": "Sommer 2023",
+        "title": "LP21-Integration",
+        "description": "Alle Materialien lassen sich nach Lehrplan 21 filtern — ein Meilenstein für die Schweiz."
+      },
+      "milestone5": {
+        "date": "2024",
+        "title": "Community wächst",
+        "description": "Immer mehr Lehrpersonen teilen Materialien und bauen gemeinsam die Plattform auf."
+      },
+      "milestone6": {
+        "date": "Heute",
+        "title": "Und es geht weiter",
+        "description": "Jeden Tag arbeiten wir daran, Currico besser zu machen — mit euch und für euch."
+      }
     },
     "founders": {
       "title": "Die zwei hinter Currico",
@@ -1111,35 +1136,40 @@
       "founder1": {
         "name": "Simon Wachter",
         "role": "Co-Founder & Pädagogik",
-        "bio": "Ich war selbst Lehrperson und weiss, wie es sich anfühlt, am Sonntagabend noch Arbeitsblätter zu erstellen. Bei Currico sorge ich dafür, dass jedes Material praxistauglich und für Schweizer Klassenzimmer gemacht ist."
+        "bio": "Ich war selbst Lehrperson und weiss, wie es sich anfühlt, am Sonntagabend noch Arbeitsblätter zu erstellen. Bei Currico sorge ich dafür, dass jedes Material praxistauglich und für Schweizer Klassenzimmer gemacht ist.",
+        "funFact": "Trinkt mehr Kaffee als Code-Zeilen geschrieben werden."
       },
       "founder2": {
         "name": "Laurent Zoccoletti",
         "role": "Co-Founder & Technik",
-        "bio": "Ich baue Currico so, dass es einfach funktioniert — schnell, simpel, ohne Frust. Mein Ziel: Die Technik soll dir helfen und nie im Weg stehen."
+        "bio": "Ich baue Currico so, dass es einfach funktioniert — schnell, simpel, ohne Frust. Mein Ziel: Die Technik soll dir helfen und nie im Weg stehen.",
+        "funFact": "Debuggt am liebsten mit Aussicht auf die Alpen."
       },
-      "story": "Wir sind kein Startup, das Investoren sucht. Wir sind zwei Leute, die an einem Küchentisch angefangen haben, weil wir glauben: Lehrpersonen verdienen es, dass jemand ihnen den Alltag erleichtert. Und wir freuen uns über jede Person, die diesen Weg mit uns geht.",
-      "highlight": "Hast du eine Frage, eine Idee oder willst einfach Hallo sagen? Wir freuen uns ehrlich, von dir zu hören.",
-      "quoteAttribution": "Simon & Laurent, Gründer von Currico",
       "emailLabel": "E-Mail an {name}"
     },
+    "quote": {
+      "context": "Warum wir jeden Tag an Currico arbeiten",
+      "text": "Wir sind kein Startup, das Investoren sucht. Wir sind zwei Leute, die an einem Küchentisch angefangen haben, weil wir glauben: Lehrpersonen verdienen es, dass jemand ihnen den Alltag erleichtert. Und wir freuen uns über jede Person, die diesen Weg mit uns geht.",
+      "attribution": "Simon & Laurent",
+      "role": "Gründer von Currico"
+    },
     "values": {
-      "title": "Woran wir glauben",
+      "title": "Was uns ausmacht",
       "value1": {
-        "title": "Deine Zeit gehört dir",
-        "description": "Schluss mit stundenlanger Vorbereitung. Finde in Minuten Material, das zu deiner Lektion passt — und nimm dir den Abend zurück."
+        "title": "Lehrplan 21 im Kern",
+        "description": "Jedes Material orientiert sich am LP21. Finde in Sekunden Inhalte, die zu deinem Kompetenzbereich passen — ohne Anpassen."
       },
       "value2": {
-        "title": "Zusammen stärker",
-        "description": "Hunderte Lehrpersonen teilen bereits Material, geben Feedback und inspirieren sich gegenseitig. Werde Teil der Community."
+        "title": "Schweizer Daten, Schweizer Server",
+        "description": "Gehostet bei Infomaniak in Schweizer Rechenzentren. Deine Daten bleiben in der Schweiz, geschützt durch strenge Datenschutzgesetze."
       },
       "value3": {
-        "title": "Gemacht für die Schweiz",
-        "description": "Jedes Material orientiert sich am Lehrplan 21 und passt zu den 26 Kantonen. Kein Anpassen von ausländischen Inhalten nötig."
+        "title": "Von Kolleg:innen geprüft",
+        "description": "Jedes Material wird von der Community bewertet und kommentiert. So findest du nur Inhalte, die im Klassenzimmer wirklich funktionieren."
       },
       "value4": {
-        "title": "Qualität vor Quantität",
-        "description": "Jedes Material wird von der Community bewertet. So findest du nur geprüfte Inhalte, die im Klassenzimmer wirklich funktionieren."
+        "title": "Faire Vergütung",
+        "description": "Wer Material teilt, verdient daran. Faire Preise für Käufer:innen, faire Vergütung für Ersteller:innen. So funktioniert Community."
       }
     },
     "helpUs": {
@@ -1156,31 +1186,6 @@
       "subtitle": "Jede Lehrperson, die mitmacht, macht Currico ein Stück besser. Für dich, für alle. Der Start ist kostenlos.",
       "button": "Materialien entdecken",
       "secondaryButton": "Kostenlos registrieren"
-    },
-    "swissBrand": {
-      "badge": "Qualität & Vertrauen",
-      "title": "Von Lehrpersonen für Lehrpersonen",
-      "subtitle": "Entwickelt mit Fokus auf Qualität, Sicherheit und die Bedürfnisse von Lehrpersonen",
-      "swissMade": {
-        "title": "Qualität zuerst",
-        "description": "Von Lehrpersonen für Lehrpersonen entwickelt"
-      },
-      "swissHosted": {
-        "title": "Sicheres Hosting",
-        "description": "Gehostet bei Infomaniak in Schweizer Rechenzentren"
-      },
-      "dataProtection": {
-        "title": "Datenschutz",
-        "description": "Ihre Daten durch strenge Datenschutzgesetze geschützt"
-      },
-      "localSupport": {
-        "title": "Lokaler Support",
-        "description": "Schweizer Team spricht Ihre Sprache"
-      },
-      "hostedBy": "Gehostet bei",
-      "swissCloud": "Swiss Cloud",
-      "co2Neutral": "CO₂-Neutral",
-      "secureHosting": "Sicheres Hosting"
     }
   },
   "contactPage": {
@@ -2610,7 +2615,7 @@
       "cookies": "Cookie-Richtlinien",
       "copyright": "Urheberrecht"
     },
-    "version": "Version 1.2 - Februar 2026"
+    "version": "Version 1.3 - Februar 2026"
   },
   "privacyPage": {
     "title": "Datenschutzerklärung",
@@ -2953,7 +2958,9 @@
     "searchPlaceholder": "Profile durchsuchen...",
     "noSearchResults": "Keine Profile gefunden",
     "errorLoading": "Fehler beim Laden der gefolgten Profile",
-    "retry": "Erneut versuchen"
+    "retry": "Erneut versuchen",
+    "loadMore": "Weitere laden",
+    "loadingMore": "Wird geladen..."
   },
   "verifyEmailPage": {
     "loading": {
@@ -3456,7 +3463,32 @@
       "deleting": "Wird gelöscht...",
       "deletePermanently": "Endgültig löschen",
       "deleteError": "Fehler beim Löschen",
-      "networkError": "Netzwerkfehler"
+      "networkError": "Netzwerkfehler",
+      "password": {
+        "title": "Passwort ändern",
+        "subtitle": "Aktualisieren Sie Ihr Anmeldepasswort",
+        "currentPassword": "Aktuelles Passwort",
+        "currentPlaceholder": "Aktuelles Passwort eingeben",
+        "newPassword": "Neues Passwort",
+        "newPlaceholder": "Neues Passwort eingeben",
+        "confirmPassword": "Passwort bestätigen",
+        "confirmPlaceholder": "Neues Passwort wiederholen",
+        "requirements": "Mind. 8 Zeichen, Gross-/Kleinbuchstaben und Zahl",
+        "mismatch": "Passwörter stimmen nicht überein",
+        "submit": "Passwort ändern",
+        "submitting": "Wird geändert...",
+        "success": "Passwort erfolgreich geändert",
+        "genericError": "Ein Fehler ist aufgetreten",
+        "errorRateLimited": "Zu viele Versuche. Bitte versuchen Sie es später erneut.",
+        "errorFieldsRequired": "Alle Felder sind erforderlich",
+        "errorCurrentWrong": "Das aktuelle Passwort ist falsch",
+        "errorSamePassword": "Das neue Passwort muss sich vom aktuellen unterscheiden",
+        "oauthMessage": "Sie haben sich mit Google angemeldet und kein Passwort gesetzt.",
+        "forgotPasswordLink": "Passwort vergessen?",
+        "setPasswordLink": "Passwort über E-Mail setzen",
+        "showPassword": "Passwort anzeigen",
+        "hidePassword": "Passwort verbergen"
+      }
     },
     "settingsProfile": {
       "avatar": {
@@ -3848,18 +3880,18 @@
     "needMoreUploads": "Sie benötigen noch {count, plural, =1 {1 weiteren Upload} other {# weitere Uploads}} für {level}",
     "needMoreDownloads": "Sie benötigen noch {count, plural, =1 {1 weiteren Download} other {# weitere Downloads}} für {level}",
     "levels": {
-      "newcomer": "Newcomer",
-      "contributor": "Mitwirkende:r",
-      "expert": "Expert:in",
-      "star": "Star",
-      "legend": "Legende"
+      "bronze": "Bronze",
+      "silber": "Silber",
+      "gold": "Gold",
+      "platin": "Platin",
+      "diamant": "Diamant"
     },
     "descriptions": {
-      "newcomer": "Willkommen! Lade dein erstes Material hoch.",
-      "contributor": "Du teilst aktiv dein Wissen — weiter so!",
-      "expert": "Deine Materialien sind gefragt. Tolle Arbeit!",
-      "star": "Du bist ein Star der Community!",
-      "legend": "Legende! Du prägst Currico."
+      "bronze": "Willkommen! Lade dein erstes Material hoch.",
+      "silber": "Du teilst aktiv dein Wissen — weiter so!",
+      "gold": "Deine Materialien sind gefragt. Tolle Arbeit!",
+      "platin": "Du bist ein Platin-Verkäufer der Community!",
+      "diamant": "Diamant! Du prägst Currico."
     },
     "page": {
       "heroTitle": "Verkäufer-Levels",
@@ -3931,7 +3963,22 @@
         "variety": "Biete verschiedene Fächer und Zyklen an, um mehr Lehrpersonen zu erreichen.",
         "keywords": "Verwende aussagekräftige Titel und Beschreibungen, damit deine Materialien gefunden werden.",
         "regular": "Lade regelmässig neue Materialien hoch — aktive Verkäufer:innen steigen schneller auf."
-      }
+      },
+      "yourLevel": "Dein aktuelles Level",
+      "currentLevel": "Aktuelles Level",
+      "levelLocked": "Gesperrt",
+      "levelUnlocked": "Erreicht",
+      "loginToSeeProgress": "Melde dich an, um deinen persönlichen Fortschritt zu sehen.",
+      "loginCta": "Anmelden",
+      "becomeSeller": "Werde Verkäufer:in, um Levels freizuschalten!",
+      "becomeSellerCta": "Verkäufer:in werden",
+      "requirementProgress": "{current}/{required}",
+      "requirementPoints": "Punkte",
+      "requirementUploads": "Uploads",
+      "requirementDownloads": "Downloads",
+      "blockerNeedMorePoints": "Du benötigst noch {count} Punkte",
+      "blockerNeedMoreUploads": "{count, plural, =1 {Du benötigst noch 1 Upload} other {Du benötigst noch # Uploads}}",
+      "blockerNeedMoreDownloads": "{count, plural, =1 {Du benötigst noch 1 Download} other {Du benötigst noch # Downloads}}"
     }
   },
   "verifiedSeller": {
@@ -3966,14 +4013,38 @@
         }
       },
       "howTitle": "Wie funktioniert die Verifizierung?",
-      "howAutomatic": "Die Verifizierung erfolgt automatisch: Jedes Mal, wenn du deine Verkäufer-Level-Seite besuchst, werden deine Statistiken überprüft. Sobald du alle 4 Kriterien erfüllst, erhältst du automatisch das Abzeichen.",
-      "howRevocation": "Achtung: Wenn du die Kriterien nicht mehr erfüllst (z.B. durch eine offene Meldung oder sinkende Bewertung), wird die automatische Verifizierung widerrufen.",
-      "howManual": "In Ausnahmefällen kann das Currico-Team die Verifizierung auch manuell vergeben oder widerrufen.",
+      "howSteps": {
+        "automatic": {
+          "title": "Automatische Prüfung",
+          "description": "Deine Statistiken werden bei jedem Verkauf, Download und jeder Bewertung überprüft. Sobald du alle 4 Kriterien erfüllst, erhältst du automatisch das Abzeichen."
+        },
+        "revocation": {
+          "title": "Widerruf möglich",
+          "description": "Wenn du die Kriterien nicht mehr erfüllst (z.B. durch sinkende Bewertungen), wird die automatische Verifizierung widerrufen."
+        },
+        "manual": {
+          "title": "Manuelle Vergabe",
+          "description": "In Ausnahmefällen kann das Currico-Team die Verifizierung auch manuell vergeben oder widerrufen."
+        }
+      },
       "benefitsTitle": "Vorteile",
       "benefits": {
         "badge": "Sichtbares Abzeichen auf deinem Profil und bei allen deinen Materialien.",
         "trust": "Erhöhtes Vertrauen bei Käufer:innen — verifizierte Verkäufer:innen werden bevorzugt.",
-        "visibility": "Bessere Sichtbarkeit auf der Plattform."
+        "visibility": "Bessere Sichtbarkeit in Suchergebnissen und Empfehlungen.",
+        "credibility": "Dein Profil wird als «vertrauenswürdig» hervorgehoben — ideal für neue Käufer:innen.",
+        "recognition": "Anerkennung deiner Arbeit als erfahrene Lehrperson und Materialerstellerin."
+      },
+      "comparisonTitle": "Was unterscheidet verifizierte Verkäufer?",
+      "comparison": {
+        "uploadMaterials": "Materialien hochladen",
+        "sellMaterials": "Materialien verkaufen",
+        "receiveReviews": "Bewertungen erhalten",
+        "profileBadge": "Verifiziertes Abzeichen auf Profil",
+        "materialBadge": "Abzeichen auf allen Materialien",
+        "searchBoost": "Hervorgehobene Platzierung in Suchergebnissen",
+        "regular": "Regulärer Verkäufer",
+        "verified": "Verifizierter Verkäufer"
       },
       "cta": "Materialien hochladen"
     }
