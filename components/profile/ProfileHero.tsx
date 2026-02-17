@@ -4,11 +4,32 @@ import { useState } from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { useTranslations, useLocale } from "next-intl";
-import { UserPlus, UserCheck, Calendar, MapPin, Instagram, Lock, Loader2 } from "lucide-react";
+import {
+  UserPlus,
+  UserCheck,
+  Calendar,
+  MapPin,
+  Instagram,
+  Lock,
+  Loader2,
+  Globe,
+  GraduationCap,
+  School2,
+} from "lucide-react";
 import { VerifiedSellerBadge } from "@/components/ui/VerifiedSellerBadge";
+import { SellerBadge } from "@/components/ui/SellerBadge";
 import { getSubjectPillClass } from "@/lib/constants/subject-colors";
 import { FadeIn, StaggerChildren, StaggerItem } from "@/components/ui/animations";
 import type { PublicProfileData } from "@/lib/types/profile";
+
+// Map DB value → i18n key suffix in accountPage.settingsProfile namespace
+const EXPERIENCE_KEY_MAP: Record<string, string> = {
+  "0-2": "experience0_2",
+  "3-5": "experience3_5",
+  "6-10": "experience6_10",
+  "11-20": "experience11_20",
+  "20+": "experience20plus",
+};
 
 interface ProfileHeroProps {
   profile: PublicProfileData;
@@ -24,11 +45,16 @@ export function ProfileHero({
   followLoading,
 }: ProfileHeroProps) {
   const t = useTranslations("profile");
+  const tExp = useTranslations("accountPage.settingsProfile");
   const locale = useLocale();
   const dateLocale = locale === "de" ? "de-CH" : "en-US";
   const [avatarError, setAvatarError] = useState(false);
 
   const showInitials = !profile.image || avatarError;
+
+  const experienceKey = profile.teaching_experience
+    ? EXPERIENCE_KEY_MAP[profile.teaching_experience]
+    : null;
 
   return (
     <FadeIn className="from-primary/15 via-accent/8 to-success/15 mb-8 overflow-hidden rounded-2xl bg-gradient-to-r">
@@ -61,6 +87,21 @@ export function ProfileHero({
                   <div className="mt-1">
                     <VerifiedSellerBadge variant="full" />
                   </div>
+                )}
+                {/* Seller Level Badge */}
+                <div className="mt-2">
+                  <SellerBadge
+                    points={profile.seller_xp}
+                    cachedLevel={profile.seller_level}
+                    variant="full"
+                  />
+                </div>
+                {/* Teacher Verified Badge */}
+                {profile.is_teacher_verified && (
+                  <span className="bg-success/15 text-success mt-1.5 inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold">
+                    <GraduationCap className="h-3.5 w-3.5" />
+                    {t("teacherVerified")}
+                  </span>
                 )}
               </div>
 
@@ -99,7 +140,7 @@ export function ProfileHero({
             {profile.is_private && !profile.isOwnProfile && (
               <div className="bg-surface border-border text-text-muted mb-3 flex items-center gap-2 rounded-lg border p-3 text-sm">
                 <Lock className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
-                <span>{t("privacy.notice")}</span>
+                <span>{t("privacy.noticePartial")}</span>
               </div>
             )}
 
@@ -108,12 +149,24 @@ export function ProfileHero({
               <p className="text-text-secondary mb-3 leading-relaxed">{profile.bio}</p>
             )}
 
-            {/* Meta: location + member since */}
+            {/* Meta: location, school, experience, member since */}
             <div className="text-text-muted flex flex-wrap gap-x-4 gap-y-1 text-sm">
               {!profile.is_private && profile.cantons.length > 0 && (
                 <div className="flex items-center gap-1">
                   <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
                   {profile.cantons.join(", ")}
+                </div>
+              )}
+              {!profile.is_private && profile.school && (
+                <div className="flex items-center gap-1">
+                  <School2 className="h-3.5 w-3.5" aria-hidden="true" />
+                  {profile.school}
+                </div>
+              )}
+              {!profile.is_private && experienceKey && (
+                <div className="flex items-center gap-1">
+                  <GraduationCap className="h-3.5 w-3.5" aria-hidden="true" />
+                  {tExp(experienceKey as never)}
                 </div>
               )}
               <div className="flex items-center gap-1">
@@ -128,6 +181,22 @@ export function ProfileHero({
 
             {/* Social Media + Subject Pills */}
             <div className="mt-3 flex flex-wrap items-center gap-2">
+              {!profile.is_private && profile.website && (
+                <a
+                  href={
+                    profile.website.startsWith("http")
+                      ? profile.website
+                      : `https://${profile.website}`
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${t("website")}: ${profile.website}`}
+                  className="text-text-muted hover:text-primary border-border flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm transition-colors hover:bg-blue-500/10"
+                >
+                  <Globe className="h-3.5 w-3.5" />
+                  {t("website")}
+                </a>
+              )}
               {!profile.is_private && profile.instagram && (
                 <a
                   href={`https://instagram.com/${profile.instagram}`}

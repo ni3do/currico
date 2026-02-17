@@ -123,6 +123,7 @@ export interface UserData {
   instagram?: string | null;
   pinterest?: string | null;
   is_private?: boolean;
+  hasPassword?: boolean;
   notify_new_from_followed?: boolean;
   notify_recommendations?: boolean;
   notify_material_updates?: boolean;

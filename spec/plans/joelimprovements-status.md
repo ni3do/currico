@@ -175,8 +175,8 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Hardcodierte E-Mail `info@currico.ch` (Zeile 194) statt aus i18n — now uses `t("noResults.contactEmail")`
 - [x] FAQ-Tabs haben kein `aria-selected` Attribut — Screenreader können aktiven Tab nicht identifizieren
 - [x] Accordion-Buttons fehlt `aria-expanded` Attribut — Screenreader erkennen geöffneten Zustand nicht
-- [ ] Keine Suchfunktion für FAQ — bei 30+ Fragen wäre In-App-Suche hilfreich
-- [ ] Kategorie-State wird bei Tab-Wechsel / Navigation nicht gespeichert — LocalStorage-Persistierung würde helfen
+- [x] Keine Suchfunktion für FAQ — search input above tabs filters across all categories by question+answer text, shows result count and category badges, uses existing i18n keys
+- [x] Kategorie-State wird bei Tab-Wechsel / Navigation nicht gespeichert — active tab persisted to localStorage via `hilfe-faq-tab` key, restored on mount with validation
 - [x] Keine `FAQPage` Schema.org-Daten — FAQPage + BreadcrumbList schema in `/hilfe/layout.tsx`
 
 ---
@@ -200,8 +200,8 @@ Legende: [x] = erledigt, [ ] = offen
 
 ## 6. Impressum (`/impressum`)
 
-- [ ] GmbH nachtragen (Firmenform aktualisieren)
-- [ ] Version update (optional)
+- [x] GmbH nachtragen (Firmenform aktualisieren) — already reflected as "Angle Labs GmbH" in company name and "GmbH" in legal form
+- [x] Version update (optional) — bumped to Version 1.3
 - [x] Light mode Inselfarben gleich machen (Farbkonsistenz) — standardized text-text-secondary → text-text-muted
 - [x] Kontakt Currico Link führt nach Mainpage (statt toter Link)
 
@@ -209,12 +209,12 @@ Legende: [x] = erledigt, [ ] = offen
 
 - [x] Keine `generateMetadata()` Funktion — Impressum ist wichtig für SEO/Trust
 - [x] "Handelsname:" hardcoded statt i18n — now uses `t("company.tradeNameLabel")`
-- [ ] Person-Array `["p1", "p2", "p3"]` ist magisch — sollte Konstante oder aus Config geladen werden
+- [x] Person-Array `["p1", "p2", "p3"]` ist magisch — extracted to `AUTHORIZED_REPRESENTATIVES` constant
 - [x] Icons (Building2, Mail, Globe, Scale, Users) haben kein `aria-hidden="true"` — werden als Inhalt gelesen
 - [x] E-Mail-Links ohne `title`-Attribut — title attributes added to all legal page mailto links with i18n
 - [x] `grid-cols-2` auf Mobile führt zu sehr schmalen Spalten — sollte `grid-cols-1 md:grid-cols-2` sein
-- [ ] Disclaimer-Sektionen nutzen `<div>` statt `<section>` mit `aria-labelledby` — fehlende Semantik
-- [ ] Keine `Organization`/`LocalBusiness` Schema.org-Daten — für Suchmaschinen-Vertrauen
+- [x] Disclaimer-Sektionen nutzen `<div>` statt `<section>` mit `aria-labelledby` — replaced with `<section>` elements with `aria-labelledby` IDs, disclaimer sections rendered via `DISCLAIMER_SECTIONS` constant
+- [x] Keine `Organization`/`LocalBusiness` Schema.org-Daten — enhanced to dual `["Organization", "LocalBusiness"]` type with `ContactPoint`, `founder` array, `areaServed`, and `addressRegion`
 - [x] Links zu anderen Legal-Seiten fehlen — cross-links section added to Impressum (privacy, terms, cookies, copyright)
 
 ---
@@ -238,19 +238,19 @@ Legende: [x] = erledigt, [ ] = offen
 ## 8. Verkäufer-Stufen (`/verkaeufer-stufen`)
 
 - [x] "So sammelst du Punkte" Raster einheitlich auf gleiche Höhe bringen — flex-col + mt-auto for equal card heights
-- [ ] Lock Tier Upgrade nur bei bestimmten Voraussetzungen (Anzahl Downloads/Uploads)
-- [ ] Namen von Leveln überarbeiten
-- [ ] Punkte/Level-Aufstieg-System überarbeiten
+- [x] Lock Tier Upgrade nur bei bestimmten Voraussetzungen (Anzahl Downloads/Uploads) — `getCurrentLevel()` checks `minUploads`/`minDownloads`; page shows lock/unlock states
+- [x] Namen von Leveln überarbeiten — bronze/silber/gold/platin/diamant
+- [x] Punkte/Level-Aufstieg-System überarbeiten — new thresholds, rating multipliers, verified bonus
 
 ### Eigene Vorschläge (Verkäufer-Stufen)
 
 - [x] Hardcoded deutsche Strings ("1 Material", "5 Materialien", "25 Downloads", "1 Bewertung" etc.) — now use i18n plural forms
 - [x] Hardcoded "Level" Text in Badge — now uses `t("page.levelBadge", { level })`
 - [x] Layout-Metadata nutzt Canonical URL "seller-levels" statt "verkaeufer-stufen" — SEO-Fehler
-- [ ] `tipIcons` Array wird per Index gemappt — fragile Zuordnung, bricht wenn Array-Länge ändert
-- [ ] Keine visuelle Hierarchie zwischen aktuellem und angestrebtem Level — alle Level gleich dargestellt
-- [ ] Breadcrumb zeigt nur Seitentitel ohne Home-Link — fehlende Hierarchie
-- [ ] Keine Schema.org-Daten für Punkte-System
+- [x] `tipIcons` Array wird per Index gemappt — fragile Zuordnung, bricht wenn Array-Länge ändert — replaced with `TIP_CONFIG` record keyed by string
+- [x] Keine visuelle Hierarchie zwischen aktuellem und angestrebtem Level — alle Level gleich dargestellt — current/unlocked/next/locked states with ring, opacity, lock icons
+- [x] Breadcrumb zeigt nur Seitentitel ohne Home-Link — fehlende Hierarchie — `Breadcrumb` component has `showHome=true` by default
+- [x] Keine Schema.org-Daten für Punkte-System — ItemList JSON-LD describing 5 levels added in layout.tsx
 
 ---
 
@@ -262,32 +262,32 @@ Legende: [x] = erledigt, [ ] = offen
 ### Eigene Vorschläge (Verifizierter Verkäufer)
 
 - [x] Keine `generateMetadata()` Funktion — SEO-Metadaten und Canonical URLs fehlen
-- [ ] Keine Validierung dass `VERIFIED_SELLER_CRITERIA` genau 5 Items hat passend zu `criteriaIcons` Array — Icon-Text-Mismatch möglich
-- [ ] Benefits-Section nutzt inline SVG-Icons statt lucide-react wie andere Sektionen — inkonsistentes Icon-System
-- [ ] Nur 3 Benefits gelistet — fühlt sich unvollständig an, Nutzer wollen mehr Detail was "verifiziert" praktisch bedeutet
-- [ ] "How it works" hat 3 kurze Absätze ohne visuelle Differenzierung oder Icons — schwer zu scannen
-- [ ] Kein Vergleich mit nicht-verifizierten Verkäufern — Nutzer sehen keinen konkreten Unterschied
+- [x] Keine Validierung dass `VERIFIED_SELLER_CRITERIA` genau 5 Items hat passend zu `criteriaIcons` Array — unified into `CRITERIA_CONFIG` array mapping keys to icons, typed with `LucideIcon`
+- [x] Benefits-Section nutzt inline SVG-Icons statt lucide-react wie andere Sektionen — all icons now from lucide-react via `BENEFITS` config (BadgeCheck, Shield, Eye, Award, Star)
+- [x] Nur 3 Benefits gelistet — expanded to 5 benefits with distinct icons and i18n keys (credibility + recognition added)
+- [x] "How it works" hat 3 kurze Absätze ohne visuelle Differenzierung oder Icons — replaced with `HOW_STEPS` config: numbered cards with icons (Zap, AlertTriangle, UserCog), title+description per step
+- [x] Kein Vergleich mit nicht-verifizierten Verkäufern — comparison table with 6 feature rows, check/X marks, highlighted verified column with green tint
 - [x] Metadata in Layout nutzt falschen Canonical-Pfad
 
 ---
 
 ## 10. Über uns (`/ueber-uns`)
 
-- [ ] Ganze Seite überarbeiten und persönlicher gestalten
-- [ ] Bilder überarbeiten und einheitlicher machen
+- [x] Ganze Seite überarbeiten und persönlicher gestalten — full overhaul with 9 sections: Hero (with animations), Stats Bar (new), Origin Story (with pull-quote), Timeline/Journey (new vertical timeline with 6 milestones), Meet the Team (with MotionCard + funFact), Founders Quote (dedicated section with circular photos), Values (Swiss-specific: LP21, Swiss servers, peer-reviewed, fair pay), Help Us Grow (with stagger animations), Final CTA
+- [ ] Bilder überarbeiten und einheitlicher machen — user will provide real photos
 
 ### Eigene Vorschläge (Über uns)
 
 - [x] `Link` aus "next/link" importiert statt aus `@/i18n/navigation` — umgeht Locale-Handling, kann Mehrsprachigkeit brechen
 - [x] Layout-Metadata nutzt Canonical "/about" statt "/ueber-uns" — SEO-Fehler
-- [ ] Hardcoded SVG-Icons für Values statt lucide-react — inkonsistentes Icon-System
-- [ ] Persönliches Zitat (Kursiv-Serif) ohne klaren Kontext wer spricht — mehrdeutig
-- [ ] Values-Section nutzt sehr generische Beschreibungen — nicht differenziert von anderen EdTech-Plattformen
-- [ ] Kein CTA-Button am Seitenanfang — erst ganz unten nach viel Text
-- [ ] Kein Schema.org `Organization` Markup — fehlende strukturierte Daten
-- [ ] Meta-Description zu generisch — sollte spezifischer für Schweizer Kontext sein
-- [ ] Keine Social-Media-Links oder Kontaktmöglichkeiten beim Team — Nutzer können Team nicht kontaktieren
-- [ ] Kein Fallback wenn Team-Member-Bilder nicht laden
+- [x] Hardcoded SVG-Icons für Values statt lucide-react — inkonsistentes Icon-System — now uses lucide-react icons via VALUES_CONFIG array (BookOpen, Shield, Users, Coins)
+- [x] Persönliches Zitat (Kursiv-Serif) ohne klaren Kontext wer spricht — mehrdeutig — extracted to dedicated Quote section with context heading, circular founder photos, and clear attribution
+- [x] Values-Section nutzt sehr generische Beschreibungen — nicht differenziert von anderen EdTech-Plattformen — rewritten with Swiss-specific values: LP21 im Kern, Schweizer Daten/Server, Von Kolleg:innen geprüft, Faire Vergütung
+- [x] Kein CTA-Button am Seitenanfang — erst ganz unten nach viel Text — Hero section now has 2 CTA buttons (Materialien entdecken + Kostenlos registrieren)
+- [ ] Kein Schema.org `Organization` Markup — fehlende strukturierte Daten — already exists in layout.tsx
+- [x] Meta-Description zu generisch — sollte spezifischer für Schweizer Kontext sein — updated to "Lerne Simon und Laurent kennen — die zwei Schweizer hinter Currico..."
+- [x] Keine Social-Media-Links oder Kontaktmöglichkeiten beim Team — Nutzer können Team nicht kontaktieren — email icons on both founder cards link to info@currico.ch
+- [x] Kein Fallback wenn Team-Member-Bilder nicht laden — both founders have onError fallback to gradient + initials (SW/LZ)
 
 ---
 
@@ -326,7 +326,7 @@ Legende: [x] = erledigt, [ ] = offen
 ### Eigene Vorschläge (Anmelden)
 
 - [ ] "Remember Me" Kontrollkästchen ist vorhanden, aber Auswahl wird nicht gespeichert — Funktionalität fehlt
-- [ ] Nach fehlgeschlagenem Login werden E-Mail und Passwort geleert — sollten bestehen bleiben für schnelleres Ausprobieren
+- [x] Nach fehlgeschlagenem Login werden E-Mail und Passwort geleert — already working correctly, fields are preserved after failed login
 - [ ] OAuth-Fehler haben keine spezifischen Fehlermeldungen — nur generischer Fehler
 - [ ] Keine sichtbare Brute-Force-Schutz-Anzeige (z.B. "Zu viele Versuche, bitte warten")
 - [ ] Keine Capslock-Warnung beim Passwort-Feld
@@ -339,7 +339,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [ ] Passwort-Anforderungen (8 Zeichen Minimum) werden nicht vor dem Absenden angezeigt — nur bei der Eingabe
 - [ ] Keine Prüfung auf häufig verwendete Passwörter (z.B. "password123")
 - [ ] Keine Passwort-Stärke-Anzeige — nur Mindestlänge wird validiert
-- [ ] AGB/Datenschutz-Links zeigen "/bald-verfuegbar" — sollten auf echte Seiten verlinken
+- [x] AGB/Datenschutz-Links zeigen "/bald-verfuegbar" — already fixed, links point to /agb and /datenschutz (real pages)
 - [ ] Keine klare Indication nach Registrierung, dass E-Mail bestätigt werden muss
 
 ---
@@ -412,13 +412,13 @@ Legende: [x] = erledigt, [ ] = offen
 ### Eigene Vorschläge (Einstellungen)
 
 - [x] Bio-Feld `maxLength={500}` — Zeichenzähler ist sofort sichtbar: `{bio.length}/500`
-- [ ] Passwort ändern Funktion fehlt komplett — sollte in diesem Bereich sein
-- [ ] "E-Mail ändern → kontaktieren Sie uns" ohne Link/Button zu Support — Sackgasse
-- [ ] Instagram/Pinterest-Felder: keine Validierung der Benutzernamen
+- [x] Passwort ändern Funktion fehlt komplett — POST /api/auth/change-password with bcrypt verify, rate limiting, strength validation; form in account settings with show/hide toggles, autocomplete hints, error code→i18n mapping, OAuth-only fallback message
+- [x] "E-Mail ändern → kontaktieren Sie uns" ohne Link/Button zu Support — rich text with Link to /kontakt added
+- [x] Instagram/Pinterest-Felder: keine Validierung der Benutzernamen — regex validation (alphanumeric, dots, underscores) with error display
 - [ ] Profil-Visibility-Toggle hat keine Bestätigung vor Änderung zu Private
 - [ ] Floating Save Bar könnte Position bei kleinen Screens falsch berechnen
 - [ ] Keine Vorschau-Funktion für öffentliches Profil vor dem Speichern
-- [ ] "Datenexport"-Button hat keine Funktionalität implementiert — sollte disabled oder funktional sein
+- [x] "Datenexport"-Button hat keine Funktionalität implementiert — button does not exist in the UI, non-issue
 - [x] "Konto löschen"-Button hat keine Funktionalität — full confirmation flow with typed "LÖSCHEN" input implemented
 - [ ] Keine Warnung, dass Konto-Löschung permanent ist und Materialien/Käufe betroffen
 - [ ] Keine Zwei-Faktor-Authentifizierung (2FA) Option
@@ -479,18 +479,18 @@ Legende: [x] = erledigt, [ ] = offen
 
 - [x] "Gefolgte Profile" Wording überarbeiten — proper i18n key `following.followedProfiles` with correct wording
 - [x] Bei Klick auf Profil → zur Profilansicht wechseln — links to `/profil/${id}` (correct German path)
-- [ ] Man kann sich nicht selber folgen (Logik einbauen) — **OUT OF SCOPE: backend API logic, not frontend UI**
+- [x] Man kann sich nicht selber folgen (Logik einbauen) — already handled server-side: `CANNOT_FOLLOW_SELF` check in POST `/api/user/following`
 
 ### Eigene Vorschläge (Folge ich)
 
 - [x] `getSubjectPillClass` ist dupliziert (erscheint in 3+ Dateien) — konsolidiert in `lib/constants/subject-colors.ts`
 - [x] Link href zu `/profile/{id}` statt `/profil/{id}` — URL-Inkonsistenz (alter englischer Pfad) — fixed in folge-ich & sammlungen
-- [ ] Unfollow-Button zeigt Hover-State mit Error-Farben (`hover:border-error`) — impliziert Gefahr statt einfaches Entfolgen
+- [x] Unfollow-Button zeigt Hover-State mit Error-Farben (`hover:border-error`) — changed to hover:border-primary hover:text-primary
 - [x] "Discover profiles" Button im Empty-State verlinkt auf `/materialien?showCreators=true` — now links to profiles tab
-- [ ] "Followed since" Datumsformat nutzt `toLocaleDateString` aber matcht nicht Rest der App
-- [ ] Alle gefolgten Seller werden auf einmal geladen — keine Pagination für grosse Listen
+- [x] "Followed since" Datumsformat nutzt `toLocaleDateString` aber matcht nicht Rest der App — fixed en-CH → en-US for consistency
+- [x] Alle gefolgten Seller werden auf einmal geladen — paginated API (`page`/`limit` params, `total`/`hasMore` response) with "Load more" button, 20 per page
 - [x] Keine Metadata für `/folge-ich` Route — layout.tsx with generateMetadata added
-- [ ] API-Response-Struktur wird nicht validiert — nimmt an dass `data.sellers` existiert
+- [x] API-Response-Struktur wird nicht validiert — `isValidFollowingResponse()` type guard validates shape before setting state, graceful fallback on invalid data
 
 ---
 
@@ -553,19 +553,19 @@ Legende: [x] = erledigt, [ ] = offen
 
 ## 20. Öffentliches Profil (`/profil/[id]`)
 
-- [ ] Profilseite komplett überarbeiten und funktionierend machen
+- [x] Profilseite komplett überarbeiten und funktionierend machen — SSR metadata layout with OG/Twitter/JSON-LD, seller level badge, teacher badge, school, experience, website, improved private profile (shows material count + partial notice), id validation
 
 ### Eigene Vorschläge (Öffentliches Profil)
 
 - [x] Hardcoded deutsche Strings: "Profil nicht gefunden", "Das gesuchte Profil existiert nicht", "Benutzer", "Materialien durchsuchen", "Profil wird geladen..." — alles in i18n auslagern
 - [x] `getSubjectPillClass` lokal definiert statt aus Shared Utility — jetzt aus `lib/constants/subject-colors.ts` importiert
 - [x] `formatPrice` ist lokal definiert statt aus Shared Utility — now imports from `lib/utils/price.ts`
-- [ ] Keine Validierung dass `params.id` ein gültiger UUID/Slug ist vor dem Fetchen
+- [x] Keine Validierung dass `params.id` ein gültiger UUID/Slug ist vor dem Fetchen — isValidId() check in page.tsx + API route, skips fetch for invalid ids
 - [ ] 4 parallele API-Calls bei Seitenaufruf — könnten zu einem einzelnen Endpoint gebündelt werden
-- [ ] Keine SSR/Static Generation — alle Daten Client-seitig gefetcht, schlecht für SEO
-- [ ] Keine OpenGraph Meta-Tags für Profil-Sharing in sozialen Medien
+- [x] Keine SSR/Static Generation — alle Daten Client-seitig gefetcht, schlecht für SEO — SSR layout.tsx with generateMetadata() + JSON-LD (Person + BreadcrumbList)
+- [x] Keine OpenGraph Meta-Tags für Profil-Sharing in sozialen Medien — OG type:profile, Twitter summary card, canonical + language alternates
 - [x] Follow-Button zeigt "Gefolgt" erst nach erfolgreicher Action — optimistic update with immediate `setProfile()` state change
-- [ ] Private-Profile-Notice versteckt zu viel — Verkäufer wollen evtl. kein privates Profil
+- [x] Private-Profile-Notice versteckt zu viel — Verkäufer wollen evtl. kein privates Profil — new noticePartial text, materials stat shown, seller level badge visible
 - [ ] Kein Caching von Profil-Daten — jeder Besuch fetcht frische Daten
 - [x] "Beste Uploads" Titel ist hardcoded Deutsch — already uses t("bestUploads")
 
@@ -673,22 +673,22 @@ Legende: [x] = erledigt, [ ] = offen
 | Startseite                | 16       | 0            | 0              | 0           |
 | Materialien               | 53       | 0            | 0              | 0           |
 | Material-Vorschau         | 35       | 1            | 1              | 2           |
-| Hilfe                     | 10       | 0            | 2              | 2           |
+| Hilfe                     | 12       | 0            | 0              | 0           |
 | Urheberrecht              | 9        | 0            | 0              | 0           |
-| Impressum                 | 8        | 2            | 3              | 5           |
+| Impressum                 | 13       | 0            | 0              | 0           |
 | Cookie-Richtlinien        | 8        | 0            | 0              | 0           |
-| Verkäufer-Stufen          | 4        | 3            | 4              | 7           |
-| Verifizierter Verkäufer   | 4        | 0            | 5              | 5           |
-| Über uns                  | 2        | 2            | 8              | 10          |
+| Verkäufer-Stufen          | 11       | 0            | 0              | 0           |
+| Verifizierter Verkäufer   | 9        | 0            | 0              | 0           |
+| Über uns                  | 10       | 1            | 1              | 2           |
 | Kontakt                   | 13       | 0            | 0              | 0           |
 | Anmelden                  | 9        | 0            | 5              | 5           |
 | Registrieren              | 0        | 0            | 5              | 5           |
 | Konto (alle Unterseiten)  | 41       | 2            | 26             | 28          |
-| Folge ich                 | 6        | 1            | 4              | 5           |
+| Folge ich                 | 9        | 0            | 0              | 0           |
 | Hochladen                 | 29       | 3            | 0              | 3           |
 | Öffentliches Profil       | 5        | 1            | 6              | 7           |
 | Verkäufer werden / Stripe | 14       | 0            | 0              | 0           |
 | Benachrichtigungen        | 0        | 3            | 0              | 3           |
 | Global                    | 14       | 2            | 8              | 10          |
 | Final Touch Audit         | 0        | 4            | 0              | 4           |
-| **Total**                 | **272**  | **24**       | **85**         | **109**     |
+| **Total**                 | **304**  | **17**       | **62**         | **79**      |

@@ -42,6 +42,9 @@ export const publicUserSelect = {
   is_teacher_verified: true,
   // Verified seller - public badge
   is_verified_seller: true,
+  // Seller reward level
+  seller_level: true,
+  seller_xp: true,
 } as const;
 
 // Private profile - visible only to the user themselves

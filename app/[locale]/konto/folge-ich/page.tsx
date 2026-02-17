@@ -20,6 +20,26 @@ interface FollowedSellerDetail {
   followedAt: string;
 }
 
+interface FollowingApiResponse {
+  sellers: FollowedSellerDetail[];
+  total: number;
+  page: number;
+  hasMore: boolean;
+}
+
+function isValidFollowingResponse(data: unknown): data is FollowingApiResponse {
+  return (
+    typeof data === "object" &&
+    data !== null &&
+    "sellers" in data &&
+    Array.isArray((data as FollowingApiResponse).sellers) &&
+    "total" in data &&
+    typeof (data as FollowingApiResponse).total === "number"
+  );
+}
+
+const PAGE_SIZE = 20;
+
 export default function AccountFollowingPage() {
   const { status } = useSession();
   const tCommon = useTranslations("common");
@@ -28,19 +48,32 @@ export default function AccountFollowingPage() {
   const { loading: sharedLoading } = useAccountData();
 
   const [followedSellers, setFollowedSellers] = useState<FollowedSellerDetail[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState(false);
   const [unfollowingId, setUnfollowingId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Fetch followed sellers
-  const fetchFollowing = useCallback(async () => {
+  // Fetch followed sellers (paginated)
+  const fetchFollowing = useCallback(async (page: number, append: boolean = false) => {
     setError(false);
     try {
-      const response = await fetch("/api/user/following");
+      const response = await fetch(`/api/user/following?page=${page}&limit=${PAGE_SIZE}`);
       if (response.ok) {
-        const data = await response.json();
-        setFollowedSellers(data.sellers || []);
+        const data: unknown = await response.json();
+        if (isValidFollowingResponse(data)) {
+          setFollowedSellers((prev) => (append ? [...prev, ...data.sellers] : data.sellers));
+          setTotalCount(data.total);
+          setHasMore(data.hasMore);
+          setCurrentPage(data.page);
+        } else {
+          setFollowedSellers((prev) => (append ? prev : []));
+          setTotalCount(0);
+          setHasMore(false);
+        }
       } else {
         setError(true);
       }
@@ -48,14 +81,20 @@ export default function AccountFollowingPage() {
       setError(true);
     } finally {
       setLoading(false);
+      setLoadingMore(false);
     }
   }, []);
 
   useEffect(() => {
     if (status === "authenticated") {
-      fetchFollowing();
+      fetchFollowing(1);
     }
   }, [status, fetchFollowing]);
+
+  const handleLoadMore = () => {
+    setLoadingMore(true);
+    fetchFollowing(currentPage + 1, true);
+  };
 
   // Unfollow a seller
   const handleUnfollow = async (sellerId: string) => {
@@ -67,6 +106,7 @@ export default function AccountFollowingPage() {
 
       if (response.ok) {
         setFollowedSellers((prev) => prev.filter((s) => s.id !== sellerId));
+        setTotalCount((prev) => prev - 1);
       }
     } catch (error) {
       console.error("Error unfollowing:", error);
@@ -116,7 +156,7 @@ export default function AccountFollowingPage() {
       <div className="card p-8">
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="text-text text-xl font-semibold">
-            {t("followedProfiles")} ({followedSellers.length})
+            {t("followedProfiles")} ({totalCount})
           </h2>
           {followedSellers.length > 0 && (
             <input
@@ -137,7 +177,7 @@ export default function AccountFollowingPage() {
             <button
               onClick={() => {
                 setLoading(true);
-                fetchFollowing();
+                fetchFollowing(1);
               }}
               className="text-primary hover:text-primary-hover mt-2 inline-flex items-center gap-1.5 text-sm font-medium"
             >
@@ -205,7 +245,7 @@ export default function AccountFollowingPage() {
                       <button
                         onClick={() => handleUnfollow(seller.id)}
                         disabled={unfollowingId === seller.id}
-                        className="border-border text-text hover:border-error hover:text-error flex items-center gap-1.5 rounded-lg border px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
+                        className="border-border text-text hover:border-primary hover:text-primary flex items-center gap-1.5 rounded-lg border px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
                       >
                         {unfollowingId === seller.id ? (
                           <>
@@ -250,7 +290,7 @@ export default function AccountFollowingPage() {
                         <Calendar className="h-4 w-4" />
                         {t("followedSince")}{" "}
                         {new Date(seller.followedAt).toLocaleDateString(
-                          locale === "de" ? "de-CH" : "en-CH",
+                          locale === "de" ? "de-CH" : "en-US",
                           {
                             month: "short",
                             year: "numeric",
@@ -262,6 +302,26 @@ export default function AccountFollowingPage() {
                 </div>
               </div>
             ))}
+
+            {/* Load More */}
+            {hasMore && !searchQuery && (
+              <div className="pt-4 text-center">
+                <button
+                  onClick={handleLoadMore}
+                  disabled={loadingMore}
+                  className="border-border text-text hover:border-primary hover:text-primary inline-flex items-center gap-2 rounded-lg border px-6 py-2.5 text-sm font-medium transition-colors disabled:opacity-50"
+                >
+                  {loadingMore ? (
+                    <>
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                      {t("loadingMore")}
+                    </>
+                  ) : (
+                    t("loadMore")
+                  )}
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>

@@ -2,12 +2,12 @@
 // Points = (uploads × 10) + (downloads × multiplier) + (reviews × 5)
 // Download multiplier increases with higher average ratings:
 //   avg < 4.0  → 2 pts per download
-//   avg >= 4.0 → 3 pts per download
-//   avg >= 4.5 → 4 pts per download
+//   avg >= 4.0 → 4 pts per download
+//   avg >= 4.5 → 6 pts per download
 // Levels based on cumulative point thresholds
 
 import type { LucideIcon } from "lucide-react";
-import { Sprout, PenTool, Award, Star, Crown } from "lucide-react";
+import { Shield, Medal, Award, Star, Crown } from "lucide-react";
 
 export interface SellerLevel {
   level: number;
@@ -25,8 +25,8 @@ export interface SellerLevel {
 export const SELLER_LEVELS: SellerLevel[] = [
   {
     level: 0,
-    name: "newcomer",
-    icon: Sprout,
+    name: "bronze",
+    icon: Shield,
     color: "text-muted",
     bgClass: "bg-surface",
     textClass: "text-text-muted",
@@ -37,60 +37,60 @@ export const SELLER_LEVELS: SellerLevel[] = [
   },
   {
     level: 1,
-    name: "contributor",
-    icon: PenTool,
+    name: "silber",
+    icon: Medal,
     color: "primary",
     bgClass: "bg-primary/10",
     textClass: "text-primary",
     badgeBg: "bg-primary/15",
-    minPoints: 30,
-    minUploads: 1,
-    minDownloads: 0,
+    minPoints: 50,
+    minUploads: 3,
+    minDownloads: 5,
   },
   {
     level: 2,
-    name: "expert",
+    name: "gold",
     icon: Award,
     color: "accent",
     bgClass: "bg-accent/10",
     textClass: "text-accent",
     badgeBg: "bg-accent/15",
-    minPoints: 150,
-    minUploads: 3,
-    minDownloads: 5,
+    minPoints: 250,
+    minUploads: 8,
+    minDownloads: 25,
   },
   {
     level: 3,
-    name: "star",
+    name: "platin",
     icon: Star,
     color: "warning",
     bgClass: "bg-warning/10",
     textClass: "text-warning",
     badgeBg: "bg-warning/15",
-    minPoints: 450,
-    minUploads: 5,
-    minDownloads: 20,
+    minPoints: 750,
+    minUploads: 15,
+    minDownloads: 75,
   },
   {
     level: 4,
-    name: "legend",
+    name: "diamant",
     icon: Crown,
     color: "success",
     bgClass: "bg-success/10",
     textClass: "text-success",
     badgeBg: "bg-success/15",
-    minPoints: 1500,
-    minUploads: 10,
-    minDownloads: 50,
+    minPoints: 2500,
+    minUploads: 30,
+    minDownloads: 200,
   },
 ];
 
 export const POINTS_PER_UPLOAD = 10;
 export const POINTS_PER_DOWNLOAD_BASE = 2;
-export const POINTS_PER_DOWNLOAD_GOOD = 3; // avg rating >= 4.0
-export const POINTS_PER_DOWNLOAD_GREAT = 4; // avg rating >= 4.5
+export const POINTS_PER_DOWNLOAD_GOOD = 4; // avg rating >= 4.0
+export const POINTS_PER_DOWNLOAD_GREAT = 6; // avg rating >= 4.5
 export const POINTS_PER_REVIEW = 5;
-export const VERIFIED_SELLER_BONUS = 50;
+export const VERIFIED_SELLER_BONUS = 100;
 
 export function getDownloadMultiplier(avgRating: number | null): number {
   if (avgRating !== null && avgRating >= 4.5) return POINTS_PER_DOWNLOAD_GREAT;

@@ -11,8 +11,8 @@ export async function generateMetadata({
   return {
     title: isDE ? "Über uns" : "About Us",
     description: isDE
-      ? "Simon & Laurent haben Currico gegründet, um Schweizer Lehrpersonen die Unterrichtsvorbereitung zu erleichtern. Erfahre unsere Geschichte."
-      : "Simon & Laurent founded Currico to make lesson prep easier for Swiss teachers. Learn our story.",
+      ? "Lerne Simon und Laurent kennen — die zwei Schweizer hinter Currico. Erfahre, wie aus einer Idee am Küchentisch eine Plattform für Lehrpersonen wurde."
+      : "Meet Simon and Laurent — the two Swiss founders behind Currico. Learn how a kitchen table idea became a platform for teachers.",
     alternates: {
       canonical: `/${locale}/ueber-uns`,
       languages: { de: "/de/ueber-uns", en: "/en/ueber-uns" },

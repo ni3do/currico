@@ -1075,35 +1075,60 @@
   },
   "aboutPage": {
     "hero": {
-      "badge": "By Teachers, for Teachers",
+      "badge": "From Switzerland, for Swiss Classrooms",
       "title": "We know your day. We've been there.",
       "subtitle": "Currico was born from real frustration — from teachers who spent evenings and weekends on lesson prep. We wanted to change that. Not with a big budget, but with heart.",
       "imageAlt": "The Currico team",
       "primaryCta": "Explore Materials",
       "secondaryCta": "Sign Up Free"
     },
-    "problem": {
-      "title": "We've all been there",
-      "subtitle": "Teachers kept telling us about the same challenges. These three came up again and again.",
-      "point1": {
-        "title": "Hours on a single worksheet",
-        "description": "Creating one worksheet — researching, designing, adapting, printing. For every lesson, every week. The hours add up fast."
-      },
-      "point2": {
-        "title": "Finding diverse materials is hard",
-        "description": "Students love varied, engaging materials. But finding them takes time you simply don't have."
-      },
-      "point3": {
-        "title": "Differentiation takes time",
-        "description": "Every child learns differently. Preparing materials for different levels matters — but it's incredibly time-consuming."
-      }
+    "stats": {
+      "materials": { "value": "500+", "label": "Materials" },
+      "teachers": { "value": "200+", "label": "Teachers" },
+      "cantons": { "value": "26", "label": "Cantons" },
+      "lp21": { "value": "LP21", "label": "compatible" }
     },
     "origin": {
       "title": "How it all started",
       "paragraph1": "It started at a kitchen table. Simon came home frustrated from school, talking about how much time he'd spent on worksheets again. Laurent, his friend from the tech world, asked: \"Why isn't there a solution for this?\"",
       "paragraph2": "We talked to other teachers — and heard the same thing everywhere: prep eats up all your free time. Hours spent searching, adapting, designing materials. And even then, it's often not quite what you need.",
       "paragraph3": "So we started building something. Not with investors or a grand plan. Just two people who believe teachers deserve tools that give them their time back.",
+      "highlight": "\"Why isn't there a solution for this?\" — That one question changed everything.",
       "imageAlt": "Simon and Laurent working together"
+    },
+    "timeline": {
+      "title": "Our Journey",
+      "subtitle": "From a kitchen table idea to a platform for Swiss teachers.",
+      "milestone1": {
+        "date": "Summer 2022",
+        "title": "The Idea",
+        "description": "At the kitchen table, a vision is born: a platform by teachers, for teachers."
+      },
+      "milestone2": {
+        "date": "Autumn 2022",
+        "title": "First Line of Code",
+        "description": "Laurent starts the prototype. Simon provides input from the classroom."
+      },
+      "milestone3": {
+        "date": "Spring 2023",
+        "title": "Beta Launch",
+        "description": "The first teachers test Currico and share invaluable feedback."
+      },
+      "milestone4": {
+        "date": "Summer 2023",
+        "title": "LP21 Integration",
+        "description": "All materials can be filtered by Lehrplan 21 — a milestone for Switzerland."
+      },
+      "milestone5": {
+        "date": "2024",
+        "title": "Community Grows",
+        "description": "More and more teachers share materials and build the platform together."
+      },
+      "milestone6": {
+        "date": "Today",
+        "title": "And We Keep Going",
+        "description": "Every day we work to make Currico better — with you and for you."
+      }
     },
     "founders": {
       "title": "The two behind Currico",
@@ -1111,35 +1136,40 @@
       "founder1": {
         "name": "Simon Wachter",
         "role": "Co-Founder & Education",
-        "bio": "I was a teacher myself and know what it feels like to spend Sunday evenings creating worksheets. At Currico, I make sure every material is practical and made for Swiss classrooms."
+        "bio": "I was a teacher myself and know what it feels like to spend Sunday evenings creating worksheets. At Currico, I make sure every material is practical and made for Swiss classrooms.",
+        "funFact": "Drinks more coffee than lines of code written."
       },
       "founder2": {
         "name": "Laurent Zoccoletti",
         "role": "Co-Founder & Tech",
-        "bio": "I build Currico to just work — fast, simple, no frustration. My goal: technology should help you, never get in the way."
+        "bio": "I build Currico to just work — fast, simple, no frustration. My goal: technology should help you, never get in the way.",
+        "funFact": "Debugs best with a view of the Alps."
       },
-      "story": "We're not a startup chasing investors. We're two people who started at a kitchen table because we believe teachers deserve someone who makes their day easier. And we're happy about every person who joins us on this journey.",
-      "highlight": "Got a question, an idea, or just want to say hi? We'd genuinely love to hear from you.",
-      "quoteAttribution": "Simon & Laurent, Founders of Currico",
       "emailLabel": "Email {name}"
     },
+    "quote": {
+      "context": "Why we work on Currico every day",
+      "text": "We're not a startup chasing investors. We're two people who started at a kitchen table because we believe teachers deserve someone who makes their day easier. And we're happy about every person who joins us on this journey.",
+      "attribution": "Simon & Laurent",
+      "role": "Founders of Currico"
+    },
     "values": {
-      "title": "What we believe in",
+      "title": "What sets us apart",
       "value1": {
-        "title": "Your time is yours",
-        "description": "No more hours of prep. Find materials that fit your lesson in minutes — and take your evening back."
+        "title": "Lehrplan 21 at the Core",
+        "description": "Every material aligns with LP21. Find content matching your competency area in seconds — no adapting needed."
       },
       "value2": {
-        "title": "Stronger together",
-        "description": "Hundreds of teachers already share materials, give feedback, and inspire each other. Join the community."
+        "title": "Swiss Data, Swiss Servers",
+        "description": "Hosted by Infomaniak in Swiss data centers. Your data stays in Switzerland, protected by strict privacy laws."
       },
       "value3": {
-        "title": "Made for Switzerland",
-        "description": "Every material aligns with Lehrplan 21 and fits all 26 cantons. No adapting foreign content required."
+        "title": "Peer-Reviewed by Colleagues",
+        "description": "Every material is rated and reviewed by the community. So you only find content that actually works in the classroom."
       },
       "value4": {
-        "title": "Quality over quantity",
-        "description": "Every material is rated by the community. So you only find reviewed content that actually works in the classroom."
+        "title": "Fair Compensation",
+        "description": "Those who share materials earn from them. Fair prices for buyers, fair pay for creators. That's how community works."
       }
     },
     "helpUs": {
@@ -1156,31 +1186,6 @@
       "subtitle": "Every teacher who joins makes Currico a little bit better. For you, for everyone. It's free to start.",
       "button": "Explore Materials",
       "secondaryButton": "Sign Up Free"
-    },
-    "swissBrand": {
-      "badge": "Quality & Trust",
-      "title": "Built by Educators for Educators",
-      "subtitle": "Developed with a focus on quality, security, and the needs of educators",
-      "swissMade": {
-        "title": "Quality First",
-        "description": "Developed by educators for educators"
-      },
-      "swissHosted": {
-        "title": "Secure Hosting",
-        "description": "Hosted by Infomaniak in Swiss data centers"
-      },
-      "dataProtection": {
-        "title": "Data Protection",
-        "description": "Your data protected by strict privacy laws"
-      },
-      "localSupport": {
-        "title": "Local Support",
-        "description": "Swiss-based team speaks your language"
-      },
-      "hostedBy": "Hosted by",
-      "swissCloud": "Swiss Cloud",
-      "co2Neutral": "CO₂ Neutral",
-      "secureHosting": "Secure Hosting"
     }
   },
   "contactPage": {
@@ -2610,7 +2615,7 @@
       "cookies": "Cookie Policy",
       "copyright": "Copyright Guide"
     },
-    "version": "Version 1.2 - February 2026"
+    "version": "Version 1.3 - February 2026"
   },
   "privacyPage": {
     "title": "Privacy Policy",
@@ -2891,10 +2896,13 @@
     "loadMore": "Load more",
     "startUpload": "Upload material",
     "collectionItems": "Materials",
+    "website": "Website",
+    "teacherVerified": "Verified Teacher",
     "privacy": {
       "label": "Keep my profile private",
       "tooltip": "When enabled, only your name and avatar will be shown on your public profile. Your bio, subjects, cycles, cantons, statistics, and social media links will be hidden.",
       "notice": "This profile is private. Only public materials are displayed.",
+      "noticePartial": "This profile is private. Personal information is hidden, but public materials are visible.",
       "sectionTitle": "Privacy Settings"
     }
   },
@@ -2950,7 +2958,9 @@
     "searchPlaceholder": "Search profiles...",
     "noSearchResults": "No profiles found",
     "errorLoading": "Failed to load followed profiles",
-    "retry": "Try again"
+    "retry": "Try again",
+    "loadMore": "Load more",
+    "loadingMore": "Loading..."
   },
   "verifyEmailPage": {
     "loading": {
@@ -3453,7 +3463,32 @@
       "deleting": "Deleting...",
       "deletePermanently": "Delete permanently",
       "deleteError": "Failed to delete",
-      "networkError": "Network error"
+      "networkError": "Network error",
+      "password": {
+        "title": "Change Password",
+        "subtitle": "Update your login password",
+        "currentPassword": "Current Password",
+        "currentPlaceholder": "Enter current password",
+        "newPassword": "New Password",
+        "newPlaceholder": "Enter new password",
+        "confirmPassword": "Confirm Password",
+        "confirmPlaceholder": "Repeat new password",
+        "requirements": "Min. 8 characters, upper/lowercase and a number",
+        "mismatch": "Passwords do not match",
+        "submit": "Change Password",
+        "submitting": "Changing...",
+        "success": "Password changed successfully",
+        "genericError": "An error occurred",
+        "errorRateLimited": "Too many attempts. Please try again later.",
+        "errorFieldsRequired": "All fields are required",
+        "errorCurrentWrong": "Current password is incorrect",
+        "errorSamePassword": "New password must be different from current password",
+        "oauthMessage": "You signed in with Google and don't have a password set.",
+        "forgotPasswordLink": "Forgot password?",
+        "setPasswordLink": "Set password via email",
+        "showPassword": "Show password",
+        "hidePassword": "Hide password"
+      }
     },
     "settingsProfile": {
       "avatar": {
@@ -3476,7 +3511,7 @@
       "displayName": "Display name",
       "displayNamePlaceholder": "e.g. Ms. M. or Maria S.",
       "email": "Email",
-      "emailChangeHint": "Contact us to change your email",
+      "emailChangeHint": "<link>Contact us</link> to change your email",
       "aboutMe": "About me",
       "aboutMePlaceholder": "Tell us about yourself and your teaching...",
       "teachingProfile": "Teaching Profile",
@@ -3514,6 +3549,7 @@
       "errorNameMin": "Name must be at least 2 characters",
       "errorNameMax": "Name must be at most 32 characters",
       "errorInvalidUrl": "Invalid URL (e.g. https://example.com)",
+      "errorInvalidUsername": "Only letters, numbers, dots, and underscores allowed",
       "errorSaving": "Failed to save. Please try again.",
       "errorSavingGeneric": "Failed to save",
       "successSaved": "Changes saved!",
@@ -3844,18 +3880,18 @@
     "needMoreUploads": "You need {count, plural, =1 {1 more upload} other {# more uploads}} for {level}",
     "needMoreDownloads": "You need {count, plural, =1 {1 more download} other {# more downloads}} for {level}",
     "levels": {
-      "newcomer": "Newcomer",
-      "contributor": "Contributor",
-      "expert": "Expert",
-      "star": "Star",
-      "legend": "Legend"
+      "bronze": "Bronze",
+      "silber": "Silver",
+      "gold": "Gold",
+      "platin": "Platinum",
+      "diamant": "Diamond"
     },
     "descriptions": {
-      "newcomer": "Welcome! Upload your first material.",
-      "contributor": "You're actively sharing knowledge — keep it up!",
-      "expert": "Your materials are in demand. Great work!",
-      "star": "You're a community star!",
-      "legend": "Legend! You're shaping Currico."
+      "bronze": "Welcome! Upload your first material.",
+      "silber": "You're actively sharing knowledge — keep it up!",
+      "gold": "Your materials are in demand. Great work!",
+      "platin": "You're a Platinum seller in the community!",
+      "diamant": "Diamond! You're shaping Currico."
     },
     "page": {
       "heroTitle": "Seller Levels",
@@ -3927,7 +3963,22 @@
         "variety": "Offer different subjects and cycles to reach more teachers.",
         "keywords": "Use descriptive titles and descriptions so your materials can be found.",
         "regular": "Upload new materials regularly — active sellers level up faster."
-      }
+      },
+      "yourLevel": "Your Current Level",
+      "currentLevel": "Current Level",
+      "levelLocked": "Locked",
+      "levelUnlocked": "Unlocked",
+      "loginToSeeProgress": "Log in to see your personal progress.",
+      "loginCta": "Log in",
+      "becomeSeller": "Become a seller to unlock levels!",
+      "becomeSellerCta": "Become a seller",
+      "requirementProgress": "{current}/{required}",
+      "requirementPoints": "Points",
+      "requirementUploads": "Uploads",
+      "requirementDownloads": "Downloads",
+      "blockerNeedMorePoints": "You still need {count} points",
+      "blockerNeedMoreUploads": "{count, plural, =1 {You still need 1 upload} other {You still need # uploads}}",
+      "blockerNeedMoreDownloads": "{count, plural, =1 {You still need 1 download} other {You still need # downloads}}"
     }
   },
   "verifiedSeller": {
@@ -3962,14 +4013,38 @@
         }
       },
       "howTitle": "How does verification work?",
-      "howAutomatic": "Verification happens automatically: Every time you visit your seller level page, your statistics are checked. As soon as you meet all 4 criteria, you automatically receive the badge.",
-      "howRevocation": "Note: If you no longer meet the criteria (e.g., due to an open report or declining rating), the automatic verification will be revoked.",
-      "howManual": "In exceptional cases, the Currico team can also grant or revoke verification manually.",
+      "howSteps": {
+        "automatic": {
+          "title": "Automatic Check",
+          "description": "Your statistics are checked with every sale, download, and review. As soon as you meet all 4 criteria, you automatically receive the badge."
+        },
+        "revocation": {
+          "title": "Revocation Possible",
+          "description": "If you no longer meet the criteria (e.g., due to declining ratings), the automatic verification will be revoked."
+        },
+        "manual": {
+          "title": "Manual Granting",
+          "description": "In exceptional cases, the Currico team can also grant or revoke verification manually."
+        }
+      },
       "benefitsTitle": "Benefits",
       "benefits": {
         "badge": "Visible badge on your profile and on all your materials.",
         "trust": "Increased trust with buyers — verified sellers are preferred.",
-        "visibility": "Better visibility on the platform."
+        "visibility": "Better visibility in search results and recommendations.",
+        "credibility": "Your profile is highlighted as 'trusted' — ideal for new buyers.",
+        "recognition": "Recognition of your work as an experienced teacher and material creator."
+      },
+      "comparisonTitle": "What sets verified sellers apart?",
+      "comparison": {
+        "uploadMaterials": "Upload materials",
+        "sellMaterials": "Sell materials",
+        "receiveReviews": "Receive reviews",
+        "profileBadge": "Verified badge on profile",
+        "materialBadge": "Badge on all materials",
+        "searchBoost": "Highlighted placement in search results",
+        "regular": "Regular Seller",
+        "verified": "Verified Seller"
       },
       "cta": "Upload Materials"
     }

@@ -2,37 +2,55 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAuth, unauthorized, badRequest, notFound } from "@/lib/api";
 
+const FOLLOWING_PAGE_SIZE = 20;
+
 /**
- * GET /api/user/following
- * List sellers the user follows
+ * GET /api/user/following?page=1&limit=20
+ * List sellers the user follows (paginated)
  */
-export async function GET() {
+export async function GET(request: NextRequest) {
   const userId = await requireAuth();
   if (!userId) return unauthorized();
 
   try {
-    const following = await prisma.follow.findMany({
-      where: { follower_id: userId },
-      include: {
-        followed: {
-          select: {
-            id: true,
-            name: true,
-            display_name: true,
-            image: true,
-            bio: true,
-            subjects: true,
-            _count: {
-              select: {
-                resources: { where: { is_published: true, is_public: true } },
+    const { searchParams } = new URL(request.url);
+    const page = Math.max(1, parseInt(searchParams.get("page") || "1", 10) || 1);
+    const limit = Math.min(
+      100,
+      Math.max(
+        1,
+        parseInt(searchParams.get("limit") || String(FOLLOWING_PAGE_SIZE), 10) ||
+          FOLLOWING_PAGE_SIZE
+      )
+    );
+    const skip = (page - 1) * limit;
+
+    const [following, total] = await Promise.all([
+      prisma.follow.findMany({
+        where: { follower_id: userId },
+        include: {
+          followed: {
+            select: {
+              id: true,
+              name: true,
+              display_name: true,
+              image: true,
+              bio: true,
+              subjects: true,
+              _count: {
+                select: {
+                  resources: { where: { is_published: true, is_public: true } },
+                },
               },
             },
           },
         },
-      },
-      orderBy: { created_at: "desc" },
-      take: 100,
-    });
+        orderBy: { created_at: "desc" },
+        skip,
+        take: limit,
+      }),
+      prisma.follow.count({ where: { follower_id: userId } }),
+    ]);
 
     const sellers = following.map((f) => ({
       id: f.followed.id,
@@ -44,7 +62,7 @@ export async function GET() {
       followedAt: f.created_at,
     }));
 
-    return NextResponse.json({ sellers });
+    return NextResponse.json({ sellers, total, page, hasMore: skip + sellers.length < total });
   } catch (error) {
     console.error("Error fetching following:", error);
     return NextResponse.json({ error: "FOLLOWING_FETCH_FAILED" }, { status: 500 });
