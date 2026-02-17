@@ -60,7 +60,7 @@ function PreviewOverlay({
         {onUnlock && (
           <button
             onClick={onUnlock}
-            className="btn-primary rounded-lg px-6 py-2 text-sm font-semibold shadow-lg transition-transform hover:scale-105"
+            className="btn-primary rounded-lg px-6 py-2 text-sm font-semibold shadow-lg transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105"
           >
             {ctaText || t("previewOverlay.cta")}
           </button>
@@ -448,7 +448,7 @@ export function PreviewGallery({
                           setIsLightboxOpen(false);
                           onPurchaseClick?.();
                         }}
-                        className="btn-primary rounded-lg px-6 py-2 text-sm font-semibold shadow-lg transition-transform hover:scale-105"
+                        className="btn-primary rounded-lg px-6 py-2 text-sm font-semibold shadow-lg transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105"
                       >
                         {`${priceFormatted} - ${t("previewOverlay.cta")}`}
                       </button>

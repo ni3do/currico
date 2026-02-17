@@ -67,7 +67,12 @@ export function TrustBar() {
           >
             {trustItems.map((item) => (
               <StaggerItem key={item.key}>
-                <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.2 }}>
+                <motion.div
+                  whileHover={{
+                    scale: 1.05,
+                    transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] },
+                  }}
+                >
                   <Link
                     href={item.href}
                     className="text-text-muted hover:text-text flex items-center gap-2 text-sm transition-colors"

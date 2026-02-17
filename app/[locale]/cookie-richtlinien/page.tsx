@@ -385,7 +385,7 @@ export default function CookiesPage() {
       {!mobileTocOpen && (
         <button
           type="button"
-          className="bg-primary text-text-on-accent fixed right-6 bottom-6 z-40 flex items-center gap-2 rounded-full px-4 py-3 shadow-lg transition-transform hover:scale-105 lg:hidden"
+          className="bg-primary text-text-on-accent fixed right-6 bottom-6 z-40 flex items-center gap-2 rounded-full px-4 py-3 shadow-lg transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 lg:hidden"
           onClick={() => setMobileTocOpen(true)}
           aria-label={t("toc.showContents")}
         >

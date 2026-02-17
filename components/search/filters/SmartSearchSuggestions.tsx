@@ -115,8 +115,8 @@ export function SmartSearchSuggestions({
           <motion.button
             onClick={onApply}
             className="bg-primary hover:bg-primary/90 flex w-full items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-white transition-colors"
-            whileHover={{ scale: 1.01 }}
-            whileTap={{ scale: 0.99 }}
+            whileHover={{ scale: 1.015, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
+            whileTap={{ scale: 0.98 }}
           >
             <ChevronRight className="h-4 w-4" />
             {t("sidebar.smartSearchApply")}

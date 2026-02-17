@@ -66,7 +66,7 @@ export function PaginationControls({
               className={`min-w-[40px] rounded-md px-4 py-2 text-sm font-medium transition-all duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                 pageNum === currentPage
                   ? "bg-primary text-text-on-accent shadow-sm"
-                  : "text-text-secondary hover:bg-surface hover:scale-105 active:scale-95"
+                  : "text-text-secondary hover:bg-surface hover:scale-[1.02] active:scale-95"
               }`}
               aria-current={pageNum === currentPage ? "page" : undefined}
             >

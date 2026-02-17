@@ -50,8 +50,7 @@ export function SellerHeroSection({ className = "" }: SellerHeroSectionProps) {
           {/* Premium Badge */}
           <motion.div
             className="border-primary/30 bg-primary/10 mb-4 inline-flex items-center gap-2 rounded-full border px-4 py-1.5"
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.2 }}
+            whileHover={{ scale: 1.05, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
           >
             <motion.span
               animate={{ rotate: [0, 15, -15, 0] }}
@@ -82,14 +81,20 @@ export function SellerHeroSection({ className = "" }: SellerHeroSectionProps) {
             <StaggerItem key={index}>
               <motion.div
                 className="group border-border bg-bg hover:border-border relative overflow-hidden rounded-xl border p-5 transition-shadow duration-200 hover:shadow-sm"
-                whileHover={{ y: -5, scale: 1.02 }}
-                transition={{ duration: 0.2 }}
+                whileHover={{
+                  y: -4,
+                  scale: 1.02,
+                  transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] },
+                }}
               >
                 {/* Icon */}
                 <motion.div
                   className={`mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br ${feature.bgGradient} ${feature.iconColor}`}
-                  whileHover={{ rotate: 10, scale: 1.1 }}
-                  transition={{ duration: 0.2 }}
+                  whileHover={{
+                    rotate: 10,
+                    scale: 1.1,
+                    transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] },
+                  }}
                 >
                   {feature.icon}
                 </motion.div>

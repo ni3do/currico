@@ -126,8 +126,10 @@ export default function Home() {
                     {/* Search bar */}
                     <motion.div
                       className="bg-surface border-border-subtle relative flex items-center rounded-full border shadow-lg"
-                      whileHover={{ scale: 1.01 }}
-                      transition={{ duration: 0.2 }}
+                      whileHover={{
+                        scale: 1.015,
+                        transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] },
+                      }}
                     >
                       <input
                         type="text"
@@ -223,7 +225,13 @@ export default function Home() {
                 delay={0.2}
                 className="hero-image-container order-2 flex items-center justify-center"
               >
-                <motion.div whileHover={{ y: -8, scale: 1.02 }} transition={{ duration: 0.3 }}>
+                <motion.div
+                  whileHover={{
+                    y: -8,
+                    scale: 1.02,
+                    transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] },
+                  }}
+                >
                   <Image
                     src="/images/hero-teachers.png"
                     alt={t("hero.imageAlt")}
