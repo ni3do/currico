@@ -173,23 +173,23 @@ export default function CheckoutSuccessPage() {
                 {/* Gradient header with confetti effect */}
                 <div className="from-success to-primary relative bg-gradient-to-r px-6 py-8 text-center">
                   <div className="absolute inset-0 opacity-20">
-                    <Sparkles className="absolute top-4 left-8 h-6 w-6 animate-pulse text-white" />
-                    <Sparkles className="absolute top-12 right-12 h-4 w-4 animate-pulse text-white delay-100" />
-                    <Sparkles className="absolute bottom-6 left-1/4 h-5 w-5 animate-pulse text-white delay-200" />
-                    <Sparkles className="absolute top-6 right-1/4 h-4 w-4 animate-pulse text-white delay-300" />
+                    <Sparkles className="text-text-on-accent absolute top-4 left-8 h-6 w-6 animate-pulse" />
+                    <Sparkles className="text-text-on-accent absolute top-12 right-12 h-4 w-4 animate-pulse delay-100" />
+                    <Sparkles className="text-text-on-accent absolute bottom-6 left-1/4 h-5 w-5 animate-pulse delay-200" />
+                    <Sparkles className="text-text-on-accent absolute top-6 right-1/4 h-4 w-4 animate-pulse delay-300" />
                   </div>
                   <div className="relative">
-                    <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
+                    <div className="bg-text-on-accent/20 mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full backdrop-blur-sm">
                       {isPending ? (
-                        <Clock className="h-8 w-8 text-white" />
+                        <Clock className="text-text-on-accent h-8 w-8" />
                       ) : (
-                        <CheckCircle className="h-8 w-8 text-white" />
+                        <CheckCircle className="text-text-on-accent h-8 w-8" />
                       )}
                     </div>
-                    <h1 className="mb-2 text-2xl font-bold text-white sm:text-3xl">
+                    <h1 className="text-text-on-accent mb-2 text-2xl font-bold sm:text-3xl">
                       {isPending ? t("pending.title") : t("success.title")}
                     </h1>
-                    <p className="mx-auto max-w-md text-white/90">
+                    <p className="text-text-on-accent mx-auto max-w-md opacity-90">
                       {isPending ? t("pending.description") : t("success.description")}
                     </p>
                   </div>
@@ -313,7 +313,7 @@ export default function CheckoutSuccessPage() {
                 <button
                   onClick={handleDownload}
                   disabled={isDownloading || isPending}
-                  className="group bg-primary hover:bg-primary-hover relative flex items-center justify-center gap-3 rounded-xl px-6 py-4 font-semibold text-white shadow-lg transition-all hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50"
+                  className="group bg-primary hover:bg-primary-hover text-text-on-accent relative flex items-center justify-center gap-3 rounded-xl px-6 py-4 font-semibold shadow-lg transition-all hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <Download className={`h-5 w-5 ${isDownloading ? "animate-bounce" : ""}`} />
                   <span>{isDownloading ? t("actions.downloading") : t("actions.downloadNow")}</span>

@@ -33,11 +33,15 @@ export default function CheckoutCancelPage() {
             {/* Header with icon */}
             <div className="from-warning to-warning/80 relative bg-gradient-to-r px-6 py-8 text-center">
               <div className="relative">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
-                  <XCircle className="h-8 w-8 text-white" />
+                <div className="bg-text-on-accent/20 mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full backdrop-blur-sm">
+                  <XCircle className="text-text-on-accent h-8 w-8" />
                 </div>
-                <h1 className="mb-2 text-2xl font-bold text-white sm:text-3xl">{t("title")}</h1>
-                <p className="mx-auto max-w-md text-white/90">{t("description")}</p>
+                <h1 className="text-text-on-accent mb-2 text-2xl font-bold sm:text-3xl">
+                  {t("title")}
+                </h1>
+                <p className="text-text-on-accent mx-auto max-w-md opacity-90">
+                  {t("description")}
+                </p>
               </div>
             </div>
 
@@ -54,7 +58,7 @@ export default function CheckoutCancelPage() {
                 {materialId && (
                   <Link
                     href={`/materialien/${materialId}`}
-                    className="group bg-primary hover:bg-primary-hover flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 font-semibold text-white shadow-md transition-all hover:shadow-lg"
+                    className="group bg-primary hover:bg-primary-hover text-text-on-accent flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 font-semibold shadow-md transition-all hover:shadow-lg"
                   >
                     <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
                     {t("actions.tryAgain")}

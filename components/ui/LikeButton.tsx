@@ -90,7 +90,7 @@ export function LikeButton({
     >
       <motion.div
         animate={animating ? { scale: [1, 1.3, 1] } : {}}
-        transition={{ duration: 0.3, ease: "easeOut" }}
+        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
       >
         <Icon
           className={`${sizeClasses[size]} transition-transform ${

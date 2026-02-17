@@ -185,7 +185,7 @@ export function SellerLevelCard({
                       style={{ background: `var(--color-${cfg.color})` }}
                       initial={{ width: 0 }}
                       animate={{ width: `${req.percent}%` }}
-                      transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
+                      transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
                     />
                   </div>
                 </div>
