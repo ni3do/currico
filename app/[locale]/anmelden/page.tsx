@@ -8,6 +8,7 @@ import { Link, useRouter } from "@/i18n/navigation";
 import { isValidEmail } from "@/lib/validations/common";
 import { isValidCallbackUrl } from "@/lib/utils/login-redirect";
 import TopBar from "@/components/ui/TopBar";
+import Footer from "@/components/ui/Footer";
 
 const REMEMBER_EMAIL_KEY = "currico_remember_email";
 
@@ -337,6 +338,7 @@ function LoginPageContent() {
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }
