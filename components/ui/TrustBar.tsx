@@ -69,7 +69,7 @@ export function TrustBar() {
               <StaggerItem key={item.key}>
                 <motion.div
                   whileHover={{
-                    scale: 1.05,
+                    scale: 1.02,
                     transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] },
                   }}
                 >

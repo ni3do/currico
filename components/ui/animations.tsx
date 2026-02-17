@@ -7,7 +7,7 @@ import { ReactNode, useRef } from "react";
 // EASING CURVES
 // ================================================================
 
-const smoothEase = [0.22, 1, 0.36, 1] as const;
+export const smoothEase = [0.22, 1, 0.36, 1] as const;
 
 // ================================================================
 // ANIMATION VARIANTS (used internally by components)

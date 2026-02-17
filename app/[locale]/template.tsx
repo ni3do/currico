@@ -2,8 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { ReactNode } from "react";
-
-const smoothEase = [0.22, 1, 0.36, 1] as const;
+import { smoothEase } from "@/components/ui/animations";
 
 export default function PageTransitionTemplate({ children }: { children: ReactNode }) {
   const prefersReducedMotion = useReducedMotion();

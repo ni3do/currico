@@ -51,7 +51,7 @@ export function SellerHeroSection({ className = "" }: SellerHeroSectionProps) {
           {/* Premium Badge */}
           <motion.div
             className="border-primary/30 bg-primary/10 mb-4 inline-flex items-center gap-2 rounded-full border px-4 py-1.5"
-            whileHover={{ scale: 1.05, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
+            whileHover={{ scale: 1.02, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
           >
             <motion.span
               animate={{ rotate: [0, 15, -15, 0] }}
@@ -118,7 +118,7 @@ export function SellerHeroSection({ className = "" }: SellerHeroSectionProps) {
         >
           {/* CTA Button */}
           <MagneticButton>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.95 }}>
               <Link
                 href="/verkaeufer-werden"
                 className="btn-primary group inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-semibold"

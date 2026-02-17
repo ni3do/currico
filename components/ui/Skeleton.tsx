@@ -10,7 +10,12 @@ export function Skeleton({ className = "" }: { className?: string }) {
 /** Skeleton for admin metric cards (4-grid layout) */
 export function DashboardCardSkeleton() {
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div
+      className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
+      role="status"
+      aria-busy="true"
+      aria-label="Loading"
+    >
       {Array.from({ length: 4 }).map((_, i) => (
         <div key={i} className="border-border bg-surface rounded-xl border p-5">
           <div className="mb-3 flex items-center gap-3">
@@ -29,6 +34,8 @@ export function DashboardCardSkeleton() {
 export function TableSkeleton({ rows = 5, columns = 5 }: { rows?: number; columns?: number }) {
   return (
     <>
+      {" "}
+      {/* aria-busy should be placed on the parent <table> or wrapper by the consumer */}
       {Array.from({ length: rows }).map((_, rowIdx) => (
         <tr key={rowIdx} className="border-border border-b">
           {Array.from({ length: columns }).map((_, colIdx) => (
@@ -45,7 +52,7 @@ export function TableSkeleton({ rows = 5, columns = 5 }: { rows?: number; column
 /** Skeleton for material cards in a grid */
 export function MaterialCardSkeleton() {
   return (
-    <div className="card overflow-hidden">
+    <div className="card overflow-hidden" role="status" aria-busy="true" aria-label="Loading">
       <Skeleton className="aspect-[16/9] w-full rounded-none" />
       <div className="p-5">
         <Skeleton className="mb-3 h-3 w-20" />
@@ -64,7 +71,12 @@ export function MaterialCardSkeleton() {
 /** Grid of material card skeletons */
 export function MaterialGridSkeleton({ count = 6 }: { count?: number }) {
   return (
-    <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3">
+    <div
+      className="grid gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3"
+      role="status"
+      aria-busy="true"
+      aria-label="Loading materials"
+    >
       {Array.from({ length: count }).map((_, i) => (
         <MaterialCardSkeleton key={i} />
       ))}
@@ -75,7 +87,7 @@ export function MaterialGridSkeleton({ count = 6 }: { count?: number }) {
 /** Skeleton for profile cards */
 export function ProfileCardSkeleton() {
   return (
-    <div className="card overflow-hidden">
+    <div className="card overflow-hidden" role="status" aria-busy="true" aria-label="Loading">
       <div className="p-5">
         {/* Avatar + name */}
         <div className="mb-4 flex items-center gap-3">
@@ -110,7 +122,12 @@ export function ProfileCardSkeleton() {
 /** Grid of profile card skeletons */
 export function ProfileGridSkeleton({ count = 6 }: { count?: number }) {
   return (
-    <div className="grid gap-5 sm:grid-cols-2 sm:gap-6 xl:grid-cols-3">
+    <div
+      className="grid gap-5 sm:grid-cols-2 sm:gap-6 xl:grid-cols-3"
+      role="status"
+      aria-busy="true"
+      aria-label="Loading profiles"
+    >
       {Array.from({ length: count }).map((_, i) => (
         <ProfileCardSkeleton key={i} />
       ))}
@@ -121,7 +138,12 @@ export function ProfileGridSkeleton({ count = 6 }: { count?: number }) {
 /** Compact material card skeleton for dashboard grids (uploads, library, wishlist) */
 export function DashboardMaterialCardSkeleton() {
   return (
-    <div className="card animate-pulse overflow-hidden">
+    <div
+      className="card animate-pulse overflow-hidden"
+      role="status"
+      aria-busy="true"
+      aria-label="Loading"
+    >
       <Skeleton className="aspect-[4/3] w-full rounded-none" />
       <div className="px-3 pt-2.5 pb-3">
         <Skeleton className="mb-2 h-3 w-20" />
@@ -140,7 +162,12 @@ export function DashboardMaterialCardSkeleton() {
 /** Grid of compact dashboard material card skeletons */
 export function DashboardMaterialGridSkeleton({ count = 3 }: { count?: number }) {
   return (
-    <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
+    <div
+      className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4"
+      role="status"
+      aria-busy="true"
+      aria-label="Loading materials"
+    >
       {Array.from({ length: count }).map((_, i) => (
         <DashboardMaterialCardSkeleton key={i} />
       ))}
@@ -151,7 +178,7 @@ export function DashboardMaterialGridSkeleton({ count = 3 }: { count?: number })
 /** Skeleton for notification items */
 export function NotificationSkeleton({ count = 4 }: { count?: number }) {
   return (
-    <div className="space-y-3">
+    <div className="space-y-3" role="status" aria-busy="true" aria-label="Loading notifications">
       {Array.from({ length: count }).map((_, i) => (
         <div key={i} className="border-border bg-surface animate-pulse rounded-xl border p-4">
           <div className="flex items-start gap-3">
@@ -170,7 +197,7 @@ export function NotificationSkeleton({ count = 4 }: { count?: number }) {
 /** Skeleton for bundle list items */
 export function BundleSkeleton({ count = 3 }: { count?: number }) {
   return (
-    <div className="space-y-3">
+    <div className="space-y-3" role="status" aria-busy="true" aria-label="Loading bundles">
       {Array.from({ length: count }).map((_, i) => (
         <div key={i} className="border-border animate-pulse rounded-xl border p-4">
           <div className="flex items-center justify-between">
@@ -189,7 +216,7 @@ export function BundleSkeleton({ count = 3 }: { count?: number }) {
 /** Skeleton for followed seller cards */
 export function FollowedSellerSkeleton({ count = 3 }: { count?: number }) {
   return (
-    <div className="card space-y-4 p-8">
+    <div className="card space-y-4 p-8" role="status" aria-busy="true" aria-label="Loading sellers">
       {Array.from({ length: count }).map((_, i) => (
         <div key={i} className="border-border animate-pulse rounded-xl border p-6">
           <div className="flex items-start gap-4">

@@ -10,7 +10,6 @@ interface MagneticButtonProps {
   /** How much the button follows the cursor (0-1, default 0.3) */
   strength?: number;
   className?: string;
-  as?: "div" | "span";
 }
 
 /**
@@ -22,7 +21,6 @@ export function MagneticButton({
   maxDisplacement = 5,
   strength = 0.3,
   className,
-  as: Tag = "div",
 }: MagneticButtonProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -52,7 +50,7 @@ export function MagneticButton({
   }, []);
 
   if (prefersReducedMotion) {
-    return <Tag className={className}>{children}</Tag>;
+    return <div className={className}>{children}</div>;
   }
 
   return (
