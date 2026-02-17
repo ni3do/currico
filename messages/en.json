@@ -17,6 +17,18 @@
     "invalidFileType": "Invalid file type",
     "userNotFound": "User not found"
   },
+  "theme": {
+    "light": "Light",
+    "system": "System",
+    "dark": "Dark",
+    "toggle": "Toggle theme",
+    "currentTheme": "Current theme: {theme}. Click to change."
+  },
+  "profileCompletion": {
+    "title": "Complete your profile",
+    "description": "Before you can upload materials, please complete the following:",
+    "button": "Complete profile"
+  },
   "dashboardCard": {
     "remove": "Remove",
     "edit": "Edit",

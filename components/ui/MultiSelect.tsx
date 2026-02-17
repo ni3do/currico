@@ -69,8 +69,23 @@ export function MultiSelect({
       {/* Selected tags */}
       <div
         onClick={() => setIsOpen(!isOpen)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            setIsOpen(!isOpen);
+          } else if (e.key === "Escape" && isOpen) {
+            setIsOpen(false);
+          }
+        }}
+        role="combobox"
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
+        aria-label={label}
+        tabIndex={0}
         className={`bg-bg min-h-[42px] w-full cursor-pointer rounded-lg border px-3 py-2 ${
-          error ? "border-error" : "border-border focus-within:border-primary"
+          error
+            ? "border-error"
+            : "border-border focus-within:border-primary focus-visible:ring-primary focus-visible:ring-2 focus-visible:ring-offset-2"
         }`}
       >
         <div className="flex flex-wrap gap-2">

@@ -190,7 +190,7 @@ export default function AccountUploadsPage() {
             {label}
             <span
               className={`ml-0.5 rounded-full px-1.5 py-0.5 text-xs ${
-                statusFilter === key ? "bg-white/20" : "bg-bg text-text-faint"
+                statusFilter === key ? "bg-text-on-accent/20" : "bg-bg text-text-faint"
               }`}
             >
               {statusCounts[key]}

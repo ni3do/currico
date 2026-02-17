@@ -223,8 +223,10 @@ export default function AboutPage() {
                 <MotionCard hoverEffect="lift" className="card overflow-hidden">
                   <div className="relative h-80 w-full overflow-hidden">
                     {simonImgError ? (
-                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-emerald-500 to-teal-600">
-                        <span className="text-7xl font-bold text-white/90">SW</span>
+                      <div className="from-success to-primary flex h-full w-full items-center justify-center bg-gradient-to-br">
+                        <span className="text-text-on-accent text-7xl font-bold opacity-90">
+                          SW
+                        </span>
                       </div>
                     ) : (
                       <Image
@@ -270,8 +272,10 @@ export default function AboutPage() {
                 <MotionCard hoverEffect="lift" className="card overflow-hidden">
                   <div className="relative h-80 w-full overflow-hidden">
                     {laurentImgError ? (
-                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600">
-                        <span className="text-7xl font-bold text-white/90">LZ</span>
+                      <div className="from-primary to-accent flex h-full w-full items-center justify-center bg-gradient-to-br">
+                        <span className="text-text-on-accent text-7xl font-bold opacity-90">
+                          LZ
+                        </span>
                       </div>
                     ) : (
                       <Image
@@ -328,9 +332,9 @@ export default function AboutPage() {
                 </p>
                 <footer className="mt-6 flex items-center gap-3">
                   <div className="flex -space-x-2">
-                    <div className="h-8 w-8 overflow-hidden rounded-full ring-2 ring-white">
+                    <div className="ring-surface h-8 w-8 overflow-hidden rounded-full ring-2">
                       {simonImgError ? (
-                        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-emerald-500 to-teal-600 text-xs font-bold text-white">
+                        <div className="from-success to-primary text-text-on-accent flex h-full w-full items-center justify-center bg-gradient-to-br text-xs font-bold">
                           SW
                         </div>
                       ) : (
@@ -343,9 +347,9 @@ export default function AboutPage() {
                         />
                       )}
                     </div>
-                    <div className="h-8 w-8 overflow-hidden rounded-full ring-2 ring-white">
+                    <div className="ring-surface h-8 w-8 overflow-hidden rounded-full ring-2">
                       {laurentImgError ? (
-                        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600 text-xs font-bold text-white">
+                        <div className="from-primary to-accent text-text-on-accent flex h-full w-full items-center justify-center bg-gradient-to-br text-xs font-bold">
                           LZ
                         </div>
                       ) : (

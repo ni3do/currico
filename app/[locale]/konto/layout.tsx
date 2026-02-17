@@ -171,7 +171,7 @@ function AccountLayoutInner({ children }: { children: ReactNode }) {
                 )}
                 {isSeller && (
                   <div className="bg-accent ring-surface absolute right-0 -bottom-0.5 flex h-5 w-5 items-center justify-center rounded-full ring-2">
-                    <span className="text-[10px] text-white">S</span>
+                    <span className="text-text-on-accent text-[10px]">S</span>
                   </div>
                 )}
               </div>

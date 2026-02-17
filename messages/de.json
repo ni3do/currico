@@ -17,6 +17,18 @@
     "invalidFileType": "Ungültiger Dateityp",
     "userNotFound": "Benutzer nicht gefunden"
   },
+  "theme": {
+    "light": "Hell",
+    "system": "System",
+    "dark": "Dunkel",
+    "toggle": "Farbschema wechseln",
+    "currentTheme": "Aktuelles Farbschema: {theme}. Klicken zum Wechseln."
+  },
+  "profileCompletion": {
+    "title": "Profil vervollständigen",
+    "description": "Bevor Sie Materialien hochladen können, müssen Sie folgende Angaben ergänzen:",
+    "button": "Profil vervollständigen"
+  },
   "dashboardCard": {
     "remove": "Entfernen",
     "edit": "Bearbeiten",

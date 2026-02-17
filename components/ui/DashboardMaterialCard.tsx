@@ -89,18 +89,18 @@ export function DashboardMaterialCard({
   const getBadgeClasses = (variant: string) => {
     switch (variant) {
       case "success":
-        return "bg-success text-white";
+        return "bg-success text-text-on-accent";
       case "warning":
-        return "bg-warning text-white";
+        return "bg-warning text-text-on-accent";
       case "error":
-        return "bg-error text-white";
+        return "bg-error text-text-on-accent";
       case "primary":
-        return "bg-primary text-white";
+        return "bg-primary text-text-on-accent";
       case "price":
-        return "bg-price text-white";
+        return "bg-price text-text-on-accent";
       case "neutral":
       default:
-        return "bg-text-muted text-white";
+        return "bg-text-muted text-text-on-accent";
     }
   };
 
@@ -121,7 +121,11 @@ export function DashboardMaterialCard({
   return (
     <div className="card group relative flex h-full flex-col overflow-hidden">
       {/* Clickable overlay link covering the entire card */}
-      <Link href={`/materialien/${id}`} className="absolute inset-0 z-0" aria-label={title} />
+      <Link
+        href={`/materialien/${id}`}
+        className="focus-visible:ring-primary absolute inset-0 z-0 rounded-xl focus-visible:ring-2 focus-visible:ring-offset-2"
+        aria-label={title}
+      />
 
       {/* Preview Image */}
       <div className="bg-bg-secondary relative aspect-[4/3] w-full overflow-hidden">
@@ -251,7 +255,7 @@ export function DashboardMaterialCard({
             {price && (
               <span
                 className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${
-                  price.isFree ? "bg-success text-white" : "bg-price text-white"
+                  price.isFree ? "bg-success text-text-on-accent" : "bg-price text-text-on-accent"
                 }`}
               >
                 {price.formatted}
