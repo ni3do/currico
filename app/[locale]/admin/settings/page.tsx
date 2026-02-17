@@ -3,7 +3,6 @@
 import { useSession, signOut } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
-import LocaleSwitcher from "@/components/ui/LocaleSwitcher";
 
 export default function AdminSettingsPage() {
   const { data: session } = useSession();
@@ -47,10 +46,6 @@ export default function AdminSettingsPage() {
               <div className="flex items-center gap-3">
                 <span className="text-text-muted text-sm">{t("theme")}</span>
                 <ThemeToggle />
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="text-text-muted text-sm">{t("language")}</span>
-                <LocaleSwitcher />
               </div>
             </div>
           </div>

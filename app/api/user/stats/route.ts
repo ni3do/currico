@@ -71,6 +71,8 @@ export async function GET() {
           role: true,
           seller_xp: true,
           stripe_charges_enabled: true,
+          totp_enabled: true,
+          backup_codes: true,
           // Notification preferences
           notify_new_from_followed: true,
           notify_recommendations: true,
@@ -110,6 +112,12 @@ export async function GET() {
         sellerPoints: user.seller_xp,
         stripeChargesEnabled: user.stripe_charges_enabled,
         hasPassword,
+        twoFactorEnabled: user.totp_enabled,
+        backupCodesRemaining: user.totp_enabled
+          ? Array.isArray(user.backup_codes)
+            ? (user.backup_codes as { hash: string; used: boolean }[]).filter((c) => !c.used).length
+            : 0
+          : 0,
         // Notification preferences
         notify_new_from_followed: user.notify_new_from_followed,
         notify_recommendations: user.notify_recommendations,

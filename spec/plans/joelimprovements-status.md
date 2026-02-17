@@ -421,7 +421,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] "Datenexport"-Button hat keine Funktionalität implementiert — button does not exist in the UI, non-issue
 - [x] "Konto löschen"-Button hat keine Funktionalität — full confirmation flow with typed "LÖSCHEN" input implemented
 - [x] Keine Warnung, dass Konto-Löschung permanent ist und Materialien/Käufe betroffen — consequences list with X icons (materials, purchases, reviews, earnings, followers)
-- [ ] Keine Zwei-Faktor-Authentifizierung (2FA) Option
+- [x] Keine Zwei-Faktor-Authentifizierung (2FA) Option — full TOTP 2FA with QR setup, backup codes, AES-256-GCM encrypted secrets, login flow challenge, account settings card
 - [x] Benachrichtigungs-Prefs zeigen nur Erfolg/Fehler als kurze Toast — descriptive feedback shows which notification was toggled with animated pill
 - [x] Keine Unterteilung in "E-Mail" vs. "In-App" Benachrichtigungen — info banner explains toggles control email only, E-Mail badge on each toggle, in-app always active
 - [x] Keine Batch-Option "Alle Benachrichtigungen deaktivieren" — batch toggle with Bell/BellOff icons at top of notifications page
@@ -470,7 +470,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Suchfeld wird nur angezeigt wenn `uploadedItems.length > 0` — already fixed, search field is unconditional, added aria-label
 - [x] Badge-Texte ("Verifiziert", "Ausstehend") sind hardcoded statt i18n — already using t("statusVerified")/t("statusPending")
 - [x] Placeholder-Text "Uploads durchsuchen..." ist hardcoded (nicht i18n) — already using t("search")
-- [ ] Keine Anzeige von Upload-Fortschritt für Materials im Draft-Status
+- [x] Keine Anzeige von Upload-Fortschritt für Materials im Draft-Status — DraftProgressCard on uploads page reads localStorage draft, shows 4-step completion circles, draft title, last saved time, resume button to /hochladen, and discard with confirmation modal
 - [x] Keine Möglichkeit, Material zu duplizieren — POST /api/materials/[id]/duplicate copies metadata + curriculum associations, Copy button on DashboardMaterialCard with toast feedback
 
 ---
@@ -687,7 +687,7 @@ Legende: [x] = erledigt, [ ] = offen
 | Kontakt                   | 13       | 0      |                                                 |
 | Anmelden                  | 14       | 0      |                                                 |
 | Registrieren              | 5        | 0      |                                                 |
-| Konto (alle Unterseiten)  | 63       | 5      | 2FA, Bulk-Actions, Edit-404, Drafts, E-Mail\*   |
+| Konto (alle Unterseiten)  | 65       | 3      | Bulk-Actions, Edit-404, E-Mail\*                |
 | Folge ich                 | 11       | 0      |                                                 |
 | Hochladen                 | 31       | 0      |                                                 |
 | Öffentliches Profil       | 13       | 0      |                                                 |
@@ -695,6 +695,6 @@ Legende: [x] = erledigt, [ ] = offen
 | Benachrichtigungen        | 2        | 1      | Newsletter-System                               |
 | Global                    | 13       | 9      | Badge-Cleanup, Loading, Buttons, a11y, Security |
 | Final Touch Audit         | 4        | 0      |                                                 |
-| **Total**                 | **362**  | **16** |                                                 |
+| **Total**                 | **364**  | **14** |                                                 |
 
 \* E-Mail-Templates = OUT OF SCOPE (Backend), Edit-404 = KNOWN ISSUE (grösseres Feature)

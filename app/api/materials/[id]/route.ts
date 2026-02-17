@@ -231,6 +231,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       })),
       downloadCount: material._count.transactions + material._count.downloads,
       isApproved: material.is_approved,
+      isPublished: material.is_published,
       status: material.status,
       seller: {
         id: material.seller.id,

@@ -46,6 +46,7 @@ export interface Material {
   createdAt: string;
   downloadCount: number;
   isApproved: boolean;
+  isPublished?: boolean;
   status: "PENDING" | "VERIFIED" | "REJECTED";
   seller: {
     id: string;

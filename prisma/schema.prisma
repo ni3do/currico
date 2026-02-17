@@ -118,6 +118,11 @@ model User {
   // ============ PRIVATE DATA ============
   password_hash String? @db.VarChar(255)
 
+  // ============ TWO-FACTOR AUTHENTICATION ============
+  totp_secret  String?  @db.VarChar(255) // AES-256-GCM encrypted
+  totp_enabled Boolean  @default(false)
+  backup_codes Json     @default("[]") // [{hash, used}]
+
   // ============ LOGIC/STATUS FIELDS ============
   role         UserRole @default(BUYER)
   is_protected Boolean  @default(false)

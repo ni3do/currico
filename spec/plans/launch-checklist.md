@@ -22,7 +22,7 @@
 
 - [x] Vollständiges Impressum (Name, Adresse, E-Mail) — `/impressum` mit Angle Labs GmbH, Firmendetails, Kontaktdaten
 - [x] Datenschutzerklärung nach nDSG — `/datenschutz` Seite vorhanden
-- [ ] Cookie-Banner, der Analytics wirklich blockiert bis zur Zustimmung — **FEHLT: kein Consent-Banner vorhanden, nur Cookie-Richtlinien-Seite**
+- [x] Cookie-Banner, der Analytics wirklich blockiert bis zur Zustimmung — `CookieConsent.tsx` mit accept/decline, localStorage-Persistenz, integriert in Layout
 - [x] AGB für Marktplatz (Urheberrecht, Haftung, Rückgabe, Streitbeilegung) — `/agb` Seite vorhanden
 - [ ] Professionelle E-Mail-Domain (@currico.ch) — hängt von Domain-Migration ab (→ Roadmap 1.1)
 
@@ -30,12 +30,12 @@
 
 > Vertrauen entsteht durch Sprache.
 
-- [ ] "Passives Einkommen" streichen → "Faire Entlohnung für Ihr Material" — noch vorhanden in `messages/de.json:1842`
-- [ ] "Von Lehrpersonen für Lehrpersonen" kommt 3× vor → variieren — `de.json` Zeilen 211, 388, 392
-- [ ] Vage Aussagen konkretisieren: "Qualitätsgeprüft" → Prüfprozess erklären; "Sicheres Hosting" → "Gehostet bei Infomaniak in Genf"
-- [ ] Headline konkretisieren: "Fertige Arbeitsblätter, Prüfungen und Unterrichtseinheiten – passend zum Lehrplan 21"
-- [~] Durchgehend "Lehrpersonen" und "Sie"-Ansprache — meist formal "Sie", aber Hero-Suche nutzt "du" (`de.json:185`)
-- [ ] 70%-Provision mit konkretem Rechenbeispiel zeigen (CHF 5 → CHF 3.50 pro Verkauf)
+- [x] "Passives Einkommen" streichen → "Faire Entlohnung" — ersetzt in allen 3 Vorkommen (de.json + en.json)
+- [x] "Von Lehrpersonen für Lehrpersonen" kommt 3× vor → variiert — "Weniger suchen, mehr unterrichten", "Aus der Praxis, für die Praxis", "Entwickelt mit echten Schweizer Lehrpersonen"
+- [x] Vage Aussagen konkretisiert: "Qualitätsgeprüft" → "Community-geprüft"/"Von Lehrpersonen geprüft"; "Sicheres Hosting" → "Gehostet bei Infomaniak" mit "Schweizer Rechenzentren in Genf"
+- [x] Headline konkretisiert: "Fertige Arbeitsblätter, Prüfungen und Unterrichtseinheiten – passend zum Lehrplan 21"
+- [x] Durchgehend "Lehrpersonen" und "Sie"-Ansprache — alle "du"/"dein" in Hero, Über-uns, Seller-Levels, Willkommen auf "Sie"/"Ihr" umgestellt
+- [x] 70%-Provision mit konkretem Rechenbeispiel — "z.B. CHF 3.50 bei CHF 5.00" in sellerCta und sellerHero
 
 ### 4. Leere Sektionen entfernen ⭐⭐⭐⭐
 
@@ -43,7 +43,7 @@
 
 - [x] "Empfohlene Materialien" Fallback — Empty-State mit CTA vorhanden
 - [ ] Doppelte Links reduzieren — Audit nötig
-- [ ] Sprachumschalter entfernen, wenn nur Deutsch verfügbar — `LocaleSwitcher.tsx` sichtbar in TopBar, aber nur DE aktiv
+- [x] Sprachumschalter entfernen, wenn nur Deutsch verfügbar — entfernt aus TopBar (Desktop + Mobile) und Admin-Settings
 - [ ] Tote UI-Elemente auditieren und entfernen
 
 ---
@@ -149,13 +149,21 @@
 
 ## Zusammenfassung
 
+> Letzte Aktualisierung: 2026-02-17
+
 | Priorität | Total  | Erledigt | Offen  | %       |
 | --------- | ------ | -------- | ------ | ------- |
-| 🔴 MUSS   | 16     | 4        | 12     | 25%     |
+| 🔴 MUSS   | 16     | 12       | 4      | 75%     |
 | 🟠 SOLLTE | 10     | 6        | 4      | 60%     |
 | 🟡 NACH   | 9      | 6        | 3      | 67%     |
 | 🟢 MITTEL | 12     | 10       | 2      | 83%     |
 | 🔵 LANG   | 6      | 2        | 4      | 33%     |
-| **Total** | **53** | **28**   | **25** | **53%** |
+| **Total** | **53** | **36**   | **17** | **68%** |
 
-> **Wichtigste Blocker vor Launch:** Domain-Migration (@currico.ch), Content beschaffen, Wording-Überarbeitung
+> **Wichtigste Blocker vor Launch:**
+>
+> 1. **Content beschaffen** — 30-50 Materialien, 10-20 Lehrpersonen rekrutieren
+> 2. **Domain-Migration** — currico.ch registrieren, @currico.ch E-Mail (→ Roadmap 1.1)
+> 3. **Hero vereinfachen** — Kompetenz-Filter raus, nur Stichwort + Zyklus
+>
+> **Hinweis:** Viele offene Items sind Business/Ops (nicht Code) oder überschneiden sich mit `joelimprovements-status.md`

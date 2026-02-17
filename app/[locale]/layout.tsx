@@ -24,12 +24,12 @@ const localeMetadata: Record<string, { title: string; description: string }> = {
   de: {
     title: "Unterrichtsmaterial für Schweizer Lehrpersonen",
     description:
-      "Hochwertige Unterrichtsmaterialien von Schweizer Lehrpersonen. Qualitätsgeprüft, Lehrplan 21 konform, zeitsparend.",
+      "Fertige Arbeitsblätter, Prüfungen und Unterrichtseinheiten von Schweizer Lehrpersonen. Von der Community geprüft, Lehrplan 21 konform, zeitsparend.",
   },
   en: {
     title: "Teaching Materials for Swiss Educators",
     description:
-      "Quality teaching materials from Swiss educators. Quality-checked, LP21 curriculum-aligned, time-saving.",
+      "Ready-made worksheets, exams and lesson plans from Swiss educators. Community-reviewed, LP21 curriculum-aligned, time-saving.",
   },
 };
 

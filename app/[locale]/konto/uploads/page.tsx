@@ -7,6 +7,7 @@ import { FileText, AlertTriangle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { DashboardMaterialCard } from "@/components/ui/DashboardMaterialCard";
 import { DashboardMaterialGridSkeleton } from "@/components/ui/Skeleton";
+import { DraftProgressCard } from "@/components/account/DraftProgressCard";
 import type { UploadedItem } from "@/lib/types/account";
 
 type StatusFilter = "ALL" | "PENDING" | "VERIFIED" | "REJECTED";
@@ -121,6 +122,9 @@ export default function AccountUploadsPage() {
         </Link>
       </div>
 
+      {/* Draft Progress Card */}
+      <DraftProgressCard />
+
       {/* Pending Banner */}
       {pendingCount > 0 && statusFilter !== "PENDING" && (
         <div className="border-warning/50 bg-warning/10 mb-4 flex items-center gap-3 rounded-xl border p-4">
@@ -213,7 +217,7 @@ export default function AccountUploadsPage() {
               cycle={item.cycles[0] || ""}
               previewUrl={item.previewUrl}
               fileFormat={item.fileFormat}
-              editHref={`/materialien/${item.id}/edit`}
+              editHref={`/materialien/${item.id}/bearbeiten`}
               onDuplicate={() => handleDuplicate(item.id)}
               duplicating={duplicatingId === item.id}
               badge={{

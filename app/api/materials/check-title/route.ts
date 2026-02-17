@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { requireAuth, unauthorized } from "@/lib/api";
 
@@ -13,6 +14,7 @@ export async function GET(request: NextRequest) {
     if (!userId) return unauthorized();
 
     const title = request.nextUrl.searchParams.get("title");
+    const excludeId = request.nextUrl.searchParams.get("excludeId");
     if (!title || title.trim().length < 3) {
       return NextResponse.json({ exists: false });
     }
@@ -24,6 +26,7 @@ export async function GET(request: NextRequest) {
       where: {
         seller_id: userId,
         title: { equals: trimmedTitle, mode: "insensitive" },
+        ...(excludeId && { id: { not: excludeId } }),
       },
       select: { id: true, title: true },
     });
@@ -43,6 +46,7 @@ export async function GET(request: NextRequest) {
       FROM resources
       WHERE seller_id = ${userId}
         AND word_similarity(${trimmedTitle}, title) > 0.4
+        ${excludeId ? Prisma.sql`AND id != ${excludeId}` : Prisma.empty}
       ORDER BY similarity DESC
       LIMIT 1
     `;

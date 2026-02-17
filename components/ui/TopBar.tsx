@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Bell, ChevronDown, User, ShieldCheck, LogOut, X, Menu } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { LoginLink } from "@/components/ui/LoginLink";
-import LocaleSwitcher from "@/components/ui/LocaleSwitcher";
+
 import NotificationDropdown from "@/components/ui/NotificationDropdown";
 
 export default function TopBar() {
@@ -116,7 +116,6 @@ export default function TopBar() {
             </div>
             <div className="flex items-center gap-3">
               <ThemeToggle />
-              <LocaleSwitcher />
               {session && (
                 <NotificationDropdown unreadCount={unreadCount} onCountChange={setUnreadCount} />
               )}
@@ -280,7 +279,6 @@ export default function TopBar() {
                 >
                   <div className="flex items-center gap-3 px-4 py-2">
                     <ThemeToggle />
-                    <LocaleSwitcher />
                   </div>
                   {session ? (
                     <>
