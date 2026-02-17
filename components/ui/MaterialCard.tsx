@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
-import { Heart } from "lucide-react";
+import { Heart, FileText, ChevronRight } from "lucide-react";
 import { getSubjectTextColor } from "@/lib/constants/subject-colors";
 import { VerifiedSellerBadge } from "@/components/ui/VerifiedSellerBadge";
 import { StarRating } from "@/components/ui/StarRating";
@@ -129,19 +129,10 @@ export function MaterialCard({
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
-            <svg
+            <FileText
               className={`text-text-faint ${isCompact ? "h-10 w-10" : "h-12 w-12"}`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              />
-            </svg>
+              strokeWidth={1.5}
+            />
           </div>
         )}
 
@@ -252,19 +243,7 @@ export function MaterialCard({
                   {priceFormatted}
                 </span>
               ) : (
-                <svg
-                  className="text-text-muted group-hover:text-primary h-5 w-5 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-1.5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
+                <ChevronRight className="text-text-muted group-hover:text-primary h-5 w-5 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-1.5" />
               )}
             </div>
           ))}
@@ -286,5 +265,3 @@ export function MaterialCard({
     </Link>
   );
 }
-
-export default MaterialCard;

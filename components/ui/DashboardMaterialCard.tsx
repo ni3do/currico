@@ -267,5 +267,3 @@ export function DashboardMaterialCard({
     </div>
   );
 }
-
-export default DashboardMaterialCard;

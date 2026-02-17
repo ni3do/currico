@@ -134,5 +134,3 @@ export function SellerHeroSection({ className = "" }: SellerHeroSectionProps) {
     </section>
   );
 }
-
-export default SellerHeroSection;

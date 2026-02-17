@@ -3,7 +3,15 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
-import { FileText, Users, UserPlus, UserCheck, CheckCircle } from "lucide-react";
+import {
+  FileText,
+  Users,
+  UserPlus,
+  UserCheck,
+  CheckCircle,
+  ChevronRight,
+  Loader2,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import { getSubjectPillClass as defaultGetSubjectPillClass } from "@/lib/constants/subject-colors";
 
@@ -118,21 +126,7 @@ export function ProfileCard({
               aria-label={isFollowing ? t("unfollow") : t("follow")}
             >
               {followLoading ? (
-                <svg className="h-3.5 w-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                  />
-                </svg>
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
               ) : isFollowing ? (
                 <UserCheck className="h-3.5 w-3.5" />
               ) : (
@@ -175,18 +169,9 @@ export function ProfileCard({
               <span className="font-medium">{displayedFollowerCount}</span>
             </span>
           </div>
-          <svg
-            className="text-text-muted group-hover:text-primary h-5 w-5 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-1.5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
+          <ChevronRight className="text-text-muted group-hover:text-primary h-5 w-5 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-1.5" />
         </div>
       </div>
     </Link>
   );
 }
-
-export default ProfileCard;
