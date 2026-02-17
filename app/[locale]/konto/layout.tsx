@@ -162,16 +162,16 @@ function AccountLayoutInner({ children }: { children: ReactNode }) {
                     alt={userName || ""}
                     width={56}
                     height={56}
-                    className="h-14 w-14 rounded-full object-cover ring-2 ring-white dark:ring-gray-800"
+                    className="ring-surface h-14 w-14 rounded-full object-cover ring-2"
                   />
                 ) : (
-                  <div className="bg-primary/10 text-primary flex h-14 w-14 items-center justify-center rounded-full text-xl font-bold ring-2 ring-white dark:ring-gray-800">
+                  <div className="bg-primary/10 text-primary ring-surface flex h-14 w-14 items-center justify-center rounded-full text-xl font-bold ring-2">
                     {(userName || "U").charAt(0).toUpperCase()}
                   </div>
                 )}
                 {isSeller && (
-                  <div className="bg-accent absolute right-0 -bottom-0.5 flex h-5 w-5 items-center justify-center rounded-full ring-2 ring-white dark:ring-gray-800">
-                    <span className="text-[10px] text-white">S</span>
+                  <div className="bg-accent ring-surface absolute right-0 -bottom-0.5 flex h-5 w-5 items-center justify-center rounded-full ring-2">
+                    <span className="text-text-on-accent text-[10px]">S</span>
                   </div>
                 )}
               </div>

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin, unauthorizedResponse } from "@/lib/admin-auth";
-import { notFound, serverError } from "@/lib/api";
+import { notFound, serverError, badRequest, forbidden } from "@/lib/api";
+import { isValidId } from "@/lib/rateLimit";
 
 /**
  * GET /api/admin/users/[id]
@@ -17,6 +18,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     const { id } = await params;
+    if (!isValidId(id)) return badRequest("Invalid ID");
 
     const user = await prisma.user.findUnique({
       where: { id },
@@ -68,11 +70,12 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     }
 
     const { id } = await params;
+    if (!isValidId(id)) return badRequest("Invalid ID");
     let body: Record<string, unknown>;
     try {
       body = await request.json();
     } catch {
-      return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+      return badRequest("Invalid JSON body");
     }
 
     // Check if user is protected (e.g., super admin)
@@ -87,10 +90,23 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 
     // Prevent changing role of protected users
     if (existingUser.is_protected && body.role && body.role !== existingUser.role) {
-      return NextResponse.json(
-        { error: "Die Rolle eines geschützten Benutzers kann nicht geändert werden" },
-        { status: 403 }
-      );
+      return forbidden("Cannot change role of a protected user");
+    }
+
+    // Validate role if provided
+    const validRoles = ["BUYER", "SELLER", "ADMIN"];
+    if ("role" in body && !validRoles.includes(body.role as string)) {
+      return badRequest("Invalid role. Allowed: BUYER, SELLER, ADMIN");
+    }
+
+    // Validate emailVerified if provided
+    if (
+      "emailVerified" in body &&
+      body.emailVerified !== null &&
+      !(body.emailVerified instanceof Date) &&
+      typeof body.emailVerified !== "string"
+    ) {
+      return badRequest("emailVerified must be a date or null");
     }
 
     // Only allow admin to update specific fields
@@ -144,6 +160,7 @@ export async function DELETE(
     }
 
     const { id } = await params;
+    if (!isValidId(id)) return badRequest("Invalid ID");
 
     // Check if user exists and is protected
     const user = await prisma.user.findUnique({
@@ -157,15 +174,12 @@ export async function DELETE(
 
     // Prevent deletion of protected users (e.g., super admin)
     if (user.is_protected) {
-      return NextResponse.json(
-        { error: "Geschützte Benutzer können nicht gelöscht werden" },
-        { status: 403 }
-      );
+      return forbidden("Protected users cannot be deleted");
     }
 
     // Prevent admin from deleting themselves
     if (id === admin.id) {
-      return NextResponse.json({ error: "Sie können sich nicht selbst löschen" }, { status: 403 });
+      return forbidden("Cannot delete yourself");
     }
 
     // Use a transaction to clean up FK dependencies not covered by onDelete: Cascade

@@ -332,7 +332,7 @@ export default function GuestDownloadPage({ params }: { params: Promise<{ token:
                 <div className="mb-4 flex items-center gap-3">
                   <div className="bg-primary flex h-10 w-10 items-center justify-center rounded-full">
                     <svg
-                      className="h-5 w-5 text-white"
+                      className="text-text-on-accent h-5 w-5"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"

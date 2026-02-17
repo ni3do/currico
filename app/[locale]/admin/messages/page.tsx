@@ -65,8 +65,8 @@ export default function AdminMessagesPage() {
       if (response.ok) {
         const data: AdminMessagesResponse = await response.json();
         setMessages(data.messages);
-        setTotalPages(data.totalPages);
-        setTotal(data.total);
+        setTotalPages(data.pagination.totalPages);
+        setTotal(data.pagination.total);
       }
     } catch (error) {
       console.error("Error fetching messages:", error);
@@ -82,10 +82,10 @@ export default function AdminMessagesPage() {
   const handleStatusUpdate = async (messageId: string, newStatus: string) => {
     setActionLoading(true);
     try {
-      const response = await fetch("/api/admin/messages", {
+      const response = await fetch(`/api/admin/messages/${messageId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: messageId, status: newStatus }),
+        body: JSON.stringify({ status: newStatus }),
       });
 
       if (response.ok) {
@@ -107,10 +107,8 @@ export default function AdminMessagesPage() {
   const handleDelete = async (messageId: string) => {
     setActionLoading(true);
     try {
-      const response = await fetch("/api/admin/messages", {
+      const response = await fetch(`/api/admin/messages/${messageId}`, {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: messageId }),
       });
 
       if (response.ok) {
@@ -157,7 +155,7 @@ export default function AdminMessagesPage() {
             }}
             className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
               statusFilter === tab.value
-                ? "bg-accent text-white shadow-sm"
+                ? "bg-accent text-text-on-accent shadow-sm"
                 : "text-text-secondary hover:bg-surface hover:text-text"
             }`}
           >
@@ -170,7 +168,7 @@ export default function AdminMessagesPage() {
       <div className="text-text-muted text-sm">{t("messagesFound", { count: total })}</div>
 
       {/* Messages Table */}
-      <div className="border-border bg-surface overflow-hidden rounded-2xl border">
+      <div className="border-border bg-surface overflow-hidden rounded-lg border">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-bg">
@@ -235,7 +233,7 @@ export default function AdminMessagesPage() {
                     <td className="px-6 py-4 text-right">
                       <button
                         onClick={() => openMessageModal(message)}
-                        className="bg-accent rounded-lg px-4 py-1.5 text-xs font-medium text-white transition-colors hover:opacity-90"
+                        className="bg-accent text-text-on-accent rounded-lg px-4 py-1.5 text-xs font-medium transition-colors hover:opacity-90"
                       >
                         {t("view")}
                       </button>
@@ -413,7 +411,7 @@ export default function AdminMessagesPage() {
               <div className="border-border mt-6 flex gap-3 border-t pt-4">
                 <a
                   href={`mailto:${selectedMessage.email}?subject=Re: ${getSubjectLabel(selectedMessage.subject)}`}
-                  className="bg-accent flex-1 rounded-lg px-4 py-2.5 text-center text-sm font-medium text-white hover:opacity-90"
+                  className="bg-accent text-text-on-accent flex-1 rounded-lg px-4 py-2.5 text-center text-sm font-medium hover:opacity-90"
                 >
                   {t("reply")}
                 </a>

@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { ChevronDown } from "lucide-react";
 import { useCurriculum } from "@/lib/hooks/useCurriculum";
+import { useScroll, useTransform, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
@@ -27,6 +28,16 @@ export default function Home() {
   const [selectedKompetenzbereich, setSelectedKompetenzbereich] = useState("");
 
   const { zyklen, getFachbereicheByZyklus, fachbereiche } = useCurriculum();
+
+  // Parallax scroll for hero section
+  const heroRef = useRef<HTMLElement>(null);
+  const prefersReducedMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const decorationY = useTransform(scrollYProgress, [0, 1], [0, -40]);
+  const heroImageY = useTransform(scrollYProgress, [0, 1], [0, -20]);
 
   const availableSubjects = useMemo(() => {
     if (!selectedCycle) return fachbereiche;
@@ -92,11 +103,37 @@ export default function Home() {
 
       <main className="flex-1">
         {/* Hero Section - Split-Screen Layout */}
-        <section className="hero-section flex min-h-[calc(100vh-4rem)] items-center">
-          {/* Decorative floating shapes */}
-          <div className="hero-decoration hero-decoration-1" aria-hidden="true" />
-          <div className="hero-decoration hero-decoration-2" aria-hidden="true" />
-          <div className="hero-decoration hero-decoration-3" aria-hidden="true" />
+        <section
+          ref={heroRef}
+          aria-label="Hero"
+          className="hero-section flex min-h-[calc(100vh-4rem)] items-center"
+        >
+          {/* Decorative floating shapes with parallax */}
+          {prefersReducedMotion ? (
+            <>
+              <div className="hero-decoration hero-decoration-1" aria-hidden="true" />
+              <div className="hero-decoration hero-decoration-2" aria-hidden="true" />
+              <div className="hero-decoration hero-decoration-3" aria-hidden="true" />
+            </>
+          ) : (
+            <>
+              <motion.div
+                className="hero-decoration hero-decoration-1"
+                style={{ y: decorationY }}
+                aria-hidden="true"
+              />
+              <motion.div
+                className="hero-decoration hero-decoration-2"
+                style={{ y: decorationY }}
+                aria-hidden="true"
+              />
+              <motion.div
+                className="hero-decoration hero-decoration-3"
+                style={{ y: decorationY }}
+                aria-hidden="true"
+              />
+            </>
+          )}
 
           <div className="relative mx-auto w-full max-w-7xl px-6 pt-6 pb-12 sm:px-8 sm:pt-8 sm:pb-16 lg:px-12 lg:pt-10 lg:pb-20">
             <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
@@ -126,8 +163,10 @@ export default function Home() {
                     {/* Search bar */}
                     <motion.div
                       className="bg-surface border-border-subtle relative flex items-center rounded-full border shadow-lg"
-                      whileHover={{ scale: 1.01 }}
-                      transition={{ duration: 0.2 }}
+                      whileHover={{
+                        scale: 1.015,
+                        transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] },
+                      }}
                     >
                       <input
                         type="text"
@@ -138,7 +177,7 @@ export default function Home() {
                       />
                       <motion.button
                         type="submit"
-                        className="bg-primary hover:bg-primary-hover focus:ring-primary absolute right-2 flex items-center gap-2 rounded-full px-6 py-2.5 font-semibold text-white transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                        className="bg-primary hover:bg-primary-hover focus:ring-primary text-text-on-accent absolute right-2 flex items-center gap-2 rounded-full px-6 py-2.5 font-semibold transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                       >
@@ -167,7 +206,7 @@ export default function Home() {
                         <select
                           value={selectedCycle}
                           onChange={(e) => handleCycleChange(e.target.value)}
-                          className="bg-surface/80 text-text-secondary focus:bg-surface w-full appearance-none rounded-full border-0 py-3 pr-10 pl-4 text-sm font-medium shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:ring-2 focus:ring-[var(--ctp-blue)] focus:outline-none"
+                          className="bg-surface/80 text-text-secondary focus:bg-surface focus:ring-primary w-full appearance-none rounded-full border-0 py-3 pr-10 pl-4 text-sm font-medium shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:ring-2 focus:outline-none"
                         >
                           <option value="">{t("hero.search.allCycles")}</option>
                           {zyklen.map((z) => (
@@ -184,7 +223,7 @@ export default function Home() {
                         <select
                           value={selectedSubject}
                           onChange={(e) => handleSubjectChange(e.target.value)}
-                          className="bg-surface/80 text-text-secondary focus:bg-surface w-full appearance-none rounded-full border-0 py-3 pr-10 pl-4 text-sm font-medium shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:ring-2 focus:ring-[var(--ctp-blue)] focus:outline-none"
+                          className="bg-surface/80 text-text-secondary focus:bg-surface focus:ring-primary w-full appearance-none rounded-full border-0 py-3 pr-10 pl-4 text-sm font-medium shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:ring-2 focus:outline-none"
                         >
                           <option value="">{t("hero.search.allSubjects")}</option>
                           {availableSubjects.map((fb) => (
@@ -201,7 +240,7 @@ export default function Home() {
                         <select
                           value={selectedKompetenzbereich}
                           onChange={(e) => setSelectedKompetenzbereich(e.target.value)}
-                          className="bg-surface/80 text-text-secondary focus:bg-surface w-full appearance-none rounded-full border-0 py-3 pr-10 pl-4 text-sm font-medium shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:ring-2 focus:ring-[var(--ctp-blue)] focus:outline-none"
+                          className="bg-surface/80 text-text-secondary focus:bg-surface focus:ring-primary w-full appearance-none rounded-full border-0 py-3 pr-10 pl-4 text-sm font-medium shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:ring-2 focus:outline-none"
                         >
                           <option value="">{t("hero.search.allKompetenzbereiche")}</option>
                           {availableKompetenzbereiche.map((kb) => (
@@ -217,13 +256,20 @@ export default function Home() {
                 </FadeIn>
               </div>
 
-              {/* Right Side - Hero Image with decorative container */}
+              {/* Right Side - Hero Image with decorative container + parallax */}
               <FadeIn
                 direction="right"
                 delay={0.2}
                 className="hero-image-container order-2 flex items-center justify-center"
               >
-                <motion.div whileHover={{ y: -8, scale: 1.02 }} transition={{ duration: 0.3 }}>
+                <motion.div
+                  style={prefersReducedMotion ? undefined : { y: heroImageY }}
+                  whileHover={{
+                    y: -8,
+                    scale: 1.02,
+                    transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] },
+                  }}
+                >
                   <Image
                     src="/images/hero-teachers.png"
                     alt={t("hero.imageAlt")}
@@ -246,11 +292,13 @@ export default function Home() {
         <SwissBrandSection />
 
         {/* Featured Resources - Visual Direction */}
-        <section className="bg-surface py-24">
+        <section aria-labelledby="featured-heading" className="bg-surface py-24">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <FadeIn direction="up" className="mb-8 flex items-end justify-between">
               <div>
-                <h2 className="text-text text-xl font-semibold">{t("featuredResources.title")}</h2>
+                <h2 id="featured-heading" className="text-text text-xl font-semibold">
+                  {t("featuredResources.title")}
+                </h2>
                 <p className="text-text-muted mt-2">{t("featuredResources.description")}</p>
               </div>
               <motion.div whileHover={{ x: 5 }} transition={{ duration: 0.2 }}>

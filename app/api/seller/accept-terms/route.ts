@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { auth } from "@/lib/auth";
-import { unauthorized, notFound } from "@/lib/api";
+import { requireAuth, unauthorized, notFound } from "@/lib/api";
 
 /**
  * POST /api/seller/accept-terms
@@ -10,12 +9,8 @@ import { unauthorized, notFound } from "@/lib/api";
  */
 export async function POST() {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return unauthorized();
-    }
-
-    const userId = session.user.id;
+    const userId = await requireAuth();
+    if (!userId) return unauthorized();
 
     // Get user data to check requirements
     const user = await prisma.user.findUnique({
@@ -32,10 +27,7 @@ export async function POST() {
 
     // Require email verification before accepting terms
     if (!user.emailVerified) {
-      return NextResponse.json(
-        { error: "E-Mail muss zuerst verifiziert werden" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "E-Mail muss zuerst verifiziert werden" }, { status: 400 });
     }
 
     // Check if already accepted
@@ -65,10 +57,7 @@ export async function POST() {
     });
   } catch (error) {
     console.error("Error accepting seller terms:", error);
-    return NextResponse.json(
-      { error: "Fehler beim Akzeptieren der Bedingungen" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Fehler beim Akzeptieren der Bedingungen" }, { status: 500 });
   }
 }
 
@@ -79,13 +68,11 @@ export async function POST() {
  */
 export async function GET() {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return unauthorized();
-    }
+    const userId = await requireAuth();
+    if (!userId) return unauthorized();
 
     const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
+      where: { id: userId },
       select: {
         seller_terms_accepted_at: true,
       },
@@ -101,9 +88,6 @@ export async function GET() {
     });
   } catch (error) {
     console.error("Error checking seller terms:", error);
-    return NextResponse.json(
-      { error: "Fehler beim Laden der Bedingungen" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Fehler beim Laden der Bedingungen" }, { status: 500 });
   }
 }

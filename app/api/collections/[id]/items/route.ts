@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAuth, unauthorized, badRequest, notFound, forbidden } from "@/lib/api";
+import { isValidId } from "@/lib/rateLimit";
 import { z } from "zod";
 
 const addItemSchema = z.object({
@@ -27,6 +28,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
   try {
     const { id: collectionId } = await params;
+    if (!isValidId(collectionId)) return badRequest("Invalid ID");
     const body = await request.json();
     const validation = addItemSchema.safeParse(body);
 
@@ -133,6 +135,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 
   try {
     const { id: collectionId } = await params;
+    if (!isValidId(collectionId)) return badRequest("Invalid ID");
     const body = await request.json();
     const validation = reorderItemsSchema.safeParse(body);
 
@@ -192,6 +195,7 @@ export async function DELETE(
 
   try {
     const { id: collectionId } = await params;
+    if (!isValidId(collectionId)) return badRequest("Invalid ID");
     const { searchParams } = new URL(request.url);
     const itemId = searchParams.get("itemId");
 

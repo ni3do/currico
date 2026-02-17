@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useTheme, useIsMounted, type Theme } from "@/components/providers/ThemeProvider";
 
 const themes: Theme[] = ["light", "system", "dark"];
@@ -62,15 +63,16 @@ const icons = {
   ),
 };
 
-const labels: Record<Theme, string> = {
-  light: "Light",
-  system: "System",
-  dark: "Dark",
-};
-
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
   const mounted = useIsMounted();
+  const t = useTranslations("theme");
+
+  const labels: Record<Theme, string> = {
+    light: t("light"),
+    system: t("system"),
+    dark: t("dark"),
+  };
 
   const cycleTheme = () => {
     const currentIndex = themes.indexOf(theme);
@@ -78,13 +80,13 @@ export function ThemeToggle() {
     setTheme(themes[nextIndex]);
   };
 
-  // Prevent hydration mismatch
+  // Prevent hydration mismatch — render a visually identical but non-functional button
   if (!mounted) {
     return (
       <button
-        className="flex h-7 w-7 items-center justify-center rounded-md border border-border bg-surface transition-colors hover:bg-surface-hover"
-        aria-label="Toggle theme"
-        disabled
+        className="group border-border bg-surface text-text-secondary hover:bg-surface-elevated hover:text-text relative flex h-7 w-7 items-center justify-center rounded-md border transition-all duration-200"
+        aria-label={t("toggle")}
+        aria-busy="true"
       >
         <span className="h-[14px] w-[14px]" />
       </button>
@@ -94,8 +96,8 @@ export function ThemeToggle() {
   return (
     <button
       onClick={cycleTheme}
-      className="group relative flex h-7 w-7 items-center justify-center rounded-md border border-border bg-surface text-text-secondary transition-all duration-200 hover:bg-surface-elevated hover:text-text"
-      aria-label={`Current theme: ${labels[theme]}. Click to change.`}
+      className="group border-border bg-surface text-text-secondary hover:bg-surface-elevated hover:text-text relative flex h-7 w-7 items-center justify-center rounded-md border transition-all duration-200"
+      aria-label={t("currentTheme", { theme: labels[theme] })}
       title={labels[theme]}
     >
       <span className="transition-transform duration-200 group-hover:scale-110">
@@ -105,16 +107,17 @@ export function ThemeToggle() {
   );
 }
 
-const settingsLabels: Record<Theme, string> = {
-  light: "Hell",
-  system: "System",
-  dark: "Dunkel",
-};
-
 // Settings component for account settings page
 export function ThemeSettings() {
   const { theme, setTheme } = useTheme();
   const mounted = useIsMounted();
+  const t = useTranslations("theme");
+
+  const settingsLabels: Record<Theme, string> = {
+    light: t("light"),
+    system: t("system"),
+    dark: t("dark"),
+  };
 
   if (!mounted) {
     return (
@@ -122,9 +125,9 @@ export function ThemeSettings() {
         {themes.map((t) => (
           <div
             key={t}
-            className="flex items-center gap-3 rounded-lg border border-border p-3 opacity-50"
+            className="border-border flex items-center gap-3 rounded-lg border p-3 opacity-50"
           >
-            <div className="h-5 w-5 rounded-full border-2 border-border" />
+            <div className="border-border h-5 w-5 rounded-full border-2" />
             <span className="h-[14px] w-[14px]" />
             <span className="text-text">{settingsLabels[t]}</span>
           </div>
@@ -150,7 +153,7 @@ export function ThemeSettings() {
               theme === t ? "border-primary" : "border-border"
             }`}
           >
-            {theme === t && <div className="h-2.5 w-2.5 rounded-full bg-primary" />}
+            {theme === t && <div className="bg-primary h-2.5 w-2.5 rounded-full" />}
           </div>
           <span className="text-text-muted">{icons[t]}</span>
           <span className="text-text">{settingsLabels[t]}</span>

@@ -1,24 +1,26 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import {
+  requireAuth,
+  unauthorized,
+  serverError,
+  parsePagination,
+  paginationResponse,
+} from "@/lib/api";
 
 // GET /api/user/resource-comments - Get all comments on seller's resources
 export async function GET(request: Request) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
-    }
+    const userId = await requireAuth();
+    if (!userId) return unauthorized();
 
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get("page") || "1");
-    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") || "20")));
-    const skip = (page - 1) * limit;
+    const { page, limit, skip } = parsePagination(searchParams);
     const filter = searchParams.get("filter") || "all"; // all, unreplied
 
     // Get all resources owned by the seller
     const sellerResources = await prisma.resource.findMany({
-      where: { seller_id: session.user.id },
+      where: { seller_id: userId },
       select: { id: true },
     });
 
@@ -27,12 +29,7 @@ export async function GET(request: Request) {
     if (resourceIds.length === 0) {
       return NextResponse.json({
         comments: [],
-        pagination: {
-          page,
-          limit,
-          totalCount: 0,
-          totalPages: 0,
-        },
+        pagination: paginationResponse(page, limit, 0),
         stats: {
           totalComments: 0,
           unrepliedComments: 0,
@@ -52,7 +49,7 @@ export async function GET(request: Request) {
         NOT: {
           replies: {
             some: {
-              user_id: session.user.id,
+              user_id: userId,
             },
           },
         },
@@ -114,7 +111,7 @@ export async function GET(request: Request) {
           NOT: {
             replies: {
               some: {
-                user_id: session.user.id,
+                user_id: userId,
               },
             },
           },
@@ -148,18 +145,13 @@ export async function GET(request: Request) {
             id: reply.user.id,
             displayName: reply.user.display_name || reply.user.name || "Anonym",
             image: reply.user.image,
-            isSeller: reply.user.id === session.user.id,
+            isSeller: reply.user.id === userId,
           },
         })),
         replyCount: comment.replies.length,
-        hasSellerReply: comment.replies.some((reply) => reply.user.id === session.user.id),
+        hasSellerReply: comment.replies.some((reply) => reply.user.id === userId),
       })),
-      pagination: {
-        page,
-        limit,
-        totalCount,
-        totalPages: Math.ceil(totalCount / limit),
-      },
+      pagination: paginationResponse(page, limit, totalCount),
       stats: {
         totalComments: allCommentsCount,
         unrepliedComments: unrepliedCount,
@@ -167,6 +159,6 @@ export async function GET(request: Request) {
     });
   } catch (error) {
     console.error("Error fetching seller resource comments:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError();
   }
 }

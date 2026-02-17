@@ -3,7 +3,7 @@ import { prisma } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
 import { formatPrice } from "@/lib/utils/price";
 import { getFileFormat } from "@/lib/utils/file-format";
-import { requireAuth, unauthorized } from "@/lib/api";
+import { requireAuth, unauthorized, parsePagination, paginationResponse } from "@/lib/api";
 
 /**
  * GET /api/user/library
@@ -22,8 +22,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const search = searchParams.get("search") || "";
     const type = searchParams.get("type") || "acquired";
-    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") || "50", 10)));
-    const offset = Math.max(0, parseInt(searchParams.get("offset") || "0", 10) || 0);
+    const { page, limit, skip } = parsePagination(searchParams, { limit: 50 });
 
     // If type is "uploaded", return user's own resources
     if (type === "uploaded") {
@@ -61,7 +60,7 @@ export async function GET(request: NextRequest) {
         },
         orderBy,
         take: limit,
-        skip: offset,
+        skip,
       });
 
       const uploadedCount = await prisma.resource.count({
@@ -102,11 +101,7 @@ export async function GET(request: NextRequest) {
         stats: {
           totalUploaded: uploadedCount,
         },
-        pagination: {
-          limit,
-          offset,
-          hasMore: items.length === limit,
-        },
+        pagination: paginationResponse(page, limit, uploadedCount),
       });
     }
 
@@ -149,7 +144,7 @@ export async function GET(request: NextRequest) {
       },
       orderBy: { created_at: "desc" },
       take: limit,
-      skip: offset,
+      skip,
     });
 
     // Get free downloads
@@ -192,7 +187,7 @@ export async function GET(request: NextRequest) {
       },
       orderBy: { created_at: "desc" },
       take: limit,
-      skip: offset,
+      skip,
     });
 
     // Combine and transform the results
@@ -279,11 +274,7 @@ export async function GET(request: NextRequest) {
         totalDownloaded: downloadedCount,
         totalInLibrary: purchasedCount + downloadedCount,
       },
-      pagination: {
-        limit,
-        offset,
-        hasMore: uniqueItems.length === limit,
-      },
+      pagination: paginationResponse(page, limit, purchasedCount + downloadedCount),
     });
   } catch (error) {
     console.error("Error fetching library:", error);

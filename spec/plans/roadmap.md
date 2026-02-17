@@ -669,3 +669,5 @@ so that [benefit/outcome].
 - [Design System](./design-system.md) - UI components and theming
 - [LP21 Filter Sidebar](./lp21-filter-sidebar.md) - Curriculum filter implementation details
 - [Stripe Connect Plan](./stripe-connect-implementation-plan.md) - Payment integration
+- [UX Polish 9-10 Plan](./ux-polish-9-and-10.md) - Path from 8.5 → 10/10 UX polish score
+- [Final Touch Audit](./final-touch-audit.md) - Full design consistency audit (score: 7.5/10)

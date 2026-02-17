@@ -17,6 +17,18 @@
     "invalidFileType": "Invalid file type",
     "userNotFound": "User not found"
   },
+  "theme": {
+    "light": "Light",
+    "system": "System",
+    "dark": "Dark",
+    "toggle": "Toggle theme",
+    "currentTheme": "Current theme: {theme}. Click to change."
+  },
+  "profileCompletion": {
+    "title": "Complete your profile",
+    "description": "Before you can upload materials, please complete the following:",
+    "button": "Complete profile"
+  },
   "dashboardCard": {
     "remove": "Remove",
     "edit": "Edit",
@@ -47,6 +59,8 @@
   },
   "common": {
     "skipToContent": "Skip to content",
+    "scrollToTop": "Scroll to top",
+    "toggleNavigation": "Toggle navigation",
     "brand": {
       "logoText": "C",
       "name": "Currico",
@@ -2325,8 +2339,11 @@
     "intro": "This Cookie Policy explains how Currico uses cookies and similar technologies when you visit our website. We are committed to transparency about the data we collect and how we use it.",
     "toc": {
       "title": "Table of Contents",
-      "label": "Table of Contents"
+      "label": "Table of Contents",
+      "showContents": "Show table of contents",
+      "hideContents": "Close table of contents"
     },
+    "backToTop": "Back to top",
     "sections": {
       "what": {
         "title": "1. What Are Cookies?",
@@ -3078,6 +3095,12 @@
       "description": "We couldn't find an answer to your question. Our team is happy to help you personally.",
       "contactButton": "Contact Support",
       "contactEmail": "info@currico.ch"
+    },
+    "contactCta": {
+      "title": "Need more help?",
+      "description": "Our team is happy to help you personally — just reach out to us.",
+      "contactButton": "Contact Support",
+      "contactEmail": "info@currico.ch"
     }
   },
   "notifications": {
@@ -3420,6 +3443,7 @@
       "newMaterial": "New Material",
       "search": "Search uploads...",
       "sort": {
+        "label": "Sort by",
         "newest": "Newest first",
         "oldest": "Oldest first",
         "title": "Alphabetical",
@@ -3696,6 +3720,12 @@
       "filterFollows": "Followers",
       "filterSystem": "System",
       "loadMore": "Load more"
+    },
+    "notificationDropdown": {
+      "title": "Notifications",
+      "markAllRead": "Mark all as read",
+      "empty": "No notifications yet",
+      "viewAll": "View all"
     },
     "welcomeGuide": {
       "welcome": "Welcome, {name}!",

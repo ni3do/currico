@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUserId } from "@/lib/auth";
+import { requireAuth, unauthorized } from "@/lib/api";
 import path from "path";
 import { getStorage } from "@/lib/storage";
 import type { FileCategory } from "@/lib/storage";
@@ -27,14 +27,8 @@ const ALLOWED_PREVIEW_TYPES = ["image/png", "image/jpeg", "image/jpg"];
  */
 export async function POST(request: NextRequest) {
   try {
-    // Check authentication
-    const userId = await getCurrentUserId();
-    if (!userId) {
-      return NextResponse.json(
-        { error: "Authentifizierung erforderlich", code: "UNAUTHORIZED" },
-        { status: 401 }
-      );
-    }
+    const userId = await requireAuth();
+    if (!userId) return unauthorized();
 
     const formData = await request.formData();
     const fileType = formData.get("type") as string; // "main" or "preview"

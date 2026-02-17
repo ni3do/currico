@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma, privateUserSelect } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
 import { updateNotificationPreferencesSchema } from "@/lib/validations/user";
-import { getCurrentUserId } from "@/lib/auth";
+import { requireAuth, unauthorized } from "@/lib/api";
 import type { NotificationType } from "@prisma/client";
 
 const VALID_TYPES: NotificationType[] = ["SALE", "FOLLOW", "REVIEW", "COMMENT", "SYSTEM"];
@@ -16,10 +16,8 @@ const DEFAULT_LIMIT = 20;
  */
 export async function GET(request: NextRequest) {
   try {
-    const userId = await getCurrentUserId();
-    if (!userId) {
-      return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
-    }
+    const userId = await requireAuth();
+    if (!userId) return unauthorized();
 
     const url = new URL(request.url);
     const unreadOnly = url.searchParams.get("unread") === "true";
@@ -75,11 +73,8 @@ export async function GET(request: NextRequest) {
  */
 export async function PATCH(request: NextRequest) {
   try {
-    const userId = await getCurrentUserId();
-
-    if (!userId) {
-      return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
-    }
+    const userId = await requireAuth();
+    if (!userId) return unauthorized();
 
     const body = await request.json();
 

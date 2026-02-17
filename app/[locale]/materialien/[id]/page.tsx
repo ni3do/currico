@@ -411,7 +411,7 @@ export default function MaterialDetailPage() {
 
         {/* FEEDBACK SECTION: Reviews & Comments merged */}
         <section className="border-border mb-12 border-t pt-12">
-          <h2 className="text-text mb-8 text-2xl font-bold">{t("feedbackTitle")}</h2>
+          <h2 className="text-text mb-8 text-xl font-semibold">{t("feedbackTitle")}</h2>
           <ReviewsSection materialId={id} hideTitle />
           <div className="border-border/50 my-8 border-t" />
           <CommentsSection materialId={id} hideTitle />

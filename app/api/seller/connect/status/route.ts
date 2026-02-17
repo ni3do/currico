@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { auth } from "@/lib/auth";
 import { getConnectAccount, createExpressDashboardLink } from "@/lib/stripe";
-import { unauthorized, notFound } from "@/lib/api";
+import { requireAuth, unauthorized, notFound } from "@/lib/api";
 
 /**
  * GET /api/seller/connect/status
@@ -11,12 +10,8 @@ import { unauthorized, notFound } from "@/lib/api";
  */
 export async function GET() {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return unauthorized();
-    }
-
-    const userId = session.user.id;
+    const userId = await requireAuth();
+    if (!userId) return unauthorized();
 
     // Get user's Stripe data from database
     const user = await prisma.user.findUnique({

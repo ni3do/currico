@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Coins, Users, Upload, ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
 import { FadeIn, StaggerChildren, StaggerItem, motion } from "./animations";
+import { MagneticButton } from "./MagneticButton";
 
 interface SellerHeroSectionProps {
   className?: string;
@@ -17,22 +18,22 @@ export function SellerHeroSection({ className = "" }: SellerHeroSectionProps) {
       icon: <Coins className="h-5 w-5" aria-hidden="true" />,
       title: t("features.commission.title"),
       description: t("features.commission.description"),
-      bgGradient: "from-[var(--ctp-yellow)]/20 to-[var(--ctp-peach)]/10",
-      iconColor: "text-[var(--ctp-yellow)]",
+      bgGradient: "from-warning/20 to-warning/10",
+      iconColor: "text-warning",
     },
     {
       icon: <Users className="h-5 w-5" aria-hidden="true" />,
       title: t("features.community.title"),
       description: t("features.community.description"),
-      bgGradient: "from-[var(--ctp-blue)]/20 to-[var(--ctp-sapphire)]/10",
-      iconColor: "text-[var(--ctp-sapphire)]",
+      bgGradient: "from-primary/20 to-primary-hover/10",
+      iconColor: "text-primary",
     },
     {
       icon: <Upload className="h-5 w-5" aria-hidden="true" />,
       title: t("features.curriculum.title"),
       description: t("features.curriculum.description"),
-      bgGradient: "from-[var(--ctp-teal)]/20 to-[var(--ctp-green)]/10",
-      iconColor: "text-[var(--ctp-teal)]",
+      bgGradient: "from-accent/20 to-success/10",
+      iconColor: "text-accent",
     },
   ];
 
@@ -41,15 +42,7 @@ export function SellerHeroSection({ className = "" }: SellerHeroSectionProps) {
       className={`seller-hero-premium bg-surface relative overflow-hidden rounded-2xl ${className}`}
     >
       {/* Subtle gradient accent */}
-      <div
-        className="absolute inset-0 opacity-50"
-        style={{
-          background: `linear-gradient(135deg,
-            color-mix(in srgb, var(--ctp-blue) 8%, transparent) 0%,
-            color-mix(in srgb, var(--ctp-teal) 5%, transparent) 100%
-          )`,
-        }}
-      />
+      <div className="from-primary/[0.08] to-accent/[0.05] absolute inset-0 bg-gradient-to-br opacity-50" />
 
       {/* Content */}
       <div className="relative z-10 mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
@@ -57,19 +50,16 @@ export function SellerHeroSection({ className = "" }: SellerHeroSectionProps) {
         <FadeIn direction="up" className="mx-auto max-w-2xl text-center">
           {/* Premium Badge */}
           <motion.div
-            className="mb-4 inline-flex items-center gap-2 rounded-full border border-[var(--ctp-blue)]/30 bg-[var(--ctp-blue)]/10 px-4 py-1.5"
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.2 }}
+            className="border-primary/30 bg-primary/10 mb-4 inline-flex items-center gap-2 rounded-full border px-4 py-1.5"
+            whileHover={{ scale: 1.02, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
           >
             <motion.span
               animate={{ rotate: [0, 15, -15, 0] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
-              <Sparkles className="h-3.5 w-3.5 text-[var(--ctp-blue)]" aria-hidden="true" />
+              <Sparkles className="text-primary h-3.5 w-3.5" aria-hidden="true" />
             </motion.span>
-            <span className="text-xs font-semibold text-[var(--ctp-blue)]">
-              {t("badge")}
-            </span>
+            <span className="text-primary text-xs font-semibold">{t("badge")}</span>
           </motion.div>
 
           {/* Headline */}
@@ -92,14 +82,20 @@ export function SellerHeroSection({ className = "" }: SellerHeroSectionProps) {
             <StaggerItem key={index}>
               <motion.div
                 className="group border-border bg-bg hover:border-border relative overflow-hidden rounded-xl border p-5 transition-shadow duration-200 hover:shadow-sm"
-                whileHover={{ y: -5, scale: 1.02 }}
-                transition={{ duration: 0.2 }}
+                whileHover={{
+                  y: -4,
+                  scale: 1.02,
+                  transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] },
+                }}
               >
                 {/* Icon */}
                 <motion.div
                   className={`mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br ${feature.bgGradient} ${feature.iconColor}`}
-                  whileHover={{ rotate: 10, scale: 1.1 }}
-                  transition={{ duration: 0.2 }}
+                  whileHover={{
+                    rotate: 10,
+                    scale: 1.1,
+                    transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] },
+                  }}
                 >
                   {feature.icon}
                 </motion.div>
@@ -121,19 +117,24 @@ export function SellerHeroSection({ className = "" }: SellerHeroSectionProps) {
           className="mx-auto mt-8 flex max-w-xl flex-col items-center gap-3 text-center"
         >
           {/* CTA Button */}
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Link
-              href="/verkaeufer-werden"
-              className="btn-primary group inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-semibold"
-            >
-              <span>{t("ctaButton")}</span>
-              <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />
-            </Link>
-          </motion.div>
+          <MagneticButton>
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.95 }}>
+              <Link
+                href="/verkaeufer-werden"
+                className="btn-primary group inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-semibold"
+              >
+                <span>{t("ctaButton")}</span>
+                <ArrowRight
+                  className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
+                  aria-hidden="true"
+                />
+              </Link>
+            </motion.div>
+          </MagneticButton>
 
           {/* Free Note */}
           <p className="text-text-muted flex items-center gap-1.5 text-xs">
-            <CheckCircle2 className="h-3.5 w-3.5 text-[var(--ctp-green)]" aria-hidden="true" />
+            <CheckCircle2 className="text-success h-3.5 w-3.5" aria-hidden="true" />
             {t("freeNote")}
           </p>
         </FadeIn>
@@ -141,5 +142,3 @@ export function SellerHeroSection({ className = "" }: SellerHeroSectionProps) {
     </section>
   );
 }
-
-export default SellerHeroSection;

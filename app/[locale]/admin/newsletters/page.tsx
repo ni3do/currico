@@ -156,7 +156,7 @@ export default function AdminNewslettersPage() {
 
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-text text-2xl font-bold">{t("title")}</h1>
+        <h1 className="text-text text-2xl font-bold sm:text-3xl">{t("title")}</h1>
         <button
           onClick={() => {
             setShowForm(true);

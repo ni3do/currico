@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { createCommentSchema } from "@/lib/validations/review";
 import { checkRateLimit, rateLimitHeaders, isValidId, safeParseInt } from "@/lib/rateLimit";
 import { notifyComment } from "@/lib/notifications";
+import { requireAuth, unauthorized } from "@/lib/api";
 
 // GET /api/materials/[id]/comments - Get all comments for a material
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -15,7 +15,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       return NextResponse.json({ error: "Ungültige Material-ID" }, { status: 400 });
     }
 
-    const session = await auth();
+    const userId = await requireAuth();
     const { searchParams } = new URL(request.url);
     const page = Math.max(1, safeParseInt(searchParams.get("page"), 1));
     const limit = Math.min(50, Math.max(1, safeParseInt(searchParams.get("limit"), 20)));
@@ -81,9 +81,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
           isSeller: comment.user.id === material.seller_id,
         },
         likeCount: comment.likes.length,
-        isLiked: session?.user?.id
-          ? comment.likes.some((like) => like.user_id === session.user.id)
-          : false,
+        isLiked: userId ? comment.likes.some((like) => like.user_id === userId) : false,
         replies: comment.replies.map((reply) => ({
           id: reply.id,
           content: reply.content,
@@ -114,13 +112,11 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 // POST /api/materials/[id]/comments - Create a new comment
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
-    }
+    const userId = await requireAuth();
+    if (!userId) return unauthorized();
 
     // Rate limiting check
-    const rateLimitResult = checkRateLimit(session.user.id, "materials:comment");
+    const rateLimitResult = checkRateLimit(userId, "materials:comment");
     if (!rateLimitResult.success) {
       return NextResponse.json(
         {
@@ -165,7 +161,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     const comment = await prisma.comment.create({
       data: {
         content,
-        user_id: session.user.id,
+        user_id: userId,
         resource_id: materialId,
       },
       include: {
@@ -181,7 +177,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     });
 
     // Notify the seller about the new comment (skip if commenter is the seller)
-    if (session.user.id !== material.seller_id) {
+    if (userId !== material.seller_id) {
       const commenterName = comment.user.display_name || comment.user.name || "Jemand";
       notifyComment(material.seller_id, material.title, commenterName);
     }

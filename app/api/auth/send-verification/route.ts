@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import {
   sendVerificationEmail,
@@ -8,7 +7,7 @@ import {
 } from "@/lib/email";
 import { checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
 import { locales, defaultLocale, type Locale } from "@/i18n/config";
-import { unauthorized, notFound } from "@/lib/api";
+import { requireAuth, unauthorized, notFound } from "@/lib/api";
 
 export async function POST(request: NextRequest) {
   // Rate limiting check
@@ -28,17 +27,13 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Get the current session
-  const session = await auth();
-
-  if (!session?.user?.id) {
-    return unauthorized();
-  }
+  const userId = await requireAuth();
+  if (!userId) return unauthorized();
 
   try {
     // Get user from database
     const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
+      where: { id: userId },
       select: {
         id: true,
         email: true,

@@ -7,7 +7,7 @@ import { POST as connectPOST } from "@/app/api/seller/connect/route";
 import { GET as connectStatusGET } from "@/app/api/seller/connect/status/route";
 import { createMockRequest, parseResponse } from "../../helpers/api-test-utils";
 import { prisma } from "@/lib/db";
-import { auth } from "@/lib/auth";
+import { getCurrentUserId } from "@/lib/auth";
 
 // Mock Stripe functions
 vi.mock("@/lib/stripe", () => ({
@@ -20,7 +20,7 @@ vi.mock("@/lib/stripe", () => ({
 // Get mocked functions
 const mockUserFindUnique = prisma.user.findUnique as ReturnType<typeof vi.fn>;
 const mockUserUpdate = prisma.user.update as ReturnType<typeof vi.fn>;
-const mockAuth = auth as ReturnType<typeof vi.fn>;
+const mockGetCurrentUserId = getCurrentUserId as ReturnType<typeof vi.fn>;
 
 // Import Stripe mocks after vi.mock
 import {
@@ -78,9 +78,7 @@ describe("Seller Onboarding Flow", () => {
   describe("POST /api/seller/accept-terms", () => {
     it("successfully accepts terms for verified user", async () => {
       const acceptedAt = new Date();
-      mockAuth.mockResolvedValue({
-        user: { id: "user-123", email: "test@example.com" },
-      });
+      mockGetCurrentUserId.mockResolvedValue("user-123");
       mockUserFindUnique.mockResolvedValue({
         emailVerified: new Date("2024-01-01"),
         seller_terms_accepted_at: null,
@@ -104,9 +102,7 @@ describe("Seller Onboarding Flow", () => {
 
     it("returns alreadyAccepted=true if terms already accepted", async () => {
       const acceptedAt = new Date("2024-01-15");
-      mockAuth.mockResolvedValue({
-        user: { id: "user-123", email: "test@example.com" },
-      });
+      mockGetCurrentUserId.mockResolvedValue("user-123");
       mockUserFindUnique.mockResolvedValue({
         emailVerified: new Date("2024-01-01"),
         seller_terms_accepted_at: acceptedAt,
@@ -124,7 +120,7 @@ describe("Seller Onboarding Flow", () => {
     });
 
     it("returns 401 when not authenticated", async () => {
-      mockAuth.mockResolvedValue(null);
+      mockGetCurrentUserId.mockResolvedValue(null);
 
       const response = await acceptTermsPOST();
       const data = await parseResponse<AcceptTermsResponse>(response);
@@ -134,9 +130,7 @@ describe("Seller Onboarding Flow", () => {
     });
 
     it("returns 400 when email not verified", async () => {
-      mockAuth.mockResolvedValue({
-        user: { id: "user-123", email: "test@example.com" },
-      });
+      mockGetCurrentUserId.mockResolvedValue("user-123");
       mockUserFindUnique.mockResolvedValue({
         emailVerified: null,
         seller_terms_accepted_at: null,
@@ -150,9 +144,7 @@ describe("Seller Onboarding Flow", () => {
     });
 
     it("returns 404 when user not found", async () => {
-      mockAuth.mockResolvedValue({
-        user: { id: "user-123", email: "test@example.com" },
-      });
+      mockGetCurrentUserId.mockResolvedValue("user-123");
       mockUserFindUnique.mockResolvedValue(null);
 
       const response = await acceptTermsPOST();
@@ -163,9 +155,7 @@ describe("Seller Onboarding Flow", () => {
     });
 
     it("returns 500 on database error", async () => {
-      mockAuth.mockResolvedValue({
-        user: { id: "user-123", email: "test@example.com" },
-      });
+      mockGetCurrentUserId.mockResolvedValue("user-123");
       mockUserFindUnique.mockResolvedValue({
         emailVerified: new Date("2024-01-01"),
         seller_terms_accepted_at: null,
@@ -183,9 +173,7 @@ describe("Seller Onboarding Flow", () => {
   describe("GET /api/seller/accept-terms", () => {
     it("returns accepted status when terms were accepted", async () => {
       const acceptedAt = new Date("2024-01-15");
-      mockAuth.mockResolvedValue({
-        user: { id: "user-123", email: "test@example.com" },
-      });
+      mockGetCurrentUserId.mockResolvedValue("user-123");
       mockUserFindUnique.mockResolvedValue({
         seller_terms_accepted_at: acceptedAt,
       });
@@ -199,9 +187,7 @@ describe("Seller Onboarding Flow", () => {
     });
 
     it("returns accepted=false when terms not yet accepted", async () => {
-      mockAuth.mockResolvedValue({
-        user: { id: "user-123", email: "test@example.com" },
-      });
+      mockGetCurrentUserId.mockResolvedValue("user-123");
       mockUserFindUnique.mockResolvedValue({
         seller_terms_accepted_at: null,
       });
@@ -215,7 +201,7 @@ describe("Seller Onboarding Flow", () => {
     });
 
     it("returns 401 when not authenticated", async () => {
-      mockAuth.mockResolvedValue(null);
+      mockGetCurrentUserId.mockResolvedValue(null);
 
       const response = await acceptTermsGET();
       const data = await parseResponse<AcceptTermsResponse>(response);
@@ -225,9 +211,7 @@ describe("Seller Onboarding Flow", () => {
     });
 
     it("returns 404 when user not found", async () => {
-      mockAuth.mockResolvedValue({
-        user: { id: "user-123", email: "test@example.com" },
-      });
+      mockGetCurrentUserId.mockResolvedValue("user-123");
       mockUserFindUnique.mockResolvedValue(null);
 
       const response = await acceptTermsGET();
@@ -240,9 +224,7 @@ describe("Seller Onboarding Flow", () => {
 
   describe("POST /api/seller/connect", () => {
     it("creates Stripe account and returns onboarding link", async () => {
-      mockAuth.mockResolvedValue({
-        user: { id: "user-123", email: "test@example.com" },
-      });
+      mockGetCurrentUserId.mockResolvedValue("user-123");
       mockUserFindUnique.mockResolvedValue({
         email: "test@example.com",
         emailVerified: new Date("2024-01-01"),
@@ -290,9 +272,7 @@ describe("Seller Onboarding Flow", () => {
     });
 
     it("reuses existing Stripe account if user already has one", async () => {
-      mockAuth.mockResolvedValue({
-        user: { id: "user-123", email: "test@example.com" },
-      });
+      mockGetCurrentUserId.mockResolvedValue("user-123");
       mockUserFindUnique.mockResolvedValue({
         email: "test@example.com",
         emailVerified: new Date("2024-01-01"),
@@ -325,7 +305,7 @@ describe("Seller Onboarding Flow", () => {
     });
 
     it("returns 401 when not authenticated", async () => {
-      mockAuth.mockResolvedValue(null);
+      mockGetCurrentUserId.mockResolvedValue(null);
 
       const request = createMockRequest("/api/seller/connect", {
         method: "POST",
@@ -339,9 +319,7 @@ describe("Seller Onboarding Flow", () => {
     });
 
     it("returns 400 when email not verified", async () => {
-      mockAuth.mockResolvedValue({
-        user: { id: "user-123", email: "test@example.com" },
-      });
+      mockGetCurrentUserId.mockResolvedValue("user-123");
       mockUserFindUnique.mockResolvedValue({
         email: "test@example.com",
         emailVerified: null,
@@ -361,9 +339,7 @@ describe("Seller Onboarding Flow", () => {
     });
 
     it("returns 400 when terms not accepted", async () => {
-      mockAuth.mockResolvedValue({
-        user: { id: "user-123", email: "test@example.com" },
-      });
+      mockGetCurrentUserId.mockResolvedValue("user-123");
       mockUserFindUnique.mockResolvedValue({
         email: "test@example.com",
         emailVerified: new Date("2024-01-01"),
@@ -383,9 +359,7 @@ describe("Seller Onboarding Flow", () => {
     });
 
     it("returns 404 when user not found", async () => {
-      mockAuth.mockResolvedValue({
-        user: { id: "user-123", email: "test@example.com" },
-      });
+      mockGetCurrentUserId.mockResolvedValue("user-123");
       mockUserFindUnique.mockResolvedValue(null);
 
       const request = createMockRequest("/api/seller/connect", {
@@ -400,9 +374,7 @@ describe("Seller Onboarding Flow", () => {
     });
 
     it("returns 500 on Stripe account creation error", async () => {
-      mockAuth.mockResolvedValue({
-        user: { id: "user-123", email: "test@example.com" },
-      });
+      mockGetCurrentUserId.mockResolvedValue("user-123");
       mockUserFindUnique.mockResolvedValue({
         email: "test@example.com",
         emailVerified: new Date("2024-01-01"),
@@ -425,9 +397,7 @@ describe("Seller Onboarding Flow", () => {
 
   describe("GET /api/seller/connect/status", () => {
     it("returns full status for seller with completed onboarding", async () => {
-      mockAuth.mockResolvedValue({
-        user: { id: "user-123", email: "test@example.com" },
-      });
+      mockGetCurrentUserId.mockResolvedValue("user-123");
       mockUserFindUnique.mockResolvedValue({
         stripe_account_id: "acct_test123",
         stripe_onboarding_complete: true,
@@ -474,9 +444,7 @@ describe("Seller Onboarding Flow", () => {
     });
 
     it("returns minimal status when user has no Stripe account", async () => {
-      mockAuth.mockResolvedValue({
-        user: { id: "user-123", email: "test@example.com" },
-      });
+      mockGetCurrentUserId.mockResolvedValue("user-123");
       mockUserFindUnique.mockResolvedValue({
         stripe_account_id: null,
         stripe_onboarding_complete: false,
@@ -503,9 +471,7 @@ describe("Seller Onboarding Flow", () => {
     });
 
     it("syncs status to database when Stripe status differs", async () => {
-      mockAuth.mockResolvedValue({
-        user: { id: "user-123", email: "test@example.com" },
-      });
+      mockGetCurrentUserId.mockResolvedValue("user-123");
       mockUserFindUnique.mockResolvedValue({
         stripe_account_id: "acct_test123",
         stripe_onboarding_complete: false,
@@ -548,9 +514,7 @@ describe("Seller Onboarding Flow", () => {
     });
 
     it("returns cached data when Stripe API fails", async () => {
-      mockAuth.mockResolvedValue({
-        user: { id: "user-123", email: "test@example.com" },
-      });
+      mockGetCurrentUserId.mockResolvedValue("user-123");
       mockUserFindUnique.mockResolvedValue({
         stripe_account_id: "acct_test123",
         stripe_onboarding_complete: true,
@@ -573,9 +537,7 @@ describe("Seller Onboarding Flow", () => {
     });
 
     it("does not return dashboard link when charges not enabled", async () => {
-      mockAuth.mockResolvedValue({
-        user: { id: "user-123", email: "test@example.com" },
-      });
+      mockGetCurrentUserId.mockResolvedValue("user-123");
       mockUserFindUnique.mockResolvedValue({
         stripe_account_id: "acct_test123",
         stripe_onboarding_complete: false,
@@ -609,7 +571,7 @@ describe("Seller Onboarding Flow", () => {
     });
 
     it("returns 401 when not authenticated", async () => {
-      mockAuth.mockResolvedValue(null);
+      mockGetCurrentUserId.mockResolvedValue(null);
 
       const response = await connectStatusGET();
       const data = await parseResponse<ConnectStatusResponse>(response);
@@ -619,9 +581,7 @@ describe("Seller Onboarding Flow", () => {
     });
 
     it("returns 404 when user not found", async () => {
-      mockAuth.mockResolvedValue({
-        user: { id: "user-123", email: "test@example.com" },
-      });
+      mockGetCurrentUserId.mockResolvedValue("user-123");
       mockUserFindUnique.mockResolvedValue(null);
 
       const response = await connectStatusGET();

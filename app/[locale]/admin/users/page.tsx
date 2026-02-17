@@ -52,8 +52,8 @@ export default function AdminUsersPage() {
       if (response.ok) {
         const data: AdminUsersResponse = await response.json();
         setUsers(data.users);
-        setTotalPages(data.totalPages);
-        setTotal(data.total);
+        setTotalPages(data.pagination.totalPages);
+        setTotal(data.pagination.total);
       }
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -188,7 +188,7 @@ export default function AdminUsersPage() {
       <div className="text-text-muted text-sm">{t("usersFound", { count: total })}</div>
 
       {/* Users Table */}
-      <div className="border-border bg-surface overflow-hidden rounded-2xl border">
+      <div className="border-border bg-surface overflow-hidden rounded-lg border">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-bg">

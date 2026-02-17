@@ -8,6 +8,7 @@ import { Link } from "@/i18n/navigation";
 import { motion } from "framer-motion";
 import { AlertCircle, RefreshCw, Users, FileText, Calendar } from "lucide-react";
 import { useAccountData } from "@/lib/hooks/useAccountData";
+import { FollowedSellerSkeleton } from "@/components/ui/Skeleton";
 import { SUBJECT_PILL_CLASSES } from "@/lib/types/account";
 
 interface FollowedSellerDetail {
@@ -22,9 +23,12 @@ interface FollowedSellerDetail {
 
 interface FollowingApiResponse {
   sellers: FollowedSellerDetail[];
-  total: number;
-  page: number;
-  hasMore: boolean;
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
 }
 
 function isValidFollowingResponse(data: unknown): data is FollowingApiResponse {
@@ -33,8 +37,8 @@ function isValidFollowingResponse(data: unknown): data is FollowingApiResponse {
     data !== null &&
     "sellers" in data &&
     Array.isArray((data as FollowingApiResponse).sellers) &&
-    "total" in data &&
-    typeof (data as FollowingApiResponse).total === "number"
+    "pagination" in data &&
+    typeof (data as FollowingApiResponse).pagination?.total === "number"
   );
 }
 
@@ -66,9 +70,9 @@ export default function AccountFollowingPage() {
         const data: unknown = await response.json();
         if (isValidFollowingResponse(data)) {
           setFollowedSellers((prev) => (append ? [...prev, ...data.sellers] : data.sellers));
-          setTotalCount(data.total);
-          setHasMore(data.hasMore);
-          setCurrentPage(data.page);
+          setTotalCount(data.pagination.total);
+          setHasMore(data.pagination.page < data.pagination.totalPages);
+          setCurrentPage(data.pagination.page);
         } else {
           setFollowedSellers((prev) => (append ? prev : []));
           setTotalCount(0);
@@ -116,25 +120,7 @@ export default function AccountFollowingPage() {
   };
 
   if (loading || sharedLoading) {
-    return (
-      <div className="card space-y-4 p-8">
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="border-border animate-pulse rounded-xl border p-6">
-            <div className="flex items-start gap-4">
-              <div className="bg-border h-16 w-16 flex-shrink-0 rounded-full" />
-              <div className="flex-1 space-y-3">
-                <div className="bg-border h-5 w-40 rounded" />
-                <div className="bg-border h-4 w-64 rounded" />
-                <div className="flex gap-2">
-                  <div className="bg-border h-5 w-16 rounded-full" />
-                  <div className="bg-border h-5 w-20 rounded-full" />
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    );
+    return <FollowedSellerSkeleton />;
   }
 
   const filteredSellers = followedSellers.filter((seller) => {
@@ -192,7 +178,7 @@ export default function AccountFollowingPage() {
             <p className="text-text-muted mb-4 text-sm">{t("noFollowingDescription")}</p>
             <Link
               href="/materialien?showCreators=true"
-              className="bg-primary hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-6 py-2.5 font-medium text-white transition-colors"
+              className="bg-primary hover:bg-primary-hover text-text-on-accent inline-flex items-center gap-2 rounded-lg px-6 py-2.5 font-medium transition-colors"
             >
               {t("discoverProfiles")}
             </Link>
@@ -221,7 +207,7 @@ export default function AccountFollowingPage() {
                         className="border-border rounded-full border-2 object-cover"
                       />
                     ) : (
-                      <div className="from-primary to-success flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br text-xl font-bold text-white">
+                      <div className="from-primary to-success text-text-on-accent flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br text-xl font-bold">
                         {seller.name.charAt(0).toUpperCase()}
                       </div>
                     )}

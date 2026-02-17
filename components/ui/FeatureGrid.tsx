@@ -47,15 +47,21 @@ export function FeatureGrid({
             <StaggerItem key={card.key}>
               <motion.div
                 className={`card text-center ${isSpacious ? "p-8" : "p-6"}`}
-                whileHover={{ y: -8, scale: 1.02 }}
-                transition={{ duration: 0.2 }}
+                whileHover={{
+                  y: -4,
+                  scale: 1.02,
+                  transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] },
+                }}
               >
                 <motion.div
                   className={`mx-auto flex items-center justify-center ${card.iconBgClass} ${
                     isSpacious ? "mb-5 h-16 w-16 rounded-2xl" : "mb-4 h-12 w-12 rounded-full"
                   }`}
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  transition={{ duration: 0.2 }}
+                  whileHover={{
+                    scale: 1.1,
+                    rotate: 5,
+                    transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] },
+                  }}
                 >
                   <span className={card.iconColorClass}>{card.icon}</span>
                 </motion.div>

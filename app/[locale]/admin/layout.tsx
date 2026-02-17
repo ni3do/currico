@@ -113,7 +113,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-4 sm:px-6 lg:px-8">
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
         {/* Breadcrumb */}
         <div className="mb-3">
           <Breadcrumb
@@ -131,7 +131,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           <div className="lg:hidden">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="border-border bg-bg-secondary text-text-secondary hover:border-error hover:text-error flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-3 text-sm font-medium transition-colors"
+              className="border-border bg-bg-secondary text-text-secondary hover:border-primary hover:text-primary flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-3 text-sm font-medium transition-colors"
             >
               <Menu className="h-5 w-5" />
               <span>{t("menu")}</span>

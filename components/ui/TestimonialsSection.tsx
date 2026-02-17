@@ -47,8 +47,11 @@ export function TestimonialsSection() {
             <StaggerItem key={testimonial.key}>
               <motion.div
                 className="card relative p-6"
-                whileHover={{ y: -4, scale: 1.01 }}
-                transition={{ duration: 0.2 }}
+                whileHover={{
+                  y: -4,
+                  scale: 1.02,
+                  transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] },
+                }}
               >
                 {/* Quote decoration */}
                 <Quote className="text-border absolute top-4 right-4 h-8 w-8 opacity-50" />

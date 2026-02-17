@@ -429,7 +429,9 @@ export default function AccountOverviewPage() {
                 <div className="bg-surface-hover mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl">
                   <FileText className="text-text-faint h-8 w-8" />
                 </div>
-                <h3 className="text-text mb-2 text-lg font-medium">{t("overview.noMaterials")}</h3>
+                <h3 className="text-text mb-2 text-lg font-semibold">
+                  {t("overview.noMaterials")}
+                </h3>
                 <p className="text-text-muted mx-auto max-w-sm text-sm">
                   {t("overview.noMaterialsDescription")}
                 </p>

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin, unauthorizedResponse } from "@/lib/admin-auth";
+import { badRequest, notFound, serverError } from "@/lib/api";
+import { isValidId } from "@/lib/rateLimit";
 
 /**
  * PATCH /api/admin/newsletters/[id]
@@ -15,16 +17,17 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     }
 
     const { id } = await params;
+    if (!isValidId(id)) return badRequest("Invalid ID");
     const body = await request.json();
     const { subject, content } = body;
 
     const newsletter = await prisma.newsletter.findUnique({ where: { id } });
     if (!newsletter) {
-      return NextResponse.json({ error: "Newsletter nicht gefunden" }, { status: 404 });
+      return notFound("Newsletter not found");
     }
 
     if (newsletter.status !== "DRAFT") {
-      return NextResponse.json({ error: "Nur Entwürfe können bearbeitet werden" }, { status: 400 });
+      return badRequest("Only drafts can be edited");
     }
 
     const updated = await prisma.newsletter.update({
@@ -38,7 +41,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     return NextResponse.json(updated);
   } catch (error) {
     console.error("Error updating newsletter:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError();
   }
 }
 
@@ -58,14 +61,15 @@ export async function DELETE(
     }
 
     const { id } = await params;
+    if (!isValidId(id)) return badRequest("Invalid ID");
 
     const newsletter = await prisma.newsletter.findUnique({ where: { id } });
     if (!newsletter) {
-      return NextResponse.json({ error: "Newsletter nicht gefunden" }, { status: 404 });
+      return notFound("Newsletter not found");
     }
 
     if (newsletter.status !== "DRAFT") {
-      return NextResponse.json({ error: "Nur Entwürfe können gelöscht werden" }, { status: 400 });
+      return badRequest("Only drafts can be deleted");
     }
 
     await prisma.newsletter.delete({ where: { id } });
@@ -73,6 +77,6 @@ export async function DELETE(
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error deleting newsletter:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError();
   }
 }

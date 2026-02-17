@@ -99,7 +99,7 @@ export function WelcomeGuide({ userName, onNavigate }: WelcomeGuideProps) {
           initial={{ opacity: 0, y: -20, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -20, scale: 0.98 }}
-          transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
           className="border-border bg-surface relative overflow-hidden rounded-2xl border shadow-sm"
         >
           {/* Decorative gradient accent */}
@@ -140,7 +140,7 @@ export function WelcomeGuide({ userName, onNavigate }: WelcomeGuideProps) {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 + index * 0.05 }}
-                    whileHover={{ y: -2 }}
+                    whileHover={{ y: -2, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
                     whileTap={{ scale: 0.98 }}
                   >
                     <div className="bg-surface-hover group-hover:bg-primary/10 mb-2 flex h-10 w-10 items-center justify-center rounded-lg transition-colors">
@@ -158,7 +158,10 @@ export function WelcomeGuide({ userName, onNavigate }: WelcomeGuideProps) {
               <motion.button
                 onClick={handleDismiss}
                 className="bg-primary text-text-on-accent hover:bg-primary-hover rounded-lg px-4 py-2 text-sm font-semibold transition-colors"
-                whileHover={{ scale: 1.02 }}
+                whileHover={{
+                  scale: 1.02,
+                  transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] },
+                }}
                 whileTap={{ scale: 0.98 }}
               >
                 {t("dismiss")}

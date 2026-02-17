@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { z } from "zod";
 import { formatPrice } from "@/lib/utils/price";
 import { requireAuth, unauthorized, forbidden, notFound, badRequest } from "@/lib/api";
+import { isValidId } from "@/lib/rateLimit";
 import { toStringArray } from "@/lib/json-array";
 
 /**
@@ -12,6 +13,7 @@ import { toStringArray } from "@/lib/json-array";
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
+    if (!isValidId(id)) return badRequest("Invalid ID");
 
     const bundle = await prisma.bundle.findUnique({
       where: { id },
@@ -126,6 +128,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     if (!userId) return unauthorized();
 
     const { id } = await params;
+    if (!isValidId(id)) return badRequest("Invalid ID");
 
     // Fetch bundle to verify ownership
     const bundle = await prisma.bundle.findUnique({
@@ -230,6 +233,7 @@ export async function DELETE(
     if (!userId) return unauthorized();
 
     const { id } = await params;
+    if (!isValidId(id)) return badRequest("Invalid ID");
 
     // Fetch bundle to verify ownership
     const bundle = await prisma.bundle.findUnique({

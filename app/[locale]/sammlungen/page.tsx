@@ -260,7 +260,7 @@ export default function CollectionsPage() {
           </div>
           <button
             onClick={() => setShowCreateModal(true)}
-            className="bg-primary hover:bg-primary-hover flex shrink-0 items-center gap-2 rounded-lg px-4 py-2.5 font-medium text-white transition-colors"
+            className="bg-primary hover:bg-primary-hover text-text-on-accent flex shrink-0 items-center gap-2 rounded-lg px-4 py-2.5 font-medium transition-colors"
           >
             <Plus className="h-4 w-4" />
             {t("newCollection")}
@@ -547,7 +547,7 @@ export default function CollectionsPage() {
                   <button
                     type="submit"
                     disabled={formLoading || !formData.name.trim()}
-                    className="bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors disabled:opacity-50"
+                    className="bg-primary hover:bg-primary-hover text-text-on-accent rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
                   >
                     {formLoading
                       ? t("form.saving")

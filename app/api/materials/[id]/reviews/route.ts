@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { createReviewSchema } from "@/lib/validations/review";
 import { checkRateLimit, rateLimitHeaders, isValidId, safeParseInt } from "@/lib/rateLimit";
 import { notifyReview } from "@/lib/notifications";
 import { checkAndUpdateVerification } from "@/lib/utils/verified-seller";
+import { requireAuth, unauthorized } from "@/lib/api";
 
 // GET /api/materials/[id]/reviews - Get all reviews for a material
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -16,7 +16,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       return NextResponse.json({ error: "Ungültige Material-ID" }, { status: 400 });
     }
 
-    const session = await auth();
+    const userId = await requireAuth();
     const { searchParams } = new URL(request.url);
     const page = Math.max(1, safeParseInt(searchParams.get("page"), 1));
     const limit = Math.min(50, Math.max(1, safeParseInt(searchParams.get("limit"), 10)));
@@ -74,11 +74,11 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
     // Check if current user has already reviewed
     let userReview = null;
-    if (session?.user?.id) {
+    if (userId) {
       userReview = await prisma.review.findUnique({
         where: {
           user_id_resource_id: {
-            user_id: session.user.id,
+            user_id: userId,
             resource_id: materialId,
           },
         },
@@ -86,22 +86,22 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     }
 
     // Check if current user is the owner of this material
-    const isOwner = session?.user?.id === material.seller_id;
+    const isOwner = userId === material.seller_id;
 
     // Check if current user can review (has purchased/downloaded, not the seller)
     let canReview = false;
-    if (session?.user?.id && !userReview && !isOwner) {
+    if (userId && !userReview && !isOwner) {
       const [hasPurchased, hasDownloaded] = await Promise.all([
         prisma.transaction.findFirst({
           where: {
-            buyer_id: session.user.id,
+            buyer_id: userId,
             resource_id: materialId,
             status: "COMPLETED",
           },
         }),
         prisma.download.findFirst({
           where: {
-            user_id: session.user.id,
+            user_id: userId,
             resource_id: materialId,
           },
         }),
@@ -154,13 +154,11 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 // POST /api/materials/[id]/reviews - Create a new review
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
-    }
+    const userId = await requireAuth();
+    if (!userId) return unauthorized();
 
     // Rate limiting check
-    const rateLimitResult = checkRateLimit(session.user.id, "materials:review");
+    const rateLimitResult = checkRateLimit(userId, "materials:review");
     if (!rateLimitResult.success) {
       return NextResponse.json(
         {
@@ -189,7 +187,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     }
 
     // Don't allow reviewing own material
-    if (material.seller_id === session.user.id) {
+    if (material.seller_id === userId) {
       return NextResponse.json(
         { error: "Sie können Ihr eigenes Material nicht bewerten" },
         { status: 403 }
@@ -200,14 +198,14 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     const [hasPurchased, hasDownloaded] = await Promise.all([
       prisma.transaction.findFirst({
         where: {
-          buyer_id: session.user.id,
+          buyer_id: userId,
           resource_id: materialId,
           status: "COMPLETED",
         },
       }),
       prisma.download.findFirst({
         where: {
-          user_id: session.user.id,
+          user_id: userId,
           resource_id: materialId,
         },
       }),
@@ -226,7 +224,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     const existingReview = await prisma.review.findUnique({
       where: {
         user_id_resource_id: {
-          user_id: session.user.id,
+          user_id: userId,
           resource_id: materialId,
         },
       },
@@ -258,7 +256,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         rating,
         title: title || null,
         content: content || null,
-        user_id: session.user.id,
+        user_id: userId,
         resource_id: materialId,
       },
       include: {

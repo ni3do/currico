@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { ArrowUp } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export function ScrollToTop() {
   const [visible, setVisible] = useState(false);
+  const t = useTranslations("common");
 
   useEffect(() => {
     function onScroll() {
@@ -24,7 +26,7 @@ export function ScrollToTop() {
   return (
     <button
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-      aria-label="Nach oben scrollen"
+      aria-label={t("scrollToTop")}
       className="bg-surface border-border text-text-muted hover:text-primary hover:border-primary/40 fixed right-6 bottom-20 z-[60] flex h-10 w-10 items-center justify-center rounded-full border shadow-lg transition-all hover:shadow-xl"
     >
       <ArrowUp className="h-5 w-5" />

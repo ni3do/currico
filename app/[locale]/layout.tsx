@@ -22,12 +22,12 @@ export function generateStaticParams() {
 
 const localeMetadata: Record<string, { title: string; description: string }> = {
   de: {
-    title: "Currico - Unterrichtsmaterial für Lehrpersonen",
+    title: "Unterrichtsmaterial für Schweizer Lehrpersonen",
     description:
       "Hochwertige Unterrichtsmaterialien von Schweizer Lehrpersonen. Qualitätsgeprüft, Lehrplan 21 konform, zeitsparend.",
   },
   en: {
-    title: "Currico - Teaching Materials for Educators",
+    title: "Teaching Materials for Swiss Educators",
     description:
       "Quality teaching materials from Swiss educators. Quality-checked, LP21 curriculum-aligned, time-saving.",
   },

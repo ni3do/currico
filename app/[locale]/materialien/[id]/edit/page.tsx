@@ -176,7 +176,7 @@ export default function EditMaterialPage() {
         />
 
         <div className="mb-8 flex items-center justify-between">
-          <h1 className="text-text text-2xl font-bold">Material bearbeiten</h1>
+          <h1 className="text-text text-2xl font-bold sm:text-3xl">Material bearbeiten</h1>
           <Link
             href={`/materialien/${materialId}`}
             className="text-text-muted hover:text-text flex items-center gap-2 text-sm transition-colors"

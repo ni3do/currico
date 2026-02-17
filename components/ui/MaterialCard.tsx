@@ -3,10 +3,11 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
-import { Heart } from "lucide-react";
+import { Heart, FileText, ChevronRight } from "lucide-react";
 import { getSubjectTextColor } from "@/lib/constants/subject-colors";
 import { VerifiedSellerBadge } from "@/components/ui/VerifiedSellerBadge";
 import { StarRating } from "@/components/ui/StarRating";
+import { TiltCard } from "@/components/ui/TiltCard";
 
 export interface MaterialCardProps {
   id: string;
@@ -129,25 +130,16 @@ export function MaterialCard({
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
-            <svg
+            <FileText
               className={`text-text-faint ${isCompact ? "h-10 w-10" : "h-12 w-12"}`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              />
-            </svg>
+              strokeWidth={1.5}
+            />
           </div>
         )}
 
         {/* Price Badge - moved to footer for non-compact, keep overlay for compact */}
         {shouldShowPriceBadge && isCompact && (
-          <span className="bg-price absolute top-3 right-3 rounded-full px-2 py-0.5 text-xs font-bold text-white shadow-md">
+          <span className="bg-price text-text-on-accent absolute top-3 right-3 rounded-full px-2 py-0.5 text-xs font-bold shadow-md">
             {priceFormatted}
           </span>
         )}
@@ -158,9 +150,13 @@ export function MaterialCard({
             onClick={handleWishlistClick}
             disabled={wishlistLoading}
             className={`absolute top-3 left-3 drop-shadow-md transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-110 active:scale-95 disabled:opacity-50 ${
-              isWishlisted ? "text-red-500" : "text-white hover:text-red-500"
+              isWishlisted ? "text-error" : "text-text-on-accent hover:text-error"
             }`}
-            aria-label={isWishlisted ? wishlistRemoveLabel || "" : wishlistAddLabel || ""}
+            aria-label={
+              isWishlisted
+                ? wishlistRemoveLabel || "Von Wunschliste entfernen"
+                : wishlistAddLabel || "Zur Wunschliste hinzufügen"
+            }
           >
             <Heart
               className={`h-7 w-7 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${wishlistLoading ? "animate-pulse" : ""} ${isWishlisted ? "scale-100" : "scale-90 group-hover:scale-100"}`}
@@ -242,25 +238,13 @@ export function MaterialCard({
               {shouldShowPriceBadge ? (
                 <span
                   className={`rounded-full px-3 py-1 text-sm font-bold ${
-                    isFree ? "bg-success text-white" : "bg-price text-white"
+                    isFree ? "bg-success text-text-on-accent" : "bg-price text-text-on-accent"
                   }`}
                 >
                   {priceFormatted}
                 </span>
               ) : (
-                <svg
-                  className="text-text-muted group-hover:text-primary h-5 w-5 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-1.5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
+                <ChevronRight className="text-text-muted group-hover:text-primary h-5 w-5 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-1.5" />
               )}
             </div>
           ))}
@@ -274,10 +258,15 @@ export function MaterialCard({
     : "card group flex h-full flex-col overflow-hidden cursor-pointer";
 
   return (
-    <Link href={linkHref} className={cardClasses}>
-      {cardContent}
-    </Link>
+    <TiltCard className="relative h-full">
+      <article>
+        <Link
+          href={linkHref}
+          className={`${cardClasses} focus-visible:ring-primary focus-visible:ring-2 focus-visible:ring-offset-2`}
+        >
+          {cardContent}
+        </Link>
+      </article>
+    </TiltCard>
   );
 }
-
-export default MaterialCard;

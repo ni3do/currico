@@ -1,25 +1,19 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { requireAuth, unauthorized, notFound, serverError } from "@/lib/api";
 
 /**
- * GET /api/auth/me
+ * GET /api/user/me
  * Get current authenticated user's basic info including role
  * Used for determining redirect after login
  */
 export async function GET() {
   try {
-    const session = await auth();
-
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "Nicht authentifiziert" },
-        { status: 401 }
-      );
-    }
+    const userId = await requireAuth();
+    if (!userId) return unauthorized();
 
     const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
+      where: { id: userId },
       select: {
         id: true,
         email: true,
@@ -29,19 +23,11 @@ export async function GET() {
       },
     });
 
-    if (!user) {
-      return NextResponse.json(
-        { error: "Benutzer nicht gefunden" },
-        { status: 404 }
-      );
-    }
+    if (!user) return notFound();
 
     return NextResponse.json(user);
   } catch (error) {
     console.error("Error fetching current user:", error);
-    return NextResponse.json(
-      { error: "Interner Serverfehler" },
-      { status: 500 }
-    );
+    return serverError();
   }
 }

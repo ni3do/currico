@@ -221,7 +221,7 @@ export default function SellerLevelsPage() {
                   <Upload aria-hidden="true" className="text-primary h-6 w-6" />
                 </div>
                 <div>
-                  <h3 className="text-text text-lg font-bold">
+                  <h3 className="text-text text-lg font-semibold">
                     {t("page.uploadPoints", { points: POINTS_PER_UPLOAD })}
                   </h3>
                 </div>
@@ -266,7 +266,7 @@ export default function SellerLevelsPage() {
                   <Download aria-hidden="true" className="text-accent h-6 w-6" />
                 </div>
                 <div>
-                  <h3 className="text-text text-lg font-bold">
+                  <h3 className="text-text text-lg font-semibold">
                     {t("page.downloadPoints", {
                       points: POINTS_PER_DOWNLOAD_BASE,
                       pointsMax: POINTS_PER_DOWNLOAD_GREAT,
@@ -316,7 +316,7 @@ export default function SellerLevelsPage() {
                   <Star aria-hidden="true" className="text-warning h-6 w-6" />
                 </div>
                 <div>
-                  <h3 className="text-text text-lg font-bold">
+                  <h3 className="text-text text-lg font-semibold">
                     {t("page.reviewPoints", { points: POINTS_PER_REVIEW })}
                   </h3>
                 </div>
@@ -427,7 +427,7 @@ export default function SellerLevelsPage() {
                 <BadgeCheck aria-hidden="true" className="text-success h-7 w-7" />
               </div>
               <div className="min-w-0 flex-1">
-                <h3 className="text-text text-lg font-bold">
+                <h3 className="text-text text-lg font-semibold">
                   +{VERIFIED_SELLER_BONUS} {t("pointsUnit")}
                 </h3>
                 <p className="text-text-muted text-sm">{t("page.verifiedBonusExplain")}</p>
@@ -474,7 +474,7 @@ export default function SellerLevelsPage() {
                 <span className="text-text-muted">×</span>
                 <span className="text-text">{POINTS_PER_REVIEW}</span>
                 <span className="text-text-muted">=</span>
-                <span className="text-text text-lg font-bold">
+                <span className="text-text text-lg font-semibold">
                   {exampleTotal} {t("pointsUnit")}
                 </span>
               </div>
@@ -559,7 +559,7 @@ export default function SellerLevelsPage() {
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
                         <h3
-                          className={`text-lg font-bold ${isLocked ? "text-text-faint" : level.textClass}`}
+                          className={`text-lg font-semibold ${isLocked ? "text-text-faint" : level.textClass}`}
                         >
                           {levelName}
                         </h3>
@@ -602,7 +602,7 @@ export default function SellerLevelsPage() {
                     {/* Points range */}
                     <div className="hidden flex-shrink-0 text-right sm:block">
                       <p
-                        className={`text-lg font-bold ${isLocked ? "text-text-faint" : level.textClass}`}
+                        className={`text-lg font-semibold ${isLocked ? "text-text-faint" : level.textClass}`}
                       >
                         {level.minPoints === 0 ? "0" : level.minPoints}+
                       </p>

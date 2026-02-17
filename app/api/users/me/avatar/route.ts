@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { getCurrentUserId } from "@/lib/auth";
+import { requireAuth, unauthorized } from "@/lib/api";
 import {
   getStorage,
   generateStorageKey,
@@ -45,11 +45,8 @@ function validateMagicBytes(buffer: Buffer, mimeType: string): boolean {
  */
 export async function POST(request: NextRequest) {
   try {
-    const userId = await getCurrentUserId();
-
-    if (!userId) {
-      return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
-    }
+    const userId = await requireAuth();
+    if (!userId) return unauthorized();
 
     const formData = await request.formData();
     const file = formData.get("avatar") as File | null;
@@ -136,11 +133,8 @@ export async function POST(request: NextRequest) {
  */
 export async function DELETE() {
   try {
-    const userId = await getCurrentUserId();
-
-    if (!userId) {
-      return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
-    }
+    const userId = await requireAuth();
+    if (!userId) return unauthorized();
 
     // Remove avatar from database (keep file for now, could add cleanup later)
     await prisma.user.update({

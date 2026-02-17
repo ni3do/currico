@@ -8,6 +8,7 @@ import { Link, useRouter } from "@/i18n/navigation";
 import { isValidEmail } from "@/lib/validations/common";
 import { isValidCallbackUrl } from "@/lib/utils/login-redirect";
 import TopBar from "@/components/ui/TopBar";
+import Footer from "@/components/ui/Footer";
 
 const REMEMBER_EMAIL_KEY = "currico_remember_email";
 
@@ -107,7 +108,7 @@ function LoginPageContent() {
       <TopBar />
 
       {/* Main Content - Centered Glass Card */}
-      <main className="relative z-10 flex flex-1 items-center justify-center px-4 py-8 sm:px-6">
+      <main className="relative z-10 flex flex-1 items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
         <div className="w-full max-w-md">
           {/* Back to Home */}
           <Link
@@ -145,6 +146,7 @@ function LoginPageContent() {
                   id="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  autoComplete="email"
                   required
                   className={`bg-surface text-text placeholder:text-text-muted w-full rounded-lg border px-4 py-3.5 transition-all focus:ring-[3px] focus:outline-none ${
                     email && !isValidEmail(email)
@@ -179,6 +181,7 @@ function LoginPageContent() {
                     onChange={(e) => setPassword(e.target.value)}
                     onKeyDown={handleCapsLock}
                     onKeyUp={handleCapsLock}
+                    autoComplete="current-password"
                     required
                     className="border-border bg-surface text-text placeholder:text-text-muted focus:border-primary focus:ring-primary/20 w-full rounded-lg border px-4 py-3.5 pr-12 transition-all focus:ring-[3px] focus:outline-none"
                     placeholder={t("form.passwordPlaceholder")}
@@ -337,6 +340,7 @@ function LoginPageContent() {
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

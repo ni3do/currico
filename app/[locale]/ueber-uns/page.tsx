@@ -1,13 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useTranslations } from "next-intl";
+import { useScroll, useTransform, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
-import { FadeIn, StaggerChildren, StaggerItem, MotionCard } from "@/components/ui/animations";
+import {
+  FadeIn,
+  StaggerChildren,
+  StaggerItem,
+  MotionCard,
+  motion,
+} from "@/components/ui/animations";
 import {
   BookOpen,
   Shield,
@@ -64,13 +71,22 @@ export default function AboutPage() {
   const [simonImgError, setSimonImgError] = useState(false);
   const [laurentImgError, setLaurentImgError] = useState(false);
 
+  // Parallax scroll for hero section
+  const heroRef = useRef<HTMLElement>(null);
+  const prefersReducedMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const heroImageY = useTransform(scrollYProgress, [0, 1], [0, -20]);
+
   return (
     <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
       <main className="flex-1">
         {/* ──────────── 1. Hero ──────────── */}
-        <section className="relative overflow-hidden">
+        <section ref={heroRef} className="relative overflow-hidden">
           <div className="bg-bg-secondary">
             <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
               <Breadcrumb items={[{ label: tCommon("breadcrumb.about") }]} />
@@ -101,7 +117,10 @@ export default function AboutPage() {
                   </div>
                 </FadeIn>
                 <FadeIn direction="right">
-                  <div className="relative aspect-square overflow-hidden rounded-2xl">
+                  <motion.div
+                    className="relative aspect-square overflow-hidden rounded-2xl"
+                    style={prefersReducedMotion ? undefined : { y: heroImageY }}
+                  >
                     <Image
                       src="/images/about-hero.png"
                       alt={t("hero.imageAlt")}
@@ -110,7 +129,7 @@ export default function AboutPage() {
                       className="object-cover"
                       priority
                     />
-                  </div>
+                  </motion.div>
                 </FadeIn>
               </div>
             </div>
@@ -223,8 +242,10 @@ export default function AboutPage() {
                 <MotionCard hoverEffect="lift" className="card overflow-hidden">
                   <div className="relative h-80 w-full overflow-hidden">
                     {simonImgError ? (
-                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-emerald-500 to-teal-600">
-                        <span className="text-7xl font-bold text-white/90">SW</span>
+                      <div className="from-success to-primary flex h-full w-full items-center justify-center bg-gradient-to-br">
+                        <span className="text-text-on-accent text-7xl font-bold opacity-90">
+                          SW
+                        </span>
                       </div>
                     ) : (
                       <Image
@@ -270,8 +291,10 @@ export default function AboutPage() {
                 <MotionCard hoverEffect="lift" className="card overflow-hidden">
                   <div className="relative h-80 w-full overflow-hidden">
                     {laurentImgError ? (
-                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600">
-                        <span className="text-7xl font-bold text-white/90">LZ</span>
+                      <div className="from-primary to-accent flex h-full w-full items-center justify-center bg-gradient-to-br">
+                        <span className="text-text-on-accent text-7xl font-bold opacity-90">
+                          LZ
+                        </span>
                       </div>
                     ) : (
                       <Image
@@ -328,9 +351,9 @@ export default function AboutPage() {
                 </p>
                 <footer className="mt-6 flex items-center gap-3">
                   <div className="flex -space-x-2">
-                    <div className="h-8 w-8 overflow-hidden rounded-full ring-2 ring-white">
+                    <div className="ring-surface h-8 w-8 overflow-hidden rounded-full ring-2">
                       {simonImgError ? (
-                        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-emerald-500 to-teal-600 text-xs font-bold text-white">
+                        <div className="from-success to-primary text-text-on-accent flex h-full w-full items-center justify-center bg-gradient-to-br text-xs font-bold">
                           SW
                         </div>
                       ) : (
@@ -343,9 +366,9 @@ export default function AboutPage() {
                         />
                       )}
                     </div>
-                    <div className="h-8 w-8 overflow-hidden rounded-full ring-2 ring-white">
+                    <div className="ring-surface h-8 w-8 overflow-hidden rounded-full ring-2">
                       {laurentImgError ? (
-                        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600 text-xs font-bold text-white">
+                        <div className="from-primary to-accent text-text-on-accent flex h-full w-full items-center justify-center bg-gradient-to-br text-xs font-bold">
                           LZ
                         </div>
                       ) : (

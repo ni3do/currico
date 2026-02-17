@@ -75,7 +75,7 @@ export function StepNavigationBar() {
                     type="button"
                     onClick={() => isVisited && goToStep(step)}
                     disabled={!isVisited}
-                    className={`relative flex h-14 w-14 items-center justify-center rounded-full border-2 font-semibold transition-all duration-300 ${
+                    className={`relative flex h-14 w-14 items-center justify-center rounded-full border-2 font-semibold transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                       hasWarning
                         ? "border-warning bg-warning text-text-on-accent hover:shadow-warning/30 cursor-pointer hover:scale-105 hover:shadow-lg"
                         : isComplete && isValid

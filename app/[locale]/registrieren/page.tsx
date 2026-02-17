@@ -13,6 +13,8 @@ import {
 import { getLoginUrl } from "@/lib/utils/login-redirect";
 import { PasswordRequirements } from "@/components/auth/PasswordRequirements";
 import TopBar from "@/components/ui/TopBar";
+import Footer from "@/components/ui/Footer";
+import { MagneticButton } from "@/components/ui/MagneticButton";
 
 export default function RegisterPage() {
   const t = useTranslations("registerPage");
@@ -210,6 +212,7 @@ export default function RegisterPage() {
                   id="name"
                   value={formData.name}
                   onChange={(e) => handleInputChange("name", e.target.value)}
+                  autoComplete="name"
                   required
                   className="border-border bg-surface text-text placeholder:text-text-muted focus:border-primary focus:ring-primary/20 w-full rounded-lg border px-4 py-3.5 transition-all focus:ring-[3px] focus:outline-none"
                   placeholder={t("form.namePlaceholder")}
@@ -226,6 +229,7 @@ export default function RegisterPage() {
                   id="email"
                   value={formData.email}
                   onChange={(e) => handleInputChange("email", e.target.value)}
+                  autoComplete="email"
                   required
                   className={`bg-surface text-text placeholder:text-text-muted w-full rounded-lg border px-4 py-3.5 transition-all focus:ring-[3px] focus:outline-none ${
                     formData.email && !isValidEmail(formData.email)
@@ -252,6 +256,7 @@ export default function RegisterPage() {
                     onChange={(e) => handleInputChange("password", e.target.value)}
                     onKeyDown={handleCapsLock}
                     onKeyUp={handleCapsLock}
+                    autoComplete="new-password"
                     required
                     className={`bg-surface text-text placeholder:text-text-muted w-full rounded-lg border px-4 py-3.5 pr-12 transition-all focus:ring-[3px] focus:outline-none ${
                       formData.password &&
@@ -349,6 +354,7 @@ export default function RegisterPage() {
                     onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
                     onKeyDown={handleCapsLock}
                     onKeyUp={handleCapsLock}
+                    autoComplete="new-password"
                     required
                     className={`bg-surface text-text placeholder:text-text-muted w-full rounded-lg border px-4 py-3.5 pr-12 transition-all focus:ring-[3px] focus:outline-none ${
                       formData.confirmPassword && formData.password !== formData.confirmPassword
@@ -444,13 +450,15 @@ export default function RegisterPage() {
               )}
 
               {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="bg-primary text-text-on-accent hover:bg-primary-hover disabled:hover:bg-primary mt-4 w-full rounded-lg px-6 py-4 text-center font-bold transition-all hover:-translate-y-0.5 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-none"
-              >
-                {isLoading ? t("form.submitting") : t("form.submitButton")}
-              </button>
+              <MagneticButton className="mt-4">
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="bg-primary text-text-on-accent hover:bg-primary-hover disabled:hover:bg-primary w-full rounded-lg px-6 py-4 text-center font-bold transition-all hover:-translate-y-0.5 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-none"
+                >
+                  {isLoading ? t("form.submitting") : t("form.submitButton")}
+                </button>
+              </MagneticButton>
             </form>
 
             {/* Divider */}
@@ -508,23 +516,7 @@ export default function RegisterPage() {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="relative z-10 px-6 py-6 sm:px-8">
-        <Link
-          href="/"
-          className="text-text-muted hover:text-primary inline-flex items-center text-sm font-medium transition-colors"
-        >
-          <svg className="mr-1.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-          {tCommon("buttons.backToHome")}
-        </Link>
-      </footer>
+      <Footer />
     </div>
   );
 }

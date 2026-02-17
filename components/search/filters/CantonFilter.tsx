@@ -88,8 +88,8 @@ export function CantonFilter({ selectedCantons, onCantonsChange, t }: CantonFilt
                   ? "border-primary bg-primary/10 text-primary"
                   : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:bg-surface-hover hover:text-text"
               }`}
-              whileHover={{ scale: 1.05, transition: { duration: 0.15 } }}
-              whileTap={{ scale: 0.95, transition: { duration: 0.1 } }}
+              whileHover={{ scale: 1.015, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
+              whileTap={{ scale: 0.97, transition: { duration: 0.1 } }}
               title={canton.name}
             >
               {canton.abbrev}

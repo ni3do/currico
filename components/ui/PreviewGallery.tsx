@@ -60,7 +60,7 @@ function PreviewOverlay({
         {onUnlock && (
           <button
             onClick={onUnlock}
-            className="btn-primary rounded-lg px-6 py-2 text-sm font-semibold shadow-lg transition-transform hover:scale-105"
+            className="btn-primary rounded-lg px-6 py-2 text-sm font-semibold shadow-lg transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105"
           >
             {ctaText || t("previewOverlay.cta")}
           </button>
@@ -386,12 +386,11 @@ export function PreviewGallery({
 
               {currentPage < previewUrls.length - 1 && (
                 <button
-                  className="absolute right-4 rounded-full bg-white/10 p-3 text-white transition-colors hover:bg-white/20"
+                  className="absolute right-16 rounded-full bg-white/10 p-3 text-white transition-colors hover:bg-white/20"
                   onClick={(e) => {
                     e.stopPropagation();
                     setCurrentPage(currentPage + 1);
                   }}
-                  style={{ right: "4rem" }}
                   aria-label={t("nextPage")}
                 >
                   <svg
@@ -449,7 +448,7 @@ export function PreviewGallery({
                           setIsLightboxOpen(false);
                           onPurchaseClick?.();
                         }}
-                        className="btn-primary rounded-lg px-6 py-2 text-sm font-semibold shadow-lg transition-transform hover:scale-105"
+                        className="btn-primary rounded-lg px-6 py-2 text-sm font-semibold shadow-lg transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105"
                       >
                         {`${priceFormatted} - ${t("previewOverlay.cta")}`}
                       </button>

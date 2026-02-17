@@ -153,7 +153,7 @@ export function ProfileCompletionProgress({
               className="bg-primary h-full rounded-full"
               initial={{ width: 0 }}
               animate={{ width: `${percentage}%` }}
-              transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             />
           </div>
           <span className="text-text-muted text-xs font-medium tabular-nums">{percentage}%</span>

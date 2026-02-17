@@ -384,7 +384,7 @@ export default function EditProfilePage() {
                   <div className="border-border peer-checked:border-primary peer-checked:bg-primary flex h-5 w-5 items-center justify-center rounded border-2 transition-colors">
                     {formData.is_private && (
                       <svg
-                        className="h-3 w-3 text-white"
+                        className="text-text-on-accent h-3 w-3"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"

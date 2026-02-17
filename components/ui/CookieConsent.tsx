@@ -103,7 +103,7 @@ export default function CookieConsent() {
         >
           <div className="mx-auto max-w-4xl">
             <motion.div
-              className="border-border rounded-xl border bg-white p-4 shadow-lg sm:p-6 dark:bg-[#1e1e2e]"
+              className="border-border bg-surface rounded-xl border p-4 shadow-lg sm:p-6"
               initial={{ scale: 0.95 }}
               animate={{ scale: 1 }}
               transition={{ delay: 0.1 }}
@@ -145,7 +145,10 @@ export default function CookieConsent() {
                     <motion.button
                       onClick={handleAccept}
                       className="bg-primary text-text-on-accent hover:bg-primary-hover focus:ring-primary rounded-lg px-5 py-2.5 text-sm font-medium transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none"
-                      whileHover={{ scale: 1.02 }}
+                      whileHover={{
+                        scale: 1.02,
+                        transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] },
+                      }}
                       whileTap={{ scale: 0.98 }}
                     >
                       {t("acceptAll")}
@@ -153,7 +156,10 @@ export default function CookieConsent() {
                     <motion.button
                       onClick={handleDecline}
                       className="border-border bg-bg-secondary text-text-primary hover:bg-bg-tertiary focus:ring-primary rounded-lg border px-5 py-2.5 text-sm font-medium transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none"
-                      whileHover={{ scale: 1.02 }}
+                      whileHover={{
+                        scale: 1.02,
+                        transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] },
+                      }}
                       whileTap={{ scale: 0.98 }}
                     >
                       {t("essentialOnly")}
@@ -166,7 +172,11 @@ export default function CookieConsent() {
                   onClick={handleDecline}
                   className="text-text-muted hover:bg-bg-tertiary hover:text-text-primary absolute top-4 right-4 rounded-full p-1 transition-colors sm:relative sm:top-auto sm:right-auto"
                   aria-label={t("close")}
-                  whileHover={{ scale: 1.1, rotate: 90 }}
+                  whileHover={{
+                    scale: 1.1,
+                    rotate: 90,
+                    transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] },
+                  }}
                   whileTap={{ scale: 0.9 }}
                 >
                   <X className="h-5 w-5" />

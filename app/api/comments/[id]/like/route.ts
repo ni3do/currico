@@ -1,16 +1,25 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { requireAuth, unauthorized, badRequest } from "@/lib/api";
+import { checkRateLimit, isValidId, rateLimitHeaders } from "@/lib/rateLimit";
 
 // POST /api/comments/[id]/like - Toggle like on a comment
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
+    const userId = await requireAuth();
+    if (!userId) return unauthorized();
+
+    // Rate limit like toggling
+    const rateLimit = checkRateLimit(userId, "resources:like");
+    if (!rateLimit.success) {
+      return NextResponse.json(
+        { error: "Zu viele Anfragen. Bitte versuchen Sie es später erneut." },
+        { status: 429, headers: rateLimitHeaders(rateLimit) }
+      );
     }
 
     const { id: commentId } = await params;
+    if (!isValidId(commentId)) return badRequest("Invalid ID");
 
     // Check if comment exists
     const comment = await prisma.comment.findUnique({
@@ -26,7 +35,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     const existingLike = await prisma.commentLike.findUnique({
       where: {
         user_id_comment_id: {
-          user_id: session.user.id,
+          user_id: userId,
           comment_id: commentId,
         },
       },
@@ -51,7 +60,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       // Like - add new like
       await prisma.commentLike.create({
         data: {
-          user_id: session.user.id,
+          user_id: userId,
           comment_id: commentId,
         },
       });
@@ -75,8 +84,9 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 // GET /api/comments/[id]/like - Get like status for a comment
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await auth();
+    const userId = await requireAuth();
     const { id: commentId } = await params;
+    if (!isValidId(commentId)) return badRequest("Invalid ID");
 
     // Check if comment exists
     const comment = await prisma.comment.findUnique({
@@ -95,11 +105,11 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
     // Check if current user has liked
     let liked = false;
-    if (session?.user?.id) {
+    if (userId) {
       const existingLike = await prisma.commentLike.findUnique({
         where: {
           user_id_comment_id: {
-            user_id: session.user.id,
+            user_id: userId,
             comment_id: commentId,
           },
         },

@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { requireAuth, unauthorized, badRequest, notFound } from "@/lib/api";
-
-const FOLLOWING_PAGE_SIZE = 20;
+import {
+  requireAuth,
+  unauthorized,
+  badRequest,
+  notFound,
+  parsePagination,
+  paginationResponse,
+} from "@/lib/api";
 
 /**
  * GET /api/user/following?page=1&limit=20
@@ -14,16 +19,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const { searchParams } = new URL(request.url);
-    const page = Math.max(1, parseInt(searchParams.get("page") || "1", 10) || 1);
-    const limit = Math.min(
-      100,
-      Math.max(
-        1,
-        parseInt(searchParams.get("limit") || String(FOLLOWING_PAGE_SIZE), 10) ||
-          FOLLOWING_PAGE_SIZE
-      )
-    );
-    const skip = (page - 1) * limit;
+    const { page, limit, skip } = parsePagination(searchParams);
 
     const [following, total] = await Promise.all([
       prisma.follow.findMany({
@@ -62,7 +58,10 @@ export async function GET(request: NextRequest) {
       followedAt: f.created_at,
     }));
 
-    return NextResponse.json({ sellers, total, page, hasMore: skip + sellers.length < total });
+    return NextResponse.json({
+      sellers,
+      pagination: paginationResponse(page, limit, total),
+    });
   } catch (error) {
     console.error("Error fetching following:", error);
     return NextResponse.json({ error: "FOLLOWING_FETCH_FAILED" }, { status: 500 });

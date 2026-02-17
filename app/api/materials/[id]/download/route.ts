@@ -6,6 +6,8 @@ import { readFile } from "fs/promises";
 import path from "path";
 import { getStorage, isLegacyLocalPath, getLegacyFilePath } from "@/lib/storage";
 import { checkAndUpdateVerification } from "@/lib/utils/verified-seller";
+import { badRequest } from "@/lib/api";
+import { isValidId } from "@/lib/rateLimit";
 import { checkDownloadMilestone } from "@/lib/notifications";
 
 /**
@@ -66,6 +68,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
   try {
     const { id } = await params;
+    if (!isValidId(id)) return badRequest("Invalid ID");
 
     // Fetch the material with related data
     const material = await prisma.resource.findUnique({
@@ -243,6 +246,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
   try {
     const { id } = await params;
+    if (!isValidId(id)) return badRequest("Invalid ID");
 
     // Fetch the material
     const material = await prisma.resource.findUnique({

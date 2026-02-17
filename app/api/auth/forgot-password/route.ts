@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { prisma } from "@/lib/db";
 import { sendPasswordResetEmail } from "@/lib/email";
+import { badRequest, serverError } from "@/lib/api";
 import { checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
+import { forgotPasswordSchema } from "@/lib/validations/auth";
 
 const PASSWORD_RESET_EXPIRY_HOURS = 1;
 
@@ -22,17 +24,18 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    let body: { email?: string };
+    let body: unknown;
     try {
       body = await request.json();
     } catch {
-      return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+      return badRequest("Invalid JSON body");
     }
-    const { email } = body;
 
-    if (!email || typeof email !== "string") {
-      return NextResponse.json({ error: "E-Mail-Adresse erforderlich" }, { status: 400 });
+    const parsed = forgotPasswordSchema.safeParse(body);
+    if (!parsed.success) {
+      return badRequest("Valid email required");
     }
+    const { email } = parsed.data;
 
     // Find user with password (credentials account only)
     const user = await prisma.user.findUnique({
@@ -79,6 +82,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error in forgot-password:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError();
   }
 }

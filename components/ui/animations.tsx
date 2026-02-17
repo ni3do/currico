@@ -7,7 +7,7 @@ import { ReactNode, useRef } from "react";
 // EASING CURVES
 // ================================================================
 
-const smoothEase = [0.22, 1, 0.36, 1] as const;
+export const smoothEase = [0.22, 1, 0.36, 1] as const;
 
 // ================================================================
 // ANIMATION VARIANTS (used internally by components)
@@ -36,13 +36,15 @@ const cardItem: Variants = {
 // HOVER CONFIGS (used by MotionCard)
 // ================================================================
 
+// Tier 1 – Micro: filter buttons, tabs, small interactive elements
 const hoverScale = {
   scale: 1.015,
-  transition: { duration: 0.25, ease: smoothEase },
+  transition: { duration: 0.2, ease: smoothEase },
 };
 
+// Tier 2 – Card: content cards, list items
 const hoverLift = {
-  y: -3,
+  y: -4,
   transition: { duration: 0.25, ease: smoothEase },
 };
 
@@ -51,9 +53,10 @@ const tapScale = {
   transition: { duration: 0.1 },
 };
 
+// Tier 2 variant – Card with subtle scale
 const hoverCard = {
   y: -4,
-  scale: 1.01,
+  scale: 1.02,
   transition: { duration: 0.3, ease: smoothEase },
 };
 

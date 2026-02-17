@@ -1,5 +1,8 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+import { AlertTriangle, X } from "lucide-react";
+
 interface ProfileCompletionBannerProps {
   missingFields: string[];
   onComplete: () => void;
@@ -9,51 +12,32 @@ export function ProfileCompletionBanner({
   missingFields,
   onComplete,
 }: ProfileCompletionBannerProps) {
+  const t = useTranslations("profileCompletion");
+
   if (missingFields.length === 0) return null;
 
   return (
-    <div className="rounded-xl border border-warning/50 bg-warning/10 p-6">
+    <div className="border-warning/50 bg-warning/10 rounded-xl border p-6">
       <div className="flex items-start gap-4">
-        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-warning/20">
-          <svg
-            className="h-5 w-5 text-warning"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-            />
-          </svg>
+        <div className="bg-warning/20 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full">
+          <AlertTriangle className="text-warning h-5 w-5" aria-hidden="true" />
         </div>
         <div className="flex-1">
-          <h3 className="font-semibold text-text">Profil vervollständigen</h3>
-          <p className="mt-1 text-sm text-text-muted">
-            Bevor Sie Materialien hochladen können, müssen Sie folgende Angaben ergänzen:
-          </p>
+          <h3 className="text-text font-semibold">{t("title")}</h3>
+          <p className="text-text-muted mt-1 text-sm">{t("description")}</p>
           <ul className="mt-3 space-y-1">
             {missingFields.map((field) => (
-              <li key={field} className="flex items-center gap-2 text-sm text-error">
-                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+              <li key={field} className="text-error flex items-center gap-2 text-sm">
+                <X className="h-4 w-4" aria-hidden="true" />
                 {field}
               </li>
             ))}
           </ul>
           <button
             onClick={onComplete}
-            className="mt-4 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-text-on-accent transition-colors hover:bg-primary-hover"
+            className="bg-primary text-text-on-accent hover:bg-primary-hover mt-4 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
           >
-            Profil vervollständigen
+            {t("button")}
           </button>
         </div>
       </div>

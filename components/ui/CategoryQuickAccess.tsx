@@ -94,9 +94,12 @@ export function CategoryQuickAccess() {
               >
                 <motion.div
                   className="card flex h-24 w-28 flex-col items-center justify-center gap-2 p-3"
-                  whileHover={{ y: -4, scale: 1.02 }}
+                  whileHover={{
+                    y: -4,
+                    scale: 1.02,
+                    transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] },
+                  }}
                   whileTap={{ scale: 0.98 }}
-                  transition={{ duration: 0.2 }}
                 >
                   <div
                     className={`flex h-10 w-10 items-center justify-center rounded-lg ${category.pillClass}`}
@@ -126,9 +129,12 @@ export function CategoryQuickAccess() {
               >
                 <motion.div
                   className="card flex flex-col items-center gap-3 p-6"
-                  whileHover={{ y: -6, scale: 1.02 }}
+                  whileHover={{
+                    y: -4,
+                    scale: 1.02,
+                    transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] },
+                  }}
                   whileTap={{ scale: 0.98 }}
-                  transition={{ duration: 0.2 }}
                 >
                   <div
                     className={`flex h-12 w-12 items-center justify-center rounded-xl ${category.pillClass}`}

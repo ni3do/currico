@@ -198,14 +198,14 @@ export default function TermsPage() {
           <p>{t("general.contentGuidelines.intro")}</p>
           <p className="mt-2">{t("general.contentGuidelines.minors")}</p>
 
-          <h3 className="text-text mt-4 text-lg font-medium">
+          <h3 className="text-text mt-4 text-lg font-semibold">
             {t("general.contentGuidelines.guarantees.title")}
           </h3>
           <p>{t("general.contentGuidelines.guarantees.content")}</p>
 
           <p className="mt-4">{t("general.contentGuidelines.responsibility")}</p>
 
-          <h3 className="text-text mt-4 text-lg font-medium">
+          <h3 className="text-text mt-4 text-lg font-semibold">
             {t("general.contentGuidelines.prohibited.title")}
           </h3>
           <ul className="ml-4 list-disc space-y-1">
@@ -215,7 +215,7 @@ export default function TermsPage() {
             <li>{t("general.contentGuidelines.prohibited.items.unauthorized")}</li>
           </ul>
 
-          <h3 className="text-text mt-4 text-lg font-medium">
+          <h3 className="text-text mt-4 text-lg font-semibold">
             {t("general.contentGuidelines.violations.title")}
           </h3>
           <p>{t("general.contentGuidelines.violations.content")}</p>

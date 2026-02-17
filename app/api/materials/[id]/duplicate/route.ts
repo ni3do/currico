@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getCurrentUserId } from "@/lib/auth";
-import { checkRateLimit } from "@/lib/rateLimit";
+import { badRequest } from "@/lib/api";
+import { checkRateLimit, isValidId } from "@/lib/rateLimit";
 
 /**
  * POST /api/materials/[id]/duplicate
@@ -22,6 +23,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     }
 
     const { id } = await params;
+    if (!isValidId(id)) return badRequest("Invalid ID");
 
     // Fetch the original material with all relations
     const original = await prisma.resource.findUnique({

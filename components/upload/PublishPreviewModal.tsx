@@ -54,7 +54,7 @@ export function PublishPreviewModal({
         >
           {/* Header */}
           <div className="border-border flex items-center justify-between border-b p-5">
-            <h2 id="preview-modal-title" className="text-text text-lg font-bold">
+            <h2 id="preview-modal-title" className="text-text text-lg font-semibold">
               {tPreview("title")}
             </h2>
             <button
@@ -87,7 +87,7 @@ export function PublishPreviewModal({
                     <span
                       className={`rounded-lg px-2.5 py-1 text-xs font-bold ${
                         priceType === "free"
-                          ? "bg-[var(--ctp-green)] text-white"
+                          ? "bg-success text-text-on-accent"
                           : "bg-surface text-text border-border border shadow-sm"
                       }`}
                     >

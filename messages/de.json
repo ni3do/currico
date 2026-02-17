@@ -17,6 +17,18 @@
     "invalidFileType": "Ungültiger Dateityp",
     "userNotFound": "Benutzer nicht gefunden"
   },
+  "theme": {
+    "light": "Hell",
+    "system": "System",
+    "dark": "Dunkel",
+    "toggle": "Farbschema wechseln",
+    "currentTheme": "Aktuelles Farbschema: {theme}. Klicken zum Wechseln."
+  },
+  "profileCompletion": {
+    "title": "Profil vervollständigen",
+    "description": "Bevor Sie Materialien hochladen können, müssen Sie folgende Angaben ergänzen:",
+    "button": "Profil vervollständigen"
+  },
   "dashboardCard": {
     "remove": "Entfernen",
     "edit": "Bearbeiten",
@@ -47,6 +59,8 @@
   },
   "common": {
     "skipToContent": "Zum Inhalt springen",
+    "scrollToTop": "Nach oben scrollen",
+    "toggleNavigation": "Navigation ein-/ausblenden",
     "brand": {
       "logoText": "C",
       "name": "Currico",
@@ -2325,8 +2339,11 @@
     "intro": "Diese Cookie-Richtlinie erklärt, wie Currico Cookies und ähnliche Technologien verwendet, wenn Sie unsere Website besuchen. Wir setzen auf Transparenz bezüglich der Daten, die wir erheben und wie wir sie nutzen.",
     "toc": {
       "title": "Inhaltsverzeichnis",
-      "label": "Inhaltsverzeichnis"
+      "label": "Inhaltsverzeichnis",
+      "showContents": "Inhaltsverzeichnis anzeigen",
+      "hideContents": "Inhaltsverzeichnis schliessen"
     },
+    "backToTop": "Nach oben",
     "sections": {
       "what": {
         "title": "1. Was sind Cookies?",
@@ -3078,6 +3095,12 @@
       "description": "Wir konnten keine Antwort auf Ihre Frage finden. Unser Team hilft Ihnen gerne persönlich weiter.",
       "contactButton": "Support kontaktieren",
       "contactEmail": "info@currico.ch"
+    },
+    "contactCta": {
+      "title": "Brauchen Sie weitere Hilfe?",
+      "description": "Unser Team hilft Ihnen gerne persönlich weiter — schreiben Sie uns einfach.",
+      "contactButton": "Support kontaktieren",
+      "contactEmail": "info@currico.ch"
     }
   },
   "notifications": {
@@ -3420,6 +3443,7 @@
       "newMaterial": "Neues Material",
       "search": "Uploads durchsuchen...",
       "sort": {
+        "label": "Sortierung",
         "newest": "Neueste zuerst",
         "oldest": "Älteste zuerst",
         "title": "Alphabetisch",
@@ -3696,6 +3720,12 @@
       "filterFollows": "Follower",
       "filterSystem": "System",
       "loadMore": "Mehr laden"
+    },
+    "notificationDropdown": {
+      "title": "Benachrichtigungen",
+      "markAllRead": "Alle als gelesen markieren",
+      "empty": "Noch keine Benachrichtigungen",
+      "viewAll": "Alle anzeigen"
     },
     "welcomeGuide": {
       "welcome": "Willkommen, {name}!",

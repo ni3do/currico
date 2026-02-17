@@ -661,10 +661,10 @@ Legende: [x] = erledigt, [ ] = offen
 
 ### Required Deliverables
 
-- [ ] **Consistency Audit:** A list of any "breaks" in the rules (e.g., "Page B has a different header margin than Page A")
-- [ ] **Motion Report:** Evaluate if the animations feel "uniform." If one page uses a bounce and another a linear fade, flag it
-- [ ] **Ideas for Improvement:** Beyond just fixing errors, give 3-5 creative ideas to elevate the design. Focus on "Micro-interactions" or layout tweaks that would make the site feel more "World Class"
-- [ ] **UX Polish Score:** A rating from 1-10 on the professional "Modern-ness" of the current setup
+- [x] **Consistency Audit:** A list of any "breaks" in the rules — see `spec/plans/final-touch-audit.md` §1
+- [x] **Motion Report:** Evaluate if the animations feel "uniform" — see `spec/plans/final-touch-audit.md` §2
+- [x] **Ideas for Improvement:** 5 creative ideas for micro-interactions — see `spec/plans/final-touch-audit.md` §3
+- [x] **UX Polish Score:** **7.5/10** — see `spec/plans/final-touch-audit.md` §4
 
 ---
 
@@ -692,5 +692,5 @@ Legende: [x] = erledigt, [ ] = offen
 | Verkäufer werden / Stripe | 14       | 0            | 0              | 0           |
 | Benachrichtigungen        | 2        | 1            | 0              | 1           |
 | Global                    | 14       | 2            | 8              | 10          |
-| Final Touch Audit         | 0        | 4            | 0              | 4           |
+| Final Touch Audit         | 4        | 0            | 0              | 0           |
 | **Total**                 | **333**  | **10**       | **41**         | **51**      |

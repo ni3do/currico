@@ -5,7 +5,7 @@ import { signOut, useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Bell, ChevronDown, ChevronRight } from "lucide-react";
+import { Bell, ChevronDown, User, ShieldCheck, LogOut, X, Menu } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { LoginLink } from "@/components/ui/LoginLink";
 import LocaleSwitcher from "@/components/ui/LocaleSwitcher";
@@ -93,7 +93,7 @@ export default function TopBar() {
             </div>
           </Link>
 
-          <nav className="hidden items-center lg:flex">
+          <nav aria-label="Main navigation" className="hidden items-center lg:flex">
             <div className="border-border mr-6 flex items-center border-r pr-6">
               <Link
                 href="/materialien"
@@ -153,19 +153,9 @@ export default function TopBar() {
                     <span className="max-w-[120px] truncate">
                       {session.user?.name || t("navigation.account")}
                     </span>
-                    <svg
+                    <ChevronDown
                       className={`h-4 w-4 transition-transform ${isUserMenuOpen ? "rotate-180" : ""}`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
+                    />
                   </button>
 
                   {/* Dropdown Menu */}
@@ -175,7 +165,7 @@ export default function TopBar() {
                         initial={{ opacity: 0, y: -10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                        transition={{ duration: 0.15, ease: "easeOut" }}
+                        transition={{ duration: 0.15, ease: [0.22, 1, 0.36, 1] }}
                         className="border-border bg-surface absolute right-0 z-50 mt-2 w-48 origin-top-right rounded-lg border py-1 shadow-lg"
                       >
                         <Link
@@ -183,19 +173,7 @@ export default function TopBar() {
                           onClick={() => setIsUserMenuOpen(false)}
                           className="text-text hover:bg-bg flex items-center gap-2 px-4 py-2 text-sm transition-colors"
                         >
-                          <svg
-                            className="h-4 w-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                            />
-                          </svg>
+                          <User className="h-4 w-4" />
                           {t("navigation.profile")}
                         </Link>
                         {isAdmin && (
@@ -204,19 +182,7 @@ export default function TopBar() {
                             onClick={() => setIsUserMenuOpen(false)}
                             className="text-text hover:bg-bg flex items-center gap-2 px-4 py-2 text-sm transition-colors"
                           >
-                            <svg
-                              className="h-4 w-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                              />
-                            </svg>
+                            <ShieldCheck className="h-4 w-4" />
                             {t("navigation.admin")}
                           </Link>
                         )}
@@ -228,19 +194,7 @@ export default function TopBar() {
                           }}
                           className="text-error hover:bg-error/10 flex w-full items-center gap-2 px-4 py-2 text-sm transition-colors"
                         >
-                          <svg
-                            className="h-4 w-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                            />
-                          </svg>
+                          <LogOut className="h-4 w-4" />
                           {t("navigation.logout")}
                         </button>
                       </motion.div>
@@ -266,27 +220,9 @@ export default function TopBar() {
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="text-text-secondary hover:text-primary p-2 lg:hidden"
-            aria-label="Toggle navigation"
+            aria-label={t("toggleNavigation")}
           >
-            {isMobileMenuOpen ? (
-              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            ) : (
-              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-            )}
+            {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
 
@@ -299,7 +235,7 @@ export default function TopBar() {
               transition={{ duration: 0.2, ease: "easeInOut" }}
               className="border-border overflow-hidden border-t lg:hidden"
             >
-              <nav className="flex flex-col space-y-2 py-4">
+              <nav aria-label="Mobile navigation" className="flex flex-col space-y-2 py-4">
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -352,19 +288,7 @@ export default function TopBar() {
                         href="/konto"
                         className="text-text-secondary hover:text-primary flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors"
                       >
-                        <svg
-                          className="h-5 w-5"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                          />
-                        </svg>
+                        <User className="h-5 w-5" />
                         {t("navigation.profile")}
                       </Link>
                       <Link
@@ -386,19 +310,7 @@ export default function TopBar() {
                           href="/admin"
                           className="text-text-secondary hover:text-primary flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors"
                         >
-                          <svg
-                            className="h-5 w-5"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                            />
-                          </svg>
+                          <ShieldCheck className="h-5 w-5" />
                           {t("navigation.admin")}
                         </Link>
                       )}

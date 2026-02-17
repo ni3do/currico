@@ -9,7 +9,7 @@ export default function Footer() {
   return (
     <footer className="border-border bg-bg-secondary border-t">
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between sm:gap-3">
+        <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-between sm:gap-4">
           {/* Left: Logo & Copyright */}
           <div className="flex flex-wrap items-center justify-center gap-2">
             <div className="bg-primary flex h-6 w-6 items-center justify-center rounded">
@@ -23,7 +23,10 @@ export default function Footer() {
           </div>
 
           {/* Right: Links */}
-          <nav className="flex flex-wrap items-center justify-center gap-3 sm:gap-5">
+          <nav
+            aria-label="Footer links"
+            className="grid grid-cols-2 gap-x-6 gap-y-1.5 sm:flex sm:flex-wrap sm:items-center sm:gap-3 md:gap-5"
+          >
             <Link
               href="/hilfe"
               className="text-text-muted hover:text-primary text-sm transition-colors"
