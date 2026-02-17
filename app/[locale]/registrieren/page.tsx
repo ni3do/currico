@@ -211,6 +211,7 @@ export default function RegisterPage() {
                   id="name"
                   value={formData.name}
                   onChange={(e) => handleInputChange("name", e.target.value)}
+                  autoComplete="name"
                   required
                   className="border-border bg-surface text-text placeholder:text-text-muted focus:border-primary focus:ring-primary/20 w-full rounded-lg border px-4 py-3.5 transition-all focus:ring-[3px] focus:outline-none"
                   placeholder={t("form.namePlaceholder")}
@@ -227,6 +228,7 @@ export default function RegisterPage() {
                   id="email"
                   value={formData.email}
                   onChange={(e) => handleInputChange("email", e.target.value)}
+                  autoComplete="email"
                   required
                   className={`bg-surface text-text placeholder:text-text-muted w-full rounded-lg border px-4 py-3.5 transition-all focus:ring-[3px] focus:outline-none ${
                     formData.email && !isValidEmail(formData.email)
@@ -253,6 +255,7 @@ export default function RegisterPage() {
                     onChange={(e) => handleInputChange("password", e.target.value)}
                     onKeyDown={handleCapsLock}
                     onKeyUp={handleCapsLock}
+                    autoComplete="new-password"
                     required
                     className={`bg-surface text-text placeholder:text-text-muted w-full rounded-lg border px-4 py-3.5 pr-12 transition-all focus:ring-[3px] focus:outline-none ${
                       formData.password &&
@@ -350,6 +353,7 @@ export default function RegisterPage() {
                     onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
                     onKeyDown={handleCapsLock}
                     onKeyUp={handleCapsLock}
+                    autoComplete="new-password"
                     required
                     className={`bg-surface text-text placeholder:text-text-muted w-full rounded-lg border px-4 py-3.5 pr-12 transition-all focus:ring-[3px] focus:outline-none ${
                       formData.confirmPassword && formData.password !== formData.confirmPassword

@@ -78,13 +78,13 @@ export function ThemeToggle() {
     setTheme(themes[nextIndex]);
   };
 
-  // Prevent hydration mismatch
+  // Prevent hydration mismatch — render a visually identical but non-functional button
   if (!mounted) {
     return (
       <button
-        className="flex h-7 w-7 items-center justify-center rounded-md border border-border bg-surface transition-colors hover:bg-surface-hover"
+        className="group border-border bg-surface text-text-secondary hover:bg-surface-elevated hover:text-text relative flex h-7 w-7 items-center justify-center rounded-md border transition-all duration-200"
         aria-label="Toggle theme"
-        disabled
+        aria-busy="true"
       >
         <span className="h-[14px] w-[14px]" />
       </button>
@@ -94,7 +94,7 @@ export function ThemeToggle() {
   return (
     <button
       onClick={cycleTheme}
-      className="group relative flex h-7 w-7 items-center justify-center rounded-md border border-border bg-surface text-text-secondary transition-all duration-200 hover:bg-surface-elevated hover:text-text"
+      className="group border-border bg-surface text-text-secondary hover:bg-surface-elevated hover:text-text relative flex h-7 w-7 items-center justify-center rounded-md border transition-all duration-200"
       aria-label={`Current theme: ${labels[theme]}. Click to change.`}
       title={labels[theme]}
     >
@@ -122,9 +122,9 @@ export function ThemeSettings() {
         {themes.map((t) => (
           <div
             key={t}
-            className="flex items-center gap-3 rounded-lg border border-border p-3 opacity-50"
+            className="border-border flex items-center gap-3 rounded-lg border p-3 opacity-50"
           >
-            <div className="h-5 w-5 rounded-full border-2 border-border" />
+            <div className="border-border h-5 w-5 rounded-full border-2" />
             <span className="h-[14px] w-[14px]" />
             <span className="text-text">{settingsLabels[t]}</span>
           </div>
@@ -150,7 +150,7 @@ export function ThemeSettings() {
               theme === t ? "border-primary" : "border-border"
             }`}
           >
-            {theme === t && <div className="h-2.5 w-2.5 rounded-full bg-primary" />}
+            {theme === t && <div className="bg-primary h-2.5 w-2.5 rounded-full" />}
           </div>
           <span className="text-text-muted">{icons[t]}</span>
           <span className="text-text">{settingsLabels[t]}</span>

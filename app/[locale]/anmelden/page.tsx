@@ -146,6 +146,7 @@ function LoginPageContent() {
                   id="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  autoComplete="email"
                   required
                   className={`bg-surface text-text placeholder:text-text-muted w-full rounded-lg border px-4 py-3.5 transition-all focus:ring-[3px] focus:outline-none ${
                     email && !isValidEmail(email)
@@ -180,6 +181,7 @@ function LoginPageContent() {
                     onChange={(e) => setPassword(e.target.value)}
                     onKeyDown={handleCapsLock}
                     onKeyUp={handleCapsLock}
+                    autoComplete="current-password"
                     required
                     className="border-border bg-surface text-text placeholder:text-text-muted focus:border-primary focus:ring-primary/20 w-full rounded-lg border px-4 py-3.5 pr-12 transition-all focus:ring-[3px] focus:outline-none"
                     placeholder={t("form.passwordPlaceholder")}

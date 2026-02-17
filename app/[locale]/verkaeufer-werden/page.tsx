@@ -472,6 +472,51 @@ export default function BecomeSellerPage() {
                     <li>{tTerms("sections.contentPolicies.requirements.lp21")}</li>
                   </ul>
 
+                  {/* Copyright Warranty */}
+                  <h4 className="text-text mt-6 text-base font-semibold">
+                    {tTerms("sections.copyrightWarranty.title")}
+                  </h4>
+                  <p>{tTerms("sections.copyrightWarranty.content")}</p>
+                  <ul className="ml-4 list-disc space-y-1">
+                    <li>{tTerms("sections.copyrightWarranty.warranties.ownership")}</li>
+                    <li>{tTerms("sections.copyrightWarranty.warranties.noInfringement")}</li>
+                    <li>{tTerms("sections.copyrightWarranty.warranties.noThirdParty")}</li>
+                  </ul>
+                  <p className="mt-2 text-sm font-medium">
+                    {tTerms("sections.copyrightWarranty.indemnification.title")}
+                  </p>
+                  <p className="text-sm">
+                    {tTerms("sections.copyrightWarranty.indemnification.content")}
+                  </p>
+                  <ul className="ml-4 list-disc space-y-1 text-sm">
+                    <li>
+                      {tTerms("sections.copyrightWarranty.indemnification.items.infringement")}
+                    </li>
+                    <li>{tTerms("sections.copyrightWarranty.indemnification.items.breach")}</li>
+                    <li>{tTerms("sections.copyrightWarranty.indemnification.items.content")}</li>
+                  </ul>
+
+                  {/* Notice and Takedown */}
+                  <h4 className="text-text mt-6 text-base font-semibold">
+                    {tTerms("sections.noticeTakedown.title")}
+                  </h4>
+                  <p>{tTerms("sections.noticeTakedown.content")}</p>
+                  <p className="mt-2 text-sm font-medium">
+                    {tTerms("sections.noticeTakedown.procedure.title")}
+                  </p>
+                  <p className="text-sm">{tTerms("sections.noticeTakedown.procedure.content")}</p>
+                  <ul className="ml-4 list-disc space-y-1 text-sm">
+                    <li>{tTerms("sections.noticeTakedown.procedure.items.identify")}</li>
+                    <li>{tTerms("sections.noticeTakedown.procedure.items.location")}</li>
+                    <li>{tTerms("sections.noticeTakedown.procedure.items.contact")}</li>
+                    <li>{tTerms("sections.noticeTakedown.procedure.items.statement")}</li>
+                    <li>{tTerms("sections.noticeTakedown.procedure.items.signature")}</li>
+                  </ul>
+                  <p className="mt-2 text-sm font-medium">
+                    {tTerms("sections.noticeTakedown.response.title")}
+                  </p>
+                  <p className="text-sm">{tTerms("sections.noticeTakedown.response.content")}</p>
+
                   {/* Prohibited Content */}
                   <h4 className="text-text mt-6 text-base font-semibold">
                     {tTerms("sections.prohibited.title")}
