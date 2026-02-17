@@ -7,6 +7,7 @@ import { Heart, FileText, ChevronRight } from "lucide-react";
 import { getSubjectTextColor } from "@/lib/constants/subject-colors";
 import { VerifiedSellerBadge } from "@/components/ui/VerifiedSellerBadge";
 import { StarRating } from "@/components/ui/StarRating";
+import { TiltCard } from "@/components/ui/TiltCard";
 
 export interface MaterialCardProps {
   id: string;
@@ -257,13 +258,15 @@ export function MaterialCard({
     : "card group flex h-full flex-col overflow-hidden cursor-pointer";
 
   return (
-    <article>
-      <Link
-        href={linkHref}
-        className={`${cardClasses} focus-visible:ring-primary focus-visible:ring-2 focus-visible:ring-offset-2`}
-      >
-        {cardContent}
-      </Link>
-    </article>
+    <TiltCard className="relative h-full">
+      <article>
+        <Link
+          href={linkHref}
+          className={`${cardClasses} focus-visible:ring-primary focus-visible:ring-2 focus-visible:ring-offset-2`}
+        >
+          {cardContent}
+        </Link>
+      </article>
+    </TiltCard>
   );
 }

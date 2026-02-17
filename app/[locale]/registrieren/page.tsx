@@ -14,6 +14,7 @@ import { getLoginUrl } from "@/lib/utils/login-redirect";
 import { PasswordRequirements } from "@/components/auth/PasswordRequirements";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
+import { MagneticButton } from "@/components/ui/MagneticButton";
 
 export default function RegisterPage() {
   const t = useTranslations("registerPage");
@@ -449,13 +450,15 @@ export default function RegisterPage() {
               )}
 
               {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="bg-primary text-text-on-accent hover:bg-primary-hover disabled:hover:bg-primary mt-4 w-full rounded-lg px-6 py-4 text-center font-bold transition-all hover:-translate-y-0.5 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-none"
-              >
-                {isLoading ? t("form.submitting") : t("form.submitButton")}
-              </button>
+              <MagneticButton className="mt-4">
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="bg-primary text-text-on-accent hover:bg-primary-hover disabled:hover:bg-primary w-full rounded-lg px-6 py-4 text-center font-bold transition-all hover:-translate-y-0.5 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-none"
+                >
+                  {isLoading ? t("form.submitting") : t("form.submitButton")}
+                </button>
+              </MagneticButton>
             </form>
 
             {/* Divider */}

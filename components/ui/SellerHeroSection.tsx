@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Coins, Users, Upload, ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
 import { FadeIn, StaggerChildren, StaggerItem, motion } from "./animations";
+import { MagneticButton } from "./MagneticButton";
 
 interface SellerHeroSectionProps {
   className?: string;
@@ -116,18 +117,20 @@ export function SellerHeroSection({ className = "" }: SellerHeroSectionProps) {
           className="mx-auto mt-8 flex max-w-xl flex-col items-center gap-3 text-center"
         >
           {/* CTA Button */}
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Link
-              href="/verkaeufer-werden"
-              className="btn-primary group inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-semibold"
-            >
-              <span>{t("ctaButton")}</span>
-              <ArrowRight
-                className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
-                aria-hidden="true"
-              />
-            </Link>
-          </motion.div>
+          <MagneticButton>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Link
+                href="/verkaeufer-werden"
+                className="btn-primary group inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-semibold"
+              >
+                <span>{t("ctaButton")}</span>
+                <ArrowRight
+                  className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
+                  aria-hidden="true"
+                />
+              </Link>
+            </motion.div>
+          </MagneticButton>
 
           {/* Free Note */}
           <p className="text-text-muted flex items-center gap-1.5 text-xs">
