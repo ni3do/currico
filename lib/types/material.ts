@@ -43,6 +43,7 @@ export interface Material {
   hasAccess?: boolean;
   subjects: string[];
   cycles: string[];
+  tags?: string[];
   createdAt: string;
   downloadCount: number;
   isApproved: boolean;
@@ -107,6 +108,7 @@ export interface FeaturedMaterial {
   price: number;
   subjects: string[];
   cycles: string[];
+  tags?: string[];
   priceFormatted: string;
   previewUrl: string | null;
   averageRating?: number;

@@ -43,6 +43,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         preview_count: true,
         subjects: true,
         cycles: true,
+        tags: true,
         is_mi_integrated: true,
         competencies: {
           select: {
@@ -182,6 +183,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     // Transform the response
     const subjects = toStringArray(material.subjects);
     const cycles = toStringArray(material.cycles);
+    const tags = toStringArray(material.tags);
 
     // Parse preview_urls from JSON
     const previewUrls = Array.isArray(material.preview_urls)
@@ -205,6 +207,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       hasAccess, // true if user can see all preview pages without blur
       subjects,
       cycles,
+      tags,
       createdAt: material.created_at,
       isMiIntegrated: material.is_mi_integrated,
       competencies: (material.competencies ?? []).map((rc) => ({
@@ -322,6 +325,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
         ...(data.price !== undefined && { price: data.price }),
         ...(data.subjects && { subjects: data.subjects }),
         ...(data.cycles && { cycles: data.cycles }),
+        ...(data.tags !== undefined && { tags: data.tags }),
         ...(data.is_published !== undefined && { is_published: data.is_published }),
       },
       select: {
@@ -331,6 +335,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
         price: true,
         subjects: true,
         cycles: true,
+        tags: true,
         file_url: true,
         preview_url: true,
         is_published: true,
@@ -349,6 +354,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
         price: updatedMaterial.price,
         subjects: updatedMaterial.subjects,
         cycles: updatedMaterial.cycles,
+        tags: updatedMaterial.tags,
         fileUrl: updatedMaterial.file_url,
         previewUrl: updatedMaterial.preview_url,
         isPublished: updatedMaterial.is_published,

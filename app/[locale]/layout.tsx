@@ -7,6 +7,7 @@ import type { Locale } from "@/i18n/config";
 import CookieConsent from "@/components/ui/CookieConsent";
 import { SkipToContent } from "@/components/ui/SkipToContent";
 import { ScrollToTop } from "@/components/ui/ScrollToTop";
+import PlausibleProvider from "@/components/providers/PlausibleProvider";
 
 // Force dynamic rendering to avoid prerender errors with client-side hooks
 export const dynamic = "force-dynamic";
@@ -108,12 +109,36 @@ export default async function LocaleLayout({ children, params }: Props) {
     },
   };
 
+  // Organization schema for site-wide identity
+  const organizationJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Currico",
+    legalName: "Angle Labs GmbH",
+    url: `${baseUrl}/${locale}`,
+    email: "info@currico.ch",
+    description:
+      locale === "de"
+        ? "Schweizer Plattform für Unterrichtsmaterialien – von Lehrpersonen für Lehrpersonen."
+        : "Swiss platform for teaching materials – by teachers, for teachers.",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Zürich",
+      addressCountry: "CH",
+    },
+  };
+
   return (
     <NextIntlClientProvider messages={messages}>
       <SkipToContent />
+      <PlausibleProvider />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
       />
       {children}
       <ScrollToTop />

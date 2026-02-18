@@ -14,7 +14,6 @@ import { MaterialCard } from "@/components/ui/MaterialCard";
 import { CurriculumBox } from "@/components/curriculum";
 import { PreviewGallery } from "@/components/ui/PreviewGallery";
 import { ReviewsSection } from "@/components/reviews";
-import { CommentsSection } from "@/components/comments";
 import { useToast } from "@/components/ui/Toast";
 import { PurchasePanel } from "@/components/materials/PurchasePanel";
 import { ReportModal } from "@/components/materials/ReportModal";
@@ -392,6 +391,21 @@ export default function MaterialDetailPage() {
           <p className="text-text-secondary leading-relaxed whitespace-pre-line">
             {material.description}
           </p>
+
+          {/* Tags */}
+          {material.tags && material.tags.length > 0 && (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {material.tags.map((tag) => (
+                <Link
+                  key={tag}
+                  href={`/materialien?tags=${encodeURIComponent(tag)}`}
+                  className="bg-surface hover:bg-primary/10 hover:text-primary text-text-muted inline-flex items-center rounded-full px-3 py-1.5 text-sm font-medium transition-colors"
+                >
+                  #{tag}
+                </Link>
+              ))}
+            </div>
+          )}
         </section>
 
         {/* LP21 CURRICULUM SECTION */}
@@ -409,12 +423,10 @@ export default function MaterialDetailPage() {
           </section>
         )}
 
-        {/* FEEDBACK SECTION: Reviews & Comments merged */}
+        {/* FEEDBACK SECTION: Reviews */}
         <section className="border-border mb-12 border-t pt-12">
           <h2 className="text-text mb-8 text-xl font-semibold">{t("feedbackTitle")}</h2>
           <ReviewsSection materialId={id} hideTitle />
-          <div className="border-border/50 my-8 border-t" />
-          <CommentsSection materialId={id} hideTitle />
         </section>
 
         {/* RELATED RESOURCES */}

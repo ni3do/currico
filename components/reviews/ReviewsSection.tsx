@@ -188,14 +188,18 @@ export function ReviewsSection({
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString(),
                     isVerifiedPurchase: true,
+                    replies: [],
+                    replyCount: 0,
                     user: {
                       id: session.user.id,
                       displayName: session.user.name || "Sie",
                       image: session.user.image || null,
                     },
                   }}
+                  materialId={materialId}
                   onEdit={handleEditReview}
                   onDelete={handleDeleteReview}
+                  onReplyAdded={() => fetchReviews(page)}
                 />
               </motion.div>
             ) : canReview ? (
@@ -258,7 +262,12 @@ export function ReviewsSection({
           {reviews
             .filter((r) => r.user.id !== session?.user?.id) // Don't show user's review here (shown above)
             .map((review) => (
-              <ReviewCard key={review.id} review={review} />
+              <ReviewCard
+                key={review.id}
+                review={review}
+                materialId={materialId}
+                onReplyAdded={() => fetchReviews(page)}
+              />
             ))}
 
           {/* Pagination */}

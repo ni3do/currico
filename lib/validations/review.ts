@@ -68,6 +68,26 @@ export const updateReplySchema = z.object({
 });
 
 // ============================================================
+// REVIEW REPLY SCHEMAS
+// ============================================================
+
+// Create a reply to a review
+export const createReviewReplySchema = z.object({
+  content: z
+    .string()
+    .min(1, "Antwort darf nicht leer sein")
+    .max(1000, "Antwort darf maximal 1000 Zeichen haben"),
+});
+
+// Update a review reply
+export const updateReviewReplySchema = z.object({
+  content: z
+    .string()
+    .min(1, "Antwort darf nicht leer sein")
+    .max(1000, "Antwort darf maximal 1000 Zeichen haben"),
+});
+
+// ============================================================
 // TYPE EXPORTS
 // ============================================================
 
@@ -77,3 +97,5 @@ export type CreateComment = z.infer<typeof createCommentSchema>;
 export type UpdateComment = z.infer<typeof updateCommentSchema>;
 export type CreateReply = z.infer<typeof createReplySchema>;
 export type UpdateReply = z.infer<typeof updateReplySchema>;
+export type CreateReviewReply = z.infer<typeof createReviewReplySchema>;
+export type UpdateReviewReply = z.infer<typeof updateReviewReplySchema>;

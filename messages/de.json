@@ -173,7 +173,8 @@
       "becomeSeller": "Verkäufer werden",
       "bundles": "Pakete",
       "copyrightGuide": "Urheberrecht",
-      "edit": "Bearbeiten"
+      "edit": "Bearbeiten",
+      "blog": "Blog"
     },
     "toast": {
       "addedToWishlist": "Zur Wunschliste hinzugefügt",
@@ -226,6 +227,7 @@
       "ratingCard": {
         "rating": "4.9"
       },
+      "eyebrow": "Die Schweizer Plattform für Unterrichtsmaterialien",
       "title": "Weniger suchen, mehr unterrichten.",
       "description": "Entdecken Sie professionelle Lehrmittel, entwickelt von Kollegen und exakt abgestimmt auf den <bold>Lehrplan 21</bold>. Vertrauenswürdig, geprüft, sofort einsetzbar.",
       "primaryButton": "Jetzt Material finden",
@@ -635,7 +637,11 @@
       "cantonChipMultiple": "{count} Kantone",
       "expand": "Aufklappen",
       "collapse": "Zuklappen",
-      "closeFilters": "Filter schliessen"
+      "closeFilters": "Filter schliessen",
+      "tagSectionLabel": "Schlagwörter",
+      "tagFilterPlaceholder": "Schlagwort suchen...",
+      "sonstigeLabel": "Sonstige",
+      "sonstigeDescription": "Ohne LP21-Zuordnung"
     },
     "search": {
       "placeholder": "Suche nach Titel, Thema, Stichwort...",
@@ -1703,7 +1709,12 @@
       "duplicateTitleLink": "Vorhandenes Material ansehen",
       "draftFilesNotSaved": "Dateien nicht im Entwurf gespeichert",
       "draftFilesNotSavedDesc": "Dateien können nicht im Entwurf gespeichert werden. Bitte laden Sie Ihre Dateien erneut hoch.",
-      "similarTitle": "Ähnlicher Titel gefunden: \"{title}\""
+      "similarTitle": "Ähnlicher Titel gefunden: \"{title}\"",
+      "tags": "Schlagwörter",
+      "tagsHint": "Bis zu 10 Schlagwörter (z.B. Arbeitsblatt, Mathe, Frühling)",
+      "tagsPlaceholder": "Schlagwort eingeben und Enter drücken",
+      "tagMax": "Maximal 10 Schlagwörter",
+      "tagDuplicate": "Bereits vorhanden"
     },
     "legal": {
       "title": "Rechtliche Bestätigungen",
@@ -1777,7 +1788,9 @@
       "searchResultSubject": "Fach",
       "searchResultArea": "Bereich",
       "searchResultCompetency": "Kompetenz",
-      "searchHint": "Suchen Sie direkt nach Fach, Kompetenzbereich oder Kompetenz"
+      "searchHint": "Suchen Sie direkt nach Fach, Kompetenzbereich oder Kompetenz",
+      "sonstigeLabel": "Sonstige",
+      "sonstigeDescription": "Materialien ohne LP21-Zuordnung"
     },
     "summary": {
       "title": "Übersicht",
@@ -2898,7 +2911,7 @@
     "description": "Beschreibung",
     "reviews": "Bewertungen",
     "comments": "Kommentare",
-    "feedbackTitle": "Bewertungen & Kommentare",
+    "feedbackTitle": "Bewertungen",
     "similarMaterials": "Ähnliche Materialien",
     "report": {
       "title": "Material melden",
@@ -3249,7 +3262,17 @@
     "titlePlaceholder": "Kurze Zusammenfassung Ihrer Bewertung",
     "contentPlaceholder": "Beschreiben Sie Ihre Erfahrung mit diesem Material...",
     "charCount": "{count}/{max} Zeichen",
-    "cannotReviewOwn": "Sie können Ihr eigenes Material nicht bewerten."
+    "cannotReviewOwn": "Sie können Ihr eigenes Material nicht bewerten.",
+    "reply": "Antworten",
+    "replyPlaceholder": "Schreiben Sie eine Antwort...",
+    "replySubmit": "Antworten",
+    "replySending": "Senden...",
+    "replyError": "Fehler beim Senden der Antwort",
+    "showReplies": "{count} Antworten anzeigen",
+    "hideReplies": "Antworten ausblenden",
+    "seller": "Verkäufer",
+    "deleteReply": "Antwort löschen",
+    "confirmDeleteReply": "Möchten Sie diese Antwort wirklich löschen?"
   },
   "likes": {
     "like": "Gefällt mir",
@@ -3373,7 +3396,7 @@
       "library": "Bibliothek",
       "uploads": "Meine Uploads",
       "bundles": "Bundles",
-      "comments": "Kommentare",
+      "comments": "Bewertungen",
       "wishlist": "Wunschliste",
       "notifications": "Benachrichtigungen",
       "following": "Folge ich",
@@ -3521,13 +3544,13 @@
       }
     },
     "comments": {
-      "title": "Kommentare zu Ihren Materialien",
-      "totalComments": "Kommentare insgesamt",
+      "title": "Bewertungen zu Ihren Materialien",
+      "totalComments": "Bewertungen insgesamt",
       "unanswered": "unbeantwortet",
-      "filterAll": "Alle Kommentare",
+      "filterAll": "Alle Bewertungen",
       "filterUnanswered": "Unbeantwortet",
-      "empty": "Keine Kommentare",
-      "emptyDescription": "Kommentare erscheinen hier, sobald Nutzer Ihre Materialien kommentieren.",
+      "empty": "Keine Bewertungen",
+      "emptyDescription": "Bewertungen erscheinen hier, sobald Nutzer Ihre Materialien bewerten.",
       "viewMaterial": "Material ansehen",
       "unansweredBadge": "Unbeantwortet",
       "reply": "Antworten",
@@ -3539,10 +3562,10 @@
       "prev": "Zurück",
       "next": "Weiter",
       "pageInfo": "Seite {page} von {total}",
-      "errorLoading": "Fehler beim Laden der Kommentare",
+      "errorLoading": "Fehler beim Laden der Bewertungen",
       "errorSending": "Fehler beim Senden der Antwort",
       "you": "Sie",
-      "notSeller": "Kommentare sind nur für Verkäufer verfügbar.",
+      "notSeller": "Bewertungen sind nur für Verkäufer verfügbar.",
       "becomeSeller": "Verkäufer werden"
     },
     "settingsNotifications": {
@@ -4414,5 +4437,12 @@
     "free": "Gratis",
     "ctaAllMaterials": "Alle Materialien entdecken",
     "unsubscribeFooter": "Newsletter abbestellen"
+  },
+  "blogPage": {
+    "title": "Blog",
+    "subtitle": "Tipps, Neuigkeiten und Inspiration rund um Unterrichtsmaterial.",
+    "noPosts": "Noch keine Beiträge vorhanden.",
+    "readMore": "Weiterlesen",
+    "backToList": "Zurück zum Blog"
   }
 }

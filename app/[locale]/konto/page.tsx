@@ -504,7 +504,7 @@ export default function AccountOverviewPage() {
                                 <ExternalLink className="h-4 w-4" />
                               </Link>
                               <Link
-                                href={`/materialien/${resource.id}/edit`}
+                                href={`/materialien/${resource.id}/bearbeiten`}
                                 className="text-text-muted hover:text-primary rounded-lg p-1.5 transition-colors"
                                 aria-label={t("overview.edit")}
                               >
@@ -599,7 +599,7 @@ export default function AccountOverviewPage() {
                                     <ExternalLink className="h-4 w-4" />
                                   </Link>
                                   <Link
-                                    href={`/materialien/${resource.id}/edit`}
+                                    href={`/materialien/${resource.id}/bearbeiten`}
                                     className="text-text-muted hover:text-primary hover:bg-primary/10 rounded-lg p-2 transition-colors"
                                     aria-label={t("overview.edit")}
                                   >

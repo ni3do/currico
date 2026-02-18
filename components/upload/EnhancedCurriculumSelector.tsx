@@ -3,8 +3,9 @@
 import { useState, useMemo, useRef, useCallback, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { FACHBEREICHE, getFachbereicheByZyklus, getFachbereichByCode } from "@/lib/data/lehrplan21";
-import type { Fachbereich, Kompetenzbereich } from "@/lib/curriculum-types";
+import type { Fachbereich } from "@/lib/curriculum-types";
 import { InfoTooltip, useFieldTooltip } from "./InfoTooltip";
+import { SONSTIGE_CODE } from "@/lib/validations/material";
 import {
   BookOpen,
   Globe,
@@ -30,6 +31,7 @@ import {
   ClipboardList,
   ChevronDown,
   Filter,
+  FolderOpen,
 } from "lucide-react";
 
 // Map icon names to Lucide components
@@ -134,13 +136,14 @@ export function EnhancedCurriculumSelector({
   const cycleTooltip = useFieldTooltip("cycle");
   const subjectTooltip = useFieldTooltip("subject");
   const cantonTooltip = useFieldTooltip("canton");
-  const [competencySearch, setCompetencySearch] = useState("");
   const [unifiedSearch, setUnifiedSearch] = useState("");
   const [showUnifiedResults, setShowUnifiedResults] = useState(false);
   const unifiedSearchRef = useRef<HTMLDivElement>(null);
   const MAX_COMPETENCIES = 5;
   // State to control competencies panel visibility with animation
   const [showCompetencies, setShowCompetencies] = useState(false);
+  // State for which Kompetenzbereich is expanded (card drill-down)
+  const [expandedKbCode, setExpandedKbCode] = useState<string | null>(null);
 
   // Close unified search dropdown on click outside
   useEffect(() => {
@@ -273,50 +276,12 @@ export function EnhancedCurriculumSelector({
     return getFachbereichByCode(subjectCode);
   }, [subjectCode]);
 
-  // Filter competencies by search
-  const filteredKompetenzbereiche = useMemo(() => {
-    if (!selectedFachbereich) return [];
-
-    const searchLower = competencySearch.toLowerCase();
-    if (!searchLower) return selectedFachbereich.kompetenzbereiche;
-
-    return selectedFachbereich.kompetenzbereiche
-      .map((kb) => ({
-        ...kb,
-        kompetenzen: kb.kompetenzen.filter(
-          (k) =>
-            k.code.toLowerCase().includes(searchLower) ||
-            k.name.toLowerCase().includes(searchLower) ||
-            k.handlungsaspekte?.some((h) => h.toLowerCase().includes(searchLower))
-        ),
-      }))
-      .filter((kb) => kb.kompetenzen.length > 0);
-  }, [selectedFachbereich, competencySearch]);
-
   // Toggle competency selection
   const toggleCompetency = (code: string) => {
     if (competencies.includes(code)) {
       onCompetenciesChange(competencies.filter((c) => c !== code));
     } else if (competencies.length < MAX_COMPETENCIES) {
       onCompetenciesChange([...competencies, code]);
-    }
-  };
-
-  // Toggle all competencies in a Kompetenzbereich
-  const toggleKompetenzbereich = (kb: Kompetenzbereich) => {
-    const kbCodes = kb.kompetenzen.map((k) => k.code);
-    const allSelected = kbCodes.every((code) => competencies.includes(code));
-
-    if (allSelected) {
-      onCompetenciesChange(competencies.filter((c) => !kbCodes.includes(c)));
-    } else {
-      const newCompetencies = [...competencies];
-      kbCodes.forEach((code) => {
-        if (!newCompetencies.includes(code) && newCompetencies.length < MAX_COMPETENCIES) {
-          newCompetencies.push(code);
-        }
-      });
-      onCompetenciesChange(newCompetencies);
     }
   };
 
@@ -337,6 +302,7 @@ export function EnhancedCurriculumSelector({
       onSubjectChange(fachbereich.name, fachbereich.code);
       onCompetenciesChange([]); // Reset competencies when subject changes
       setShowCompetencies(true);
+      setExpandedKbCode(null);
     }
   };
 
@@ -345,6 +311,7 @@ export function EnhancedCurriculumSelector({
     onSubjectChange("", "");
     onCompetenciesChange([]);
     setShowCompetencies(false);
+    setExpandedKbCode(null);
   };
 
   // Get canton label
@@ -359,27 +326,6 @@ export function EnhancedCurriculumSelector({
 
   // Check if any filters are selected
   const hasFilters = cycle || subject || competencies.length > 0 || canton;
-
-  // State for collapsible competency sections - stores user overrides only
-  const [sectionOverrides, setSectionOverrides] = useState<Record<string, boolean>>({});
-
-  // Compute expanded state: all sections expanded by default, with user overrides applied
-  const expandedSections = useMemo(() => {
-    if (!selectedFachbereich) return {};
-    const expanded: Record<string, boolean> = {};
-    selectedFachbereich.kompetenzbereiche.forEach((kb) => {
-      // Default to expanded, but use override if user has toggled
-      expanded[kb.code] = sectionOverrides[kb.code] ?? true;
-    });
-    return expanded;
-  }, [selectedFachbereich, sectionOverrides]);
-
-  const toggleSection = (code: string) => {
-    setSectionOverrides((prev) => ({
-      ...prev,
-      [code]: !(prev[code] ?? true), // Toggle from current state (default true)
-    }));
-  };
 
   // Ref for scroll container to maintain position
   const containerRef = useRef<HTMLDivElement>(null);
@@ -559,7 +505,8 @@ export function EnhancedCurriculumSelector({
       <div>
         <div className="mb-3 flex items-center gap-1.5">
           <label className="text-text text-sm font-medium">
-            {tFields("cycle")} <span className="text-error">*</span>
+            {tFields("cycle")}{" "}
+            {subjectCode !== SONSTIGE_CODE && <span className="text-error">*</span>}
           </label>
           <InfoTooltip content={cycleTooltip.content} />
         </div>
@@ -628,7 +575,50 @@ export function EnhancedCurriculumSelector({
             </label>
             <InfoTooltip content={subjectTooltip.content} />
           </div>
-          {!cycle && <span className="text-text-muted text-xs">{tCurr("selectCycleFirst")}</span>}
+          {!cycle && subjectCode !== SONSTIGE_CODE && (
+            <span className="text-text-muted text-xs">{tCurr("selectCycleFirst")}</span>
+          )}
+        </div>
+
+        {/* Sonstige card - always visible */}
+        <div className="mb-2">
+          <button
+            type="button"
+            onClick={() => {
+              if (subjectCode === SONSTIGE_CODE) {
+                // Deselect Sonstige
+                onSubjectChange("", "");
+                setShowCompetencies(false);
+              } else {
+                // Select Sonstige: clear cycle and competencies
+                onSubjectChange(tCurr("sonstigeLabel"), SONSTIGE_CODE);
+                onCycleChange("");
+                onCompetenciesChange([]);
+                setShowCompetencies(false);
+              }
+            }}
+            onBlur={onSubjectBlur}
+            className={`group relative flex w-full items-center gap-3 rounded-xl border-2 px-4 py-3 text-left transition-colors duration-150 ${
+              subjectCode === SONSTIGE_CODE
+                ? "border-primary bg-primary/10"
+                : touchedSubject && subjectError
+                  ? "border-error/50 bg-error/5 hover:border-error"
+                  : "border-border bg-bg hover:border-primary/50"
+            }`}
+          >
+            <div className="bg-text-muted/10 flex h-10 w-10 items-center justify-center rounded-lg">
+              <FolderOpen className="text-text-muted h-5 w-5" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="text-text text-sm font-medium">{tCurr("sonstigeLabel")}</div>
+              <div className="text-text-muted text-xs">{tCurr("sonstigeDescription")}</div>
+            </div>
+            {subjectCode === SONSTIGE_CODE && (
+              <div className="bg-primary absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full">
+                <Check className="text-text-on-accent h-3 w-3" />
+              </div>
+            )}
+          </button>
         </div>
 
         {cycle ? (
@@ -702,268 +692,193 @@ export function EnhancedCurriculumSelector({
         )}
       </div>
 
-      {/* Competencies - Opens when Fach is clicked */}
+      {/* Competencies - Kompetenzbereich cards (same layout as Fach) */}
       {selectedFachbereich && showCompetencies && (
-        <div
-          className="animate-in fade-in slide-in-from-top-2 overflow-hidden rounded-xl border-2 duration-200"
-          style={{ borderColor: `${selectedFachbereich.color}40` }}
-        >
-          {/* Header bar with subject color */}
-          <div
-            className="flex items-center justify-between px-4 py-3"
-            style={{ backgroundColor: `${selectedFachbereich.color}15` }}
-          >
-            <div className="flex items-center gap-3">
-              <div
-                className="flex h-8 w-8 items-center justify-center rounded-lg"
-                style={{
-                  backgroundColor: `${selectedFachbereich.color}30`,
-                  color: selectedFachbereich.color,
-                }}
-              >
-                {(() => {
-                  const Icon = getSubjectIcon(selectedFachbereich.icon);
-                  return <Icon className="h-4 w-4" />;
-                })()}
-              </div>
-              <div>
-                <div className="text-text text-sm font-semibold">
-                  {tCurr("competenciesFor", { name: selectedFachbereich.name })}
-                </div>
-                <div className="text-text-muted text-xs">
-                  {tCurr("areasAvailable", { count: selectedFachbereich.kompetenzbereiche.length })}
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
+        <div className="animate-in fade-in slide-in-from-top-2 duration-200">
+          {/* Section heading */}
+          <div className="mb-3 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <label className="text-text text-sm font-medium">
+                {tCurr("competenciesFor", { name: selectedFachbereich.name })}
+              </label>
               {competencies.length > 0 && (
                 <span
-                  className={`rounded-full px-3 py-1 text-xs font-semibold ${competencies.length >= MAX_COMPETENCIES ? "bg-warning/20 text-warning" : "bg-primary/20 text-primary"}`}
+                  className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${competencies.length >= MAX_COMPETENCIES ? "bg-warning/20 text-warning" : "bg-primary/20 text-primary"}`}
                 >
-                  {tCurr("competenciesSelected", { count: competencies.length })}
-                  {competencies.length >= MAX_COMPETENCIES && ` (max)`}
+                  {competencies.length}/{MAX_COMPETENCIES}
                 </span>
               )}
+            </div>
+            {competencies.length > 0 && (
               <button
                 type="button"
-                onClick={() => setShowCompetencies(false)}
-                className="text-text-muted hover:text-text rounded-lg p-1 transition-colors"
-                title={tCurr("close")}
+                onClick={() => onCompetenciesChange([])}
+                className="text-text-muted hover:text-error text-xs transition-colors"
               >
-                <X className="h-5 w-5" />
+                {tCurr("removeAll")}
               </button>
-            </div>
+            )}
           </div>
 
-          <div className="p-4">
-            {/* Search and selected pills row */}
-            <div className="mb-4 flex flex-wrap items-center gap-3">
-              {/* Search */}
-              <div className="relative min-w-[200px] flex-1">
-                <Search className="text-text-muted absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2" />
-                <input
-                  type="text"
-                  value={competencySearch}
-                  onChange={(e) => setCompetencySearch(e.target.value)}
-                  placeholder={tFields("competencySearch")}
-                  className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 w-full rounded-lg border py-2 pr-8 pl-8 text-sm transition-colors duration-100 focus:ring-1 focus:outline-none"
-                />
-                {competencySearch && (
+          {/* Selected competencies pills */}
+          {competencies.length > 0 && (
+            <div className="mb-4 flex flex-wrap gap-1.5">
+              {competencies.map((code) => (
+                <span
+                  key={code}
+                  className="bg-primary/10 text-primary inline-flex items-center gap-1 rounded-full px-2.5 py-1 font-mono text-xs font-medium"
+                >
+                  {code}
                   <button
                     type="button"
-                    onClick={() => setCompetencySearch("")}
-                    className="text-text-muted hover:text-text absolute top-1/2 right-2.5 -translate-y-1/2 transition-colors"
+                    onClick={() => toggleCompetency(code)}
+                    className="hover:text-error ml-0.5 transition-colors"
                   >
-                    <X className="h-3.5 w-3.5" />
+                    <X className="h-3 w-3" />
                   </button>
-                )}
-              </div>
-              {competencies.length > 0 && (
-                <button
-                  type="button"
-                  onClick={() => onCompetenciesChange([])}
-                  className="text-text-muted hover:text-error text-xs transition-colors"
-                >
-                  {tCurr("removeAll")}
-                </button>
-              )}
+                </span>
+              ))}
             </div>
+          )}
 
-            {/* Selected Competencies Pills */}
-            {competencies.length > 0 && (
-              <div className="mb-4 flex flex-wrap gap-1">
-                {competencies.map((code) => (
-                  <span
-                    key={code}
-                    className="bg-primary/10 text-primary inline-flex items-center gap-0.5 rounded px-1.5 py-0.5 font-mono text-[11px] font-medium"
+          {/* Kompetenzbereich grid - same card style as Fach */}
+          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            {selectedFachbereich.kompetenzbereiche.map((kb) => {
+              const kbCodes = kb.kompetenzen.map((k) => k.code);
+              const selectedCount = kbCodes.filter((code) => competencies.includes(code)).length;
+              const isExpanded = expandedKbCode === kb.code;
+
+              return (
+                <button
+                  key={kb.code}
+                  type="button"
+                  onClick={() => setExpandedKbCode(isExpanded ? null : kb.code)}
+                  className={`group relative flex items-center gap-3 rounded-xl border-2 px-4 py-3 text-left transition-colors duration-150 ${
+                    isExpanded
+                      ? "border-primary bg-primary/10"
+                      : selectedCount > 0
+                        ? "border-primary/40 bg-primary/5"
+                        : "border-border bg-bg hover:border-primary/50"
+                  }`}
+                >
+                  <div
+                    className="flex h-10 w-10 items-center justify-center rounded-lg text-sm font-bold"
+                    style={{
+                      backgroundColor: `${selectedFachbereich.color}20`,
+                      color: selectedFachbereich.color,
+                    }}
                   >
-                    {code}
-                    <button
-                      type="button"
-                      onClick={() => toggleCompetency(code)}
-                      className="hover:text-error ml-0.5 transition-colors"
+                    {kb.code.split(".").pop()}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-text truncate text-sm font-medium">{kb.name}</div>
+                    <div className="text-text-muted flex items-center gap-1 text-xs">
+                      <span>{tCurr("competencyCount", { count: kb.kompetenzen.length })}</span>
+                      {selectedCount > 0 && (
+                        <span className="text-primary font-medium">
+                          • {tCurr("selectedCount", { count: selectedCount })}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <ChevronDown
+                    className={`h-4 w-4 transition-transform duration-150 ${
+                      isExpanded ? "rotate-180" : ""
+                    } ${isExpanded ? "text-primary" : "text-text-muted group-hover:text-text"}`}
+                  />
+                  {selectedCount > 0 && (
+                    <div className="bg-primary absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full">
+                      <Check className="text-text-on-accent h-3 w-3" />
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Expanded Kompetenz cards - shown below the Kompetenzbereich grid */}
+          {expandedKbCode &&
+            (() => {
+              const expandedKb = selectedFachbereich.kompetenzbereiche.find(
+                (kb) => kb.code === expandedKbCode
+              );
+              if (!expandedKb) return null;
+
+              return (
+                <div
+                  className="animate-in fade-in slide-in-from-top-2 mt-4 rounded-xl border-2 p-4 duration-200"
+                  style={{ borderColor: `${selectedFachbereich.color}40` }}
+                >
+                  <div className="mb-3 flex items-center gap-2">
+                    <div
+                      className="flex h-8 w-8 items-center justify-center rounded-lg text-xs font-bold"
+                      style={{
+                        backgroundColor: `${selectedFachbereich.color}20`,
+                        color: selectedFachbereich.color,
+                      }}
                     >
-                      <X className="h-2.5 w-2.5" />
-                    </button>
-                  </span>
-                ))}
-              </div>
-            )}
+                      {expandedKb.code.split(".").pop()}
+                    </div>
+                    <div>
+                      <div className="text-text text-sm font-semibold">{expandedKb.name}</div>
+                      <div className="text-text-muted text-xs">{expandedKb.code}</div>
+                    </div>
+                  </div>
 
-            {/* Competency Tree - Collapsible sections */}
-            <div className="bg-surface overflow-hidden rounded-lg">
-              {filteredKompetenzbereiche.length === 0 ? (
-                <div className="text-text-muted py-8 text-center text-sm">
-                  {competencySearch ? tCurr("noSearchResults") : tCurr("noCompetencies")}
-                </div>
-              ) : (
-                <div className="divide-border divide-y">
-                  {filteredKompetenzbereiche.map((kb) => {
-                    const kbCodes = kb.kompetenzen.map((k) => k.code);
-                    const selectedCount = kbCodes.filter((code) =>
-                      competencies.includes(code)
-                    ).length;
-                    const allSelected = selectedCount === kbCodes.length;
-                    const someSelected = selectedCount > 0 && !allSelected;
-                    const isExpanded = expandedSections[kb.code] ?? true;
+                  <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                    {expandedKb.kompetenzen.map((kompetenz) => {
+                      const isSelected = competencies.includes(kompetenz.code);
+                      const isMaxReached = competencies.length >= MAX_COMPETENCIES && !isSelected;
 
-                    return (
-                      <div key={kb.code}>
-                        {/* Kompetenzbereich Header - Prominent theme header */}
+                      return (
                         <button
+                          key={kompetenz.code}
                           type="button"
-                          onClick={() => toggleSection(kb.code)}
-                          className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors duration-100"
-                          style={{
-                            backgroundColor: `${selectedFachbereich.color}08`,
-                            borderBottom: isExpanded
-                              ? `1px solid ${selectedFachbereich.color}20`
-                              : undefined,
-                          }}
-                        >
-                          <div className="flex items-center gap-3">
-                            <ChevronDown
-                              className={`h-4 w-4 transition-transform duration-150 ${isExpanded ? "" : "-rotate-90"}`}
-                              style={{ color: selectedFachbereich.color }}
-                            />
-                            <div
-                              className="flex h-9 w-9 items-center justify-center rounded-lg text-xs font-bold"
-                              style={{
-                                backgroundColor: `${selectedFachbereich.color}20`,
-                                color: selectedFachbereich.color,
-                              }}
-                            >
-                              {kb.code.split(".").pop()}
-                            </div>
-                            <div>
-                              <div className="text-text text-sm font-semibold">{kb.name}</div>
-                              <div className="text-text-muted text-xs">{kb.code}</div>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <span className="text-text-muted text-sm">
-                              {selectedCount > 0 ? (
-                                <span className="text-success font-semibold">{selectedCount}</span>
-                              ) : (
-                                "0"
-                              )}
-                              <span className="mx-0.5">/</span>
-                              {kbCodes.length}
-                            </span>
-                            <div
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                toggleKompetenzbereich(kb);
-                              }}
-                              className={`flex h-6 w-6 cursor-pointer items-center justify-center rounded-lg transition-colors duration-100 ${
-                                allSelected
-                                  ? "bg-primary"
-                                  : someSelected
-                                    ? "bg-primary/50"
-                                    : "border-border hover:border-primary/50 border-2"
-                              }`}
-                              title={allSelected ? tCurr("deselectAll") : tCurr("selectAll")}
-                            >
-                              {(allSelected || someSelected) && (
-                                <Check className="text-text-on-accent h-3.5 w-3.5" />
-                              )}
-                            </div>
-                          </div>
-                        </button>
-
-                        {/* Kompetenzen - Card layout matching Fach exactly */}
-                        <div
-                          className={`grid transition-all duration-200 ease-in-out ${
-                            isExpanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                          onClick={() => toggleCompetency(kompetenz.code)}
+                          disabled={isMaxReached}
+                          className={`group relative flex items-center gap-3 rounded-xl border-2 px-4 py-3 text-left transition-colors duration-150 ${
+                            isSelected
+                              ? "border-primary bg-primary/10"
+                              : isMaxReached
+                                ? "border-border bg-bg cursor-not-allowed opacity-50"
+                                : "border-border bg-bg hover:border-primary/50"
                           }`}
                         >
-                          <div className="overflow-hidden">
-                            <div className="grid grid-cols-1 gap-2 px-4 pb-4 sm:grid-cols-2 md:grid-cols-3">
-                              {kb.kompetenzen.map((kompetenz) => {
-                                const isSelected = competencies.includes(kompetenz.code);
-                                const isMaxReached =
-                                  competencies.length >= MAX_COMPETENCIES && !isSelected;
-
-                                return (
-                                  <button
-                                    key={kompetenz.code}
-                                    type="button"
-                                    onClick={() => toggleCompetency(kompetenz.code)}
-                                    disabled={isMaxReached}
-                                    className={`group relative flex items-center gap-3 rounded-xl border-2 px-4 py-3 text-left transition-colors duration-150 ${
-                                      isSelected
-                                        ? "border-primary bg-primary/10"
-                                        : isMaxReached
-                                          ? "border-border bg-bg cursor-not-allowed opacity-50"
-                                          : "border-border bg-bg hover:border-primary/50"
-                                    }`}
-                                  >
-                                    {/* Icon area - matches Fach style */}
-                                    <div
-                                      className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg text-sm font-bold"
-                                      style={{
-                                        backgroundColor: `${selectedFachbereich.color}20`,
-                                        color: selectedFachbereich.color,
-                                      }}
-                                    >
-                                      {kompetenz.code.split(".").pop()}
-                                    </div>
-                                    {/* Content - matches Fach style */}
-                                    <div className="min-w-0 flex-1">
-                                      <div
-                                        className="text-text truncate text-sm font-medium"
-                                        title={kompetenz.name}
-                                      >
-                                        {kompetenz.name}
-                                      </div>
-                                      <div className="text-text-muted text-xs">
-                                        {kompetenz.code}
-                                      </div>
-                                    </div>
-                                    {/* Checkmark badge - matches Fach style */}
-                                    {isSelected && (
-                                      <div className="bg-primary absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full">
-                                        <Check className="text-text-on-accent h-3 w-3" />
-                                      </div>
-                                    )}
-                                  </button>
-                                );
-                              })}
-                            </div>
+                          <div
+                            className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg text-sm font-bold"
+                            style={{
+                              backgroundColor: `${selectedFachbereich.color}20`,
+                              color: selectedFachbereich.color,
+                            }}
+                          >
+                            {kompetenz.code.split(".").pop()}
                           </div>
-                        </div>
-                      </div>
-                    );
-                  })}
+                          <div className="min-w-0 flex-1">
+                            <div
+                              className="text-text truncate text-sm font-medium"
+                              title={kompetenz.name}
+                            >
+                              {kompetenz.name}
+                            </div>
+                            <div className="text-text-muted text-xs">{kompetenz.code}</div>
+                          </div>
+                          {isSelected && (
+                            <div className="bg-primary absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full">
+                              <Check className="text-text-on-accent h-3 w-3" />
+                            </div>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-              )}
-            </div>
+              );
+            })()}
 
-            {/* Tip */}
-            <p className="text-text-muted mt-3 text-xs">
-              <strong className="text-text">{tCurr("tip")}</strong> {tCurr("tipText")}
-            </p>
-          </div>
+          {/* Tip */}
+          <p className="text-text-muted mt-3 text-xs">
+            <strong className="text-text">{tCurr("tip")}</strong> {tCurr("tipText")}
+          </p>
         </div>
       )}
 

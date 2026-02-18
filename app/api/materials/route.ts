@@ -88,6 +88,18 @@ export async function GET(request: NextRequest) {
     // Dialect filter
     const dialect = searchParams.get("dialect");
 
+    // Tag filter (single tag or comma-separated tags)
+    const tag = searchParams.get("tag");
+    const tagsParam = searchParams.get("tags");
+    const tagFilters = tagsParam
+      ? tagsParam
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean)
+      : tag
+        ? [tag]
+        : [];
+
     // Additional filters
     const maxPrice = searchParams.get("maxPrice");
     const minPrice = searchParams.get("minPrice");
@@ -106,7 +118,7 @@ export async function GET(request: NextRequest) {
     // for safe parameterized queries. First, get IDs that match the JSON array filters.
     let jsonFilteredIds: string[] | null = null;
 
-    if (subject || cycle) {
+    if (subject || cycle || tagFilters.length > 0) {
       const { Prisma } = await import("@prisma/client");
 
       const conditions = [Prisma.sql`is_published = true AND is_public = true`];
@@ -115,6 +127,10 @@ export async function GET(request: NextRequest) {
       }
       if (cycle) {
         conditions.push(Prisma.sql`cycles::jsonb @> ${JSON.stringify(cycle)}::jsonb`);
+      }
+      for (const t of tagFilters) {
+        // Match tags JSONB array containing each tag value
+        conditions.push(Prisma.sql`tags::jsonb @> ${JSON.stringify([t])}::jsonb`);
       }
 
       const results = await prisma.$queryRaw<{ id: string }[]>`
@@ -472,6 +488,7 @@ export async function GET(request: NextRequest) {
           price: true,
           subjects: true,
           cycles: true,
+          tags: true,
           preview_url: true,
           created_at: true,
           dialect: true,
@@ -556,6 +573,7 @@ export async function GET(request: NextRequest) {
     const transformedMaterials = sortedMaterials.map((material) => {
       const subjects = toStringArray(material.subjects);
       const cycles = toStringArray(material.cycles);
+      const tags = toStringArray(material.tags);
       const reviewCount = material.reviews?.length ?? 0;
       const averageRating =
         reviewCount > 0 ? material.reviews!.reduce((sum, r) => sum + r.rating, 0) / reviewCount : 0;
@@ -567,6 +585,7 @@ export async function GET(request: NextRequest) {
         priceFormatted: formatPrice(material.price),
         subjects,
         cycles,
+        tags,
         previewUrl: material.preview_url,
         createdAt: material.created_at,
         dialect: material.dialect,
@@ -659,10 +678,12 @@ export async function POST(request: NextRequest) {
     const dialect = (formData.get("dialect") as string) || "BOTH";
     const resourceType = (formData.get("resourceType") as string) || "pdf";
     const isPublishedStr = formData.get("is_published") as string;
+    const tagsStr = formData.get("tags") as string;
 
     // Parse arrays from JSON strings or comma-separated values
     let subjects: string[] = [];
     let cycles: string[] = [];
+    let tags: string[] = [];
     try {
       subjects = subjectsStr ? JSON.parse(subjectsStr) : [];
     } catch {
@@ -673,6 +694,16 @@ export async function POST(request: NextRequest) {
     } catch {
       cycles = cyclesStr ? cyclesStr.split(",").map((s) => s.trim()) : [];
     }
+    try {
+      tags = tagsStr ? JSON.parse(tagsStr) : [];
+    } catch {
+      tags = tagsStr
+        ? tagsStr
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean)
+        : [];
+    }
 
     // Validate metadata with schema
     const parsed = createMaterialSchema.safeParse({
@@ -681,6 +712,7 @@ export async function POST(request: NextRequest) {
       price: parseInt(priceStr || "0", 10),
       subjects,
       cycles,
+      tags,
       language,
       dialect,
       resourceType,
@@ -753,6 +785,7 @@ export async function POST(request: NextRequest) {
         price: data.price,
         subjects: data.subjects,
         cycles: data.cycles,
+        tags: data.tags,
         dialect: data.dialect as "STANDARD" | "SWISS" | "BOTH",
         is_published: data.is_published,
         is_approved: false, // Requires admin approval

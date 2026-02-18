@@ -7,17 +7,32 @@ import { ChevronDown } from "lucide-react";
 import { useCurriculum } from "@/lib/hooks/useCurriculum";
 import { useScroll, useTransform, useReducedMotion } from "framer-motion";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { MaterialCard } from "@/components/ui/MaterialCard";
-import { SellerHeroSection } from "@/components/ui/SellerHeroSection";
 import { TrustBar } from "@/components/ui/TrustBar";
-import { SwissBrandSection } from "@/components/ui/SwissBrandSection";
-import { CategoryQuickAccess } from "@/components/ui/CategoryQuickAccess";
-import { ValueProposition } from "@/components/ui/ValueProposition";
-import { HowItWorks } from "@/components/ui/HowItWorks";
-import { TestimonialsSection } from "@/components/ui/TestimonialsSection";
 import { FadeIn, StaggerChildren, StaggerItem, motion } from "@/components/ui/animations";
+
+// Dynamic imports for below-fold sections (code-splitting)
+const SwissBrandSection = dynamic(() =>
+  import("@/components/ui/SwissBrandSection").then((m) => ({ default: m.SwissBrandSection }))
+);
+const CategoryQuickAccess = dynamic(() =>
+  import("@/components/ui/CategoryQuickAccess").then((m) => ({ default: m.CategoryQuickAccess }))
+);
+const HowItWorks = dynamic(() =>
+  import("@/components/ui/HowItWorks").then((m) => ({ default: m.HowItWorks }))
+);
+const TestimonialsSection = dynamic(() =>
+  import("@/components/ui/TestimonialsSection").then((m) => ({ default: m.TestimonialsSection }))
+);
+const ValueProposition = dynamic(() =>
+  import("@/components/ui/ValueProposition").then((m) => ({ default: m.ValueProposition }))
+);
+const SellerHeroSection = dynamic(() =>
+  import("@/components/ui/SellerHeroSection").then((m) => ({ default: m.SellerHeroSection }))
+);
 import { getSubjectPillClass } from "@/lib/constants/subject-colors";
 import type { FeaturedMaterial } from "@/lib/types/material";
 
@@ -127,6 +142,9 @@ export default function Home() {
               {/* Left Side - Text Content */}
               <div className="order-1 max-w-xl">
                 <FadeIn direction="up" delay={0}>
+                  <p className="text-primary mb-3 text-sm font-semibold tracking-wide uppercase">
+                    {t("hero.eyebrow")}
+                  </p>
                   <h1 className="text-text text-4xl leading-[1.1] font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
                     {t("hero.title")}
                   </h1>

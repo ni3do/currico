@@ -34,7 +34,8 @@ export function useFilterHandlers({
     filters.dialect !== null ||
     filters.maxPrice !== null ||
     filters.formats.length > 0 ||
-    filters.cantons.length > 0;
+    filters.cantons.length > 0 ||
+    filters.tags.length > 0;
 
   // Handlers for exclusive tab selection (only one active at a time)
   const handleToggleMaterials = useCallback(() => {
@@ -57,6 +58,7 @@ export function useFilterHandlers({
       maxPrice: null,
       formats: [],
       cantons: [],
+      tags: [],
     });
   }, [filters, onFiltersChange]);
 
@@ -235,6 +237,7 @@ export function useFilterHandlers({
       maxPrice: null,
       formats: [],
       cantons: [],
+      tags: [],
     });
     setExpandedFachbereiche(new Set());
     setExpandedKompetenzbereiche(new Set());
@@ -277,6 +280,20 @@ export function useFilterHandlers({
     [filters, onFiltersChange]
   );
 
+  const handleTagToggle = useCallback(
+    (tag: string) => {
+      const normalized = tag.toLowerCase().trim();
+      const newTags = filters.tags.includes(normalized)
+        ? filters.tags.filter((t) => t !== normalized)
+        : [...filters.tags, normalized];
+      onFiltersChange({
+        ...filters,
+        tags: newTags,
+      });
+    },
+    [filters, onFiltersChange]
+  );
+
   return {
     // Accordion state
     expandedFachbereiche,
@@ -296,5 +313,6 @@ export function useFilterHandlers({
     toggleFachbereichExpansion,
     toggleKompetenzbereichExpansion,
     handleFormatToggle,
+    handleTagToggle,
   };
 }

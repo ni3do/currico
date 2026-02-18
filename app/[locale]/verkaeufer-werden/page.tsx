@@ -18,6 +18,7 @@ import {
   ExternalLink,
   ArrowRight,
   Info,
+  Calculator,
 } from "lucide-react";
 import type { StripeStatus } from "@/lib/types/account";
 
@@ -106,7 +107,10 @@ export default function BecomeSellerPage() {
   const [isStripeLoading, setIsStripeLoading] = useState(false);
   const [stripeError, setStripeError] = useState<string | null>(null);
   const [stripeStatus, setStripeStatus] = useState<StripeStatus | null>(null);
+  const [materialsPerMonth, setMaterialsPerMonth] = useState(10);
+  const [avgPrice, setAvgPrice] = useState(8);
   const t = useTranslations("becomeSeller");
+  const tCalc = useTranslations("earningsCalculator");
   const tCommon = useTranslations("common");
   const tTerms = useTranslations("sellerTerms");
   const searchParams = useSearchParams();
@@ -351,6 +355,100 @@ export default function BecomeSellerPage() {
               </div>
               <h3 className="heading-4 mb-3">{t("benefits.simple.title")}</h3>
               <p className="text-text-muted leading-relaxed">{t("benefits.simple.description")}</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Earnings Calculator */}
+        <section className="mb-12">
+          <div className="card mx-auto max-w-3xl p-6 sm:p-8">
+            <div className="mb-8 text-center">
+              <div className="bg-success/15 mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full">
+                <Calculator className="text-success h-7 w-7" aria-hidden="true" />
+              </div>
+              <h2 className="text-text text-xl font-semibold">{tCalc("title")}</h2>
+              <p className="text-text-muted mt-1 text-sm">{tCalc("subtitle")}</p>
+            </div>
+
+            <div className="space-y-6">
+              {/* Materials per month slider */}
+              <div>
+                <div className="flex items-center justify-between">
+                  <label htmlFor="materials-slider" className="text-text text-sm font-medium">
+                    {tCalc("materialsLabel")}
+                  </label>
+                  <span className="text-primary text-sm font-semibold">{materialsPerMonth}</span>
+                </div>
+                <input
+                  id="materials-slider"
+                  type="range"
+                  min={1}
+                  max={50}
+                  value={materialsPerMonth}
+                  onChange={(e) => setMaterialsPerMonth(Number(e.target.value))}
+                  className="mt-2 w-full accent-[var(--color-primary)]"
+                />
+                <div className="text-text-muted mt-1 flex justify-between text-xs">
+                  <span>1</span>
+                  <span>50</span>
+                </div>
+              </div>
+
+              {/* Average price slider */}
+              <div>
+                <div className="flex items-center justify-between">
+                  <label htmlFor="price-slider" className="text-text text-sm font-medium">
+                    {tCalc("priceLabel")}
+                  </label>
+                  <span className="text-primary text-sm font-semibold">
+                    {avgPrice.toLocaleString("de-CH", { style: "currency", currency: "CHF" })}
+                  </span>
+                </div>
+                <input
+                  id="price-slider"
+                  type="range"
+                  min={1}
+                  max={30}
+                  value={avgPrice}
+                  onChange={(e) => setAvgPrice(Number(e.target.value))}
+                  className="mt-2 w-full accent-[var(--color-primary)]"
+                />
+                <div className="text-text-muted mt-1 flex justify-between text-xs">
+                  <span>CHF 1</span>
+                  <span>CHF 30</span>
+                </div>
+              </div>
+
+              {/* Results */}
+              <div className="bg-bg-secondary rounded-xl p-6 text-center">
+                <p className="text-text-muted text-sm">{tCalc("yearlyEarnings")}</p>
+                <p className="text-success mt-2 text-3xl font-bold">
+                  {(materialsPerMonth * avgPrice * 0.7 * 12).toLocaleString("de-CH", {
+                    style: "currency",
+                    currency: "CHF",
+                  })}
+                </p>
+                <p className="text-text-muted mt-1 text-sm">
+                  {tCalc("monthlyBreakdown", {
+                    amount: (materialsPerMonth * avgPrice * 0.7).toLocaleString("de-CH", {
+                      style: "currency",
+                      currency: "CHF",
+                    }),
+                  })}
+                </p>
+              </div>
+
+              <p className="text-text-muted text-center text-xs">{tCalc("commissionNote")}</p>
+
+              <div className="text-center">
+                <Link
+                  href="/registrieren"
+                  className="btn btn-primary inline-flex items-center gap-2 px-8 py-3"
+                >
+                  {tCalc("ctaButton")}
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </Link>
+              </div>
             </div>
           </div>
         </section>

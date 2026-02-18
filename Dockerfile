@@ -58,6 +58,7 @@ COPY messages ./messages
 COPY components ./components
 COPY lib ./lib
 COPY app ./app
+COPY content ./content
 COPY instrumentation.ts ./
 
 # Copy scripts needed for runtime
@@ -117,6 +118,9 @@ RUN chmod +x ./start.sh ./entrypoint.sh
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+# Copy blog content for MDX rendering
+COPY --from=builder /app/content ./content
 
 # Copy instrumentation file for OpenTelemetry
 COPY --from=builder /app/instrumentation.ts ./instrumentation.ts

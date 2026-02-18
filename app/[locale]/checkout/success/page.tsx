@@ -272,7 +272,7 @@ export default function CheckoutSuccessPage() {
                         <span>
                           {t("purchaseDetails.by")}{" "}
                           <Link
-                            href={`/seller/${transaction.resource.seller.id}`}
+                            href={`/profil/${transaction.resource.seller.id}`}
                             className="text-primary font-medium hover:underline"
                           >
                             {transaction.resource.seller.displayName ||
@@ -324,7 +324,7 @@ export default function CheckoutSuccessPage() {
 
                 {/* Go to Library Button - Secondary */}
                 <Link
-                  href="/konto?tab=library"
+                  href="/konto/library"
                   className="group border-border bg-surface text-text hover:border-primary hover:bg-primary/5 flex items-center justify-center gap-3 rounded-xl border-2 px-6 py-4 font-semibold transition-all"
                 >
                   <Library className="h-5 w-5" />

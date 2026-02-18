@@ -23,7 +23,9 @@ import {
   FormCheckbox,
   RadioOption,
   PublishPreviewModal,
+  TagInput,
 } from "@/components/upload";
+import { SONSTIGE_CODE } from "@/lib/validations/material";
 import { checkForEszett, replaceEszett } from "@/lib/validations/swiss-quality";
 import { clearDraftFiles } from "@/lib/utils/draft-file-storage";
 import { validateFileName } from "@/lib/validations/filename";
@@ -336,9 +338,17 @@ function UploadPageContent() {
     apiFormData.append("dialect", formData.dialect);
     apiFormData.append("resourceType", formData.resourceType);
 
-    const cycleFullName = `Zyklus ${formData.cycle}`;
+    const isSonstige = formData.subjectCode === SONSTIGE_CODE;
     apiFormData.append("subjects", JSON.stringify([formData.subjectCode || formData.subject]));
-    apiFormData.append("cycles", JSON.stringify([cycleFullName]));
+    if (isSonstige) {
+      apiFormData.append(
+        "cycles",
+        JSON.stringify(formData.cycle ? [`Zyklus ${formData.cycle}`] : [])
+      );
+    } else {
+      apiFormData.append("cycles", JSON.stringify([`Zyklus ${formData.cycle}`]));
+    }
+    apiFormData.append("tags", JSON.stringify(formData.tags));
 
     const priceInCents =
       formData.priceType === "free" ? 0 : Math.round(parseFloat(formData.price || "0") * 100);
@@ -737,6 +747,17 @@ function UploadPageContent() {
                       </div>
                     </FormField>
                   )}
+
+                  {/* Tags */}
+                  <FormField label={tFields("tags")} hint={tFields("tagsHint")}>
+                    <TagInput
+                      tags={formData.tags}
+                      onChange={(tags) => updateFormData("tags", tags)}
+                      placeholder={tFields("tagsPlaceholder")}
+                      maxMessage={tFields("tagMax")}
+                      duplicateMessage={tFields("tagDuplicate")}
+                    />
+                  </FormField>
                 </div>
               )}
 

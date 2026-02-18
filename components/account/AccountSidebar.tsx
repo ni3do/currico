@@ -17,7 +17,7 @@ import {
   Shield,
   ChevronDown,
   Package,
-  MessageCircle,
+  Star,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SellerBadge } from "@/components/ui/SellerBadge";
@@ -87,7 +87,7 @@ export function AccountSidebar({
     {
       id: "comments" as TabType,
       label: t("nav.comments"),
-      icon: MessageCircle,
+      icon: Star,
       sellerOnly: true,
       count: null,
     },
