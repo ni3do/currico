@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma, publicUserSelect } from "@/lib/db";
 import { getCurrentUserId } from "@/lib/auth";
-import { isValidId, checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
+import { badRequest, notFound, rateLimited, serverError } from "@/lib/api";
+import { isValidId, checkRateLimit, getClientIP } from "@/lib/rateLimit";
 
 /**
  * GET /api/users/[id]/profile-bundle
@@ -15,16 +16,13 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   try {
     const rateLimit = checkRateLimit(getClientIP(request), "profile:bundle");
     if (!rateLimit.success) {
-      return NextResponse.json(
-        { error: "Too many requests" },
-        { status: 429, headers: rateLimitHeaders(rateLimit) }
-      );
+      return rateLimited();
     }
 
     const { id } = await params;
 
     if (!isValidId(id)) {
-      return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+      return badRequest("Invalid ID");
     }
 
     const currentUserId = await getCurrentUserId();
@@ -142,7 +140,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       ]);
 
     if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      return notFound("User not found");
     }
 
     const isFollowing = !!followRecord;
@@ -240,6 +238,6 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     });
   } catch (error) {
     console.error("Error fetching profile bundle:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return serverError();
   }
 }

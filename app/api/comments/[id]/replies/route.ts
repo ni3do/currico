@@ -2,8 +2,15 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { createReplySchema } from "@/lib/validations/review";
 import { notifyCommentReply } from "@/lib/notifications";
-import { requireAuth, unauthorized, badRequest } from "@/lib/api";
-import { checkRateLimit, getClientIP, isValidId, rateLimitHeaders } from "@/lib/rateLimit";
+import {
+  requireAuth,
+  unauthorized,
+  badRequest,
+  notFound,
+  rateLimited,
+  serverError,
+} from "@/lib/api";
+import { checkRateLimit, isValidId } from "@/lib/rateLimit";
 
 // GET /api/comments/[id]/replies - Get all replies for a comment
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -23,7 +30,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     });
 
     if (!comment) {
-      return NextResponse.json({ error: "Kommentar nicht gefunden" }, { status: 404 });
+      return notFound("Kommentar nicht gefunden");
     }
 
     // Get replies with user info
@@ -58,7 +65,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     });
   } catch (error) {
     console.error("Error fetching replies:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError();
   }
 }
 
@@ -71,10 +78,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     // Rate limit reply creation
     const rateLimit = checkRateLimit(userId, "resources:reply");
     if (!rateLimit.success) {
-      return NextResponse.json(
-        { error: "Zu viele Anfragen. Bitte versuchen Sie es später erneut." },
-        { status: 429, headers: rateLimitHeaders(rateLimit) }
-      );
+      return rateLimited();
     }
 
     const { id: commentId } = await params;
@@ -93,7 +97,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     });
 
     if (!comment) {
-      return NextResponse.json({ error: "Kommentar nicht gefunden" }, { status: 404 });
+      return notFound("Kommentar nicht gefunden");
     }
 
     // Parse and validate request body
@@ -101,10 +105,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     const validation = createReplySchema.safeParse(body);
 
     if (!validation.success) {
-      return NextResponse.json(
-        { error: "Ungültige Eingabe", details: validation.error.flatten() },
-        { status: 400 }
-      );
+      return badRequest("Ungültige Eingabe", { details: validation.error.flatten() });
     }
 
     const { content } = validation.data;
@@ -151,6 +152,6 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     });
   } catch (error) {
     console.error("Error creating reply:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError();
   }
 }

@@ -481,6 +481,8 @@ export async function GET(request: NextRequest) {
               id: true,
               display_name: true,
               is_verified_seller: true,
+              seller_level: true,
+              seller_xp: true,
             },
           },
           reviews: {
@@ -572,6 +574,8 @@ export async function GET(request: NextRequest) {
           id: material.seller.id,
           displayName: material.seller.display_name,
           isVerifiedSeller: material.seller.is_verified_seller,
+          sellerLevel: material.seller.seller_level,
+          sellerXp: material.seller.seller_xp,
         },
         averageRating: Math.round(averageRating * 10) / 10,
         reviewCount,

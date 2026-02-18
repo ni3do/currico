@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { z } from "zod";
 import { sendContactNotificationEmail } from "@/lib/email";
-import { checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
+import { rateLimited, badRequest, serverError } from "@/lib/api";
+import { checkRateLimit, getClientIP } from "@/lib/rateLimit";
 
 const contactSchema = z.object({
   name: z
@@ -28,10 +29,7 @@ export async function POST(request: NextRequest) {
   const rateLimitResult = checkRateLimit(clientIP, "contact:submit");
 
   if (!rateLimitResult.success) {
-    return NextResponse.json(
-      { error: "Too many requests. Please try again later.", code: "RATE_LIMITED" },
-      { status: 429, headers: rateLimitHeaders(rateLimitResult) }
-    );
+    return rateLimited();
   }
 
   try {
@@ -40,7 +38,7 @@ export async function POST(request: NextRequest) {
     const parsed = contactSchema.safeParse(body);
     if (!parsed.success) {
       const firstError = parsed.error.issues[0];
-      return NextResponse.json({ error: firstError?.message ?? "Invalid input" }, { status: 400 });
+      return badRequest(firstError?.message ?? "Invalid input");
     }
 
     const { name, email, phone, subject, message } = parsed.data;
@@ -70,9 +68,6 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error("Contact form error:", error);
-    return NextResponse.json(
-      { error: "Beim Senden Ihrer Nachricht ist ein Fehler aufgetreten" },
-      { status: 500 }
-    );
+    return serverError("Beim Senden Ihrer Nachricht ist ein Fehler aufgetreten");
   }
 }

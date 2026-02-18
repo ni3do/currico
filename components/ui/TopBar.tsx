@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Bell, ChevronDown, User, ShieldCheck, LogOut, X, Menu } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { LoginLink } from "@/components/ui/LoginLink";
-import LocaleSwitcher from "@/components/ui/LocaleSwitcher";
+
 import NotificationDropdown from "@/components/ui/NotificationDropdown";
 
 export default function TopBar() {
@@ -116,7 +116,6 @@ export default function TopBar() {
             </div>
             <div className="flex items-center gap-3">
               <ThemeToggle />
-              <LocaleSwitcher />
               {session && (
                 <NotificationDropdown unreadCount={unreadCount} onCountChange={setUnreadCount} />
               )}
@@ -206,10 +205,7 @@ export default function TopBar() {
                   <LoginLink className="text-text-secondary hover:text-primary px-4 py-2 text-sm font-medium transition-colors">
                     {t("navigation.login")}
                   </LoginLink>
-                  <Link
-                    href="/registrieren"
-                    className="bg-primary text-text-on-accent hover:bg-primary-hover rounded-lg px-5 py-2 text-sm font-medium transition-colors"
-                  >
+                  <Link href="/registrieren" className="btn-primary rounded-lg px-5 py-2 text-sm">
                     {t("navigation.register")}
                   </Link>
                 </>
@@ -280,7 +276,6 @@ export default function TopBar() {
                 >
                   <div className="flex items-center gap-3 px-4 py-2">
                     <ThemeToggle />
-                    <LocaleSwitcher />
                   </div>
                   {session ? (
                     <>
@@ -328,7 +323,7 @@ export default function TopBar() {
                       </LoginLink>
                       <Link
                         href="/registrieren"
-                        className="bg-primary text-text-on-accent hover:bg-primary-hover mx-4 rounded-lg px-5 py-2 text-center text-sm font-medium transition-colors"
+                        className="btn-primary mx-4 rounded-lg px-5 py-2 text-center text-sm"
                       >
                         {t("navigation.register")}
                       </Link>

@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { Heart, FileText, ChevronRight } from "lucide-react";
 import { getSubjectTextColor } from "@/lib/constants/subject-colors";
-import { VerifiedSellerBadge } from "@/components/ui/VerifiedSellerBadge";
+import { SellerBadge } from "@/components/ui/SellerBadge";
 import { StarRating } from "@/components/ui/StarRating";
 import { TiltCard } from "@/components/ui/TiltCard";
 
@@ -23,6 +23,8 @@ export interface MaterialCardProps {
   seller?: {
     displayName: string | null;
     isVerifiedSeller?: boolean;
+    sellerLevel?: number;
+    sellerXp?: number;
   };
   /** Render custom footer content instead of default */
   footer?: React.ReactNode;
@@ -50,6 +52,8 @@ export interface MaterialCardProps {
   averageRating?: number;
   /** Number of reviews */
   reviewCount?: number;
+  /** LP21 competency codes to display as badges */
+  competencies?: { code: string; subjectColor?: string }[];
 }
 
 export function MaterialCard({
@@ -75,6 +79,7 @@ export function MaterialCard({
   anonymousLabel,
   averageRating,
   reviewCount,
+  competencies,
 }: MaterialCardProps) {
   const [isWishlisted, setIsWishlisted] = useState(initialWishlisted);
   const [wishlistLoading, setWishlistLoading] = useState(false);
@@ -182,6 +187,27 @@ export function MaterialCard({
               </>
             )}
           </span>
+          {/* LP21 Competency Badges - show up to 2 codes */}
+          {competencies && competencies.length > 0 && !isCompact && (
+            <div className="mt-1 flex flex-wrap items-center gap-1">
+              {competencies.slice(0, 2).map((c) => (
+                <span
+                  key={c.code}
+                  className="inline-flex items-center rounded px-1.5 py-0.5 font-mono text-[10px] font-semibold"
+                  style={{
+                    backgroundColor: `${c.subjectColor || "#6b7280"}20`,
+                    color: c.subjectColor || "#6b7280",
+                    border: `1px solid ${c.subjectColor || "#6b7280"}40`,
+                  }}
+                >
+                  {c.code}
+                </span>
+              ))}
+              {competencies.length > 2 && (
+                <span className="text-text-faint text-[10px]">+{competencies.length - 2}</span>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Title - Primary Heading Style */}
@@ -214,7 +240,13 @@ export function MaterialCard({
           <div className="text-text-muted mt-2 flex items-center gap-3 text-xs">
             <span className="flex items-center gap-1">
               {seller?.displayName || anonymousLabel || ""}
-              {seller?.isVerifiedSeller && <VerifiedSellerBadge variant="compact" />}
+              {seller?.sellerLevel != null && seller.sellerLevel > 0 && (
+                <SellerBadge
+                  points={seller.sellerXp ?? 0}
+                  cachedLevel={seller.sellerLevel}
+                  variant="compact"
+                />
+              )}
             </span>
             {priceFormatted && (
               <span className={`font-semibold ${isFree ? "text-success" : "text-price"}`}>
@@ -233,7 +265,13 @@ export function MaterialCard({
             <div className="border-border-subtle flex items-center justify-between border-t pt-3">
               <span className="text-text-muted flex items-center gap-1.5 text-sm transition-colors duration-300">
                 {seller?.displayName || anonymousLabel || ""}
-                {seller?.isVerifiedSeller && <VerifiedSellerBadge variant="compact" />}
+                {seller?.sellerLevel != null && seller.sellerLevel > 0 && (
+                  <SellerBadge
+                    points={seller.sellerXp ?? 0}
+                    cachedLevel={seller.sellerLevel}
+                    variant="compact"
+                  />
+                )}
               </span>
               {shouldShowPriceBadge ? (
                 <span

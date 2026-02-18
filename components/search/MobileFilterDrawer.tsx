@@ -35,7 +35,7 @@ export function MobileFilterDrawer({
     <div className="lg:hidden">
       <button
         onClick={onOpen}
-        className="border-border bg-bg-secondary text-text-secondary hover:border-primary hover:text-primary flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-3.5 text-sm font-medium shadow-sm transition-all duration-200 hover:shadow-md active:scale-[0.98]"
+        className="btn-tertiary flex w-full items-center justify-center gap-2 rounded-lg px-4 py-3.5 text-sm shadow-sm hover:shadow-md active:scale-[0.98]"
       >
         <SlidersHorizontal className="h-5 w-5" />
         <span>{labels.filterTitle}</span>
@@ -95,7 +95,7 @@ export function MobileFilterDrawer({
                 <div className="bg-bg border-border sticky bottom-0 border-t px-5 py-4">
                   <button
                     onClick={onClose}
-                    className="bg-primary text-text-on-accent hover:bg-primary-hover w-full rounded-lg px-4 py-3 text-sm font-semibold transition-colors"
+                    className="btn-primary w-full rounded-lg px-4 py-3 text-sm"
                   >
                     {labels.showResults}
                   </button>

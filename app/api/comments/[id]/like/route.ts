@@ -1,7 +1,14 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { requireAuth, unauthorized, badRequest } from "@/lib/api";
-import { checkRateLimit, isValidId, rateLimitHeaders } from "@/lib/rateLimit";
+import {
+  requireAuth,
+  unauthorized,
+  badRequest,
+  notFound,
+  rateLimited,
+  serverError,
+} from "@/lib/api";
+import { checkRateLimit, isValidId } from "@/lib/rateLimit";
 
 // POST /api/comments/[id]/like - Toggle like on a comment
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -12,10 +19,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     // Rate limit like toggling
     const rateLimit = checkRateLimit(userId, "resources:like");
     if (!rateLimit.success) {
-      return NextResponse.json(
-        { error: "Zu viele Anfragen. Bitte versuchen Sie es später erneut." },
-        { status: 429, headers: rateLimitHeaders(rateLimit) }
-      );
+      return rateLimited();
     }
 
     const { id: commentId } = await params;
@@ -28,7 +32,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     });
 
     if (!comment) {
-      return NextResponse.json({ error: "Kommentar nicht gefunden" }, { status: 404 });
+      return notFound("Kommentar nicht gefunden");
     }
 
     // Check if user already liked this comment
@@ -77,7 +81,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     }
   } catch (error) {
     console.error("Error toggling comment like:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError();
   }
 }
 
@@ -95,7 +99,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     });
 
     if (!comment) {
-      return NextResponse.json({ error: "Kommentar nicht gefunden" }, { status: 404 });
+      return notFound("Kommentar nicht gefunden");
     }
 
     // Get like count
@@ -120,6 +124,6 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     return NextResponse.json({ liked, likeCount });
   } catch (error) {
     console.error("Error getting comment like status:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError();
   }
 }

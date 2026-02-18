@@ -12,6 +12,7 @@ import {
   XCircle,
   FileEdit,
   Copy,
+  Check,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { getSubjectTextColorByName } from "@/lib/constants/subject-colors";
@@ -65,6 +66,11 @@ export interface DashboardMaterialCardProps {
   // Duplicate button (for uploads)
   onDuplicate?: () => void;
   duplicating?: boolean;
+
+  // Selection (for bulk actions)
+  selectable?: boolean;
+  selected?: boolean;
+  onSelect?: (id: string) => void;
 }
 
 export function DashboardMaterialCard({
@@ -83,6 +89,9 @@ export function DashboardMaterialCard({
   onRemove,
   onDuplicate,
   duplicating,
+  selectable,
+  selected,
+  onSelect,
 }: DashboardMaterialCardProps) {
   const t = useTranslations("dashboardCard");
 
@@ -119,7 +128,9 @@ export function DashboardMaterialCard({
   };
 
   return (
-    <div className="card group relative flex h-full flex-col overflow-hidden">
+    <div
+      className={`card group relative flex h-full flex-col overflow-hidden ${selected ? "ring-primary ring-2 ring-offset-2" : ""}`}
+    >
       {/* Clickable overlay link covering the entire card */}
       <Link
         href={`/materialien/${id}`}
@@ -129,6 +140,24 @@ export function DashboardMaterialCard({
 
       {/* Preview Image */}
       <div className="bg-bg-secondary relative aspect-[4/3] w-full overflow-hidden">
+        {selectable && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onSelect?.(id);
+            }}
+            className={`absolute top-2 left-2 z-10 flex h-6 w-6 items-center justify-center rounded-full border-2 transition-colors ${
+              selected
+                ? "bg-primary border-primary text-text-on-accent"
+                : "border-white/80 bg-black/20 text-transparent hover:border-white hover:bg-black/40"
+            }`}
+            aria-label={selected ? t("deselect") : t("select")}
+          >
+            <Check className="h-3.5 w-3.5" />
+          </button>
+        )}
         {previewUrl ? (
           <Image src={previewUrl} alt={title} fill className="image-zoom object-cover" />
         ) : (

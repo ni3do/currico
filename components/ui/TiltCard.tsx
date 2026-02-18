@@ -73,7 +73,7 @@ export function TiltCard({ children, maxTilt = 3, stiffness = 300, className }: 
     >
       {/* Light reflection overlay */}
       <div
-        className="pointer-events-none absolute inset-0 z-10 rounded-lg opacity-0 transition-opacity duration-300"
+        className="pointer-events-none absolute inset-0 z-10 rounded-xl opacity-0 transition-opacity duration-300"
         style={{
           opacity: isHovering ? 0.06 : 0,
           background: `radial-gradient(circle at ${50 + tilt.rotateY * 10}% ${50 - tilt.rotateX * 10}%, white, transparent 60%)`,

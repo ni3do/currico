@@ -118,6 +118,11 @@ model User {
   // ============ PRIVATE DATA ============
   password_hash String? @db.VarChar(255)
 
+  // ============ TWO-FACTOR AUTHENTICATION ============
+  totp_secret  String?  @db.VarChar(255) // AES-256-GCM encrypted
+  totp_enabled Boolean  @default(false)
+  backup_codes Json     @default("[]") // [{hash, used}]
+
   // ============ LOGIC/STATUS FIELDS ============
   role         UserRole @default(BUYER)
   is_protected Boolean  @default(false)
@@ -157,6 +162,8 @@ model User {
   notify_platform_updates     Boolean @default(true)
   notify_comments             Boolean @default(true)
   notify_new_followers        Boolean @default(true)
+
+  last_digest_at DateTime?
 
   // ============ RELATIONS ============
   accounts                Account[]
@@ -871,6 +878,7 @@ model NewsletterSubscriber {
   confirmed       Boolean   @default(false)
   confirm_token   String?   @db.VarChar(255)
   unsubscribed_at DateTime?
+  last_digest_at  DateTime?
 
   @@index([confirmed, unsubscribed_at])
   @@map("newsletter_subscribers")

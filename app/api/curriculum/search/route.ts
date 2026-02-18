@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
+import { rateLimited, badRequest, serverError } from "@/lib/api";
+import { checkRateLimit, getClientIP } from "@/lib/rateLimit";
 
 /**
  * GET /api/curriculum/search
@@ -19,10 +20,7 @@ export async function GET(request: Request) {
   try {
     const rateLimit = checkRateLimit(getClientIP(request), "curriculum:search");
     if (!rateLimit.success) {
-      return NextResponse.json(
-        { error: "Too many requests" },
-        { status: 429, headers: rateLimitHeaders(rateLimit) }
-      );
+      return rateLimited();
     }
     const { searchParams } = new URL(request.url);
     const query = searchParams.get("q");
@@ -32,10 +30,7 @@ export async function GET(request: Request) {
     const subjectCode = searchParams.get("subject");
 
     if (!query || query.length < 2) {
-      return NextResponse.json(
-        { error: "Suchanfrage muss mindestens 2 Zeichen lang sein" },
-        { status: 400 }
-      );
+      return badRequest("Suchanfrage muss mindestens 2 Zeichen lang sein");
     }
 
     // Normalize LP21 code for search (remove spaces, dots, convert to uppercase)
@@ -213,6 +208,6 @@ export async function GET(request: Request) {
     });
   } catch (error) {
     console.error("Error searching curriculum:", error);
-    return NextResponse.json({ error: "Fehler bei der Lehrplan-Suche" }, { status: 500 });
+    return serverError("Fehler bei der Lehrplan-Suche");
   }
 }

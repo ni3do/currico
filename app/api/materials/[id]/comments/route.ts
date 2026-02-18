@@ -1,9 +1,16 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { createCommentSchema } from "@/lib/validations/review";
-import { checkRateLimit, rateLimitHeaders, isValidId, safeParseInt } from "@/lib/rateLimit";
+import { checkRateLimit, isValidId, safeParseInt } from "@/lib/rateLimit";
 import { notifyComment } from "@/lib/notifications";
-import { requireAuth, unauthorized } from "@/lib/api";
+import {
+  requireAuth,
+  unauthorized,
+  badRequest,
+  notFound,
+  serverError,
+  rateLimited,
+} from "@/lib/api";
 
 // GET /api/materials/[id]/comments - Get all comments for a material
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -12,7 +19,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
     // Validate material ID format
     if (!isValidId(materialId)) {
-      return NextResponse.json({ error: "Ungültige Material-ID" }, { status: 400 });
+      return badRequest("Ungültige Material-ID");
     }
 
     const userId = await requireAuth();
@@ -28,7 +35,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     });
 
     if (!material) {
-      return NextResponse.json({ error: "Material nicht gefunden" }, { status: 404 });
+      return notFound("Material nicht gefunden");
     }
 
     // Get comments with user info, replies, and likes
@@ -105,7 +112,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     });
   } catch (error) {
     console.error("Error fetching comments:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError("Interner Serverfehler");
   }
 }
 
@@ -118,20 +125,14 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     // Rate limiting check
     const rateLimitResult = checkRateLimit(userId, "materials:comment");
     if (!rateLimitResult.success) {
-      return NextResponse.json(
-        {
-          error: "Zu viele Anfragen. Bitte versuchen Sie es später erneut.",
-          retryAfter: rateLimitResult.retryAfter,
-        },
-        { status: 429, headers: rateLimitHeaders(rateLimitResult) }
-      );
+      return rateLimited("Zu viele Anfragen. Bitte versuchen Sie es später erneut.");
     }
 
     const { id: materialId } = await params;
 
     // Validate material ID format
     if (!isValidId(materialId)) {
-      return NextResponse.json({ error: "Ungültige Material-ID" }, { status: 400 });
+      return badRequest("Ungültige Material-ID");
     }
 
     // Check if material exists
@@ -141,7 +142,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     });
 
     if (!material) {
-      return NextResponse.json({ error: "Material nicht gefunden" }, { status: 404 });
+      return notFound("Material nicht gefunden");
     }
 
     // Parse and validate request body
@@ -149,10 +150,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     const validation = createCommentSchema.safeParse(body);
 
     if (!validation.success) {
-      return NextResponse.json(
-        { error: "Ungültige Eingabe", details: validation.error.flatten() },
-        { status: 400 }
-      );
+      return badRequest("Ungültige Eingabe", { details: validation.error.flatten() });
     }
 
     const { content } = validation.data;
@@ -203,6 +201,6 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     });
   } catch (error) {
     console.error("Error creating comment:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError("Interner Serverfehler");
   }
 }

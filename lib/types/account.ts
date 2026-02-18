@@ -128,6 +128,8 @@ export interface UserData {
   pinterest?: string | null;
   is_private?: boolean;
   hasPassword?: boolean;
+  twoFactorEnabled?: boolean;
+  backupCodesRemaining?: number;
   notify_new_from_followed?: boolean;
   notify_recommendations?: boolean;
   notify_material_updates?: boolean;

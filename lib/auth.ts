@@ -4,6 +4,7 @@ import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "./db";
+import { validateTOTP, validateBackupCode } from "./totp";
 
 // Extend NextAuth types to include role and onboarding flag
 declare module "next-auth" {
@@ -45,6 +46,7 @@ const nextAuth = NextAuth({
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
+        totp: { label: "TOTP", type: "text" },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
@@ -53,6 +55,16 @@ const nextAuth = NextAuth({
 
         const user = await prisma.user.findUnique({
           where: { email: credentials.email as string },
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            image: true,
+            password_hash: true,
+            totp_enabled: true,
+            totp_secret: true,
+            backup_codes: true,
+          },
         });
 
         if (!user || !user.password_hash) {
@@ -66,6 +78,34 @@ const nextAuth = NextAuth({
 
         if (!isPasswordValid) {
           return null;
+        }
+
+        // 2FA check
+        if (user.totp_enabled && user.totp_secret) {
+          const totpCode = (credentials.totp as string | undefined)?.trim();
+          if (!totpCode) {
+            // No TOTP provided but required — frontend handles via login-check
+            return null;
+          }
+
+          // Try TOTP first (6-digit code)
+          if (/^\d{6}$/.test(totpCode)) {
+            if (!validateTOTP(totpCode, user.totp_secret)) {
+              return null;
+            }
+          } else {
+            // Try backup code (8-char hex)
+            const storedHashes = (user.backup_codes as { hash: string; used: boolean }[]) || [];
+            const { valid, updatedHashes } = validateBackupCode(totpCode, storedHashes);
+            if (!valid) {
+              return null;
+            }
+            // Mark backup code as used
+            await prisma.user.update({
+              where: { id: user.id },
+              data: { backup_codes: updatedHashes },
+            });
+          }
         }
 
         return {

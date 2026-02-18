@@ -15,7 +15,9 @@
     "internalError": "Internal server error",
     "invalidInput": "Invalid input",
     "invalidFileType": "Invalid file type",
-    "userNotFound": "User not found"
+    "userNotFound": "User not found",
+    "rateLimited": "Too many requests — please try again later",
+    "conflict": "This entry already exists"
   },
   "theme": {
     "light": "Light",
@@ -35,7 +37,9 @@
     "duplicate": "Duplicate",
     "downloads": "Downloads",
     "sales": "Sales",
-    "unknownSeller": "Unknown"
+    "unknownSeller": "Unknown",
+    "select": "Select",
+    "deselect": "Deselect"
   },
   "avatar": {
     "errorInvalidType": "Please select an image (JPG, PNG)",
@@ -88,6 +92,16 @@
       "hostedBy": "Hosted by",
       "swissCloud": "Swiss Cloud",
       "payment": "Payment with TWINT & card",
+      "description": "The Swiss platform for Lehrplan 21-aligned teaching materials. Created by teachers, made for teachers.",
+      "columns": {
+        "platform": "Platform",
+        "legal": "Legal",
+        "contact": "Contact"
+      },
+      "contact": {
+        "email": "kontakt@currico.ch",
+        "location": "Switzerland"
+      },
       "links": {
         "help": "Help",
         "imprint": "Imprint",
@@ -96,7 +110,10 @@
         "cookies": "Cookies",
         "copyrightGuide": "Copyright Guide",
         "sellerLevels": "Seller Levels",
-        "verifiedSeller": "Verified Sellers"
+        "verifiedSeller": "Verified Sellers",
+        "materials": "Browse Materials",
+        "upload": "Upload Material",
+        "becomeSeller": "Become a Seller"
       }
     },
     "errors": {
@@ -155,7 +172,8 @@
       "help": "Help",
       "becomeSeller": "Become Seller",
       "bundles": "Bundles",
-      "copyrightGuide": "Copyright Guide"
+      "copyrightGuide": "Copyright Guide",
+      "edit": "Edit"
     },
     "toast": {
       "addedToWishlist": "Added to wishlist",
@@ -179,9 +197,9 @@
   "homePage": {
     "hero": {
       "swissBadge": "100% Lehrplan 21 aligned",
-      "headline": "Teaching materials for the",
-      "headlineHighlight": "Swiss Lehrplan 21",
-      "subheadline": "Find ready-to-use teaching materials from Swiss educators. Quality-checked, curriculum-aligned, time-saving.",
+      "headline": "Ready-made worksheets, exams and lesson plans –",
+      "headlineHighlight": "aligned with Lehrplan 21",
+      "subheadline": "Find ready-to-use teaching materials from Swiss educators. Community-reviewed, curriculum-aligned, time-saving.",
       "searchPlaceholder": "What are you teaching today? (e.g. Math Grade 5)",
       "searchButton": "Search",
       "quickFilters": "Popular categories:",
@@ -195,7 +213,7 @@
       "trustIndicators": {
         "lehrplan21": "Lehrplan 21 aligned",
         "swissTeachers": "Swiss teachers",
-        "verified": "Quality verified",
+        "verified": "Reviewed by teachers",
         "swissMade": "Swiss Made",
         "swissQuality": "Swiss Quality",
         "swissHosted": "Swiss Hosted"
@@ -208,7 +226,7 @@
       "ratingCard": {
         "rating": "4.9"
       },
-      "title": "By Teachers, For Teachers: Teaching Materials in Record Time.",
+      "title": "Less searching, more teaching.",
       "description": "Discover professional teaching materials, developed by colleagues and precisely aligned with <bold>Lehrplan 21</bold>. Trustworthy, verified, ready to use.",
       "primaryButton": "Find Materials Now",
       "secondaryButton": "Learn More",
@@ -229,7 +247,6 @@
         "dialectSwiss": "Swiss German",
         "dialectStandard": "Standard German",
         "allDialects": "All Dialects",
-        "allKompetenzbereiche": "Choose competency…",
         "formLabel": "Search teaching materials"
       }
     },
@@ -285,8 +302,8 @@
       "title": "Why Currico?",
       "description": "A platform that meets the standards of Swiss educational institutions.",
       "feature1": {
-        "title": "Quality Checked",
-        "description": "Every material is reviewed by experts for pedagogical quality and curriculum compliance."
+        "title": "Community-Reviewed",
+        "description": "Every material is reviewed by the community — ratings and comments help you find the best content."
       },
       "feature2": {
         "title": "Lehrplan 21 Compliant",
@@ -301,8 +318,8 @@
       "title": "Share Your Teaching Materials",
       "description": "You've created great worksheets, lesson plans, or exams? Share them with colleagues across Switzerland and earn money while helping other teachers save time.",
       "benefits": {
-        "earn": "Earn passive income",
-        "earnDesc": "Set your own prices and earn 70% of every sale",
+        "earn": "Fair compensation",
+        "earnDesc": "Set your own prices — you keep 70% of every sale (e.g. CHF 3.50 from CHF 5.00)",
         "reach": "Reach thousands",
         "reachDesc": "Connect with teachers throughout Switzerland",
         "simple": "Simple upload",
@@ -314,8 +331,8 @@
     "trustBar": {
       "lp21": "LP21 Compliant",
       "swissMade": "Swiss Made",
-      "quality": "Quality Checked",
-      "hosting": "Swiss Server",
+      "quality": "Community-Reviewed",
+      "hosting": "Hosted by Infomaniak",
       "securePay": "Secure Payment",
       "ndsg": "nDSG Compliant"
     },
@@ -385,15 +402,15 @@
     },
     "swissBrand": {
       "badge": "Quality & Trust",
-      "title": "Built by Educators for Educators",
+      "title": "From the Classroom, For the Classroom",
       "description": "Currico is developed with a focus on quality, security, and the needs of educators. Your data is protected by strict privacy laws.",
       "swissMade": {
         "title": "Quality First",
-        "description": "Developed by educators for educators"
+        "description": "Developed with real Swiss educators"
       },
       "swissHosted": {
-        "title": "Secure Hosting",
-        "description": "Hosted by Infomaniak in Swiss data centers"
+        "title": "Hosted by Infomaniak",
+        "description": "Your data stays in Swiss data centers in Geneva"
       },
       "dataProtection": {
         "title": "Data Protection",
@@ -406,7 +423,7 @@
       "hostedBy": "Hosted by",
       "swissCloud": "Swiss Cloud",
       "co2Neutral": "CO₂ Neutral",
-      "secureHosting": "Secure Hosting"
+      "secureHosting": "Hosted by Infomaniak in Switzerland"
     }
   },
   "loginPage": {
@@ -433,8 +450,22 @@
       "prompt": "Don't have an account?",
       "link": "Register for free"
     },
+    "twoFactor": {
+      "title": "Two-Factor Authentication",
+      "description": "Enter the 6-digit code from your authenticator app.",
+      "codeLabel": "Verification code",
+      "codePlaceholder": "000000",
+      "useBackupCode": "Use backup code",
+      "useAuthenticator": "Use authenticator",
+      "backupCodeLabel": "Backup code",
+      "backupCodePlaceholder": "8-character code",
+      "verify": "Verify",
+      "verifying": "Verifying...",
+      "back": "Back to login"
+    },
     "errors": {
       "invalidCredentials": "Invalid email address or password",
+      "invalid2FACode": "Invalid verification code. Please try again.",
       "generic": "An error occurred. Please try again.",
       "tooManyAttempts": "Too many login attempts. Please wait a moment.",
       "accountExistsWithDifferentProvider": "An account with this email already exists. Please use the original sign-in method.",
@@ -1839,7 +1870,7 @@
       },
       "simple": {
         "title": "Upload Once, Earn Repeatedly",
-        "description": "Create your materials once. Earn passive income every time someone purchases them."
+        "description": "Create your materials once. Earn with every purchase — no extra effort needed."
       }
     },
     "requirements": {
@@ -2121,7 +2152,7 @@
     },
     "features": {
       "commission": {
-        "title": "Passive Income",
+        "title": "Fair Compensation",
         "description": "Set your own prices and earn 70% of every sale"
       },
       "community": {
@@ -3388,7 +3419,17 @@
       "filterFree": "Free",
       "filterPurchased": "Purchased",
       "errorLoading": "Failed to load library",
-      "retry": "Try again"
+      "retry": "Try again",
+      "bulk": {
+        "selected": "{count} of {total} selected",
+        "selectAll": "Select all",
+        "deselectAll": "Deselect all",
+        "download": "{count, plural, one {Download # material} other {Download # materials}}",
+        "downloading": "Downloading…",
+        "downloadSuccess": "{count, plural, one {# material downloaded successfully} other {# materials downloaded successfully}}",
+        "downloadPartial": "{success} of {total} materials downloaded",
+        "actions": "Bulk actions"
+      }
     },
     "wishlist": {
       "title": "Wishlist",
@@ -3466,7 +3507,18 @@
       "emptyDescription": "Share your teaching materials with other teachers.",
       "uploadFirst": "Upload material",
       "duplicateSuccess": "Material duplicated! Edit the copy as needed.",
-      "duplicateError": "Failed to duplicate. Please try again."
+      "duplicateError": "Failed to duplicate. Please try again.",
+      "draft": {
+        "title": "Continue draft",
+        "savedAt": "Saved {time}",
+        "progress": "{completed} of {total} steps completed",
+        "resume": "Resume",
+        "discard": "Discard",
+        "discardTitle": "Discard draft?",
+        "discardMessage": "Are you sure you want to discard this draft? This action cannot be undone.",
+        "discardCancel": "Cancel",
+        "discardConfirm": "Discard"
+      }
     },
     "comments": {
       "title": "Comments on your materials",
@@ -3563,6 +3615,55 @@
         "setPasswordLink": "Set password via email",
         "showPassword": "Show password",
         "hidePassword": "Hide password"
+      },
+      "twoFactor": {
+        "title": "Two-Factor Authentication",
+        "subtitle": "Protect your account with an additional security factor",
+        "disabled": {
+          "description": "Two-factor authentication (2FA) adds an extra layer of security. After enabling, you'll need a code from an authenticator app in addition to your password.",
+          "enable": "Enable 2FA"
+        },
+        "setup": {
+          "step1": "1. Scan the QR code with your authenticator app",
+          "step2": "2. Enter the 6-digit code to confirm setup",
+          "manualEntry": "Manual entry",
+          "secretLabel": "Secret key",
+          "copied": "Copied!",
+          "verifyLabel": "Verification code",
+          "verifyPlaceholder": "000000",
+          "verify": "Confirm & enable",
+          "verifying": "Verifying...",
+          "cancel": "Cancel",
+          "invalidCode": "Invalid code. Please try again.",
+          "errorGeneric": "An error occurred. Please try again."
+        },
+        "enabled": {
+          "status": "Enabled",
+          "description": "Your account is protected by 2FA.",
+          "backupCodesRemaining": "{count} backup codes remaining",
+          "regenerateCodes": "Regenerate codes",
+          "disable": "Disable 2FA"
+        },
+        "backupCodes": {
+          "title": "Backup Codes",
+          "warning": "Save these codes securely. Each code can only be used once. They will not be shown again.",
+          "copyAll": "Copy all",
+          "copied": "Copied!",
+          "close": "I have saved the codes"
+        },
+        "passwordPrompt": {
+          "title": "Confirm password",
+          "description": "Enter your password to continue.",
+          "passwordLabel": "Password",
+          "passwordPlaceholder": "Enter your password",
+          "confirm": "Confirm",
+          "confirming": "Confirming...",
+          "cancel": "Cancel",
+          "wrongPassword": "Wrong password",
+          "errorGeneric": "An error occurred"
+        },
+        "requiresPassword": "To enable 2FA, you must set a password first.",
+        "errorRateLimited": "Too many attempts. Please wait a moment."
       }
     },
     "settingsProfile": {
@@ -4205,6 +4306,55 @@
       "generic": "An error occurred. Please try again."
     }
   },
+  "editMaterial": {
+    "pageTitle": "Edit Material",
+    "pageSubtitle": "Change title, description, curriculum mapping, and price",
+    "breadcrumbEdit": "Edit",
+    "loading": "Loading material...",
+    "notFound": "Material not found",
+    "notFoundDesc": "This material does not exist or has been deleted.",
+    "notOwner": "No permission",
+    "notOwnerDesc": "You can only edit your own materials.",
+    "backToUploads": "Back to my uploads",
+    "sectionFile": "File Information",
+    "fileReadOnly": "Files cannot be changed after upload.",
+    "sectionBasics": "Basic Information",
+    "sectionCurriculum": "Curriculum Mapping",
+    "sectionPrice": "Price",
+    "sectionPublish": "Publication",
+    "titleLabel": "Title",
+    "titleHint": "Between 3 and 64 characters",
+    "titlePlaceholder": "Enter a title",
+    "descriptionLabel": "Description",
+    "descriptionHint": "{count} / 5000 characters",
+    "descriptionPlaceholder": "Describe your material...",
+    "priceFree": "Free",
+    "priceFreeDesc": "Share material for free",
+    "pricePaid": "Paid",
+    "pricePaidDesc": "Set a price in CHF",
+    "priceLabel": "Price (CHF)",
+    "priceHint": "Minimum CHF 0.50, rounded to 0.50",
+    "pricePlaceholder": "e.g. 3.50",
+    "earningsPerSale": "Your earnings per sale",
+    "priceLocked": "Price locked",
+    "priceLockedDesc": "The price cannot be changed after verification to protect existing buyers.",
+    "publishedLabel": "Published",
+    "publishedDesc": "Material is visible to other users",
+    "unpublishedDesc": "Material is only visible to you",
+    "statusPending": "This material is currently being reviewed by our team.",
+    "statusRejected": "This material was rejected. Please adjust it and resubmit.",
+    "save": "Save changes",
+    "saving": "Saving...",
+    "saved": "Changes saved",
+    "noChanges": "No changes",
+    "unsavedChanges": "You have unsaved changes. Are you sure you want to leave the page?",
+    "errorLoad": "Error loading material",
+    "errorSave": "Error saving. Please try again.",
+    "errorValidation": "Please check your input.",
+    "errorPriceApproved": "Price cannot be changed after verification.",
+    "authRequired": "Please log in to edit materials.",
+    "successRedirect": "Material updated successfully"
+  },
   "bundle": {
     "pageTitle": "Create Bundle",
     "pageSubtitle": "Combine multiple materials into a discounted package",
@@ -4254,5 +4404,15 @@
     "next": "Next",
     "subjectOptionalHint": "Optional — auto-derived from selected materials",
     "cycleOptionalHint": "Optional — auto-derived from selected materials"
+  },
+  "digest": {
+    "subject": "New materials for you",
+    "heading": "{count} new materials for you",
+    "headingGeneric": "New materials on Currico",
+    "intro": "Based on your profile and favorites, we've put together new materials for you.",
+    "introGeneric": "Discover the latest materials on Currico.",
+    "free": "Free",
+    "ctaAllMaterials": "Discover all materials",
+    "unsubscribeFooter": "Unsubscribe from newsletter"
   }
 }

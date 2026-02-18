@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
-import { requireAuth, unauthorized } from "@/lib/api";
+import { requireAuth, unauthorized, serverError } from "@/lib/api";
 
 /**
  * GET /api/materials/check-title?title=...
@@ -13,6 +14,7 @@ export async function GET(request: NextRequest) {
     if (!userId) return unauthorized();
 
     const title = request.nextUrl.searchParams.get("title");
+    const excludeId = request.nextUrl.searchParams.get("excludeId");
     if (!title || title.trim().length < 3) {
       return NextResponse.json({ exists: false });
     }
@@ -24,6 +26,7 @@ export async function GET(request: NextRequest) {
       where: {
         seller_id: userId,
         title: { equals: trimmedTitle, mode: "insensitive" },
+        ...(excludeId && { id: { not: excludeId } }),
       },
       select: { id: true, title: true },
     });
@@ -43,6 +46,7 @@ export async function GET(request: NextRequest) {
       FROM resources
       WHERE seller_id = ${userId}
         AND word_similarity(${trimmedTitle}, title) > 0.4
+        ${excludeId ? Prisma.sql`AND id != ${excludeId}` : Prisma.empty}
       ORDER BY similarity DESC
       LIMIT 1
     `;
@@ -60,6 +64,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ exists: false });
   } catch (error) {
     console.error("Error checking title:", error);
-    return NextResponse.json({ error: "CHECK_FAILED" }, { status: 500 });
+    return serverError("CHECK_FAILED");
   }
 }

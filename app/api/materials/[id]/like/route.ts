@@ -1,7 +1,14 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { checkRateLimit, rateLimitHeaders, isValidId } from "@/lib/rateLimit";
-import { requireAuth, unauthorized } from "@/lib/api";
+import { checkRateLimit, isValidId } from "@/lib/rateLimit";
+import {
+  requireAuth,
+  unauthorized,
+  rateLimited,
+  badRequest,
+  notFound,
+  serverError,
+} from "@/lib/api";
 
 // POST /api/materials/[id]/like - Toggle like on a material
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -12,20 +19,14 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     // Rate limiting check
     const rateLimitResult = checkRateLimit(userId, "materials:like");
     if (!rateLimitResult.success) {
-      return NextResponse.json(
-        {
-          error: "Zu viele Anfragen. Bitte versuchen Sie es später erneut.",
-          retryAfter: rateLimitResult.retryAfter,
-        },
-        { status: 429, headers: rateLimitHeaders(rateLimitResult) }
-      );
+      return rateLimited("Zu viele Anfragen. Bitte versuchen Sie es später erneut.");
     }
 
     const { id: materialId } = await params;
 
     // Validate material ID format
     if (!isValidId(materialId)) {
-      return NextResponse.json({ error: "Ungültige Material-ID" }, { status: 400 });
+      return badRequest("Ungültige Material-ID");
     }
 
     // Check if material exists
@@ -35,7 +36,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     });
 
     if (!material) {
-      return NextResponse.json({ error: "Material nicht gefunden" }, { status: 404 });
+      return notFound("Material nicht gefunden");
     }
 
     // Check if user already liked this material
@@ -84,7 +85,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     }
   } catch (error) {
     console.error("Error toggling material like:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError("Interner Serverfehler");
   }
 }
 
@@ -101,7 +102,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     });
 
     if (!material) {
-      return NextResponse.json({ error: "Material nicht gefunden" }, { status: 404 });
+      return notFound("Material nicht gefunden");
     }
 
     // Get like count
@@ -126,6 +127,6 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     return NextResponse.json({ liked, likeCount });
   } catch (error) {
     console.error("Error getting material like status:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError("Interner Serverfehler");
   }
 }

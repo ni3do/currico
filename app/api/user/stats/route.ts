@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
-import { requireAuth, unauthorized, notFound } from "@/lib/api";
+import { requireAuth, unauthorized, notFound, serverError } from "@/lib/api";
 
 /**
  * GET /api/user/stats
@@ -71,6 +71,8 @@ export async function GET() {
           role: true,
           seller_xp: true,
           stripe_charges_enabled: true,
+          totp_enabled: true,
+          backup_codes: true,
           // Notification preferences
           notify_new_from_followed: true,
           notify_recommendations: true,
@@ -110,6 +112,12 @@ export async function GET() {
         sellerPoints: user.seller_xp,
         stripeChargesEnabled: user.stripe_charges_enabled,
         hasPassword,
+        twoFactorEnabled: user.totp_enabled,
+        backupCodesRemaining: user.totp_enabled
+          ? Array.isArray(user.backup_codes)
+            ? (user.backup_codes as { hash: string; used: boolean }[]).filter((c) => !c.used).length
+            : 0
+          : 0,
         // Notification preferences
         notify_new_from_followed: user.notify_new_from_followed,
         notify_recommendations: user.notify_recommendations,
@@ -132,6 +140,6 @@ export async function GET() {
     });
   } catch (error) {
     console.error("Error fetching user stats:", error);
-    return NextResponse.json({ error: "Fehler beim Laden der Statistiken" }, { status: 500 });
+    return serverError("Fehler beim Laden der Statistiken");
   }
 }

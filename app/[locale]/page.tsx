@@ -13,7 +13,10 @@ import { MaterialCard } from "@/components/ui/MaterialCard";
 import { SellerHeroSection } from "@/components/ui/SellerHeroSection";
 import { TrustBar } from "@/components/ui/TrustBar";
 import { SwissBrandSection } from "@/components/ui/SwissBrandSection";
+import { CategoryQuickAccess } from "@/components/ui/CategoryQuickAccess";
 import { ValueProposition } from "@/components/ui/ValueProposition";
+import { HowItWorks } from "@/components/ui/HowItWorks";
+import { TestimonialsSection } from "@/components/ui/TestimonialsSection";
 import { FadeIn, StaggerChildren, StaggerItem, motion } from "@/components/ui/animations";
 import { getSubjectPillClass } from "@/lib/constants/subject-colors";
 import type { FeaturedMaterial } from "@/lib/types/material";
@@ -25,8 +28,6 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCycle, setSelectedCycle] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
-  const [selectedKompetenzbereich, setSelectedKompetenzbereich] = useState("");
-
   const { zyklen, getFachbereicheByZyklus, fachbereiche } = useCurriculum();
 
   // Parallax scroll for hero section
@@ -44,15 +45,6 @@ export default function Home() {
     return getFachbereicheByZyklus(parseInt(selectedCycle, 10));
   }, [selectedCycle, fachbereiche, getFachbereicheByZyklus]);
 
-  const availableKompetenzbereiche = useMemo(() => {
-    const subjects = selectedSubject
-      ? availableSubjects.filter((fb) => fb.code === selectedSubject)
-      : availableSubjects;
-    return subjects.flatMap((fb) =>
-      fb.kompetenzbereiche.map((kb) => ({ ...kb, fachbereichName: fb.shortName }))
-    );
-  }, [selectedSubject, availableSubjects]);
-
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const params = new URLSearchParams();
@@ -60,22 +52,17 @@ export default function Home() {
     if (trimmedQuery) params.set("search", trimmedQuery);
     if (selectedCycle) params.set("zyklus", selectedCycle);
     if (selectedSubject) params.set("fachbereich", selectedSubject);
-    if (selectedKompetenzbereich) params.set("kompetenzbereich", selectedKompetenzbereich);
     const qs = params.toString();
     router.push(qs ? `/materialien?${qs}` : "/materialien");
   };
 
   const handleCycleChange = (value: string) => {
     setSelectedCycle(value);
-    // Reset subject and kompetenzbereich when cycle changes since they differ by cycle
     setSelectedSubject("");
-    setSelectedKompetenzbereich("");
   };
 
   const handleSubjectChange = (value: string) => {
     setSelectedSubject(value);
-    // Reset kompetenzbereich when subject changes
-    setSelectedKompetenzbereich("");
   };
 
   const [featuredMaterials, setFeaturedMaterials] = useState<FeaturedMaterial[]>([]);
@@ -234,23 +221,6 @@ export default function Home() {
                         </select>
                         <ChevronDown className="text-text-muted pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2" />
                       </div>
-
-                      {/* Kompetenzbereich dropdown */}
-                      <div className="relative flex-1">
-                        <select
-                          value={selectedKompetenzbereich}
-                          onChange={(e) => setSelectedKompetenzbereich(e.target.value)}
-                          className="bg-surface/80 text-text-secondary focus:bg-surface focus:ring-primary w-full appearance-none rounded-full border-0 py-3 pr-10 pl-4 text-sm font-medium shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:ring-2 focus:outline-none"
-                        >
-                          <option value="">{t("hero.search.allKompetenzbereiche")}</option>
-                          {availableKompetenzbereiche.map((kb) => (
-                            <option key={kb.code} value={kb.code}>
-                              {kb.code} – {kb.name}
-                            </option>
-                          ))}
-                        </select>
-                        <ChevronDown className="text-text-muted pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2" />
-                      </div>
                     </div>
                   </form>
                 </FadeIn>
@@ -290,6 +260,9 @@ export default function Home() {
 
         {/* Swiss Brand - Quality & Trust */}
         <SwissBrandSection />
+
+        {/* Beliebte Fächer - Quick Access Tiles */}
+        <CategoryQuickAccess />
 
         {/* Featured Resources - Visual Direction */}
         <section aria-labelledby="featured-heading" className="bg-surface py-24">
@@ -348,10 +321,13 @@ export default function Home() {
                       previewUrl={mat.previewUrl}
                       averageRating={mat.averageRating}
                       reviewCount={mat.reviewCount}
+                      competencies={mat.competencies}
                       subjectPillClass={getSubjectPillClass(mat.subjects[0] || "Allgemein")}
                       seller={{
                         displayName: mat.seller.displayName,
                         isVerifiedSeller: mat.seller.isVerifiedSeller,
+                        sellerLevel: mat.seller.sellerLevel,
+                        sellerXp: mat.seller.sellerXp,
                       }}
                       href={`/materialien/${mat.id}`}
                     />
@@ -396,6 +372,12 @@ export default function Home() {
             </FadeIn>
           </div>
         </section>
+
+        {/* How It Works - 3-Step Guide */}
+        <HowItWorks />
+
+        {/* Testimonials - Social Proof */}
+        <TestimonialsSection />
 
         {/* Value Proposition Triptych - Rule of Three */}
         <ValueProposition />

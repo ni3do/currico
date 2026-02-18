@@ -15,7 +15,9 @@
     "internalError": "Interner Serverfehler",
     "invalidInput": "Ungültige Eingabe",
     "invalidFileType": "Ungültiger Dateityp",
-    "userNotFound": "Benutzer nicht gefunden"
+    "userNotFound": "Benutzer nicht gefunden",
+    "rateLimited": "Zu viele Anfragen — bitte versuche es später erneut",
+    "conflict": "Dieser Eintrag existiert bereits"
   },
   "theme": {
     "light": "Hell",
@@ -35,7 +37,9 @@
     "duplicate": "Duplizieren",
     "downloads": "Downloads",
     "sales": "Verkäufe",
-    "unknownSeller": "Unbekannt"
+    "unknownSeller": "Unbekannt",
+    "select": "Auswählen",
+    "deselect": "Abwählen"
   },
   "avatar": {
     "errorInvalidType": "Bitte wählen Sie ein Bild aus (JPG, PNG)",
@@ -88,6 +92,16 @@
       "hostedBy": "Gehostet bei",
       "swissCloud": "Swiss Cloud",
       "payment": "Zahlung mit TWINT & Karte",
+      "description": "Die Schweizer Plattform für Lehrplan-21-konforme Unterrichtsmaterialien. Von Lehrpersonen erstellt, für Lehrpersonen gemacht.",
+      "columns": {
+        "platform": "Plattform",
+        "legal": "Rechtliches",
+        "contact": "Kontakt"
+      },
+      "contact": {
+        "email": "kontakt@currico.ch",
+        "location": "Schweiz"
+      },
       "links": {
         "help": "Hilfe",
         "imprint": "Impressum",
@@ -96,7 +110,10 @@
         "cookies": "Cookies",
         "copyrightGuide": "Urheberrecht",
         "sellerLevels": "Verkäufer-Levels",
-        "verifiedSeller": "Verifizierte Verkäufer"
+        "verifiedSeller": "Verifizierte Verkäufer",
+        "materials": "Materialien durchsuchen",
+        "upload": "Material hochladen",
+        "becomeSeller": "Verkäufer werden"
       }
     },
     "errors": {
@@ -155,7 +172,8 @@
       "help": "Hilfe",
       "becomeSeller": "Verkäufer werden",
       "bundles": "Pakete",
-      "copyrightGuide": "Urheberrecht"
+      "copyrightGuide": "Urheberrecht",
+      "edit": "Bearbeiten"
     },
     "toast": {
       "addedToWishlist": "Zur Wunschliste hinzugefügt",
@@ -179,10 +197,10 @@
   "homePage": {
     "hero": {
       "swissBadge": "100% Lehrplan 21 konform",
-      "headline": "Unterrichtsmaterial für den",
-      "headlineHighlight": "Schweizer Lehrplan 21",
-      "subheadline": "Finden Sie sofort einsatzbereite Lehrmittel von Schweizer Lehrpersonen. Qualitätsgeprüft, lehrplankonform, zeitsparend.",
-      "searchPlaceholder": "Was unterrichtest du heute? (z.B. Mathe 5. Klasse)",
+      "headline": "Fertige Arbeitsblätter, Prüfungen und Unterrichtseinheiten –",
+      "headlineHighlight": "passend zum Lehrplan 21",
+      "subheadline": "Finden Sie sofort einsatzbereite Lehrmittel von Schweizer Lehrpersonen. Von der Community geprüft, lehrplankonform, zeitsparend.",
+      "searchPlaceholder": "Was unterrichten Sie heute? (z.B. Mathe 5. Klasse)",
       "searchButton": "Suchen",
       "quickFilters": "Beliebte Kategorien:",
       "filters": {
@@ -195,7 +213,7 @@
       "trustIndicators": {
         "lehrplan21": "Lehrplan 21 abgestimmt",
         "swissTeachers": "Schweizer Lehrpersonen",
-        "verified": "Qualitätsgeprüft",
+        "verified": "Von Lehrpersonen geprüft",
         "swissMade": "Swiss Made",
         "swissQuality": "Schweizer Qualität",
         "swissHosted": "Schweizer Hosting"
@@ -208,12 +226,12 @@
       "ratingCard": {
         "rating": "4.9"
       },
-      "title": "Von Lehrpersonen für Lehrpersonen: Unterrichtsmaterial in Rekordzeit.",
+      "title": "Weniger suchen, mehr unterrichten.",
       "description": "Entdecken Sie professionelle Lehrmittel, entwickelt von Kollegen und exakt abgestimmt auf den <bold>Lehrplan 21</bold>. Vertrauenswürdig, geprüft, sofort einsetzbar.",
       "primaryButton": "Jetzt Material finden",
       "secondaryButton": "Mehr erfahren",
       "search": {
-        "placeholder": "Was unterrichtest du heute? (z.B. Mathe 5. Klasse)",
+        "placeholder": "Was unterrichten Sie heute? (z.B. Mathe 5. Klasse)",
         "allCycles": "Zyklus wählen…",
         "allSubjects": "Fach wählen…",
         "math": "Mathematik",
@@ -229,7 +247,6 @@
         "dialectSwiss": "Schweizerdeutsch",
         "dialectStandard": "Hochdeutsch",
         "allDialects": "Alle Sprachvarianten",
-        "allKompetenzbereiche": "Kompetenz wählen…",
         "formLabel": "Unterrichtsmaterialien suchen"
       }
     },
@@ -285,8 +302,8 @@
       "title": "Warum Currico?",
       "description": "Eine Plattform, die den Ansprüchen von Schweizer Bildungsinstitutionen gerecht wird.",
       "feature1": {
-        "title": "Qualitätsgeprüft",
-        "description": "Jedes Material wird von Fachexperten auf pädagogische Qualität und Lehrplan-Konformität geprüft."
+        "title": "Community-geprüft",
+        "description": "Jedes Material wird von der Community bewertet — Bewertungen und Kommentare helfen Ihnen, die besten Inhalte zu finden."
       },
       "feature2": {
         "title": "Lehrplan 21 konform",
@@ -301,8 +318,8 @@
       "title": "Teilen Sie Ihre Unterrichtsmaterialien",
       "description": "Sie haben tolle Arbeitsblätter, Unterrichtseinheiten oder Prüfungen erstellt? Teilen Sie diese mit Kolleginnen und Kollegen in der ganzen Schweiz und verdienen Sie Geld, während Sie anderen Lehrpersonen Zeit sparen.",
       "benefits": {
-        "earn": "Passives Einkommen",
-        "earnDesc": "Setzen Sie Ihre eigenen Preise und verdienen Sie 70% pro Verkauf",
+        "earn": "Faire Entlohnung",
+        "earnDesc": "Setzen Sie Ihre Preise selbst — Sie erhalten 70% pro Verkauf (z.B. CHF 3.50 bei CHF 5.00)",
         "reach": "Tausende erreichen",
         "reachDesc": "Vernetzen Sie sich mit Lehrpersonen in der ganzen Schweiz",
         "simple": "Einfacher Upload",
@@ -314,8 +331,8 @@
     "trustBar": {
       "lp21": "LP21 konform",
       "swissMade": "Swiss Made",
-      "quality": "Qualitätsgeprüft",
-      "hosting": "Schweizer Server",
+      "quality": "Community-geprüft",
+      "hosting": "Gehostet bei Infomaniak",
       "securePay": "Sichere Zahlung",
       "ndsg": "nDSG-konform"
     },
@@ -385,15 +402,15 @@
     },
     "swissBrand": {
       "badge": "Qualität & Vertrauen",
-      "title": "Von Lehrpersonen für Lehrpersonen",
+      "title": "Aus der Praxis, für die Praxis",
       "description": "Currico wird mit Fokus auf Qualität, Sicherheit und die Bedürfnisse von Lehrpersonen entwickelt. Ihre Daten sind durch strenge Datenschutzgesetze geschützt.",
       "swissMade": {
         "title": "Qualität zuerst",
-        "description": "Von Lehrpersonen für Lehrpersonen entwickelt"
+        "description": "Entwickelt mit echten Schweizer Lehrpersonen"
       },
       "swissHosted": {
-        "title": "Sicheres Hosting",
-        "description": "Gehostet bei Infomaniak in Schweizer Rechenzentren"
+        "title": "Gehostet bei Infomaniak",
+        "description": "Ihre Daten liegen in Schweizer Rechenzentren in Genf"
       },
       "dataProtection": {
         "title": "Datenschutz",
@@ -406,7 +423,7 @@
       "hostedBy": "Gehostet bei",
       "swissCloud": "Swiss Cloud",
       "co2Neutral": "CO₂-Neutral",
-      "secureHosting": "Sicheres Hosting"
+      "secureHosting": "Gehostet bei Infomaniak in der Schweiz"
     }
   },
   "loginPage": {
@@ -433,8 +450,22 @@
       "prompt": "Noch kein Konto?",
       "link": "Kostenlos registrieren"
     },
+    "twoFactor": {
+      "title": "Zwei-Faktor-Authentifizierung",
+      "description": "Geben Sie den 6-stelligen Code aus Ihrer Authenticator-App ein.",
+      "codeLabel": "Bestätigungscode",
+      "codePlaceholder": "000000",
+      "useBackupCode": "Backup-Code verwenden",
+      "useAuthenticator": "Authenticator verwenden",
+      "backupCodeLabel": "Backup-Code",
+      "backupCodePlaceholder": "8-stelliger Code",
+      "verify": "Bestätigen",
+      "verifying": "Wird überprüft...",
+      "back": "Zurück zur Anmeldung"
+    },
     "errors": {
       "invalidCredentials": "Ungültige E-Mail-Adresse oder Passwort",
+      "invalid2FACode": "Ungültiger Bestätigungscode. Bitte versuchen Sie es erneut.",
       "generic": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
       "tooManyAttempts": "Zu viele Anmeldeversuche. Bitte warten Sie einen Moment.",
       "accountExistsWithDifferentProvider": "Ein Konto mit dieser E-Mail existiert bereits. Bitte verwenden Sie die ursprüngliche Anmeldemethode.",
@@ -1119,7 +1150,7 @@
   "aboutPage": {
     "hero": {
       "badge": "Aus der Schweiz, für Schweizer Klassenzimmer",
-      "title": "Wir kennen deinen Alltag. Wir waren da.",
+      "title": "Wir kennen Ihren Alltag. Wir waren da.",
       "subtitle": "Currico ist aus echtem Frust entstanden — dem Frust von Lehrpersonen, die Abende und Wochenenden mit Unterrichtsvorbereitung verbringen. Wir wollten das ändern. Nicht mit einem grossen Budget, sondern mit Herzblut.",
       "imageAlt": "Das Currico-Team",
       "primaryCta": "Materialien entdecken",
@@ -1175,7 +1206,7 @@
     },
     "founders": {
       "title": "Die zwei hinter Currico",
-      "subtitle": "Kein Konzern, kein Investor, kein Budget. Nur zwei Leute mit einer Mission: deinen Schulalltag ein kleines bisschen leichter machen.",
+      "subtitle": "Kein Konzern, kein Investor, kein Budget. Nur zwei Leute mit einer Mission: Ihren Schulalltag ein kleines bisschen leichter machen.",
       "founder1": {
         "name": "Simon Wachter",
         "role": "Co-Founder & Pädagogik",
@@ -1185,7 +1216,7 @@
       "founder2": {
         "name": "Laurent Zoccoletti",
         "role": "Co-Founder & Technik",
-        "bio": "Ich baue Currico so, dass es einfach funktioniert — schnell, simpel, ohne Frust. Mein Ziel: Die Technik soll dir helfen und nie im Weg stehen.",
+        "bio": "Ich baue Currico so, dass es einfach funktioniert — schnell, simpel, ohne Frust. Mein Ziel: Die Technik soll Ihnen helfen und nie im Weg stehen.",
         "funFact": "Debuggt am liebsten mit Aussicht auf die Alpen."
       },
       "emailLabel": "E-Mail an {name}"
@@ -1200,33 +1231,33 @@
       "title": "Was uns ausmacht",
       "value1": {
         "title": "Lehrplan 21 im Kern",
-        "description": "Jedes Material orientiert sich am LP21. Finde in Sekunden Inhalte, die zu deinem Kompetenzbereich passen — ohne Anpassen."
+        "description": "Jedes Material orientiert sich am LP21. Finden Sie in Sekunden Inhalte, die zu Ihrem Kompetenzbereich passen — ohne Anpassen."
       },
       "value2": {
         "title": "Schweizer Daten, Schweizer Server",
-        "description": "Gehostet bei Infomaniak in Schweizer Rechenzentren. Deine Daten bleiben in der Schweiz, geschützt durch strenge Datenschutzgesetze."
+        "description": "Gehostet bei Infomaniak in Schweizer Rechenzentren. Ihre Daten bleiben in der Schweiz, geschützt durch strenge Datenschutzgesetze."
       },
       "value3": {
-        "title": "Von Kolleg:innen geprüft",
-        "description": "Jedes Material wird von der Community bewertet und kommentiert. So findest du nur Inhalte, die im Klassenzimmer wirklich funktionieren."
+        "title": "Von der Community geprüft",
+        "description": "Jedes Material wird von der Community bewertet und kommentiert. So finden Sie nur Inhalte, die im Klassenzimmer wirklich funktionieren."
       },
       "value4": {
         "title": "Faire Vergütung",
-        "description": "Wer Material teilt, verdient daran. Faire Preise für Käufer:innen, faire Vergütung für Ersteller:innen. So funktioniert Community."
+        "description": "Wer Material teilt, verdient daran. Faire Preise für Käuferinnen und Käufer, faire Vergütung für Erstellerinnen und Ersteller. So funktioniert Community."
       }
     },
     "helpUs": {
-      "title": "Hilf uns, Currico besser zu machen",
-      "paragraph1": "Wir sind ein winziges Team ohne Budget. Wir machen das hier nicht für Profit — wir machen das, weil wir überzeugt sind, dass wir den Alltag von Lehrpersonen verbessern können. Und dafür brauchen wir dich.",
-      "paragraph2": "Wenn du eine Idee hast, eine Funktion vermisst oder etwas verbessern würdest — sag es uns. Jeder Vorschlag zählt. Wir lesen alles, wir antworten, und wenn deine Idee passt, bauen wir sie ein. Gemeinsam machen wir Currico zu dem, was Lehrpersonen wirklich brauchen.",
-      "idea1": "Teile deine Ideen für neue Funktionen",
-      "idea2": "Sag uns, was dich stört oder fehlt",
-      "idea3": "Hilf mit, eine Community aufzubauen",
-      "button": "Schreib uns deine Idee"
+      "title": "Helfen Sie uns, Currico besser zu machen",
+      "paragraph1": "Wir sind ein winziges Team ohne Budget. Wir machen das hier nicht für Profit — wir machen das, weil wir überzeugt sind, dass wir den Alltag von Lehrpersonen verbessern können. Und dafür brauchen wir Sie.",
+      "paragraph2": "Wenn Sie eine Idee haben, eine Funktion vermissen oder etwas verbessern würden — sagen Sie es uns. Jeder Vorschlag zählt. Wir lesen alles, wir antworten, und wenn Ihre Idee passt, bauen wir sie ein. Gemeinsam machen wir Currico zu dem, was Lehrpersonen wirklich brauchen.",
+      "idea1": "Teilen Sie Ihre Ideen für neue Funktionen",
+      "idea2": "Sagen Sie uns, was Sie stört oder fehlt",
+      "idea3": "Helfen Sie mit, eine Community aufzubauen",
+      "button": "Schreiben Sie uns Ihre Idee"
     },
     "cta": {
-      "title": "Werde Teil der Currico-Familie",
-      "subtitle": "Jede Lehrperson, die mitmacht, macht Currico ein Stück besser. Für dich, für alle. Der Start ist kostenlos.",
+      "title": "Werden Sie Teil der Currico-Familie",
+      "subtitle": "Jede Lehrperson, die mitmacht, macht Currico ein Stück besser. Für Sie und für alle. Der Start ist kostenlos.",
       "button": "Materialien entdecken",
       "secondaryButton": "Kostenlos registrieren"
     }
@@ -1839,7 +1870,7 @@
       },
       "simple": {
         "title": "Einmal hochladen, wiederholt verdienen",
-        "description": "Erstellen Sie Ihre Materialien einmal. Verdienen Sie passives Einkommen bei jedem Kauf."
+        "description": "Erstellen Sie Ihre Materialien einmal. Verdienen Sie bei jedem Kauf — ohne weiteren Aufwand."
       }
     },
     "requirements": {
@@ -2121,8 +2152,8 @@
     },
     "features": {
       "commission": {
-        "title": "Passives Einkommen",
-        "description": "Setzen Sie Ihre eigenen Preise und verdienen Sie 70% pro Verkauf"
+        "title": "Faire Entlohnung",
+        "description": "Setzen Sie Ihre Preise selbst — Sie erhalten 70% pro Verkauf (z.B. CHF 3.50 bei CHF 5.00)"
       },
       "community": {
         "title": "Tausende erreichen",
@@ -3388,7 +3419,17 @@
       "filterFree": "Gratis",
       "filterPurchased": "Gekauft",
       "errorLoading": "Fehler beim Laden der Bibliothek",
-      "retry": "Erneut versuchen"
+      "retry": "Erneut versuchen",
+      "bulk": {
+        "selected": "{count} von {total} ausgewählt",
+        "selectAll": "Alle auswählen",
+        "deselectAll": "Auswahl aufheben",
+        "download": "{count, plural, one {# Material herunterladen} other {# Materialien herunterladen}}",
+        "downloading": "Wird heruntergeladen…",
+        "downloadSuccess": "{count, plural, one {# Material erfolgreich heruntergeladen} other {# Materialien erfolgreich heruntergeladen}}",
+        "downloadPartial": "{success} von {total} Materialien heruntergeladen",
+        "actions": "Bulk-Aktionen"
+      }
     },
     "wishlist": {
       "title": "Wunschliste",
@@ -3466,7 +3507,18 @@
       "emptyDescription": "Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen.",
       "uploadFirst": "Material hochladen",
       "duplicateSuccess": "Material dupliziert! Bearbeiten Sie die Kopie nach Bedarf.",
-      "duplicateError": "Fehler beim Duplizieren. Bitte versuchen Sie es erneut."
+      "duplicateError": "Fehler beim Duplizieren. Bitte versuchen Sie es erneut.",
+      "draft": {
+        "title": "Entwurf fortsetzen",
+        "savedAt": "Gespeichert {time}",
+        "progress": "{completed} von {total} Schritten abgeschlossen",
+        "resume": "Fortsetzen",
+        "discard": "Verwerfen",
+        "discardTitle": "Entwurf verwerfen?",
+        "discardMessage": "Sind Sie sicher, dass Sie diesen Entwurf löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+        "discardCancel": "Abbrechen",
+        "discardConfirm": "Verwerfen"
+      }
     },
     "comments": {
       "title": "Kommentare zu Ihren Materialien",
@@ -3563,6 +3615,55 @@
         "setPasswordLink": "Passwort über E-Mail setzen",
         "showPassword": "Passwort anzeigen",
         "hidePassword": "Passwort verbergen"
+      },
+      "twoFactor": {
+        "title": "Zwei-Faktor-Authentifizierung",
+        "subtitle": "Schützen Sie Ihr Konto mit einem zusätzlichen Sicherheitsfaktor",
+        "disabled": {
+          "description": "Zwei-Faktor-Authentifizierung (2FA) fügt eine zusätzliche Sicherheitsebene hinzu. Nach dem Aktivieren benötigen Sie neben Ihrem Passwort einen Code aus einer Authenticator-App.",
+          "enable": "2FA aktivieren"
+        },
+        "setup": {
+          "step1": "1. Scannen Sie den QR-Code mit Ihrer Authenticator-App",
+          "step2": "2. Geben Sie den 6-stelligen Code ein, um die Einrichtung zu bestätigen",
+          "manualEntry": "Manueller Eintrag",
+          "secretLabel": "Geheimer Schlüssel",
+          "copied": "Kopiert!",
+          "verifyLabel": "Bestätigungscode",
+          "verifyPlaceholder": "000000",
+          "verify": "Bestätigen & aktivieren",
+          "verifying": "Wird überprüft...",
+          "cancel": "Abbrechen",
+          "invalidCode": "Ungültiger Code. Bitte versuchen Sie es erneut.",
+          "errorGeneric": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
+        },
+        "enabled": {
+          "status": "Aktiviert",
+          "description": "Ihr Konto ist durch 2FA geschützt.",
+          "backupCodesRemaining": "{count} Backup-Codes verbleibend",
+          "regenerateCodes": "Neue Codes generieren",
+          "disable": "2FA deaktivieren"
+        },
+        "backupCodes": {
+          "title": "Backup-Codes",
+          "warning": "Speichern Sie diese Codes sicher. Jeder Code kann nur einmal verwendet werden. Sie werden nicht erneut angezeigt.",
+          "copyAll": "Alle kopieren",
+          "copied": "Kopiert!",
+          "close": "Ich habe die Codes gesichert"
+        },
+        "passwordPrompt": {
+          "title": "Passwort bestätigen",
+          "description": "Geben Sie Ihr Passwort ein, um fortzufahren.",
+          "passwordLabel": "Passwort",
+          "passwordPlaceholder": "Ihr Passwort eingeben",
+          "confirm": "Bestätigen",
+          "confirming": "Wird bestätigt...",
+          "cancel": "Abbrechen",
+          "wrongPassword": "Falsches Passwort",
+          "errorGeneric": "Ein Fehler ist aufgetreten"
+        },
+        "requiresPassword": "Um 2FA zu aktivieren, müssen Sie zuerst ein Passwort setzen.",
+        "errorRateLimited": "Zu viele Versuche. Bitte warten Sie einen Moment."
       }
     },
     "settingsProfile": {
@@ -3956,7 +4057,7 @@
   },
   "rewards": {
     "title": "Verkäufer-Levels",
-    "yourLevel": "Dein Level",
+    "yourLevel": "Ihr Level",
     "pointsLabel": "{points} Punkte",
     "pointsUnit": "Punkte",
     "pointsToNext": "Noch {points} Punkte bis zum nächsten Level",
@@ -3986,44 +4087,44 @@
       "diamant": "Diamant"
     },
     "descriptions": {
-      "bronze": "Willkommen! Lade dein erstes Material hoch.",
-      "silber": "Du teilst aktiv dein Wissen — weiter so!",
-      "gold": "Deine Materialien sind gefragt. Tolle Arbeit!",
-      "platin": "Du bist ein Platin-Verkäufer der Community!",
-      "diamant": "Diamant! Du prägst Currico."
+      "bronze": "Willkommen! Laden Sie Ihr erstes Material hoch.",
+      "silber": "Sie teilen aktiv Ihr Wissen — weiter so!",
+      "gold": "Ihre Materialien sind gefragt. Tolle Arbeit!",
+      "platin": "Sie sind Platin-Verkäufer der Community!",
+      "diamant": "Diamant! Sie prägen Currico."
     },
     "page": {
       "heroTitle": "Verkäufer-Levels",
-      "heroDescription": "Je mehr du zur Currico-Community beiträgst, desto höher steigst du auf. Sammle Punkte durch Uploads, Downloads und gute Bewertungen.",
-      "howTitle": "So sammelst du Punkte",
-      "howDescription": "Deine Punkte berechnen sich aus drei Faktoren:",
+      "heroDescription": "Je mehr Sie zur Currico-Community beitragen, desto höher steigen Sie auf. Sammeln Sie Punkte durch Uploads, Downloads und gute Bewertungen.",
+      "howTitle": "So sammeln Sie Punkte",
+      "howDescription": "Ihre Punkte berechnen sich aus drei Faktoren:",
       "uploadPoints": "{points} Punkte pro Upload",
-      "uploadPointsDescription": "Für jedes Material, das du auf Currico hochlädst, erhältst du {points} Punkte — egal ob kostenlos oder kostenpflichtig.",
+      "uploadPointsDescription": "Für jedes Material, das Sie auf Currico hochladen, erhalten Sie {points} Punkte — egal ob kostenlos oder kostenpflichtig.",
       "downloadPoints": "{points}–{pointsMax} Punkte pro Download",
-      "downloadPointsDescription": "Jedes Mal, wenn jemand dein Material herunterlädt oder kauft, erhältst du Punkte. Die Basis sind {points} Punkte — mit guten Bewertungen steigt der Wert!",
+      "downloadPointsDescription": "Jedes Mal, wenn jemand Ihr Material herunterlädt oder kauft, erhalten Sie Punkte. Die Basis sind {points} Punkte — mit guten Bewertungen steigt der Wert!",
       "reviewPoints": "{points} Punkte pro Bewertung",
-      "reviewPointsDescription": "Für jede Bewertung, die du auf deine Materialien erhältst, bekommst du {points} Punkte.",
+      "reviewPointsDescription": "Für jede Bewertung, die Sie auf Ihre Materialien erhalten, bekommen Sie {points} Punkte.",
       "ratingBonusTitle": "Bewertungsbonus",
-      "ratingBonusDescription": "Je besser deine durchschnittliche Bewertung, desto mehr Punkte erhältst du pro Download:",
+      "ratingBonusDescription": "Je besser Ihre durchschnittliche Bewertung, desto mehr Punkte erhalten Sie pro Download:",
       "ratingBonusBase": "Unter ⌀ 4.0",
       "ratingBonusGood": "Ab ⌀ 4.0",
       "ratingBonusGreat": "Ab ⌀ 4.5",
       "ratingBonusPerDownload": "{points} Punkte/Download",
       "verifiedBonusTitle": "Verifizierter-Verkäufer-Bonus",
-      "verifiedBonusDescription": "Verifizierte Verkäufer:innen erhalten einen einmaligen Bonus auf ihre Gesamtpunktzahl:",
-      "verifiedBonusExplain": "Einmaliger Bonus, solange du als verifizierte:r Verkäufer:in bestätigt bist. Wird bei Widerruf wieder abgezogen.",
+      "verifiedBonusDescription": "Verifizierte Verkäuferinnen und Verkäufer erhalten einen einmaligen Bonus auf ihre Gesamtpunktzahl:",
+      "verifiedBonusExplain": "Einmaliger Bonus, solange Sie als verifizierte Verkäuferin bzw. Verkäufer bestätigt sind. Wird bei Widerruf wieder abgezogen.",
       "verifiedBonusLink": "Wie werde ich verifiziert?",
-      "howToVerifyTitle": "So wirst du verifizierte:r Verkäufer:in",
-      "howToVerifyDescription": "Erfülle alle 5 Kriterien gleichzeitig, um das Abzeichen «Verifizierter Verkäufer» zu erhalten und den Punktebonus freizuschalten:",
+      "howToVerifyTitle": "So werden Sie verifizierter Verkäufer",
+      "howToVerifyDescription": "Erfüllen Sie alle 5 Kriterien gleichzeitig, um das Abzeichen «Verifizierter Verkäufer» zu erhalten und den Punktebonus freizuschalten:",
       "verifyCriteria": {
         "sales": {
           "label": "Mindestens 10 Verkäufe",
-          "description": "Erfolgreiche Verkäufe oder Downloads deiner Materialien.",
+          "description": "Erfolgreiche Verkäufe oder Downloads Ihrer Materialien.",
           "value": "≥ 10"
         },
         "rating": {
           "label": "Durchschnitt ≥ 4.5 Sterne",
-          "description": "Durchschnittliche Bewertung deiner Materialien.",
+          "description": "Durchschnittliche Bewertung Ihrer Materialien.",
           "value": "≥ 4.5 ★"
         },
         "resources": {
@@ -4033,7 +4134,7 @@
         },
         "age": {
           "label": "Konto mindestens 30 Tage alt",
-          "description": "Dein Konto muss mindestens einen Monat bestehen.",
+          "description": "Ihr Konto muss mindestens einen Monat bestehen.",
           "value": "≥ 30 Tage"
         },
         "reports": {
@@ -4044,10 +4145,10 @@
       },
       "howToVerifyLink": "Alles über die Verifizierung erfahren",
       "exampleTitle": "Rechenbeispiel",
-      "exampleDescription": "Wenn du {uploads} Materialien hochlädst und insgesamt {downloads} Downloads bekommst:",
+      "exampleDescription": "Wenn Sie {uploads} Materialien hochladen und insgesamt {downloads} Downloads bekommen:",
       "exampleFormula": "{uploads} Uploads × {pointsPerUpload} + {downloads} Downloads × {pointsPerDownload} = {total} Punkte",
       "levelsTitle": "Die 5 Levels",
-      "levelsDescription": "Jedes Level schaltet eine neue Auszeichnung für dein Profil frei.",
+      "levelsDescription": "Jedes Level schaltet eine neue Auszeichnung für Ihr Profil frei.",
       "levelMinPoints": "Ab {points} Punkten",
       "levelBadge": "Level {level}",
       "materialsCount": "{count, plural, =1 {1 Material} other {# Materialien}}",
@@ -4058,26 +4159,26 @@
       "reqDownloads": "{count, plural, =0 {0 Downloads} =1 {1 Download} other {# Downloads}}",
       "tipsTitle": "Tipps zum schnelleren Aufstieg",
       "tips": {
-        "quality": "Lade qualitativ hochwertige Materialien hoch — gute Materialien werden häufiger heruntergeladen.",
-        "variety": "Biete verschiedene Fächer und Zyklen an, um mehr Lehrpersonen zu erreichen.",
-        "keywords": "Verwende aussagekräftige Titel und Beschreibungen, damit deine Materialien gefunden werden.",
-        "regular": "Lade regelmässig neue Materialien hoch — aktive Verkäufer:innen steigen schneller auf."
+        "quality": "Laden Sie qualitativ hochwertige Materialien hoch — gute Materialien werden häufiger heruntergeladen.",
+        "variety": "Bieten Sie verschiedene Fächer und Zyklen an, um mehr Lehrpersonen zu erreichen.",
+        "keywords": "Verwenden Sie aussagekräftige Titel und Beschreibungen, damit Ihre Materialien gefunden werden.",
+        "regular": "Laden Sie regelmässig neue Materialien hoch — aktive Verkäuferinnen und Verkäufer steigen schneller auf."
       },
-      "yourLevel": "Dein aktuelles Level",
+      "yourLevel": "Ihr aktuelles Level",
       "currentLevel": "Aktuelles Level",
       "levelLocked": "Gesperrt",
       "levelUnlocked": "Erreicht",
-      "loginToSeeProgress": "Melde dich an, um deinen persönlichen Fortschritt zu sehen.",
+      "loginToSeeProgress": "Melden Sie sich an, um Ihren persönlichen Fortschritt zu sehen.",
       "loginCta": "Anmelden",
-      "becomeSeller": "Werde Verkäufer:in, um Levels freizuschalten!",
-      "becomeSellerCta": "Verkäufer:in werden",
+      "becomeSeller": "Werden Sie Verkäufer, um Levels freizuschalten!",
+      "becomeSellerCta": "Verkäufer werden",
       "requirementProgress": "{current}/{required}",
       "requirementPoints": "Punkte",
       "requirementUploads": "Uploads",
       "requirementDownloads": "Downloads",
-      "blockerNeedMorePoints": "Du benötigst noch {count} Punkte",
-      "blockerNeedMoreUploads": "{count, plural, =1 {Du benötigst noch 1 Upload} other {Du benötigst noch # Uploads}}",
-      "blockerNeedMoreDownloads": "{count, plural, =1 {Du benötigst noch 1 Download} other {Du benötigst noch # Downloads}}"
+      "blockerNeedMorePoints": "Sie benötigen noch {count} Punkte",
+      "blockerNeedMoreUploads": "{count, plural, =1 {Sie benötigen noch 1 Upload} other {Sie benötigen noch # Uploads}}",
+      "blockerNeedMoreDownloads": "{count, plural, =1 {Sie benötigen noch 1 Download} other {Sie benötigen noch # Downloads}}"
     }
   },
   "verifiedSeller": {
@@ -4092,12 +4193,12 @@
       "criteria": {
         "minSales": {
           "title": "Mindestverkäufe",
-          "description": "Mindestens 10 erfolgreiche Verkäufe oder Downloads deiner Materialien.",
+          "description": "Mindestens 10 erfolgreiche Verkäufe oder Downloads Ihrer Materialien.",
           "value": "≥ 10"
         },
         "minRating": {
           "title": "Mindestbewertung",
-          "description": "Durchschnittliche Bewertung deiner Materialien von mindestens 4.5 Sternen.",
+          "description": "Durchschnittliche Bewertung Ihrer Materialien von mindestens 4.5 Sternen.",
           "value": "≥ 4.5 ★"
         },
         "minResources": {
@@ -4107,7 +4208,7 @@
         },
         "accountAge": {
           "title": "Kontoalter",
-          "description": "Dein Konto muss mindestens 30 Tage alt sein.",
+          "description": "Ihr Konto muss mindestens 30 Tage alt sein.",
           "value": "≥ 30 Tage"
         }
       },
@@ -4115,11 +4216,11 @@
       "howSteps": {
         "automatic": {
           "title": "Automatische Prüfung",
-          "description": "Deine Statistiken werden bei jedem Verkauf, Download und jeder Bewertung überprüft. Sobald du alle 4 Kriterien erfüllst, erhältst du automatisch das Abzeichen."
+          "description": "Ihre Statistiken werden bei jedem Verkauf, Download und jeder Bewertung überprüft. Sobald Sie alle 4 Kriterien erfüllen, erhalten Sie automatisch das Abzeichen."
         },
         "revocation": {
           "title": "Widerruf möglich",
-          "description": "Wenn du die Kriterien nicht mehr erfüllst (z.B. durch sinkende Bewertungen), wird die automatische Verifizierung widerrufen."
+          "description": "Wenn Sie die Kriterien nicht mehr erfüllen (z.B. durch sinkende Bewertungen), wird die automatische Verifizierung widerrufen."
         },
         "manual": {
           "title": "Manuelle Vergabe",
@@ -4128,11 +4229,11 @@
       },
       "benefitsTitle": "Vorteile",
       "benefits": {
-        "badge": "Sichtbares Abzeichen auf deinem Profil und bei allen deinen Materialien.",
-        "trust": "Erhöhtes Vertrauen bei Käufer:innen — verifizierte Verkäufer:innen werden bevorzugt.",
+        "badge": "Sichtbares Abzeichen auf Ihrem Profil und bei allen Ihren Materialien.",
+        "trust": "Erhöhtes Vertrauen bei Käuferinnen und Käufern — verifizierte Verkäufer werden bevorzugt.",
         "visibility": "Bessere Sichtbarkeit in Suchergebnissen und Empfehlungen.",
-        "credibility": "Dein Profil wird als «vertrauenswürdig» hervorgehoben — ideal für neue Käufer:innen.",
-        "recognition": "Anerkennung deiner Arbeit als erfahrene Lehrperson und Materialerstellerin."
+        "credibility": "Ihr Profil wird als «vertrauenswürdig» hervorgehoben — ideal für neue Käuferinnen und Käufer.",
+        "recognition": "Anerkennung Ihrer Arbeit als erfahrene Lehrperson und Materialerstellerin bzw. -ersteller."
       },
       "comparisonTitle": "Was unterscheidet verifizierte Verkäufer?",
       "comparison": {
@@ -4184,10 +4285,10 @@
   },
   "welcomePage": {
     "title": "Willkommen, {name}!",
-    "subtitle": "Vervollständige dein Profil, damit wir dir passende Materialien zeigen können.",
+    "subtitle": "Vervollständigen Sie Ihr Profil, damit wir Ihnen passende Materialien zeigen können.",
     "fields": {
       "displayName": "Anzeigename",
-      "displayNamePlaceholder": "Dein Name auf Currico",
+      "displayNamePlaceholder": "Ihr Name auf Currico",
       "displayNameHint": "2–32 Zeichen. Wird anderen Nutzern angezeigt.",
       "subjects": "Fächer",
       "subjectsPlaceholder": "Fächer auswählen...",
@@ -4204,6 +4305,55 @@
       "cyclesRequired": "Bitte wähle mindestens einen Zyklus aus.",
       "generic": "Ein Fehler ist aufgetreten. Bitte versuche es erneut."
     }
+  },
+  "editMaterial": {
+    "pageTitle": "Material bearbeiten",
+    "pageSubtitle": "Ändern Sie Titel, Beschreibung, Lehrplan-Zuordnung und Preis",
+    "breadcrumbEdit": "Bearbeiten",
+    "loading": "Material wird geladen...",
+    "notFound": "Material nicht gefunden",
+    "notFoundDesc": "Das Material existiert nicht oder wurde gelöscht.",
+    "notOwner": "Keine Berechtigung",
+    "notOwnerDesc": "Sie können nur eigene Materialien bearbeiten.",
+    "backToUploads": "Zurück zu meinen Uploads",
+    "sectionFile": "Datei-Informationen",
+    "fileReadOnly": "Dateien können nach dem Hochladen nicht geändert werden.",
+    "sectionBasics": "Grundinformationen",
+    "sectionCurriculum": "Lehrplan-Zuordnung",
+    "sectionPrice": "Preis",
+    "sectionPublish": "Veröffentlichung",
+    "titleLabel": "Titel",
+    "titleHint": "Zwischen 3 und 64 Zeichen",
+    "titlePlaceholder": "Geben Sie einen Titel ein",
+    "descriptionLabel": "Beschreibung",
+    "descriptionHint": "{count} / 5000 Zeichen",
+    "descriptionPlaceholder": "Beschreiben Sie Ihr Material...",
+    "priceFree": "Gratis",
+    "priceFreeDesc": "Material kostenlos teilen",
+    "pricePaid": "Kostenpflichtig",
+    "pricePaidDesc": "Preis in CHF festlegen",
+    "priceLabel": "Preis (CHF)",
+    "priceHint": "Mindestens CHF 0.50, wird auf 0.50 gerundet",
+    "pricePlaceholder": "z.B. 3.50",
+    "earningsPerSale": "Ihr Verdienst pro Verkauf",
+    "priceLocked": "Preis gesperrt",
+    "priceLockedDesc": "Der Preis kann nach der Verifizierung nicht mehr geändert werden, um bestehende Käufer zu schützen.",
+    "publishedLabel": "Veröffentlicht",
+    "publishedDesc": "Material ist für andere Benutzer sichtbar",
+    "unpublishedDesc": "Material ist nur für Sie sichtbar",
+    "statusPending": "Dieses Material wird aktuell von unserem Team geprüft.",
+    "statusRejected": "Dieses Material wurde abgelehnt. Bitte passen Sie es an und reichen Sie es erneut ein.",
+    "save": "Änderungen speichern",
+    "saving": "Wird gespeichert...",
+    "saved": "Änderungen gespeichert",
+    "noChanges": "Keine Änderungen",
+    "unsavedChanges": "Sie haben ungespeicherte Änderungen. Sind Sie sicher, dass Sie die Seite verlassen möchten?",
+    "errorLoad": "Fehler beim Laden des Materials",
+    "errorSave": "Fehler beim Speichern. Bitte versuchen Sie es erneut.",
+    "errorValidation": "Bitte überprüfen Sie Ihre Eingaben.",
+    "errorPriceApproved": "Der Preis kann nach der Verifizierung nicht geändert werden.",
+    "authRequired": "Bitte melden Sie sich an, um Materialien zu bearbeiten.",
+    "successRedirect": "Material erfolgreich aktualisiert"
   },
   "bundle": {
     "pageTitle": "Bundle erstellen",
@@ -4254,5 +4404,15 @@
     "uploadMaterial": "Material hochladen",
     "previous": "Zurück",
     "next": "Weiter"
+  },
+  "digest": {
+    "subject": "Neue Materialien für Sie",
+    "heading": "{count} neue Materialien für Sie",
+    "headingGeneric": "Neue Materialien auf Currico",
+    "intro": "Basierend auf Ihrem Profil und Ihren Favoriten haben wir neue Materialien für Sie zusammengestellt.",
+    "introGeneric": "Entdecken Sie die neuesten Materialien auf Currico.",
+    "free": "Gratis",
+    "ctaAllMaterials": "Alle Materialien entdecken",
+    "unsubscribeFooter": "Newsletter abbestellen"
   }
 }

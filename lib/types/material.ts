@@ -46,6 +46,7 @@ export interface Material {
   createdAt: string;
   downloadCount: number;
   isApproved: boolean;
+  isPublished?: boolean;
   status: "PENDING" | "VERIFIED" | "REJECTED";
   seller: {
     id: string;
@@ -110,7 +111,14 @@ export interface FeaturedMaterial {
   previewUrl: string | null;
   averageRating?: number;
   reviewCount?: number;
-  seller: { id: string; displayName: string | null; isVerifiedSeller: boolean };
+  competencies?: { code: string; subjectColor?: string }[];
+  seller: {
+    id: string;
+    displayName: string | null;
+    isVerifiedSeller: boolean;
+    sellerLevel?: number;
+    sellerXp?: number;
+  };
 }
 
 export interface BundleResource {

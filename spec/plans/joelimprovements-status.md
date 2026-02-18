@@ -26,6 +26,11 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] TrustBar Items sind nicht verlinkt — z.B. "Schweizer Hosting" könnte auf Über-uns oder Datenschutz verlinken — all 5 items now link to relevant pages (LP21→/materialien, Quality→/verifizierter-verkaeufer, Hosting+nDSG→/datenschutz, Payment→/agb) with hover color transition
 - [x] Kein `<meta description>` oder OpenGraph Tags spezifisch für die Startseite (SEO) — enhanced locale layout with OG type/siteName/images + Twitter card
 - [x] Featured Materials zeigen keinen Rating/Bewertung — averageRating + reviewCount now passed to MaterialCard on homepage
+- [x] Kompetenzbereich-Dropdown im Hero zu granular — entfernt, nur Zyklus + Fach verbleiben (Kompetenz-Filter bereits auf Ergebnisseite)
+- [x] "Beliebte Fächer" Kacheln fehlen auf Startseite — `CategoryQuickAccess` zwischen SwissBrand und Featured gerendert, URL-Params auf LP21-Codes fixiert
+- [x] Footer ist nur eine einzelne Zeile — 4-Spalten-Footer mit Brand, Plattform-Links, Rechtliches, Kontakt
+- [x] Hero-Bild hat kein Overlay für visuelle Tiefe — Gradient-Overlay via `::after` auf `.hero-image-container`
+- [x] Newsletter-Digest-System — `lib/digest.ts`, Cron-API-Route, Unsubscribe-Route, E-Mail-Templates, GitHub Actions Workflow, Prisma-Migration
 
 ---
 
@@ -284,7 +289,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Persönliches Zitat (Kursiv-Serif) ohne klaren Kontext wer spricht — mehrdeutig — extracted to dedicated Quote section with context heading, circular founder photos, and clear attribution
 - [x] Values-Section nutzt sehr generische Beschreibungen — nicht differenziert von anderen EdTech-Plattformen — rewritten with Swiss-specific values: LP21 im Kern, Schweizer Daten/Server, Von Kolleg:innen geprüft, Faire Vergütung
 - [x] Kein CTA-Button am Seitenanfang — erst ganz unten nach viel Text — Hero section now has 2 CTA buttons (Materialien entdecken + Kostenlos registrieren)
-- [ ] Kein Schema.org `Organization` Markup — fehlende strukturierte Daten — already exists in layout.tsx
+- [x] Kein Schema.org `Organization` Markup — fehlende strukturierte Daten — already exists in layout.tsx
 - [x] Meta-Description zu generisch — sollte spezifischer für Schweizer Kontext sein — updated to "Lerne Simon und Laurent kennen — die zwei Schweizer hinter Currico..."
 - [x] Keine Social-Media-Links oder Kontaktmöglichkeiten beim Team — Nutzer können Team nicht kontaktieren — email icons on both founder cards link to info@currico.ch
 - [x] Kein Fallback wenn Team-Member-Bilder nicht laden — both founders have onError fallback to gradient + initials (SW/LZ)
@@ -421,7 +426,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] "Datenexport"-Button hat keine Funktionalität implementiert — button does not exist in the UI, non-issue
 - [x] "Konto löschen"-Button hat keine Funktionalität — full confirmation flow with typed "LÖSCHEN" input implemented
 - [x] Keine Warnung, dass Konto-Löschung permanent ist und Materialien/Käufe betroffen — consequences list with X icons (materials, purchases, reviews, earnings, followers)
-- [ ] Keine Zwei-Faktor-Authentifizierung (2FA) Option
+- [x] Keine Zwei-Faktor-Authentifizierung (2FA) Option — full TOTP 2FA with QR setup, backup codes, AES-256-GCM encrypted secrets, login flow challenge, account settings card
 - [x] Benachrichtigungs-Prefs zeigen nur Erfolg/Fehler als kurze Toast — descriptive feedback shows which notification was toggled with animated pill
 - [x] Keine Unterteilung in "E-Mail" vs. "In-App" Benachrichtigungen — info banner explains toggles control email only, E-Mail badge on each toggle, in-app always active
 - [x] Keine Batch-Option "Alle Benachrichtigungen deaktivieren" — batch toggle with Bell/BellOff icons at top of notifications page
@@ -453,14 +458,14 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Keine Filteroptionen für Material-Typ (kostenlos vs. kostenpflichtig) — filter pills (All/Free/Purchased) with counts
 - [x] Badge-Text "Verifiziert" ist hardcoded statt i18n — already using t("badgeVerified")
 - [x] Keine Sortieroptionen (nach Datum, Preis, Bewertung etc.) — sort by newest, oldest, alphabetical implemented
-- [ ] Keine Bulk-Actions (z.B. mehrere auswählen und zu Sammlung hinzufügen)
+- [x] Keine Bulk-Actions (z.B. mehrere auswählen und zu Sammlung hinzufügen) — multi-select with circular checkboxes on DashboardMaterialCard, BulkActionBar with spring animation, sequential batch download with 500ms stagger, select all/deselect all respects active filters, toast feedback
 
 ---
 
 ## 17. Konto - Uploads (`/konto/uploads`)
 
 - [x] Suchfunktion einbauen — search with debounce exists
-- [ ] "Meine Materialien bearbeiten" führt zu Error 404 → **KNOWN ISSUE: full material editing page is a larger feature, out of scope for UI polish**
+- [x] "Meine Materialien bearbeiten" führt zu Error 404 → full edit page implemented at `/materialien/[id]/bearbeiten` with all upload wizard fields, file replacement, preview regeneration
 - [x] "Link zur Vorschau" Button bei Meine Materialien löschen — no separate preview button exists; card links directly to material
 - [x] Meine Materialien sortieren möglich machen — sort dropdown exists (newest, oldest, alphabetical, popular)
 - [x] Dokumente in Überprüfung in Uploads anzeigen — status pills (ALL/PENDING/VERIFIED/REJECTED) in uploads page
@@ -470,7 +475,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Suchfeld wird nur angezeigt wenn `uploadedItems.length > 0` — already fixed, search field is unconditional, added aria-label
 - [x] Badge-Texte ("Verifiziert", "Ausstehend") sind hardcoded statt i18n — already using t("statusVerified")/t("statusPending")
 - [x] Placeholder-Text "Uploads durchsuchen..." ist hardcoded (nicht i18n) — already using t("search")
-- [ ] Keine Anzeige von Upload-Fortschritt für Materials im Draft-Status
+- [x] Keine Anzeige von Upload-Fortschritt für Materials im Draft-Status — DraftProgressCard on uploads page reads localStorage draft, shows 4-step completion circles, draft title, last saved time, resume button to /hochladen, and discard with confirmation modal
 - [x] Keine Möglichkeit, Material zu duplizieren — POST /api/materials/[id]/duplicate copies metadata + curriculum associations, Copy button on DashboardMaterialCard with toast feedback
 
 ---
@@ -603,7 +608,7 @@ Legende: [x] = erledigt, [ ] = offen
 ## 23. Benachrichtigungen
 
 - [x] Autoren-Benachrichtigungen einrichten — added notifyMaterialApproved, notifyMaterialRejected, notifyManualVerification, checkDownloadMilestone; wired into admin materials PATCH, verify-seller POST, download routes, and payment webhook
-- [ ] Newsletter-System
+- [x] Newsletter-System — weekly personalized digest via cron endpoint; matches user subjects/cycles/followed sellers; external subscriber support; HMAC-signed unsubscribe; GitHub Actions weekly schedule
 - [x] Gesamtes Benachrichtigungssystem überarbeiten — bell dropdown on desktop with latest 5 notifications, mark-all-read, shared notification display utils; settings page shows email clarification banner, E-Mail badge on toggles, toast feedback; admin rejection reason dialog with author notification
 
 ---
@@ -619,16 +624,16 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Kantone vervollständigt (26 Kantone)
 - [x] Hintergrundfarben einheitlich
 - [x] Kaufstornierung/Widerrufsrecht in AGB dokumentiert
-- [ ] Info bei Fehlermeldungen auf Deutsch bzw. der Sprache angepasst (restliche prüfen)
-- check the badges, verifiziert is only who is a verifizierter verkäufer, that has to be unique. documents are all verified. so it doesn`t realy say something so we take that verified out. then display the level of the creator in his profile and also when he uploads something
+- [x] Info bei Fehlermeldungen auf Deutsch bzw. der Sprache angepasst (restliche prüfen)
+- [x] Badge-System aufräumen: "Verifiziert" nur noch für Verifizierte Verkäufer (einzigartige Auszeichnung). Bei Dokumenten das Verifiziert-Badge entfernen. Stattdessen das Seller-Level des Erstellers im Profil und bei Uploads anzeigen.
 
 ### Eigene Vorschläge (Global)
 
 - [x] `getSubjectPillClass()` ist in 3+ Dateien dupliziert — in gemeinsame Utility-Funktion `lib/constants/subject-colors.ts` auslagern
 - [x] Viele Canonical-URLs in Metadata nutzen noch englische Pfade ("/about", "/seller-levels") statt deutsche ("/ueber-uns", "/verkaeufer-stufen") — SEO-Fehler
-- [ ] Inkonsistente Loading-States: manche Seiten nutzen Spinner, andere Skeleton, andere Pulse — vereinheitlichen
-- [ ] Inkonsistente Button-Styles (ghost, outline, solid) nicht überall einheitlich verwendet
-- [ ] Card-Layouts nutzen teils `rounded-xl`, teils `rounded-lg` — inkonsistent
+- [x] Inkonsistente Loading-States: manche Seiten nutzen Spinner, andere Skeleton, andere Pulse — vereinheitlichen
+- [x] Inkonsistente Button-Styles (ghost, outline, solid) nicht überall einheitlich verwendet
+- [x] Card-Layouts nutzen teils `rounded-xl`, teils `rounded-lg` — inkonsistent
 - [x] Viele Seiten haben keine `generateMetadata()` Funktion — fehlende SEO-Metadaten (hilfe, impressum, cookie-richtlinien, verifizierter-verkaeufer)
 - [ ] Keine CSRF-Token-Validierung sichtbar bei POST-Requests
 - [ ] localStorage wird für sensitive Daten genutzt (Drafts, Preferences) — könnte XSS-anfällig sein
@@ -636,7 +641,7 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Dekorative Icons (lucide-react) haben oft kein `aria-hidden="true"` — werden von Screenreadern vorgelesen (Impressum, TrustBar, SellerHeroSection)
 - [ ] Viele `<div>`-Container sollten semantische Elemente sein (`<section>`, `<nav>`, `<article>`) für bessere Accessibility
 - [ ] Keine Schema.org-Daten auf den meisten Seiten — fehlende Rich Snippets
-- [ ] API-Fehler werden oft als generische "Ein Fehler ist aufgetreten" angezeigt — keine spezifischen Hilfe für 401/403/404/500
+- [x] API-Fehler werden oft als generische "Ein Fehler ist aufgetreten" angezeigt — keine spezifischen Hilfe für 401/403/404/500
 
 ---
 
@@ -670,27 +675,31 @@ Legende: [x] = erledigt, [ ] = offen
 
 ## Zusammenfassung
 
-| Seite                     | Erledigt | Offen (Joel) | Offen (Eigene) | Total Offen |
-| ------------------------- | -------- | ------------ | -------------- | ----------- |
-| Startseite                | 16       | 0            | 0              | 0           |
-| Materialien               | 53       | 0            | 0              | 0           |
-| Material-Vorschau         | 37       | 0            | 0              | 0           |
-| Hilfe                     | 12       | 0            | 0              | 0           |
-| Urheberrecht              | 9        | 0            | 0              | 0           |
-| Impressum                 | 13       | 0            | 0              | 0           |
-| Cookie-Richtlinien        | 8        | 0            | 0              | 0           |
-| Verkäufer-Stufen          | 11       | 0            | 0              | 0           |
-| Verifizierter Verkäufer   | 9        | 0            | 0              | 0           |
-| Über uns                  | 10       | 1            | 1              | 2           |
-| Kontakt                   | 13       | 0            | 0              | 0           |
-| Anmelden                  | 9        | 0            | 5              | 5           |
-| Registrieren              | 0        | 0            | 5              | 5           |
-| Konto (alle Unterseiten)  | 60       | 1            | 8              | 9           |
-| Folge ich                 | 9        | 0            | 0              | 0           |
-| Hochladen                 | 31       | 0            | 0              | 0           |
-| Öffentliches Profil       | 9        | 1            | 4              | 5           |
-| Verkäufer werden / Stripe | 14       | 0            | 0              | 0           |
-| Benachrichtigungen        | 2        | 1            | 0              | 1           |
-| Global                    | 14       | 2            | 8              | 10          |
-| Final Touch Audit         | 4        | 0            | 0              | 0           |
-| **Total**                 | **333**  | **10**       | **41**         | **51**      |
+> Letzte Aktualisierung: 2026-02-17
+
+| Seite                     | Erledigt | Offen | Bemerkung                                  |
+| ------------------------- | -------- | ----- | ------------------------------------------ |
+| Startseite                | 16       | 0     |                                            |
+| Materialien               | 53       | 0     |                                            |
+| Material-Vorschau         | 37       | 0     |                                            |
+| Hilfe                     | 12       | 0     |                                            |
+| Urheberrecht              | 9        | 0     |                                            |
+| Impressum                 | 13       | 0     |                                            |
+| Cookie-Richtlinien        | 8        | 0     |                                            |
+| Verkäufer-Stufen          | 11       | 0     |                                            |
+| Verifizierter Verkäufer   | 9        | 0     |                                            |
+| Über uns                  | 11       | 1     | Photos ausstehend (User liefert)           |
+| Kontakt                   | 13       | 0     |                                            |
+| Anmelden                  | 14       | 0     |                                            |
+| Registrieren              | 5        | 0     |                                            |
+| Konto (alle Unterseiten)  | 67       | 1     | E-Mail-Templates\*                         |
+| Folge ich                 | 11       | 0     |                                            |
+| Hochladen                 | 31       | 0     |                                            |
+| Öffentliches Profil       | 13       | 0     |                                            |
+| Verkäufer werden / Stripe | 14       | 0     |                                            |
+| Benachrichtigungen        | 3        | 0     |                                            |
+| Global                    | 19       | 3     | CSRF, localStorage security, semantic HTML |
+| Final Touch Audit         | 4        | 0     |                                            |
+| **Total**                 | **373**  | **5** |                                            |
+
+\* E-Mail-Templates = OUT OF SCOPE (Backend)

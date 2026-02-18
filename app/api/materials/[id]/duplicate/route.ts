@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getCurrentUserId } from "@/lib/auth";
-import { badRequest } from "@/lib/api";
+import { badRequest, unauthorized, notFound, forbidden, serverError, rateLimited } from "@/lib/api";
 import { checkRateLimit, isValidId } from "@/lib/rateLimit";
 
 /**
@@ -14,12 +14,12 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
   try {
     const userId = await getCurrentUserId();
     if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return unauthorized();
     }
 
     const rateLimit = checkRateLimit(userId, "resources:duplicate");
     if (!rateLimit.success) {
-      return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+      return rateLimited();
     }
 
     const { id } = await params;
@@ -37,12 +37,12 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     });
 
     if (!original) {
-      return NextResponse.json({ error: "Material not found" }, { status: 404 });
+      return notFound("Material not found");
     }
 
     // Only the owner can duplicate their own material
     if (original.seller_id !== userId) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      return forbidden();
     }
 
     // Create the duplicate with copied fields
@@ -96,6 +96,6 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     });
   } catch (error) {
     console.error("Error duplicating material:", error);
-    return NextResponse.json({ error: "Failed to duplicate material" }, { status: 500 });
+    return serverError("Failed to duplicate material");
   }
 }

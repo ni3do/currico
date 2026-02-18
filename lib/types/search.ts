@@ -12,6 +12,11 @@ export interface LP21FilterState {
   cantons: string[];
 }
 
+export interface MaterialCompetency {
+  code: string;
+  subjectColor?: string;
+}
+
 export interface MaterialListItem {
   id: string;
   title: string;
@@ -24,10 +29,13 @@ export interface MaterialListItem {
   createdAt: string;
   averageRating?: number;
   reviewCount?: number;
+  competencies?: MaterialCompetency[];
   seller: {
     id: string;
     displayName: string | null;
     isVerifiedSeller?: boolean;
+    sellerLevel?: number;
+    sellerXp?: number;
   };
 }
 

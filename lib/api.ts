@@ -15,6 +15,8 @@ export const API_ERROR_CODES = {
   INVALID_INPUT: "INVALID_INPUT",
   INVALID_FILE_TYPE: "INVALID_FILE_TYPE",
   USER_NOT_FOUND: "USER_NOT_FOUND",
+  RATE_LIMITED: "RATE_LIMITED",
+  CONFLICT: "CONFLICT",
 } as const;
 
 export type ApiErrorCode = (typeof API_ERROR_CODES)[keyof typeof API_ERROR_CODES];
@@ -47,6 +49,14 @@ export function serverError(message = "Internal server error") {
     { error: message, code: API_ERROR_CODES.INTERNAL_ERROR },
     { status: 500 }
   );
+}
+
+export function rateLimited(message = "Too many requests") {
+  return NextResponse.json({ error: message, code: API_ERROR_CODES.RATE_LIMITED }, { status: 429 });
+}
+
+export function conflict(message = "Conflict") {
+  return NextResponse.json({ error: message, code: API_ERROR_CODES.CONFLICT }, { status: 409 });
 }
 
 // ============================================================

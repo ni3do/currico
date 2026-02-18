@@ -3,16 +3,7 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { FadeIn, StaggerChildren, StaggerItem, motion } from "@/components/ui/animations";
-import {
-  BookOpen,
-  Calculator,
-  Leaf,
-  Languages,
-  Music,
-  Palette,
-  Monitor,
-  Dumbbell,
-} from "lucide-react";
+import { BookOpen, Calculator, Leaf, Languages, Music, Palette, Monitor } from "lucide-react";
 
 interface SubjectCategory {
   key: string;
@@ -26,13 +17,13 @@ const categories: SubjectCategory[] = [
     key: "deutsch",
     icon: <BookOpen className="h-6 w-6" />,
     pillClass: "pill-deutsch",
-    queryParam: "Deutsch",
+    queryParam: "D",
   },
   {
     key: "mathematik",
     icon: <Calculator className="h-6 w-6" />,
     pillClass: "pill-mathe",
-    queryParam: "Mathematik",
+    queryParam: "MA",
   },
   {
     key: "nmg",
@@ -44,31 +35,31 @@ const categories: SubjectCategory[] = [
     key: "englisch",
     icon: <Languages className="h-6 w-6" />,
     pillClass: "pill-englisch",
-    queryParam: "Englisch",
+    queryParam: "EN",
   },
   {
     key: "franzoesisch",
     icon: <Languages className="h-6 w-6" />,
     pillClass: "pill-franzoesisch",
-    queryParam: "Französisch",
+    queryParam: "FR",
   },
   {
     key: "musik",
     icon: <Music className="h-6 w-6" />,
     pillClass: "pill-musik",
-    queryParam: "Musik",
+    queryParam: "MU",
   },
   {
     key: "gestalten",
     icon: <Palette className="h-6 w-6" />,
     pillClass: "pill-gestalten",
-    queryParam: "Bildnerisches Gestalten",
+    queryParam: "BG",
   },
   {
     key: "medien",
     icon: <Monitor className="h-6 w-6" />,
     pillClass: "pill-medien",
-    queryParam: "Medien & Informatik",
+    queryParam: "MI",
   },
 ];
 
@@ -89,7 +80,7 @@ export function CategoryQuickAccess() {
             {categories.map((category) => (
               <Link
                 key={category.key}
-                href={`/materialien?subject=${encodeURIComponent(category.queryParam)}`}
+                href={`/materialien?fachbereich=${encodeURIComponent(category.queryParam)}`}
                 className="flex-shrink-0"
               >
                 <motion.div
@@ -124,7 +115,7 @@ export function CategoryQuickAccess() {
           {categories.map((category) => (
             <StaggerItem key={category.key} variant="card">
               <Link
-                href={`/materialien?subject=${encodeURIComponent(category.queryParam)}`}
+                href={`/materialien?fachbereich=${encodeURIComponent(category.queryParam)}`}
                 className="block"
               >
                 <motion.div

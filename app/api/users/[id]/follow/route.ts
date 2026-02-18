@@ -1,7 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { requireAuth, unauthorized, badRequest, notFound } from "@/lib/api";
-import { checkRateLimit, rateLimitHeaders, isValidId } from "@/lib/rateLimit";
+import {
+  requireAuth,
+  unauthorized,
+  badRequest,
+  notFound,
+  rateLimited,
+  serverError,
+} from "@/lib/api";
+import { checkRateLimit, isValidId } from "@/lib/rateLimit";
 import { notifyFollow } from "@/lib/notifications";
 
 /**
@@ -15,13 +22,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
   // Rate limiting check
   const rateLimitResult = checkRateLimit(currentUserId, "users:follow");
   if (!rateLimitResult.success) {
-    return NextResponse.json(
-      {
-        error: "Zu viele Anfragen. Bitte versuchen Sie es später erneut.",
-        retryAfter: rateLimitResult.retryAfter,
-      },
-      { status: 429, headers: rateLimitHeaders(rateLimitResult) }
-    );
+    return rateLimited();
   }
 
   try {
@@ -82,7 +83,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     });
   } catch (error) {
     console.error("Error following user:", error);
-    return NextResponse.json({ error: "Fehler beim Folgen des Benutzers" }, { status: 500 });
+    return serverError("Fehler beim Folgen des Benutzers");
   }
 }
 
@@ -100,13 +101,7 @@ export async function DELETE(
   // Rate limiting check (same limit as follow)
   const rateLimitResult = checkRateLimit(currentUserId, "users:follow");
   if (!rateLimitResult.success) {
-    return NextResponse.json(
-      {
-        error: "Zu viele Anfragen. Bitte versuchen Sie es später erneut.",
-        retryAfter: rateLimitResult.retryAfter,
-      },
-      { status: 429, headers: rateLimitHeaders(rateLimitResult) }
-    );
+    return rateLimited();
   }
 
   try {
@@ -136,6 +131,6 @@ export async function DELETE(
     });
   } catch (error) {
     console.error("Error unfollowing user:", error);
-    return NextResponse.json({ error: "Fehler beim Entfolgen des Benutzers" }, { status: 500 });
+    return serverError("Fehler beim Entfolgen des Benutzers");
   }
 }
