@@ -5,9 +5,16 @@ import {
   generateVerificationToken,
   VERIFICATION_TOKEN_EXPIRY_HOURS,
 } from "@/lib/email";
-import { checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
+import { checkRateLimit, getClientIP } from "@/lib/rateLimit";
 import { locales, defaultLocale, type Locale } from "@/i18n/config";
-import { requireAuth, unauthorized, notFound } from "@/lib/api";
+import {
+  requireAuth,
+  unauthorized,
+  notFound,
+  badRequest,
+  rateLimited,
+  serverError,
+} from "@/lib/api";
 
 export async function POST(request: NextRequest) {
   // Rate limiting check
@@ -15,16 +22,7 @@ export async function POST(request: NextRequest) {
   const rateLimitResult = checkRateLimit(clientIP, "auth:send-verification");
 
   if (!rateLimitResult.success) {
-    return NextResponse.json(
-      {
-        error: "Zu viele Anfragen. Bitte versuchen Sie es später erneut.",
-        retryAfter: rateLimitResult.retryAfter,
-      },
-      {
-        status: 429,
-        headers: rateLimitHeaders(rateLimitResult),
-      }
-    );
+    return rateLimited();
   }
 
   const userId = await requireAuth();
@@ -47,7 +45,7 @@ export async function POST(request: NextRequest) {
 
     // Check if already verified
     if (user.emailVerified) {
-      return NextResponse.json({ error: "E-Mail-Adresse ist bereits bestätigt" }, { status: 400 });
+      return badRequest("E-Mail-Adresse ist bereits bestätigt");
     }
 
     // Delete any existing verification tokens for this user
@@ -81,9 +79,8 @@ export async function POST(request: NextRequest) {
 
     if (!result.success) {
       console.error("Failed to send verification email:", result.error);
-      return NextResponse.json(
-        { error: "E-Mail konnte nicht gesendet werden. Bitte versuchen Sie es später erneut." },
-        { status: 500 }
+      return serverError(
+        "E-Mail konnte nicht gesendet werden. Bitte versuchen Sie es später erneut."
       );
     }
 
@@ -92,6 +89,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Send verification error:", error);
-    return NextResponse.json({ error: "Ein Fehler ist aufgetreten" }, { status: 500 });
+    return serverError("Ein Fehler ist aufgetreten");
   }
 }

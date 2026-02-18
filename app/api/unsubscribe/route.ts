@@ -9,6 +9,7 @@ const TYPE_TO_COLUMN: Record<string, string> = {
   REVIEW: "notify_review_reminders",
   COMMENT: "notify_comments",
   SYSTEM: "notify_platform_updates",
+  NEWSLETTER: "notify_newsletter",
 };
 
 function htmlPage(title: string, message: string) {
@@ -38,6 +39,40 @@ export async function GET(request: NextRequest) {
     return new NextResponse(
       htmlPage("Link ungültig", "Der Abmelde-Link ist ungültig oder unvollständig."),
       { status: 400, headers: { "Content-Type": "text/html; charset=utf-8" } }
+    );
+  }
+
+  // Handle external newsletter subscriber unsubscribe (user param is an email)
+  if (type === "NEWSLETTER_EXTERNAL") {
+    const email = userId; // For external subscribers, the user param is the email
+    if (!verifyUnsubscribeToken(email, type, sig)) {
+      return new NextResponse(
+        htmlPage("Link ungültig", "Der Abmelde-Link ist ungültig oder abgelaufen."),
+        { status: 400, headers: { "Content-Type": "text/html; charset=utf-8" } }
+      );
+    }
+
+    try {
+      await prisma.newsletterSubscriber.updateMany({
+        where: { email, unsubscribed_at: null },
+        data: { unsubscribed_at: new Date() },
+      });
+    } catch {
+      return new NextResponse(
+        htmlPage(
+          "Fehler",
+          "Beim Abmelden ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut."
+        ),
+        { status: 500, headers: { "Content-Type": "text/html; charset=utf-8" } }
+      );
+    }
+
+    return new NextResponse(
+      htmlPage(
+        "Erfolgreich abgemeldet",
+        "Sie erhalten keine Newsletter-Digest-E-Mails mehr. Sie können sich jederzeit erneut anmelden."
+      ),
+      { status: 200, headers: { "Content-Type": "text/html; charset=utf-8" } }
     );
   }
 
@@ -77,6 +112,7 @@ export async function GET(request: NextRequest) {
     REVIEW: "Bewertungsbenachrichtigungen",
     COMMENT: "Kommentar-Benachrichtigungen",
     SYSTEM: "Plattform-Updates",
+    NEWSLETTER: "Newsletter-Digest",
   };
 
   const label = typeLabels[type] || "Benachrichtigungen";

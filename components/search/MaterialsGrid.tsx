@@ -49,6 +49,8 @@ export function MaterialsGrid({
             seller={{
               displayName: material.seller.displayName,
               isVerifiedSeller: material.seller.isVerifiedSeller,
+              sellerLevel: material.seller.sellerLevel,
+              sellerXp: material.seller.sellerXp,
             }}
             subjectPillClass={getSubjectPillClass(material.subjects[0] || "Allgemein")}
             showWishlist={true}

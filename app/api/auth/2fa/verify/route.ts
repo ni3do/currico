@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { requireAuth, unauthorized } from "@/lib/api";
-import { checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
+import { requireAuth, unauthorized, badRequest, rateLimited, serverError } from "@/lib/api";
+import { checkRateLimit, getClientIP } from "@/lib/rateLimit";
 import { twoFactorVerifySchema } from "@/lib/validations/auth";
 import { validateTOTP, generateBackupCodes } from "@/lib/totp";
 
@@ -16,17 +16,14 @@ export async function POST(request: NextRequest) {
   const clientIP = getClientIP(request);
   const rl = checkRateLimit(`${userId}:${clientIP}`, "auth:2fa-verify");
   if (!rl.success) {
-    return NextResponse.json(
-      { error: "RATE_LIMITED" },
-      { status: 429, headers: rateLimitHeaders(rl) }
-    );
+    return rateLimited();
   }
 
   try {
     const body = await request.json();
     const parsed = twoFactorVerifySchema.safeParse(body);
     if (!parsed.success) {
-      return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
+      return badRequest("INVALID_INPUT");
     }
 
     const user = await prisma.user.findUnique({
@@ -35,16 +32,16 @@ export async function POST(request: NextRequest) {
     });
 
     if (!user || !user.totp_secret) {
-      return NextResponse.json({ error: "SETUP_REQUIRED" }, { status: 400 });
+      return badRequest("SETUP_REQUIRED");
     }
 
     if (user.totp_enabled) {
-      return NextResponse.json({ error: "ALREADY_ENABLED" }, { status: 400 });
+      return badRequest("ALREADY_ENABLED");
     }
 
     const isValid = validateTOTP(parsed.data.token, user.totp_secret);
     if (!isValid) {
-      return NextResponse.json({ error: "INVALID_CODE" }, { status: 400 });
+      return badRequest("INVALID_CODE");
     }
 
     // Generate backup codes and enable 2FA
@@ -61,6 +58,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ backupCodes: codes });
   } catch (error) {
     console.error("2FA verify error:", error);
-    return NextResponse.json({ error: "INTERNAL_ERROR" }, { status: 500 });
+    return serverError();
   }
 }

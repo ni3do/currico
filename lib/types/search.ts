@@ -34,6 +34,8 @@ export interface MaterialListItem {
     id: string;
     displayName: string | null;
     isVerifiedSeller?: boolean;
+    sellerLevel?: number;
+    sellerXp?: number;
   };
 }
 

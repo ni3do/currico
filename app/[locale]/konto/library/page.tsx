@@ -8,6 +8,8 @@ import { motion } from "framer-motion";
 import { AlertCircle, BookOpen, Gift, RefreshCw, ShoppingBag, Sparkles } from "lucide-react";
 import { DashboardMaterialCard } from "@/components/ui/DashboardMaterialCard";
 import { DashboardMaterialGridSkeleton } from "@/components/ui/Skeleton";
+import { BulkActionBar } from "@/components/ui/BulkActionBar";
+import { useToast } from "@/components/ui/Toast";
 import { useAccountData } from "@/lib/hooks/useAccountData";
 import type { LibraryItem } from "@/lib/types/account";
 
@@ -18,6 +20,7 @@ export default function AccountLibraryPage() {
   const { loading: sharedLoading } = useAccountData();
   const t = useTranslations("accountPage.library");
   const tSort = useTranslations("common.sort");
+  const { toast } = useToast();
 
   const [libraryItems, setLibraryItems] = useState<LibraryItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -25,6 +28,8 @@ export default function AccountLibraryPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"newest" | "oldest" | "title">("newest");
   const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [downloading, setDownloading] = useState(false);
 
   // Fetch library items
   const fetchLibrary = useCallback(async (search?: string) => {
@@ -75,7 +80,75 @@ export default function AccountLibraryPage() {
     return items;
   }, [libraryItems, typeFilter, sortBy]);
 
+  // Selection: only count items that are currently visible (filtered)
+  const visibleIds = useMemo(
+    () => new Set(filteredAndSortedItems.map((i) => i.id)),
+    [filteredAndSortedItems]
+  );
+  const visibleSelectedCount = useMemo(
+    () => [...selectedIds].filter((id) => visibleIds.has(id)).length,
+    [selectedIds, visibleIds]
+  );
+
+  const toggleSelect = useCallback((id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }, []);
+
+  const selectAll = useCallback(() => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      for (const id of visibleIds) next.add(id);
+      return next;
+    });
+  }, [visibleIds]);
+
+  const deselectAll = useCallback(() => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      for (const id of visibleIds) next.delete(id);
+      return next;
+    });
+  }, [visibleIds]);
+
+  // Bulk download: sequential window.open with 500ms stagger
+  const handleBulkDownload = useCallback(async () => {
+    const ids = [...selectedIds].filter((id) => visibleIds.has(id));
+    if (ids.length === 0) return;
+
+    setDownloading(true);
+    let successCount = 0;
+
+    for (let i = 0; i < ids.length; i++) {
+      try {
+        window.open(`/api/materials/${ids[i]}/download`, "_blank");
+        successCount++;
+        // Stagger between downloads
+        if (i < ids.length - 1) {
+          await new Promise((r) => setTimeout(r, 500));
+        }
+      } catch {
+        // Continue with remaining downloads
+      }
+    }
+
+    setDownloading(false);
+
+    if (successCount === ids.length) {
+      toast(t("bulk.downloadSuccess", { count: successCount }), "success");
+    } else {
+      toast(t("bulk.downloadPartial", { success: successCount, total: ids.length }), "warning");
+    }
+
+    setSelectedIds(new Set());
+  }, [selectedIds, visibleIds, toast, t]);
+
   const isLoading = loading || sharedLoading;
+  const hasSelection = visibleSelectedCount > 0;
 
   return (
     <motion.div
@@ -205,7 +278,7 @@ export default function AccountLibraryPage() {
           </div>
         )}
 
-        <div className="p-6">
+        <div className={`p-6 ${hasSelection ? "pb-24" : ""}`}>
           {error ? (
             <div className="py-12 text-center">
               <AlertCircle className="text-error mx-auto mb-3 h-10 w-10" aria-hidden="true" />
@@ -241,6 +314,9 @@ export default function AccountLibraryPage() {
                     item.verified ? { label: t("badgeVerified"), variant: "success" } : undefined
                   }
                   seller={{ displayName: item.seller.displayName }}
+                  selectable
+                  selected={selectedIds.has(item.id)}
+                  onSelect={toggleSelect}
                 />
               ))}
             </div>
@@ -262,6 +338,16 @@ export default function AccountLibraryPage() {
           )}
         </div>
       </div>
+
+      {/* Bulk Action Bar */}
+      <BulkActionBar
+        selectedCount={visibleSelectedCount}
+        totalCount={filteredAndSortedItems.length}
+        onSelectAll={selectAll}
+        onDeselectAll={deselectAll}
+        onDownload={handleBulkDownload}
+        downloading={downloading}
+      />
     </motion.div>
   );
 }

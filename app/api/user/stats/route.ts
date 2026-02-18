@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
-import { requireAuth, unauthorized, notFound } from "@/lib/api";
+import { requireAuth, unauthorized, notFound, serverError } from "@/lib/api";
 
 /**
  * GET /api/user/stats
@@ -140,6 +140,6 @@ export async function GET() {
     });
   } catch (error) {
     console.error("Error fetching user stats:", error);
-    return NextResponse.json({ error: "Fehler beim Laden der Statistiken" }, { status: 500 });
+    return serverError("Fehler beim Laden der Statistiken");
   }
 }

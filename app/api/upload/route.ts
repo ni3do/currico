@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireAuth, unauthorized } from "@/lib/api";
+import { requireAuth, unauthorized, badRequest, serverError } from "@/lib/api";
 import path from "path";
 import { getStorage } from "@/lib/storage";
 import type { FileCategory } from "@/lib/storage";
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     const file = formData.get("file") as File;
 
     if (!file) {
-      return NextResponse.json({ error: "Keine Datei angegeben" }, { status: 400 });
+      return badRequest("Keine Datei angegeben");
     }
 
     // Validate file type
@@ -44,24 +44,16 @@ export async function POST(request: NextRequest) {
     const maxSize = isPreview ? MAX_PREVIEW_SIZE : MAX_FILE_SIZE;
 
     if (!allowedTypes.includes(file.type)) {
-      return NextResponse.json(
-        {
-          error: `Invalid file type: ${file.type}`,
-          allowed: allowedTypes,
-        },
-        { status: 400 }
-      );
+      return badRequest(`Invalid file type: ${file.type}`, {
+        allowed: allowedTypes,
+      });
     }
 
     if (file.size > maxSize) {
-      return NextResponse.json(
-        {
-          error: `File too large. Maximum size: ${maxSize / 1024 / 1024}MB`,
-          size: file.size,
-          maxSize,
-        },
-        { status: 400 }
-      );
+      return badRequest(`File too large. Maximum size: ${maxSize / 1024 / 1024}MB`, {
+        size: file.size,
+        maxSize,
+      });
     }
 
     // Get storage provider
@@ -94,6 +86,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error uploading file:", error);
-    return NextResponse.json({ error: "Fehler beim Hochladen der Datei" }, { status: 500 });
+    return serverError("Fehler beim Hochladen der Datei");
   }
 }

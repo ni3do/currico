@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { createConnectAccount, createAccountOnboardingLink } from "@/lib/stripe";
-import { requireAuth, unauthorized, notFound } from "@/lib/api";
+import { requireAuth, unauthorized, notFound, badRequest, serverError } from "@/lib/api";
 
 /**
  * POST /api/seller/connect
@@ -32,15 +32,12 @@ export async function POST(request: NextRequest) {
 
     // Require email verification
     if (!user.emailVerified) {
-      return NextResponse.json({ error: "E-Mail muss zuerst verifiziert werden" }, { status: 400 });
+      return badRequest("E-Mail muss zuerst verifiziert werden");
     }
 
     // Require seller terms acceptance
     if (!user.seller_terms_accepted_at) {
-      return NextResponse.json(
-        { error: "Verkäuferbedingungen müssen zuerst akzeptiert werden" },
-        { status: 400 }
-      );
+      return badRequest("Verkäuferbedingungen müssen zuerst akzeptiert werden");
     }
 
     // Construct base URL from request
@@ -88,9 +85,9 @@ export async function POST(request: NextRequest) {
 
     // Handle Stripe-specific errors
     if (error instanceof Error && error.message.includes("STRIPE_SECRET_KEY")) {
-      return NextResponse.json({ error: "Stripe ist nicht konfiguriert" }, { status: 500 });
+      return serverError("Stripe ist nicht konfiguriert");
     }
 
-    return NextResponse.json({ error: "Fehler beim Erstellen des Stripe-Kontos" }, { status: 500 });
+    return serverError("Fehler beim Erstellen des Stripe-Kontos");
   }
 }

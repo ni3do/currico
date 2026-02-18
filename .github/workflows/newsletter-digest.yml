@@ -1,0 +1,23 @@
+name: Weekly Newsletter Digest
+
+on:
+  schedule:
+    # Every Monday at 06:00 UTC (07:00 CET / 08:00 CEST)
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+jobs:
+  send-digest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger newsletter digest
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" \
+            -X POST \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "${{ secrets.APP_URL }}/api/cron/newsletter-digest")
+          echo "HTTP status: $response"
+          if [ "$response" -ge 400 ]; then
+            echo "Digest endpoint returned error status $response"
+            exit 1
+          fi

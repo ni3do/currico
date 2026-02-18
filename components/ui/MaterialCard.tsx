@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { Heart, FileText, ChevronRight } from "lucide-react";
 import { getSubjectTextColor } from "@/lib/constants/subject-colors";
-import { VerifiedSellerBadge } from "@/components/ui/VerifiedSellerBadge";
+import { SellerBadge } from "@/components/ui/SellerBadge";
 import { StarRating } from "@/components/ui/StarRating";
 import { TiltCard } from "@/components/ui/TiltCard";
 
@@ -23,6 +23,8 @@ export interface MaterialCardProps {
   seller?: {
     displayName: string | null;
     isVerifiedSeller?: boolean;
+    sellerLevel?: number;
+    sellerXp?: number;
   };
   /** Render custom footer content instead of default */
   footer?: React.ReactNode;
@@ -238,7 +240,13 @@ export function MaterialCard({
           <div className="text-text-muted mt-2 flex items-center gap-3 text-xs">
             <span className="flex items-center gap-1">
               {seller?.displayName || anonymousLabel || ""}
-              {seller?.isVerifiedSeller && <VerifiedSellerBadge variant="compact" />}
+              {seller?.sellerLevel != null && seller.sellerLevel > 0 && (
+                <SellerBadge
+                  points={seller.sellerXp ?? 0}
+                  cachedLevel={seller.sellerLevel}
+                  variant="compact"
+                />
+              )}
             </span>
             {priceFormatted && (
               <span className={`font-semibold ${isFree ? "text-success" : "text-price"}`}>
@@ -257,7 +265,13 @@ export function MaterialCard({
             <div className="border-border-subtle flex items-center justify-between border-t pt-3">
               <span className="text-text-muted flex items-center gap-1.5 text-sm transition-colors duration-300">
                 {seller?.displayName || anonymousLabel || ""}
-                {seller?.isVerifiedSeller && <VerifiedSellerBadge variant="compact" />}
+                {seller?.sellerLevel != null && seller.sellerLevel > 0 && (
+                  <SellerBadge
+                    points={seller.sellerXp ?? 0}
+                    cachedLevel={seller.sellerLevel}
+                    variant="compact"
+                  />
+                )}
               </span>
               {shouldShowPriceBadge ? (
                 <span

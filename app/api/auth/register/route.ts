@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
-import { checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
+import { checkRateLimit, getClientIP } from "@/lib/rateLimit";
+import { badRequest, rateLimited, serverError } from "@/lib/api";
 
 const registrationSchema = z.object({
   name: z
@@ -28,16 +29,7 @@ export async function POST(request: NextRequest) {
   const rateLimitResult = checkRateLimit(clientIP, "auth:register");
 
   if (!rateLimitResult.success) {
-    return NextResponse.json(
-      {
-        error: "Zu viele Anfragen. Bitte versuchen Sie es später erneut.",
-        retryAfter: rateLimitResult.retryAfter,
-      },
-      {
-        status: 429,
-        headers: rateLimitHeaders(rateLimitResult),
-      }
-    );
+    return rateLimited("Zu viele Anfragen. Bitte versuchen Sie es später erneut.");
   }
 
   try {
@@ -47,10 +39,7 @@ export async function POST(request: NextRequest) {
     const parsed = registrationSchema.safeParse(body);
     if (!parsed.success) {
       const firstError = parsed.error.issues[0];
-      return NextResponse.json(
-        { error: firstError?.message ?? "Ungültige Eingabe" },
-        { status: 400 }
-      );
+      return badRequest(firstError?.message ?? "Ungültige Eingabe");
     }
 
     const { name, email, password, canton, subjects, cycles } = parsed.data;
@@ -61,10 +50,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (existingUser) {
-      return NextResponse.json(
-        { error: "Ein Benutzer mit dieser E-Mail existiert bereits" },
-        { status: 400 }
-      );
+      return badRequest("Ein Benutzer mit dieser E-Mail existiert bereits");
     }
 
     // Hash the password
@@ -142,6 +128,6 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error("Registration error:", error);
-    return NextResponse.json({ error: "Ein Fehler ist aufgetreten" }, { status: 500 });
+    return serverError("Ein Fehler ist aufgetreten");
   }
 }

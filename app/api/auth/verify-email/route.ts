@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { isSwissEducationDomain } from "@/lib/config/swiss-school-domains";
+import { badRequest, serverError } from "@/lib/api";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const token = searchParams.get("token");
 
   if (!token) {
-    return NextResponse.json({ error: "Token fehlt", code: "MISSING_TOKEN" }, { status: 400 });
+    return badRequest("MISSING_TOKEN");
   }
 
   try {
@@ -26,10 +27,7 @@ export async function GET(request: NextRequest) {
     });
 
     if (!verificationToken) {
-      return NextResponse.json(
-        { error: "Ungültiger Token", code: "INVALID_TOKEN" },
-        { status: 400 }
-      );
+      return badRequest("INVALID_TOKEN");
     }
 
     // Check if token has expired
@@ -39,13 +37,7 @@ export async function GET(request: NextRequest) {
         where: { id: verificationToken.id },
       });
 
-      return NextResponse.json(
-        {
-          error: "Token ist abgelaufen. Bitte fordern Sie einen neuen Bestätigungslink an.",
-          code: "TOKEN_EXPIRED",
-        },
-        { status: 400 }
-      );
+      return badRequest("TOKEN_EXPIRED");
     }
 
     // Check if user already verified (edge case if they click link twice)
@@ -91,9 +83,6 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Verify email error:", error);
-    return NextResponse.json(
-      { error: "Ein Fehler ist aufgetreten", code: "INTERNAL_ERROR" },
-      { status: 500 }
-    );
+    return serverError("Ein Fehler ist aufgetreten");
   }
 }

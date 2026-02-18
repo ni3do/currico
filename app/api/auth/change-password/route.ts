@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
-import { requireAuth, unauthorized, serverError } from "@/lib/api";
-import { checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
+import { requireAuth, unauthorized, badRequest, rateLimited, serverError } from "@/lib/api";
+import { checkRateLimit, getClientIP } from "@/lib/rateLimit";
 
 /**
  * POST /api/auth/change-password
@@ -19,38 +19,35 @@ export async function POST(request: NextRequest) {
     const rateLimitResult = checkRateLimit(clientIP, "auth:change-password");
 
     if (!rateLimitResult.success) {
-      return NextResponse.json(
-        { error: "RATE_LIMITED" },
-        { status: 429, headers: rateLimitHeaders(rateLimitResult) }
-      );
+      return rateLimited();
     }
 
     let body: { currentPassword?: string; newPassword?: string; confirmPassword?: string };
     try {
       body = await request.json();
     } catch {
-      return NextResponse.json({ error: "INVALID_BODY" }, { status: 400 });
+      return badRequest("INVALID_BODY");
     }
 
     const { currentPassword, newPassword, confirmPassword } = body;
 
     // Validate all fields present
     if (!currentPassword || !newPassword || !confirmPassword) {
-      return NextResponse.json({ error: "FIELDS_REQUIRED" }, { status: 400 });
+      return badRequest("FIELDS_REQUIRED");
     }
 
     // Validate passwords match
     if (newPassword !== confirmPassword) {
-      return NextResponse.json({ error: "PASSWORDS_MISMATCH" }, { status: 400 });
+      return badRequest("PASSWORDS_MISMATCH");
     }
 
     // Validate password strength (same as registration)
     if (newPassword.length < 8) {
-      return NextResponse.json({ error: "PASSWORD_TOO_SHORT" }, { status: 400 });
+      return badRequest("PASSWORD_TOO_SHORT");
     }
 
     if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(newPassword)) {
-      return NextResponse.json({ error: "PASSWORD_TOO_WEAK" }, { status: 400 });
+      return badRequest("PASSWORD_TOO_WEAK");
     }
 
     // Fetch user's password hash
@@ -60,24 +57,24 @@ export async function POST(request: NextRequest) {
     });
 
     if (!user) {
-      return NextResponse.json({ error: "USER_NOT_FOUND" }, { status: 400 });
+      return badRequest("USER_NOT_FOUND");
     }
 
     // OAuth-only users cannot change password
     if (!user.password_hash) {
-      return NextResponse.json({ error: "NO_PASSWORD_SET" }, { status: 400 });
+      return badRequest("NO_PASSWORD_SET");
     }
 
     // Verify current password
     const isCurrentValid = await bcrypt.compare(currentPassword, user.password_hash);
     if (!isCurrentValid) {
-      return NextResponse.json({ error: "CURRENT_PASSWORD_WRONG" }, { status: 400 });
+      return badRequest("CURRENT_PASSWORD_WRONG");
     }
 
     // Ensure new password differs from current
     const isSamePassword = await bcrypt.compare(newPassword, user.password_hash);
     if (isSamePassword) {
-      return NextResponse.json({ error: "SAME_PASSWORD" }, { status: 400 });
+      return badRequest("SAME_PASSWORD");
     }
 
     // Hash and update

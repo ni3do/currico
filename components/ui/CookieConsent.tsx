@@ -144,7 +144,7 @@ export default function CookieConsent() {
                   <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
                     <motion.button
                       onClick={handleAccept}
-                      className="bg-primary text-text-on-accent hover:bg-primary-hover focus:ring-primary rounded-lg px-5 py-2.5 text-sm font-medium transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                      className="btn-primary rounded-lg px-5 py-2.5 text-sm focus:ring-2 focus:ring-offset-2 focus:outline-none"
                       whileHover={{
                         scale: 1.02,
                         transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] },
@@ -155,7 +155,7 @@ export default function CookieConsent() {
                     </motion.button>
                     <motion.button
                       onClick={handleDecline}
-                      className="border-border bg-bg-secondary text-text-primary hover:bg-bg-tertiary focus:ring-primary rounded-lg border px-5 py-2.5 text-sm font-medium transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                      className="btn-tertiary rounded-lg px-5 py-2.5 text-sm focus:ring-2 focus:ring-offset-2 focus:outline-none"
                       whileHover={{
                         scale: 1.02,
                         transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] },

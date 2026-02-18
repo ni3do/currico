@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 import { prisma, publicUserSelect } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
-import { parsePagination, paginationResponse } from "@/lib/api";
-import { checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
+import { parsePagination, paginationResponse, rateLimited, serverError } from "@/lib/api";
+import { checkRateLimit, getClientIP } from "@/lib/rateLimit";
 
 /** Minimum word-level trigram similarity for user name fuzzy search */
 const USER_NAME_WORD_SIMILARITY_THRESHOLD = 0.4;
@@ -23,10 +23,7 @@ export async function GET(request: NextRequest) {
   try {
     const rateLimit = checkRateLimit(getClientIP(request), "users:search");
     if (!rateLimit.success) {
-      return NextResponse.json(
-        { error: "Too many requests" },
-        { status: 429, headers: rateLimitHeaders(rateLimit) }
-      );
+      return rateLimited();
     }
 
     const { searchParams } = new URL(request.url);
@@ -178,6 +175,6 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error searching users:", error);
-    return NextResponse.json({ error: "Fehler bei der Suche" }, { status: 500 });
+    return serverError("Fehler bei der Suche");
   }
 }

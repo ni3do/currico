@@ -6,7 +6,7 @@ import { readFile } from "fs/promises";
 import path from "path";
 import { getStorage, isLegacyLocalPath, getLegacyFilePath } from "@/lib/storage";
 import { checkAndUpdateVerification } from "@/lib/utils/verified-seller";
-import { badRequest } from "@/lib/api";
+import { badRequest, unauthorized, notFound, forbidden, serverError } from "@/lib/api";
 import { isValidId } from "@/lib/rateLimit";
 import { checkDownloadMilestone } from "@/lib/notifications";
 
@@ -56,10 +56,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   // Authentication check
   const userId = await getCurrentUserId();
   if (!userId) {
-    return NextResponse.json(
-      { error: "Bitte melden Sie sich an, um Materialien herunterzuladen" },
-      { status: 401 }
-    );
+    return unauthorized("Bitte melden Sie sich an, um Materialien herunterzuladen");
   }
 
   // Check if user is admin
@@ -99,7 +96,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     });
 
     if (!material) {
-      return NextResponse.json({ error: "Material nicht gefunden" }, { status: 404 });
+      return notFound("Material nicht gefunden");
     }
 
     // Check if material is accessible
@@ -109,7 +106,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       material.is_published && material.is_approved && material.is_public;
 
     if (!isAdmin && !isOwner && !isPubliclyAccessible) {
-      return NextResponse.json({ error: "Dieses Material ist nicht verfügbar" }, { status: 403 });
+      return forbidden("Dieses Material ist nicht verfügbar");
     }
 
     // Check access rights for downloads
@@ -136,9 +133,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     if (!isAdmin && !isOwner && !isVerified) {
       if (process.env.NODE_ENV === "development")
         console.log("[DOWNLOAD] ACCESS DENIED - not verified");
-      return NextResponse.json(
-        { error: "Dieses Material wird noch überprüft und kann noch nicht heruntergeladen werden" },
-        { status: 403 }
+      return forbidden(
+        "Dieses Material wird noch überprüft und kann noch nicht heruntergeladen werden"
       );
     }
 
@@ -147,10 +143,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     if (process.env.NODE_ENV === "development") console.log("[DOWNLOAD] hasAccess:", hasAccess);
 
     if (!hasAccess) {
-      return NextResponse.json(
-        { error: "Bitte kaufen Sie dieses Material, um es herunterzuladen" },
-        { status: 403 }
-      );
+      return forbidden("Bitte kaufen Sie dieses Material, um es herunterzuladen");
     }
 
     // Record download for free materials (if not already recorded)
@@ -187,7 +180,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         });
       } catch {
         console.error("Legacy file not found:", filePath);
-        return NextResponse.json({ error: "Datei nicht gefunden" }, { status: 404 });
+        return notFound("Datei nicht gefunden");
       }
     }
 
@@ -201,10 +194,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         return NextResponse.redirect(signedUrl);
       } catch (error) {
         console.error("Failed to generate signed URL:", error);
-        return NextResponse.json(
-          { error: "Fehler beim Erstellen des Download-Links" },
-          { status: 500 }
-        );
+        return serverError("Fehler beim Erstellen des Download-Links");
       }
     }
 
@@ -220,11 +210,11 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       });
     } catch {
       console.error("File not found:", material.file_url);
-      return NextResponse.json({ error: "Datei nicht gefunden" }, { status: 404 });
+      return notFound("Datei nicht gefunden");
     }
   } catch (error) {
     console.error("Error downloading material:", error);
-    return NextResponse.json({ error: "Fehler beim Herunterladen des Materials" }, { status: 500 });
+    return serverError("Fehler beim Herunterladen des Materials");
   }
 }
 
@@ -237,7 +227,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
   // Authentication check
   const userId = await getCurrentUserId();
   if (!userId) {
-    return NextResponse.json({ error: "Bitte melden Sie sich an" }, { status: 401 });
+    return unauthorized("Bitte melden Sie sich an");
   }
 
   // Check if user is admin
@@ -270,7 +260,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     });
 
     if (!material) {
-      return NextResponse.json({ error: "Material nicht gefunden" }, { status: 404 });
+      return notFound("Material nicht gefunden");
     }
 
     // Check access - admins can access any material
@@ -278,14 +268,14 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
     // Regular users cannot download unverified materials
     if (!isAdmin && !isOwner && !material.is_approved) {
-      return NextResponse.json({ error: "Dieses Material wird noch überprüft" }, { status: 403 });
+      return forbidden("Dieses Material wird noch überprüft");
     }
 
     const isPubliclyAccessible =
       material.is_published && material.is_approved && material.is_public;
 
     if (!isAdmin && !isOwner && !isPubliclyAccessible) {
-      return NextResponse.json({ error: "Dieses Material ist nicht verfügbar" }, { status: 403 });
+      return forbidden("Dieses Material ist nicht verfügbar");
     }
 
     const isFree = material.price === 0;
@@ -293,10 +283,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     const hasAccess = isAdmin || isOwner || isFree || hasPurchased;
 
     if (!hasAccess) {
-      return NextResponse.json(
-        { error: "Bitte kaufen Sie dieses Material zuerst" },
-        { status: 403 }
-      );
+      return forbidden("Bitte kaufen Sie dieses Material zuerst");
     }
 
     // Record download for free materials
@@ -332,6 +319,6 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     });
   } catch (error) {
     console.error("Error recording download:", error);
-    return NextResponse.json({ error: "Fehler beim Verarbeiten der Anfrage" }, { status: 500 });
+    return serverError("Fehler beim Verarbeiten der Anfrage");
   }
 }

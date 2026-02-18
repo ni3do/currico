@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { requireAuth, unauthorized, badRequest, notFound } from "@/lib/api";
+import { requireAuth, unauthorized, badRequest, notFound, conflict, serverError } from "@/lib/api";
 import { z } from "zod";
 
 const createReportSchema = z
@@ -67,10 +67,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (existingReport) {
-      return NextResponse.json(
-        { error: "Sie haben dieses Material bereits gemeldet" },
-        { status: 409 }
-      );
+      return conflict("Sie haben dieses Material bereits gemeldet");
     }
 
     // Create the report
@@ -96,6 +93,6 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error("Error creating report:", error);
-    return NextResponse.json({ error: "Fehler beim Erstellen der Meldung" }, { status: 500 });
+    return serverError("Fehler beim Erstellen der Meldung");
   }
 }

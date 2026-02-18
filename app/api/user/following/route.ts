@@ -5,6 +5,7 @@ import {
   unauthorized,
   badRequest,
   notFound,
+  serverError,
   parsePagination,
   paginationResponse,
 } from "@/lib/api";
@@ -64,7 +65,7 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error fetching following:", error);
-    return NextResponse.json({ error: "FOLLOWING_FETCH_FAILED" }, { status: 500 });
+    return serverError("FOLLOWING_FETCH_FAILED");
   }
 }
 
@@ -117,7 +118,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error following seller:", error);
-    return NextResponse.json({ error: "FOLLOW_FAILED" }, { status: 500 });
+    return serverError("FOLLOW_FAILED");
   }
 }
 
@@ -148,6 +149,6 @@ export async function DELETE(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error unfollowing seller:", error);
-    return NextResponse.json({ error: "UNFOLLOW_FAILED" }, { status: 500 });
+    return serverError("UNFOLLOW_FAILED");
   }
 }

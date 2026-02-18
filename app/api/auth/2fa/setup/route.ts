@@ -1,7 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { requireAuth, unauthorized } from "@/lib/api";
-import { checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
+import {
+  requireAuth,
+  unauthorized,
+  notFound,
+  badRequest,
+  rateLimited,
+  serverError,
+} from "@/lib/api";
+import { checkRateLimit, getClientIP } from "@/lib/rateLimit";
 import { generateTOTPSetup } from "@/lib/totp";
 
 /**
@@ -15,10 +22,7 @@ export async function POST(request: NextRequest) {
   const clientIP = getClientIP(request);
   const rl = checkRateLimit(`${userId}:${clientIP}`, "auth:2fa-setup");
   if (!rl.success) {
-    return NextResponse.json(
-      { error: "RATE_LIMITED" },
-      { status: 429, headers: rateLimitHeaders(rl) }
-    );
+    return rateLimited();
   }
 
   try {
@@ -28,16 +32,16 @@ export async function POST(request: NextRequest) {
     });
 
     if (!user) {
-      return NextResponse.json({ error: "USER_NOT_FOUND" }, { status: 404 });
+      return notFound("USER_NOT_FOUND");
     }
 
     // Must have a password set (OAuth-only users need to set one first)
     if (!user.password_hash) {
-      return NextResponse.json({ error: "PASSWORD_REQUIRED" }, { status: 400 });
+      return badRequest("PASSWORD_REQUIRED");
     }
 
     if (user.totp_enabled) {
-      return NextResponse.json({ error: "ALREADY_ENABLED" }, { status: 400 });
+      return badRequest("ALREADY_ENABLED");
     }
 
     const { secret, encrypted, qrCodeUrl } = await generateTOTPSetup(user.email);
@@ -51,6 +55,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ qrCodeUrl, secret });
   } catch (error) {
     console.error("2FA setup error:", error);
-    return NextResponse.json({ error: "INTERNAL_ERROR" }, { status: 500 });
+    return serverError();
   }
 }

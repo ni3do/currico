@@ -16,7 +16,7 @@ function escapeHtml(str: string): string {
 
 let transporter: Transporter | null = null;
 
-function getTransporter(): Transporter {
+export function getTransporter(): Transporter {
   if (transporter) {
     return transporter;
   }
@@ -44,7 +44,7 @@ function getTransporter(): Transporter {
   return transporter;
 }
 
-function getFromEmail(): string {
+export function getFromEmail(): string {
   return process.env.EMAIL_FROM || process.env.SMTP_USER || "info@currico.ch";
 }
 

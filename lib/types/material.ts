@@ -112,7 +112,13 @@ export interface FeaturedMaterial {
   averageRating?: number;
   reviewCount?: number;
   competencies?: { code: string; subjectColor?: string }[];
-  seller: { id: string; displayName: string | null; isVerifiedSeller: boolean };
+  seller: {
+    id: string;
+    displayName: string | null;
+    isVerifiedSeller: boolean;
+    sellerLevel?: number;
+    sellerXp?: number;
+  };
 }
 
 export interface BundleResource {

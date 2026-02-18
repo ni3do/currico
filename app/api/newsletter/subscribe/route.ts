@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { generateVerificationToken } from "@/lib/email";
-import { checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
+import { rateLimited, badRequest, serverError } from "@/lib/api";
+import { checkRateLimit, getClientIP } from "@/lib/rateLimit";
 
 /**
  * POST /api/newsletter/subscribe
@@ -11,23 +12,20 @@ export async function POST(request: NextRequest) {
   try {
     const rateLimit = checkRateLimit(getClientIP(request), "newsletter:subscribe");
     if (!rateLimit.success) {
-      return NextResponse.json(
-        { error: "Zu viele Anfragen. Bitte versuchen Sie es später erneut." },
-        { status: 429, headers: rateLimitHeaders(rateLimit) }
-      );
+      return rateLimited();
     }
 
     const body = await request.json();
     const { email } = body;
 
     if (!email || typeof email !== "string") {
-      return NextResponse.json({ error: "E-Mail-Adresse ist erforderlich" }, { status: 400 });
+      return badRequest("E-Mail-Adresse ist erforderlich");
     }
 
     // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      return NextResponse.json({ error: "Ungültige E-Mail-Adresse" }, { status: 400 });
+      return badRequest("Ungültige E-Mail-Adresse");
     }
 
     const normalizedEmail = email.toLowerCase().trim();
@@ -74,6 +72,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true }, { status: 201 });
   } catch (error) {
     console.error("Error subscribing to newsletter:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError();
   }
 }

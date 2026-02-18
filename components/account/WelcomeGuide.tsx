@@ -157,7 +157,7 @@ export function WelcomeGuide({ userName, onNavigate }: WelcomeGuideProps) {
             <div className="mt-5 flex justify-end">
               <motion.button
                 onClick={handleDismiss}
-                className="bg-primary text-text-on-accent hover:bg-primary-hover rounded-lg px-4 py-2 text-sm font-semibold transition-colors"
+                className="btn-primary rounded-lg px-4 py-2 text-sm"
                 whileHover={{
                   scale: 1.02,
                   transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] },

@@ -52,16 +52,16 @@
 
 ### 5. Hero-Bereich überarbeiten ⭐⭐⭐⭐
 
-- [ ] Dunkles Overlay auf Hero-Bild für Lesbarkeit (bg-black/40) — **aktuell kein Overlay**
+- [x] Dunkles Overlay auf Hero-Bild für Lesbarkeit (bg-black/40) — Subtiler Gradient-Overlay via `::after` auf `.hero-image-container`
 - [x] CTA-Button visuell hervorheben — "Jetzt Material finden" + "Mehr erfahren" vorhanden
 - [ ] Klarer Nutzen in 3 Sekunden: Was bekomme ich hier?
 - [ ] Optional: Mockup der Plattform statt generisches Stock-Foto
 
 ### 6. Suchleiste vereinfachen ⭐⭐⭐⭐
 
-- [ ] "Kompetenz"-Filter aus dem Hero entfernen (zu granular für Einstieg) — **aktuell 3 Dropdowns im Hero: Zyklus, Fach, Kompetenz**
-- [ ] Startseite: nur Stichwortsuche + Zyklus
-- [ ] Kompetenz-Filter auf Ergebnisseite verschieben (Faceted Search)
+- [x] "Kompetenz"-Filter aus dem Hero entfernen (zu granular für Einstieg) — Kompetenzbereich-Dropdown entfernt, nur Zyklus + Fach im Hero
+- [x] Startseite: nur Stichwortsuche + Zyklus + Fach — vereinfacht
+- [x] Kompetenz-Filter auf Ergebnisseite verschieben (Faceted Search) — bereits in `LP21FilterSidebar.tsx`
 
 ### 7. LP21-Konformität prominent zeigen ⭐⭐⭐⭐
 
@@ -72,7 +72,7 @@
 
 - [x] Mindestens erste Seite als Thumbnail — Auto-generierte PDF-Thumbnails bei Upload (`preview-generator.ts`)
 - [x] PDF-Viewer mit 2–3 Seiten — PreviewGallery mit Wasserzeichen (Seite 1 klar, Rest geblurred)
-- [ ] "Beliebte Fächer" als klickbare Kacheln auf Startseite
+- [x] "Beliebte Fächer" als klickbare Kacheln auf Startseite — `CategoryQuickAccess` mit LP21-Codes, zwischen SwissBrand und Featured
 
 ---
 
@@ -97,7 +97,7 @@
 ### 12. Navigation & Footer verbessern ⭐⭐⭐
 
 - [x] Icons im Header für Anmelden/Registrieren — TopBar mit User-Icon, Bell-Dropdown
-- [~] Footer: Kurzbeschreibung, Navigation, Kontakt, Rechtliches, Social Links — Navigation + Legal vorhanden, aber **kein Kontakt-Info, keine Social-Links, keine Kurzbeschreibung**
+- [x] Footer: Kurzbeschreibung, Navigation, Kontakt, Rechtliches, Social Links — 4-Spalten-Footer mit Brand-Beschreibung, Plattform-Links, Rechtliches, Kontakt (E-Mail + Standort)
 - [x] FAQ/Hilfe prominent verlinken — im Footer und Navigation
 
 ---
@@ -141,7 +141,7 @@
 - [x] **Bewertungssystem** — Sterne + Textbewertungen vorhanden (ReviewForm, StarRating)
 - [ ] **Content-Marketing** — Blog unter /blog mit SEO-relevanten Artikeln
 - [ ] **Analytics** — Matomo oder Plausible (nDSG-freundlicher als Google Analytics); aktuell nur Sentry
-- [ ] **E-Mail-Marketing** — Newsletter-Signup, Willkommens-Sequenz (→ Newsletter-System offen)
+- [x] **E-Mail-Marketing** — Newsletter-Digest-System implementiert (`lib/digest.ts`, Cron-Route, Unsubscribe, GitHub Actions Workflow)
 - [x] **"Über uns" ausbauen** — Komplett überarbeitet mit Team, Timeline, Values, Stats
 - [~] **Accessibility** — Viel bereits gemacht (aria-labels, focus traps, semantic HTML), Audit noch offen
 
@@ -149,21 +149,20 @@
 
 ## Zusammenfassung
 
-> Letzte Aktualisierung: 2026-02-17
+> Letzte Aktualisierung: 2026-02-18
 
 | Priorität | Total  | Erledigt | Offen  | %       |
 | --------- | ------ | -------- | ------ | ------- |
 | 🔴 MUSS   | 16     | 12       | 4      | 75%     |
-| 🟠 SOLLTE | 10     | 6        | 4      | 60%     |
-| 🟡 NACH   | 9      | 6        | 3      | 67%     |
+| 🟠 SOLLTE | 10     | 10       | 0      | 100%    |
+| 🟡 NACH   | 10     | 7        | 3      | 70%     |
 | 🟢 MITTEL | 12     | 10       | 2      | 83%     |
-| 🔵 LANG   | 6      | 2        | 4      | 33%     |
-| **Total** | **53** | **36**   | **17** | **68%** |
+| 🔵 LANG   | 6      | 3        | 3      | 50%     |
+| **Total** | **54** | **42**   | **12** | **78%** |
 
 > **Wichtigste Blocker vor Launch:**
 >
 > 1. **Content beschaffen** — 30-50 Materialien, 10-20 Lehrpersonen rekrutieren
 > 2. **Domain-Migration** — currico.ch registrieren, @currico.ch E-Mail (→ Roadmap 1.1)
-> 3. **Hero vereinfachen** — Kompetenz-Filter raus, nur Stichwort + Zyklus
 >
 > **Hinweis:** Viele offene Items sind Business/Ops (nicht Code) oder überschneiden sich mit `joelimprovements-status.md`

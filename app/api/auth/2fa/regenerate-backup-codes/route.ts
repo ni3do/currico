@@ -1,8 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import bcrypt from "bcryptjs";
-import { requireAuth, unauthorized } from "@/lib/api";
-import { checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
+import {
+  requireAuth,
+  unauthorized,
+  notFound,
+  badRequest,
+  rateLimited,
+  serverError,
+} from "@/lib/api";
+import { checkRateLimit, getClientIP } from "@/lib/rateLimit";
 import { twoFactorRegenerateSchema } from "@/lib/validations/auth";
 import { generateBackupCodes } from "@/lib/totp";
 
@@ -17,17 +24,14 @@ export async function POST(request: NextRequest) {
   const clientIP = getClientIP(request);
   const rl = checkRateLimit(`${userId}:${clientIP}`, "auth:2fa-regenerate");
   if (!rl.success) {
-    return NextResponse.json(
-      { error: "RATE_LIMITED" },
-      { status: 429, headers: rateLimitHeaders(rl) }
-    );
+    return rateLimited();
   }
 
   try {
     const body = await request.json();
     const parsed = twoFactorRegenerateSchema.safeParse(body);
     if (!parsed.success) {
-      return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
+      return badRequest("INVALID_INPUT");
     }
 
     const user = await prisma.user.findUnique({
@@ -36,16 +40,16 @@ export async function POST(request: NextRequest) {
     });
 
     if (!user || !user.password_hash) {
-      return NextResponse.json({ error: "USER_NOT_FOUND" }, { status: 404 });
+      return notFound("USER_NOT_FOUND");
     }
 
     if (!user.totp_enabled) {
-      return NextResponse.json({ error: "NOT_ENABLED" }, { status: 400 });
+      return badRequest("NOT_ENABLED");
     }
 
     const isValid = await bcrypt.compare(parsed.data.password, user.password_hash);
     if (!isValid) {
-      return NextResponse.json({ error: "WRONG_PASSWORD" }, { status: 401 });
+      return unauthorized("WRONG_PASSWORD");
     }
 
     const { codes, hashes } = generateBackupCodes();
@@ -58,6 +62,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ backupCodes: codes });
   } catch (error) {
     console.error("2FA regenerate error:", error);
-    return NextResponse.json({ error: "INTERNAL_ERROR" }, { status: 500 });
+    return serverError();
   }
 }

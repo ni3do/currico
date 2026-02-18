@@ -15,7 +15,9 @@
     "internalError": "Interner Serverfehler",
     "invalidInput": "Ungültige Eingabe",
     "invalidFileType": "Ungültiger Dateityp",
-    "userNotFound": "Benutzer nicht gefunden"
+    "userNotFound": "Benutzer nicht gefunden",
+    "rateLimited": "Zu viele Anfragen — bitte versuche es später erneut",
+    "conflict": "Dieser Eintrag existiert bereits"
   },
   "theme": {
     "light": "Hell",
@@ -35,7 +37,9 @@
     "duplicate": "Duplizieren",
     "downloads": "Downloads",
     "sales": "Verkäufe",
-    "unknownSeller": "Unbekannt"
+    "unknownSeller": "Unbekannt",
+    "select": "Auswählen",
+    "deselect": "Abwählen"
   },
   "avatar": {
     "errorInvalidType": "Bitte wählen Sie ein Bild aus (JPG, PNG)",
@@ -88,6 +92,16 @@
       "hostedBy": "Gehostet bei",
       "swissCloud": "Swiss Cloud",
       "payment": "Zahlung mit TWINT & Karte",
+      "description": "Die Schweizer Plattform für Lehrplan-21-konforme Unterrichtsmaterialien. Von Lehrpersonen erstellt, für Lehrpersonen gemacht.",
+      "columns": {
+        "platform": "Plattform",
+        "legal": "Rechtliches",
+        "contact": "Kontakt"
+      },
+      "contact": {
+        "email": "kontakt@currico.ch",
+        "location": "Schweiz"
+      },
       "links": {
         "help": "Hilfe",
         "imprint": "Impressum",
@@ -96,7 +110,10 @@
         "cookies": "Cookies",
         "copyrightGuide": "Urheberrecht",
         "sellerLevels": "Verkäufer-Levels",
-        "verifiedSeller": "Verifizierte Verkäufer"
+        "verifiedSeller": "Verifizierte Verkäufer",
+        "materials": "Materialien durchsuchen",
+        "upload": "Material hochladen",
+        "becomeSeller": "Verkäufer werden"
       }
     },
     "errors": {
@@ -230,7 +247,6 @@
         "dialectSwiss": "Schweizerdeutsch",
         "dialectStandard": "Hochdeutsch",
         "allDialects": "Alle Sprachvarianten",
-        "allKompetenzbereiche": "Kompetenz wählen…",
         "formLabel": "Unterrichtsmaterialien suchen"
       }
     },
@@ -3403,7 +3419,17 @@
       "filterFree": "Gratis",
       "filterPurchased": "Gekauft",
       "errorLoading": "Fehler beim Laden der Bibliothek",
-      "retry": "Erneut versuchen"
+      "retry": "Erneut versuchen",
+      "bulk": {
+        "selected": "{count} von {total} ausgewählt",
+        "selectAll": "Alle auswählen",
+        "deselectAll": "Auswahl aufheben",
+        "download": "{count, plural, one {# Material herunterladen} other {# Materialien herunterladen}}",
+        "downloading": "Wird heruntergeladen…",
+        "downloadSuccess": "{count, plural, one {# Material erfolgreich heruntergeladen} other {# Materialien erfolgreich heruntergeladen}}",
+        "downloadPartial": "{success} von {total} Materialien heruntergeladen",
+        "actions": "Bulk-Aktionen"
+      }
     },
     "wishlist": {
       "title": "Wunschliste",
@@ -4378,5 +4404,15 @@
     "uploadMaterial": "Material hochladen",
     "previous": "Zurück",
     "next": "Weiter"
+  },
+  "digest": {
+    "subject": "Neue Materialien für Sie",
+    "heading": "{count} neue Materialien für Sie",
+    "headingGeneric": "Neue Materialien auf Currico",
+    "intro": "Basierend auf Ihrem Profil und Ihren Favoriten haben wir neue Materialien für Sie zusammengestellt.",
+    "introGeneric": "Entdecken Sie die neuesten Materialien auf Currico.",
+    "free": "Gratis",
+    "ctaAllMaterials": "Alle Materialien entdecken",
+    "unsubscribeFooter": "Newsletter abbestellen"
   }
 }

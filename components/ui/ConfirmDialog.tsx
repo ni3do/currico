@@ -42,8 +42,7 @@ export function ConfirmDialog({
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [open, onCancel]);
 
-  const confirmStyles =
-    variant === "danger" ? "bg-error hover:bg-error/90 text-text-on-accent" : "btn-primary";
+  const confirmStyles = variant === "danger" ? "btn-danger" : "btn-primary";
 
   return (
     <AnimatePresence>
@@ -82,7 +81,7 @@ export function ConfirmDialog({
               <button
                 ref={cancelRef}
                 onClick={onCancel}
-                className="border-border text-text hover:bg-surface-elevated flex-1 rounded-xl border px-4 py-2.5 text-sm font-medium transition-colors"
+                className="btn-tertiary flex-1 rounded-xl px-4 py-2.5 text-sm"
               >
                 {cancelLabel}
               </button>

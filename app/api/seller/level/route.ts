@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { requireAuth, requireSeller, unauthorized, forbidden } from "@/lib/api";
+import { requireAuth, requireSeller, unauthorized, forbidden, serverError } from "@/lib/api";
 import {
   calculatePoints,
   getCurrentLevel,
@@ -173,6 +173,6 @@ export async function GET() {
     });
   } catch (error) {
     console.error("Error fetching seller level:", error);
-    return NextResponse.json({ error: "Fehler beim Laden der Level-Daten" }, { status: 500 });
+    return serverError("Fehler beim Laden der Level-Daten");
   }
 }

@@ -33,6 +33,8 @@ export function translateApiError(
     INVALID_INPUT: "invalidInput",
     INVALID_FILE_TYPE: "invalidFileType",
     USER_NOT_FOUND: "userNotFound",
+    RATE_LIMITED: "rateLimited",
+    CONFLICT: "conflict",
   };
 
   const key = codeToKey[code];
