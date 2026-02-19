@@ -13,8 +13,10 @@ if git diff --cached --name-only | grep -q "^prisma/schema\.prisma$"; then
   npx prisma generate
 fi
 
-# Run lint-staged
-npx lint-staged
+# Run lint-staged (only when lintable files are staged)
+if git diff --cached --name-only | grep -qE '\.(ts|tsx|js|jsx|json|css|md)$'; then
+  npx lint-staged
+fi
 
 # Run unit tests
 if [ -n "$SKIP_TESTS" ]; then
