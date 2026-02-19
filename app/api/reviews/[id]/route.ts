@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { updateReviewSchema } from "@/lib/validations/review";
-import { requireAuth, unauthorized, badRequest } from "@/lib/api";
+import { requireAuth, unauthorized, badRequest, notFound, forbidden, serverError } from "@/lib/api";
 import { isValidId } from "@/lib/rateLimit";
 
 // GET /api/reviews/[id] - Get a single review
@@ -31,7 +31,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     });
 
     if (!review) {
-      return NextResponse.json({ error: "Bewertung nicht gefunden" }, { status: 404 });
+      return notFound("Bewertung nicht gefunden");
     }
 
     // Check if it's a verified purchase
@@ -65,7 +65,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     });
   } catch (error) {
     console.error("Error fetching review:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError("Interner Serverfehler");
   }
 }
 
@@ -84,14 +84,11 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     });
 
     if (!review) {
-      return NextResponse.json({ error: "Bewertung nicht gefunden" }, { status: 404 });
+      return notFound("Bewertung nicht gefunden");
     }
 
     if (review.user_id !== userId) {
-      return NextResponse.json(
-        { error: "Sie können nur Ihre eigenen Bewertungen bearbeiten" },
-        { status: 403 }
-      );
+      return forbidden("Sie können nur Ihre eigenen Bewertungen bearbeiten");
     }
 
     // Parse and validate request body
@@ -99,15 +96,12 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     try {
       body = await request.json();
     } catch {
-      return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+      return badRequest("Invalid JSON body");
     }
     const validation = updateReviewSchema.safeParse(body);
 
     if (!validation.success) {
-      return NextResponse.json(
-        { error: "Ungültige Eingabe", details: validation.error.flatten() },
-        { status: 400 }
-      );
+      return badRequest("Ungültige Eingabe", { details: validation.error.flatten() });
     }
 
     const { rating, title, content } = validation.data;
@@ -150,7 +144,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     });
   } catch (error) {
     console.error("Error updating review:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError("Interner Serverfehler");
   }
 }
 
@@ -169,7 +163,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     });
 
     if (!review) {
-      return NextResponse.json({ error: "Bewertung nicht gefunden" }, { status: 404 });
+      return notFound("Bewertung nicht gefunden");
     }
 
     // Allow deletion by owner or admin
@@ -179,10 +173,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     });
 
     if (review.user_id !== userId && user?.role !== "ADMIN") {
-      return NextResponse.json(
-        { error: "Sie können nur Ihre eigenen Bewertungen löschen" },
-        { status: 403 }
-      );
+      return forbidden("Sie können nur Ihre eigenen Bewertungen löschen");
     }
 
     // Delete review
@@ -193,6 +184,6 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     return NextResponse.json({ message: "Bewertung erfolgreich gelöscht" });
   } catch (error) {
     console.error("Error deleting review:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError("Interner Serverfehler");
   }
 }

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
-import { requireAuth, requireSeller, unauthorized, forbidden } from "@/lib/api";
+import { requireAuth, requireSeller, unauthorized, forbidden, serverError } from "@/lib/api";
 import { formatPrice } from "@/lib/utils/price";
 
 /**
@@ -55,6 +55,6 @@ export async function GET() {
     });
   } catch (error) {
     console.error("Error fetching seller materials:", error);
-    return NextResponse.json({ error: "MATERIALS_FETCH_FAILED" }, { status: 500 });
+    return serverError("MATERIALS_FETCH_FAILED");
   }
 }

@@ -84,7 +84,7 @@ export function EmptySearchState({
                 onResetSearch();
                 onResetFilters();
               }}
-              className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition-colors"
+              className="btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm"
             >
               {t("empty.clearAll")}
             </button>

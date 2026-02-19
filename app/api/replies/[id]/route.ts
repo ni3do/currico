@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { updateReplySchema } from "@/lib/validations/review";
-import { requireAuth, unauthorized, badRequest } from "@/lib/api";
+import { requireAuth, unauthorized, badRequest, notFound, forbidden, serverError } from "@/lib/api";
 import { isValidId } from "@/lib/rateLimit";
 
 // GET /api/replies/[id] - Get a single reply
@@ -37,7 +37,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     });
 
     if (!reply) {
-      return NextResponse.json({ error: "Antwort nicht gefunden" }, { status: 404 });
+      return notFound("Antwort nicht gefunden");
     }
 
     return NextResponse.json({
@@ -63,7 +63,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     });
   } catch (error) {
     console.error("Error fetching reply:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError("Interner Serverfehler");
   }
 }
 
@@ -82,14 +82,11 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     });
 
     if (!reply) {
-      return NextResponse.json({ error: "Antwort nicht gefunden" }, { status: 404 });
+      return notFound("Antwort nicht gefunden");
     }
 
     if (reply.user_id !== userId) {
-      return NextResponse.json(
-        { error: "Sie können nur Ihre eigenen Antworten bearbeiten" },
-        { status: 403 }
-      );
+      return forbidden("Sie können nur Ihre eigenen Antworten bearbeiten");
     }
 
     // Parse and validate request body
@@ -97,10 +94,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     const validation = updateReplySchema.safeParse(body);
 
     if (!validation.success) {
-      return NextResponse.json(
-        { error: "Ungültige Eingabe", details: validation.error.flatten() },
-        { status: 400 }
-      );
+      return badRequest("Ungültige Eingabe", { details: validation.error.flatten() });
     }
 
     const { content } = validation.data;
@@ -137,7 +131,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     });
   } catch (error) {
     console.error("Error updating reply:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError("Interner Serverfehler");
   }
 }
 
@@ -165,7 +159,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     });
 
     if (!reply) {
-      return NextResponse.json({ error: "Antwort nicht gefunden" }, { status: 404 });
+      return notFound("Antwort nicht gefunden");
     }
 
     // Allow deletion by owner, resource seller, or admin
@@ -180,10 +174,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
       user?.role === "ADMIN";
 
     if (!canDelete) {
-      return NextResponse.json(
-        { error: "Sie können nur Ihre eigenen Antworten löschen" },
-        { status: 403 }
-      );
+      return forbidden("Sie können nur Ihre eigenen Antworten löschen");
     }
 
     // Delete reply
@@ -194,6 +185,6 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     return NextResponse.json({ message: "Antwort erfolgreich gelöscht" });
   } catch (error) {
     console.error("Error deleting reply:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError("Interner Serverfehler");
   }
 }

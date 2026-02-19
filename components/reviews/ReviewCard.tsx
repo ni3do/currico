@@ -176,7 +176,7 @@ export function ReviewCard({
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`border-border bg-bg rounded-xl border p-4 ${className}`}
+        className={`border-border bg-bg rounded-lg border p-4 ${className}`}
       >
         {/* Rating + Verified badge */}
         <div className="mb-2 flex items-center gap-2">

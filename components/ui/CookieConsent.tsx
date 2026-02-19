@@ -103,7 +103,7 @@ export default function CookieConsent() {
         >
           <div className="mx-auto max-w-4xl">
             <motion.div
-              className="border-border bg-surface rounded-xl border p-4 shadow-lg sm:p-6"
+              className="border-border bg-surface rounded-lg border p-4 shadow-lg sm:p-6"
               initial={{ scale: 0.95 }}
               animate={{ scale: 1 }}
               transition={{ delay: 0.1 }}
@@ -144,7 +144,7 @@ export default function CookieConsent() {
                   <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
                     <motion.button
                       onClick={handleAccept}
-                      className="btn-primary rounded-lg px-5 py-2.5 text-sm focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                      className="btn-primary px-5 py-2.5 text-sm focus:ring-2 focus:ring-offset-2 focus:outline-none"
                       whileHover={{
                         scale: 1.02,
                         transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] },
@@ -155,7 +155,7 @@ export default function CookieConsent() {
                     </motion.button>
                     <motion.button
                       onClick={handleDecline}
-                      className="btn-tertiary rounded-lg px-5 py-2.5 text-sm focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                      className="btn-tertiary px-5 py-2.5 text-sm focus:ring-2 focus:ring-offset-2 focus:outline-none"
                       whileHover={{
                         scale: 1.02,
                         transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] },

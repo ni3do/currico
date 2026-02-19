@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { readFile } from "fs/promises";
 import path from "path";
+import { notFound, badRequest, serverError } from "@/lib/api";
 
 /**
  * Content type map for file extensions
@@ -32,7 +33,7 @@ export async function GET(
     // Only allow serving from previews and avatars directories (public content)
     const category = pathSegments[0];
     if (!["previews", "avatars"].includes(category)) {
-      return NextResponse.json({ error: "Not found" }, { status: 404 });
+      return notFound("Not found");
     }
 
     const relativePath = pathSegments.join("/");
@@ -41,7 +42,7 @@ export async function GET(
 
     // Validate resolved path stays under uploads root to prevent traversal
     if (!filePath.startsWith(uploadsRoot + path.sep)) {
-      return NextResponse.json({ error: "Invalid path" }, { status: 400 });
+      return badRequest("Invalid path");
     }
 
     // Read the file
@@ -60,10 +61,10 @@ export async function GET(
   } catch (error) {
     // File not found or read error
     if ((error as NodeJS.ErrnoException).code === "ENOENT") {
-      return NextResponse.json({ error: "Datei nicht gefunden" }, { status: 404 });
+      return notFound("Datei nicht gefunden");
     }
 
     console.error("Error serving uploaded file:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError("Interner Serverfehler");
   }
 }

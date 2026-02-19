@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { requireAuth, unauthorized, badRequest, notFound, forbidden } from "@/lib/api";
+import { requireAuth, unauthorized, badRequest, notFound, forbidden, serverError } from "@/lib/api";
 import { isValidId } from "@/lib/rateLimit";
 import { z } from "zod";
 
@@ -79,7 +79,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     });
   } catch (error) {
     console.error("Error fetching collection:", error);
-    return NextResponse.json({ error: "Fehler beim Laden der Sammlung" }, { status: 500 });
+    return serverError("Fehler beim Laden der Sammlung");
   }
 }
 
@@ -128,7 +128,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     });
   } catch (error) {
     console.error("Error updating collection:", error);
-    return NextResponse.json({ error: "Fehler beim Aktualisieren der Sammlung" }, { status: 500 });
+    return serverError("Fehler beim Aktualisieren der Sammlung");
   }
 }
 
@@ -171,6 +171,6 @@ export async function DELETE(
     });
   } catch (error) {
     console.error("Error deleting collection:", error);
-    return NextResponse.json({ error: "Fehler beim Löschen der Sammlung" }, { status: 500 });
+    return serverError("Fehler beim Löschen der Sammlung");
   }
 }

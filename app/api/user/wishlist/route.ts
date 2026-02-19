@@ -2,7 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
 import { formatPrice } from "@/lib/utils/price";
-import { requireAuth, unauthorized, parsePagination, paginationResponse } from "@/lib/api";
+import {
+  requireAuth,
+  unauthorized,
+  badRequest,
+  notFound,
+  serverError,
+  parsePagination,
+  paginationResponse,
+} from "@/lib/api";
 
 /**
  * GET /api/user/wishlist
@@ -94,7 +102,7 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error fetching wishlist:", error);
-    return NextResponse.json({ error: "WISHLIST_FETCH_FAILED" }, { status: 500 });
+    return serverError("WISHLIST_FETCH_FAILED");
   }
 }
 
@@ -111,7 +119,7 @@ export async function POST(request: NextRequest) {
     const { resourceId } = body;
 
     if (!resourceId) {
-      return NextResponse.json({ error: "RESOURCE_ID_REQUIRED" }, { status: 400 });
+      return badRequest("RESOURCE_ID_REQUIRED");
     }
 
     // Check if resource exists and is public
@@ -127,16 +135,16 @@ export async function POST(request: NextRequest) {
     });
 
     if (!resource) {
-      return NextResponse.json({ error: "MATERIAL_NOT_FOUND" }, { status: 404 });
+      return notFound("MATERIAL_NOT_FOUND");
     }
 
     // Don't allow wishlisting own resources
     if (resource.seller_id === userId) {
-      return NextResponse.json({ error: "CANNOT_WISHLIST_OWN_MATERIAL" }, { status: 400 });
+      return badRequest("CANNOT_WISHLIST_OWN_MATERIAL");
     }
 
     if (!resource.is_published || !resource.is_approved || !resource.is_public) {
-      return NextResponse.json({ error: "MATERIAL_NOT_AVAILABLE" }, { status: 400 });
+      return badRequest("MATERIAL_NOT_AVAILABLE");
     }
 
     // Add to wishlist (upsert to avoid duplicates)
@@ -160,7 +168,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error adding to wishlist:", error);
-    return NextResponse.json({ error: "WISHLIST_ADD_FAILED" }, { status: 500 });
+    return serverError("WISHLIST_ADD_FAILED");
   }
 }
 
@@ -177,7 +185,7 @@ export async function DELETE(request: NextRequest) {
     const resourceId = searchParams.get("resourceId");
 
     if (!resourceId) {
-      return NextResponse.json({ error: "RESOURCE_ID_REQUIRED" }, { status: 400 });
+      return badRequest("RESOURCE_ID_REQUIRED");
     }
 
     // Delete from wishlist
@@ -194,6 +202,6 @@ export async function DELETE(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error removing from wishlist:", error);
-    return NextResponse.json({ error: "WISHLIST_REMOVE_FAILED" }, { status: 500 });
+    return serverError("WISHLIST_REMOVE_FAILED");
   }
 }

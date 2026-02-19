@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getConnectAccount, createExpressDashboardLink } from "@/lib/stripe";
-import { requireAuth, unauthorized, notFound } from "@/lib/api";
+import { requireAuth, unauthorized, notFound, serverError } from "@/lib/api";
 
 /**
  * GET /api/seller/connect/status
@@ -144,9 +144,9 @@ export async function GET() {
 
     // Handle Stripe-specific errors
     if (error instanceof Error && error.message.includes("STRIPE_SECRET_KEY")) {
-      return NextResponse.json({ error: "Stripe ist nicht konfiguriert" }, { status: 500 });
+      return serverError("Stripe ist nicht konfiguriert");
     }
 
-    return NextResponse.json({ error: "Fehler beim Abrufen des Stripe-Status" }, { status: 500 });
+    return serverError("Fehler beim Abrufen des Stripe-Status");
   }
 }

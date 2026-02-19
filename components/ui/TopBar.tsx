@@ -205,7 +205,7 @@ export default function TopBar() {
                   <LoginLink className="text-text-secondary hover:text-primary px-4 py-2 text-sm font-medium transition-colors">
                     {t("navigation.login")}
                   </LoginLink>
-                  <Link href="/registrieren" className="btn-primary rounded-lg px-5 py-2 text-sm">
+                  <Link href="/registrieren" className="btn-primary px-5 py-2 text-sm">
                     {t("navigation.register")}
                   </Link>
                 </>
@@ -323,7 +323,7 @@ export default function TopBar() {
                       </LoginLink>
                       <Link
                         href="/registrieren"
-                        className="btn-primary mx-4 rounded-lg px-5 py-2 text-center text-sm"
+                        className="btn-primary mx-4 px-5 py-2 text-center text-sm"
                       >
                         {t("navigation.register")}
                       </Link>

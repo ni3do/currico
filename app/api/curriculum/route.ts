@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { notFound, serverError } from "@/lib/api";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { toStringArray, toNumberArray } from "@/lib/json-array";
@@ -73,7 +74,7 @@ export async function GET(request: Request) {
     });
 
     if (!curriculum) {
-      return NextResponse.json({ error: "Lehrplan nicht gefunden" }, { status: 404 });
+      return notFound("Lehrplan nicht gefunden");
     }
 
     // Build competencies query
@@ -356,7 +357,7 @@ export async function GET(request: Request) {
     });
   } catch (error) {
     console.error("Error fetching curriculum:", error);
-    return NextResponse.json({ error: "Fehler beim Laden der Lehrplandaten" }, { status: 500 });
+    return serverError("Fehler beim Laden der Lehrplandaten");
   }
 }
 
@@ -382,7 +383,7 @@ async function handleFilterFormat() {
     });
 
     if (!curriculum) {
-      return NextResponse.json({ error: "LP21-Lehrplan nicht gefunden" }, { status: 404 });
+      return notFound("LP21-Lehrplan nicht gefunden");
     }
 
     // Color class mapping based on subject code
@@ -489,9 +490,6 @@ async function handleFilterFormat() {
     });
   } catch (error) {
     console.error("Error fetching curriculum filter data:", error);
-    return NextResponse.json(
-      { error: "Fehler beim Laden der Lehrplan-Filterdaten" },
-      { status: 500 }
-    );
+    return serverError("Fehler beim Laden der Lehrplan-Filterdaten");
   }
 }

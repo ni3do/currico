@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { updateCommentSchema } from "@/lib/validations/review";
-import { requireAuth, unauthorized, badRequest } from "@/lib/api";
+import { requireAuth, unauthorized, badRequest, notFound, forbidden, serverError } from "@/lib/api";
 import { isValidId } from "@/lib/rateLimit";
 
 // GET /api/comments/[id] - Get a single comment
@@ -49,7 +49,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     });
 
     if (!comment) {
-      return NextResponse.json({ error: "Kommentar nicht gefunden" }, { status: 404 });
+      return notFound("Kommentar nicht gefunden");
     }
 
     return NextResponse.json({
@@ -87,7 +87,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     });
   } catch (error) {
     console.error("Error fetching comment:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError("Interner Serverfehler");
   }
 }
 
@@ -106,14 +106,11 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     });
 
     if (!comment) {
-      return NextResponse.json({ error: "Kommentar nicht gefunden" }, { status: 404 });
+      return notFound("Kommentar nicht gefunden");
     }
 
     if (comment.user_id !== userId) {
-      return NextResponse.json(
-        { error: "Sie können nur Ihre eigenen Kommentare bearbeiten" },
-        { status: 403 }
-      );
+      return forbidden("Sie können nur Ihre eigenen Kommentare bearbeiten");
     }
 
     // Parse and validate request body
@@ -121,15 +118,12 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     try {
       body = await request.json();
     } catch {
-      return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+      return badRequest("Invalid JSON body");
     }
     const validation = updateCommentSchema.safeParse(body);
 
     if (!validation.success) {
-      return NextResponse.json(
-        { error: "Ungültige Eingabe", details: validation.error.flatten() },
-        { status: 400 }
-      );
+      return badRequest("Ungültige Eingabe", { details: validation.error.flatten() });
     }
 
     const { content } = validation.data;
@@ -166,7 +160,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     });
   } catch (error) {
     console.error("Error updating comment:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError("Interner Serverfehler");
   }
 }
 
@@ -190,7 +184,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     });
 
     if (!comment) {
-      return NextResponse.json({ error: "Kommentar nicht gefunden" }, { status: 404 });
+      return notFound("Kommentar nicht gefunden");
     }
 
     // Allow deletion by owner, resource seller, or admin
@@ -203,10 +197,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
       comment.user_id === userId || comment.resource.seller_id === userId || user?.role === "ADMIN";
 
     if (!canDelete) {
-      return NextResponse.json(
-        { error: "Sie können nur Ihre eigenen Kommentare löschen" },
-        { status: 403 }
-      );
+      return forbidden("Sie können nur Ihre eigenen Kommentare löschen");
     }
 
     // Delete comment (cascades to replies and likes)
@@ -217,6 +208,6 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     return NextResponse.json({ message: "Kommentar erfolgreich gelöscht" });
   } catch (error) {
     console.error("Error deleting comment:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError("Interner Serverfehler");
   }
 }

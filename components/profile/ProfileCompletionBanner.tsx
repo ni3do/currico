@@ -33,10 +33,7 @@ export function ProfileCompletionBanner({
               </li>
             ))}
           </ul>
-          <button
-            onClick={onComplete}
-            className="bg-primary text-text-on-accent hover:bg-primary-hover mt-4 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
-          >
+          <button onClick={onComplete} className="btn-primary mt-4 px-4 py-2 text-sm">
             {t("button")}
           </button>
         </div>

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin, unauthorizedResponse } from "@/lib/admin-auth";
+import { serverError } from "@/lib/api";
 
 export async function GET(request: NextRequest) {
   try {
@@ -106,6 +107,6 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error fetching transactions:", error);
-    return NextResponse.json({ error: "Fehler beim Laden der Transaktionen" }, { status: 500 });
+    return serverError("Fehler beim Laden der Transaktionen");
   }
 }

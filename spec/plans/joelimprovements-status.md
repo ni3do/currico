@@ -635,8 +635,8 @@ Legende: [x] = erledigt, [ ] = offen
 - [x] Inkonsistente Button-Styles (ghost, outline, solid) nicht überall einheitlich verwendet
 - [x] Card-Layouts nutzen teils `rounded-xl`, teils `rounded-lg` — inkonsistent
 - [x] Viele Seiten haben keine `generateMetadata()` Funktion — fehlende SEO-Metadaten (hilfe, impressum, cookie-richtlinien, verifizierter-verkaeufer)
-- [ ] Keine CSRF-Token-Validierung sichtbar bei POST-Requests
-- [ ] localStorage wird für sensitive Daten genutzt (Drafts, Preferences) — könnte XSS-anfällig sein
+- [x] Keine CSRF-Token-Validierung sichtbar bei POST-Requests — NextAuth v5 handles CSRF; API mutations require requireAuth(); SameSite cookies
+- [x] localStorage wird für sensitive Daten genutzt (Drafts, Preferences) — könnte XSS-anfällig sein — Audit: nur 3 nicht-sensitive Items (Theme, Cookie-Consent, Upload-Draft-Metadaten); Datei-Uploads via IndexedDB
 - [x] `Link` aus "next/link" statt aus `@/i18n/navigation` auf einigen Seiten — umgeht Locale-Handling
 - [x] Dekorative Icons (lucide-react) haben oft kein `aria-hidden="true"` — werden von Screenreadern vorgelesen (Impressum, TrustBar, SellerHeroSection)
 - [x] Viele `<div>`-Container sollten semantische Elemente sein (`<section>`, `<nav>`, `<article>`) für bessere Accessibility — Footer-Spalten zu `<nav aria-labelledby>`, Testimonials zu `<article>`

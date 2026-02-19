@@ -129,7 +129,7 @@ export function EmailVerificationBanner({ email }: EmailVerificationBannerProps)
           <button
             onClick={handleResend}
             disabled={sending}
-            className="bg-primary text-text-on-accent hover:bg-primary-hover mt-4 rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
+            className="btn-primary mt-4 px-4 py-2 text-sm disabled:opacity-50"
           >
             {sending ? (
               <span className="flex items-center gap-2">

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma, privateUserSelect } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
 import { updateNotificationPreferencesSchema } from "@/lib/validations/user";
-import { requireAuth, unauthorized } from "@/lib/api";
+import { requireAuth, unauthorized, serverError, badRequest } from "@/lib/api";
 import type { NotificationType } from "@prisma/client";
 
 const VALID_TYPES: NotificationType[] = ["SALE", "FOLLOW", "REVIEW", "COMMENT", "SYSTEM"];
@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error fetching notifications:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError("Interner Serverfehler");
   }
 }
 
@@ -99,13 +99,9 @@ export async function PATCH(request: NextRequest) {
     // Validate input for notification preferences
     const validationResult = updateNotificationPreferencesSchema.safeParse(body);
     if (!validationResult.success) {
-      return NextResponse.json(
-        {
-          error: "Ungültige Eingabe",
-          details: validationResult.error.flatten().fieldErrors,
-        },
-        { status: 400 }
-      );
+      return badRequest("Ungültige Eingabe", {
+        details: validationResult.error.flatten().fieldErrors,
+      });
     }
 
     const data = validationResult.data;
@@ -160,6 +156,6 @@ export async function PATCH(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error updating notification preferences:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError("Interner Serverfehler");
   }
 }

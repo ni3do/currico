@@ -131,7 +131,7 @@ export function ProfileCompletionProgress({
           {onNavigateToSettings && (
             <button
               onClick={onNavigateToSettings}
-              className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-semibold transition-colors"
+              className="btn-primary inline-flex items-center gap-1.5 px-3.5 py-2 text-xs"
             >
               {t("editProfile")}
               <ChevronRight className="h-3.5 w-3.5" />

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { z } from "zod";
 import { formatPrice } from "@/lib/utils/price";
-import { requireAuth, unauthorized, forbidden, notFound, badRequest } from "@/lib/api";
+import { requireAuth, unauthorized, forbidden, notFound, badRequest, serverError } from "@/lib/api";
 import { isValidId } from "@/lib/rateLimit";
 import { toStringArray } from "@/lib/json-array";
 
@@ -97,7 +97,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     return NextResponse.json({ bundle: transformedBundle });
   } catch (error) {
     console.error("Error fetching bundle:", error);
-    return NextResponse.json({ error: "BUNDLE_FETCH_FAILED" }, { status: 500 });
+    return serverError("BUNDLE_FETCH_FAILED");
   }
 }
 
@@ -216,7 +216,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     });
   } catch (error) {
     console.error("Error updating bundle:", error);
-    return NextResponse.json({ error: "BUNDLE_UPDATE_FAILED" }, { status: 500 });
+    return serverError("BUNDLE_UPDATE_FAILED");
   }
 }
 
@@ -261,6 +261,6 @@ export async function DELETE(
     });
   } catch (error) {
     console.error("Error deleting bundle:", error);
-    return NextResponse.json({ error: "BUNDLE_DELETE_FAILED" }, { status: 500 });
+    return serverError("BUNDLE_DELETE_FAILED");
   }
 }
