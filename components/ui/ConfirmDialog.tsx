@@ -81,13 +81,13 @@ export function ConfirmDialog({
               <button
                 ref={cancelRef}
                 onClick={onCancel}
-                className="btn-tertiary flex-1 rounded-xl px-4 py-2.5 text-sm"
+                className="btn-tertiary flex-1 px-4 py-2.5 text-sm"
               >
                 {cancelLabel}
               </button>
               <button
                 onClick={onConfirm}
-                className={`flex-1 rounded-xl px-4 py-2.5 text-sm font-medium transition-colors ${confirmStyles}`}
+                className={`flex-1 px-4 py-2.5 text-sm font-medium transition-colors ${confirmStyles}`}
               >
                 {confirmLabel}
               </button>

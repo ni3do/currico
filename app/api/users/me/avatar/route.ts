@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { requireAuth, unauthorized } from "@/lib/api";
+import { requireAuth, unauthorized, badRequest, serverError } from "@/lib/api";
 import {
   getStorage,
   generateStorageKey,
@@ -52,20 +52,17 @@ export async function POST(request: NextRequest) {
     const file = formData.get("avatar") as File | null;
 
     if (!file) {
-      return NextResponse.json({ error: "Keine Datei hochgeladen" }, { status: 400 });
+      return badRequest("Keine Datei hochgeladen");
     }
 
     // Validate file type
     if (!ALLOWED_TYPES.includes(file.type)) {
-      return NextResponse.json(
-        { error: "Ungültiger Dateityp. Erlaubt: JPG, PNG, WebP" },
-        { status: 400 }
-      );
+      return badRequest("Ungültiger Dateityp. Erlaubt: JPG, PNG, WebP");
     }
 
     // Validate file size
     if (file.size > MAX_SIZE) {
-      return NextResponse.json({ error: "Datei zu gross. Maximum: 2MB" }, { status: 400 });
+      return badRequest("Datei zu gross. Maximum: 2MB");
     }
 
     // Validate file content with magic bytes
@@ -73,10 +70,7 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(bytes);
 
     if (!validateMagicBytes(buffer, file.type)) {
-      return NextResponse.json(
-        { error: "Dateiinhalt stimmt nicht mit dem Dateityp überein" },
-        { status: 400 }
-      );
+      return badRequest("Dateiinhalt stimmt nicht mit dem Dateityp überein");
     }
 
     // Delete old avatar file if it exists
@@ -122,7 +116,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error uploading avatar:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError("Interner Serverfehler");
   }
 }
 
@@ -147,6 +141,6 @@ export async function DELETE() {
     });
   } catch (error) {
     console.error("Error deleting avatar:", error);
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return serverError("Interner Serverfehler");
   }
 }

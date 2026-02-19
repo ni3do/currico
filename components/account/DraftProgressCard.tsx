@@ -209,7 +209,7 @@ export function DraftProgressCard() {
           <div className="flex items-center gap-2 sm:flex-col sm:items-stretch">
             <Link
               href="/hochladen"
-              className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex flex-1 items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-colors sm:flex-initial"
+              className="btn-primary inline-flex flex-1 items-center justify-center gap-2 rounded-full px-4 py-2 text-sm sm:flex-initial"
             >
               {t("resume")}
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -241,14 +241,14 @@ export function DraftProgressCard() {
               <button
                 type="button"
                 onClick={() => setShowConfirm(false)}
-                className="border-border text-text hover:bg-surface-elevated flex-1 rounded-lg border px-4 py-2.5 font-medium transition-colors"
+                className="btn-tertiary flex-1 px-4 py-2.5"
               >
                 {t("discardCancel")}
               </button>
               <button
                 type="button"
                 onClick={handleDiscard}
-                className="bg-error text-text-on-accent hover:bg-error/90 flex-1 rounded-lg px-4 py-2.5 font-medium transition-colors"
+                className="btn-danger flex-1 px-4 py-2.5"
               >
                 {t("discardConfirm")}
               </button>

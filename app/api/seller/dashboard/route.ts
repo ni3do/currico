@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { formatPrice, getResourceStatus } from "@/lib/utils/price";
-import { requireAuth, requireSeller, unauthorized, forbidden } from "@/lib/api";
+import { requireAuth, requireSeller, unauthorized, forbidden, serverError } from "@/lib/api";
 import { PLATFORM_FEE_PERCENT } from "@/lib/constants";
 import { getFileFormat } from "@/lib/utils/file-format";
 
@@ -145,6 +145,6 @@ export async function GET() {
     });
   } catch (error) {
     console.error("Error fetching seller dashboard:", error);
-    return NextResponse.json({ error: "Fehler beim Laden der Dashboard-Daten" }, { status: 500 });
+    return serverError("Fehler beim Laden der Dashboard-Daten");
   }
 }

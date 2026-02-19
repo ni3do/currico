@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { requireAuth, unauthorized, badRequest } from "@/lib/api";
+import { requireAuth, unauthorized, badRequest, serverError } from "@/lib/api";
 import { z } from "zod";
 
 const createCollectionSchema = z.object({
@@ -70,7 +70,7 @@ export async function GET() {
     return NextResponse.json({ collections: transformedCollections });
   } catch (error) {
     console.error("Error fetching collections:", error);
-    return NextResponse.json({ error: "Fehler beim Laden der Sammlungen" }, { status: 500 });
+    return serverError("Fehler beim Laden der Sammlungen");
   }
 }
 
@@ -116,6 +116,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error creating collection:", error);
-    return NextResponse.json({ error: "Fehler beim Erstellen der Sammlung" }, { status: 500 });
+    return serverError("Fehler beim Erstellen der Sammlung");
   }
 }

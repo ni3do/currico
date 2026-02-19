@@ -238,7 +238,7 @@ export function StripeConnectStatus({ isSeller }: StripeConnectStatusProps) {
 
             <Link
               href="/verkaeufer-werden"
-              className="bg-primary text-text-on-accent hover:bg-primary-hover mt-4 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+              className="btn-primary mt-4 inline-flex items-center gap-2 px-4 py-2 text-sm"
             >
               {t("invite.cta")}
               <ChevronRight className="h-4 w-4" aria-hidden="true" />

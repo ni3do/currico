@@ -2,7 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { z } from "zod";
 import { formatPrice } from "@/lib/utils/price";
-import { requireAuth, requireSeller, unauthorized, forbidden, badRequest } from "@/lib/api";
+import {
+  requireAuth,
+  requireSeller,
+  unauthorized,
+  forbidden,
+  badRequest,
+  serverError,
+} from "@/lib/api";
 
 const createBundleSchema = z.object({
   title: z.string().min(1, "Titel ist erforderlich").max(200),
@@ -99,7 +106,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ bundles: transformedBundles });
   } catch (error) {
     console.error("Error fetching bundles:", error);
-    return NextResponse.json({ error: "Fehler beim Laden der Bundles" }, { status: 500 });
+    return serverError("Fehler beim Laden der Bundles");
   }
 }
 
@@ -189,6 +196,6 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error("Error creating bundle:", error);
-    return NextResponse.json({ error: "Fehler beim Erstellen des Bundles" }, { status: 500 });
+    return serverError("Fehler beim Erstellen des Bundles");
   }
 }

@@ -3,7 +3,13 @@ import { prisma } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
 import { formatPrice } from "@/lib/utils/price";
 import { getFileFormat } from "@/lib/utils/file-format";
-import { requireAuth, unauthorized, parsePagination, paginationResponse } from "@/lib/api";
+import {
+  requireAuth,
+  unauthorized,
+  parsePagination,
+  paginationResponse,
+  serverError,
+} from "@/lib/api";
 
 /**
  * GET /api/user/library
@@ -278,6 +284,6 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error fetching library:", error);
-    return NextResponse.json({ error: "LIBRARY_FETCH_FAILED" }, { status: 500 });
+    return serverError("LIBRARY_FETCH_FAILED");
   }
 }

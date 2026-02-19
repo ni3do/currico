@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { requireAuth, unauthorized, notFound } from "@/lib/api";
+import { requireAuth, unauthorized, notFound, badRequest, serverError } from "@/lib/api";
 
 /**
  * POST /api/seller/accept-terms
@@ -27,7 +27,7 @@ export async function POST() {
 
     // Require email verification before accepting terms
     if (!user.emailVerified) {
-      return NextResponse.json({ error: "E-Mail muss zuerst verifiziert werden" }, { status: 400 });
+      return badRequest("E-Mail muss zuerst verifiziert werden");
     }
 
     // Check if already accepted
@@ -57,7 +57,7 @@ export async function POST() {
     });
   } catch (error) {
     console.error("Error accepting seller terms:", error);
-    return NextResponse.json({ error: "Fehler beim Akzeptieren der Bedingungen" }, { status: 500 });
+    return serverError("Fehler beim Akzeptieren der Bedingungen");
   }
 }
 
@@ -88,6 +88,6 @@ export async function GET() {
     });
   } catch (error) {
     console.error("Error checking seller terms:", error);
-    return NextResponse.json({ error: "Fehler beim Laden der Bedingungen" }, { status: 500 });
+    return serverError("Fehler beim Laden der Bedingungen");
   }
 }

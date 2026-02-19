@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { requireAuth, unauthorized } from "@/lib/api";
+import { requireAuth, unauthorized, badRequest, notFound, serverError } from "@/lib/api";
 
 /**
  * GET /api/payments/checkout-session/[sessionId]
@@ -16,7 +16,7 @@ export async function GET(
   const { sessionId } = await params;
 
   if (!sessionId) {
-    return NextResponse.json({ error: "Session-ID ist erforderlich" }, { status: 400 });
+    return badRequest("Session-ID ist erforderlich");
   }
 
   try {
@@ -53,7 +53,7 @@ export async function GET(
     });
 
     if (!transaction) {
-      return NextResponse.json({ error: "Transaktion nicht gefunden" }, { status: 404 });
+      return notFound("Transaktion nicht gefunden");
     }
 
     // Format amount for display
@@ -83,6 +83,6 @@ export async function GET(
     });
   } catch (error) {
     console.error("Error fetching checkout session:", error);
-    return NextResponse.json({ error: "Fehler beim Laden der Checkout-Session" }, { status: 500 });
+    return serverError("Fehler beim Laden der Checkout-Session");
   }
 }

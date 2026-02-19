@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { formatPrice } from "@/lib/utils/price";
-import { requireAuth, requireSeller, unauthorized, forbidden } from "@/lib/api";
+import { requireAuth, requireSeller, unauthorized, forbidden, serverError } from "@/lib/api";
 import { toStringArray } from "@/lib/json-array";
 
 /**
@@ -73,6 +73,6 @@ export async function GET() {
     return NextResponse.json({ bundles: transformedBundles });
   } catch (error) {
     console.error("Error fetching seller bundles:", error);
-    return NextResponse.json({ error: "BUNDLES_FETCH_FAILED" }, { status: 500 });
+    return serverError("BUNDLES_FETCH_FAILED");
   }
 }

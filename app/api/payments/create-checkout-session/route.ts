@@ -3,7 +3,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { getStripeClient, calculateApplicationFee } from "@/lib/stripe";
-import { notFound } from "@/lib/api";
+import { notFound, badRequest, unauthorized, serverError } from "@/lib/api";
 
 // Input validation schema
 const createCheckoutSessionSchema = z.object({
@@ -26,25 +26,19 @@ export async function POST(request: NextRequest) {
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ error: "Ungültiger JSON-Body" }, { status: 400 });
+    return badRequest("Ungültiger JSON-Body");
   }
 
   const parsed = createCheckoutSessionSchema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json(
-      { error: "Ungültige Eingabe", details: parsed.error.flatten().fieldErrors },
-      { status: 400 }
-    );
+    return badRequest("Ungültige Eingabe", { details: parsed.error.flatten().fieldErrors });
   }
 
   const { materialId, guestEmail } = parsed.data;
 
   // Require either authentication or guest email
   if (!userId && !guestEmail) {
-    return NextResponse.json(
-      { error: "Authentifizierung oder Gast-E-Mail erforderlich" },
-      { status: 401 }
-    );
+    return unauthorized("Authentifizierung oder Gast-E-Mail erforderlich");
   }
 
   // Determine buyer email for Stripe customer
@@ -89,19 +83,16 @@ export async function POST(request: NextRequest) {
 
     // Validate material exists and is available for purchase
     if (!material) {
-      return NextResponse.json({ error: "Material nicht gefunden" }, { status: 404 });
+      return notFound("Material nicht gefunden");
     }
 
     if (!material.is_published || !material.is_approved) {
-      return NextResponse.json({ error: "Material ist nicht zum Kauf verfügbar" }, { status: 400 });
+      return badRequest("Material ist nicht zum Kauf verfügbar");
     }
 
     // Prevent purchasing own materials (only applies to authenticated users)
     if (userId && material.seller_id === userId) {
-      return NextResponse.json(
-        { error: "Eigenes Material kann nicht gekauft werden" },
-        { status: 400 }
-      );
+      return badRequest("Eigenes Material kann nicht gekauft werden");
     }
 
     // Check if user/guest already owns this material
@@ -114,23 +105,17 @@ export async function POST(request: NextRequest) {
     });
 
     if (existingPurchase) {
-      return NextResponse.json({ error: "Sie besitzen dieses Material bereits" }, { status: 400 });
+      return badRequest("Sie besitzen dieses Material bereits");
     }
 
     // Validate seller can receive payments
     if (!material.seller.stripe_account_id || !material.seller.stripe_charges_enabled) {
-      return NextResponse.json(
-        { error: "Der Verkäufer kann derzeit keine Zahlungen empfangen" },
-        { status: 400 }
-      );
+      return badRequest("Der Verkäufer kann derzeit keine Zahlungen empfangen");
     }
 
     // Free materials don't need checkout
     if (material.price === 0) {
-      return NextResponse.json(
-        { error: "Kostenlose Materialien benötigen keinen Checkout" },
-        { status: 400 }
-      );
+      return badRequest("Kostenlose Materialien benötigen keinen Checkout");
     }
 
     const stripe = getStripeClient();
@@ -269,9 +254,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    return NextResponse.json(
-      { error: "Fehler beim Erstellen der Checkout-Session" },
-      { status: 500 }
-    );
+    return serverError("Fehler beim Erstellen der Checkout-Session");
   }
 }
