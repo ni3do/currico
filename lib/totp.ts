@@ -1,6 +1,17 @@
 import { createCipheriv, createDecipheriv, randomBytes, createHash, timingSafeEqual } from "crypto";
-import * as OTPAuth from "otpauth";
-import QRCode from "qrcode";
+
+// Turbopack cannot resolve otpauth (nested export conditions) or qrcode
+// (complex browser field). Use eval'd require to fully bypass static analysis.
+const _require = eval("require") as NodeRequire;
+const OTPAuth: {
+  TOTP: new (opts: Record<string, unknown>) => {
+    secret: { base32: string };
+    validate: (o: { token: string; window: number }) => number | null;
+    toString: () => string;
+  };
+  Secret: { fromBase32: (s: string) => unknown };
+} = _require("otpauth");
+const QRCode: { toDataURL: (text: string) => Promise<string> } = _require("qrcode");
 
 const ALGORITHM = "aes-256-gcm";
 const IV_LENGTH = 12;
