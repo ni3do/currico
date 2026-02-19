@@ -10,6 +10,7 @@ export interface LP21FilterState {
   maxPrice: number | null;
   formats: string[];
   cantons: string[];
+  tags: string[];
 }
 
 export interface MaterialCompetency {
@@ -29,6 +30,7 @@ export interface MaterialListItem {
   createdAt: string;
   averageRating?: number;
   reviewCount?: number;
+  tags?: string[];
   competencies?: MaterialCompetency[];
   seller: {
     id: string;

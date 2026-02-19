@@ -32,8 +32,10 @@ export default function Footer() {
           </div>
 
           {/* Column 2: Plattform */}
-          <div>
-            <h3 className="text-text mb-3 text-sm font-semibold">{t("footer.columns.platform")}</h3>
+          <nav aria-labelledby="footer-platform">
+            <h3 id="footer-platform" className="text-text mb-3 text-sm font-semibold">
+              {t("footer.columns.platform")}
+            </h3>
             <ul className="space-y-2">
               <li>
                 <Link
@@ -61,6 +63,14 @@ export default function Footer() {
               </li>
               <li>
                 <Link
+                  href="/blog"
+                  className="text-text-muted hover:text-primary text-sm transition-colors"
+                >
+                  {t("footer.links.blog")}
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/verkaeufer-werden"
                   className="text-text-muted hover:text-primary text-sm transition-colors"
                 >
@@ -68,11 +78,13 @@ export default function Footer() {
                 </Link>
               </li>
             </ul>
-          </div>
+          </nav>
 
           {/* Column 3: Rechtliches */}
-          <div>
-            <h3 className="text-text mb-3 text-sm font-semibold">{t("footer.columns.legal")}</h3>
+          <nav aria-labelledby="footer-legal">
+            <h3 id="footer-legal" className="text-text mb-3 text-sm font-semibold">
+              {t("footer.columns.legal")}
+            </h3>
             <ul className="space-y-2">
               <li>
                 <Link
@@ -115,11 +127,13 @@ export default function Footer() {
                 </Link>
               </li>
             </ul>
-          </div>
+          </nav>
 
           {/* Column 4: Kontakt */}
-          <div>
-            <h3 className="text-text mb-3 text-sm font-semibold">{t("footer.columns.contact")}</h3>
+          <nav aria-labelledby="footer-contact">
+            <h3 id="footer-contact" className="text-text mb-3 text-sm font-semibold">
+              {t("footer.columns.contact")}
+            </h3>
             <ul className="space-y-2">
               <li>
                 <a
@@ -137,7 +151,7 @@ export default function Footer() {
                 </span>
               </li>
             </ul>
-          </div>
+          </nav>
         </div>
 
         {/* Bottom bar */}

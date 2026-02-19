@@ -60,6 +60,7 @@ export function MaterialsGrid({
             averageRating={material.averageRating}
             reviewCount={material.reviewCount}
             competencies={material.competencies}
+            tags={material.tags}
             wishlistAddLabel={labels.wishlistAdd}
             wishlistRemoveLabel={labels.wishlistRemove}
             anonymousLabel={labels.anonymous}

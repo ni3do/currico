@@ -2,9 +2,9 @@
 
 import { useTranslations } from "next-intl";
 import { useAccountData } from "@/lib/hooks/useAccountData";
-import { SellerCommentsSection } from "@/components/account/SellerCommentsSection";
+import { SellerReviewsSection } from "@/components/account/SellerReviewsSection";
 import { Link } from "@/i18n/navigation";
-import { MessageCircle } from "lucide-react";
+import { Star } from "lucide-react";
 
 export default function AccountCommentsPage() {
   const { userData } = useAccountData();
@@ -13,7 +13,7 @@ export default function AccountCommentsPage() {
   if (!userData?.isSeller) {
     return (
       <div className="py-12 text-center">
-        <MessageCircle className="text-text-faint mx-auto mb-4 h-16 w-16" />
+        <Star className="text-text-faint mx-auto mb-4 h-16 w-16" />
         <h3 className="text-text mb-2 text-lg font-medium">{t("empty")}</h3>
         <p className="text-text-muted mb-4 text-sm">{t("notSeller")}</p>
         <Link
@@ -28,7 +28,7 @@ export default function AccountCommentsPage() {
 
   return (
     <div className="border-border bg-surface rounded-xl border p-6">
-      <SellerCommentsSection />
+      <SellerReviewsSection />
     </div>
   );
 }

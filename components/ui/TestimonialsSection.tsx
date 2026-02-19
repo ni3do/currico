@@ -45,7 +45,7 @@ export function TestimonialsSection() {
         >
           {testimonials.map((testimonial) => (
             <StaggerItem key={testimonial.key}>
-              <motion.div
+              <motion.article
                 className="card relative p-6"
                 whileHover={{
                   y: -4,
@@ -77,7 +77,7 @@ export function TestimonialsSection() {
                     </p>
                   </div>
                 </div>
-              </motion.div>
+              </motion.article>
             </StaggerItem>
           ))}
         </StaggerChildren>

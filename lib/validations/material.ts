@@ -80,68 +80,117 @@ export const MAGIC_BYTES: Record<string, number[][]> = {
 };
 
 // ============================================================
+// CONSTANTS
+// ============================================================
+
+/** Special subject code for non-LP21 materials (classroom deco, org tools, etc.) */
+export const SONSTIGE_CODE = "SONSTIGE";
+
+// ============================================================
+// SHARED SUB-SCHEMAS
+// ============================================================
+
+const tagsSchema = z
+  .array(
+    z
+      .string()
+      .min(2, "Schlagwort muss mindestens 2 Zeichen haben")
+      .max(30, "Schlagwort darf maximal 30 Zeichen haben")
+      .transform((s) => s.toLowerCase().trim())
+  )
+  .max(10, "Maximal 10 Schlagwörter")
+  .default([]);
+
+// ============================================================
 // ZOD SCHEMAS
 // ============================================================
 
 // Schema for creating a new material
 // Note: subjects and cycles accept any strings - validation against database happens at API level
-export const createMaterialSchema = z.object({
-  title: z
-    .string()
-    .min(3, "Titel muss mindestens 3 Zeichen haben")
-    .max(64, "Titel darf maximal 64 Zeichen haben"),
-  description: z
-    .string()
-    .min(10, "Beschreibung muss mindestens 10 Zeichen haben")
-    .max(5000, "Beschreibung darf maximal 5000 Zeichen haben"),
-  price: z
-    .number()
-    .int("Preis muss eine ganze Zahl sein")
-    .min(0, "Preis darf nicht negativ sein")
-    .max(100000, "Preis darf maximal 1000 CHF sein") // Max 1000 CHF in cents
-    .refine(
-      (val) => val === 0 || (val >= 50 && val % 50 === 0),
-      "Preis muss 0 (gratis) oder mindestens CHF 0.50 in 50-Rappen-Schritten sein"
-    ),
-  subjects: z
-    .array(z.string().min(2, "Fachkürzel muss mindestens 2 Zeichen haben"))
-    .min(1, "Mindestens ein Fach auswählen"),
-  cycles: z.array(z.string().min(1)).min(1, "Mindestens einen Zyklus auswählen"),
-  language: z.enum(MATERIAL_LANGUAGES).optional().default("de"),
-  dialect: z.enum(MATERIAL_DIALECTS).optional().default("BOTH"),
-  resourceType: z.enum(MATERIAL_TYPES).optional().default("pdf"),
-  is_published: z.boolean().optional().default(false),
-});
+export const createMaterialSchema = z
+  .object({
+    title: z
+      .string()
+      .min(3, "Titel muss mindestens 3 Zeichen haben")
+      .max(64, "Titel darf maximal 64 Zeichen haben"),
+    description: z
+      .string()
+      .min(10, "Beschreibung muss mindestens 10 Zeichen haben")
+      .max(5000, "Beschreibung darf maximal 5000 Zeichen haben"),
+    price: z
+      .number()
+      .int("Preis muss eine ganze Zahl sein")
+      .min(0, "Preis darf nicht negativ sein")
+      .max(100000, "Preis darf maximal 1000 CHF sein") // Max 1000 CHF in cents
+      .refine(
+        (val) => val === 0 || (val >= 50 && val % 50 === 0),
+        "Preis muss 0 (gratis) oder mindestens CHF 0.50 in 50-Rappen-Schritten sein"
+      ),
+    subjects: z
+      .array(z.string().min(2, "Fachkürzel muss mindestens 2 Zeichen haben"))
+      .min(1, "Mindestens ein Fach auswählen"),
+    cycles: z.array(z.string().min(1)).default([]),
+    tags: tagsSchema,
+    language: z.enum(MATERIAL_LANGUAGES).optional().default("de"),
+    dialect: z.enum(MATERIAL_DIALECTS).optional().default("BOTH"),
+    resourceType: z.enum(MATERIAL_TYPES).optional().default("pdf"),
+    is_published: z.boolean().optional().default(false),
+  })
+  .superRefine((data, ctx) => {
+    const isSonstige = data.subjects.includes(SONSTIGE_CODE);
+    if (!isSonstige && data.cycles.length === 0) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Mindestens einen Zyklus auswählen",
+        path: ["cycles"],
+      });
+    }
+  });
 
 // Schema for updating an existing material
-export const updateMaterialSchema = z.object({
-  title: z
-    .string()
-    .min(3, "Titel muss mindestens 3 Zeichen haben")
-    .max(64, "Titel darf maximal 64 Zeichen haben")
-    .optional(),
-  description: z
-    .string()
-    .min(10, "Beschreibung muss mindestens 10 Zeichen haben")
-    .max(5000, "Beschreibung darf maximal 5000 Zeichen haben")
-    .optional(),
-  price: z
-    .number()
-    .int("Preis muss eine ganze Zahl sein")
-    .min(0, "Preis darf nicht negativ sein")
-    .max(100000, "Preis darf maximal 1000 CHF sein")
-    .refine(
-      (val) => val === 0 || (val >= 50 && val % 50 === 0),
-      "Preis muss 0 (gratis) oder mindestens CHF 0.50 in 50-Rappen-Schritten sein"
-    )
-    .optional(),
-  subjects: z
-    .array(z.string().min(2, "Fachkürzel muss mindestens 2 Zeichen haben"))
-    .min(1, "Mindestens ein Fach auswählen")
-    .optional(),
-  cycles: z.array(z.string().min(1)).min(1, "Mindestens einen Zyklus auswählen").optional(),
-  is_published: z.boolean().optional(),
-});
+export const updateMaterialSchema = z
+  .object({
+    title: z
+      .string()
+      .min(3, "Titel muss mindestens 3 Zeichen haben")
+      .max(64, "Titel darf maximal 64 Zeichen haben")
+      .optional(),
+    description: z
+      .string()
+      .min(10, "Beschreibung muss mindestens 10 Zeichen haben")
+      .max(5000, "Beschreibung darf maximal 5000 Zeichen haben")
+      .optional(),
+    price: z
+      .number()
+      .int("Preis muss eine ganze Zahl sein")
+      .min(0, "Preis darf nicht negativ sein")
+      .max(100000, "Preis darf maximal 1000 CHF sein")
+      .refine(
+        (val) => val === 0 || (val >= 50 && val % 50 === 0),
+        "Preis muss 0 (gratis) oder mindestens CHF 0.50 in 50-Rappen-Schritten sein"
+      )
+      .optional(),
+    subjects: z
+      .array(z.string().min(2, "Fachkürzel muss mindestens 2 Zeichen haben"))
+      .min(1, "Mindestens ein Fach auswählen")
+      .optional(),
+    cycles: z.array(z.string().min(1)).optional(),
+    tags: tagsSchema.optional(),
+    is_published: z.boolean().optional(),
+  })
+  .superRefine((data, ctx) => {
+    // Only validate cycles when both subjects and cycles are provided
+    if (data.subjects && data.cycles !== undefined) {
+      const isSonstige = data.subjects.includes(SONSTIGE_CODE);
+      if (!isSonstige && data.cycles.length === 0) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Mindestens einen Zyklus auswählen",
+          path: ["cycles"],
+        });
+      }
+    }
+  });
 
 // ============================================================
 // TYPE EXPORTS

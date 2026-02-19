@@ -141,6 +141,23 @@ export function notifyComment(sellerId: string, resourceTitle: string, commenter
 }
 
 /**
+ * Notify a review author that someone replied to their review.
+ */
+export function notifyReviewReply(
+  reviewAuthorId: string,
+  resourceTitle: string,
+  replierName: string
+) {
+  createNotification({
+    userId: reviewAuthorId,
+    type: "COMMENT",
+    title: `Neue Antwort auf Ihre Bewertung`,
+    body: `${replierName} hat auf Ihre Bewertung zu "${resourceTitle}" geantwortet.`,
+    link: "/konto",
+  }).catch((err) => console.error("Failed to create review reply notification:", err));
+}
+
+/**
  * Notify a comment author that someone replied to their comment.
  */
 export function notifyCommentReply(

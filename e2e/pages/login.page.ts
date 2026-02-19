@@ -62,7 +62,7 @@ export class LoginPage extends BasePage {
 
     // Navigation links - use the link inside the form area (not the header link)
     this.registerLink = page.locator('main a[href*="/registrieren"]');
-    this.forgotPasswordLink = page.locator('a[href*="/bald-verfuegbar"]');
+    this.forgotPasswordLink = page.locator('a[href*="/forgot-password"]');
     this.backToHomeLink = page.locator('footer a[href="/"]');
 
     // Cookie banner

@@ -71,6 +71,7 @@ export function LP21FilterSidebar({
     toggleFachbereichExpansion,
     toggleKompetenzbereichExpansion,
     handleFormatToggle,
+    handleTagToggle,
   } = useFilterHandlers({
     filters,
     onFiltersChange,
@@ -179,6 +180,8 @@ export function LP21FilterSidebar({
             errorLabel={t("sidebar.loadingError")}
             expandLabel={t("sidebar.expand")}
             collapseLabel={t("sidebar.collapse")}
+            sonstigeLabel={t("sidebar.sonstigeLabel")}
+            sonstigeDescription={t("sidebar.sonstigeDescription")}
           />
         </CollapsibleSection>
 
@@ -193,6 +196,8 @@ export function LP21FilterSidebar({
             onDialectChange={(dialect) => onFiltersChange({ ...filters, dialect })}
             cantons={filters.cantons}
             onCantonsChange={(cantons) => onFiltersChange({ ...filters, cantons })}
+            tags={filters.tags}
+            onTagToggle={handleTagToggle}
             t={t}
           />
         )}

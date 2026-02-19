@@ -67,6 +67,9 @@ export interface DashboardMaterialCardProps {
   onDuplicate?: () => void;
   duplicating?: boolean;
 
+  // Tags/keywords
+  tags?: string[];
+
   // Selection (for bulk actions)
   selectable?: boolean;
   selected?: boolean;
@@ -89,6 +92,7 @@ export function DashboardMaterialCard({
   onRemove,
   onDuplicate,
   duplicating,
+  tags,
   selectable,
   selected,
   onSelect,
@@ -246,6 +250,23 @@ export function DashboardMaterialCard({
               <span className={`pill text-[10px] ${getPillClasses(secondaryBadge.variant)}`}>
                 {secondaryBadge.label}
               </span>
+            )}
+          </div>
+        )}
+
+        {/* Tag pills */}
+        {tags && tags.length > 0 && (
+          <div className="mt-1 flex flex-wrap items-center gap-1">
+            {tags.slice(0, 3).map((tag) => (
+              <span
+                key={tag}
+                className="bg-surface text-text-muted inline-flex rounded-full px-1.5 py-0.5 text-[10px] font-medium"
+              >
+                #{tag}
+              </span>
+            ))}
+            {tags.length > 3 && (
+              <span className="text-text-faint text-[10px]">+{tags.length - 3}</span>
             )}
           </div>
         )}

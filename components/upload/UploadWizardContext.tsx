@@ -11,6 +11,7 @@ import {
 } from "react";
 import { useTranslations } from "next-intl";
 import { saveDraftFiles, loadDraftFiles, clearDraftFiles } from "@/lib/utils/draft-file-storage";
+import { SONSTIGE_CODE } from "@/lib/validations/material";
 
 // Storage key for localStorage
 const STORAGE_KEY = "currico_upload_draft";
@@ -25,6 +26,7 @@ export interface FormData {
   language: string;
   dialect: "STANDARD" | "SWISS" | "BOTH";
   resourceType: string;
+  tags: string[];
 
   // Step 2: Curriculum
   cycle: string;
@@ -130,6 +132,7 @@ const defaultFormData: FormData = {
   language: "de",
   dialect: "BOTH",
   resourceType: "pdf",
+  tags: [],
   cycle: "",
   subject: "",
   subjectCode: "",
@@ -339,8 +342,9 @@ export function UploadWizardProvider({ children }: { children: ReactNode }) {
           }
           break;
 
-        case 2:
-          if (!formData.cycle) {
+        case 2: {
+          const isSonstige = formData.subjectCode === SONSTIGE_CODE;
+          if (!isSonstige && !formData.cycle) {
             errors.push({ field: "cycle", message: tValidation("cycleRequired") });
           }
           if (!formData.subject) {
@@ -350,6 +354,7 @@ export function UploadWizardProvider({ children }: { children: ReactNode }) {
             errors.push({ field: "competencies", message: tValidation("competenciesMax") });
           }
           break;
+        }
 
         case 3:
           if (formData.priceType === "paid") {
@@ -430,6 +435,7 @@ export function UploadWizardProvider({ children }: { children: ReactNode }) {
         case 1:
           return formData.title.trim().length > 0 && formData.description.trim().length > 0;
         case 2:
+          if (formData.subjectCode === SONSTIGE_CODE) return formData.subject !== "";
           return formData.cycle !== "" && formData.subject !== "";
         case 3:
           return (

@@ -42,9 +42,9 @@
 > Leere Regale schrecken sofort ab.
 
 - [x] "Empfohlene Materialien" Fallback — Empty-State mit CTA vorhanden
-- [ ] Doppelte Links reduzieren — Audit nötig
+- [x] Doppelte Links reduzieren — Audit erledigt: /materialien in TopBar+Footer ist Standard-Webpraxis, keine Änderung nötig
 - [x] Sprachumschalter entfernen, wenn nur Deutsch verfügbar — entfernt aus TopBar (Desktop + Mobile) und Admin-Settings
-- [ ] Tote UI-Elemente auditieren und entfernen
+- [x] Tote UI-Elemente auditieren und entfernen — bald-verfuegbar Seite, SellerCommentsSection, ~170 Zeilen toter Slider-CSS entfernt
 
 ---
 
@@ -54,8 +54,8 @@
 
 - [x] Dunkles Overlay auf Hero-Bild für Lesbarkeit (bg-black/40) — Subtiler Gradient-Overlay via `::after` auf `.hero-image-container`
 - [x] CTA-Button visuell hervorheben — "Jetzt Material finden" + "Mehr erfahren" vorhanden
-- [ ] Klarer Nutzen in 3 Sekunden: Was bekomme ich hier?
-- [ ] Optional: Mockup der Plattform statt generisches Stock-Foto
+- [x] Klarer Nutzen in 3 Sekunden: Was bekomme ich hier? — Eyebrow-Text "Die Schweizer Plattform für Unterrichtsmaterialien" über Hero-Titel
+- [~] Optional: Mockup der Plattform statt generisches Stock-Foto — benötigt Design-Asset/Screenshot
 
 ### 6. Suchleiste vereinfachen ⭐⭐⭐⭐
 
@@ -92,7 +92,7 @@
 ### 11. Verkäufer-Bereich stärken ⭐⭐⭐
 
 - [x] "Für Verkäufer" als eigenen Bereich — `/verkaeufer-werden` mit OnboardingStepper, SellerHeroSection auf Homepage
-- [ ] Konkretes Rechenbeispiel prominent platzieren (70% Provision)
+- [x] Konkretes Rechenbeispiel prominent platzieren (70% Provision) — interaktiver Verdienstrechner auf /verkaeufer-werden mit Schiebereglern
 
 ### 12. Navigation & Footer verbessern ⭐⭐⭐
 
@@ -117,14 +117,14 @@
 - [x] `priority` auf Hero-Bild im Next.js `<Image />` — sizes-Prop und priority gesetzt
 - [x] `generateMetadata` für dynamische Seitentitel — auf allen Seiten implementiert
 - [x] Custom 404-Seite — `app/not-found.tsx` mit Navigation zur Startseite und Materialien
-- [ ] Lighthouse-Test, Core Web Vitals optimieren (LCP < 2.5s)
+- [~] Lighthouse-Test, Core Web Vitals optimieren (LCP < 2.5s) — Homepage code-splitting implementiert, voller Audit nach Launch
 - [x] WebP/AVIF, Lazy Loading — Next.js Image mit automatischer Optimierung
 
 ### 15. SEO-Grundlagen ⭐⭐
 
 - [x] Meta-Title & Description pro Seite — alle Seiten haben `generateMetadata()`
 - [x] Open-Graph-Tags für Social Sharing — OG type, images, Twitter cards
-- [x] Schema.org-Markup (Organization, SearchAction, Product) — JSON-LD auf vielen Seiten
+- [x] Schema.org-Markup (Organization, SearchAction, Product) — JSON-LD auf vielen Seiten; Organization-Schema im Root-Layout für alle Seiten
 - [x] `sitemap.xml` und `robots.txt` — `app/sitemap.ts` (statische + dynamische Seiten mit Prisma) + `app/robots.ts` (blockiert /api/, /konto/, /admin/)
 - [x] Strukturierte Überschriften (eine H1 pro Seite) — Heading-Hierarchie standardisiert
 
@@ -140,7 +140,7 @@
 
 - [x] **Bewertungssystem** — Sterne + Textbewertungen vorhanden (ReviewForm, StarRating)
 - [ ] **Content-Marketing** — Blog unter /blog mit SEO-relevanten Artikeln
-- [ ] **Analytics** — Matomo oder Plausible (nDSG-freundlicher als Google Analytics); aktuell nur Sentry
+- [x] **Analytics** — Plausible CE integriert (PlausibleProvider, usePlausible Hook), Umgebungsvariablen in Produktion setzen
 - [x] **E-Mail-Marketing** — Newsletter-Digest-System implementiert (`lib/digest.ts`, Cron-Route, Unsubscribe, GitHub Actions Workflow)
 - [x] **"Über uns" ausbauen** — Komplett überarbeitet mit Team, Timeline, Values, Stats
 - [~] **Accessibility** — Viel bereits gemacht (aria-labels, focus traps, semantic HTML), Audit noch offen
@@ -151,14 +151,14 @@
 
 > Letzte Aktualisierung: 2026-02-18
 
-| Priorität | Total  | Erledigt | Offen  | %       |
-| --------- | ------ | -------- | ------ | ------- |
-| 🔴 MUSS   | 16     | 12       | 4      | 75%     |
-| 🟠 SOLLTE | 10     | 10       | 0      | 100%    |
-| 🟡 NACH   | 10     | 7        | 3      | 70%     |
-| 🟢 MITTEL | 12     | 10       | 2      | 83%     |
-| 🔵 LANG   | 6      | 3        | 3      | 50%     |
-| **Total** | **54** | **42**   | **12** | **78%** |
+| Priorität | Total  | Erledigt | Offen | %       |
+| --------- | ------ | -------- | ----- | ------- |
+| 🔴 MUSS   | 16     | 14       | 2     | 88%     |
+| 🟠 SOLLTE | 10     | 10       | 0     | 100%    |
+| 🟡 NACH   | 10     | 8        | 2     | 80%     |
+| 🟢 MITTEL | 12     | 10       | 2     | 83%     |
+| 🔵 LANG   | 6      | 4        | 2     | 67%     |
+| **Total** | **54** | **46**   | **8** | **85%** |
 
 > **Wichtigste Blocker vor Launch:**
 >

@@ -54,6 +54,8 @@ export interface MaterialCardProps {
   reviewCount?: number;
   /** LP21 competency codes to display as badges */
   competencies?: { code: string; subjectColor?: string }[];
+  /** Tags/keywords to display as pills */
+  tags?: string[];
 }
 
 export function MaterialCard({
@@ -80,6 +82,7 @@ export function MaterialCard({
   averageRating,
   reviewCount,
   competencies,
+  tags,
 }: MaterialCardProps) {
   const [isWishlisted, setIsWishlisted] = useState(initialWishlisted);
   const [wishlistLoading, setWishlistLoading] = useState(false);
@@ -205,6 +208,22 @@ export function MaterialCard({
               ))}
               {competencies.length > 2 && (
                 <span className="text-text-faint text-[10px]">+{competencies.length - 2}</span>
+              )}
+            </div>
+          )}
+          {/* Tag pills - show up to 3 */}
+          {tags && tags.length > 0 && !isCompact && (
+            <div className="mt-1 flex flex-wrap items-center gap-1">
+              {tags.slice(0, 3).map((tag) => (
+                <span
+                  key={tag}
+                  className="bg-surface text-text-muted inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium"
+                >
+                  #{tag}
+                </span>
+              ))}
+              {tags.length > 3 && (
+                <span className="text-text-faint text-[10px]">+{tags.length - 3}</span>
               )}
             </div>
           )}

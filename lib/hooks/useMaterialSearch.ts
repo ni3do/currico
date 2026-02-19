@@ -14,7 +14,7 @@ interface UseMaterialSearchOptions {
   router: { replace(href: string, options?: { scroll?: boolean }): void };
   searchParams: ReadonlyURLSearchParams;
   toast: (message: string, type?: "success" | "error" | "warning" | "info") => void;
-   
+
   t: (key: string, values?: any) => string;
   getFachbereichByCode: (code: string) => { code: string } | undefined;
 }
@@ -85,6 +85,7 @@ export function useMaterialSearch({
       maxPrice: searchParams.get("maxPrice") ? parseInt(searchParams.get("maxPrice")!) : null,
       formats: searchParams.get("formats")?.split(",").filter(Boolean) || [],
       cantons: searchParams.get("cantons")?.split(",").filter(Boolean) || [],
+      tags: searchParams.get("tags")?.split(",").filter(Boolean) || [],
     };
   }, [searchParams]);
 
@@ -113,6 +114,7 @@ export function useMaterialSearch({
         params.set("formats", currentFilters.formats.join(","));
       if (currentFilters.cantons.length > 0)
         params.set("cantons", currentFilters.cantons.join(","));
+      if (currentFilters.tags.length > 0) params.set("tags", currentFilters.tags.join(","));
       if (currentSort && currentSort !== "newest") params.set("sort", currentSort);
       if (page > 1) params.set("page", page.toString());
       if (currentFilters.showCreators && profileSortBy !== "newest")
@@ -230,6 +232,7 @@ export function useMaterialSearch({
     filters.maxPrice !== null ? filters.maxPrice : null,
     ...filters.formats,
     filters.cantons.length > 0 ? true : null,
+    ...filters.tags,
   ].filter(Boolean).length;
 
   const isLoading = filters.showMaterials ? loading : profilesLoading;
@@ -271,6 +274,7 @@ export function useMaterialSearch({
       maxPrice: null,
       formats: [],
       cantons: [],
+      tags: [],
       ...overrides,
     }),
     [filters.showMaterials, filters.showCreators, filters.searchQuery]

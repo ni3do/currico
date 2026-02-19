@@ -113,7 +113,8 @@
         "verifiedSeller": "Verified Sellers",
         "materials": "Browse Materials",
         "upload": "Upload Material",
-        "becomeSeller": "Become a Seller"
+        "becomeSeller": "Become a Seller",
+        "blog": "Blog"
       }
     },
     "errors": {
@@ -173,7 +174,8 @@
       "becomeSeller": "Become Seller",
       "bundles": "Bundles",
       "copyrightGuide": "Copyright Guide",
-      "edit": "Edit"
+      "edit": "Edit",
+      "blog": "Blog"
     },
     "toast": {
       "addedToWishlist": "Added to wishlist",
@@ -226,6 +228,7 @@
       "ratingCard": {
         "rating": "4.9"
       },
+      "eyebrow": "The Swiss Platform for Teaching Materials",
       "title": "Less searching, more teaching.",
       "description": "Discover professional teaching materials, developed by colleagues and precisely aligned with <bold>Lehrplan 21</bold>. Trustworthy, verified, ready to use.",
       "primaryButton": "Find Materials Now",
@@ -635,7 +638,11 @@
       "cantonChipMultiple": "{count} cantons",
       "expand": "Expand",
       "collapse": "Collapse",
-      "closeFilters": "Close filters"
+      "closeFilters": "Close filters",
+      "tagSectionLabel": "Tags",
+      "tagFilterPlaceholder": "Search tags...",
+      "sonstigeLabel": "Other",
+      "sonstigeDescription": "Without LP21 alignment"
     },
     "search": {
       "placeholder": "Search by title, topic, keyword...",
@@ -1703,7 +1710,12 @@
       "duplicateTitleLink": "View existing material",
       "draftFilesNotSaved": "Files not saved in draft",
       "draftFilesNotSavedDesc": "Files cannot be saved in drafts. Please re-upload your files.",
-      "similarTitle": "Similar title found: \"{title}\""
+      "similarTitle": "Similar title found: \"{title}\"",
+      "tags": "Tags",
+      "tagsHint": "Up to 10 tags (e.g., worksheet, math, spring)",
+      "tagsPlaceholder": "Type a tag and press Enter",
+      "tagMax": "Maximum 10 tags",
+      "tagDuplicate": "Already added"
     },
     "legal": {
       "title": "Legal Confirmations",
@@ -1777,7 +1789,9 @@
       "searchResultSubject": "Subject",
       "searchResultArea": "Area",
       "searchResultCompetency": "Competency",
-      "searchHint": "Search directly for subject, competency area, or competency"
+      "searchHint": "Search directly for subject, competency area, or competency",
+      "sonstigeLabel": "Other",
+      "sonstigeDescription": "Materials without LP21 alignment"
     },
     "summary": {
       "title": "Overview",
@@ -2898,7 +2912,7 @@
     "description": "Description",
     "reviews": "Reviews",
     "comments": "Comments",
-    "feedbackTitle": "Reviews & Comments",
+    "feedbackTitle": "Reviews",
     "similarMaterials": "Similar Materials",
     "report": {
       "title": "Report material",
@@ -3249,7 +3263,17 @@
     "contentPlaceholder": "Describe your experience with this material...",
     "charCount": "{count}/{max} characters",
     "options": "Options",
-    "cannotReviewOwn": "You cannot review your own material."
+    "cannotReviewOwn": "You cannot review your own material.",
+    "reply": "Reply",
+    "replyPlaceholder": "Write a reply...",
+    "replySubmit": "Reply",
+    "replySending": "Sending...",
+    "replyError": "Failed to send reply",
+    "showReplies": "Show {count} replies",
+    "hideReplies": "Hide replies",
+    "seller": "Seller",
+    "deleteReply": "Delete reply",
+    "confirmDeleteReply": "Are you sure you want to delete this reply?"
   },
   "likes": {
     "like": "Like",
@@ -3373,7 +3397,7 @@
       "library": "Library",
       "uploads": "My Uploads",
       "bundles": "Bundles",
-      "comments": "Comments",
+      "comments": "Reviews",
       "wishlist": "Wishlist",
       "notifications": "Notifications",
       "following": "Following",
@@ -3521,13 +3545,13 @@
       }
     },
     "comments": {
-      "title": "Comments on your materials",
-      "totalComments": "Total comments",
+      "title": "Reviews on your materials",
+      "totalComments": "Total reviews",
       "unanswered": "unanswered",
-      "filterAll": "All comments",
+      "filterAll": "All reviews",
       "filterUnanswered": "Unanswered",
-      "empty": "No comments",
-      "emptyDescription": "Comments will appear here once users comment on your materials.",
+      "empty": "No reviews",
+      "emptyDescription": "Reviews will appear here once users review your materials.",
       "viewMaterial": "View material",
       "unansweredBadge": "Unanswered",
       "reply": "Reply",
@@ -3539,10 +3563,10 @@
       "prev": "Previous",
       "next": "Next",
       "pageInfo": "Page {page} of {total}",
-      "errorLoading": "Failed to load comments",
+      "errorLoading": "Failed to load reviews",
       "errorSending": "Failed to send reply",
       "you": "You",
-      "notSeller": "Comments are only available for sellers.",
+      "notSeller": "Reviews are only available for sellers.",
       "becomeSeller": "Become a seller"
     },
     "settingsNotifications": {
@@ -4414,5 +4438,12 @@
     "free": "Free",
     "ctaAllMaterials": "Discover all materials",
     "unsubscribeFooter": "Unsubscribe from newsletter"
+  },
+  "blogPage": {
+    "title": "Blog",
+    "subtitle": "Tips, news, and inspiration about teaching materials.",
+    "noPosts": "No posts yet.",
+    "readMore": "Read more",
+    "backToList": "Back to blog"
   }
 }

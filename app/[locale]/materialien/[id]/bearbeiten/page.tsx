@@ -17,7 +17,9 @@ import {
   FormInput,
   FormTextarea,
   RadioOption,
+  TagInput,
 } from "@/components/upload";
+import { SONSTIGE_CODE } from "@/lib/validations/material";
 import { checkForEszett, replaceEszett } from "@/lib/validations/swiss-quality";
 import { roundToNearestHalfFranc } from "@/lib/utils/price";
 import { getFachbereichByCode } from "@/lib/data/lehrplan21";
@@ -33,6 +35,7 @@ interface MaterialEditData {
   previewUrl: string | null;
   subjects: string[];
   cycles: string[];
+  tags?: string[];
   isApproved: boolean;
   isPublished?: boolean;
   status: "PENDING" | "VERIFIED" | "REJECTED";
@@ -45,6 +48,7 @@ interface FormState {
   cycle: string;
   subject: string;
   subjectCode: string;
+  tags: string[];
   priceType: "free" | "paid";
   price: string;
   isPublished: boolean;
@@ -62,6 +66,7 @@ function parseCycleNumber(cycleStr: string): string {
  * Map a subject code like "MA" to its display name via LP21 data
  */
 function resolveSubjectName(code: string): string {
+  if (code === SONSTIGE_CODE) return "Sonstige";
   const fb = getFachbereichByCode(code);
   return fb ? fb.name : code;
 }
@@ -92,6 +97,7 @@ export default function EditMaterialPage() {
     cycle: "",
     subject: "",
     subjectCode: "",
+    tags: [],
     priceType: "free",
     price: "",
     isPublished: true,
@@ -146,6 +152,7 @@ export default function EditMaterialPage() {
           cycle: cycleNum,
           subject: subjectName,
           subjectCode: subjectCode,
+          tags: Array.isArray(m.tags) ? m.tags : [],
           priceType: isPaid ? "paid" : "free",
           price: isPaid ? priceInCHF.toFixed(2) : "",
           isPublished: m.isPublished ?? true,
@@ -172,6 +179,7 @@ export default function EditMaterialPage() {
       form.description !== init.description ||
       form.cycle !== init.cycle ||
       form.subjectCode !== init.subjectCode ||
+      JSON.stringify(form.tags) !== JSON.stringify(init.tags) ||
       form.priceType !== init.priceType ||
       form.price !== init.price ||
       form.isPublished !== init.isPublished
@@ -272,6 +280,10 @@ export default function EditMaterialPage() {
       }
       if (form.cycle !== init.cycle) {
         body.cycles = form.cycle ? [`Zyklus ${form.cycle}`] : [];
+      }
+      // Tags changes
+      if (JSON.stringify(form.tags) !== JSON.stringify(init.tags)) {
+        body.tags = form.tags;
       }
 
       // Price changes (only if not approved)
@@ -594,6 +606,20 @@ export default function EditMaterialPage() {
                 />
               </FormField>
             </div>
+          </section>
+
+          {/* Tags Section */}
+          <section className="border-border bg-surface rounded-2xl border p-6 shadow-lg shadow-black/5">
+            <h2 className="text-text mb-4 text-lg font-semibold">{tFields("tags")}</h2>
+            <FormField label={tFields("tags")} hint={tFields("tagsHint")}>
+              <TagInput
+                tags={form.tags}
+                onChange={(tags) => updateField("tags", tags)}
+                placeholder={tFields("tagsPlaceholder")}
+                maxMessage={tFields("tagMax")}
+                duplicateMessage={tFields("tagDuplicate")}
+              />
+            </FormField>
           </section>
 
           {/* Curriculum Section */}

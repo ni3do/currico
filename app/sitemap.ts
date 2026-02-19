@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/db";
+import { getAllPosts } from "@/lib/blog";
 
 const BASE_URL = process.env.NEXTAUTH_URL || "https://currico.siwachter.com";
 
@@ -21,6 +22,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/verkaeufer-stufen",
     "/verifizierter-verkaeufer",
     "/verkaeufer-werden",
+    "/blog",
   ];
 
   const staticEntries: MetadataRoute.Sitemap = staticPages.map((path) => ({
@@ -90,5 +92,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // DB unavailable — skip profiles
   }
 
-  return [...staticEntries, ...materialEntries, ...profileEntries];
+  // Dynamic blog post pages
+  let blogEntries: MetadataRoute.Sitemap = [];
+  try {
+    const posts = getAllPosts();
+    blogEntries = posts.map((post) => ({
+      url: `${BASE_URL}/de/blog/${post.slug}`,
+      lastModified: new Date(post.date),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+      alternates: {
+        languages: {
+          de: `${BASE_URL}/de/blog/${post.slug}`,
+          en: `${BASE_URL}/en/blog/${post.slug}`,
+        },
+      },
+    }));
+  } catch {
+    // Blog directory unavailable — skip
+  }
+
+  return [...staticEntries, ...materialEntries, ...profileEntries, ...blogEntries];
 }

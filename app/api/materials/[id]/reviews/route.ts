@@ -40,7 +40,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       return notFound("Material nicht gefunden");
     }
 
-    // Get reviews with user info
+    // Get reviews with user info and replies
     const [reviews, totalCount] = await Promise.all([
       prisma.review.findMany({
         where: { resource_id: materialId },
@@ -52,6 +52,19 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
               name: true,
               image: true,
             },
+          },
+          replies: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  display_name: true,
+                  name: true,
+                  image: true,
+                },
+              },
+            },
+            orderBy: { created_at: "asc" },
           },
         },
         orderBy: { created_at: "desc" },
@@ -131,6 +144,19 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
           displayName: review.user.display_name || review.user.name || "Anonym",
           image: review.user.image,
         },
+        replies: review.replies.map((reply) => ({
+          id: reply.id,
+          content: reply.content,
+          createdAt: reply.created_at.toISOString(),
+          updatedAt: reply.updated_at.toISOString(),
+          user: {
+            id: reply.user.id,
+            displayName: reply.user.display_name || reply.user.name || "Anonym",
+            image: reply.user.image,
+            isSeller: reply.user.id === material.seller_id,
+          },
+        })),
+        replyCount: review.replies.length,
       })),
       pagination: {
         page,

@@ -117,6 +117,9 @@ export function useSearchFetcher({
         if (currentFilters.cantons.length > 0) {
           params.set("cantons", currentFilters.cantons.join(","));
         }
+        if (currentFilters.tags.length > 0) {
+          params.set("tags", currentFilters.tags.join(","));
+        }
         if (currentSort) {
           params.set("sort", currentSort);
         }

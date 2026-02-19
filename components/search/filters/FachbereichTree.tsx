@@ -1,7 +1,8 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
+import { Loader2, FolderOpen } from "lucide-react";
 import type { Fachbereich } from "@/lib/curriculum-types";
+import { SONSTIGE_CODE } from "@/lib/validations/material";
 import { FachbereichAccordion } from "./FachbereichAccordion";
 
 interface FachbereichTreeProps {
@@ -21,6 +22,8 @@ interface FachbereichTreeProps {
   errorLabel: string;
   expandLabel: string;
   collapseLabel: string;
+  sonstigeLabel?: string;
+  sonstigeDescription?: string;
 }
 
 export function FachbereichTree({
@@ -40,6 +43,8 @@ export function FachbereichTree({
   errorLabel,
   expandLabel,
   collapseLabel,
+  sonstigeLabel,
+  sonstigeDescription,
 }: FachbereichTreeProps) {
   if (loading) {
     return (
@@ -52,6 +57,8 @@ export function FachbereichTree({
   if (error) {
     return <div className="text-error py-4 text-center text-sm">{errorLabel}</div>;
   }
+
+  const isSonstigeSelected = selectedFachbereich === SONSTIGE_CODE;
 
   return (
     <div className="space-y-2">
@@ -74,6 +81,27 @@ export function FachbereichTree({
           index={index}
         />
       ))}
+
+      {/* Sonstige — non-LP21 materials */}
+      {sonstigeLabel && (
+        <button
+          type="button"
+          onClick={() => onFachbereichChange(SONSTIGE_CODE)}
+          className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-sm font-medium transition-colors ${
+            isSonstigeSelected
+              ? "bg-primary/10 text-primary ring-primary/30 ring-1"
+              : "text-text-muted hover:bg-surface hover:text-text"
+          }`}
+        >
+          <FolderOpen className="h-4 w-4 flex-shrink-0" />
+          <div className="min-w-0">
+            <div>{sonstigeLabel}</div>
+            {sonstigeDescription && !isSonstigeSelected && (
+              <div className="text-text-faint text-xs">{sonstigeDescription}</div>
+            )}
+          </div>
+        </button>
+      )}
     </div>
   );
 }

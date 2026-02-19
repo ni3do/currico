@@ -639,8 +639,8 @@ Legende: [x] = erledigt, [ ] = offen
 - [ ] localStorage wird für sensitive Daten genutzt (Drafts, Preferences) — könnte XSS-anfällig sein
 - [x] `Link` aus "next/link" statt aus `@/i18n/navigation` auf einigen Seiten — umgeht Locale-Handling
 - [x] Dekorative Icons (lucide-react) haben oft kein `aria-hidden="true"` — werden von Screenreadern vorgelesen (Impressum, TrustBar, SellerHeroSection)
-- [ ] Viele `<div>`-Container sollten semantische Elemente sein (`<section>`, `<nav>`, `<article>`) für bessere Accessibility
-- [ ] Keine Schema.org-Daten auf den meisten Seiten — fehlende Rich Snippets
+- [x] Viele `<div>`-Container sollten semantische Elemente sein (`<section>`, `<nav>`, `<article>`) für bessere Accessibility — Footer-Spalten zu `<nav aria-labelledby>`, Testimonials zu `<article>`
+- [x] Keine Schema.org-Daten auf den meisten Seiten — fehlende Rich Snippets — Organization-Schema im Root-Layout, 10+ Seiten mit JSON-LD
 - [x] API-Fehler werden oft als generische "Ein Fehler ist aufgetreten" angezeigt — keine spezifischen Hilfe für 401/403/404/500
 
 ---
@@ -677,29 +677,29 @@ Legende: [x] = erledigt, [ ] = offen
 
 > Letzte Aktualisierung: 2026-02-17
 
-| Seite                     | Erledigt | Offen | Bemerkung                                  |
-| ------------------------- | -------- | ----- | ------------------------------------------ |
-| Startseite                | 16       | 0     |                                            |
-| Materialien               | 53       | 0     |                                            |
-| Material-Vorschau         | 37       | 0     |                                            |
-| Hilfe                     | 12       | 0     |                                            |
-| Urheberrecht              | 9        | 0     |                                            |
-| Impressum                 | 13       | 0     |                                            |
-| Cookie-Richtlinien        | 8        | 0     |                                            |
-| Verkäufer-Stufen          | 11       | 0     |                                            |
-| Verifizierter Verkäufer   | 9        | 0     |                                            |
-| Über uns                  | 11       | 1     | Photos ausstehend (User liefert)           |
-| Kontakt                   | 13       | 0     |                                            |
-| Anmelden                  | 14       | 0     |                                            |
-| Registrieren              | 5        | 0     |                                            |
-| Konto (alle Unterseiten)  | 67       | 1     | E-Mail-Templates\*                         |
-| Folge ich                 | 11       | 0     |                                            |
-| Hochladen                 | 31       | 0     |                                            |
-| Öffentliches Profil       | 13       | 0     |                                            |
-| Verkäufer werden / Stripe | 14       | 0     |                                            |
-| Benachrichtigungen        | 3        | 0     |                                            |
-| Global                    | 19       | 3     | CSRF, localStorage security, semantic HTML |
-| Final Touch Audit         | 4        | 0     |                                            |
-| **Total**                 | **373**  | **5** |                                            |
+| Seite                     | Erledigt | Offen | Bemerkung                        |
+| ------------------------- | -------- | ----- | -------------------------------- |
+| Startseite                | 16       | 0     |                                  |
+| Materialien               | 53       | 0     |                                  |
+| Material-Vorschau         | 37       | 0     |                                  |
+| Hilfe                     | 12       | 0     |                                  |
+| Urheberrecht              | 9        | 0     |                                  |
+| Impressum                 | 13       | 0     |                                  |
+| Cookie-Richtlinien        | 8        | 0     |                                  |
+| Verkäufer-Stufen          | 11       | 0     |                                  |
+| Verifizierter Verkäufer   | 9        | 0     |                                  |
+| Über uns                  | 11       | 1     | Photos ausstehend (User liefert) |
+| Kontakt                   | 13       | 0     |                                  |
+| Anmelden                  | 14       | 0     |                                  |
+| Registrieren              | 5        | 0     |                                  |
+| Konto (alle Unterseiten)  | 67       | 1     | E-Mail-Templates\*               |
+| Folge ich                 | 11       | 0     |                                  |
+| Hochladen                 | 31       | 0     |                                  |
+| Öffentliches Profil       | 13       | 0     |                                  |
+| Verkäufer werden / Stripe | 14       | 0     |                                  |
+| Benachrichtigungen        | 3        | 0     |                                  |
+| Global                    | 21       | 1     | CSRF                             |
+| Final Touch Audit         | 4        | 0     |                                  |
+| **Total**                 | **375**  | **3** |                                  |
 
 \* E-Mail-Templates = OUT OF SCOPE (Backend)

@@ -4,37 +4,46 @@ import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
-import { MessageCircle, AlertCircle, Filter, ExternalLink, Send, ChevronDown } from "lucide-react";
+import {
+  Star,
+  AlertCircle,
+  Filter,
+  ExternalLink,
+  Send,
+  ChevronDown,
+  ShieldCheck,
+} from "lucide-react";
+import { StarRating } from "@/components/ui/StarRating";
 import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "@/components/ui/Toast";
-import type { SellerComment } from "@/lib/types/comments";
+import type { SellerReview } from "@/lib/types/review";
 
-interface SellerCommentsSectionProps {
+interface SellerReviewsSectionProps {
   className?: string;
 }
 
-export function SellerCommentsSection({ className = "" }: SellerCommentsSectionProps) {
+export function SellerReviewsSection({ className = "" }: SellerReviewsSectionProps) {
   const tCommon = useTranslations("common");
   const t = useTranslations("accountPage.comments");
   const { toast } = useToast();
-  const [comments, setComments] = useState<SellerComment[]>([]);
+  const [reviews, setReviews] = useState<SellerReview[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<"all" | "unreplied">("all");
-  const [stats, setStats] = useState({ totalComments: 0, unrepliedComments: 0 });
+  const [stats, setStats] = useState({ totalReviews: 0, unrepliedReviews: 0 });
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [replyContent, setReplyContent] = useState("");
   const [submittingReply, setSubmittingReply] = useState(false);
-  const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set());
+  const [expandedReviews, setExpandedReviews] = useState<Set<string>>(new Set());
 
-  const fetchComments = useCallback(
+  const fetchReviews = useCallback(
     async (pageNum: number = 1, filterType: string = filter) => {
       try {
         setLoading(true);
         const response = await fetch(
-          `/api/user/material-comments?page=${pageNum}&limit=10&filter=${filterType}`
+          `/api/user/resource-reviews?page=${pageNum}&limit=10&filter=${filterType}`
         );
 
         if (!response.ok) {
@@ -42,7 +51,7 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
         }
 
         const data = await response.json();
-        setComments(data.comments);
+        setReviews(data.reviews);
         setStats(data.stats);
         setPage(data.pagination.page);
         setTotalPages(data.pagination.totalPages);
@@ -56,20 +65,20 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
   );
 
   useEffect(() => {
-    fetchComments(1, filter);
-  }, [filter, fetchComments]);
+    fetchReviews(1, filter);
+  }, [filter, fetchReviews]);
 
   const handleFilterChange = (newFilter: "all" | "unreplied") => {
     setFilter(newFilter);
     setPage(1);
   };
 
-  const handleSubmitReply = async (commentId: string) => {
+  const handleSubmitReply = async (reviewId: string) => {
     if (!replyContent.trim()) return;
 
     setSubmittingReply(true);
     try {
-      const response = await fetch(`/api/comments/${commentId}/replies`, {
+      const response = await fetch(`/api/reviews/${reviewId}/replies`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content: replyContent.trim() }),
@@ -81,7 +90,7 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
 
       setReplyContent("");
       setReplyingTo(null);
-      fetchComments(page, filter);
+      fetchReviews(page, filter);
     } catch (err) {
       console.error("Error submitting reply:", err);
       toast(t("errorSending"), "error");
@@ -90,13 +99,13 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
     }
   };
 
-  const toggleExpanded = (commentId: string) => {
-    setExpandedComments((prev) => {
+  const toggleExpanded = (reviewId: string) => {
+    setExpandedReviews((prev) => {
       const next = new Set(prev);
-      if (next.has(commentId)) {
-        next.delete(commentId);
+      if (next.has(reviewId)) {
+        next.delete(reviewId);
       } else {
-        next.add(commentId);
+        next.add(reviewId);
       }
       return next;
     });
@@ -113,7 +122,7 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
   };
 
   // Loading state
-  if (loading && comments.length === 0) {
+  if (loading && reviews.length === 0) {
     return (
       <div className={`${className}`}>
         <div className="border-border bg-bg animate-pulse rounded-xl border p-8">
@@ -144,10 +153,10 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
         <div>
           <h2 className="text-text text-xl font-semibold">{t("title")}</h2>
           <p className="text-text-muted mt-1 text-sm">
-            {stats.totalComments} {t("totalComments")}
-            {stats.unrepliedComments > 0 && (
+            {stats.totalReviews} {t("totalComments")}
+            {stats.unrepliedReviews > 0 && (
               <span className="text-warning ml-2">
-                ({stats.unrepliedComments} {t("unanswered")})
+                ({stats.unrepliedReviews} {t("unanswered")})
               </span>
             )}
           </p>
@@ -167,56 +176,56 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
         </div>
       </div>
 
-      {/* Comments List */}
-      {comments.length === 0 ? (
+      {/* Reviews List */}
+      {reviews.length === 0 ? (
         <div className="border-border bg-bg rounded-xl border p-8 text-center">
-          <MessageCircle className="text-text-faint mx-auto mb-3 h-12 w-12" />
+          <Star className="text-text-faint mx-auto mb-3 h-12 w-12" />
           <p className="text-text-muted mb-2">{t("empty")}</p>
           <p className="text-text-faint text-sm">{t("emptyDescription")}</p>
         </div>
       ) : (
         <div className="space-y-4">
-          {comments.map((comment) => (
+          {reviews.map((review) => (
             <motion.div
-              key={comment.id}
+              key={review.id}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               className={`border-border bg-bg rounded-xl border p-5 ${
-                !comment.hasSellerReply ? "border-l-warning border-l-4" : ""
+                !review.hasSellerReply ? "border-l-warning border-l-4" : ""
               }`}
             >
               {/* Resource Link */}
               <Link
-                href={`/materialien/${comment.resource.id}`}
+                href={`/materialien/${review.resource.id}`}
                 className="bg-surface hover:bg-surface-hover mb-4 flex items-center gap-3 rounded-lg p-3 transition-colors"
               >
-                {comment.resource.previewUrl ? (
+                {review.resource.previewUrl ? (
                   <Image
-                    src={comment.resource.previewUrl}
-                    alt={comment.resource.title}
+                    src={review.resource.previewUrl}
+                    alt={review.resource.title}
                     width={48}
                     height={48}
                     className="h-12 w-12 rounded object-cover"
                   />
                 ) : (
                   <div className="bg-bg-secondary flex h-12 w-12 items-center justify-center rounded">
-                    <MessageCircle className="text-text-muted h-5 w-5" />
+                    <Star className="text-text-muted h-5 w-5" />
                   </div>
                 )}
                 <div className="min-w-0 flex-1">
-                  <p className="text-text truncate text-sm font-medium">{comment.resource.title}</p>
+                  <p className="text-text truncate text-sm font-medium">{review.resource.title}</p>
                   <p className="text-text-faint text-xs">{t("viewMaterial")}</p>
                 </div>
                 <ExternalLink className="text-text-muted h-4 w-4 flex-shrink-0" />
               </Link>
 
-              {/* Comment Header */}
+              {/* Review Header with Rating */}
               <div className="mb-3 flex items-start justify-between">
                 <div className="flex items-center gap-3">
-                  {comment.user.image ? (
+                  {review.user.image ? (
                     <Image
-                      src={comment.user.image}
-                      alt={comment.user.displayName}
+                      src={review.user.image}
+                      alt={review.user.displayName}
                       width={36}
                       height={36}
                       className="h-9 w-9 rounded-full object-cover"
@@ -224,48 +233,56 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
                   ) : (
                     <div className="bg-surface flex h-9 w-9 items-center justify-center rounded-full">
                       <span className="text-text-muted text-sm font-medium">
-                        {comment.user.displayName.charAt(0).toUpperCase()}
+                        {review.user.displayName.charAt(0).toUpperCase()}
                       </span>
                     </div>
                   )}
                   <div>
-                    <span className="text-text font-medium">{comment.user.displayName}</span>
-                    <p className="text-text-faint text-xs">{formatDate(comment.createdAt)}</p>
+                    <div className="flex items-center gap-2">
+                      <span className="text-text font-medium">{review.user.displayName}</span>
+                      <StarRating rating={review.rating} size="sm" />
+                    </div>
+                    <p className="text-text-faint text-xs">{formatDate(review.createdAt)}</p>
                   </div>
                 </div>
-                {!comment.hasSellerReply && (
+                {!review.hasSellerReply && (
                   <span className="pill pill-warning text-xs">{t("unansweredBadge")}</span>
                 )}
               </div>
 
-              {/* Comment Content */}
-              <p className="text-text-secondary mb-4 leading-relaxed whitespace-pre-wrap">
-                {comment.content}
-              </p>
+              {/* Review Title */}
+              {review.title && <h4 className="text-text mb-1 text-sm font-bold">{review.title}</h4>}
+
+              {/* Review Content */}
+              {review.content && (
+                <p className="text-text-secondary mb-4 leading-relaxed whitespace-pre-wrap">
+                  {review.content}
+                </p>
+              )}
 
               {/* Existing Replies */}
-              {comment.replies.length > 0 && (
+              {review.replies.length > 0 && (
                 <div className="mb-4">
                   <button
-                    onClick={() => toggleExpanded(comment.id)}
+                    onClick={() => toggleExpanded(review.id)}
                     className="text-text-muted hover:text-text mb-2 flex items-center gap-1 text-sm"
                   >
-                    <span>{t("replies", { count: comment.replies.length })}</span>
+                    <span>{t("replies", { count: review.replies.length })}</span>
                     <ChevronDown
                       className={`h-4 w-4 transition-transform ${
-                        expandedComments.has(comment.id) ? "rotate-180" : ""
+                        expandedReviews.has(review.id) ? "rotate-180" : ""
                       }`}
                     />
                   </button>
                   <AnimatePresence>
-                    {expandedComments.has(comment.id) && (
+                    {expandedReviews.has(review.id) && (
                       <motion.div
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
                         className="border-border space-y-2 overflow-hidden border-l-2 pl-4"
                       >
-                        {comment.replies.map((reply) => (
+                        {review.replies.map((reply) => (
                           <div
                             key={reply.id}
                             className={`rounded-lg p-3 ${
@@ -277,7 +294,10 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
                                 {reply.user.displayName}
                               </span>
                               {reply.user.isSeller && (
-                                <span className="pill pill-primary text-xs">{t("you")}</span>
+                                <span className="pill pill-primary flex items-center gap-0.5 text-xs">
+                                  <ShieldCheck className="h-3 w-3" />
+                                  {t("you")}
+                                </span>
                               )}
                               <span className="text-text-faint text-xs">
                                 {formatDate(reply.createdAt)}
@@ -293,7 +313,7 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
               )}
 
               {/* Reply Form */}
-              {replyingTo === comment.id ? (
+              {replyingTo === review.id ? (
                 <div className="border-border rounded-lg border p-3">
                   <textarea
                     value={replyContent}
@@ -318,7 +338,7 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
                         {t("cancel")}
                       </button>
                       <button
-                        onClick={() => handleSubmitReply(comment.id)}
+                        onClick={() => handleSubmitReply(review.id)}
                         disabled={submittingReply || !replyContent.trim()}
                         className="btn-primary flex items-center gap-2 px-4 py-2 text-sm disabled:opacity-50"
                       >
@@ -330,10 +350,10 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
                 </div>
               ) : (
                 <button
-                  onClick={() => setReplyingTo(comment.id)}
+                  onClick={() => setReplyingTo(review.id)}
                   className="text-primary hover:text-primary-hover flex items-center gap-2 text-sm font-medium transition-colors"
                 >
-                  <MessageCircle className="h-4 w-4" />
+                  <Star className="h-4 w-4" />
                   {t("reply")}
                 </button>
               )}
@@ -344,7 +364,7 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
           {totalPages > 1 && (
             <div className="flex items-center justify-center gap-2 pt-4">
               <button
-                onClick={() => fetchComments(page - 1, filter)}
+                onClick={() => fetchReviews(page - 1, filter)}
                 disabled={page === 1 || loading}
                 className="btn-secondary px-4 py-2 disabled:opacity-50"
               >
@@ -354,7 +374,7 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
                 {t("pageInfo", { page, total: totalPages })}
               </span>
               <button
-                onClick={() => fetchComments(page + 1, filter)}
+                onClick={() => fetchReviews(page + 1, filter)}
                 disabled={page === totalPages || loading}
                 className="btn-secondary px-4 py-2 disabled:opacity-50"
               >
@@ -368,4 +388,4 @@ export function SellerCommentsSection({ className = "" }: SellerCommentsSectionP
   );
 }
 
-export default SellerCommentsSection;
+export default SellerReviewsSection;

@@ -193,6 +193,7 @@ model User {
   // Review and rating relations
   resourceLikes  ResourceLike[]
   reviews        Review[]
+  reviewReplies  ReviewReply[]  @relation("ReviewReplies")
   comments       Comment[]
   commentReplies CommentReply[]
   commentLikes   CommentLike[]
@@ -246,6 +247,7 @@ model Resource {
 
   subjects Json @default("[]")
   cycles   Json @default("[]")
+  tags     Json @default("[]")
 
   is_published Boolean @default(false)
   is_approved  Boolean @default(false)
@@ -754,20 +756,36 @@ model ResourceLike {
 
 // Review - star rating (1-5) with optional text
 model Review {
-  id          String   @id @default(cuid()) @db.VarChar(50)
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
-  rating      Int      @db.SmallInt // 1-5
-  title       String?  @db.VarChar(100)
-  content     String?  @db.Text
-  user_id     String   @db.VarChar(50)
-  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  resource_id String   @db.VarChar(50)
-  resource    Resource @relation(fields: [resource_id], references: [id], onDelete: Cascade)
+  id          String        @id @default(cuid()) @db.VarChar(50)
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
+  rating      Int           @db.SmallInt // 1-5
+  title       String?       @db.VarChar(100)
+  content     String?       @db.Text
+  user_id     String        @db.VarChar(50)
+  user        User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  resource_id String        @db.VarChar(50)
+  resource    Resource      @relation(fields: [resource_id], references: [id], onDelete: Cascade)
+  replies     ReviewReply[]
 
   @@unique([user_id, resource_id])
   @@index([resource_id])
   @@map("reviews")
+}
+
+// ReviewReply - single-level replies to reviews
+model ReviewReply {
+  id         String   @id @default(cuid()) @db.VarChar(50)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  content    String   @db.Text
+  user_id    String   @db.VarChar(50)
+  user       User     @relation("ReviewReplies", fields: [user_id], references: [id], onDelete: Cascade)
+  review_id  String   @db.VarChar(50)
+  review     Review   @relation(fields: [review_id], references: [id], onDelete: Cascade)
+
+  @@index([review_id])
+  @@map("review_replies")
 }
 
 // Comment - discussion on resources

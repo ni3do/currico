@@ -57,6 +57,7 @@ export function FilterChips({
       maxPrice: null,
       formats: [],
       cantons: [],
+      tags: [],
     });
 
   return (
@@ -219,6 +220,28 @@ export function FilterChips({
                 onFiltersChange({
                   ...filters,
                   formats: filters.formats.filter((f) => f !== fmt),
+                })
+              }
+              className="hover:bg-surface-hover"
+            />
+          </motion.span>
+        ))}
+        {filters.tags.map((tag) => (
+          <motion.span
+            key={`chip-tag-${tag}`}
+            layout
+            initial={CHIP_INITIAL}
+            animate={CHIP_ANIMATE}
+            exit={CHIP_INITIAL}
+            transition={CHIP_TRANSITION}
+            className="bg-surface text-text-secondary border-border hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
+          >
+            #{tag}
+            <DismissButton
+              onClick={() =>
+                onFiltersChange({
+                  ...filters,
+                  tags: filters.tags.filter((t) => t !== tag),
                 })
               }
               className="hover:bg-surface-hover"
