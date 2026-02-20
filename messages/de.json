@@ -152,6 +152,12 @@
       "delete": "Löschen",
       "close": "Schliessen"
     },
+    "autocomplete": {
+      "label": "Suchvorschläge",
+      "searching": "Suche…",
+      "free": "Gratis",
+      "viewAll": "Alle Ergebnisse anzeigen"
+    },
     "breadcrumb": {
       "home": "Startseite",
       "materials": "Materialien",
@@ -228,15 +234,15 @@
       "ratingCard": {
         "rating": "4.9"
       },
-      "eyebrow": "Die Schweizer Plattform für Unterrichtsmaterialien",
+      "eyebrow": "Lehrplan-21-konforme Materialien — sofort einsetzbar",
       "title": "Weniger suchen, mehr unterrichten.",
       "description": "Entdecken Sie professionelle Lehrmittel, entwickelt von Kollegen und exakt abgestimmt auf den <bold>Lehrplan 21</bold>. Vertrauenswürdig, geprüft, sofort einsetzbar.",
       "primaryButton": "Jetzt Material finden",
       "secondaryButton": "Mehr erfahren",
       "search": {
         "placeholder": "Was unterrichten Sie heute? (z.B. Mathe 5. Klasse)",
-        "allCycles": "Zyklus wählen…",
-        "allSubjects": "Fach wählen…",
+        "allCycles": "Zyklus (1, 2 oder 3)",
+        "allSubjects": "Fachbereich (z.B. Deutsch, Mathe)",
         "math": "Mathematik",
         "german": "Deutsch",
         "english": "Englisch",
@@ -250,8 +256,11 @@
         "dialectSwiss": "Schweizerdeutsch",
         "dialectStandard": "Hochdeutsch",
         "allDialects": "Alle Sprachvarianten",
-        "formLabel": "Unterrichtsmaterialien suchen"
-      }
+        "formLabel": "Unterrichtsmaterialien suchen",
+        "cycleLabel": "Zyklus auswählen",
+        "subjectLabel": "Fachbereich auswählen"
+      },
+      "sellerCta": "Eigene Materialien verkaufen?"
     },
     "howItWorks": {
       "title": "So funktioniert's",
@@ -272,7 +281,8 @@
     "featuredResources": {
       "title": "Empfohlene Materialien",
       "description": "Von Experten ausgewählt und qualitätsgeprüft",
-      "viewAllMobile": "Alle Materialien anzeigen",
+      "viewAllLink": "Alle Materialien entdecken",
+      "viewAllMobile": "Alle Materialien entdecken",
       "emptyTitle": "Noch keine Materialien vorhanden",
       "emptyDescription": "Seien Sie die erste Lehrperson, die Unterrichtsmaterial teilt!",
       "emptyUpload": "Jetzt Material hochladen",
@@ -330,6 +340,11 @@
       },
       "button": "Jetzt verkaufen",
       "note": "Kostenlose Registrierung. Keine monatlichen Gebühren."
+    },
+    "platformStats": {
+      "materials": "Materialien",
+      "sellers": "Lehrpersonen",
+      "downloads": "Downloads"
     },
     "trustBar": {
       "lp21": "LP21 konform",

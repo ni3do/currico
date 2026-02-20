@@ -227,7 +227,7 @@ export default function TopBar() {
 
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="text-text-secondary hover:text-primary p-2 lg:hidden"
+            className="text-text-secondary hover:text-primary flex min-h-[44px] min-w-[44px] items-center justify-center p-2 lg:hidden"
             aria-label={t("toggleNavigation")}
           >
             {isMobileMenuOpen ? (
@@ -255,7 +255,7 @@ export default function TopBar() {
                 >
                   <Link
                     href="/materialien"
-                    className={`block px-4 py-2 text-sm font-medium transition-colors ${isActive("/materialien") ? "text-primary" : "text-text-secondary hover:text-primary"}`}
+                    className={`block px-4 py-3 text-sm font-medium transition-colors ${isActive("/materialien") ? "text-primary" : "text-text-secondary hover:text-primary"}`}
                   >
                     {t("navigation.materials")}
                   </Link>
@@ -267,7 +267,7 @@ export default function TopBar() {
                 >
                   <Link
                     href="/ueber-uns"
-                    className={`block px-4 py-2 text-sm font-medium transition-colors ${isActive("/ueber-uns") ? "text-primary" : "text-text-secondary hover:text-primary"}`}
+                    className={`block px-4 py-3 text-sm font-medium transition-colors ${isActive("/ueber-uns") ? "text-primary" : "text-text-secondary hover:text-primary"}`}
                   >
                     {t("navigation.aboutUs")}
                   </Link>
@@ -279,7 +279,7 @@ export default function TopBar() {
                 >
                   <Link
                     href="/kontakt"
-                    className={`block px-4 py-2 text-sm font-medium transition-colors ${isActive("/kontakt") ? "text-primary" : "text-text-secondary hover:text-primary"}`}
+                    className={`block px-4 py-3 text-sm font-medium transition-colors ${isActive("/kontakt") ? "text-primary" : "text-text-secondary hover:text-primary"}`}
                   >
                     {t("navigation.contact")}
                   </Link>
@@ -297,14 +297,14 @@ export default function TopBar() {
                     <>
                       <Link
                         href="/konto"
-                        className="text-text-secondary hover:text-primary flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors"
+                        className="text-text-secondary hover:text-primary flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors"
                       >
                         <User className="h-5 w-5" aria-hidden="true" />
                         {t("navigation.profile")}
                       </Link>
                       <Link
                         href="/konto/notifications"
-                        className="text-text-secondary hover:text-primary flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors"
+                        className="text-text-secondary hover:text-primary flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors"
                       >
                         <div className="relative">
                           <Bell className="h-5 w-5" aria-hidden="true" />
@@ -319,7 +319,7 @@ export default function TopBar() {
                       {isAdmin && (
                         <Link
                           href="/admin"
-                          className="text-text-secondary hover:text-primary flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors"
+                          className="text-text-secondary hover:text-primary flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors"
                         >
                           <ShieldCheck className="h-5 w-5" aria-hidden="true" />
                           {t("navigation.admin")}
@@ -327,14 +327,14 @@ export default function TopBar() {
                       )}
                       <button
                         onClick={() => signOut()}
-                        className="text-text-secondary hover:text-primary px-4 py-2 text-left text-sm font-medium transition-colors"
+                        className="text-text-secondary hover:text-primary px-4 py-3 text-left text-sm font-medium transition-colors"
                       >
                         {t("navigation.logout")}
                       </button>
                     </>
                   ) : (
                     <>
-                      <LoginLink className="text-text-secondary hover:text-primary px-4 py-2 text-sm font-medium transition-colors">
+                      <LoginLink className="text-text-secondary hover:text-primary px-4 py-3 text-sm font-medium transition-colors">
                         {t("navigation.login")}
                       </LoginLink>
                       <Link
