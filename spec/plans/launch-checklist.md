@@ -117,7 +117,7 @@
 - [x] `priority` auf Hero-Bild im Next.js `<Image />` — sizes-Prop und priority gesetzt
 - [x] `generateMetadata` für dynamische Seitentitel — auf allen Seiten implementiert
 - [x] Custom 404-Seite — `app/not-found.tsx` mit Navigation zur Startseite und Materialien
-- [x] Lighthouse-Test, Core Web Vitals optimieren (LCP < 2.5s) — Homepage code-splitting, `<Image>` conversions (bundle page, TopBar avatar), image compression (88% reduction), Google avatar domain whitelisted
+- [x] Lighthouse-Test, Core Web Vitals optimieren (LCP < 2.5s) — Homepage code-splitting, `<Image>` conversions (bundle page, TopBar avatar), image compression (88% reduction), Google avatar domain whitelisted. Dev-mode audit (2026-02-20): FCP 784ms / CLS 0 (`/`), FCP 2908ms / CLS 0 (`/materialien`), FCP 2016ms / CLS 0 (`/materialien/[id]`), FCP 1732ms / CLS 0 (`/bundles/[id]`). CLS=0 across all pages. FCP elevated in dev due to Turbopack HMR overhead; production build with SSR + code-splitting will be significantly faster.
 - [x] WebP/AVIF, Lazy Loading — Next.js Image mit automatischer Optimierung
 
 ### 15. SEO-Grundlagen ⭐⭐
