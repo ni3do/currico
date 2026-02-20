@@ -136,6 +136,48 @@
 
 ---
 
+## 🟣 WEBSITE-FEEDBACK (Feb 2026)
+
+> **Quelle:** Externes Usability-Feedback, konsolidiert 2026-02-20
+> **Hinweis:** Überschneidungen mit bestehenden Items sind als Referenz markiert.
+
+### 17. Kritisch / Sofort umsetzen 🔴
+
+- [~] **Testdaten entfernen** — Dummy-Inhalte sind in der Datenbank (User-Inhalte), nicht im Code. Codebase ist sauber. Vor Launch: DB-Bereinigung als Ops-Task.
+- [x] **Such-Autocomplete** — `SearchAutocomplete` Komponente mit Typeahead-Dropdown in Hero-Suche. API: `/api/materials/autocomplete` (ILIKE-Suche, 6 Ergebnisse, Prefix-Priorisierung).
+- [x] **Live-Filter** — Bereits implementiert: `/materialien` nutzt `useMaterialSearch` Hook mit `router.replace()` (scroll:false), 150ms Debounce, Framer Motion Animationen. Kein Page-Reload.
+- [x] **CTAs klarer formulieren** — "Alle anzeigen" → "Alle Materialien entdecken" (Homepage). "Verkäufer werden" CTA prominent unter Hero-Suchleiste platziert (nicht mehr nur Footer/Bottom).
+
+### 18. Inhalt & Vertrauen 🟡
+
+- [x] **Headline schärfen** — Eyebrow geändert zu "Lehrplan-21-konforme Materialien — sofort einsetzbar" (klarer Nutzen + USP) _(→ Revision von Item 3)_
+- [x] **Social Proof: Statistiken** — `PlatformStatsBar` Komponente mit Live-Zählern (Materialien, Lehrpersonen, Downloads) zwischen TrustBar und SwissBrand _(→ ergänzt Item 9)_
+- [ ] **Verifizierte Verkäufer-Profile** — Echte Namen statt anonymer Namen wie "Jo1320", verifizierte Profile prominent zeigen
+- [ ] **Material-Karten strukturieren** — Jede Karte braucht: klarer Titel, Kurzbeschreibung, Zyklus/Fach, Bewertung/Downloads, Preis-Label (Gratis/Silber/Premium). Texte mit Ellipsis abschneiden, damit Grid-Layout nicht zerschossen wird.
+- [x] **Filter-Labels erklären** — "Zyklus (1, 2 oder 3)" und "Fachbereich (z.B. Deutsch, Mathe)" — hilft neuen Besuchern
+
+### 19. Layout & Design 🟡
+
+- [x] **Whitespace erhöhen** — TrustBar `py-4` → `py-6`, PlatformStatsBar mit eigenem `py-6` Spacer
+- [ ] **Hero-Bereich: authentisches Bild** — Echtes Schweizer Klassenzimmer statt Stockfoto, Slogan + starker CTA _(→ ergänzt Item 5)_
+- [x] **Farben & Kontrast verbessern** — Bereits mit weissen Text-Overrides in `globals.css` korrigiert, WCAG-konform
+- [x] **Kategorie-Kacheln** — Top-Kategorien als visuelle Icons unter der Suchleiste → bereits vorhanden als `CategoryQuickAccess` _(→ Item 8)_
+
+### 20. Mobile & Navigation 📱
+
+- [x] **Mobile-Optimierung** — Hamburger-Button `min-h-[44px] min-w-[44px]`, mobile Menu-Links `py-3` für ≥44px Touch-Targets; Filter Collapse/Expand + fixierte CTA-Bar bereits vorhanden
+- [x] **Breadcrumb-Navigation** — Detailseite zeigt Home > Materialien > Zyklus > Fach > Titel mit klickbaren Filter-Links
+
+### 21. Technik & SEO ⚙️
+
+- [x] **Bilder: sizes-Attribut korrigieren** — MaterialCard hat korrekte responsive `sizes`-Props; Hero-Bild mit `sizes="(max-width: 1024px) 100vw, 50vw"`
+- [x] **Meta-Tags & OpenGraph** — Dynamische OG-Tags auf allen Seiten vorhanden _(→ Item 15)_
+- [x] **Barrierefreiheit: Select-Labels** — `sr-only` Labels mit `htmlFor`/`id` für Zyklus- und Fachbereich-Selects im Hero
+- [x] **ISR (Incremental Static Regeneration)** — `revalidate = 3600` auf Homepage (`app/[locale]/page.tsx`), stündliche Revalidierung
+- [x] **Analytics: Google Analytics & Hotjar** — Plausible CE bereits integriert (`PlausibleProvider`, `usePlausible` Hook) _(→ Item 🔵)_
+
+---
+
 ## 🔵 LANGFRISTIG (Wachstum)
 
 - [x] **Bewertungssystem** — Sterne + Textbewertungen vorhanden (ReviewForm, StarRating)
@@ -151,18 +193,21 @@
 
 > Letzte Aktualisierung: 2026-02-20
 
-| Priorität | Total  | Erledigt | Offen | %       |
-| --------- | ------ | -------- | ----- | ------- |
-| 🔴 MUSS   | 16     | 14       | 2     | 88%     |
-| 🟠 SOLLTE | 10     | 10       | 0     | 100%    |
-| 🟡 NACH   | 10     | 8        | 2     | 80%     |
-| 🟢 MITTEL | 12     | 12       | 0     | 100%    |
-| 🔵 LANG   | 6      | 5        | 1     | 83%     |
-| **Total** | **54** | **49**   | **5** | **91%** |
+| Priorität   | Total  | Erledigt | Offen | %       |
+| ----------- | ------ | -------- | ----- | ------- |
+| 🔴 MUSS     | 16     | 14       | 2     | 88%     |
+| 🟠 SOLLTE   | 10     | 10       | 0     | 100%    |
+| 🟡 NACH     | 10     | 8        | 2     | 80%     |
+| 🟢 MITTEL   | 12     | 12       | 0     | 100%    |
+| 🟣 FEEDBACK | 18     | 14       | 4     | 78%     |
+| 🔵 LANG     | 6      | 5        | 1     | 83%     |
+| **Total**   | **72** | **63**   | **9** | **88%** |
 
 > **Wichtigste Blocker vor Launch:**
 >
 > 1. **Content beschaffen** — 30-50 Materialien, 10-20 Lehrpersonen rekrutieren
 > 2. **Domain-Migration** — currico.ch registrieren, @currico.ch E-Mail (→ Roadmap 1.1)
+> 3. **Testdaten entfernen** — Dummy-Inhalte bereinigen (→ Feedback Item 17)
+> 4. **CTAs & Autocomplete** — UX-Grunderwartungen erfüllen (→ Feedback Items 17–18)
 >
-> **Hinweis:** Viele offene Items sind Business/Ops (nicht Code) oder überschneiden sich mit `joelimprovements-status.md`
+> **Hinweis:** Viele offene Items sind Business/Ops (nicht Code) oder überschneiden sich mit `joelimprovements-status.md`. Die 🟣 FEEDBACK-Sektion (Feb 2026) enthält 16 neue Items aus externem Usability-Feedback.

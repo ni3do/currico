@@ -5,6 +5,8 @@ import { formatPrice } from "@/lib/utils/price";
 import type { FeaturedMaterial } from "@/lib/types/material";
 import HomeClient from "./HomeClient";
 
+export const revalidate = 3600; // ISR: revalidate every hour
+
 type Props = {
   params: Promise<{ locale: string }>;
 };
@@ -14,45 +16,59 @@ export default async function HomePage({ params }: Props) {
   setRequestLocale(locale);
 
   let featured: FeaturedMaterial[] = [];
+  let platformStats = { materialCount: 0, sellerCount: 0, downloadCount: 0 };
 
   try {
-    const materials = await prisma.resource.findMany({
-      where: { is_published: true, is_public: true },
-      orderBy: { created_at: "desc" },
-      take: 3,
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        price: true,
-        subjects: true,
-        cycles: true,
-        tags: true,
-        preview_url: true,
-        seller: {
-          select: {
-            id: true,
-            display_name: true,
-            is_verified_seller: true,
-            seller_level: true,
-            seller_xp: true,
+    const [materials, stats] = await Promise.all([
+      prisma.resource.findMany({
+        where: { is_published: true, is_public: true },
+        orderBy: { created_at: "desc" },
+        take: 3,
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          price: true,
+          subjects: true,
+          cycles: true,
+          tags: true,
+          preview_url: true,
+          seller: {
+            select: {
+              id: true,
+              display_name: true,
+              is_verified_seller: true,
+              seller_level: true,
+              seller_xp: true,
+            },
           },
-        },
-        reviews: {
-          select: { rating: true },
-        },
-        competencies: {
-          select: {
-            competency: {
-              select: {
-                code: true,
-                subject: { select: { color: true } },
+          reviews: {
+            select: { rating: true },
+          },
+          competencies: {
+            select: {
+              competency: {
+                select: {
+                  code: true,
+                  subject: { select: { color: true } },
+                },
               },
             },
           },
         },
-      },
-    });
+      }),
+      Promise.all([
+        prisma.resource.count({ where: { is_published: true } }),
+        prisma.user.count({ where: { role: { in: ["SELLER", "ADMIN"] } } }),
+        prisma.download.count(),
+      ]).then(([materialCount, sellerCount, downloadCount]) => ({
+        materialCount,
+        sellerCount,
+        downloadCount,
+      })),
+    ]);
+
+    platformStats = stats;
 
     featured = materials.map((m) => {
       const subjects = toStringArray(m.subjects);
@@ -93,5 +109,5 @@ export default async function HomePage({ params }: Props) {
     // Graceful degradation — render homepage with empty featured section
   }
 
-  return <HomeClient initialMaterials={featured} />;
+  return <HomeClient initialMaterials={featured} platformStats={platformStats} />;
 }

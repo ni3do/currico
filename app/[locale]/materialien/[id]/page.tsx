@@ -289,9 +289,17 @@ export default function MaterialDetailPage() {
         <Breadcrumb
           items={[
             { label: tCommon("breadcrumb.materials"), href: "/materialien" },
+            ...(material.cycles[0]
+              ? [
+                  {
+                    label: material.cycles[0],
+                    href: `/materialien?zyklus=${encodeURIComponent(material.cycles[0])}`,
+                  },
+                ]
+              : []),
             {
               label: material.subjects[0] || t("subjectFallback"),
-              href: `/materialien?subject=${material.subjects[0] || ""}`,
+              href: `/materialien?${material.cycles[0] ? `zyklus=${encodeURIComponent(material.cycles[0])}&` : ""}fachbereich=${encodeURIComponent(material.subjects[0] || "")}`,
             },
             { label: material.title },
           ]}

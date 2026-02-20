@@ -152,6 +152,12 @@
       "delete": "Delete",
       "close": "Close"
     },
+    "autocomplete": {
+      "label": "Search suggestions",
+      "searching": "Searching…",
+      "free": "Free",
+      "viewAll": "View all results"
+    },
     "breadcrumb": {
       "home": "Home",
       "materials": "Materials",
@@ -228,15 +234,15 @@
       "ratingCard": {
         "rating": "4.9"
       },
-      "eyebrow": "The Swiss Platform for Teaching Materials",
+      "eyebrow": "Lehrplan 21-aligned materials — ready to use",
       "title": "Less searching, more teaching.",
       "description": "Discover professional teaching materials, developed by colleagues and precisely aligned with <bold>Lehrplan 21</bold>. Trustworthy, verified, ready to use.",
       "primaryButton": "Find Materials Now",
       "secondaryButton": "Learn More",
       "search": {
         "placeholder": "Search subject, topic or keyword...",
-        "allCycles": "Choose cycle…",
-        "allSubjects": "Choose subject…",
+        "allCycles": "Cycle (1, 2, or 3)",
+        "allSubjects": "Subject area (e.g. German, Math)",
         "math": "Mathematics",
         "german": "German",
         "english": "English",
@@ -250,8 +256,11 @@
         "dialectSwiss": "Swiss German",
         "dialectStandard": "Standard German",
         "allDialects": "All Dialects",
-        "formLabel": "Search teaching materials"
-      }
+        "formLabel": "Search teaching materials",
+        "cycleLabel": "Select cycle",
+        "subjectLabel": "Select subject area"
+      },
+      "sellerCta": "Want to sell your own materials?"
     },
     "howItWorks": {
       "title": "How It Works",
@@ -272,7 +281,8 @@
     "featuredResources": {
       "title": "Featured Materials",
       "description": "Selected by experts and quality checked",
-      "viewAllMobile": "View All Materials",
+      "viewAllLink": "Discover All Materials",
+      "viewAllMobile": "Discover All Materials",
       "emptyTitle": "No materials yet",
       "emptyDescription": "Be the first teacher to share teaching materials!",
       "emptyUpload": "Upload material now",
@@ -330,6 +340,11 @@
       },
       "button": "Start Selling",
       "note": "Free to join. No monthly fees."
+    },
+    "platformStats": {
+      "materials": "Materials",
+      "sellers": "Teachers",
+      "downloads": "Downloads"
     },
     "trustBar": {
       "lp21": "LP21 Compliant",
