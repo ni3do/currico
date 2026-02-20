@@ -1,5 +1,7 @@
 "use client";
 
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
 interface PaginationControlsProps {
   currentPage: number;
   totalPages: number;
@@ -43,14 +45,7 @@ export function PaginationControls({
           disabled={currentPage === 1}
           aria-label={labels.previous}
         >
-          <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
+          <ChevronLeft className="h-5 w-5" aria-hidden="true" />
         </button>
 
         {/* Page numbers */}
@@ -82,9 +77,7 @@ export function PaginationControls({
           disabled={currentPage === totalPages}
           aria-label={labels.next}
         >
-          <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
+          <ChevronRight className="h-5 w-5" aria-hidden="true" />
         </button>
       </nav>
     </div>

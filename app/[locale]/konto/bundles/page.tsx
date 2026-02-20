@@ -213,150 +213,272 @@ export default function AccountBundlesPage() {
         ) : loading || bundlesLoading ? (
           <BundleSkeleton />
         ) : filteredBundles.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="text-text-muted text-left text-xs font-medium tracking-wider uppercase">
-                  <th className="pb-4">{t("table.title")}</th>
-                  <th className="pb-4">{t("table.status")}</th>
-                  <th className="pb-4 text-center">{t("table.materials")}</th>
-                  <th className="pb-4 text-right">{t("table.price")}</th>
-                  <th className="pb-4 text-right">{t("table.savings")}</th>
-                  <th className="pb-4 text-right">{t("table.actions")}</th>
-                </tr>
-              </thead>
-              <tbody className="divide-border divide-y">
-                {filteredBundles.map((bundle) => (
-                  <tr key={bundle.id} className="group hover:bg-bg transition-colors">
-                    <td className="py-4 pr-4">
-                      <Link href={`/bundles/${bundle.id}`} className="block">
-                        <div className="text-text group-hover:text-primary flex items-center gap-2 text-sm font-medium">
-                          <Package className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
-                          {bundle.title}
-                        </div>
-                        <div className="text-text-muted mt-0.5 text-xs">
-                          {bundle.subjects[0] || "Allgemein"} · {bundle.cycles[0] || ""}
-                        </div>
-                      </Link>
-                    </td>
-                    <td className="py-4 pr-4">
-                      <div className="flex flex-col gap-1">
-                        <span
-                          className={`inline-flex w-fit items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium ${
-                            bundle.status === "VERIFIED"
-                              ? "bg-success/10 text-success"
-                              : bundle.status === "PENDING"
-                                ? "bg-warning/10 text-warning"
-                                : "bg-error/10 text-error"
-                          }`}
-                          aria-label={
-                            bundle.status === "VERIFIED"
-                              ? `Status: ${t("status.verified")}`
-                              : bundle.status === "PENDING"
-                                ? `Status: ${t("status.pending")}`
-                                : `Status: ${t("status.rejected")}`
-                          }
-                        >
-                          {bundle.status === "VERIFIED" ? (
-                            <CircleCheck className="h-3.5 w-3.5" aria-hidden="true" />
-                          ) : bundle.status === "PENDING" ? (
-                            <Clock className="h-3.5 w-3.5" aria-hidden="true" />
-                          ) : (
-                            <XCircle className="h-3.5 w-3.5" aria-hidden="true" />
-                          )}
-                          {bundle.status === "VERIFIED"
-                            ? t("status.verified")
-                            : bundle.status === "PENDING"
-                              ? t("status.pending")
-                              : t("status.rejected")}
-                        </span>
-                        <span
-                          className={`inline-flex items-center gap-1 text-xs ${
-                            bundle.isPublished ? "text-success" : "text-text-muted"
-                          }`}
-                        >
-                          {bundle.isPublished ? (
-                            <CircleCheck className="h-3 w-3" aria-hidden="true" />
-                          ) : (
-                            <FileEdit className="h-3 w-3" aria-hidden="true" />
-                          )}
-                          {bundle.isPublished ? t("published") : t("draft")}
-                        </span>
+          <>
+            {/* Mobile card layout */}
+            <div className="flex flex-col gap-3 md:hidden">
+              {filteredBundles.map((bundle) => (
+                <div key={bundle.id} className="border-border bg-bg rounded-xl border p-4">
+                  <div className="mb-3 flex items-start justify-between gap-2">
+                    <Link href={`/bundles/${bundle.id}`} className="min-w-0 flex-1">
+                      <div className="text-text flex items-center gap-2 text-sm font-medium">
+                        <Package className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
+                        <span className="truncate">{bundle.title}</span>
                       </div>
-                    </td>
-                    <td className="text-text py-4 pr-4 text-center text-sm font-medium">
-                      {bundle.resourceCount}
-                    </td>
-                    <td className="text-text py-4 pr-4 text-right text-sm font-medium">
-                      {bundle.priceFormatted}
-                    </td>
-                    <td className="py-4 pr-4 text-right">
-                      {bundle.savingsPercent > 0 && (
-                        <span className="text-success text-sm font-medium">
-                          {bundle.savingsPercent}%
-                        </span>
-                      )}
-                    </td>
-                    <td className="py-4 text-right">
-                      <div
-                        className="relative inline-block"
-                        ref={openBundleActionMenu === bundle.id ? bundleActionMenuRef : null}
+                      <div className="text-text-muted mt-0.5 pl-6 text-xs">
+                        {bundle.subjects[0] || "Allgemein"} · {bundle.cycles[0] || ""}
+                      </div>
+                    </Link>
+                    <div
+                      className="relative"
+                      ref={openBundleActionMenu === bundle.id ? bundleActionMenuRef : null}
+                    >
+                      <button
+                        onClick={() =>
+                          setOpenBundleActionMenu(
+                            openBundleActionMenu === bundle.id ? null : bundle.id
+                          )
+                        }
+                        className="text-text-muted hover:bg-surface-hover hover:text-text rounded-lg p-1.5 transition-colors"
+                        aria-label={t("actionsLabel")}
                       >
-                        <button
-                          onClick={() =>
-                            setOpenBundleActionMenu(
-                              openBundleActionMenu === bundle.id ? null : bundle.id
-                            )
-                          }
-                          className="text-text-muted hover:bg-surface-hover hover:text-text rounded-lg p-2 transition-colors"
-                          aria-label={t("actionsLabel")}
-                        >
-                          <MoreVertical className="h-5 w-5" />
-                        </button>
-                        {openBundleActionMenu === bundle.id && (
-                          <div className="border-border bg-surface absolute right-0 z-10 mt-1 w-48 rounded-xl border py-1.5 shadow-lg">
-                            <Link
-                              href={`/bundles/${bundle.id}`}
-                              className="text-text hover:bg-bg flex items-center gap-2.5 px-4 py-2 text-sm transition-colors"
-                              onClick={() => setOpenBundleActionMenu(null)}
-                            >
-                              <ExternalLink className="h-4 w-4" aria-hidden="true" />
-                              {t("view")}
-                            </Link>
-                            <button
-                              onClick={() =>
-                                handleToggleBundlePublish(bundle.id, bundle.isPublished)
-                              }
-                              className="text-text hover:bg-bg flex w-full items-center gap-2.5 px-4 py-2 text-sm transition-colors"
-                            >
-                              {bundle.isPublished ? (
-                                <>
-                                  <X className="h-4 w-4" aria-hidden="true" />
-                                  {t("unpublish")}
-                                </>
-                              ) : (
-                                <>
-                                  <Check className="h-4 w-4" aria-hidden="true" />
-                                  {t("publish")}
-                                </>
-                              )}
-                            </button>
-                            <button
-                              onClick={() => handleDeleteBundle(bundle.id, bundle.title)}
-                              className="text-error hover:bg-error/10 flex w-full items-center gap-2.5 px-4 py-2 text-sm transition-colors"
-                            >
-                              <Trash2 className="h-4 w-4" aria-hidden="true" />
-                              {t("delete")}
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    </td>
+                        <MoreVertical className="h-4 w-4" />
+                      </button>
+                      {openBundleActionMenu === bundle.id && (
+                        <div className="border-border bg-surface absolute right-0 z-10 mt-1 w-48 rounded-xl border py-1.5 shadow-lg">
+                          <Link
+                            href={`/bundles/${bundle.id}`}
+                            className="text-text hover:bg-bg flex items-center gap-2.5 px-4 py-2 text-sm transition-colors"
+                            onClick={() => setOpenBundleActionMenu(null)}
+                          >
+                            <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                            {t("view")}
+                          </Link>
+                          <button
+                            onClick={() => handleToggleBundlePublish(bundle.id, bundle.isPublished)}
+                            className="text-text hover:bg-bg flex w-full items-center gap-2.5 px-4 py-2 text-sm transition-colors"
+                          >
+                            {bundle.isPublished ? (
+                              <>
+                                <X className="h-4 w-4" aria-hidden="true" />
+                                {t("unpublish")}
+                              </>
+                            ) : (
+                              <>
+                                <Check className="h-4 w-4" aria-hidden="true" />
+                                {t("publish")}
+                              </>
+                            )}
+                          </button>
+                          <button
+                            onClick={() => handleDeleteBundle(bundle.id, bundle.title)}
+                            className="text-error hover:bg-error/10 flex w-full items-center gap-2.5 px-4 py-2 text-sm transition-colors"
+                          >
+                            <Trash2 className="h-4 w-4" aria-hidden="true" />
+                            {t("delete")}
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span
+                      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium ${
+                        bundle.status === "VERIFIED"
+                          ? "bg-success/10 text-success"
+                          : bundle.status === "PENDING"
+                            ? "bg-warning/10 text-warning"
+                            : "bg-error/10 text-error"
+                      }`}
+                    >
+                      {bundle.status === "VERIFIED" ? (
+                        <CircleCheck className="h-3.5 w-3.5" aria-hidden="true" />
+                      ) : bundle.status === "PENDING" ? (
+                        <Clock className="h-3.5 w-3.5" aria-hidden="true" />
+                      ) : (
+                        <XCircle className="h-3.5 w-3.5" aria-hidden="true" />
+                      )}
+                      {bundle.status === "VERIFIED"
+                        ? t("status.verified")
+                        : bundle.status === "PENDING"
+                          ? t("status.pending")
+                          : t("status.rejected")}
+                    </span>
+                    <span
+                      className={`inline-flex items-center gap-1 text-xs ${
+                        bundle.isPublished ? "text-success" : "text-text-muted"
+                      }`}
+                    >
+                      {bundle.isPublished ? (
+                        <CircleCheck className="h-3 w-3" aria-hidden="true" />
+                      ) : (
+                        <FileEdit className="h-3 w-3" aria-hidden="true" />
+                      )}
+                      {bundle.isPublished ? t("published") : t("draft")}
+                    </span>
+                  </div>
+                  <div className="border-border mt-3 flex items-center gap-4 border-t pt-3 text-xs">
+                    <span className="text-text-muted">
+                      {t("table.materials")}:{" "}
+                      <span className="text-text font-medium">{bundle.resourceCount}</span>
+                    </span>
+                    <span className="text-text-muted">
+                      {t("table.price")}:{" "}
+                      <span className="text-text font-medium">{bundle.priceFormatted}</span>
+                    </span>
+                    {bundle.savingsPercent > 0 && (
+                      <span className="text-success font-medium">-{bundle.savingsPercent}%</span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop table layout */}
+            <div className="hidden overflow-x-auto md:block">
+              <table className="w-full">
+                <thead>
+                  <tr className="text-text-muted text-left text-xs font-medium tracking-wider uppercase">
+                    <th className="pb-4">{t("table.title")}</th>
+                    <th className="pb-4">{t("table.status")}</th>
+                    <th className="pb-4 text-center">{t("table.materials")}</th>
+                    <th className="pb-4 text-right">{t("table.price")}</th>
+                    <th className="pb-4 text-right">{t("table.savings")}</th>
+                    <th className="pb-4 text-right">{t("table.actions")}</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-border divide-y">
+                  {filteredBundles.map((bundle) => (
+                    <tr key={bundle.id} className="group hover:bg-bg transition-colors">
+                      <td className="py-4 pr-4">
+                        <Link href={`/bundles/${bundle.id}`} className="block">
+                          <div className="text-text group-hover:text-primary flex items-center gap-2 text-sm font-medium">
+                            <Package className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
+                            {bundle.title}
+                          </div>
+                          <div className="text-text-muted mt-0.5 text-xs">
+                            {bundle.subjects[0] || "Allgemein"} · {bundle.cycles[0] || ""}
+                          </div>
+                        </Link>
+                      </td>
+                      <td className="py-4 pr-4">
+                        <div className="flex flex-col gap-1">
+                          <span
+                            className={`inline-flex w-fit items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium ${
+                              bundle.status === "VERIFIED"
+                                ? "bg-success/10 text-success"
+                                : bundle.status === "PENDING"
+                                  ? "bg-warning/10 text-warning"
+                                  : "bg-error/10 text-error"
+                            }`}
+                            aria-label={
+                              bundle.status === "VERIFIED"
+                                ? `Status: ${t("status.verified")}`
+                                : bundle.status === "PENDING"
+                                  ? `Status: ${t("status.pending")}`
+                                  : `Status: ${t("status.rejected")}`
+                            }
+                          >
+                            {bundle.status === "VERIFIED" ? (
+                              <CircleCheck className="h-3.5 w-3.5" aria-hidden="true" />
+                            ) : bundle.status === "PENDING" ? (
+                              <Clock className="h-3.5 w-3.5" aria-hidden="true" />
+                            ) : (
+                              <XCircle className="h-3.5 w-3.5" aria-hidden="true" />
+                            )}
+                            {bundle.status === "VERIFIED"
+                              ? t("status.verified")
+                              : bundle.status === "PENDING"
+                                ? t("status.pending")
+                                : t("status.rejected")}
+                          </span>
+                          <span
+                            className={`inline-flex items-center gap-1 text-xs ${
+                              bundle.isPublished ? "text-success" : "text-text-muted"
+                            }`}
+                          >
+                            {bundle.isPublished ? (
+                              <CircleCheck className="h-3 w-3" aria-hidden="true" />
+                            ) : (
+                              <FileEdit className="h-3 w-3" aria-hidden="true" />
+                            )}
+                            {bundle.isPublished ? t("published") : t("draft")}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="text-text py-4 pr-4 text-center text-sm font-medium">
+                        {bundle.resourceCount}
+                      </td>
+                      <td className="text-text py-4 pr-4 text-right text-sm font-medium">
+                        {bundle.priceFormatted}
+                      </td>
+                      <td className="py-4 pr-4 text-right">
+                        {bundle.savingsPercent > 0 && (
+                          <span className="text-success text-sm font-medium">
+                            {bundle.savingsPercent}%
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-4 text-right">
+                        <div
+                          className="relative inline-block"
+                          ref={openBundleActionMenu === bundle.id ? bundleActionMenuRef : null}
+                        >
+                          <button
+                            onClick={() =>
+                              setOpenBundleActionMenu(
+                                openBundleActionMenu === bundle.id ? null : bundle.id
+                              )
+                            }
+                            className="text-text-muted hover:bg-surface-hover hover:text-text rounded-lg p-2 transition-colors"
+                            aria-label={t("actionsLabel")}
+                          >
+                            <MoreVertical className="h-5 w-5" />
+                          </button>
+                          {openBundleActionMenu === bundle.id && (
+                            <div className="border-border bg-surface absolute right-0 z-10 mt-1 w-48 rounded-xl border py-1.5 shadow-lg">
+                              <Link
+                                href={`/bundles/${bundle.id}`}
+                                className="text-text hover:bg-bg flex items-center gap-2.5 px-4 py-2 text-sm transition-colors"
+                                onClick={() => setOpenBundleActionMenu(null)}
+                              >
+                                <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                                {t("view")}
+                              </Link>
+                              <button
+                                onClick={() =>
+                                  handleToggleBundlePublish(bundle.id, bundle.isPublished)
+                                }
+                                className="text-text hover:bg-bg flex w-full items-center gap-2.5 px-4 py-2 text-sm transition-colors"
+                              >
+                                {bundle.isPublished ? (
+                                  <>
+                                    <X className="h-4 w-4" aria-hidden="true" />
+                                    {t("unpublish")}
+                                  </>
+                                ) : (
+                                  <>
+                                    <Check className="h-4 w-4" aria-hidden="true" />
+                                    {t("publish")}
+                                  </>
+                                )}
+                              </button>
+                              <button
+                                onClick={() => handleDeleteBundle(bundle.id, bundle.title)}
+                                className="text-error hover:bg-error/10 flex w-full items-center gap-2.5 px-4 py-2 text-sm transition-colors"
+                              >
+                                <Trash2 className="h-4 w-4" aria-hidden="true" />
+                                {t("delete")}
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         ) : (
           <div className="py-12 text-center">
             <Package className="text-text-faint mx-auto mb-4 h-16 w-16" aria-hidden="true" />

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { AvatarUploader } from "@/components/profile/AvatarUploader";
 import { MultiSelect } from "@/components/ui/MultiSelect";
 import { Link } from "@/i18n/navigation";
@@ -39,6 +40,7 @@ const emptyFormData: ProfileFormData = {
 };
 
 export default function EditProfilePage() {
+  const t = useTranslations("settingsProfile");
   const [formData, setFormData] = useState<ProfileFormData>(emptyFormData);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSaving, setIsSaving] = useState(false);
@@ -293,33 +295,33 @@ export default function EditProfilePage() {
 
                   {/* Subjects */}
                   <MultiSelect
-                    label="Unterrichtsfächer"
+                    label={t("subjects")}
                     options={subjectOptions}
                     selected={formData.subjects}
                     onChange={(value) => handleChange("subjects", value)}
-                    placeholder="Fächer auswählen..."
+                    placeholder={t("subjectsPlaceholder")}
                     required
                     error={errors.subjects}
                   />
 
                   {/* Cycles */}
                   <MultiSelect
-                    label="Unterrichtete Zyklen"
+                    label={t("cycles")}
                     options={CYCLES}
                     selected={formData.cycles}
                     onChange={(value) => handleChange("cycles", value)}
-                    placeholder="Zyklen auswählen..."
+                    placeholder={t("cyclesPlaceholder")}
                     required
                     error={errors.cycles}
                   />
 
                   {/* Cantons */}
                   <MultiSelect
-                    label="Kantone"
+                    label={t("cantons")}
                     options={SWISS_CANTONS}
                     selected={formData.cantons}
                     onChange={(value) => handleChange("cantons", value)}
-                    placeholder="Kantone auswählen (optional)..."
+                    placeholder={t("cantonsPlaceholder")}
                   />
 
                   {/* Social Media */}

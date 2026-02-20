@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
-import { requireAdmin, unauthorizedResponse } from "@/lib/admin-auth";
-import { serverError } from "@/lib/api";
+import { requireAdmin, forbiddenResponse } from "@/lib/admin-auth";
+import { parsePagination, paginationResponse, serverError } from "@/lib/api";
 import { formatPriceAdmin, getResourceStatus } from "@/lib/utils/price";
 
 const materialSelect = Prisma.validator<Prisma.ResourceSelect>()({
@@ -41,16 +41,13 @@ type MaterialWithRelations = Prisma.ResourceGetPayload<{
 export async function GET(request: NextRequest) {
   const admin = await requireAdmin();
   if (!admin) {
-    return unauthorizedResponse();
+    return forbiddenResponse();
   }
 
   try {
     const searchParams = request.nextUrl.searchParams;
-    const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
-    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") || "20")));
+    const { page, limit, skip } = parsePagination(searchParams);
     const status = searchParams.get("status") || "all";
-
-    const skip = (page - 1) * limit;
 
     const where: Record<string, unknown> = {};
 
@@ -88,12 +85,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       materials: transformedMaterials,
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-      },
+      pagination: paginationResponse(page, limit, total),
     });
   } catch (error) {
     console.error("Error fetching materials:", error);

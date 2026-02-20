@@ -139,11 +139,14 @@ export default function AccountFollowingPage() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="card p-8">
+      <div className="border-border bg-surface rounded-xl border p-6">
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <h2 className="text-text text-xl font-semibold">
-            {t("followedProfiles")} ({totalCount})
-          </h2>
+          <div>
+            <h2 className="text-text text-xl font-semibold">
+              {t("followedProfiles")} ({totalCount})
+            </h2>
+            <p className="text-text-muted mt-1 text-sm">{t("description")}</p>
+          </div>
           {followedSellers.length > 0 && (
             <input
               type="text"

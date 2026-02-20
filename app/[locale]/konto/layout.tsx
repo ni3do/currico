@@ -269,7 +269,7 @@ function AccountLoadingSkeleton() {
       {/* KPI cards skeleton */}
       <div className="grid gap-3 sm:gap-4 md:grid-cols-3">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="border-border bg-surface rounded-2xl border p-6">
+          <div key={i} className="border-border bg-surface rounded-xl border p-6">
             <div className="flex items-start justify-between">
               <div className="space-y-3">
                 <div className="bg-border h-4 w-20 rounded" />
@@ -282,7 +282,7 @@ function AccountLoadingSkeleton() {
       </div>
 
       {/* Table skeleton */}
-      <div className="border-border bg-surface rounded-2xl border">
+      <div className="border-border bg-surface rounded-xl border">
         <div className="border-border flex items-center justify-between border-b p-4">
           <div className="bg-border h-6 w-40 rounded" />
           <div className="bg-border h-9 w-36 rounded-lg" />
@@ -307,7 +307,7 @@ function AccountLoadingSkeleton() {
       </div>
 
       {/* Recent downloads skeleton */}
-      <div className="border-border bg-surface rounded-2xl border">
+      <div className="border-border bg-surface rounded-xl border">
         <div className="border-border flex items-center justify-between border-b p-4">
           <div className="bg-border h-6 w-40 rounded" />
           <div className="bg-border h-4 w-24 rounded" />

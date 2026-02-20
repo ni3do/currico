@@ -418,7 +418,7 @@ export default function SettingsAccountPage() {
                     }}
                     placeholder={t("password.currentPlaceholder")}
                     autoComplete="current-password"
-                    className="border-border bg-surface text-text w-full rounded-lg border px-4 py-3 pr-12 text-sm"
+                    className="border-border bg-bg text-text w-full rounded-lg border px-4 py-3 pr-12 text-sm"
                   />
                   <button
                     type="button"
@@ -453,7 +453,7 @@ export default function SettingsAccountPage() {
                     }}
                     placeholder={t("password.newPlaceholder")}
                     autoComplete="new-password"
-                    className="border-border bg-surface text-text w-full rounded-lg border px-4 py-3 pr-12 text-sm"
+                    className="border-border bg-bg text-text w-full rounded-lg border px-4 py-3 pr-12 text-sm"
                   />
                   <button
                     type="button"
@@ -487,7 +487,7 @@ export default function SettingsAccountPage() {
                     }}
                     placeholder={t("password.confirmPlaceholder")}
                     autoComplete="new-password"
-                    className="border-border bg-surface text-text w-full rounded-lg border px-4 py-3 pr-12 text-sm"
+                    className="border-border bg-bg text-text w-full rounded-lg border px-4 py-3 pr-12 text-sm"
                   />
                   <button
                     type="button"
@@ -632,7 +632,7 @@ export default function SettingsAccountPage() {
                     }}
                     placeholder={t("twoFactor.passwordPrompt.passwordPlaceholder")}
                     autoComplete="current-password"
-                    className="border-border bg-surface text-text w-full rounded-lg border px-4 py-3 text-sm"
+                    className="border-border bg-bg text-text w-full rounded-lg border px-4 py-3 text-sm"
                   />
                 </div>
                 {promptError && <p className="text-error text-sm">{promptError}</p>}
@@ -750,7 +750,7 @@ export default function SettingsAccountPage() {
                         inputMode="numeric"
                         autoComplete="one-time-code"
                         placeholder={t("twoFactor.setup.verifyPlaceholder")}
-                        className="border-border bg-surface text-text w-full rounded-lg border px-4 py-3 text-center text-lg tracking-widest"
+                        className="border-border bg-bg text-text w-full rounded-lg border px-4 py-3 text-center text-lg tracking-widest"
                       />
                     </div>
                     {twoFactorError && <p className="text-error text-sm">{twoFactorError}</p>}
@@ -880,7 +880,7 @@ export default function SettingsAccountPage() {
                   type="text"
                   value={deleteConfirmText}
                   onChange={(e) => setDeleteConfirmText(e.target.value)}
-                  className="border-border bg-surface text-text w-full rounded-lg border px-3 py-2 text-sm"
+                  className="border-border bg-bg text-text w-full rounded-lg border px-3 py-2 text-sm"
                   placeholder={t("confirmKeyword")}
                 />
               </div>

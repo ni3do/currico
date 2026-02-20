@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { parsePagination, paginationResponse, notFound, serverError } from "@/lib/api";
+import { parsePagination, paginationResponse, notFound, badRequest, serverError } from "@/lib/api";
+import { isValidId } from "@/lib/rateLimit";
 
 /**
  * GET /api/users/[id]/materials
@@ -13,6 +14,7 @@ import { parsePagination, paginationResponse, notFound, serverError } from "@/li
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
+    if (!isValidId(id)) return badRequest("Invalid ID");
     const { searchParams } = new URL(request.url);
     const { page, limit, skip } = parsePagination(searchParams, { limit: 12 });
     const sort = searchParams.get("sort") || "newest";

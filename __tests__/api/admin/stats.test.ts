@@ -13,8 +13,8 @@ const mockReportCount = prisma.report.count as ReturnType<typeof vi.fn>;
 const mockRequireAdmin = vi.fn();
 vi.mock("@/lib/admin-auth", () => ({
   requireAdmin: () => mockRequireAdmin(),
-  unauthorizedResponse: () =>
-    new Response(JSON.stringify({ error: "Zugriff verweigert" }), {
+  forbiddenResponse: () =>
+    new Response(JSON.stringify({ error: "Zugriff verweigert", code: "FORBIDDEN" }), {
       status: 403,
       headers: { "Content-Type": "application/json" },
     }),

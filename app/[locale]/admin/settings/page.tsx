@@ -54,7 +54,7 @@ export default function AdminSettingsPage() {
           <div className="border-border border-t pt-4">
             <button
               onClick={() => signOut({ callbackUrl: "/" })}
-              className="border-error text-error flex items-center gap-2 rounded-xl border px-4 py-2 transition-colors hover:bg-[var(--badge-error-bg)]"
+              className="border-error text-error hover:bg-error/20 flex items-center gap-2 rounded-xl border px-4 py-2 transition-colors"
             >
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path

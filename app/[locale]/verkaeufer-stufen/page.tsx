@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { motion } from "framer-motion";
+import { FadeIn, StaggerChildren, StaggerItem, motion } from "@/components/ui/animations";
 import {
   Upload,
   Download,
@@ -71,11 +71,7 @@ export default function SellerLevelsPage() {
 
         {/* Personalized Progress Summary */}
         {!loading && isLoggedIn && isSeller && sellerData && (
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-10"
-          >
+          <FadeIn className="mb-10">
             <div className="border-border bg-surface overflow-hidden rounded-2xl border">
               <div
                 className={`${SELLER_LEVELS[sellerData.level]?.bgClass ?? "bg-surface"} px-6 py-5`}
@@ -161,16 +157,12 @@ export default function SellerLevelsPage() {
                 </div>
               )}
             </div>
-          </motion.section>
+          </FadeIn>
         )}
 
         {/* Non-seller CTA */}
         {!loading && isLoggedIn && !isSeller && (
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-10"
-          >
+          <FadeIn className="mb-10">
             <div className="border-border bg-surface flex items-center justify-between rounded-2xl border px-6 py-4">
               <p className="text-text-muted text-sm">{t("page.becomeSeller")}</p>
               <Link
@@ -180,16 +172,12 @@ export default function SellerLevelsPage() {
                 {t("page.becomeSellerCta")}
               </Link>
             </div>
-          </motion.section>
+          </FadeIn>
         )}
 
         {/* Logged-out CTA */}
         {!loading && !isLoggedIn && (
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-10"
-          >
+          <FadeIn className="mb-10">
             <div className="border-border bg-surface flex items-center justify-between rounded-2xl border px-6 py-4">
               <p className="text-text-muted text-sm">{t("page.loginToSeeProgress")}</p>
               <Link
@@ -200,16 +188,11 @@ export default function SellerLevelsPage() {
                 {t("page.loginCta")}
               </Link>
             </div>
-          </motion.section>
+          </FadeIn>
         )}
 
         {/* How Points Work */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="mb-10"
-        >
+        <FadeIn delay={0.1} className="mb-10">
           <h2 className="text-text mb-2 text-xl font-semibold">{t("page.howTitle")}</h2>
           <p className="text-text-muted mb-6 text-sm">{t("page.howDescription")}</p>
 
@@ -354,15 +337,10 @@ export default function SellerLevelsPage() {
               </div>
             </div>
           </div>
-        </motion.section>
+        </FadeIn>
 
         {/* Rating Bonus */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-          className="mb-10"
-        >
+        <FadeIn delay={0.15} className="mb-10">
           <h2 className="text-text mb-2 text-xl font-semibold">
             <TrendingUp aria-hidden="true" className="text-success mr-2 inline-block h-5 w-5" />
             {t("page.ratingBonusTitle")}
@@ -406,15 +384,10 @@ export default function SellerLevelsPage() {
               </div>
             </div>
           </div>
-        </motion.section>
+        </FadeIn>
 
         {/* Verified Seller Bonus */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.18 }}
-          className="mb-10"
-        >
+        <FadeIn delay={0.18} className="mb-10">
           <h2 className="text-text mb-2 text-xl font-semibold">
             <BadgeCheck aria-hidden="true" className="text-success mr-2 inline-block h-5 w-5" />
             {t("page.verifiedBonusTitle")}
@@ -443,15 +416,10 @@ export default function SellerLevelsPage() {
               </Link>
             </div>
           </div>
-        </motion.section>
+        </FadeIn>
 
         {/* Example Calculation */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="mb-10"
-        >
+        <FadeIn delay={0.2} className="mb-10">
           <h2 className="text-text mb-2 text-xl font-semibold">{t("page.exampleTitle")}</h2>
           <p className="text-text-muted mb-4 text-sm">
             {t("page.exampleDescription", {
@@ -494,19 +462,14 @@ export default function SellerLevelsPage() {
               </div>
             </div>
           </div>
-        </motion.section>
+        </FadeIn>
 
         {/* The 5 Levels */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="mb-10"
-        >
+        <FadeIn delay={0.3} className="mb-10">
           <h2 className="text-text mb-2 text-xl font-semibold">{t("page.levelsTitle")}</h2>
           <p className="text-text-muted mb-6 text-sm">{t("page.levelsDescription")}</p>
 
-          <div className="space-y-3">
+          <StaggerChildren className="space-y-3">
             {SELLER_LEVELS.map((level, index) => {
               const Icon = level.icon;
               const levelName = t(`levels.${level.name}` as never);
@@ -521,11 +484,9 @@ export default function SellerLevelsPage() {
               const isLocked = hasSeller && level.level > currentLevelIndex + 1;
 
               return (
-                <motion.div
+                <StaggerItem
                   key={level.level}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.3 + index * 0.08 }}
+                  variant="card"
                   className={`border-border bg-surface overflow-hidden rounded-2xl border ${
                     isCurrent
                       ? `ring-2 ring-offset-2 ring-offset-[var(--color-bg)]`
@@ -745,54 +706,38 @@ export default function SellerLevelsPage() {
                       {t("page.levelMinPoints", { points: level.minPoints })}
                     </span>
                   </div>
-                </motion.div>
+                </StaggerItem>
               );
             })}
-          </div>
-        </motion.section>
+          </StaggerChildren>
+        </FadeIn>
 
         {/* Tips */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="mb-10"
-        >
+        <FadeIn delay={0.5} className="mb-10">
           <h2 className="text-text mb-2 text-xl font-semibold">
             <Lightbulb aria-hidden="true" className="text-warning mr-2 inline-block h-5 w-5" />
             {t("page.tipsTitle")}
           </h2>
 
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            {(["quality", "variety", "keywords", "regular"] as const).map((tip, index) => {
+          <StaggerChildren className="mt-4 grid gap-3 sm:grid-cols-2">
+            {(["quality", "variety", "keywords", "regular"] as const).map((tip) => {
               const TipIcon = TIP_CONFIG[tip];
               return (
-                <motion.div
-                  key={tip}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 + index * 0.08 }}
-                  className="border-border bg-surface rounded-xl border p-4"
-                >
+                <StaggerItem key={tip} className="border-border bg-surface rounded-xl border p-4">
                   <div className="flex gap-3">
                     <div className="bg-warning/10 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg">
                       <TipIcon aria-hidden="true" className="text-warning h-4 w-4" />
                     </div>
                     <p className="text-text-muted text-sm">{t(`page.tips.${tip}` as never)}</p>
                   </div>
-                </motion.div>
+                </StaggerItem>
               );
             })}
-          </div>
-        </motion.section>
+          </StaggerChildren>
+        </FadeIn>
 
         {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="mb-10 text-center"
-        >
+        <FadeIn delay={0.6} className="mb-10 text-center">
           <Link
             href="/hochladen"
             className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold transition-colors"
@@ -800,7 +745,7 @@ export default function SellerLevelsPage() {
             <Upload aria-hidden="true" className="h-4 w-4" />
             {t("keepGoing")}
           </Link>
-        </motion.div>
+        </FadeIn>
       </main>
 
       <Footer />

@@ -111,7 +111,7 @@ export default function NotificationsPage() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="border-border bg-surface space-y-4 rounded-xl border p-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -153,7 +153,7 @@ export default function NotificationsPage() {
 
       {/* List */}
       {error ? (
-        <div className="border-border bg-surface rounded-xl border py-12 text-center">
+        <div className="py-12 text-center">
           <AlertCircle className="text-error mx-auto mb-3 h-10 w-10" aria-hidden="true" />
           <p className="text-text mb-1 font-medium">{t("errorLoading")}</p>
           <button
@@ -168,7 +168,7 @@ export default function NotificationsPage() {
           </button>
         </div>
       ) : notifications.length === 0 ? (
-        <div className="border-border bg-surface rounded-xl border border-dashed py-16 text-center">
+        <div className="py-16 text-center">
           <BellOff className="text-text-faint mx-auto mb-3 h-10 w-10" />
           <p className="text-text font-medium">{t("empty")}</p>
           <p className="text-text-muted mt-1 text-sm">{t("emptyDescription")}</p>

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { requireAdmin, unauthorizedResponse } from "@/lib/admin-auth";
+import { requireAdmin, forbiddenResponse } from "@/lib/admin-auth";
 import { badRequest, serverError } from "@/lib/api";
 import { isValidId } from "@/lib/rateLimit";
 import { updateMessageStatusSchema } from "@/lib/validations/admin";
@@ -14,7 +14,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   try {
     const admin = await requireAdmin();
     if (!admin) {
-      return unauthorizedResponse();
+      return forbiddenResponse();
     }
 
     const { id } = await params;
@@ -52,7 +52,7 @@ export async function DELETE(
   try {
     const admin = await requireAdmin();
     if (!admin) {
-      return unauthorizedResponse();
+      return forbiddenResponse();
     }
 
     const { id } = await params;

@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { register } from "@/lib/metrics";
-import { requireAdmin, unauthorizedResponse } from "@/lib/admin-auth";
+import { requireAdmin, forbiddenResponse } from "@/lib/admin-auth";
 
 export async function GET() {
   const admin = await requireAdmin();
-  if (!admin) return unauthorizedResponse();
+  if (!admin) return forbiddenResponse();
 
   const metrics = await register.metrics();
   return new NextResponse(metrics, {

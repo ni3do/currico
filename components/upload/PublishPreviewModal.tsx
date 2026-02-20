@@ -148,15 +148,12 @@ export function PublishPreviewModal({
 
           {/* Footer */}
           <div className="border-border flex gap-3 border-t p-5">
-            <button
-              onClick={onCancel}
-              className="border-border text-text hover:bg-surface-elevated flex-1 rounded-xl border-2 px-4 py-2.5 text-sm font-medium transition-colors"
-            >
+            <button onClick={onCancel} className="btn-tertiary flex-1 px-4 py-2.5 text-sm">
               {tPreview("cancel")}
             </button>
             <button
               onClick={onConfirm}
-              className="from-primary to-primary-hover text-text-on-accent flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r px-4 py-2.5 text-sm font-semibold shadow-lg transition-all hover:shadow-xl"
+              className="btn-primary flex flex-1 items-center justify-center gap-2 px-4 py-2.5 text-sm"
             >
               <Check className="h-4 w-4" aria-hidden="true" />
               {tPreview("confirm")}

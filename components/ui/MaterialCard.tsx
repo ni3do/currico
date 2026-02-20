@@ -3,6 +3,7 @@
 import { useState, useEffect, memo } from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { Heart, FileText, ChevronRight } from "lucide-react";
 import { getSubjectTextColor } from "@/lib/constants/subject-colors";
 import { SellerBadge } from "@/components/ui/SellerBadge";
@@ -84,6 +85,7 @@ export const MaterialCard = memo(function MaterialCard({
   competencies,
   tags,
 }: MaterialCardProps) {
+  const tCommon = useTranslations("common");
   const [isWishlisted, setIsWishlisted] = useState(initialWishlisted);
   const [wishlistLoading, setWishlistLoading] = useState(false);
 
@@ -163,8 +165,8 @@ export const MaterialCard = memo(function MaterialCard({
             }`}
             aria-label={
               isWishlisted
-                ? wishlistRemoveLabel || "Von Wunschliste entfernen"
-                : wishlistAddLabel || "Zur Wunschliste hinzufügen"
+                ? wishlistRemoveLabel || tCommon("wishlistRemove")
+                : wishlistAddLabel || tCommon("wishlistAdd")
             }
           >
             <Heart

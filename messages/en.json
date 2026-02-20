@@ -65,6 +65,14 @@
     "skipToContent": "Skip to content",
     "scrollToTop": "Scroll to top",
     "toggleNavigation": "Toggle navigation",
+    "multiSelect": {
+      "placeholder": "Select...",
+      "search": "Search...",
+      "noResults": "No options found"
+    },
+    "wishlistAdd": "Add to wishlist",
+    "wishlistRemove": "Remove from wishlist",
+    "toggle": "Toggle",
     "brand": {
       "logoText": "C",
       "name": "Currico",
@@ -3548,6 +3556,8 @@
       "uploadFirst": "Upload material",
       "duplicateSuccess": "Material duplicated! Edit the copy as needed.",
       "duplicateError": "Failed to duplicate. Please try again.",
+      "errorLoading": "Failed to load uploads",
+      "retry": "Retry",
       "draft": {
         "title": "Continue draft",
         "savedAt": "Saved {time}",
@@ -3822,7 +3832,9 @@
       "sortLabel": "Sort by",
       "sortNewest": "Newest first",
       "sortDownloads": "Most downloads",
-      "sortEarnings": "Highest earnings"
+      "sortEarnings": "Highest earnings",
+      "fetchError": "Failed to load data. Please try again.",
+      "retry": "Retry"
     },
     "profile": {
       "completeProfile": "Complete your profile",

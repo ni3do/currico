@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { requireAdmin, unauthorizedResponse } from "@/lib/admin-auth";
+import { requireAdmin, forbiddenResponse } from "@/lib/admin-auth";
 import { notFound, serverError, badRequest, forbidden } from "@/lib/api";
 import { isValidId } from "@/lib/rateLimit";
+import { updateAdminUserSchema } from "@/lib/validations/admin";
 
 /**
  * GET /api/admin/users/[id]
@@ -14,7 +15,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     const admin = await requireAdmin();
 
     if (!admin) {
-      return unauthorizedResponse();
+      return forbiddenResponse();
     }
 
     const { id } = await params;
@@ -66,16 +67,22 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     const admin = await requireAdmin();
 
     if (!admin) {
-      return unauthorizedResponse();
+      return forbiddenResponse();
     }
 
     const { id } = await params;
     if (!isValidId(id)) return badRequest("Invalid ID");
-    let body: Record<string, unknown>;
+
+    let body: unknown;
     try {
       body = await request.json();
     } catch {
       return badRequest("Invalid JSON body");
+    }
+
+    const parsed = updateAdminUserSchema.safeParse(body);
+    if (!parsed.success) {
+      return badRequest("Invalid input", { details: parsed.error.flatten().fieldErrors });
     }
 
     // Check if user is protected (e.g., super admin)
@@ -89,40 +96,13 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     }
 
     // Prevent changing role of protected users
-    if (existingUser.is_protected && body.role && body.role !== existingUser.role) {
+    if (existingUser.is_protected && parsed.data.role && parsed.data.role !== existingUser.role) {
       return forbidden("Cannot change role of a protected user");
-    }
-
-    // Validate role if provided
-    const validRoles = ["BUYER", "SELLER", "ADMIN"];
-    if ("role" in body && !validRoles.includes(body.role as string)) {
-      return badRequest("Invalid role. Allowed: BUYER, SELLER, ADMIN");
-    }
-
-    // Validate emailVerified if provided
-    if (
-      "emailVerified" in body &&
-      body.emailVerified !== null &&
-      !(body.emailVerified instanceof Date) &&
-      typeof body.emailVerified !== "string"
-    ) {
-      return badRequest("emailVerified must be a date or null");
-    }
-
-    // Only allow admin to update specific fields
-    // Note: Seller verification is now handled via Stripe KYC, not admin toggle
-    const allowedFields = ["role", "emailVerified"];
-    const updateData: Record<string, unknown> = {};
-
-    for (const field of allowedFields) {
-      if (field in body) {
-        updateData[field] = body[field];
-      }
     }
 
     const updatedUser = await prisma.user.update({
       where: { id },
-      data: updateData,
+      data: parsed.data,
       select: {
         id: true,
         name: true,
@@ -156,7 +136,7 @@ export async function DELETE(
     const admin = await requireAdmin();
 
     if (!admin) {
-      return unauthorizedResponse();
+      return forbiddenResponse();
     }
 
     const { id } = await params;

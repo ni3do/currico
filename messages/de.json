@@ -65,6 +65,14 @@
     "skipToContent": "Zum Inhalt springen",
     "scrollToTop": "Nach oben scrollen",
     "toggleNavigation": "Navigation ein-/ausblenden",
+    "multiSelect": {
+      "placeholder": "Auswählen...",
+      "search": "Suchen...",
+      "noResults": "Keine Optionen gefunden"
+    },
+    "wishlistAdd": "Zur Wunschliste hinzufügen",
+    "wishlistRemove": "Von Wunschliste entfernen",
+    "toggle": "Umschalten",
     "brand": {
       "logoText": "C",
       "name": "Currico",
@@ -3546,6 +3554,8 @@
       "empty": "Noch keine hochgeladenen Materialien",
       "emptyDescription": "Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen.",
       "uploadFirst": "Material hochladen",
+      "errorLoading": "Fehler beim Laden der Uploads",
+      "retry": "Erneut versuchen",
       "duplicateSuccess": "Material dupliziert! Bearbeiten Sie die Kopie nach Bedarf.",
       "duplicateError": "Fehler beim Duplizieren. Bitte versuchen Sie es erneut.",
       "draft": {
@@ -3822,7 +3832,9 @@
       "sortLabel": "Sortierung",
       "sortNewest": "Neueste zuerst",
       "sortDownloads": "Meiste Downloads",
-      "sortEarnings": "Höchste Einnahmen"
+      "sortEarnings": "Höchste Einnahmen",
+      "fetchError": "Daten konnten nicht geladen werden. Bitte versuchen Sie es erneut.",
+      "retry": "Erneut versuchen"
     },
     "profile": {
       "completeProfile": "Vervollständigen Sie Ihr Profil",

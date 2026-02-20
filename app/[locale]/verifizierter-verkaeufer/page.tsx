@@ -2,7 +2,6 @@
 
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { motion } from "framer-motion";
 import {
   BadgeCheck,
   ShoppingCart,
@@ -23,6 +22,7 @@ import type { LucideIcon } from "lucide-react";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
+import { FadeIn, StaggerChildren, StaggerItem } from "@/components/ui/animations";
 
 const CRITERIA_CONFIG: { key: string; icon: LucideIcon }[] = [
   { key: "minSales", icon: ShoppingCart },
@@ -70,35 +70,19 @@ export default function VerifiedSellerPage() {
         </div>
 
         {/* What it means */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="mb-10"
-        >
+        <FadeIn delay={0.1} className="mb-10">
           <h2 className="text-text mb-2 text-xl font-semibold">{t("page.whatTitle")}</h2>
           <p className="text-text-muted mb-4 text-sm">{t("page.whatDescription")}</p>
-        </motion.section>
+        </FadeIn>
 
         {/* The 4 Criteria */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="mb-10"
-        >
+        <FadeIn delay={0.2} className="mb-10">
           <h2 className="text-text mb-2 text-xl font-semibold">{t("page.criteriaTitle")}</h2>
           <p className="text-text-muted mb-6 text-sm">{t("page.criteriaDescription")}</p>
 
-          <div className="space-y-3">
-            {CRITERIA_CONFIG.map(({ key, icon: Icon }, index) => (
-              <motion.div
-                key={key}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 + index * 0.08 }}
-                className="card flex items-start gap-4 p-5"
-              >
+          <StaggerChildren className="space-y-3">
+            {CRITERIA_CONFIG.map(({ key, icon: Icon }) => (
+              <StaggerItem key={key} variant="card" className="card flex items-start gap-4 p-5">
                 <div className="bg-success/10 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl">
                   <Icon className="text-success h-6 w-6" aria-hidden="true" />
                 </div>
@@ -111,18 +95,13 @@ export default function VerifiedSellerPage() {
                 <div className="text-success flex-shrink-0 text-sm font-bold">
                   {t(`page.criteria.${key}.value`)}
                 </div>
-              </motion.div>
+              </StaggerItem>
             ))}
-          </div>
-        </motion.section>
+          </StaggerChildren>
+        </FadeIn>
 
         {/* How it works */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="mb-10"
-        >
+        <FadeIn delay={0.4} className="mb-10">
           <h2 className="text-text mb-6 text-xl font-semibold">{t("page.howTitle")}</h2>
           <div className="space-y-3">
             {HOW_STEPS.map(({ key, icon: Icon }, index) => (
@@ -144,15 +123,10 @@ export default function VerifiedSellerPage() {
               </div>
             ))}
           </div>
-        </motion.section>
+        </FadeIn>
 
         {/* Benefits */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="mb-10"
-        >
+        <FadeIn delay={0.5} className="mb-10">
           <h2 className="text-text mb-6 text-xl font-semibold">{t("page.benefitsTitle")}</h2>
           <div className="card p-6">
             <ul className="text-text-muted space-y-3 text-sm">
@@ -164,15 +138,10 @@ export default function VerifiedSellerPage() {
               ))}
             </ul>
           </div>
-        </motion.section>
+        </FadeIn>
 
         {/* Comparison */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="mb-10"
-        >
+        <FadeIn delay={0.6} className="mb-10">
           <h2 className="text-text mb-6 text-xl font-semibold">{t("page.comparisonTitle")}</h2>
           <div className="card overflow-hidden">
             <table className="w-full text-sm">
@@ -210,15 +179,10 @@ export default function VerifiedSellerPage() {
               </tbody>
             </table>
           </div>
-        </motion.section>
+        </FadeIn>
 
         {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7 }}
-          className="mb-10 text-center"
-        >
+        <FadeIn delay={0.7} className="mb-10 text-center">
           <Link
             href="/hochladen"
             className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold transition-colors"
@@ -226,7 +190,7 @@ export default function VerifiedSellerPage() {
             <Upload className="h-4 w-4" />
             {t("page.cta")}
           </Link>
-        </motion.div>
+        </FadeIn>
       </main>
 
       <Footer />

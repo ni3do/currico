@@ -9,6 +9,7 @@ import {
   parsePagination,
   paginationResponse,
 } from "@/lib/api";
+import { followSellerSchema } from "@/lib/validations/user";
 
 /**
  * GET /api/user/following?page=1&limit=20
@@ -80,9 +81,12 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { sellerId } = body;
+    const parsed = followSellerSchema.safeParse(body);
+    if (!parsed.success) {
+      return badRequest("SELLER_ID_REQUIRED");
+    }
+    const { sellerId } = parsed.data;
 
-    if (!sellerId) return badRequest("SELLER_ID_REQUIRED");
     if (sellerId === userId) return badRequest("CANNOT_FOLLOW_SELF");
 
     // Check if seller exists and is actually a seller

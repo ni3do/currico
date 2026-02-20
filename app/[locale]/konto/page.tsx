@@ -21,6 +21,7 @@ import {
   XCircle,
   AlertCircle,
   ArrowUpDown,
+  RefreshCw,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { WelcomeGuide } from "@/components/account/WelcomeGuide";
@@ -52,6 +53,7 @@ export default function AccountOverviewPage() {
   const [libraryItems, setLibraryItems] = useState<LibraryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState<string | null>(null);
+  const [fetchError, setFetchError] = useState(false);
   const [downloadMessage, setDownloadMessage] = useState<{
     type: "success" | "error";
     text: string;
@@ -77,6 +79,7 @@ export default function AccountOverviewPage() {
 
   const fetchData = useCallback(async () => {
     setLoading(true);
+    setFetchError(false);
     try {
       const fetches: Promise<Response>[] = [fetch("/api/user/library?type=acquired")];
       if (isSeller) {
@@ -108,6 +111,7 @@ export default function AccountOverviewPage() {
       }
     } catch (error) {
       console.error("Error fetching overview data:", error);
+      setFetchError(true);
     } finally {
       setLoading(false);
     }
@@ -249,6 +253,21 @@ export default function AccountOverviewPage() {
           />
         )}
 
+        {/* Error state */}
+        {fetchError && !loading && (
+          <div className="border-error/50 bg-error/10 flex items-center gap-3 rounded-xl border p-4">
+            <AlertCircle className="text-error h-5 w-5 flex-shrink-0" aria-hidden="true" />
+            <p className="text-text flex-1 text-sm">{t("overview.fetchError")}</p>
+            <button
+              onClick={fetchData}
+              className="text-error hover:bg-error/20 inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
+            >
+              <RefreshCw className="h-3.5 w-3.5" />
+              {t("overview.retry")}
+            </button>
+          </div>
+        )}
+
         {/* KPI Metrics Row */}
         <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
           {loading
@@ -256,7 +275,7 @@ export default function AccountOverviewPage() {
               [1, 2, 3, 4].map((i) => (
                 <div
                   key={i}
-                  className="border-border bg-surface animate-pulse rounded-2xl border p-6"
+                  className="border-border bg-surface animate-pulse rounded-xl border p-6"
                 >
                   <div className="flex items-start justify-between">
                     <div className="space-y-3">
@@ -313,7 +332,7 @@ export default function AccountOverviewPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className="border-border bg-surface group relative overflow-hidden rounded-2xl border p-6 transition-shadow hover:shadow-md"
+                    className="border-border bg-surface group relative overflow-hidden rounded-xl border p-6 transition-shadow hover:shadow-md"
                   >
                     {/* Subtle gradient accent */}
                     <div
@@ -350,7 +369,7 @@ export default function AccountOverviewPage() {
         )}
 
         {/* Resources Table */}
-        <div className="border-border bg-surface overflow-hidden rounded-2xl border">
+        <div className="border-border bg-surface overflow-hidden rounded-xl border">
           <div className="border-border flex items-center justify-between border-b px-5 py-4">
             <h2 className="text-text text-base font-semibold">{t("overview.myMaterials")}</h2>
             <Link
@@ -426,7 +445,7 @@ export default function AccountOverviewPage() {
               </div>
             ) : sellerMaterials.length === 0 ? (
               <div className="py-16 text-center">
-                <div className="bg-surface-hover mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl">
+                <div className="bg-surface-hover mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-xl">
                   <FileText className="text-text-faint h-8 w-8" />
                 </div>
                 <h3 className="text-text mb-2 text-lg font-semibold">
@@ -633,7 +652,7 @@ export default function AccountOverviewPage() {
         </div>
 
         {/* Recent Downloads */}
-        <div className="border-border bg-surface rounded-2xl border">
+        <div className="border-border bg-surface rounded-xl border">
           <div className="border-border flex items-center justify-between border-b px-5 py-4">
             <div className="flex items-center gap-2">
               <h2 className="text-text text-base font-semibold">{t("overview.recentDownloads")}</h2>

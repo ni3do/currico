@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
+import { X, Check, AlertCircle } from "lucide-react";
 import { FocusTrap } from "@/components/ui/FocusTrap";
 import { useToast } from "@/components/ui/Toast";
 
@@ -89,33 +90,14 @@ export function ReportModal({ materialId, onClose }: ReportModalProps) {
               aria-label={t("a11y.closeDialog")}
               className="text-text-muted hover:text-text"
             >
-              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
+              <X className="h-6 w-6" aria-hidden="true" />
             </button>
           </div>
 
           {reportStatus === "success" ? (
             <div className="flex flex-col items-center justify-center py-8 text-center">
               <div className="bg-success-light mb-4 flex h-12 w-12 items-center justify-center rounded-full">
-                <svg
-                  className="text-success h-6 w-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
+                <Check className="text-success h-6 w-6" aria-hidden="true" />
               </div>
               <h4 className="text-text mb-2 font-semibold">{t("report.successTitle")}</h4>
               <p className="text-text-muted text-sm">{t("report.successDescription")}</p>
@@ -165,19 +147,7 @@ export function ReportModal({ materialId, onClose }: ReportModalProps) {
               {/* Error Message */}
               {reportStatus === "error" && reportErrorMessage && (
                 <div className="border-error/50 bg-error/10 flex items-center gap-3 rounded-lg border p-3">
-                  <svg
-                    className="text-error h-5 w-5 flex-shrink-0"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
+                  <AlertCircle className="text-error h-5 w-5 flex-shrink-0" aria-hidden="true" />
                   <p className="text-error text-sm">{reportErrorMessage}</p>
                 </div>
               )}
@@ -206,5 +176,3 @@ export function ReportModal({ materialId, onClose }: ReportModalProps) {
     </div>
   );
 }
-
-export default ReportModal;

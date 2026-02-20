@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
+import { AnimatedCollapse } from "@/components/ui/animations";
 import {
   Upload,
   Shield,
@@ -257,11 +258,11 @@ export default function HilfePage() {
                           className={`text-text-muted h-5 w-5 shrink-0 transition-transform ${isOpen ? "rotate-180" : ""}`}
                         />
                       </button>
-                      {isOpen && (
+                      <AnimatedCollapse isOpen={isOpen}>
                         <div className="text-text-muted px-5 pb-4 text-sm leading-relaxed">
                           {item.answer}
                         </div>
-                      )}
+                      </AnimatedCollapse>
                     </div>
                   );
                 })
@@ -289,11 +290,11 @@ export default function HilfePage() {
                             className={`text-text-muted h-5 w-5 shrink-0 transition-transform ${isOpen ? "rotate-180" : ""}`}
                           />
                         </button>
-                        {isOpen && (
+                        <AnimatedCollapse isOpen={isOpen}>
                           <div className="text-text-muted px-5 pb-4 text-sm leading-relaxed">
                             {tFaq(`${qKey}.answer`)}
                           </div>
-                        )}
+                        </AnimatedCollapse>
                       </div>
                     );
                   })

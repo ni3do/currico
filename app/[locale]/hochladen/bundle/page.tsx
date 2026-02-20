@@ -365,7 +365,7 @@ export default function CreateBundlePage() {
                     value={formData.title}
                     onChange={(e) => updateFormData("title", e.target.value)}
                     required
-                    className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 w-full rounded-xl border px-4 py-3 focus:ring-2 focus:outline-none"
+                    className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 w-full rounded-lg border px-4 py-3 focus:ring-2 focus:outline-none"
                     placeholder={tBundle("titlePlaceholder")}
                   />
                 </div>
@@ -379,7 +379,7 @@ export default function CreateBundlePage() {
                     onChange={(e) => updateFormData("description", e.target.value)}
                     required
                     rows={4}
-                    className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 w-full rounded-xl border px-4 py-3 focus:ring-2 focus:outline-none"
+                    className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 w-full rounded-lg border px-4 py-3 focus:ring-2 focus:outline-none"
                     placeholder={tBundle("descriptionPlaceholder")}
                   />
                 </div>
@@ -536,7 +536,7 @@ export default function CreateBundlePage() {
                   value={materialSearch}
                   onChange={(e) => setMaterialSearch(e.target.value)}
                   placeholder={tBundle("searchPlaceholder")}
-                  className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 mb-4 w-full rounded-xl border px-4 py-2.5 text-sm focus:ring-2 focus:outline-none"
+                  className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 mb-4 w-full rounded-lg border px-4 py-2.5 text-sm focus:ring-2 focus:outline-none"
                 />
               )}
 
@@ -641,7 +641,7 @@ export default function CreateBundlePage() {
                     min="0.50"
                     max="25"
                     step="0.50"
-                    className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 w-full rounded-xl border px-4 py-3 pl-12 focus:ring-2 focus:outline-none"
+                    className="border-border bg-bg text-text placeholder:text-text-faint focus:border-primary focus:ring-primary/20 w-full rounded-lg border px-4 py-3 pl-12 focus:ring-2 focus:outline-none"
                     placeholder={tBundle("pricePlaceholder")}
                   />
                   <span className="text-text-muted absolute top-1/2 left-4 -translate-y-1/2">

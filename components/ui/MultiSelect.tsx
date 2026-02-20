@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useTranslations } from "next-intl";
+import { X, Check } from "lucide-react";
 
 interface MultiSelectProps {
   label: string;
@@ -20,13 +22,17 @@ export function MultiSelect({
   options,
   selected,
   onChange,
-  placeholder = "Auswählen...",
+  placeholder,
   required = false,
   error,
   getTagClassName,
-  searchPlaceholder = "Suchen...",
-  noResultsText = "Keine Optionen gefunden",
+  searchPlaceholder,
+  noResultsText,
 }: MultiSelectProps) {
+  const t = useTranslations("common");
+  const resolvedPlaceholder = placeholder || t("multiSelect.placeholder");
+  const resolvedSearchPlaceholder = searchPlaceholder || t("multiSelect.search");
+  const resolvedNoResultsText = noResultsText || t("multiSelect.noResults");
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
@@ -105,18 +111,11 @@ export function MultiSelect({
                 }}
                 className="hover:text-error ml-1"
               >
-                <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                <X className="h-3 w-3" aria-hidden="true" />
               </button>
             </span>
           ))}
-          {selected.length === 0 && <span className="text-text-muted">{placeholder}</span>}
+          {selected.length === 0 && <span className="text-text-muted">{resolvedPlaceholder}</span>}
         </div>
       </div>
 
@@ -131,7 +130,7 @@ export function MultiSelect({
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder={searchPlaceholder}
+              placeholder={resolvedSearchPlaceholder}
               className="border-border bg-bg text-text focus:border-primary w-full rounded-md border px-3 py-1.5 text-sm focus:outline-none"
               onClick={(e) => e.stopPropagation()}
             />
@@ -140,7 +139,7 @@ export function MultiSelect({
           {/* Options */}
           <div className="p-1">
             {filteredOptions.length === 0 ? (
-              <div className="text-text-muted px-3 py-2 text-sm">{noResultsText}</div>
+              <div className="text-text-muted px-3 py-2 text-sm">{resolvedNoResultsText}</div>
             ) : (
               filteredOptions.map((option) => (
                 <button
@@ -161,19 +160,11 @@ export function MultiSelect({
                     }`}
                   >
                     {selected.includes(option) && (
-                      <svg
+                      <Check
                         className="text-text-on-accent h-3 w-3"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={3}
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
+                        strokeWidth={3}
+                        aria-hidden="true"
+                      />
                     )}
                   </span>
                   {option}

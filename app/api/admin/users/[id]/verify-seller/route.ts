@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { requireAdmin, unauthorizedResponse } from "@/lib/admin-auth";
+import { requireAdmin, forbiddenResponse } from "@/lib/admin-auth";
 import { badRequest, notFound, serverError } from "@/lib/api";
 import { notifyManualVerification } from "@/lib/notifications";
 
@@ -10,7 +10,7 @@ import { notifyManualVerification } from "@/lib/notifications";
  */
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const adminId = await requireAdmin();
-  if (!adminId) return unauthorizedResponse();
+  if (!adminId) return forbiddenResponse();
 
   try {
     const { id: userId } = await params;
@@ -75,7 +75,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const adminId = await requireAdmin();
-  if (!adminId) return unauthorizedResponse();
+  if (!adminId) return forbiddenResponse();
 
   try {
     const { id: userId } = await params;

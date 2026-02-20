@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 interface ToggleProps {
   checked: boolean;
   onChange: (checked: boolean) => void;
@@ -9,6 +11,8 @@ interface ToggleProps {
 }
 
 export function Toggle({ checked, onChange, label, description, className = "" }: ToggleProps) {
+  const t = useTranslations("common");
+
   return (
     <div className={`flex items-center gap-3 ${className}`}>
       <button
@@ -17,7 +21,7 @@ export function Toggle({ checked, onChange, label, description, className = "" }
         className="focus-visible:ring-primary relative flex items-center rounded-full focus-visible:ring-2 focus-visible:ring-offset-2"
         role="switch"
         aria-checked={checked}
-        aria-label={label}
+        aria-label={label || t("toggle")}
       >
         <div
           className={`h-6 w-11 rounded-full transition-colors ${checked ? "bg-primary" : "bg-border"}`}

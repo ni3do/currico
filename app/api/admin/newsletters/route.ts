@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { requireAdmin, unauthorizedResponse } from "@/lib/admin-auth";
+import { requireAdmin, forbiddenResponse } from "@/lib/admin-auth";
 import { badRequest, serverError } from "@/lib/api";
+import { createNewsletterSchema } from "@/lib/validations/admin";
 
 /**
  * GET /api/admin/newsletters
@@ -12,7 +13,7 @@ export async function GET() {
   try {
     const admin = await requireAdmin();
     if (!admin) {
-      return unauthorizedResponse();
+      return forbiddenResponse();
     }
 
     const newsletters = await prisma.newsletter.findMany({
@@ -35,15 +36,15 @@ export async function POST(request: NextRequest) {
   try {
     const admin = await requireAdmin();
     if (!admin) {
-      return unauthorizedResponse();
+      return forbiddenResponse();
     }
 
     const body = await request.json();
-    const { subject, content } = body;
-
-    if (!subject || !content) {
-      return badRequest("Subject and content are required");
+    const parsed = createNewsletterSchema.safeParse(body);
+    if (!parsed.success) {
+      return badRequest("Invalid input", { details: parsed.error.flatten().fieldErrors });
     }
+    const { subject, content } = parsed.data;
 
     const newsletter = await prisma.newsletter.create({
       data: {

@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { FileText, AlertTriangle } from "lucide-react";
+import { FileText, AlertTriangle, AlertCircle, RefreshCw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { DashboardMaterialCard } from "@/components/ui/DashboardMaterialCard";
 import { DashboardMaterialGridSkeleton } from "@/components/ui/Skeleton";
@@ -21,6 +21,7 @@ export default function AccountUploadsPage() {
   const [uploadedLoading, setUploadedLoading] = useState(false);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
   const [duplicatingId, setDuplicatingId] = useState<string | null>(null);
+  const [fetchError, setFetchError] = useState(false);
   const [duplicateMessage, setDuplicateMessage] = useState<{
     type: "success" | "error";
     text: string;
@@ -29,6 +30,7 @@ export default function AccountUploadsPage() {
   // Fetch uploaded items
   const fetchUploaded = useCallback(async (search?: string, sort?: string) => {
     setUploadedLoading(true);
+    setFetchError(false);
     try {
       const params = new URLSearchParams({ type: "uploaded" });
       if (search) params.set("search", search);
@@ -37,9 +39,12 @@ export default function AccountUploadsPage() {
       if (response.ok) {
         const data = await response.json();
         setUploadedItems(data.items);
+      } else {
+        setFetchError(true);
       }
     } catch (error) {
       console.error("Error fetching uploaded:", error);
+      setFetchError(true);
     } finally {
       setUploadedLoading(false);
     }
@@ -204,7 +209,19 @@ export default function AccountUploadsPage() {
         ))}
       </div>
 
-      {uploadedLoading ? (
+      {fetchError && !uploadedLoading ? (
+        <div className="py-12 text-center">
+          <AlertCircle className="text-error mx-auto mb-3 h-10 w-10" aria-hidden="true" />
+          <p className="text-text mb-1 font-medium">{t("errorLoading")}</p>
+          <button
+            onClick={() => fetchUploaded(searchQuery || undefined, sortBy)}
+            className="text-primary hover:text-primary-hover mt-2 inline-flex items-center gap-1.5 text-sm font-medium"
+          >
+            <RefreshCw className="h-3.5 w-3.5" />
+            {t("retry")}
+          </button>
+        </div>
+      ) : uploadedLoading ? (
         <DashboardMaterialGridSkeleton />
       ) : filteredItems.length > 0 ? (
         <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">

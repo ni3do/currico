@@ -3,9 +3,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { Check, AlertCircle, Mail } from "lucide-react";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
+import { FadeIn } from "@/components/ui/animations";
 
 // Swiss phone number pattern: +41/0 prefix, 9-10 digits
 const SWISS_PHONE_PATTERN = /^(\+41|0)\s?\d{2}\s?\d{3}\s?\d{2}\s?\d{2}$/;
@@ -129,7 +131,7 @@ export default function ContactClient() {
         {/* Contact Form & Info Section */}
         <div className="grid gap-12 lg:grid-cols-5 lg:gap-16">
           {/* Contact Form - Left Side (3 columns) */}
-          <div className="lg:col-span-3">
+          <FadeIn className="lg:col-span-3">
             <div className="card p-8 sm:p-10">
               <h2 className="text-text mb-8 text-xl font-semibold sm:text-2xl">
                 {t("form.title")}
@@ -138,20 +140,7 @@ export default function ContactClient() {
               {submitStatus === "success" ? (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
                   <div className="bg-success-light mb-6 flex h-16 w-16 items-center justify-center rounded-full">
-                    <svg
-                      className="text-success h-8 w-8"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
+                    <Check className="text-success h-8 w-8" aria-hidden="true" />
                   </div>
                   <h3 className="text-text mb-2 text-lg font-semibold">{t("form.successTitle")}</h3>
                   <p className="text-text-muted">{t("form.successMessage")}</p>
@@ -293,19 +282,10 @@ export default function ContactClient() {
                   {/* Error Message */}
                   {submitStatus === "error" && errorMessage && (
                     <div className="border-error/50 bg-error/10 flex items-center gap-3 rounded-lg border p-4">
-                      <svg
+                      <AlertCircle
                         className="text-error h-5 w-5 flex-shrink-0"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
+                        aria-hidden="true"
+                      />
                       <p className="text-error text-sm">{errorMessage}</p>
                     </div>
                   )}
@@ -321,10 +301,10 @@ export default function ContactClient() {
                 </form>
               )}
             </div>
-          </div>
+          </FadeIn>
 
           {/* Direct Contact Info - Right Side (2 columns) */}
-          <div className="lg:col-span-2">
+          <FadeIn delay={0.1} className="lg:col-span-2">
             <h2 className="text-text mb-8 text-xl font-semibold sm:text-2xl">
               {t("direct.title")}
             </h2>
@@ -334,19 +314,7 @@ export default function ContactClient() {
               <div className="card p-6">
                 <div className="flex items-start gap-4">
                   <div className="bg-primary-light flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full">
-                    <svg
-                      className="text-primary h-6 w-6"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                      />
-                    </svg>
+                    <Mail className="text-primary h-6 w-6" aria-hidden="true" />
                   </div>
                   <div>
                     <h3 className="text-text mb-1 font-semibold">{t("direct.email.title")}</h3>
@@ -361,7 +329,7 @@ export default function ContactClient() {
                 </div>
               </div>
             </div>
-          </div>
+          </FadeIn>
         </div>
       </main>
 
