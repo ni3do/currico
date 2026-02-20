@@ -22,7 +22,7 @@ export default async function HomePage({ params }: Props) {
     const [materials, stats] = await Promise.all([
       prisma.resource.findMany({
         where: { is_published: true, is_public: true },
-        orderBy: { created_at: "desc" },
+        orderBy: [{ seller: { is_verified_seller: "desc" } }, { created_at: "desc" }],
         take: 3,
         select: {
           id: true,
@@ -44,6 +44,12 @@ export default async function HomePage({ params }: Props) {
           },
           reviews: {
             select: { rating: true },
+          },
+          _count: {
+            select: {
+              downloads: true,
+              transactions: { where: { status: "COMPLETED" } },
+            },
           },
           competencies: {
             select: {
@@ -91,6 +97,7 @@ export default async function HomePage({ params }: Props) {
         previewUrl: m.preview_url,
         averageRating,
         reviewCount,
+        downloadCount: m._count.downloads + m._count.transactions,
         competencies: (m.competencies ?? []).map((rc) => ({
           code: rc.competency.code,
           subjectColor: rc.competency.subject.color ?? undefined,

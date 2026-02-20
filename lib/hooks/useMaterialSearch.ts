@@ -86,6 +86,7 @@ export function useMaterialSearch({
       formats: searchParams.get("formats")?.split(",").filter(Boolean) || [],
       cantons: searchParams.get("cantons")?.split(",").filter(Boolean) || [],
       tags: searchParams.get("tags")?.split(",").filter(Boolean) || [],
+      verifiedOnly: searchParams.get("verifiedOnly") === "true",
     };
   }, [searchParams]);
 
@@ -115,6 +116,7 @@ export function useMaterialSearch({
       if (currentFilters.cantons.length > 0)
         params.set("cantons", currentFilters.cantons.join(","));
       if (currentFilters.tags.length > 0) params.set("tags", currentFilters.tags.join(","));
+      if (currentFilters.verifiedOnly) params.set("verifiedOnly", "true");
       if (currentSort && currentSort !== "newest") params.set("sort", currentSort);
       if (page > 1) params.set("page", page.toString());
       if (currentFilters.showCreators && profileSortBy !== "newest")
@@ -233,6 +235,7 @@ export function useMaterialSearch({
     ...filters.formats,
     filters.cantons.length > 0 ? true : null,
     ...filters.tags,
+    filters.verifiedOnly ? true : null,
   ].filter(Boolean).length;
 
   const isLoading = filters.showMaterials ? loading : profilesLoading;
@@ -275,6 +278,7 @@ export function useMaterialSearch({
       formats: [],
       cantons: [],
       tags: [],
+      verifiedOnly: false,
       ...overrides,
     }),
     [filters.showMaterials, filters.showCreators, filters.searchQuery]

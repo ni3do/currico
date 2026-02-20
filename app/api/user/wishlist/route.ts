@@ -11,6 +11,7 @@ import {
   parsePagination,
   paginationResponse,
 } from "@/lib/api";
+import { addToWishlistSchema } from "@/lib/validations/user";
 
 /**
  * GET /api/user/wishlist
@@ -116,11 +117,11 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { resourceId } = body;
-
-    if (!resourceId) {
+    const parsed = addToWishlistSchema.safeParse(body);
+    if (!parsed.success) {
       return badRequest("RESOURCE_ID_REQUIRED");
     }
+    const { resourceId } = parsed.data;
 
     // Check if resource exists and is public
     const resource = await prisma.resource.findUnique({

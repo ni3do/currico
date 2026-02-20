@@ -22,10 +22,12 @@ import {
 } from "lucide-react";
 import type { StripeStatus } from "@/lib/types/account";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { looksLikeUsername } from "@/lib/utils/display-name";
 
 interface UserData {
   emailVerified: string | null;
   sellerTermsAcceptedAt: string | null;
+  displayName: string | null;
 }
 
 // Stepper component for onboarding progress
@@ -139,6 +141,7 @@ export default function BecomeSellerPage() {
               setUserData({
                 emailVerified: statsData.user.emailVerified,
                 sellerTermsAcceptedAt: null,
+                displayName: statsData.user.displayName || statsData.user.name || null,
               });
             }
           }
@@ -453,6 +456,34 @@ export default function BecomeSellerPage() {
             </div>
           </div>
         </section>
+
+        {/* Display Name Nudge */}
+        {!isLoading &&
+          isLoggedIn &&
+          userData?.displayName &&
+          looksLikeUsername(userData.displayName) && (
+            <div className="border-warning/30 bg-warning/5 mb-8 rounded-lg border p-4">
+              <div className="flex items-start gap-3">
+                <AlertTriangle
+                  className="text-warning mt-0.5 h-5 w-5 flex-shrink-0"
+                  aria-hidden="true"
+                />
+                <div className="min-w-0 flex-1">
+                  <p className="text-text text-sm font-semibold">{t("displayNameNudge.title")}</p>
+                  <p className="text-text-muted mt-1 text-sm">
+                    {t("displayNameNudge.description")}
+                  </p>
+                  <Link
+                    href="/konto/settings/profile"
+                    className="text-primary hover:text-primary-hover mt-2 inline-flex items-center gap-1 text-sm font-medium"
+                  >
+                    {t("displayNameNudge.cta")}
+                    <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
 
         {/* Requirements Section - dynamic checklist */}
         <section className="mb-12">

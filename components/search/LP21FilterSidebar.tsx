@@ -198,6 +198,8 @@ export function LP21FilterSidebar({
             onCantonsChange={(cantons) => onFiltersChange({ ...filters, cantons })}
             tags={filters.tags}
             onTagToggle={handleTagToggle}
+            verifiedOnly={filters.verifiedOnly}
+            onVerifiedOnlyChange={(v) => onFiltersChange({ ...filters, verifiedOnly: v })}
             t={t}
           />
         )}

@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
 import { requireAuth, unauthorized, badRequest, rateLimited, serverError } from "@/lib/api";
 import { checkRateLimit, getClientIP } from "@/lib/rateLimit";
+import { changePasswordSchema } from "@/lib/validations/auth";
 
 /**
  * POST /api/auth/change-password
@@ -22,33 +23,28 @@ export async function POST(request: NextRequest) {
       return rateLimited();
     }
 
-    let body: { currentPassword?: string; newPassword?: string; confirmPassword?: string };
+    let body: unknown;
     try {
       body = await request.json();
     } catch {
       return badRequest("INVALID_BODY");
     }
 
-    const { currentPassword, newPassword, confirmPassword } = body;
-
-    // Validate all fields present
-    if (!currentPassword || !newPassword || !confirmPassword) {
+    const parsed = changePasswordSchema.safeParse(body);
+    if (!parsed.success) {
+      const firstError = parsed.error.issues[0];
+      // Map Zod errors to existing error codes for i18n
+      if (firstError?.path.includes("confirmPassword") && firstError.code === "custom") {
+        return badRequest("PASSWORDS_MISMATCH");
+      }
+      if (firstError?.path.includes("newPassword")) {
+        if (firstError.code === "too_small") return badRequest("PASSWORD_TOO_SHORT");
+        return badRequest("PASSWORD_TOO_WEAK");
+      }
       return badRequest("FIELDS_REQUIRED");
     }
 
-    // Validate passwords match
-    if (newPassword !== confirmPassword) {
-      return badRequest("PASSWORDS_MISMATCH");
-    }
-
-    // Validate password strength (same as registration)
-    if (newPassword.length < 8) {
-      return badRequest("PASSWORD_TOO_SHORT");
-    }
-
-    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(newPassword)) {
-      return badRequest("PASSWORD_TOO_WEAK");
-    }
+    const { currentPassword, newPassword } = parsed.data;
 
     // Fetch user's password hash
     const user = await prisma.user.findUnique({

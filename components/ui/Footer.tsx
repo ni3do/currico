@@ -23,7 +23,7 @@ export default function Footer() {
             <p className="text-text-muted mt-3 text-sm leading-relaxed">
               {t("footer.description")}
             </p>
-            <div className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-[color-mix(in_srgb,var(--ctp-red)_12%,transparent)] px-3 py-1.5">
+            <div className="bg-error/[0.12] mt-4 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5">
               <span className="text-xs">🇨🇭</span>
               <span className="text-text-secondary text-xs font-medium">
                 {t("footer.swissMade")}

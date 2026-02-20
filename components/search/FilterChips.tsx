@@ -1,6 +1,6 @@
 "use client";
 
-import { X } from "lucide-react";
+import { X, BadgeCheck } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CANTON_ABBREVS } from "./filters/CantonFilter";
 import type { LP21FilterState } from "@/lib/types/search";
@@ -58,6 +58,7 @@ export function FilterChips({
       formats: [],
       cantons: [],
       tags: [],
+      verifiedOnly: false,
     });
 
   return (
@@ -266,6 +267,24 @@ export function FilterChips({
             <DismissButton
               onClick={() => onFiltersChange({ ...filters, cantons: [] })}
               className="hover:bg-surface-hover"
+            />
+          </motion.span>
+        )}
+        {filters.verifiedOnly && (
+          <motion.span
+            key="chip-verified"
+            layout
+            initial={CHIP_INITIAL}
+            animate={CHIP_ANIMATE}
+            exit={CHIP_INITIAL}
+            transition={CHIP_TRANSITION}
+            className="bg-success/10 text-success border-success/20 hover-chip inline-flex items-center gap-1.5 rounded-full border py-1 pr-1.5 pl-3 text-xs font-semibold"
+          >
+            <BadgeCheck className="h-3 w-3" aria-hidden="true" />
+            {t("sidebar.verifiedSellerChip")}
+            <DismissButton
+              onClick={() => onFiltersChange({ ...filters, verifiedOnly: false })}
+              className="hover:bg-success/20"
             />
           </motion.span>
         )}

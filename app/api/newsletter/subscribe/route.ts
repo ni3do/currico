@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { generateVerificationToken } from "@/lib/email";
 import { rateLimited, badRequest, serverError } from "@/lib/api";
 import { checkRateLimit, getClientIP } from "@/lib/rateLimit";
+import { newsletterSubscribeSchema } from "@/lib/validations/auth";
 
 /**
  * POST /api/newsletter/subscribe
@@ -16,19 +17,12 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { email } = body;
-
-    if (!email || typeof email !== "string") {
-      return badRequest("E-Mail-Adresse ist erforderlich");
-    }
-
-    // Basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    const parsed = newsletterSubscribeSchema.safeParse(body);
+    if (!parsed.success) {
       return badRequest("Ungültige E-Mail-Adresse");
     }
 
-    const normalizedEmail = email.toLowerCase().trim();
+    const normalizedEmail = parsed.data.email.toLowerCase().trim();
 
     // Check if already subscribed
     const existing = await prisma.newsletterSubscriber.findUnique({

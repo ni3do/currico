@@ -391,6 +391,7 @@ export default function HomeClient({ initialMaterials, platformStats }: HomeClie
                       previewUrl={mat.previewUrl}
                       averageRating={mat.averageRating}
                       reviewCount={mat.reviewCount}
+                      downloadCount={mat.downloadCount}
                       competencies={mat.competencies}
                       subjectPillClass={getSubjectPillClass(mat.subjects[0] || "Allgemein")}
                       seller={{

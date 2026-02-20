@@ -153,7 +153,7 @@
 - [x] **Headline schärfen** — Eyebrow geändert zu "Lehrplan-21-konforme Materialien — sofort einsetzbar" (klarer Nutzen + USP) _(→ Revision von Item 3)_
 - [x] **Social Proof: Statistiken** — `PlatformStatsBar` Komponente mit Live-Zählern (Materialien, Lehrpersonen, Downloads) zwischen TrustBar und SwissBrand _(→ ergänzt Item 9)_
 - [ ] **Verifizierte Verkäufer-Profile** — Echte Namen statt anonymer Namen wie "Jo1320", verifizierte Profile prominent zeigen
-- [ ] **Material-Karten strukturieren** — Jede Karte braucht: klarer Titel, Kurzbeschreibung, Zyklus/Fach, Bewertung/Downloads, Preis-Label (Gratis/Silber/Premium). Texte mit Ellipsis abschneiden, damit Grid-Layout nicht zerschossen wird.
+- [x] **Material-Karten strukturieren** — Price badge auf Image-Overlay (alle Varianten), LP21-Codes entfernt (Eyebrow reicht), Tags unter Beschreibung, Footer vereinfacht (Seller + Chevron), Padding gestrafft. Skeleton aktualisiert.
 - [x] **Filter-Labels erklären** — "Zyklus (1, 2 oder 3)" und "Fachbereich (z.B. Deutsch, Mathe)" — hilft neuen Besuchern
 
 ### 19. Layout & Design 🟡
@@ -199,9 +199,9 @@
 | 🟠 SOLLTE   | 10     | 10       | 0     | 100%    |
 | 🟡 NACH     | 10     | 8        | 2     | 80%     |
 | 🟢 MITTEL   | 12     | 12       | 0     | 100%    |
-| 🟣 FEEDBACK | 18     | 14       | 4     | 78%     |
+| 🟣 FEEDBACK | 18     | 15       | 3     | 83%     |
 | 🔵 LANG     | 6      | 5        | 1     | 83%     |
-| **Total**   | **72** | **63**   | **9** | **88%** |
+| **Total**   | **72** | **64**   | **8** | **89%** |
 
 > **Wichtigste Blocker vor Launch:**
 >

@@ -120,6 +120,9 @@ export function useSearchFetcher({
         if (currentFilters.tags.length > 0) {
           params.set("tags", currentFilters.tags.join(","));
         }
+        if (currentFilters.verifiedOnly) {
+          params.set("verifiedOnly", "true");
+        }
         if (currentSort) {
           params.set("sort", currentSort);
         }

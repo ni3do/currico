@@ -12,6 +12,9 @@ import {
   FileArchive,
   Presentation,
   Heart,
+  BadgeCheck,
+  ChevronRight,
+  Share2,
 } from "lucide-react";
 import { LP21Badge } from "@/components/curriculum/LP21Badge";
 import { CheckoutButton } from "@/components/checkout/CheckoutButton";
@@ -123,13 +126,7 @@ export function PurchasePanel({
             </span>
             {material.seller.verified && (
               <span className="text-primary flex items-center gap-1 text-xs">
-                <svg className="h-3.5 w-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path
-                    fillRule="evenodd"
-                    d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+                <BadgeCheck className="h-3.5 w-3.5 flex-shrink-0" />
                 {t("verified")}
               </span>
             )}
@@ -138,14 +135,7 @@ export function PurchasePanel({
             <span className="text-text-muted text-sm">
               {t("sellerMaterials", { count: material.seller.materialCount })}
             </span>
-            <svg
-              className="text-text-muted h-3.5 w-3.5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
+            <ChevronRight className="text-text-muted h-3.5 w-3.5" />
           </div>
         </div>
         <button
@@ -256,14 +246,7 @@ export function PurchasePanel({
           aria-label={t("a11y.shareLink")}
           className="text-text-muted hover:text-primary inline-flex items-center gap-1.5 text-sm transition-colors"
         >
-          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
-            />
-          </svg>
+          <Share2 className="h-4 w-4" />
           {t("share")}
         </button>
         <button
@@ -278,5 +261,3 @@ export function PurchasePanel({
     </div>
   );
 }
-
-export default PurchasePanel;

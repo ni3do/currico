@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
-import { requireAdmin, unauthorizedResponse } from "@/lib/admin-auth";
+import { requireAdmin, forbiddenResponse } from "@/lib/admin-auth";
 import { badRequest, serverError } from "@/lib/api";
 import { isValidId } from "@/lib/rateLimit";
 import { notifyMaterialApproved, notifyMaterialRejected } from "@/lib/notifications";
@@ -44,7 +44,7 @@ const materialSelect = Prisma.validator<Prisma.ResourceSelect>()({
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const admin = await requireAdmin();
   if (!admin) {
-    return unauthorizedResponse();
+    return forbiddenResponse();
   }
 
   try {

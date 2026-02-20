@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { requireAdmin, unauthorizedResponse } from "@/lib/admin-auth";
+import { requireAdmin, forbiddenResponse } from "@/lib/admin-auth";
 import { badRequest, notFound, serverError } from "@/lib/api";
 import { isValidId } from "@/lib/rateLimit";
+import { updateNewsletterSchema } from "@/lib/validations/admin";
 
 /**
  * PATCH /api/admin/newsletters/[id]
@@ -13,13 +14,17 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   try {
     const admin = await requireAdmin();
     if (!admin) {
-      return unauthorizedResponse();
+      return forbiddenResponse();
     }
 
     const { id } = await params;
     if (!isValidId(id)) return badRequest("Invalid ID");
     const body = await request.json();
-    const { subject, content } = body;
+    const parsed = updateNewsletterSchema.safeParse(body);
+    if (!parsed.success) {
+      return badRequest("Invalid input", { details: parsed.error.flatten().fieldErrors });
+    }
+    const { subject, content } = parsed.data;
 
     const newsletter = await prisma.newsletter.findUnique({ where: { id } });
     if (!newsletter) {
@@ -57,7 +62,7 @@ export async function DELETE(
   try {
     const admin = await requireAdmin();
     if (!admin) {
-      return unauthorizedResponse();
+      return forbiddenResponse();
     }
 
     const { id } = await params;

@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
-import { AlertCircle, RefreshCw } from "lucide-react";
+import { AlertCircle, RefreshCw, Heart } from "lucide-react";
 import { DashboardMaterialCard } from "@/components/ui/DashboardMaterialCard";
 import { DashboardMaterialGridSkeleton } from "@/components/ui/Skeleton";
 import { useAccountData } from "@/lib/hooks/useAccountData";
@@ -155,20 +155,11 @@ export default function AccountWishlistPage() {
           </div>
         ) : (
           <div className="py-12 text-center">
-            <svg
+            <Heart
               className="text-text-faint mx-auto mb-4 h-16 w-16"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+              strokeWidth={1.5}
               aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-              />
-            </svg>
+            />
             <h3 className="text-text mb-2 text-lg font-semibold">{t("empty")}</h3>
             <p className="text-text-muted mb-4">{t("emptyDescription")}</p>
             <Link

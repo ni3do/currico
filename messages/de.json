@@ -65,6 +65,21 @@
     "skipToContent": "Zum Inhalt springen",
     "scrollToTop": "Nach oben scrollen",
     "toggleNavigation": "Navigation ein-/ausblenden",
+    "multiSelect": {
+      "placeholder": "Auswählen...",
+      "search": "Suchen...",
+      "noResults": "Keine Optionen gefunden"
+    },
+    "wishlistAdd": "Zur Wunschliste hinzufügen",
+    "wishlistRemove": "Von Wunschliste entfernen",
+    "toggle": "Umschalten",
+    "card": {
+      "wishlistAdd": "Zur Wunschliste hinzufügen",
+      "wishlistRemove": "Aus Wunschliste entfernen",
+      "anonymous": "Anonym",
+      "noReviews": "Noch keine Bewertungen",
+      "downloads": "{count} Downloads"
+    },
     "brand": {
       "logoText": "C",
       "name": "Currico",
@@ -657,7 +672,10 @@
       "tagSectionLabel": "Schlagwörter",
       "tagFilterPlaceholder": "Schlagwort suchen...",
       "sonstigeLabel": "Sonstige",
-      "sonstigeDescription": "Ohne LP21-Zuordnung"
+      "sonstigeDescription": "Ohne LP21-Zuordnung",
+      "verifiedSellerLabel": "Verifizierte Verkäufer",
+      "verifiedSellerToggle": "Nur verifizierte Verkäufer",
+      "verifiedSellerChip": "Verifiziert"
     },
     "search": {
       "placeholder": "Suche nach Titel, Thema, Stichwort...",
@@ -763,6 +781,7 @@
       "countLabelProfiles": "Profile gefunden",
       "showResults": "{count} Ergebnisse anzeigen",
       "sortLabel": "Sortieren:",
+      "sortRecommended": "Empfohlen",
       "gridView": "Rasteransicht",
       "listView": "Listenansicht",
       "sortOptions": {
@@ -782,7 +801,9 @@
     "card": {
       "wishlistAdd": "Zur Wunschliste hinzufügen",
       "wishlistRemove": "Aus Wunschliste entfernen",
-      "anonymous": "Anonym"
+      "anonymous": "Anonym",
+      "noReviews": "Noch keine Bewertungen",
+      "downloads": "{count} Downloads"
     },
     "sellerCta": {
       "title": "Haben Sie Materialien zum Teilen?",
@@ -1945,7 +1966,12 @@
     "statusPendingVerification": "Ihre Verifizierung wird bearbeitet",
     "statusActive": "Ihr Stripe-Konto ist aktiv",
     "statusRestricted": "Bitte vervollständigen Sie Ihre Stripe-Verifizierung",
-    "retryStripe": "Erneut mit Stripe verbinden"
+    "retryStripe": "Erneut mit Stripe verbinden",
+    "displayNameNudge": {
+      "title": "Professioneller Anzeigename empfohlen",
+      "description": "Ihr aktueller Name sieht wie ein Benutzername aus. Verkäufer:innen mit echtem Namen erhalten mehr Vertrauen und Verkäufe.",
+      "cta": "Name in Einstellungen ändern"
+    }
   },
   "stripeConnectStatus": {
     "error": {
@@ -3546,6 +3572,8 @@
       "empty": "Noch keine hochgeladenen Materialien",
       "emptyDescription": "Teilen Sie Ihre Unterrichtsmaterialien mit anderen Lehrpersonen.",
       "uploadFirst": "Material hochladen",
+      "errorLoading": "Fehler beim Laden der Uploads",
+      "retry": "Erneut versuchen",
       "duplicateSuccess": "Material dupliziert! Bearbeiten Sie die Kopie nach Bedarf.",
       "duplicateError": "Fehler beim Duplizieren. Bitte versuchen Sie es erneut.",
       "draft": {
@@ -3781,7 +3809,8 @@
       "avatarRemoved": "Profilbild erfolgreich entfernt!",
       "avatarRemoveError": "Fehler beim Löschen. Bitte versuchen Sie es erneut.",
       "avatarRemoveErrorGeneric": "Fehler beim Löschen",
-      "defaultUser": "Benutzer"
+      "defaultUser": "Benutzer",
+      "displayNameNudge": "Tipp: Ein echter Name wie «Maria S.» wirkt professioneller und schafft Vertrauen bei Käufer:innen."
     },
     "overview": {
       "earnings": "Einnahmen",
@@ -3822,7 +3851,9 @@
       "sortLabel": "Sortierung",
       "sortNewest": "Neueste zuerst",
       "sortDownloads": "Meiste Downloads",
-      "sortEarnings": "Höchste Einnahmen"
+      "sortEarnings": "Höchste Einnahmen",
+      "fetchError": "Daten konnten nicht geladen werden. Bitte versuchen Sie es erneut.",
+      "retry": "Erneut versuchen"
     },
     "profile": {
       "completeProfile": "Vervollständigen Sie Ihr Profil",

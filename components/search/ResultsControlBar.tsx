@@ -18,6 +18,7 @@ interface ResultsControlBarProps {
     sortLabel: string;
     gridView: string;
     listView: string;
+    sortRecommended: string;
     sortNewest: string;
     sortPriceLow: string;
     sortPriceHigh: string;
@@ -112,6 +113,7 @@ export function ResultsControlBar({
               onChange={(e) => onSortChange(e.target.value)}
               className="border-border bg-bg text-text-secondary focus:border-primary focus:ring-focus-ring rounded-full border px-3 py-2.5 text-sm focus:ring-2 focus:outline-none"
             >
+              <option value="recommended">{labels.sortRecommended}</option>
               <option value="newest">{labels.sortNewest}</option>
               <option value="price-low">{labels.sortPriceLow}</option>
               <option value="price-high">{labels.sortPriceHigh}</option>

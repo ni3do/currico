@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { Check, Circle, AlertTriangle } from "lucide-react";
 import {
   checkPasswordRequirements,
   getPasswordStrength,
@@ -39,30 +40,13 @@ export function PasswordRequirements({ password }: PasswordRequirementsProps) {
         {requirements.map((req) => (
           <li key={req.key} className="flex items-center gap-2 text-xs">
             {req.met ? (
-              <svg
+              <Check
                 className="text-success h-3.5 w-3.5 flex-shrink-0"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+                strokeWidth={2.5}
                 aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2.5}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
+              />
             ) : (
-              <svg
-                className="text-text-muted h-3.5 w-3.5 flex-shrink-0"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <circle cx="12" cy="12" r="9" strokeWidth={2} />
-              </svg>
+              <Circle className="text-text-muted h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
             )}
             <span className={req.met ? "text-success" : "text-text-muted"}>{t(req.key)}</span>
           </li>
@@ -72,20 +56,7 @@ export function PasswordRequirements({ password }: PasswordRequirementsProps) {
       {/* Common password warning */}
       {isCommon && (
         <p className="text-warning flex items-center gap-1.5 text-xs font-medium">
-          <svg
-            className="h-3.5 w-3.5 flex-shrink-0"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"
-            />
-          </svg>
+          <AlertTriangle className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
           {t("commonPassword")}
         </p>
       )}

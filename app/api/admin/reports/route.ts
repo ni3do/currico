@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { requireAdmin, unauthorizedResponse } from "@/lib/admin-auth";
+import { requireAdmin, forbiddenResponse } from "@/lib/admin-auth";
 import { serverError, parsePagination, paginationResponse } from "@/lib/api";
 
 /**
@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
   try {
     const admin = await requireAdmin();
     if (!admin) {
-      return unauthorizedResponse();
+      return forbiddenResponse();
     }
 
     const searchParams = request.nextUrl.searchParams;

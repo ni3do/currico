@@ -290,7 +290,7 @@ export default function AdminMessagesPage() {
               setSelectedMessage(null);
             }}
           >
-            <div className="border-border bg-surface mx-4 max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border p-6">
+            <div className="border-border bg-surface mx-4 max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl border p-6">
               <div className="mb-4 flex items-center justify-between">
                 <h3 className="text-text text-xl font-semibold">{t("messageDetail")}</h3>
                 <button
@@ -381,7 +381,7 @@ export default function AdminMessagesPage() {
                     <button
                       onClick={() => handleStatusUpdate(selectedMessage.id, "REPLIED")}
                       disabled={actionLoading}
-                      className="rounded-lg bg-[var(--badge-success-bg)] px-4 py-2.5 text-sm font-medium text-[var(--badge-success-text)] hover:opacity-90 disabled:opacity-60"
+                      className="bg-success/20 text-success rounded-lg px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-60"
                     >
                       {t("markReplied")}
                     </button>

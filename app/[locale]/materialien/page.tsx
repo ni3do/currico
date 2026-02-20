@@ -154,6 +154,7 @@ export default function MaterialienPage() {
                 sortLabel: t("results.sortLabel"),
                 gridView: t("results.gridView"),
                 listView: t("results.listView"),
+                sortRecommended: t("results.sortRecommended"),
                 sortNewest: t("results.sortOptions.newest"),
                 sortPriceLow: t("results.sortOptions.priceLow"),
                 sortPriceHigh: t("results.sortOptions.priceHigh"),

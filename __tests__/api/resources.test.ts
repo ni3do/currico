@@ -26,6 +26,8 @@ describe("GET /api/materials", () => {
         preview_url: "/preview1.jpg",
         created_at: new Date(),
         seller: { id: "seller-1", display_name: "Teacher A" },
+        reviews: [],
+        _count: { downloads: 0, transactions: 0 },
       },
       {
         id: "mat-2",
@@ -37,6 +39,8 @@ describe("GET /api/materials", () => {
         preview_url: null,
         created_at: new Date(),
         seller: { id: "seller-2", display_name: "Teacher B" },
+        reviews: [],
+        _count: { downloads: 0, transactions: 0 },
       },
     ];
 
@@ -68,6 +72,8 @@ describe("GET /api/materials", () => {
         preview_url: null,
         created_at: new Date(),
         seller: { id: "seller-1", display_name: "Teacher" },
+        reviews: [],
+        _count: { downloads: 5, transactions: 3 },
       },
       {
         id: "mat-2",
@@ -79,6 +85,8 @@ describe("GET /api/materials", () => {
         preview_url: null,
         created_at: new Date(),
         seller: { id: "seller-2", display_name: "Teacher" },
+        reviews: [],
+        _count: { downloads: 10, transactions: 0 },
       },
     ]);
     mockMaterialCount.mockResolvedValue(2);

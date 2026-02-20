@@ -121,6 +121,16 @@ export type UpdateProfile = z.infer<typeof updateProfileSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type UpdateNotificationPreferences = z.infer<typeof updateNotificationPreferencesSchema>;
 
+// Wishlist action schema
+export const addToWishlistSchema = z.object({
+  resourceId: z.string().min(1),
+});
+
+// Follow seller schema
+export const followSellerSchema = z.object({
+  sellerId: z.string().min(1),
+});
+
 // ============================================================
 // VALIDATION HELPERS
 // ============================================================

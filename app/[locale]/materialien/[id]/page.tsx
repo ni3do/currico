@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { getLoginUrl } from "@/lib/utils/login-redirect";
 import { getSubjectPillClass } from "@/lib/constants/subject-colors";
+import { Frown, AlertTriangle, Clock, FileText } from "lucide-react";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
@@ -15,6 +16,7 @@ import { CurriculumBox } from "@/components/curriculum";
 import { PreviewGallery } from "@/components/ui/PreviewGallery";
 import { ReviewsSection } from "@/components/reviews";
 import { useToast } from "@/components/ui/Toast";
+import { FadeIn } from "@/components/ui/animations";
 import { PurchasePanel } from "@/components/materials/PurchasePanel";
 import { ReportModal } from "@/components/materials/ReportModal";
 import type { Material, RelatedMaterial } from "@/lib/types/material";
@@ -182,6 +184,7 @@ export default function MaterialDetailPage() {
         <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
           <MaterialDetailSkeleton />
         </main>
+        <Footer />
       </div>
     );
   }
@@ -193,19 +196,11 @@ export default function MaterialDetailPage() {
         <TopBar />
         <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
           <div className="py-16 text-center">
-            <svg
+            <Frown
               className="text-text-muted mx-auto mb-6 h-16 w-16"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+              strokeWidth={1.5}
+              aria-hidden="true"
+            />
             <h1 className="text-text mb-4 text-2xl font-bold sm:text-3xl">{t("notFound")}</h1>
             <p className="text-text-muted mx-auto mb-8 max-w-md">{t("notFoundDescription")}</p>
             <Link
@@ -227,19 +222,11 @@ export default function MaterialDetailPage() {
         <TopBar />
         <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
           <div className="py-16 text-center">
-            <svg
+            <AlertTriangle
               className="text-error mx-auto mb-6 h-16 w-16"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-              />
-            </svg>
+              strokeWidth={1.5}
+              aria-hidden="true"
+            />
             <h1 className="text-text mb-4 text-2xl font-bold sm:text-3xl">{t("loadError")}</h1>
             <p className="text-text-muted mx-auto mb-8 max-w-md">{t("loadErrorDescription")}</p>
             <button
@@ -264,19 +251,7 @@ export default function MaterialDetailPage() {
         {!material.isApproved && (
           <div className="border-warning/50 bg-warning/10 mb-6 rounded-lg border p-4">
             <div className="flex items-center gap-3">
-              <svg
-                className="text-warning h-5 w-5 flex-shrink-0"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
+              <Clock className="text-warning h-5 w-5 flex-shrink-0" aria-hidden="true" />
               <div>
                 <p className="text-warning font-medium">{t("pendingReview")}</p>
                 <p className="text-text-muted text-sm">{t("pendingReviewDescription")}</p>
@@ -307,64 +282,58 @@ export default function MaterialDetailPage() {
         />
 
         {/* HERO SECTION: Preview + Purchase (2-column on desktop) */}
-        <section className="mb-12">
-          <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-12">
-            {/* Column 1: Preview Gallery - Primary Visual */}
-            <div className="order-2 lg:order-1">
-              {material.previewUrls?.length || material.previewUrl ? (
-                <PreviewGallery
-                  previewUrls={
-                    material.previewUrls?.length
-                      ? material.previewUrls
-                      : material.previewUrl
-                        ? [material.previewUrl]
-                        : []
-                  }
-                  previewCount={material.previewCount || 1}
-                  hasAccess={material.hasAccess ?? material.price === 0}
-                  resourceTitle={material.title}
-                  priceFormatted={material.priceFormatted}
-                  onPurchaseClick={() => {
-                    const purchaseSection = document.querySelector("[data-purchase-section]");
-                    purchaseSection?.scrollIntoView({ behavior: "smooth", block: "center" });
-                  }}
-                />
-              ) : (
-                <div className="border-border bg-bg flex aspect-[3/4] max-h-[70vh] items-center justify-center rounded-xl border">
-                  <div className="text-text-muted text-center">
-                    <svg
-                      className="mx-auto mb-2 h-16 w-16"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
+        <FadeIn>
+          <section className="mb-12">
+            <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-12">
+              {/* Column 1: Preview Gallery - Primary Visual */}
+              <div className="order-2 lg:order-1">
+                {material.previewUrls?.length || material.previewUrl ? (
+                  <PreviewGallery
+                    previewUrls={
+                      material.previewUrls?.length
+                        ? material.previewUrls
+                        : material.previewUrl
+                          ? [material.previewUrl]
+                          : []
+                    }
+                    previewCount={material.previewCount || 1}
+                    hasAccess={material.hasAccess ?? material.price === 0}
+                    resourceTitle={material.title}
+                    priceFormatted={material.priceFormatted}
+                    onPurchaseClick={() => {
+                      const purchaseSection = document.querySelector("[data-purchase-section]");
+                      purchaseSection?.scrollIntoView({ behavior: "smooth", block: "center" });
+                    }}
+                  />
+                ) : (
+                  <div className="border-border bg-bg flex aspect-[3/4] max-h-[70vh] items-center justify-center rounded-xl border">
+                    <div className="text-text-muted text-center">
+                      <FileText
+                        className="mx-auto mb-2 h-16 w-16"
                         strokeWidth={1.5}
-                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                        aria-hidden="true"
                       />
-                    </svg>
-                    <p className="text-sm">{t("noPreview")}</p>
+                      <p className="text-sm">{t("noPreview")}</p>
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
 
-            {/* Column 2: Info + Purchase Panel */}
-            <PurchasePanel
-              material={material}
-              isFollowing={isFollowing}
-              isWishlisted={isWishlisted}
-              downloading={downloading}
-              wishlistLoading={wishlistLoading}
-              onFollowToggle={handleFollowToggle}
-              onDownload={handleDownload}
-              onWishlistToggle={handleWishlistToggle}
-              onShowReport={() => setShowReportModal(true)}
-            />
-          </div>
-        </section>
+              {/* Column 2: Info + Purchase Panel */}
+              <PurchasePanel
+                material={material}
+                isFollowing={isFollowing}
+                isWishlisted={isWishlisted}
+                downloading={downloading}
+                wishlistLoading={wishlistLoading}
+                onFollowToggle={handleFollowToggle}
+                onDownload={handleDownload}
+                onWishlistToggle={handleWishlistToggle}
+                onShowReport={() => setShowReportModal(true)}
+              />
+            </div>
+          </section>
+        </FadeIn>
 
         {/* DESCRIPTION SECTION */}
         <section className="mb-12 max-w-3xl">

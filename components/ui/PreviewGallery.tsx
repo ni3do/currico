@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { Lock, FileText, ZoomIn, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { FocusTrap } from "@/components/ui/FocusTrap";
 
 /**
@@ -40,19 +41,7 @@ function PreviewOverlay({
       {/* Subtle bottom gradient with CTA */}
       <div className="absolute inset-x-0 bottom-0 flex flex-col items-center bg-gradient-to-t from-black/60 via-black/20 to-transparent px-4 pt-16 pb-4">
         <div className="mb-2 flex items-center gap-1.5">
-          <svg
-            className="h-4 w-4 text-white/90"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-            />
-          </svg>
+          <Lock className="h-4 w-4 text-white/90" />
           <p className="text-center text-sm font-medium text-white/90 drop-shadow-md">
             {t("previewOverlay.description")}
           </p>
@@ -156,19 +145,7 @@ export function PreviewGallery({
     return (
       <div className="border-border bg-bg flex aspect-[3/4] max-w-sm items-center justify-center rounded-xl border">
         <div className="text-text-muted text-center">
-          <svg
-            className="mx-auto mb-2 h-12 w-12"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            />
-          </svg>
+          <FileText className="mx-auto mb-2 h-12 w-12" strokeWidth={1.5} />
           <p className="text-sm">{t("noPreview")}</p>
         </div>
       </div>
@@ -213,19 +190,7 @@ export function PreviewGallery({
                 />
                 {/* Zoom hint overlay */}
                 <div className="absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition-opacity hover:bg-black/20 hover:opacity-100">
-                  <svg
-                    className="h-10 w-10 text-white drop-shadow-lg"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
-                    />
-                  </svg>
+                  <ZoomIn className="h-10 w-10 text-white drop-shadow-lg" />
                 </div>
               </>
             )}
@@ -272,19 +237,7 @@ export function PreviewGallery({
                     />
                     {isThumbLocked && (
                       <div className="absolute inset-x-0 bottom-0 flex items-center justify-center bg-gradient-to-t from-black/40 to-transparent pt-3 pb-1">
-                        <svg
-                          className="h-3 w-3 text-white/80"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                          />
-                        </svg>
+                        <Lock className="h-3 w-3 text-white/80" />
                       </div>
                     )}
                     <span className="bg-bg/80 absolute right-0.5 bottom-0.5 rounded px-1 text-[10px] font-medium">
@@ -341,20 +294,7 @@ export function PreviewGallery({
                 onClick={() => setIsLightboxOpen(false)}
                 aria-label={t("closeLightbox")}
               >
-                <svg
-                  className="h-6 w-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                <X className="h-6 w-6" aria-hidden="true" />
               </button>
 
               {/* Navigation arrows */}
@@ -367,20 +307,7 @@ export function PreviewGallery({
                   }}
                   aria-label={t("previousPage")}
                 >
-                  <svg
-                    className="h-6 w-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 19l-7-7 7-7"
-                    />
-                  </svg>
+                  <ChevronLeft className="h-6 w-6" aria-hidden="true" />
                 </button>
               )}
 
@@ -393,20 +320,7 @@ export function PreviewGallery({
                   }}
                   aria-label={t("nextPage")}
                 >
-                  <svg
-                    className="h-6 w-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
+                  <ChevronRight className="h-6 w-6" aria-hidden="true" />
                 </button>
               )}
 
@@ -426,19 +340,7 @@ export function PreviewGallery({
                     {/* Subtle bottom overlay in lightbox */}
                     <div className="absolute inset-x-0 bottom-0 flex flex-col items-center rounded-b-lg bg-gradient-to-t from-black/60 via-black/20 to-transparent px-4 pt-16 pb-4">
                       <div className="mb-2 flex items-center gap-1.5">
-                        <svg
-                          className="h-4 w-4 text-white/90"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                          />
-                        </svg>
+                        <Lock className="h-4 w-4 text-white/90" />
                         <p className="text-center text-sm font-medium text-white/90 drop-shadow-md">
                           {t("previewOverlay.description")}
                         </p>

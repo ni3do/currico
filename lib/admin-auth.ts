@@ -26,11 +26,16 @@ export async function requireAdmin() {
 }
 
 /**
- * Returns an unauthorized response for admin endpoints.
+ * Returns a 403 Forbidden response for admin endpoints.
+ * @deprecated Use `forbiddenResponse()` instead — renamed for clarity (returns 403, not 401).
  */
 export function unauthorizedResponse() {
-  return NextResponse.json(
-    { error: "Zugriff verweigert" },
-    { status: 403 }
-  );
+  return forbiddenResponse();
+}
+
+/**
+ * Returns a 403 Forbidden response for admin endpoints.
+ */
+export function forbiddenResponse() {
+  return NextResponse.json({ error: "Zugriff verweigert", code: "FORBIDDEN" }, { status: 403 });
 }

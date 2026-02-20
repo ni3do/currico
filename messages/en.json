@@ -65,6 +65,21 @@
     "skipToContent": "Skip to content",
     "scrollToTop": "Scroll to top",
     "toggleNavigation": "Toggle navigation",
+    "multiSelect": {
+      "placeholder": "Select...",
+      "search": "Search...",
+      "noResults": "No options found"
+    },
+    "wishlistAdd": "Add to wishlist",
+    "wishlistRemove": "Remove from wishlist",
+    "toggle": "Toggle",
+    "card": {
+      "wishlistAdd": "Add to wishlist",
+      "wishlistRemove": "Remove from wishlist",
+      "anonymous": "Anonymous",
+      "noReviews": "No reviews yet",
+      "downloads": "{count} downloads"
+    },
     "brand": {
       "logoText": "C",
       "name": "Currico",
@@ -657,7 +672,10 @@
       "tagSectionLabel": "Tags",
       "tagFilterPlaceholder": "Search tags...",
       "sonstigeLabel": "Other",
-      "sonstigeDescription": "Without LP21 alignment"
+      "sonstigeDescription": "Without LP21 alignment",
+      "verifiedSellerLabel": "Verified Sellers",
+      "verifiedSellerToggle": "Verified sellers only",
+      "verifiedSellerChip": "Verified"
     },
     "search": {
       "placeholder": "Search by title, topic, keyword...",
@@ -763,6 +781,7 @@
       "countLabelProfiles": "Profiles found",
       "showResults": "Show {count} results",
       "sortLabel": "Sort by:",
+      "sortRecommended": "Recommended",
       "gridView": "Grid view",
       "listView": "List view",
       "sortOptions": {
@@ -782,7 +801,9 @@
     "card": {
       "wishlistAdd": "Add to wishlist",
       "wishlistRemove": "Remove from wishlist",
-      "anonymous": "Anonymous"
+      "anonymous": "Anonymous",
+      "noReviews": "No reviews yet",
+      "downloads": "{count} downloads"
     },
     "sellerCta": {
       "title": "Have Materials to Share?",
@@ -1945,7 +1966,12 @@
     "statusPendingVerification": "Your verification is being processed",
     "statusActive": "Your Stripe account is active",
     "statusRestricted": "Please complete your Stripe verification",
-    "retryStripe": "Retry Stripe Connection"
+    "retryStripe": "Retry Stripe Connection",
+    "displayNameNudge": {
+      "title": "Professional display name recommended",
+      "description": "Your current name looks like a username. Sellers with real names receive more trust and sales.",
+      "cta": "Change name in settings"
+    }
   },
   "stripeConnectStatus": {
     "error": {
@@ -3548,6 +3574,8 @@
       "uploadFirst": "Upload material",
       "duplicateSuccess": "Material duplicated! Edit the copy as needed.",
       "duplicateError": "Failed to duplicate. Please try again.",
+      "errorLoading": "Failed to load uploads",
+      "retry": "Retry",
       "draft": {
         "title": "Continue draft",
         "savedAt": "Saved {time}",
@@ -3781,7 +3809,8 @@
       "avatarRemoved": "Profile picture removed successfully!",
       "avatarRemoveError": "Failed to remove. Please try again.",
       "avatarRemoveErrorGeneric": "Failed to remove",
-      "defaultUser": "User"
+      "defaultUser": "User",
+      "displayNameNudge": "Tip: A real name like 'Maria S.' looks more professional and builds trust with buyers."
     },
     "overview": {
       "earnings": "Earnings",
@@ -3822,7 +3851,9 @@
       "sortLabel": "Sort by",
       "sortNewest": "Newest first",
       "sortDownloads": "Most downloads",
-      "sortEarnings": "Highest earnings"
+      "sortEarnings": "Highest earnings",
+      "fetchError": "Failed to load data. Please try again.",
+      "retry": "Retry"
     },
     "profile": {
       "completeProfile": "Complete your profile",

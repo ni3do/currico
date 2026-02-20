@@ -35,7 +35,8 @@ export function useFilterHandlers({
     filters.maxPrice !== null ||
     filters.formats.length > 0 ||
     filters.cantons.length > 0 ||
-    filters.tags.length > 0;
+    filters.tags.length > 0 ||
+    filters.verifiedOnly;
 
   // Handlers for exclusive tab selection (only one active at a time)
   const handleToggleMaterials = useCallback(() => {
@@ -59,6 +60,7 @@ export function useFilterHandlers({
       formats: [],
       cantons: [],
       tags: [],
+      verifiedOnly: false,
     });
   }, [filters, onFiltersChange]);
 
@@ -238,6 +240,7 @@ export function useFilterHandlers({
       formats: [],
       cantons: [],
       tags: [],
+      verifiedOnly: false,
     });
     setExpandedFachbereiche(new Set());
     setExpandedKompetenzbereiche(new Set());

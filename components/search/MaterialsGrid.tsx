@@ -59,6 +59,7 @@ export function MaterialsGrid({
             variant={viewMode === "list" ? "compact" : "default"}
             averageRating={material.averageRating}
             reviewCount={material.reviewCount}
+            downloadCount={material.downloadCount}
             competencies={material.competencies}
             tags={material.tags}
             wishlistAddLabel={labels.wishlistAdd}

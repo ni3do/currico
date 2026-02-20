@@ -283,7 +283,7 @@ export default function AdminUsersPage() {
                               setSelectedUser(user);
                               setShowDeleteConfirm(true);
                             }}
-                            className="rounded-lg bg-[var(--badge-error-bg)] px-3 py-1.5 text-xs font-medium text-[var(--badge-error-text)] transition-opacity hover:opacity-80"
+                            className="bg-error/20 text-error rounded-lg px-3 py-1.5 text-xs font-medium transition-opacity hover:opacity-80"
                           >
                             {t("delete")}
                           </button>
@@ -405,7 +405,7 @@ export default function AdminUsersPage() {
                             disabled={actionLoading}
                             className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors disabled:opacity-60 ${
                               selectedUser.is_verified_seller
-                                ? "bg-[var(--badge-error-bg)] text-[var(--badge-error-text)] hover:opacity-80"
+                                ? "bg-error/20 text-error hover:opacity-80"
                                 : "bg-success/20 text-success hover:bg-success/30"
                             }`}
                           >
@@ -447,9 +447,9 @@ export default function AdminUsersPage() {
           >
             <div className="modal-content modal-sm mx-4">
               <div className="mb-4 flex items-center gap-3">
-                <div className="rounded-full bg-[var(--badge-error-bg)] p-2">
+                <div className="bg-error/20 rounded-full p-2">
                   <svg
-                    className="h-6 w-6 text-[var(--badge-error-text)]"
+                    className="text-error h-6 w-6"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"

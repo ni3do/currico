@@ -11,6 +11,7 @@ export interface LP21FilterState {
   formats: string[];
   cantons: string[];
   tags: string[];
+  verifiedOnly: boolean;
 }
 
 export interface MaterialCompetency {
@@ -30,6 +31,7 @@ export interface MaterialListItem {
   createdAt: string;
   averageRating?: number;
   reviewCount?: number;
+  downloadCount?: number;
   tags?: string[];
   competencies?: MaterialCompetency[];
   seller: {
