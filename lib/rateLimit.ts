@@ -32,13 +32,13 @@ export const rateLimitConfigs: Record<string, RateLimitConfig> = {
   "auth:reset-password": { limit: 5, windowMs: 15 * 60 * 1000 }, // 5 per 15 min
   "auth:change-password": { limit: 5, windowMs: 15 * 60 * 1000 }, // 5 per 15 min
   "contact:submit": { limit: 5, windowMs: 15 * 60 * 1000 }, // 5 per 15 min
-  "resources:list": { limit: 60, windowMs: 60 * 1000 }, // 60 per minute
-  "resources:create": { limit: 10, windowMs: 60 * 1000 }, // 10 per minute
-  "user:profile": { limit: 10, windowMs: 60 * 1000 }, // 10 per minute
+  "materials:list": { limit: 60, windowMs: 60 * 1000 }, // 60 per minute
+  "materials:create": { limit: 10, windowMs: 60 * 1000 }, // 10 per minute
   // Social interaction rate limits (prevent spam)
-  "resources:like": { limit: 30, windowMs: 60 * 1000 }, // 30 per minute
-  "resources:review": { limit: 5, windowMs: 60 * 1000 }, // 5 per minute
-  "resources:comment": { limit: 10, windowMs: 60 * 1000 }, // 10 per minute
+  "resources:like": { limit: 30, windowMs: 60 * 1000 }, // 30 per minute (comments/like)
+  "materials:like": { limit: 30, windowMs: 60 * 1000 }, // 30 per minute (materials/like)
+  "materials:review": { limit: 5, windowMs: 60 * 1000 }, // 5 per minute
+  "materials:comment": { limit: 10, windowMs: 60 * 1000 }, // 10 per minute
   "resources:reply": { limit: 10, windowMs: 60 * 1000 }, // 10 per minute
   "users:follow": { limit: 20, windowMs: 60 * 1000 }, // 20 per minute
   "resources:duplicate": { limit: 10, windowMs: 60 * 1000 }, // 10 per minute

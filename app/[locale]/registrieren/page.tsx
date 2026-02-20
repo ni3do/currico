@@ -28,6 +28,7 @@ export default function RegisterPage() {
     password: "",
     confirmPassword: "",
     agreeToTerms: false,
+    website: "", // honeypot field — hidden from real users, filled by bots
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -72,6 +73,7 @@ export default function RegisterPage() {
             name: formData.name,
             email: formData.email,
             password: formData.password,
+            website: formData.website,
           }),
         });
 
@@ -216,6 +218,20 @@ export default function RegisterPage() {
                   required
                   className="border-border bg-surface text-text placeholder:text-text-muted focus:border-primary focus:ring-primary/20 w-full rounded-lg border px-4 py-3.5 transition-all focus:ring-[3px] focus:outline-none"
                   placeholder={t("form.namePlaceholder")}
+                />
+              </div>
+
+              {/* Honeypot — invisible to real users, catches bots */}
+              <div className="absolute left-[-9999px]" aria-hidden="true">
+                <label htmlFor="website">Website</label>
+                <input
+                  type="text"
+                  id="website"
+                  name="website"
+                  value={formData.website}
+                  onChange={(e) => handleInputChange("website", e.target.value)}
+                  tabIndex={-1}
+                  autoComplete="off"
                 />
               </div>
 

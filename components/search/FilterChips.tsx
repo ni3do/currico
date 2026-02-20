@@ -30,7 +30,7 @@ function DismissButton({
       onClick={onClick}
       className={`flex h-5 w-5 items-center justify-center rounded-full transition-colors ${className}`}
     >
-      <X className="h-3 w-3" />
+      <X className="h-3 w-3" aria-hidden="true" />
     </button>
   );
 }

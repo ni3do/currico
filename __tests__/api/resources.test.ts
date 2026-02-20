@@ -268,16 +268,14 @@ describe("GET /api/materials", () => {
       await GET(request);
     }
 
-    // 61st request - rate limit key "materials:list" is not configured
-    // in rateLimitConfigs (config has "resources:list"), so rate limiting
-    // does not trigger and request succeeds
+    // 61st request should be rate limited (429)
     const request = createMockRequest("/api/materials", {
       headers: { "x-forwarded-for": "10.0.0.1" },
     });
 
     const response = await GET(request);
 
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(429);
   });
 
   it("returns 500 on database error", async () => {

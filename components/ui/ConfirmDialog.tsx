@@ -61,7 +61,7 @@ export function ConfirmDialog({
             >
               {variant === "danger" && (
                 <div className="bg-error/10 mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full">
-                  <AlertTriangle className="text-error h-6 w-6" />
+                  <AlertTriangle className="text-error h-6 w-6" aria-hidden="true" />
                 </div>
               )}
               <h3 id="confirm-dialog-title" className="text-text text-center text-lg font-semibold">

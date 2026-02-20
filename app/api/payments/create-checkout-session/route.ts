@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { getStripeClient, calculateApplicationFee } from "@/lib/stripe";
 import { notFound, badRequest, unauthorized, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 
 // Input validation schema
 const createCheckoutSessionSchema = z.object({
@@ -245,7 +246,7 @@ export async function POST(request: NextRequest) {
       sessionId: checkoutSession.id,
     });
   } catch (error) {
-    console.error("Error creating checkout session:", error);
+    captureError("Error creating checkout session:", error);
 
     // Handle specific Stripe errors
     if (error instanceof Error && error.message.includes("Stripe")) {

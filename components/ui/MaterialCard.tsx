@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { Heart, FileText, ChevronRight } from "lucide-react";
@@ -58,7 +58,7 @@ export interface MaterialCardProps {
   tags?: string[];
 }
 
-export function MaterialCard({
+export const MaterialCard = memo(function MaterialCard({
   id,
   title,
   description,
@@ -141,6 +141,7 @@ export function MaterialCard({
             <FileText
               className={`text-text-faint ${isCompact ? "h-10 w-10" : "h-12 w-12"}`}
               strokeWidth={1.5}
+              aria-hidden="true"
             />
           </div>
         )}
@@ -326,4 +327,4 @@ export function MaterialCard({
       </article>
     </TiltCard>
   );
-}
+});

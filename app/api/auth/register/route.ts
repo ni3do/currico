@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { checkRateLimit, getClientIP } from "@/lib/rateLimit";
 import { badRequest, rateLimited, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 
 const registrationSchema = z.object({
   name: z
@@ -34,6 +35,14 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
+
+    // Honeypot check — bots fill in the hidden "website" field, real users don't
+    if (body.website) {
+      return NextResponse.json(
+        { message: "Benutzer erfolgreich erstellt", user: { id: "ok", name: "", email: "" } },
+        { status: 201 }
+      );
+    }
 
     // Validate input with schema
     const parsed = registrationSchema.safeParse(body);
@@ -127,7 +136,7 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("Registration error:", error);
+    captureError("Registration error:", error);
     return serverError("Ein Fehler ist aufgetreten");
   }
 }

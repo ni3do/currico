@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import {
@@ -35,7 +35,7 @@ export interface ProfileCardProps {
   showFollowButton?: boolean;
 }
 
-export function ProfileCard({
+export const ProfileCard = memo(function ProfileCard({
   id,
   name,
   image,
@@ -111,7 +111,7 @@ export function ProfileCard({
                 </h3>
                 {isVerified && (
                   <span className="text-success inline-flex items-center gap-1 text-xs">
-                    <CheckCircle className="h-3.5 w-3.5" />
+                    <CheckCircle className="h-3.5 w-3.5" aria-hidden="true" />
                     {t("verified")}
                   </span>
                 )}
@@ -129,11 +129,11 @@ export function ProfileCard({
                   aria-label={isFollowing ? t("unfollow") : t("follow")}
                 >
                   {followLoading ? (
-                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
                   ) : isFollowing ? (
-                    <UserCheck className="h-3.5 w-3.5" />
+                    <UserCheck className="h-3.5 w-3.5" aria-hidden="true" />
                   ) : (
-                    <UserPlus className="h-3.5 w-3.5" />
+                    <UserPlus className="h-3.5 w-3.5" aria-hidden="true" />
                   )}
                   {isFollowing ? t("following") : t("follow")}
                 </button>
@@ -164,19 +164,22 @@ export function ProfileCard({
             <div className="border-border-subtle flex items-center justify-between border-t pt-3">
               <div className="text-text-muted flex items-center gap-4 text-sm">
                 <span className="flex items-center gap-1.5 transition-colors duration-300">
-                  <FileText className="h-4 w-4" />
+                  <FileText className="h-4 w-4" aria-hidden="true" />
                   <span className="font-medium">{resourceCount}</span>
                 </span>
                 <span className="flex items-center gap-1.5 transition-colors duration-300">
-                  <Users className="h-4 w-4" />
+                  <Users className="h-4 w-4" aria-hidden="true" />
                   <span className="font-medium">{displayedFollowerCount}</span>
                 </span>
               </div>
-              <ChevronRight className="text-text-muted group-hover:text-primary h-5 w-5 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-1.5" />
+              <ChevronRight
+                className="text-text-muted group-hover:text-primary h-5 w-5 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-1.5"
+                aria-hidden="true"
+              />
             </div>
           </div>
         </Link>
       </article>
     </TiltCard>
   );
-}
+});

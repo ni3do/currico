@@ -84,7 +84,7 @@ export function ResultsControlBar({
               aria-label={labels.gridView}
               title={labels.gridView}
             >
-              <LayoutGrid className="h-4 w-4" />
+              <LayoutGrid className="h-4 w-4" aria-hidden="true" />
             </button>
             <button
               onClick={() => onViewModeChange("list")}
@@ -96,7 +96,7 @@ export function ResultsControlBar({
               aria-label={labels.listView}
               title={labels.listView}
             >
-              <List className="h-4 w-4" />
+              <List className="h-4 w-4" aria-hidden="true" />
             </button>
           </div>
         )}

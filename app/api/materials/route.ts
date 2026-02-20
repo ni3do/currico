@@ -25,6 +25,7 @@ import { sanitizeFileName } from "@/lib/validations/filename";
 import { sanitizeSearchQuery, isLP21Code } from "@/lib/search-utils";
 import { notifyNewMaterial } from "@/lib/notifications";
 import { checkAndUpdateVerification } from "@/lib/utils/verified-seller";
+import { captureError } from "@/lib/api-error";
 
 /** Word-level trigram similarity thresholds for fuzzy search */
 const TITLE_WORD_SIMILARITY_THRESHOLD = 0.4;
@@ -640,7 +641,7 @@ export async function GET(request: NextRequest) {
       }
     );
   } catch (error) {
-    console.error("Error fetching materials:", error);
+    captureError("Error fetching materials:", error);
     return serverError();
   }
 }
@@ -938,7 +939,7 @@ export async function POST(request: NextRequest) {
       } catch (previewError) {
         // Preview generation failed, but we continue without a preview
         // This can happen due to missing native dependencies (canvas, pdf-to-img) in some environments
-        console.error("Auto-preview generation failed:", previewError);
+        captureError("Auto-preview generation failed:", previewError);
       }
     }
 
@@ -989,7 +990,7 @@ export async function POST(request: NextRequest) {
 
     // Check if seller now qualifies for verified status (fire-and-forget)
     checkAndUpdateVerification(userId).catch((err) =>
-      console.error("Verification check failed after publish:", err)
+      captureError("Verification check failed after publish:", err)
     );
 
     return NextResponse.json(
@@ -1016,7 +1017,7 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("Error creating material:", error);
+    captureError("Error creating material:", error);
     return serverError();
   }
 }

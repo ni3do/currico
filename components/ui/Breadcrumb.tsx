@@ -33,7 +33,12 @@ export function Breadcrumb({ items, showHome = true, className = "" }: Breadcrum
 
         return (
           <span key={index} className="flex items-center gap-1.5">
-            {index > 0 && <ChevronRight className="text-text-faint h-3.5 w-3.5 flex-shrink-0" />}
+            {index > 0 && (
+              <ChevronRight
+                className="text-text-faint h-3.5 w-3.5 flex-shrink-0"
+                aria-hidden="true"
+              />
+            )}
             {isLast ? (
               <span className="text-text-secondary font-medium">{item.label}</span>
             ) : item.href ? (
@@ -41,7 +46,7 @@ export function Breadcrumb({ items, showHome = true, className = "" }: Breadcrum
                 href={item.href}
                 className="hover:text-primary flex items-center gap-1 transition-colors"
               >
-                {isHome && <Home className="h-3.5 w-3.5" />}
+                {isHome && <Home className="h-3.5 w-3.5" aria-hidden="true" />}
                 <span>{item.label}</span>
               </Link>
             ) : (

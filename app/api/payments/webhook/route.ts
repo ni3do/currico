@@ -7,6 +7,7 @@ import { notifySale, checkDownloadMilestone } from "@/lib/notifications";
 import { checkAndUpdateVerification } from "@/lib/utils/verified-seller";
 import { DOWNLOAD_LINK_EXPIRY_DAYS, DOWNLOAD_LINK_MAX_DOWNLOADS } from "@/lib/constants";
 import Stripe from "stripe";
+import { captureError } from "@/lib/api-error";
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -27,7 +28,10 @@ export async function POST(request: NextRequest) {
   if (isDev) console.log("[PAYMENT WEBHOOK] Payload:", payload.length, "Signature:", !!signature);
 
   if (!signature) {
-    console.error("[PAYMENT WEBHOOK] ERROR: Missing stripe-signature header");
+    captureError(
+      "[PAYMENT WEBHOOK] ERROR: Missing stripe-signature header",
+      new Error("Missing stripe-signature header")
+    );
     return NextResponse.json({ error: "Missing stripe-signature header" }, { status: 400 });
   }
 
@@ -36,7 +40,7 @@ export async function POST(request: NextRequest) {
     event = constructWebhookEvent(payload, signature);
     if (isDev) console.log("[PAYMENT WEBHOOK] Verified:", event.type, event.id);
   } catch (error) {
-    console.error("[PAYMENT WEBHOOK] ERROR: Signature verification failed:", error);
+    captureError("[PAYMENT WEBHOOK] Signature verification failed:", error);
     return NextResponse.json({ error: "Webhook signature verification failed" }, { status: 400 });
   }
 
@@ -65,7 +69,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ received: true });
   } catch (error) {
-    console.error(`Webhook: Error handling ${event.type}:`, error);
+    captureError(`Webhook: Error handling ${event.type}:`, error);
     return NextResponse.json({ error: "Webhook handler failed" }, { status: 500 });
   }
 }
@@ -276,8 +280,9 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session):
       if (isDev) console.log(`Webhook: Sent purchase confirmation to ${buyerEmail}`);
     } else {
       // Log as critical error for visibility - transaction completed but buyer won't receive email
-      console.error(
-        `CRITICAL: Email failed for completed transaction ${transaction.id} to ${buyerEmail}: ${emailResult.error}`
+      captureError(
+        `CRITICAL: Email failed for completed transaction ${transaction.id} to ${buyerEmail}`,
+        new Error(emailResult.error || "Email send failed")
       );
     }
   } else {
@@ -289,12 +294,12 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session):
 
   // Check if seller now qualifies for verified status (fire-and-forget)
   checkAndUpdateVerification(transaction.resource.seller_id).catch((err) =>
-    console.error("Verification check failed after purchase:", err)
+    captureError("Verification check failed after purchase:", err)
   );
 
   // Check for download milestones (fire-and-forget)
   checkDownloadMilestone(transaction.resource_id).catch((err) =>
-    console.error("Milestone check failed after purchase:", err)
+    captureError("Milestone check failed after purchase:", err)
   );
 
   if (isDev) {
