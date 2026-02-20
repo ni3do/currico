@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { ChevronDown } from "lucide-react";
@@ -51,20 +51,25 @@ const SellerHeroSection = dynamic(
   () => import("@/components/ui/SellerHeroSection").then((m) => ({ default: m.SellerHeroSection })),
   { ssr: false, loading: SectionSkeleton }
 );
+import { SearchAutocomplete } from "@/components/search/SearchAutocomplete";
 import { getSubjectPillClass } from "@/lib/constants/subject-colors";
+import { PlatformStatsBar, type PlatformStats } from "@/components/ui/PlatformStatsBar";
 import type { FeaturedMaterial } from "@/lib/types/material";
 
 interface HomeClientProps {
   initialMaterials: FeaturedMaterial[];
+  platformStats: PlatformStats;
 }
 
-export default function HomeClient({ initialMaterials }: HomeClientProps) {
+export default function HomeClient({ initialMaterials, platformStats }: HomeClientProps) {
   const t = useTranslations("homePage");
   const tCommon = useTranslations("common");
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCycle, setSelectedCycle] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
+  const [searchFocused, setSearchFocused] = useState(false);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
   const { zyklen, getFachbereicheByZyklus, fachbereiche } = useCurriculum();
 
   // Parallax scroll for hero section
@@ -92,6 +97,17 @@ export default function HomeClient({ initialMaterials }: HomeClientProps) {
     const qs = params.toString();
     router.push(qs ? `/materialien?${qs}` : "/materialien");
   };
+
+  // Close autocomplete when clicking outside the search container
+  const handleSearchBlur = useCallback((e: React.FocusEvent) => {
+    // Only close if focus moved outside the search container
+    if (
+      searchContainerRef.current &&
+      !searchContainerRef.current.contains(e.relatedTarget as Node)
+    ) {
+      setSearchFocused(false);
+    }
+  }, []);
 
   const handleCycleChange = (value: string) => {
     setSelectedCycle(value);
@@ -170,50 +186,67 @@ export default function HomeClient({ initialMaterials }: HomeClientProps) {
                     className="mt-10 w-full max-w-[600px]"
                     aria-label={t("hero.search.formLabel")}
                   >
-                    {/* Search bar */}
-                    <motion.div
-                      className="bg-surface border-border-subtle relative flex items-center rounded-full border shadow-lg"
-                      whileHover={{
-                        scale: 1.015,
-                        transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] },
-                      }}
-                    >
-                      <input
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder={t("hero.search.placeholder")}
-                        className="text-text placeholder-text-muted focus:ring-primary w-full rounded-full bg-transparent py-4 pr-32 pl-6 text-base focus:ring-2 focus:ring-offset-2 focus:outline-none"
-                      />
-                      <motion.button
-                        type="submit"
-                        className="bg-primary hover:bg-primary-hover focus:ring-primary text-text-on-accent absolute right-2 flex items-center gap-2 rounded-full px-6 py-2.5 font-semibold transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none"
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
+                    {/* Search bar with autocomplete */}
+                    <div ref={searchContainerRef} className="relative" onBlur={handleSearchBlur}>
+                      <motion.div
+                        className="bg-surface border-border-subtle relative flex items-center rounded-full border shadow-lg"
+                        whileHover={{
+                          scale: 1.015,
+                          transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] },
+                        }}
                       >
-                        <svg
-                          className="h-5 w-5"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
+                        <input
+                          type="text"
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          onFocus={() => setSearchFocused(true)}
+                          placeholder={t("hero.search.placeholder")}
+                          className="text-text placeholder-text-muted focus:ring-primary w-full rounded-full bg-transparent py-4 pr-32 pl-6 text-base focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                          role="combobox"
+                          aria-expanded={searchFocused && searchQuery.length >= 2}
+                          aria-autocomplete="list"
+                          aria-controls="hero-autocomplete"
+                        />
+                        <motion.button
+                          type="submit"
+                          className="bg-primary hover:bg-primary-hover focus:ring-primary text-text-on-accent absolute right-2 flex items-center gap-2 rounded-full px-6 py-2.5 font-semibold transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                          />
-                        </svg>
-                        <span className="hidden sm:inline">{t("hero.search.button")}</span>
-                        <span className="sr-only sm:hidden">{t("hero.search.button")}</span>
-                      </motion.button>
-                    </motion.div>
+                          <svg
+                            className="h-5 w-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                            />
+                          </svg>
+                          <span className="hidden sm:inline">{t("hero.search.button")}</span>
+                          <span className="sr-only sm:hidden">{t("hero.search.button")}</span>
+                        </motion.button>
+                      </motion.div>
 
-                    {/* Cycle + Subject dropdowns */}
+                      <SearchAutocomplete
+                        query={searchQuery}
+                        isOpen={searchFocused}
+                        onSelect={() => setSearchFocused(false)}
+                      />
+                    </div>
+
+                    {/* Cycle + Subject dropdowns + Seller CTA */}
                     <div className="mt-4 flex flex-col gap-3 sm:flex-row">
                       {/* Cycle dropdown */}
                       <div className="relative flex-1">
+                        <label htmlFor="hero-cycle-select" className="sr-only">
+                          {t("hero.search.cycleLabel")}
+                        </label>
                         <select
+                          id="hero-cycle-select"
                           value={selectedCycle}
                           onChange={(e) => handleCycleChange(e.target.value)}
                           className="bg-surface/80 text-text-secondary focus:bg-surface focus:ring-primary w-full appearance-none rounded-full border-0 py-3 pr-10 pl-4 text-sm font-medium shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:ring-2 focus:outline-none"
@@ -230,7 +263,11 @@ export default function HomeClient({ initialMaterials }: HomeClientProps) {
 
                       {/* Subject dropdown */}
                       <div className="relative flex-1">
+                        <label htmlFor="hero-subject-select" className="sr-only">
+                          {t("hero.search.subjectLabel")}
+                        </label>
                         <select
+                          id="hero-subject-select"
                           value={selectedSubject}
                           onChange={(e) => handleSubjectChange(e.target.value)}
                           className="bg-surface/80 text-text-secondary focus:bg-surface focus:ring-primary w-full appearance-none rounded-full border-0 py-3 pr-10 pl-4 text-sm font-medium shadow-md backdrop-blur-sm transition-shadow hover:shadow-lg focus:ring-2 focus:outline-none"
@@ -246,6 +283,19 @@ export default function HomeClient({ initialMaterials }: HomeClientProps) {
                       </div>
                     </div>
                   </form>
+                </FadeIn>
+
+                {/* Seller CTA - prominent link below search */}
+                <FadeIn direction="up" delay={0.3}>
+                  <p className="text-text-muted mt-5 text-sm">
+                    {t("hero.sellerCta")}{" "}
+                    <Link
+                      href="/verkaeufer-werden"
+                      className="text-primary font-medium hover:underline"
+                    >
+                      {tCommon("footer.links.becomeSeller")} →
+                    </Link>
+                  </p>
                 </FadeIn>
               </div>
 
@@ -281,6 +331,9 @@ export default function HomeClient({ initialMaterials }: HomeClientProps) {
         {/* Trust Bar - Social Proof & Authority */}
         <TrustBar />
 
+        {/* Platform Stats - Social Proof Counters */}
+        <PlatformStatsBar {...platformStats} />
+
         {/* Swiss Brand - Quality & Trust */}
         <SwissBrandSection />
 
@@ -302,7 +355,7 @@ export default function HomeClient({ initialMaterials }: HomeClientProps) {
                   href="/materialien"
                   className="text-primary hidden items-center text-sm font-medium hover:underline sm:flex"
                 >
-                  {tCommon("buttons.viewAll")}
+                  {t("featuredResources.viewAllLink")}
                   <svg
                     className="ml-1 h-4 w-4"
                     fill="none"

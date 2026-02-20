@@ -66,7 +66,7 @@ export function TrustBar() {
   const t = useTranslations("homePage.trustBar");
 
   return (
-    <section className="bg-surface border-border-subtle border-y py-4">
+    <section className="bg-surface border-border-subtle border-y py-6">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <FadeIn direction="up">
           <StaggerChildren
