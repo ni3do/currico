@@ -140,13 +140,13 @@ export default function Footer() {
                   href={`mailto:${t("footer.contact.email")}`}
                   className="text-text-muted hover:text-primary inline-flex items-center gap-2 text-sm transition-colors"
                 >
-                  <Mail className="h-4 w-4 flex-shrink-0" />
+                  <Mail className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
                   {t("footer.contact.email")}
                 </a>
               </li>
               <li>
                 <span className="text-text-muted inline-flex items-center gap-2 text-sm">
-                  <MapPin className="h-4 w-4 flex-shrink-0" />
+                  <MapPin className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
                   {t("footer.contact.location")}
                 </span>
               </li>

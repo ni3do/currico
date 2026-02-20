@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, memo } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
@@ -30,7 +30,7 @@ interface ReviewCardProps {
   className?: string;
 }
 
-export function ReviewCard({
+export const ReviewCard = memo(function ReviewCard({
   review,
   materialId,
   onEdit,
@@ -183,7 +183,7 @@ export function ReviewCard({
           <StarRating rating={review.rating} size="lg" />
           {review.isVerifiedPurchase && (
             <span className="pill pill-success flex items-center gap-1 text-xs">
-              <BadgeCheck className="h-3 w-3" />
+              <BadgeCheck className="h-3 w-3" aria-hidden="true" />
               {t("verifiedPurchase")}
             </span>
           )}
@@ -239,7 +239,7 @@ export function ReviewCard({
                 className="text-text-muted hover:text-text hover:bg-surface rounded-lg p-1.5 transition-colors"
                 aria-label={t("options")}
               >
-                <MoreVertical className="h-4 w-4" />
+                <MoreVertical className="h-4 w-4" aria-hidden="true" />
               </button>
               <AnimatePresence>
                 {showMenu && (
@@ -258,7 +258,7 @@ export function ReviewCard({
                         }}
                         className="text-text hover:bg-surface flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm"
                       >
-                        <Pencil className="h-4 w-4" />
+                        <Pencil className="h-4 w-4" aria-hidden="true" />
                         {t("edit")}
                       </button>
                       <div className="border-border mx-2 border-t" />
@@ -270,7 +270,7 @@ export function ReviewCard({
                         disabled={deleting}
                         className="text-error hover:bg-error/10 flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm disabled:opacity-60"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="h-4 w-4" aria-hidden="true" />
                         {deleting ? t("deleting") : t("delete")}
                       </button>
                     </motion.div>
@@ -290,12 +290,13 @@ export function ReviewCard({
                 onClick={() => setShowReplies(!showReplies)}
                 className="text-text-muted hover:text-text flex items-center gap-1 text-sm transition-colors"
               >
-                <MessageCircle className="h-3.5 w-3.5" />
+                <MessageCircle className="h-3.5 w-3.5" aria-hidden="true" />
                 <span>
                   {showReplies ? t("hideReplies") : t("showReplies", { count: replies.length })}
                 </span>
                 <ChevronDown
                   className={`h-3.5 w-3.5 transition-transform ${showReplies ? "rotate-180" : ""}`}
+                  aria-hidden="true"
                 />
               </button>
             )}
@@ -307,7 +308,7 @@ export function ReviewCard({
                 }}
                 className="text-primary hover:text-primary-hover flex items-center gap-1 text-sm font-medium transition-colors"
               >
-                <MessageCircle className="h-3.5 w-3.5" />
+                <MessageCircle className="h-3.5 w-3.5" aria-hidden="true" />
                 {t("reply")}
               </button>
             )}
@@ -386,7 +387,7 @@ export function ReviewCard({
                             </span>
                             {reply.user.isSeller && (
                               <span className="pill pill-primary flex items-center gap-0.5 text-xs">
-                                <ShieldCheck className="h-3 w-3" />
+                                <ShieldCheck className="h-3 w-3" aria-hidden="true" />
                                 {t("seller")}
                               </span>
                             )}
@@ -409,7 +410,7 @@ export function ReviewCard({
                                 className="text-text-muted hover:text-text rounded p-1 transition-colors"
                                 aria-label={t("edit")}
                               >
-                                <Pencil className="h-3 w-3" />
+                                <Pencil className="h-3 w-3" aria-hidden="true" />
                               </button>
                               <button
                                 onClick={() => {
@@ -419,7 +420,7 @@ export function ReviewCard({
                                 className="text-text-muted hover:text-error rounded p-1 transition-colors"
                                 aria-label={t("delete")}
                               >
-                                <Trash2 className="h-3 w-3" />
+                                <Trash2 className="h-3 w-3" aria-hidden="true" />
                               </button>
                             </div>
                           )}
@@ -472,7 +473,7 @@ export function ReviewCard({
                         disabled={submittingReply || !replyContent.trim()}
                         className="btn-primary flex items-center gap-1.5 px-3 py-1.5 text-sm disabled:opacity-60"
                       >
-                        <Send className="h-3.5 w-3.5" />
+                        <Send className="h-3.5 w-3.5" aria-hidden="true" />
                         {submittingReply ? t("replySending") : t("replySubmit")}
                       </button>
                     </div>
@@ -510,6 +511,6 @@ export function ReviewCard({
       />
     </>
   );
-}
+});
 
 export default ReviewCard;

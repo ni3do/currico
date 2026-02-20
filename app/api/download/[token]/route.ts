@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { readFile } from "fs/promises";
 import path from "path";
 import { getStorage, isLegacyLocalPath, getLegacyFilePath } from "@/lib/storage";
+import { captureError } from "@/lib/api-error";
 
 /**
  * Content type map for file extensions
@@ -129,7 +130,7 @@ export async function GET(
           },
         });
       } catch {
-        console.error("Legacy file not found:", filePath);
+        captureError("Legacy file not found:", new Error(`File not found: ${filePath}`));
         return NextResponse.json(
           { error: "file_not_found", message: "Datei nicht gefunden" },
           { status: 404 }
@@ -144,7 +145,7 @@ export async function GET(
         });
         response = NextResponse.redirect(signedUrl);
       } catch (error) {
-        console.error("Failed to generate signed URL:", error);
+        captureError("Failed to generate signed URL:", error);
         return NextResponse.json(
           { error: "server_error", message: "Fehler beim Erstellen des Download-Links" },
           { status: 500 }
@@ -162,7 +163,7 @@ export async function GET(
           },
         });
       } catch {
-        console.error("File not found:", resource.file_url);
+        captureError("File not found:", new Error(`File not found: ${resource.file_url}`));
         return NextResponse.json(
           { error: "file_not_found", message: "Datei nicht gefunden" },
           { status: 404 }
@@ -178,7 +179,7 @@ export async function GET(
 
     return response;
   } catch (error) {
-    console.error("Error processing download token:", error);
+    captureError("Error processing download token:", error);
     return NextResponse.json(
       { error: "server_error", message: "Ein Fehler ist aufgetreten" },
       { status: 500 }

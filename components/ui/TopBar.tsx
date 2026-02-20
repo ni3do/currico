@@ -160,6 +160,7 @@ export default function TopBar() {
                     </span>
                     <ChevronDown
                       className={`h-4 w-4 transition-transform ${isUserMenuOpen ? "rotate-180" : ""}`}
+                      aria-hidden="true"
                     />
                   </button>
 
@@ -181,7 +182,7 @@ export default function TopBar() {
                           onClick={() => setIsUserMenuOpen(false)}
                           className="text-text hover:bg-bg flex items-center gap-2 px-4 py-2 text-sm transition-colors"
                         >
-                          <User className="h-4 w-4" />
+                          <User className="h-4 w-4" aria-hidden="true" />
                           {t("navigation.profile")}
                         </Link>
                         {isAdmin && (
@@ -191,7 +192,7 @@ export default function TopBar() {
                             onClick={() => setIsUserMenuOpen(false)}
                             className="text-text hover:bg-bg flex items-center gap-2 px-4 py-2 text-sm transition-colors"
                           >
-                            <ShieldCheck className="h-4 w-4" />
+                            <ShieldCheck className="h-4 w-4" aria-hidden="true" />
                             {t("navigation.admin")}
                           </Link>
                         )}
@@ -204,7 +205,7 @@ export default function TopBar() {
                           }}
                           className="text-error hover:bg-error/10 flex w-full items-center gap-2 px-4 py-2 text-sm transition-colors"
                         >
-                          <LogOut className="h-4 w-4" />
+                          <LogOut className="h-4 w-4" aria-hidden="true" />
                           {t("navigation.logout")}
                         </button>
                       </motion.div>
@@ -229,7 +230,11 @@ export default function TopBar() {
             className="text-text-secondary hover:text-primary p-2 lg:hidden"
             aria-label={t("toggleNavigation")}
           >
-            {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            {isMobileMenuOpen ? (
+              <X className="h-6 w-6" aria-hidden="true" />
+            ) : (
+              <Menu className="h-6 w-6" aria-hidden="true" />
+            )}
           </button>
         </div>
 
@@ -294,7 +299,7 @@ export default function TopBar() {
                         href="/konto"
                         className="text-text-secondary hover:text-primary flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors"
                       >
-                        <User className="h-5 w-5" />
+                        <User className="h-5 w-5" aria-hidden="true" />
                         {t("navigation.profile")}
                       </Link>
                       <Link
@@ -302,7 +307,7 @@ export default function TopBar() {
                         className="text-text-secondary hover:text-primary flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors"
                       >
                         <div className="relative">
-                          <Bell className="h-5 w-5" />
+                          <Bell className="h-5 w-5" aria-hidden="true" />
                           {unreadCount > 0 && (
                             <span className="bg-error text-text-on-accent absolute -top-1.5 -right-1.5 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-bold">
                               {unreadCount > 99 ? "99+" : unreadCount}
@@ -316,7 +321,7 @@ export default function TopBar() {
                           href="/admin"
                           className="text-text-secondary hover:text-primary flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors"
                         >
-                          <ShieldCheck className="h-5 w-5" />
+                          <ShieldCheck className="h-5 w-5" aria-hidden="true" />
                           {t("navigation.admin")}
                         </Link>
                       )}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, memo } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
@@ -23,7 +23,7 @@ interface CommentCardProps {
   className?: string;
 }
 
-export function CommentCard({
+export const CommentCard = memo(function CommentCard({
   comment,
   materialId,
   onReplyAdded,
@@ -153,7 +153,7 @@ export function CommentCard({
                 </Link>
                 {comment.user.isSeller && (
                   <span className="pill pill-primary flex items-center gap-1 text-xs">
-                    <BadgeCheck className="h-3 w-3" />
+                    <BadgeCheck className="h-3 w-3" aria-hidden="true" />
                     {t("seller")}
                   </span>
                 )}
@@ -170,7 +170,7 @@ export function CommentCard({
                 className="text-text-muted hover:text-text hover:bg-surface rounded-lg p-1.5 transition-colors"
                 aria-label={t("options")}
               >
-                <MoreVertical className="h-5 w-5" />
+                <MoreVertical className="h-5 w-5" aria-hidden="true" />
               </button>
               <AnimatePresence>
                 {showMenu && (
@@ -189,7 +189,7 @@ export function CommentCard({
                         }}
                         className="text-text hover:bg-surface flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm transition-colors"
                       >
-                        <Pencil className="h-4 w-4" />
+                        <Pencil className="h-4 w-4" aria-hidden="true" />
                         {t("edit")}
                       </button>
                       <div className="border-border mx-2 border-t" />
@@ -201,7 +201,7 @@ export function CommentCard({
                         disabled={deleting}
                         className="text-error hover:bg-error/10 flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm transition-colors disabled:opacity-60"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="h-4 w-4" aria-hidden="true" />
                         {deleting ? t("deleting") : t("delete")}
                       </button>
                     </motion.div>
@@ -269,7 +269,7 @@ export function CommentCard({
               onClick={() => setShowReplyForm(!showReplyForm)}
               className="text-text-muted hover:text-primary flex items-center gap-1.5 text-sm transition-colors"
             >
-              <MessageCircle className="h-4 w-4" />
+              <MessageCircle className="h-4 w-4" aria-hidden="true" />
               {t("reply")}
             </button>
           )}
@@ -282,6 +282,7 @@ export function CommentCard({
               <span>{t("replyCount", { count: localReplies.length })}</span>
               <ChevronDown
                 className={`h-4 w-4 transition-transform ${showReplies ? "rotate-180" : ""}`}
+                aria-hidden="true"
               />
             </button>
           )}
@@ -335,7 +336,7 @@ export function CommentCard({
       />
     </>
   );
-}
+});
 
 // Reply Card (simplified version of CommentCard)
 interface ReplyCardProps {
@@ -452,7 +453,7 @@ function ReplyCard({ reply, onDeleted }: ReplyCardProps) {
                 className="text-text-muted hover:text-text hover:bg-surface rounded p-1 transition-colors"
                 aria-label={t("options")}
               >
-                <MoreVertical className="h-4 w-4" />
+                <MoreVertical className="h-4 w-4" aria-hidden="true" />
               </button>
               <AnimatePresence>
                 {showMenu && (
@@ -471,7 +472,7 @@ function ReplyCard({ reply, onDeleted }: ReplyCardProps) {
                         }}
                         className="text-text hover:bg-surface flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors"
                       >
-                        <Pencil className="h-3.5 w-3.5" />
+                        <Pencil className="h-3.5 w-3.5" aria-hidden="true" />
                         {t("edit")}
                       </button>
                       <div className="border-border mx-2 border-t" />
@@ -483,7 +484,7 @@ function ReplyCard({ reply, onDeleted }: ReplyCardProps) {
                         disabled={deleting}
                         className="text-error hover:bg-error/10 flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors disabled:opacity-60"
                       >
-                        <Trash2 className="h-3.5 w-3.5" />
+                        <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                         {deleting ? t("deleting") : t("delete")}
                       </button>
                     </motion.div>

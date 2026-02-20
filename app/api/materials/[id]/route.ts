@@ -4,6 +4,7 @@ import { toStringArray } from "@/lib/json-array";
 import { getCurrentUserId } from "@/lib/auth";
 import { requireAdmin } from "@/lib/admin-auth";
 import { requireAuth, unauthorized, badRequest, notFound, forbidden, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { isValidId } from "@/lib/rateLimit";
 import { updateMaterialSchema } from "@/lib/validations/material";
 import { formatPrice } from "@/lib/utils/price";
@@ -267,7 +268,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       }
     );
   } catch (error) {
-    console.error("Error fetching material:", error);
+    captureError("Error fetching material:", error);
     return serverError("MATERIAL_FETCH_FAILED");
   }
 }
@@ -369,7 +370,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       },
     });
   } catch (error) {
-    console.error("Error updating material:", error);
+    captureError("Error updating material:", error);
     return serverError("MATERIAL_UPDATE_FAILED");
   }
 }
@@ -453,7 +454,7 @@ export async function DELETE(
       message: "MATERIAL_DELETED",
     });
   } catch (error) {
-    console.error("Error deleting material:", error);
+    captureError("Error deleting material:", error);
     return serverError("MATERIAL_DELETE_FAILED");
   }
 }

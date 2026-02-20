@@ -98,6 +98,7 @@ export function LikeButton({
           }`}
           fill={liked ? "currentColor" : "none"}
           strokeWidth={liked ? 0 : 2}
+          aria-hidden="true"
         />
       </motion.div>
       {label && <span className={`${textClasses[size]} font-medium`}>{label}</span>}

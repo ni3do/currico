@@ -113,7 +113,7 @@ export default function NotificationDropdown({
         aria-expanded={isOpen}
         aria-controls="notification-dropdown-panel"
       >
-        <Bell className="h-5 w-5" />
+        <Bell className="h-5 w-5" aria-hidden="true" />
         {unreadCount > 0 && (
           <span className="bg-error text-text-on-accent absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-bold">
             {unreadCount > 99 ? "99+" : unreadCount}
@@ -140,7 +140,7 @@ export default function NotificationDropdown({
                   onClick={markAllRead}
                   className="text-primary hover:text-primary-hover flex items-center gap-1 text-xs font-medium transition-colors"
                 >
-                  <CheckCheck className="h-3.5 w-3.5" />
+                  <CheckCheck className="h-3.5 w-3.5" aria-hidden="true" />
                   {t("markAllRead")}
                 </button>
               )}
@@ -164,7 +164,7 @@ export default function NotificationDropdown({
                 </div>
               ) : notifications.length === 0 ? (
                 <div className="px-4 py-8 text-center">
-                  <BellOff className="text-text-faint mx-auto mb-2 h-8 w-8" />
+                  <BellOff className="text-text-faint mx-auto mb-2 h-8 w-8" aria-hidden="true" />
                   <p className="text-text-muted text-sm">{t("empty")}</p>
                 </div>
               ) : (
@@ -188,7 +188,7 @@ export default function NotificationDropdown({
                         <div
                           className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full ${colorClass}`}
                         >
-                          <Icon className="h-4 w-4" />
+                          <Icon className="h-4 w-4" aria-hidden="true" />
                         </div>
                         <div className="min-w-0 flex-1">
                           <p

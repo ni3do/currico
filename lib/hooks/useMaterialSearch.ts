@@ -15,7 +15,7 @@ interface UseMaterialSearchOptions {
   searchParams: ReadonlyURLSearchParams;
   toast: (message: string, type?: "success" | "error" | "warning" | "info") => void;
 
-  t: (key: string, values?: any) => string;
+  t: (key: string, values?: Record<string, string | number | Date>) => string;
   getFachbereichByCode: (code: string) => { code: string } | undefined;
 }
 

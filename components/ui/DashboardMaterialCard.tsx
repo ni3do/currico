@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import {
@@ -76,7 +77,7 @@ export interface DashboardMaterialCardProps {
   onSelect?: (id: string) => void;
 }
 
-export function DashboardMaterialCard({
+export const DashboardMaterialCard = memo(function DashboardMaterialCard({
   id,
   title,
   subject,
@@ -159,7 +160,7 @@ export function DashboardMaterialCard({
             }`}
             aria-label={selected ? t("deselect") : t("select")}
           >
-            <Check className="h-3.5 w-3.5" />
+            <Check className="h-3.5 w-3.5" aria-hidden="true" />
           </button>
         )}
         {previewUrl ? (
@@ -172,7 +173,7 @@ export function DashboardMaterialCard({
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
-            <FileText className="text-text-faint h-8 w-8" />
+            <FileText className="text-text-faint h-8 w-8" aria-hidden="true" />
           </div>
         )}
         {fileFormat && (
@@ -205,7 +206,10 @@ export function DashboardMaterialCard({
                 className="text-text-muted hover:text-primary relative z-10 -m-0.5 p-0.5 transition-colors disabled:opacity-60"
                 title={t("duplicate")}
               >
-                <Copy className={`h-3.5 w-3.5 ${duplicating ? "animate-pulse" : ""}`} />
+                <Copy
+                  className={`h-3.5 w-3.5 ${duplicating ? "animate-pulse" : ""}`}
+                  aria-hidden="true"
+                />
               </button>
             )}
             {editHref && (
@@ -214,7 +218,7 @@ export function DashboardMaterialCard({
                 className="text-text-muted hover:text-primary relative z-10 -m-0.5 p-0.5 transition-colors"
                 title={t("edit")}
               >
-                <FileEdit className="h-3.5 w-3.5" />
+                <FileEdit className="h-3.5 w-3.5" aria-hidden="true" />
               </Link>
             )}
             {onRemove && (
@@ -223,7 +227,7 @@ export function DashboardMaterialCard({
                 className="text-text-muted hover:text-error relative z-10 -m-0.5 p-0.5 transition-colors"
                 title={t("remove")}
               >
-                <Trash2 className="h-3.5 w-3.5" />
+                <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
               </button>
             )}
           </div>
@@ -243,11 +247,11 @@ export function DashboardMaterialCard({
                 aria-label={`Status: ${badge.label}`}
               >
                 {badge.variant === "success" ? (
-                  <CircleCheck className="h-2.5 w-2.5" />
+                  <CircleCheck className="h-2.5 w-2.5" aria-hidden="true" />
                 ) : badge.variant === "warning" ? (
-                  <Clock className="h-2.5 w-2.5" />
+                  <Clock className="h-2.5 w-2.5" aria-hidden="true" />
                 ) : badge.variant === "error" ? (
-                  <XCircle className="h-2.5 w-2.5" />
+                  <XCircle className="h-2.5 w-2.5" aria-hidden="true" />
                 ) : null}
                 {badge.label}
               </span>
@@ -287,13 +291,13 @@ export function DashboardMaterialCard({
             <div className="text-text-muted mb-2 flex items-center justify-between text-[11px]">
               {stats.downloads !== undefined && (
                 <span className="flex items-center gap-1">
-                  <Download className="h-3 w-3" />
+                  <Download className="h-3 w-3" aria-hidden="true" />
                   {stats.downloads} {t("downloads")}
                 </span>
               )}
               {stats.purchases !== undefined && (
                 <span className="flex items-center gap-1">
-                  <ShoppingCart className="h-3 w-3" />
+                  <ShoppingCart className="h-3 w-3" aria-hidden="true" />
                   {stats.purchases} {t("sales")}
                 </span>
               )}
@@ -322,4 +326,4 @@ export function DashboardMaterialCard({
       </div>
     </div>
   );
-}
+});

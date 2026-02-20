@@ -98,14 +98,14 @@ function ToastItem({ toast, onDismiss }: { toast: Toast; onDismiss: (id: string)
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <Icon className="h-5 w-5 flex-shrink-0" />
+      <Icon className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
       <span className="text-text text-sm font-medium">{toast.message}</span>
       <button
         onClick={() => onDismiss(toast.id)}
         className="text-text-muted hover:text-text ml-2 flex-shrink-0 transition-colors"
         aria-label="Dismiss"
       >
-        <X className="h-4 w-4" />
+        <X className="h-4 w-4" aria-hidden="true" />
       </button>
     </motion.div>
   );

@@ -129,6 +129,8 @@ export default function CreateBundlePage() {
       updateFormData("cycles", Array.from(allCycles));
       setAutoFilledCycles(true);
     }
+    // Intentionally omitting formData.subjects/cycles from deps — including them
+    // would cause infinite loops since this effect modifies those same values.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData.selectedMaterials, materials]);
 

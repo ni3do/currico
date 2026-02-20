@@ -29,7 +29,7 @@ export function ScrollToTop() {
       aria-label={t("scrollToTop")}
       className="bg-surface border-border text-text-muted hover:text-primary hover:border-primary/40 fixed right-6 bottom-20 z-[60] flex h-10 w-10 items-center justify-center rounded-full border shadow-lg transition-all hover:shadow-xl"
     >
-      <ArrowUp className="h-5 w-5" />
+      <ArrowUp className="h-5 w-5" aria-hidden="true" />
     </button>
   );
 }

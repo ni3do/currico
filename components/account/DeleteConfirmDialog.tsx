@@ -41,7 +41,7 @@ export function DeleteConfirmDialog({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="bg-error/10 mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full">
-              <Trash2 className="text-error h-6 w-6" />
+              <Trash2 className="text-error h-6 w-6" aria-hidden="true" />
             </div>
             <h3 className="text-text text-center text-lg font-semibold">
               {type === "material" ? t("materialTitle") : t("bundleTitle")}
