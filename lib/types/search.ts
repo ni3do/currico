@@ -30,6 +30,7 @@ export interface MaterialListItem {
   createdAt: string;
   averageRating?: number;
   reviewCount?: number;
+  downloadCount?: number;
   tags?: string[];
   competencies?: MaterialCompetency[];
   seller: {

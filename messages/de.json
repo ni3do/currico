@@ -791,7 +791,8 @@
       "wishlistAdd": "Zur Wunschliste hinzufügen",
       "wishlistRemove": "Aus Wunschliste entfernen",
       "anonymous": "Anonym",
-      "noReviews": "Noch keine Bewertungen"
+      "noReviews": "Noch keine Bewertungen",
+      "downloads": "{count} Downloads"
     },
     "sellerCta": {
       "title": "Haben Sie Materialien zum Teilen?",

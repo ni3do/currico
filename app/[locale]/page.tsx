@@ -45,6 +45,12 @@ export default async function HomePage({ params }: Props) {
           reviews: {
             select: { rating: true },
           },
+          _count: {
+            select: {
+              downloads: true,
+              transactions: { where: { status: "COMPLETED" } },
+            },
+          },
           competencies: {
             select: {
               competency: {
@@ -91,6 +97,7 @@ export default async function HomePage({ params }: Props) {
         previewUrl: m.preview_url,
         averageRating,
         reviewCount,
+        downloadCount: m._count.downloads + m._count.transactions,
         competencies: (m.competencies ?? []).map((rc) => ({
           code: rc.competency.code,
           subjectColor: rc.competency.subject.color ?? undefined,

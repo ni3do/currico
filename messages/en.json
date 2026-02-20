@@ -791,7 +791,8 @@
       "wishlistAdd": "Add to wishlist",
       "wishlistRemove": "Remove from wishlist",
       "anonymous": "Anonymous",
-      "noReviews": "No reviews yet"
+      "noReviews": "No reviews yet",
+      "downloads": "{count} downloads"
     },
     "sellerCta": {
       "title": "Have Materials to Share?",

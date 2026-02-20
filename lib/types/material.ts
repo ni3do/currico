@@ -113,6 +113,7 @@ export interface FeaturedMaterial {
   previewUrl: string | null;
   averageRating?: number;
   reviewCount?: number;
+  downloadCount?: number;
   competencies?: { code: string; subjectColor?: string }[];
   seller: {
     id: string;

@@ -4,7 +4,7 @@ import { useState, useEffect, memo } from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
-import { Heart, FileText, ChevronRight } from "lucide-react";
+import { Heart, FileText, ChevronRight, Download } from "lucide-react";
 import { getSubjectTextColor } from "@/lib/constants/subject-colors";
 import { SellerBadge } from "@/components/ui/SellerBadge";
 import { StarRating } from "@/components/ui/StarRating";
@@ -53,6 +53,8 @@ export interface MaterialCardProps {
   averageRating?: number;
   /** Number of reviews */
   reviewCount?: number;
+  /** Number of times this material has been downloaded/acquired */
+  downloadCount?: number;
   /** LP21 competency codes to display as badges */
   competencies?: { code: string; subjectColor?: string }[];
   /** Tags/keywords to display as pills */
@@ -82,6 +84,7 @@ export const MaterialCard = memo(function MaterialCard({
   anonymousLabel,
   averageRating,
   reviewCount,
+  downloadCount,
   competencies,
   tags,
 }: MaterialCardProps) {
@@ -238,23 +241,60 @@ export const MaterialCard = memo(function MaterialCard({
           {title}
         </h3>
 
-        {/* Rating — fixed height for default variant */}
+        {/* Rating + Downloads — fixed height for default variant */}
         {isCompact ? (
-          reviewCount != null &&
-          reviewCount > 0 &&
-          averageRating != null && (
+          (reviewCount != null && reviewCount > 0 && averageRating != null) ||
+          (downloadCount != null && downloadCount > 0) ? (
             <div className="mt-0.5 flex items-center gap-1.5">
-              <StarRating rating={averageRating} size="sm" />
-              <span className="text-text-muted text-xs">({reviewCount})</span>
+              {reviewCount != null && reviewCount > 0 && averageRating != null && (
+                <>
+                  <StarRating rating={averageRating} size="sm" />
+                  <span className="text-text-muted text-xs">({reviewCount})</span>
+                </>
+              )}
+              {downloadCount != null && downloadCount > 0 && (
+                <>
+                  {reviewCount != null && reviewCount > 0 && (
+                    <span className="text-text-faint text-xs">·</span>
+                  )}
+                  <span
+                    className="text-text-muted flex items-center gap-0.5 text-xs"
+                    aria-label={tCommon("card.downloads", { count: downloadCount })}
+                  >
+                    <Download className="h-3 w-3" aria-hidden="true" />
+                    {downloadCount}
+                  </span>
+                </>
+              )}
             </div>
-          )
+          ) : null
         ) : (
           <div className="mb-1 flex h-5 items-center gap-1.5">
             {reviewCount != null && reviewCount > 0 && averageRating != null ? (
               <>
                 <StarRating rating={averageRating} size="sm" />
                 <span className="text-text-muted text-xs">({reviewCount})</span>
+                {downloadCount != null && downloadCount > 0 && (
+                  <>
+                    <span className="text-text-faint text-xs">·</span>
+                    <span
+                      className="text-text-muted flex items-center gap-0.5 text-xs"
+                      aria-label={tCommon("card.downloads", { count: downloadCount })}
+                    >
+                      <Download className="h-3 w-3" aria-hidden="true" />
+                      {downloadCount}
+                    </span>
+                  </>
+                )}
               </>
+            ) : downloadCount != null && downloadCount > 0 ? (
+              <span
+                className="text-text-muted flex items-center gap-0.5 text-xs"
+                aria-label={tCommon("card.downloads", { count: downloadCount })}
+              >
+                <Download className="h-3 w-3" aria-hidden="true" />
+                {downloadCount}
+              </span>
             ) : (
               <span className="text-text-faint text-xs">{tCommon("card.noReviews")}</span>
             )}

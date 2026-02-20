@@ -508,6 +508,12 @@ export async function GET(request: NextRequest) {
               rating: true,
             },
           },
+          _count: {
+            select: {
+              downloads: true,
+              transactions: { where: { status: "COMPLETED" } },
+            },
+          },
           competencies: {
             select: {
               competency: {
@@ -599,6 +605,7 @@ export async function GET(request: NextRequest) {
         },
         averageRating: Math.round(averageRating * 10) / 10,
         reviewCount,
+        downloadCount: material._count.downloads + material._count.transactions,
         isMiIntegrated: material.is_mi_integrated,
         competencies: (material.competencies ?? []).map((rc) => ({
           id: rc.competency.id,
