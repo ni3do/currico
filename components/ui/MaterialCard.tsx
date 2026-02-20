@@ -193,13 +193,13 @@ export const MaterialCard = memo(function MaterialCard({
               </>
             )}
           </span>
-          {/* LP21 Competency Badges - show up to 2 codes */}
-          {competencies && competencies.length > 0 && !isCompact && (
-            <div className="mt-1 flex flex-wrap items-center gap-1">
-              {competencies.slice(0, 2).map((c) => (
+          {/* Competency + Tag badges — single fixed-height row */}
+          {!isCompact && (
+            <div className="mt-1 flex h-6 items-center gap-1 overflow-hidden">
+              {competencies?.slice(0, 2).map((c) => (
                 <span
                   key={c.code}
-                  className="inline-flex items-center rounded px-1.5 py-0.5 font-mono text-[10px] font-semibold"
+                  className="inline-flex shrink-0 items-center rounded px-1.5 py-0.5 font-mono text-[10px] font-semibold"
                   style={{
                     backgroundColor: `${c.subjectColor || "#6b7280"}20`,
                     color: c.subjectColor || "#6b7280",
@@ -209,24 +209,21 @@ export const MaterialCard = memo(function MaterialCard({
                   {c.code}
                 </span>
               ))}
-              {competencies.length > 2 && (
-                <span className="text-text-faint text-[10px]">+{competencies.length - 2}</span>
+              {competencies && competencies.length > 2 && (
+                <span className="text-text-faint shrink-0 text-[10px]">
+                  +{competencies.length - 2}
+                </span>
               )}
-            </div>
-          )}
-          {/* Tag pills - show up to 3 */}
-          {tags && tags.length > 0 && !isCompact && (
-            <div className="mt-1 flex flex-wrap items-center gap-1">
-              {tags.slice(0, 3).map((tag) => (
+              {tags?.slice(0, 3).map((tag) => (
                 <span
                   key={tag}
-                  className="bg-surface text-text-muted inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium"
+                  className="bg-surface text-text-muted inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[10px] font-medium"
                 >
                   #{tag}
                 </span>
               ))}
-              {tags.length > 3 && (
-                <span className="text-text-faint text-[10px]">+{tags.length - 3}</span>
+              {tags && tags.length > 3 && (
+                <span className="text-text-faint shrink-0 text-[10px]">+{tags.length - 3}</span>
               )}
             </div>
           )}
@@ -241,17 +238,34 @@ export const MaterialCard = memo(function MaterialCard({
           {title}
         </h3>
 
-        {/* Rating */}
-        {reviewCount != null && reviewCount > 0 && averageRating != null && (
-          <div className={`flex items-center gap-1.5 ${isCompact ? "mt-0.5" : "mb-1"}`}>
-            <StarRating rating={averageRating} size="sm" />
-            <span className="text-text-muted text-xs">({reviewCount})</span>
+        {/* Rating — fixed height for default variant */}
+        {isCompact ? (
+          reviewCount != null &&
+          reviewCount > 0 &&
+          averageRating != null && (
+            <div className="mt-0.5 flex items-center gap-1.5">
+              <StarRating rating={averageRating} size="sm" />
+              <span className="text-text-muted text-xs">({reviewCount})</span>
+            </div>
+          )
+        ) : (
+          <div className="mb-1 flex h-5 items-center gap-1.5">
+            {reviewCount != null && reviewCount > 0 && averageRating != null ? (
+              <>
+                <StarRating rating={averageRating} size="sm" />
+                <span className="text-text-muted text-xs">({reviewCount})</span>
+              </>
+            ) : (
+              <span className="text-text-faint text-xs">{tCommon("card.noReviews")}</span>
+            )}
           </div>
         )}
 
-        {/* Description */}
-        {!isCompact && description && (
-          <p className="text-text-muted mb-3 line-clamp-2 text-sm leading-relaxed">{description}</p>
+        {/* Description — fixed min-height for default variant */}
+        {!isCompact && (
+          <p className="text-text-muted mb-3 line-clamp-2 min-h-[2.5rem] text-sm leading-relaxed">
+            {description || "\u00A0"}
+          </p>
         )}
         {isCompact && description && (
           <p className="text-text-muted mt-1 line-clamp-1 hidden text-xs sm:block">{description}</p>
@@ -260,8 +274,8 @@ export const MaterialCard = memo(function MaterialCard({
         {/* Compact footer: seller + price inline */}
         {isCompact && (
           <div className="text-text-muted mt-2 flex items-center gap-3 text-xs">
-            <span className="flex items-center gap-1">
-              {seller?.displayName || anonymousLabel || ""}
+            <span className="flex min-w-0 items-center gap-1">
+              <span className="truncate">{seller?.displayName || anonymousLabel || ""}</span>
               {seller?.sellerLevel != null && seller.sellerLevel > 0 && (
                 <SellerBadge
                   points={seller.sellerXp ?? 0}
@@ -285,8 +299,8 @@ export const MaterialCard = memo(function MaterialCard({
         {!isCompact &&
           (footer ?? (
             <div className="border-border-subtle flex items-center justify-between border-t pt-3">
-              <span className="text-text-muted flex items-center gap-1.5 text-sm transition-colors duration-300">
-                {seller?.displayName || anonymousLabel || ""}
+              <span className="text-text-muted flex min-w-0 items-center gap-1.5 text-sm transition-colors duration-300">
+                <span className="truncate">{seller?.displayName || anonymousLabel || ""}</span>
                 {seller?.sellerLevel != null && seller.sellerLevel > 0 && (
                   <SellerBadge
                     points={seller.sellerXp ?? 0}

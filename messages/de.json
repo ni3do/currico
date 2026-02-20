@@ -790,7 +790,8 @@
     "card": {
       "wishlistAdd": "Zur Wunschliste hinzufügen",
       "wishlistRemove": "Aus Wunschliste entfernen",
-      "anonymous": "Anonym"
+      "anonymous": "Anonym",
+      "noReviews": "Noch keine Bewertungen"
     },
     "sellerCta": {
       "title": "Haben Sie Materialien zum Teilen?",

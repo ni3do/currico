@@ -790,7 +790,8 @@
     "card": {
       "wishlistAdd": "Add to wishlist",
       "wishlistRemove": "Remove from wishlist",
-      "anonymous": "Anonymous"
+      "anonymous": "Anonymous",
+      "noReviews": "No reviews yet"
     },
     "sellerCta": {
       "title": "Have Materials to Share?",
