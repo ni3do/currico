@@ -298,7 +298,7 @@ export default function AdminDocumentsPage() {
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="border-border bg-surface text-text hover:bg-bg rounded-lg border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50"
+            className="border-border bg-surface text-text hover:bg-bg rounded-lg border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60"
           >
             {t("previous")}
           </button>
@@ -306,7 +306,7 @@ export default function AdminDocumentsPage() {
           <button
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
-            className="border-border bg-surface text-text hover:bg-bg rounded-lg border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50"
+            className="border-border bg-surface text-text hover:bg-bg rounded-lg border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60"
           >
             {t("next")}
           </button>
@@ -446,7 +446,7 @@ export default function AdminDocumentsPage() {
                     <button
                       onClick={() => handleVerify(selectedMaterial.id)}
                       disabled={actionLoading}
-                      className="flex items-center justify-center gap-2 rounded-lg bg-[var(--badge-success-bg)] px-4 py-3 text-sm font-medium text-[var(--badge-success-text)] hover:opacity-90 disabled:opacity-50"
+                      className="flex items-center justify-center gap-2 rounded-lg bg-[var(--badge-success-bg)] px-4 py-3 text-sm font-medium text-[var(--badge-success-text)] hover:opacity-90 disabled:opacity-60"
                     >
                       <svg
                         className="h-5 w-5"
@@ -471,7 +471,7 @@ export default function AdminDocumentsPage() {
                         setShowRejectModal(true);
                       }}
                       disabled={actionLoading}
-                      className="flex items-center justify-center gap-2 rounded-lg bg-[var(--badge-error-bg)] px-4 py-3 text-sm font-medium text-[var(--badge-error-text)] hover:opacity-90 disabled:opacity-50"
+                      className="flex items-center justify-center gap-2 rounded-lg bg-[var(--badge-error-bg)] px-4 py-3 text-sm font-medium text-[var(--badge-error-text)] hover:opacity-90 disabled:opacity-60"
                     >
                       <svg
                         className="h-5 w-5"
@@ -493,7 +493,7 @@ export default function AdminDocumentsPage() {
                     <button
                       onClick={() => handleResetToPending(selectedMaterial.id)}
                       disabled={actionLoading}
-                      className="flex items-center justify-center gap-2 rounded-lg bg-[var(--badge-warning-bg)] px-4 py-3 text-sm font-medium text-[var(--badge-warning-text)] hover:opacity-90 disabled:opacity-50"
+                      className="flex items-center justify-center gap-2 rounded-lg bg-[var(--badge-warning-bg)] px-4 py-3 text-sm font-medium text-[var(--badge-warning-text)] hover:opacity-90 disabled:opacity-60"
                     >
                       <svg
                         className="h-5 w-5"
@@ -580,7 +580,7 @@ export default function AdminDocumentsPage() {
                 <button
                   onClick={() => handleReject(selectedMaterial.id, rejectionReason)}
                   disabled={actionLoading}
-                  className="flex-1 rounded-lg bg-[var(--badge-error-bg)] px-4 py-2 text-sm font-medium text-[var(--badge-error-text)] hover:opacity-90 disabled:opacity-50"
+                  className="flex-1 rounded-lg bg-[var(--badge-error-bg)] px-4 py-2 text-sm font-medium text-[var(--badge-error-text)] hover:opacity-90 disabled:opacity-60"
                 >
                   {t("rejectReason.confirm")}
                 </button>

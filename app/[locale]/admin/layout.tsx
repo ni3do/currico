@@ -13,6 +13,7 @@ import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import type { AdminStats, AdminTabType } from "@/lib/types/admin";
+import { LoadingSpinner } from "@/components/ui/Skeleton";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -104,7 +105,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   if (status === "loading" || status === "unauthenticated" || session?.user?.role !== "ADMIN") {
     return (
       <div className="bg-bg flex min-h-screen items-center justify-center">
-        <div className="border-primary h-8 w-8 animate-spin rounded-full border-b-2"></div>
+        <LoadingSpinner />
       </div>
     );
   }

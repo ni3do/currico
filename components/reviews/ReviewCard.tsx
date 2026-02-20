@@ -268,7 +268,7 @@ export function ReviewCard({
                           setShowDeleteDialog(true);
                         }}
                         disabled={deleting}
-                        className="text-error hover:bg-error/10 flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm disabled:opacity-50"
+                        className="text-error hover:bg-error/10 flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm disabled:opacity-60"
                       >
                         <Trash2 className="h-4 w-4" />
                         {deleting ? t("deleting") : t("delete")}
@@ -354,7 +354,7 @@ export function ReviewCard({
                             <button
                               onClick={() => handleEditReply(reply.id)}
                               disabled={!editReplyContent.trim()}
-                              className="btn-primary px-3 py-1.5 text-xs disabled:opacity-50"
+                              className="btn-primary px-3 py-1.5 text-xs disabled:opacity-60"
                             >
                               {t("save")}
                             </button>
@@ -470,7 +470,7 @@ export function ReviewCard({
                       <button
                         onClick={handleSubmitReply}
                         disabled={submittingReply || !replyContent.trim()}
-                        className="btn-primary flex items-center gap-1.5 px-3 py-1.5 text-sm disabled:opacity-50"
+                        className="btn-primary flex items-center gap-1.5 px-3 py-1.5 text-sm disabled:opacity-60"
                       >
                         <Send className="h-3.5 w-3.5" />
                         {submittingReply ? t("replySending") : t("replySubmit")}

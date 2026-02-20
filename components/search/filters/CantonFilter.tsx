@@ -68,9 +68,10 @@ export function CantonFilter({ selectedCantons, onCantonsChange, t }: CantonFilt
           </span>
           <button
             onClick={clearAll}
+            aria-label={t("sidebar.clearAllFilters")}
             className="text-text-muted hover:text-primary text-xs font-medium transition-colors"
           >
-            <X className="inline h-3 w-3" />
+            <X className="inline h-3 w-3" aria-hidden="true" />
           </button>
         </div>
       )}

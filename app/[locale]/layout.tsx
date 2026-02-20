@@ -8,10 +8,6 @@ import CookieConsent from "@/components/ui/CookieConsent";
 import { SkipToContent } from "@/components/ui/SkipToContent";
 import { ScrollToTop } from "@/components/ui/ScrollToTop";
 import PlausibleProvider from "@/components/providers/PlausibleProvider";
-
-// Force dynamic rendering to avoid prerender errors with client-side hooks
-export const dynamic = "force-dynamic";
-
 type Props = {
   children: React.ReactNode;
   params: Promise<{ locale: string }>;

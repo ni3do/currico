@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { Plus, Send, Pencil, Trash2, Mail } from "lucide-react";
 import type { Newsletter } from "@/lib/types/admin";
+import { PageLoadingSpinner } from "@/components/ui/Skeleton";
 
 export default function AdminNewslettersPage() {
   const t = useTranslations("admin.newsletters");
@@ -138,11 +139,7 @@ export default function AdminNewslettersPage() {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <div className="border-primary h-8 w-8 animate-spin rounded-full border-b-2" />
-      </div>
-    );
+    return <PageLoadingSpinner />;
   }
 
   return (
@@ -211,7 +208,7 @@ export default function AdminNewslettersPage() {
               <button
                 onClick={handleSave}
                 disabled={saving || !subject.trim() || !content.trim()}
-                className="bg-primary hover:bg-primary-hover text-text-on-accent rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
+                className="bg-primary hover:bg-primary-hover text-text-on-accent rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-60"
               >
                 {t("save")}
               </button>

@@ -121,7 +121,7 @@ export function SellerHeroSection({ className = "" }: SellerHeroSectionProps) {
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.95 }}>
               <Link
                 href="/verkaeufer-werden"
-                className="btn-primary group inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-semibold"
+                className="btn-primary group inline-flex items-center gap-2 px-6 py-2.5 text-sm font-semibold"
               >
                 <span>{t("ctaButton")}</span>
                 <ArrowRight

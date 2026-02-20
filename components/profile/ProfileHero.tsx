@@ -147,7 +147,7 @@ export function ProfileHero({
                   <button
                     onClick={onFollowToggle}
                     disabled={followLoading}
-                    className={`flex items-center justify-center gap-2 rounded-full px-6 py-2.5 font-medium transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 active:scale-95 disabled:opacity-50 ${
+                    className={`flex items-center justify-center gap-2 rounded-full px-6 py-2.5 font-medium transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 active:scale-95 disabled:opacity-60 ${
                       profile.isFollowing
                         ? "border-primary text-primary hover:bg-primary/10 border"
                         : "bg-primary hover:bg-primary-hover text-text-on-accent"

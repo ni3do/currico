@@ -738,7 +738,7 @@ export default function AccountOverviewPage() {
                     <button
                       onClick={() => handleDownload(item.id)}
                       disabled={downloading === item.id}
-                      className="text-primary hover:bg-primary/10 shrink-0 rounded-lg p-2 transition-colors disabled:opacity-50"
+                      className="text-primary hover:bg-primary/10 shrink-0 rounded-lg p-2 transition-colors disabled:opacity-60"
                       title={t("overview.downloads")}
                       aria-label={t("overview.downloadLabel")}
                     >

@@ -209,7 +209,7 @@ export function DraftProgressCard() {
           <div className="flex items-center gap-2 sm:flex-col sm:items-stretch">
             <Link
               href="/hochladen"
-              className="btn-primary inline-flex flex-1 items-center justify-center gap-2 rounded-full px-4 py-2 text-sm sm:flex-initial"
+              className="btn-primary inline-flex flex-1 items-center justify-center gap-2 px-4 py-2 text-sm sm:flex-initial"
             >
               {t("resume")}
               <ArrowRight className="h-4 w-4" aria-hidden="true" />

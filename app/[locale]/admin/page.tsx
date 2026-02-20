@@ -13,7 +13,7 @@ import {
   Download,
   DollarSign,
 } from "lucide-react";
-import { DashboardCardSkeleton, Skeleton } from "@/components/ui/Skeleton";
+import { DashboardCardSkeleton, AdminChartSkeleton } from "@/components/ui/Skeleton";
 import type { AdminStats } from "@/lib/types/admin";
 
 export default function AdminDashboardPage() {
@@ -43,20 +43,7 @@ export default function AdminDashboardPage() {
     return (
       <div className="space-y-6">
         <DashboardCardSkeleton />
-        <div className="grid gap-6 lg:grid-cols-2">
-          <div className="border-border bg-surface rounded-xl border p-6">
-            <Skeleton className="mb-4 h-5 w-32" />
-            <Skeleton className="h-48 w-full rounded-lg" />
-          </div>
-          <div className="border-border bg-surface rounded-xl border p-6">
-            <Skeleton className="mb-4 h-5 w-40" />
-            <div className="space-y-3">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <Skeleton key={i} className="h-10 w-full" />
-              ))}
-            </div>
-          </div>
-        </div>
+        <AdminChartSkeleton />
       </div>
     );
   }

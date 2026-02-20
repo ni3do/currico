@@ -324,37 +324,44 @@ export async function GET(request: Request) {
       });
     }
 
-    return NextResponse.json({
-      curriculum: {
-        code: curriculum.code,
-        name_de: curriculum.name_de,
-        name_fr: curriculum.name_fr,
+    const cacheHeaders = { "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400" };
+
+    return NextResponse.json(
+      {
+        curriculum: {
+          code: curriculum.code,
+          name_de: curriculum.name_de,
+          name_fr: curriculum.name_fr,
+        },
+        subjects: curriculum.subjects.map((s) => ({
+          id: s.id,
+          code: s.code,
+          name_de: s.name_de,
+          name_fr: s.name_fr,
+          color: s.color,
+          icon: s.icon,
+        })),
+        competencies: competencies.map((c) => ({
+          id: c.id,
+          code: c.code,
+          description_de: c.description_de,
+          description_fr: c.description_fr,
+          cycle: c.cycle,
+          kompetenzbereich: c.kompetenzbereich,
+          handlungsaspekt: c.handlungsaspekt,
+          anforderungsstufe: c.anforderungsstufe,
+          subject: c.subject,
+        })),
+        groupedCompetencies,
+        hierarchicalTree,
+        lehrmittel,
+        transversalCompetencies,
+        bneThemes,
       },
-      subjects: curriculum.subjects.map((s) => ({
-        id: s.id,
-        code: s.code,
-        name_de: s.name_de,
-        name_fr: s.name_fr,
-        color: s.color,
-        icon: s.icon,
-      })),
-      competencies: competencies.map((c) => ({
-        id: c.id,
-        code: c.code,
-        description_de: c.description_de,
-        description_fr: c.description_fr,
-        cycle: c.cycle,
-        kompetenzbereich: c.kompetenzbereich,
-        handlungsaspekt: c.handlungsaspekt,
-        anforderungsstufe: c.anforderungsstufe,
-        subject: c.subject,
-      })),
-      groupedCompetencies,
-      hierarchicalTree,
-      lehrmittel,
-      transversalCompetencies,
-      bneThemes,
-    });
+      {
+        headers: cacheHeaders,
+      }
+    );
   } catch (error) {
     console.error("Error fetching curriculum:", error);
     return serverError("Fehler beim Laden der Lehrplandaten");
@@ -484,10 +491,15 @@ async function handleFilterFormat() {
       };
     });
 
-    return NextResponse.json({
-      zyklen: ZYKLEN,
-      fachbereiche,
-    });
+    return NextResponse.json(
+      {
+        zyklen: ZYKLEN,
+        fachbereiche,
+      },
+      {
+        headers: { "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400" },
+      }
+    );
   } catch (error) {
     console.error("Error fetching curriculum filter data:", error);
     return serverError("Fehler beim Laden der Lehrplan-Filterdaten");

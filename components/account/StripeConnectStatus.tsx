@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Check, AlertTriangle, Clock, Coins, ExternalLink, ChevronRight } from "lucide-react";
 import type { StripeStatus } from "@/lib/types/account";
+import { StripeStatusSkeleton } from "@/components/ui/Skeleton";
 
 interface StripeConnectStatusProps {
   isSeller: boolean;
@@ -65,17 +66,7 @@ export function StripeConnectStatus({ isSeller }: StripeConnectStatusProps) {
 
   // Loading state
   if (isLoading) {
-    return (
-      <div className="border-border bg-surface rounded-2xl border p-6">
-        <div className="flex items-center gap-3">
-          <div className="bg-bg h-10 w-10 animate-pulse rounded-full" />
-          <div className="flex-1 space-y-2">
-            <div className="bg-bg h-4 w-32 animate-pulse rounded" />
-            <div className="bg-bg h-3 w-48 animate-pulse rounded" />
-          </div>
-        </div>
-      </div>
-    );
+    return <StripeStatusSkeleton />;
   }
 
   // Error state
@@ -199,7 +190,7 @@ export function StripeConnectStatus({ isSeller }: StripeConnectStatusProps) {
             <button
               onClick={handleContinueStripeOnboarding}
               disabled={isStripeLoading}
-              className="bg-warning text-text-on-accent hover:bg-warning-hover mt-4 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
+              className="bg-warning text-text-on-accent hover:bg-warning-hover mt-4 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-60"
             >
               {isStripeLoading ? t("pending.continueLoading") : t("pending.continueSetup")}
               <ChevronRight className="h-4 w-4" aria-hidden="true" />

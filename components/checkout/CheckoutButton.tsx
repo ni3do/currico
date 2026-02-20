@@ -114,7 +114,7 @@ export function CheckoutButton({
       <button
         onClick={handleCheckout}
         disabled={disabled || loading}
-        className={`btn-action flex items-center justify-center gap-2 py-4 text-lg font-semibold shadow-md transition-all hover:shadow-lg disabled:opacity-50 ${className}`}
+        className={`btn-action flex items-center justify-center gap-2 py-4 text-lg font-semibold shadow-md transition-all hover:shadow-lg disabled:opacity-60 ${className}`}
       >
         {loading ? (
           <>
@@ -154,6 +154,25 @@ export function CheckoutButton({
           </>
         )}
       </button>
+
+      {/* Accepted Payment Methods */}
+      <div className="flex items-center justify-center gap-2">
+        <div className="flex items-center gap-1.5" aria-label={t("acceptedMethods")}>
+          {/* TWINT */}
+          <span className="bg-text text-bg inline-flex h-5 items-center rounded px-1.5 text-[10px] leading-none font-bold">
+            TWINT
+          </span>
+          {/* Visa */}
+          <span className="inline-flex h-5 items-center rounded border border-[#1a1f71] bg-white px-1.5 text-[10px] leading-none font-bold text-[#1a1f71]">
+            VISA
+          </span>
+          {/* Mastercard */}
+          <span className="inline-flex h-5 items-center gap-0.5 rounded bg-[#252525] px-1.5">
+            <span className="h-2.5 w-2.5 rounded-full bg-[#eb001b] opacity-90" />
+            <span className="-ml-1 h-2.5 w-2.5 rounded-full bg-[#f79e1b] opacity-90" />
+          </span>
+        </div>
+      </div>
 
       {/* Error Message */}
       {error && (

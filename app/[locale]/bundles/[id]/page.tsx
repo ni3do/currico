@@ -8,8 +8,10 @@ import { useTranslations, useLocale } from "next-intl";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
-import { Package, FileText, Tag, ChevronDown, ChevronUp } from "lucide-react";
+import { Package, FileText, Tag, ChevronDown, ChevronUp, BadgeCheck } from "lucide-react";
+import Image from "next/image";
 import type { Bundle } from "@/lib/types/material";
+import { BundleDetailSkeleton } from "@/components/ui/Skeleton";
 
 export default function BundleDetailPage() {
   const params = useParams();
@@ -97,35 +99,7 @@ export default function BundleDetailPage() {
       <div className="bg-bg flex min-h-screen flex-col">
         <TopBar />
         <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
-          <div className="animate-pulse">
-            <div className="bg-surface mb-8 h-4 w-48 rounded" />
-            <div className="grid gap-8 lg:grid-cols-3">
-              <div className="lg:col-span-2">
-                <div className="card rounded-2xl p-8">
-                  <div className="mb-4 flex gap-3">
-                    <div className="bg-surface h-6 w-16 rounded-full" />
-                    <div className="bg-surface h-6 w-24 rounded-full" />
-                  </div>
-                  <div className="bg-surface mb-6 h-10 w-3/4 rounded" />
-                  <div className="bg-surface mb-4 h-4 w-full rounded" />
-                  <div className="bg-surface mb-4 h-4 w-5/6 rounded" />
-                  <div className="bg-surface mb-8 h-4 w-2/3 rounded" />
-                </div>
-              </div>
-              <div className="lg:col-span-1">
-                <div className="card rounded-2xl p-6">
-                  <div className="bg-surface mb-4 h-5 w-24 rounded" />
-                  <div className="flex gap-3">
-                    <div className="bg-surface h-12 w-12 rounded-full" />
-                    <div>
-                      <div className="bg-surface mb-2 h-4 w-32 rounded" />
-                      <div className="bg-surface h-3 w-24 rounded" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <BundleDetailSkeleton />
         </main>
       </div>
     );
@@ -260,10 +234,11 @@ export default function BundleDetailPage() {
                     >
                       {/* Preview thumbnail */}
                       {resource.previewUrl ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
+                        <Image
                           src={resource.previewUrl}
                           alt={resource.title}
+                          width={48}
+                          height={64}
                           className="h-16 w-12 flex-shrink-0 rounded-lg object-cover"
                         />
                       ) : (
@@ -344,10 +319,11 @@ export default function BundleDetailPage() {
               <h3 className="text-text mb-4 font-semibold">{t("createdBy")}</h3>
               <div className="mb-4 flex items-center gap-3">
                 {bundle.seller.image ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
+                  <Image
                     src={bundle.seller.image}
                     alt={bundle.seller.displayName || t("seller")}
+                    width={48}
+                    height={48}
                     className="h-12 w-12 rounded-full object-cover"
                   />
                 ) : (
@@ -361,13 +337,7 @@ export default function BundleDetailPage() {
                       {bundle.seller.displayName || t("anonymous")}
                     </span>
                     {bundle.seller.verified && (
-                      <svg className="text-primary h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path
-                          fillRule="evenodd"
-                          d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
+                      <BadgeCheck className="text-primary h-4 w-4" aria-hidden="true" />
                     )}
                   </div>
                   <div className="text-text-muted text-sm">
@@ -381,7 +351,7 @@ export default function BundleDetailPage() {
                 <button
                   onClick={handleFollowToggle}
                   disabled={followLoading}
-                  className={`w-full rounded-lg border-2 px-4 py-3 font-medium transition-all disabled:opacity-50 ${
+                  className={`w-full rounded-lg border-2 px-4 py-3 font-medium transition-all disabled:opacity-60 ${
                     isFollowing
                       ? "border-primary bg-primary-light text-primary"
                       : "border-border bg-bg text-text hover:border-primary hover:bg-primary-light"

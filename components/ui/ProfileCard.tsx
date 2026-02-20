@@ -121,7 +121,7 @@ export function ProfileCard({
                 <button
                   onClick={handleFollowClick}
                   disabled={followLoading}
-                  className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 active:scale-95 disabled:opacity-50 ${
+                  className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 active:scale-95 disabled:opacity-60 ${
                     isFollowing
                       ? "border-primary text-primary hover:bg-primary/10 border"
                       : "bg-primary hover:bg-primary-hover text-text-on-accent"

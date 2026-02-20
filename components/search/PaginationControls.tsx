@@ -39,7 +39,7 @@ export function PaginationControls({
         {/* Previous button */}
         <button
           onClick={() => onPageChange(currentPage - 1)}
-          className="text-text-muted hover:bg-surface rounded-md px-3 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+          className="text-text-muted hover:bg-surface rounded-md px-3 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60"
           disabled={currentPage === 1}
           aria-label={labels.previous}
         >
@@ -78,7 +78,7 @@ export function PaginationControls({
         {/* Next button */}
         <button
           onClick={() => onPageChange(currentPage + 1)}
-          className="text-text-secondary hover:bg-surface rounded-md px-3 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+          className="text-text-secondary hover:bg-surface rounded-md px-3 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60"
           disabled={currentPage === totalPages}
           aria-label={labels.next}
         >

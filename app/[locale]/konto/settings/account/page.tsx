@@ -360,7 +360,7 @@ export default function SettingsAccountPage() {
                   <button
                     onClick={handleResendVerification}
                     disabled={verificationSending}
-                    className="group flex items-center gap-2 transition-colors hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="group flex items-center gap-2 transition-colors hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     <div className="bg-warning/20 rounded-full p-1">
                       {verificationSending ? (
@@ -527,7 +527,7 @@ export default function SettingsAccountPage() {
                 <button
                   type="submit"
                   disabled={!canSubmitPassword || passwordChanging}
-                  className="bg-primary text-text-on-accent hover:bg-primary/90 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                  className="bg-primary text-text-on-accent hover:bg-primary/90 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {passwordChanging ? t("password.submitting") : t("password.submit")}
                 </button>
@@ -651,7 +651,7 @@ export default function SettingsAccountPage() {
                   <button
                     type="submit"
                     disabled={!promptPassword || promptLoading}
-                    className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+                    className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${
                       passwordPromptAction === "disable"
                         ? "bg-error text-text-on-accent hover:bg-error/90"
                         : "bg-primary text-text-on-accent hover:bg-primary/90"
@@ -688,7 +688,7 @@ export default function SettingsAccountPage() {
                   <button
                     onClick={handleStartSetup}
                     disabled={twoFactorLoading}
-                    className="bg-primary text-text-on-accent hover:bg-primary/90 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                    className="bg-primary text-text-on-accent hover:bg-primary/90 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     <Smartphone className="h-4 w-4" />
                     {twoFactorLoading
@@ -765,7 +765,7 @@ export default function SettingsAccountPage() {
                       <button
                         type="submit"
                         disabled={totpCode.length !== 6 || twoFactorLoading}
-                        className="bg-primary text-text-on-accent hover:bg-primary/90 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                        className="bg-primary text-text-on-accent hover:bg-primary/90 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                       >
                         {twoFactorLoading
                           ? t("twoFactor.setup.verifying")
@@ -917,7 +917,7 @@ export default function SettingsAccountPage() {
                     }
                   }}
                   disabled={deleteConfirmText !== t("confirmKeyword") || deleting}
-                  className="bg-error text-text-on-accent hover:bg-error/90 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                  className="bg-error text-text-on-accent hover:bg-error/90 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {deleting ? t("deleting") : t("deletePermanently")}
                 </button>

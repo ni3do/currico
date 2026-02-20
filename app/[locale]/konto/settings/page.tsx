@@ -440,7 +440,7 @@ export default function SettingsProfilePage() {
               <button
                 onClick={handleAvatarDelete}
                 disabled={isDeletingAvatar}
-                className="text-error mt-1 text-sm font-medium hover:underline disabled:opacity-50"
+                className="text-error mt-1 text-sm font-medium hover:underline disabled:opacity-60"
               >
                 {isDeletingAvatar ? tSettings("avatarRemoving") : tSettings("avatarRemove")}
               </button>

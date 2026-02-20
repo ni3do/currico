@@ -7,6 +7,7 @@ import { useRouter } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import { MultiSelect } from "@/components/ui/MultiSelect";
 import { SWISS_CANTONS } from "@/lib/validations/user";
+import { LoadingSpinner } from "@/components/ui/Skeleton";
 
 const CYCLES = ["Zyklus 1", "Zyklus 2", "Zyklus 3"] as const;
 
@@ -109,7 +110,7 @@ export default function WelcomePage() {
   if (status === "loading") {
     return (
       <div className="bg-bg flex min-h-screen items-center justify-center">
-        <div className="border-primary h-8 w-8 animate-spin rounded-full border-b-2" />
+        <LoadingSpinner />
       </div>
     );
   }
@@ -205,7 +206,7 @@ export default function WelcomePage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="bg-primary text-text-on-accent hover:bg-primary-hover disabled:hover:bg-primary w-full rounded-lg px-6 py-3.5 font-semibold transition-all hover:-translate-y-0.5 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-none"
+                className="bg-primary text-text-on-accent hover:bg-primary-hover disabled:hover:bg-primary w-full rounded-lg px-6 py-3.5 font-semibold transition-all hover:-translate-y-0.5 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:shadow-none"
               >
                 {isSubmitting ? t("submitting") : t("submit")}
               </button>

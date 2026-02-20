@@ -551,6 +551,7 @@ export default function EditMaterialPage() {
                         <Link
                           href={`/materialien/${duplicateTitle.existingId}`}
                           target="_blank"
+                          rel="noopener noreferrer"
                           className="text-primary ml-2 inline-flex items-center gap-1 text-sm font-medium hover:underline"
                         >
                           {tFields("duplicateTitleLink")}
@@ -575,6 +576,7 @@ export default function EditMaterialPage() {
                         <Link
                           href={`/materialien/${duplicateTitle.existingId}`}
                           target="_blank"
+                          rel="noopener noreferrer"
                           className="text-primary ml-2 inline-flex items-center gap-1 text-sm font-medium hover:underline"
                         >
                           {tFields("duplicateTitleLink")}
@@ -768,7 +770,7 @@ export default function EditMaterialPage() {
               disabled={
                 saving || !isDirty || !!titleError || !!descriptionError || eszettCheck.hasAny
               }
-              className="bg-primary text-text-on-accent shadow-primary/25 hover:bg-primary-hover disabled:bg-text-muted inline-flex items-center gap-2 rounded-xl px-8 py-3 font-semibold shadow-lg transition-all duration-200 hover:shadow-xl active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none"
+              className="bg-primary text-text-on-accent shadow-primary/25 hover:bg-primary-hover disabled:bg-text-muted inline-flex items-center gap-2 rounded-xl px-8 py-3 font-semibold shadow-lg transition-all duration-200 hover:shadow-xl active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-none"
             >
               {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
               {saving ? t("saving") : !isDirty ? t("noChanges") : t("save")}

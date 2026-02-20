@@ -101,7 +101,7 @@ export function AvatarUploader({
           onClick={() => fileInputRef.current?.click()}
           disabled={isUploading}
           aria-label={uploadLabel || t("uploadLabel")}
-          className="border-bg bg-primary text-text-on-accent hover:bg-success absolute right-0 bottom-0 flex h-8 w-8 items-center justify-center rounded-full border-2 transition-colors disabled:opacity-50"
+          className="border-bg bg-primary text-text-on-accent hover:bg-success absolute right-0 bottom-0 flex h-8 w-8 items-center justify-center rounded-full border-2 transition-colors disabled:opacity-60"
         >
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path

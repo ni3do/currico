@@ -616,6 +616,7 @@ function UploadPageContent() {
                             <Link
                               href={`/materialien/${duplicateTitle.existingId}`}
                               target="_blank"
+                              rel="noopener noreferrer"
                               className="text-primary ml-2 inline-flex items-center gap-1 text-sm font-medium hover:underline"
                             >
                               {tFields("duplicateTitleLink")}
@@ -638,6 +639,7 @@ function UploadPageContent() {
                             <Link
                               href={`/materialien/${duplicateTitle.existingId}`}
                               target="_blank"
+                              rel="noopener noreferrer"
                               className="text-primary ml-2 inline-flex items-center gap-1 text-sm font-medium hover:underline"
                             >
                               {tFields("duplicateTitleLink")}
@@ -1197,6 +1199,7 @@ function UploadPageContent() {
                       <Link
                         href="/urheberrecht"
                         target="_blank"
+                        rel="noopener noreferrer"
                         className="text-primary hover:bg-primary/10 inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
                       >
                         <Scale className="h-4 w-4" />
@@ -1293,6 +1296,7 @@ function UploadPageContent() {
                       <Link
                         href="/urheberrecht"
                         target="_blank"
+                        rel="noopener noreferrer"
                         className="text-primary font-medium hover:underline"
                       >
                         {tLegal("copyrightGuideLinkText")} →
@@ -1326,7 +1330,7 @@ function UploadPageContent() {
                   type="button"
                   onClick={goBack}
                   disabled={currentStep === 1}
-                  className="border-border text-text hover:bg-surface-elevated rounded-xl border-2 px-6 py-3 font-medium transition-all duration-200 hover:shadow-md active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+                  className="border-border text-text hover:bg-surface-elevated rounded-xl border-2 px-6 py-3 font-medium transition-all duration-200 hover:shadow-md active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   ← {tNav("back")}
                 </button>
@@ -1344,7 +1348,7 @@ function UploadPageContent() {
                     type="button"
                     onClick={handlePrePublish}
                     disabled={!canPublish || uploadStatus !== "idle"}
-                    className="from-primary to-primary-hover text-text-on-accent shadow-primary/25 hover:shadow-primary/30 rounded-xl bg-gradient-to-r px-8 py-3 font-semibold shadow-lg transition-all duration-200 hover:shadow-xl active:scale-[0.98] disabled:cursor-not-allowed disabled:from-gray-400 disabled:to-gray-500 disabled:opacity-50"
+                    className="from-primary to-primary-hover text-text-on-accent shadow-primary/25 hover:shadow-primary/30 rounded-xl bg-gradient-to-r px-8 py-3 font-semibold shadow-lg transition-all duration-200 hover:shadow-xl active:scale-[0.98] disabled:cursor-not-allowed disabled:from-gray-400 disabled:to-gray-500 disabled:opacity-60"
                   >
                     <span className="flex items-center gap-2">
                       <Check className="h-5 w-5" />

@@ -313,7 +313,7 @@ export default function CheckoutSuccessPage() {
                 <button
                   onClick={handleDownload}
                   disabled={isDownloading || isPending}
-                  className="group bg-primary hover:bg-primary-hover text-text-on-accent relative flex items-center justify-center gap-3 rounded-xl px-6 py-4 font-semibold shadow-lg transition-all hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50"
+                  className="group bg-primary hover:bg-primary-hover text-text-on-accent relative flex items-center justify-center gap-3 rounded-xl px-6 py-4 font-semibold shadow-lg transition-all hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <Download className={`h-5 w-5 ${isDownloading ? "animate-bounce" : ""}`} />
                   <span>{isDownloading ? t("actions.downloading") : t("actions.downloadNow")}</span>

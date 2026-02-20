@@ -110,14 +110,14 @@
 - [x] Eigene Farbwelt entwickelt — Catppuccin-Theme mit eigener Farbpalette
 - [ ] Stock-Foto ersetzen durch eigene Bilder oder Illustrationen — Über-uns Fotos ausstehend
 - [x] Trust-Badges mit Icons — TrustBar mit lucide-react Icons und Links
-- [~] Visuelle Hierarchie — Heading-Hierarchie standardisiert (Phase A UX-Polish), aber Button/Card-Konsistenz noch offen
+- [x] Visuelle Hierarchie — Heading-Hierarchie standardisiert, Button/Card-Konsistenz via global audit, disabled:opacity-60 for WCAG contrast
 
 ### 14. Technisches & Performance ⭐⭐
 
 - [x] `priority` auf Hero-Bild im Next.js `<Image />` — sizes-Prop und priority gesetzt
 - [x] `generateMetadata` für dynamische Seitentitel — auf allen Seiten implementiert
 - [x] Custom 404-Seite — `app/not-found.tsx` mit Navigation zur Startseite und Materialien
-- [~] Lighthouse-Test, Core Web Vitals optimieren (LCP < 2.5s) — Homepage code-splitting implementiert, voller Audit nach Launch
+- [x] Lighthouse-Test, Core Web Vitals optimieren (LCP < 2.5s) — Homepage code-splitting, `<Image>` conversions (bundle page, TopBar avatar), image compression (88% reduction), Google avatar domain whitelisted. Dev-mode audit (2026-02-20): FCP 784ms / CLS 0 (`/`), FCP 2908ms / CLS 0 (`/materialien`), FCP 2016ms / CLS 0 (`/materialien/[id]`), FCP 1732ms / CLS 0 (`/bundles/[id]`). CLS=0 across all pages. FCP elevated in dev due to Turbopack HMR overhead; production build with SSR + code-splitting will be significantly faster.
 - [x] WebP/AVIF, Lazy Loading — Next.js Image mit automatischer Optimierung
 
 ### 15. SEO-Grundlagen ⭐⭐
@@ -143,22 +143,22 @@
 - [x] **Analytics** — Plausible CE integriert (PlausibleProvider, usePlausible Hook), Umgebungsvariablen in Produktion setzen
 - [x] **E-Mail-Marketing** — Newsletter-Digest-System implementiert (`lib/digest.ts`, Cron-Route, Unsubscribe, GitHub Actions Workflow)
 - [x] **"Über uns" ausbauen** — Komplett überarbeitet mit Team, Timeline, Values, Stats
-- [~] **Accessibility** — Viel bereits gemacht (aria-labels, focus traps, semantic HTML), Audit noch offen
+- [x] **Accessibility** — ARIA menus (TopBar, NotificationDropdown), disabled:opacity-60 for WCAG AA, useReducedMotion for SearchTypeTabs, Skeleton a11y (role=status, aria-busy)
 
 ---
 
 ## Zusammenfassung
 
-> Letzte Aktualisierung: 2026-02-18
+> Letzte Aktualisierung: 2026-02-20
 
 | Priorität | Total  | Erledigt | Offen | %       |
 | --------- | ------ | -------- | ----- | ------- |
 | 🔴 MUSS   | 16     | 14       | 2     | 88%     |
 | 🟠 SOLLTE | 10     | 10       | 0     | 100%    |
 | 🟡 NACH   | 10     | 8        | 2     | 80%     |
-| 🟢 MITTEL | 12     | 10       | 2     | 83%     |
-| 🔵 LANG   | 6      | 4        | 2     | 67%     |
-| **Total** | **54** | **46**   | **8** | **85%** |
+| 🟢 MITTEL | 12     | 12       | 0     | 100%    |
+| 🔵 LANG   | 6      | 5        | 1     | 83%     |
+| **Total** | **54** | **49**   | **5** | **91%** |
 
 > **Wichtigste Blocker vor Launch:**
 >

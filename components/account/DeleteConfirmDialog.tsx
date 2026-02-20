@@ -50,16 +50,10 @@ export function DeleteConfirmDialog({
               <strong className="text-text">&ldquo;{title}&rdquo;</strong> {t("permanentWarning")}
             </p>
             <div className="mt-6 flex gap-3">
-              <button
-                onClick={onCancel}
-                className="border-border text-text hover:bg-surface-elevated flex-1 rounded-xl border px-4 py-2.5 text-sm font-medium transition-colors"
-              >
+              <button onClick={onCancel} className="btn-secondary flex-1 px-4 py-2.5 text-sm">
                 {tCommon("buttons.cancel")}
               </button>
-              <button
-                onClick={onConfirm}
-                className="bg-error hover:bg-error/90 text-text-on-accent flex-1 rounded-xl px-4 py-2.5 text-sm font-medium transition-colors"
-              >
+              <button onClick={onConfirm} className="btn-danger flex-1 px-4 py-2.5 text-sm">
                 {tCommon("buttons.delete")}
               </button>
             </div>

@@ -163,7 +163,13 @@ export function DashboardMaterialCard({
           </button>
         )}
         {previewUrl ? (
-          <Image src={previewUrl} alt={title} fill className="image-zoom object-cover" />
+          <Image
+            src={previewUrl}
+            alt={title}
+            fill
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            className="image-zoom object-cover"
+          />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
             <FileText className="text-text-faint h-8 w-8" />
@@ -196,7 +202,7 @@ export function DashboardMaterialCard({
               <button
                 onClick={onDuplicate}
                 disabled={duplicating}
-                className="text-text-muted hover:text-primary relative z-10 -m-0.5 p-0.5 transition-colors disabled:opacity-50"
+                className="text-text-muted hover:text-primary relative z-10 -m-0.5 p-0.5 transition-colors disabled:opacity-60"
                 title={t("duplicate")}
               >
                 <Copy className={`h-3.5 w-3.5 ${duplicating ? "animate-pulse" : ""}`} />

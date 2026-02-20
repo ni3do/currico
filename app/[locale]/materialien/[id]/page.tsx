@@ -18,6 +18,7 @@ import { useToast } from "@/components/ui/Toast";
 import { PurchasePanel } from "@/components/materials/PurchasePanel";
 import { ReportModal } from "@/components/materials/ReportModal";
 import type { Material, RelatedMaterial } from "@/lib/types/material";
+import { MaterialDetailSkeleton } from "@/components/ui/Skeleton";
 
 export default function MaterialDetailPage() {
   const params = useParams();
@@ -179,35 +180,7 @@ export default function MaterialDetailPage() {
       <div className="bg-bg flex min-h-screen flex-col">
         <TopBar />
         <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
-          <div className="animate-pulse">
-            <div className="bg-surface mb-6 h-4 w-64 rounded" />
-            <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-12">
-              <div className="order-2 lg:order-1">
-                <div className="bg-surface aspect-[3/4] w-full rounded-xl" />
-              </div>
-              <div className="order-1 lg:order-2">
-                <div className="mb-3 flex gap-2">
-                  <div className="bg-surface h-6 w-12 rounded-full" />
-                  <div className="bg-surface h-6 w-20 rounded-full" />
-                </div>
-                <div className="bg-surface mb-4 h-9 w-3/4 rounded" />
-                <div className="border-border mb-4 flex items-center gap-3 rounded-lg border p-3">
-                  <div className="bg-surface h-10 w-10 rounded-full" />
-                  <div className="flex-1">
-                    <div className="bg-surface mb-1.5 h-4 w-32 rounded" />
-                    <div className="bg-surface h-3 w-24 rounded" />
-                  </div>
-                  <div className="bg-surface h-8 w-20 rounded-lg" />
-                </div>
-                <div className="bg-surface mb-6 h-4 w-2/3 rounded" />
-                <div className="border-primary/20 bg-primary/5 rounded-xl border-2 p-6">
-                  <div className="bg-surface mb-4 h-9 w-24 rounded" />
-                  <div className="bg-surface mb-4 h-14 w-full rounded-lg" />
-                  <div className="bg-surface h-12 w-full rounded-lg" />
-                </div>
-              </div>
-            </div>
-          </div>
+          <MaterialDetailSkeleton />
         </main>
       </div>
     );
@@ -475,7 +448,7 @@ export default function MaterialDetailPage() {
                 onClick={handleDownload}
                 disabled={downloading}
                 aria-label={t("a11y.downloadFree")}
-                className="btn-action px-6 py-3 font-semibold disabled:opacity-50"
+                className="btn-action px-6 py-3 font-semibold disabled:opacity-60"
               >
                 {downloading ? "..." : t("download")}
               </button>

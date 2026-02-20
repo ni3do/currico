@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from "react";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { FileText, FolderOpen, Loader2, Upload } from "lucide-react";
@@ -66,35 +67,59 @@ export function ProfileTabs({
     },
   ];
 
+  const visibleTabs = tabs.filter((tab) => tab.show);
+
+  const handleTabKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+      e.preventDefault();
+      const currentIndex = visibleTabs.findIndex((tab) => tab.id === activeTab);
+      const nextIndex =
+        e.key === "ArrowRight"
+          ? (currentIndex + 1) % visibleTabs.length
+          : (currentIndex - 1 + visibleTabs.length) % visibleTabs.length;
+      const nextTab = visibleTabs[nextIndex];
+      onTabChange(nextTab.id);
+      requestAnimationFrame(() => {
+        const el = document.getElementById(`tab-${nextTab.id}`);
+        el?.focus();
+      });
+    },
+    [activeTab, visibleTabs, onTabChange]
+  );
+
   return (
     <div>
       {/* Tab Bar */}
-      <div className="border-border relative mb-6 flex gap-4 border-b" role="tablist">
-        {tabs
-          .filter((tab) => tab.show)
-          .map((tab) => (
-            <button
-              key={tab.id}
-              role="tab"
-              id={`tab-${tab.id}`}
-              aria-selected={activeTab === tab.id}
-              aria-controls={`tabpanel-${tab.id}`}
-              onClick={() => onTabChange(tab.id)}
-              className={`relative flex items-center gap-2 pb-4 text-sm font-medium transition-colors ${
-                activeTab === tab.id ? "text-primary" : "text-text-muted hover:text-text"
-              }`}
-            >
-              <tab.icon className="h-4 w-4" aria-hidden="true" />
-              {tab.label} ({tab.count})
-              {activeTab === tab.id && (
-                <motion.div
-                  layoutId="profile-tab-underline"
-                  className="bg-primary absolute right-0 bottom-0 left-0 h-0.5 rounded-full"
-                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                />
-              )}
-            </button>
-          ))}
+      <div
+        className="border-border relative mb-6 flex gap-4 border-b"
+        role="tablist"
+        onKeyDown={handleTabKeyDown}
+      >
+        {visibleTabs.map((tab) => (
+          <button
+            key={tab.id}
+            role="tab"
+            id={`tab-${tab.id}`}
+            aria-selected={activeTab === tab.id}
+            aria-controls={`tabpanel-${tab.id}`}
+            tabIndex={activeTab === tab.id ? 0 : -1}
+            onClick={() => onTabChange(tab.id)}
+            className={`relative flex items-center gap-2 pb-4 text-sm font-medium transition-colors ${
+              activeTab === tab.id ? "text-primary" : "text-text-muted hover:text-text"
+            }`}
+          >
+            <tab.icon className="h-4 w-4" aria-hidden="true" />
+            {tab.label} ({tab.count})
+            {activeTab === tab.id && (
+              <motion.div
+                layoutId="profile-tab-underline"
+                className="bg-primary absolute right-0 bottom-0 left-0 h-0.5 rounded-full"
+                transition={{ type: "spring", stiffness: 500, damping: 30 }}
+              />
+            )}
+          </button>
+        ))}
       </div>
 
       {/* Tab Panels */}
@@ -156,7 +181,7 @@ export function ProfileTabs({
                     <button
                       onClick={onLoadMore}
                       disabled={loadingMore}
-                      className="btn-secondary inline-flex items-center gap-2 px-8 py-3 disabled:opacity-50"
+                      className="btn-secondary inline-flex items-center gap-2 px-8 py-3 disabled:opacity-60"
                     >
                       {loadingMore && <Loader2 className="h-4 w-4 animate-spin" />}
                       {t("loadMore")}

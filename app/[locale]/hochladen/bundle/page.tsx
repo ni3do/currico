@@ -578,7 +578,7 @@ export default function CreateBundlePage() {
                       type="button"
                       onClick={() => setMaterialPage((p) => Math.max(1, p - 1))}
                       disabled={materialPage === 1}
-                      className="border-border text-text hover:bg-surface-elevated rounded-lg border p-2 transition-colors disabled:opacity-50"
+                      className="border-border text-text hover:bg-surface-elevated rounded-lg border p-2 transition-colors disabled:opacity-60"
                     >
                       <ChevronLeft className="h-4 w-4" />
                     </button>
@@ -589,7 +589,7 @@ export default function CreateBundlePage() {
                       type="button"
                       onClick={() => setMaterialPage((p) => Math.min(totalPages, p + 1))}
                       disabled={materialPage === totalPages}
-                      className="border-border text-text hover:bg-surface-elevated rounded-lg border p-2 transition-colors disabled:opacity-50"
+                      className="border-border text-text hover:bg-surface-elevated rounded-lg border p-2 transition-colors disabled:opacity-60"
                     >
                       <ChevronRight className="h-4 w-4" />
                     </button>
@@ -705,7 +705,7 @@ export default function CreateBundlePage() {
                     parseFloat(formData.price) > 0 &&
                     calculateDiscount() <= 0)
                 }
-                className="bg-primary text-text-on-accent shadow-primary/20 hover:bg-primary-hover flex-1 rounded-xl px-6 py-4 font-semibold shadow-lg transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                className="bg-primary text-text-on-accent shadow-primary/20 hover:bg-primary-hover flex-1 rounded-xl px-6 py-4 font-semibold shadow-lg transition-colors disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {submitting ? tBundle("creating") : tBundle("createBundle")}
               </button>

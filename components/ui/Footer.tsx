@@ -155,8 +155,26 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-border mt-10 flex flex-col items-center gap-2 border-t pt-6 sm:flex-row sm:justify-between">
+        <div className="border-border mt-10 flex flex-col items-center gap-3 border-t pt-6 sm:flex-row sm:justify-between">
           <span className="text-text-muted text-xs">{t("footer.copyright")}</span>
+          <div className="flex items-center gap-2">
+            <span className="text-text-muted text-xs">{t("footer.payment")}</span>
+            <div className="flex items-center gap-1.5" aria-hidden="true">
+              {/* TWINT */}
+              <span className="bg-text text-bg inline-flex h-5 items-center rounded px-1.5 text-[10px] leading-none font-bold">
+                TWINT
+              </span>
+              {/* Visa */}
+              <span className="inline-flex h-5 items-center rounded border border-[#1a1f71] bg-white px-1.5 text-[10px] leading-none font-bold text-[#1a1f71]">
+                VISA
+              </span>
+              {/* Mastercard */}
+              <span className="inline-flex h-5 items-center gap-0.5 rounded bg-[#252525] px-1.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-[#eb001b] opacity-90" />
+                <span className="-ml-1 h-2.5 w-2.5 rounded-full bg-[#f79e1b] opacity-90" />
+              </span>
+            </div>
+          </div>
           <span className="text-text-muted text-xs">{t("footer.swissHosted")}</span>
         </div>
       </div>

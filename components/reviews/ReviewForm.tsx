@@ -145,7 +145,7 @@ export function ReviewForm({
         <button
           type="submit"
           disabled={submitting || rating === 0}
-          className="btn-primary flex-1 px-6 py-3 disabled:opacity-50"
+          className="btn-primary flex-1 px-6 py-3 disabled:opacity-60"
         >
           {submitting ? t("saving") : isEditing ? t("updateReview") : t("submitReview")}
         </button>
@@ -154,7 +154,7 @@ export function ReviewForm({
             type="button"
             onClick={onCancel}
             disabled={submitting}
-            className="btn-secondary px-6 py-3 disabled:opacity-50"
+            className="btn-secondary px-6 py-3 disabled:opacity-60"
           >
             {t("cancel")}
           </button>

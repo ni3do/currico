@@ -199,7 +199,7 @@ export function CommentCard({
                           setShowDeleteDialog(true);
                         }}
                         disabled={deleting}
-                        className="text-error hover:bg-error/10 flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm transition-colors disabled:opacity-50"
+                        className="text-error hover:bg-error/10 flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm transition-colors disabled:opacity-60"
                       >
                         <Trash2 className="h-4 w-4" />
                         {deleting ? t("deleting") : t("delete")}
@@ -226,7 +226,7 @@ export function CommentCard({
               <button
                 onClick={handleSaveEdit}
                 disabled={saving || !editContent.trim()}
-                className="btn-primary px-4 py-2 text-sm disabled:opacity-50"
+                className="btn-primary px-4 py-2 text-sm disabled:opacity-60"
               >
                 {saving ? t("saving") : t("save")}
               </button>
@@ -236,7 +236,7 @@ export function CommentCard({
                   setEditContent(localContent);
                 }}
                 disabled={saving}
-                className="btn-secondary px-4 py-2 text-sm disabled:opacity-50"
+                className="btn-secondary px-4 py-2 text-sm disabled:opacity-60"
               >
                 {t("cancel")}
               </button>
@@ -481,7 +481,7 @@ function ReplyCard({ reply, onDeleted }: ReplyCardProps) {
                           setShowDeleteDialog(true);
                         }}
                         disabled={deleting}
-                        className="text-error hover:bg-error/10 flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors disabled:opacity-50"
+                        className="text-error hover:bg-error/10 flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors disabled:opacity-60"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                         {deleting ? t("deleting") : t("delete")}
@@ -508,7 +508,7 @@ function ReplyCard({ reply, onDeleted }: ReplyCardProps) {
               <button
                 onClick={handleSaveEdit}
                 disabled={saving || !editContent.trim()}
-                className="btn-primary px-3 py-1.5 text-xs disabled:opacity-50"
+                className="btn-primary px-3 py-1.5 text-xs disabled:opacity-60"
               >
                 {saving ? t("saving") : t("save")}
               </button>

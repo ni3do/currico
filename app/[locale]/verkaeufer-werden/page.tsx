@@ -21,6 +21,7 @@ import {
   Calculator,
 } from "lucide-react";
 import type { StripeStatus } from "@/lib/types/account";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 interface UserData {
   emailVerified: string | null;
@@ -678,7 +679,7 @@ export default function BecomeSellerPage() {
             {/* CTA Section */}
             <div className="mt-8 text-center">
               {isLoading ? (
-                <div className="bg-bg-secondary mx-auto h-12 w-48 animate-pulse rounded-lg" />
+                <Skeleton className="mx-auto h-12 w-48 rounded-lg" />
               ) : !isLoggedIn ? (
                 <div className="space-y-3">
                   <p className="text-text-muted">{t("cta.loginRequired")}</p>
@@ -707,7 +708,7 @@ export default function BecomeSellerPage() {
                     <button
                       onClick={handleStartStripeOnboarding}
                       disabled={isStripeLoading}
-                      className="btn btn-primary inline-flex items-center gap-2 px-10 py-3.5 text-base disabled:cursor-not-allowed disabled:opacity-50"
+                      className="btn btn-primary inline-flex items-center gap-2 px-10 py-3.5 text-base disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       {isStripeLoading
                         ? t("cta.stripeOnboardingLoading")
@@ -726,7 +727,7 @@ export default function BecomeSellerPage() {
                     onClick={handleAcceptTerms}
                     disabled={!termsAccepted || isSubmitting}
                     title={!termsAccepted ? getDisabledTooltip() : undefined}
-                    className="btn btn-primary inline-flex items-center gap-2 px-8 py-3 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="btn btn-primary inline-flex items-center gap-2 px-8 py-3 disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {isSubmitting ? t("cta.submitting") : t("cta.button")}
                     {!isSubmitting && termsAccepted && (
