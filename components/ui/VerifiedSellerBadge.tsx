@@ -28,6 +28,7 @@ export function VerifiedSellerBadge({ variant = "compact" }: VerifiedSellerBadge
     <Link
       href="/verifizierter-verkaeufer"
       className="bg-success/20 text-success hover:bg-success/30 mt-1 inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium transition-colors"
+      onClick={(e) => e.stopPropagation()}
     >
       <BadgeCheck className="h-3.5 w-3.5" />
       {t("badge")}

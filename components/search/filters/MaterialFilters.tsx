@@ -20,6 +20,8 @@ interface MaterialFiltersProps {
   onCantonsChange: (cantons: string[]) => void;
   tags: string[];
   onTagToggle: (tag: string) => void;
+  verifiedOnly: boolean;
+  onVerifiedOnlyChange: (value: boolean) => void;
   t: ReturnType<typeof useTranslations>;
 }
 
@@ -34,6 +36,8 @@ export function MaterialFilters({
   onCantonsChange,
   tags,
   onTagToggle,
+  verifiedOnly,
+  onVerifiedOnlyChange,
   t,
 }: MaterialFiltersProps) {
   const [tagInput, setTagInput] = useState("");
@@ -51,6 +55,36 @@ export function MaterialFilters({
 
   return (
     <>
+      <div className="divider my-5" />
+
+      <CollapsibleSection title={t("sidebar.verifiedSellerLabel")} defaultOpen={verifiedOnly}>
+        <div
+          className="flex cursor-pointer items-center gap-3 py-1"
+          onClick={() => onVerifiedOnlyChange(!verifiedOnly)}
+        >
+          <button
+            type="button"
+            role="switch"
+            aria-checked={verifiedOnly}
+            aria-label={t("sidebar.verifiedSellerToggle")}
+            onClick={(e) => {
+              e.stopPropagation();
+              onVerifiedOnlyChange(!verifiedOnly);
+            }}
+            className="relative"
+          >
+            <div
+              className={`h-6 w-11 rounded-full transition-colors ${verifiedOnly ? "bg-success" : "bg-border"}`}
+            >
+              <div
+                className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${verifiedOnly ? "translate-x-5" : "translate-x-0.5"}`}
+              />
+            </div>
+          </button>
+          <span className="text-sm">{t("sidebar.verifiedSellerToggle")}</span>
+        </div>
+      </CollapsibleSection>
+
       <div className="divider my-5" />
 
       <CollapsibleSection title={t("sidebar.tagSectionLabel")} defaultOpen={tags.length > 0}>

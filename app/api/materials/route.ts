@@ -101,6 +101,9 @@ export async function GET(request: NextRequest) {
         ? [tag]
         : [];
 
+    // Verified seller filter
+    const verifiedOnly = searchParams.get("verifiedOnly") === "true";
+
     // Additional filters
     const maxPrice = searchParams.get("maxPrice");
     const minPrice = searchParams.get("minPrice");
@@ -282,6 +285,11 @@ export async function GET(request: NextRequest) {
     // Dialect filter: SWISS shows SWISS + BOTH, STANDARD shows STANDARD + BOTH
     if (dialect === "SWISS" || dialect === "STANDARD") {
       where.dialect = { in: [dialect, "BOTH"] };
+    }
+
+    // Verified seller filter
+    if (verifiedOnly) {
+      where.seller = { ...(where.seller as Record<string, unknown>), is_verified_seller: true };
     }
 
     // Competency filter - fuzzy match on code
@@ -468,11 +476,13 @@ export async function GET(request: NextRequest) {
     // Build orderBy
     // If doing full-text search and sort is "relevance" or not specified, we'll sort by rank
     const useRelevanceSort = fullTextSearchIds && (sort === "relevance" || sort === "newest");
-    let orderBy: Record<string, string> = { created_at: "desc" };
+    let orderBy: Record<string, unknown> | Record<string, unknown>[] = { created_at: "desc" };
     if (sort === "price-low") {
       orderBy = { price: "asc" };
     } else if (sort === "price-high") {
       orderBy = { price: "desc" };
+    } else if (sort === "recommended") {
+      orderBy = [{ seller: { is_verified_seller: "desc" } }, { created_at: "desc" }];
     } else if (sort === "relevance" && !fullTextSearchIds) {
       // Relevance sort without search falls back to newest
       orderBy = { created_at: "desc" };

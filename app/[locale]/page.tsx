@@ -22,7 +22,7 @@ export default async function HomePage({ params }: Props) {
     const [materials, stats] = await Promise.all([
       prisma.resource.findMany({
         where: { is_published: true, is_public: true },
-        orderBy: { created_at: "desc" },
+        orderBy: [{ seller: { is_verified_seller: "desc" } }, { created_at: "desc" }],
         take: 3,
         select: {
           id: true,

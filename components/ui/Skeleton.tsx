@@ -53,13 +53,18 @@ export function TableSkeleton({ rows = 5, columns = 5 }: { rows?: number; column
 export function MaterialCardSkeleton() {
   return (
     <div className="card overflow-hidden" role="status" aria-busy="true" aria-label="Loading">
-      <Skeleton className="aspect-[16/9] w-full rounded-none" />
-      <div className="p-5">
-        <Skeleton className="mb-3 h-3 w-20" />
-        <Skeleton className="mb-2 h-5 w-3/4" />
-        <Skeleton className="mb-4 h-3 w-full" />
+      <div className="relative">
+        <Skeleton className="aspect-[4/3] w-full rounded-none" />
+        {/* Price badge skeleton */}
+        <Skeleton className="absolute top-3 right-3 h-7 w-16 rounded-full" />
+      </div>
+      <div className="p-4">
+        <Skeleton className="mb-1.5 h-3 w-20" />
+        <Skeleton className="mb-1.5 h-5 w-3/4" />
+        <Skeleton className="mb-1 h-4 w-24" />
+        <Skeleton className="mb-2 h-3 w-full" />
         <Skeleton className="h-3 w-2/3" />
-        <div className="border-border-subtle mt-4 flex items-center justify-between border-t pt-4">
+        <div className="border-border-subtle mt-3 flex items-center justify-between border-t pt-3">
           <Skeleton className="h-3 w-24" />
           <Skeleton className="h-5 w-5 rounded-full" />
         </div>

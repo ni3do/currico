@@ -16,6 +16,7 @@ import {
   ChevronDown,
   AlertTriangle,
   ExternalLink,
+  Info,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
@@ -26,6 +27,7 @@ import { MultiSelect } from "@/components/ui/MultiSelect";
 import { CYCLES } from "@/lib/types/account";
 import { SWISS_CANTONS } from "@/lib/validations/user";
 import { getSubjectPillClass } from "@/lib/constants/subject-colors";
+import { looksLikeUsername } from "@/lib/utils/display-name";
 
 // Teaching experience options
 const TEACHING_EXPERIENCE_OPTIONS = [
@@ -485,6 +487,12 @@ export default function SettingsProfilePage() {
                 )}
                 <p className="text-text-muted text-xs">{profileFormData.display_name.length}/32</p>
               </div>
+              {looksLikeUsername(profileFormData.display_name) && (
+                <div className="border-primary/20 bg-primary/5 mt-2 flex items-start gap-2 rounded-lg border px-3 py-2">
+                  <Info className="text-primary mt-0.5 h-4 w-4 flex-shrink-0" aria-hidden="true" />
+                  <p className="text-text-muted text-xs">{tSettings("displayNameNudge")}</p>
+                </div>
+              )}
             </div>
             <div>
               <label className="text-text mb-1.5 block text-sm font-medium">

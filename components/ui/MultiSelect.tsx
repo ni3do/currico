@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useId } from "react";
 import { useTranslations } from "next-intl";
 import { X, Check } from "lucide-react";
 
@@ -36,6 +36,7 @@ export function MultiSelect({
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
+  const listboxId = useId();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -86,6 +87,7 @@ export function MultiSelect({
         role="combobox"
         aria-expanded={isOpen}
         aria-haspopup="listbox"
+        aria-controls={listboxId}
         aria-label={label}
         tabIndex={0}
         className={`bg-bg min-h-[42px] w-full cursor-pointer rounded-lg border px-3 py-2 ${
@@ -123,7 +125,11 @@ export function MultiSelect({
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="border-border bg-surface absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-lg border shadow-lg">
+        <div
+          id={listboxId}
+          role="listbox"
+          className="border-border bg-surface absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-lg border shadow-lg"
+        >
           {/* Search input */}
           <div className="border-border bg-surface sticky top-0 border-b p-2">
             <input

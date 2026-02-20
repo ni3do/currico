@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { Heart, FileText, ChevronRight, Download } from "lucide-react";
 import { getSubjectTextColor } from "@/lib/constants/subject-colors";
 import { SellerBadge } from "@/components/ui/SellerBadge";
+import { VerifiedSellerBadge } from "@/components/ui/VerifiedSellerBadge";
 import { StarRating } from "@/components/ui/StarRating";
 import { TiltCard } from "@/components/ui/TiltCard";
 
@@ -151,9 +152,13 @@ export const MaterialCard = memo(function MaterialCard({
           </div>
         )}
 
-        {/* Price Badge - moved to footer for non-compact, keep overlay for compact */}
-        {shouldShowPriceBadge && isCompact && (
-          <span className="bg-price text-text-on-accent absolute top-3 right-3 rounded-full px-2 py-0.5 text-xs font-bold shadow-md">
+        {/* Price Badge - overlay on image for all variants */}
+        {shouldShowPriceBadge && (
+          <span
+            className={`absolute top-3 right-3 rounded-full font-bold shadow-md ${
+              isFree ? "bg-success text-text-on-accent" : "bg-price text-text-on-accent"
+            } ${isCompact ? "px-2 py-0.5 text-xs" : "px-3 py-1 text-sm"}`}
+          >
             {priceFormatted}
           </span>
         )}
@@ -182,9 +187,9 @@ export const MaterialCard = memo(function MaterialCard({
       </div>
 
       {/* Content */}
-      <div className={`flex flex-1 flex-col ${isCompact ? "justify-center p-3 sm:p-4" : "p-5"}`}>
+      <div className={`flex flex-1 flex-col ${isCompact ? "justify-center p-3 sm:p-4" : "p-4"}`}>
         {/* Eyebrow Tag - Subject & Level */}
-        <div className={`${isCompact ? "mb-1" : "mb-2"}`}>
+        <div className={`${isCompact ? "mb-1" : "mb-1.5"}`}>
           <span
             className={`text-xs font-semibold tracking-wide uppercase ${getSubjectTextColor(subjectPillClass)}`}
           >
@@ -196,40 +201,6 @@ export const MaterialCard = memo(function MaterialCard({
               </>
             )}
           </span>
-          {/* Competency + Tag badges — single fixed-height row */}
-          {!isCompact && (
-            <div className="mt-1 flex h-6 items-center gap-1 overflow-hidden">
-              {competencies?.slice(0, 2).map((c) => (
-                <span
-                  key={c.code}
-                  className="inline-flex shrink-0 items-center rounded px-1.5 py-0.5 font-mono text-[10px] font-semibold"
-                  style={{
-                    backgroundColor: `${c.subjectColor || "#6b7280"}20`,
-                    color: c.subjectColor || "#6b7280",
-                    border: `1px solid ${c.subjectColor || "#6b7280"}40`,
-                  }}
-                >
-                  {c.code}
-                </span>
-              ))}
-              {competencies && competencies.length > 2 && (
-                <span className="text-text-faint shrink-0 text-[10px]">
-                  +{competencies.length - 2}
-                </span>
-              )}
-              {tags?.slice(0, 3).map((tag) => (
-                <span
-                  key={tag}
-                  className="bg-surface text-text-muted inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[10px] font-medium"
-                >
-                  #{tag}
-                </span>
-              ))}
-              {tags && tags.length > 3 && (
-                <span className="text-text-faint shrink-0 text-[10px]">+{tags.length - 3}</span>
-              )}
-            </div>
-          )}
         </div>
 
         {/* Title - Primary Heading Style */}
@@ -303,7 +274,7 @@ export const MaterialCard = memo(function MaterialCard({
 
         {/* Description — fixed min-height for default variant */}
         {!isCompact && (
-          <p className="text-text-muted mb-3 line-clamp-2 min-h-[2.5rem] text-sm leading-relaxed">
+          <p className="text-text-muted mb-2 line-clamp-2 min-h-[2.5rem] text-sm leading-relaxed">
             {description || "\u00A0"}
           </p>
         )}
@@ -311,11 +282,29 @@ export const MaterialCard = memo(function MaterialCard({
           <p className="text-text-muted mt-1 line-clamp-1 hidden text-xs sm:block">{description}</p>
         )}
 
+        {/* Tags — optional row below description */}
+        {!isCompact && tags && tags.length > 0 && (
+          <div className="mb-1 flex h-5 items-center gap-1 overflow-hidden">
+            {tags.slice(0, 3).map((tag) => (
+              <span
+                key={tag}
+                className="bg-surface text-text-muted inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[10px] font-medium"
+              >
+                #{tag}
+              </span>
+            ))}
+            {tags.length > 3 && (
+              <span className="text-text-faint shrink-0 text-[10px]">+{tags.length - 3}</span>
+            )}
+          </div>
+        )}
+
         {/* Compact footer: seller + price inline */}
         {isCompact && (
           <div className="text-text-muted mt-2 flex items-center gap-3 text-xs">
             <span className="flex min-w-0 items-center gap-1">
               <span className="truncate">{seller?.displayName || anonymousLabel || ""}</span>
+              {seller?.isVerifiedSeller && <VerifiedSellerBadge variant="compact" />}
               {seller?.sellerLevel != null && seller.sellerLevel > 0 && (
                 <SellerBadge
                   points={seller.sellerXp ?? 0}
@@ -341,6 +330,7 @@ export const MaterialCard = memo(function MaterialCard({
             <div className="border-border-subtle flex items-center justify-between border-t pt-3">
               <span className="text-text-muted flex min-w-0 items-center gap-1.5 text-sm transition-colors duration-300">
                 <span className="truncate">{seller?.displayName || anonymousLabel || ""}</span>
+                {seller?.isVerifiedSeller && <VerifiedSellerBadge variant="compact" />}
                 {seller?.sellerLevel != null && seller.sellerLevel > 0 && (
                   <SellerBadge
                     points={seller.sellerXp ?? 0}
@@ -349,17 +339,7 @@ export const MaterialCard = memo(function MaterialCard({
                   />
                 )}
               </span>
-              {shouldShowPriceBadge ? (
-                <span
-                  className={`rounded-full px-3 py-1 text-sm font-bold ${
-                    isFree ? "bg-success text-text-on-accent" : "bg-price text-text-on-accent"
-                  }`}
-                >
-                  {priceFormatted}
-                </span>
-              ) : (
-                <ChevronRight className="text-text-muted group-hover:text-primary h-5 w-5 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-1.5" />
-              )}
+              <ChevronRight className="text-text-muted group-hover:text-primary h-5 w-5 flex-shrink-0 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-1.5" />
             </div>
           ))}
       </div>

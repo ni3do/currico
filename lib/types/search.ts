@@ -11,6 +11,7 @@ export interface LP21FilterState {
   formats: string[];
   cantons: string[];
   tags: string[];
+  verifiedOnly: boolean;
 }
 
 export interface MaterialCompetency {
