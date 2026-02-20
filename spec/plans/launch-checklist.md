@@ -189,25 +189,86 @@
 
 ---
 
+## 🟤 UI/UX AUDIT RUNDE 2 (Feb 2026)
+
+> **Quelle:** Manuelles Feedback + Code-Audit, konsolidiert 2026-02-20
+> **Details:** Siehe `2overview.md` für vollständige Beschreibungen
+
+### 22. Bugs — Broken Links & Funktionalität 🔴
+
+- [ ] **Footer "Material hochladen" Button** — funktioniert nicht
+- [ ] **Materialien-Seite Upload-Button** — funktioniert nicht
+- [ ] **TrustBar Link "/verifizierter-verkaeufer"** — Seite existiert nicht
+- [ ] **Email-Links aus Benachrichtigungen** — AUTH_URL vs NEXTAUTH_URL Inkonsistenz
+- [ ] **Registrierung: "Erstes Material hochladen"** — CTA fehlt komplett
+- [ ] **Profilbild hochladen** — funktioniert nicht
+- [ ] **Upload-Validierung: Fachkürzel** — Deutsch falsch gespeichert
+- [ ] **Bewertung nach Download** — braucht Page-Reload statt Live-Update
+- [ ] **BG-Filter Umrandung** — inkonsistent mit anderen Fachbereichen
+- [ ] **"Sonstige" Filter** — Layout-Verschiebung beim Auswählen
+- [ ] **Urheberrecht "Zurück zum Upload"** — Button prüfen
+
+### 23. Text & Inhalt 🟡
+
+- [ ] Hero-Beschreibung: "Vertrauenswürdig, geprüft, sofort einsetzbar" streichen
+- [ ] Seller-CTA unter Suche löschen (redundant)
+- [ ] "Entwickelt mit" → "Entwickelt von" Schweizer Lehrpersonen
+- [ ] "Qualität garantiert" → "Qualität im Fokus" oder "Qualitätsgeprüft"
+- [ ] Testimonials-Sektion entfernen (keine echten Nutzer)
+- [ ] "Dialekt" → "Sprachvariante" umbenennen
+- [ ] Schlagwörter-Filter entfernen (redundant mit Suchleiste)
+- [ ] Seller-Level-Badge von Cards entfernen
+- [ ] "Geprüft" Tags/Embleme vereinfachen
+- [ ] Impressum & Cookies: Redundante Footer-Links entfernen
+- [ ] Blog-Link im Footer ausblenden (kein Content)
+
+### 24. UX-Verbesserungen 🟡
+
+- [ ] Zweites Zahlungsmittel-Icon in TrustBar entfernen
+- [ ] PlatformStats visuell aufwerten + Minimum-Schwelle
+- [ ] Ersteller-Klick → Profil statt Filter
+- [ ] Detail-Seite: 2/3 Dokument, 1/3 Beschreibung
+- [ ] Bewertungs-Formular kompakter (Sterne + Text nebeneinander)
+- [ ] "Material melden" Modal grösser
+- [ ] AGB & Datenschutz: TOC-Sidebar hinzufügen
+- [ ] "Nach oben" Buttons aus Seitenmitte entfernen (Urheberrecht + Cookies)
+- [ ] Profilbild: Ganzer Kreis klickbar
+- [ ] "Ungespeicherte Änderungen" eigenes Modal
+- [ ] Punkte-System in eigenen Tab
+- [ ] Uploads-Hover abrunden
+- [ ] Downloads klickbar machen
+- [ ] Cards vollständig klickbar (Bibliothek, Wunschliste, Uploads)
+- [ ] "Folge ich" ganze Zeile klickbar
+- [ ] Upload-Wizard: Mehr Animationen
+- [ ] Upload-Checkliste entfernen (redundant)
+- [ ] Material-Vorschau am Schluss grösser + klickbar
+- [ ] Upload-Button in TopBar für eingeloggte Nutzer
+- [ ] Hilfe-Center: Schnelleinstieg-Karten gleiche Höhe
+- [ ] Dropdowns: Hover-Highlight passend zu rounded corners
+
+---
+
 ## Zusammenfassung
 
 > Letzte Aktualisierung: 2026-02-20
 
-| Priorität   | Total  | Erledigt | Offen | %       |
-| ----------- | ------ | -------- | ----- | ------- |
-| 🔴 MUSS     | 16     | 14       | 2     | 88%     |
-| 🟠 SOLLTE   | 10     | 10       | 0     | 100%    |
-| 🟡 NACH     | 10     | 8        | 2     | 80%     |
-| 🟢 MITTEL   | 12     | 12       | 0     | 100%    |
-| 🟣 FEEDBACK | 18     | 15       | 3     | 83%     |
-| 🔵 LANG     | 6      | 5        | 1     | 83%     |
-| **Total**   | **72** | **64**   | **8** | **89%** |
+| Priorität   | Total   | Erledigt | Offen  | %       |
+| ----------- | ------- | -------- | ------ | ------- |
+| 🔴 MUSS     | 16      | 14       | 2      | 88%     |
+| 🟠 SOLLTE   | 10      | 10       | 0      | 100%    |
+| 🟡 NACH     | 10      | 8        | 2      | 80%     |
+| 🟢 MITTEL   | 12      | 12       | 0      | 100%    |
+| 🟣 FEEDBACK | 18      | 15       | 3      | 83%     |
+| 🔵 LANG     | 6       | 5        | 1      | 83%     |
+| 🟤 RUNDE 2  | 43      | 0        | 43     | 0%      |
+| **Total**   | **115** | **64**   | **51** | **56%** |
 
 > **Wichtigste Blocker vor Launch:**
 >
-> 1. **Content beschaffen** — 30-50 Materialien, 10-20 Lehrpersonen rekrutieren
-> 2. **Domain-Migration** — currico.ch registrieren, @currico.ch E-Mail (→ Roadmap 1.1)
-> 3. **Testdaten entfernen** — Dummy-Inhalte bereinigen (→ Feedback Item 17)
-> 4. **CTAs & Autocomplete** — UX-Grunderwartungen erfüllen (→ Feedback Items 17–18)
+> 1. **Bugs fixen (Sektion 22)** — 11 kaputte Features, darunter Upload-Buttons und Email-Links
+> 2. **Content beschaffen** — 30-50 Materialien, 10-20 Lehrpersonen rekrutieren
+> 3. **Domain-Migration** — currico.ch registrieren, @currico.ch E-Mail (→ Roadmap 1.1)
+> 4. **Testdaten entfernen** — Dummy-Inhalte bereinigen (→ Feedback Item 17)
+> 5. **Text & Vertrauen (Sektion 23)** — Übertriebene Claims entfernen, Fake-Testimonials raus
 >
-> **Hinweis:** Viele offene Items sind Business/Ops (nicht Code) oder überschneiden sich mit `joelimprovements-status.md`. Die 🟣 FEEDBACK-Sektion (Feb 2026) enthält 16 neue Items aus externem Usability-Feedback.
+> **Hinweis:** Runde-2-Items (🟤) stammen aus manuellem Feedback + Code-Audit. Vollständige Beschreibungen in `spec/plans/2overview.md`.

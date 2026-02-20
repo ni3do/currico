@@ -127,7 +127,7 @@ export const createMaterialSchema = z
         "Preis muss 0 (gratis) oder mindestens CHF 0.50 in 50-Rappen-Schritten sein"
       ),
     subjects: z
-      .array(z.string().min(2, "Fachkürzel muss mindestens 2 Zeichen haben"))
+      .array(z.string().min(1, "Fachkürzel darf nicht leer sein"))
       .min(1, "Mindestens ein Fach auswählen"),
     cycles: z.array(z.string().min(1)).default([]),
     tags: tagsSchema,
@@ -171,7 +171,7 @@ export const updateMaterialSchema = z
       )
       .optional(),
     subjects: z
-      .array(z.string().min(2, "Fachkürzel muss mindestens 2 Zeichen haben"))
+      .array(z.string().min(1, "Fachkürzel darf nicht leer sein"))
       .min(1, "Mindestens ein Fach auswählen")
       .optional(),
     cycles: z.array(z.string().min(1)).optional(),

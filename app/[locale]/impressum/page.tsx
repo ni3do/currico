@@ -150,27 +150,6 @@ export default function ImpressumPage() {
           </div>
         </section>
 
-        {/* Related Legal Pages */}
-        <div className="border-border mt-8 rounded-xl border p-6">
-          <div className="flex flex-wrap gap-4">
-            <Link href="/datenschutz" className="text-primary text-sm font-medium hover:underline">
-              {t("links.privacy")}
-            </Link>
-            <Link href="/agb" className="text-primary text-sm font-medium hover:underline">
-              {t("links.terms")}
-            </Link>
-            <Link
-              href="/cookie-richtlinien"
-              className="text-primary text-sm font-medium hover:underline"
-            >
-              {t("links.cookies")}
-            </Link>
-            <Link href="/urheberrecht" className="text-primary text-sm font-medium hover:underline">
-              {t("links.copyright")}
-            </Link>
-          </div>
-        </div>
-
         {/* Version */}
         <p className="text-text-muted mt-8 text-sm">{t("version")}</p>
       </main>

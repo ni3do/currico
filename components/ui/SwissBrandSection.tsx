@@ -31,6 +31,7 @@ export function SwissBrandSection() {
       iconColorClass: "text-primary",
       title: t("dataProtection.title"),
       description: t("dataProtection.description"),
+      href: "/datenschutz",
     },
   ];
 

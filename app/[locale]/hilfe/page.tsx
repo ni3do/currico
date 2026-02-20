@@ -138,12 +138,17 @@ export default function HilfePage() {
           <h2 className="text-text mb-6 text-xl font-semibold">{t("quickStart.title")}</h2>
           <div className="grid gap-4 sm:grid-cols-3">
             {quickStartItems.map((item) => (
-              <div key={item.key} className="border-border bg-surface rounded-xl border p-5">
+              <div
+                key={item.key}
+                className="border-border bg-surface flex flex-col rounded-xl border p-5"
+              >
                 <div className="mb-3">{item.icon}</div>
                 <h3 className="text-text mb-2 font-semibold">
                   {t(`quickStart.${item.key}.question`)}
                 </h3>
-                <p className="text-text-muted mb-4 text-sm">{t(`quickStart.${item.key}.answer`)}</p>
+                <p className="text-text-muted mb-4 flex-1 text-sm">
+                  {t(`quickStart.${item.key}.answer`)}
+                </p>
                 <Link
                   href={item.linkHref}
                   className="text-primary inline-flex items-center text-sm font-medium hover:underline"

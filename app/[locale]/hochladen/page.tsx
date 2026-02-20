@@ -39,8 +39,6 @@ import {
   AlertTriangle,
   Check,
   Loader2,
-  ClipboardCheck,
-  Scale,
   Info,
 } from "lucide-react";
 import { MaterialTypeBadge } from "@/components/ui/MaterialTypeBadge";
@@ -1163,51 +1161,6 @@ function UploadPageContent() {
                       />
                     </div>
                   </FormField>
-
-                  {/* Pre-Upload Checklist Callout */}
-                  <div className="border-primary/30 bg-primary/5 rounded-xl border p-5">
-                    <div className="mb-3 flex items-center gap-3">
-                      <div className="bg-primary/10 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg">
-                        <ClipboardCheck className="text-primary h-5 w-5" />
-                      </div>
-                      <div>
-                        <h3 className="text-text text-base font-semibold">
-                          {tLegal("checklistTitle")}
-                        </h3>
-                        <p className="text-text-muted text-sm">{tLegal("checklistSubtitle")}</p>
-                      </div>
-                    </div>
-                    <ul className="mb-4 space-y-2 pl-1">
-                      {(
-                        [
-                          "ownWork",
-                          "noScans",
-                          "noTrademarks",
-                          "swissSpelling",
-                          "correctLicense",
-                        ] as const
-                      ).map((key) => (
-                        <li key={key} className="flex items-start gap-2.5">
-                          <Check className="text-primary mt-0.5 h-4 w-4 flex-shrink-0" />
-                          <span className="text-text-secondary text-sm">
-                            {tLegal(`checklistItems.${key}`)}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                    <div className="flex items-center gap-4">
-                      <Link
-                        href="/urheberrecht"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary hover:bg-primary/10 inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
-                      >
-                        <Scale className="h-4 w-4" />
-                        {tLegal("copyrightGuideFull")}
-                        <ExternalLink className="h-3.5 w-3.5" />
-                      </Link>
-                    </div>
-                  </div>
 
                   {/* Legal Confirmations */}
                   <div className="border-border bg-surface-elevated rounded-xl border p-6">

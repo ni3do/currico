@@ -23,7 +23,7 @@ const trustItems: TrustItem[] = [
     key: "quality",
     icon: <Shield className="text-success h-5 w-5" aria-hidden="true" />,
     labelKey: "quality",
-    href: "/verifizierter-verkaeufer",
+    href: "/verkaeufer-werden",
   },
   {
     key: "hosting",
@@ -48,15 +48,7 @@ const trustItems: TrustItem[] = [
   },
   {
     key: "securePay",
-    icon: (
-      <span className="flex items-center gap-1" aria-hidden="true">
-        <CreditCard className="text-success h-5 w-5" />
-        <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none">
-          <rect width="24" height="24" rx="4" fill="#000000" />
-          <path d="M6 8h4v8H6V8zm8 0h4v8h-4V8zm-4 3h4v2h-4v-2z" fill="#FFFFFF" />
-        </svg>
-      </span>
-    ),
+    icon: <CreditCard className="text-success h-5 w-5" aria-hidden="true" />,
     labelKey: "securePay",
     href: "/agb",
   },

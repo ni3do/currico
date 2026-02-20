@@ -75,11 +75,7 @@ export function PurchasePanel({
           {formatIcon}
           {material.fileFormat || t("fileFormatUnknown")}
         </span>
-        {material.isApproved ? (
-          <span className="pill pill-success">{t("verified")}</span>
-        ) : (
-          <span className="pill pill-warning">{t("pendingStatus")}</span>
-        )}
+        {!material.isApproved && <span className="pill pill-warning">{t("pendingStatus")}</span>}
         {material.competencies &&
           material.competencies
             .slice(0, 2)
@@ -103,7 +99,7 @@ export function PurchasePanel({
 
       {/* Inline Seller Trust Card */}
       <Link
-        href={`/materialien?seller=${material.seller.id}`}
+        href={`/profil/${material.seller.id}`}
         className="border-border bg-surface/50 hover:border-primary/50 mb-4 flex items-center gap-3 rounded-lg border p-3 transition-colors"
       >
         {material.seller.image ? (
@@ -125,10 +121,10 @@ export function PurchasePanel({
               {material.seller.displayName || t("anonymous")}
             </span>
             {material.seller.verified && (
-              <span className="text-primary flex items-center gap-1 text-xs">
-                <BadgeCheck className="h-3.5 w-3.5 flex-shrink-0" />
-                {t("verified")}
-              </span>
+              <BadgeCheck
+                className="text-primary h-4 w-4 flex-shrink-0"
+                aria-label={t("verified")}
+              />
             )}
           </div>
           <div className="flex items-center gap-2">

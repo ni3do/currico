@@ -82,7 +82,7 @@ export function ReportModal({ materialId, onClose }: ReportModalProps) {
   return (
     <div className="bg-ctp-crust/50 fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
       <FocusTrap onEscape={handleClose}>
-        <div className="card mx-4 w-full max-w-md p-6">
+        <div className="card mx-4 w-full max-w-xl p-6">
           <div className="mb-4 flex items-center justify-between">
             <h3 className="text-text text-xl font-semibold">{t("report.title")}</h3>
             <button
@@ -137,9 +137,9 @@ export function ReportModal({ materialId, onClose }: ReportModalProps) {
                   name="description"
                   value={reportDescription}
                   onChange={(e) => setReportDescription(e.target.value)}
-                  rows={4}
+                  rows={5}
                   maxLength={1000}
-                  className="input min-h-[100px] resize-y"
+                  className="input min-h-[120px] resize-y"
                   placeholder={t("report.commentPlaceholder")}
                 />
               </div>

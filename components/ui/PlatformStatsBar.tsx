@@ -15,8 +15,13 @@ function formatSwissNumber(n: number): string {
   return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "\u2019");
 }
 
+const MIN_MATERIALS_THRESHOLD = 10;
+
 export function PlatformStatsBar({ materialCount, sellerCount, downloadCount }: PlatformStats) {
   const t = useTranslations("homePage.platformStats");
+
+  // Hide stats section until we have enough content to look credible
+  if (materialCount < MIN_MATERIALS_THRESHOLD) return null;
 
   const stats = [
     { key: "materials", icon: BookOpen, value: materialCount, label: t("materials") },

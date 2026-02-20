@@ -1,5 +1,6 @@
 "use client";
 
+import { Link } from "@/i18n/navigation";
 import { FadeIn, StaggerChildren, StaggerItem, motion } from "@/components/ui/animations";
 
 export interface FeatureCard {
@@ -9,6 +10,7 @@ export interface FeatureCard {
   iconColorClass: string;
   title: string;
   description: string;
+  href?: string;
 }
 
 interface FeatureGridProps {
@@ -43,8 +45,8 @@ export function FeatureGrid({
           staggerDelay={0.15}
           className="mx-auto grid max-w-5xl gap-6 sm:grid-cols-3 sm:gap-8"
         >
-          {cards.map((card) => (
-            <StaggerItem key={card.key}>
+          {cards.map((card) => {
+            const inner = (
               <motion.div
                 className={`card text-center ${isSpacious ? "p-8" : "p-6"}`}
                 whileHover={{
@@ -74,8 +76,19 @@ export function FeatureGrid({
                   {card.description}
                 </p>
               </motion.div>
-            </StaggerItem>
-          ))}
+            );
+            return (
+              <StaggerItem key={card.key}>
+                {card.href ? (
+                  <Link href={card.href} className="block">
+                    {inner}
+                  </Link>
+                ) : (
+                  inner
+                )}
+              </StaggerItem>
+            );
+          })}
         </StaggerChildren>
       </div>
     </section>

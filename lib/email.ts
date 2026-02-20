@@ -61,7 +61,8 @@ export async function sendVerificationEmail(
   token: string,
   locale: string = "de"
 ): Promise<SendEmailResult> {
-  const baseUrl = process.env.AUTH_URL || "http://localhost:3000";
+  const baseUrl =
+    process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "https://currico.ch";
   const verifyUrl = `${baseUrl}/${locale}/auth/verify-email?token=${token}`;
 
   const subject =
@@ -171,7 +172,8 @@ export async function sendPurchaseConfirmationEmail({
   isGuest,
   locale = "de",
 }: PurchaseEmailParams): Promise<SendEmailResult> {
-  const baseUrl = process.env.AUTH_URL || "http://localhost:3000";
+  const baseUrl =
+    process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "https://currico.ch";
 
   // Format price (cents to CHF with 2 decimals)
   const formattedPrice = (amount / 100).toFixed(2);

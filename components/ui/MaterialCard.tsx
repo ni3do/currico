@@ -6,7 +6,6 @@ import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { Heart, FileText, ChevronRight, Download } from "lucide-react";
 import { getSubjectTextColor } from "@/lib/constants/subject-colors";
-import { SellerBadge } from "@/components/ui/SellerBadge";
 import { VerifiedSellerBadge } from "@/components/ui/VerifiedSellerBadge";
 import { StarRating } from "@/components/ui/StarRating";
 import { TiltCard } from "@/components/ui/TiltCard";
@@ -305,13 +304,6 @@ export const MaterialCard = memo(function MaterialCard({
             <span className="flex min-w-0 items-center gap-1">
               <span className="truncate">{seller?.displayName || anonymousLabel || ""}</span>
               {seller?.isVerifiedSeller && <VerifiedSellerBadge variant="compact" />}
-              {seller?.sellerLevel != null && seller.sellerLevel > 0 && (
-                <SellerBadge
-                  points={seller.sellerXp ?? 0}
-                  cachedLevel={seller.sellerLevel}
-                  variant="compact"
-                />
-              )}
             </span>
             {priceFormatted && (
               <span className={`font-semibold ${isFree ? "text-success" : "text-price"}`}>
@@ -331,13 +323,6 @@ export const MaterialCard = memo(function MaterialCard({
               <span className="text-text-muted flex min-w-0 items-center gap-1.5 text-sm transition-colors duration-300">
                 <span className="truncate">{seller?.displayName || anonymousLabel || ""}</span>
                 {seller?.isVerifiedSeller && <VerifiedSellerBadge variant="compact" />}
-                {seller?.sellerLevel != null && seller.sellerLevel > 0 && (
-                  <SellerBadge
-                    points={seller.sellerXp ?? 0}
-                    cachedLevel={seller.sellerLevel}
-                    variant="compact"
-                  />
-                )}
               </span>
               <ChevronRight className="text-text-muted group-hover:text-primary h-5 w-5 flex-shrink-0 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-1.5" />
             </div>

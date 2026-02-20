@@ -576,7 +576,7 @@ export default function AccountOverviewPage() {
                               exit={{ opacity: 0 }}
                               transition={{ delay: index * 0.03 }}
                               layout
-                              className="group hover:bg-bg transition-colors"
+                              className="group hover:bg-bg rounded-lg transition-colors"
                             >
                               <td className="py-3.5 pr-4 pl-1">
                                 <Link href={`/materialien/${resource.id}`} className="block">
@@ -725,8 +725,14 @@ export default function AccountOverviewPage() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.05 }}
-                    className="group border-border bg-bg hover:border-primary/30 flex items-center gap-3 rounded-xl border p-3.5 transition-all hover:shadow-sm"
+                    className="group border-border bg-bg hover:border-primary/30 relative flex items-center gap-3 rounded-xl border p-3.5 transition-all hover:shadow-sm"
                   >
+                    {/* Clickable card overlay */}
+                    <Link
+                      href={`/materialien/${item.id}`}
+                      className="absolute inset-0 z-0 rounded-xl"
+                      aria-label={item.title}
+                    />
                     {/* Thumbnail or icon */}
                     {item.previewUrl ? (
                       <Image
@@ -755,9 +761,13 @@ export default function AccountOverviewPage() {
                       </div>
                     </div>
                     <button
-                      onClick={() => handleDownload(item.id)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleDownload(item.id);
+                      }}
                       disabled={downloading === item.id}
-                      className="text-primary hover:bg-primary/10 shrink-0 rounded-lg p-2 transition-colors disabled:opacity-60"
+                      className="text-primary hover:bg-primary/10 relative z-10 shrink-0 rounded-lg p-2 transition-colors disabled:opacity-60"
                       title={t("overview.downloads")}
                       aria-label={t("overview.downloadLabel")}
                     >

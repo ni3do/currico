@@ -196,11 +196,17 @@ export default function AccountFollowingPage() {
             {filteredSellers.map((seller) => (
               <div
                 key={seller.id}
-                className="border-border bg-bg hover:border-primary/50 rounded-xl border p-6 transition-all"
+                className="border-border bg-bg hover:border-primary/50 group relative rounded-xl border p-6 transition-all"
               >
+                {/* Full-card clickable link */}
+                <Link
+                  href={`/profil/${seller.id}`}
+                  className="absolute inset-0 z-0 rounded-xl"
+                  aria-label={seller.name}
+                />
                 <div className="flex items-start gap-4">
                   {/* Avatar */}
-                  <Link href={`/profil/${seller.id}`} className="flex-shrink-0">
+                  <div className="flex-shrink-0">
                     {seller.image ? (
                       <Image
                         src={seller.image}
@@ -214,27 +220,28 @@ export default function AccountFollowingPage() {
                         {seller.name.charAt(0).toUpperCase()}
                       </div>
                     )}
-                  </Link>
+                  </div>
 
                   {/* Info */}
                   <div className="min-w-0 flex-1">
                     <div className="flex items-start justify-between">
                       <div>
-                        <Link
-                          href={`/profil/${seller.id}`}
-                          className="text-text hover:text-primary text-lg font-semibold"
-                        >
+                        <span className="text-text group-hover:text-primary text-lg font-semibold transition-colors">
                           {seller.name}
-                        </Link>
+                        </span>
                         {seller.bio && (
                           <p className="text-text-muted mt-1 line-clamp-2 text-sm">{seller.bio}</p>
                         )}
                       </div>
 
                       <button
-                        onClick={() => handleUnfollow(seller.id)}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleUnfollow(seller.id);
+                        }}
                         disabled={unfollowingId === seller.id}
-                        className="border-border text-text hover:border-primary hover:text-primary flex items-center gap-1.5 rounded-lg border px-4 py-2 text-sm font-medium transition-colors disabled:opacity-60"
+                        className="border-border text-text hover:border-primary hover:text-primary relative z-10 flex items-center gap-1.5 rounded-lg border px-4 py-2 text-sm font-medium transition-colors disabled:opacity-60"
                       >
                         {unfollowingId === seller.id ? (
                           <>

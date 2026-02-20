@@ -168,6 +168,13 @@ export default function RegisterPage() {
                   </button>
 
                   <button
+                    onClick={() => router.push("/hochladen")}
+                    className="border-border bg-surface text-text hover:bg-surface-elevated w-full rounded-lg border px-6 py-3.5 font-semibold transition-all"
+                  >
+                    {t("emailSent.uploadButton")}
+                  </button>
+
+                  <button
                     onClick={handleResendVerification}
                     disabled={resendState === "sending" || resendState === "sent"}
                     className="text-primary hover:text-primary-hover w-full text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60"
