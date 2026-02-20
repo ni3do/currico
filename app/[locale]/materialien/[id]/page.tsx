@@ -448,7 +448,7 @@ export default function MaterialDetailPage() {
                 onClick={handleDownload}
                 disabled={downloading}
                 aria-label={t("a11y.downloadFree")}
-                className="btn-action px-6 py-3 font-semibold disabled:opacity-50"
+                className="btn-action px-6 py-3 font-semibold disabled:opacity-60"
               >
                 {downloading ? "..." : t("download")}
               </button>

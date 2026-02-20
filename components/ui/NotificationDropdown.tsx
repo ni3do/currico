@@ -111,6 +111,7 @@ export default function NotificationDropdown({
         className="text-text-secondary hover:text-primary relative p-2 transition-colors"
         aria-label={t("title")}
         aria-expanded={isOpen}
+        aria-controls="notification-dropdown-panel"
       >
         <Bell className="h-5 w-5" />
         {unreadCount > 0 && (
@@ -128,6 +129,7 @@ export default function NotificationDropdown({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.15, ease: [0.22, 1, 0.36, 1] }}
+            id="notification-dropdown-panel"
             className="border-border bg-surface absolute right-0 z-50 mt-2 w-80 origin-top-right overflow-hidden rounded-xl border shadow-lg"
           >
             {/* Header */}

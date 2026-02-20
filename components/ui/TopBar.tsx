@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bell, ChevronDown, User, ShieldCheck, LogOut, X, Menu } from "lucide-react";
+import Image from "next/image";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { LoginLink } from "@/components/ui/LoginLink";
 
@@ -125,6 +126,9 @@ export default function TopBar() {
                   {/* User Avatar/Name Dropdown Trigger */}
                   <button
                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                    aria-expanded={isUserMenuOpen}
+                    aria-haspopup="menu"
+                    aria-controls="user-menu-dropdown"
                     className="text-text-secondary hover:bg-surface hover:text-primary flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
                   >
                     {isAdmin ? (
@@ -137,10 +141,11 @@ export default function TopBar() {
                         </div>
                       </div>
                     ) : session.user?.image ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
+                      <Image
                         src={session.user.image}
                         alt={session.user?.name || ""}
+                        width={32}
+                        height={32}
                         className="h-8 w-8 rounded-full"
                       />
                     ) : (
@@ -166,10 +171,13 @@ export default function TopBar() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -10, scale: 0.95 }}
                         transition={{ duration: 0.15, ease: [0.22, 1, 0.36, 1] }}
+                        id="user-menu-dropdown"
+                        role="menu"
                         className="border-border bg-surface absolute right-0 z-50 mt-2 w-48 origin-top-right rounded-lg border py-1 shadow-lg"
                       >
                         <Link
                           href="/konto"
+                          role="menuitem"
                           onClick={() => setIsUserMenuOpen(false)}
                           className="text-text hover:bg-bg flex items-center gap-2 px-4 py-2 text-sm transition-colors"
                         >
@@ -179,6 +187,7 @@ export default function TopBar() {
                         {isAdmin && (
                           <Link
                             href="/admin"
+                            role="menuitem"
                             onClick={() => setIsUserMenuOpen(false)}
                             className="text-text hover:bg-bg flex items-center gap-2 px-4 py-2 text-sm transition-colors"
                           >
@@ -188,6 +197,7 @@ export default function TopBar() {
                         )}
                         <div className="border-border my-1 border-t"></div>
                         <button
+                          role="menuitem"
                           onClick={() => {
                             setIsUserMenuOpen(false);
                             signOut();

@@ -114,7 +114,7 @@ export function CheckoutButton({
       <button
         onClick={handleCheckout}
         disabled={disabled || loading}
-        className={`btn-action flex items-center justify-center gap-2 py-4 text-lg font-semibold shadow-md transition-all hover:shadow-lg disabled:opacity-50 ${className}`}
+        className={`btn-action flex items-center justify-center gap-2 py-4 text-lg font-semibold shadow-md transition-all hover:shadow-lg disabled:opacity-60 ${className}`}
       >
         {loading ? (
           <>

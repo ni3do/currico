@@ -314,7 +314,7 @@ export default function ContactClient() {
                   <button
                     type="submit"
                     disabled={isSubmitting || !formData.consent}
-                    className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex w-full items-center justify-center rounded-lg px-8 py-3 font-semibold transition-all hover:-translate-y-0.5 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-none sm:w-auto"
+                    className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex w-full items-center justify-center rounded-lg px-8 py-3 font-semibold transition-all hover:-translate-y-0.5 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:shadow-none sm:w-auto"
                   >
                     {isSubmitting ? t("form.submitting") : t("form.submitButton")}
                   </button>

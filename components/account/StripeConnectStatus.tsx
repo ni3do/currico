@@ -190,7 +190,7 @@ export function StripeConnectStatus({ isSeller }: StripeConnectStatusProps) {
             <button
               onClick={handleContinueStripeOnboarding}
               disabled={isStripeLoading}
-              className="bg-warning text-text-on-accent hover:bg-warning-hover mt-4 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
+              className="bg-warning text-text-on-accent hover:bg-warning-hover mt-4 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-60"
             >
               {isStripeLoading ? t("pending.continueLoading") : t("pending.continueSetup")}
               <ChevronRight className="h-4 w-4" aria-hidden="true" />

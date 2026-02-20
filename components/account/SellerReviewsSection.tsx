@@ -333,7 +333,7 @@ export function SellerReviewsSection({ className = "" }: SellerReviewsSectionPro
                       <button
                         onClick={() => handleSubmitReply(review.id)}
                         disabled={submittingReply || !replyContent.trim()}
-                        className="btn-primary flex items-center gap-2 px-4 py-2 text-sm disabled:opacity-50"
+                        className="btn-primary flex items-center gap-2 px-4 py-2 text-sm disabled:opacity-60"
                       >
                         <Send className="h-4 w-4" />
                         {submittingReply ? t("sending") : t("send")}
@@ -359,7 +359,7 @@ export function SellerReviewsSection({ className = "" }: SellerReviewsSectionPro
               <button
                 onClick={() => fetchReviews(page - 1, filter)}
                 disabled={page === 1 || loading}
-                className="btn-secondary px-4 py-2 disabled:opacity-50"
+                className="btn-secondary px-4 py-2 disabled:opacity-60"
               >
                 {t("prev")}
               </button>
@@ -369,7 +369,7 @@ export function SellerReviewsSection({ className = "" }: SellerReviewsSectionPro
               <button
                 onClick={() => fetchReviews(page + 1, filter)}
                 disabled={page === totalPages || loading}
-                className="btn-secondary px-4 py-2 disabled:opacity-50"
+                className="btn-secondary px-4 py-2 disabled:opacity-60"
               >
                 {t("next")}
               </button>

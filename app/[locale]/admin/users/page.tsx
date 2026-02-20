@@ -304,7 +304,7 @@ export default function AdminUsersPage() {
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="border-border bg-surface text-text hover:bg-bg rounded-lg border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50"
+            className="border-border bg-surface text-text hover:bg-bg rounded-lg border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60"
           >
             {t("previous")}
           </button>
@@ -312,7 +312,7 @@ export default function AdminUsersPage() {
           <button
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
-            className="border-border bg-surface text-text hover:bg-bg rounded-lg border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50"
+            className="border-border bg-surface text-text hover:bg-bg rounded-lg border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60"
           >
             {t("next")}
           </button>
@@ -363,7 +363,7 @@ export default function AdminUsersPage() {
                     defaultValue={selectedUser.role}
                     onChange={(e) => handleRoleChange(selectedUser.id, e.target.value)}
                     disabled={selectedUser.is_protected || actionLoading}
-                    className="border-border bg-surface text-text focus:border-primary w-full rounded-full border px-4 py-2.5 focus:outline-none disabled:opacity-50"
+                    className="border-border bg-surface text-text focus:border-primary w-full rounded-full border px-4 py-2.5 focus:outline-none disabled:opacity-60"
                   >
                     <option value="BUYER">{t("buyer")}</option>
                     <option value="SELLER">{t("seller")}</option>
@@ -403,7 +403,7 @@ export default function AdminUsersPage() {
                               )
                             }
                             disabled={actionLoading}
-                            className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors disabled:opacity-50 ${
+                            className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors disabled:opacity-60 ${
                               selectedUser.is_verified_seller
                                 ? "bg-[var(--badge-error-bg)] text-[var(--badge-error-text)] hover:opacity-80"
                                 : "bg-success/20 text-success hover:bg-success/30"
@@ -477,7 +477,7 @@ export default function AdminUsersPage() {
                 <button
                   onClick={() => handleDeleteUser(selectedUser.id)}
                   disabled={actionLoading}
-                  className="bg-error text-text-on-accent flex-1 rounded-lg px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-50"
+                  className="bg-error text-text-on-accent flex-1 rounded-lg px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-60"
                 >
                   {actionLoading ? t("deleting") : t("yesDelete")}
                 </button>

@@ -2,7 +2,7 @@
 
 import { useCallback } from "react";
 import { FileText, Users } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import type { useTranslations } from "next-intl";
 
 interface SearchTypeTabsProps {
@@ -20,6 +20,8 @@ export function SearchTypeTabs({
   onToggleCreators,
   t,
 }: SearchTypeTabsProps) {
+  const prefersReducedMotion = useReducedMotion();
+
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
@@ -41,6 +43,13 @@ export function SearchTypeTabs({
     [showMaterials, onToggleMaterials, onToggleCreators]
   );
 
+  const hoverAnimation = prefersReducedMotion
+    ? undefined
+    : ({ scale: 1.015, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] as const } } as const);
+  const tapAnimation = prefersReducedMotion
+    ? undefined
+    : ({ scale: 0.97, transition: { duration: 0.1 } } as const);
+
   return (
     <div>
       <h3 className="label-meta mb-3">{t("sidebar.displayLabel")}</h3>
@@ -61,8 +70,8 @@ export function SearchTypeTabs({
               ? "border-primary bg-primary/10 text-primary"
               : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:bg-surface-hover"
           }`}
-          whileHover={{ scale: 1.015, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
-          whileTap={{ scale: 0.97, transition: { duration: 0.1 } }}
+          whileHover={hoverAnimation}
+          whileTap={tapAnimation}
         >
           <FileText className="h-4 w-4" />
           <span className="text-sm font-semibold">{t("sidebar.showMaterials")}</span>
@@ -79,8 +88,8 @@ export function SearchTypeTabs({
               ? "border-primary bg-primary/10 text-primary"
               : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:bg-surface-hover"
           }`}
-          whileHover={{ scale: 1.015, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
-          whileTap={{ scale: 0.97, transition: { duration: 0.1 } }}
+          whileHover={hoverAnimation}
+          whileTap={tapAnimation}
         >
           <Users className="h-4 w-4" />
           <span className="text-sm font-semibold">{t("sidebar.showCreators")}</span>

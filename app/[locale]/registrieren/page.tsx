@@ -168,7 +168,7 @@ export default function RegisterPage() {
                   <button
                     onClick={handleResendVerification}
                     disabled={resendState === "sending" || resendState === "sent"}
-                    className="text-primary hover:text-primary-hover w-full text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                    className="text-primary hover:text-primary-hover w-full text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {resendState === "sending"
                       ? t("emailSent.resending")
@@ -454,7 +454,7 @@ export default function RegisterPage() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="bg-primary text-text-on-accent hover:bg-primary-hover disabled:hover:bg-primary w-full rounded-lg px-6 py-4 text-center font-bold transition-all hover:-translate-y-0.5 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-none"
+                  className="bg-primary text-text-on-accent hover:bg-primary-hover disabled:hover:bg-primary w-full rounded-lg px-6 py-4 text-center font-bold transition-all hover:-translate-y-0.5 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:shadow-none"
                 >
                   {isLoading ? t("form.submitting") : t("form.submitButton")}
                 </button>

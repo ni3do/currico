@@ -75,6 +75,14 @@ Catppuccin theme with Latte (light) and Mocha (dark) variants. Auto-adapts to us
 
 **Nav:** `.nav-link` `.nav-link-active`
 
+## Disabled States
+
+Use `disabled:opacity-60` (not `disabled:opacity-50`) on all interactive elements to meet WCAG AA contrast requirements. Combined with `disabled:cursor-not-allowed` for clarity.
+
+```tsx
+className = "btn-primary disabled:opacity-60 disabled:cursor-not-allowed";
+```
+
 ## Tailwind Integration
 
 Colors are registered via `@theme` block. Use directly as utilities:

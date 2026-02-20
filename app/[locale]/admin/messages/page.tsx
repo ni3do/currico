@@ -252,7 +252,7 @@ export default function AdminMessagesPage() {
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="border-border bg-surface text-text hover:bg-bg rounded-lg border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50"
+            className="border-border bg-surface text-text hover:bg-bg rounded-lg border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60"
           >
             {t("previous")}
           </button>
@@ -260,7 +260,7 @@ export default function AdminMessagesPage() {
           <button
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
-            className="border-border bg-surface text-text hover:bg-bg rounded-lg border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50"
+            className="border-border bg-surface text-text hover:bg-bg rounded-lg border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60"
           >
             {t("next")}
           </button>
@@ -372,7 +372,7 @@ export default function AdminMessagesPage() {
                     <button
                       onClick={() => handleStatusUpdate(selectedMessage.id, "READ")}
                       disabled={actionLoading}
-                      className="bg-primary/10 text-primary rounded-lg px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-50"
+                      className="bg-primary/10 text-primary rounded-lg px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-60"
                     >
                       {t("markRead")}
                     </button>
@@ -381,7 +381,7 @@ export default function AdminMessagesPage() {
                     <button
                       onClick={() => handleStatusUpdate(selectedMessage.id, "REPLIED")}
                       disabled={actionLoading}
-                      className="rounded-lg bg-[var(--badge-success-bg)] px-4 py-2.5 text-sm font-medium text-[var(--badge-success-text)] hover:opacity-90 disabled:opacity-50"
+                      className="rounded-lg bg-[var(--badge-success-bg)] px-4 py-2.5 text-sm font-medium text-[var(--badge-success-text)] hover:opacity-90 disabled:opacity-60"
                     >
                       {t("markReplied")}
                     </button>
@@ -390,7 +390,7 @@ export default function AdminMessagesPage() {
                     <button
                       onClick={() => handleStatusUpdate(selectedMessage.id, "ARCHIVED")}
                       disabled={actionLoading}
-                      className="border-border bg-bg text-text-muted rounded-lg border px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-50"
+                      className="border-border bg-bg text-text-muted rounded-lg border px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-60"
                     >
                       {t("archive")}
                     </button>
@@ -399,7 +399,7 @@ export default function AdminMessagesPage() {
                     <button
                       onClick={() => handleStatusUpdate(selectedMessage.id, "NEW")}
                       disabled={actionLoading}
-                      className="bg-accent/10 text-accent rounded-lg px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-50"
+                      className="bg-accent/10 text-accent rounded-lg px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-60"
                     >
                       {t("markNew")}
                     </button>
@@ -418,7 +418,7 @@ export default function AdminMessagesPage() {
                 <button
                   onClick={() => setDeleteMessageId(selectedMessage.id)}
                   disabled={actionLoading}
-                  className="border-error bg-error/10 text-error hover:bg-error/20 rounded-lg border px-4 py-2.5 text-sm font-medium disabled:opacity-50"
+                  className="border-error bg-error/10 text-error hover:bg-error/20 rounded-lg border px-4 py-2.5 text-sm font-medium disabled:opacity-60"
                 >
                   {t("deleteMessage")}
                 </button>

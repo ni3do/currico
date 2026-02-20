@@ -181,7 +181,7 @@ export function ProfileTabs({
                     <button
                       onClick={onLoadMore}
                       disabled={loadingMore}
-                      className="btn-secondary inline-flex items-center gap-2 px-8 py-3 disabled:opacity-50"
+                      className="btn-secondary inline-flex items-center gap-2 px-8 py-3 disabled:opacity-60"
                     >
                       {loadingMore && <Loader2 className="h-4 w-4 animate-spin" />}
                       {t("loadMore")}

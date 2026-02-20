@@ -97,7 +97,7 @@ export function CommentForm({
           disabled={submitting || !content.trim()}
           className={`btn-primary absolute ${
             isReply ? "right-2 bottom-2" : "right-3 bottom-3"
-          } flex items-center justify-center rounded-lg p-2 disabled:opacity-50`}
+          } flex items-center justify-center rounded-lg p-2 disabled:opacity-60`}
           title={isReply ? t("sendReply") : t("sendComment")}
         >
           <Send className={isReply ? "h-4 w-4" : "h-5 w-5"} />
@@ -114,7 +114,7 @@ export function CommentForm({
             type="button"
             onClick={onCancel}
             disabled={submitting}
-            className="text-text-muted hover:text-text text-xs transition-colors disabled:opacity-50"
+            className="text-text-muted hover:text-text text-xs transition-colors disabled:opacity-60"
           >
             {tCommon("buttons.cancel")}
           </button>

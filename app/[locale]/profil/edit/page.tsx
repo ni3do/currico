@@ -450,7 +450,7 @@ export default function EditProfilePage() {
               <button
                 type="submit"
                 disabled={isSaving}
-                className="bg-primary text-text-on-accent hover:bg-primary-hover disabled:bg-surface rounded-lg px-6 py-3 font-medium transition-colors disabled:opacity-50"
+                className="bg-primary text-text-on-accent hover:bg-primary-hover disabled:bg-surface rounded-lg px-6 py-3 font-medium transition-colors disabled:opacity-60"
               >
                 {isSaving ? (
                   <span className="flex items-center gap-2">

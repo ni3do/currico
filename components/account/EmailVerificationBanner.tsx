@@ -85,7 +85,7 @@ export function EmailVerificationBanner({ email }: EmailVerificationBannerProps)
             <button
               onClick={handleResend}
               disabled={sending || cooldownRemaining > 0}
-              className="text-primary hover:text-primary-hover mt-3 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50"
+              className="text-primary hover:text-primary-hover mt-3 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60"
             >
               {sending
                 ? t("banner.sending")
@@ -129,7 +129,7 @@ export function EmailVerificationBanner({ email }: EmailVerificationBannerProps)
           <button
             onClick={handleResend}
             disabled={sending}
-            className="btn-primary mt-4 px-4 py-2 text-sm disabled:opacity-50"
+            className="btn-primary mt-4 px-4 py-2 text-sm disabled:opacity-60"
           >
             {sending ? (
               <span className="flex items-center gap-2">

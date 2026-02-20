@@ -675,7 +675,7 @@ Legende: [x] = erledigt, [ ] = offen
 
 ## Zusammenfassung
 
-> Letzte Aktualisierung: 2026-02-17
+> Letzte Aktualisierung: 2026-02-20
 
 | Seite                     | Erledigt | Offen | Bemerkung                        |
 | ------------------------- | -------- | ----- | -------------------------------- |

@@ -228,7 +228,7 @@ export default function AdminReportsPage() {
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="border-border bg-surface text-text hover:bg-bg rounded-lg border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50"
+            className="border-border bg-surface text-text hover:bg-bg rounded-lg border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60"
           >
             {t("previous")}
           </button>
@@ -236,7 +236,7 @@ export default function AdminReportsPage() {
           <button
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
-            className="border-border bg-surface text-text hover:bg-bg rounded-lg border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50"
+            className="border-border bg-surface text-text hover:bg-bg rounded-lg border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60"
           >
             {t("next")}
           </button>
@@ -349,7 +349,7 @@ export default function AdminReportsPage() {
                     <button
                       onClick={() => handleStatusUpdate(selectedReport.id, "IN_REVIEW")}
                       disabled={actionLoading}
-                      className="bg-warning/20 text-warning rounded-lg px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-50"
+                      className="bg-warning/20 text-warning rounded-lg px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-60"
                     >
                       {t("setInReview")}
                     </button>
@@ -358,7 +358,7 @@ export default function AdminReportsPage() {
                     <button
                       onClick={() => handleStatusUpdate(selectedReport.id, "RESOLVED")}
                       disabled={actionLoading}
-                      className="bg-success/20 text-success rounded-lg px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-50"
+                      className="bg-success/20 text-success rounded-lg px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-60"
                     >
                       {t("setResolved")}
                     </button>
@@ -367,7 +367,7 @@ export default function AdminReportsPage() {
                     <button
                       onClick={() => handleStatusUpdate(selectedReport.id, "DISMISSED")}
                       disabled={actionLoading}
-                      className="btn-tertiary rounded-lg px-4 py-2.5 text-sm disabled:opacity-50"
+                      className="btn-tertiary rounded-lg px-4 py-2.5 text-sm disabled:opacity-60"
                     >
                       {t("dismiss")}
                     </button>
@@ -376,7 +376,7 @@ export default function AdminReportsPage() {
                     <button
                       onClick={() => handleStatusUpdate(selectedReport.id, "OPEN")}
                       disabled={actionLoading}
-                      className="bg-error/20 text-error rounded-lg px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-50"
+                      className="bg-error/20 text-error rounded-lg px-4 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-60"
                     >
                       {t("reopen")}
                     </button>

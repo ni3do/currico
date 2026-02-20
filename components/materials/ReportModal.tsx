@@ -186,7 +186,7 @@ export function ReportModal({ materialId, onClose }: ReportModalProps) {
                 <button
                   type="submit"
                   disabled={reportSubmitting}
-                  className="btn-danger flex-1 px-4 py-3 disabled:opacity-50"
+                  className="btn-danger flex-1 px-4 py-3 disabled:opacity-60"
                 >
                   {reportSubmitting ? t("report.submitting") : t("report.submit")}
                 </button>
@@ -194,7 +194,7 @@ export function ReportModal({ materialId, onClose }: ReportModalProps) {
                   type="button"
                   onClick={handleClose}
                   disabled={reportSubmitting}
-                  className="btn-secondary px-6 py-3 disabled:opacity-50"
+                  className="btn-secondary px-6 py-3 disabled:opacity-60"
                 >
                   {t("report.cancel")}
                 </button>

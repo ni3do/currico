@@ -157,7 +157,7 @@ export function MaterialCard({
           <button
             onClick={handleWishlistClick}
             disabled={wishlistLoading}
-            className={`absolute top-3 left-3 drop-shadow-md transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-110 active:scale-95 disabled:opacity-50 ${
+            className={`absolute top-3 left-3 drop-shadow-md transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-110 active:scale-95 disabled:opacity-60 ${
               isWishlisted ? "text-error" : "text-text-on-accent hover:text-error"
             }`}
             aria-label={

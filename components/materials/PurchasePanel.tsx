@@ -211,7 +211,7 @@ export function PurchasePanel({
             onClick={onDownload}
             disabled={downloading}
             aria-label={t("a11y.downloadFree")}
-            className="btn-primary w-full py-4 text-lg font-semibold disabled:opacity-50"
+            className="btn-primary w-full py-4 text-lg font-semibold disabled:opacity-60"
           >
             {downloading ? "..." : t("downloadFree")}
           </button>
@@ -229,7 +229,7 @@ export function PurchasePanel({
           onClick={onWishlistToggle}
           disabled={wishlistLoading}
           aria-label={isWishlisted ? t("a11y.removeFromWishlist") : t("a11y.addToWishlist")}
-          className={`mt-4 flex w-full items-center justify-center gap-2 rounded-lg border-2 px-4 py-2.5 font-medium transition-all disabled:opacity-50 ${
+          className={`mt-4 flex w-full items-center justify-center gap-2 rounded-lg border-2 px-4 py-2.5 font-medium transition-all disabled:opacity-60 ${
             isWishlisted
               ? "border-error bg-error/10 text-error"
               : "border-border bg-surface text-text-muted hover:border-error hover:text-error"

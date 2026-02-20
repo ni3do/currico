@@ -13,12 +13,13 @@ import Footer from "@/components/ui/Footer";
 import { MaterialCard } from "@/components/ui/MaterialCard";
 import { TrustBar } from "@/components/ui/TrustBar";
 import { FadeIn, StaggerChildren, StaggerItem, motion } from "@/components/ui/animations";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 // Skeleton placeholder for below-fold dynamic imports (prevents CLS)
 const SectionSkeleton = () => (
-  <div className="py-24">
+  <div className="py-24" role="status" aria-busy="true">
     <div className="mx-auto max-w-7xl px-4">
-      <div className="bg-surface-hover h-48 animate-pulse rounded-2xl" />
+      <Skeleton className="h-48 rounded-2xl" />
     </div>
   </div>
 );

@@ -708,7 +708,7 @@ export default function BecomeSellerPage() {
                     <button
                       onClick={handleStartStripeOnboarding}
                       disabled={isStripeLoading}
-                      className="btn btn-primary inline-flex items-center gap-2 px-10 py-3.5 text-base disabled:cursor-not-allowed disabled:opacity-50"
+                      className="btn btn-primary inline-flex items-center gap-2 px-10 py-3.5 text-base disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       {isStripeLoading
                         ? t("cta.stripeOnboardingLoading")
@@ -727,7 +727,7 @@ export default function BecomeSellerPage() {
                     onClick={handleAcceptTerms}
                     disabled={!termsAccepted || isSubmitting}
                     title={!termsAccepted ? getDisabledTooltip() : undefined}
-                    className="btn btn-primary inline-flex items-center gap-2 px-8 py-3 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="btn btn-primary inline-flex items-center gap-2 px-8 py-3 disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {isSubmitting ? t("cta.submitting") : t("cta.button")}
                     {!isSubmitting && termsAccepted && (
