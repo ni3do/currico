@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { Plus, Send, Pencil, Trash2, Mail } from "lucide-react";
 import type { Newsletter } from "@/lib/types/admin";
+import { PageLoadingSpinner } from "@/components/ui/Skeleton";
 
 export default function AdminNewslettersPage() {
   const t = useTranslations("admin.newsletters");
@@ -138,11 +139,7 @@ export default function AdminNewslettersPage() {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <div className="border-primary h-8 w-8 animate-spin rounded-full border-b-2" />
-      </div>
-    );
+    return <PageLoadingSpinner />;
   }
 
   return (

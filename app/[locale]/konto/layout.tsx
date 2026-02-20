@@ -24,6 +24,7 @@ import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { AccountSidebar } from "@/components/account/AccountSidebar";
 import { AccountDataContext, useAccountDataProvider } from "@/lib/hooks/useAccountData";
 import { pathToTab, TAB_TO_PATH, type TabType } from "@/lib/types/account";
+import { LoadingSpinner } from "@/components/ui/Skeleton";
 
 // Mobile tab items (subset - no settings sub-items)
 const MOBILE_TABS = [
@@ -85,7 +86,7 @@ function AccountLayoutInner({ children }: { children: ReactNode }) {
   if (status === "loading" || status === "unauthenticated" || session?.user?.role === "ADMIN") {
     return (
       <div className="bg-bg flex min-h-screen items-center justify-center">
-        <div className="border-primary h-8 w-8 animate-spin rounded-full border-b-2"></div>
+        <LoadingSpinner />
       </div>
     );
   }

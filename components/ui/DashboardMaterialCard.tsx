@@ -163,7 +163,13 @@ export function DashboardMaterialCard({
           </button>
         )}
         {previewUrl ? (
-          <Image src={previewUrl} alt={title} fill className="image-zoom object-cover" />
+          <Image
+            src={previewUrl}
+            alt={title}
+            fill
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            className="image-zoom object-cover"
+          />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
             <FileText className="text-text-faint h-8 w-8" />

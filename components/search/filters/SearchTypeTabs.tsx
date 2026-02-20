@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from "react";
 import { FileText, Users } from "lucide-react";
 import { motion } from "framer-motion";
 import type { useTranslations } from "next-intl";
@@ -19,14 +20,41 @@ export function SearchTypeTabs({
   onToggleCreators,
   t,
 }: SearchTypeTabsProps) {
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+        e.preventDefault();
+        if (showMaterials) onToggleCreators();
+        else onToggleMaterials();
+        // Move focus to the newly active tab
+        const target = e.currentTarget.querySelector(
+          '[aria-selected="true"]'
+        ) as HTMLElement | null;
+        requestAnimationFrame(() => {
+          const next = e.currentTarget.querySelector(
+            '[aria-selected="true"]'
+          ) as HTMLElement | null;
+          if (next && next !== target) next.focus();
+        });
+      }
+    },
+    [showMaterials, onToggleMaterials, onToggleCreators]
+  );
+
   return (
     <div>
       <h3 className="label-meta mb-3">{t("sidebar.displayLabel")}</h3>
-      <div className="flex gap-2" role="tablist" aria-label={t("sidebar.displayLabel")}>
+      <div
+        className="flex gap-2"
+        role="tablist"
+        aria-label={t("sidebar.displayLabel")}
+        onKeyDown={handleKeyDown}
+      >
         <motion.button
           role="tab"
           aria-selected={showMaterials}
           aria-controls="search-results-panel"
+          tabIndex={showMaterials ? 0 : -1}
           onClick={onToggleMaterials}
           className={`flex flex-1 items-center justify-center gap-2 rounded-lg border-2 px-3 py-2.5 text-center transition-colors ${
             showMaterials
@@ -44,6 +72,7 @@ export function SearchTypeTabs({
           role="tab"
           aria-selected={showCreators}
           aria-controls="search-results-panel"
+          tabIndex={showCreators ? 0 : -1}
           onClick={onToggleCreators}
           className={`flex flex-1 items-center justify-center gap-2 rounded-lg border-2 px-3 py-2.5 text-center transition-colors ${
             showCreators

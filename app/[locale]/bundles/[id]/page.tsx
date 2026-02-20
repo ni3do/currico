@@ -10,6 +10,7 @@ import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { Package, FileText, Tag, ChevronDown, ChevronUp } from "lucide-react";
 import type { Bundle } from "@/lib/types/material";
+import { BundleDetailSkeleton } from "@/components/ui/Skeleton";
 
 export default function BundleDetailPage() {
   const params = useParams();
@@ -97,35 +98,7 @@ export default function BundleDetailPage() {
       <div className="bg-bg flex min-h-screen flex-col">
         <TopBar />
         <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
-          <div className="animate-pulse">
-            <div className="bg-surface mb-8 h-4 w-48 rounded" />
-            <div className="grid gap-8 lg:grid-cols-3">
-              <div className="lg:col-span-2">
-                <div className="card rounded-2xl p-8">
-                  <div className="mb-4 flex gap-3">
-                    <div className="bg-surface h-6 w-16 rounded-full" />
-                    <div className="bg-surface h-6 w-24 rounded-full" />
-                  </div>
-                  <div className="bg-surface mb-6 h-10 w-3/4 rounded" />
-                  <div className="bg-surface mb-4 h-4 w-full rounded" />
-                  <div className="bg-surface mb-4 h-4 w-5/6 rounded" />
-                  <div className="bg-surface mb-8 h-4 w-2/3 rounded" />
-                </div>
-              </div>
-              <div className="lg:col-span-1">
-                <div className="card rounded-2xl p-6">
-                  <div className="bg-surface mb-4 h-5 w-24 rounded" />
-                  <div className="flex gap-3">
-                    <div className="bg-surface h-12 w-12 rounded-full" />
-                    <div>
-                      <div className="bg-surface mb-2 h-4 w-32 rounded" />
-                      <div className="bg-surface h-3 w-24 rounded" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <BundleDetailSkeleton />
         </main>
       </div>
     );

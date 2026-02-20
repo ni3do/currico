@@ -131,7 +131,7 @@ export function ReportModal({ materialId, onClose }: ReportModalProps) {
                   name="reason"
                   value={reportReason}
                   onChange={(e) => setReportReason(e.target.value)}
-                  className="input rounded-full"
+                  className="input"
                   required
                 >
                   <option value="inappropriate">{t("report.reasons.inappropriate")}</option>

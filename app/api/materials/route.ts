@@ -624,16 +624,21 @@ export async function GET(request: NextRequest) {
       };
     });
 
-    return NextResponse.json({
-      materials: transformedMaterials,
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
+    return NextResponse.json(
+      {
+        materials: transformedMaterials,
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages: Math.ceil(total / limit),
+        },
+        ...(search ? { searchMeta: { matchMode: searchMatchMode } } : {}),
       },
-      ...(search ? { searchMeta: { matchMode: searchMatchMode } } : {}),
-    });
+      {
+        headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" },
+      }
+    );
   } catch (error) {
     console.error("Error fetching materials:", error);
     return serverError();

@@ -1,11 +1,12 @@
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { compileMDX } from "next-mdx-remote/rsc";
-import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
+import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { getPostBySlug, getAllSlugs } from "@/lib/blog";
-import { ArrowLeft, Calendar, User } from "lucide-react";
+import { Calendar, User } from "lucide-react";
 
 export function generateStaticParams() {
   return getAllSlugs().map((slug) => ({ slug }));
@@ -80,20 +81,23 @@ export default async function BlogPostPage({
 
       <main id="main-content" className="bg-bg min-h-screen">
         <article className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
-          {/* Back link */}
-          <Link
-            href="/blog"
-            className="text-primary mb-8 inline-flex items-center gap-1.5 text-sm font-medium hover:underline"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            {t("backToList")}
-          </Link>
+          {/* Breadcrumb */}
+          <Breadcrumb
+            items={[{ label: t("title"), href: "/blog" }, { label: post.title }]}
+            className="mb-6"
+          />
 
           {/* Hero image */}
           {post.image && (
-            <div className="mb-8 aspect-[16/9] overflow-hidden rounded-xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={post.image} alt={post.title} className="h-full w-full object-cover" />
+            <div className="relative mb-8 aspect-[16/9] overflow-hidden rounded-xl">
+              <Image
+                src={post.image}
+                alt={post.title}
+                fill
+                sizes="(max-width: 768px) 100vw, 768px"
+                className="object-cover"
+                priority
+              />
             </div>
           )}
 

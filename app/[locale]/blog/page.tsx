@@ -1,7 +1,9 @@
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
+import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { getAllPosts } from "@/lib/blog";
 import { Calendar, ArrowRight } from "lucide-react";
 
@@ -51,6 +53,7 @@ export default async function BlogPage() {
         {/* Header */}
         <section className="bg-bg-secondary border-border border-b">
           <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
+            <Breadcrumb items={[{ label: t("title") }]} className="mb-3" />
             <h1 className="text-text text-3xl font-bold sm:text-4xl">{t("title")}</h1>
             <p className="text-text-secondary mt-2 text-lg">{t("subtitle")}</p>
           </div>
@@ -69,12 +72,13 @@ export default async function BlogPage() {
                   className="group card overflow-hidden"
                 >
                   {post.image && (
-                    <div className="aspect-[16/9] overflow-hidden">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
+                    <div className="relative aspect-[16/9] overflow-hidden">
+                      <Image
                         src={post.image}
                         alt={post.title}
-                        className="image-zoom h-full w-full object-cover"
+                        fill
+                        sizes="(max-width: 640px) 100vw, 50vw"
+                        className="image-zoom object-cover"
                       />
                     </div>
                   )}

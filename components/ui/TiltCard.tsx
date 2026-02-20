@@ -19,32 +19,46 @@ interface TiltCardProps {
  */
 export function TiltCard({ children, maxTilt = 3, stiffness = 300, className }: TiltCardProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const rectRef = useRef<DOMRect | null>(null);
+  const rafRef = useRef<number>(0);
   const [tilt, setTilt] = useState({ rotateX: 0, rotateY: 0 });
   const [isHovering, setIsHovering] = useState(false);
   const prefersReducedMotion = useReducedMotion();
 
+  const handleMouseEnter = useCallback(() => {
+    setIsHovering(true);
+    if (ref.current) rectRef.current = ref.current.getBoundingClientRect();
+  }, []);
+
   const handleMouseMove = useCallback(
     (e: React.MouseEvent) => {
-      if (!ref.current) return;
-      const rect = ref.current.getBoundingClientRect();
+      if (rafRef.current) return;
+      rafRef.current = requestAnimationFrame(() => {
+        rafRef.current = 0;
+        if (!rectRef.current) return;
+        const rect = rectRef.current;
 
-      // Position relative to center (-0.5 to 0.5)
-      const x = (e.clientX - rect.left) / rect.width - 0.5;
-      const y = (e.clientY - rect.top) / rect.height - 0.5;
+        // Position relative to center (-0.5 to 0.5)
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
 
-      // Invert Y for natural tilt (cursor at top → tilt toward viewer)
-      setTilt({
-        rotateX: -y * maxTilt * 2,
-        rotateY: x * maxTilt * 2,
+        // Invert Y for natural tilt (cursor at top → tilt toward viewer)
+        setTilt({
+          rotateX: -y * maxTilt * 2,
+          rotateY: x * maxTilt * 2,
+        });
       });
     },
     [maxTilt]
   );
 
-  const handleMouseEnter = useCallback(() => setIsHovering(true), []);
-
   const handleMouseLeave = useCallback(() => {
     setIsHovering(false);
+    rectRef.current = null;
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = 0;
+    }
     setTilt({ rotateX: 0, rotateY: 0 });
   }, []);
 

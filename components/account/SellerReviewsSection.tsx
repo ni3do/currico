@@ -17,6 +17,7 @@ import { StarRating } from "@/components/ui/StarRating";
 import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "@/components/ui/Toast";
 import type { SellerReview } from "@/lib/types/review";
+import { ReviewSectionSkeleton } from "@/components/ui/Skeleton";
 
 interface SellerReviewsSectionProps {
   className?: string;
@@ -123,15 +124,7 @@ export function SellerReviewsSection({ className = "" }: SellerReviewsSectionPro
 
   // Loading state
   if (loading && reviews.length === 0) {
-    return (
-      <div className={`${className}`}>
-        <div className="border-border bg-bg animate-pulse rounded-xl border p-8">
-          <div className="bg-surface mb-4 h-6 w-48 rounded" />
-          <div className="bg-surface mb-4 h-4 w-full rounded" />
-          <div className="bg-surface h-4 w-3/4 rounded" />
-        </div>
-      </div>
-    );
+    return <ReviewSectionSkeleton className={className} />;
   }
 
   // Error state

@@ -36,6 +36,7 @@ export function SearchInput({
           onFocus={() => setSearchFocused(true)}
           onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
           placeholder={placeholder}
+          aria-label={placeholder}
           role="combobox"
           aria-expanded={searchFocused && searchResults.length > 0}
           aria-haspopup="listbox"

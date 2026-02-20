@@ -257,10 +257,15 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       sellerName: r.seller.display_name,
     }));
 
-    return NextResponse.json({
-      material: transformedMaterial,
-      relatedMaterials: transformedRelated,
-    });
+    return NextResponse.json(
+      {
+        material: transformedMaterial,
+        relatedMaterials: transformedRelated,
+      },
+      {
+        headers: { "Cache-Control": "public, s-maxage=120, stale-while-revalidate=600" },
+      }
+    );
   } catch (error) {
     console.error("Error fetching material:", error);
     return serverError("MATERIAL_FETCH_FAILED");

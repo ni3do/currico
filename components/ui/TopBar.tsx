@@ -52,12 +52,13 @@ export default function TopBar() {
     }
   }, [isUserMenuOpen]);
 
-  // Poll for unread notification count
+  // Poll for unread notification count (120s interval, skip when tab is hidden)
   useEffect(() => {
     if (!session) return;
     let active = true;
 
     const fetchCount = async () => {
+      if (document.hidden) return;
       try {
         const res = await fetch("/api/users/me/notifications?unread=true");
         if (res.ok && active) {
@@ -70,7 +71,7 @@ export default function TopBar() {
     };
 
     fetchCount();
-    const interval = setInterval(fetchCount, 30_000);
+    const interval = setInterval(fetchCount, 120_000);
     return () => {
       active = false;
       clearInterval(interval);

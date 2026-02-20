@@ -551,6 +551,7 @@ export default function EditMaterialPage() {
                         <Link
                           href={`/materialien/${duplicateTitle.existingId}`}
                           target="_blank"
+                          rel="noopener noreferrer"
                           className="text-primary ml-2 inline-flex items-center gap-1 text-sm font-medium hover:underline"
                         >
                           {tFields("duplicateTitleLink")}
@@ -575,6 +576,7 @@ export default function EditMaterialPage() {
                         <Link
                           href={`/materialien/${duplicateTitle.existingId}`}
                           target="_blank"
+                          rel="noopener noreferrer"
                           className="text-primary ml-2 inline-flex items-center gap-1 text-sm font-medium hover:underline"
                         >
                           {tFields("duplicateTitleLink")}

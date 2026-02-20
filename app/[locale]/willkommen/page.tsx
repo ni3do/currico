@@ -7,6 +7,7 @@ import { useRouter } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import { MultiSelect } from "@/components/ui/MultiSelect";
 import { SWISS_CANTONS } from "@/lib/validations/user";
+import { LoadingSpinner } from "@/components/ui/Skeleton";
 
 const CYCLES = ["Zyklus 1", "Zyklus 2", "Zyklus 3"] as const;
 
@@ -109,7 +110,7 @@ export default function WelcomePage() {
   if (status === "loading") {
     return (
       <div className="bg-bg flex min-h-screen items-center justify-center">
-        <div className="border-primary h-8 w-8 animate-spin rounded-full border-b-2" />
+        <LoadingSpinner />
       </div>
     );
   }

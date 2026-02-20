@@ -616,6 +616,7 @@ function UploadPageContent() {
                             <Link
                               href={`/materialien/${duplicateTitle.existingId}`}
                               target="_blank"
+                              rel="noopener noreferrer"
                               className="text-primary ml-2 inline-flex items-center gap-1 text-sm font-medium hover:underline"
                             >
                               {tFields("duplicateTitleLink")}
@@ -638,6 +639,7 @@ function UploadPageContent() {
                             <Link
                               href={`/materialien/${duplicateTitle.existingId}`}
                               target="_blank"
+                              rel="noopener noreferrer"
                               className="text-primary ml-2 inline-flex items-center gap-1 text-sm font-medium hover:underline"
                             >
                               {tFields("duplicateTitleLink")}
@@ -1197,6 +1199,7 @@ function UploadPageContent() {
                       <Link
                         href="/urheberrecht"
                         target="_blank"
+                        rel="noopener noreferrer"
                         className="text-primary hover:bg-primary/10 inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
                       >
                         <Scale className="h-4 w-4" />
@@ -1293,6 +1296,7 @@ function UploadPageContent() {
                       <Link
                         href="/urheberrecht"
                         target="_blank"
+                        rel="noopener noreferrer"
                         className="text-primary font-medium hover:underline"
                       >
                         {tLegal("copyrightGuideLinkText")} →

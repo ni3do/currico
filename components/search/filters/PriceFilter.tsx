@@ -33,7 +33,7 @@ export function PriceFilter({ maxPrice, onMaxPriceChange, t }: PriceFilterProps)
         aria-valuetext={maxPrice !== null ? `CHF ${maxPrice}` : t("sidebar.priceAll")}
         className="bg-surface-hover [&::-webkit-slider-thumb]:bg-primary accent-primary h-2 w-full cursor-pointer appearance-none rounded-lg [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-md"
       />
-      <div className="text-text-muted mt-0.5 flex justify-between text-[10px]">
+      <div className="text-text-muted mt-0.5 flex justify-between text-xs">
         <span>CHF 0</span>
         <span>CHF 50+</span>
       </div>

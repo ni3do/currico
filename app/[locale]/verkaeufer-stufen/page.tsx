@@ -608,7 +608,7 @@ export default function SellerLevelsPage() {
                       </p>
                       <p className="text-text-muted text-xs">{t("pointsUnit")}</p>
                       {nextLevel && (
-                        <p className="text-text-faint mt-0.5 text-[10px]">
+                        <p className="text-text-faint mt-0.5 text-xs">
                           → {nextLevel.minPoints} {t("pointsUnit")}
                         </p>
                       )}

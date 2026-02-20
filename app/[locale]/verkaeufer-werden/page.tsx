@@ -21,6 +21,7 @@ import {
   Calculator,
 } from "lucide-react";
 import type { StripeStatus } from "@/lib/types/account";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 interface UserData {
   emailVerified: string | null;
@@ -678,7 +679,7 @@ export default function BecomeSellerPage() {
             {/* CTA Section */}
             <div className="mt-8 text-center">
               {isLoading ? (
-                <div className="bg-bg-secondary mx-auto h-12 w-48 animate-pulse rounded-lg" />
+                <Skeleton className="mx-auto h-12 w-48 rounded-lg" />
               ) : !isLoggedIn ? (
                 <div className="space-y-3">
                   <p className="text-text-muted">{t("cta.loginRequired")}</p>

@@ -336,7 +336,7 @@
       "swissMade": "Swiss Made",
       "quality": "Community-Reviewed",
       "hosting": "Hosted by Infomaniak",
-      "securePay": "Secure Payment",
+      "securePay": "TWINT & Card",
       "ndsg": "nDSG Compliant"
     },
     "categoryQuickAccess": {
@@ -2020,6 +2020,7 @@
   "checkout": {
     "buyNow": "Buy Now",
     "processing": "Processing...",
+    "acceptedMethods": "TWINT · Visa · Mastercard",
     "digitalConsent": {
       "label": "I agree that the digital content is available immediately and I acknowledge that I lose my right of withdrawal once the download starts.",
       "required": "Please accept the terms for digital content to continue."
