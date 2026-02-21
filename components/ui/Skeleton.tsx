@@ -77,7 +77,7 @@ export function MaterialCardSkeleton() {
 export function MaterialGridSkeleton({ count = 6 }: { count?: number }) {
   return (
     <div
-      className="grid gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3 2xl:grid-cols-4"
+      className="grid gap-4 min-[1920px]:grid-cols-5 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3 2xl:grid-cols-4"
       role="status"
       aria-busy="true"
       aria-label="Loading materials"
@@ -128,7 +128,7 @@ export function ProfileCardSkeleton() {
 export function ProfileGridSkeleton({ count = 6 }: { count?: number }) {
   return (
     <div
-      className="grid gap-5 sm:grid-cols-2 sm:gap-6 xl:grid-cols-3 2xl:grid-cols-4"
+      className="grid gap-5 min-[1920px]:grid-cols-5 sm:grid-cols-2 sm:gap-6 xl:grid-cols-3 2xl:grid-cols-4"
       role="status"
       aria-busy="true"
       aria-label="Loading profiles"
@@ -168,7 +168,7 @@ export function DashboardMaterialCardSkeleton() {
 export function DashboardMaterialGridSkeleton({ count = 3 }: { count?: number }) {
   return (
     <div
-      className="grid grid-cols-2 gap-4 sm:gap-5 md:grid-cols-3"
+      className="grid grid-cols-2 gap-4 min-[1920px]:grid-cols-5 sm:gap-5 md:grid-cols-3 2xl:grid-cols-4"
       role="status"
       aria-busy="true"
       aria-label="Loading materials"
