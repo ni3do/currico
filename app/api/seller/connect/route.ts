@@ -1,7 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { createConnectAccount, createAccountOnboardingLink } from "@/lib/stripe";
-import { requireAuth, unauthorized, notFound, badRequest, serverError } from "@/lib/api";
+import {
+  requireAuth,
+  unauthorized,
+  notFound,
+  badRequest,
+  serverError,
+  API_ERROR_CODES,
+} from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 
 /**
@@ -33,12 +40,16 @@ export async function POST(request: NextRequest) {
 
     // Require email verification
     if (!user.emailVerified) {
-      return badRequest("Email verification required");
+      return badRequest(
+        "Email verification required",
+        undefined,
+        API_ERROR_CODES.EMAIL_VERIFICATION_REQUIRED
+      );
     }
 
     // Require seller terms acceptance
     if (!user.seller_terms_accepted_at) {
-      return badRequest("Seller terms required");
+      return badRequest("Seller terms required", undefined, API_ERROR_CODES.SELLER_TERMS_REQUIRED);
     }
 
     // Construct base URL from request

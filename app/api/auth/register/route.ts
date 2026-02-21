@@ -3,7 +3,7 @@ import { prisma } from "@/lib/db";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { checkRateLimit, getClientIP } from "@/lib/rateLimit";
-import { badRequest, rateLimited, serverError } from "@/lib/api";
+import { badRequest, rateLimited, serverError, API_ERROR_CODES } from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 
 const registrationSchema = z.object({
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     // Honeypot check — bots fill in the hidden "website" field, real users don't
     if (body.website) {
       return NextResponse.json(
-        { message: "Benutzer erfolgreich erstellt", user: { id: "ok", name: "", email: "" } },
+        { message: "User created successfully", user: { id: "ok", name: "", email: "" } },
         { status: 201 }
       );
     }
@@ -48,7 +48,11 @@ export async function POST(request: NextRequest) {
     const parsed = registrationSchema.safeParse(body);
     if (!parsed.success) {
       const firstError = parsed.error.issues[0];
-      return badRequest(firstError?.message ?? "Invalid input", { code: "INVALID_INPUT" });
+      return badRequest(
+        firstError?.message ?? "Invalid input",
+        undefined,
+        API_ERROR_CODES.INVALID_INPUT
+      );
     }
 
     const { name, email, password, canton, subjects, cycles } = parsed.data;
@@ -59,7 +63,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (existingUser) {
-      return badRequest("Email already exists", { code: "EMAIL_EXISTS" });
+      return badRequest("Email already exists", undefined, API_ERROR_CODES.EMAIL_EXISTS);
     }
 
     // Hash the password
@@ -126,7 +130,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       {
-        message: "Benutzer erfolgreich erstellt",
+        message: "User created successfully",
         user: {
           id: user.id,
           name: user.name,

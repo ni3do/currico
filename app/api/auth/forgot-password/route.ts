@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { prisma } from "@/lib/db";
 import { sendPasswordResetEmail } from "@/lib/email";
-import { badRequest, rateLimited, serverError } from "@/lib/api";
+import { badRequest, rateLimited, serverError, API_ERROR_CODES } from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 import { checkRateLimit, getClientIP } from "@/lib/rateLimit";
 import { forgotPasswordSchema } from "@/lib/validations/auth";
@@ -26,12 +26,12 @@ export async function POST(request: NextRequest) {
     try {
       body = await request.json();
     } catch {
-      return badRequest("Invalid JSON body", { code: "BAD_REQUEST" });
+      return badRequest("Invalid JSON body", undefined, API_ERROR_CODES.INVALID_JSON_BODY);
     }
 
     const parsed = forgotPasswordSchema.safeParse(body);
     if (!parsed.success) {
-      return badRequest("Valid email required", { code: "INVALID_INPUT" });
+      return badRequest("Valid email required", undefined, API_ERROR_CODES.INVALID_INPUT);
     }
     const { email } = parsed.data;
 

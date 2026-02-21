@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { isSwissEducationDomain } from "@/lib/config/swiss-school-domains";
-import { badRequest, serverError } from "@/lib/api";
+import { badRequest, serverError, API_ERROR_CODES } from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 
 export async function GET(request: NextRequest) {
@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   const token = searchParams.get("token");
 
   if (!token) {
-    return badRequest("MISSING_TOKEN");
+    return badRequest("Missing token", undefined, API_ERROR_CODES.MISSING_TOKEN);
   }
 
   try {
@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
     });
 
     if (!verificationToken) {
-      return badRequest("INVALID_TOKEN");
+      return badRequest("Invalid token", undefined, API_ERROR_CODES.INVALID_TOKEN);
     }
 
     // Check if token has expired
@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
         where: { id: verificationToken.id },
       });
 
-      return badRequest("TOKEN_EXPIRED");
+      return badRequest("Token expired", undefined, API_ERROR_CODES.TOKEN_EXPIRED);
     }
 
     // Check if user already verified (edge case if they click link twice)
@@ -48,10 +48,11 @@ export async function GET(request: NextRequest) {
         where: { id: verificationToken.id },
       });
 
-      return NextResponse.json({
-        message: "E-Mail-Adresse ist bereits bestätigt",
-        alreadyVerified: true,
-      });
+      return badRequest(
+        "Email already verified",
+        undefined,
+        API_ERROR_CODES.EMAIL_ALREADY_VERIFIED
+      );
     }
 
     // Check if the user's email qualifies for automatic teacher verification
@@ -78,7 +79,7 @@ export async function GET(request: NextRequest) {
     ]);
 
     return NextResponse.json({
-      message: "E-Mail-Adresse erfolgreich bestätigt",
+      message: "Email verified successfully",
       verified: true,
       teacherVerified: shouldVerifyTeacher,
     });

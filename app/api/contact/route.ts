@@ -2,26 +2,26 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { z } from "zod";
 import { sendContactNotificationEmail } from "@/lib/email";
-import { rateLimited, badRequest, serverError } from "@/lib/api";
+import { rateLimited, badRequest, serverError, API_ERROR_CODES } from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 import { checkRateLimit, getClientIP } from "@/lib/rateLimit";
 
 const contactSchema = z.object({
   name: z
     .string()
-    .min(2, "Name muss mindestens 2 Zeichen lang sein")
-    .max(100, "Name darf maximal 100 Zeichen lang sein"),
-  email: z.string().email("Ungültige E-Mail-Adresse"),
+    .min(2, "Name must be at least 2 characters")
+    .max(100, "Name must be at most 100 characters"),
+  email: z.string().email("Invalid email address"),
   phone: z.string().max(30).optional().or(z.literal("")),
   subject: z.enum(["general", "support", "sales", "partnership", "feedback", "refund"], {
-    message: "Bitte wählen Sie ein gültiges Thema",
+    message: "Invalid topic",
   }),
   message: z
     .string()
-    .min(10, "Nachricht muss mindestens 10 Zeichen lang sein")
-    .max(5000, "Nachricht darf maximal 5000 Zeichen lang sein"),
+    .min(10, "Message must be at least 10 characters")
+    .max(5000, "Message must be at most 5000 characters"),
   consent: z.literal(true, {
-    message: "Sie müssen der Datenschutzrichtlinie zustimmen",
+    message: "Privacy policy consent required",
   }),
 });
 
@@ -39,7 +39,11 @@ export async function POST(request: NextRequest) {
     const parsed = contactSchema.safeParse(body);
     if (!parsed.success) {
       const firstError = parsed.error.issues[0];
-      return badRequest(firstError?.message ?? "Invalid input", { code: "INVALID_INPUT" });
+      return badRequest(
+        firstError?.message ?? "Invalid input",
+        undefined,
+        API_ERROR_CODES.INVALID_INPUT
+      );
     }
 
     const { name, email, phone, subject, message } = parsed.data;
@@ -62,7 +66,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: true,
-        message: "Ihre Nachricht wurde erfolgreich gesendet",
+        message: "Message sent",
         id: contactMessage.id,
       },
       { status: 201 }

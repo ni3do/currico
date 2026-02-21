@@ -22,7 +22,7 @@ import { toStringArray } from "@/lib/json-array";
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    if (!isValidId(id)) return badRequest("Invalid ID");
+    if (!isValidId(id)) return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
 
     const bundle = await prisma.bundle.findUnique({
       where: { id },
@@ -137,7 +137,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     if (!userId) return unauthorized();
 
     const { id } = await params;
-    if (!isValidId(id)) return badRequest("Invalid ID");
+    if (!isValidId(id)) return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
 
     // Fetch bundle to verify ownership
     const bundle = await prisma.bundle.findUnique({
@@ -154,7 +154,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     if (bundle.seller_id !== userId) {
-      return forbidden("Not authorized to edit this bundle");
+      return forbidden("Bundle edit forbidden", API_ERROR_CODES.BUNDLE_EDIT_FORBIDDEN);
     }
 
     // Parse and validate request body
@@ -245,7 +245,7 @@ export async function DELETE(
     if (!userId) return unauthorized();
 
     const { id } = await params;
-    if (!isValidId(id)) return badRequest("Invalid ID");
+    if (!isValidId(id)) return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
 
     // Fetch bundle to verify ownership
     const bundle = await prisma.bundle.findUnique({
@@ -261,7 +261,7 @@ export async function DELETE(
     }
 
     if (bundle.seller_id !== userId) {
-      return forbidden("Not authorized to delete this bundle");
+      return forbidden("Bundle delete forbidden", API_ERROR_CODES.BUNDLE_DELETE_FORBIDDEN);
     }
 
     // Delete bundle (cascade will remove BundleResource entries)

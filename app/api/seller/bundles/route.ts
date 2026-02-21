@@ -1,7 +1,14 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { formatPrice } from "@/lib/utils/price";
-import { requireAuth, requireSeller, unauthorized, forbidden, serverError } from "@/lib/api";
+import {
+  requireAuth,
+  requireSeller,
+  unauthorized,
+  forbidden,
+  serverError,
+  API_ERROR_CODES,
+} from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 import { toStringArray } from "@/lib/json-array";
 
@@ -15,7 +22,7 @@ export async function GET() {
     if (!userId) return unauthorized();
 
     const seller = await requireSeller(userId);
-    if (!seller) return forbidden("SELLER_ONLY");
+    if (!seller) return forbidden("Seller only", API_ERROR_CODES.SELLER_ONLY);
 
     const bundles = await prisma.bundle.findMany({
       where: { seller_id: userId },

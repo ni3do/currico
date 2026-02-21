@@ -1,6 +1,13 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { requireAuth, requireSeller, unauthorized, forbidden, serverError } from "@/lib/api";
+import {
+  requireAuth,
+  requireSeller,
+  unauthorized,
+  forbidden,
+  serverError,
+  API_ERROR_CODES,
+} from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 import {
   calculatePoints,
@@ -24,7 +31,7 @@ export async function GET() {
     if (!userId) return unauthorized();
 
     const seller = await requireSeller(userId);
-    if (!seller) return forbidden("Seller only");
+    if (!seller) return forbidden("Seller only", API_ERROR_CODES.SELLER_ONLY);
 
     const [
       uploadCount,

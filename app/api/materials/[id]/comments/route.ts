@@ -11,6 +11,7 @@ import {
   notFound,
   serverError,
   rateLimited,
+  API_ERROR_CODES,
 } from "@/lib/api";
 
 // GET /api/materials/[id]/comments - Get all comments for a material
@@ -20,7 +21,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
     // Validate material ID format
     if (!isValidId(materialId)) {
-      return badRequest("Invalid ID");
+      return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
     }
 
     const userId = await requireAuth();
@@ -133,7 +134,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
     // Validate material ID format
     if (!isValidId(materialId)) {
-      return badRequest("Invalid ID");
+      return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
     }
 
     // Check if material exists
@@ -198,7 +199,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         replies: [],
         replyCount: 0,
       },
-      message: "Kommentar erfolgreich erstellt",
+      message: "Comment created",
     });
   } catch (error) {
     captureError("Error creating comment:", error);

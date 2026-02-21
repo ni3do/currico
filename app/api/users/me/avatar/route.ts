@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { requireAuth, unauthorized, badRequest, serverError } from "@/lib/api";
+import { requireAuth, unauthorized, badRequest, serverError, API_ERROR_CODES } from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 import {
   getStorage,
@@ -53,17 +53,17 @@ export async function POST(request: NextRequest) {
     const file = formData.get("avatar") as File | null;
 
     if (!file) {
-      return badRequest("No file uploaded");
+      return badRequest("No file uploaded", undefined, API_ERROR_CODES.NO_FILE_UPLOADED);
     }
 
     // Validate file type
     if (!ALLOWED_TYPES.includes(file.type)) {
-      return badRequest("Invalid file type");
+      return badRequest("Invalid file type", undefined, API_ERROR_CODES.INVALID_FILE_TYPE);
     }
 
     // Validate file size
     if (file.size > MAX_SIZE) {
-      return badRequest("File too large");
+      return badRequest("File too large", undefined, API_ERROR_CODES.FILE_TOO_LARGE);
     }
 
     // Validate file content with magic bytes
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(bytes);
 
     if (!validateMagicBytes(buffer, file.type)) {
-      return badRequest("File content mismatch");
+      return badRequest("File content mismatch", undefined, API_ERROR_CODES.INVALID_FILE_CONTENT);
     }
 
     // Delete old avatar file if it exists
@@ -112,7 +112,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json({
-      message: "Avatar erfolgreich hochgeladen",
+      message: "Avatar uploaded",
       url: imageUrl,
     });
   } catch (error) {
@@ -159,7 +159,7 @@ export async function DELETE() {
     });
 
     return NextResponse.json({
-      message: "Avatar erfolgreich entfernt",
+      message: "Avatar removed",
     });
   } catch (error) {
     captureError("Error deleting avatar:", error);

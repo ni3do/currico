@@ -3,7 +3,15 @@ import { prisma } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
 import { getCurrentUserId } from "@/lib/auth";
 import { requireAdmin } from "@/lib/admin-auth";
-import { requireAuth, unauthorized, badRequest, notFound, forbidden, serverError } from "@/lib/api";
+import {
+  requireAuth,
+  unauthorized,
+  badRequest,
+  notFound,
+  forbidden,
+  serverError,
+  API_ERROR_CODES,
+} from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 import { isValidId } from "@/lib/rateLimit";
 import { updateMaterialSchema } from "@/lib/validations/material";
@@ -21,7 +29,7 @@ import { unlink } from "fs/promises";
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    if (!isValidId(id)) return badRequest("Invalid ID");
+    if (!isValidId(id)) return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
 
     // Check if user is admin
     const admin = await requireAdmin();
@@ -128,7 +136,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     // Return 404 if not found
     if (!material) {
-      return notFound("MATERIAL_NOT_FOUND");
+      return notFound("Material not found", API_ERROR_CODES.MATERIAL_NOT_FOUND);
     }
 
     // Check visibility: admins and material owners can see any material
@@ -136,7 +144,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     const isOwner = userId === material.seller_id;
 
     if (!isAdmin && !isOwner && !material.is_published) {
-      return notFound("MATERIAL_NOT_FOUND");
+      return notFound("Material not found", API_ERROR_CODES.MATERIAL_NOT_FOUND);
     }
 
     // Check if user has access to full previews (owner, purchased, free, or admin)
@@ -283,7 +291,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 
   try {
     const { id } = await params;
-    if (!isValidId(id)) return badRequest("Invalid ID");
+    if (!isValidId(id)) return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
 
     // Fetch the material to verify ownership
     const material = await prisma.resource.findUnique({
@@ -296,12 +304,12 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     });
 
     if (!material) {
-      return notFound("MATERIAL_NOT_FOUND");
+      return notFound("Material not found", API_ERROR_CODES.MATERIAL_NOT_FOUND);
     }
 
     // Check ownership
     if (material.seller_id !== userId) {
-      return forbidden("MATERIAL_EDIT_FORBIDDEN");
+      return forbidden("Material edit forbidden", API_ERROR_CODES.MATERIAL_EDIT_FORBIDDEN);
     }
 
     // Parse and validate request body
@@ -309,9 +317,11 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     const parsed = updateMaterialSchema.safeParse(body);
 
     if (!parsed.success) {
-      return badRequest("VALIDATION_ERROR", {
-        details: parsed.error.flatten().fieldErrors,
-      });
+      return badRequest(
+        "Validation error",
+        { details: parsed.error.flatten().fieldErrors },
+        API_ERROR_CODES.INVALID_INPUT
+      );
     }
 
     const data = parsed.data;
@@ -319,7 +329,11 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     // If material is already approved, some fields cannot be changed
     // Price changes on approved materials would affect buyers
     if (material.is_approved && data.price !== undefined) {
-      return badRequest("PRICE_CHANGE_AFTER_APPROVAL");
+      return badRequest(
+        "Price change after approval",
+        undefined,
+        API_ERROR_CODES.PRICE_CHANGE_AFTER_APPROVAL
+      );
     }
 
     // Update the material
@@ -352,7 +366,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     });
 
     return NextResponse.json({
-      message: "MATERIAL_UPDATED",
+      message: "Material updated",
       material: {
         id: updatedMaterial.id,
         title: updatedMaterial.title,
@@ -388,7 +402,7 @@ export async function DELETE(
 
   try {
     const { id } = await params;
-    if (!isValidId(id)) return badRequest("Invalid ID");
+    if (!isValidId(id)) return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
 
     // Fetch the material with transaction count
     const material = await prisma.resource.findUnique({
@@ -405,19 +419,21 @@ export async function DELETE(
     });
 
     if (!material) {
-      return notFound("MATERIAL_NOT_FOUND");
+      return notFound("Material not found", API_ERROR_CODES.MATERIAL_NOT_FOUND);
     }
 
     // Check ownership
     if (material.seller_id !== userId) {
-      return forbidden("MATERIAL_DELETE_FORBIDDEN");
+      return forbidden("Material delete forbidden", API_ERROR_CODES.MATERIAL_DELETE_FORBIDDEN);
     }
 
     // Check for completed transactions
     if (material._count.transactions > 0) {
-      return badRequest("MATERIAL_HAS_PURCHASES", {
-        transactionCount: material._count.transactions,
-      });
+      return badRequest(
+        "Material has purchases",
+        { transactionCount: material._count.transactions },
+        API_ERROR_CODES.MATERIAL_HAS_PURCHASES
+      );
     }
 
     // Delete associated files using storage abstraction
@@ -451,7 +467,7 @@ export async function DELETE(
     await prisma.resource.delete({ where: { id } });
 
     return NextResponse.json({
-      message: "MATERIAL_DELETED",
+      message: "Material deleted",
     });
   } catch (error) {
     captureError("Error deleting material:", error);

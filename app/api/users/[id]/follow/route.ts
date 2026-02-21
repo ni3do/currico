@@ -7,6 +7,7 @@ import {
   notFound,
   rateLimited,
   serverError,
+  API_ERROR_CODES,
 } from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 import { checkRateLimit, isValidId } from "@/lib/rateLimit";
@@ -31,12 +32,12 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
     // Validate user ID format
     if (!isValidId(targetUserId)) {
-      return badRequest("Invalid ID");
+      return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
     }
 
     // Can't follow yourself
     if (targetUserId === currentUserId) {
-      return badRequest("Cannot follow self");
+      return badRequest("Cannot follow self", undefined, API_ERROR_CODES.CANNOT_FOLLOW_SELF);
     }
 
     // Check if target user exists
@@ -78,7 +79,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
     return NextResponse.json({
       success: true,
-      message: "Erfolgreich gefolgt",
+      message: "Followed",
       followId: follow.id,
       followerCount,
     });
@@ -110,7 +111,7 @@ export async function DELETE(
 
     // Validate user ID format
     if (!isValidId(targetUserId)) {
-      return badRequest("Invalid ID");
+      return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
     }
 
     await prisma.follow.deleteMany({
@@ -127,7 +128,7 @@ export async function DELETE(
 
     return NextResponse.json({
       success: true,
-      message: "Erfolgreich entfolgt",
+      message: "Unfollowed",
       followerCount,
     });
   } catch (error) {

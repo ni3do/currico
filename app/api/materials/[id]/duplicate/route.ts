@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getCurrentUserId } from "@/lib/auth";
-import { badRequest, unauthorized, notFound, forbidden, serverError, rateLimited } from "@/lib/api";
+import {
+  badRequest,
+  unauthorized,
+  notFound,
+  forbidden,
+  serverError,
+  rateLimited,
+  API_ERROR_CODES,
+} from "@/lib/api";
 import { checkRateLimit, isValidId } from "@/lib/rateLimit";
 import { captureError } from "@/lib/api-error";
 
@@ -24,7 +32,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     }
 
     const { id } = await params;
-    if (!isValidId(id)) return badRequest("Invalid ID");
+    if (!isValidId(id)) return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
 
     // Fetch the original material with all relations
     const original = await prisma.resource.findUnique({
@@ -38,7 +46,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     });
 
     if (!original) {
-      return notFound("Material not found");
+      return notFound("Material not found", API_ERROR_CODES.MATERIAL_NOT_FOUND);
     }
 
     // Only the owner can duplicate their own material

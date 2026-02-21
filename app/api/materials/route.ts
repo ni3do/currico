@@ -10,6 +10,7 @@ import {
   forbidden,
   badRequest,
   serverError,
+  API_ERROR_CODES,
 } from "@/lib/api";
 import {
   createMaterialSchema,
@@ -756,30 +757,33 @@ export async function POST(request: NextRequest) {
       if (uploadCheck.missing && uploadCheck.missing.length > 0) {
         // For paid resources without Stripe, give a helpful message
         if (data.price > 0 && uploadCheck.missing.includes("STRIPE_VERIFICATION")) {
-          return badRequest("Stripe verification required for paid resources", {
-            code: "STRIPE_REQUIRED",
-            missing: uploadCheck.missing,
-          });
+          return badRequest(
+            "Stripe verification required",
+            { missing: uploadCheck.missing },
+            API_ERROR_CODES.STRIPE_REQUIRED
+          );
         }
-        return badRequest("Profile incomplete", {
-          code: "PROFILE_INCOMPLETE",
-          missing: uploadCheck.missing,
-        });
+        return badRequest(
+          "Profile incomplete",
+          { missing: uploadCheck.missing },
+          API_ERROR_CODES.PROFILE_INCOMPLETE
+        );
       }
-      return forbidden(uploadCheck.error || "ACCESS_DENIED");
+      return forbidden(uploadCheck.error || "Access denied");
     }
 
     // Handle file upload
     const file = formData.get("file") as File | null;
     const previewFile = formData.get("preview") as File | null;
 
-    if (!file) return badRequest("No file uploaded");
+    if (!file) return badRequest("No file uploaded", undefined, API_ERROR_CODES.NO_FILE_UPLOADED);
 
     // Validate main file
-    if (file.size > MAX_MATERIAL_FILE_SIZE) return badRequest("File too large (max 50MB)");
+    if (file.size > MAX_MATERIAL_FILE_SIZE)
+      return badRequest("File too large", undefined, API_ERROR_CODES.FILE_TOO_LARGE);
 
     if (!isAllowedMaterialType(file.type, data.resourceType || "other")) {
-      return badRequest(`Invalid file type for ${data.resourceType}`);
+      return badRequest("Invalid file type", undefined, API_ERROR_CODES.INVALID_FILE_TYPE);
     }
 
     // Read file buffer and validate magic bytes
@@ -787,7 +791,7 @@ export async function POST(request: NextRequest) {
     const fileBuffer = Buffer.from(fileBytes);
 
     if (!validateMagicBytes(fileBuffer, file.type)) {
-      return badRequest("File content does not match file type");
+      return badRequest("File content mismatch", undefined, API_ERROR_CODES.INVALID_FILE_CONTENT);
     }
 
     // Get storage provider
@@ -853,12 +857,12 @@ export async function POST(request: NextRequest) {
       // User uploaded a preview file
       if (previewFile.size > MAX_PREVIEW_FILE_SIZE) {
         await cleanupOnError(mainFileResult.key);
-        return badRequest("Preview image too large (max 5MB)");
+        return badRequest("Preview too large", undefined, API_ERROR_CODES.FILE_TOO_LARGE);
       }
 
       if (!isAllowedPreviewType(previewFile.type)) {
         await cleanupOnError(mainFileResult.key);
-        return badRequest("Invalid preview type (JPEG, PNG or WebP)");
+        return badRequest("Invalid preview type", undefined, API_ERROR_CODES.INVALID_FILE_TYPE);
       }
 
       const previewBytes = await previewFile.arrayBuffer();
@@ -866,7 +870,11 @@ export async function POST(request: NextRequest) {
 
       if (!validateMagicBytes(previewBuffer, previewFile.type)) {
         await cleanupOnError(mainFileResult.key);
-        return badRequest("Preview content does not match file type");
+        return badRequest(
+          "Preview content mismatch",
+          undefined,
+          API_ERROR_CODES.INVALID_FILE_CONTENT
+        );
       }
 
       const previewExt = getExtensionFromMimeType(previewFile.type);

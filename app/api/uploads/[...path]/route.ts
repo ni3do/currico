@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { readFile } from "fs/promises";
 import path from "path";
-import { notFound, badRequest, serverError } from "@/lib/api";
+import { notFound, badRequest, serverError, API_ERROR_CODES } from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 
 /**
@@ -34,7 +34,7 @@ export async function GET(
     // Only allow serving from previews and avatars directories (public content)
     const category = pathSegments[0];
     if (!["previews", "avatars"].includes(category)) {
-      return notFound("Not found");
+      return notFound();
     }
 
     const relativePath = pathSegments.join("/");
@@ -43,7 +43,7 @@ export async function GET(
 
     // Validate resolved path stays under uploads root to prevent traversal
     if (!filePath.startsWith(uploadsRoot + path.sep)) {
-      return badRequest("Invalid path");
+      return badRequest("Invalid path", undefined, API_ERROR_CODES.BAD_REQUEST);
     }
 
     // Read the file

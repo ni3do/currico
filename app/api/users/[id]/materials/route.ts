@@ -1,6 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { parsePagination, paginationResponse, notFound, badRequest, serverError } from "@/lib/api";
+import {
+  parsePagination,
+  paginationResponse,
+  notFound,
+  badRequest,
+  serverError,
+  API_ERROR_CODES,
+} from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 import { isValidId } from "@/lib/rateLimit";
 
@@ -15,7 +22,7 @@ import { isValidId } from "@/lib/rateLimit";
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    if (!isValidId(id)) return badRequest("Invalid ID");
+    if (!isValidId(id)) return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
     const { searchParams } = new URL(request.url);
     const { page, limit, skip } = parsePagination(searchParams, { limit: 12 });
     const sort = searchParams.get("sort") || "newest";

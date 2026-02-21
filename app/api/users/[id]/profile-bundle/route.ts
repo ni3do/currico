@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma, publicUserSelect } from "@/lib/db";
 import { getCurrentUserId } from "@/lib/auth";
-import { badRequest, notFound, rateLimited, serverError } from "@/lib/api";
+import { badRequest, notFound, rateLimited, serverError, API_ERROR_CODES } from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 import { isValidId, checkRateLimit, getClientIP } from "@/lib/rateLimit";
 
@@ -23,7 +23,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     const { id } = await params;
 
     if (!isValidId(id)) {
-      return badRequest("Invalid ID");
+      return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
     }
 
     const currentUserId = await getCurrentUserId();
@@ -141,7 +141,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       ]);
 
     if (!user) {
-      return notFound("User not found");
+      return notFound("User not found", API_ERROR_CODES.USER_NOT_FOUND);
     }
 
     const isFollowing = !!followRecord;

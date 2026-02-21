@@ -37,5 +37,5 @@ export function unauthorizedResponse() {
  * Returns a 403 Forbidden response for admin endpoints.
  */
 export function forbiddenResponse() {
-  return NextResponse.json({ error: "Zugriff verweigert", code: "FORBIDDEN" }, { status: 403 });
+  return NextResponse.json({ error: "Access denied", code: "FORBIDDEN" }, { status: 403 });
 }

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { generateVerificationToken } from "@/lib/email";
-import { rateLimited, badRequest, serverError } from "@/lib/api";
+import { rateLimited, badRequest, serverError, API_ERROR_CODES } from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 import { checkRateLimit, getClientIP } from "@/lib/rateLimit";
 import { newsletterSubscribeSchema } from "@/lib/validations/auth";
@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const parsed = newsletterSubscribeSchema.safeParse(body);
     if (!parsed.success) {
-      return badRequest("Invalid email");
+      return badRequest("Invalid email", undefined, API_ERROR_CODES.INVALID_INPUT);
     }
 
     const normalizedEmail = parsed.data.email.toLowerCase().trim();

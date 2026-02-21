@@ -83,7 +83,7 @@ describe("POST /api/contact", () => {
     const data = await parseResponse<{ error: string }>(response);
 
     expect(response.status).toBe(400);
-    expect(data.error).toContain("Datenschutzrichtlinie");
+    expect(data.error).toContain("Privacy policy consent required");
   });
 
   it("validates name minimum length", async () => {
@@ -102,7 +102,7 @@ describe("POST /api/contact", () => {
     const data = await parseResponse<{ error: string }>(response);
 
     expect(response.status).toBe(400);
-    expect(data.error).toContain("mindestens 2 Zeichen");
+    expect(data.error).toContain("at least 2 characters");
   });
 
   it("validates email format", async () => {
@@ -121,7 +121,7 @@ describe("POST /api/contact", () => {
     const data = await parseResponse<{ error: string }>(response);
 
     expect(response.status).toBe(400);
-    expect(data.error).toContain("E-Mail");
+    expect(data.error).toContain("email");
   });
 
   it("validates message minimum length", async () => {
@@ -140,7 +140,7 @@ describe("POST /api/contact", () => {
     const data = await parseResponse<{ error: string }>(response);
 
     expect(response.status).toBe(400);
-    expect(data.error).toContain("mindestens 10 Zeichen");
+    expect(data.error).toContain("at least 10 characters");
   });
 
   it("validates subject is a valid option", async () => {
@@ -159,7 +159,7 @@ describe("POST /api/contact", () => {
     const data = await parseResponse<{ error: string }>(response);
 
     expect(response.status).toBe(400);
-    expect(data.error).toContain("gültiges Thema");
+    expect(data.error).toContain("Invalid topic");
   });
 
   it("handles optional phone field", async () => {

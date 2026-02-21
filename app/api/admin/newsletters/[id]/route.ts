@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin, forbiddenResponse } from "@/lib/admin-auth";
-import { badRequest, notFound, serverError } from "@/lib/api";
+import { badRequest, notFound, serverError, API_ERROR_CODES } from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 import { isValidId } from "@/lib/rateLimit";
 import { updateNewsletterSchema } from "@/lib/validations/admin";
@@ -19,7 +19,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     }
 
     const { id } = await params;
-    if (!isValidId(id)) return badRequest("Invalid ID");
+    if (!isValidId(id)) return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
     const body = await request.json();
     const parsed = updateNewsletterSchema.safeParse(body);
     if (!parsed.success) {
@@ -33,7 +33,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     }
 
     if (newsletter.status !== "DRAFT") {
-      return badRequest("Only drafts can be edited");
+      return badRequest("Drafts only", undefined, API_ERROR_CODES.DRAFTS_ONLY);
     }
 
     const updated = await prisma.newsletter.update({
@@ -67,7 +67,7 @@ export async function DELETE(
     }
 
     const { id } = await params;
-    if (!isValidId(id)) return badRequest("Invalid ID");
+    if (!isValidId(id)) return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
 
     const newsletter = await prisma.newsletter.findUnique({ where: { id } });
     if (!newsletter) {
@@ -75,7 +75,7 @@ export async function DELETE(
     }
 
     if (newsletter.status !== "DRAFT") {
-      return badRequest("Only drafts can be deleted");
+      return badRequest("Drafts only", undefined, API_ERROR_CODES.DRAFTS_ONLY);
     }
 
     await prisma.newsletter.delete({ where: { id } });

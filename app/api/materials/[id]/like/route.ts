@@ -8,6 +8,7 @@ import {
   badRequest,
   notFound,
   serverError,
+  API_ERROR_CODES,
 } from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 
@@ -27,7 +28,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
     // Validate material ID format
     if (!isValidId(materialId)) {
-      return badRequest("Invalid ID");
+      return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
     }
 
     // Check if material exists
@@ -63,7 +64,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       return NextResponse.json({
         liked: false,
         likeCount,
-        message: "Like entfernt",
+        message: "Like removed",
       });
     } else {
       // Like - add new like
@@ -81,7 +82,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       return NextResponse.json({
         liked: true,
         likeCount,
-        message: "Material gefällt Ihnen",
+        message: "Material liked",
       });
     }
   } catch (error) {

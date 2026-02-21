@@ -1,6 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { requireAuth, unauthorized, badRequest, notFound, conflict, serverError } from "@/lib/api";
+import {
+  requireAuth,
+  unauthorized,
+  badRequest,
+  notFound,
+  serverError,
+  API_ERROR_CODES,
+} from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 import { z } from "zod";
 
@@ -12,7 +19,7 @@ const createReportSchema = z
     reported_user_id: z.string().optional(),
   })
   .refine((data) => data.resource_id || data.reported_user_id, {
-    message: "Entweder resource_id oder reported_user_id muss angegeben werden",
+    message: "Either resource_id or reported_user_id is required",
   });
 
 /**
@@ -28,9 +35,13 @@ export async function POST(request: NextRequest) {
     const validation = createReportSchema.safeParse(body);
 
     if (!validation.success) {
-      return badRequest("Invalid input", {
-        details: validation.error.flatten().fieldErrors,
-      });
+      return badRequest(
+        "Invalid input",
+        {
+          details: validation.error.flatten().fieldErrors,
+        },
+        API_ERROR_CODES.INVALID_INPUT
+      );
     }
 
     const { reason, description, resource_id, reported_user_id } = validation.data;
@@ -68,7 +79,10 @@ export async function POST(request: NextRequest) {
     });
 
     if (existingReport) {
-      return conflict("Sie haben dieses Material bereits gemeldet");
+      return NextResponse.json(
+        { error: "Already reported", code: API_ERROR_CODES.ALREADY_REPORTED },
+        { status: 409 }
+      );
     }
 
     // Create the report

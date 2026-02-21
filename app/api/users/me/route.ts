@@ -2,7 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma, privateUserSelect } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
 import { updateProfileSchema } from "@/lib/validations/user";
-import { requireAuth, unauthorized, notFound, serverError } from "@/lib/api";
+import {
+  requireAuth,
+  unauthorized,
+  notFound,
+  badRequest,
+  serverError,
+  API_ERROR_CODES,
+} from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 
 /**
@@ -52,12 +59,12 @@ export async function PATCH(request: NextRequest) {
     // Validate input
     const validationResult = updateProfileSchema.safeParse(body);
     if (!validationResult.success) {
-      return NextResponse.json(
+      return badRequest(
+        "Invalid input",
         {
-          error: "Invalid input",
           details: validationResult.error.flatten().fieldErrors,
         },
-        { status: 400 }
+        API_ERROR_CODES.INVALID_INPUT
       );
     }
 
@@ -159,7 +166,7 @@ export async function DELETE() {
       });
     });
 
-    return NextResponse.json({ message: "Konto erfolgreich gelöscht" });
+    return NextResponse.json({ message: "Account deleted" });
   } catch (error) {
     captureError("Error deleting user account:", error);
     return serverError();

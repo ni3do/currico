@@ -23,7 +23,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
     // Validate material ID format
     if (!isValidId(materialId)) {
-      return badRequest("Invalid ID");
+      return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
     }
 
     const userId = await requireAuth();
@@ -203,7 +203,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
     // Validate material ID format
     if (!isValidId(materialId)) {
-      return badRequest("Invalid ID");
+      return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
     }
 
     // Check if material exists
@@ -253,7 +253,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     });
 
     if (existingReview) {
-      return badRequest("Already reviewed", { code: API_ERROR_CODES.ALREADY_REVIEWED });
+      return badRequest("Already reviewed", undefined, API_ERROR_CODES.ALREADY_REVIEWED);
     }
 
     // Parse and validate request body
@@ -261,10 +261,11 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     const validation = createReviewSchema.safeParse(body);
 
     if (!validation.success) {
-      return badRequest("Invalid input", {
-        code: "INVALID_INPUT",
-        details: validation.error.flatten(),
-      });
+      return badRequest(
+        "Invalid input",
+        { details: validation.error.flatten() },
+        API_ERROR_CODES.INVALID_INPUT
+      );
     }
 
     const { rating, title, content } = validation.data;

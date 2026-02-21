@@ -10,6 +10,7 @@ import {
   serverError,
   parsePagination,
   paginationResponse,
+  API_ERROR_CODES,
 } from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 import { addToWishlistSchema } from "@/lib/validations/user";
@@ -120,7 +121,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const parsed = addToWishlistSchema.safeParse(body);
     if (!parsed.success) {
-      return badRequest("RESOURCE_ID_REQUIRED");
+      return badRequest("Resource ID required", undefined, API_ERROR_CODES.INVALID_INPUT);
     }
     const { resourceId } = parsed.data;
 
@@ -137,16 +138,20 @@ export async function POST(request: NextRequest) {
     });
 
     if (!resource) {
-      return notFound("MATERIAL_NOT_FOUND");
+      return notFound("Material not found", API_ERROR_CODES.MATERIAL_NOT_FOUND);
     }
 
     // Don't allow wishlisting own resources
     if (resource.seller_id === userId) {
-      return badRequest("CANNOT_WISHLIST_OWN_MATERIAL");
+      return badRequest(
+        "Cannot wishlist own material",
+        undefined,
+        API_ERROR_CODES.CANNOT_WISHLIST_OWN
+      );
     }
 
     if (!resource.is_published || !resource.is_approved || !resource.is_public) {
-      return badRequest("MATERIAL_NOT_AVAILABLE");
+      return badRequest("Material not available", undefined, API_ERROR_CODES.MATERIAL_UNAVAILABLE);
     }
 
     // Add to wishlist (upsert to avoid duplicates)
@@ -166,7 +171,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: "WISHLIST_ADDED",
+      message: "Added to wishlist",
     });
   } catch (error) {
     captureError("Error adding to wishlist:", error);
@@ -187,7 +192,7 @@ export async function DELETE(request: NextRequest) {
     const resourceId = searchParams.get("resourceId");
 
     if (!resourceId) {
-      return badRequest("RESOURCE_ID_REQUIRED");
+      return badRequest("Resource ID required", undefined, API_ERROR_CODES.INVALID_INPUT);
     }
 
     // Delete from wishlist
@@ -200,7 +205,7 @@ export async function DELETE(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: "WISHLIST_REMOVED",
+      message: "Removed from wishlist",
     });
   } catch (error) {
     captureError("Error removing from wishlist:", error);
