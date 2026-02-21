@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
 import { requireAuth, unauthorized, notFound, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { parseBackupCodes } from "@/lib/totp";
 
 /**
@@ -138,7 +139,7 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error("Error fetching user stats:", error);
-    return serverError("Fehler beim Laden der Statistiken");
+    captureError("Error fetching user stats:", error);
+    return serverError();
   }
 }

@@ -3,6 +3,7 @@ import { prisma, privateUserSelect } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
 import { updateProfileSchema } from "@/lib/validations/user";
 import { requireAuth, unauthorized, notFound, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 
 /**
  * GET /api/users/me
@@ -31,7 +32,7 @@ export async function GET() {
       cantons: toStringArray(user.cantons),
     });
   } catch (error) {
-    console.error("Error fetching user profile:", error);
+    captureError("Error fetching user profile:", error);
     return serverError();
   }
 }
@@ -53,7 +54,7 @@ export async function PATCH(request: NextRequest) {
     if (!validationResult.success) {
       return NextResponse.json(
         {
-          error: "Ungültige Eingabe",
+          error: "Invalid input",
           details: validationResult.error.flatten().fieldErrors,
         },
         { status: 400 }
@@ -102,7 +103,7 @@ export async function PATCH(request: NextRequest) {
       cantons: toStringArray(updatedUser.cantons),
     });
   } catch (error) {
-    console.error("Error updating user profile:", error);
+    captureError("Error updating user profile:", error);
     return serverError();
   }
 }
@@ -128,8 +129,7 @@ export async function DELETE() {
     if (sellerTransactions > 0) {
       return NextResponse.json(
         {
-          error:
-            "Konto kann nicht gelöscht werden, da Sie verkaufte Materialien haben. Bitte kontaktieren Sie den Support.",
+          error: "Cannot delete account with sold materials",
         },
         { status: 400 }
       );
@@ -161,7 +161,7 @@ export async function DELETE() {
 
     return NextResponse.json({ message: "Konto erfolgreich gelöscht" });
   } catch (error) {
-    console.error("Error deleting user account:", error);
+    captureError("Error deleting user account:", error);
     return serverError();
   }
 }

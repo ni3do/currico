@@ -135,22 +135,26 @@ const nextAuth = NextAuth({
     async jwt({ token, user, trigger }) {
       if (user) {
         token.id = user.id as string;
-        // Fetch role and onboarding status from database
+        // Fetch role, onboarding status, and image from database
         const dbUser = await prisma.user.findUnique({
           where: { id: user.id as string },
-          select: { role: true, display_name: true },
+          select: { role: true, display_name: true, image: true, name: true },
         });
         token.role = (dbUser?.role ?? "BUYER") as "BUYER" | "SELLER" | "ADMIN";
         token.needsOnboarding = !dbUser?.display_name;
+        token.picture = dbUser?.image ?? undefined;
+        token.name = dbUser?.display_name || dbUser?.name || token.name;
       }
-      // Refresh role and onboarding status on session update
+      // Refresh role, onboarding status, image, and name on session update
       if (trigger === "update" && token.id) {
         const dbUser = await prisma.user.findUnique({
           where: { id: token.id as string },
-          select: { role: true, display_name: true },
+          select: { role: true, display_name: true, image: true, name: true },
         });
         token.role = (dbUser?.role ?? "BUYER") as "BUYER" | "SELLER" | "ADMIN";
         token.needsOnboarding = !dbUser?.display_name;
+        token.picture = dbUser?.image ?? undefined;
+        token.name = dbUser?.display_name || dbUser?.name || token.name;
       }
       return token;
     },
@@ -159,6 +163,8 @@ const nextAuth = NextAuth({
         session.user.id = token.id as string;
         session.user.role = (token.role ?? "BUYER") as "BUYER" | "SELLER" | "ADMIN";
         session.user.needsOnboarding = token.needsOnboarding ?? false;
+        session.user.image = (token.picture as string) ?? null;
+        session.user.name = (token.name as string) ?? null;
       }
       return session;
     },

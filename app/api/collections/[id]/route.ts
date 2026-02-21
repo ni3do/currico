@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAuth, unauthorized, badRequest, notFound, forbidden, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { isValidId } from "@/lib/rateLimit";
 import { z } from "zod";
 
@@ -61,14 +62,14 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     });
 
     if (!collection) {
-      return notFound("Sammlung nicht gefunden");
+      return notFound();
     }
 
     // Check access - public collections are viewable by all
     // Private collections only viewable by owner
     const userId = await requireAuth();
     if (!collection.is_public && collection.owner_id !== userId) {
-      return forbidden("Diese Sammlung ist privat");
+      return forbidden("Collection is private");
     }
 
     return NextResponse.json({
@@ -78,8 +79,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       },
     });
   } catch (error) {
-    console.error("Error fetching collection:", error);
-    return serverError("Fehler beim Laden der Sammlung");
+    captureError("Error fetching collection:", error);
+    return serverError();
   }
 }
 
@@ -98,7 +99,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     const validation = updateCollectionSchema.safeParse(body);
 
     if (!validation.success) {
-      return badRequest("Ungültige Eingabe", {
+      return badRequest("Invalid input", {
         details: validation.error.flatten().fieldErrors,
       });
     }
@@ -110,11 +111,11 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     });
 
     if (!existing) {
-      return notFound("Sammlung nicht gefunden");
+      return notFound();
     }
 
     if (existing.owner_id !== userId) {
-      return forbidden("Sie können nur Ihre eigenen Sammlungen bearbeiten");
+      return forbidden("Own collection only");
     }
 
     const collection = await prisma.collection.update({
@@ -127,8 +128,8 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       collection,
     });
   } catch (error) {
-    console.error("Error updating collection:", error);
-    return serverError("Fehler beim Aktualisieren der Sammlung");
+    captureError("Error updating collection:", error);
+    return serverError();
   }
 }
 
@@ -154,11 +155,11 @@ export async function DELETE(
     });
 
     if (!existing) {
-      return notFound("Sammlung nicht gefunden");
+      return notFound();
     }
 
     if (existing.owner_id !== userId) {
-      return forbidden("Sie können nur Ihre eigenen Sammlungen löschen");
+      return forbidden("Own collection only");
     }
 
     await prisma.collection.delete({
@@ -170,7 +171,7 @@ export async function DELETE(
       message: "Sammlung gelöscht",
     });
   } catch (error) {
-    console.error("Error deleting collection:", error);
-    return serverError("Fehler beim Löschen der Sammlung");
+    captureError("Error deleting collection:", error);
+    return serverError();
   }
 }

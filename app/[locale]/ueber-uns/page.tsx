@@ -88,7 +88,7 @@ export default function AboutPage() {
         {/* ──────────── 1. Hero ──────────── */}
         <section ref={heroRef} className="relative overflow-hidden">
           <div className="bg-bg-secondary">
-            <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+            <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8 2xl:max-w-[1440px]">
               <Breadcrumb items={[{ label: tCommon("breadcrumb.about") }]} />
 
               <div className="mt-6 grid items-center gap-12 lg:grid-cols-2">
@@ -152,7 +152,7 @@ export default function AboutPage() {
 
         {/* ──────────── 3. Origin Story ──────────── */}
         <section className="bg-bg">
-          <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+          <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 2xl:max-w-[1440px]">
             <div className="grid items-center gap-12 lg:grid-cols-2">
               <FadeIn direction="left">
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
@@ -182,7 +182,7 @@ export default function AboutPage() {
 
         {/* ──────────── 4. Timeline / Journey ──────────── */}
         <section className="bg-bg-secondary">
-          <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+          <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 2xl:max-w-[1440px]">
             <FadeIn className="mx-auto mb-12 max-w-2xl text-center">
               <h2 className="text-text text-2xl font-bold sm:text-3xl">{t("timeline.title")}</h2>
               <p className="text-text-muted mt-4 text-lg">{t("timeline.subtitle")}</p>
@@ -230,7 +230,7 @@ export default function AboutPage() {
 
         {/* ──────────── 5. Meet the Team ──────────── */}
         <section className="bg-bg">
-          <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+          <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 2xl:max-w-[1440px]">
             <FadeIn className="mx-auto mb-12 max-w-2xl text-center">
               <h2 className="text-text text-2xl font-bold sm:text-3xl">{t("founders.title")}</h2>
               <p className="text-text-muted mt-4 text-lg">{t("founders.subtitle")}</p>
@@ -340,7 +340,7 @@ export default function AboutPage() {
 
         {/* ──────────── 6. Founders Quote ──────────── */}
         <section className="bg-bg-secondary">
-          <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+          <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 2xl:max-w-[1440px]">
             <FadeIn className="mx-auto max-w-3xl">
               <p className="text-text-muted mb-4 text-center text-sm font-semibold tracking-wider uppercase">
                 {t("quote.context")}
@@ -396,7 +396,7 @@ export default function AboutPage() {
 
         {/* ──────────── 7. Values — Swiss-specific ──────────── */}
         <section className="bg-bg">
-          <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+          <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 2xl:max-w-[1440px]">
             <FadeIn className="mx-auto mb-12 max-w-2xl text-center">
               <h2 className="text-text text-2xl font-bold sm:text-3xl">{t("values.title")}</h2>
             </FadeIn>
@@ -423,7 +423,7 @@ export default function AboutPage() {
 
         {/* ──────────── 8. Help Us Grow ──────────── */}
         <section className="bg-bg-secondary">
-          <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+          <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 2xl:max-w-[1440px]">
             <FadeIn>
               <div className="border-primary/20 bg-primary/5 rounded-3xl border-2 border-dashed p-8 sm:p-12">
                 <div className="mx-auto max-w-3xl text-center">
@@ -485,7 +485,7 @@ export default function AboutPage() {
 
         {/* ──────────── 9. Final CTA ──────────── */}
         <section className="bg-bg">
-          <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+          <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 2xl:max-w-[1440px]">
             <FadeIn className="mx-auto max-w-3xl text-center">
               <h2 className="text-text text-2xl font-bold sm:text-3xl">{t("cta.title")}</h2>
               <p className="text-text-muted mx-auto mt-4 max-w-2xl text-lg leading-relaxed">

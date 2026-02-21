@@ -5,10 +5,11 @@ import { signOut, useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Bell, ChevronDown, User, ShieldCheck, LogOut, X, Menu, Plus } from "lucide-react";
+import { Bell, ChevronDown, User, ShieldCheck, LogOut, X, Menu } from "lucide-react";
 import Image from "next/image";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { LoginLink } from "@/components/ui/LoginLink";
+import { getAvatarUrl } from "@/lib/storage/client";
 
 import NotificationDropdown from "@/components/ui/NotificationDropdown";
 
@@ -81,7 +82,7 @@ export default function TopBar() {
 
   return (
     <header className="border-border-subtle bg-bg/95 sticky top-0 z-50 border-b backdrop-blur-sm">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 2xl:max-w-[1440px]">
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
             <div className="bg-primary flex h-10 w-10 items-center justify-center rounded-md">
@@ -121,15 +122,6 @@ export default function TopBar() {
               {session && (
                 <NotificationDropdown unreadCount={unreadCount} onCountChange={setUnreadCount} />
               )}
-              {session && (
-                <Link
-                  href="/hochladen"
-                  className="btn-primary flex items-center gap-1.5 px-3.5 py-2 text-sm"
-                >
-                  <Plus className="h-4 w-4" aria-hidden="true" />
-                  {t("navigation.upload")}
-                </Link>
-              )}
               {session ? (
                 <div className="relative" ref={userMenuRef}>
                   {/* User Avatar/Name Dropdown Trigger */}
@@ -149,9 +141,9 @@ export default function TopBar() {
                           </span>
                         </div>
                       </div>
-                    ) : session.user?.image ? (
+                    ) : getAvatarUrl(session.user?.image) ? (
                       <Image
-                        src={session.user.image}
+                        src={getAvatarUrl(session.user?.image)!}
                         alt={session.user?.name || ""}
                         width={32}
                         height={32}
@@ -304,13 +296,6 @@ export default function TopBar() {
                   </div>
                   {session ? (
                     <>
-                      <Link
-                        href="/hochladen"
-                        className="btn-primary mx-4 flex items-center justify-center gap-2 px-5 py-2.5 text-sm"
-                      >
-                        <Plus className="h-4 w-4" aria-hidden="true" />
-                        {t("navigation.upload")}
-                      </Link>
                       <Link
                         href="/konto"
                         className="text-text-secondary hover:text-primary flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors"

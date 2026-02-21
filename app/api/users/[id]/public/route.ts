@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma, publicUserSelect } from "@/lib/db";
 import { getCurrentUserId } from "@/lib/auth";
+import { badRequest, notFound, serverError } from "@/lib/api";
 import { isValidId } from "@/lib/rateLimit";
+import { captureError } from "@/lib/api-error";
 
 /**
  * GET /api/users/[id]/public
@@ -19,10 +21,7 @@ export async function GET(
     const { id } = await params;
 
     if (!isValidId(id)) {
-      return NextResponse.json(
-        { error: "Ungültige ID" },
-        { status: 400 }
-      );
+      return badRequest("Invalid ID");
     }
 
     const currentUserId = await getCurrentUserId();
@@ -43,10 +42,7 @@ export async function GET(
     });
 
     if (!user) {
-      return NextResponse.json(
-        { error: "Benutzer nicht gefunden" },
-        { status: 404 }
-      );
+      return notFound();
     }
 
     // Check if current user follows this profile
@@ -115,10 +111,7 @@ export async function GET(
       isOwnProfile,
     });
   } catch (error) {
-    console.error("Error fetching public profile:", error);
-    return NextResponse.json(
-      { error: "Interner Serverfehler" },
-      { status: 500 }
-    );
+    captureError("Error fetching public profile:", error);
+    return serverError();
   }
 }

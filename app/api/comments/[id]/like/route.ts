@@ -8,6 +8,7 @@ import {
   rateLimited,
   serverError,
 } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { checkRateLimit, isValidId } from "@/lib/rateLimit";
 
 // POST /api/comments/[id]/like - Toggle like on a comment
@@ -32,7 +33,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     });
 
     if (!comment) {
-      return notFound("Kommentar nicht gefunden");
+      return notFound();
     }
 
     // Check if user already liked this comment
@@ -80,7 +81,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       });
     }
   } catch (error) {
-    console.error("Error toggling comment like:", error);
+    captureError("Error toggling comment like:", error);
     return serverError();
   }
 }
@@ -99,7 +100,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     });
 
     if (!comment) {
-      return notFound("Kommentar nicht gefunden");
+      return notFound();
     }
 
     // Get like count
@@ -123,7 +124,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
     return NextResponse.json({ liked, likeCount });
   } catch (error) {
-    console.error("Error getting comment like status:", error);
+    captureError("Error getting comment like status:", error);
     return serverError();
   }
 }

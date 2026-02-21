@@ -11,6 +11,7 @@ import {
   parsePagination,
   paginationResponse,
 } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { addToWishlistSchema } from "@/lib/validations/user";
 
 /**
@@ -102,7 +103,7 @@ export async function GET(request: NextRequest) {
       pagination: paginationResponse(page, limit, totalCount),
     });
   } catch (error) {
-    console.error("Error fetching wishlist:", error);
+    captureError("Error fetching wishlist:", error);
     return serverError("WISHLIST_FETCH_FAILED");
   }
 }
@@ -168,7 +169,7 @@ export async function POST(request: NextRequest) {
       message: "WISHLIST_ADDED",
     });
   } catch (error) {
-    console.error("Error adding to wishlist:", error);
+    captureError("Error adding to wishlist:", error);
     return serverError("WISHLIST_ADD_FAILED");
   }
 }
@@ -202,7 +203,7 @@ export async function DELETE(request: NextRequest) {
       message: "WISHLIST_REMOVED",
     });
   } catch (error) {
-    console.error("Error removing from wishlist:", error);
+    captureError("Error removing from wishlist:", error);
     return serverError("WISHLIST_REMOVE_FAILED");
   }
 }

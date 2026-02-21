@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { readFile } from "fs/promises";
 import path from "path";
 import { notFound, badRequest, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 
 /**
  * Content type map for file extensions
@@ -61,10 +62,10 @@ export async function GET(
   } catch (error) {
     // File not found or read error
     if ((error as NodeJS.ErrnoException).code === "ENOENT") {
-      return notFound("Datei nicht gefunden");
+      return notFound();
     }
 
-    console.error("Error serving uploaded file:", error);
-    return serverError("Interner Serverfehler");
+    captureError("Error serving uploaded file:", error);
+    return serverError();
   }
 }

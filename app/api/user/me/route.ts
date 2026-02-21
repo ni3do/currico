@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAuth, unauthorized, notFound, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 
 /**
  * GET /api/user/me
@@ -27,7 +28,7 @@ export async function GET() {
 
     return NextResponse.json(user);
   } catch (error) {
-    console.error("Error fetching current user:", error);
+    captureError("Error fetching current user:", error);
     return serverError();
   }
 }

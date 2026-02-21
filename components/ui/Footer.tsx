@@ -9,7 +9,7 @@ export default function Footer() {
 
   return (
     <footer className="border-border bg-bg-secondary border-t">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 2xl:max-w-[1440px]">
         {/* 4-column grid: 1 col mobile → 2 col tablet → 4 col desktop */}
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {/* Column 1: Brand */}

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { getCurrentUserId } from "@/lib/auth";
 import { badRequest, unauthorized, notFound, forbidden, serverError, rateLimited } from "@/lib/api";
 import { checkRateLimit, isValidId } from "@/lib/rateLimit";
+import { captureError } from "@/lib/api-error";
 
 /**
  * POST /api/materials/[id]/duplicate
@@ -95,7 +96,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       title: duplicate.title,
     });
   } catch (error) {
-    console.error("Error duplicating material:", error);
+    captureError("Error duplicating material:", error);
     return serverError("Failed to duplicate material");
   }
 }

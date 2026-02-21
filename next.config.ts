@@ -6,6 +6,7 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  serverExternalPackages: ["otpauth", "qrcode"],
   turbopack: {},
   images: {
     formats: ["image/avif", "image/webp"],

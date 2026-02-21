@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { updateCommentSchema } from "@/lib/validations/review";
 import { requireAuth, unauthorized, badRequest, notFound, forbidden, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { isValidId } from "@/lib/rateLimit";
 
 // GET /api/comments/[id] - Get a single comment
@@ -49,7 +50,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     });
 
     if (!comment) {
-      return notFound("Kommentar nicht gefunden");
+      return notFound();
     }
 
     return NextResponse.json({
@@ -86,8 +87,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       },
     });
   } catch (error) {
-    console.error("Error fetching comment:", error);
-    return serverError("Interner Serverfehler");
+    captureError("Error fetching comment:", error);
+    return serverError();
   }
 }
 
@@ -106,11 +107,11 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     });
 
     if (!comment) {
-      return notFound("Kommentar nicht gefunden");
+      return notFound();
     }
 
     if (comment.user_id !== userId) {
-      return forbidden("Sie können nur Ihre eigenen Kommentare bearbeiten");
+      return forbidden("Own comment only");
     }
 
     // Parse and validate request body
@@ -123,7 +124,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     const validation = updateCommentSchema.safeParse(body);
 
     if (!validation.success) {
-      return badRequest("Ungültige Eingabe", { details: validation.error.flatten() });
+      return badRequest("Invalid input", { details: validation.error.flatten() });
     }
 
     const { content } = validation.data;
@@ -159,8 +160,8 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
       message: "Kommentar erfolgreich aktualisiert",
     });
   } catch (error) {
-    console.error("Error updating comment:", error);
-    return serverError("Interner Serverfehler");
+    captureError("Error updating comment:", error);
+    return serverError();
   }
 }
 
@@ -184,7 +185,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     });
 
     if (!comment) {
-      return notFound("Kommentar nicht gefunden");
+      return notFound();
     }
 
     // Allow deletion by owner, resource seller, or admin
@@ -197,7 +198,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
       comment.user_id === userId || comment.resource.seller_id === userId || user?.role === "ADMIN";
 
     if (!canDelete) {
-      return forbidden("Sie können nur Ihre eigenen Kommentare löschen");
+      return forbidden("Own comment only");
     }
 
     // Delete comment (cascades to replies and likes)
@@ -207,7 +208,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 
     return NextResponse.json({ message: "Kommentar erfolgreich gelöscht" });
   } catch (error) {
-    console.error("Error deleting comment:", error);
-    return serverError("Interner Serverfehler");
+    captureError("Error deleting comment:", error);
+    return serverError();
   }
 }

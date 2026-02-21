@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { motion } from "framer-motion";
 import { MaterialCard } from "@/components/ui/MaterialCard";
 import { getSubjectPillClass } from "@/lib/constants/subject-colors";
@@ -13,7 +14,7 @@ interface MaterialsGridProps {
   labels: { wishlistAdd: string; wishlistRemove: string; anonymous: string };
 }
 
-export function MaterialsGrid({
+export const MaterialsGrid = memo(function MaterialsGrid({
   materials,
   wishlistedIds,
   onWishlistToggle,
@@ -70,4 +71,4 @@ export function MaterialsGrid({
       ))}
     </>
   );
-}
+});

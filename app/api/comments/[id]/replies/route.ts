@@ -10,6 +10,7 @@ import {
   rateLimited,
   serverError,
 } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { checkRateLimit, isValidId } from "@/lib/rateLimit";
 
 // GET /api/comments/[id]/replies - Get all replies for a comment
@@ -30,7 +31,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     });
 
     if (!comment) {
-      return notFound("Kommentar nicht gefunden");
+      return notFound();
     }
 
     // Get replies with user info
@@ -64,7 +65,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       })),
     });
   } catch (error) {
-    console.error("Error fetching replies:", error);
+    captureError("Error fetching replies:", error);
     return serverError();
   }
 }
@@ -97,7 +98,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     });
 
     if (!comment) {
-      return notFound("Kommentar nicht gefunden");
+      return notFound();
     }
 
     // Parse and validate request body
@@ -105,7 +106,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     const validation = createReplySchema.safeParse(body);
 
     if (!validation.success) {
-      return badRequest("Ungültige Eingabe", { details: validation.error.flatten() });
+      return badRequest("Invalid input", { details: validation.error.flatten() });
     }
 
     const { content } = validation.data;
@@ -151,7 +152,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       message: "Antwort erfolgreich erstellt",
     });
   } catch (error) {
-    console.error("Error creating reply:", error);
+    captureError("Error creating reply:", error);
     return serverError();
   }
 }

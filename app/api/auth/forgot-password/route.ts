@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { prisma } from "@/lib/db";
 import { sendPasswordResetEmail } from "@/lib/email";
-import { badRequest, serverError } from "@/lib/api";
-import { checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
+import { badRequest, rateLimited, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
+import { checkRateLimit, getClientIP } from "@/lib/rateLimit";
 import { forgotPasswordSchema } from "@/lib/validations/auth";
 
 const PASSWORD_RESET_EXPIRY_HOURS = 1;
@@ -17,10 +18,7 @@ export async function POST(request: NextRequest) {
   const rateLimitResult = checkRateLimit(clientIP, "auth:forgot-password");
 
   if (!rateLimitResult.success) {
-    return NextResponse.json(
-      { error: "Too many requests. Please try again later.", code: "RATE_LIMITED" },
-      { status: 429, headers: rateLimitHeaders(rateLimitResult) }
-    );
+    return rateLimited();
   }
 
   try {
@@ -28,12 +26,12 @@ export async function POST(request: NextRequest) {
     try {
       body = await request.json();
     } catch {
-      return badRequest("Invalid JSON body");
+      return badRequest("Invalid JSON body", { code: "BAD_REQUEST" });
     }
 
     const parsed = forgotPasswordSchema.safeParse(body);
     if (!parsed.success) {
-      return badRequest("Valid email required");
+      return badRequest("Valid email required", { code: "INVALID_INPUT" });
     }
     const { email } = parsed.data;
 
@@ -81,7 +79,7 @@ export async function POST(request: NextRequest) {
         "Falls ein Konto mit dieser E-Mail existiert, wurde ein Link zum Zurücksetzen gesendet.",
     });
   } catch (error) {
-    console.error("Error in forgot-password:", error);
+    captureError("Error in forgot-password:", error);
     return serverError();
   }
 }

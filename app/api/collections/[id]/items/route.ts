@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAuth, unauthorized, badRequest, notFound, forbidden, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { isValidId } from "@/lib/rateLimit";
 import { z } from "zod";
 
@@ -33,7 +34,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     const validation = addItemSchema.safeParse(body);
 
     if (!validation.success) {
-      return badRequest("Ungültige Eingabe", {
+      return badRequest("Invalid input", {
         details: validation.error.flatten().fieldErrors,
       });
     }
@@ -47,11 +48,11 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     });
 
     if (!collection) {
-      return notFound("Sammlung nicht gefunden");
+      return notFound();
     }
 
     if (collection.owner_id !== userId) {
-      return forbidden("Sie können nur Ihre eigenen Sammlungen bearbeiten");
+      return forbidden("Own collection only");
     }
 
     // Check if resource exists and belongs to user (sellers can only add their own resources)
@@ -61,11 +62,11 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     });
 
     if (!resource) {
-      return notFound("Material nicht gefunden");
+      return notFound();
     }
 
     if (resource.seller_id !== userId) {
-      return forbidden("Sie können nur Ihre eigenen Materialien zu Sammlungen hinzufügen");
+      return forbidden("Own material only");
     }
 
     // Check if already in collection
@@ -79,7 +80,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     });
 
     if (existing) {
-      return badRequest("Dieses Material ist bereits in der Sammlung");
+      return badRequest("Already in collection");
     }
 
     // Get max position if not provided
@@ -120,8 +121,8 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       },
     });
   } catch (error) {
-    console.error("Error adding item to collection:", error);
-    return serverError("Fehler beim Hinzufügen zur Sammlung");
+    captureError("Error adding item to collection:", error);
+    return serverError();
   }
 }
 
@@ -140,7 +141,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     const validation = reorderItemsSchema.safeParse(body);
 
     if (!validation.success) {
-      return badRequest("Ungültige Eingabe", {
+      return badRequest("Invalid input", {
         details: validation.error.flatten().fieldErrors,
       });
     }
@@ -152,11 +153,11 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     });
 
     if (!collection) {
-      return notFound("Sammlung nicht gefunden");
+      return notFound();
     }
 
     if (collection.owner_id !== userId) {
-      return forbidden("Sie können nur Ihre eigenen Sammlungen bearbeiten");
+      return forbidden("Own collection only");
     }
 
     // Update positions in transaction
@@ -174,8 +175,8 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       message: "Reihenfolge aktualisiert",
     });
   } catch (error) {
-    console.error("Error reordering collection items:", error);
-    return serverError("Fehler beim Aktualisieren der Reihenfolge");
+    captureError("Error reordering collection items:", error);
+    return serverError();
   }
 }
 
@@ -197,7 +198,7 @@ export async function DELETE(
     const itemId = searchParams.get("itemId");
 
     if (!itemId) {
-      return badRequest("itemId ist erforderlich");
+      return badRequest("Invalid input");
     }
 
     // Check collection ownership
@@ -207,11 +208,11 @@ export async function DELETE(
     });
 
     if (!collection) {
-      return notFound("Sammlung nicht gefunden");
+      return notFound();
     }
 
     if (collection.owner_id !== userId) {
-      return forbidden("Sie können nur Ihre eigenen Sammlungen bearbeiten");
+      return forbidden("Own collection only");
     }
 
     // Delete the item
@@ -224,7 +225,7 @@ export async function DELETE(
       message: "Material aus Sammlung entfernt",
     });
   } catch (error) {
-    console.error("Error removing item from collection:", error);
-    return serverError("Fehler beim Entfernen aus der Sammlung");
+    captureError("Error removing item from collection:", error);
+    return serverError();
   }
 }

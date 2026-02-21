@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAuth, unauthorized, badRequest, notFound, conflict, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { z } from "zod";
 
 const createReportSchema = z
@@ -27,7 +28,7 @@ export async function POST(request: NextRequest) {
     const validation = createReportSchema.safeParse(body);
 
     if (!validation.success) {
-      return badRequest("Ungültige Eingabe", {
+      return badRequest("Invalid input", {
         details: validation.error.flatten().fieldErrors,
       });
     }
@@ -41,7 +42,7 @@ export async function POST(request: NextRequest) {
         select: { id: true },
       });
       if (!resource) {
-        return notFound("Material nicht gefunden");
+        return notFound();
       }
     }
 
@@ -92,7 +93,7 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("Error creating report:", error);
-    return serverError("Fehler beim Erstellen der Meldung");
+    captureError("Error creating report:", error);
+    return serverError();
   }
 }

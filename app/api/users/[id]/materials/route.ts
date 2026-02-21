@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { parsePagination, paginationResponse, notFound, badRequest, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { isValidId } from "@/lib/rateLimit";
 
 /**
@@ -88,16 +89,23 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       salesCount: r._count.transactions,
     }));
 
-    return NextResponse.json({
-      materials: transformedMaterials,
-      seller: {
-        id: user.id,
-        name: user.display_name || user.name,
+    return NextResponse.json(
+      {
+        materials: transformedMaterials,
+        seller: {
+          id: user.id,
+          name: user.display_name || user.name,
+        },
+        pagination: best ? null : paginationResponse(page, limit, total),
       },
-      pagination: best ? null : paginationResponse(page, limit, total),
-    });
+      {
+        headers: {
+          "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
+        },
+      }
+    );
   } catch (error) {
-    console.error("Error fetching user materials:", error);
+    captureError("Error fetching user materials:", error);
     return serverError();
   }
 }

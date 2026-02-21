@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
+import { useSession } from "next-auth/react";
 import { Link } from "@/i18n/navigation";
 import { useAccountData } from "@/lib/hooks/useAccountData";
 import { AvatarUploader } from "@/components/profile/AvatarUploader";
@@ -42,6 +43,7 @@ const TEACHING_EXPERIENCE_OPTIONS = [
 
 export default function SettingsProfilePage() {
   const { userData, refreshUserData } = useAccountData();
+  const { update: updateSession } = useSession();
   const router = useRouter();
   const tSettings = useTranslations("accountPage.settingsProfile");
 
@@ -331,7 +333,7 @@ export default function SettingsProfilePage() {
       setAvatarMessage({ type: "success", text: tSettings("avatarUploaded") });
       setTimeout(() => setAvatarMessage(null), 3000);
 
-      await refreshUserData();
+      await Promise.all([refreshUserData(), updateSession()]);
     } catch (error) {
       console.error("Error uploading avatar:", error);
       setAvatarMessage({
@@ -364,7 +366,7 @@ export default function SettingsProfilePage() {
       setAvatarMessage({ type: "success", text: tSettings("avatarRemoved") });
       setTimeout(() => setAvatarMessage(null), 3000);
 
-      await refreshUserData();
+      await Promise.all([refreshUserData(), updateSession()]);
     } catch (error) {
       console.error("Error deleting avatar:", error);
       setAvatarMessage({

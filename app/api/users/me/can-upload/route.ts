@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
 import { canUploadMaterials } from "@/lib/validations/user";
 import { requireAuth, unauthorized, notFound, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 
 /**
  * GET /api/users/me/can-upload
@@ -42,7 +43,7 @@ export async function GET() {
 
     return NextResponse.json(result);
   } catch (error) {
-    console.error("Error checking upload eligibility:", error);
+    captureError("Error checking upload eligibility:", error);
     return serverError();
   }
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Check, ChevronRight, PartyPopper } from "lucide-react";
+import { Check, ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 interface ProfileData {
@@ -80,25 +80,9 @@ export function ProfileCompletionProgress({
   const totalCount = items.length;
   const percentage = Math.round((completedCount / totalCount) * 100);
 
-  // Show success state when profile is complete
+  // Hide when profile is complete — no need to keep showing it
   if (percentage === 100) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className={`border-success/30 bg-success/5 relative overflow-hidden rounded-2xl border p-5 ${className}`}
-      >
-        <div className="flex items-center gap-3">
-          <div className="bg-success/10 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full">
-            <PartyPopper className="text-success h-5 w-5" aria-hidden="true" />
-          </div>
-          <div>
-            <p className="text-text text-sm font-semibold">{t("profileComplete")}</p>
-            <p className="text-text-muted mt-0.5 text-xs">{t("profileCompleteDescription")}</p>
-          </div>
-        </div>
-      </motion.div>
-    );
+    return null;
   }
 
   // Sort: incomplete required first, then incomplete recommended, then completed

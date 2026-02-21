@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
 import { requireAuth, requireSeller, unauthorized, forbidden, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { formatPrice } from "@/lib/utils/price";
 
 /**
@@ -54,7 +55,7 @@ export async function GET() {
       materials: transformedMaterials,
     });
   } catch (error) {
-    console.error("Error fetching seller materials:", error);
+    captureError("Error fetching seller materials:", error);
     return serverError("MATERIALS_FETCH_FAILED");
   }
 }

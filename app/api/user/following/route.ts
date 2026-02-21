@@ -9,6 +9,7 @@ import {
   parsePagination,
   paginationResponse,
 } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { followSellerSchema } from "@/lib/validations/user";
 
 /**
@@ -65,7 +66,7 @@ export async function GET(request: NextRequest) {
       pagination: paginationResponse(page, limit, total),
     });
   } catch (error) {
-    console.error("Error fetching following:", error);
+    captureError("Error fetching following:", error);
     return serverError("FOLLOWING_FETCH_FAILED");
   }
 }
@@ -121,7 +122,7 @@ export async function POST(request: NextRequest) {
       followId: follow.id,
     });
   } catch (error) {
-    console.error("Error following seller:", error);
+    captureError("Error following seller:", error);
     return serverError("FOLLOW_FAILED");
   }
 }
@@ -152,7 +153,7 @@ export async function DELETE(request: NextRequest) {
       message: "UNFOLLOWED",
     });
   } catch (error) {
-    console.error("Error unfollowing seller:", error);
+    captureError("Error unfollowing seller:", error);
     return serverError("UNFOLLOW_FAILED");
   }
 }

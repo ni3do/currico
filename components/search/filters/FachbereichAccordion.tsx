@@ -56,7 +56,7 @@ export function FachbereichAccordion({
     >
       {/* Header with subtle background color */}
       <motion.div
-        className="relative flex items-center rounded-lg"
+        className="relative flex items-center"
         style={{
           backgroundColor: isSelected ? `${fachbereich.color}20` : `${fachbereich.color}08`,
         }}

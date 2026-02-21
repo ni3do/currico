@@ -35,6 +35,19 @@ export function translateApiError(
     USER_NOT_FOUND: "userNotFound",
     RATE_LIMITED: "rateLimited",
     CONFLICT: "conflict",
+    // Checkout/Payment
+    EMAIL_EXISTS: "emailExists",
+    ALREADY_OWNED: "alreadyOwned",
+    CANNOT_BUY_OWN: "cannotBuyOwn",
+    MATERIAL_UNAVAILABLE: "materialUnavailable",
+    SELLER_PAYMENTS_DISABLED: "sellerPaymentsDisabled",
+    FREE_MATERIAL: "freeMaterial",
+    PAYMENT_SERVICE_ERROR: "paymentServiceError",
+    // Reviews
+    CANNOT_REVIEW_OWN: "cannotReviewOwn",
+    MUST_PURCHASE_TO_REVIEW: "mustPurchaseToReview",
+    ALREADY_REVIEWED: "alreadyReviewed",
+    OWN_REVIEW_ONLY: "ownReviewOnly",
   };
 
   const key = codeToKey[code];

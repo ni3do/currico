@@ -17,6 +17,19 @@ export const API_ERROR_CODES = {
   USER_NOT_FOUND: "USER_NOT_FOUND",
   RATE_LIMITED: "RATE_LIMITED",
   CONFLICT: "CONFLICT",
+  // Domain-specific: Checkout/Payment
+  EMAIL_EXISTS: "EMAIL_EXISTS",
+  ALREADY_OWNED: "ALREADY_OWNED",
+  CANNOT_BUY_OWN: "CANNOT_BUY_OWN",
+  MATERIAL_UNAVAILABLE: "MATERIAL_UNAVAILABLE",
+  SELLER_PAYMENTS_DISABLED: "SELLER_PAYMENTS_DISABLED",
+  FREE_MATERIAL: "FREE_MATERIAL",
+  PAYMENT_SERVICE_ERROR: "PAYMENT_SERVICE_ERROR",
+  // Domain-specific: Reviews
+  CANNOT_REVIEW_OWN: "CANNOT_REVIEW_OWN",
+  MUST_PURCHASE_TO_REVIEW: "MUST_PURCHASE_TO_REVIEW",
+  ALREADY_REVIEWED: "ALREADY_REVIEWED",
+  OWN_REVIEW_ONLY: "OWN_REVIEW_ONLY",
 } as const;
 
 export type ApiErrorCode = (typeof API_ERROR_CODES)[keyof typeof API_ERROR_CODES];
@@ -29,8 +42,8 @@ export function unauthorized(message = "Unauthorized") {
   return NextResponse.json({ error: message, code: API_ERROR_CODES.UNAUTHORIZED }, { status: 401 });
 }
 
-export function forbidden(message = "Forbidden") {
-  return NextResponse.json({ error: message, code: API_ERROR_CODES.FORBIDDEN }, { status: 403 });
+export function forbidden(message = "Forbidden", code: ApiErrorCode = API_ERROR_CODES.FORBIDDEN) {
+  return NextResponse.json({ error: message, code }, { status: 403 });
 }
 
 export function badRequest(message: string, details?: Record<string, unknown>) {
@@ -40,15 +53,15 @@ export function badRequest(message: string, details?: Record<string, unknown>) {
   );
 }
 
-export function notFound(message = "Not found") {
-  return NextResponse.json({ error: message, code: API_ERROR_CODES.NOT_FOUND }, { status: 404 });
+export function notFound(message = "Not found", code: ApiErrorCode = API_ERROR_CODES.NOT_FOUND) {
+  return NextResponse.json({ error: message, code }, { status: 404 });
 }
 
-export function serverError(message = "Internal server error") {
-  return NextResponse.json(
-    { error: message, code: API_ERROR_CODES.INTERNAL_ERROR },
-    { status: 500 }
-  );
+export function serverError(
+  message = "Internal server error",
+  code: ApiErrorCode = API_ERROR_CODES.INTERNAL_ERROR
+) {
+  return NextResponse.json({ error: message, code }, { status: 500 });
 }
 
 export function rateLimited(message = "Too many requests") {
@@ -57,6 +70,13 @@ export function rateLimited(message = "Too many requests") {
 
 export function conflict(message = "Conflict") {
   return NextResponse.json({ error: message, code: API_ERROR_CODES.CONFLICT }, { status: 409 });
+}
+
+export function serviceUnavailable(
+  message = "Service unavailable",
+  code: ApiErrorCode = API_ERROR_CODES.PAYMENT_SERVICE_ERROR
+) {
+  return NextResponse.json({ error: message, code }, { status: 503 });
 }
 
 // ============================================================

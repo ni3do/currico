@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAuth, unauthorized, badRequest, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { z } from "zod";
 
 const createCollectionSchema = z.object({
@@ -69,8 +70,8 @@ export async function GET() {
 
     return NextResponse.json({ collections: transformedCollections });
   } catch (error) {
-    console.error("Error fetching collections:", error);
-    return serverError("Fehler beim Laden der Sammlungen");
+    captureError("Error fetching collections:", error);
+    return serverError();
   }
 }
 
@@ -87,7 +88,7 @@ export async function POST(request: NextRequest) {
     const validation = createCollectionSchema.safeParse(body);
 
     if (!validation.success) {
-      return badRequest("Ungültige Eingabe", {
+      return badRequest("Invalid input", {
         details: validation.error.flatten().fieldErrors,
       });
     }
@@ -115,7 +116,7 @@ export async function POST(request: NextRequest) {
       collection,
     });
   } catch (error) {
-    console.error("Error creating collection:", error);
-    return serverError("Fehler beim Erstellen der Sammlung");
+    captureError("Error creating collection:", error);
+    return serverError();
   }
 }

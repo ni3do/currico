@@ -90,7 +90,7 @@ export default function MaterialienPage() {
     <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 sm:py-10 lg:px-8 lg:py-12">
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 sm:py-10 lg:px-8 lg:py-12 2xl:max-w-[1440px]">
         {/* Page Header */}
         <div className="mb-6 sm:mb-8">
           <Breadcrumb items={[{ label: tCommon("navigation.materials") }]} />
@@ -216,7 +216,7 @@ export default function MaterialienPage() {
                   key={filters.showMaterials ? "materials" : "profiles"}
                   className={
                     viewMode === "grid" || !filters.showMaterials
-                      ? "grid gap-5 sm:grid-cols-2 sm:gap-6 xl:grid-cols-3"
+                      ? "grid gap-5 sm:grid-cols-2 sm:gap-6 xl:grid-cols-3 2xl:grid-cols-4"
                       : "flex flex-col gap-5"
                   }
                   style={{ opacity: isPending ? 0.7 : 1, transition: "opacity 150ms ease" }}

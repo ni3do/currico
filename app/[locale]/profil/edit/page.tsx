@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
+import { useSession } from "next-auth/react";
 import { AvatarUploader } from "@/components/profile/AvatarUploader";
 import { MultiSelect } from "@/components/ui/MultiSelect";
 import { Link } from "@/i18n/navigation";
@@ -41,6 +42,7 @@ const emptyFormData: ProfileFormData = {
 
 export default function EditProfilePage() {
   const t = useTranslations("settingsProfile");
+  const { update: updateSession } = useSession();
   const [formData, setFormData] = useState<ProfileFormData>(emptyFormData);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSaving, setIsSaving] = useState(false);
@@ -123,6 +125,7 @@ export default function EditProfilePage() {
       setFormData((prev) => ({ ...prev, avatar_url: data.url }));
       setSuccessMessage("Avatar erfolgreich hochgeladen!");
       setTimeout(() => setSuccessMessage(""), 3000);
+      await updateSession();
     } catch (error) {
       console.error("Error uploading avatar:", error);
       setErrors({ avatar: "Fehler beim Hochladen des Avatars" });

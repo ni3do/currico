@@ -7,6 +7,7 @@ import {
   parsePagination,
   paginationResponse,
 } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 
 // GET /api/user/resource-comments - Get all comments on seller's resources
 export async function GET(request: Request) {
@@ -158,7 +159,7 @@ export async function GET(request: Request) {
       },
     });
   } catch (error) {
-    console.error("Error fetching seller resource comments:", error);
+    captureError("Error fetching seller resource comments:", error);
     return serverError();
   }
 }

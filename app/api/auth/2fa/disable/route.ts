@@ -9,6 +9,7 @@ import {
   rateLimited,
   serverError,
 } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { checkRateLimit, getClientIP } from "@/lib/rateLimit";
 import { twoFactorDisableSchema } from "@/lib/validations/auth";
 
@@ -62,7 +63,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("2FA disable error:", error);
+    captureError("2FA disable error:", error);
     return serverError();
   }
 }

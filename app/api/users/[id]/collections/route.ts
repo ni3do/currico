@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getCurrentUserId } from "@/lib/auth";
 import { notFound, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 
 /**
  * GET /api/users/[id]/collections
@@ -79,7 +80,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       isOwnProfile,
     });
   } catch (error) {
-    console.error("Error fetching user collections:", error);
+    captureError("Error fetching user collections:", error);
     return serverError();
   }
 }

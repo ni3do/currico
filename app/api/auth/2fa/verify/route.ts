@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAuth, unauthorized, badRequest, rateLimited, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { checkRateLimit, getClientIP } from "@/lib/rateLimit";
 import { twoFactorVerifySchema } from "@/lib/validations/auth";
 import { validateTOTP, generateBackupCodes } from "@/lib/totp";
@@ -57,7 +58,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ backupCodes: codes });
   } catch (error) {
-    console.error("2FA verify error:", error);
+    captureError("2FA verify error:", error);
     return serverError();
   }
 }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAuth, unauthorized, badRequest, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import {
   getStorage,
   generateStorageKey,
@@ -52,17 +53,17 @@ export async function POST(request: NextRequest) {
     const file = formData.get("avatar") as File | null;
 
     if (!file) {
-      return badRequest("Keine Datei hochgeladen");
+      return badRequest("No file uploaded");
     }
 
     // Validate file type
     if (!ALLOWED_TYPES.includes(file.type)) {
-      return badRequest("Ungültiger Dateityp. Erlaubt: JPG, PNG, WebP");
+      return badRequest("Invalid file type");
     }
 
     // Validate file size
     if (file.size > MAX_SIZE) {
-      return badRequest("Datei zu gross. Maximum: 2MB");
+      return badRequest("File too large");
     }
 
     // Validate file content with magic bytes
@@ -70,7 +71,7 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(bytes);
 
     if (!validateMagicBytes(buffer, file.type)) {
-      return badRequest("Dateiinhalt stimmt nicht mit dem Dateityp überein");
+      return badRequest("File content mismatch");
     }
 
     // Delete old avatar file if it exists
@@ -115,8 +116,8 @@ export async function POST(request: NextRequest) {
       url: imageUrl,
     });
   } catch (error) {
-    console.error("Error uploading avatar:", error);
-    return serverError("Interner Serverfehler");
+    captureError("Error uploading avatar:", error);
+    return serverError();
   }
 }
 
@@ -130,7 +131,28 @@ export async function DELETE() {
     const userId = await requireAuth();
     if (!userId) return unauthorized();
 
-    // Remove avatar from database (keep file for now, could add cleanup later)
+    // Get current avatar to delete from storage
+    const currentUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { image: true },
+    });
+
+    // Delete file from storage
+    if (currentUser?.image) {
+      try {
+        if (isLegacyLocalPath(currentUser.image)) {
+          await unlink(getLegacyFilePath(currentUser.image));
+        } else if (!currentUser.image.startsWith("http")) {
+          // Storage key — delete via storage adapter
+          const storage = getStorage();
+          await storage.delete(currentUser.image, "avatar");
+        }
+      } catch {
+        // File might not exist, continue with DB cleanup
+      }
+    }
+
+    // Remove avatar from database
     await prisma.user.update({
       where: { id: userId },
       data: { image: null },
@@ -140,7 +162,7 @@ export async function DELETE() {
       message: "Avatar erfolgreich entfernt",
     });
   } catch (error) {
-    console.error("Error deleting avatar:", error);
-    return serverError("Interner Serverfehler");
+    captureError("Error deleting avatar:", error);
+    return serverError();
   }
 }

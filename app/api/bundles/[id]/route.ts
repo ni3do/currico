@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { z } from "zod";
 import { formatPrice } from "@/lib/utils/price";
 import { requireAuth, unauthorized, forbidden, notFound, badRequest, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { isValidId } from "@/lib/rateLimit";
 import { toStringArray } from "@/lib/json-array";
 
@@ -96,7 +97,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     return NextResponse.json({ bundle: transformedBundle });
   } catch (error) {
-    console.error("Error fetching bundle:", error);
+    captureError("Error fetching bundle:", error);
     return serverError("BUNDLE_FETCH_FAILED");
   }
 }
@@ -215,7 +216,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       message: "BUNDLE_UPDATED",
     });
   } catch (error) {
-    console.error("Error updating bundle:", error);
+    captureError("Error updating bundle:", error);
     return serverError("BUNDLE_UPDATE_FAILED");
   }
 }
@@ -260,7 +261,7 @@ export async function DELETE(
       message: "BUNDLE_DELETED",
     });
   } catch (error) {
-    console.error("Error deleting bundle:", error);
+    captureError("Error deleting bundle:", error);
     return serverError("BUNDLE_DELETE_FAILED");
   }
 }

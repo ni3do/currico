@@ -295,6 +295,7 @@ model Resource {
 
   @@index([seller_id])
   @@index([is_published, is_public])
+  @@index([is_published, is_public, created_at])
   @@index([status])
   @@index([created_at])
   @@index([title(ops: raw("gin_trgm_ops"))], type: Gin, map: "idx_resources_title_trgm")
@@ -339,6 +340,7 @@ model Transaction {
   @@index([buyer_id])
   @@index([resource_id])
   @@index([status])
+  @@index([created_at])
   @@map("transactions")
 }
 
@@ -657,6 +659,7 @@ model Follow {
 
   @@unique([follower_id, followed_id])
   @@index([followed_id])
+  @@index([follower_id])
   @@map("follows")
 }
 
@@ -679,6 +682,7 @@ model Collection {
   items CollectionItem[]
 
   @@index([owner_id])
+  @@index([owner_id, is_public])
   @@map("collections")
 }
 
@@ -770,6 +774,7 @@ model Review {
 
   @@unique([user_id, resource_id])
   @@index([resource_id])
+  @@index([user_id])
   @@map("reviews")
 }
 
@@ -802,6 +807,7 @@ model Comment {
   likes       CommentLike[]
 
   @@index([resource_id])
+  @@index([user_id])
   @@map("comments")
 }
 

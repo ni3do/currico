@@ -15,6 +15,7 @@ Documentation is organized into three tiers:
 - [Launch Checklist](./plans/launch-checklist.md) - Pre-launch readiness: 22 done / 31 open across 5 priority tiers
 - [Roadmap](./plans/roadmap.md) - Strategic roadmap (domain migration + pilot program remaining)
 - [Joel Improvements Status](./plans/joelimprovements-status.md) - Page-by-page tracker: 362 done / 16 open (96%)
+- [Code Quality Improvements](./plans/code-quality-improvements.md) - Technical debt: dead code, indexes, constraints, error codes, perf (33 items)
 - [Consistency Audit Plan](./plans/consistency-audit-plan.md) - Full-project audit: 53 improvements across security, API, theme, UI, a11y, polish
 - [Final Touch Audit](./plans/final-touch-audit.md) - Design consistency audit report (score: 7.5/10)
 - [UX Polish 9-10](./plans/ux-polish-9-and-10.md) - Path from 8.5 → 10/10 UX polish score

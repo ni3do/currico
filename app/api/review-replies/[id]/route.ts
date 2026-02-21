@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { updateReviewReplySchema } from "@/lib/validations/review";
 import { requireAuth, unauthorized, badRequest, notFound, forbidden, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { isValidId } from "@/lib/rateLimit";
 
 // PUT /api/review-replies/[id] - Update own review reply
@@ -19,11 +20,11 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     });
 
     if (!reply) {
-      return notFound("Antwort nicht gefunden");
+      return notFound();
     }
 
     if (reply.user_id !== userId) {
-      return forbidden("Sie können nur Ihre eigenen Antworten bearbeiten");
+      return forbidden("Own reply only");
     }
 
     // Parse and validate request body
@@ -31,7 +32,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     const validation = updateReviewReplySchema.safeParse(body);
 
     if (!validation.success) {
-      return badRequest("Ungültige Eingabe", { details: validation.error.flatten() });
+      return badRequest("Invalid input", { details: validation.error.flatten() });
     }
 
     const { content } = validation.data;
@@ -67,7 +68,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
       message: "Antwort erfolgreich aktualisiert",
     });
   } catch (error) {
-    console.error("Error updating review reply:", error);
+    captureError("Error updating review reply:", error);
     return serverError();
   }
 }
@@ -96,7 +97,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     });
 
     if (!reply) {
-      return notFound("Antwort nicht gefunden");
+      return notFound();
     }
 
     // Allow deletion by owner, resource seller, or admin
@@ -111,7 +112,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
       user?.role === "ADMIN";
 
     if (!canDelete) {
-      return forbidden("Sie können nur Ihre eigenen Antworten löschen");
+      return forbidden("Own reply only");
     }
 
     // Delete reply
@@ -121,7 +122,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 
     return NextResponse.json({ message: "Antwort erfolgreich gelöscht" });
   } catch (error) {
-    console.error("Error deleting review reply:", error);
+    captureError("Error deleting review reply:", error);
     return serverError();
   }
 }

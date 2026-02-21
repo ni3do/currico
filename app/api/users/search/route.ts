@@ -3,6 +3,7 @@ import { Prisma } from "@prisma/client";
 import { prisma, publicUserSelect } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
 import { parsePagination, paginationResponse, rateLimited, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { checkRateLimit, getClientIP } from "@/lib/rateLimit";
 
 /** Minimum word-level trigram similarity for user name fuzzy search */
@@ -174,7 +175,7 @@ export async function GET(request: NextRequest) {
       pagination: paginationResponse(page, limit, total),
     });
   } catch (error) {
-    console.error("Error searching users:", error);
-    return serverError("Fehler bei der Suche");
+    captureError("Error searching users:", error);
+    return serverError();
   }
 }

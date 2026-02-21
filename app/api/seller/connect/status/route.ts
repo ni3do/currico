@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getConnectAccount, createExpressDashboardLink } from "@/lib/stripe";
 import { requireAuth, unauthorized, notFound, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 
 /**
  * GET /api/seller/connect/status
@@ -51,7 +52,7 @@ export async function GET() {
     try {
       stripeAccount = await getConnectAccount(user.stripe_account_id);
     } catch (error) {
-      console.error("Error fetching Stripe account:", error);
+      captureError("Error fetching Stripe account:", error);
       // Return cached data if Stripe API fails
       return NextResponse.json({
         hasAccount: true,
@@ -140,13 +141,13 @@ export async function GET() {
         : null,
     });
   } catch (error) {
-    console.error("Error getting Stripe Connect status:", error);
+    captureError("Error getting Stripe Connect status:", error);
 
     // Handle Stripe-specific errors
     if (error instanceof Error && error.message.includes("STRIPE_SECRET_KEY")) {
-      return serverError("Stripe ist nicht konfiguriert");
+      return serverError();
     }
 
-    return serverError("Fehler beim Abrufen des Stripe-Status");
+    return serverError();
   }
 }

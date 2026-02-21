@@ -517,7 +517,7 @@ function UploadPageContent() {
     <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8 2xl:max-w-[1440px]">
         <div>
           {/* Page Header */}
           <div className="mb-8">
@@ -997,7 +997,12 @@ function UploadPageContent() {
                           />
                         </div>
                       ) : (
-                        <div className="border-primary bg-primary/5 rounded-xl border-2 p-4">
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                          className="border-primary bg-primary/5 rounded-xl border-2 p-4"
+                        >
                           <div className="space-y-3">
                             {files.map((file, index) => (
                               <div
@@ -1067,7 +1072,7 @@ function UploadPageContent() {
                             onChange={handleMainFilesChange}
                             aria-label={tFields("mainFiles")}
                           />
-                        </div>
+                        </motion.div>
                       )}
                     </FormField>
 

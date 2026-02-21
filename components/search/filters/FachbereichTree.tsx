@@ -1,9 +1,13 @@
 "use client";
 
-import { Loader2, FolderOpen } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { motion } from "framer-motion";
 import type { Fachbereich } from "@/lib/curriculum-types";
 import { SONSTIGE_CODE } from "@/lib/validations/material";
 import { FachbereichAccordion } from "./FachbereichAccordion";
+
+// Neutral gray-blue accent for "Sonstige" — Catppuccin overlay1
+const SONSTIGE_COLOR = "#8c8fa1";
 
 interface FachbereichTreeProps {
   fachbereiche: Fachbereich[];
@@ -61,7 +65,7 @@ export function FachbereichTree({
   const isSonstigeSelected = selectedFachbereich === SONSTIGE_CODE;
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 p-0.5">
       {fachbereiche.map((fb, index) => (
         <FachbereichAccordion
           key={fb.code}
@@ -84,25 +88,65 @@ export function FachbereichTree({
 
       {/* Sonstige — non-LP21 materials */}
       {sonstigeLabel && (
-        <button
-          type="button"
-          onClick={() => onFachbereichChange(SONSTIGE_CODE)}
-          className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-sm font-medium transition-colors ${
-            isSonstigeSelected
-              ? "bg-primary/10 text-primary ring-primary/30 ring-1"
-              : "text-text-muted hover:bg-surface hover:text-text"
+        <motion.div
+          className={`overflow-hidden rounded-lg border transition-colors ${
+            isSonstigeSelected ? "border-transparent" : "border-border hover:border-border-subtle"
           }`}
+          style={{
+            ...(isSonstigeSelected && {
+              boxShadow: `0 0 0 2px ${SONSTIGE_COLOR}`,
+            }),
+          }}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: fachbereiche.length * 0.03 }}
         >
-          <FolderOpen className="h-4 w-4 flex-shrink-0" />
-          <div className="min-w-0">
-            <div>{sonstigeLabel}</div>
-            {sonstigeDescription && (
-              <div className={`text-text-faint text-xs ${isSonstigeSelected ? "invisible" : ""}`}>
-                {sonstigeDescription}
+          <motion.div
+            className="relative flex items-center"
+            style={{
+              backgroundColor: isSonstigeSelected ? `${SONSTIGE_COLOR}20` : `${SONSTIGE_COLOR}08`,
+            }}
+            whileHover={{
+              backgroundColor: isSonstigeSelected ? `${SONSTIGE_COLOR}25` : `${SONSTIGE_COLOR}15`,
+              x: 2,
+              scale: 1.005,
+            }}
+            transition={{ duration: 0.15 }}
+          >
+            {/* Spacer matching FachbereichAccordion alignment */}
+            <div className="w-8" />
+
+            <motion.button
+              type="button"
+              onClick={() => onFachbereichChange(SONSTIGE_CODE)}
+              className="flex flex-1 items-center gap-2.5 py-2 pr-3 text-left"
+              whileTap={{ scale: 0.98 }}
+            >
+              <motion.span
+                className="flex h-7 w-10 shrink-0 items-center justify-center rounded-md text-xs font-bold"
+                initial={false}
+                animate={{
+                  backgroundColor: isSonstigeSelected ? SONSTIGE_COLOR : `${SONSTIGE_COLOR}20`,
+                  color: isSonstigeSelected ? "white" : SONSTIGE_COLOR,
+                }}
+                transition={{ duration: 0.2 }}
+              >
+                SO
+              </motion.span>
+              <div className="min-w-0 flex-1">
+                <div
+                  className={`text-sm leading-tight font-medium ${isSonstigeSelected ? "" : "text-text"}`}
+                  style={isSonstigeSelected ? { color: SONSTIGE_COLOR } : undefined}
+                >
+                  {sonstigeLabel}
+                </div>
+                {sonstigeDescription && (
+                  <div className="text-text-faint text-xs leading-tight">{sonstigeDescription}</div>
+                )}
               </div>
-            )}
-          </div>
-        </button>
+            </motion.button>
+          </motion.div>
+        </motion.div>
       )}
     </div>
   );

@@ -8,6 +8,7 @@ import {
   rateLimited,
   serverError,
 } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { checkRateLimit, getClientIP } from "@/lib/rateLimit";
 import { generateTOTPSetup } from "@/lib/totp";
 
@@ -54,7 +55,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ qrCodeUrl, secret });
   } catch (error) {
-    console.error("2FA setup error:", error);
+    captureError("2FA setup error:", error);
     return serverError();
   }
 }

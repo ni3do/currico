@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin, forbiddenResponse } from "@/lib/admin-auth";
 import { badRequest, notFound, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { notifyManualVerification } from "@/lib/notifications";
 
 /**
@@ -61,7 +62,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       user: updatedUser,
     });
   } catch (error) {
-    console.error("Error verifying seller:", error);
+    captureError("Error verifying seller:", error);
     return serverError();
   }
 }
@@ -121,7 +122,7 @@ export async function DELETE(
       user: updatedUser,
     });
   } catch (error) {
-    console.error("Error removing seller verification:", error);
+    captureError("Error removing seller verification:", error);
     return serverError();
   }
 }

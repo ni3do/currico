@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin, forbiddenResponse } from "@/lib/admin-auth";
 import { serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 
 export async function GET(request: NextRequest) {
   try {
@@ -106,7 +107,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("Error fetching transactions:", error);
-    return serverError("Fehler beim Laden der Transaktionen");
+    captureError("Error fetching transactions:", error);
+    return serverError();
   }
 }

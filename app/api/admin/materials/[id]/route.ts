@@ -3,6 +3,7 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { requireAdmin, forbiddenResponse } from "@/lib/admin-auth";
 import { badRequest, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { isValidId } from "@/lib/rateLimit";
 import { notifyMaterialApproved, notifyMaterialRejected } from "@/lib/notifications";
 import { updateMaterialStatusSchema } from "@/lib/validations/admin";
@@ -100,7 +101,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 
     return NextResponse.json(updated);
   } catch (error) {
-    console.error("Error updating material:", error);
+    captureError("Error updating material:", error);
     return serverError();
   }
 }

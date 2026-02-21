@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
 import { badRequest, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
 import { resetPasswordSchema } from "@/lib/validations/auth";
 
@@ -68,7 +69,7 @@ export async function POST(request: NextRequest) {
       message: "Passwort erfolgreich zurückgesetzt. Sie können sich jetzt anmelden.",
     });
   } catch (error) {
-    console.error("Error in reset-password:", error);
+    captureError("Error in reset-password:", error);
     return serverError();
   }
 }
