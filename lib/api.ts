@@ -30,6 +30,16 @@ export const API_ERROR_CODES = {
   MUST_PURCHASE_TO_REVIEW: "MUST_PURCHASE_TO_REVIEW",
   ALREADY_REVIEWED: "ALREADY_REVIEWED",
   OWN_REVIEW_ONLY: "OWN_REVIEW_ONLY",
+  // Domain-specific: Downloads
+  INVALID_TOKEN: "INVALID_TOKEN",
+  PAYMENT_INCOMPLETE: "PAYMENT_INCOMPLETE",
+  TOKEN_EXPIRED: "TOKEN_EXPIRED",
+  MAX_DOWNLOADS_REACHED: "MAX_DOWNLOADS_REACHED",
+  FILE_NOT_FOUND: "FILE_NOT_FOUND",
+  INVALID_OR_EXPIRED_TOKEN: "INVALID_OR_EXPIRED_TOKEN",
+  // Domain-specific: Bundles
+  BUNDLE_NOT_FOUND: "BUNDLE_NOT_FOUND",
+  BUNDLE_MATERIALS_INVALID: "BUNDLE_MATERIALS_INVALID",
 } as const;
 
 export type ApiErrorCode = (typeof API_ERROR_CODES)[keyof typeof API_ERROR_CODES];
@@ -46,11 +56,12 @@ export function forbidden(message = "Forbidden", code: ApiErrorCode = API_ERROR_
   return NextResponse.json({ error: message, code }, { status: 403 });
 }
 
-export function badRequest(message: string, details?: Record<string, unknown>) {
-  return NextResponse.json(
-    { error: message, code: API_ERROR_CODES.BAD_REQUEST, ...details },
-    { status: 400 }
-  );
+export function badRequest(
+  message: string,
+  details?: Record<string, unknown>,
+  code: ApiErrorCode = API_ERROR_CODES.BAD_REQUEST
+) {
+  return NextResponse.json({ error: message, code, ...details }, { status: 400 });
 }
 
 export function notFound(message = "Not found", code: ApiErrorCode = API_ERROR_CODES.NOT_FOUND) {
@@ -64,8 +75,11 @@ export function serverError(
   return NextResponse.json({ error: message, code }, { status: 500 });
 }
 
-export function rateLimited(message = "Too many requests") {
-  return NextResponse.json({ error: message, code: API_ERROR_CODES.RATE_LIMITED }, { status: 429 });
+export function rateLimited(message = "Too many requests", headers?: HeadersInit) {
+  return NextResponse.json(
+    { error: message, code: API_ERROR_CODES.RATE_LIMITED },
+    { status: 429, headers }
+  );
 }
 
 export function conflict(message = "Conflict") {

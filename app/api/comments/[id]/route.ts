@@ -157,7 +157,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
           image: updatedComment.user.image,
         },
       },
-      message: "Kommentar erfolgreich aktualisiert",
+      message: "Comment updated successfully",
     });
   } catch (error) {
     captureError("Error updating comment:", error);
@@ -206,7 +206,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
       where: { id: commentId },
     });
 
-    return NextResponse.json({ message: "Kommentar erfolgreich gelöscht" });
+    return NextResponse.json({ message: "Comment deleted successfully" });
   } catch (error) {
     captureError("Error deleting comment:", error);
     return serverError();

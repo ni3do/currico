@@ -180,7 +180,7 @@ export async function DELETE(
       });
     });
 
-    return NextResponse.json({ success: true, message: "Benutzer wurde gelöscht" });
+    return NextResponse.json({ success: true, message: "User deleted successfully" });
   } catch (error) {
     captureError("Error deleting user:", error);
     return serverError();

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { notFound, badRequest, serverError, API_ERROR_CODES } from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 
 /**
@@ -50,18 +51,12 @@ export async function GET(
     });
 
     if (!downloadToken) {
-      return NextResponse.json(
-        { error: "invalid_token", message: "Download-Link nicht gefunden" },
-        { status: 404 }
-      );
+      return notFound("Download link not found", API_ERROR_CODES.INVALID_TOKEN);
     }
 
     // Check if transaction is completed
     if (downloadToken.transaction.status !== "COMPLETED") {
-      return NextResponse.json(
-        { error: "payment_incomplete", message: "Zahlung wurde noch nicht abgeschlossen" },
-        { status: 400 }
-      );
+      return badRequest("Payment not completed", undefined, API_ERROR_CODES.PAYMENT_INCOMPLETE);
     }
 
     const now = new Date();
@@ -102,9 +97,6 @@ export async function GET(
     });
   } catch (error) {
     captureError("Error fetching download token info:", error);
-    return NextResponse.json(
-      { error: "server_error", message: "Ein Fehler ist aufgetreten" },
-      { status: 500 }
-    );
+    return serverError();
   }
 }

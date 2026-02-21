@@ -9,6 +9,7 @@ import {
   forbidden,
   badRequest,
   serverError,
+  API_ERROR_CODES,
 } from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 
@@ -127,8 +128,7 @@ export async function POST(request: NextRequest) {
     const parsed = createBundleSchema.safeParse(body);
 
     if (!parsed.success) {
-      const firstError = parsed.error.issues[0];
-      return badRequest(firstError?.message ?? "Invalid input");
+      return badRequest("Invalid input", undefined, API_ERROR_CODES.INVALID_INPUT);
     }
 
     const { title, description, price, subjects, cycles, resourceIds, coverImageUrl } = parsed.data;
@@ -144,7 +144,11 @@ export async function POST(request: NextRequest) {
     });
 
     if (resources.length !== resourceIds.length) {
-      return badRequest("Some materials not found or not owned");
+      return badRequest(
+        "Materials not found or not owned by seller",
+        undefined,
+        API_ERROR_CODES.BUNDLE_MATERIALS_INVALID
+      );
     }
 
     // Create bundle with resources
@@ -183,7 +187,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: true,
-        message: "Bundle erfolgreich erstellt",
+        message: "Bundle created successfully",
         bundle: {
           id: bundle.id,
           title: bundle.title,

@@ -34,6 +34,7 @@ const mockSendPurchaseConfirmationEmail = sendPurchaseConfirmationEmail as Retur
 interface WebhookResponse {
   received?: boolean;
   error?: string;
+  code?: string;
 }
 
 /**
@@ -102,7 +103,7 @@ describe("Webhook Handler", () => {
       const data = await parseResponse<WebhookResponse>(response);
 
       expect(response.status).toBe(400);
-      expect(data.error).toBe("Missing stripe-signature header");
+      expect(data.code).toBe("BAD_REQUEST");
     });
 
     it("returns 400 when signature verification fails", async () => {
@@ -116,7 +117,7 @@ describe("Webhook Handler", () => {
       const data = await parseResponse<WebhookResponse>(response);
 
       expect(response.status).toBe(400);
-      expect(data.error).toBe("Webhook signature verification failed");
+      expect(data.code).toBe("BAD_REQUEST");
     });
   });
 
@@ -635,7 +636,7 @@ describe("Webhook Handler", () => {
       const data = await parseResponse<WebhookResponse>(response);
 
       expect(response.status).toBe(500);
-      expect(data.error).toBe("Webhook handler failed");
+      expect(data.code).toBe("INTERNAL_ERROR");
     });
 
     it("returns 500 when checkout handler throws an error", async () => {
@@ -653,7 +654,7 @@ describe("Webhook Handler", () => {
       const data = await parseResponse<WebhookResponse>(response);
 
       expect(response.status).toBe(500);
-      expect(data.error).toBe("Webhook handler failed");
+      expect(data.code).toBe("INTERNAL_ERROR");
     });
   });
 });

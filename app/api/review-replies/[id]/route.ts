@@ -65,7 +65,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
           image: updatedReply.user.image,
         },
       },
-      message: "Antwort erfolgreich aktualisiert",
+      message: "Reply updated successfully",
     });
   } catch (error) {
     captureError("Error updating review reply:", error);
@@ -120,7 +120,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
       where: { id: replyId },
     });
 
-    return NextResponse.json({ message: "Antwort erfolgreich gelöscht" });
+    return NextResponse.json({ message: "Reply deleted successfully" });
   } catch (error) {
     captureError("Error deleting review reply:", error);
     return serverError();

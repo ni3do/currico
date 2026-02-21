@@ -28,7 +28,15 @@
     "cannotReviewOwn": "You cannot review your own material",
     "mustPurchaseToReview": "You must purchase or download this material to review it",
     "alreadyReviewed": "You have already reviewed this material",
-    "ownReviewOnly": "You can only edit your own reviews"
+    "ownReviewOnly": "You can only edit your own reviews",
+    "invalidToken": "Invalid download link",
+    "paymentIncomplete": "Payment has not been completed",
+    "tokenExpired": "Download link has expired",
+    "maxDownloadsReached": "Maximum number of downloads reached",
+    "fileNotFound": "File not found",
+    "invalidOrExpiredToken": "Invalid or expired link",
+    "bundleNotFound": "Bundle not found",
+    "bundleMaterialsInvalid": "Some materials were not found or are not owned by you"
   },
   "theme": {
     "light": "Light",

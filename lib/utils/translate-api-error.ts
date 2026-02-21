@@ -48,6 +48,16 @@ export function translateApiError(
     MUST_PURCHASE_TO_REVIEW: "mustPurchaseToReview",
     ALREADY_REVIEWED: "alreadyReviewed",
     OWN_REVIEW_ONLY: "ownReviewOnly",
+    // Downloads
+    INVALID_TOKEN: "invalidToken",
+    PAYMENT_INCOMPLETE: "paymentIncomplete",
+    TOKEN_EXPIRED: "tokenExpired",
+    MAX_DOWNLOADS_REACHED: "maxDownloadsReached",
+    FILE_NOT_FOUND: "fileNotFound",
+    INVALID_OR_EXPIRED_TOKEN: "invalidOrExpiredToken",
+    // Bundles
+    BUNDLE_NOT_FOUND: "bundleNotFound",
+    BUNDLE_MATERIALS_INVALID: "bundleMaterialsInvalid",
   };
 
   const key = codeToKey[code];

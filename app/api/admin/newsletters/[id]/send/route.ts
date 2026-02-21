@@ -41,7 +41,7 @@ export async function POST(_request: NextRequest, { params }: { params: Promise<
       captureError("Background newsletter send failed:", err);
     });
 
-    return NextResponse.json({ success: true, message: "Newsletter wird gesendet" });
+    return NextResponse.json({ success: true, message: "Newsletter is being sent" });
   } catch (error) {
     captureError("Error sending newsletter:", error);
     return serverError();
