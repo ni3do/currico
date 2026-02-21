@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin, forbiddenResponse } from "@/lib/admin-auth";
 import { badRequest, notFound, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { isValidId } from "@/lib/rateLimit";
 import { sendNewsletter } from "@/lib/newsletter";
 
@@ -37,12 +38,12 @@ export async function POST(_request: NextRequest, { params }: { params: Promise<
 
     // Trigger sending in background (don't await)
     sendNewsletter(id).catch((err) => {
-      console.error("Background newsletter send failed:", err);
+      captureError("Background newsletter send failed:", err);
     });
 
     return NextResponse.json({ success: true, message: "Newsletter wird gesendet" });
   } catch (error) {
-    console.error("Error sending newsletter:", error);
+    captureError("Error sending newsletter:", error);
     return serverError();
   }
 }

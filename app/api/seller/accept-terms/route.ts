@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAuth, unauthorized, notFound, badRequest, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 
 /**
  * POST /api/seller/accept-terms
@@ -27,7 +28,7 @@ export async function POST() {
 
     // Require email verification before accepting terms
     if (!user.emailVerified) {
-      return badRequest("E-Mail muss zuerst verifiziert werden");
+      return badRequest("Email verification required");
     }
 
     // Check if already accepted
@@ -56,8 +57,8 @@ export async function POST() {
       acceptedAt: updatedUser.seller_terms_accepted_at?.toISOString(),
     });
   } catch (error) {
-    console.error("Error accepting seller terms:", error);
-    return serverError("Fehler beim Akzeptieren der Bedingungen");
+    captureError("Error accepting seller terms:", error);
+    return serverError();
   }
 }
 
@@ -87,7 +88,7 @@ export async function GET() {
       acceptedAt: user.seller_terms_accepted_at?.toISOString() ?? null,
     });
   } catch (error) {
-    console.error("Error checking seller terms:", error);
-    return serverError("Fehler beim Laden der Bedingungen");
+    captureError("Error checking seller terms:", error);
+    return serverError();
   }
 }

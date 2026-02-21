@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { generateVerificationToken } from "@/lib/email";
 import { rateLimited, badRequest, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { checkRateLimit, getClientIP } from "@/lib/rateLimit";
 import { newsletterSubscribeSchema } from "@/lib/validations/auth";
 
@@ -19,7 +20,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const parsed = newsletterSubscribeSchema.safeParse(body);
     if (!parsed.success) {
-      return badRequest("Ungültige E-Mail-Adresse");
+      return badRequest("Invalid email");
     }
 
     const normalizedEmail = parsed.data.email.toLowerCase().trim();
@@ -65,7 +66,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true }, { status: 201 });
   } catch (error) {
-    console.error("Error subscribing to newsletter:", error);
+    captureError("Error subscribing to newsletter:", error);
     return serverError();
   }
 }

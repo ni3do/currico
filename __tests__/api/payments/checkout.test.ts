@@ -32,7 +32,7 @@ const mockGetCurrentUserId = getCurrentUserId as ReturnType<typeof vi.fn>;
 // Import Stripe mocks after vi.mock
 import { getStripeClient } from "@/lib/stripe";
 
-const mockGetStripeClient = getStripeClient as any;
+const mockGetStripeClient = getStripeClient as ReturnType<typeof vi.fn>;
 
 // Type definitions for responses
 interface CreateCheckoutResponse {
@@ -205,7 +205,7 @@ describe("Checkout Flow", () => {
       const data = await parseResponse<CreateCheckoutResponse>(response);
 
       expect(response.status).toBe(401);
-      expect(data.error).toBe("Authentifizierung oder Gast-E-Mail erforderlich");
+      expect(data.error).toBe("Unauthorized");
     });
 
     it("returns 400 when materialId is missing", async () => {
@@ -222,7 +222,7 @@ describe("Checkout Flow", () => {
       const data = await parseResponse<CreateCheckoutResponse>(response);
 
       expect(response.status).toBe(400);
-      expect(data.error).toBe("Ungültige Eingabe");
+      expect(data.error).toBe("Invalid input");
     });
 
     it("returns 404 when material not found", async () => {
@@ -241,7 +241,7 @@ describe("Checkout Flow", () => {
       const data = await parseResponse<CreateCheckoutResponse>(response);
 
       expect(response.status).toBe(404);
-      expect(data.error).toBe("Material nicht gefunden");
+      expect(data.error).toBe("Not found");
     });
 
     it("returns 400 when material is not published", async () => {
@@ -263,7 +263,7 @@ describe("Checkout Flow", () => {
       const data = await parseResponse<CreateCheckoutResponse>(response);
 
       expect(response.status).toBe(400);
-      expect(data.error).toBe("Material ist nicht zum Kauf verfügbar");
+      expect(data.error).toBe("Material unavailable");
     });
 
     it("returns 400 when material is not approved", async () => {
@@ -285,7 +285,7 @@ describe("Checkout Flow", () => {
       const data = await parseResponse<CreateCheckoutResponse>(response);
 
       expect(response.status).toBe(400);
-      expect(data.error).toBe("Material ist nicht zum Kauf verfügbar");
+      expect(data.error).toBe("Material unavailable");
     });
 
     it("returns 400 when trying to purchase own material", async () => {
@@ -304,7 +304,7 @@ describe("Checkout Flow", () => {
       const data = await parseResponse<CreateCheckoutResponse>(response);
 
       expect(response.status).toBe(400);
-      expect(data.error).toBe("Eigenes Material kann nicht gekauft werden");
+      expect(data.error).toBe("Cannot buy own material");
     });
 
     it("returns 400 when user already owns the material", async () => {
@@ -327,7 +327,7 @@ describe("Checkout Flow", () => {
       const data = await parseResponse<CreateCheckoutResponse>(response);
 
       expect(response.status).toBe(400);
-      expect(data.error).toBe("Sie besitzen dieses Material bereits");
+      expect(data.error).toBe("Already owned");
     });
 
     it("returns 400 when seller cannot receive payments", async () => {
@@ -354,7 +354,7 @@ describe("Checkout Flow", () => {
       const data = await parseResponse<CreateCheckoutResponse>(response);
 
       expect(response.status).toBe(400);
-      expect(data.error).toBe("Der Verkäufer kann derzeit keine Zahlungen empfangen");
+      expect(data.error).toBe("Seller payments disabled");
     });
 
     it("returns 400 for free materials", async () => {
@@ -377,7 +377,7 @@ describe("Checkout Flow", () => {
       const data = await parseResponse<CreateCheckoutResponse>(response);
 
       expect(response.status).toBe(400);
-      expect(data.error).toBe("Kostenlose Materialien benötigen keinen Checkout");
+      expect(data.error).toBe("Free material");
     });
 
     it("returns 400 for invalid JSON body", async () => {
@@ -398,7 +398,7 @@ describe("Checkout Flow", () => {
       const data = await parseResponse<CreateCheckoutResponse>(response);
 
       expect(response.status).toBe(400);
-      expect(data.error).toBe("Ungültiger JSON-Body");
+      expect(data.error).toBe("Invalid JSON body");
     });
 
     it("returns 404 when authenticated user not found", async () => {
@@ -601,7 +601,7 @@ describe("Checkout Flow", () => {
       const data = await parseResponse<GetCheckoutSessionResponse>(response);
 
       expect(response.status).toBe(400);
-      expect(data.error).toBe("Session-ID ist erforderlich");
+      expect(data.error).toBe("Session ID required");
     });
 
     it("returns 404 when transaction not found", async () => {
@@ -615,7 +615,7 @@ describe("Checkout Flow", () => {
       const data = await parseResponse<GetCheckoutSessionResponse>(response);
 
       expect(response.status).toBe(404);
-      expect(data.error).toBe("Transaktion nicht gefunden");
+      expect(data.error).toBe("Not found");
     });
 
     it("returns 404 when transaction belongs to different user", async () => {
@@ -630,7 +630,7 @@ describe("Checkout Flow", () => {
       const data = await parseResponse<GetCheckoutSessionResponse>(response);
 
       expect(response.status).toBe(404);
-      expect(data.error).toBe("Transaktion nicht gefunden");
+      expect(data.error).toBe("Not found");
     });
 
     it("returns 500 on database error", async () => {
@@ -644,7 +644,7 @@ describe("Checkout Flow", () => {
       const data = await parseResponse<GetCheckoutSessionResponse>(response);
 
       expect(response.status).toBe(500);
-      expect(data.error).toBe("Fehler beim Laden der Checkout-Session");
+      expect(data.error).toBe("Internal server error");
     });
   });
 });

@@ -72,7 +72,7 @@ describe("POST /api/auth/register", () => {
     const data = await parseResponse<{ error: string }>(response);
 
     expect(response.status).toBe(400);
-    expect(data.error).toBe("Ein Benutzer mit dieser E-Mail existiert bereits");
+    expect(data.error).toBe("Email already exists");
   });
 
   it("validates name minimum length", async () => {
@@ -213,7 +213,7 @@ describe("POST /api/auth/register", () => {
     const data = await parseResponse<{ error: string }>(response);
 
     expect(response.status).toBe(429);
-    expect(data.error).toContain("Zu viele Anfragen");
+    expect(data.error).toBe("Too many requests");
   });
 
   it("links past guest purchases when user registers with same email", async () => {

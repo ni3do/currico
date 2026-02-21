@@ -14,6 +14,7 @@ import {
   UploadResult,
   SignedUrlOptions,
   FileCategory,
+  getCategoryDir,
 } from "../types";
 import { StorageError } from "../errors";
 
@@ -59,16 +60,7 @@ export class S3StorageAdapter implements StorageProvider {
    * Get the prefix/folder for a file category
    */
   private getCategoryPrefix(category: FileCategory): string {
-    switch (category) {
-      case "material":
-        return "resources";
-      case "preview":
-        return "previews";
-      case "avatar":
-        return "avatars";
-      default:
-        return "misc";
-    }
+    return getCategoryDir(category);
   }
 
   async upload(buffer: Buffer, options: UploadOptions): Promise<UploadResult> {

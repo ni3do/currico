@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { rateLimited, badRequest, serverError } from "@/lib/api";
 import { checkRateLimit, getClientIP } from "@/lib/rateLimit";
+import { captureError } from "@/lib/api-error";
 
 /**
  * GET /api/curriculum/search
@@ -30,7 +31,7 @@ export async function GET(request: Request) {
     const subjectCode = searchParams.get("subject");
 
     if (!query || query.length < 2) {
-      return badRequest("Suchanfrage muss mindestens 2 Zeichen lang sein");
+      return badRequest("Query too short");
     }
 
     // Normalize LP21 code for search (remove spaces, dots, convert to uppercase)
@@ -207,7 +208,7 @@ export async function GET(request: Request) {
       total: filteredCompetencies.length + transversalResults.length + bneResults.length,
     });
   } catch (error) {
-    console.error("Error searching curriculum:", error);
-    return serverError("Fehler bei der Lehrplan-Suche");
+    captureError("Error searching curriculum:", error);
+    return serverError();
   }
 }

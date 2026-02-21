@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin, forbiddenResponse } from "@/lib/admin-auth";
 import { badRequest, notFound, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 
 /**
  * POST /api/admin/users/[id]/verify-teacher
@@ -61,7 +62,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       user: updatedUser,
     });
   } catch (error) {
-    console.error("Error verifying teacher:", error);
+    captureError("Error verifying teacher:", error);
     return serverError();
   }
 }
@@ -124,7 +125,7 @@ export async function DELETE(
       user: updatedUser,
     });
   } catch (error) {
-    console.error("Error removing teacher verification:", error);
+    captureError("Error removing teacher verification:", error);
     return serverError();
   }
 }

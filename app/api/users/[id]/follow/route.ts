@@ -8,6 +8,7 @@ import {
   rateLimited,
   serverError,
 } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { checkRateLimit, isValidId } from "@/lib/rateLimit";
 import { notifyFollow } from "@/lib/notifications";
 
@@ -30,12 +31,12 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
     // Validate user ID format
     if (!isValidId(targetUserId)) {
-      return badRequest("Ungültige Benutzer-ID");
+      return badRequest("Invalid ID");
     }
 
     // Can't follow yourself
     if (targetUserId === currentUserId) {
-      return badRequest("Sie können sich nicht selbst folgen");
+      return badRequest("Cannot follow self");
     }
 
     // Check if target user exists
@@ -82,8 +83,8 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       followerCount,
     });
   } catch (error) {
-    console.error("Error following user:", error);
-    return serverError("Fehler beim Folgen des Benutzers");
+    captureError("Error following user:", error);
+    return serverError();
   }
 }
 
@@ -109,7 +110,7 @@ export async function DELETE(
 
     // Validate user ID format
     if (!isValidId(targetUserId)) {
-      return badRequest("Ungültige Benutzer-ID");
+      return badRequest("Invalid ID");
     }
 
     await prisma.follow.deleteMany({
@@ -130,7 +131,7 @@ export async function DELETE(
       followerCount,
     });
   } catch (error) {
-    console.error("Error unfollowing user:", error);
-    return serverError("Fehler beim Entfolgen des Benutzers");
+    captureError("Error unfollowing user:", error);
+    return serverError();
   }
 }

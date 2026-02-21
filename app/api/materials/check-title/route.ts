@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { requireAuth, unauthorized, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 
 /**
  * GET /api/materials/check-title?title=...
@@ -63,7 +64,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ exists: false });
   } catch (error) {
-    console.error("Error checking title:", error);
+    captureError("Error checking title:", error);
     return serverError("CHECK_FAILED");
   }
 }

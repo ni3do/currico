@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { sendWeeklyDigest } from "@/lib/digest";
 import { unauthorized, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 
 export const dynamic = "force-dynamic";
 
@@ -36,7 +37,7 @@ export async function POST(request: NextRequest) {
     const stats = await sendWeeklyDigest();
     return NextResponse.json({ success: true, ...stats });
   } catch (error) {
-    console.error("Newsletter digest cron failed:", error);
+    captureError("Newsletter digest cron failed:", error);
     return serverError(error instanceof Error ? error.message : "Internal error");
   }
 }

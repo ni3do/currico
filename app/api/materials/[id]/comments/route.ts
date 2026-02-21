@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { createCommentSchema } from "@/lib/validations/review";
+import { captureError } from "@/lib/api-error";
 import { checkRateLimit, isValidId, safeParseInt } from "@/lib/rateLimit";
 import { notifyComment } from "@/lib/notifications";
 import {
@@ -19,7 +20,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
     // Validate material ID format
     if (!isValidId(materialId)) {
-      return badRequest("Ungültige Material-ID");
+      return badRequest("Invalid ID");
     }
 
     const userId = await requireAuth();
@@ -35,7 +36,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     });
 
     if (!material) {
-      return notFound("Material nicht gefunden");
+      return notFound();
     }
 
     // Get comments with user info, replies, and likes
@@ -111,8 +112,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       },
     });
   } catch (error) {
-    console.error("Error fetching comments:", error);
-    return serverError("Interner Serverfehler");
+    captureError("Error fetching comments:", error);
+    return serverError();
   }
 }
 
@@ -125,14 +126,14 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     // Rate limiting check
     const rateLimitResult = checkRateLimit(userId, "materials:comment");
     if (!rateLimitResult.success) {
-      return rateLimited("Zu viele Anfragen. Bitte versuchen Sie es später erneut.");
+      return rateLimited();
     }
 
     const { id: materialId } = await params;
 
     // Validate material ID format
     if (!isValidId(materialId)) {
-      return badRequest("Ungültige Material-ID");
+      return badRequest("Invalid ID");
     }
 
     // Check if material exists
@@ -142,7 +143,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     });
 
     if (!material) {
-      return notFound("Material nicht gefunden");
+      return notFound();
     }
 
     // Parse and validate request body
@@ -150,7 +151,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     const validation = createCommentSchema.safeParse(body);
 
     if (!validation.success) {
-      return badRequest("Ungültige Eingabe", { details: validation.error.flatten() });
+      return badRequest("Invalid input", { details: validation.error.flatten() });
     }
 
     const { content } = validation.data;
@@ -200,7 +201,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       message: "Kommentar erfolgreich erstellt",
     });
   } catch (error) {
-    console.error("Error creating comment:", error);
-    return serverError("Interner Serverfehler");
+    captureError("Error creating comment:", error);
+    return serverError();
   }
 }

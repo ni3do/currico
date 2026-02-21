@@ -10,6 +10,7 @@ import {
   badRequest,
   serverError,
 } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 
 const createBundleSchema = z.object({
   title: z.string().min(1, "Titel ist erforderlich").max(200),
@@ -105,8 +106,8 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ bundles: transformedBundles });
   } catch (error) {
-    console.error("Error fetching bundles:", error);
-    return serverError("Fehler beim Laden der Bundles");
+    captureError("Error fetching bundles:", error);
+    return serverError();
   }
 }
 
@@ -120,14 +121,14 @@ export async function POST(request: NextRequest) {
     if (!userId) return unauthorized();
 
     const seller = await requireSeller(userId);
-    if (!seller) return forbidden("Nur für Verkäufer zugänglich");
+    if (!seller) return forbidden("Seller only");
 
     const body = await request.json();
     const parsed = createBundleSchema.safeParse(body);
 
     if (!parsed.success) {
       const firstError = parsed.error.issues[0];
-      return badRequest(firstError?.message ?? "Ungültige Eingabe");
+      return badRequest(firstError?.message ?? "Invalid input");
     }
 
     const { title, description, price, subjects, cycles, resourceIds, coverImageUrl } = parsed.data;
@@ -143,7 +144,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (resources.length !== resourceIds.length) {
-      return badRequest("Einige Materialien wurden nicht gefunden oder gehören Ihnen nicht");
+      return badRequest("Some materials not found or not owned");
     }
 
     // Create bundle with resources
@@ -195,7 +196,7 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("Error creating bundle:", error);
-    return serverError("Fehler beim Erstellen des Bundles");
+    captureError("Error creating bundle:", error);
+    return serverError();
   }
 }

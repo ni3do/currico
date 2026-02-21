@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAuth, requireSeller, unauthorized, forbidden, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import {
   calculatePoints,
   getCurrentLevel,
@@ -23,7 +24,7 @@ export async function GET() {
     if (!userId) return unauthorized();
 
     const seller = await requireSeller(userId);
-    if (!seller) return forbidden("Nur für Verkäufer zugänglich");
+    if (!seller) return forbidden("Seller only");
 
     const [
       uploadCount,
@@ -139,7 +140,7 @@ export async function GET() {
         title: `Level-Up: ${displayName}!`,
         body: `Herzlichen Glückwunsch! Sie haben Level ${level.level} (${displayName}) erreicht.`,
         link: "/konto",
-      }).catch((err) => console.error("Failed to create level-up notification:", err));
+      }).catch((err) => captureError("Failed to create level-up notification:", err));
     }
 
     // Fire-and-forget update
@@ -172,7 +173,7 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error("Error fetching seller level:", error);
-    return serverError("Fehler beim Laden der Level-Daten");
+    captureError("Error fetching seller level:", error);
+    return serverError();
   }
 }

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin, forbiddenResponse } from "@/lib/admin-auth";
 import { serverError, parsePagination, paginationResponse } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 
 /**
  * GET /api/admin/reports
@@ -52,7 +53,7 @@ export async function GET(request: NextRequest) {
       pagination: paginationResponse(page, limit, total),
     });
   } catch (error) {
-    console.error("Error fetching reports:", error);
+    captureError("Error fetching reports:", error);
     return serverError();
   }
 }

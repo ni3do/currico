@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
 import { requireAuth, unauthorized, badRequest, rateLimited, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { checkRateLimit, getClientIP } from "@/lib/rateLimit";
 import { changePasswordSchema } from "@/lib/validations/auth";
 
@@ -83,7 +84,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Error in change-password:", error);
+    captureError("Error in change-password:", error);
     return serverError();
   }
 }

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAuth, unauthorized, badRequest, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import path from "path";
 import { getStorage } from "@/lib/storage";
 import type { FileCategory } from "@/lib/storage";
@@ -35,7 +36,7 @@ export async function POST(request: NextRequest) {
     const file = formData.get("file") as File;
 
     if (!file) {
-      return badRequest("Keine Datei angegeben");
+      return badRequest("No file provided");
     }
 
     // Validate file type
@@ -45,6 +46,7 @@ export async function POST(request: NextRequest) {
 
     if (!allowedTypes.includes(file.type)) {
       return badRequest(`Invalid file type: ${file.type}`, {
+        code: "INVALID_FILE_TYPE",
         allowed: allowedTypes,
       });
     }
@@ -85,7 +87,7 @@ export async function POST(request: NextRequest) {
       type: result.contentType,
     });
   } catch (error) {
-    console.error("Error uploading file:", error);
-    return serverError("Fehler beim Hochladen der Datei");
+    captureError("Error uploading file:", error);
+    return serverError();
   }
 }

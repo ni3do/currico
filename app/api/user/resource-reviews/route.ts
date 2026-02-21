@@ -7,6 +7,7 @@ import {
   parsePagination,
   paginationResponse,
 } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 
 // GET /api/user/resource-reviews - Get all reviews on seller's resources
 export async function GET(request: Request) {
@@ -155,7 +156,7 @@ export async function GET(request: Request) {
       },
     });
   } catch (error) {
-    console.error("Error fetching seller resource reviews:", error);
+    captureError("Error fetching seller resource reviews:", error);
     return serverError();
   }
 }

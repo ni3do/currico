@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin, forbiddenResponse } from "@/lib/admin-auth";
 import { badRequest, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { createNewsletterSchema } from "@/lib/validations/admin";
 
 /**
@@ -22,7 +23,7 @@ export async function GET() {
 
     return NextResponse.json(newsletters);
   } catch (error) {
-    console.error("Error fetching newsletters:", error);
+    captureError("Error fetching newsletters:", error);
     return serverError();
   }
 }
@@ -56,7 +57,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(newsletter, { status: 201 });
   } catch (error) {
-    console.error("Error creating newsletter:", error);
+    captureError("Error creating newsletter:", error);
     return serverError();
   }
 }

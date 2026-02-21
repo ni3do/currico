@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin, forbiddenResponse } from "@/lib/admin-auth";
 import { notFound, serverError, badRequest, forbidden } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { isValidId } from "@/lib/rateLimit";
 import { updateAdminUserSchema } from "@/lib/validations/admin";
 
@@ -52,7 +53,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     return NextResponse.json(user);
   } catch (error) {
-    console.error("Error fetching user for admin:", error);
+    captureError("Error fetching user for admin:", error);
     return serverError();
   }
 }
@@ -118,7 +119,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 
     return NextResponse.json(updatedUser);
   } catch (error) {
-    console.error("Error updating user as admin:", error);
+    captureError("Error updating user as admin:", error);
     return serverError();
   }
 }
@@ -181,7 +182,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true, message: "Benutzer wurde gelöscht" });
   } catch (error) {
-    console.error("Error deleting user:", error);
+    captureError("Error deleting user:", error);
     return serverError();
   }
 }

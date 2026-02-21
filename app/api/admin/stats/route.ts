@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin, forbiddenResponse } from "@/lib/admin-auth";
 import { serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 
 export async function GET() {
   const admin = await requireAdmin();
@@ -89,7 +90,7 @@ export async function GET() {
 
     return NextResponse.json(stats);
   } catch (error) {
-    console.error("Error fetching admin stats:", error);
-    return serverError("Fehler beim Laden der Statistiken");
+    captureError("Error fetching admin stats:", error);
+    return serverError();
   }
 }

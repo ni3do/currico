@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { formatPrice, getResourceStatus } from "@/lib/utils/price";
 import { requireAuth, requireSeller, unauthorized, forbidden, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { PLATFORM_FEE_PERCENT } from "@/lib/constants";
 import { getFileFormat } from "@/lib/utils/file-format";
 
@@ -16,7 +17,7 @@ export async function GET() {
     if (!userId) return unauthorized();
 
     const seller = await requireSeller(userId);
-    if (!seller) return forbidden("Nur für Verkäufer zugänglich");
+    if (!seller) return forbidden("Seller only");
 
     // Fetch data in parallel
     const [materials, transactions, totalEarnings, followerCount] = await Promise.all([
@@ -133,18 +134,25 @@ export async function GET() {
       };
     });
 
-    return NextResponse.json({
-      stats: {
-        netEarnings: formatPrice(totalNet, { showFreeLabel: false }),
-        totalDownloads,
-        totalPurchases,
-        followers: followerCount,
+    return NextResponse.json(
+      {
+        stats: {
+          netEarnings: formatPrice(totalNet, { showFreeLabel: false }),
+          totalDownloads,
+          totalPurchases,
+          followers: followerCount,
+        },
+        materials: transformedMaterials,
+        transactions: transformedTransactions,
       },
-      materials: transformedMaterials,
-      transactions: transformedTransactions,
-    });
+      {
+        headers: {
+          "Cache-Control": "private, max-age=30",
+        },
+      }
+    );
   } catch (error) {
-    console.error("Error fetching seller dashboard:", error);
-    return serverError("Fehler beim Laden der Dashboard-Daten");
+    captureError("Error fetching seller dashboard:", error);
+    return serverError();
   }
 }

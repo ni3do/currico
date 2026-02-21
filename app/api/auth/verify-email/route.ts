@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { isSwissEducationDomain } from "@/lib/config/swiss-school-domains";
 import { badRequest, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -82,7 +83,7 @@ export async function GET(request: NextRequest) {
       teacherVerified: shouldVerifyTeacher,
     });
   } catch (error) {
-    console.error("Verify email error:", error);
-    return serverError("Ein Fehler ist aufgetreten");
+    captureError("Verify email error:", error);
+    return serverError();
   }
 }

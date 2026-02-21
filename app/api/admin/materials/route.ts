@@ -3,6 +3,7 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { requireAdmin, forbiddenResponse } from "@/lib/admin-auth";
 import { parsePagination, paginationResponse, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { formatPriceAdmin, getResourceStatus } from "@/lib/utils/price";
 
 const materialSelect = Prisma.validator<Prisma.ResourceSelect>()({
@@ -88,7 +89,7 @@ export async function GET(request: NextRequest) {
       pagination: paginationResponse(page, limit, total),
     });
   } catch (error) {
-    console.error("Error fetching materials:", error);
+    captureError("Error fetching materials:", error);
     return serverError();
   }
 }

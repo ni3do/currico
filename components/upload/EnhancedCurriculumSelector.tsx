@@ -530,8 +530,8 @@ export function EnhancedCurriculumSelector({
                   checked={cycle === c.value}
                   onChange={(e) => {
                     onCycleChange(e.target.value);
-                    // Reset subject when cycle changes if not available
-                    if (subjectCode) {
+                    // Reset subject when cycle changes if not available (Sonstige is always available)
+                    if (subjectCode && subjectCode !== SONSTIGE_CODE) {
                       const newSubjects = getFachbereicheByZyklus(parseInt(e.target.value));
                       const currentSubjectAvailable = newSubjects.some(
                         (s) => s.code === subjectCode
@@ -575,50 +575,7 @@ export function EnhancedCurriculumSelector({
             </label>
             <InfoTooltip content={subjectTooltip.content} />
           </div>
-          {!cycle && subjectCode !== SONSTIGE_CODE && (
-            <span className="text-text-muted text-xs">{tCurr("selectCycleFirst")}</span>
-          )}
-        </div>
-
-        {/* Sonstige card - always visible */}
-        <div className="mb-2">
-          <button
-            type="button"
-            onClick={() => {
-              if (subjectCode === SONSTIGE_CODE) {
-                // Deselect Sonstige
-                onSubjectChange("", "");
-                setShowCompetencies(false);
-              } else {
-                // Select Sonstige: clear cycle and competencies
-                onSubjectChange(tCurr("sonstigeLabel"), SONSTIGE_CODE);
-                onCycleChange("");
-                onCompetenciesChange([]);
-                setShowCompetencies(false);
-              }
-            }}
-            onBlur={onSubjectBlur}
-            className={`group relative flex w-full items-center gap-3 rounded-xl border-2 px-4 py-3 text-left transition-colors duration-150 ${
-              subjectCode === SONSTIGE_CODE
-                ? "border-primary bg-primary/10"
-                : touchedSubject && subjectError
-                  ? "border-error/50 bg-error/5 hover:border-error"
-                  : "border-border bg-bg hover:border-primary/50"
-            }`}
-          >
-            <div className="bg-text-muted/10 flex h-10 w-10 items-center justify-center rounded-lg">
-              <FolderOpen className="text-text-muted h-5 w-5" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="text-text text-sm font-medium">{tCurr("sonstigeLabel")}</div>
-              <div className="text-text-muted text-xs">{tCurr("sonstigeDescription")}</div>
-            </div>
-            {subjectCode === SONSTIGE_CODE && (
-              <div className="bg-primary absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full">
-                <Check className="text-text-on-accent h-3 w-3" />
-              </div>
-            )}
-          </button>
+          {!cycle && <span className="text-text-muted text-xs">{tCurr("selectCycleFirst")}</span>}
         </div>
 
         {cycle ? (
@@ -677,6 +634,44 @@ export function EnhancedCurriculumSelector({
                 </button>
               );
             })}
+
+            {/* Sonstige — same card size as other subjects */}
+            <button
+              type="button"
+              onClick={() => {
+                if (subjectCode === SONSTIGE_CODE) {
+                  onSubjectChange("", "");
+                  setShowCompetencies(false);
+                } else {
+                  onSubjectChange(tCurr("sonstigeLabel"), SONSTIGE_CODE);
+                  onCompetenciesChange([]);
+                  setShowCompetencies(false);
+                }
+              }}
+              onBlur={onSubjectBlur}
+              className={`group relative flex items-center gap-3 rounded-xl border-2 px-4 py-3 text-left transition-colors duration-150 ${
+                subjectCode === SONSTIGE_CODE
+                  ? "border-primary bg-primary/10"
+                  : touchedSubject && subjectError
+                    ? "border-error/50 bg-error/5 hover:border-error"
+                    : "border-border bg-bg hover:border-primary/50"
+              }`}
+            >
+              <div className="bg-text-muted/10 flex h-10 w-10 items-center justify-center rounded-lg">
+                <FolderOpen className="text-text-muted h-5 w-5" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="text-text truncate text-sm font-medium">
+                  {tCurr("sonstigeLabel")}
+                </div>
+                <div className="text-text-muted text-xs">{tCurr("sonstigeDescription")}</div>
+              </div>
+              {subjectCode === SONSTIGE_CODE && (
+                <div className="bg-primary absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full">
+                  <Check className="text-text-on-accent h-3 w-3" />
+                </div>
+              )}
+            </button>
           </div>
         ) : (
           <div className="border-border bg-surface-elevated rounded-xl border-2 border-dashed p-8 text-center">

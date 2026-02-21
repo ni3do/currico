@@ -18,7 +18,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 // Skeleton placeholder for below-fold dynamic imports (prevents CLS)
 const SectionSkeleton = () => (
   <div className="py-24" role="status" aria-busy="true">
-    <div className="mx-auto max-w-7xl px-4">
+    <div className="mx-auto max-w-7xl px-4 2xl:max-w-[1440px]">
       <Skeleton className="h-48 rounded-2xl" />
     </div>
   </div>
@@ -153,7 +153,7 @@ export default function HomeClient({ initialMaterials, platformStats }: HomeClie
             </>
           )}
 
-          <div className="relative mx-auto w-full max-w-7xl px-6 pt-6 pb-12 sm:px-8 sm:pt-8 sm:pb-16 lg:px-12 lg:pt-10 lg:pb-20">
+          <div className="relative mx-auto w-full max-w-7xl px-6 pt-6 pb-12 sm:px-8 sm:pt-8 sm:pb-16 lg:px-12 lg:pt-10 lg:pb-20 2xl:max-w-[1440px]">
             <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
               {/* Left Side - Text Content */}
               <div className="order-1 max-w-xl">
@@ -326,7 +326,7 @@ export default function HomeClient({ initialMaterials, platformStats }: HomeClie
 
         {/* Featured Resources - Visual Direction */}
         <section aria-labelledby="featured-heading" className="bg-surface py-24">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 2xl:max-w-[1440px]">
             <FadeIn direction="up" className="mb-8 flex items-end justify-between">
               <div>
                 <h2 id="featured-heading" className="text-text text-xl font-semibold">
@@ -360,7 +360,7 @@ export default function HomeClient({ initialMaterials, platformStats }: HomeClie
             {featuredMaterials.length > 0 ? (
               <StaggerChildren
                 staggerDelay={0.1}
-                className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+                className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
               >
                 {featuredMaterials.map((mat) => (
                   <StaggerItem key={mat.id}>
@@ -435,7 +435,9 @@ export default function HomeClient({ initialMaterials, platformStats }: HomeClie
         <ValueProposition />
 
         {/* Seller CTA Section - Serial Position (Recency) */}
-        <SellerHeroSection />
+        <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8 2xl:max-w-[1440px]">
+          <SellerHeroSection />
+        </div>
       </main>
 
       <Footer />

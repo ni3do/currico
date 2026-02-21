@@ -236,6 +236,6 @@ describe("POST /api/contact", () => {
     const data = await parseResponse<{ error: string }>(response);
 
     expect(response.status).toBe(500);
-    expect(data.error).toContain("Fehler aufgetreten");
+    expect(data.error).toBe("Internal server error");
   });
 });

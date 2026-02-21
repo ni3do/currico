@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { captureError } from "@/lib/api-error";
 
 /**
  * GET /api/download/[token]/info
@@ -100,7 +101,7 @@ export async function GET(
       },
     });
   } catch (error) {
-    console.error("Error fetching download token info:", error);
+    captureError("Error fetching download token info:", error);
     return NextResponse.json(
       { error: "server_error", message: "Ein Fehler ist aufgetreten" },
       { status: 500 }

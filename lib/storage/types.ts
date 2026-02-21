@@ -6,6 +6,20 @@ export type FileCategory = "material" | "preview" | "avatar";
 
 export type StorageProviderType = "local" | "s3";
 
+/** Map file category to storage directory/prefix name */
+export function getCategoryDir(category: FileCategory): string {
+  switch (category) {
+    case "material":
+      return "resources";
+    case "preview":
+      return "previews";
+    case "avatar":
+      return "avatars";
+    default:
+      return "misc";
+  }
+}
+
 export interface StorageConfig {
   provider: StorageProviderType;
   // S3 configuration

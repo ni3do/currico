@@ -9,6 +9,7 @@ import {
   rateLimited,
   serverError,
 } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { checkRateLimit, getClientIP } from "@/lib/rateLimit";
 import { twoFactorRegenerateSchema } from "@/lib/validations/auth";
 import { generateBackupCodes } from "@/lib/totp";
@@ -61,7 +62,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ backupCodes: codes });
   } catch (error) {
-    console.error("2FA regenerate error:", error);
+    captureError("2FA regenerate error:", error);
     return serverError();
   }
 }

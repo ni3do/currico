@@ -9,6 +9,7 @@ import {
   notFound,
   serverError,
 } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 
 // POST /api/materials/[id]/like - Toggle like on a material
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -19,14 +20,14 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     // Rate limiting check
     const rateLimitResult = checkRateLimit(userId, "materials:like");
     if (!rateLimitResult.success) {
-      return rateLimited("Zu viele Anfragen. Bitte versuchen Sie es später erneut.");
+      return rateLimited();
     }
 
     const { id: materialId } = await params;
 
     // Validate material ID format
     if (!isValidId(materialId)) {
-      return badRequest("Ungültige Material-ID");
+      return badRequest("Invalid ID");
     }
 
     // Check if material exists
@@ -36,7 +37,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     });
 
     if (!material) {
-      return notFound("Material nicht gefunden");
+      return notFound();
     }
 
     // Check if user already liked this material
@@ -84,8 +85,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       });
     }
   } catch (error) {
-    console.error("Error toggling material like:", error);
-    return serverError("Interner Serverfehler");
+    captureError("Error toggling material like:", error);
+    return serverError();
   }
 }
 
@@ -102,7 +103,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     });
 
     if (!material) {
-      return notFound("Material nicht gefunden");
+      return notFound();
     }
 
     // Get like count
@@ -126,7 +127,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
     return NextResponse.json({ liked, likeCount });
   } catch (error) {
-    console.error("Error getting material like status:", error);
-    return serverError("Interner Serverfehler");
+    captureError("Error getting material like status:", error);
+    return serverError();
   }
 }

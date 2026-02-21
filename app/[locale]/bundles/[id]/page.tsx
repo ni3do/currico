@@ -98,7 +98,7 @@ export default function BundleDetailPage() {
     return (
       <div className="bg-bg flex min-h-screen flex-col">
         <TopBar />
-        <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+        <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8 2xl:max-w-[1440px]">
           <BundleDetailSkeleton />
         </main>
       </div>
@@ -110,7 +110,7 @@ export default function BundleDetailPage() {
     return (
       <div className="bg-bg flex min-h-screen flex-col">
         <TopBar />
-        <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+        <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8 2xl:max-w-[1440px]">
           <div className="text-center">
             <Package className="text-text-muted mx-auto mb-4 h-16 w-16" />
             <h1 className="text-text mb-4 text-2xl font-bold sm:text-3xl">{t("notFound")}</h1>
@@ -131,7 +131,7 @@ export default function BundleDetailPage() {
     return (
       <div className="bg-bg flex min-h-screen flex-col">
         <TopBar />
-        <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+        <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8 2xl:max-w-[1440px]">
           <div className="text-center">
             <h1 className="text-text mb-4 text-2xl font-bold sm:text-3xl">{t("loadError")}</h1>
             <p className="text-text-muted mb-8">{t("loadErrorDescription")}</p>
@@ -151,7 +151,7 @@ export default function BundleDetailPage() {
     <div className="bg-bg flex min-h-screen flex-col">
       <TopBar />
 
-      <main className="mx-auto max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+      <main className="mx-auto max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8 2xl:max-w-[1440px]">
         {/* Breadcrumb */}
         <Breadcrumb
           items={[

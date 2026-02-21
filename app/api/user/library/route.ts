@@ -10,6 +10,7 @@ import {
   paginationResponse,
   serverError,
 } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 
 /**
  * GET /api/user/library
@@ -111,90 +112,96 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Get purchased resources (completed transactions)
-    const purchasedResources = await prisma.transaction.findMany({
-      where: {
-        buyer_id: userId,
-        status: "COMPLETED",
-        resource: search
-          ? {
-              title: { contains: search },
-            }
-          : undefined,
-      },
-      select: {
-        id: true,
-        created_at: true,
-        amount: true,
-        resource: {
-          select: {
-            id: true,
-            title: true,
-            description: true,
-            price: true,
-            file_url: true,
-            preview_url: true,
-            subjects: true,
-            cycles: true,
-            is_approved: true,
-            status: true,
-            seller: {
-              select: {
-                id: true,
-                display_name: true,
-                image: true,
+    // Fetch purchased resources, free downloads, and counts in parallel
+    const [purchasedResources, freeDownloads, purchasedCount, downloadedCount] = await Promise.all([
+      prisma.transaction.findMany({
+        where: {
+          buyer_id: userId,
+          status: "COMPLETED",
+          resource: search
+            ? {
+                title: { contains: search },
+              }
+            : undefined,
+        },
+        select: {
+          id: true,
+          created_at: true,
+          amount: true,
+          resource: {
+            select: {
+              id: true,
+              title: true,
+              description: true,
+              price: true,
+              file_url: true,
+              preview_url: true,
+              subjects: true,
+              cycles: true,
+              is_approved: true,
+              status: true,
+              seller: {
+                select: {
+                  id: true,
+                  display_name: true,
+                  image: true,
+                },
               },
             },
           },
         },
-      },
-      orderBy: { created_at: "desc" },
-      take: limit,
-      skip,
-    });
-
-    // Get free downloads
-    const freeDownloads = await prisma.download.findMany({
-      where: {
-        user_id: userId,
-        resource: search
-          ? {
-              title: { contains: search },
-              price: 0, // Only free resources
-            }
-          : {
-              price: 0,
-            },
-      },
-      select: {
-        id: true,
-        created_at: true,
-        resource: {
-          select: {
-            id: true,
-            title: true,
-            description: true,
-            price: true,
-            file_url: true,
-            preview_url: true,
-            subjects: true,
-            cycles: true,
-            is_approved: true,
-            status: true,
-            seller: {
-              select: {
-                id: true,
-                display_name: true,
-                image: true,
+        orderBy: { created_at: "desc" },
+        take: limit,
+        skip,
+      }),
+      prisma.download.findMany({
+        where: {
+          user_id: userId,
+          resource: search
+            ? {
+                title: { contains: search },
+                price: 0,
+              }
+            : {
+                price: 0,
+              },
+        },
+        select: {
+          id: true,
+          created_at: true,
+          resource: {
+            select: {
+              id: true,
+              title: true,
+              description: true,
+              price: true,
+              file_url: true,
+              preview_url: true,
+              subjects: true,
+              cycles: true,
+              is_approved: true,
+              status: true,
+              seller: {
+                select: {
+                  id: true,
+                  display_name: true,
+                  image: true,
+                },
               },
             },
           },
         },
-      },
-      orderBy: { created_at: "desc" },
-      take: limit,
-      skip,
-    });
+        orderBy: { created_at: "desc" },
+        take: limit,
+        skip,
+      }),
+      prisma.transaction.count({
+        where: { buyer_id: userId, status: "COMPLETED" },
+      }),
+      prisma.download.count({
+        where: { user_id: userId },
+      }),
+    ]);
 
     // Combine and transform the results
     const libraryItems = [
@@ -263,16 +270,6 @@ export async function GET(request: NextRequest) {
     // Sort by acquired date (most recent first)
     uniqueItems.sort((a, b) => new Date(b.acquiredAt).getTime() - new Date(a.acquiredAt).getTime());
 
-    // Get counts for stats
-    const [purchasedCount, downloadedCount] = await Promise.all([
-      prisma.transaction.count({
-        where: { buyer_id: userId, status: "COMPLETED" },
-      }),
-      prisma.download.count({
-        where: { user_id: userId },
-      }),
-    ]);
-
     return NextResponse.json({
       items: uniqueItems,
       stats: {
@@ -283,7 +280,7 @@ export async function GET(request: NextRequest) {
       pagination: paginationResponse(page, limit, purchasedCount + downloadedCount),
     });
   } catch (error) {
-    console.error("Error fetching library:", error);
+    captureError("Error fetching library:", error);
     return serverError("LIBRARY_FETCH_FAILED");
   }
 }

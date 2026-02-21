@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
   const rateLimitResult = checkRateLimit(clientIP, "auth:register");
 
   if (!rateLimitResult.success) {
-    return rateLimited("Zu viele Anfragen. Bitte versuchen Sie es später erneut.");
+    return rateLimited();
   }
 
   try {
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
     const parsed = registrationSchema.safeParse(body);
     if (!parsed.success) {
       const firstError = parsed.error.issues[0];
-      return badRequest(firstError?.message ?? "Ungültige Eingabe");
+      return badRequest(firstError?.message ?? "Invalid input", { code: "INVALID_INPUT" });
     }
 
     const { name, email, password, canton, subjects, cycles } = parsed.data;
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (existingUser) {
-      return badRequest("Ein Benutzer mit dieser E-Mail existiert bereits");
+      return badRequest("Email already exists", { code: "EMAIL_EXISTS" });
     }
 
     // Hash the password
@@ -137,6 +137,6 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     captureError("Registration error:", error);
-    return serverError("Ein Fehler ist aufgetreten");
+    return serverError();
   }
 }

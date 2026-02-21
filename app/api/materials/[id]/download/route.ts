@@ -9,6 +9,7 @@ import { checkAndUpdateVerification } from "@/lib/utils/verified-seller";
 import { badRequest, unauthorized, notFound, forbidden, serverError } from "@/lib/api";
 import { isValidId } from "@/lib/rateLimit";
 import { checkDownloadMilestone } from "@/lib/notifications";
+import { captureError } from "@/lib/api-error";
 
 /**
  * Content type map for file extensions
@@ -56,7 +57,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   // Authentication check
   const userId = await getCurrentUserId();
   if (!userId) {
-    return unauthorized("Bitte melden Sie sich an, um Materialien herunterzuladen");
+    return unauthorized();
   }
 
   // Check if user is admin
@@ -96,7 +97,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     });
 
     if (!material) {
-      return notFound("Material nicht gefunden");
+      return notFound();
     }
 
     // Check if material is accessible
@@ -106,7 +107,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       material.is_published && material.is_approved && material.is_public;
 
     if (!isAdmin && !isOwner && !isPubliclyAccessible) {
-      return forbidden("Dieses Material ist nicht verfügbar");
+      return forbidden("Material unavailable");
     }
 
     // Check access rights for downloads
@@ -133,9 +134,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     if (!isAdmin && !isOwner && !isVerified) {
       if (process.env.NODE_ENV === "development")
         console.log("[DOWNLOAD] ACCESS DENIED - not verified");
-      return forbidden(
-        "Dieses Material wird noch überprüft und kann noch nicht heruntergeladen werden"
-      );
+      return forbidden("Material under review");
     }
 
     // Grant access if: admin, owner, free material, or has purchased
@@ -143,7 +142,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     if (process.env.NODE_ENV === "development") console.log("[DOWNLOAD] hasAccess:", hasAccess);
 
     if (!hasAccess) {
-      return forbidden("Bitte kaufen Sie dieses Material, um es herunterzuladen");
+      return forbidden("Purchase required");
     }
 
     // Record download for free materials (if not already recorded)
@@ -157,7 +156,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
       // Check for download milestones (fire-and-forget)
       checkDownloadMilestone(id).catch((err) =>
-        console.error("Milestone check failed after free download:", err)
+        captureError("Milestone check failed after free download:", err)
       );
     }
 
@@ -179,8 +178,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           },
         });
       } catch {
-        console.error("Legacy file not found:", filePath);
-        return notFound("Datei nicht gefunden");
+        captureError("Legacy file not found:", filePath);
+        return notFound();
       }
     }
 
@@ -193,8 +192,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         });
         return NextResponse.redirect(signedUrl);
       } catch (error) {
-        console.error("Failed to generate signed URL:", error);
-        return serverError("Fehler beim Erstellen des Download-Links");
+        captureError("Failed to generate signed URL:", error);
+        return serverError();
       }
     }
 
@@ -209,12 +208,12 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         },
       });
     } catch {
-      console.error("File not found:", material.file_url);
-      return notFound("Datei nicht gefunden");
+      captureError("File not found:", material.file_url);
+      return notFound();
     }
   } catch (error) {
-    console.error("Error downloading material:", error);
-    return serverError("Fehler beim Herunterladen des Materials");
+    captureError("Error downloading material:", error);
+    return serverError();
   }
 }
 
@@ -227,7 +226,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
   // Authentication check
   const userId = await getCurrentUserId();
   if (!userId) {
-    return unauthorized("Bitte melden Sie sich an");
+    return unauthorized();
   }
 
   // Check if user is admin
@@ -260,7 +259,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     });
 
     if (!material) {
-      return notFound("Material nicht gefunden");
+      return notFound();
     }
 
     // Check access - admins can access any material
@@ -268,14 +267,14 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
     // Regular users cannot download unverified materials
     if (!isAdmin && !isOwner && !material.is_approved) {
-      return forbidden("Dieses Material wird noch überprüft");
+      return forbidden("Material under review");
     }
 
     const isPubliclyAccessible =
       material.is_published && material.is_approved && material.is_public;
 
     if (!isAdmin && !isOwner && !isPubliclyAccessible) {
-      return forbidden("Dieses Material ist nicht verfügbar");
+      return forbidden("Material unavailable");
     }
 
     const isFree = material.price === 0;
@@ -283,7 +282,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     const hasAccess = isAdmin || isOwner || isFree || hasPurchased;
 
     if (!hasAccess) {
-      return forbidden("Bitte kaufen Sie dieses Material zuerst");
+      return forbidden("Purchase required");
     }
 
     // Record download for free materials
@@ -304,12 +303,12 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
       // Check if seller now qualifies for verified status (fire-and-forget)
       checkAndUpdateVerification(material.seller_id).catch((err) =>
-        console.error("Verification check failed after download:", err)
+        captureError("Verification check failed after download:", err)
       );
 
       // Check for download milestones (fire-and-forget)
       checkDownloadMilestone(id).catch((err) =>
-        console.error("Milestone check failed after free download record:", err)
+        captureError("Milestone check failed after free download record:", err)
       );
     }
 
@@ -318,7 +317,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       downloadUrl: `/api/materials/${id}/download`,
     });
   } catch (error) {
-    console.error("Error recording download:", error);
-    return serverError("Fehler beim Verarbeiten der Anfrage");
+    captureError("Error recording download:", error);
+    return serverError();
   }
 }

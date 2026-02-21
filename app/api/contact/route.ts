@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { z } from "zod";
 import { sendContactNotificationEmail } from "@/lib/email";
 import { rateLimited, badRequest, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { checkRateLimit, getClientIP } from "@/lib/rateLimit";
 
 const contactSchema = z.object({
@@ -38,7 +39,7 @@ export async function POST(request: NextRequest) {
     const parsed = contactSchema.safeParse(body);
     if (!parsed.success) {
       const firstError = parsed.error.issues[0];
-      return badRequest(firstError?.message ?? "Invalid input");
+      return badRequest(firstError?.message ?? "Invalid input", { code: "INVALID_INPUT" });
     }
 
     const { name, email, phone, subject, message } = parsed.data;
@@ -55,7 +56,7 @@ export async function POST(request: NextRequest) {
 
     // Send email notification to admin (non-blocking)
     sendContactNotificationEmail({ name, email, subject, message }).catch((err: unknown) => {
-      console.error("Failed to send contact notification email:", err);
+      captureError("Failed to send contact notification email:", err);
     });
 
     return NextResponse.json(
@@ -67,7 +68,7 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("Contact form error:", error);
-    return serverError("Beim Senden Ihrer Nachricht ist ein Fehler aufgetreten");
+    captureError("Contact form error:", error);
+    return serverError();
   }
 }

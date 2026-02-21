@@ -15,6 +15,7 @@ import {
   rateLimited,
   serverError,
 } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 
 export async function POST(request: NextRequest) {
   // Rate limiting check
@@ -45,7 +46,7 @@ export async function POST(request: NextRequest) {
 
     // Check if already verified
     if (user.emailVerified) {
-      return badRequest("E-Mail-Adresse ist bereits bestätigt");
+      return badRequest("Email already verified");
     }
 
     // Delete any existing verification tokens for this user
@@ -78,17 +79,15 @@ export async function POST(request: NextRequest) {
     const result = await sendVerificationEmail(user.email, token, locale);
 
     if (!result.success) {
-      console.error("Failed to send verification email:", result.error);
-      return serverError(
-        "E-Mail konnte nicht gesendet werden. Bitte versuchen Sie es später erneut."
-      );
+      captureError("Failed to send verification email:", result.error);
+      return serverError();
     }
 
     return NextResponse.json({
       message: "Bestätigungslink wurde an Ihre E-Mail-Adresse gesendet",
     });
   } catch (error) {
-    console.error("Send verification error:", error);
-    return serverError("Ein Fehler ist aufgetreten");
+    captureError("Send verification error:", error);
+    return serverError();
   }
 }

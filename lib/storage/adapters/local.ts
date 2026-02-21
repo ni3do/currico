@@ -7,6 +7,7 @@ import {
   UploadResult,
   SignedUrlOptions,
   FileCategory,
+  getCategoryDir,
 } from "../types";
 import { StorageError } from "../errors";
 
@@ -25,22 +26,6 @@ export class LocalStorageAdapter implements StorageProvider {
   }
 
   /**
-   * Get the subdirectory for a file category
-   */
-  private getCategoryDir(category: FileCategory): string {
-    switch (category) {
-      case "material":
-        return "resources";
-      case "preview":
-        return "previews";
-      case "avatar":
-        return "avatars";
-      default:
-        return "misc";
-    }
-  }
-
-  /**
    * Get the full filesystem path for a key
    */
   private getFilePath(key: string): string {
@@ -56,7 +41,7 @@ export class LocalStorageAdapter implements StorageProvider {
     const uniqueFilename = `${hash}${ext}`;
 
     // Build the storage key
-    const categoryDir = this.getCategoryDir(category);
+    const categoryDir = getCategoryDir(category);
     const key = `${categoryDir}/${userId}/${uniqueFilename}`;
 
     // Create directory if it doesn't exist

@@ -140,7 +140,7 @@ describe("Seller Onboarding Flow", () => {
       const data = await parseResponse<AcceptTermsResponse>(response);
 
       expect(response.status).toBe(400);
-      expect(data.error).toBe("E-Mail muss zuerst verifiziert werden");
+      expect(data.error).toBe("Email verification required");
     });
 
     it("returns 404 when user not found", async () => {
@@ -166,7 +166,7 @@ describe("Seller Onboarding Flow", () => {
       const data = await parseResponse<AcceptTermsResponse>(response);
 
       expect(response.status).toBe(500);
-      expect(data.error).toBe("Fehler beim Akzeptieren der Bedingungen");
+      expect(data.error).toBe("Internal server error");
     });
   });
 
@@ -335,7 +335,7 @@ describe("Seller Onboarding Flow", () => {
       const data = await parseResponse<ConnectResponse>(response);
 
       expect(response.status).toBe(400);
-      expect(data.error).toBe("E-Mail muss zuerst verifiziert werden");
+      expect(data.error).toBe("Email verification required");
     });
 
     it("returns 400 when terms not accepted", async () => {
@@ -355,7 +355,7 @@ describe("Seller Onboarding Flow", () => {
       const data = await parseResponse<ConnectResponse>(response);
 
       expect(response.status).toBe(400);
-      expect(data.error).toBe("Verkäuferbedingungen müssen zuerst akzeptiert werden");
+      expect(data.error).toBe("Seller terms required");
     });
 
     it("returns 404 when user not found", async () => {
@@ -391,7 +391,7 @@ describe("Seller Onboarding Flow", () => {
       const data = await parseResponse<ConnectResponse>(response);
 
       expect(response.status).toBe(500);
-      expect(data.error).toBe("Fehler beim Erstellen des Stripe-Kontos");
+      expect(data.error).toBe("Internal server error");
     });
   });
 

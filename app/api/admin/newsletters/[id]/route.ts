@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin, forbiddenResponse } from "@/lib/admin-auth";
 import { badRequest, notFound, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { isValidId } from "@/lib/rateLimit";
 import { updateNewsletterSchema } from "@/lib/validations/admin";
 
@@ -45,7 +46,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 
     return NextResponse.json(updated);
   } catch (error) {
-    console.error("Error updating newsletter:", error);
+    captureError("Error updating newsletter:", error);
     return serverError();
   }
 }
@@ -81,7 +82,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Error deleting newsletter:", error);
+    captureError("Error deleting newsletter:", error);
     return serverError();
   }
 }

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma, publicUserSelect } from "@/lib/db";
 import { getCurrentUserId } from "@/lib/auth";
 import { badRequest, notFound, rateLimited, serverError } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 import { isValidId, checkRateLimit, getClientIP } from "@/lib/rateLimit";
 
 /**
@@ -224,20 +225,27 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       })),
     }));
 
-    return NextResponse.json({
-      profile,
-      bestMaterials: bestMaterials.map(transformMaterial),
-      materials: allMaterials.map(transformMaterial),
-      pagination: {
-        page: 1,
-        limit: 12,
-        total: totalMaterials,
-        totalPages: Math.ceil(totalMaterials / 12),
+    return NextResponse.json(
+      {
+        profile,
+        bestMaterials: bestMaterials.map(transformMaterial),
+        materials: allMaterials.map(transformMaterial),
+        pagination: {
+          page: 1,
+          limit: 12,
+          total: totalMaterials,
+          totalPages: Math.ceil(totalMaterials / 12),
+        },
+        collections: transformedCollections,
       },
-      collections: transformedCollections,
-    });
+      {
+        headers: {
+          "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+        },
+      }
+    );
   } catch (error) {
-    console.error("Error fetching profile bundle:", error);
+    captureError("Error fetching profile bundle:", error);
     return serverError();
   }
 }

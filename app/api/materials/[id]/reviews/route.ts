@@ -12,7 +12,9 @@ import {
   forbidden,
   serverError,
   rateLimited,
+  API_ERROR_CODES,
 } from "@/lib/api";
+import { captureError } from "@/lib/api-error";
 
 // GET /api/materials/[id]/reviews - Get all reviews for a material
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -21,7 +23,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
     // Validate material ID format
     if (!isValidId(materialId)) {
-      return badRequest("Ungültige Material-ID");
+      return badRequest("Invalid ID");
     }
 
     const userId = await requireAuth();
@@ -37,7 +39,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     });
 
     if (!material) {
-      return notFound("Material nicht gefunden");
+      return notFound();
     }
 
     // Get reviews with user info and replies
@@ -180,8 +182,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       isOwner: isOwner ?? false,
     });
   } catch (error) {
-    console.error("Error fetching reviews:", error);
-    return serverError("Interner Serverfehler");
+    captureError("Error fetching reviews:", error);
+    return serverError();
   }
 }
 
@@ -194,14 +196,14 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     // Rate limiting check
     const rateLimitResult = checkRateLimit(userId, "materials:review");
     if (!rateLimitResult.success) {
-      return rateLimited("Zu viele Anfragen. Bitte versuchen Sie es später erneut.");
+      return rateLimited();
     }
 
     const { id: materialId } = await params;
 
     // Validate material ID format
     if (!isValidId(materialId)) {
-      return badRequest("Ungültige Material-ID");
+      return badRequest("Invalid ID");
     }
 
     // Check if material exists
@@ -211,12 +213,12 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     });
 
     if (!material) {
-      return notFound("Material nicht gefunden");
+      return notFound();
     }
 
     // Don't allow reviewing own material
     if (material.seller_id === userId) {
-      return forbidden("Sie können Ihr eigenes Material nicht bewerten");
+      return forbidden("Cannot review own material", API_ERROR_CODES.CANNOT_REVIEW_OWN);
     }
 
     // Check if user has purchased or downloaded this material
@@ -237,9 +239,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     ]);
 
     if (!hasPurchased && !hasDownloaded) {
-      return forbidden(
-        "Sie müssen dieses Material kaufen oder herunterladen, um es bewerten zu können"
-      );
+      return forbidden("Must purchase to review", API_ERROR_CODES.MUST_PURCHASE_TO_REVIEW);
     }
 
     // Check if user already reviewed
@@ -253,7 +253,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     });
 
     if (existingReview) {
-      return badRequest("Sie haben dieses Material bereits bewertet");
+      return badRequest("Already reviewed", { code: API_ERROR_CODES.ALREADY_REVIEWED });
     }
 
     // Parse and validate request body
@@ -261,7 +261,10 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     const validation = createReviewSchema.safeParse(body);
 
     if (!validation.success) {
-      return badRequest("Ungültige Eingabe", { details: validation.error.flatten() });
+      return badRequest("Invalid input", {
+        code: "INVALID_INPUT",
+        details: validation.error.flatten(),
+      });
     }
 
     const { rating, title, content } = validation.data;
@@ -292,7 +295,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
     // Check if seller now qualifies for verified status (fire-and-forget)
     checkAndUpdateVerification(material.seller_id).catch((err) =>
-      console.error("Verification check failed after review:", err)
+      captureError("Verification check failed after review:", err)
     );
 
     return NextResponse.json({
@@ -309,10 +312,10 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
           image: review.user.image,
         },
       },
-      message: "Bewertung erfolgreich erstellt",
+      message: "Review created",
     });
   } catch (error) {
-    console.error("Error creating review:", error);
-    return serverError("Interner Serverfehler");
+    captureError("Error creating review:", error);
+    return serverError();
   }
 }
