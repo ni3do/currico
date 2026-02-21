@@ -9,21 +9,22 @@ import {
   forbidden,
   badRequest,
   serverError,
+  API_ERROR_CODES,
 } from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 
 const createBundleSchema = z.object({
-  title: z.string().min(1, "Titel ist erforderlich").max(200),
+  title: z.string().min(1, "Title is required").max(200),
   description: z.string().max(5000).optional(),
   price: z
     .number()
-    .min(0, "Preis muss positiv sein")
+    .min(0, "Price must be positive")
     .refine((val) => val === 0 || (val >= 50 && val % 50 === 0), {
       message: "Price must be in 0.50 CHF increments",
     }),
   subjects: z.array(z.string()).optional().default([]),
   cycles: z.array(z.string()).optional().default([]),
-  resourceIds: z.array(z.string()).min(2, "Mindestens 2 Materialien sind erforderlich"),
+  resourceIds: z.array(z.string()).min(2, "At least 2 materials are required"),
   coverImageUrl: z.string().url().optional().nullable(),
 });
 
@@ -121,14 +122,13 @@ export async function POST(request: NextRequest) {
     if (!userId) return unauthorized();
 
     const seller = await requireSeller(userId);
-    if (!seller) return forbidden("Seller only");
+    if (!seller) return forbidden("Seller only", API_ERROR_CODES.SELLER_ONLY);
 
     const body = await request.json();
     const parsed = createBundleSchema.safeParse(body);
 
     if (!parsed.success) {
-      const firstError = parsed.error.issues[0];
-      return badRequest(firstError?.message ?? "Invalid input");
+      return badRequest("Invalid input", undefined, API_ERROR_CODES.INVALID_INPUT);
     }
 
     const { title, description, price, subjects, cycles, resourceIds, coverImageUrl } = parsed.data;
@@ -144,7 +144,11 @@ export async function POST(request: NextRequest) {
     });
 
     if (resources.length !== resourceIds.length) {
-      return badRequest("Some materials not found or not owned");
+      return badRequest(
+        "Materials not found or not owned by seller",
+        undefined,
+        API_ERROR_CODES.BUNDLE_MATERIALS_INVALID
+      );
     }
 
     // Create bundle with resources
@@ -183,7 +187,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: true,
-        message: "Bundle erfolgreich erstellt",
+        message: "Bundle created successfully",
         bundle: {
           id: bundle.id,
           title: bundle.title,

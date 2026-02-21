@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin, forbiddenResponse } from "@/lib/admin-auth";
-import { notFound, serverError, badRequest, forbidden } from "@/lib/api";
+import { notFound, serverError, badRequest, forbidden, API_ERROR_CODES } from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 import { isValidId } from "@/lib/rateLimit";
 import { updateAdminUserSchema } from "@/lib/validations/admin";
@@ -20,7 +20,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     const { id } = await params;
-    if (!isValidId(id)) return badRequest("Invalid ID");
+    if (!isValidId(id)) return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
 
     const user = await prisma.user.findUnique({
       where: { id },
@@ -72,13 +72,13 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     }
 
     const { id } = await params;
-    if (!isValidId(id)) return badRequest("Invalid ID");
+    if (!isValidId(id)) return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
 
     let body: unknown;
     try {
       body = await request.json();
     } catch {
-      return badRequest("Invalid JSON body");
+      return badRequest("Invalid JSON body", undefined, API_ERROR_CODES.INVALID_JSON_BODY);
     }
 
     const parsed = updateAdminUserSchema.safeParse(body);
@@ -98,7 +98,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 
     // Prevent changing role of protected users
     if (existingUser.is_protected && parsed.data.role && parsed.data.role !== existingUser.role) {
-      return forbidden("Cannot change role of a protected user");
+      return forbidden("Protected user", API_ERROR_CODES.PROTECTED_USER);
     }
 
     const updatedUser = await prisma.user.update({
@@ -141,7 +141,7 @@ export async function DELETE(
     }
 
     const { id } = await params;
-    if (!isValidId(id)) return badRequest("Invalid ID");
+    if (!isValidId(id)) return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
 
     // Check if user exists and is protected
     const user = await prisma.user.findUnique({
@@ -155,12 +155,12 @@ export async function DELETE(
 
     // Prevent deletion of protected users (e.g., super admin)
     if (user.is_protected) {
-      return forbidden("Protected users cannot be deleted");
+      return forbidden("Protected user", API_ERROR_CODES.PROTECTED_USER);
     }
 
     // Prevent admin from deleting themselves
     if (id === admin.id) {
-      return forbidden("Cannot delete yourself");
+      return forbidden("Cannot delete self", API_ERROR_CODES.CANNOT_DELETE_SELF);
     }
 
     // Use a transaction to clean up FK dependencies not covered by onDelete: Cascade
@@ -180,7 +180,7 @@ export async function DELETE(
       });
     });
 
-    return NextResponse.json({ success: true, message: "Benutzer wurde gelöscht" });
+    return NextResponse.json({ success: true, message: "User deleted successfully" });
   } catch (error) {
     captureError("Error deleting user:", error);
     return serverError();

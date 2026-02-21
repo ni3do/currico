@@ -2,7 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { z } from "zod";
 import { formatPrice } from "@/lib/utils/price";
-import { requireAuth, unauthorized, forbidden, notFound, badRequest, serverError } from "@/lib/api";
+import {
+  requireAuth,
+  unauthorized,
+  forbidden,
+  notFound,
+  badRequest,
+  serverError,
+  API_ERROR_CODES,
+} from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 import { isValidId } from "@/lib/rateLimit";
 import { toStringArray } from "@/lib/json-array";
@@ -14,7 +22,7 @@ import { toStringArray } from "@/lib/json-array";
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    if (!isValidId(id)) return badRequest("Invalid ID");
+    if (!isValidId(id)) return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
 
     const bundle = await prisma.bundle.findUnique({
       where: { id },
@@ -49,7 +57,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     // Return 404 if not found or not publicly visible
     if (!bundle || !bundle.is_published || bundle.status !== "VERIFIED") {
-      return notFound("BUNDLE_NOT_FOUND");
+      return notFound("Bundle not found", API_ERROR_CODES.BUNDLE_NOT_FOUND);
     }
 
     // Calculate savings
@@ -98,7 +106,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     return NextResponse.json({ bundle: transformedBundle });
   } catch (error) {
     captureError("Error fetching bundle:", error);
-    return serverError("BUNDLE_FETCH_FAILED");
+    return serverError("Failed to fetch bundle");
   }
 }
 
@@ -129,7 +137,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     if (!userId) return unauthorized();
 
     const { id } = await params;
-    if (!isValidId(id)) return badRequest("Invalid ID");
+    if (!isValidId(id)) return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
 
     // Fetch bundle to verify ownership
     const bundle = await prisma.bundle.findUnique({
@@ -142,11 +150,11 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     });
 
     if (!bundle) {
-      return notFound("BUNDLE_NOT_FOUND");
+      return notFound("Bundle not found", API_ERROR_CODES.BUNDLE_NOT_FOUND);
     }
 
     if (bundle.seller_id !== userId) {
-      return forbidden("BUNDLE_EDIT_FORBIDDEN");
+      return forbidden("Bundle edit forbidden", API_ERROR_CODES.BUNDLE_EDIT_FORBIDDEN);
     }
 
     // Parse and validate request body
@@ -154,8 +162,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const parsed = updateBundleSchema.safeParse(body);
 
     if (!parsed.success) {
-      const firstError = parsed.error.issues[0];
-      return badRequest(firstError?.message ?? "VALIDATION_ERROR");
+      return badRequest("Invalid input", undefined, API_ERROR_CODES.INVALID_INPUT);
     }
 
     const { title, description, price, subjects, cycles, resourceIds, coverImageUrl, isPublished } =
@@ -173,7 +180,11 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       });
 
       if (materials.length !== resourceIds.length) {
-        return badRequest("BUNDLE_MATERIALS_INVALID");
+        return badRequest(
+          "Materials not found or not owned by seller",
+          undefined,
+          API_ERROR_CODES.BUNDLE_MATERIALS_INVALID
+        );
       }
     }
 
@@ -213,11 +224,11 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
     return NextResponse.json({
       success: true,
-      message: "BUNDLE_UPDATED",
+      message: "Bundle updated successfully",
     });
   } catch (error) {
     captureError("Error updating bundle:", error);
-    return serverError("BUNDLE_UPDATE_FAILED");
+    return serverError("Failed to update bundle");
   }
 }
 
@@ -234,7 +245,7 @@ export async function DELETE(
     if (!userId) return unauthorized();
 
     const { id } = await params;
-    if (!isValidId(id)) return badRequest("Invalid ID");
+    if (!isValidId(id)) return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
 
     // Fetch bundle to verify ownership
     const bundle = await prisma.bundle.findUnique({
@@ -246,11 +257,11 @@ export async function DELETE(
     });
 
     if (!bundle) {
-      return notFound("BUNDLE_NOT_FOUND");
+      return notFound("Bundle not found", API_ERROR_CODES.BUNDLE_NOT_FOUND);
     }
 
     if (bundle.seller_id !== userId) {
-      return forbidden("BUNDLE_DELETE_FORBIDDEN");
+      return forbidden("Bundle delete forbidden", API_ERROR_CODES.BUNDLE_DELETE_FORBIDDEN);
     }
 
     // Delete bundle (cascade will remove BundleResource entries)
@@ -258,10 +269,10 @@ export async function DELETE(
 
     return NextResponse.json({
       success: true,
-      message: "BUNDLE_DELETED",
+      message: "Bundle deleted successfully",
     });
   } catch (error) {
     captureError("Error deleting bundle:", error);
-    return serverError("BUNDLE_DELETE_FAILED");
+    return serverError("Failed to delete bundle");
   }
 }

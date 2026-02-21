@@ -17,7 +17,8 @@ import { isValidId } from "@/lib/rateLimit";
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id: reviewId } = await params;
-    if (!isValidId(reviewId)) return badRequest("Invalid ID");
+    if (!isValidId(reviewId))
+      return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
 
     const review = await prisma.review.findUnique({
       where: { id: reviewId },
@@ -85,7 +86,8 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     if (!userId) return unauthorized();
 
     const { id: reviewId } = await params;
-    if (!isValidId(reviewId)) return badRequest("Invalid ID");
+    if (!isValidId(reviewId))
+      return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
 
     // Check if review exists and belongs to user
     const review = await prisma.review.findUnique({
@@ -105,7 +107,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     try {
       body = await request.json();
     } catch {
-      return badRequest("Invalid JSON body");
+      return badRequest("Invalid JSON body", undefined, API_ERROR_CODES.INVALID_JSON_BODY);
     }
     const validation = updateReviewSchema.safeParse(body);
 
@@ -167,7 +169,8 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     if (!userId) return unauthorized();
 
     const { id: reviewId } = await params;
-    if (!isValidId(reviewId)) return badRequest("Invalid ID");
+    if (!isValidId(reviewId))
+      return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
 
     // Check if review exists and belongs to user
     const review = await prisma.review.findUnique({

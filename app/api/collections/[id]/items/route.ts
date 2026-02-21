@@ -1,6 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { requireAuth, unauthorized, badRequest, notFound, forbidden, serverError } from "@/lib/api";
+import {
+  requireAuth,
+  unauthorized,
+  badRequest,
+  notFound,
+  forbidden,
+  serverError,
+  API_ERROR_CODES,
+} from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 import { isValidId } from "@/lib/rateLimit";
 import { z } from "zod";
@@ -29,14 +37,19 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
   try {
     const { id: collectionId } = await params;
-    if (!isValidId(collectionId)) return badRequest("Invalid ID");
+    if (!isValidId(collectionId))
+      return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
     const body = await request.json();
     const validation = addItemSchema.safeParse(body);
 
     if (!validation.success) {
-      return badRequest("Invalid input", {
-        details: validation.error.flatten().fieldErrors,
-      });
+      return badRequest(
+        "Invalid input",
+        {
+          details: validation.error.flatten().fieldErrors,
+        },
+        API_ERROR_CODES.INVALID_INPUT
+      );
     }
 
     const { resourceId, position } = validation.data;
@@ -52,7 +65,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     }
 
     if (collection.owner_id !== userId) {
-      return forbidden("Own collection only");
+      return forbidden("Own collection only", API_ERROR_CODES.OWN_COLLECTION_ONLY);
     }
 
     // Check if resource exists and belongs to user (sellers can only add their own resources)
@@ -66,7 +79,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     }
 
     if (resource.seller_id !== userId) {
-      return forbidden("Own material only");
+      return forbidden("Own material only", API_ERROR_CODES.FORBIDDEN);
     }
 
     // Check if already in collection
@@ -80,7 +93,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     });
 
     if (existing) {
-      return badRequest("Already in collection");
+      return badRequest("Already in collection", undefined, API_ERROR_CODES.ALREADY_IN_COLLECTION);
     }
 
     // Get max position if not provided
@@ -136,14 +149,19 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 
   try {
     const { id: collectionId } = await params;
-    if (!isValidId(collectionId)) return badRequest("Invalid ID");
+    if (!isValidId(collectionId))
+      return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
     const body = await request.json();
     const validation = reorderItemsSchema.safeParse(body);
 
     if (!validation.success) {
-      return badRequest("Invalid input", {
-        details: validation.error.flatten().fieldErrors,
-      });
+      return badRequest(
+        "Invalid input",
+        {
+          details: validation.error.flatten().fieldErrors,
+        },
+        API_ERROR_CODES.INVALID_INPUT
+      );
     }
 
     // Check collection ownership
@@ -157,7 +175,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     }
 
     if (collection.owner_id !== userId) {
-      return forbidden("Own collection only");
+      return forbidden("Own collection only", API_ERROR_CODES.OWN_COLLECTION_ONLY);
     }
 
     // Update positions in transaction
@@ -172,7 +190,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 
     return NextResponse.json({
       success: true,
-      message: "Reihenfolge aktualisiert",
+      message: "Order updated",
     });
   } catch (error) {
     captureError("Error reordering collection items:", error);
@@ -193,12 +211,13 @@ export async function DELETE(
 
   try {
     const { id: collectionId } = await params;
-    if (!isValidId(collectionId)) return badRequest("Invalid ID");
+    if (!isValidId(collectionId))
+      return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
     const { searchParams } = new URL(request.url);
     const itemId = searchParams.get("itemId");
 
     if (!itemId) {
-      return badRequest("Invalid input");
+      return badRequest("Invalid input", undefined, API_ERROR_CODES.INVALID_INPUT);
     }
 
     // Check collection ownership
@@ -212,7 +231,7 @@ export async function DELETE(
     }
 
     if (collection.owner_id !== userId) {
-      return forbidden("Own collection only");
+      return forbidden("Own collection only", API_ERROR_CODES.OWN_COLLECTION_ONLY);
     }
 
     // Delete the item
@@ -222,7 +241,7 @@ export async function DELETE(
 
     return NextResponse.json({
       success: true,
-      message: "Material aus Sammlung entfernt",
+      message: "Item removed from collection",
     });
   } catch (error) {
     captureError("Error removing item from collection:", error);

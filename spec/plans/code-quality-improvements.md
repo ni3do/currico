@@ -54,7 +54,7 @@ Replace hardcoded German/English error messages with error codes from `API_ERROR
 - [x] `app/api/reviews/[id]/route.ts` — use error codes
 - [x] `app/api/materials/[id]/reviews/route.ts` — use error codes
 - [x] Updated test assertions in `__tests__/api/payments/checkout.test.ts`, `__tests__/api/auth/register.test.ts`, `__tests__/api/contact.test.ts`
-- [ ] Remaining: ~50+ API routes still have hardcoded German messages (see Step 7)
+- [x] Remaining ~50+ API routes standardized: all hardcoded German/English messages replaced with `API_ERROR_CODES`, Zod schemas translated to English, admin-auth translated
 
 ---
 
@@ -70,7 +70,7 @@ Replace hardcoded German/English error messages with error codes from `API_ERROR
 ## 6. Performance — Component Optimization
 
 - [x] `components/search/MaterialsGrid.tsx` — wrapped with `memo()`
-- [ ] Consider lazy-loading: `CurriculumBox`, `PreviewGallery`, `ReviewsSection` (below fold)
+- [x] Lazy-loading: `CurriculumBox` and `ReviewsSection` already use `dynamic()` with SSR disabled + skeleton loaders. `PreviewGallery` intentionally not lazy-loaded (hero element).
 
 ---
 
@@ -78,7 +78,7 @@ Replace hardcoded German/English error messages with error codes from `API_ERROR
 
 - [x] Extract shared `getCategoryDir()` into `lib/storage/types.ts`, used by both local and s3 adapters
 - [x] Replace `console.error()` calls in API routes with `captureError()` from `lib/api-error.ts` (for Sentry integration) — 0 `console.error` calls remain in `app/api/`
-- [x] Replace remaining hardcoded German error messages across all API routes with English equivalents
+- [x] Replace all hardcoded German/English error messages across all API routes with `API_ERROR_CODES` constants and English messages
 
 ---
 

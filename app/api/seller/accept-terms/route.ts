@@ -1,6 +1,13 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { requireAuth, unauthorized, notFound, badRequest, serverError } from "@/lib/api";
+import {
+  requireAuth,
+  unauthorized,
+  notFound,
+  badRequest,
+  serverError,
+  API_ERROR_CODES,
+} from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 
 /**
@@ -28,7 +35,11 @@ export async function POST() {
 
     // Require email verification before accepting terms
     if (!user.emailVerified) {
-      return badRequest("Email verification required");
+      return badRequest(
+        "Email verification required",
+        undefined,
+        API_ERROR_CODES.EMAIL_VERIFICATION_REQUIRED
+      );
     }
 
     // Check if already accepted

@@ -3,13 +3,20 @@ import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { getStripeClient, calculateApplicationFee } from "@/lib/stripe";
-import { notFound, badRequest, unauthorized, serverError, serviceUnavailable } from "@/lib/api";
+import {
+  notFound,
+  badRequest,
+  unauthorized,
+  serverError,
+  serviceUnavailable,
+  API_ERROR_CODES,
+} from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 
 // Input validation schema
 const createCheckoutSessionSchema = z.object({
-  materialId: z.string().min(1, "Material-ID ist erforderlich"),
-  guestEmail: z.string().email("Gültige E-Mail für Gastkauf erforderlich").optional(),
+  materialId: z.string().min(1, "Material ID is required"),
+  guestEmail: z.string().email("Valid email required for guest purchase").optional(),
 });
 
 /**
@@ -91,12 +98,12 @@ export async function POST(request: NextRequest) {
     }
 
     if (!material.is_published || !material.is_approved) {
-      return badRequest("Material unavailable", { code: "MATERIAL_UNAVAILABLE" });
+      return badRequest("Material unavailable", undefined, API_ERROR_CODES.MATERIAL_UNAVAILABLE);
     }
 
     // Prevent purchasing own materials (only applies to authenticated users)
     if (userId && material.seller_id === userId) {
-      return badRequest("Cannot buy own material", { code: "CANNOT_BUY_OWN" });
+      return badRequest("Cannot buy own material", undefined, API_ERROR_CODES.CANNOT_BUY_OWN);
     }
 
     // Check if user/guest already owns this material
@@ -109,17 +116,21 @@ export async function POST(request: NextRequest) {
     });
 
     if (existingPurchase) {
-      return badRequest("Already owned", { code: "ALREADY_OWNED" });
+      return badRequest("Already owned", undefined, API_ERROR_CODES.ALREADY_OWNED);
     }
 
     // Validate seller can receive payments
     if (!material.seller.stripe_account_id || !material.seller.stripe_charges_enabled) {
-      return badRequest("Seller payments disabled", { code: "SELLER_PAYMENTS_DISABLED" });
+      return badRequest(
+        "Seller payments disabled",
+        undefined,
+        API_ERROR_CODES.SELLER_PAYMENTS_DISABLED
+      );
     }
 
     // Free materials don't need checkout
     if (material.price === 0) {
-      return badRequest("Free material", { code: "FREE_MATERIAL" });
+      return badRequest("Free material", undefined, API_ERROR_CODES.FREE_MATERIAL);
     }
 
     const stripe = getStripeClient();

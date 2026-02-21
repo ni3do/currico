@@ -9,6 +9,7 @@ import {
   notFound,
   rateLimited,
   serverError,
+  API_ERROR_CODES,
 } from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 import { checkRateLimit, isValidId } from "@/lib/rateLimit";
@@ -17,7 +18,8 @@ import { checkRateLimit, isValidId } from "@/lib/rateLimit";
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id: reviewId } = await params;
-    if (!isValidId(reviewId)) return badRequest("Invalid ID");
+    if (!isValidId(reviewId))
+      return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
 
     // Check if review exists
     const review = await prisma.review.findUnique({
@@ -83,7 +85,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     }
 
     const { id: reviewId } = await params;
-    if (!isValidId(reviewId)) return badRequest("Invalid ID");
+    if (!isValidId(reviewId))
+      return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
 
     // Check if review exists
     const review = await prisma.review.findUnique({
@@ -149,7 +152,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
           isSeller: reply.user.id === review.resource.seller_id,
         },
       },
-      message: "Antwort erfolgreich erstellt",
+      message: "Reply created",
     });
   } catch (error) {
     captureError("Error creating review reply:", error);

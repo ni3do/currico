@@ -49,7 +49,7 @@ describe("POST /api/auth/register", () => {
     const data = await parseResponse<{ message: string; user: { id: string } }>(response);
 
     expect(response.status).toBe(201);
-    expect(data.message).toBe("Benutzer erfolgreich erstellt");
+    expect(data.message).toBe("User created successfully");
     expect(data.user.id).toBe("user-123");
   });
 

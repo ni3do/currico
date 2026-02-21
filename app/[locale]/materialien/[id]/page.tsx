@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import dynamic from "next/dynamic";
 import { Link, useRouter } from "@/i18n/navigation";
 import { getLoginUrl } from "@/lib/utils/login-redirect";
 import { getSubjectPillClass } from "@/lib/constants/subject-colors";
@@ -12,15 +13,35 @@ import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { MaterialCard } from "@/components/ui/MaterialCard";
-import { CurriculumBox } from "@/components/curriculum";
 import { PreviewGallery } from "@/components/ui/PreviewGallery";
-import { ReviewsSection } from "@/components/reviews";
 import { useToast } from "@/components/ui/Toast";
 import { FadeIn } from "@/components/ui/animations";
 import { PurchasePanel } from "@/components/materials/PurchasePanel";
 import { ReportModal } from "@/components/materials/ReportModal";
 import type { Material, RelatedMaterial } from "@/lib/types/material";
-import { MaterialDetailSkeleton } from "@/components/ui/Skeleton";
+import { MaterialDetailSkeleton, ReviewSectionSkeleton } from "@/components/ui/Skeleton";
+
+const CurriculumBox = dynamic(
+  () => import("@/components/curriculum").then((m) => ({ default: m.CurriculumBox })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="border-border animate-pulse rounded-xl border p-6">
+        <div className="bg-surface mb-3 h-5 w-40 rounded" />
+        <div className="bg-surface mb-2 h-4 w-full rounded" />
+        <div className="bg-surface h-4 w-3/4 rounded" />
+      </div>
+    ),
+  }
+);
+
+const ReviewsSection = dynamic(
+  () => import("@/components/reviews").then((m) => ({ default: m.ReviewsSection })),
+  {
+    ssr: false,
+    loading: () => <ReviewSectionSkeleton />,
+  }
+);
 
 export default function MaterialDetailPage() {
   const params = useParams();

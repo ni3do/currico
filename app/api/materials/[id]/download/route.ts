@@ -6,7 +6,14 @@ import { readFile } from "fs/promises";
 import path from "path";
 import { getStorage, isLegacyLocalPath, getLegacyFilePath } from "@/lib/storage";
 import { checkAndUpdateVerification } from "@/lib/utils/verified-seller";
-import { badRequest, unauthorized, notFound, forbidden, serverError } from "@/lib/api";
+import {
+  badRequest,
+  unauthorized,
+  notFound,
+  forbidden,
+  serverError,
+  API_ERROR_CODES,
+} from "@/lib/api";
 import { isValidId } from "@/lib/rateLimit";
 import { checkDownloadMilestone } from "@/lib/notifications";
 import { captureError } from "@/lib/api-error";
@@ -66,7 +73,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
   try {
     const { id } = await params;
-    if (!isValidId(id)) return badRequest("Invalid ID");
+    if (!isValidId(id)) return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
 
     // Fetch the material with related data
     const material = await prisma.resource.findUnique({
@@ -107,7 +114,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       material.is_published && material.is_approved && material.is_public;
 
     if (!isAdmin && !isOwner && !isPubliclyAccessible) {
-      return forbidden("Material unavailable");
+      return forbidden("Material unavailable", API_ERROR_CODES.MATERIAL_UNAVAILABLE);
     }
 
     // Check access rights for downloads
@@ -134,7 +141,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     if (!isAdmin && !isOwner && !isVerified) {
       if (process.env.NODE_ENV === "development")
         console.log("[DOWNLOAD] ACCESS DENIED - not verified");
-      return forbidden("Material under review");
+      return forbidden("Material under review", API_ERROR_CODES.MATERIAL_UNDER_REVIEW);
     }
 
     // Grant access if: admin, owner, free material, or has purchased
@@ -142,7 +149,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     if (process.env.NODE_ENV === "development") console.log("[DOWNLOAD] hasAccess:", hasAccess);
 
     if (!hasAccess) {
-      return forbidden("Purchase required");
+      return forbidden("Purchase required", API_ERROR_CODES.PURCHASE_REQUIRED);
     }
 
     // Record download for free materials (if not already recorded)
@@ -235,7 +242,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
   try {
     const { id } = await params;
-    if (!isValidId(id)) return badRequest("Invalid ID");
+    if (!isValidId(id)) return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
 
     // Fetch the material
     const material = await prisma.resource.findUnique({
@@ -267,14 +274,14 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
     // Regular users cannot download unverified materials
     if (!isAdmin && !isOwner && !material.is_approved) {
-      return forbidden("Material under review");
+      return forbidden("Material under review", API_ERROR_CODES.MATERIAL_UNDER_REVIEW);
     }
 
     const isPubliclyAccessible =
       material.is_published && material.is_approved && material.is_public;
 
     if (!isAdmin && !isOwner && !isPubliclyAccessible) {
-      return forbidden("Material unavailable");
+      return forbidden("Material unavailable", API_ERROR_CODES.MATERIAL_UNAVAILABLE);
     }
 
     const isFree = material.price === 0;
@@ -282,7 +289,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     const hasAccess = isAdmin || isOwner || isFree || hasPurchased;
 
     if (!hasAccess) {
-      return forbidden("Purchase required");
+      return forbidden("Purchase required", API_ERROR_CODES.PURCHASE_REQUIRED);
     }
 
     // Record download for free materials

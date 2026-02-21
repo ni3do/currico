@@ -7,6 +7,7 @@ import { notifySale, checkDownloadMilestone } from "@/lib/notifications";
 import { checkAndUpdateVerification } from "@/lib/utils/verified-seller";
 import { DOWNLOAD_LINK_EXPIRY_DAYS, DOWNLOAD_LINK_MAX_DOWNLOADS } from "@/lib/constants";
 import Stripe from "stripe";
+import { badRequest, serverError } from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 
 const isDev = process.env.NODE_ENV === "development";
@@ -32,7 +33,7 @@ export async function POST(request: NextRequest) {
       "[PAYMENT WEBHOOK] ERROR: Missing stripe-signature header",
       new Error("Missing stripe-signature header")
     );
-    return NextResponse.json({ error: "Missing stripe-signature header" }, { status: 400 });
+    return badRequest("Missing stripe-signature header");
   }
 
   // Verify webhook signature
@@ -41,7 +42,7 @@ export async function POST(request: NextRequest) {
     if (isDev) console.log("[PAYMENT WEBHOOK] Verified:", event.type, event.id);
   } catch (error) {
     captureError("[PAYMENT WEBHOOK] Signature verification failed:", error);
-    return NextResponse.json({ error: "Webhook signature verification failed" }, { status: 400 });
+    return badRequest("Webhook signature verification failed");
   }
 
   // Handle the event
@@ -70,7 +71,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ received: true });
   } catch (error) {
     captureError(`Webhook: Error handling ${event.type}:`, error);
-    return NextResponse.json({ error: "Webhook handler failed" }, { status: 500 });
+    return serverError("Webhook handler failed");
   }
 }
 

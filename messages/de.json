@@ -28,7 +28,15 @@
     "cannotReviewOwn": "Sie können Ihr eigenes Material nicht bewerten",
     "mustPurchaseToReview": "Sie müssen dieses Material kaufen oder herunterladen, um es bewerten zu können",
     "alreadyReviewed": "Sie haben dieses Material bereits bewertet",
-    "ownReviewOnly": "Sie können nur Ihre eigenen Bewertungen bearbeiten"
+    "ownReviewOnly": "Sie können nur Ihre eigenen Bewertungen bearbeiten",
+    "invalidToken": "Ungültiger Download-Link",
+    "paymentIncomplete": "Zahlung wurde noch nicht abgeschlossen",
+    "tokenExpired": "Download-Link ist abgelaufen",
+    "maxDownloadsReached": "Maximale Anzahl Downloads erreicht",
+    "fileNotFound": "Datei nicht gefunden",
+    "invalidOrExpiredToken": "Ungültiger oder abgelaufener Link",
+    "bundleNotFound": "Paket nicht gefunden",
+    "bundleMaterialsInvalid": "Einige Materialien wurden nicht gefunden oder gehören nicht Ihnen"
   },
   "theme": {
     "light": "Hell",

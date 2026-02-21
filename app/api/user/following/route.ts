@@ -8,6 +8,7 @@ import {
   serverError,
   parsePagination,
   paginationResponse,
+  API_ERROR_CODES,
 } from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 import { followSellerSchema } from "@/lib/validations/user";
@@ -84,11 +85,12 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const parsed = followSellerSchema.safeParse(body);
     if (!parsed.success) {
-      return badRequest("SELLER_ID_REQUIRED");
+      return badRequest("Seller ID required", undefined, API_ERROR_CODES.INVALID_INPUT);
     }
     const { sellerId } = parsed.data;
 
-    if (sellerId === userId) return badRequest("CANNOT_FOLLOW_SELF");
+    if (sellerId === userId)
+      return badRequest("Cannot follow self", undefined, API_ERROR_CODES.CANNOT_FOLLOW_SELF);
 
     // Check if seller exists and is actually a seller
     const seller = await prisma.user.findUnique({
@@ -96,9 +98,9 @@ export async function POST(request: NextRequest) {
       select: { role: true },
     });
 
-    if (!seller) return notFound("SELLER_NOT_FOUND");
+    if (!seller) return notFound("Seller not found", API_ERROR_CODES.USER_NOT_FOUND);
     if (seller.role !== "SELLER") {
-      return badRequest("NOT_A_SELLER");
+      return badRequest("Not a seller", undefined, API_ERROR_CODES.NOT_A_SELLER);
     }
 
     // Create follow relationship (upsert to handle duplicates)
@@ -118,7 +120,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: "FOLLOWED",
+      message: "Followed",
       followId: follow.id,
     });
   } catch (error) {
@@ -139,7 +141,8 @@ export async function DELETE(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const sellerId = searchParams.get("sellerId");
 
-    if (!sellerId) return badRequest("SELLER_ID_REQUIRED");
+    if (!sellerId)
+      return badRequest("Seller ID required", undefined, API_ERROR_CODES.INVALID_INPUT);
 
     await prisma.follow.deleteMany({
       where: {
@@ -150,7 +153,7 @@ export async function DELETE(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: "UNFOLLOWED",
+      message: "Unfollowed",
     });
   } catch (error) {
     captureError("Error unfollowing seller:", error);

@@ -9,6 +9,7 @@ import {
   notFound,
   rateLimited,
   serverError,
+  API_ERROR_CODES,
 } from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 import { checkRateLimit, isValidId } from "@/lib/rateLimit";
@@ -17,7 +18,8 @@ import { checkRateLimit, isValidId } from "@/lib/rateLimit";
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id: commentId } = await params;
-    if (!isValidId(commentId)) return badRequest("Invalid ID");
+    if (!isValidId(commentId))
+      return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
 
     // Check if comment exists
     const comment = await prisma.comment.findUnique({
@@ -83,7 +85,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     }
 
     const { id: commentId } = await params;
-    if (!isValidId(commentId)) return badRequest("Invalid ID");
+    if (!isValidId(commentId))
+      return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
 
     // Check if comment exists
     const comment = await prisma.comment.findUnique({
@@ -106,7 +109,11 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     const validation = createReplySchema.safeParse(body);
 
     if (!validation.success) {
-      return badRequest("Invalid input", { details: validation.error.flatten() });
+      return badRequest(
+        "Invalid input",
+        { details: validation.error.flatten() },
+        API_ERROR_CODES.INVALID_INPUT
+      );
     }
 
     const { content } = validation.data;
@@ -149,7 +156,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
           isSeller: reply.user.id === comment.resource.seller_id,
         },
       },
-      message: "Antwort erfolgreich erstellt",
+      message: "Reply created",
     });
   } catch (error) {
     captureError("Error creating reply:", error);

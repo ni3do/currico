@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin, forbiddenResponse } from "@/lib/admin-auth";
-import { badRequest, notFound, serverError } from "@/lib/api";
+import { badRequest, notFound, serverError, API_ERROR_CODES } from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 
 /**
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     const { id: userId } = await params;
 
     if (!userId) {
-      return badRequest("User ID is required");
+      return badRequest("User ID required", undefined, API_ERROR_CODES.INVALID_ID);
     }
 
     // Check if user exists
@@ -31,12 +31,12 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     });
 
     if (!user) {
-      return notFound("User not found");
+      return notFound("User not found", API_ERROR_CODES.USER_NOT_FOUND);
     }
 
     // Prevent modifying protected users (other admins)
     if (user.is_protected) {
-      return badRequest("Cannot modify protected user");
+      return badRequest("Protected user", undefined, API_ERROR_CODES.PROTECTED_USER);
     }
 
     // Update user with manual verification
@@ -58,7 +58,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     });
 
     return NextResponse.json({
-      message: "Lehrer-Verifizierung erfolgreich",
+      message: "Teacher verification successful",
       user: updatedUser,
     });
   } catch (error) {
@@ -82,7 +82,7 @@ export async function DELETE(
     const { id: userId } = await params;
 
     if (!userId) {
-      return badRequest("User ID is required");
+      return badRequest("User ID required", undefined, API_ERROR_CODES.INVALID_ID);
     }
 
     // Check if user exists
@@ -96,12 +96,12 @@ export async function DELETE(
     });
 
     if (!user) {
-      return notFound("User not found");
+      return notFound("User not found", API_ERROR_CODES.USER_NOT_FOUND);
     }
 
     // Prevent modifying protected users
     if (user.is_protected) {
-      return badRequest("Cannot modify protected user");
+      return badRequest("Protected user", undefined, API_ERROR_CODES.PROTECTED_USER);
     }
 
     // Remove teacher verification

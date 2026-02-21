@@ -1,7 +1,15 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { updateReplySchema } from "@/lib/validations/review";
-import { requireAuth, unauthorized, badRequest, notFound, forbidden, serverError } from "@/lib/api";
+import {
+  requireAuth,
+  unauthorized,
+  badRequest,
+  notFound,
+  forbidden,
+  serverError,
+  API_ERROR_CODES,
+} from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 import { isValidId } from "@/lib/rateLimit";
 
@@ -9,7 +17,7 @@ import { isValidId } from "@/lib/rateLimit";
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id: replyId } = await params;
-    if (!isValidId(replyId)) return badRequest("Invalid ID");
+    if (!isValidId(replyId)) return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
 
     const reply = await prisma.commentReply.findUnique({
       where: { id: replyId },
@@ -75,7 +83,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     if (!userId) return unauthorized();
 
     const { id: replyId } = await params;
-    if (!isValidId(replyId)) return badRequest("Invalid ID");
+    if (!isValidId(replyId)) return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
 
     // Check if reply exists and belongs to user
     const reply = await prisma.commentReply.findUnique({
@@ -87,7 +95,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     }
 
     if (reply.user_id !== userId) {
-      return forbidden("Own reply only");
+      return forbidden("Own reply only", API_ERROR_CODES.OWN_REPLY_ONLY);
     }
 
     // Parse and validate request body
@@ -95,7 +103,11 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     const validation = updateReplySchema.safeParse(body);
 
     if (!validation.success) {
-      return badRequest("Invalid input", { details: validation.error.flatten() });
+      return badRequest(
+        "Invalid input",
+        { details: validation.error.flatten() },
+        API_ERROR_CODES.INVALID_INPUT
+      );
     }
 
     const { content } = validation.data;
@@ -128,7 +140,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
           image: updatedReply.user.image,
         },
       },
-      message: "Antwort erfolgreich aktualisiert",
+      message: "Reply updated",
     });
   } catch (error) {
     captureError("Error updating reply:", error);
@@ -143,7 +155,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     if (!userId) return unauthorized();
 
     const { id: replyId } = await params;
-    if (!isValidId(replyId)) return badRequest("Invalid ID");
+    if (!isValidId(replyId)) return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
 
     // Check if reply exists and belongs to user
     const reply = await prisma.commentReply.findUnique({
@@ -175,7 +187,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
       user?.role === "ADMIN";
 
     if (!canDelete) {
-      return forbidden("Own reply only");
+      return forbidden("Own reply only", API_ERROR_CODES.OWN_REPLY_ONLY);
     }
 
     // Delete reply
@@ -183,7 +195,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
       where: { id: replyId },
     });
 
-    return NextResponse.json({ message: "Antwort erfolgreich gelöscht" });
+    return NextResponse.json({ message: "Reply deleted" });
   } catch (error) {
     captureError("Error deleting reply:", error);
     return serverError();

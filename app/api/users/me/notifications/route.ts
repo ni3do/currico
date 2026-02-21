@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma, privateUserSelect } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
 import { updateNotificationPreferencesSchema } from "@/lib/validations/user";
-import { requireAuth, unauthorized, serverError, badRequest } from "@/lib/api";
+import { requireAuth, unauthorized, serverError, badRequest, API_ERROR_CODES } from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 import type { NotificationType } from "@prisma/client";
 
@@ -100,9 +100,13 @@ export async function PATCH(request: NextRequest) {
     // Validate input for notification preferences
     const validationResult = updateNotificationPreferencesSchema.safeParse(body);
     if (!validationResult.success) {
-      return badRequest("Invalid input", {
-        details: validationResult.error.flatten().fieldErrors,
-      });
+      return badRequest(
+        "Invalid input",
+        {
+          details: validationResult.error.flatten().fieldErrors,
+        },
+        API_ERROR_CODES.INVALID_INPUT
+      );
     }
 
     const data = validationResult.data;

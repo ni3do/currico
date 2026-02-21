@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { rateLimited, badRequest, serverError } from "@/lib/api";
+import { rateLimited, badRequest, serverError, API_ERROR_CODES } from "@/lib/api";
 import { checkRateLimit, getClientIP } from "@/lib/rateLimit";
 import { captureError } from "@/lib/api-error";
 
@@ -31,7 +31,7 @@ export async function GET(request: Request) {
     const subjectCode = searchParams.get("subject");
 
     if (!query || query.length < 2) {
-      return badRequest("Query too short");
+      return badRequest("Query too short", undefined, API_ERROR_CODES.INVALID_INPUT);
     }
 
     // Normalize LP21 code for search (remove spaces, dots, convert to uppercase)

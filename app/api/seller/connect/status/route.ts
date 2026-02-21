@@ -65,7 +65,7 @@ export async function GET() {
         role: user.role,
         dashboardUrl: null,
         requirements: null,
-        error: "Stripe-Status konnte nicht abgerufen werden",
+        error: "Could not retrieve Stripe status",
       });
     }
 

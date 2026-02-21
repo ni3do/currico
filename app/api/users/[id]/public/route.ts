@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma, publicUserSelect } from "@/lib/db";
 import { getCurrentUserId } from "@/lib/auth";
-import { badRequest, notFound, serverError } from "@/lib/api";
+import { badRequest, notFound, serverError, API_ERROR_CODES } from "@/lib/api";
 import { isValidId } from "@/lib/rateLimit";
 import { captureError } from "@/lib/api-error";
 
@@ -21,7 +21,7 @@ export async function GET(
     const { id } = await params;
 
     if (!isValidId(id)) {
-      return badRequest("Invalid ID");
+      return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
     }
 
     const currentUserId = await getCurrentUserId();

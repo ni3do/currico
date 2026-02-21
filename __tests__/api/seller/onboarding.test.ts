@@ -532,7 +532,7 @@ describe("Seller Onboarding Flow", () => {
       expect(data.hasAccount).toBe(true);
       expect(data.chargesEnabled).toBe(true);
       expect(data.payoutsEnabled).toBe(true);
-      expect(data.error).toBe("Stripe-Status konnte nicht abgerufen werden");
+      expect(data.error).toBe("Could not retrieve Stripe status");
       expect(data.dashboardUrl).toBeNull();
     });
 

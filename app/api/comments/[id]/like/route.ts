@@ -7,6 +7,7 @@ import {
   notFound,
   rateLimited,
   serverError,
+  API_ERROR_CODES,
 } from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 import { checkRateLimit, isValidId } from "@/lib/rateLimit";
@@ -24,7 +25,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     }
 
     const { id: commentId } = await params;
-    if (!isValidId(commentId)) return badRequest("Invalid ID");
+    if (!isValidId(commentId))
+      return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
 
     // Check if comment exists
     const comment = await prisma.comment.findUnique({
@@ -59,7 +61,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       return NextResponse.json({
         liked: false,
         likeCount,
-        message: "Like entfernt",
+        message: "Like removed",
       });
     } else {
       // Like - add new like
@@ -77,7 +79,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       return NextResponse.json({
         liked: true,
         likeCount,
-        message: "Kommentar gefällt Ihnen",
+        message: "Comment liked",
       });
     }
   } catch (error) {
@@ -91,7 +93,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   try {
     const userId = await requireAuth();
     const { id: commentId } = await params;
-    if (!isValidId(commentId)) return badRequest("Invalid ID");
+    if (!isValidId(commentId))
+      return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
 
     // Check if comment exists
     const comment = await prisma.comment.findUnique({

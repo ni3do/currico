@@ -42,9 +42,9 @@ export default function GuestDownloadPage({ params }: { params: Promise<{ token:
         const data = await res.json();
 
         if (!res.ok) {
-          if (data.error === "invalid_token") {
+          if (data.code === "INVALID_TOKEN") {
             setError("invalid_token");
-          } else if (data.error === "payment_incomplete") {
+          } else if (data.code === "PAYMENT_INCOMPLETE") {
             setError("payment_incomplete");
           } else {
             setError("generic");

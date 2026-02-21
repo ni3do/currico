@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
-import { badRequest, serverError } from "@/lib/api";
+import { badRequest, serverError, rateLimited, API_ERROR_CODES } from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 import { checkRateLimit, getClientIP, rateLimitHeaders } from "@/lib/rateLimit";
 import { resetPasswordSchema } from "@/lib/validations/auth";
@@ -16,10 +16,7 @@ export async function POST(request: NextRequest) {
     const rateLimitResult = checkRateLimit(clientIP, "auth:reset-password");
 
     if (!rateLimitResult.success) {
-      return NextResponse.json(
-        { error: "Too many requests. Please try again later.", code: "RATE_LIMITED" },
-        { status: 429, headers: rateLimitHeaders(rateLimitResult) }
-      );
+      return rateLimited("Too many requests", rateLimitHeaders(rateLimitResult));
     }
 
     let body: unknown;
@@ -31,7 +28,11 @@ export async function POST(request: NextRequest) {
 
     const parsed = resetPasswordSchema.safeParse(body);
     if (!parsed.success) {
-      return badRequest("Invalid token or password requirements not met");
+      return badRequest(
+        "Invalid token or password requirements not met",
+        undefined,
+        API_ERROR_CODES.INVALID_INPUT
+      );
     }
     const { token, password } = parsed.data;
 
@@ -42,13 +43,21 @@ export async function POST(request: NextRequest) {
     });
 
     if (!resetToken) {
-      return badRequest("Invalid or expired link");
+      return badRequest(
+        "Invalid or expired link",
+        undefined,
+        API_ERROR_CODES.INVALID_OR_EXPIRED_TOKEN
+      );
     }
 
     if (new Date() > resetToken.expires) {
       // Clean up expired token
       await prisma.passwordResetToken.delete({ where: { id: resetToken.id } });
-      return badRequest("Link has expired. Please request a new one.");
+      return badRequest(
+        "Link has expired. Please request a new one.",
+        undefined,
+        API_ERROR_CODES.INVALID_OR_EXPIRED_TOKEN
+      );
     }
 
     // Hash new password and update user
@@ -66,7 +75,7 @@ export async function POST(request: NextRequest) {
     ]);
 
     return NextResponse.json({
-      message: "Passwort erfolgreich zurückgesetzt. Sie können sich jetzt anmelden.",
+      message: "Password reset successfully",
     });
   } catch (error) {
     captureError("Error in reset-password:", error);

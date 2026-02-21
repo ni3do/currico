@@ -14,7 +14,7 @@ const mockRequireAdmin = vi.fn();
 vi.mock("@/lib/admin-auth", () => ({
   requireAdmin: () => mockRequireAdmin(),
   forbiddenResponse: () =>
-    new Response(JSON.stringify({ error: "Zugriff verweigert", code: "FORBIDDEN" }), {
+    new Response(JSON.stringify({ error: "Access denied", code: "FORBIDDEN" }), {
       status: 403,
       headers: { "Content-Type": "application/json" },
     }),
@@ -74,7 +74,7 @@ describe("GET /api/admin/stats", () => {
     const data = await parseResponse<{ error: string }>(response);
 
     expect(response.status).toBe(403);
-    expect(data.error).toBe("Zugriff verweigert");
+    expect(data.error).toBe("Access denied");
   });
 
   it("handles null revenue values", async () => {

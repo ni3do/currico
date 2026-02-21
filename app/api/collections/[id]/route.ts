@@ -1,6 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { requireAuth, unauthorized, badRequest, notFound, forbidden, serverError } from "@/lib/api";
+import {
+  requireAuth,
+  unauthorized,
+  badRequest,
+  notFound,
+  forbidden,
+  serverError,
+  API_ERROR_CODES,
+} from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 import { isValidId } from "@/lib/rateLimit";
 import { z } from "zod";
@@ -19,7 +27,7 @@ const updateCollectionSchema = z.object({
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    if (!isValidId(id)) return badRequest("Invalid ID");
+    if (!isValidId(id)) return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
 
     const collection = await prisma.collection.findUnique({
       where: { id },
@@ -69,7 +77,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     // Private collections only viewable by owner
     const userId = await requireAuth();
     if (!collection.is_public && collection.owner_id !== userId) {
-      return forbidden("Collection is private");
+      return forbidden("Collection is private", API_ERROR_CODES.COLLECTION_PRIVATE);
     }
 
     return NextResponse.json({
@@ -94,14 +102,18 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 
   try {
     const { id } = await params;
-    if (!isValidId(id)) return badRequest("Invalid ID");
+    if (!isValidId(id)) return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
     const body = await request.json();
     const validation = updateCollectionSchema.safeParse(body);
 
     if (!validation.success) {
-      return badRequest("Invalid input", {
-        details: validation.error.flatten().fieldErrors,
-      });
+      return badRequest(
+        "Invalid input",
+        {
+          details: validation.error.flatten().fieldErrors,
+        },
+        API_ERROR_CODES.INVALID_INPUT
+      );
     }
 
     // Check ownership
@@ -115,7 +127,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     }
 
     if (existing.owner_id !== userId) {
-      return forbidden("Own collection only");
+      return forbidden("Own collection only", API_ERROR_CODES.OWN_COLLECTION_ONLY);
     }
 
     const collection = await prisma.collection.update({
@@ -146,7 +158,7 @@ export async function DELETE(
 
   try {
     const { id } = await params;
-    if (!isValidId(id)) return badRequest("Invalid ID");
+    if (!isValidId(id)) return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
 
     // Check ownership
     const existing = await prisma.collection.findUnique({
@@ -159,7 +171,7 @@ export async function DELETE(
     }
 
     if (existing.owner_id !== userId) {
-      return forbidden("Own collection only");
+      return forbidden("Own collection only", API_ERROR_CODES.OWN_COLLECTION_ONLY);
     }
 
     await prisma.collection.delete({
@@ -168,7 +180,7 @@ export async function DELETE(
 
     return NextResponse.json({
       success: true,
-      message: "Sammlung gelöscht",
+      message: "Collection deleted",
     });
   } catch (error) {
     captureError("Error deleting collection:", error);

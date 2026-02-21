@@ -1,7 +1,15 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { updateCommentSchema } from "@/lib/validations/review";
-import { requireAuth, unauthorized, badRequest, notFound, forbidden, serverError } from "@/lib/api";
+import {
+  requireAuth,
+  unauthorized,
+  badRequest,
+  notFound,
+  forbidden,
+  serverError,
+  API_ERROR_CODES,
+} from "@/lib/api";
 import { captureError } from "@/lib/api-error";
 import { isValidId } from "@/lib/rateLimit";
 
@@ -9,7 +17,8 @@ import { isValidId } from "@/lib/rateLimit";
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id: commentId } = await params;
-    if (!isValidId(commentId)) return badRequest("Invalid ID");
+    if (!isValidId(commentId))
+      return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
     const userId = await requireAuth();
 
     const comment = await prisma.comment.findUnique({
@@ -99,7 +108,8 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     if (!userId) return unauthorized();
 
     const { id: commentId } = await params;
-    if (!isValidId(commentId)) return badRequest("Invalid ID");
+    if (!isValidId(commentId))
+      return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
 
     // Check if comment exists and belongs to user
     const comment = await prisma.comment.findUnique({
@@ -111,7 +121,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     }
 
     if (comment.user_id !== userId) {
-      return forbidden("Own comment only");
+      return forbidden("Own comment only", API_ERROR_CODES.OWN_COMMENT_ONLY);
     }
 
     // Parse and validate request body
@@ -119,12 +129,16 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     try {
       body = await request.json();
     } catch {
-      return badRequest("Invalid JSON body");
+      return badRequest("Invalid JSON body", undefined, API_ERROR_CODES.INVALID_JSON_BODY);
     }
     const validation = updateCommentSchema.safeParse(body);
 
     if (!validation.success) {
-      return badRequest("Invalid input", { details: validation.error.flatten() });
+      return badRequest(
+        "Invalid input",
+        { details: validation.error.flatten() },
+        API_ERROR_CODES.INVALID_INPUT
+      );
     }
 
     const { content } = validation.data;
@@ -157,7 +171,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
           image: updatedComment.user.image,
         },
       },
-      message: "Kommentar erfolgreich aktualisiert",
+      message: "Comment updated successfully",
     });
   } catch (error) {
     captureError("Error updating comment:", error);
@@ -172,7 +186,8 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     if (!userId) return unauthorized();
 
     const { id: commentId } = await params;
-    if (!isValidId(commentId)) return badRequest("Invalid ID");
+    if (!isValidId(commentId))
+      return badRequest("Invalid ID", undefined, API_ERROR_CODES.INVALID_ID);
 
     // Check if comment exists and belongs to user
     const comment = await prisma.comment.findUnique({
@@ -198,7 +213,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
       comment.user_id === userId || comment.resource.seller_id === userId || user?.role === "ADMIN";
 
     if (!canDelete) {
-      return forbidden("Own comment only");
+      return forbidden("Own comment only", API_ERROR_CODES.OWN_COMMENT_ONLY);
     }
 
     // Delete comment (cascades to replies and likes)
@@ -206,7 +221,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
       where: { id: commentId },
     });
 
-    return NextResponse.json({ message: "Kommentar erfolgreich gelöscht" });
+    return NextResponse.json({ message: "Comment deleted successfully" });
   } catch (error) {
     captureError("Error deleting comment:", error);
     return serverError();

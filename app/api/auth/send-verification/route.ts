@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({
-      message: "Bestätigungslink wurde an Ihre E-Mail-Adresse gesendet",
+      message: "Verification link sent",
     });
   } catch (error) {
     captureError("Send verification error:", error);
