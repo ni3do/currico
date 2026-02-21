@@ -151,7 +151,7 @@ export default function SellerLevelsPage() {
                       }}
                       initial={{ width: 0 }}
                       animate={{ width: `${sellerData.progressPercent}%` }}
-                      transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
+                      transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
                     />
                   </div>
                 </div>
@@ -593,7 +593,7 @@ export default function SellerLevelsPage() {
                           }}
                           initial={{ width: 0 }}
                           animate={{ width: `${sellerData.progressPercent}%` }}
-                          transition={{ duration: 1, ease: "easeOut", delay: 0.5 }}
+                          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.5 }}
                         />
                       </div>
 
@@ -629,7 +629,11 @@ export default function SellerLevelsPage() {
                                       }}
                                       initial={{ width: 0 }}
                                       animate={{ width: `${req.percent}%` }}
-                                      transition={{ duration: 0.8, ease: "easeOut", delay: 0.7 }}
+                                      transition={{
+                                        duration: 0.8,
+                                        ease: [0.22, 1, 0.36, 1],
+                                        delay: 0.7,
+                                      }}
                                     />
                                   </div>
                                 </div>

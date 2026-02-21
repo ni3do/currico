@@ -12,7 +12,7 @@ export function generateStaticParams() {
   return getAllSlugs().map((slug) => ({ slug }));
 }
 
-const BASE_URL = process.env.NEXTAUTH_URL || "https://currico.siwachter.com";
+const BASE_URL = process.env.AUTH_URL || "https://currico.ch";
 
 export default async function BlogPostPage({
   params,

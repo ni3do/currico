@@ -108,7 +108,15 @@ export default function MaterialDetailPage() {
 
     setDownloading(true);
     try {
-      window.open(`/api/materials/${id}/download`, "_blank");
+      // Record download first, then open file — ensures the download record
+      // exists before we refresh the review section (fixes race condition)
+      const res = await fetch(`/api/materials/${id}/download`, { method: "POST" });
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error || "Download failed");
+      }
+      const { downloadUrl } = await res.json();
+      window.open(downloadUrl, "_blank");
       toast(t("downloadStarted"), "success");
       // Refresh review section so user can leave a review without page reload
       setReviewRefreshKey((k) => k + 1);

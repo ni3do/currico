@@ -5,7 +5,7 @@ import { signOut, useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Bell, ChevronDown, User, ShieldCheck, LogOut, X, Menu } from "lucide-react";
+import { Bell, ChevronDown, User, ShieldCheck, LogOut, X, Menu, Plus } from "lucide-react";
 import Image from "next/image";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { LoginLink } from "@/components/ui/LoginLink";
@@ -121,6 +121,15 @@ export default function TopBar() {
               {session && (
                 <NotificationDropdown unreadCount={unreadCount} onCountChange={setUnreadCount} />
               )}
+              {session && (
+                <Link
+                  href="/hochladen"
+                  className="btn-primary flex items-center gap-1.5 px-3.5 py-2 text-sm"
+                >
+                  <Plus className="h-4 w-4" aria-hidden="true" />
+                  {t("navigation.upload")}
+                </Link>
+              )}
               {session ? (
                 <div className="relative" ref={userMenuRef}>
                   {/* User Avatar/Name Dropdown Trigger */}
@@ -180,7 +189,7 @@ export default function TopBar() {
                           href="/konto"
                           role="menuitem"
                           onClick={() => setIsUserMenuOpen(false)}
-                          className="text-text hover:bg-bg flex items-center gap-2 px-4 py-2 text-sm transition-colors"
+                          className="text-text hover:bg-bg mx-1 flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors"
                         >
                           <User className="h-4 w-4" aria-hidden="true" />
                           {t("navigation.profile")}
@@ -190,20 +199,20 @@ export default function TopBar() {
                             href="/admin"
                             role="menuitem"
                             onClick={() => setIsUserMenuOpen(false)}
-                            className="text-text hover:bg-bg flex items-center gap-2 px-4 py-2 text-sm transition-colors"
+                            className="text-text hover:bg-bg mx-1 flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors"
                           >
                             <ShieldCheck className="h-4 w-4" aria-hidden="true" />
                             {t("navigation.admin")}
                           </Link>
                         )}
-                        <div className="border-border my-1 border-t"></div>
+                        <div className="border-border mx-1 my-1 border-t"></div>
                         <button
                           role="menuitem"
                           onClick={() => {
                             setIsUserMenuOpen(false);
                             signOut();
                           }}
-                          className="text-error hover:bg-error/10 flex w-full items-center gap-2 px-4 py-2 text-sm transition-colors"
+                          className="text-error hover:bg-error/10 mx-1 flex w-[calc(100%-0.5rem)] items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors"
                         >
                           <LogOut className="h-4 w-4" aria-hidden="true" />
                           {t("navigation.logout")}
@@ -295,6 +304,13 @@ export default function TopBar() {
                   </div>
                   {session ? (
                     <>
+                      <Link
+                        href="/hochladen"
+                        className="btn-primary mx-4 flex items-center justify-center gap-2 px-5 py-2.5 text-sm"
+                      >
+                        <Plus className="h-4 w-4" aria-hidden="true" />
+                        {t("navigation.upload")}
+                      </Link>
                       <Link
                         href="/konto"
                         className="text-text-secondary hover:text-primary flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors"

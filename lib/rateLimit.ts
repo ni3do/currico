@@ -48,6 +48,7 @@ export const rateLimitConfigs: Record<string, RateLimitConfig> = {
   "profile:bundle": { limit: 30, windowMs: 60 * 1000 }, // 30 per minute
   "newsletter:subscribe": { limit: 5, windowMs: 60 * 1000 }, // 5 per minute
   // 2FA rate limits
+  "auth:2fa-login": { limit: 5, windowMs: 15 * 60 * 1000 }, // 5 per 15 min (brute-force protection)
   "auth:login-check": { limit: 10, windowMs: 15 * 60 * 1000 }, // 10 per 15 min
   "auth:2fa-setup": { limit: 5, windowMs: 15 * 60 * 1000 }, // 5 per 15 min
   "auth:2fa-verify": { limit: 10, windowMs: 15 * 60 * 1000 }, // 10 per 15 min

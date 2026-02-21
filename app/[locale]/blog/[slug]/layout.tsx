@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getPostBySlug } from "@/lib/blog";
 
-const BASE_URL = process.env.NEXTAUTH_URL || "https://currico.siwachter.com";
+const BASE_URL = process.env.AUTH_URL || "https://currico.ch";
 
 export async function generateMetadata({
   params,

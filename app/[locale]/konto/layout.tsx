@@ -16,6 +16,7 @@ import {
   MessageCircle,
   Bell,
   Users,
+  Trophy,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import TopBar from "@/components/ui/TopBar";
@@ -41,6 +42,12 @@ const MOBILE_TABS = [
   },
   { id: "notifications" as TabType, label: "nav.notifications", icon: Bell },
   { id: "following" as TabType, label: "nav.following", icon: Users },
+  {
+    id: "rewards" as TabType,
+    label: "nav.rewards",
+    icon: Trophy,
+    sellerOnly: true,
+  },
   {
     id: "settings-profile" as TabType,
     label: "nav.settings",
@@ -132,6 +139,7 @@ function AccountLayoutInner({ children }: { children: ReactNode }) {
         wishlist: t("nav.wishlist"),
         notifications: t("nav.notifications"),
         following: t("nav.following"),
+        rewards: t("nav.rewards"),
         "settings-profile": t("nav.settingsProfile"),
         "settings-notifications": t("nav.settingsNotifications"),
         "settings-account": t("nav.settingsAccount"),

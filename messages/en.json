@@ -96,7 +96,8 @@
       "profile": "Profile",
       "account": "My Account",
       "notifications": "Notifications",
-      "admin": "Admin Panel"
+      "admin": "Admin Panel",
+      "upload": "Upload"
     },
     "footer": {
       "copyright": "© 2026 Currico",
@@ -219,7 +220,7 @@
   },
   "homePage": {
     "hero": {
-      "swissBadge": "100% Lehrplan 21 aligned",
+      "swissBadge": "Lehrplan 21 aligned",
       "headline": "Ready-made worksheets, exams and lesson plans –",
       "headlineHighlight": "aligned with Lehrplan 21",
       "subheadline": "Find ready-to-use teaching materials from Swiss educators. Community-reviewed, curriculum-aligned, time-saving.",
@@ -274,8 +275,7 @@
         "formLabel": "Search teaching materials",
         "cycleLabel": "Select cycle",
         "subjectLabel": "Select subject area"
-      },
-      "sellerCta": "Want to sell your own materials?"
+      }
     },
     "howItWorks": {
       "title": "How It Works",
@@ -397,28 +397,6 @@
       "community": {
         "title": "By Teachers, For Teachers",
         "description": "Benefit from the knowledge and experience of your colleagues from all over Switzerland."
-      }
-    },
-    "testimonials": {
-      "title": "What Teachers Say",
-      "description": "Trusted by educators across Switzerland",
-      "testimonial1": {
-        "quote": "Currico has transformed my lesson planning. I find quality materials in minutes instead of hours. The Lehrplan 21 filtering is incredibly helpful.",
-        "name": "Sarah M.",
-        "role": "Primary Teacher",
-        "location": "Zürich"
-      },
-      "testimonial2": {
-        "quote": "As a seller, I've earned over CHF 2,000 sharing materials I already created. It feels great to help other teachers while earning extra income.",
-        "name": "Thomas K.",
-        "role": "Secondary Teacher",
-        "location": "Bern"
-      },
-      "testimonial3": {
-        "quote": "The quality control really shows. Every material I've purchased has been professionally made and ready to use in my classroom the next day.",
-        "name": "Lisa W.",
-        "role": "Special Education Teacher",
-        "location": "Basel"
       }
     },
     "pilotTeacher": {
@@ -670,8 +648,6 @@
       "expand": "Expand",
       "collapse": "Collapse",
       "closeFilters": "Close filters",
-      "tagSectionLabel": "Tags",
-      "tagFilterPlaceholder": "Search tags...",
       "sonstigeLabel": "Other",
       "sonstigeDescription": "Without LP21 alignment",
       "verifiedSellerLabel": "Verified Sellers",
@@ -2527,7 +2503,7 @@
       },
       "q3": {
         "question": "Why Currico instead of other platforms?",
-        "answer": "Currico is 100% focused on Switzerland. All materials use Swiss spelling (ss instead of ß), are aligned with Lehrplan 21, and prices are in Swiss Francs. Additionally, our server is hosted in Switzerland."
+        "answer": "Currico is fully focused on Switzerland. All materials use Swiss spelling (ss instead of ß), are aligned with Lehrplan 21, and prices are in Swiss Francs. Additionally, our server is hosted in Switzerland."
       },
       "q4": {
         "question": "Do I need to create an account?",
@@ -3452,6 +3428,7 @@
       "wishlist": "Wishlist",
       "notifications": "Notifications",
       "following": "Following",
+      "rewards": "Points & Level",
       "settings": "Settings",
       "settingsProfile": "Profile",
       "settingsNotifications": "Notifications",
@@ -3799,6 +3776,7 @@
       "privateConfirmAction": "Make private",
       "privateConfirmCancel": "Cancel",
       "unsavedChanges": "You have unsaved changes",
+      "unsavedChangesBody": "Would you like to save or discard your changes?",
       "discard": "Discard",
       "saveChanges": "Save changes",
       "saving": "Saving...",

@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Currico" }],
   creator: "Currico",
-  metadataBase: new URL(process.env.NEXTAUTH_URL || "https://currico.ch"),
+  metadataBase: new URL(process.env.AUTH_URL || "https://currico.ch"),
   openGraph: {
     type: "website",
     locale: "de_CH",

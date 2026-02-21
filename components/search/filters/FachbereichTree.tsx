@@ -96,8 +96,10 @@ export function FachbereichTree({
           <FolderOpen className="h-4 w-4 flex-shrink-0" />
           <div className="min-w-0">
             <div>{sonstigeLabel}</div>
-            {sonstigeDescription && !isSonstigeSelected && (
-              <div className="text-text-faint text-xs">{sonstigeDescription}</div>
+            {sonstigeDescription && (
+              <div className={`text-text-faint text-xs ${isSonstigeSelected ? "invisible" : ""}`}>
+                {sonstigeDescription}
+              </div>
             )}
           </div>
         </button>

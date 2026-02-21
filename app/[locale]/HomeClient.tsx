@@ -205,7 +205,7 @@ export default function HomeClient({ initialMaterials, platformStats }: HomeClie
                         <motion.button
                           type="submit"
                           className="bg-primary hover:bg-primary-hover focus:ring-primary text-text-on-accent absolute right-2 flex items-center gap-2 rounded-full px-6 py-2.5 font-semibold transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none"
-                          whileHover={{ scale: 1.05 }}
+                          whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.95 }}
                         >
                           <svg

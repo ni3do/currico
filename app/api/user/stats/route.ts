@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { toStringArray } from "@/lib/json-array";
 import { requireAuth, unauthorized, notFound, serverError } from "@/lib/api";
+import { parseBackupCodes } from "@/lib/totp";
 
 /**
  * GET /api/user/stats
@@ -114,9 +115,7 @@ export async function GET() {
         hasPassword,
         twoFactorEnabled: user.totp_enabled,
         backupCodesRemaining: user.totp_enabled
-          ? Array.isArray(user.backup_codes)
-            ? (user.backup_codes as { hash: string; used: boolean }[]).filter((c) => !c.used).length
-            : 0
+          ? parseBackupCodes(user.backup_codes).filter((c) => !c.used).length
           : 0,
         // Notification preferences
         notify_new_from_followed: user.notify_new_from_followed,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   User,
   Mail,
@@ -28,6 +28,8 @@ import { CYCLES } from "@/lib/types/account";
 import { SWISS_CANTONS } from "@/lib/validations/user";
 import { getSubjectPillClass } from "@/lib/constants/subject-colors";
 import { looksLikeUsername } from "@/lib/utils/display-name";
+import { UnsavedChangesDialog } from "@/components/ui/UnsavedChangesDialog";
+import { useRouter } from "@/i18n/navigation";
 
 // Teaching experience options
 const TEACHING_EXPERIENCE_OPTIONS = [
@@ -40,6 +42,7 @@ const TEACHING_EXPERIENCE_OPTIONS = [
 
 export default function SettingsProfilePage() {
   const { userData, refreshUserData } = useAccountData();
+  const router = useRouter();
   const tSettings = useTranslations("accountPage.settingsProfile");
 
   // Avatar state
@@ -169,6 +172,40 @@ export default function SettingsProfilePage() {
     setProfileMessage(null);
   };
 
+  // Custom unsaved changes dialog for in-app navigation
+  const [unsavedDialogOpen, setUnsavedDialogOpen] = useState(false);
+  const pendingNavUrl = useRef<string | null>(null);
+
+  useEffect(() => {
+    const handleLinkClick = (e: MouseEvent) => {
+      if (!hasProfileChanges()) return;
+      const target = (e.target as HTMLElement).closest("a[href]") as HTMLAnchorElement | null;
+      if (!target) return;
+      const href = target.getAttribute("href");
+      if (!href || href.startsWith("#") || href.startsWith("mailto:") || target.target === "_blank")
+        return;
+      // Only intercept same-origin navigation
+      if (target.origin && target.origin !== window.location.origin) return;
+      e.preventDefault();
+      e.stopPropagation();
+      pendingNavUrl.current = href;
+      setUnsavedDialogOpen(true);
+    };
+    document.addEventListener("click", handleLinkClick, true);
+    return () => document.removeEventListener("click", handleLinkClick, true);
+  }, [hasProfileChanges]);
+
+  const handleUnsavedDiscard = () => {
+    setUnsavedDialogOpen(false);
+    if (initialProfileData) {
+      setProfileFormData(initialProfileData);
+    }
+    if (pendingNavUrl.current) {
+      router.push(pendingNavUrl.current as Parameters<typeof router.push>[0]);
+      pendingNavUrl.current = null;
+    }
+  };
+
   // Handle profile form field change
   const handleProfileFieldChange = (field: string, value: string | string[] | boolean) => {
     setProfileFormData((prev) => ({ ...prev, [field]: value }));
@@ -257,6 +294,16 @@ export default function SettingsProfilePage() {
       });
     } finally {
       setIsSavingProfile(false);
+    }
+  };
+
+  // Save then navigate (used by unsaved changes dialog)
+  const handleUnsavedSave = async () => {
+    await handleSaveProfile();
+    setUnsavedDialogOpen(false);
+    if (pendingNavUrl.current) {
+      router.push(pendingNavUrl.current as Parameters<typeof router.push>[0]);
+      pendingNavUrl.current = null;
     }
   };
 
@@ -362,7 +409,7 @@ export default function SettingsProfilePage() {
                       d="M5 13l4 4L19 7"
                       initial={{ pathLength: 0 }}
                       animate={{ pathLength: 1 }}
-                      transition={{ duration: 0.4, ease: "easeOut" }}
+                      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                     />
                   </motion.svg>
                 </div>
@@ -837,7 +884,7 @@ export default function SettingsProfilePage() {
                             d="M5 13l4 4L19 7"
                             initial={{ pathLength: 0 }}
                             animate={{ pathLength: 1 }}
-                            transition={{ duration: 0.3, ease: "easeOut" }}
+                            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                           />
                         </motion.svg>
                         {tSettings("saved")}
@@ -870,6 +917,22 @@ export default function SettingsProfilePage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Custom unsaved changes dialog */}
+      <UnsavedChangesDialog
+        open={unsavedDialogOpen}
+        title={tSettings("unsavedChanges")}
+        message={tSettings("unsavedChangesBody")}
+        discardLabel={tSettings("discard")}
+        saveLabel={tSettings("saveChanges")}
+        onDiscard={handleUnsavedDiscard}
+        onSave={handleUnsavedSave}
+        onCancel={() => {
+          setUnsavedDialogOpen(false);
+          pendingNavUrl.current = null;
+        }}
+        isSaving={isSavingProfile}
+      />
     </div>
   );
 }

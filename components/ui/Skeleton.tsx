@@ -168,7 +168,7 @@ export function DashboardMaterialCardSkeleton() {
 export function DashboardMaterialGridSkeleton({ count = 3 }: { count?: number }) {
   return (
     <div
-      className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4"
+      className="grid grid-cols-2 gap-4 sm:gap-5 md:grid-cols-3"
       role="status"
       aria-busy="true"
       aria-label="Loading materials"

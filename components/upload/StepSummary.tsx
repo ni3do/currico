@@ -14,6 +14,7 @@ import {
   Edit2,
 } from "lucide-react";
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface StepSummaryItemProps {
   step: Step;
@@ -233,33 +234,43 @@ function StepSummaryItem({ step, title, icon: Icon, isOpen, onToggle }: StepSumm
       </button>
 
       {/* Content */}
-      {isOpen && (
-        <div className="border-border border-t px-4 pt-3 pb-4">
-          {getSummaryContent()}
-
-          {/* Errors */}
-          {errors.length > 0 && (
-            <div className="mt-3 space-y-1">
-              {errors.map((error, i) => (
-                <div key={i} className="text-warning flex items-center gap-1.5 text-xs">
-                  <AlertTriangle className="h-3 w-3 flex-shrink-0" />
-                  {error.message}
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Edit Button */}
-          <button
-            type="button"
-            onClick={() => goToStep(step)}
-            className="text-primary hover:bg-primary/10 mt-3 flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            className="overflow-hidden"
           >
-            <Edit2 className="h-3.5 w-3.5" />
-            {tCommon("buttons.edit")}
-          </button>
-        </div>
-      )}
+            <div className="border-border border-t px-4 pt-3 pb-4">
+              {getSummaryContent()}
+
+              {/* Errors */}
+              {errors.length > 0 && (
+                <div className="mt-3 space-y-1">
+                  {errors.map((error, i) => (
+                    <div key={i} className="text-warning flex items-center gap-1.5 text-xs">
+                      <AlertTriangle className="h-3 w-3 flex-shrink-0" />
+                      {error.message}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Edit Button */}
+              <button
+                type="button"
+                onClick={() => goToStep(step)}
+                className="text-primary hover:bg-primary/10 mt-3 flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
+              >
+                <Edit2 className="h-3.5 w-3.5" />
+                {tCommon("buttons.edit")}
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

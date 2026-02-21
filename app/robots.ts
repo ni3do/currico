@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const BASE_URL = process.env.NEXTAUTH_URL || "https://currico.siwachter.com";
+const BASE_URL = process.env.AUTH_URL || "https://currico.ch";
 
 export default function robots(): MetadataRoute.Robots {
   return {

@@ -76,9 +76,15 @@ export function AvatarUploader({
 
   return (
     <div className="flex flex-col items-center">
-      <div className="relative">
+      <button
+        type="button"
+        onClick={() => fileInputRef.current?.click()}
+        disabled={isUploading}
+        aria-label={uploadLabel || t("uploadLabel")}
+        className="group relative cursor-pointer disabled:cursor-wait"
+      >
         {/* Avatar display */}
-        <div className="border-border from-primary to-success relative h-24 w-24 overflow-hidden rounded-full border-4 bg-gradient-to-br">
+        <div className="border-border from-primary to-success group-hover:border-primary relative h-24 w-24 overflow-hidden rounded-full border-4 bg-gradient-to-br transition-colors">
           {displayedAvatar ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={displayedAvatar} alt={displayName} className="h-full w-full object-cover" />
@@ -88,6 +94,14 @@ export function AvatarUploader({
             </div>
           )}
 
+          {/* Hover overlay */}
+          <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/0 transition-colors group-hover:bg-black/30">
+            <Camera
+              className="h-5 w-5 text-white opacity-0 transition-opacity group-hover:opacity-100"
+              aria-hidden="true"
+            />
+          </div>
+
           {/* Loading overlay */}
           {isUploading && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/50">
@@ -96,17 +110,14 @@ export function AvatarUploader({
           )}
         </div>
 
-        {/* Upload button overlay */}
-        <button
-          type="button"
-          onClick={() => fileInputRef.current?.click()}
-          disabled={isUploading}
-          aria-label={uploadLabel || t("uploadLabel")}
-          className="border-bg bg-primary text-text-on-accent hover:bg-success absolute right-0 bottom-0 flex h-8 w-8 items-center justify-center rounded-full border-2 transition-colors disabled:opacity-60"
+        {/* Camera badge */}
+        <span
+          className="border-bg bg-primary text-text-on-accent group-hover:bg-success absolute right-0 bottom-0 flex h-8 w-8 items-center justify-center rounded-full border-2 transition-colors"
+          aria-hidden="true"
         >
-          <Camera className="h-4 w-4" aria-hidden="true" />
-        </button>
-      </div>
+          <Camera className="h-4 w-4" />
+        </span>
+      </button>
 
       {/* Hidden file input */}
       <input

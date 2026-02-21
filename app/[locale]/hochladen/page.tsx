@@ -41,6 +41,7 @@ import {
   Loader2,
   Info,
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { MaterialTypeBadge } from "@/components/ui/MaterialTypeBadge";
 import { MAX_MATERIAL_FILE_SIZE, MAX_PREVIEW_FILE_SIZE } from "@/lib/validations/material";
 import { SELLER_PAYOUT_PERCENT } from "@/lib/constants";
@@ -574,708 +575,743 @@ function UploadPageContent() {
 
             {/* Form Card */}
             <div className="border-border bg-surface rounded-2xl border p-6 shadow-lg shadow-black/5 transition-shadow duration-300 hover:shadow-xl sm:p-8">
-              {/* Step 1: Basics */}
-              {currentStep === 1 && (
-                <div className="space-y-6">
-                  <div className="border-primary/20 border-b pb-4">
-                    <h2 className="text-text text-xl font-semibold">{tSteps("basics")}</h2>
-                    <p className="text-text-muted mt-1 text-sm">{tSteps("basicsSubtitle")}</p>
-                  </div>
-
-                  <FormField
-                    label={tFields("title")}
-                    tooltipKey="title"
-                    required
-                    error={getFieldError("title")}
-                    touched={touchedFields.title}
-                    hint={tFields("titleHint")}
+              <AnimatePresence mode="wait">
+                {/* Step 1: Basics */}
+                {currentStep === 1 && (
+                  <motion.div
+                    key="step-1"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                    className="space-y-6"
                   >
-                    <FormInput
-                      type="text"
-                      value={formData.title}
-                      onChange={(e) => updateFormData("title", e.target.value)}
-                      onBlur={() => markFieldTouched("title")}
-                      hasError={touchedFields.title && !!getFieldError("title")}
-                      placeholder={tFields("titlePlaceholder")}
-                      maxLength={64}
-                    />
-                  </FormField>
-
-                  {/* Duplicate title warning */}
-                  {duplicateTitle?.exists && duplicateTitle.matchType === "exact" && (
-                    <div className="border-warning/50 bg-warning/10 -mt-4 rounded-xl border p-3">
-                      <div className="flex items-start gap-2">
-                        <AlertTriangle className="text-warning mt-0.5 h-4 w-4 flex-shrink-0" />
-                        <div className="text-sm">
-                          <span className="text-warning font-medium">
-                            {tFields("duplicateTitle")}
-                          </span>
-                          {duplicateTitle.existingId && (
-                            <Link
-                              href={`/materialien/${duplicateTitle.existingId}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-primary ml-2 inline-flex items-center gap-1 text-sm font-medium hover:underline"
-                            >
-                              {tFields("duplicateTitleLink")}
-                              <ExternalLink className="h-3 w-3" />
-                            </Link>
-                          )}
-                        </div>
-                      </div>
+                    <div className="border-primary/20 border-b pb-4">
+                      <h2 className="text-text text-xl font-semibold">{tSteps("basics")}</h2>
+                      <p className="text-text-muted mt-1 text-sm">{tSteps("basicsSubtitle")}</p>
                     </div>
-                  )}
-                  {duplicateTitle?.exists && duplicateTitle.matchType === "similar" && (
-                    <div className="border-info/50 bg-info/10 -mt-4 rounded-xl border p-3">
-                      <div className="flex items-start gap-2">
-                        <Info className="text-info mt-0.5 h-4 w-4 flex-shrink-0" />
-                        <div className="text-sm">
-                          <span className="text-info font-medium">
-                            {tFields("similarTitle", { title: duplicateTitle.existingTitle ?? "" })}
-                          </span>
-                          {duplicateTitle.existingId && (
-                            <Link
-                              href={`/materialien/${duplicateTitle.existingId}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-primary ml-2 inline-flex items-center gap-1 text-sm font-medium hover:underline"
-                            >
-                              {tFields("duplicateTitleLink")}
-                              <ExternalLink className="h-3 w-3" />
-                            </Link>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  )}
 
-                  <FormField
-                    label={tFields("description")}
-                    tooltipKey="description"
-                    required
-                    error={getFieldError("description")}
-                    touched={touchedFields.description}
-                    hint={tFields("descriptionHint", { count: formData.description.length })}
-                  >
-                    <FormTextarea
-                      value={formData.description}
-                      onChange={(e) => updateFormData("description", e.target.value)}
-                      onBlur={() => markFieldTouched("description")}
-                      hasError={touchedFields.description && !!getFieldError("description")}
-                      placeholder={tFields("descriptionPlaceholder")}
-                      rows={4}
-                      maxLength={2000}
-                    />
-                  </FormField>
-
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <FormField label={tFields("language")} tooltipKey="language" required>
-                      <FormSelect
-                        value={formData.language}
-                        onChange={(e) => {
-                          updateFormData("language", e.target.value);
-                          // Reset dialect when switching away from German
-                          if (e.target.value !== "de") {
-                            updateFormData("dialect", "BOTH");
-                          }
-                        }}
-                      >
-                        <option value="de">{tFields("languageDE")}</option>
-                        <option value="en">{tFields("languageEN")}</option>
-                        <option value="fr">{tFields("languageFR")}</option>
-                        <option value="it">{tFields("languageIT")}</option>
-                      </FormSelect>
-                    </FormField>
-
-                    <FormField label={tFields("materialType")} tooltipKey="resourceType" required>
-                      <FormSelect
-                        value={formData.resourceType}
-                        onChange={(e) => updateFormData("resourceType", e.target.value)}
-                      >
-                        <option value="pdf">PDF</option>
-                        <option value="word">Word</option>
-                        <option value="powerpoint">PowerPoint</option>
-                        <option value="excel">Excel</option>
-                        <option value="onenote">OneNote</option>
-                        <option value="other">{tFields("resourceTypeOther")}</option>
-                      </FormSelect>
-                    </FormField>
-                  </div>
-
-                  {/* Dialect toggle - only shown for German */}
-                  {formData.language === "de" && (
-                    <FormField label={tFields("dialect")} hint={tFields("dialectHint")}>
-                      <div className="flex gap-2">
-                        {[
-                          {
-                            value: "BOTH" as const,
-                            label: tFields("dialectBoth"),
-                            desc: tFields("dialectBothDesc"),
-                          },
-                          {
-                            value: "SWISS" as const,
-                            label: tFields("dialectSwiss"),
-                            desc: tFields("dialectSwissDesc"),
-                          },
-                          {
-                            value: "STANDARD" as const,
-                            label: tFields("dialectStandard"),
-                            desc: tFields("dialectStandardDesc"),
-                          },
-                        ].map((opt) => {
-                          const isActive = formData.dialect === opt.value;
-                          return (
-                            <button
-                              key={opt.value}
-                              type="button"
-                              onClick={() => updateFormData("dialect", opt.value)}
-                              className={`flex-1 rounded-lg border-2 px-3 py-2.5 text-center transition-colors ${
-                                isActive
-                                  ? "border-primary bg-primary/10 text-primary"
-                                  : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:bg-surface-hover"
-                              }`}
-                            >
-                              <div className="text-sm font-semibold">{opt.label}</div>
-                              <div
-                                className={`text-xs ${isActive ? "text-primary/80" : "text-text-muted"}`}
-                              >
-                                {opt.desc}
-                              </div>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </FormField>
-                  )}
-
-                  {/* Tags */}
-                  <FormField label={tFields("tags")} hint={tFields("tagsHint")}>
-                    <TagInput
-                      tags={formData.tags}
-                      onChange={(tags) => updateFormData("tags", tags)}
-                      placeholder={tFields("tagsPlaceholder")}
-                      maxMessage={tFields("tagMax")}
-                      duplicateMessage={tFields("tagDuplicate")}
-                    />
-                  </FormField>
-                </div>
-              )}
-
-              {/* Step 2: Curriculum */}
-              {currentStep === 2 && (
-                <div className="space-y-6">
-                  <div className="border-primary/20 border-b pb-4">
-                    <h2 className="text-text text-xl font-semibold">{tSteps("curriculum")}</h2>
-                    <p className="text-text-muted mt-1 text-sm">{tSteps("curriculumSubtitle")}</p>
-                  </div>
-
-                  <EnhancedCurriculumSelector
-                    cycle={formData.cycle}
-                    subject={formData.subject}
-                    subjectCode={formData.subjectCode}
-                    canton={formData.canton}
-                    competencies={formData.competencies}
-                    onCycleChange={(cycle) => updateFormData("cycle", cycle)}
-                    onSubjectChange={(subject, code) => {
-                      updateFormData("subject", subject);
-                      updateFormData("subjectCode", code || "");
-                    }}
-                    onCantonChange={(canton) => updateFormData("canton", canton)}
-                    onCompetenciesChange={(comps) => updateFormData("competencies", comps)}
-                    touchedCycle={touchedFields.cycle}
-                    touchedSubject={touchedFields.subject}
-                    cycleError={getFieldError("cycle")}
-                    subjectError={getFieldError("subject")}
-                    onCycleBlur={() => markFieldTouched("cycle")}
-                    onSubjectBlur={() => markFieldTouched("subject")}
-                  />
-                </div>
-              )}
-
-              {/* Step 3: Properties & Price */}
-              {currentStep === 3 && (
-                <div className="space-y-6">
-                  <div className="border-primary/20 border-b pb-4">
-                    <h2 className="text-text text-xl font-semibold">{tSteps("priceTitle")}</h2>
-                    <p className="text-text-muted mt-1 text-sm">{tSteps("priceSubtitle")}</p>
-                  </div>
-
-                  <FormField label={tFields("priceType")} tooltipKey="priceType" required>
-                    <div
-                      className="grid grid-cols-2 gap-4"
-                      role="radiogroup"
-                      aria-label={tFields("priceType")}
+                    <FormField
+                      label={tFields("title")}
+                      tooltipKey="title"
+                      required
+                      error={getFieldError("title")}
+                      touched={touchedFields.title}
+                      hint={tFields("titleHint")}
                     >
-                      <RadioOption
-                        name="priceType"
-                        value="free"
-                        checked={formData.priceType === "free"}
-                        onChange={(val) => updateFormData("priceType", val as "free" | "paid")}
-                        label={tFields("priceFree")}
-                        description={tFields("priceFreeDesc")}
+                      <FormInput
+                        type="text"
+                        value={formData.title}
+                        onChange={(e) => updateFormData("title", e.target.value)}
+                        onBlur={() => markFieldTouched("title")}
+                        hasError={touchedFields.title && !!getFieldError("title")}
+                        placeholder={tFields("titlePlaceholder")}
+                        maxLength={64}
                       />
-                      <RadioOption
-                        name="priceType"
-                        value="paid"
-                        checked={formData.priceType === "paid"}
-                        onChange={(val) => updateFormData("priceType", val as "free" | "paid")}
-                        label={tFields("pricePaid")}
-                        description={tFields("pricePaidDesc")}
-                      />
-                    </div>
-                  </FormField>
+                    </FormField>
 
-                  {formData.priceType === "paid" && (
-                    <div>
-                      <FormField
-                        label={tFields("price")}
-                        tooltipKey="price"
-                        required
-                        error={getFieldError("price")}
-                        touched={touchedFields.price}
-                        hint={tFields("priceHint")}
-                      >
-                        <div className="relative">
-                          <FormInput
-                            type="number"
-                            value={formData.price}
-                            onChange={(e) => updateFormData("price", e.target.value)}
-                            onBlur={() => {
-                              markFieldTouched("price");
-                              const val = parseFloat(formData.price);
-                              if (!isNaN(val) && val > 0) {
-                                updateFormData("price", roundToNearestHalfFranc(val).toFixed(2));
-                              }
-                            }}
-                            hasError={touchedFields.price && !!getFieldError("price")}
-                            min="0.50"
-                            max="50"
-                            step="0.50"
-                            placeholder={tFields("pricePlaceholder")}
-                            className="pl-14"
-                          />
-                          <span className="text-text-muted absolute top-1/2 left-4 -translate-y-1/2 font-medium">
-                            CHF
-                          </span>
-                        </div>
-                      </FormField>
-
-                      {/* Price preview */}
-                      {formData.price && parseFloat(formData.price) > 0 && (
-                        <div className="border-success/30 bg-success/5 mt-4 rounded-xl border p-4">
-                          <div className="flex items-center justify-between">
-                            <span className="text-text-muted text-sm">
-                              {tFields("earningsPerSale")}
+                    {/* Duplicate title warning */}
+                    {duplicateTitle?.exists && duplicateTitle.matchType === "exact" && (
+                      <div className="border-warning/50 bg-warning/10 -mt-4 rounded-xl border p-3">
+                        <div className="flex items-start gap-2">
+                          <AlertTriangle className="text-warning mt-0.5 h-4 w-4 flex-shrink-0" />
+                          <div className="text-sm">
+                            <span className="text-warning font-medium">
+                              {tFields("duplicateTitle")}
                             </span>
-                            <span className="text-success text-lg font-bold">
-                              CHF{" "}
-                              {((parseFloat(formData.price) * SELLER_PAYOUT_PERCENT) / 100).toFixed(
-                                2
-                              )}
-                            </span>
+                            {duplicateTitle.existingId && (
+                              <Link
+                                href={`/materialien/${duplicateTitle.existingId}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-primary ml-2 inline-flex items-center gap-1 text-sm font-medium hover:underline"
+                              >
+                                {tFields("duplicateTitleLink")}
+                                <ExternalLink className="h-3 w-3" />
+                              </Link>
+                            )}
                           </div>
                         </div>
-                      )}
+                      </div>
+                    )}
+                    {duplicateTitle?.exists && duplicateTitle.matchType === "similar" && (
+                      <div className="border-info/50 bg-info/10 -mt-4 rounded-xl border p-3">
+                        <div className="flex items-start gap-2">
+                          <Info className="text-info mt-0.5 h-4 w-4 flex-shrink-0" />
+                          <div className="text-sm">
+                            <span className="text-info font-medium">
+                              {tFields("similarTitle", {
+                                title: duplicateTitle.existingTitle ?? "",
+                              })}
+                            </span>
+                            {duplicateTitle.existingId && (
+                              <Link
+                                href={`/materialien/${duplicateTitle.existingId}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-primary ml-2 inline-flex items-center gap-1 text-sm font-medium hover:underline"
+                              >
+                                {tFields("duplicateTitleLink")}
+                                <ExternalLink className="h-3 w-3" />
+                              </Link>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    <FormField
+                      label={tFields("description")}
+                      tooltipKey="description"
+                      required
+                      error={getFieldError("description")}
+                      touched={touchedFields.description}
+                      hint={tFields("descriptionHint", { count: formData.description.length })}
+                    >
+                      <FormTextarea
+                        value={formData.description}
+                        onChange={(e) => updateFormData("description", e.target.value)}
+                        onBlur={() => markFieldTouched("description")}
+                        hasError={touchedFields.description && !!getFieldError("description")}
+                        placeholder={tFields("descriptionPlaceholder")}
+                        rows={4}
+                        maxLength={2000}
+                      />
+                    </FormField>
+
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <FormField label={tFields("language")} tooltipKey="language" required>
+                        <FormSelect
+                          value={formData.language}
+                          onChange={(e) => {
+                            updateFormData("language", e.target.value);
+                            // Reset dialect when switching away from German
+                            if (e.target.value !== "de") {
+                              updateFormData("dialect", "BOTH");
+                            }
+                          }}
+                        >
+                          <option value="de">{tFields("languageDE")}</option>
+                          <option value="en">{tFields("languageEN")}</option>
+                          <option value="fr">{tFields("languageFR")}</option>
+                          <option value="it">{tFields("languageIT")}</option>
+                        </FormSelect>
+                      </FormField>
+
+                      <FormField label={tFields("materialType")} tooltipKey="resourceType" required>
+                        <FormSelect
+                          value={formData.resourceType}
+                          onChange={(e) => updateFormData("resourceType", e.target.value)}
+                        >
+                          <option value="pdf">PDF</option>
+                          <option value="word">Word</option>
+                          <option value="powerpoint">PowerPoint</option>
+                          <option value="excel">Excel</option>
+                          <option value="onenote">OneNote</option>
+                          <option value="other">{tFields("resourceTypeOther")}</option>
+                        </FormSelect>
+                      </FormField>
                     </div>
-                  )}
-                </div>
-              )}
 
-              {/* Step 4: Files & Legal */}
-              {currentStep === 4 && (
-                <div className="space-y-6">
-                  <div className="border-primary/20 border-b pb-4">
-                    <h2 className="text-text text-xl font-semibold">{tSteps("files")}</h2>
-                    <p className="text-text-muted mt-1 text-sm">{tSteps("filesSubtitle")}</p>
-                  </div>
+                    {/* Dialect toggle - only shown for German */}
+                    {formData.language === "de" && (
+                      <FormField label={tFields("dialect")} hint={tFields("dialectHint")}>
+                        <div className="flex gap-2">
+                          {[
+                            {
+                              value: "BOTH" as const,
+                              label: tFields("dialectBoth"),
+                              desc: tFields("dialectBothDesc"),
+                            },
+                            {
+                              value: "SWISS" as const,
+                              label: tFields("dialectSwiss"),
+                              desc: tFields("dialectSwissDesc"),
+                            },
+                            {
+                              value: "STANDARD" as const,
+                              label: tFields("dialectStandard"),
+                              desc: tFields("dialectStandardDesc"),
+                            },
+                          ].map((opt) => {
+                            const isActive = formData.dialect === opt.value;
+                            return (
+                              <button
+                                key={opt.value}
+                                type="button"
+                                onClick={() => updateFormData("dialect", opt.value)}
+                                className={`flex-1 rounded-lg border-2 px-3 py-2.5 text-center transition-colors ${
+                                  isActive
+                                    ? "border-primary bg-primary/10 text-primary"
+                                    : "border-border bg-bg text-text-secondary hover:border-primary/50 hover:bg-surface-hover"
+                                }`}
+                              >
+                                <div className="text-sm font-semibold">{opt.label}</div>
+                                <div
+                                  className={`text-xs ${isActive ? "text-primary/80" : "text-text-muted"}`}
+                                >
+                                  {opt.desc}
+                                </div>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </FormField>
+                    )}
 
-                  {/* Main File Upload */}
-                  <FormField
-                    label={tFields("mainFiles")}
-                    tooltipKey="files"
-                    required
-                    error={getFieldError("files")}
-                    touched={touchedFields.files}
+                    {/* Tags */}
+                    <FormField label={tFields("tags")} hint={tFields("tagsHint")}>
+                      <TagInput
+                        tags={formData.tags}
+                        onChange={(tags) => updateFormData("tags", tags)}
+                        placeholder={tFields("tagsPlaceholder")}
+                        maxMessage={tFields("tagMax")}
+                        duplicateMessage={tFields("tagDuplicate")}
+                      />
+                    </FormField>
+                  </motion.div>
+                )}
+
+                {/* Step 2: Curriculum */}
+                {currentStep === 2 && (
+                  <motion.div
+                    key="step-2"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                    className="space-y-6"
                   >
-                    {isLoadingFiles ? (
-                      <div className="border-primary bg-primary/5 rounded-xl border-2 p-8">
-                        <div className="text-center">
-                          <Loader2 className="text-primary mx-auto h-12 w-12 animate-spin" />
-                          <p className="text-text mt-4 text-sm font-medium">
-                            {tFields("fileLoading")}
-                          </p>
-                          <div className="mx-auto mt-4 max-w-xs">
-                            <div className="bg-border h-3 overflow-hidden rounded-full">
-                              <div
-                                className="from-primary to-success h-full bg-gradient-to-r transition-all"
-                                style={{ width: `${fileLoadingProgress}%` }}
-                              />
+                    <div className="border-primary/20 border-b pb-4">
+                      <h2 className="text-text text-xl font-semibold">{tSteps("curriculum")}</h2>
+                      <p className="text-text-muted mt-1 text-sm">{tSteps("curriculumSubtitle")}</p>
+                    </div>
+
+                    <EnhancedCurriculumSelector
+                      cycle={formData.cycle}
+                      subject={formData.subject}
+                      subjectCode={formData.subjectCode}
+                      canton={formData.canton}
+                      competencies={formData.competencies}
+                      onCycleChange={(cycle) => updateFormData("cycle", cycle)}
+                      onSubjectChange={(subject, code) => {
+                        updateFormData("subject", subject);
+                        updateFormData("subjectCode", code || "");
+                      }}
+                      onCantonChange={(canton) => updateFormData("canton", canton)}
+                      onCompetenciesChange={(comps) => updateFormData("competencies", comps)}
+                      touchedCycle={touchedFields.cycle}
+                      touchedSubject={touchedFields.subject}
+                      cycleError={getFieldError("cycle")}
+                      subjectError={getFieldError("subject")}
+                      onCycleBlur={() => markFieldTouched("cycle")}
+                      onSubjectBlur={() => markFieldTouched("subject")}
+                    />
+                  </motion.div>
+                )}
+
+                {/* Step 3: Properties & Price */}
+                {currentStep === 3 && (
+                  <motion.div
+                    key="step-3"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                    className="space-y-6"
+                  >
+                    <div className="border-primary/20 border-b pb-4">
+                      <h2 className="text-text text-xl font-semibold">{tSteps("priceTitle")}</h2>
+                      <p className="text-text-muted mt-1 text-sm">{tSteps("priceSubtitle")}</p>
+                    </div>
+
+                    <FormField label={tFields("priceType")} tooltipKey="priceType" required>
+                      <div
+                        className="grid grid-cols-2 gap-4"
+                        role="radiogroup"
+                        aria-label={tFields("priceType")}
+                      >
+                        <RadioOption
+                          name="priceType"
+                          value="free"
+                          checked={formData.priceType === "free"}
+                          onChange={(val) => updateFormData("priceType", val as "free" | "paid")}
+                          label={tFields("priceFree")}
+                          description={tFields("priceFreeDesc")}
+                        />
+                        <RadioOption
+                          name="priceType"
+                          value="paid"
+                          checked={formData.priceType === "paid"}
+                          onChange={(val) => updateFormData("priceType", val as "free" | "paid")}
+                          label={tFields("pricePaid")}
+                          description={tFields("pricePaidDesc")}
+                        />
+                      </div>
+                    </FormField>
+
+                    {formData.priceType === "paid" && (
+                      <div>
+                        <FormField
+                          label={tFields("price")}
+                          tooltipKey="price"
+                          required
+                          error={getFieldError("price")}
+                          touched={touchedFields.price}
+                          hint={tFields("priceHint")}
+                        >
+                          <div className="relative">
+                            <FormInput
+                              type="number"
+                              value={formData.price}
+                              onChange={(e) => updateFormData("price", e.target.value)}
+                              onBlur={() => {
+                                markFieldTouched("price");
+                                const val = parseFloat(formData.price);
+                                if (!isNaN(val) && val > 0) {
+                                  updateFormData("price", roundToNearestHalfFranc(val).toFixed(2));
+                                }
+                              }}
+                              hasError={touchedFields.price && !!getFieldError("price")}
+                              min="0.50"
+                              max="50"
+                              step="0.50"
+                              placeholder={tFields("pricePlaceholder")}
+                              className="pl-14"
+                            />
+                            <span className="text-text-muted absolute top-1/2 left-4 -translate-y-1/2 font-medium">
+                              CHF
+                            </span>
+                          </div>
+                        </FormField>
+
+                        {/* Price preview */}
+                        {formData.price && parseFloat(formData.price) > 0 && (
+                          <div className="border-success/30 bg-success/5 mt-4 rounded-xl border p-4">
+                            <div className="flex items-center justify-between">
+                              <span className="text-text-muted text-sm">
+                                {tFields("earningsPerSale")}
+                              </span>
+                              <span className="text-success text-lg font-bold">
+                                CHF{" "}
+                                {(
+                                  (parseFloat(formData.price) * SELLER_PAYOUT_PERCENT) /
+                                  100
+                                ).toFixed(2)}
+                              </span>
                             </div>
-                            <p className="text-primary mt-2 text-sm font-medium">
-                              {fileLoadingProgress}%
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </motion.div>
+                )}
+
+                {/* Step 4: Files & Legal */}
+                {currentStep === 4 && (
+                  <motion.div
+                    key="step-4"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                    className="space-y-6"
+                  >
+                    <div className="border-primary/20 border-b pb-4">
+                      <h2 className="text-text text-xl font-semibold">{tSteps("files")}</h2>
+                      <p className="text-text-muted mt-1 text-sm">{tSteps("filesSubtitle")}</p>
+                    </div>
+
+                    {/* Main File Upload */}
+                    <FormField
+                      label={tFields("mainFiles")}
+                      tooltipKey="files"
+                      required
+                      error={getFieldError("files")}
+                      touched={touchedFields.files}
+                    >
+                      {isLoadingFiles ? (
+                        <div className="border-primary bg-primary/5 rounded-xl border-2 p-8">
+                          <div className="text-center">
+                            <Loader2 className="text-primary mx-auto h-12 w-12 animate-spin" />
+                            <p className="text-text mt-4 text-sm font-medium">
+                              {tFields("fileLoading")}
+                            </p>
+                            <div className="mx-auto mt-4 max-w-xs">
+                              <div className="bg-border h-3 overflow-hidden rounded-full">
+                                <div
+                                  className="from-primary to-success h-full bg-gradient-to-r transition-all"
+                                  style={{ width: `${fileLoadingProgress}%` }}
+                                />
+                              </div>
+                              <p className="text-primary mt-2 text-sm font-medium">
+                                {fileLoadingProgress}%
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ) : files.length === 0 ? (
+                        <div
+                          role="button"
+                          tabIndex={0}
+                          onClick={() => mainFileInputRef.current?.click()}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              mainFileInputRef.current?.click();
+                            }
+                          }}
+                          className={`cursor-pointer rounded-xl border-2 border-dashed p-8 text-center transition-colors ${
+                            touchedFields.files && getFieldError("files")
+                              ? "border-error bg-error/5 hover:border-error"
+                              : "border-border bg-bg hover:border-primary"
+                          } `}
+                        >
+                          {isTouchDevice ? (
+                            <>
+                              <div className="bg-primary/10 mx-auto flex h-14 w-14 items-center justify-center rounded-full">
+                                <Upload className="text-primary h-7 w-7" />
+                              </div>
+                              <p className="text-text mt-3 text-sm font-medium">
+                                {tFields("mainFilesUploadTouch")}
+                              </p>
+                              <div className="bg-primary text-text-on-accent mx-auto mt-3 inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold">
+                                <Upload className="h-4 w-4" />
+                                {tFields("mainFilesBrowse")}
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <Upload className="text-text-muted mx-auto h-12 w-12" />
+                              <p className="text-text mt-2 text-sm">{tFields("mainFilesUpload")}</p>
+                            </>
+                          )}
+                          <p className="text-text-muted mt-2 text-xs">{tFields("mainFilesHint")}</p>
+                          <input
+                            ref={mainFileInputRef}
+                            type="file"
+                            className="hidden"
+                            accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
+                            onChange={handleMainFilesChange}
+                            aria-label={tFields("mainFiles")}
+                          />
+                        </div>
+                      ) : (
+                        <div className="border-primary bg-primary/5 rounded-xl border-2 p-4">
+                          <div className="space-y-3">
+                            {files.map((file, index) => (
+                              <div
+                                key={index}
+                                className="border-border bg-surface hover:bg-surface-elevated flex items-center gap-4 rounded-lg border p-3 transition-colors"
+                              >
+                                <div
+                                  className="flex flex-1 cursor-pointer items-center gap-4"
+                                  onClick={() => handleFilePreview(file)}
+                                >
+                                  <div className="flex-shrink-0">
+                                    {file.type.startsWith("image/") ? (
+                                      // eslint-disable-next-line @next/next/no-img-element
+                                      <img
+                                        src={fileObjectUrls[index]}
+                                        alt={file.name}
+                                        className="h-10 w-10 rounded-lg object-cover"
+                                      />
+                                    ) : (
+                                      <MaterialTypeBadge format={getFileFormat(file)} />
+                                    )}
+                                  </div>
+                                  <div className="min-w-0 flex-1">
+                                    <p className="text-text truncate text-sm font-medium">
+                                      {file.name}
+                                    </p>
+                                    <div className="mt-1">
+                                      <div className="flex items-center gap-2">
+                                        <span className="text-text-muted text-xs">
+                                          {(file.size / 1024 / 1024).toFixed(2)} MB /{" "}
+                                          {(MAX_MATERIAL_FILE_SIZE / 1024 / 1024).toFixed(0)} MB
+                                        </span>
+                                      </div>
+                                      <div className="bg-border mt-1 h-1 w-full overflow-hidden rounded-full">
+                                        <div
+                                          className={`h-full rounded-full transition-all ${
+                                            file.size / MAX_MATERIAL_FILE_SIZE > 0.9
+                                              ? "bg-error"
+                                              : file.size / MAX_MATERIAL_FILE_SIZE > 0.7
+                                                ? "bg-warning"
+                                                : "bg-success"
+                                          }`}
+                                          style={{
+                                            width: `${Math.min(100, (file.size / MAX_MATERIAL_FILE_SIZE) * 100)}%`,
+                                          }}
+                                        />
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <ExternalLink className="text-text-muted h-4 w-4" />
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => removeFile(index)}
+                                  className="text-text-muted hover:bg-error/10 hover:text-error rounded-lg p-2 transition-colors"
+                                >
+                                  <X className="h-5 w-5" />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                          <input
+                            ref={mainFileInputRef}
+                            type="file"
+                            className="hidden"
+                            accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
+                            onChange={handleMainFilesChange}
+                            aria-label={tFields("mainFiles")}
+                          />
+                        </div>
+                      )}
+                    </FormField>
+
+                    {/* Draft file warning */}
+                    {hasDraft && files.length === 0 && formData.title.trim() !== "" && (
+                      <div className="border-info/30 bg-info/5 rounded-xl border p-4">
+                        <div className="flex items-start gap-3">
+                          <Info className="text-info h-5 w-5 flex-shrink-0" />
+                          <div className="text-text text-sm">
+                            <p className="text-info font-medium">{tFields("draftFilesNotSaved")}</p>
+                            <p className="text-text-muted mt-1">
+                              {tFields("draftFilesNotSavedDesc")}
                             </p>
                           </div>
                         </div>
                       </div>
-                    ) : files.length === 0 ? (
+                    )}
+
+                    {/* File Name Warnings */}
+                    {fileNameWarnings.length > 0 && (
+                      <div className="border-warning/50 bg-warning/10 rounded-xl border p-4">
+                        <div className="flex items-start gap-3">
+                          <AlertTriangle className="text-warning h-5 w-5 flex-shrink-0" />
+                          <div className="text-text text-sm">
+                            <p className="text-warning mb-1 font-medium">
+                              {tFields("fileNameWarning")}
+                            </p>
+                            <ul className="list-inside list-disc space-y-0.5">
+                              {fileNameWarnings.map((w, i) => (
+                                <li key={i}>{w}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Auto Preview Info - dynamic per format */}
+                    {formData.resourceType === "pdf" ? (
+                      <div className="border-success/30 bg-success/5 rounded-xl border p-4">
+                        <div className="flex gap-3">
+                          <Check className="text-success h-5 w-5 flex-shrink-0" />
+                          <div className="text-text text-sm">
+                            <strong>{tFields("autoPreview")}</strong> {tFields("autoPreviewPdf")}
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="border-info/30 bg-info/5 rounded-xl border p-4">
+                        <div className="flex gap-3">
+                          <Info className="text-info h-5 w-5 flex-shrink-0" />
+                          <div className="text-text text-sm">
+                            <strong>{tFields("autoPreview")}</strong> {tFields("autoPreviewOther")}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Preview Upload */}
+                    <FormField
+                      label={tFields("previewImage")}
+                      tooltipKey="previewFiles"
+                      hint={tFields("previewImageHint")}
+                    >
                       <div
                         role="button"
                         tabIndex={0}
-                        onClick={() => mainFileInputRef.current?.click()}
+                        onClick={() => previewFileInputRef.current?.click()}
                         onKeyDown={(e) => {
                           if (e.key === "Enter" || e.key === " ") {
                             e.preventDefault();
-                            mainFileInputRef.current?.click();
+                            previewFileInputRef.current?.click();
                           }
                         }}
-                        className={`cursor-pointer rounded-xl border-2 border-dashed p-8 text-center transition-colors ${
-                          touchedFields.files && getFieldError("files")
-                            ? "border-error bg-error/5 hover:border-error"
-                            : "border-border bg-bg hover:border-primary"
-                        } `}
+                        className="border-border bg-bg hover:border-primary cursor-pointer rounded-xl border-2 border-dashed p-6 text-center transition-colors"
                       >
-                        {isTouchDevice ? (
-                          <>
-                            <div className="bg-primary/10 mx-auto flex h-14 w-14 items-center justify-center rounded-full">
-                              <Upload className="text-primary h-7 w-7" />
-                            </div>
-                            <p className="text-text mt-3 text-sm font-medium">
-                              {tFields("mainFilesUploadTouch")}
-                            </p>
-                            <div className="bg-primary text-text-on-accent mx-auto mt-3 inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold">
-                              <Upload className="h-4 w-4" />
-                              {tFields("mainFilesBrowse")}
-                            </div>
-                          </>
+                        {previewFiles.length > 0 ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={previewObjectUrl!}
+                            alt={tFields("previewAlt")}
+                            className="mx-auto h-24 w-auto rounded-lg object-contain"
+                          />
                         ) : (
-                          <>
-                            <Upload className="text-text-muted mx-auto h-12 w-12" />
-                            <p className="text-text mt-2 text-sm">{tFields("mainFilesUpload")}</p>
-                          </>
+                          <ImageIcon className="text-text-muted mx-auto h-10 w-10" />
                         )}
-                        <p className="text-text-muted mt-2 text-xs">{tFields("mainFilesHint")}</p>
-                        <input
-                          ref={mainFileInputRef}
-                          type="file"
-                          className="hidden"
-                          accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
-                          onChange={handleMainFilesChange}
-                          aria-label={tFields("mainFiles")}
-                        />
-                      </div>
-                    ) : (
-                      <div className="border-primary bg-primary/5 rounded-xl border-2 p-4">
-                        <div className="space-y-3">
-                          {files.map((file, index) => (
-                            <div
-                              key={index}
-                              className="border-border bg-surface hover:bg-surface-elevated flex items-center gap-4 rounded-lg border p-3 transition-colors"
-                            >
-                              <div
-                                className="flex flex-1 cursor-pointer items-center gap-4"
-                                onClick={() => handleFilePreview(file)}
-                              >
-                                <div className="flex-shrink-0">
-                                  {file.type.startsWith("image/") ? (
-                                    // eslint-disable-next-line @next/next/no-img-element
-                                    <img
-                                      src={fileObjectUrls[index]}
-                                      alt={file.name}
-                                      className="h-10 w-10 rounded-lg object-cover"
-                                    />
-                                  ) : (
-                                    <MaterialTypeBadge format={getFileFormat(file)} />
-                                  )}
-                                </div>
-                                <div className="min-w-0 flex-1">
-                                  <p className="text-text truncate text-sm font-medium">
-                                    {file.name}
-                                  </p>
-                                  <div className="mt-1">
-                                    <div className="flex items-center gap-2">
-                                      <span className="text-text-muted text-xs">
-                                        {(file.size / 1024 / 1024).toFixed(2)} MB /{" "}
-                                        {(MAX_MATERIAL_FILE_SIZE / 1024 / 1024).toFixed(0)} MB
-                                      </span>
-                                    </div>
-                                    <div className="bg-border mt-1 h-1 w-full overflow-hidden rounded-full">
-                                      <div
-                                        className={`h-full rounded-full transition-all ${
-                                          file.size / MAX_MATERIAL_FILE_SIZE > 0.9
-                                            ? "bg-error"
-                                            : file.size / MAX_MATERIAL_FILE_SIZE > 0.7
-                                              ? "bg-warning"
-                                              : "bg-success"
-                                        }`}
-                                        style={{
-                                          width: `${Math.min(100, (file.size / MAX_MATERIAL_FILE_SIZE) * 100)}%`,
-                                        }}
-                                      />
-                                    </div>
-                                  </div>
-                                </div>
-                                <ExternalLink className="text-text-muted h-4 w-4" />
+                        <p className="text-text-muted mt-2 text-sm">
+                          {tFields("previewImageFormats")}
+                        </p>
+                        {previewFiles.length > 0 && (
+                          <div className="mt-2">
+                            <p className="text-primary text-sm font-medium">
+                              {tFields("previewSelectedChange", { count: previewFiles.length })}
+                            </p>
+                            <div className="mx-auto mt-1 max-w-xs">
+                              <span className="text-text-muted text-xs">
+                                {(previewFiles[0].size / 1024 / 1024).toFixed(2)} MB /{" "}
+                                {(MAX_PREVIEW_FILE_SIZE / 1024 / 1024).toFixed(0)} MB
+                              </span>
+                              <div className="bg-border mt-0.5 h-1 w-full overflow-hidden rounded-full">
+                                <div
+                                  className={`h-full rounded-full transition-all ${
+                                    previewFiles[0].size / MAX_PREVIEW_FILE_SIZE > 0.9
+                                      ? "bg-error"
+                                      : previewFiles[0].size / MAX_PREVIEW_FILE_SIZE > 0.7
+                                        ? "bg-warning"
+                                        : "bg-success"
+                                  }`}
+                                  style={{
+                                    width: `${Math.min(100, (previewFiles[0].size / MAX_PREVIEW_FILE_SIZE) * 100)}%`,
+                                  }}
+                                />
                               </div>
-                              <button
-                                type="button"
-                                onClick={() => removeFile(index)}
-                                className="text-text-muted hover:bg-error/10 hover:text-error rounded-lg p-2 transition-colors"
-                              >
-                                <X className="h-5 w-5" />
-                              </button>
                             </div>
-                          ))}
-                        </div>
+                          </div>
+                        )}
                         <input
-                          ref={mainFileInputRef}
+                          ref={previewFileInputRef}
                           type="file"
                           className="hidden"
-                          accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
-                          onChange={handleMainFilesChange}
-                          aria-label={tFields("mainFiles")}
+                          accept="image/png,image/jpeg,image/webp"
+                          onChange={handlePreviewFilesChange}
+                          aria-label={tFields("previewImage")}
                         />
                       </div>
-                    )}
-                  </FormField>
+                    </FormField>
 
-                  {/* Draft file warning */}
-                  {hasDraft && files.length === 0 && formData.title.trim() !== "" && (
-                    <div className="border-info/30 bg-info/5 rounded-xl border p-4">
-                      <div className="flex items-start gap-3">
-                        <Info className="text-info h-5 w-5 flex-shrink-0" />
-                        <div className="text-text text-sm">
-                          <p className="text-info font-medium">{tFields("draftFilesNotSaved")}</p>
-                          <p className="text-text-muted mt-1">
-                            {tFields("draftFilesNotSavedDesc")}
-                          </p>
+                    {/* Legal Confirmations */}
+                    <div className="border-border bg-surface-elevated rounded-xl border p-6">
+                      <div className="mb-5 flex items-center justify-between">
+                        <div>
+                          <h3 className="text-text text-lg font-semibold">{tLegal("title")}</h3>
+                          <p className="text-text-muted mt-1 text-sm">{tLegal("subtitle")}</p>
                         </div>
+                        <span
+                          className={`text-sm font-bold ${allLegalChecked ? "text-success" : "text-text-muted"}`}
+                        >
+                          {
+                            [
+                              formData.legalOwnContent,
+                              formData.legalNoTextbookScans,
+                              formData.legalNoTrademarks,
+                              formData.legalSwissGerman,
+                              formData.legalTermsAccepted,
+                            ].filter(Boolean).length
+                          }{" "}
+                          / 5
+                        </span>
                       </div>
-                    </div>
-                  )}
-
-                  {/* File Name Warnings */}
-                  {fileNameWarnings.length > 0 && (
-                    <div className="border-warning/50 bg-warning/10 rounded-xl border p-4">
-                      <div className="flex items-start gap-3">
-                        <AlertTriangle className="text-warning h-5 w-5 flex-shrink-0" />
-                        <div className="text-text text-sm">
-                          <p className="text-warning mb-1 font-medium">
-                            {tFields("fileNameWarning")}
-                          </p>
-                          <ul className="list-inside list-disc space-y-0.5">
-                            {fileNameWarnings.map((w, i) => (
-                              <li key={i}>{w}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Auto Preview Info - dynamic per format */}
-                  {formData.resourceType === "pdf" ? (
-                    <div className="border-success/30 bg-success/5 rounded-xl border p-4">
-                      <div className="flex gap-3">
-                        <Check className="text-success h-5 w-5 flex-shrink-0" />
-                        <div className="text-text text-sm">
-                          <strong>{tFields("autoPreview")}</strong> {tFields("autoPreviewPdf")}
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="border-info/30 bg-info/5 rounded-xl border p-4">
-                      <div className="flex gap-3">
-                        <Info className="text-info h-5 w-5 flex-shrink-0" />
-                        <div className="text-text text-sm">
-                          <strong>{tFields("autoPreview")}</strong> {tFields("autoPreviewOther")}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Preview Upload */}
-                  <FormField
-                    label={tFields("previewImage")}
-                    tooltipKey="previewFiles"
-                    hint={tFields("previewImageHint")}
-                  >
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => previewFileInputRef.current?.click()}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
-                          e.preventDefault();
-                          previewFileInputRef.current?.click();
-                        }
-                      }}
-                      className="border-border bg-bg hover:border-primary cursor-pointer rounded-xl border-2 border-dashed p-6 text-center transition-colors"
-                    >
-                      {previewFiles.length > 0 ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={previewObjectUrl!}
-                          alt={tFields("previewAlt")}
-                          className="mx-auto h-24 w-auto rounded-lg object-contain"
+                      {/* Progress bar */}
+                      <div className="bg-border mb-5 h-1.5 overflow-hidden rounded-full">
+                        <div
+                          className={`h-full transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${allLegalChecked ? "bg-success" : "bg-primary"}`}
+                          style={{
+                            width: `${([formData.legalOwnContent, formData.legalNoTextbookScans, formData.legalNoTrademarks, formData.legalSwissGerman, formData.legalTermsAccepted].filter(Boolean).length / 5) * 100}%`,
+                          }}
                         />
-                      ) : (
-                        <ImageIcon className="text-text-muted mx-auto h-10 w-10" />
-                      )}
-                      <p className="text-text-muted mt-2 text-sm">
-                        {tFields("previewImageFormats")}
-                      </p>
-                      {previewFiles.length > 0 && (
-                        <div className="mt-2">
-                          <p className="text-primary text-sm font-medium">
-                            {tFields("previewSelectedChange", { count: previewFiles.length })}
-                          </p>
-                          <div className="mx-auto mt-1 max-w-xs">
-                            <span className="text-text-muted text-xs">
-                              {(previewFiles[0].size / 1024 / 1024).toFixed(2)} MB /{" "}
-                              {(MAX_PREVIEW_FILE_SIZE / 1024 / 1024).toFixed(0)} MB
-                            </span>
-                            <div className="bg-border mt-0.5 h-1 w-full overflow-hidden rounded-full">
-                              <div
-                                className={`h-full rounded-full transition-all ${
-                                  previewFiles[0].size / MAX_PREVIEW_FILE_SIZE > 0.9
-                                    ? "bg-error"
-                                    : previewFiles[0].size / MAX_PREVIEW_FILE_SIZE > 0.7
-                                      ? "bg-warning"
-                                      : "bg-success"
-                                }`}
-                                style={{
-                                  width: `${Math.min(100, (previewFiles[0].size / MAX_PREVIEW_FILE_SIZE) * 100)}%`,
-                                }}
-                              />
-                            </div>
+                      </div>
+
+                      <div className="space-y-3">
+                        <FormCheckbox
+                          checked={formData.legalOwnContent}
+                          onChange={(checked) => updateFormData("legalOwnContent", checked)}
+                          label={tLegal("ownContent")}
+                          description={tLegal("ownContentDesc")}
+                          hasError={touchedFields.legalOwnContent && !formData.legalOwnContent}
+                          tooltipKey="legalOwnContent"
+                        />
+
+                        <FormCheckbox
+                          checked={formData.legalNoTextbookScans}
+                          onChange={(checked) => updateFormData("legalNoTextbookScans", checked)}
+                          label={tLegal("noScans")}
+                          description={tLegal("noScansDesc")}
+                          hasError={
+                            touchedFields.legalNoTextbookScans && !formData.legalNoTextbookScans
+                          }
+                          tooltipKey="legalNoTextbookScans"
+                        />
+
+                        <FormCheckbox
+                          checked={formData.legalNoTrademarks}
+                          onChange={(checked) => updateFormData("legalNoTrademarks", checked)}
+                          label={tLegal("noTrademarks")}
+                          description={tLegal("noTrademarksDesc")}
+                          hasError={touchedFields.legalNoTrademarks && !formData.legalNoTrademarks}
+                          tooltipKey="legalNoTrademarks"
+                        />
+
+                        <FormCheckbox
+                          checked={formData.legalSwissGerman}
+                          onChange={(checked) => updateFormData("legalSwissGerman", checked)}
+                          label={tLegal("swissGerman")}
+                          description={tLegal("swissGermanDesc")}
+                          hasError={touchedFields.legalSwissGerman && !formData.legalSwissGerman}
+                          tooltipKey="legalSwissGerman"
+                        />
+
+                        <FormCheckbox
+                          checked={formData.legalTermsAccepted}
+                          onChange={(checked) => updateFormData("legalTermsAccepted", checked)}
+                          label={tLegal("acceptTerms")}
+                          description={tLegal("acceptTermsDesc")}
+                          hasError={
+                            touchedFields.legalTermsAccepted && !formData.legalTermsAccepted
+                          }
+                          tooltipKey="legalTermsAccepted"
+                        />
+                      </div>
+
+                      {/* Copyright guide link */}
+                      <div className="bg-primary/5 border-primary/20 mt-4 rounded-lg border p-3 text-sm">
+                        <span className="text-text-secondary">{tLegal("copyrightGuideLink")} </span>
+                        <Link
+                          href="/urheberrecht"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary font-medium hover:underline"
+                        >
+                          {tLegal("copyrightGuideLinkText")} →
+                        </Link>
+                      </div>
+
+                      {!allLegalChecked && (
+                        <div className="bg-warning/10 text-warning mt-4 rounded-lg p-3 text-sm">
+                          <div className="flex items-center gap-2">
+                            <AlertTriangle className="h-4 w-4" />
+                            {tLegal("incomplete")}
                           </div>
                         </div>
                       )}
-                      <input
-                        ref={previewFileInputRef}
-                        type="file"
-                        className="hidden"
-                        accept="image/png,image/jpeg,image/webp"
-                        onChange={handlePreviewFilesChange}
-                        aria-label={tFields("previewImage")}
-                      />
-                    </div>
-                  </FormField>
 
-                  {/* Legal Confirmations */}
-                  <div className="border-border bg-surface-elevated rounded-xl border p-6">
-                    <div className="mb-5 flex items-center justify-between">
-                      <div>
-                        <h3 className="text-text text-lg font-semibold">{tLegal("title")}</h3>
-                        <p className="text-text-muted mt-1 text-sm">{tLegal("subtitle")}</p>
-                      </div>
-                      <span
-                        className={`text-sm font-bold ${allLegalChecked ? "text-success" : "text-text-muted"}`}
-                      >
-                        {
-                          [
-                            formData.legalOwnContent,
-                            formData.legalNoTextbookScans,
-                            formData.legalNoTrademarks,
-                            formData.legalSwissGerman,
-                            formData.legalTermsAccepted,
-                          ].filter(Boolean).length
-                        }{" "}
-                        / 5
-                      </span>
-                    </div>
-                    {/* Progress bar */}
-                    <div className="bg-border mb-5 h-1.5 overflow-hidden rounded-full">
-                      <div
-                        className={`h-full transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${allLegalChecked ? "bg-success" : "bg-primary"}`}
-                        style={{
-                          width: `${([formData.legalOwnContent, formData.legalNoTextbookScans, formData.legalNoTrademarks, formData.legalSwissGerman, formData.legalTermsAccepted].filter(Boolean).length / 5) * 100}%`,
-                        }}
-                      />
-                    </div>
-
-                    <div className="space-y-3">
-                      <FormCheckbox
-                        checked={formData.legalOwnContent}
-                        onChange={(checked) => updateFormData("legalOwnContent", checked)}
-                        label={tLegal("ownContent")}
-                        description={tLegal("ownContentDesc")}
-                        hasError={touchedFields.legalOwnContent && !formData.legalOwnContent}
-                        tooltipKey="legalOwnContent"
-                      />
-
-                      <FormCheckbox
-                        checked={formData.legalNoTextbookScans}
-                        onChange={(checked) => updateFormData("legalNoTextbookScans", checked)}
-                        label={tLegal("noScans")}
-                        description={tLegal("noScansDesc")}
-                        hasError={
-                          touchedFields.legalNoTextbookScans && !formData.legalNoTextbookScans
-                        }
-                        tooltipKey="legalNoTextbookScans"
-                      />
-
-                      <FormCheckbox
-                        checked={formData.legalNoTrademarks}
-                        onChange={(checked) => updateFormData("legalNoTrademarks", checked)}
-                        label={tLegal("noTrademarks")}
-                        description={tLegal("noTrademarksDesc")}
-                        hasError={touchedFields.legalNoTrademarks && !formData.legalNoTrademarks}
-                        tooltipKey="legalNoTrademarks"
-                      />
-
-                      <FormCheckbox
-                        checked={formData.legalSwissGerman}
-                        onChange={(checked) => updateFormData("legalSwissGerman", checked)}
-                        label={tLegal("swissGerman")}
-                        description={tLegal("swissGermanDesc")}
-                        hasError={touchedFields.legalSwissGerman && !formData.legalSwissGerman}
-                        tooltipKey="legalSwissGerman"
-                      />
-
-                      <FormCheckbox
-                        checked={formData.legalTermsAccepted}
-                        onChange={(checked) => updateFormData("legalTermsAccepted", checked)}
-                        label={tLegal("acceptTerms")}
-                        description={tLegal("acceptTermsDesc")}
-                        hasError={touchedFields.legalTermsAccepted && !formData.legalTermsAccepted}
-                        tooltipKey="legalTermsAccepted"
-                      />
-                    </div>
-
-                    {/* Copyright guide link */}
-                    <div className="bg-primary/5 border-primary/20 mt-4 rounded-lg border p-3 text-sm">
-                      <span className="text-text-secondary">{tLegal("copyrightGuideLink")} </span>
-                      <Link
-                        href="/urheberrecht"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary font-medium hover:underline"
-                      >
-                        {tLegal("copyrightGuideLinkText")} →
-                      </Link>
-                    </div>
-
-                    {!allLegalChecked && (
-                      <div className="bg-warning/10 text-warning mt-4 rounded-lg p-3 text-sm">
-                        <div className="flex items-center gap-2">
-                          <AlertTriangle className="h-4 w-4" />
-                          {tLegal("incomplete")}
+                      {eszettCheck.hasAny && (
+                        <div className="bg-error/10 text-error mt-4 rounded-lg p-3 text-sm">
+                          <div className="flex items-center gap-2">
+                            <AlertTriangle className="h-4 w-4" />
+                            {tLegal("eszettWarning")}
+                          </div>
                         </div>
-                      </div>
-                    )}
-
-                    {eszettCheck.hasAny && (
-                      <div className="bg-error/10 text-error mt-4 rounded-lg p-3 text-sm">
-                        <div className="flex items-center gap-2">
-                          <AlertTriangle className="h-4 w-4" />
-                          {tLegal("eszettWarning")}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               {/* Navigation Buttons */}
               <div className="border-border mt-10 flex justify-between border-t pt-6">

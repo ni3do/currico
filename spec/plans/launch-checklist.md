@@ -196,79 +196,77 @@
 
 ### 22. Bugs — Broken Links & Funktionalität 🔴
 
-- [ ] **Footer "Material hochladen" Button** — funktioniert nicht
-- [ ] **Materialien-Seite Upload-Button** — funktioniert nicht
-- [ ] **TrustBar Link "/verifizierter-verkaeufer"** — Seite existiert nicht
-- [ ] **Email-Links aus Benachrichtigungen** — AUTH_URL vs NEXTAUTH_URL Inkonsistenz
-- [ ] **Registrierung: "Erstes Material hochladen"** — CTA fehlt komplett
-- [ ] **Profilbild hochladen** — funktioniert nicht
-- [ ] **Upload-Validierung: Fachkürzel** — Deutsch falsch gespeichert
-- [ ] **Bewertung nach Download** — braucht Page-Reload statt Live-Update
-- [ ] **BG-Filter Umrandung** — inkonsistent mit anderen Fachbereichen
-- [ ] **"Sonstige" Filter** — Layout-Verschiebung beim Auswählen
-- [ ] **Urheberrecht "Zurück zum Upload"** — Button prüfen
+- [x] **Footer "Material hochladen" Button** — funktioniert (getestet 2026-02-21, Link navigiert korrekt zu /hochladen)
+- [x] **Materialien-Seite Upload-Button** — funktioniert (getestet 2026-02-21, Link navigiert korrekt zu /hochladen)
+- [x] **TrustBar Link "/verifizierter-verkaeufer"** — Seite existiert, TrustBar zeigt auf /verkaeufer-werden
+- [x] **Email-Links aus Benachrichtigungen** — `NEXTAUTH_URL` → `AUTH_URL` in 12 Dateien, SEO-Fallback `currico.siwachter.com` → `currico.ch`, `NEXTAUTH_SECRET` → `AUTH_SECRET`
+- [x] **Registrierung: "Erstes Material hochladen"** — CTA existiert auf Post-Registration Screen
+- [x] **Profilbild hochladen** — funktioniert (getestet 2026-02-21, File-Chooser öffnet sich korrekt)
+- [x] **Upload-Validierung: Fachkürzel** — min(1) Validierung erlaubt "D" Code
+- [x] **Bewertung nach Download** — Race Condition behoben: POST-first Ansatz statt window.open() + sofortigem Refresh
+- [ ] **BG-Filter Umrandung** — inkonsistent mit anderen Fachbereichen (möglicherweise DB-Farbdaten, benötigt `db:seed-curriculum`)
+- [x] **"Sonstige" Filter** — Layout-Verschiebung behoben: Beschreibung bleibt sichtbar (invisible statt hidden)
+- [x] **Urheberrecht "Zurück zum Upload"** — Button schliesst Tab wenn von Upload-Wizard geöffnet, Fallback zu /hochladen
 
 ### 23. Text & Inhalt 🟡
 
-- [ ] Hero-Beschreibung: "Vertrauenswürdig, geprüft, sofort einsetzbar" streichen
-- [ ] Seller-CTA unter Suche löschen (redundant)
-- [ ] "Entwickelt mit" → "Entwickelt von" Schweizer Lehrpersonen
-- [ ] "Qualität garantiert" → "Qualität im Fokus" oder "Qualitätsgeprüft"
-- [ ] Testimonials-Sektion entfernen (keine echten Nutzer)
-- [ ] "Dialekt" → "Sprachvariante" umbenennen
-- [ ] Schlagwörter-Filter entfernen (redundant mit Suchleiste)
-- [ ] Seller-Level-Badge von Cards entfernen
-- [ ] "Geprüft" Tags/Embleme vereinfachen
-- [ ] Impressum & Cookies: Redundante Footer-Links entfernen
-- [ ] Blog-Link im Footer ausblenden (kein Content)
+- [x] Hero-Beschreibung: "Vertrauenswürdig, geprüft, sofort einsetzbar" streichen — bereits entfernt
+- [x] Seller-CTA unter Suche löschen (redundant) — bereits entfernt, orphan i18n key bereinigt
+- [x] "Entwickelt mit" → "Entwickelt von" Schweizer Lehrpersonen — bereits umgesetzt
+- [x] "Qualität garantiert" → "Qualität im Fokus" oder "Qualitätsgeprüft" — bereits umgesetzt
+- [x] Testimonials-Sektion entfernen (keine echten Nutzer) — TestimonialsSection.tsx gelöscht, i18n keys bereinigt
+- [x] "Dialekt" → "Sprachvariante" umbenennen — bereits umgesetzt
+- [x] Schlagwörter-Filter entfernen (redundant mit Suchleiste) — UI bereits entfernt, orphan i18n keys bereinigt
+- [x] Seller-Level-Badge von Cards entfernen — war nie auf MaterialCards vorhanden
+- [x] "Geprüft" Tags/Embleme vereinfachen — Card-Badge bereits nur Icon, restliche Labels sind interne Status-Bezeichnungen
+- [x] Impressum & Cookies: Redundante Footer-Links entfernen — Cookie-Richtlinien aus Footer entfernt
+- [x] Blog-Link im Footer ausblenden (kein Content) — aus Footer und Sitemap entfernt
 
 ### 24. UX-Verbesserungen 🟡
 
-- [ ] Zweites Zahlungsmittel-Icon in TrustBar entfernen
-- [ ] PlatformStats visuell aufwerten + Minimum-Schwelle
-- [ ] Ersteller-Klick → Profil statt Filter
-- [ ] Detail-Seite: 2/3 Dokument, 1/3 Beschreibung
-- [ ] Bewertungs-Formular kompakter (Sterne + Text nebeneinander)
-- [ ] "Material melden" Modal grösser
-- [ ] AGB & Datenschutz: TOC-Sidebar hinzufügen
-- [ ] "Nach oben" Buttons aus Seitenmitte entfernen (Urheberrecht + Cookies)
-- [ ] Profilbild: Ganzer Kreis klickbar
-- [ ] "Ungespeicherte Änderungen" eigenes Modal
-- [ ] Punkte-System in eigenen Tab
-- [ ] Uploads-Hover abrunden
-- [ ] Downloads klickbar machen
-- [ ] Cards vollständig klickbar (Bibliothek, Wunschliste, Uploads)
-- [ ] "Folge ich" ganze Zeile klickbar
-- [ ] Upload-Wizard: Mehr Animationen
-- [ ] Upload-Checkliste entfernen (redundant)
-- [ ] Material-Vorschau am Schluss grösser + klickbar
-- [ ] Upload-Button in TopBar für eingeloggte Nutzer
-- [ ] Hilfe-Center: Schnelleinstieg-Karten gleiche Höhe
-- [ ] Dropdowns: Hover-Highlight passend zu rounded corners
+- [x] Zweites Zahlungsmittel-Icon in TrustBar entfernen — bereits in PR #102 erledigt
+- [x] PlatformStats visuell aufwerten + Minimum-Schwelle — bereits in PR #101 erledigt
+- [x] Ersteller-Klick → Profil statt Filter — bereits in PR #102 erledigt
+- [x] Detail-Seite: 2/3 Dokument, 1/3 Beschreibung — bereits in PR #102 erledigt
+- [x] Bewertungs-Formular kompakter (Sterne + Text nebeneinander) — bereits in PR #102 erledigt
+- [x] "Material melden" Modal grösser — bereits in PR #102 erledigt
+- [x] AGB & Datenschutz: TOC-Sidebar hinzufügen — bereits in PR #102 erledigt
+- [x] "Nach oben" Buttons aus Seitenmitte entfernen (Urheberrecht + Cookies) — bereits in PR #102 erledigt
+- [x] Profilbild: Ganzer Kreis klickbar — Ganzer Avatar-Kreis als Button mit Hover-Overlay
+- [x] "Ungespeicherte Änderungen" eigenes Modal — UnsavedChangesDialog Komponente + Link-Interception auf Settings-Seite
+- [x] Punkte-System in eigenen Tab — SellerLevelCard in /konto/rewards verschoben, neuer Nav-Tab
+- [x] Uploads-Hover abrunden — bereits in PR #102 erledigt
+- [x] Downloads klickbar machen — bereits in PR #102 erledigt
+- [x] Cards vollständig klickbar (Bibliothek, Wunschliste, Uploads) — DashboardMaterialCard hat inset-0 overlay Link
+- [x] "Folge ich" ganze Zeile klickbar — bereits in PR #102 erledigt
+- [x] Upload-Wizard: Mehr Animationen — Framer Motion Step-Transitions, StepSummary Expand/Collapse, PublishPreviewModal Eingang
+- [x] Upload-Checkliste entfernen (redundant) — bereits in PR #102 erledigt
+- [x] Material-Vorschau am Schluss grösser + klickbar — bereits in PR #102 erledigt
+- [x] Upload-Button in TopBar für eingeloggte Nutzer — Plus-Icon + "Hochladen" Button in Desktop & Mobile Nav
+- [x] Hilfe-Center: Schnelleinstieg-Karten gleiche Höhe — bereits in PR #102 erledigt
+- [x] Dropdowns: Hover-Highlight passend zu rounded corners — TopBar, MultiSelect rounded-lg auf Hover-Items
 
 ---
 
 ## Zusammenfassung
 
-> Letzte Aktualisierung: 2026-02-20
+> Letzte Aktualisierung: 2026-02-21
 
 | Priorität   | Total   | Erledigt | Offen  | %       |
 | ----------- | ------- | -------- | ------ | ------- |
 | 🔴 MUSS     | 16      | 14       | 2      | 88%     |
 | 🟠 SOLLTE   | 10      | 10       | 0      | 100%    |
-| 🟡 NACH     | 10      | 8        | 2      | 80%     |
-| 🟢 MITTEL   | 12      | 12       | 0      | 100%    |
+| 🟡 NACH     | 10      | 9        | 1      | 90%     |
+| 🟢 MITTEL   | 12      | 9        | 3      | 75%     |
 | 🟣 FEEDBACK | 18      | 15       | 3      | 83%     |
 | 🔵 LANG     | 6       | 5        | 1      | 83%     |
-| 🟤 RUNDE 2  | 43      | 0        | 43     | 0%      |
-| **Total**   | **115** | **64**   | **51** | **56%** |
+| 🟤 RUNDE 2  | 43      | 42       | 1      | 98%     |
+| **Total**   | **115** | **104**  | **11** | **90%** |
 
-> **Wichtigste Blocker vor Launch:**
+> **Verbleibende offene Items:**
 >
-> 1. **Bugs fixen (Sektion 22)** — 11 kaputte Features, darunter Upload-Buttons und Email-Links
-> 2. **Content beschaffen** — 30-50 Materialien, 10-20 Lehrpersonen rekrutieren
-> 3. **Domain-Migration** — currico.ch registrieren, @currico.ch E-Mail (→ Roadmap 1.1)
-> 4. **Testdaten entfernen** — Dummy-Inhalte bereinigen (→ Feedback Item 17)
-> 5. **Text & Vertrauen (Sektion 23)** — Übertriebene Claims entfernen, Fake-Testimonials raus
+> - **Non-Code / Ops:** Content (30-50 Materialien), Domain-Migration, Testdaten, professionelle E-Mail, Logo, Stock-Fotos, Hero-Bild, Partner-Logos, Blog-Content
+> - **Code (blocked):** BG-Filter Border (braucht `db:seed-curriculum`)
+> - **Testing:** 2FA Setup-Wizard testen
 >
 > **Hinweis:** Runde-2-Items (🟤) stammen aus manuellem Feedback + Code-Audit. Vollständige Beschreibungen in `spec/plans/2overview.md`.
