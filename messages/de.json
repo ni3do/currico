@@ -366,7 +366,7 @@
       "description": "Sie haben tolle Arbeitsblätter, Unterrichtseinheiten oder Prüfungen erstellt? Teilen Sie diese mit Kolleginnen und Kollegen in der ganzen Schweiz und verdienen Sie Geld, während Sie anderen Lehrpersonen Zeit sparen.",
       "benefits": {
         "earn": "Faire Entlohnung",
-        "earnDesc": "Setzen Sie Ihre Preise selbst — Sie erhalten 70% pro Verkauf (z.B. CHF 3.50 bei CHF 5.00)",
+        "earnDesc": "Setzen Sie Ihre Preise selbst — Sie erhalten 70% pro Verkauf",
         "reach": "Tausende erreichen",
         "reachDesc": "Vernetzen Sie sich mit Lehrpersonen in der ganzen Schweiz",
         "simple": "Einfacher Upload",
@@ -2209,7 +2209,7 @@
     "features": {
       "commission": {
         "title": "Faire Entlohnung",
-        "description": "Setzen Sie Ihre Preise selbst — Sie erhalten 70% pro Verkauf (z.B. CHF 3.50 bei CHF 5.00)"
+        "description": "Setzen Sie Ihre Preise selbst — Sie erhalten 70% pro Verkauf"
       },
       "community": {
         "title": "Tausende erreichen",
