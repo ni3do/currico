@@ -134,7 +134,7 @@
         "contact": "Kontakt"
       },
       "contact": {
-        "email": "kontakt@currico.ch",
+        "email": "info@currico.ch",
         "location": "Schweiz"
       },
       "links": {
@@ -416,6 +416,10 @@
       "community": {
         "title": "Von Lehrern für Lehrer",
         "description": "Profitieren Sie vom Wissen und der Erfahrung Ihrer Kollegen aus der ganzen Schweiz."
+      },
+      "lp21": {
+        "title": "LP21-konform",
+        "description": "Alle Materialien sind nach Lehrplan 21 Kompetenzen getaggt — passend für Ihren Unterricht."
       }
     },
     "pilotTeacher": {

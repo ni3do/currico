@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Star, Award, Server, Lock } from "lucide-react";
+import { Star, Award, Server, Lock, Headphones } from "lucide-react";
 import { FeatureGrid, type FeatureCard } from "@/components/ui/FeatureGrid";
 
 export function SwissBrandSection() {
@@ -32,6 +32,14 @@ export function SwissBrandSection() {
       title: t("dataProtection.title"),
       description: t("dataProtection.description"),
       href: "/datenschutz",
+    },
+    {
+      key: "localSupport",
+      icon: <Headphones className="h-6 w-6" aria-hidden="true" />,
+      iconBgClass: "bg-accent-light",
+      iconColorClass: "text-accent",
+      title: t("localSupport.title"),
+      description: t("localSupport.description"),
     },
   ];
 

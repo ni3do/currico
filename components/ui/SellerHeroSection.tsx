@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { Coins, Users, Upload, ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
+import { Coins, Upload, ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
 import { FadeIn, StaggerChildren, StaggerItem, motion } from "./animations";
 import { MagneticButton } from "./MagneticButton";
 
@@ -20,13 +20,6 @@ export function SellerHeroSection({ className = "" }: SellerHeroSectionProps) {
       description: t("features.commission.description"),
       bgGradient: "from-warning/20 to-warning/10",
       iconColor: "text-warning",
-    },
-    {
-      icon: <Users className="h-5 w-5" aria-hidden="true" />,
-      title: t("features.community.title"),
-      description: t("features.community.description"),
-      bgGradient: "from-primary/20 to-primary-hover/10",
-      iconColor: "text-primary",
     },
     {
       icon: <Upload className="h-5 w-5" aria-hidden="true" />,
@@ -76,7 +69,7 @@ export function SellerHeroSection({ className = "" }: SellerHeroSectionProps) {
         {/* Feature Cards Grid */}
         <StaggerChildren
           staggerDelay={0.1}
-          className="mx-auto mt-8 grid max-w-4xl gap-4 sm:grid-cols-3"
+          className="mx-auto mt-8 grid max-w-3xl gap-4 sm:grid-cols-2"
         >
           {features.map((feature, index) => (
             <StaggerItem key={index}>

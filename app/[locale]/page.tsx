@@ -23,7 +23,7 @@ export default async function HomePage({ params }: Props) {
       prisma.resource.findMany({
         where: { is_published: true, is_public: true },
         orderBy: [{ seller: { is_verified_seller: "desc" } }, { created_at: "desc" }],
-        take: 3,
+        take: 4,
         select: {
           id: true,
           title: true,
