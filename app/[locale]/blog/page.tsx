@@ -16,7 +16,7 @@ export default async function BlogPage() {
     "@type": "Blog",
     name: "Currico Blog",
     description: t("subtitle"),
-    url: `${process.env.NEXTAUTH_URL || "https://currico.siwachter.com"}/de/blog`,
+    url: `${process.env.AUTH_URL || "https://currico.ch"}/de/blog`,
   };
 
   const breadcrumbJsonLd = {
@@ -27,7 +27,7 @@ export default async function BlogPage() {
         "@type": "ListItem",
         position: 1,
         name: "Home",
-        item: `${process.env.NEXTAUTH_URL || "https://currico.siwachter.com"}/de`,
+        item: `${process.env.AUTH_URL || "https://currico.ch"}/de`,
       },
       {
         "@type": "ListItem",

@@ -96,7 +96,8 @@
       "profile": "Profil",
       "account": "Mein Konto",
       "notifications": "Benachrichtigungen",
-      "admin": "Admin Panel"
+      "admin": "Admin Panel",
+      "upload": "Hochladen"
     },
     "footer": {
       "copyright": "© 2026 Currico",
@@ -219,7 +220,7 @@
   },
   "homePage": {
     "hero": {
-      "swissBadge": "100% Lehrplan 21 konform",
+      "swissBadge": "Lehrplan 21 konform",
       "headline": "Fertige Arbeitsblätter, Prüfungen und Unterrichtseinheiten –",
       "headlineHighlight": "passend zum Lehrplan 21",
       "subheadline": "Finden Sie sofort einsatzbereite Lehrmittel von Schweizer Lehrpersonen. Von der Community geprüft, lehrplankonform, zeitsparend.",
@@ -274,8 +275,7 @@
         "formLabel": "Unterrichtsmaterialien suchen",
         "cycleLabel": "Zyklus auswählen",
         "subjectLabel": "Fachbereich auswählen"
-      },
-      "sellerCta": "Eigene Materialien verkaufen?"
+      }
     },
     "howItWorks": {
       "title": "So funktioniert's",
@@ -397,28 +397,6 @@
       "community": {
         "title": "Von Lehrern für Lehrer",
         "description": "Profitieren Sie vom Wissen und der Erfahrung Ihrer Kollegen aus der ganzen Schweiz."
-      }
-    },
-    "testimonials": {
-      "title": "Das sagen Lehrpersonen",
-      "description": "Vertrauen von Pädagogen in der ganzen Schweiz",
-      "testimonial1": {
-        "quote": "Currico hat meine Unterrichtsvorbereitung revolutioniert. Ich finde Qualitätsmaterialien in Minuten statt Stunden. Die Lehrplan 21 Filter sind unglaublich hilfreich.",
-        "name": "Sarah M.",
-        "role": "Primarlehrerin",
-        "location": "Zürich"
-      },
-      "testimonial2": {
-        "quote": "Als Verkäufer habe ich bereits über CHF 2'000 verdient, indem ich Materialien geteilt habe, die ich ohnehin erstellt hatte. Es ist ein tolles Gefühl, anderen Lehrpersonen zu helfen.",
-        "name": "Thomas K.",
-        "role": "Sekundarlehrer",
-        "location": "Bern"
-      },
-      "testimonial3": {
-        "quote": "Die Qualitätskontrolle zeigt sich wirklich. Jedes Material, das ich gekauft habe, war professionell erstellt und konnte direkt am nächsten Tag im Unterricht eingesetzt werden.",
-        "name": "Lisa W.",
-        "role": "Heilpädagogin",
-        "location": "Basel"
       }
     },
     "pilotTeacher": {
@@ -670,8 +648,6 @@
       "expand": "Aufklappen",
       "collapse": "Zuklappen",
       "closeFilters": "Filter schliessen",
-      "tagSectionLabel": "Schlagwörter",
-      "tagFilterPlaceholder": "Schlagwort suchen...",
       "sonstigeLabel": "Sonstige",
       "sonstigeDescription": "Ohne LP21-Zuordnung",
       "verifiedSellerLabel": "Verifizierte Verkäufer",
@@ -2527,7 +2503,7 @@
       },
       "q3": {
         "question": "Warum Currico statt anderen Plattformen?",
-        "answer": "Currico ist 100% auf die Schweiz ausgerichtet. Alle Materialien verwenden Schweizer Rechtschreibung (ss statt ß), sind auf den Lehrplan 21 abgestimmt und die Preise sind in Schweizer Franken. Zudem ist unser Server in der Schweiz gehostet."
+        "answer": "Currico ist vollständig auf die Schweiz ausgerichtet. Alle Materialien verwenden Schweizer Rechtschreibung (ss statt ß), sind auf den Lehrplan 21 abgestimmt und die Preise sind in Schweizer Franken. Zudem ist unser Server in der Schweiz gehostet."
       },
       "q4": {
         "question": "Muss ich ein Konto erstellen?",
@@ -3452,6 +3428,7 @@
       "wishlist": "Wunschliste",
       "notifications": "Benachrichtigungen",
       "following": "Folge ich",
+      "rewards": "Punkte & Level",
       "settings": "Einstellungen",
       "settingsProfile": "Profil",
       "settingsNotifications": "Benachrichtigungen",
@@ -3799,6 +3776,7 @@
       "privateConfirmAction": "Auf privat stellen",
       "privateConfirmCancel": "Abbrechen",
       "unsavedChanges": "Sie haben ungespeicherte Änderungen",
+      "unsavedChangesBody": "Möchten Sie die Änderungen speichern oder verwerfen?",
       "discard": "Verwerfen",
       "saveChanges": "Änderungen speichern",
       "saving": "Speichern...",

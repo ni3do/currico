@@ -4,7 +4,8 @@ import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "./db";
-import { validateTOTP, validateBackupCode } from "./totp";
+import { validateTOTP, validateBackupCode, parseBackupCodes } from "./totp";
+import { checkRateLimit } from "./rateLimit";
 
 // Extend NextAuth types to include role and onboarding flag
 declare module "next-auth" {
@@ -88,6 +89,12 @@ const nextAuth = NextAuth({
             return null;
           }
 
+          // Rate limit 2FA verification attempts per user to prevent brute-force
+          const rateLimitResult = checkRateLimit(user.id, "auth:2fa-login");
+          if (!rateLimitResult.success) {
+            return null;
+          }
+
           // Try TOTP first (6-digit code)
           if (/^\d{6}$/.test(totpCode)) {
             if (!validateTOTP(totpCode, user.totp_secret)) {
@@ -95,7 +102,7 @@ const nextAuth = NextAuth({
             }
           } else {
             // Try backup code (8-char hex)
-            const storedHashes = (user.backup_codes as { hash: string; used: boolean }[]) || [];
+            const storedHashes = parseBackupCodes(user.backup_codes);
             const { valid, updatedHashes } = validateBackupCode(totpCode, storedHashes);
             if (!valid) {
               return null;

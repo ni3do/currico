@@ -63,14 +63,6 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/blog"
-                  className="text-text-muted hover:text-primary text-sm transition-colors"
-                >
-                  {t("footer.links.blog")}
-                </Link>
-              </li>
-              <li>
-                <Link
                   href="/verkaeufer-werden"
                   className="text-text-muted hover:text-primary text-sm transition-colors"
                 >
@@ -108,14 +100,6 @@ export default function Footer() {
                   className="text-text-muted hover:text-primary text-sm transition-colors"
                 >
                   {t("footer.links.terms")}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/cookie-richtlinien"
-                  className="text-text-muted hover:text-primary text-sm transition-colors"
-                >
-                  {t("footer.links.cookies")}
                 </Link>
               </li>
               <li>

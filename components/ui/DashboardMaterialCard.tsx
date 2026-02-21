@@ -168,7 +168,7 @@ export const DashboardMaterialCard = memo(function DashboardMaterialCard({
             src={previewUrl}
             alt={title}
             fill
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 33vw"
             className="image-zoom object-cover"
           />
         ) : (
@@ -184,7 +184,7 @@ export const DashboardMaterialCard = memo(function DashboardMaterialCard({
       </div>
 
       {/* Content */}
-      <div className="flex flex-1 flex-col px-3 pt-2.5 pb-3">
+      <div className="flex flex-1 flex-col px-3 pt-3 pb-3">
         {/* Subject + Cycle Eyebrow with Remove Button */}
         <div className="mb-1 flex items-center justify-between">
           <span
@@ -285,7 +285,7 @@ export const DashboardMaterialCard = memo(function DashboardMaterialCard({
         <div className="mt-auto" />
 
         {/* Footer */}
-        <div className="border-border-subtle mt-2 border-t pt-2">
+        <div className="border-border-subtle mt-2 border-t pt-3">
           {/* Stats Row (for uploads) */}
           {stats && (
             <div className="text-text-muted mb-2 flex items-center justify-between text-[11px]">

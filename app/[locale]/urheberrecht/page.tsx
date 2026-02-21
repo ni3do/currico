@@ -735,14 +735,25 @@ export default function CopyrightGuidePage() {
                   </Link>
                 </div>
 
-                {/* Upload CTA */}
+                {/* Upload CTA — if opened from upload wizard (target="_blank"), close tab to return */}
                 <div className="no-print mt-6 text-center">
-                  <Link
-                    href="/hochladen"
+                  <button
+                    type="button"
+                    onClick={() => {
+                      // If opened via target="_blank" from upload wizard, close this tab
+                      // to return the user to their in-progress upload session.
+                      // window.close() only works for script-opened windows; if it fails
+                      // (e.g. user navigated here directly), fall back to navigation.
+                      if (window.opener || window.history.length <= 1) {
+                        window.close();
+                      }
+                      // Fallback: navigate to upload page
+                      window.location.href = "/hochladen";
+                    }}
                     className="bg-primary text-text-on-accent hover:bg-primary-hover inline-flex items-center gap-2 rounded-lg px-6 py-3 font-medium transition-colors"
                   >
                     {t("readyToUpload")}
-                  </Link>
+                  </button>
                 </div>
               </section>
 

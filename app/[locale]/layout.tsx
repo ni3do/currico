@@ -85,7 +85,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   // Get messages for the current locale
   const messages = await getMessages();
 
-  const baseUrl = process.env.NEXTAUTH_URL || "https://currico.siwachter.com";
+  const baseUrl = process.env.AUTH_URL || "https://currico.ch";
 
   // WebSite schema with SearchAction for Google site search
   const websiteJsonLd = {

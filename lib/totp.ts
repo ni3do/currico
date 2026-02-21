@@ -121,6 +121,21 @@ export function generateBackupCodes(): {
 }
 
 /**
+ * Safely parse backup_codes JSON field from Prisma
+ * Returns validated array or empty array if data is corrupt
+ */
+export function parseBackupCodes(raw: unknown): { hash: string; used: boolean }[] {
+  if (!Array.isArray(raw)) return [];
+  return raw.filter(
+    (entry): entry is { hash: string; used: boolean } =>
+      typeof entry === "object" &&
+      entry !== null &&
+      typeof entry.hash === "string" &&
+      typeof entry.used === "boolean"
+  );
+}
+
+/**
  * Validate a backup code against stored hashes (single-use, timing-safe)
  */
 export function validateBackupCode(

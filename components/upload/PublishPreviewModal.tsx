@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { X, Check, FileText } from "lucide-react";
+import { motion } from "framer-motion";
 import { getSubjectPillClass } from "@/lib/constants/subject-colors";
 import { FocusTrap } from "@/components/ui/FocusTrap";
 
@@ -42,11 +43,20 @@ export function PublishPreviewModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onCancel} />
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.2 }}
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        onClick={onCancel}
+      />
 
       {/* Modal */}
       <FocusTrap onEscape={onCancel}>
-        <div
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
           role="dialog"
           aria-modal="true"
           aria-labelledby="preview-modal-title"
@@ -159,7 +169,7 @@ export function PublishPreviewModal({
               {tPreview("confirm")}
             </button>
           </div>
-        </div>
+        </motion.div>
       </FocusTrap>
     </div>
   );

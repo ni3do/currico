@@ -28,7 +28,7 @@ import { WelcomeGuide } from "@/components/account/WelcomeGuide";
 import { EmailVerificationBanner } from "@/components/account/EmailVerificationBanner";
 import { StripeConnectStatus } from "@/components/account/StripeConnectStatus";
 import { DeleteConfirmDialog } from "@/components/account/DeleteConfirmDialog";
-import { SellerLevelCard } from "@/components/account/SellerLevelCard";
+// SellerLevelCard moved to /konto/rewards
 import { ProfileCompletionProgress } from "@/components/account/ProfileCompletionProgress";
 import { MaterialTypeBadge } from "@/components/ui/MaterialTypeBadge";
 import { useAccountData } from "@/lib/hooks/useAccountData";
@@ -63,13 +63,7 @@ export default function AccountOverviewPage() {
     type: "material" | "bundle";
     title: string;
   } | null>(null);
-  const [levelData, setLevelData] = useState<{
-    uploads: number;
-    downloads: number;
-    reviews: number;
-    avgRating: number | null;
-    downloadMultiplier: number;
-  } | null>(null);
+  // Level data moved to /konto/rewards
 
   // Filter and sort state for materials table
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
@@ -84,7 +78,6 @@ export default function AccountOverviewPage() {
       const fetches: Promise<Response>[] = [fetch("/api/user/library?type=acquired")];
       if (isSeller) {
         fetches.push(fetch("/api/seller/dashboard"));
-        fetches.push(fetch("/api/seller/level"));
       }
 
       const responses = await Promise.all(fetches);
@@ -99,16 +92,7 @@ export default function AccountOverviewPage() {
         setSellerStats(data.stats);
         setSellerMaterials(data.materials);
       }
-      if (isSeller && responses[2]?.ok) {
-        const data = await responses[2].json();
-        setLevelData({
-          uploads: data.uploads,
-          downloads: data.downloads,
-          reviews: data.reviews,
-          avgRating: data.avgRating,
-          downloadMultiplier: data.downloadMultiplier,
-        });
-      }
+      // Level data now fetched in /konto/rewards
     } catch (error) {
       console.error("Error fetching overview data:", error);
       setFetchError(true);
@@ -357,16 +341,7 @@ export default function AccountOverviewPage() {
               })}
         </div>
 
-        {/* Seller Level Card */}
-        {levelData && (
-          <SellerLevelCard
-            uploads={levelData.uploads}
-            downloads={levelData.downloads}
-            reviews={levelData.reviews}
-            avgRating={levelData.avgRating}
-            downloadMultiplier={levelData.downloadMultiplier}
-          />
-        )}
+        {/* Seller Level Card — moved to /konto/rewards */}
 
         {/* Resources Table */}
         <div className="border-border bg-surface overflow-hidden rounded-xl border">

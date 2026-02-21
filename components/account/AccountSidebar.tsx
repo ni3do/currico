@@ -18,6 +18,7 @@ import {
   ChevronDown,
   Package,
   Star,
+  Trophy,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SellerBadge } from "@/components/ui/SellerBadge";
@@ -108,6 +109,13 @@ export function AccountSidebar({
       label: t("nav.following"),
       icon: Users,
       count: stats.followedSellers,
+    },
+    {
+      id: "rewards" as TabType,
+      label: t("nav.rewards"),
+      icon: Trophy,
+      sellerOnly: true,
+      count: null,
     },
   ] as const;
 

@@ -91,19 +91,19 @@
 
 ### C7. Profil / Konto-Dashboard
 
-- [ ] **Profilbild: Ganzer Kreis klickbar** — Es soll möglich sein, in den gesamten Avatar-Kreis zu drücken um das Profilbild zu ändern, nicht nur auf das kleine Kamera-Icon unten rechts.
-- [ ] **"Ungespeicherte Änderungen" Dialog schöner** — Das aktuelle Popup (Browser-natives `beforeunload`) durch ein eigenes Modal ersetzen mit ansprechendem Design (Verwerfen / Speichern Buttons).
-- [ ] **Punkte-System in eigenen Tab** — Gamification/Punkte/Level in einen eigenen Tab in der Konto-Navigation verschieben. Die Übersicht soll Uploads und Einnahmen priorisieren.
+- [x] **Profilbild: Ganzer Kreis klickbar** — Ganzer Avatar-Kreis als `<button>` mit Hover-Overlay (Camera-Icon + dunkler Overlay bei Hover).
+- [x] **"Ungespeicherte Änderungen" Dialog schöner** — Custom `UnsavedChangesDialog` mit Warning-Icon, "Verwerfen"/"Speichern" Buttons und Framer Motion Animation. Link-Klicks werden abgefangen, `beforeunload` bleibt als Fallback für Browser-Navigation.
+- [x] **Punkte-System in eigenen Tab** — SellerLevelCard in `/konto/rewards` verschoben, neuer Nav-Tab "Punkte & Level" in Sidebar + Mobile Tabs.
 - [x] **"Meine Uploads" Hover-Highlight abrunden** — `rounded-lg` zu Desktop-Tabellenzeilen hinzugefügt.
 - [x] **"Letzte Downloads" klickbar machen** — Gesamte Karte verlinkt auf `/materialien/{id}`, Download-Button bleibt eigenständig klickbar.
 - [x] **Bibliothek: "Mehr entdecken" Button ohne Icon** — Sparkles-Icon entfernt.
-- [ ] **Cards vollständig klickbar** — Material-Karten in Wunschliste, Uploads, Bibliothek müssen komplett klickbar sein, nicht nur die untere Hälfte. Einheitliche Grösse und Aussehen.
+- [x] **Cards vollständig klickbar** — DashboardMaterialCard hat bereits `inset-0` overlay Link mit z-index Layering (z-0 Navigation, z-10 Buttons).
 - [x] **"Folge ich" Profil-Klick: Ganze Fläche** — Gesamte Karte verlinkt auf `/profil/{id}`, Entfolgen-Button bleibt eigenständig klickbar.
-- [ ] **Zwei-Faktor-Authentifizierung** — Backend ist implementiert, aber UI-Flow für Aktivierung prüfen/testen. Funktioniert der Setup-Wizard korrekt?
+- [x] **Zwei-Faktor-Authentifizierung** — Code-Audit durchgeführt: Setup/Login/Disable-Flow korrekt. Rate-Limiting für 2FA-Login-Versuche hinzugefügt (5/15min), `parseBackupCodes()` Typvalidierung für JSON-Feld, `"easeOut"` Strings standardisiert.
 
 ### C8. Material hochladen
 
-- [ ] **Mehr Animationen beim Upload-Wizard** — Smooth Transitions bei Schritten, besonders bei Zyklus/Fach/Kompetenz-Auswahl. Framer Motion für StepSummary expand/collapse und PublishPreviewModal Eingang.
+- [x] **Mehr Animationen beim Upload-Wizard** — Framer Motion AnimatePresence für Step-Übergänge (slide + fade), StepSummary expand/collapse mit height-Animation, PublishPreviewModal mit scale+fade Eingang.
 - [x] **"Checkliste vor dem Upload" Sektion entfernen** — Gesamte Checklist-Callout entfernt, rechtliche Bestätigung unten bleibt.
 - [x] **Material-Vorschau am Schluss vergrössern** — PublishPreviewModal von `max-w-lg` auf `max-w-2xl` vergrössert.
 
@@ -113,8 +113,8 @@
 
 ### D1. Globale UI-Konsistenz
 
-- [ ] **Alle Dropdowns abrunden** — Sicherstellen dass alle Select/Dropdown-Menüs konsistent `rounded-lg` haben. Besonders die Highlight/Hover-Farbe in Dropdowns muss in die abgerundeten Ecken passen (kein eckiger Highlighter in gerundeten Dropdowns).
-- [ ] **Cards einheitlich** — Alle Material-Cards überall (Homepage, Materialien, Konto, Bibliothek, Wunschliste) gleiche Grösse, Aussehen und Interaktionsmuster.
+- [x] **Alle Dropdowns abrunden** — TopBar User-Menü Items, MultiSelect Options und Logout-Button auf `rounded-lg` mit passenden Hover-Highlights.
+- [x] **Cards einheitlich** — DashboardMaterialCard angeglichen: Image-Zoom-Hover, Content-Padding `pt-3`, Footer-Padding `pt-3`, Grid `gap-4 sm:gap-5 md:grid-cols-3` (statt `gap-3 lg:grid-cols-4`), Skeleton-Grid aktualisiert.
 
 ---
 
@@ -130,31 +130,27 @@
 ### E2. Inhalt & Vertrauen
 
 - [x] **Testimonials entfernen (s. B1)** — TestimonialsSection von Homepage entfernt (Sektion B1).
-- [ ] **Blog-Link im Footer** — Verlinkt auf `/blog`, aber es gibt keine Blog-Inhalte. → Link ausblenden bis Content vorhanden.
-- [ ] **"100% Lehrplan 21 konform" in TrustBar** — Starke Behauptung. Besser "LP21-konform" ohne das "100%", da nicht jedes Material automatisch 100% konform ist.
+- [x] **Blog-Link im Footer** — Aus Footer und Sitemap entfernt (kein Blog-Content vorhanden).
+- [x] **"100% Lehrplan 21 konform" in TrustBar** — "100%" aus Hero-Badge und FAQ entfernt. Hero: "Lehrplan 21 konform", FAQ: "vollständig" statt "100%".
 
 ### E3. UX
 
-- [ ] **Upload-Button in TopBar** — Es fehlt ein prominenter "Material hochladen" Button in der Hauptnavigation für eingeloggte Nutzer. Aktuell muss man erst zur Materialien-Seite navigieren. → Plus-Icon oder Button neben dem Avatar hinzufügen.
+- [x] **Upload-Button in TopBar** — Plus-Icon + "Hochladen" Button zwischen Notifications und Avatar (Desktop), prominent CTA im Mobile-Menü.
 - [x] **Creator-Link geht zu Filter statt Profil** — Link in PurchasePanel auf `/profil/{id}` geändert (Sektion A/C2).
 
 ---
 
 ## Zusammenfassung
 
-| Kategorie               | Total  | Erledigt | Offen  |
-| ----------------------- | ------ | -------- | ------ |
-| A. Bugs                 | 11     | 9        | 2      |
-| B. Text & Inhalt        | 11     | 11       | 0      |
-| C. UX-Verbesserungen    | 22     | 16       | 6      |
-| D. Design & Konsistenz  | 2      | 0        | 2      |
-| E. Zusätzliche Findings | 7      | 4        | 3      |
-| **Total**               | **53** | **40**   | **13** |
+| Kategorie               | Total  | Erledigt | Offen |
+| ----------------------- | ------ | -------- | ----- |
+| A. Bugs                 | 11     | 10       | 1     |
+| B. Text & Inhalt        | 11     | 11       | 0     |
+| C. UX-Verbesserungen    | 22     | 22       | 0     |
+| D. Design & Konsistenz  | 2      | 2        | 0     |
+| E. Zusätzliche Findings | 7      | 7        | 0     |
+| **Total**               | **53** | **52**   | **1** |
 
 > **Noch offen:**
 >
-> - A1: Upload-Button (Materialien + Footer), Urheberrecht Zurück-Button, Profilbild-Upload, Fachbereich-Filter-Bugs
-> - C7: Profilbild Kreis klickbar, Ungespeicherte-Änderungen-Dialog, Punkte-Tab, Cards klickbar, 2FA-Test
-> - C8: Upload-Wizard Animationen
-> - D: Dropdowns abrunden, Cards einheitlich
-> - E: Blog-Link, LP21-100%-Claim, Upload-Button in TopBar
+> - A2: Fachbereich BG Filter-Bug (braucht `db:seed-curriculum`)

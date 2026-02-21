@@ -3,7 +3,7 @@ import crypto from "crypto";
 const APP_NAME = "Currico";
 
 const UNSUBSCRIBE_SECRET =
-  process.env.UNSUBSCRIBE_SECRET || process.env.NEXTAUTH_SECRET || "fallback-secret";
+  process.env.UNSUBSCRIBE_SECRET || process.env.AUTH_SECRET || "fallback-secret";
 
 // -- Unsubscribe helpers --------------------------------------------------
 
@@ -12,8 +12,7 @@ export function generateUnsubscribeUrl(userId: string, notificationType: string)
     .createHmac("sha256", UNSUBSCRIBE_SECRET)
     .update(userId + notificationType)
     .digest("hex");
-  const baseUrl =
-    process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "https://currico.ch";
+  const baseUrl = process.env.AUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "https://currico.ch";
   return `${baseUrl}/api/unsubscribe?user=${userId}&type=${notificationType}&sig=${sig}`;
 }
 
@@ -150,8 +149,7 @@ export function generateExternalUnsubscribeUrl(email: string): string {
     .createHmac("sha256", UNSUBSCRIBE_SECRET)
     .update(email + "NEWSLETTER_EXTERNAL")
     .digest("hex");
-  const baseUrl =
-    process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "https://currico.ch";
+  const baseUrl = process.env.AUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "https://currico.ch";
   return `${baseUrl}/api/unsubscribe?user=${encodeURIComponent(email)}&type=NEWSLETTER_EXTERNAL&sig=${sig}`;
 }
 
@@ -187,8 +185,7 @@ export function renderDigestEmail({
   isPersonalized = true,
 }: DigestEmailParams): EmailOutput {
   const isDe = locale === "de";
-  const baseUrl =
-    process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "https://currico.ch";
+  const baseUrl = process.env.AUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "https://currico.ch";
   const count = materials.length;
 
   const heading = isPersonalized

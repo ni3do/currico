@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/db";
 import { getAllPosts } from "@/lib/blog";
 
-const BASE_URL = process.env.NEXTAUTH_URL || "https://currico.siwachter.com";
+const BASE_URL = process.env.AUTH_URL || "https://currico.ch";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Static pages with German slugs
@@ -22,7 +22,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/verkaeufer-stufen",
     "/verifizierter-verkaeufer",
     "/verkaeufer-werden",
-    "/blog",
   ];
 
   const staticEntries: MetadataRoute.Sitemap = staticPages.map((path) => ({

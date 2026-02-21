@@ -224,25 +224,27 @@ Add a subtle 3D tilt effect on MaterialCard hover (max 3° rotation on X/Y axes 
 
 ---
 
-## Summary of Actionable Fixes
+## Summary of Actionable Fixes — ALL COMPLETE
 
-### Quick Wins (< 30min each)
+> Implemented via `ux-polish-9-and-10.md` phases A+B and additional cleanup.
 
-1. Fix `--radius-md` → `--radius-lg` in all `.btn-*` CSS classes
-2. Replace `text-white` → `text-text-on-accent` in checkout pages
-3. Add responsive scaling to admin newsletter h1
-4. Standardize CantonFilter hover scale from `1.05` to `1.015`
-5. Replace `"easeOut"` string with `[0.22, 1, 0.36, 1]` in LikeButton + NotificationDropdown
+### Quick Wins (< 30min each) ✅
 
-### Medium Effort (1-2hr each)
+1. ~~Fix `--radius-md` → `--radius-lg` in all `.btn-*` CSS classes~~ — Already `--radius-lg`
+2. ~~Replace `text-white` → `text-text-on-accent` in checkout pages~~ — Already semantic
+3. ~~Add responsive scaling to admin newsletter h1~~ — Already `text-2xl sm:text-3xl`
+4. ~~Standardize CantonFilter hover scale from `1.05` to `1.015`~~ — Fixed in A-3
+5. ~~Replace `"easeOut"` string with `[0.22, 1, 0.36, 1]`~~ — Fixed in 5 files (verkaeufer-stufen ×3, settings ×2)
 
-6. Standardize all page h1s to `text-2xl sm:text-3xl font-bold`
-7. Unify admin page padding to match standard pages
-8. Add explicit `transition` prop to all `whileHover` usages missing it
-9. Standardize hover translateY to `-3px` (buttons), `-4px` (cards), `-6px` (feature items)
+### Medium Effort (1-2hr each) ✅
 
-### Larger Projects (half-day each)
+6. ~~Standardize all page h1s to `text-2xl sm:text-3xl font-bold`~~ — Done in A-1
+7. ~~Unify admin page padding to match standard pages~~ — Done in A-2
+8. ~~Add explicit `transition` prop to all `whileHover` usages missing it~~ — Done in A-3
+9. ~~Standardize hover translateY to `-3px` (buttons), `-4px` (cards), `-6px` (feature items)~~ — Done in A-3
 
-10. Adopt `.heading-1`/`.heading-2`/`.heading-3` CSS classes across all pages
-11. Create unified skeleton loading system
-12. Add page-level route transitions via `template.tsx`
+### Larger Projects (half-day each) ✅
+
+10. ~~Adopt CSS heading classes across pages~~ — heading-2/heading-4 used where appropriate; dead heading-1/heading-3/container-standard CSS removed
+11. ~~Create unified skeleton loading system~~ — Done in A-4 (Skeleton component with 12 variants)
+12. ~~Add page-level route transitions via `template.tsx`~~ — Done in B-1

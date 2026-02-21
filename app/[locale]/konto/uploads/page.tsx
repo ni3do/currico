@@ -224,7 +224,7 @@ export default function AccountUploadsPage() {
       ) : uploadedLoading ? (
         <DashboardMaterialGridSkeleton />
       ) : filteredItems.length > 0 ? (
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 sm:gap-5 md:grid-cols-3">
           {filteredItems.map((item) => (
             <DashboardMaterialCard
               key={item.id}
