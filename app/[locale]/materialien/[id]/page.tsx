@@ -40,6 +40,7 @@ export default function MaterialDetailPage() {
   const [isFollowing, setIsFollowing] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [wishlistLoading, setWishlistLoading] = useState(false);
+  const [reviewRefreshKey, setReviewRefreshKey] = useState(0);
 
   const fetchMaterial = useCallback(async () => {
     setLoading(true);
@@ -109,6 +110,8 @@ export default function MaterialDetailPage() {
     try {
       window.open(`/api/materials/${id}/download`, "_blank");
       toast(t("downloadStarted"), "success");
+      // Refresh review section so user can leave a review without page reload
+      setReviewRefreshKey((k) => k + 1);
     } catch (error) {
       console.error("Download error:", error);
       toast(tCommon("errors.generic"), "error");
@@ -284,7 +287,7 @@ export default function MaterialDetailPage() {
         {/* HERO SECTION: Preview + Purchase (2-column on desktop) */}
         <FadeIn>
           <section className="mb-12">
-            <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-12">
+            <div className="grid items-start gap-8 lg:grid-cols-[2fr_1fr] lg:gap-12">
               {/* Column 1: Preview Gallery - Primary Visual */}
               <div className="order-2 lg:order-1">
                 {material.previewUrls?.length || material.previewUrl ? (
@@ -376,7 +379,7 @@ export default function MaterialDetailPage() {
         {/* FEEDBACK SECTION: Reviews */}
         <section className="border-border mb-12 border-t pt-12">
           <h2 className="text-text mb-8 text-xl font-semibold">{t("feedbackTitle")}</h2>
-          <ReviewsSection materialId={id} hideTitle />
+          <ReviewsSection materialId={id} hideTitle refreshKey={reviewRefreshKey} />
         </section>
 
         {/* RELATED RESOURCES */}

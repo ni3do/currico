@@ -78,14 +78,12 @@ export function ReviewForm({
       onSubmit={handleSubmit}
       className={`border-border bg-bg-secondary rounded-xl border p-6 ${className}`}
     >
-      <h3 className="text-text mb-4 text-lg font-semibold">
-        {isEditing ? t("editReview") : t("writeReview")}
-      </h3>
-
-      {/* Rating Selection */}
-      <div className="mb-6">
-        <label className="text-text mb-2 block text-sm font-medium">{t("ratingLabel")} *</label>
-        <div className="flex items-center gap-4">
+      {/* Header + Rating on same row */}
+      <div className="mb-4 flex flex-wrap items-center gap-4">
+        <h3 className="text-text text-lg font-semibold">
+          {isEditing ? t("editReview") : t("writeReview")}
+        </h3>
+        <div className="flex items-center gap-2">
           <StarRating rating={rating} size="lg" interactive onRatingChange={setRating} />
           {rating > 0 && (
             <span className="text-text-muted text-sm">
@@ -95,42 +93,36 @@ export function ReviewForm({
         </div>
       </div>
 
-      {/* Title (optional) */}
-      <div className="mb-4">
-        <label htmlFor="review-title" className="text-text mb-2 block text-sm font-medium">
-          {t("titleOptional")}
-        </label>
-        <input
-          id="review-title"
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          maxLength={100}
-          placeholder={t("titlePlaceholder")}
-          className="input"
-        />
-        <p className="text-text-faint mt-1 text-xs">
-          {t("charCount", { count: title.length, max: 100 })}
-        </p>
-      </div>
-
-      {/* Content (optional) */}
-      <div className="mb-6">
-        <label htmlFor="review-content" className="text-text mb-2 block text-sm font-medium">
-          {t("contentOptional")}
-        </label>
-        <textarea
-          id="review-content"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          maxLength={2000}
-          rows={4}
-          placeholder={t("contentPlaceholder")}
-          className="input min-h-[100px] resize-y"
-        />
-        <p className="text-text-faint mt-1 text-xs">
-          {t("charCount", { count: content.length, max: 2000 })}
-        </p>
+      {/* Title + Content side by side on larger screens */}
+      <div className="mb-4 grid gap-4 sm:grid-cols-[1fr_2fr]">
+        <div>
+          <label htmlFor="review-title" className="text-text mb-1.5 block text-sm font-medium">
+            {t("titleOptional")}
+          </label>
+          <input
+            id="review-title"
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            maxLength={100}
+            placeholder={t("titlePlaceholder")}
+            className="input"
+          />
+        </div>
+        <div>
+          <label htmlFor="review-content" className="text-text mb-1.5 block text-sm font-medium">
+            {t("contentOptional")}
+          </label>
+          <textarea
+            id="review-content"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            maxLength={2000}
+            rows={2}
+            placeholder={t("contentPlaceholder")}
+            className="input resize-y"
+          />
+        </div>
       </div>
 
       {/* Error */}

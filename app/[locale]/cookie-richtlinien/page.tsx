@@ -6,17 +6,7 @@ import { Link } from "@/i18n/navigation";
 import TopBar from "@/components/ui/TopBar";
 import Footer from "@/components/ui/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
-import {
-  Cookie,
-  Shield,
-  BarChart3,
-  Settings,
-  Mail,
-  HardDrive,
-  List,
-  X,
-  ArrowUp,
-} from "lucide-react";
+import { Cookie, Shield, BarChart3, Settings, Mail, HardDrive, List, X } from "lucide-react";
 import { APP_COOKIES, APP_LOCAL_STORAGE } from "@/lib/constants/cookies";
 
 const TOC_SECTIONS = ["what", "howWeUse", "types", "localStorage", "managing", "changes"] as const;
@@ -321,30 +311,6 @@ export default function CookiesPage() {
               </section>
             </div>
 
-            {/* Related Links */}
-            <nav
-              aria-label={t("links.ariaLabel")}
-              className="border-border mt-8 rounded-xl border p-6"
-            >
-              <div className="flex flex-wrap gap-4">
-                <Link
-                  href="/datenschutz"
-                  className="text-primary text-sm font-medium hover:underline"
-                >
-                  {t("links.privacy")}
-                </Link>
-                <Link
-                  href="/impressum"
-                  className="text-primary text-sm font-medium hover:underline"
-                >
-                  {t("links.impressum")}
-                </Link>
-                <Link href="/agb" className="text-primary text-sm font-medium hover:underline">
-                  {t("links.terms")}
-                </Link>
-              </div>
-            </nav>
-
             {/* Contact CTA */}
             <div className="border-border bg-bg-secondary mt-12 rounded-xl border p-6 text-center">
               <Mail className="text-primary mx-auto mb-4 h-8 w-8" aria-hidden="true" />
@@ -356,21 +322,6 @@ export default function CookiesPage() {
                 title={t("contact.emailTitle")}
               >
                 {t("contact.email")}
-              </a>
-            </div>
-
-            {/* Back to top */}
-            <div className="mt-8 text-center">
-              <a
-                href="#top"
-                onClick={(e) => {
-                  e.preventDefault();
-                  document.getElementById("top")?.scrollIntoView({ behavior: "smooth" });
-                }}
-                className="text-text-muted hover:text-primary inline-flex items-center gap-1.5 text-sm transition-colors"
-              >
-                <ArrowUp className="h-4 w-4" aria-hidden="true" />
-                {t("backToTop")}
               </a>
             </div>
           </div>

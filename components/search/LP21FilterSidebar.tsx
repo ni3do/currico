@@ -196,8 +196,6 @@ export function LP21FilterSidebar({
             onDialectChange={(dialect) => onFiltersChange({ ...filters, dialect })}
             cantons={filters.cantons}
             onCantonsChange={(cantons) => onFiltersChange({ ...filters, cantons })}
-            tags={filters.tags}
-            onTagToggle={handleTagToggle}
             verifiedOnly={filters.verifiedOnly}
             onVerifiedOnlyChange={(v) => onFiltersChange({ ...filters, verifiedOnly: v })}
             t={t}

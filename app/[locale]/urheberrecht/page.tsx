@@ -16,7 +16,6 @@ import {
   ClipboardCheck,
   Mail,
   Scale,
-  ArrowUp,
   ExternalLink,
   Sparkles,
   HelpCircle,
@@ -763,21 +762,6 @@ export default function CopyrightGuidePage() {
                   {t("sections.contact.email")}
                 </a>
               </section>
-            </div>
-
-            {/* Back to top — real anchor for keyboard nav, smooth scroll enhancement */}
-            <div className="no-print mt-8 text-center">
-              <a
-                href="#top"
-                onClick={(e) => {
-                  e.preventDefault();
-                  document.getElementById("top")?.scrollIntoView({ behavior: "smooth" });
-                }}
-                className="text-text-muted hover:text-primary inline-flex items-center gap-1.5 text-sm transition-colors"
-              >
-                <ArrowUp className="h-4 w-4" aria-hidden="true" />
-                {t("backToTop")}
-              </a>
             </div>
           </div>
           {/* close content column */}

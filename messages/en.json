@@ -251,7 +251,7 @@
       },
       "eyebrow": "Lehrplan 21-aligned materials — ready to use",
       "title": "Less searching, more teaching.",
-      "description": "Discover professional teaching materials, developed by colleagues and precisely aligned with <bold>Lehrplan 21</bold>. Trustworthy, verified, ready to use.",
+      "description": "Discover professional teaching materials, developed by colleagues and precisely aligned with <bold>Lehrplan 21</bold>.",
       "primaryButton": "Find Materials Now",
       "secondaryButton": "Learn More",
       "search": {
@@ -267,7 +267,7 @@
         "music": "Music",
         "sports": "Sports",
         "button": "Search",
-        "dialectLabel": "Dialect",
+        "dialectLabel": "Language variant",
         "dialectSwiss": "Swiss German",
         "dialectStandard": "Standard German",
         "allDialects": "All Dialects",
@@ -385,14 +385,14 @@
     },
     "valueProposition": {
       "title": "Why Currico?",
-      "description": "The platform that saves Swiss teachers time and guarantees quality.",
+      "description": "The platform that saves Swiss teachers time.",
       "timeSaving": {
         "title": "Save Time",
         "description": "Find in minutes what usually takes hours. Ready-to-use materials without additional work."
       },
       "quality": {
-        "title": "Quality Guaranteed",
-        "description": "Every material is reviewed and precisely aligned with Lehrplan 21."
+        "title": "Quality Focus",
+        "description": "Materials are community-reviewed and checked for LP21 alignment."
       },
       "community": {
         "title": "By Teachers, For Teachers",
@@ -439,7 +439,7 @@
       "description": "Currico is developed with a focus on quality, security, and the needs of educators. Your data is protected by strict privacy laws.",
       "swissMade": {
         "title": "Quality First",
-        "description": "Developed with real Swiss educators"
+        "description": "Developed by Swiss educators"
       },
       "swissHosted": {
         "title": "Hosted by Infomaniak",
@@ -555,6 +555,7 @@
       "description": "We sent a confirmation email to <strong>{email}</strong>. Please check your inbox and click the confirmation link.",
       "checkSpam": "Didn't receive it? Check your spam folder.",
       "continueButton": "Continue to dashboard",
+      "uploadButton": "Upload your first material",
       "resendButton": "Resend email",
       "resending": "Sending...",
       "resent": "Email has been resent"
@@ -622,7 +623,7 @@
       "showMaterials": "Materials",
       "showCreators": "Profiles",
       "displayLabel": "Show",
-      "dialectLabel": "Dialect",
+      "dialectLabel": "Language variant",
       "dialectSwiss": "Swiss German",
       "dialectStandard": "Standard German",
       "zyklusLabel": "Cycle",
@@ -2239,6 +2240,12 @@
   "termsPage": {
     "title": "Terms of Service",
     "lastUpdated": "Last updated: February 2026",
+    "toc": {
+      "title": "Table of Contents",
+      "label": "Terms navigation",
+      "showContents": "Show table of contents",
+      "hideContents": "Hide table of contents"
+    },
     "general": {
       "introduction": {
         "title": "1. Introduction",
@@ -2919,14 +2926,16 @@
     },
     "version": "Version 1.2 - February 2026",
     "emailTitle": "Send email to Currico",
+    "toc": {
+      "title": "Table of Contents",
+      "label": "Privacy policy navigation",
+      "showContents": "Show table of contents",
+      "hideContents": "Hide table of contents"
+    },
     "contact": {
       "title": "Questions About Privacy?",
       "description": "For questions or concerns about your data, contact us:",
       "email": "info@currico.ch"
-    },
-    "links": {
-      "impressum": "Legal Notice",
-      "terms": "Terms and Conditions"
     }
   },
   "materialDetail": {

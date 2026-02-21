@@ -38,11 +38,6 @@ const HowItWorks = dynamic(
   () => import("@/components/ui/HowItWorks").then((m) => ({ default: m.HowItWorks })),
   { ssr: false, loading: SectionSkeleton }
 );
-const TestimonialsSection = dynamic(
-  () =>
-    import("@/components/ui/TestimonialsSection").then((m) => ({ default: m.TestimonialsSection })),
-  { ssr: false, loading: SectionSkeleton }
-);
 const ValueProposition = dynamic(
   () => import("@/components/ui/ValueProposition").then((m) => ({ default: m.ValueProposition })),
   { ssr: false, loading: SectionSkeleton }
@@ -285,18 +280,7 @@ export default function HomeClient({ initialMaterials, platformStats }: HomeClie
                   </form>
                 </FadeIn>
 
-                {/* Seller CTA - prominent link below search */}
-                <FadeIn direction="up" delay={0.3}>
-                  <p className="text-text-muted mt-5 text-sm">
-                    {t("hero.sellerCta")}{" "}
-                    <Link
-                      href="/verkaeufer-werden"
-                      className="text-primary font-medium hover:underline"
-                    >
-                      {tCommon("footer.links.becomeSeller")} →
-                    </Link>
-                  </p>
-                </FadeIn>
+                {/* Seller CTA removed — dedicated section exists further down */}
               </div>
 
               {/* Right Side - Hero Image with decorative container + parallax */}
@@ -446,9 +430,6 @@ export default function HomeClient({ initialMaterials, platformStats }: HomeClie
 
         {/* How It Works - 3-Step Guide */}
         <HowItWorks />
-
-        {/* Testimonials - Social Proof */}
-        <TestimonialsSection />
 
         {/* Value Proposition Triptych - Rule of Three */}
         <ValueProposition />

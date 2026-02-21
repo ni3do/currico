@@ -15,12 +15,15 @@ interface ReviewsSectionProps {
   materialId: string;
   hideTitle?: boolean;
   className?: string;
+  /** Increment to force re-fetch (e.g. after download) */
+  refreshKey?: number;
 }
 
 export function ReviewsSection({
   materialId,
   hideTitle = false,
   className = "",
+  refreshKey = 0,
 }: ReviewsSectionProps) {
   const { data: session, status: sessionStatus } = useSession();
   const tCommon = useTranslations("common");
@@ -69,7 +72,7 @@ export function ReviewsSection({
 
   useEffect(() => {
     fetchReviews();
-  }, [fetchReviews]);
+  }, [fetchReviews, refreshKey]);
 
   const handleReviewSubmitted = () => {
     setShowForm(false);

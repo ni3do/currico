@@ -251,7 +251,7 @@
       },
       "eyebrow": "Lehrplan-21-konforme Materialien — sofort einsetzbar",
       "title": "Weniger suchen, mehr unterrichten.",
-      "description": "Entdecken Sie professionelle Lehrmittel, entwickelt von Kollegen und exakt abgestimmt auf den <bold>Lehrplan 21</bold>. Vertrauenswürdig, geprüft, sofort einsetzbar.",
+      "description": "Entdecken Sie professionelle Lehrmittel, entwickelt von Kollegen und exakt abgestimmt auf den <bold>Lehrplan 21</bold>.",
       "primaryButton": "Jetzt Material finden",
       "secondaryButton": "Mehr erfahren",
       "search": {
@@ -267,7 +267,7 @@
         "music": "Musik",
         "sports": "Sport",
         "button": "Suchen",
-        "dialectLabel": "Dialekt",
+        "dialectLabel": "Sprachvariante",
         "dialectSwiss": "Schweizerdeutsch",
         "dialectStandard": "Hochdeutsch",
         "allDialects": "Alle Sprachvarianten",
@@ -385,14 +385,14 @@
     },
     "valueProposition": {
       "title": "Warum Currico?",
-      "description": "Die Plattform, die Schweizer Lehrpersonen Zeit spart und Qualität garantiert.",
+      "description": "Die Plattform, die Schweizer Lehrpersonen Zeit spart.",
       "timeSaving": {
         "title": "Zeit sparen",
         "description": "Finden Sie in Minuten, was sonst Stunden dauert. Sofort einsetzbare Materialien ohne Nachbearbeitung."
       },
       "quality": {
-        "title": "Qualität garantiert",
-        "description": "Jedes Material wird geprüft und ist exakt auf den Lehrplan 21 abgestimmt."
+        "title": "Qualität im Fokus",
+        "description": "Materialien werden von der Community bewertet und auf LP21-Konformität geprüft."
       },
       "community": {
         "title": "Von Lehrern für Lehrer",
@@ -439,7 +439,7 @@
       "description": "Currico wird mit Fokus auf Qualität, Sicherheit und die Bedürfnisse von Lehrpersonen entwickelt. Ihre Daten sind durch strenge Datenschutzgesetze geschützt.",
       "swissMade": {
         "title": "Qualität zuerst",
-        "description": "Entwickelt mit echten Schweizer Lehrpersonen"
+        "description": "Entwickelt von Schweizer Lehrpersonen"
       },
       "swissHosted": {
         "title": "Gehostet bei Infomaniak",
@@ -555,6 +555,7 @@
       "description": "Wir haben eine Bestätigungs-E-Mail an <strong>{email}</strong> gesendet. Bitte prüfen Sie Ihren Posteingang und klicken Sie auf den Bestätigungslink.",
       "checkSpam": "Nicht erhalten? Prüfen Sie Ihren Spam-Ordner.",
       "continueButton": "Weiter zum Dashboard",
+      "uploadButton": "Erstes Material hochladen",
       "resendButton": "E-Mail erneut senden",
       "resending": "Wird gesendet...",
       "resent": "E-Mail wurde erneut gesendet"
@@ -622,7 +623,7 @@
       "showMaterials": "Materialien",
       "showCreators": "Profile",
       "displayLabel": "Anzeigen",
-      "dialectLabel": "Dialekt",
+      "dialectLabel": "Sprachvariante",
       "dialectSwiss": "Schweizerdeutsch",
       "dialectStandard": "Hochdeutsch",
       "zyklusLabel": "Zyklus",
@@ -2239,6 +2240,12 @@
   "termsPage": {
     "title": "Allgemeine Geschäftsbedingungen (AGB)",
     "lastUpdated": "Zuletzt aktualisiert: Februar 2026",
+    "toc": {
+      "title": "Inhaltsverzeichnis",
+      "label": "AGB-Navigation",
+      "showContents": "Inhaltsverzeichnis anzeigen",
+      "hideContents": "Inhaltsverzeichnis schliessen"
+    },
     "general": {
       "introduction": {
         "title": "1. Einführung",
@@ -2919,14 +2926,16 @@
     },
     "version": "Version 1.2 - Februar 2026",
     "emailTitle": "E-Mail an Currico senden",
+    "toc": {
+      "title": "Inhaltsverzeichnis",
+      "label": "Datenschutz-Navigation",
+      "showContents": "Inhaltsverzeichnis anzeigen",
+      "hideContents": "Inhaltsverzeichnis schliessen"
+    },
     "contact": {
       "title": "Fragen zum Datenschutz?",
       "description": "Für Fragen oder Anliegen bezüglich Ihrer Daten kontaktieren Sie uns:",
       "email": "info@currico.ch"
-    },
-    "links": {
-      "impressum": "Impressum",
-      "terms": "Allgemeine Geschäftsbedingungen"
     }
   },
   "materialDetail": {

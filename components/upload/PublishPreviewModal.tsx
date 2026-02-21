@@ -50,7 +50,7 @@ export function PublishPreviewModal({
           role="dialog"
           aria-modal="true"
           aria-labelledby="preview-modal-title"
-          className="border-border bg-surface relative z-10 w-full max-w-lg rounded-2xl border shadow-2xl"
+          className="border-border bg-surface relative z-10 w-full max-w-2xl rounded-2xl border shadow-2xl"
         >
           {/* Header */}
           <div className="border-border flex items-center justify-between border-b p-5">
