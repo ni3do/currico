@@ -327,6 +327,7 @@ export default function TopBar() {
                         </Link>
                       )}
                       <button
+                        type="button"
                         onClick={() => signOut()}
                         className="text-text-secondary hover:text-primary px-4 py-3 text-left text-sm font-medium transition-colors"
                       >

@@ -73,7 +73,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const searchParams = request.nextUrl.searchParams;
-    const page = Math.max(1, safeParseInt(searchParams.get("page"), 1));
+    const page = Math.max(1, Math.min(500, safeParseInt(searchParams.get("page"), 1)));
     const limit = Math.min(100, Math.max(1, safeParseInt(searchParams.get("limit"), 20)));
     const subject = searchParams.get("subject");
     const cycle = searchParams.get("cycle");

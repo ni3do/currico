@@ -294,6 +294,7 @@ model Resource {
   comments Comment[]
 
   @@index([seller_id])
+  @@index([seller_id, is_published, is_public])
   @@index([is_published, is_public])
   @@index([is_published, is_public, created_at])
   @@index([status])
@@ -338,6 +339,7 @@ model Transaction {
   downloadTokens DownloadToken[]
 
   @@index([buyer_id])
+  @@index([buyer_id, status, created_at])
   @@index([resource_id])
   @@index([status])
   @@index([created_at])
@@ -398,6 +400,9 @@ model Report {
   handled_at    DateTime?
 
   @@index([reporter_id])
+  @@index([reported_user_id])
+  @@index([resource_id])
+  @@index([handled_by_id])
   @@index([status])
   @@map("reports")
 }
@@ -724,6 +729,7 @@ model Bundle {
   resources BundleResource[]
 
   @@index([seller_id])
+  @@index([seller_id, is_published])
   @@index([is_published])
   @@map("bundles")
 }

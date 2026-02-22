@@ -257,21 +257,21 @@
 
 ## P2 — Medium: Database
 
-### DB-4: Missing compound index on Resource
+### ~~DB-4: Missing compound index on Resource~~ — DONE
 
-- `@@index([seller_id, is_published, is_public])` for seller material listings.
+- **Fix applied:** Added `@@index([seller_id, is_published, is_public])`.
 
-### DB-5: Missing compound index on Transaction
+### ~~DB-5: Missing compound index on Transaction~~ — DONE
 
-- `@@index([buyer_id, status, created_at])` for purchase history queries.
+- **Fix applied:** Added `@@index([buyer_id, status, created_at])`.
 
-### DB-6: Missing indexes on Report model
+### ~~DB-6: Missing indexes on Report model~~ — DONE
 
-- `@@index([reported_user_id])`, `@@index([resource_id])`, `@@index([handled_by_id])`
+- **Fix applied:** Added `@@index([reported_user_id])`, `@@index([resource_id])`, `@@index([handled_by_id])`.
 
-### DB-7: Missing index on Bundle
+### ~~DB-7: Missing index on Bundle~~ — DONE
 
-- `@@index([seller_id, is_published])` for seller bundle listings.
+- **Fix applied:** Added `@@index([seller_id, is_published])`.
 
 ### DB-8: Transaction model missing refund tracking fields
 
@@ -285,10 +285,10 @@
 
 ## P2 — Medium: API Validation
 
-### VAL-1: No max offset cap on materials list
+### ~~VAL-1: No max offset cap on materials list~~ — DONE
 
-- **File:** `app/api/materials/route.ts:76-77`
-- **Fix:** Cap `offset + limit <= 10000` to prevent expensive deep-pagination queries.
+- **File:** `app/api/materials/route.ts:76`
+- **Fix applied:** Capped page at 500 (`Math.min(500, ...)`) to prevent deep-pagination abuse.
 
 ### VAL-2: No file format validation in download endpoint
 
@@ -342,10 +342,10 @@
 - **File:** `sentry.client.config.ts:11`
 - **Fix applied:** Reduced `replaysOnErrorSampleRate` from 1.0 to 0.2.
 
-### CQ-3: ESLint missing no-console rule
+### ~~CQ-3: ESLint missing no-console rule~~ — DONE
 
 - **File:** `eslint.config.mjs`
-- **Fix:** Add `"no-console": "warn"` to catch debug logs before production.
+- **Fix applied:** Added `"no-console": ["warn", { allow: ["warn"] }]`.
 
 ### ~~CQ-4: SearchAutocomplete memory leak~~ — FALSE POSITIVE
 
@@ -381,21 +381,20 @@
 - Mix of `.text-error`, `.text-error mt-1 text-xs` patterns.
 - **Fix:** Standardize on a single error message component.
 
-### UI-4: MaterialCard free detection relies on string comparison
+### ~~UI-4: MaterialCard free detection relies on string comparison~~ — DONE
 
-- **File:** `components/ui/MaterialCard.tsx:102-103`
-- **Issue:** Checks both `price === 0` AND string `"Gratis"/"Free"` — fragile.
-- **Fix:** Rely only on numeric price check.
+- **File:** `components/ui/MaterialCard.tsx:102`
+- **Fix applied:** Now relies only on numeric `price === 0` check.
 
 ### UI-5: Missing debounce on wishlist/like rapid clicks
 
 - **Files:** MaterialCard (wishlist), LikeButton
 - **Fix:** Add debounce/throttle to prevent multiple API calls.
 
-### UI-6: Mobile logout button missing type="button"
+### ~~UI-6: Mobile logout button missing type="button"~~ — DONE
 
-- **File:** `components/ui/TopBar.tsx:331`
-- **Fix:** Add `type="button"` to prevent accidental form submission.
+- **File:** `components/ui/TopBar.tsx:330`
+- **Fix applied:** Added `type="button"` to mobile logout button.
 
 ---
 
