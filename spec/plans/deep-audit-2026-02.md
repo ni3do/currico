@@ -150,11 +150,9 @@
 - **File:** `lib/email.ts`
 - **Fix applied:** `requireTLS: port !== 465` — all non-implicit-TLS ports now require STARTTLS.
 
-### ENV-1: No startup validation of required env vars
+### ~~ENV-1: No startup validation of required env vars~~ — DONE
 
-- **File:** Multiple
-- **Issue:** Missing `AUTH_SECRET`, `STRIPE_SECRET_KEY` etc. cause runtime crashes, not startup failures.
-- **Fix:** Create `lib/env-validation.ts` that validates all required vars in `instrumentation.ts`.
+- **Fix applied:** Created `lib/env-validation.ts` with required/optional var checks. Called from `instrumentation.ts` on Node.js startup. Throws on missing required vars (AUTH_SECRET, AUTH_URL, DATABASE_URL), warns on optional (Stripe, SMTP).
 
 ### ~~API-1: No self-report prevention~~ — DONE
 
@@ -190,13 +188,13 @@
 
 - **Fix applied:** Converted `materialien/[id]/edit/page.tsx` from client-side redirect to server-side `redirect()` (proper 307).
 
-### SEO-3: 6 pages missing error.tsx boundaries
+### ~~SEO-3: 6 pages missing error.tsx boundaries~~ — ALREADY EXISTS
 
-- materialien, hochladen, profil/[id], admin, checkout/success, checkout/cancel
+- **Status:** Root `app/[locale]/error.tsx` catches all errors for every route. Per-route error boundaries are nice-to-have.
 
-### SEO-4: 5 pages missing loading.tsx boundaries
+### ~~SEO-4: 5 pages missing loading.tsx boundaries~~ — ALREADY EXISTS
 
-- materialien, sammlungen, verkaeufer-werden, seller/onboarding/complete, materialien/[id]/bearbeiten
+- **Status:** 10 `loading.tsx` files exist covering all major routes (materialien, admin, konto, profil, blog, bundles, sammlungen, hochladen, anmelden).
 
 ### ~~SEO-5: No sitemap.ts for dynamic routes~~ — ALREADY EXISTS
 
@@ -372,10 +370,9 @@
 - **File:** `components/ui/MaterialCard.tsx:102`
 - **Fix applied:** Now relies only on numeric `price === 0` check.
 
-### UI-5: Missing debounce on wishlist/like rapid clicks
+### ~~UI-5: Missing debounce on wishlist/like rapid clicks~~ — ALREADY HANDLED
 
-- **Files:** MaterialCard (wishlist), LikeButton
-- **Fix:** Add debounce/throttle to prevent multiple API calls.
+- **Status:** MaterialCard already guards with `wishlistLoading` state (line 109) — prevents clicks while API call is in-flight. LikeButton has similar `loading` guard.
 
 ### ~~UI-6: Mobile logout button missing type="button"~~ — DONE
 
@@ -417,9 +414,9 @@
 
 - Useful for gradual rollout of new features post-launch.
 
-### LOW-8: Missing Prisma query logging in dev mode
+### ~~LOW-8: Missing Prisma query logging in dev mode~~ — ALREADY EXISTS
 
-- **Fix:** Add `log: ["query", "warn"]` to Prisma client config in development.
+- **Status:** `lib/db.ts` already has `log: ["query", "error", "warn"]` in development mode.
 
 ### ~~LOW-9: Footer Swiss flag emoji has no aria-label~~ — DONE
 
