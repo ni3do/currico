@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { vi } from "vitest";
 
 /**
  * Create a mock NextRequest for testing API routes
@@ -52,4 +53,27 @@ export function createMockFormData(data: Record<string, string | Blob>): FormDat
     formData.append(key, value);
   });
   return formData;
+}
+
+/**
+ * Create route params object for Next.js 16 (params are a Promise)
+ */
+export function createRouteParams<T extends Record<string, string>>(params: T) {
+  return { params: Promise.resolve(params) };
+}
+
+/**
+ * Set getCurrentUserId mock to return the given userId (authenticated)
+ */
+export async function mockAuthenticated(userId: string) {
+  const { getCurrentUserId } = await import("@/lib/auth");
+  (getCurrentUserId as ReturnType<typeof vi.fn>).mockResolvedValue(userId);
+}
+
+/**
+ * Set getCurrentUserId mock to return null (unauthenticated)
+ */
+export async function mockUnauthenticated() {
+  const { getCurrentUserId } = await import("@/lib/auth");
+  (getCurrentUserId as ReturnType<typeof vi.fn>).mockResolvedValue(null);
 }
