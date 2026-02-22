@@ -289,15 +289,15 @@
 
 ## P2 — Medium: Testing
 
-### TEST-1: Zero component tests — DEFERRED
+### TEST-1: Zero component tests — IN PROGRESS
 
 - 101 component files, 0 test files. No UI testing at all.
-- **Status:** Major effort. Track separately in roadmap.
+- **Progress:** First hook test added (useWishlist) establishing `renderHook` pattern. Component tests remain.
 
-### TEST-2: Only 7 API test files for 88 routes — DEFERRED
+### TEST-2: Only 7 API test files for 88 routes — IN PROGRESS
 
 - **Missing tests for:** auth 2FA, payments, seller verification, upload, admin CRUD, bundles, comments.
-- **Status:** Major effort. Track separately in roadmap.
+- **Progress (Feb 2026):** Added 8 new API test files (change-password, forgot-password, reset-password, material-by-id, token-download, users/me, reviews) + 4 utility/validation test files + 1 hook test. Total: 27 test files / 391 tests (was 15 files / ~240 tests).
 
 ### TEST-3: E2E tests are smoke-only — DEFERRED
 
