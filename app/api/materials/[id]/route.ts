@@ -413,7 +413,7 @@ export async function DELETE(
         file_url: true,
         preview_url: true,
         _count: {
-          select: { transactions: { where: { status: "COMPLETED" } } },
+          select: { transactions: { where: { status: { in: ["COMPLETED", "REFUNDED"] } } } },
         },
       },
     });

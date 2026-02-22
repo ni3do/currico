@@ -99,8 +99,7 @@ export const MaterialCard = memo(function MaterialCard({
 
   const isCompact = variant === "compact";
   const linkHref = href ?? `/materialien/${id}`;
-  const isFree =
-    price !== undefined ? price === 0 : priceFormatted === "Gratis" || priceFormatted === "Free";
+  const isFree = price !== undefined ? price === 0 : false;
   const shouldShowPriceBadge = showPriceBadge && priceFormatted;
 
   const handleWishlistClick = async (e: React.MouseEvent) => {

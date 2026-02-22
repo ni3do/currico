@@ -147,6 +147,20 @@ export async function requireAuth(): Promise<string | null> {
 }
 
 /**
+ * Verify resource ownership - returns forbidden response if user doesn't own the resource
+ */
+export function requireOwnership(
+  userId: string,
+  ownerId: string,
+  code: ApiErrorCode = API_ERROR_CODES.FORBIDDEN
+): NextResponse | null {
+  if (userId !== ownerId) {
+    return forbidden("Not the owner", code);
+  }
+  return null;
+}
+
+/**
  * Check if user is a seller
  * Returns user object with seller info or null if not a seller
  */

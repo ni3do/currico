@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import * as Sentry from "@sentry/nextjs";
 
 interface UseWishlistOptions {
   isAuthenticated: boolean;
@@ -23,7 +24,7 @@ export function useWishlist({ isAuthenticated, toast, t }: UseWishlistOptions) {
           setWishlistedIds(ids);
         }
       } catch (error) {
-        console.error("Error fetching wishlist:", error);
+        Sentry.captureException(error);
       }
     };
     fetchWishlist();
@@ -66,7 +67,7 @@ export function useWishlist({ isAuthenticated, toast, t }: UseWishlistOptions) {
           }
         }
       } catch (error) {
-        console.error("Error toggling wishlist:", error);
+        Sentry.captureException(error);
         toast(t("toast.error"), "error");
       }
       return false;

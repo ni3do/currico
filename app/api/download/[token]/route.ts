@@ -82,9 +82,9 @@ export async function GET(
       return notFound("Download link not found", API_ERROR_CODES.INVALID_TOKEN);
     }
 
-    // Check if transaction is completed
+    // Check if transaction is completed (use generic 404 to avoid leaking transaction status)
     if (downloadToken.transaction.status !== "COMPLETED") {
-      return badRequest("Payment not completed", undefined, API_ERROR_CODES.PAYMENT_INCOMPLETE);
+      return notFound("Download link not found", API_ERROR_CODES.INVALID_TOKEN);
     }
 
     // Check if token has expired
@@ -109,15 +109,30 @@ export async function GET(
     const filename = getSafeFilename(resource.title, resource.file_url);
     const contentType = getContentType(resource.file_url);
 
-    // Prepare the response first, then increment count only on success
-    let response: NextResponse;
+    // Atomically increment download count BEFORE serving the file.
+    // This prevents race conditions where concurrent requests bypass the limit.
+    // Uses a conditional update to ensure count hasn't exceeded max.
+    const updated = await prisma.downloadToken.updateMany({
+      where: {
+        id: downloadToken.id,
+        download_count: { lt: downloadToken.max_downloads },
+      },
+      data: { download_count: { increment: 1 } },
+    });
+
+    if (updated.count === 0) {
+      return NextResponse.json(
+        { error: "Maximum downloads reached", code: API_ERROR_CODES.MAX_DOWNLOADS_REACHED },
+        { status: 410 }
+      );
+    }
 
     // Check if this is a legacy local path (starts with /uploads/)
     if (isLegacyLocalPath(resource.file_url)) {
       const filePath = getLegacyFilePath(resource.file_url);
       try {
         const fileBuffer = await readFile(filePath);
-        response = new NextResponse(new Uint8Array(fileBuffer), {
+        return new NextResponse(new Uint8Array(fileBuffer), {
           headers: {
             "Content-Type": contentType,
             "Content-Disposition": `attachment; filename="${encodeURIComponent(filename)}"`,
@@ -135,7 +150,7 @@ export async function GET(
           expiresIn: 3600, // 1 hour
           downloadFilename: filename,
         });
-        response = NextResponse.redirect(signedUrl);
+        return NextResponse.redirect(signedUrl);
       } catch (error) {
         captureError("Failed to generate signed URL:", error);
         return serverError("Failed to generate download link");
@@ -144,7 +159,7 @@ export async function GET(
       // For local storage, read and stream the file
       try {
         const fileBuffer = await storage.getFile(resource.file_url, "material");
-        response = new NextResponse(new Uint8Array(fileBuffer), {
+        return new NextResponse(new Uint8Array(fileBuffer), {
           headers: {
             "Content-Type": contentType,
             "Content-Disposition": `attachment; filename="${encodeURIComponent(filename)}"`,
@@ -156,14 +171,6 @@ export async function GET(
         return notFound("File not found", API_ERROR_CODES.FILE_NOT_FOUND);
       }
     }
-
-    // Increment download count only after file is successfully prepared
-    await prisma.downloadToken.update({
-      where: { id: downloadToken.id },
-      data: { download_count: { increment: 1 } },
-    });
-
-    return response;
   } catch (error) {
     captureError("Error processing download token:", error);
     return serverError();

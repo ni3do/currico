@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
 import { useSession } from "next-auth/react";
+import * as Sentry from "@sentry/nextjs";
 import { usePathname, useRouter } from "next/navigation";
 import { getLoginUrl } from "@/lib/utils/login-redirect";
 import type { UserData, UserStats, FollowedSeller } from "@/lib/types/account";
@@ -48,7 +49,7 @@ export function useAccountDataProvider() {
         setStats(data.stats);
       }
     } catch (error) {
-      console.error("Error fetching user stats:", error);
+      Sentry.captureException(error);
     }
   }, []);
 
@@ -65,8 +66,11 @@ export function useAccountDataProvider() {
   useEffect(() => {
     if (status !== "authenticated") return;
 
+    const controller = new AbortController();
+    const { signal } = controller;
+
     Promise.all([
-      fetch("/api/user/stats")
+      fetch("/api/user/stats", { signal })
         .then((res) => (res.ok ? res.json() : null))
         .then((data) => {
           if (data) {
@@ -74,22 +78,28 @@ export function useAccountDataProvider() {
             setStats(data.stats);
           }
         }),
-      fetch("/api/user/following")
+      fetch("/api/user/following", { signal })
         .then((res) => (res.ok ? res.json() : null))
         .then((data) => {
           if (data) setFollowedSellers(data.sellers || []);
         }),
-      fetch("/api/users/me/notifications")
+      fetch("/api/users/me/notifications", { signal })
         .then((res) => (res.ok ? res.json() : null))
         .then((data) => {
           if (data) setUnreadNotifications(data.unreadCount || 0);
         }),
     ])
-      .catch((err) => console.error("Error fetching account data:", err))
+      .catch((err) => {
+        if (!signal.aborted) Sentry.captureException(err);
+      })
       .finally(() => {
-        setLoading(false);
-        initialLoadDone.current = true;
+        if (!signal.aborted) {
+          setLoading(false);
+          initialLoadDone.current = true;
+        }
       });
+
+    return () => controller.abort();
   }, [status]);
 
   // Re-fetch user data when navigating between konto subpages (keeps header fresh after edits)

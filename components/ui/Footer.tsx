@@ -24,7 +24,9 @@ export default function Footer() {
               {t("footer.description")}
             </p>
             <div className="bg-error/[0.12] mt-4 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5">
-              <span className="text-xs">🇨🇭</span>
+              <span className="text-xs" role="img" aria-label="Swiss flag">
+                🇨🇭
+              </span>
               <span className="text-text-secondary text-xs font-medium">
                 {t("footer.swissMade")}
               </span>

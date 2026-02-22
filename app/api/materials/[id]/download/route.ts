@@ -19,6 +19,33 @@ import { checkDownloadMilestone } from "@/lib/notifications";
 import { captureError } from "@/lib/api-error";
 
 /**
+ * Allowed file extensions for downloads
+ */
+const ALLOWED_EXTENSIONS = new Set([
+  ".pdf",
+  ".doc",
+  ".docx",
+  ".xls",
+  ".xlsx",
+  ".ppt",
+  ".pptx",
+  ".zip",
+  ".png",
+  ".jpg",
+  ".jpeg",
+  ".rtf",
+  ".csv",
+  ".txt",
+  ".gif",
+  ".webp",
+  ".mp3",
+  ".wav",
+  ".mp4",
+  ".webm",
+  ".one",
+]);
+
+/**
  * Content type map for file extensions
  */
 const contentTypes: Record<string, string> = {
@@ -165,6 +192,13 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       checkDownloadMilestone(id).catch((err) =>
         captureError("Milestone check failed after free download:", err)
       );
+    }
+
+    // Validate file extension against allowlist
+    const fileExt = path.extname(material.file_url).toLowerCase();
+    if (fileExt && !ALLOWED_EXTENSIONS.has(fileExt)) {
+      captureError("Download blocked - disallowed extension:", material.file_url);
+      return forbidden("File type not allowed", API_ERROR_CODES.INVALID_FILE_TYPE);
     }
 
     const storage = getStorage();

@@ -22,6 +22,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/verkaeufer-stufen",
     "/verifizierter-verkaeufer",
     "/verkaeufer-werden",
+    "/sammlungen",
+    "/blog",
   ];
 
   const staticEntries: MetadataRoute.Sitemap = staticPages.map((path) => ({

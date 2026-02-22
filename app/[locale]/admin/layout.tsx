@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { usePathname } from "@/i18n/navigation";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import * as Sentry from "@sentry/nextjs";
 import { Link } from "@/i18n/navigation";
 import { getLoginUrl } from "@/lib/utils/login-redirect";
 import { useTranslations } from "next-intl";
@@ -53,7 +54,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         }
       } catch (error) {
         if (!isCancelled) {
-          console.error("Error fetching admin stats:", error);
+          Sentry.captureException(error);
         }
       }
     };

@@ -87,21 +87,25 @@ export function validateTOTP(token: string, encryptedSecret: string): boolean {
 
 /**
  * Generate 10 single-use backup codes
- * Returns plaintext codes (shown once) and hashed versions (stored)
+ * Returns plaintext codes (shown once) and salted+hashed versions (stored)
  */
 export function generateBackupCodes(): {
   codes: string[];
-  hashes: { hash: string; used: boolean }[];
+  hashes: { hash: string; salt: string; used: boolean }[];
 } {
   const codes: string[] = [];
-  const hashes: { hash: string; used: boolean }[] = [];
+  const hashes: { hash: string; salt: string; used: boolean }[] = [];
 
   for (let i = 0; i < 10; i++) {
     // 8-char alphanumeric code (lowercase for easy typing)
     const code = randomBytes(5).toString("hex").slice(0, 8);
+    const salt = randomBytes(16).toString("hex");
     codes.push(code);
     hashes.push({
-      hash: createHash("sha256").update(code).digest("hex"),
+      hash: createHash("sha256")
+        .update(salt + code)
+        .digest("hex"),
+      salt,
       used: false,
     });
   }
@@ -111,12 +115,12 @@ export function generateBackupCodes(): {
 
 /**
  * Safely parse backup_codes JSON field from Prisma
- * Returns validated array or empty array if data is corrupt
+ * Supports both legacy (unsalted) and new (salted) formats for backwards compatibility
  */
-export function parseBackupCodes(raw: unknown): { hash: string; used: boolean }[] {
+export function parseBackupCodes(raw: unknown): { hash: string; salt?: string; used: boolean }[] {
   if (!Array.isArray(raw)) return [];
   return raw.filter(
-    (entry): entry is { hash: string; used: boolean } =>
+    (entry): entry is { hash: string; salt?: string; used: boolean } =>
       typeof entry === "object" &&
       entry !== null &&
       typeof entry.hash === "string" &&
@@ -126,17 +130,26 @@ export function parseBackupCodes(raw: unknown): { hash: string; used: boolean }[
 
 /**
  * Validate a backup code against stored hashes (single-use, timing-safe)
+ * Supports both legacy (unsalted) and new (salted) hash formats
  */
 export function validateBackupCode(
   code: string,
-  storedHashes: { hash: string; used: boolean }[]
-): { valid: boolean; updatedHashes: { hash: string; used: boolean }[] } {
-  const inputHash = createHash("sha256").update(code.toLowerCase().trim()).digest("hex");
-  const inputHashBuffer = Buffer.from(inputHash, "hex");
+  storedHashes: { hash: string; salt?: string; used: boolean }[]
+): { valid: boolean; updatedHashes: { hash: string; salt?: string; used: boolean }[] } {
+  const normalizedCode = code.toLowerCase().trim();
 
   let found = false;
   const updatedHashes = storedHashes.map((entry) => {
     if (entry.used || found) return entry;
+
+    // Hash with salt if present (new format), otherwise unsalted (legacy)
+    const inputHash = entry.salt
+      ? createHash("sha256")
+          .update(entry.salt + normalizedCode)
+          .digest("hex")
+      : createHash("sha256").update(normalizedCode).digest("hex");
+    const inputHashBuffer = Buffer.from(inputHash, "hex");
+
     const storedBuffer = Buffer.from(entry.hash, "hex");
     if (
       storedBuffer.length === inputHashBuffer.length &&

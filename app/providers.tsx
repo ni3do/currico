@@ -6,7 +6,7 @@ import { ToastProvider } from "@/components/ui/Toast";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <SessionProvider refetchInterval={30 * 60} refetchOnWindowFocus={false}>
+    <SessionProvider refetchInterval={30 * 60} refetchOnWindowFocus={true}>
       <ThemeProvider>
         <ToastProvider>{children}</ToastProvider>
       </ThemeProvider>

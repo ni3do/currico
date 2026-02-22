@@ -71,7 +71,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ received: true });
   } catch (error) {
     captureError(`Webhook: Error handling ${event.type}:`, error);
-    return serverError("Webhook handler failed");
+    // Return 500 so Stripe retries the webhook delivery
+    return NextResponse.json(
+      { error: "Webhook handler failed", code: "INTERNAL_ERROR" },
+      { status: 500 }
+    );
   }
 }
 

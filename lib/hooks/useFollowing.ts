@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import * as Sentry from "@sentry/nextjs";
 
 interface UseFollowingOptions {
   isAuthenticated: boolean;
@@ -29,7 +30,7 @@ export function useFollowing({
           setFollowingIds(ids);
         }
       } catch (error) {
-        console.error("Error fetching following:", error);
+        Sentry.captureException(error);
       }
     };
     fetchFollowing();
@@ -70,7 +71,7 @@ export function useFollowing({
           }
         }
       } catch (error) {
-        console.error("Error toggling follow:", error);
+        Sentry.captureException(error);
         toast(t("toast.error"), "error");
       }
       return false;

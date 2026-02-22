@@ -14,6 +14,11 @@ function escapeHtml(str: string): string {
     .replace(/"/g, "&quot;");
 }
 
+/** Strip CRLF characters to prevent email header injection */
+function sanitizeHeaderValue(str: string): string {
+  return str.replace(/[\r\n]/g, "");
+}
+
 let transporter: Transporter | null = null;
 
 export function getTransporter(): Transporter {
@@ -33,8 +38,8 @@ export function getTransporter(): Transporter {
   transporter = nodemailer.createTransport({
     host,
     port,
-    secure: port === 465, // true for 465 (SSL), false for 587 (STARTTLS)
-    requireTLS: port === 587, // Require STARTTLS for port 587
+    secure: port === 465, // true for 465 (implicit TLS)
+    requireTLS: port !== 465, // Require STARTTLS for all non-465 ports (587, 25, etc.)
     auth: {
       user,
       pass,
@@ -182,10 +187,11 @@ export async function sendPurchaseConfirmationEmail({
       ? `${baseUrl}/${locale}/download/${downloadToken}`
       : `${baseUrl}/${locale}/konto/library`;
 
-  const subject =
+  const subject = sanitizeHeaderValue(
     locale === "de"
-      ? `${APP_NAME}: Kaufbestätigung - ${escapeHtml(resourceTitle)}`
-      : `${APP_NAME}: Purchase Confirmation - ${escapeHtml(resourceTitle)}`;
+      ? `${APP_NAME}: Kaufbestätigung - ${resourceTitle}`
+      : `${APP_NAME}: Purchase Confirmation - ${resourceTitle}`
+  );
 
   const downloadInfo =
     locale === "de"
@@ -329,8 +335,10 @@ export async function sendContactNotificationEmail({
     await transport.sendMail({
       from: getFromEmail(),
       to: adminEmail,
-      replyTo: email,
-      subject: `[${APP_NAME}] Neue Kontaktanfrage: ${subjectLabels[subject] || escapeHtml(subject)}`,
+      replyTo: sanitizeHeaderValue(email),
+      subject: sanitizeHeaderValue(
+        `[${APP_NAME}] Neue Kontaktanfrage: ${subjectLabels[subject] || subject}`
+      ),
       text: `Neue Kontaktanfrage von ${name} (${email})
 
 Betreff: ${subjectLabels[subject] || subject}
@@ -475,7 +483,7 @@ export async function sendNotificationEmail(params: {
     await transport.sendMail({
       from: `"${APP_NAME}" <${getFromEmail()}>`,
       to: email,
-      subject: `${APP_NAME}: ${title}`,
+      subject: sanitizeHeaderValue(`${APP_NAME}: ${title}`),
       text,
       html,
     });
