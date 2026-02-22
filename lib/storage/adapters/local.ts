@@ -51,6 +51,12 @@ export class LocalStorageAdapter implements StorageProvider {
   async upload(buffer: Buffer, options: UploadOptions): Promise<UploadResult> {
     const { category, userId, filename, contentType } = options;
 
+    // Enforce file size limit
+    const MAX_SIZE = 50 * 1024 * 1024; // 50MB
+    if (buffer.length > MAX_SIZE) {
+      throw new StorageError("UPLOAD_FAILED", `File exceeds maximum size of ${MAX_SIZE} bytes`);
+    }
+
     // Generate unique filename with hash
     const ext = path.extname(filename);
     const hash = crypto.randomBytes(16).toString("hex");

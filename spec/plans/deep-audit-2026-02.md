@@ -135,11 +135,9 @@
 - **File:** `lib/storage/adapters/local.ts:31`
 - **Fix applied:** Added `validateKey()` that rejects `..`, leading slashes, and resolves path to ensure it stays within uploadDir.
 
-### STOR-2: Storage adapters don't enforce file size limits
+### ~~STOR-2: Storage adapters don't enforce file size limits~~ — DONE
 
-- **File:** `lib/storage/adapters/s3.ts:66`
-- **Issue:** `MAX_MATERIAL_FILE_SIZE = 50MB` defined in validations but not enforced in adapter.
-- **Fix:** Add size check in `upload()` method before writing.
+- **Fix applied:** Added 50MB size check in both `S3StorageAdapter.upload()` and `LocalStorageAdapter.upload()` before writing.
 
 ### STOR-3: No rollback if DB save fails after S3 upload
 
@@ -279,15 +277,15 @@
 - **File:** `app/api/materials/route.ts:76`
 - **Fix applied:** Capped page at 500 (`Math.min(500, ...)`) to prevent deep-pagination abuse.
 
-### VAL-2: No file format validation in download endpoint
+### ~~VAL-2: No file format validation in download endpoint~~ — DONE
 
-- **File:** `app/api/materials/[id]/download/route.ts:41-44`
-- **Fix:** Validate `file_url` extension against allowlist before serving.
+- **File:** `app/api/materials/[id]/download/route.ts`
+- **Fix applied:** Added `ALLOWED_EXTENSIONS` set and validation before serving file. Blocks unexpected extensions with 403.
 
-### VAL-3: Missing reusable ownership check helper
+### ~~VAL-3: Missing reusable ownership check helper~~ — DONE
 
 - **File:** `lib/api.ts`
-- **Fix:** Add `requireOwnership(userId, ownerId)` helper to DRY ownership checks across routes.
+- **Fix applied:** Added `requireOwnership(userId, ownerId, code?)` helper that returns `forbidden()` if user doesn't match owner.
 
 ---
 
@@ -308,10 +306,10 @@
 - Only 2 tests that check page loads. No user flow coverage.
 - **Fix:** Add flows: search → view → purchase, upload → publish, login → 2FA, guest checkout.
 
-### TEST-4: No coverage thresholds in Vitest config
+### ~~TEST-4: No coverage thresholds in Vitest config~~ — DONE
 
-- **File:** `vitest.config.ts:13-23`
-- **Fix:** Add `coverage.thresholds` with minimum line/branch/function targets.
+- **File:** `vitest.config.ts`
+- **Fix applied:** Added `coverage.thresholds` at 20% for lines/branches/functions/statements (baseline for gradual improvement).
 
 ### TEST-5: Missing integration tests for critical paths
 
@@ -400,9 +398,10 @@
 
 - `hono: 4.11.4`, `@auth/core: 0.41.1`, `@swc/helpers: 0.5.18` — add comments explaining why.
 
-### LOW-4: Docker missing HEALTHCHECK directive
+### ~~LOW-4: Docker missing HEALTHCHECK directive~~ — DONE
 
 - **File:** `Dockerfile`
+- **Fix applied:** Added `HEALTHCHECK` using `wget` against `/api/health` (30s interval, 5s timeout, 3 retries).
 
 ### LOW-5: CI pipeline not parallelized
 
@@ -422,9 +421,9 @@
 
 - **Fix:** Add `log: ["query", "warn"]` to Prisma client config in development.
 
-### LOW-9: Footer Swiss flag emoji has no aria-label
+### ~~LOW-9: Footer Swiss flag emoji has no aria-label~~ — DONE
 
-- **File:** `components/ui/Footer.tsx:27`
+- **Fix applied:** Added `role="img" aria-label="Swiss flag"` to emoji span.
 
 ### LOW-10: StarRating aria-label not contextual
 
