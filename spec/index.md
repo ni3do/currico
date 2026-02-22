@@ -15,6 +15,7 @@ Documentation is organized into three tiers:
 - [Remaining Work](./plans/remaining-work.md) - **Start here.** All open items: 4 ops, 3 business, 3 design, 1 code bug (11 total)
 - [Roadmap](./plans/roadmap.md) - Strategic roadmap (domain migration + pilot program remaining)
 - [Launch Checklist](./plans/launch-checklist.md) - 115-item launch readiness audit (104/115 done, 90%)
+- [Deep Audit](./plans/deep-audit-2026-02.md) - Full project scan: 77 items across security, SEO, i18n, DB, testing, UI (Feb 2026)
 
 ## Reference
 

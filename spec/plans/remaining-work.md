@@ -7,13 +7,14 @@
 
 ## At a Glance
 
-| Category             | Items  | Blocked on           |
-| -------------------- | ------ | -------------------- |
-| Ops / Infrastructure | 4      | Domain purchase      |
-| Business Decisions   | 3      | Founders             |
-| Design / Assets      | 3      | Photos, logo         |
-| Code (blocked)       | 1      | `db:seed-curriculum` |
-| **Total**            | **11** |                      |
+| Category             | Items  | Blocked on                                |
+| -------------------- | ------ | ----------------------------------------- |
+| Ops / Infrastructure | 4      | Domain purchase                           |
+| Business Decisions   | 3      | Founders                                  |
+| Design / Assets      | 3      | Photos, logo                              |
+| Code (blocked)       | 1      | `db:seed-curriculum`                      |
+| Deep Audit           | 77     | See [deep-audit](./deep-audit-2026-02.md) |
+| **Total**            | **88** |                                           |
 
 ---
 
@@ -51,6 +52,21 @@ These need design work or real photos.
 ## 4. Code (blocked)
 
 - [ ] **BG filter border inconsistency** — "Bildnerisches Gestalten" filter outline doesn't match other subjects. Likely a DB color data issue. Blocked on running `npm run db:seed-curriculum` to verify.
+
+---
+
+## 5. Deep Audit (77 items)
+
+A full automated project scan was completed on 2026-02-22. See **[deep-audit-2026-02.md](./deep-audit-2026-02.md)** for the complete prioritized list.
+
+| Priority    | Count | Category                                         |
+| ----------- | ----- | ------------------------------------------------ |
+| P0 Critical | 10    | Security vulns, data integrity                   |
+| P1 High     | 18    | Auth, headers, storage, env validation           |
+| P2 Medium   | 39    | SEO, i18n, DB indexes, testing, code quality, UI |
+| P3 Low      | 10    | TypeScript, Docker, CI, nice-to-haves            |
+
+**Recommended order:** Security hardening (Phase A) before launch, SEO/metadata (Phase C) first week post-launch, testing (Phase E) ongoing.
 
 ---
 
