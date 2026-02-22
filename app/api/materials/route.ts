@@ -970,32 +970,44 @@ export async function POST(request: NextRequest) {
 
     // Update material with file URLs
     // For the file_url, store the storage key (not the full URL)
-    const updatedMaterial = await prisma.resource.update({
-      where: { id: material.id },
-      data: {
-        file_url: mainFileResult.key,
-        preview_url: previewUrl,
-        preview_urls: previewUrls,
-        preview_count: previewCount || 1,
-      },
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        price: true,
-        subjects: true,
-        cycles: true,
-        file_url: true,
-        preview_url: true,
-        preview_urls: true,
-        preview_count: true,
-        is_published: true,
-        is_approved: true,
-        status: true,
-        is_public: true,
-        created_at: true,
-      },
-    });
+    // STOR-3: Wrap in try/catch to rollback S3 files if DB update fails
+    let updatedMaterial;
+    try {
+      updatedMaterial = await prisma.resource.update({
+        where: { id: material.id },
+        data: {
+          file_url: mainFileResult.key,
+          preview_url: previewUrl,
+          preview_urls: previewUrls,
+          preview_count: previewCount || 1,
+        },
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          price: true,
+          subjects: true,
+          cycles: true,
+          file_url: true,
+          preview_url: true,
+          preview_urls: true,
+          preview_count: true,
+          is_published: true,
+          is_approved: true,
+          status: true,
+          is_public: true,
+          created_at: true,
+        },
+      });
+    } catch (dbError) {
+      // DB update failed — clean up uploaded S3 files to prevent orphans
+      await cleanupOnError(mainFileResult.key);
+      // Also clean up any preview files that were uploaded
+      for (const url of previewUrls) {
+        await storage.delete(url, "preview").catch(() => {});
+      }
+      throw dbError;
+    }
 
     // Notify followers when a new material is published
     if (updatedMaterial.is_published) {

@@ -14,6 +14,8 @@ interface TagInputProps {
   maxMessage?: string;
   /** Error message for duplicates */
   duplicateMessage?: string;
+  /** Error message for too short */
+  tooShortMessage?: string;
   disabled?: boolean;
 }
 
@@ -23,9 +25,10 @@ export function TagInput({
   maxTags = 10,
   minLength = 2,
   maxLength = 30,
-  placeholder = "Schlagwort eingeben und Enter drücken",
-  maxMessage = "Maximal 10 Schlagwörter",
-  duplicateMessage = "Bereits vorhanden",
+  placeholder,
+  maxMessage,
+  duplicateMessage,
+  tooShortMessage,
   disabled = false,
 }: TagInputProps) {
   const [inputValue, setInputValue] = useState("");
@@ -37,12 +40,12 @@ export function TagInput({
       const tag = raw.toLowerCase().trim();
       if (tag.length < minLength || tag.length > maxLength) return;
       if (tags.includes(tag)) {
-        setError(duplicateMessage);
+        setError(duplicateMessage ?? null);
         setTimeout(() => setError(null), 2000);
         return;
       }
       if (tags.length >= maxTags) {
-        setError(maxMessage);
+        setError(maxMessage ?? null);
         setTimeout(() => setError(null), 2000);
         return;
       }

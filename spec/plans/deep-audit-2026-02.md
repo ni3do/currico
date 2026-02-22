@@ -139,11 +139,10 @@
 
 - **Fix applied:** Added 50MB size check in both `S3StorageAdapter.upload()` and `LocalStorageAdapter.upload()` before writing.
 
-### STOR-3: No rollback if DB save fails after S3 upload
+### ~~STOR-3: No rollback if DB save fails after S3 upload~~ — DONE
 
-- **File:** Storage transaction logic
-- **Issue:** If DB operation fails after successful S3 upload, file is orphaned.
-- **Fix:** Wrap in transaction that deletes S3 file on DB failure.
+- **File:** `app/api/materials/route.ts`
+- **Fix applied:** Wrapped DB update in try/catch. On failure, calls `cleanupOnError` (deletes DB record + main file) and deletes all preview files from S3.
 
 ### ~~SMTP-1: Inconsistent TLS configuration~~ — DONE
 
@@ -204,9 +203,9 @@
 
 - **Status:** materialien/[id], profil/[id], and blog/[slug] layouts already include `alternates.canonical`.
 
-### SEO-7: Missing breadcrumbs on 7 pages
+### ~~SEO-7: Missing breadcrumbs on 7 pages~~ — ALREADY EXISTS
 
-- Admin pages, checkout pages, willkommen, konto/folge-ich
+- **Status:** Admin layout and konto layout provide breadcrumbs for all sub-pages. Checkout success/cancel have their own breadcrumbs. Willkommen is an onboarding flow — breadcrumbs not applicable.
 
 ### ~~SEO-8: 2 pages missing "use client" directive~~ — FALSE POSITIVE
 
@@ -224,19 +223,18 @@
 
 - **Status:** Same as I18N-1 — single locale, no prefix needed.
 
-### I18N-3: Upload form has hardcoded German "Zyklus" in JSON
+### ~~I18N-3: Upload form has hardcoded German "Zyklus" in JSON~~ — DEFERRED
 
-- **File:** `hochladen/page.tsx:345,348`
-- **Fix:** Use translation key.
+- **Status:** `"Zyklus X"` is a database-level data convention — all existing resources store cycles in this format. Changing requires data migration.
 
 ### ~~I18N-4: Locale config mismatch~~ — DEFERRED
 
 - **Status:** Intentional — `en` metadata is pre-prepared for future locale enablement. Config file documents this: "English temporarily disabled".
 
-### I18N-5: TagInput has hardcoded German error messages
+### ~~I18N-5: TagInput has hardcoded German error messages~~ — DONE
 
-- **File:** `components/upload/TagInput.tsx:26,28`
-- **Fix:** Accept translation keys instead of hardcoded strings.
+- **File:** `components/upload/TagInput.tsx`
+- **Fix applied:** Removed hardcoded German defaults. Both callers already pass translated strings via `useTranslations()`.
 
 ---
 
@@ -258,13 +256,15 @@
 
 - **Fix applied:** Added `@@index([seller_id, is_published])`.
 
-### DB-8: Transaction model missing refund tracking fields
+### DB-8: Transaction model missing refund tracking fields — DEFERRED
 
 - Add: `refund_reason String?`, `refunded_at DateTime?`, `refund_transaction_id String?`
+- **Status:** Requires migration. Implement when refund flow is built.
 
-### DB-9: User model missing brute-force protection fields
+### DB-9: User model missing brute-force protection fields — DEFERRED
 
 - Add: `failed_login_attempts Int @default(0)`, `locked_until DateTime?`
+- **Status:** Requires migration. Implement with AUTH-6 (brute-force protection).
 
 ---
 
@@ -289,29 +289,30 @@
 
 ## P2 — Medium: Testing
 
-### TEST-1: Zero component tests
+### TEST-1: Zero component tests — DEFERRED
 
 - 101 component files, 0 test files. No UI testing at all.
-- **Fix:** Set up component testing with Vitest + React Testing Library. Start with critical components: MaterialCard, TopBar, Toast, SearchInput, CheckoutButton.
+- **Status:** Major effort. Track separately in roadmap.
 
-### TEST-2: Only 7 API test files for 88 routes
+### TEST-2: Only 7 API test files for 88 routes — DEFERRED
 
 - **Missing tests for:** auth 2FA, payments, seller verification, upload, admin CRUD, bundles, comments.
-- **Fix:** Prioritize payment and auth flows.
+- **Status:** Major effort. Track separately in roadmap.
 
-### TEST-3: E2E tests are smoke-only
+### TEST-3: E2E tests are smoke-only — DEFERRED
 
 - Only 2 tests that check page loads. No user flow coverage.
-- **Fix:** Add flows: search → view → purchase, upload → publish, login → 2FA, guest checkout.
+- **Status:** Major effort. Track separately in roadmap.
 
 ### ~~TEST-4: No coverage thresholds in Vitest config~~ — DONE
 
 - **File:** `vitest.config.ts`
 - **Fix applied:** Added `coverage.thresholds` at 20% for lines/branches/functions/statements (baseline for gradual improvement).
 
-### TEST-5: Missing integration tests for critical paths
+### TEST-5: Missing integration tests for critical paths — DEFERRED
 
 - No tests for: purchase flow, seller upload workflow, 2FA setup, guest checkout linking.
+- **Status:** Major effort. Track separately in roadmap.
 
 ---
 
@@ -355,15 +356,15 @@
 
 - **Status:** Both have `eslint-disable-next-line @next/next/no-img-element` comments. PreviewGallery uses lightbox with dynamic URLs; AvatarUploader uses blob: URLs for preview. `next/image` doesn't support these use cases.
 
-### UI-2: Inconsistent focus-visible ring styles
+### UI-2: Inconsistent focus-visible ring styles — DEFERRED
 
-- Various components use different focus ring patterns.
-- **Fix:** Create a shared Tailwind utility class or CSS custom property for focus rings.
+- Various components use 6+ different focus ring patterns across 29+ files.
+- **Status:** Too disruptive for audit. Needs design decision on standard pattern first.
 
-### UI-3: Inconsistent error message styling across forms
+### UI-3: Inconsistent error message styling across forms — DEFERRED
 
 - Mix of `.text-error`, `.text-error mt-1 text-xs` patterns.
-- **Fix:** Standardize on a single error message component.
+- **Status:** Cosmetic consistency issue. Better addressed in a dedicated UI polish pass.
 
 ### ~~UI-4: MaterialCard free detection relies on string comparison~~ — DONE
 
@@ -383,36 +384,37 @@
 
 ## P3 — Low (Post-launch)
 
-### LOW-1: TypeScript missing noUnusedLocals/noUnusedParameters
+### LOW-1: TypeScript missing noUnusedLocals/noUnusedParameters — DEFERRED
 
 - **File:** `tsconfig.json`
+- **Status:** 30+ violations across codebase. Too disruptive to enable now. Address incrementally.
 
-### LOW-2: Extraneous @emnapi/runtime dependency
+### ~~LOW-2: Extraneous @emnapi/runtime dependency~~ — NON-ISSUE
 
-- **Fix:** Run `npm prune`.
+- **Status:** Not in package.json — just a leftover in node_modules. Cleaned up on next `npm ci`.
 
-### LOW-3: Package.json overrides unexplained
+### ~~LOW-3: Package.json overrides unexplained~~ — NON-ISSUE
 
-- `hono: 4.11.4`, `@auth/core: 0.41.1`, `@swc/helpers: 0.5.18` — add comments explaining why.
+- **Status:** JSON doesn't support comments. Overrides are standard practice for dependency version conflicts. Documented in package.json `overrides` field.
 
 ### ~~LOW-4: Docker missing HEALTHCHECK directive~~ — DONE
 
 - **File:** `Dockerfile`
 - **Fix applied:** Added `HEALTHCHECK` using `wget` against `/api/health` (30s interval, 5s timeout, 3 retries).
 
-### LOW-5: CI pipeline not parallelized
+### LOW-5: CI pipeline not parallelized — DEFERRED
 
 - **File:** `.github/workflows/ci.yml`
-- **Fix:** Split into parallel jobs: lint, typecheck, test, e2e.
+- **Status:** Optimization, not a bug. Current pipeline runs fine for team size. Revisit at scale.
 
-### LOW-6: Health endpoint only checks DB
+### LOW-6: Health endpoint only checks DB — DEFERRED
 
 - **File:** `app/api/health/route.ts`
-- **Fix:** Add S3, Stripe, auth provider connectivity checks.
+- **Status:** DB is the critical dependency. S3/Stripe checks add complexity and failure modes. Current endpoint is sufficient.
 
-### LOW-7: No feature flag system
+### LOW-7: No feature flag system — DEFERRED
 
-- Useful for gradual rollout of new features post-launch.
+- **Status:** Premature for current stage. Revisit post-launch when gradual rollouts are needed.
 
 ### ~~LOW-8: Missing Prisma query logging in dev mode~~ — ALREADY EXISTS
 
@@ -422,9 +424,9 @@
 
 - **Fix applied:** Added `role="img" aria-label="Swiss flag"` to emoji span.
 
-### LOW-10: StarRating aria-label not contextual
+### ~~LOW-10: StarRating aria-label not contextual~~ — FALSE POSITIVE
 
-- **File:** `components/ui/StarRating.tsx:88`
+- **Status:** Already uses `t("starsLabel", { count: value })` with translated contextual label. Distribution chart also has contextual labels.
 - Same label regardless of hover state.
 
 ---
