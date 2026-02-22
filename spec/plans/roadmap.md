@@ -62,3 +62,5 @@
 
 - [Remaining Work](./remaining-work.md) — Full list of all open items (ops, business, design, code)
 - [Launch Checklist](./launch-checklist.md) — 115-item launch readiness audit (104/115 done)
+- [Joel Improvements Tracker](./joelimprovements-status.md) - Page-by-page status (364/378 done)
+- [Design System](../reference/design-system.md) - Theme tokens and components
