@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Search, Eye, Download } from "lucide-react";
+import { Search, Eye, Download, ChevronRight } from "lucide-react";
 import { FadeIn, StaggerChildren, StaggerItem } from "@/components/ui/animations";
 
 const STEPS = [
@@ -25,10 +25,10 @@ export function HowItWorks() {
 
         <StaggerChildren
           staggerDelay={0.15}
-          className="mx-auto grid max-w-4xl gap-8 md:grid-cols-3"
+          className="mx-auto flex max-w-4xl flex-col items-center gap-6 md:flex-row md:items-start md:justify-between md:gap-0"
         >
           {STEPS.map((step, index) => (
-            <StaggerItem key={step.key}>
+            <StaggerItem key={step.key} className="flex items-center md:flex-1">
               <div className="flex flex-col items-center text-center">
                 {/* Step number + icon */}
                 <div className="relative mb-5">
@@ -44,10 +44,17 @@ export function HowItWorks() {
 
                 {/* Text */}
                 <h3 className="text-text mb-2 text-lg font-semibold">{t(`${step.key}.title`)}</h3>
-                <p className="text-text-muted text-sm leading-relaxed">
+                <p className="text-text-muted max-w-[220px] text-sm leading-relaxed">
                   {t(`${step.key}.description`)}
                 </p>
               </div>
+
+              {/* Connecting arrow (between steps, not after last) */}
+              {index < STEPS.length - 1 && (
+                <div className="text-border-subtle hidden shrink-0 px-4 md:flex md:items-center md:pt-6">
+                  <ChevronRight className="h-6 w-6" aria-hidden="true" />
+                </div>
+              )}
             </StaggerItem>
           ))}
         </StaggerChildren>

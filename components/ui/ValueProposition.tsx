@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Clock, Shield, Users } from "lucide-react";
+import { Clock, Shield, Users, BookCheck } from "lucide-react";
 import { FeatureGrid, type FeatureCard } from "@/components/ui/FeatureGrid";
 
 export function ValueProposition() {
@@ -31,6 +31,14 @@ export function ValueProposition() {
       iconColorClass: "text-accent",
       title: t("community.title"),
       description: t("community.description"),
+    },
+    {
+      key: "lp21",
+      icon: <BookCheck className="h-7 w-7" aria-hidden="true" />,
+      iconBgClass: "bg-warning-light",
+      iconColorClass: "text-warning",
+      title: t("lp21.title"),
+      description: t("lp21.description"),
     },
   ];
 

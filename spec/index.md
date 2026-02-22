@@ -12,13 +12,9 @@ Documentation is organized into three tiers:
 
 ## Active Plans
 
-- [Launch Checklist](./plans/launch-checklist.md) - Pre-launch readiness: 22 done / 31 open across 5 priority tiers
+- [Remaining Work](./plans/remaining-work.md) - **Start here.** All open items: 4 ops, 3 business, 3 design, 1 code bug (11 total)
 - [Roadmap](./plans/roadmap.md) - Strategic roadmap (domain migration + pilot program remaining)
-- [Joel Improvements Status](./plans/joelimprovements-status.md) - Page-by-page tracker: 362 done / 16 open (96%)
-- [Code Quality Improvements](./plans/code-quality-improvements.md) - Technical debt: dead code, indexes, constraints, error codes, perf (33 items)
-- [Consistency Audit Plan](./plans/consistency-audit-plan.md) - Full-project audit: 53 improvements across security, API, theme, UI, a11y, polish
-- [Final Touch Audit](./plans/final-touch-audit.md) - Design consistency audit report (score: 7.5/10)
-- [UX Polish 9-10](./plans/ux-polish-9-and-10.md) - Path from 8.5 → 10/10 UX polish score
+- [Launch Checklist](./plans/launch-checklist.md) - 115-item launch readiness audit (104/115 done, 90%)
 
 ## Reference
 
@@ -39,6 +35,12 @@ Documentation is organized into three tiers:
 
 Completed implementation plans in [`archive/`](./archive/):
 
+- [Joel Improvements Status](./archive/joelimprovements-status.md) - Page-by-page tracker: 375 done / 3 remaining (99%)
+- [Code Quality Improvements](./archive/code-quality-improvements.md) - Technical debt: 33/33 items complete
+- [Consistency Audit Plan](./archive/consistency-audit-plan.md) - Full-project audit: 53/53 items complete
+- [Final Touch Audit](./archive/final-touch-audit.md) - Design consistency audit (score: 7.5/10)
+- [UX Polish 9-10](./archive/ux-polish-9-and-10.md) - Path from 8.5 → 10/10 UX polish
+- [UI/UX Audit Runde 2](./archive/2overview.md) - Manual feedback + code audit: 52/53 items complete
 - [Account Structure Refactor](./archive/account-structure-refactor.md)
 - [Backend Improvements](./archive/backend-improvements.md)
 - [Claude Workflow](./archive/claude-workflow.md)

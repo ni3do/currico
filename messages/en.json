@@ -134,7 +134,7 @@
         "contact": "Contact"
       },
       "contact": {
-        "email": "kontakt@currico.ch",
+        "email": "info@currico.ch",
         "location": "Switzerland"
       },
       "links": {
@@ -366,7 +366,7 @@
       "description": "You've created great worksheets, lesson plans, or exams? Share them with colleagues across Switzerland and earn money while helping other teachers save time.",
       "benefits": {
         "earn": "Fair compensation",
-        "earnDesc": "Set your own prices — you keep 70% of every sale (e.g. CHF 3.50 from CHF 5.00)",
+        "earnDesc": "Set your own prices — you keep 70% of every sale",
         "reach": "Reach thousands",
         "reachDesc": "Connect with teachers throughout Switzerland",
         "simple": "Simple upload",
@@ -416,6 +416,10 @@
       "community": {
         "title": "By Teachers, For Teachers",
         "description": "Benefit from the knowledge and experience of your colleagues from all over Switzerland."
+      },
+      "lp21": {
+        "title": "LP21 Aligned",
+        "description": "All materials are tagged by Lehrplan 21 competencies — ready for your curriculum."
       }
     },
     "pilotTeacher": {

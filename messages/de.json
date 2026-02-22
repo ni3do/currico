@@ -134,7 +134,7 @@
         "contact": "Kontakt"
       },
       "contact": {
-        "email": "kontakt@currico.ch",
+        "email": "info@currico.ch",
         "location": "Schweiz"
       },
       "links": {
@@ -366,7 +366,7 @@
       "description": "Sie haben tolle Arbeitsblätter, Unterrichtseinheiten oder Prüfungen erstellt? Teilen Sie diese mit Kolleginnen und Kollegen in der ganzen Schweiz und verdienen Sie Geld, während Sie anderen Lehrpersonen Zeit sparen.",
       "benefits": {
         "earn": "Faire Entlohnung",
-        "earnDesc": "Setzen Sie Ihre Preise selbst — Sie erhalten 70% pro Verkauf (z.B. CHF 3.50 bei CHF 5.00)",
+        "earnDesc": "Setzen Sie Ihre Preise selbst — Sie erhalten 70% pro Verkauf",
         "reach": "Tausende erreichen",
         "reachDesc": "Vernetzen Sie sich mit Lehrpersonen in der ganzen Schweiz",
         "simple": "Einfacher Upload",
@@ -416,6 +416,10 @@
       "community": {
         "title": "Von Lehrern für Lehrer",
         "description": "Profitieren Sie vom Wissen und der Erfahrung Ihrer Kollegen aus der ganzen Schweiz."
+      },
+      "lp21": {
+        "title": "LP21-konform",
+        "description": "Alle Materialien sind nach Lehrplan 21 Kompetenzen getaggt — passend für Ihren Unterricht."
       }
     },
     "pilotTeacher": {
@@ -2205,7 +2209,7 @@
     "features": {
       "commission": {
         "title": "Faire Entlohnung",
-        "description": "Setzen Sie Ihre Preise selbst — Sie erhalten 70% pro Verkauf (z.B. CHF 3.50 bei CHF 5.00)"
+        "description": "Setzen Sie Ihre Preise selbst — Sie erhalten 70% pro Verkauf"
       },
       "community": {
         "title": "Tausende erreichen",

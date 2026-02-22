@@ -43,7 +43,11 @@ export function FeatureGrid({
 
         <StaggerChildren
           staggerDelay={0.15}
-          className="mx-auto grid max-w-5xl gap-6 sm:grid-cols-3 sm:gap-8"
+          className={`mx-auto grid gap-6 sm:gap-8 ${
+            cards.length === 4
+              ? "max-w-6xl sm:grid-cols-2 lg:grid-cols-4"
+              : "max-w-5xl sm:grid-cols-3"
+          }`}
         >
           {cards.map((card) => {
             const inner = (

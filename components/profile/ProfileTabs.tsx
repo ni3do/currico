@@ -155,7 +155,7 @@ export function ProfileTabs({
             ) : (
               <>
                 <StaggerChildren
-                  className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                  className="grid gap-5 min-[1920px]:grid-cols-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
                   variant="grid"
                 >
                   {materials.map((material) => (
@@ -213,7 +213,10 @@ export function ProfileTabs({
                 </p>
               </div>
             ) : (
-              <StaggerChildren className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3" variant="grid">
+              <StaggerChildren
+                className="grid gap-5 min-[1920px]:grid-cols-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                variant="grid"
+              >
                 {collections.map((collection) => (
                   <StaggerItem key={collection.id} variant="card">
                     <CollectionCard collection={collection} />
