@@ -1,18 +1,11 @@
-"use client";
+import { redirect } from "next/navigation";
 
-import { useParams } from "next/navigation";
-import { useRouter } from "@/i18n/navigation";
-import { useEffect } from "react";
+type Props = {
+  params: Promise<{ id: string }>;
+};
 
-// Redirect /edit to /bearbeiten (the full editor)
-export default function EditRedirect() {
-  const params = useParams();
-  const router = useRouter();
-  const materialId = params.id as string;
-
-  useEffect(() => {
-    router.replace(`/materialien/${materialId}/bearbeiten`);
-  }, [router, materialId]);
-
-  return null;
+// Server-side redirect from /edit to /bearbeiten (canonical URL)
+export default async function EditRedirect({ params }: Props) {
+  const { id } = await params;
+  redirect(`/materialien/${id}/bearbeiten`);
 }

@@ -181,24 +181,16 @@
 
 ## P2 — Medium: SEO & Metadata
 
-### SEO-1: 20+ pages missing generateMetadata
+### ~~SEO-1: 20+ pages missing generateMetadata~~ — PARTIALLY DONE
 
-- **Pages without any metadata:**
-  - Homepage (`app/[locale]/page.tsx`)
-  - Material detail (`app/[locale]/materialien/[id]/page.tsx`)
-  - Profile (`app/[locale]/profil/[id]/page.tsx`)
-  - Upload (`app/[locale]/hochladen/page.tsx`)
-  - All account subpages (`konto/*`)
-  - All admin pages (`admin/*`)
-  - Checkout success/cancel
-  - Blog posts (`blog/[slug]/page.tsx`)
-  - Bundles, collections, willkommen, verkaeufer-werden
-- **Impact:** No title/description in search results, no og:image for social sharing.
+- **Already had metadata:** Homepage (root layout), materialien, materialien/[id], profil/[id], blog, blog/[slug], and all legal pages.
+- **Added metadata layouts:** hochladen, sammlungen, willkommen (noindex), checkout (noindex).
+- **Not needed (auth-gated, robots.txt blocks):** konto/_, admin/_
+- **Remaining:** bundles/[id] (dynamic metadata needs server component refactor)
 
-### SEO-2: Duplicate edit routes
+### ~~SEO-2: Duplicate edit routes~~ — DONE
 
-- **Files:** Both `materialien/[id]/bearbeiten/` AND `materialien/[id]/edit/` exist.
-- **Fix:** Remove one, add 301 redirect via middleware.
+- **Fix applied:** Converted `materialien/[id]/edit/page.tsx` from client-side redirect to server-side `redirect()` (proper 307).
 
 ### SEO-3: 6 pages missing error.tsx boundaries
 
@@ -208,45 +200,42 @@
 
 - materialien, sammlungen, verkaeufer-werden, seller/onboarding/complete, materialien/[id]/bearbeiten
 
-### SEO-5: No sitemap.ts for dynamic routes
+### ~~SEO-5: No sitemap.ts for dynamic routes~~ — ALREADY EXISTS
 
-- **Fix:** Create `app/sitemap.ts` that queries DB for materials, profiles, bundles, blog posts.
+- **Status:** `app/sitemap.ts` already covers materials, profiles, blog posts, and static pages. Added `/sammlungen` and `/blog` to static entries.
 
-### SEO-6: No canonical URLs on dynamic routes
+### ~~SEO-6: No canonical URLs on dynamic routes~~ — ALREADY EXISTS
 
-- Material detail, profile, blog posts need canonical link tags.
+- **Status:** materialien/[id], profil/[id], and blog/[slug] layouts already include `alternates.canonical`.
 
 ### SEO-7: Missing breadcrumbs on 7 pages
 
 - Admin pages, checkout pages, willkommen, konto/folge-ich
 
-### SEO-8: 2 pages missing "use client" directive
+### ~~SEO-8: 2 pages missing "use client" directive~~ — FALSE POSITIVE
 
-- `konto/page.tsx` and `admin/page.tsx` use React hooks but no `"use client"` declaration.
+- **Status:** Both `konto/page.tsx` and `admin/page.tsx` are rendered inside `"use client"` layouts, so they inherit client context.
 
 ---
 
 ## P2 — Medium: i18n
 
-### I18N-1: Hardcoded router.push bypasses i18n routing
+### ~~I18N-1: Hardcoded router.push bypasses i18n routing~~ — NON-ISSUE
 
-- **Files:** `anmelden/page.tsx:81,83`, `registrieren/page.tsx:164,171`
-- **Fix:** Use `useRouter()` from `@/i18n/navigation`.
+- **Status:** Platform is German-only (`locales = ["de"]`) with `localePrefix: "as-needed"`. Plain paths like `/konto` and `/admin` work correctly without prefix.
 
-### I18N-2: Admin pages use hardcoded `/admin/*` paths
+### ~~I18N-2: Admin pages use hardcoded `/admin/*` paths~~ — NON-ISSUE
 
-- **File:** `admin/page.tsx:112-161`
-- **Fix:** Use i18n-aware Link/router.
+- **Status:** Same as I18N-1 — single locale, no prefix needed.
 
 ### I18N-3: Upload form has hardcoded German "Zyklus" in JSON
 
 - **File:** `hochladen/page.tsx:345,348`
 - **Fix:** Use translation key.
 
-### I18N-4: Locale config mismatch
+### ~~I18N-4: Locale config mismatch~~ — DEFERRED
 
-- **Issue:** `locales = ["de"]` only, but `en` metadata defined in layout.tsx.
-- **Fix:** Either enable `en` locale or remove `en` metadata to avoid confusion.
+- **Status:** Intentional — `en` metadata is pre-prepared for future locale enablement. Config file documents this: "English temporarily disabled".
 
 ### I18N-5: TagInput has hardcoded German error messages
 
@@ -366,10 +355,9 @@
 
 ## P2 — Medium: UI Components
 
-### UI-1: `<img>` used instead of `<Image>` in 2 components
+### ~~UI-1: `<img>` used instead of `<Image>` in 2 components~~ — FALSE POSITIVE
 
-- **Files:** `components/ui/PreviewGallery.tsx:335,361`, `components/profile/AvatarUploader.tsx:89`
-- **Fix:** Replace with `next/image` for optimization.
+- **Status:** Both have `eslint-disable-next-line @next/next/no-img-element` comments. PreviewGallery uses lightbox with dynamic URLs; AvatarUploader uses blob: URLs for preview. `next/image` doesn't support these use cases.
 
 ### UI-2: Inconsistent focus-visible ring styles
 
