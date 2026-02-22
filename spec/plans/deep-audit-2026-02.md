@@ -332,39 +332,35 @@
 
 ## P2 — Medium: Code Quality
 
-### CQ-1: console.error in production hooks
+### ~~CQ-1: console.error in production hooks~~ — DONE
 
-- **Files:** `lib/hooks/useWishlist.ts:26,69`, `useFollowing.ts:32,73`, `useAccountData.ts:51,88`
-- **Fix:** Replace with Sentry.captureException() or conditional dev-only logging.
+- **Files:** `lib/hooks/useWishlist.ts`, `useFollowing.ts`, `useAccountData.ts`
+- **Fix applied:** Replaced all `console.error` with `Sentry.captureException()`.
 
-### CQ-2: Sentry session replay at 100% on errors
+### ~~CQ-2: Sentry session replay at 100% on errors~~ — DONE
 
-- **File:** `sentry.client.config.ts:10-11`
-- **Issue:** Captures payment forms, auth dialogs, sensitive data.
-- **Fix:** Reduce to 20% or add custom filtering for sensitive pages.
+- **File:** `sentry.client.config.ts:11`
+- **Fix applied:** Reduced `replaysOnErrorSampleRate` from 1.0 to 0.2.
 
 ### CQ-3: ESLint missing no-console rule
 
 - **File:** `eslint.config.mjs`
 - **Fix:** Add `"no-console": "warn"` to catch debug logs before production.
 
-### CQ-4: SearchAutocomplete memory leak
+### ~~CQ-4: SearchAutocomplete memory leak~~ — FALSE POSITIVE
 
-- **File:** `components/search/SearchAutocomplete.tsx:73-79`
-- **Issue:** Timeout and AbortController not cleaned up on unmount.
-- **Fix:** Return cleanup function from useEffect.
+- **File:** `components/search/SearchAutocomplete.tsx`
+- **Status:** Cleanup already exists (lines 96-101). No fix needed.
 
-### CQ-5: SessionProvider refetchOnWindowFocus disabled
+### ~~CQ-5: SessionProvider refetchOnWindowFocus disabled~~ — DONE
 
 - **File:** `app/providers.tsx:9`
-- **Issue:** Sessions go stale after browser idle.
-- **Fix:** Set `refetchOnWindowFocus={true}` or implement manual refresh on critical operations.
+- **Fix applied:** Changed `refetchOnWindowFocus={false}` to `true`.
 
-### CQ-6: useAccountData race condition
+### ~~CQ-6: useAccountData race condition~~ — DONE
 
-- **File:** `lib/hooks/useAccountData.ts:42-92`
-- **Issue:** No AbortController, no request deduplication on re-renders.
-- **Fix:** Add AbortController cleanup in useEffect.
+- **File:** `lib/hooks/useAccountData.ts`
+- **Fix applied:** Added AbortController with cleanup. Fetch calls cancelled on unmount, state updates skipped if aborted.
 
 ---
 
