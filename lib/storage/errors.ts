@@ -7,6 +7,7 @@ export type StorageErrorCode =
   | "FILE_NOT_FOUND"
   | "DELETE_FAILED"
   | "INVALID_CONFIG"
+  | "INVALID_KEY"
   | "PERMISSION_DENIED"
   | "BUCKET_NOT_FOUND"
   | "SIGNED_URL_FAILED";

@@ -82,9 +82,9 @@ export async function GET(
       return notFound("Download link not found", API_ERROR_CODES.INVALID_TOKEN);
     }
 
-    // Check if transaction is completed
+    // Check if transaction is completed (use generic 404 to avoid leaking transaction status)
     if (downloadToken.transaction.status !== "COMPLETED") {
-      return badRequest("Payment not completed", undefined, API_ERROR_CODES.PAYMENT_INCOMPLETE);
+      return notFound("Download link not found", API_ERROR_CODES.INVALID_TOKEN);
     }
 
     // Check if token has expired

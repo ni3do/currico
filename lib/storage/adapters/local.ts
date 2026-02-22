@@ -26,9 +26,25 @@ export class LocalStorageAdapter implements StorageProvider {
   }
 
   /**
+   * Validate that a storage key doesn't contain path traversal sequences
+   */
+  private validateKey(key: string): void {
+    // Reject path traversal attempts
+    if (key.includes("..") || key.startsWith("/") || key.startsWith("\\")) {
+      throw new StorageError("INVALID_KEY", `Invalid storage key: ${key}`);
+    }
+    // Resolve and ensure the path stays within uploadDir
+    const resolved = path.resolve(this.uploadDir, key);
+    if (!resolved.startsWith(path.resolve(this.uploadDir))) {
+      throw new StorageError("INVALID_KEY", `Storage key escapes upload directory: ${key}`);
+    }
+  }
+
+  /**
    * Get the full filesystem path for a key
    */
   private getFilePath(key: string): string {
+    this.validateKey(key);
     return path.join(this.uploadDir, key);
   }
 

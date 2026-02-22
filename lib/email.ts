@@ -38,8 +38,8 @@ export function getTransporter(): Transporter {
   transporter = nodemailer.createTransport({
     host,
     port,
-    secure: port === 465, // true for 465 (SSL), false for 587 (STARTTLS)
-    requireTLS: port === 587, // Require STARTTLS for port 587
+    secure: port === 465, // true for 465 (implicit TLS)
+    requireTLS: port !== 465, // Require STARTTLS for all non-465 ports (587, 25, etc.)
     auth: {
       user,
       pass,

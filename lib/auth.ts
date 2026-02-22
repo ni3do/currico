@@ -26,6 +26,7 @@ declare module "@auth/core/jwt" {
     id?: string;
     role?: "BUYER" | "SELLER" | "ADMIN";
     needsOnboarding?: boolean;
+    roleRefreshedAt?: number;
   }
 }
 
@@ -34,7 +35,7 @@ const nextAuth = NextAuth({
   trustHost: true,
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    maxAge: 7 * 24 * 60 * 60, // 7 days
   },
   providers: [
     Google({
@@ -144,9 +145,14 @@ const nextAuth = NextAuth({
         token.needsOnboarding = !dbUser?.display_name;
         token.picture = dbUser?.image ?? undefined;
         token.name = dbUser?.display_name || dbUser?.name || token.name;
+        token.roleRefreshedAt = Date.now();
       }
-      // Refresh role, onboarding status, image, and name on session update
-      if (trigger === "update" && token.id) {
+
+      // Refresh on explicit session update OR if role data is stale (>1 hour)
+      const isStale =
+        token.id && (!token.roleRefreshedAt || Date.now() - token.roleRefreshedAt > 60 * 60 * 1000);
+
+      if (token.id && (trigger === "update" || isStale)) {
         const dbUser = await prisma.user.findUnique({
           where: { id: token.id as string },
           select: { role: true, display_name: true, image: true, name: true },
@@ -155,6 +161,7 @@ const nextAuth = NextAuth({
         token.needsOnboarding = !dbUser?.display_name;
         token.picture = dbUser?.image ?? undefined;
         token.name = dbUser?.display_name || dbUser?.name || token.name;
+        token.roleRefreshedAt = Date.now();
       }
       return token;
     },

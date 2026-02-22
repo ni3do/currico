@@ -46,14 +46,26 @@ export async function POST(request: NextRequest) {
 
     const { reason, description, resource_id, reported_user_id } = validation.data;
 
-    // Validate that the referenced resource exists
+    // Prevent self-reports
+    if (reported_user_id === userId) {
+      return badRequest("Cannot report yourself", undefined, API_ERROR_CODES.INVALID_INPUT);
+    }
+
+    // Validate that the referenced resource exists (and isn't owned by reporter)
     if (resource_id) {
       const resource = await prisma.resource.findUnique({
         where: { id: resource_id },
-        select: { id: true },
+        select: { id: true, seller_id: true },
       });
       if (!resource) {
         return notFound();
+      }
+      if (resource.seller_id === userId) {
+        return badRequest(
+          "Cannot report your own material",
+          undefined,
+          API_ERROR_CODES.INVALID_INPUT
+        );
       }
     }
 
